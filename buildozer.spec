@@ -1,7 +1,7 @@
 [app]
 title = התורה השומרונית
 package.name = samaritantorah
-package.domain = net.the-samaritans
+package.domain = net.thesamaritans
 
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,ttf,db
