@@ -222,7 +222,7 @@ class TorahApp(App):
                     headers={'User-Agent': 'SamaritanTorahApp/' + APP_VERSION})
                 with urllib.request.urlopen(req, timeout=8) as r:
                     data = json.loads(r.read().decode())
-                tag = data.get('tag_name', '').lstrip('v')
+                tag = data.get('tag_name', '').lstrip('vV')
                 if tag and tag > APP_VERSION:
                     dl_url = None
                     for asset in data.get('assets', []):

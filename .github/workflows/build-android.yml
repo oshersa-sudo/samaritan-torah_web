@@ -2,7 +2,9 @@ name: Build Android APK
 
 on:
   push:
-    branches: [main, master]
+    tags:
+      - 'v*'
+      - 'V*'
   workflow_dispatch:
 
 jobs:
@@ -45,22 +47,18 @@ jobs:
           mkdir -p "$SDK/cmdline-tools/latest"
           mv /tmp/cmdtools_extract/cmdline-tools/* "$SDK/cmdline-tools/latest/"
 
-          # Symlink for old-style path that Buildozer looks for
           mkdir -p "$SDK/tools/bin"
           ln -s "$SDK/cmdline-tools/latest/bin/sdkmanager" "$SDK/tools/bin/sdkmanager"
 
-          # Accept all licenses
           yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" \
             --sdk_root="$SDK" --licenses > /dev/null 2>&1 || true
 
-          # Install required SDK components
           "$SDK/cmdline-tools/latest/bin/sdkmanager" \
             --sdk_root="$SDK" \
             "build-tools;34.0.0" \
             "platforms;android-33" \
             "platform-tools"
 
-          # Write license files explicitly
           mkdir -p "$SDK/licenses"
           printf "24333f8a63b6825ea9c5514f83c2829b004d1fee\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n" \
             > "$SDK/licenses/android-sdk-license"
@@ -79,9 +77,9 @@ jobs:
       - name: Build APK
         run: buildozer android debug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Upload APK to Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: samaritan-torah-apk
-          path: bin/*.apk
-          retention-days: 30
+          files: bin/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
