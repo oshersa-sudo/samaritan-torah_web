@@ -1,0 +1,87 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y \
+            git zip unzip autoconf libtool pkg-config \
+            zlib1g-dev libncurses5-dev libncursesw5-dev \
+            libtinfo5 cmake libffi-dev libssl-dev libltdl-dev
+
+      - name: Install Buildozer and Cython
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install buildozer==1.5.0 cython==0.29.37
+
+      - name: Pre-install Android SDK into Buildozer's expected path
+        run: |
+          SDK="$HOME/.buildozer/android/platform/android-sdk"
+          mkdir -p "$SDK/cmdline-tools"
+
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip \
+               -O /tmp/cmdtools.zip
+          unzip -q /tmp/cmdtools.zip -d /tmp/cmdtools_extract
+          mkdir -p "$SDK/cmdline-tools/latest"
+          mv /tmp/cmdtools_extract/cmdline-tools/* "$SDK/cmdline-tools/latest/"
+
+          # Symlink for old-style path that Buildozer looks for
+          mkdir -p "$SDK/tools/bin"
+          ln -s "$SDK/cmdline-tools/latest/bin/sdkmanager" "$SDK/tools/bin/sdkmanager"
+
+          # Accept all licenses
+          yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" \
+            --sdk_root="$SDK" --licenses > /dev/null 2>&1 || true
+
+          # Install required SDK components
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" \
+            --sdk_root="$SDK" \
+            "build-tools;34.0.0" \
+            "platforms;android-33" \
+            "platform-tools"
+
+          # Write license files explicitly
+          mkdir -p "$SDK/licenses"
+          printf "24333f8a63b6825ea9c5514f83c2829b004d1fee\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n" \
+            > "$SDK/licenses/android-sdk-license"
+          printf "84831b9409646a918e30573bab4c9c91346d8abd\n" \
+            > "$SDK/licenses/android-sdk-preview-license"
+          printf "33b6a2b64607f11b759f320ef9dff4ae5c47d97a\n" \
+            > "$SDK/licenses/google-gdk-license"
+
+      - name: Cache Buildozer directory
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: buildozer-v1-${{ hashFiles('buildozer.spec') }}
+          restore-keys: buildozer-v1-
+
+      - name: Build APK
+        run: buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: samaritan-torah-apk
+          path: bin/*.apk
+          retention-days: 30
