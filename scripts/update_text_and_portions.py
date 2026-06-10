@@ -23,11 +23,10 @@ BOOK_HEB_MAP = {
     'דברים':  'Deuteronomy',
 }
 
-BRACKET_RE = re.compile(r'\[[^\]]*\]|\{[^}]*\}')
-
-
 def clean_text(text):
-    text = BRACKET_RE.sub('', text)
+    """Remove only bracket/brace characters, keep content inside."""
+    text = re.sub(r'\[([^\]]*)\]', r'\1', text)
+    text = re.sub(r'\{([^}]*)\}', r'\1', text)
     text = re.sub(r'  +', ' ', text).strip()
     return text
 
