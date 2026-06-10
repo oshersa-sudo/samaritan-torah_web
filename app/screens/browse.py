@@ -73,8 +73,14 @@ def _sam_markup(text):
 
 def _verse_text(raw_lines):
     """Return (text, markup_bool, ltr_bool) based on current modes."""
+    from kivy.utils import platform
     app = App.get_running_app()
     use_sam = getattr(app, '_font_mode', 'Hebrew') == 'Samaritan'
+    if platform == 'android':
+        # Android renders RTL natively — logical order gives correct line wrapping
+        if use_sam:
+            return _sam_markup(_add_word_dots(raw_lines)), True, False
+        return raw_lines, False, False
     visual = rtl_lines(raw_lines)
     if use_sam:
         return _sam_markup(_add_word_dots(visual)), True, False
