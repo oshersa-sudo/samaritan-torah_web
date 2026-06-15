@@ -7,3 +7,22 @@ build/
 data/WLC.db
 .claude/
 *.log
+
+# secrets — never commit
+.env
+
+# editing backups created during this work
+*.bak
+*.bak_*
+*.bak[0-9]*
+*.feature_bak
+*.marks.bak
+*.marks2.bak
+*.corr.bak
+~$*
+
+# large raw / intermediate research data (not needed to run the app)
+data/_*
+data/dict_ocr/
+data/Genesis_Pic/
+*.apk
