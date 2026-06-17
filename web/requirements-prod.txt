@@ -1,0 +1,6 @@
+# Production dependencies (Linux server, behind nginx).
+# The web server itself needs only Flask + a WSGI server; RTL/shaping happen in
+# the browser, so the Kivy-only packages (arabic-reshaper, python-bidi, kivy…)
+# are NOT required here.
+-r requirements.txt
+gunicorn>=21.2

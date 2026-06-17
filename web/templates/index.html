@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>התורה השומרונית הישראלית</title>
+<link rel="icon" href="{{ url_for('static', filename='img/app_icon.png') }}">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1a3873">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="תורה שומרונית">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="app">
+
+  <!-- header -->
+  <header id="hdr">
+    <div class="title-row">
+      <button id="menuBtn" class="menu-btn" aria-label="תפריט">&#9776;</button>
+      <img class="scroll-ico" src="{{ url_for('static', filename='img/torah_scroll_nobg.png') }}" alt="">
+      <h1>התורה השומרונית הישראלית</h1>
+      <span class="ver">v{{ version }}</span>
+    </div>
+    <div class="toggle-row">
+      <button id="btnStandard" class="divbtn">חלוקה יהודית</button>
+      <button id="btnSamaritan" class="divbtn active">חלוקה שומרונית</button>
+    </div>
+  </header>
+
+  <!-- breadcrumb -->
+  <nav id="crumbs"></nav>
+
+  <!-- main scrolling content -->
+  <main id="content"></main>
+
+  <!-- spread button (portion pages only) -->
+  <button id="spreadBtn" class="wide-btn hidden">פריסת פרקים</button>
+
+  <!-- chapter nav + font size (verse pages only) -->
+  <div id="navbar" class="hidden">
+    <button id="nextBtn" class="nav-arrow">‹ פרשה הבאה</button>
+    <button id="minusBtn" class="round">−</button>
+    <button id="plusBtn" class="round">+</button>
+    <button id="prevBtn" class="nav-arrow">פרשה קודמת ›</button>
+  </div>
+
+  <!-- bottom toolbar -->
+  <div id="toolbar">
+    <div class="tb-row">
+      <button id="shareBtn" class="tb green hidden">שתף</button>
+      <button id="backBtn" class="tb accent" disabled>‹ חזור</button>
+      <button id="browseBtn" class="tb navy">עיון</button>
+      <button id="searchBtn" class="tb navy">חיפוש</button>
+      <button id="dictBtn" class="tb" disabled>מילון מילים</button>
+      <button id="fontBtn" class="tb" disabled>כתב שומרוני</button>
+      <button id="interpBtn" class="tb" disabled>פירוש הפסוק</button>
+    </div>
+    <div class="tb-row">
+      <button id="commentaryBtn" class="tb" disabled>פרשנות יהודית</button>
+      <button id="compareBtn" class="tb" disabled>השוואה לנ.מסורה</button>
+      <button id="samSrcBtn" class="tb" disabled>ממקור שומרון</button>
+      <button id="engBtn" class="tb" disabled>התרגום לאנגלית</button>
+      <button id="arabicBtn" class="tb" disabled>התרגום לערבית</button>
+      <button id="aramBtn" class="tb" disabled>התרגום הארמי</button>
+    </div>
+  </div>
+
+  <!-- search screen -->
+  <section id="searchScreen" class="hidden">
+    <div class="search-bar">
+      <input id="searchInput" type="text" placeholder="חפש מילה" dir="rtl">
+      <button id="doSearchBtn">חפש</button>
+    </div>
+    <label class="flag"><span>חיפוש מדויק</span><input type="checkbox" id="cbExact"></label>
+    <label class="flag"><span>לפי שורש המילה</span><input type="checkbox" id="cbRoot"></label>
+    <label class="flag"><span>חפש בתרגום הארמי</span><input type="checkbox" id="cbAram"></label>
+    <div class="flag root-box-row hidden" id="rootBoxRow">
+      <span>שורש לחיפוש:</span><input type="text" id="rootBox" dir="rtl">
+    </div>
+    <div id="searchStatus"></div>
+    <div id="searchResults"></div>
+    <div class="search-foot">
+      <button id="sShareBtn" class="tb green">שתף</button>
+      <button id="sBackBtn" class="tb accent">‹ חזור</button>
+      <button id="sBrowseBtn" class="tb navy">עיון</button>
+      <span class="grow"></span>
+      <button id="sMinusBtn" class="round">−</button>
+      <button id="sPlusBtn" class="round">+</button>
+    </div>
+  </section>
+
+  <footer>
+    <div>All rights reserved to Osher Sassoni ©</div>
+    <a href="https://www.the-samaritans.net" target="_blank" rel="noopener">www.the-samaritans.net</a>
+  </footer>
+</div>
+
+<!-- share popup -->
+<div id="shareModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title">שיתוף</div>
+    <button class="share-opt" data-t="whatsapp" style="background:#26ad60">WhatsApp</button>
+    <button class="share-opt" data-t="email" style="background:#3473b8">אימייל</button>
+    <button class="share-opt" data-t="facebook" style="background:#3b5998">Facebook</button>
+    <button class="share-opt close" data-t="">סגור</button>
+  </div>
+</div>
+
+<!-- side menu (hamburger) -->
+<div id="menuOverlay" class="menu-overlay hidden"></div>
+<nav id="menuDrawer" class="menu-drawer hidden">
+  <div class="menu-head">תפריט</div>
+  <button class="menu-item" data-act="calendar">חשבן קשטה — לוח השנה השומרוני</button>
+  <button class="menu-item" data-act="genealogy">אילן היוחסין השומרוני המלא</button>
+  <button class="menu-item" data-act="whatsnew">מה חדש?</button>
+  <button class="menu-item" data-act="version">גרסא נוכחית</button>
+  <button class="menu-item" data-act="contact">צור קשר</button>
+</nav>
+
+<!-- info window (what's new / current version) -->
+<div id="infoModal" class="modal hidden">
+  <div class="modal-box big">
+    <div class="modal-title" id="infoTitle"></div>
+    <div id="infoBody"></div>
+    <button class="popup-close" id="infoClose">סגור</button>
+  </div>
+</div>
+
+<!-- contact window -->
+<div id="contactModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title">צור קשר</div>
+    <div class="form-row"><label for="cName">שם מלא</label><input id="cName" type="text" autocomplete="name"></div>
+    <div class="form-row"><label for="cEmail">כתובת מייל</label><input id="cEmail" type="email" dir="ltr" autocomplete="email"></div>
+    <div class="form-row"><label for="cMsg">הודעה (עד 100 מילים)</label><textarea id="cMsg" rows="5"></textarea></div>
+    <div id="cCount" class="form-count">0 / 100 מילים</div>
+    <div id="cErr" class="form-err"></div>
+    <div class="form-btns">
+      <button id="cSend" class="form-send">שלח</button>
+      <button id="cCancel" class="popup-close">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- dictionary popup (Tal's dictionary, full entry) -->
+<div id="popup" class="modal hidden">
+  <div class="modal-box big">
+    <div class="modal-title" id="popupTitle"></div>
+    <div id="popupBody"></div>
+    <button id="popupClose" class="popup-close">סגור</button>
+  </div>
+</div>
+
+<script>window.APP_VERSION = "{{ version }}";</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    // auto-reload once when a new service worker takes control, so an updated
+    // version is shown immediately instead of a stale cached one.
+    let _reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!_reloaded) { _reloaded = true; location.reload(); }
+    });
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => reg.update()).catch(()=>{});
+    });
+  }
+</script>
+</body>
+</html>

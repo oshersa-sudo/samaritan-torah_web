@@ -1,0 +1,30 @@
+# systemd unit for the Samaritan Torah web app (gunicorn).
+# Copy to /etc/systemd/system/samaritan-torah.service and adjust the paths/user.
+#
+#   sudo cp web/deploy/samaritan-torah.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now samaritan-torah
+#   sudo systemctl status samaritan-torah
+#
+[Unit]
+Description=Samaritan Torah web app (Flask/gunicorn)
+After=network.target
+
+[Service]
+# the OS user that owns the files (e.g. www-data, or your deploy user)
+User=www-data
+Group=www-data
+
+# repo root on the server (must contain app/, web/ and data/torah.db)
+WorkingDirectory=/var/www/samaritan-torah
+
+# gunicorn from the project's virtualenv; binds to localhost (nginx proxies to it).
+# threads + a longer timeout because some requests fetch from Sefaria/Wiktionary.
+ExecStart=/var/www/samaritan-torah/venv/bin/gunicorn web.server:app \
+          --bind 127.0.0.1:8000 --workers 2 --threads 4 --timeout 60
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

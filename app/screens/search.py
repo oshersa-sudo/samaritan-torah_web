@@ -13,7 +13,8 @@ from kivy.clock import Clock
 import re
 from app.services.database import (search_verses, get_samaritan_location,
                                    get_root_occurrences, get_word_occurrences,
-                                   wildword_is)
+                                   wildword_is, get_verse_dictionary,
+                                   lookup_tal_dictionary)
 from app.services.rtl import rtl
 from app.widgets import HoverButton
 
@@ -39,6 +40,52 @@ def _clean_pron(p):
     p = re.sub(r'\([^)]*[א-ת؀-ۿ][^)]*\)', '', p or '')
     p = re.sub(r'[א-ת؀-ۿ]', '', p)
     return re.sub(r'\s+', ' ', p).strip()
+
+
+# ── meaning enrichment for a search result (same data as the web edition) ──────
+_FIN = {'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ'}
+
+
+def _fold(s):
+    """Hebrew letters only, final forms folded — to match a word against the
+    verse_dictionary entries regardless of final-letter spelling."""
+    return ''.join(_FIN.get(c, c) for c in (s or '') if ('א' <= c <= 'ת') or c in _FIN)
+
+
+def _aramaic_for(pairs, cands, aramaic):
+    """The Aramaic translation of the matched word, from the verse's word-pairs."""
+    cf = [_fold(c) for c in cands if _fold(c)]
+    for a, h in pairs:
+        side = _fold(a if aramaic else h)
+        if side and side in cf:
+            return a
+    for a, h in pairs:
+        side = _fold(a if aramaic else h)
+        if side and any(c in side or side in c for c in cf):
+            return a
+    return ''
+
+
+_TAL_GLOSS = {}
+
+
+def _tal_gloss(aramaic_word):
+    """Gloss of an Aramaic word from Tal's dictionary (English — Tal has no Hebrew
+    gloss). Cached; the dictionary is static."""
+    if not aramaic_word:
+        return ''
+    if aramaic_word in _TAL_GLOSS:
+        return _TAL_GLOSS[aramaic_word]
+    g = ''
+    try:
+        res = lookup_tal_dictionary(aramaic_word, limit=1)
+        if res:
+            r = res[0]
+            g = (r['gloss_en'] or '').strip() or (r['notes'] or '').strip()[:90]
+    except Exception:
+        g = ''
+    _TAL_GLOSS[aramaic_word] = g
+    return g
 
 
 class RTLTextInput(TextInput):
@@ -310,6 +357,11 @@ class SearchScreen(Screen):
 
         self.status.text = rtl(f'נמצאו {len(rows)} תוצאות{src}{note}')
 
+        # per-verse Aramaic word-pairs (batched once) for the meaning line; the
+        # Tal gloss and the online Hebrew meaning are filled in a background thread.
+        vdict = get_verse_dictionary([r['id'] for r in rows]) if rows else {}
+        meaning_pending = []          # (aramaic_word, hebrew_word, label)
+
         current_sr = None
         for row in rows:
             info = occ_map.get(row['id'])
@@ -380,6 +432,68 @@ class SearchScreen(Screen):
                     occ_lbl.bind(texture_size=lambda i, ts: setattr(i, 'height',
                                                                     max(ts[1] + dp(8), dp(28))))
                     self.results.add_widget(occ_lbl)
+
+            # meaning line: Aramaic translation + Tal gloss + online Hebrew meaning.
+            cand_words = (info['words'] if (root and info and info.get('words')) else None) or [query]
+            aramaic_w  = _aramaic_for(vdict.get(row['id'], []), cand_words, aramaic)
+            heword     = cand_words[0] if cand_words else query
+            mean_lbl = Label(
+                text=('[color=1a3873]%s[/color]' % rtl('תרגום ארמי: ' + aramaic_w)) if aramaic_w else '',
+                markup=True, font_name=FONT, font_size=sp(15) + self._result_font_offset,
+                size_hint_y=None, height=dp(24) if aramaic_w else 0,
+                halign='right', valign='middle', color=C_DARK)
+            mean_lbl.bind(width=lambda i, w: setattr(i, 'text_size', (w - dp(8), None)))
+            mean_lbl.bind(texture_size=lambda i, ts: setattr(
+                i, 'height', (ts[1] + dp(6)) if i.text.strip() else 0))
+            self.results.add_widget(mean_lbl)
+            meaning_pending.append((aramaic_w, heword, mean_lbl))
+
+        if meaning_pending:
+            self._fetch_meanings(meaning_pending)
+
+    def _fetch_meanings(self, pending):
+        """In one background thread: the Tal gloss for each Aramaic word and the
+        online Hebrew-dictionary meaning for each searched word, then fill the
+        labels on the UI thread."""
+        import threading
+        from app.services import hebrew_dict
+        hewords = list({hw for _, hw, _ in pending if hw})
+
+        def work():
+            try:
+                he = hebrew_dict.lookup_many(hewords)
+            except Exception:
+                he = {}
+            tal = {}
+            for aw, _hw, _lbl in pending:
+                if aw and aw not in tal:
+                    tal[aw] = _tal_gloss(aw)
+            Clock.schedule_once(lambda dt: self._fill_meanings(pending, tal, he), 0)
+
+        threading.Thread(target=work, daemon=True).start()
+
+    def _fill_meanings(self, pending, tal, he):
+        for aw, hw, lbl in pending:
+            segs = []
+            if aw:
+                segs.append('[color=1a3873]%s[/color]' % rtl('תרגום ארמי: ' + aw))
+                g = tal.get(aw, '')
+                if g:
+                    segs.append('[color=666666]%s %s[/color]' % (rtl('מילון טל:'), g))
+            r = he.get(hw)
+            if r and r[0]:
+                he_txt = r[0].strip()
+                if len(he_txt) > 110:                 # keep it short (1–2 lines)
+                    cut = he_txt[:110]
+                    he_txt = cut[:cut.rfind(' ')] + ' …' if ' ' in cut else cut + '…'
+                segs.append('[color=4a6a4a]%s[/color]' % rtl('פירוש עברי: ' + he_txt))
+            if segs:
+                # each source on its own line: every line is single-direction, so it
+                # wraps cleanly (mixing RTL Hebrew and LTR English on one line does not).
+                lbl.text = '\n'.join(segs)
+            else:
+                lbl.text = ''
+                lbl.height = 0
 
     def _path_btn(self, text, color, callback):
         b = Button(

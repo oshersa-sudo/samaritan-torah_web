@@ -1,0 +1,15 @@
+# Render blueprint — deploys the Samaritan Torah web app straight from the git repo.
+# On render.com: New → Blueprint → connect this repo. Render reads this file and
+# builds/runs the web service. The free plan is enough; it sleeps after ~15 min
+# of inactivity and cold-starts on the next visit (~30–50s).
+services:
+  - type: web
+    name: samaritan-torah
+    runtime: python
+    plan: free
+    # install ONLY Flask + gunicorn (not the phone-app's Kivy requirements)
+    buildCommand: pip install -r web/requirements-prod.txt
+    startCommand: gunicorn web.server:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.4"
