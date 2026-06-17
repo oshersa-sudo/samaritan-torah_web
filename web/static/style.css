@@ -155,6 +155,8 @@ body{
      font-family:inherit; font-size:13.5px; line-height:1.2; cursor:pointer; white-space:normal; }
 .tb.navy{ background:var(--navy); }
 .tb.accent{ background:var(--accent); }
+/* search button gets its own colour so it stands out from "עיון" next to it */
+#searchBtn{ background:#1f8a8a; }
 .tb.green{ background:var(--share); flex:0 0 auto; min-width:54px; }
 .tb.on{ background:var(--active); }
 .tb:disabled{ background:#555 !important; opacity:.6; cursor:default; }
@@ -163,7 +165,7 @@ body{
 /* search */
 .search-bar{ display:flex; gap:6px; margin-bottom:6px; }
 #searchInput{ flex:1; padding:10px; border:1px solid var(--line); border-radius:6px; font-family:inherit; font-size:18px; }
-#doSearchBtn{ width:92px; border:0; border-radius:8px; background:var(--navy); color:#fff; font-family:inherit; font-size:19px; font-weight:600; cursor:pointer; }
+#doSearchBtn{ width:92px; border:0; border-radius:8px; background:#1f8a8a; color:#fff; font-family:inherit; font-size:19px; font-weight:600; cursor:pointer; }
 .flag{ display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:5px 2px; color:var(--accent); font-size:16px; }
 .flag input{ width:20px; height:20px; }
 .root-box-row input{ flex:1; padding:8px; border:1px solid var(--line); border-radius:6px; font-family:inherit; font-size:18px; }

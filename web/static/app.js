@@ -622,7 +622,18 @@ $('backBtn').onclick=()=>goBack();
 
 $('fontBtn').onclick=()=>{ S.samFont=!S.samFont; if(S.samFont){ S.panel=null; S.english=false; } syncToolbar(true); paintVerses(); };
 $('engBtn').onclick=()=>{ S.english=!S.english; if(S.english){ S.samFont=false; if(['compare','aramaic','arabic'].includes(S.panel)) S.panel=null; } syncToolbar(true); paintVerses(); };
-$('dictBtn').onclick=()=>{ S.dict=!S.dict; syncToolbar(true); paintVerses(); };
+// when a panel/dictionary opens below the text, scroll it into view so the user
+// sees that something opened (it retries until the async panel is in the DOM).
+function scrollToEl(selector){
+  let tries=0;
+  const tick=()=>{
+    const el=$('content').querySelector(selector);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    else if(tries++<25) setTimeout(tick,60);
+  };
+  setTimeout(tick,60);
+}
+$('dictBtn').onclick=()=>{ S.dict=!S.dict; syncToolbar(true); paintVerses(); if(S.dict) scrollToEl('.dictpanel'); };
 function togglePanel(name){
   S.panel = (S.panel===name)?null:name;
   if(S.panel){ S.samFont=false;
@@ -631,6 +642,7 @@ function togglePanel(name){
     if(S.panel==='samaritan_src'){ S.samSrcChoice=null; S.tmSel=null; }
   }
   syncToolbar(true); paintVerses();
+  if(S.panel) scrollToEl('.pair, .srcpanel');
 }
 $('interpBtn').onclick=()=>togglePanel('interpret');
 $('compareBtn').onclick=()=>togglePanel('compare');
