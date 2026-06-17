@@ -175,7 +175,7 @@ body{
 #searchStatus{ color:var(--accent); font-size:15px; padding:4px 2px; min-height:22px; }
 #searchResults{ flex:1; overflow-y:auto; }
 .res-path{ display:block; width:100%; text-align:right; background:none; border:0; font-family:inherit;
-           font-size:14.5px; padding:3px 2px; cursor:pointer; }
+           font-size:16.5px; padding:6px 2px; cursor:pointer; line-height:1.4; }
 .res-path.jew{ color:var(--accent); }
 .res-path.sam{ color:#8c4d1a; }
 .res-verse{ font-size:19px; padding:2px 2px 6px; line-height:1.6; }
@@ -187,16 +187,20 @@ body{
 .res-meaning .aram-link{ color:var(--accent); cursor:pointer; }
 .res-meaning .aram-link:hover{ text-decoration:underline; }
 .res-meaning .aram-link b{ color:var(--navy); }
+.res-meaning .more-hint{ color:var(--muted); font-size:13px; }
 
-/* word-sources popup (Tal root + Tibåt Mårqe / tradition occurrences) */
-#infoBody .ws-h{ color:var(--navy); font-weight:700; font-size:16px; margin:12px 0 4px;
-                 border-bottom:1px solid rgba(26,56,115,.2); padding-bottom:3px; }
-#infoBody .ws-item{ font-size:15px; padding:5px 2px; color:var(--dark); line-height:1.5;
-                    border-bottom:1px solid rgba(26,56,115,.06); }
+/* search-flags in two columns */
+.flags-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 14px; margin-bottom:2px; }
+
+/* word-sources popup (Tal root + Tibåt Mårqe / tradition occurrences) — readable */
+#infoBody .ws-h{ color:var(--navy); font-weight:700; font-size:19px; margin:14px 0 6px;
+                 border-bottom:2px solid rgba(26,56,115,.25); padding-bottom:4px; }
+#infoBody .ws-item{ font-size:17px; padding:8px 4px; color:var(--dark); line-height:1.65;
+                    border-bottom:1px solid rgba(26,56,115,.08); }
 #infoBody .ws-item b{ color:var(--navy); }
-#infoBody .ws-item .pos{ color:var(--muted); font-size:12px; }
-#infoBody .ws-cite{ color:var(--muted); font-size:13px; padding:1px 8px 0; }
-#infoBody .ws-snip{ color:#444; font-size:14px; padding:1px 8px 0; }
+#infoBody .ws-item .pos{ color:var(--muted); font-size:13px; }
+#infoBody .ws-cite{ color:#555; font-size:15px; padding:3px 10px 0; }
+#infoBody .ws-snip{ color:#333; font-size:16px; padding:3px 10px 0; line-height:1.6; }
 .res-subroot{ font-size:25px; font-weight:700; text-decoration:underline; padding:8px 2px 2px; }
 .search-foot{ display:flex; align-items:center; gap:6px; padding-top:6px; }
 .search-foot .grow{ flex:1; }

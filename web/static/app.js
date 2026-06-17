@@ -764,9 +764,10 @@ function wildMatch(word,pat){
 async function doSearch(){
   const q=$('searchInput').value.trim(); if(!q) return;
   const exact=$('cbExact').checked, rootFlag=$('cbRoot').checked, aram=$('cbAram').checked;
+  const ignoreFinals=$('cbIgnoreFinals').checked, showMeanings=$('cbShowMeanings').checked;
   const rootLetters=$('rootBox').value.trim();
   const params=new URLSearchParams({q, exact:exact?'1':'0', root:rootFlag?'1':'0',
-    aramaic:aram?'1':'0', root_letters:rootLetters});
+    aramaic:aram?'1':'0', root_letters:rootLetters, ignore_finals:ignoreFinals?'1':'0'});
   $('searchStatus').textContent='מחפש…';
   const data = await api('search?'+params.toString());
   const root = data.root;
@@ -783,8 +784,9 @@ async function doSearch(){
       esc(`←  יהודית   ${r.book_name}  ›  ${r.portion_name}  ›  פרק ${r.chapter_num}  פסוק ${r.number}`));
     jb.onclick=()=>goToJewish(r); res.appendChild(jb);
     if(r.sam){
+      const open = r.sam.opening ? `  (${r.sam.opening})` : '';
       const sb=el('button','res-path sam',
-        esc(`→  שומרונית   ${r.book_name}  ›  ${r.sam.sam_portion_name}  ›  פרק שומרוני ${r.sam.sam_ch_num}  פסוק ${r.sam.number}`));
+        esc(`→  שומרונית   ${r.book_name}  ›  ${r.sam.sam_portion_name}  ›  פרק שומרוני ${r.sam.sam_ch_num}  פסוק ${r.sam.number}${open}`));
       sb.onclick=()=>goToSam(r); res.appendChild(sb);
     }
     const dtext=(aram? r.sam_aramaic : r.text)||'';
@@ -801,26 +803,29 @@ async function doSearch(){
       if(spans.length){ const ol=el('div','res-occ',spans.join('    '));
         ol.style.fontSize=(20+S.searchFontOffset)+'px'; res.appendChild(ol); }
     }
-    // meaning of the HIGHLIGHTED word: Aramaic translation (clickable → more
-    // locations) + Tal gloss + an online Hebrew definition (filled async).
-    const heWord = r.matched_word || q;
-    const ml=el('div','res-meaning');
-    let hasParts=false;
-    if(r.aramaic){
-      const a=el('span','aram-link', 'תרגום ארמי: ');
-      a.appendChild(el('b','', esc(r.aramaic)));
-      a.title='לחץ למיקומים נוספים של המילה';
-      a.onclick=()=>openWordSources(r.aramaic);
-      ml.appendChild(a); hasParts=true;
+    // meaning of the HIGHLIGHTED word (only when the "show meanings" flag is on):
+    // Aramaic translation (clickable → more locations) + Tal gloss + online Hebrew.
+    if(showMeanings){
+      const heWord = r.matched_word || q;
+      const ml=el('div','res-meaning');
+      let hasParts=false;
+      if(r.aramaic){
+        const a=el('span','aram-link', 'תרגום ארמי: ');
+        a.appendChild(el('b','', esc(r.aramaic)));
+        a.appendChild(el('span','more-hint', ' (לחץ על המילה לתוצאות נוספות)'));
+        a.title='לחץ למיקומים נוספים של המילה';
+        a.onclick=()=>openWordSources(r.aramaic);
+        ml.appendChild(a); hasParts=true;
+      }
+      if(r.meaning){
+        if(hasParts) ml.appendChild(el('span','sep','  ·  '));
+        ml.appendChild(el('span','', 'מילון טל: '+esc(r.meaning))); hasParts=true;
+      }
+      const heSpan=el('span','he-mean');
+      heSpan.dataset.word=heWord; heSpan.dataset.sep=hasParts?'1':'0';
+      ml.appendChild(heSpan); res.appendChild(ml);
+      if(heWord) heWords.add(heWord);
     }
-    if(r.meaning){
-      if(hasParts) ml.appendChild(el('span','sep','  ·  '));
-      ml.appendChild(el('span','', 'מילון טל: '+esc(r.meaning))); hasParts=true;
-    }
-    const heSpan=el('span','he-mean');
-    heSpan.dataset.word=heWord; heSpan.dataset.sep=hasParts?'1':'0';
-    ml.appendChild(heSpan); res.appendChild(ml);
-    if(heWord) heWords.add(heWord);
   }
   // fill every result's Hebrew-dictionary meaning in one bulk request
   if(heWords.size){

@@ -74,9 +74,13 @@
       <input id="searchInput" type="text" placeholder="חפש מילה" dir="rtl">
       <button id="doSearchBtn">חפש</button>
     </div>
-    <label class="flag"><span>חיפוש מדויק</span><input type="checkbox" id="cbExact"></label>
-    <label class="flag"><span>לפי שורש המילה</span><input type="checkbox" id="cbRoot"></label>
-    <label class="flag"><span>חפש בתרגום הארמי</span><input type="checkbox" id="cbAram"></label>
+    <div class="flags-grid">
+      <label class="flag"><span>חיפוש מדויק</span><input type="checkbox" id="cbExact"></label>
+      <label class="flag"><span>הצג פירוש המילים</span><input type="checkbox" id="cbShowMeanings" checked></label>
+      <label class="flag"><span>לפי שורש המילה</span><input type="checkbox" id="cbRoot"></label>
+      <label class="flag"><span>התעלם מסופיות</span><input type="checkbox" id="cbIgnoreFinals"></label>
+      <label class="flag"><span>חפש בתרגום הארמי</span><input type="checkbox" id="cbAram"></label>
+    </div>
     <div class="flag root-box-row hidden" id="rootBoxRow">
       <span>שורש לחיפוש:</span><input type="text" id="rootBox" dir="rtl">
     </div>

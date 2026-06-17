@@ -346,13 +346,27 @@ def wildword_is(word_letters, pattern):
     return _wild_search_re(pattern).search(w) is not None
 
 
-def search_verses(query, exact=False, root=False, aramaic=False, root_letters=None):
+_FINALS_TR = str.maketrans('ךםןףץ', 'כמנפצ')
+
+
+def _fold_finals(s):
+    """Map word-final Hebrew letters to their base form (ך→כ, ם→מ … ץ→צ), so a
+    query and the text compare equal regardless of final-letter spelling."""
+    return (s or '').translate(_FINALS_TR)
+
+
+def search_verses(query, exact=False, root=False, aramaic=False, root_letters=None,
+                  ignore_finals=False):
     """Search verses. aramaic=True searches the Aramaic translation field
     instead of the Hebrew text; root=True matches by Hebrew root (all words
     sharing the root). root_letters, when given, is the (possibly user-edited)
-    root to use instead of extracting one from the query."""
+    root to use instead of extracting one from the query. ignore_finals=True
+    makes a plain/exact search final-letter-insensitive (הציף matches הציפ)."""
     field = 'v.sam_aramaic' if aramaic else 'v.text'
     conn = get_connection()
+    if ignore_finals:
+        conn.create_function('FOLD', 1, _fold_finals)
+    fld = 'FOLD(%s)' % field if ignore_finals else field   # column expr to match on
     sel_extra = ''
     order_by = 'b.order_n, c.number, v.number'
     if root:
@@ -383,13 +397,15 @@ def search_verses(query, exact=False, root=False, aramaic=False, root_letters=No
             order_by = '_ord'
             params = [rn, rn]   # first binds the SELECT subquery, then the WHERE
     elif exact:
-        where = f"(' ' || {field} || ' ') LIKE ?"
-        params = [f"% {query} %"]
+        q = _fold_finals(query) if ignore_finals else query
+        where = f"(' ' || {fld} || ' ') LIKE ?"
+        params = [f"% {q} %"]
     elif aramaic or ('?' not in query and '+' not in query):
         # unchanged plain substring — used for the Aramaic flag and for a simple
         # literal Hebrew query (no wildcards / no AND operator).
-        where = f"{field} LIKE ?"
-        params = [f"%{query}%"]
+        q = _fold_finals(query) if ignore_finals else query
+        where = f"{fld} LIKE ?"
+        params = [f"%{q}%"]
     else:
         # enhanced Hebrew search (only when no flag is on): '?' is a single-char
         # wildcard matching a WHOLE word (so '????' = any 4-letter word, 'י?הב' =

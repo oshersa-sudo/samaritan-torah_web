@@ -98,6 +98,24 @@ def _tal_gloss(aramaic_word):
     return g
 
 
+_SAM_OPENING = {}
+
+
+def _sam_opening(sam_ch_id):
+    """First three words of a Samaritan chapter — shown next to a search result's
+    Samaritan-division path to identify the chapter. Cached (static data)."""
+    if sam_ch_id in _SAM_OPENING:
+        return _SAM_OPENING[sam_ch_id]
+    try:
+        rows = db.get_verses_by_sam_ch(sam_ch_id)
+        words = re.findall('[א-ת]+', (rows[0]['text'] if rows else '') or '')
+        txt = ' '.join(words[:3])
+    except Exception:
+        txt = ''
+    _SAM_OPENING[sam_ch_id] = txt
+    return txt
+
+
 # ── pages ──────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
@@ -348,11 +366,13 @@ def api_search():
     root_flag = request.args.get('root') == '1'
     root = root_flag and len(query.split()) == 1
     root_letters = request.args.get('root_letters') or None
+    ignore_finals = request.args.get('ignore_finals') == '1'
     if exact and root:
         root = False
 
     rows = db.search_verses(query, exact=exact, root=root, aramaic=aramaic,
-                            root_letters=root_letters if root else None)
+                            root_letters=root_letters if root else None,
+                            ignore_finals=ignore_finals)
 
     occ_map, searched_root = {}, ''
     if not aramaic and rows:
@@ -388,6 +408,7 @@ def api_search():
                 'sam_ch_id': sam['sam_ch_id'], 'sam_ch_num': sam['sam_ch_num'],
                 'number': sam['number'], 'sam_portion_id': sam['sam_portion_id'],
                 'sam_portion_name': sam['sam_portion_name'],
+                'opening': _sam_opening(sam['sam_ch_id']),
             }
         if info:
             item['occ'] = [list(o) for o in info.get('occ', [])]
