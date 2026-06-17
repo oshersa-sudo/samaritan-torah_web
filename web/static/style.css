@@ -82,7 +82,8 @@ body{
 .vrow .num.active{ background:var(--accent); color:#fff; }
 .vrow .vtext{ flex:1; font-size:20px; line-height:1.7; direction:rtl; text-align:right; }
 .vrow .vtext.eng{ direction:ltr; text-align:left; font-family:'Translit',serif; font-size:17px; }
-.sam .vrow .vtext{ font-size:22px; }
+.sam .vrow .vtext{ font-size:22px; text-align:justify; text-align-last:right;
+                   overflow-wrap:break-word; word-break:break-word; }
 
 .numstrip{ display:flex; flex-wrap:wrap; gap:5px; padding:5px 2px; justify-content:flex-end; direction:ltr; }
 .numstrip .num{ min-width:36px; height:34px; border:0; border-radius:6px; background:#c2cbef;
@@ -124,6 +125,7 @@ body{
             padding:8px; margin:6px 2px; }
 .dictpanel .dtitle{ text-align:center; font-weight:700; color:var(--navy); font-size:17px; }
 .dictpanel .dhint{ text-align:center; color:var(--muted); font-size:12px; margin-bottom:4px; }
+.dictpanel .dhint-strong{ text-align:center; color:var(--navy); font-size:16px; font-weight:700; margin-bottom:8px; }
 .dictpanel .online-row{ display:flex; align-items:center; justify-content:flex-end; gap:6px; color:var(--navy); font-size:14px; margin-bottom:4px; }
 .dict-item{ border-bottom:1px solid rgba(26,56,115,.10); padding-bottom:2px; }
 .dictword{ color:var(--accent); font-size:19px; cursor:pointer; padding:3px 2px; border-bottom:1px dotted transparent; }
@@ -182,6 +184,19 @@ body{
 .res-occ .extra{ color:#8a8a8a; font-family:'Hebrew'; }
 .res-meaning{ color:#555; font-size:15px; padding:0 2px 8px; line-height:1.5; }
 .res-meaning b{ color:var(--navy); }
+.res-meaning .aram-link{ color:var(--accent); cursor:pointer; }
+.res-meaning .aram-link:hover{ text-decoration:underline; }
+.res-meaning .aram-link b{ color:var(--navy); }
+
+/* word-sources popup (Tal root + Tibåt Mårqe / tradition occurrences) */
+#infoBody .ws-h{ color:var(--navy); font-weight:700; font-size:16px; margin:12px 0 4px;
+                 border-bottom:1px solid rgba(26,56,115,.2); padding-bottom:3px; }
+#infoBody .ws-item{ font-size:15px; padding:5px 2px; color:var(--dark); line-height:1.5;
+                    border-bottom:1px solid rgba(26,56,115,.06); }
+#infoBody .ws-item b{ color:var(--navy); }
+#infoBody .ws-item .pos{ color:var(--muted); font-size:12px; }
+#infoBody .ws-cite{ color:var(--muted); font-size:13px; padding:1px 8px 0; }
+#infoBody .ws-snip{ color:#444; font-size:14px; padding:1px 8px 0; }
 .res-subroot{ font-size:25px; font-weight:700; text-decoration:underline; padding:8px 2px 2px; }
 .search-foot{ display:flex; align-items:center; gap:6px; padding-top:6px; }
 .search-foot .grow{ flex:1; }
@@ -201,7 +216,8 @@ footer a{ color:var(--accent); text-decoration:none; }
 .share-opt.close{ background:var(--navy); }
 .popup-close{ padding:14px; border:0; border-radius:8px; background:var(--navy); color:#fff;
               font-family:inherit; font-size:17px; cursor:pointer; margin-top:8px; }
-#popupBody{ overflow-y:auto; }
+#popupBody, #infoBody{ flex:1 1 auto; min-height:0; overflow-y:auto; }
+.modal-box .popup-close, .modal-box .share-opt{ flex:0 0 auto; }
 #popupBody .tal-head{ color:var(--navy); font-weight:700; font-size:19px; margin-top:8px; }
 #popupBody .tal-gloss{ color:var(--accent); font-size:15px; }
 #popupBody .tal-note{ color:var(--dark); font-size:14px; }

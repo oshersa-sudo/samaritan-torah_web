@@ -63,6 +63,19 @@ def _heb_fold(s):
     return ''.join(_FIN.get(c, c) for c in (s or '') if ('א' <= c <= 'ת') or c in _FIN)
 
 
+def _first_match_word(text, query, exact):
+    """The actual word IN THE VERSE that the (plain) query matched — i.e. the word
+    highlighted in the result — so the meaning reflects it, not the typed query."""
+    qf = _heb_fold(query)
+    if not qf:
+        return ''
+    for w in re.findall('[א-ת]+', text or ''):
+        wf = _heb_fold(w)
+        if (wf == qf if exact else qf in wf):
+            return w
+    return ''
+
+
 _TAL_GLOSS_CACHE = {}
 
 
@@ -368,7 +381,7 @@ def api_search():
             'chapter_id': r['chapter_id'], 'chapter_num': r['chapter_num'],
             'portion_id': r['portion_id'], 'portion_name': r['portion_name'] or '',
             'sam': None, 'occ': None, 'match_words': None, 'subroot': '',
-            'aramaic': '', 'meaning': '',
+            'aramaic': '', 'meaning': '', 'matched_word': '',
         }
         if sam and sam['sam_portion_id']:
             item['sam'] = {
@@ -382,12 +395,16 @@ def api_search():
             if root and not aramaic:
                 item['match_words'] = info.get('words') or []
 
-        # meaning of the searched word: its Aramaic translation (from the verse's
-        # word-pairs) + the gloss from Tal's dictionary, shown by the pronunciation.
+        # meaning of the HIGHLIGHTED word (not the typed query): its Aramaic
+        # translation (from the verse's word-pairs) + the gloss from Tal's dict.
+        if info and root and info.get('words'):
+            mword = info['words'][0]
+        else:
+            mword = _first_match_word(r['sam_aramaic'] if aramaic else r['text'],
+                                      query, exact) or query
+        item['matched_word'] = mword
         pairs = vdict.get(r['id'], [])
-        cands = [_heb_fold(c) for c in
-                 ((info.get('words') if (info and root) else None) or [query])]
-        cands = [c for c in cands if c]
+        cands = [c for c in [_heb_fold(mword)] if c]
         aramaic_w = ''
         for a, h in pairs:                                  # exact word match first
             side = _heb_fold(a if aramaic else h)
@@ -408,6 +425,58 @@ def api_search():
         'searched_root': searched_root,
         'root_requested_multi': (root_flag and not root),
     })
+
+
+def _snippet(text, word, span=70):
+    t = text or ''
+    i = t.find(word)
+    if i < 0:
+        return t[:span] + ('…' if len(t) > span else '')
+    s = max(0, i - 22); e = min(len(t), i + len(word) + 48)
+    return ('…' if s > 0 else '') + t[s:e] + ('…' if e < len(t) else '')
+
+
+@app.route('/api/word_sources')
+def api_word_sources():
+    """For a tapped word: its root/entry from Tal's dictionary (with the citation
+    locations), plus where the word also occurs in Tibåt Mårqe and the Samaritan-
+    tradition (eyalk) sources. Shown in a popup."""
+    word = (request.args.get('word') or '').strip()
+    out = {'word': word, 'tal': [], 'tibat_marqe': [], 'eyalk': []}
+    if len(_heb_fold(word)) < 2:
+        return jsonify(out)
+    try:
+        for e in db.lookup_tal_dictionary(word, limit=4):
+            out['tal'].append({
+                'lemma': e.get('lemma'), 'pos': e.get('pos'), 'gloss_en': e.get('gloss_en'),
+                'citations': [{'quote': q, 'ref': rf} for q, rf in (e.get('citations') or [])][:5],
+            })
+    except Exception:
+        pass
+    like = '%' + word + '%'
+    conn = db.get_connection()
+    try:
+        for r in conn.execute(
+                "SELECT book, section, book_title, aramaic, hebrew FROM tm_sections "
+                "WHERE aramaic LIKE ? OR hebrew LIKE ? ORDER BY sort_key LIMIT 15",
+                (like, like)).fetchall():
+            letter = db._TM_HE_LETTER.get(r['book'], r['book'])
+            out['tibat_marqe'].append({
+                'label': 'ספר %s, §%s' % (letter, r['section']),
+                'book_title': r['book_title'] or '',
+                'snippet': _snippet(r['aramaic'] or r['hebrew'] or '', word),
+            })
+    except Exception:
+        pass
+    try:
+        for r in conn.execute(
+                "SELECT parsha, text FROM eyalk_sections WHERE text LIKE ? ORDER BY ord LIMIT 12",
+                (like,)).fetchall():
+            out['eyalk'].append({'parsha': r['parsha'] or '', 'snippet': _snippet(r['text'], word)})
+    except Exception:
+        pass
+    conn.close()
+    return jsonify(out)
 
 
 if __name__ == '__main__':

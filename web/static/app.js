@@ -248,6 +248,7 @@ async function renderVerses(chId, chNum, pid, pname){
 // the actual verse-area painter (re-run on every mode/filter/font change)
 function paintVerses(){
   const c=$('content'); c.innerHTML='';
+  c.classList.toggle('sam', S.samFont && !S.english);   // enables Samaritan justify
   if(!S.verses.length){ c.appendChild(el('div','note','אין פסוקים')); return; }
   const all = S.verses;
   const verses = S.verseFilter!=null ? all.filter(v=>v.id===S.verseFilter) : all;
@@ -468,8 +469,7 @@ async function renderDict(c, verses){
   const ids = verses.map(v=>v.id).join(',');
   const map = await api('dictionary?verse_ids='+ids);
   const panel=el('div','dictpanel');
-  panel.appendChild(el('div','dtitle','מילון מילים'));
-  panel.appendChild(el('div','dhint','הקש על מילה לתרגום מתוך המילון של א. טל'));
+  panel.appendChild(el('div','dhint-strong','לחץ על המילה לקבל פירוש מילוני'));
 
   // online Hebrew-Hebrew dictionary toggle (Wiktionary + Wikipedia, free)
   const orow=el('div','online-row');
@@ -801,15 +801,24 @@ async function doSearch(){
       if(spans.length){ const ol=el('div','res-occ',spans.join('    '));
         ol.style.fontSize=(20+S.searchFontOffset)+'px'; res.appendChild(ol); }
     }
-    // meaning of the word: Aramaic translation + Tal-dictionary gloss (English —
-    // the only gloss Tal has) + an online Hebrew-dictionary definition (async).
-    const heWord = (root && r.match_words && r.match_words.length) ? r.match_words[0] : q;
-    const parts=[];
-    if(r.aramaic) parts.push(`תרגום ארמי: <b>${esc(r.aramaic)}</b>`);
-    if(r.meaning) parts.push(`מילון טל: ${esc(r.meaning)}`);
-    const ml=el('div','res-meaning', parts.join('&nbsp;&nbsp;·&nbsp;&nbsp;'));
+    // meaning of the HIGHLIGHTED word: Aramaic translation (clickable → more
+    // locations) + Tal gloss + an online Hebrew definition (filled async).
+    const heWord = r.matched_word || q;
+    const ml=el('div','res-meaning');
+    let hasParts=false;
+    if(r.aramaic){
+      const a=el('span','aram-link', 'תרגום ארמי: ');
+      a.appendChild(el('b','', esc(r.aramaic)));
+      a.title='לחץ למיקומים נוספים של המילה';
+      a.onclick=()=>openWordSources(r.aramaic);
+      ml.appendChild(a); hasParts=true;
+    }
+    if(r.meaning){
+      if(hasParts) ml.appendChild(el('span','sep','  ·  '));
+      ml.appendChild(el('span','', 'מילון טל: '+esc(r.meaning))); hasParts=true;
+    }
     const heSpan=el('span','he-mean');
-    heSpan.dataset.word=heWord; heSpan.dataset.sep=parts.length?'1':'0';
+    heSpan.dataset.word=heWord; heSpan.dataset.sep=hasParts?'1':'0';
     ml.appendChild(heSpan); res.appendChild(ml);
     if(heWord) heWords.add(heWord);
   }
@@ -872,6 +881,38 @@ function showInfo(title, html){
   $('infoModal').classList.remove('hidden');
 }
 $('infoClose').onclick=()=>$('infoModal').classList.add('hidden');
+
+// tap a word's translation in the search results → its root from Tal's dictionary
+// (with citation locations) and where it also occurs in Tibåt Mårqe and the
+// Samaritan-tradition sources, in a closable window.
+async function openWordSources(word){
+  showInfo('מיקומים נוספים: ' + word, '<div class="note">מחפש…</div>');
+  let d;
+  try { d = await api('word_sources?word=' + encodeURIComponent(word)); }
+  catch(e){ $('infoBody').innerHTML = '<div class="note">שגיאה בטעינה.</div>'; return; }
+  let h = '';
+  if(d.tal && d.tal.length){
+    h += '<div class="ws-h">מילון טל — שורש ומיקומים</div>';
+    for(const e of d.tal){
+      h += `<div class="ws-item"><b>${esc(e.lemma||word)}</b>` +
+           (e.pos?` <span class="pos">${esc(e.pos)}</span>`:'') +
+           (e.gloss_en?` ${esc(e.gloss_en)}`:'');
+      for(const c of (e.citations||[])) h += `<div class="ws-cite">${esc(c.quote)} — ${esc(c.ref||'')}</div>`;
+      h += '</div>';
+    }
+  }
+  if(d.tibat_marqe && d.tibat_marqe.length){
+    h += '<div class="ws-h">תיבת מרקה</div>';
+    for(const t of d.tibat_marqe)
+      h += `<div class="ws-item"><b>${esc(t.label)}</b> ${esc(t.book_title)}<div class="ws-snip">${esc(t.snippet)}</div></div>`;
+  }
+  if(d.eyalk && d.eyalk.length){
+    h += '<div class="ws-h">מן המסורת השומרונית</div>';
+    for(const t of d.eyalk)
+      h += `<div class="ws-item">${t.parsha?'<b>'+esc(t.parsha)+'</b>':''}<div class="ws-snip">${esc(t.snippet)}</div></div>`;
+  }
+  $('infoBody').innerHTML = h || '<div class="note">לא נמצאו מיקומים נוספים למילה זו.</div>';
+}
 
 async function showWhatsNew(){
   showInfo('מה חדש?', '<div class="note">טוען…</div>');
