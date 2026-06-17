@@ -672,8 +672,17 @@ function showSearch(on){
   $('spreadBtn').classList.add('hidden');
   if(on) $('searchInput').focus();
 }
-$('sBackBtn').onclick=()=>{ showSearch(false); if(S.view==='books') showBooks(); };
+$('sBackBtn').onclick=()=>{ showSearch(false); restoreFromSearch(); };
 $('sBrowseBtn').onclick=()=>{ showSearch(false); showBooks(); };
+// re-render the view we came from, so its nav bar / chrome is restored (showSearch
+// hides the nav bar; without a re-render the prev/next + font buttons stay gone).
+function restoreFromSearch(){
+  if(S.view==='verses')           renderVerses(S.curChId, S.curChNum, S.curPid, S.portionName);
+  else if(S.view==='chapters')    showChapters(S.curPid, S.portionName);
+  else if(S.view==='sam_chapters')showSamChapters(S.curPid, S.portionName);
+  else if(S.view==='portions')    showPortions(S.book, S.bookName);
+  else                            showBooks();
+}
 $('doSearchBtn').onclick=doSearch;
 $('searchInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
 $('cbRoot').addEventListener('change',e=>{
