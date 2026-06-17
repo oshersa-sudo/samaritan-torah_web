@@ -146,8 +146,8 @@ body{
 /* toolbar */
 #toolbar{ flex:0 0 auto; background:var(--navy); padding:3px; display:flex; flex-direction:column; gap:2px; }
 .tb-row{ display:flex; gap:2px; }
-.tb{ flex:1; padding:9px 2px; border:0; border-radius:4px; background:#414166; color:#fff;
-     font-family:inherit; font-size:13px; cursor:pointer; white-space:nowrap; }
+.tb{ flex:1 1 0; min-width:0; padding:8px 2px; border:0; border-radius:4px; background:#414166; color:#fff;
+     font-family:inherit; font-size:13px; line-height:1.15; cursor:pointer; white-space:normal; }
 .tb.navy{ background:var(--navy); }
 .tb.accent{ background:var(--accent); }
 .tb.green{ background:var(--share); flex:0 0 auto; min-width:54px; }
@@ -228,5 +228,22 @@ footer a{ color:var(--accent); text-decoration:none; }
 #infoBody .whatsnew{ white-space:pre-wrap; font-family:inherit; font-size:15px; line-height:1.7;
                      color:var(--dark); text-align:right; margin:0; }
 #infoBody .ver-num{ text-align:center; font-size:30px; font-weight:700; color:var(--navy); padding:14px; }
+
+/* ── responsive: narrow phones — keep the button bars from overflowing ─────── */
+@media (max-width:430px){
+  #toolbar{ padding:2px; }
+  .tb-row{ gap:1px; }
+  .tb{ font-size:11px; padding:7px 1px; }
+  .tb.green{ min-width:42px; }
+  .nav-arrow{ font-size:11px; padding:9px 2px; }
+  #navbar{ gap:4px; }
+  .round{ width:44px; font-size:22px; }
+  .divbtn{ font-size:12px; }
+  .title-row h1{ font-size:17px; }
+  .ver{ font-size:10px; }
+}
+@media (max-width:340px){
+  .tb{ font-size:10px; }
+}
 
 .hidden{ display:none !important; }
