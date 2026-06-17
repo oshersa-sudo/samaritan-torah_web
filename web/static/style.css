@@ -210,6 +210,13 @@ body{
 #infoBody .ws-item .pos{ color:var(--muted); font-size:13px; }
 #infoBody .ws-cite{ color:#555; font-size:15px; padding:3px 10px 0; }
 #infoBody .ws-snip{ color:#333; font-size:16px; padding:3px 10px 0; line-height:1.6; }
+
+/* user-help window */
+#infoBody .help-h{ color:var(--navy); font-weight:700; font-size:18px; margin:14px 0 5px;
+                   border-bottom:2px solid rgba(26,56,115,.2); padding-bottom:3px; }
+#infoBody .help-list{ margin:0; padding:0 18px 0 0; }
+#infoBody .help-list li{ font-size:15.5px; line-height:1.65; margin-bottom:4px; color:var(--dark); }
+#infoBody .help-list b{ color:var(--navy); }
 .res-subroot{ font-size:25px; font-weight:700; text-decoration:underline; padding:8px 2px 2px; }
 .search-foot{ display:flex; align-items:center; gap:6px; padding-top:6px; }
 .search-foot .grow{ flex:1; }
