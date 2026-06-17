@@ -319,17 +319,28 @@ def get_eyalk_commentary(verse_ids):
     return [{'parsha': r['parsha'] or '', 'text': r['text'] or ''} for r in rows]
 
 
-# ── plain-search wildcards: '?' = exactly one Hebrew letter ─────────────────────
-# A pattern made ONLY of '?' matches a WHOLE word of that exact length ('????' =
-# any 4-letter word). A pattern that contains letters matches as a SUBSTRING
-# inside a word, each '?' standing for one letter ('מ?כלת' finds הַמַּאֲכֶלֶת).
+# ── plain-search wildcards ─────────────────────────────────────────────────────
+# '?' = exactly one Hebrew letter; '*' = any run of letters (an unknown string).
+# A pattern of ONLY '?' matches a WHOLE word of that length ('????' = any 4-letter
+# word). A '?'-with-letters pattern matches as a SUBSTRING inside a word
+# ('מ?כלת' finds הַמַּאֲכֶלֶת). A pattern with '*' is a glob, anchored to the word's
+# edges except where '*' stands: 'כא*' = starts with כא, '*כא' = ends with כא,
+# '*כא*' = contains כא.
 def _all_wild(pattern):
     return bool(pattern) and all(c == '?' for c in pattern)
 
 
 @functools.lru_cache(maxsize=512)
 def _wild_search_re(pattern):
-    """Regex used to find the ?-pattern inside a verse text."""
+    """Regex used to find the ?/*-pattern inside a verse text."""
+    if '*' in pattern:                                   # glob: anchor where no '*'
+        left  = not pattern.startswith('*')
+        right = not pattern.endswith('*')
+        core  = pattern.strip('*')
+        body  = ''.join('[א-ת]' if c == '?' else ('[א-ת]*' if c == '*' else re.escape(c))
+                        for c in core)
+        rx = ('(?<![א-ת])' if left else '') + body + ('(?![א-ת])' if right else '')
+        return re.compile(rx)
     if _all_wild(pattern):
         return re.compile(r'(?<![א-ת])[א-ת]{%d}(?![א-ת])' % len(pattern))
     body = ''.join('[א-ת]' if c == '?' else re.escape(c) for c in pattern)
@@ -400,26 +411,24 @@ def search_verses(query, exact=False, root=False, aramaic=False, root_letters=No
         q = _fold_finals(query) if ignore_finals else query
         where = f"(' ' || {fld} || ' ') LIKE ?"
         params = [f"% {q} %"]
-    elif aramaic or ('?' not in query and '+' not in query):
+    elif aramaic or not any(c in query for c in '?*+'):
         # unchanged plain substring — used for the Aramaic flag and for a simple
         # literal Hebrew query (no wildcards / no AND operator).
         q = _fold_finals(query) if ignore_finals else query
         where = f"{fld} LIKE ?"
         params = [f"%{q}%"]
     else:
-        # enhanced Hebrew search (only when no flag is on): '?' is a single-char
-        # wildcard matching a WHOLE word (so '????' = any 4-letter word, 'י?הב' =
-        # a 4-letter word with those letters in order); '+' joins terms that must
-        # ALL appear in the verse, in any order.
+        # enhanced Hebrew search: '?' = one letter, '*' = an unknown string (glob);
+        # '+' joins terms that must ALL appear in the verse, in any order.
         terms = [t.strip() for t in query.split('+') if t.strip()]
         conds, params = [], []
-        if any('?' in t for t in terms):
+        if any(('?' in t or '*' in t) for t in terms):
             conn.create_function(
                 'WILDWORD', 2,
                 lambda text, pat: 1 if (text and _wild_search_re(pat).search(text)) else 0)
         for t in terms:
-            pat = ''.join(c for c in t if ('א' <= c <= 'ת') or c == '?')
-            if '?' in t and pat:
+            pat = ''.join(c for c in t if ('א' <= c <= 'ת') or c in '?*')
+            if ('?' in t or '*' in t) and pat:
                 conds.append(f"WILDWORD({field}, ?)")
                 params.append(pat)
             else:

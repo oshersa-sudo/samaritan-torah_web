@@ -185,6 +185,8 @@ body{
 .adv-btn{ display:block; width:100%; margin:2px 0 6px; padding:11px; border:0; border-radius:8px;
           background:#405973; color:#fff; font-family:inherit; font-size:16px; cursor:pointer; }
 .adv-panel{ border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:6px; background:#fbfbf6; }
+.adv-hint{ color:#555; font-size:13.5px; line-height:1.55; padding:8px 2px 2px; text-align:right; }
+.adv-hint b{ color:var(--navy); }
 .adv-apply{ display:block; width:100%; margin-top:6px; padding:12px; border:0; border-radius:8px;
             background:var(--share); color:#fff; font-family:inherit; font-size:17px; font-weight:600; cursor:pointer; }
 .res-verse{ font-size:19px; padding:2px 2px 6px; line-height:1.6; }

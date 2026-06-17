@@ -750,10 +750,10 @@ function markQuery(text, q, exact, root, matchWords, aramaic, ignoreFinals){
   const hf = s => { const h=heb(s); return ignoreFinals ? foldFin(h) : h; };
   let isMatch;
   if(root && matchWords){ const mw=new Set(matchWords.map(hf).filter(Boolean)); isMatch=w=>{const h=hf(w);return h&&mw.has(h);}; }
-  else if(!exact && !aramaic && (q.includes('?')||q.includes('+'))){
+  else if(!exact && !aramaic && (q.includes('?')||q.includes('*')||q.includes('+'))){
     const parts=q.split('+').map(t=>t.trim()).filter(Boolean);
     const lits=[]; const wilds=[];
-    for(const t of parts){ if(t.includes('?')){ wilds.push([...t].filter(c=>(c>='א'&&c<='ת')||c==='?').join('')); }
+    for(const t of parts){ if(t.includes('?')||t.includes('*')){ wilds.push([...t].filter(c=>(c>='א'&&c<='ת')||c==='?'||c==='*').join('')); }
                            else for(const w of t.split(/\s+/)){ const h=hf(w); if(h) lits.push(h); } }
     isMatch=w=>{ const h=hf(w); if(!h) return false;
       return wilds.some(p=>wildMatch(h,p)) || lits.some(t=>h.includes(t)); };
@@ -765,6 +765,12 @@ function markQuery(text, q, exact, root, matchWords, aramaic, ignoreFinals){
   return text.split(/\s+/).map(w=> isMatch(w)?`<span class="hl">${esc(w)}</span>`:esc(w)).join(' ');
 }
 function wildMatch(word,pat){
+  if(pat.includes('*')){                       // glob: anchor where there is no '*'
+    const left=!pat.startsWith('*'), right=!pat.endsWith('*');
+    const core=pat.replace(/^\*+/,'').replace(/\*+$/,'');
+    const body=[...core].map(c=>c==='?'?'[א-ת]':c==='*'?'[א-ת]*':c).join('');
+    try{ return new RegExp((left?'^':'')+body+(right?'$':'')).test(word); }catch(e){ return false; }
+  }
   if(pat && [...pat].every(c=>c==='?')) return word.length===pat.length;
   const body=[...pat].map(c=>c==='?'?'[א-ת]':c).join('');
   try{ return new RegExp(body).test(word); }catch(e){ return false; }
@@ -953,7 +959,9 @@ const HELP_SECTIONS = [
   ]],
   ['חיפוש', [
     'הקלד מילה ולחץ <b>חפש</b>.',
-    '<b>חיפוש מתקדם</b> פותח דגלים: חיפוש מדויק · לפי שורש · בתרגום הארמי · התעלם מסופיות · הצג פירוש המילים. <b>אישור</b> מריץ את החיפוש.',
+    '<b>תווים כלליים:</b> <b>?</b> מחליף תו אחד (למשל <b>א?ר</b> = אבר, אור), ו-<b>*</b> מחליף מחרוזת לא ידועה: <b>כא*</b> = מתחיל ב-כא, <b>*כא</b> = מסתיים ב-כא, <b>*כא*</b> = מכיל כא.',
+    '<b>+</b> בין מילים מחפש את כולן באותו פסוק בכל סדר (למשל <b>מלך+ארץ</b>).',
+    '<b>חיפוש מתקדם</b> פותח דגלים: <b>חיפוש מדויק</b> (מילה שלמה) · <b>לפי שורש</b> (כל הנטיות) · <b>בתרגום הארמי</b> · <b>התעלם מסופיות</b> (הציף=הציפ) · <b>הצג פירוש המילים</b>. <b>אישור</b> מריץ את החיפוש.',
     'כל תוצאה מציגה את הנתיב ב<b>חלוקה יהודית</b> וב<b>שומרונית</b> (לחיצה מעבירה לפסוק), את הטקסט עם המילה מודגשת, ואת ההגייה.',
     'כשפירוש-המילים דלוק: <b>תרגום ארמי</b>, פירוש מ<b>מילון טל</b>, ו<b>פירוש עברי</b>. לחיצה על המילה הארמית פותחת חלון עם <b>מיקומים נוספים</b> שלה (טל, תיבת מרקה, והמסורת).',
   ]],
