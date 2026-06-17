@@ -178,6 +178,15 @@ body{
            font-size:16.5px; padding:6px 2px; cursor:pointer; line-height:1.4; }
 .res-path.jew{ color:var(--accent); }
 .res-path.sam{ color:#8c4d1a; }
+.res-path b{ font-weight:700; }
+.res-path .dir{ unicode-bidi:isolate; color:var(--muted); padding:0 4px; }
+
+/* advanced-search button + panel (holds all the flags) */
+.adv-btn{ display:block; width:100%; margin:2px 0 6px; padding:11px; border:0; border-radius:8px;
+          background:#405973; color:#fff; font-family:inherit; font-size:16px; cursor:pointer; }
+.adv-panel{ border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:6px; background:#fbfbf6; }
+.adv-apply{ display:block; width:100%; margin-top:6px; padding:12px; border:0; border-radius:8px;
+            background:var(--share); color:#fff; font-family:inherit; font-size:17px; font-weight:600; cursor:pointer; }
 .res-verse{ font-size:19px; padding:2px 2px 6px; line-height:1.6; }
 .res-verse .hl{ color:#cc0000; font-weight:700; }
 .res-occ{ font-family:'Translit',serif; color:#337373; font-size:18px; padding:0 2px 2px; }

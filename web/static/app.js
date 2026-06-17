@@ -719,6 +719,10 @@ function restoreFromSearch(){
 }
 $('doSearchBtn').onclick=doSearch;
 $('searchInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+// advanced-search: the flags live in a panel toggled by "חיפוש מתקדם"; "אישור"
+// closes the panel and runs the search, so the results show without the flags.
+$('advBtn').onclick=()=>$('advPanel').classList.toggle('hidden');
+$('advApply').onclick=()=>{ $('advPanel').classList.add('hidden'); if($('searchInput').value.trim()) doSearch(); };
 $('cbRoot').addEventListener('change',e=>{
   $('rootBoxRow').classList.toggle('hidden', !e.target.checked);
   if(e.target.checked && $('cbExact').checked) $('cbExact').checked=false;
@@ -738,19 +742,24 @@ async function fillRootBox(){
 
 const HEB_ONLY=/[^א-ת]/g;
 const heb = s => (s||'').replace(HEB_ONLY,'');
-function markQuery(text, q, exact, root, matchWords, aramaic){
+const FINALS_MAP={'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
+const foldFin = s => (s||'').replace(/[ךםןףץ]/g, c=>FINALS_MAP[c]);
+function markQuery(text, q, exact, root, matchWords, aramaic, ignoreFinals){
+  // fold word-final letters too when "ignore finals" is on, so the matched words
+  // are highlighted just like the search matched them (הציף ↔ הציפ).
+  const hf = s => { const h=heb(s); return ignoreFinals ? foldFin(h) : h; };
   let isMatch;
-  if(root && matchWords){ const mw=new Set(matchWords.map(heb).filter(Boolean)); isMatch=w=>{const h=heb(w);return h&&mw.has(h);}; }
+  if(root && matchWords){ const mw=new Set(matchWords.map(hf).filter(Boolean)); isMatch=w=>{const h=hf(w);return h&&mw.has(h);}; }
   else if(!exact && !aramaic && (q.includes('?')||q.includes('+'))){
     const parts=q.split('+').map(t=>t.trim()).filter(Boolean);
     const lits=[]; const wilds=[];
     for(const t of parts){ if(t.includes('?')){ wilds.push([...t].filter(c=>(c>='א'&&c<='ת')||c==='?').join('')); }
-                           else for(const w of t.split(/\s+/)){ const h=heb(w); if(h) lits.push(h); } }
-    isMatch=w=>{ const h=heb(w); if(!h) return false;
+                           else for(const w of t.split(/\s+/)){ const h=hf(w); if(h) lits.push(h); } }
+    isMatch=w=>{ const h=hf(w); if(!h) return false;
       return wilds.some(p=>wildMatch(h,p)) || lits.some(t=>h.includes(t)); };
   } else {
-    const terms=q.split(/\s+/).map(heb).filter(Boolean);
-    isMatch=w=>{ const h=heb(w); if(!h||!terms.length) return false;
+    const terms=q.split(/\s+/).map(hf).filter(Boolean);
+    isMatch=w=>{ const h=hf(w); if(!h||!terms.length) return false;
       return exact? terms.includes(h) : terms.some(t=>h.includes(t)); };
   }
   return text.split(/\s+/).map(w=> isMatch(w)?`<span class="hl">${esc(w)}</span>`:esc(w)).join(' ');
@@ -780,17 +789,19 @@ async function doSearch(){
     if(root && r.subroot && r.subroot!==data.searched_root && r.subroot!==curSub){
       res.appendChild(el('div','res-subroot',esc(r.subroot))); curSub=r.subroot;
     }
-    const jb=el('button','res-path jew',
-      esc(`←  יהודית   ${r.book_name}  ›  ${r.portion_name}  ›  פרק ${r.chapter_num}  פסוק ${r.number}`));
+    const jb=el('button','res-path jew');
+    jb.innerHTML = `<b>יהודית</b> <span class="dir">←</span> ` +
+      esc(`${r.book_name}  ›  ${r.portion_name}  ›  פרק ${r.chapter_num}  פסוק ${r.number}`);
     jb.onclick=()=>goToJewish(r); res.appendChild(jb);
     if(r.sam){
       const open = r.sam.opening ? `  (${r.sam.opening})` : '';
-      const sb=el('button','res-path sam',
-        esc(`→  שומרונית   ${r.book_name}  ›  ${r.sam.sam_portion_name}  ›  פרק שומרוני ${r.sam.sam_ch_num}  פסוק ${r.sam.number}${open}`));
+      const sb=el('button','res-path sam');
+      sb.innerHTML = `<b>שומרונית</b> <span class="dir">←</span> ` +
+        esc(`${r.book_name}  ›  ${r.sam.sam_portion_name}  ›  פרק שומרוני ${r.sam.sam_ch_num}  פסוק ${r.sam.number}${open}`);
       sb.onclick=()=>goToSam(r); res.appendChild(sb);
     }
     const dtext=(aram? r.sam_aramaic : r.text)||'';
-    const vl=el('div','res-verse', markQuery(dtext,q,exact,root,r.match_words,aram));
+    const vl=el('div','res-verse', markQuery(dtext,q,exact,root,r.match_words,aram,ignoreFinals));
     vl.style.fontSize=(19+S.searchFontOffset)+'px'; res.appendChild(vl);
     if(r.occ && r.occ.length){
       const spans=[];
