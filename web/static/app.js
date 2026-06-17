@@ -5,7 +5,15 @@
 // and only the Samaritan script needs per-glyph spans.
 
 const $ = id => document.getElementById(id);
-const api = async (path) => (await fetch('/api/' + path)).json();
+// cache every GET response — the DB is read-only, so results never change within
+// a session. Re-navigating (books↔portions↔chapters↔verses) becomes instant.
+const _apiCache = new Map();
+const api = async (path) => {
+  if (_apiCache.has(path)) return _apiCache.get(path);
+  const data = await (await fetch('/api/' + path)).json();
+  _apiCache.set(path, data);
+  return data;
+};
 const apiPost = async (path, body) =>
   (await fetch('/api/' + path, {method:'POST', headers:{'Content-Type':'application/json'},
                                 body:JSON.stringify(body)})).json();
@@ -235,6 +243,14 @@ function paintVerses(){
   if(!S.verses.length){ c.appendChild(el('div','note','אין פסוקים')); return; }
   const all = S.verses;
   const verses = S.verseFilter!=null ? all.filter(v=>v.id===S.verseFilter) : all;
+  // when a single verse is filtered (e.g. arrived from a search result), show a
+  // prominent "clear filter" button at the top — in every view mode.
+  if(S.verseFilter!=null){
+    const bar=el('div','clear-filter-bar');
+    const btn=el('button','clear-filter-btn','נקה סינון');
+    btn.onclick=()=>filterVerse(null);
+    bar.appendChild(btn); c.appendChild(bar);
+  }
   const usePanel = S.panel && !S.samFont;
 
   if(usePanel && S.panel!=='compare'){
@@ -273,9 +289,7 @@ function addPlainRows(c, verses){
 
 function addNumStrip(c, all){
   const strip = el('div','numstrip');
-  if(S.verseFilter!=null){
-    const cl=el('button','num clear','נקה'); cl.onclick=()=>filterVerse(null); strip.appendChild(cl);
-  }
+  // (the "clear filter" button now lives at the top of the view, in paintVerses)
   for(const v of all){
     const b=el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
     b.onclick=()=>filterVerse(v.id); strip.appendChild(b);

@@ -7,6 +7,7 @@ services:
     name: samaritan-torah
     runtime: python
     plan: free
+    region: frankfurt          # closest free region to Israel (much lower latency)
     # install ONLY Flask + gunicorn (not the phone-app's Kivy requirements)
     buildCommand: pip install -r web/requirements-prod.txt
     startCommand: gunicorn web.server:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60
