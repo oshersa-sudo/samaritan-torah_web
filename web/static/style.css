@@ -14,7 +14,8 @@ body{
   font-family:'Hebrew',sans-serif; background:var(--cream); color:var(--dark);
   direction:rtl; overflow:hidden;
 }
-#app{ display:flex; flex-direction:column; height:100vh; height:100dvh; max-width:760px; margin:0 auto;
+#app{ display:flex; flex-direction:column; height:100vh; height:100dvh; height:var(--app-h, 100dvh);
+      max-width:760px; margin:0 auto;
       background-color:var(--cream); position:relative;
       background-image:linear-gradient(rgba(247,247,242,.86), rgba(247,247,242,.90)),
                        url('/static/img/background.jpg');
@@ -186,7 +187,8 @@ body{
 .search-foot .grow{ flex:1; }
 
 /* footer */
-footer{ flex:0 0 auto; text-align:center; padding:3px; font-size:11px; color:#666; }
+footer{ flex:0 0 auto; text-align:center; padding:3px; font-size:11px; color:#666;
+        padding-bottom:calc(3px + env(safe-area-inset-bottom)); }
 footer a{ color:var(--accent); text-decoration:none; }
 
 /* modals */

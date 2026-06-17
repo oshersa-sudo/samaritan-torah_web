@@ -21,6 +21,14 @@ const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g
 const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls)e.className=cls;
                                  if(html!=null)e.innerHTML=html; return e; };
 
+// Pin the app to the REAL visible height. On mobile the browser's collapsing
+// address bar changes window.innerHeight, which 100vh does not follow — leaving
+// the bottom toolbar hidden behind the browser bar. Re-measure on every change.
+function setAppHeight(){ document.documentElement.style.setProperty('--app-h', window.innerHeight + 'px'); }
+['resize','orientationchange','pageshow'].forEach(ev => addEventListener(ev, setAppHeight));
+if (window.visualViewport) visualViewport.addEventListener('resize', setAppHeight);
+setAppHeight();
+
 // ── state ───────────────────────────────────────────────────────────────────
 const S = {
   division: 'samaritan',          // 'samaritan' | 'standard'
