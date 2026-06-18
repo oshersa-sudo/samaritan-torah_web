@@ -362,10 +362,16 @@ function buildCommentary(c, verses){
   const panel = el('div','srcpanel');
   if(S.commentarySel===null){
     panel.appendChild(el('div','ptitle','בחר פרשן'));
-    for(const [key,name] of COMMENTATORS.concat([['web','פרשנים נוספים (ספריא)']])){
+    // only commentators that actually have text on the current verse(s)
+    const avail = COMMENTATORS.filter(([key]) => verses.some(v => (v[key]||'').trim()));
+    for(const [key,name] of avail){
       const b=el('button','picker-btn',esc(name)); b.onclick=()=>{ S.commentarySel=key; paintVerses(); };
       panel.appendChild(b);
     }
+    // the live-Sefaria option is always offered (its results are fetched on demand)
+    const wb=el('button','picker-btn','פרשנים נוספים (ספריא)');
+    wb.onclick=()=>{ S.commentarySel='web'; paintVerses(); }; panel.appendChild(wb);
+    if(!avail.length) panel.appendChild(el('div','note','אין פרשנות מקומית לפסוקים אלה'));
   } else {
     const head=el('div','shead');
     const back=el('button','miniback','‹ בחר פרשן'); back.onclick=()=>{ S.commentarySel=null; paintVerses(); };
@@ -407,11 +413,20 @@ async function buildSamSrc(c, verses){
   if(S.samSrcChoice===null){
     const panel=el('div','srcpanel');
     panel.appendChild(el('div','ptitle','ממקור שומרון — בחר מקור'));
-    for(const [label,ch] of [['תיבת מרקה','tm'],['מן המסורת השומרונית','eyalk']]){
+    const loading=el('div','note','בודק מקורות זמינים…'); panel.appendChild(loading);
+    c.appendChild(panel);
+    // only show a source that actually has content on the current verse(s)
+    const [tm, ey] = await Promise.all([api('tibat_marqe?verse_ids='+ids), api('eyalk?verse_ids='+ids)]);
+    loading.remove();
+    const avail=[];
+    if(tm.length) avail.push(['תיבת מרקה','tm']);
+    if(ey.length) avail.push(['מן המסורת השומרונית','eyalk']);
+    if(!avail.length){ panel.appendChild(el('div','note','אין מקור שומרוני זמין לפסוקים אלה')); return; }
+    for(const [label,ch] of avail){
       const b=el('button','picker-btn',label); b.onclick=()=>{ S.samSrcChoice=ch; S.tmSel=null; paintVerses(); };
       panel.appendChild(b);
     }
-    c.appendChild(panel); return;
+    return;
   }
   if(S.samSrcChoice==='eyalk'){
     const items = await api('eyalk?verse_ids='+ids);
