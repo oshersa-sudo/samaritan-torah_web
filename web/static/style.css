@@ -82,6 +82,8 @@ body{
 .vrow .num.active{ background:var(--accent); color:#fff; }
 .vrow .vtext{ flex:1; font-size:20px; line-height:1.7; direction:rtl; text-align:right; }
 .vrow .vtext.eng{ direction:ltr; text-align:left; font-family:'Translit',serif; font-size:17px; }
+.vrow .vtext.interp{ white-space:pre-wrap; text-align:justify; text-align-last:right;
+                     overflow-wrap:break-word; word-break:break-word; }
 .sam .vrow .vtext{ font-size:22px; text-align:justify; text-align-last:right;
                    overflow-wrap:break-word; word-break:break-word; }
 

@@ -54,16 +54,19 @@ const PANEL_MODES = ['compare','interpret','aramaic','arabic','commentary','sama
 // ── Samaritan rendering (ports _add_word_dots + _sam_markup) ─────────────────
 function addWordDots(text){
   text = text.replace(/\.\s*:/g, ':').replace(/:\s*\./g, ':').replace(/\.\s*׃/g, '׃');
+  const PAUSE = /[:.׃]$/;     // stop / standing / verse-end marks — no separator after these
   const out = [];
   for (const line of text.split('\n')){
-    const toks = line.split(' '); const nt = [];
+    const toks = line.split(' ').filter(t => t !== '');
+    const nt = [];
     for (let i=0;i<toks.length;i++){
-      nt.push(toks[i]);
-      if (i < toks.length-1){
-        const nx = toks[i+1];
-        if (toks[i] && !/^\d+$/.test(toks[i]) && nx && !nx.startsWith('׃') && !nx.startsWith('--'))
-          nt.push('·');
-      }
+      const tok = toks[i], nx = toks[i+1];
+      // a word-separating dot is glued to the END of the current word, but not:
+      // after a number, after a stop/standing/verse-end mark, at the end of the
+      // line/chapter, or right before the verse-end (׃) / chapter-end (--) marks.
+      const sep = tok && !/^\d+$/.test(tok) && !PAUSE.test(tok)
+                  && i < toks.length-1 && nx && !nx.startsWith('׃') && !nx.startsWith('--');
+      nt.push(sep ? tok + '·' : tok);
     }
     out.push(nt.join(' '));
   }
@@ -339,10 +342,27 @@ async function buildCompare(c, verses){
   c.appendChild(pairEl(mas,sam));
 }
 async function buildInterpret(c, verses){
+  // Show the verse commentary INLINE, in place of the original verse text
+  // (one row per verse), rather than as a separate panel beside the original.
   const m = await api('interpretations?verse_ids='+verses.map(v=>v.id).join(','));
-  const parts = verses.filter(v=>m[v.id]).map(v=>`${v.number}  ${esc(m[v.id])}`).join('\n');
-  const ip = panelEl('פירוש הפסוק', parts || 'פירוש אינו זמין');
-  c.appendChild(pairEl(ip, origPanel(verses)));
+  const fs = fsize();
+  let any = false;
+  for(const v of verses){
+    let txt = (m[v.id]||'').trim();
+    if(!txt) continue;
+    // strip leftover markdown (heading lines, ** bold) that leaked into the text
+    txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
+    if(!txt) continue;
+    any = true;
+    const row = el('div','vrow');
+    const num = el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
+    num.onclick=()=>filterVerse(v.id);
+    const t = el('div','vtext interp', esc(txt));
+    t.style.fontSize = fs+'px';
+    row.appendChild(t); row.appendChild(num);
+    c.appendChild(row);
+  }
+  if(!any) c.appendChild(el('div','note','פירוש אינו זמין לפסוקים אלה'));
 }
 function buildAramaic(c, verses){
   const parts = verses.filter(v=>(v.sam_aramaic||'').trim())

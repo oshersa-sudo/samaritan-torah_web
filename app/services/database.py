@@ -269,47 +269,46 @@ def tal_concise(word, conn=None):
     base = _tal_bare(word)
     if not base or len(base) < 2:
         return None
-    # Targum words appear in the determined state and with proclitics; try the
-    # surface form, then without a leading clitic (ו/ב/ל/כ/ד/מ/ה) and/or the
-    # emphatic ending (־א/־ה), so they resolve to their index entry.
-    forms = [base]
-    if len(base) > 2 and base[0] in 'ובלכדמה':
-        forms.append(base[1:])
-    if len(base) > 2 and base[-1] in 'אה':
-        forms.append(base[:-1])
-        if base[0] in 'ובלכדמה' and len(base) > 3:
-            forms.append(base[1:-1])
     own = conn is None
     if own:
         conn = get_connection()
-    row = None
+    res = None
+    # (1) The distilled gloss table covers ~every Targum word with a clean Hebrew
+    # meaning (and root) — anchored on the word's Hebrew equivalent and grounded
+    # in Tal where available. This is the primary source.
     try:
-        for f in forms:
-            row = conn.execute(
-                "SELECT dri.root, e.lemma, e.gloss_en FROM dict_root_index dri "
-                "JOIN dict_root_entries dre ON dre.root = dri.root "
-                "JOIN dict_entries e ON e.id = dre.entry_id "
-                "WHERE dri.word = ? ORDER BY dre.tier LIMIT 1", (f,)).fetchone()
-            if row:
-                break
+        g = conn.execute("SELECT root, gloss FROM tal_word_gloss WHERE word = ? LIMIT 1",
+                         (base,)).fetchone()
+        if g and ((g['root'] or '').strip() or (g['gloss'] or '').strip()):
+            res = {'root': (g['root'] or '').strip(), 'lemma': '',
+                   'gloss': (g['gloss'] or '').strip()}
     except Exception:
-        row = None
-    gloss = ''
-    if row:
-        # Prefer a clean distilled Hebrew meaning (tal_word_gloss) over the noisy
-        # OCR gloss_en, which often holds citation fragments rather than a sense.
+        res = None
+    # (2) Fallback: resolve the root from Tal's published index (root only),
+    # trying the determined-state / proclitic variants of the surface form.
+    if res is None:
+        forms = [base]
+        if len(base) > 2 and base[0] in 'ובלכדמה':
+            forms.append(base[1:])
+        if len(base) > 2 and base[-1] in 'אה':
+            forms.append(base[:-1])
+            if base[0] in 'ובלכדמה' and len(base) > 3:
+                forms.append(base[1:-1])
         try:
-            g = conn.execute("SELECT gloss FROM tal_word_gloss WHERE word = ? LIMIT 1",
-                             (base,)).fetchone()
-            if g and (g['gloss'] or '').strip():
-                gloss = g['gloss'].strip()
+            for f in forms:
+                row = conn.execute(
+                    "SELECT dri.root, e.lemma FROM dict_root_index dri "
+                    "JOIN dict_root_entries dre ON dre.root = dri.root "
+                    "JOIN dict_entries e ON e.id = dre.entry_id "
+                    "WHERE dri.word = ? ORDER BY dre.tier LIMIT 1", (f,)).fetchone()
+                if row:
+                    res = {'root': row['root'] or '', 'lemma': row['lemma'] or '', 'gloss': ''}
+                    break
         except Exception:
             pass
     if own:
         conn.close()
-    if not row:
-        return None
-    return {'root': row['root'] or '', 'lemma': row['lemma'] or '', 'gloss': gloss}
+    return res
 
 
 def get_word_table(verse_ids):
@@ -330,11 +329,14 @@ def get_word_table(verse_ids):
         heb = r['hebrew'] or ''
         parts = [p.strip() for p in heb.split(',', 1)]
         word = parts[0]
-        meaning = parts[1] if len(parts) > 1 else ''
+        inline = parts[1] if len(parts) > 1 else ''
         tc = tal_concise(r['aramaic'], conn)
         tal = ''
         if tc:
             tal = tc['root'] + (' · ' + tc['gloss'] if tc['gloss'] else '')
+        # verse_dictionary rarely carries an inline gloss, so fall back to the
+        # distilled Hebrew meaning, then to the word itself — never blank.
+        meaning = inline or (tc['gloss'] if tc and tc['gloss'] else word)
         out.setdefault(r['verse_id'], []).append({
             'word': word, 'meaning': meaning, 'aramaic': r['aramaic'] or '',
             'tal': tal, 'arabic': (r['arabic'] if has_ar else '') or '',
