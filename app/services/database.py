@@ -529,7 +529,11 @@ def search_verses(query, exact=False, root=False, aramaic=False, root_letters=No
     fld = 'FOLD(%s)' % field if ignore_finals else field   # column expr to match on
     sel_extra = ''
     order_by = 'b.order_n, c.number, v.number'
-    if root:
+    # '?' / '*' / '+' are search operators incompatible with exact / root / plain-
+    # literal matching, so when present they take precedence — a '?' search must
+    # keep working even if "חיפוש מדויק" / "לפי שורש" / "בתרגום הארמי" is ticked.
+    has_special = any(c in query for c in '?*+')
+    if root and not has_special:
         from app.services.hebrew_root import extract_root, to_skeleton, normalize, text_has_root
         if aramaic:
             # Aramaic translation field — the root index is Hebrew-only, so this
@@ -556,19 +560,19 @@ def search_verses(query, exact=False, root=False, aramaic=False, root_letters=No
                          "WHERE ri.verse_id = v.id AND ri.root_norm = ?) AS _ord")
             order_by = '_ord'
             params = [rn, rn]   # first binds the SELECT subquery, then the WHERE
-    elif exact:
+    elif exact and not has_special:
         q = _fold_finals(query) if ignore_finals else query
         where = f"(' ' || {fld} || ' ') LIKE ?"
         params = [f"% {q} %"]
-    elif aramaic or not any(c in query for c in '?*+'):
-        # unchanged plain substring — used for the Aramaic flag and for a simple
-        # literal Hebrew query (no wildcards / no AND operator).
+    elif not has_special:
+        # plain substring — a literal Hebrew or Aramaic query (no ? / * / +).
         q = _fold_finals(query) if ignore_finals else query
         where = f"{fld} LIKE ?"
         params = [f"%{q}%"]
     else:
-        # enhanced Hebrew search: '?' = one letter, '*' = an unknown string (glob);
-        # '+' joins terms that must ALL appear in the verse, in any order.
+        # enhanced search: '?' = one letter, '*' = an unknown string (glob); '+'
+        # joins terms that must ALL appear. Runs on the chosen field (Hebrew text
+        # or the Aramaic translation), overriding the exact/root flags.
         terms = [t.strip() for t in query.split('+') if t.strip()]
         conds, params = [], []
         if any(('?' in t or '*' in t) for t in terms):

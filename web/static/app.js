@@ -868,15 +868,16 @@ function markQuery(text, q, exact, root, matchWords, aramaic, ignoreFinals){
   // are highlighted just like the search matched them (הציף ↔ הציפ).
   const hf = s => { const h=heb(s); return ignoreFinals ? foldFin(h) : h; };
   let isMatch;
-  if(root && matchWords){ const mw=new Set(matchWords.map(hf).filter(Boolean)); isMatch=w=>{const h=hf(w);return h&&mw.has(h);}; }
-  else if(!exact && !aramaic && (q.includes('?')||q.includes('*')||q.includes('+'))){
+  const hasWild = q.includes('?')||q.includes('*')||q.includes('+');
+  if(hasWild){            // ?/*/+ override the flags here too, matching the server
     const parts=q.split('+').map(t=>t.trim()).filter(Boolean);
     const lits=[]; const wilds=[];
     for(const t of parts){ if(t.includes('?')||t.includes('*')){ wilds.push([...t].filter(c=>(c>='א'&&c<='ת')||c==='?'||c==='*').join('')); }
                            else for(const w of t.split(/\s+/)){ const h=hf(w); if(h) lits.push(h); } }
     isMatch=w=>{ const h=hf(w); if(!h) return false;
       return wilds.some(p=>wildMatch(h,p)) || lits.some(t=>h.includes(t)); };
-  } else {
+  } else if(root && matchWords){ const mw=new Set(matchWords.map(hf).filter(Boolean)); isMatch=w=>{const h=hf(w);return h&&mw.has(h);}; }
+  else {
     const terms=q.split(/\s+/).map(hf).filter(Boolean);
     isMatch=w=>{ const h=hf(w); if(!h||!terms.length) return false;
       return exact? terms.includes(h) : terms.some(t=>h.includes(t)); };
@@ -1100,6 +1101,39 @@ function showHelp(){
   }
   showInfo('עזרה למשתמש', h);
 }
+
+// focused, accurate help for the search screen (every option + examples)
+const SEARCH_HELP = [
+  ['חיפוש בסיסי', [
+    'הקלד מילה (או חלק ממילה) ולחץ <b>חפש</b> או Enter. נמצאים כל הפסוקים שהמילה מופיעה בהם — גם כשהיא חלק ממילה ארוכה יותר. לדוגמה: <b>אלהים</b>, או <b>אלה</b> שתמצא גם אלהים, האלה וכו׳.',
+    'כל תוצאה מציגה: את מיקום הפסוק ב<b>חלוקה היהודית</b> וב<b>חלוקה השומרונית</b> (לחיצה על הנתיב קופצת לפסוק), את טקסט הפסוק כשהמילה <b>מודגשת</b>, ואת ההגייה השומרונית.',
+  ]],
+  ['תווים כלליים (להחלפת אותיות)', [
+    '<b>?</b> — מחליף <b>תו אחד</b> כלשהו. לדוגמה: <b>א?ר</b> מוצא אוֹר, אָמַר, עָבָר — כל מילה עם אות אחת בין א ל-ר.',
+    '<b>????</b> (רק סימני שאלה) — מוצא <b>מילים שלמות</b> באורך המדויק (כאן: בנות 4 אותיות).',
+    '<b>*</b> — מחליף <b>מחרוזת אותיות</b> לא ידועה (מאורך כלשהו). <b>כא*</b> = מילים המתחילות ב-כא · <b>*כא</b> = מסתיימות ב-כא · <b>*כא*</b> = מכילות כא.',
+    '<b>+</b> — <b>וגם</b>: כל המילים חייבות להופיע באותו פסוק, בכל סדר. לדוגמה: <b>אור+חשך</b> מוצא פסוקים שיש בהם גם אור וגם חשך.',
+    'הערה חשובה: כשמשתמשים ב-<b>?</b> / <b>*</b> / <b>+</b> , הם <b>גוברים</b> על דגלי החיפוש המתקדם — תמיד יבוצע חיפוש-תבנית, גם אם סומן "מדויק" או "לפי שורש".',
+  ]],
+  ['חיפוש מתקדם — מה כל דגל עושה', [
+    '<b>חיפוש מדויק</b> — מוצא רק את <b>המילה השלמה</b> כפי שהקלדת, ולא כחלק ממילה. לדוגמה: <b>אל</b> מדויק → רק המילה "אל", לא "אלהים" או "אלה".',
+    '<b>לפי שורש המילה</b> — מוצא את <b>כל הנטיות</b> של אותו שורש (מתוך אינדקס השורשים). לדוגמה: <b>ברא</b> → ברא, בורא, נברא, בראשית. אפשר לתקן את השורש בתיבת <b>שורש לחיפוש</b>. פעיל למילה אחת בלבד.',
+    '<b>חפש בתרגום הארמי</b> — מחפש בטקסט <b>התרגום הארמי השומרוני</b> במקום בטקסט העברי.',
+    '<b>התעלם מסופיות</b> — אינו מבחין בין אות סופית לרגילה (ך=כ, ם=מ, ן=נ, ף=פ, ץ=צ). לדוגמה: <b>הציף</b> ימצא גם "הציפ".',
+    '<b>הצג פירוש המילים</b> — מתחת לכל תוצאה מוצגת משמעות המילה שנמצאה: <b>תרגום ארמי</b>, פירוש מ<b>מילון א. טל</b>, ו<b>פירוש עברי</b>. לחיצה על המילה הארמית פותחת חלון עם <b>מיקומים נוספים</b> שלה.',
+    '<b>אישור</b> — סוגר את הפאנל ומריץ את החיפוש עם הדגלים שבחרת.',
+  ]],
+];
+function showSearchHelp(){
+  let h = '';
+  for(const [title, items] of SEARCH_HELP){
+    h += `<div class="help-h">${title}</div><ul class="help-list">`;
+    for(const it of items) h += `<li>${it}</li>`;
+    h += '</ul>';
+  }
+  showInfo('עזרה לחיפוש', h);
+}
+$('searchHelpBtn').onclick=showSearchHelp;
 
 async function showWhatsNew(){
   showInfo('מה חדש?', '<div class="note">טוען…</div>');
