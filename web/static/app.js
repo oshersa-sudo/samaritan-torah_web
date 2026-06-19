@@ -660,9 +660,8 @@ function setView(){
 // base colours of each mode button (matching the native app's palette);
 // disabled → grey, active → bright blue, otherwise its own colour.
 const BTN_BASE = {
-  fontBtn:'#40406b', engBtn:'#336133', dictBtn:'#405973', interpBtn:'#335959',
+  fontBtn:'#40406b', translateBtn:'#6b4a2a', dictBtn:'#405973', interpBtn:'#335959',
   compareBtn:'#593373', commentaryBtn:'#4d4d80', samSrcBtn:'#735438',
-  aramBtn:'#594026', arabicBtn:'#594026',
 };
 function syncToolbar(isVerse){
   $('shareBtn').classList.toggle('hidden', !isVerse);
@@ -670,18 +669,22 @@ function syncToolbar(isVerse){
     const b=$(id); b.disabled=!enabled; b.classList.toggle('on',!!on);
     b.style.background = !enabled ? '#555' : (on ? 'var(--active)' : (BTN_BASE[id]||''));
   };
+  // all the content/display buttons form a single-select group: only one is
+  // active at a time (clicking one turns the previous off), so every button is
+  // simply enabled in verse view and highlighted when it is the active one.
   const sam=S.samFont;
-  setBtn('fontBtn', isVerse && !S.english, sam);
+  setBtn('fontBtn', isVerse, sam);
   $('fontBtn').textContent = sam?'כתב עברי':'כתב שומרוני';
-  setBtn('engBtn', isVerse && !sam && S.panel!=='compare' && S.panel!=='aramaic' && S.panel!=='arabic', S.english);
-  $('engBtn').textContent = S.english?'עברית':'התרגום לאנגלית';
-  setBtn('dictBtn', isVerse && !S.english && S.panel!=='compare', S.dict);
-  setBtn('interpBtn',     isVerse && !sam, S.panel==='interpret');
-  setBtn('compareBtn',    isVerse && !sam && !S.english, S.panel==='compare');
-  setBtn('commentaryBtn', isVerse && !sam, S.panel==='commentary');
-  setBtn('samSrcBtn',     isVerse && !sam, S.panel==='samaritan_src');
-  setBtn('aramBtn',       isVerse && !sam && !S.english, S.panel==='aramaic');
-  setBtn('arabicBtn',     isVerse && !sam && !S.english, S.panel==='arabic');
+  setBtn('dictBtn',       isVerse, S.dict);
+  setBtn('interpBtn',     isVerse, S.panel==='interpret');
+  setBtn('compareBtn',    isVerse, S.panel==='compare');
+  setBtn('commentaryBtn', isVerse, S.panel==='commentary');
+  setBtn('samSrcBtn',     isVerse, S.panel==='samaritan_src');
+  const transOn = S.english || S.panel==='aramaic' || S.panel==='arabic';
+  setBtn('translateBtn',  isVerse, transOn);
+  $('translateBtn').textContent = S.english ? 'תרגום: אנגלית'
+    : S.panel==='aramaic' ? 'תרגום: ארמי'
+    : S.panel==='arabic'  ? 'תרגום: ערבי' : 'תרגומי התורה';
 }
 
 // ── toolbar handlers ─────────────────────────────────────────────────────────
@@ -689,8 +692,25 @@ $('browseBtn').onclick=()=>{ showSearch(false); showBooks(); };
 $('searchBtn').onclick=()=>showSearch(true);
 $('backBtn').onclick=()=>goBack();
 
-$('fontBtn').onclick=()=>{ S.samFont=!S.samFont; if(S.samFont){ S.panel=null; S.english=false; } syncToolbar(true); paintVerses(); };
-$('engBtn').onclick=()=>{ S.english=!S.english; if(S.english){ S.samFont=false; if(['compare','aramaic','arabic'].includes(S.panel)) S.panel=null; } syncToolbar(true); paintVerses(); };
+// every content/display mode is mutually exclusive — turning one on clears the rest
+function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=false; }
+$('fontBtn').onclick=()=>{ const was=S.samFont; clearModes(); S.samFont=!was; syncToolbar(true); paintVerses(); };
+// "תרגומי התורה" — opens a small picker (ארמי / ערבי / אנגלי), marking the active one
+$('translateBtn').onclick=()=>{
+  document.querySelectorAll('#transModal .trans-opt').forEach(b=>{
+    const tr=b.dataset.tr;
+    b.classList.toggle('sel', (tr==='english'&&S.english)||(!!tr&&S.panel===tr));
+  });
+  $('transModal').classList.remove('hidden');
+};
+document.querySelectorAll('#transModal .trans-opt').forEach(b=>{
+  b.onclick=()=>{
+    const tr=b.dataset.tr; $('transModal').classList.add('hidden');
+    if(!tr) return;                                  // "סגור"
+    if(tr==='english'){ const was=S.english; clearModes(); S.english=!was; syncToolbar(true); paintVerses(); }
+    else togglePanel(tr);                            // aramaic / arabic — toggles + exclusion + scroll
+  };
+});
 // when a panel/dictionary opens below the text, scroll it into view so the user
 // sees that something opened (it retries until the async panel is in the DOM).
 function scrollToEl(selector){
@@ -702,11 +722,12 @@ function scrollToEl(selector){
   };
   setTimeout(tick,60);
 }
-$('dictBtn').onclick=()=>{ S.dict=!S.dict; syncToolbar(true); paintVerses(); if(S.dict) scrollToEl('.dictpanel'); };
+$('dictBtn').onclick=()=>{ const was=S.dict; clearModes(); S.dict=!was; syncToolbar(true); paintVerses(); if(S.dict) scrollToEl('.dictpanel'); };
 function togglePanel(name){
-  S.panel = (S.panel===name)?null:name;
-  if(S.panel){ S.samFont=false;
-    if(['compare','aramaic','arabic'].includes(S.panel)) S.english=false;
+  const was = (S.panel===name);
+  clearModes();
+  if(!was){
+    S.panel = name;
     if(S.panel==='commentary') S.commentarySel=null;
     if(S.panel==='samaritan_src'){ S.samSrcChoice=null; S.tmSel=null; }
   }
@@ -717,8 +738,6 @@ $('interpBtn').onclick=()=>togglePanel('interpret');
 $('compareBtn').onclick=()=>togglePanel('compare');
 $('commentaryBtn').onclick=()=>togglePanel('commentary');
 $('samSrcBtn').onclick=()=>togglePanel('samaritan_src');
-$('aramBtn').onclick=()=>togglePanel('aramaic');
-$('arabicBtn').onclick=()=>togglePanel('arabic');
 
 function goBack(){
   if(S.verseFilter!=null){ filterVerse(null); return; }

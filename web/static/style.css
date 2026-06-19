@@ -256,6 +256,7 @@ footer a{ color:var(--accent); text-decoration:none; }
 .modal-title{ text-align:center; font-weight:700; color:var(--navy); font-size:18px; }
 .share-opt{ padding:14px; border:0; border-radius:8px; color:#fff; font-family:inherit; font-size:17px; cursor:pointer; }
 .share-opt.close{ background:var(--navy); }
+.trans-opt.sel{ outline:3px solid #fff; outline-offset:-3px; box-shadow:0 0 0 2px var(--navy); }
 .popup-close{ padding:14px; border:0; border-radius:8px; background:var(--navy); color:#fff;
               font-family:inherit; font-size:17px; cursor:pointer; margin-top:8px; }
 #popupBody, #infoBody{ flex:1 1 auto; min-height:0; overflow-y:auto; }
