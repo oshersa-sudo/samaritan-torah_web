@@ -26,6 +26,7 @@ const I18N = {
   he: {
     app_title:'התורה השומרונית הישראלית', div_jewish:'חלוקה יהודית', div_sam:'חלוקה שומרונית',
     spread:'פריסת פרקים', next_portion:'‹ פרשה הבאה', prev_portion:'פרשה קודמת ›',
+    next_chapter:'‹ פרק הבא', prev_chapter:'פרק קודם ›',
     share:'שתף', back:'‹ חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
     font_sam:'כתב שומרוני', font_heb:'כתב עברי', interp:'פירוש הפסוק', commentary:'פרשנות יהודית',
     compare:'השוואה לנ.מסורה', variants:'חילופי נוסח', samsrc:'ממקור שומרון', translate:'תרגומי התורה',
@@ -55,6 +56,7 @@ const I18N = {
   en: {
     app_title:'The Israelite Samaritan Torah', div_jewish:'Jewish division', div_sam:'Samaritan division',
     spread:'All chapters', next_portion:'Next portion ›', prev_portion:'‹ Previous portion',
+    next_chapter:'Next chapter ›', prev_chapter:'‹ Previous chapter',
     share:'Share', back:'‹ Back', browse:'Browse', search:'Search', dict:'Word dictionary',
     font_sam:'Samaritan script', font_heb:'Hebrew script', interp:'Verse commentary', commentary:'Jewish commentary',
     compare:'Compare to Masorah', variants:'Textual variants', samsrc:'Samaritan sources', translate:'Torah translations',
@@ -84,6 +86,7 @@ const I18N = {
   ar: {
     app_title:'التوراة السامرية الإسرائيلية', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
     spread:'كل الأصحاحات', next_portion:'المقطع التالي ›', prev_portion:'‹ المقطع السابق',
+    next_chapter:'الأصحاح التالي ›', prev_chapter:'‹ الأصحاح السابق',
     share:'مشاركة', back:'‹ رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
     font_sam:'الخط السامري', font_heb:'الخط العبري', interp:'تفسير الآية', commentary:'تفسير يهودي',
     compare:'مقارنة بالنصّ الماسوري', variants:'اختلافات النصّ', samsrc:'مصادر سامرية', translate:'ترجمات التوراة',
@@ -723,8 +726,8 @@ function navState(mode){
   S.navMode = mode;
   $('navbar').classList.remove('hidden');
   // navbar is LTR (matching the source app): next on the LEFT, previous on the RIGHT.
-  $('nextBtn').textContent = mode==='chapter' ? '‹ פרק הבא' : '‹ פרשה הבאה';
-  $('prevBtn').textContent = mode==='chapter' ? 'פרק קודם ›' : 'פרשה קודמת ›';
+  $('nextBtn').textContent = mode==='chapter' ? t('next_chapter') : t('next_portion');
+  $('prevBtn').textContent = mode==='chapter' ? t('prev_chapter') : t('prev_portion');
   updateNavDisabled();
 }
 function updateNavDisabled(){
@@ -1396,6 +1399,8 @@ function applyI18n(){
   document.querySelectorAll('[data-i18n-ph]').forEach(n=>{ n.placeholder = t(n.dataset.i18nPh); });
   if(typeof syncToolbar === 'function') syncToolbar(S.view === 'verses');
   if(typeof paintVerses === 'function' && S.view === 'verses') paintVerses();
+  // the prev/next buttons are set per-mode by navState — re-apply so they too translate
+  if(typeof navState === 'function' && S.navMode && !$('navbar').classList.contains('hidden')) navState(S.navMode);
 }
 function setLang(lang){ if(!I18N[lang]) return; LANG = lang; applyI18n(); }
 // a small styled yes/no dialog → Promise<boolean>
