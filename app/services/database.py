@@ -261,6 +261,88 @@ def get_verse_dictionary(verse_ids):
     return result
 
 
+def tal_concise(word, conn=None):
+    """A SHORT meaning for an Aramaic word, via Tal's authoritative index only
+    (word → root → entry). Returns {'root','lemma','gloss'} or None when the word
+    is not in the index — so the noisy fallback matches are never shown here.
+    Pass an open `conn` to avoid per-word connections."""
+    base = _tal_bare(word)
+    if not base or len(base) < 2:
+        return None
+    # Targum words appear in the determined state and with proclitics; try the
+    # surface form, then without a leading clitic (ו/ב/ל/כ/ד/מ/ה) and/or the
+    # emphatic ending (־א/־ה), so they resolve to their index entry.
+    forms = [base]
+    if len(base) > 2 and base[0] in 'ובלכדמה':
+        forms.append(base[1:])
+    if len(base) > 2 and base[-1] in 'אה':
+        forms.append(base[:-1])
+        if base[0] in 'ובלכדמה' and len(base) > 3:
+            forms.append(base[1:-1])
+    own = conn is None
+    if own:
+        conn = get_connection()
+    row = None
+    try:
+        for f in forms:
+            row = conn.execute(
+                "SELECT dri.root, e.lemma, e.gloss_en FROM dict_root_index dri "
+                "JOIN dict_root_entries dre ON dre.root = dri.root "
+                "JOIN dict_entries e ON e.id = dre.entry_id "
+                "WHERE dri.word = ? ORDER BY dre.tier LIMIT 1", (f,)).fetchone()
+            if row:
+                break
+    except Exception:
+        row = None
+    gloss = ''
+    if row:
+        # Prefer a clean distilled Hebrew meaning (tal_word_gloss) over the noisy
+        # OCR gloss_en, which often holds citation fragments rather than a sense.
+        try:
+            g = conn.execute("SELECT gloss FROM tal_word_gloss WHERE word = ? LIMIT 1",
+                             (base,)).fetchone()
+            if g and (g['gloss'] or '').strip():
+                gloss = g['gloss'].strip()
+        except Exception:
+            pass
+    if own:
+        conn.close()
+    if not row:
+        return None
+    return {'root': row['root'] or '', 'lemma': row['lemma'] or '', 'gloss': gloss}
+
+
+def get_word_table(verse_ids):
+    """Per-word table rows for the "מילון מילים" panel. For each Targum word of
+    the given verse(s): {word (Hebrew), meaning (Hebrew), aramaic, tal (concise
+    Tal gloss via index→root), arabic (word-aligned, where available)}."""
+    if not verse_ids:
+        return {}
+    conn = get_connection()
+    has_ar = any(r[1] == 'arabic' for r in conn.execute("PRAGMA table_info(verse_dictionary)"))
+    placeholders = ','.join('?' * len(verse_ids))
+    cols = 'id, verse_id, aramaic, hebrew' + (', arabic' if has_ar else '')
+    rows = conn.execute(
+        f'SELECT {cols} FROM verse_dictionary WHERE verse_id IN ({placeholders}) ORDER BY id',
+        verse_ids).fetchall()
+    out = {}
+    for r in rows:
+        heb = r['hebrew'] or ''
+        parts = [p.strip() for p in heb.split(',', 1)]
+        word = parts[0]
+        meaning = parts[1] if len(parts) > 1 else ''
+        tc = tal_concise(r['aramaic'], conn)
+        tal = ''
+        if tc:
+            tal = tc['root'] + (' · ' + tc['gloss'] if tc['gloss'] else '')
+        out.setdefault(r['verse_id'], []).append({
+            'word': word, 'meaning': meaning, 'aramaic': r['aramaic'] or '',
+            'tal': tal, 'arabic': (r['arabic'] if has_ar else '') or '',
+        })
+    conn.close()
+    return out
+
+
 _TM_HE_LETTER = {'I': 'א', 'II': 'ב', 'III': 'ג', 'IV': 'ד', 'V': 'ה', 'VI': 'ו'}
 
 
@@ -317,6 +399,31 @@ def get_eyalk_commentary(verse_ids):
     ).fetchall()
     conn.close()
     return [{'parsha': r['parsha'] or '', 'text': r['text'] or ''} for r in rows]
+
+
+def get_tzdaka_commentary(verse_ids):
+    """פירוש צדקה אל-חכים (Ṣadaqah al-Ḥakīm on Genesis) relevant to any of the
+    given verses, in reading order. Each item is {ref, title, text}. A section
+    linked to several of the verses appears once. Returns [] when nothing is
+    relevant (panel then stays empty)."""
+    if not verse_ids:
+        return []
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT DISTINCT s.id, s.ref, s.title, s.ord, s.text
+                FROM tzdaka_sections s
+                JOIN tzdaka_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders})
+                ORDER BY s.ord""",
+            verse_ids
+        ).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    return [{'ref': r['ref'] or '', 'title': r['title'] or '', 'text': r['text'] or ''}
+            for r in rows]
 
 
 # ── plain-search wildcards ─────────────────────────────────────────────────────
@@ -801,8 +908,31 @@ def lookup_tal_dictionary(word, limit=6):
         return []
     sk = _tal_skel(word)
     entries = _tal_entries()
+    byid = {e['id']: e for e in entries}
+    hits = []
 
-    hits = [e for e in entries if e['_bare'] == bare]
+    # (1) Authoritative root index (Tal's own index): word -> root -> entry.
+    # This is the primary path; it resolves an inflected Aramaic word to its
+    # root and returns that root's dictionary entry. Falls through silently if
+    # the index tables are absent or the word is not indexed.
+    try:
+        conn = get_connection()
+        ids = [r['entry_id'] for r in conn.execute(
+            "SELECT dre.entry_id FROM dict_root_index dri "
+            "JOIN dict_root_entries dre ON dre.root = dri.root "
+            "WHERE dri.word = ? ORDER BY dre.tier", (bare,))]
+        conn.close()
+        seen = set()
+        for i in ids:
+            if i in byid and i not in seen:
+                seen.add(i); hits.append(byid[i])
+    except Exception:
+        pass
+
+    # (2) Fallbacks for words not in the index: exact lemma, then the word
+    # appearing inside a citation quote, then a consonant-skeleton match.
+    if not hits:
+        hits = [e for e in entries if e['_bare'] == bare]
     if not hits:
         conn = get_connection()
         ids = [r['id'] for r in conn.execute(
@@ -810,7 +940,6 @@ def lookup_tal_dictionary(word, limit=6):
             "JOIN dict_forms f ON f.id = ci.form_id "
             "WHERE ci.quote LIKE ? LIMIT 30", (f'%{bare}%',))]
         conn.close()
-        byid = {e['id']: e for e in entries}
         hits = [byid[i] for i in ids if i in byid]
     if not hits and len(sk) >= 2:
         hits = [e for e in entries if e['_skel'] == sk]

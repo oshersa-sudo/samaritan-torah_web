@@ -137,9 +137,27 @@ body{
 .tal-inline b{ color:var(--navy); font-weight:700; }
 .tal-inline .pos{ color:var(--muted); font-size:12px; }
 .tal-inline .sep{ color:var(--muted); }
-.dict-scroll{ max-height:260px; overflow-y:auto; }
+.dict-scroll{ max-height:340px; overflow-y:auto; overflow-x:auto; }
 .dict-online{ color:var(--dark); font-size:15px; padding:2px 12px 6px; }
 .dict-online .src{ color:var(--accent); font-weight:700; font-size:12px; }
+
+/* word table: מילה · תרגום ארמי · פירוש עברי · מילון טל · ערבית */
+.wtbl{ width:100%; border-collapse:collapse; direction:rtl; font-size:15px; }
+.wtbl th{ position:sticky; top:0; background:var(--navy); color:#fff; font-weight:700;
+          font-size:13px; padding:6px 7px; text-align:right; white-space:nowrap; z-index:1; }
+.wtbl td{ padding:6px 7px; text-align:right; border-bottom:1px solid rgba(26,56,115,.12);
+          vertical-align:top; }
+.wtbl tr:nth-child(even) td{ background:rgba(26,56,115,.035); }
+.wtbl tr.tappable{ cursor:pointer; }
+.wtbl tr.tappable:hover td{ background:rgba(115,84,56,.10); }
+.wtbl .wt-word{ font-weight:700; color:var(--navy); white-space:nowrap; }
+.wtbl .wt-aram{ color:var(--accent); font-weight:700; white-space:nowrap; }
+.wtbl .wt-mean{ color:var(--dark); }
+.wtbl .wt-tal{ color:#4d4d80; font-size:13.5px; }
+.wtbl .wt-ar{ font-family:'Arabic',serif; font-size:17px; color:var(--dark); direction:rtl; }
+.online-block{ margin-top:8px; border-top:1px solid rgba(26,56,115,.18); padding-top:6px; }
+.online-block .online-item{ color:var(--dark); font-size:14.5px; padding:3px 2px; }
+.online-block .src{ color:var(--accent); font-weight:700; font-size:12px; }
 
 /* spread + navbar */
 .wide-btn{ flex:0 0 auto; margin:2px 6px; padding:13px; border:0; border-radius:6px;

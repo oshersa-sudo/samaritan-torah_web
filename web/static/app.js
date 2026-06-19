@@ -416,11 +416,13 @@ async function buildSamSrc(c, verses){
     const loading=el('div','note','בודק מקורות זמינים…'); panel.appendChild(loading);
     c.appendChild(panel);
     // only show a source that actually has content on the current verse(s)
-    const [tm, ey] = await Promise.all([api('tibat_marqe?verse_ids='+ids), api('eyalk?verse_ids='+ids)]);
+    const [tm, ey, tz] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
+      api('eyalk?verse_ids='+ids), api('tzdaka?verse_ids='+ids)]);
     loading.remove();
     const avail=[];
     if(tm.length) avail.push(['תיבת מרקה','tm']);
     if(ey.length) avail.push(['מן המסורת השומרונית','eyalk']);
+    if(tz.length) avail.push(['פירוש צדקה אל-חכים','tzdaka']);
     if(!avail.length){ panel.appendChild(el('div','note','אין מקור שומרוני זמין לפסוקים אלה')); return; }
     for(const [label,ch] of avail){
       const b=el('button','picker-btn',label); b.onclick=()=>{ S.samSrcChoice=ch; S.tmSel=null; paintVerses(); };
@@ -439,6 +441,23 @@ async function buildSamSrc(c, verses){
     for(const it of items){
       const card=el('div','card');
       if(it.parsha) card.appendChild(el('div','chead',esc(it.parsha)));
+      const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      panel.appendChild(card);
+    }
+    c.appendChild(panel); return;
+  }
+  if(S.samSrcChoice==='tzdaka'){
+    const items = await api('tzdaka?verse_ids='+ids);
+    const panel=el('div','srcpanel');
+    const head=el('div','shead');
+    const back=el('button','miniback','‹ מקורות'); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle','פירוש צדקה אל-חכים'));
+    panel.appendChild(head);
+    if(!items.length) panel.appendChild(el('div','note','אין פרשנות רלוונטית לפסוקים אלה'));
+    for(const it of items){
+      const card=el('div','card');
+      const lbl=[it.ref, it.title].filter(Boolean).join('  ·  ');
+      if(lbl) card.appendChild(el('div','chead',esc(lbl)));
       const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
       panel.appendChild(card);
     }
@@ -482,9 +501,9 @@ async function buildDict(c, verses){ await renderDict(c, verses); }
 function maybeDict(c, verses){ if(S.dict) renderDict(c, verses); }
 async function renderDict(c, verses){
   const ids = verses.map(v=>v.id).join(',');
-  const map = await api('dictionary?verse_ids='+ids);
+  const map = await api('word_table?verse_ids='+ids);
   const panel=el('div','dictpanel');
-  panel.appendChild(el('div','dhint-strong','לחץ על המילה לקבל פירוש מילוני'));
+  panel.appendChild(el('div','dhint-strong','מילון מילים — הקש על שורה לערך המלא במילון א. טל'));
 
   // online Hebrew-Hebrew dictionary toggle (Wiktionary + Wikipedia, free)
   const orow=el('div','online-row');
@@ -493,38 +512,45 @@ async function renderDict(c, verses){
   cb.onchange=()=>{ S.onlineDict=cb.checked; paintVerses(); };
   lbl.prepend(cb); orow.appendChild(lbl); panel.appendChild(orow);
 
-  const aramMode = (S.panel==='aramaic');
-  const scroll=el('div','dict-scroll'); let n=0;
-  const pending=[];                       // [hebWord, resultBoxEl]
-  for(const v of verses){
-    for(const [aram,heb] of (map[v.id]||[])){
-      let txt;
-      if(aramMode) txt = `${aram}  ›  ${heb}`;
-      else { if(heb===aram) continue; txt = `${heb} —— ${aram} —— ${heb}`; }
-      const wrap=el('div','dict-item');
-      const w=el('div','dictword',esc(txt)); w.onclick=()=>showTal(aram);
-      wrap.appendChild(w);
-      if(S.onlineDict){
-        const rb=el('div','dict-online','טוען מהמילון…'); wrap.appendChild(rb);
-        pending.push([heb, rb]);
-      }
-      scroll.appendChild(wrap); n++;
-    }
+  const rows=[];
+  for(const v of verses) for(const w of (map[v.id]||[])) rows.push(w);
+  if(!rows.length){ panel.appendChild(el('div','note','אין מילון זמין לפסוק זה')); c.appendChild(panel); return; }
+
+  const scroll=el('div','dict-scroll');
+  const tbl=el('table','wtbl');
+  const hr=el('tr');
+  for(const h of ['מילה','תרגום ארמי','פירוש עברי','מילון טל','ערבית']) hr.appendChild(el('th',null,esc(h)));
+  tbl.appendChild(hr);
+  for(const w of rows){
+    const tr=el('tr');
+    tr.appendChild(el('td','wt-word',esc(w.word||'—')));
+    tr.appendChild(el('td','wt-aram',esc(w.aramaic||'—')));
+    tr.appendChild(el('td','wt-mean',esc(w.meaning||'—')));
+    tr.appendChild(el('td','wt-tal',esc(w.tal||'—')));
+    tr.appendChild(el('td','wt-ar',esc(w.arabic||'—')));
+    if(w.aramaic){ tr.classList.add('tappable'); tr.onclick=()=>showTal(w.aramaic); }
+    tbl.appendChild(tr);
   }
-  if(!n) scroll.appendChild(el('div','note','אין מילון זמין לפרק זה'));
+  scroll.appendChild(tbl);
   panel.appendChild(scroll);
   c.appendChild(panel);
 
-  if(S.onlineDict && pending.length){
-    const uniq=[...new Set(pending.map(p=>p[0]))];
+  // optional online Hebrew dictionary, shown as a separate block below the table
+  if(S.onlineDict){
+    const uniq=[...new Set(rows.map(w=>w.word).filter(Boolean))];
+    const ob=el('div','online-block'); ob.appendChild(el('div','note','טוען ממילוני רשת…'));
+    panel.appendChild(ob);
     api('online_dict?words='+encodeURIComponent(uniq.join(','))).then(res=>{
-      for(const [heb,rb] of pending){
-        const r=res[heb];
-        if(!r){ rb.textContent='לא נמצאו תוצאות ברשת'; rb.style.color='#73738c'; continue; }
+      ob.innerHTML='';
+      for(const wd of uniq){
+        const r=res[wd]; if(!r) continue;
         const credit=(r.sources||[]).map(s=>`${s[0]} (${s[1]})`).join('  ·  ');
-        rb.innerHTML=`<div class="src">מקורות: ${esc(credit)}</div>${esc(r.summary)}`;
+        const it=el('div','online-item',`<b>${esc(wd)}</b> — ${esc(r.summary)}`);
+        if(credit) it.appendChild(el('div','src','מקורות: '+esc(credit)));
+        ob.appendChild(it);
       }
-    }).catch(()=>{ for(const [,rb] of pending) rb.textContent='שגיאה בטעינה מהרשת'; });
+      if(!ob.children.length) ob.appendChild(el('div','note','לא נמצאו תוצאות ברשת'));
+    }).catch(()=>{ ob.innerHTML=''; ob.appendChild(el('div','note','שגיאה בטעינה מהרשת')); });
   }
 }
 // Tap a dictionary word → a popup window with its full entry/entries from Tal's

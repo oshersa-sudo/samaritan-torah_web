@@ -234,6 +234,12 @@ def api_dictionary():
     return jsonify({str(k): v for k, v in m.items()})
 
 
+@app.route('/api/word_table')
+def api_word_table():
+    m = db.get_word_table(_ids_arg())
+    return jsonify({str(k): v for k, v in m.items()})
+
+
 @app.route('/api/tibat_marqe')
 def api_tibat_marqe():
     return jsonify(db.get_tibat_marqe(_ids_arg()))
@@ -242,6 +248,11 @@ def api_tibat_marqe():
 @app.route('/api/eyalk')
 def api_eyalk():
     return jsonify(db.get_eyalk_commentary(_ids_arg()))
+
+
+@app.route('/api/tzdaka')
+def api_tzdaka():
+    return jsonify(db.get_tzdaka_commentary(_ids_arg()))
 
 
 @app.route('/api/tal')

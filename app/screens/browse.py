@@ -22,7 +22,8 @@ from app.services.database import (get_books, get_portions, get_chapters, get_ve
 from app.services.rtl import rtl, rtl_lines, arabic
 from app.widgets import HoverButton, RoundedHoverButton, IconHoverButton
 from app.services.interpreter import get_chapter_interpretations
-from app.services.database import get_verse_dictionary, get_tibat_marqe, get_eyalk_commentary
+from app.services.database import (get_verse_dictionary, get_tibat_marqe,
+                                   get_eyalk_commentary, get_tzdaka_commentary)
 
 _ICONS = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'icons')
 
@@ -924,23 +925,71 @@ class BrowseScreen(Screen):
             return self._build_tm_container(verses, fsize)
         if self._sam_src_choice == 'eyalk':
             return self._build_eyalk_container(verses, fsize)
+        if self._sam_src_choice == 'tzdaka':
+            return self._build_tzdaka_container(verses, fsize)
         return self._build_src_picker(verses, fsize)
 
     def _build_src_picker(self, verses, fsize):
-        """The source-selection panel: two buttons choosing the source."""
+        """The source-selection panel: a button per source that actually has
+        content on the current verse(s)."""
         panel = self._src_panel_frame()
         title = Label(text=rtl('ממקור שומרון — בחר מקור'), font_name=FONT, font_size=sp(18),
                       bold=True, color=C_NAVY, size_hint_y=None, height=dp(34),
                       halign='center', valign='middle')
         title.bind(size=lambda i, s: setattr(i, 'text_size', s))
         panel.add_widget(title)
-        for label, choice in ((rtl('תיבת מרקה'), 'tm'),
-                              (rtl('מן המסורת השומרונית'), 'eyalk')):
+        vids = [v['id'] for v in verses]
+        avail = []
+        if get_tibat_marqe(vids):
+            avail.append((rtl('תיבת מרקה'), 'tm'))
+        if get_eyalk_commentary(vids):
+            avail.append((rtl('מן המסורת השומרונית'), 'eyalk'))
+        if get_tzdaka_commentary(vids):
+            avail.append((rtl('פירוש צדקה אל-חכים'), 'tzdaka'))
+        if not avail:
+            msg = Label(text=rtl('אין מקור שומרוני זמין לפסוקים אלה'),
+                        font_name=FONT, font_size=sp(15), color=C_MUTED,
+                        size_hint_y=None, height=dp(46), halign='center', valign='middle')
+            msg.bind(size=lambda i, s: setattr(i, 'text_size', s))
+            panel.add_widget(msg)
+            return panel
+        for label, choice in avail:
             btn = HoverButton(text=label, font_name=FONT, font_size=sp(16),
                               background_color=C_NAVY, background_normal='', color=C_WHITE,
                               size_hint_y=None, height=dp(48))
             btn.bind(on_press=lambda _b, c=choice: self._select_sam_source(c))
             panel.add_widget(btn)
+        return panel
+
+    def _build_tzdaka_container(self, verses, fsize):
+        """פירוש צדקה אל-חכים — the commentary section(s) linked to the current
+        verse(s), each tagged with its reference and topic."""
+        items = get_tzdaka_commentary([v['id'] for v in verses])
+        panel = self._src_panel_frame()
+
+        header = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(6))
+        back = HoverButton(text=rtl('‹ מקורות'), font_name=FONT, font_size=sp(13),
+                           background_color=C_ACCENT, background_normal='', color=C_WHITE,
+                           size_hint_x=None, width=dp(110))
+        back.bind(on_press=lambda *_: self._select_sam_source(None))
+        title = Label(text=rtl('פירוש צדקה אל-חכים'), font_name=FONT, font_size=sp(17),
+                      bold=True, color=C_NAVY, halign='center', valign='middle')
+        title.bind(size=lambda i, s: setattr(i, 'text_size', s))
+        header.add_widget(back)
+        header.add_widget(title)
+        panel.add_widget(header)
+
+        if not items:
+            msg = Label(text=rtl('אין פרשנות רלוונטית לפסוקים אלה'),
+                        font_name=FONT, font_size=sp(15), color=C_MUTED,
+                        size_hint_y=None, height=dp(46), halign='center', valign='middle')
+            msg.bind(size=lambda i, s: setattr(i, 'text_size', s))
+            panel.add_widget(msg)
+            return panel
+
+        for it in items:
+            label = '  ·  '.join(p for p in (it['ref'], it['title']) if p)
+            panel.add_widget(self._eyalk_card({'parsha': label, 'text': it['text']}, fsize))
         return panel
 
     def _build_eyalk_container(self, verses, fsize):
