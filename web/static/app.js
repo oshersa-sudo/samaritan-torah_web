@@ -49,7 +49,7 @@ const S = {
 
 const COMMENTATORS = [['rashi','רש"י'],['ramban','רמב"ן'],['cassuto','קאסוטו'],
                       ['baal_haturim','בעל הטורים']];
-const PANEL_MODES = ['compare','interpret','aramaic','arabic','commentary','samaritan_src'];
+const PANEL_MODES = ['compare','interpret','aramaic','arabic','commentary','samaritan_src','variants'];
 
 // ── Samaritan rendering (ports _add_word_dots + _sam_markup) ─────────────────
 function addWordDots(text){
@@ -269,6 +269,7 @@ function paintVerses(){
     addNumStrip(c, all);
     if(S.panel==='commentary'){ addPlainRows(c, verses); buildCommentary(c, verses); }
     else if(S.panel==='samaritan_src'){ addPlainRows(c, verses); buildSamSrc(c, verses); }
+    else if(S.panel==='variants'){ addPlainRows(c, verses); buildVariants(c, verses); }
     else if(S.panel==='interpret'){ buildInterpret(c, verses); maybeDict(c, verses); }
     else if(S.panel==='aramaic'){ buildAramaic(c, verses); maybeDict(c, verses); }
     else if(S.panel==='arabic'){ buildArabic(c, verses); maybeDict(c, verses); }
@@ -363,6 +364,36 @@ async function buildInterpret(c, verses){
     c.appendChild(row);
   }
   if(!any) c.appendChild(el('div','note','פירוש אינו זמין לפסוקים אלה'));
+}
+// ── חילופי נוסח (von Gall critical apparatus) ───────────────────────────────
+async function buildVariants(c, verses){
+  const items = await api('apparatus?verse_ids='+verses.map(v=>v.id).join(','));
+  const panel=el('div','srcpanel');
+  panel.appendChild(el('div','ptitle','חילופי נוסח — מהדורת פון גאל'));
+  if(!items.length){
+    panel.appendChild(el('div','note','אין חילופי נוסח לפסוקים אלה. (האפראט של פון גאל מתועד כרגע לבראשית פרק א׳ בלבד.)'));
+    c.appendChild(panel); return;
+  }
+  let curV=null;
+  for(const it of items){
+    if(it.verse!==curV){ curV=it.verse; panel.appendChild(el('div','app-vhead','פסוק '+esc(String(it.verse)))); }
+    const card=el('div','app-card');
+    const occ = it.occurrence?'<sup>'+esc(it.occurrence)+'</sup>':'';
+    const reg = it.register===2?' <span class="app-reg">כתיב/ניקוד</span>':'';
+    card.appendChild(el('div','app-lemma','<b>'+esc(it.lemma||'—')+'</b>'+occ+reg+'  <span class="app-mark">⟵ מצביע</span>'));
+    let rd;
+    if(it.type==='om') rd='חֲסֵרָה';
+    else if(it.type==='add') rd='נוסף: '+esc(it.reading);
+    else if(it.type==='transp') rd='היפוך סדר'+(it.reading?': '+esc(it.reading):'');
+    else if(it.type==='del') rd='מחיקת מגיה'+(it.reading?': '+esc(it.reading):'');
+    else rd=esc(it.reading||'—');
+    card.appendChild(el('div','app-read','<span class="app-type">'+esc(it.type_label)+'</span> '+rd));
+    if(it.witnesses && it.witnesses.length)
+      card.appendChild(el('div','app-wit','עדים: <span dir="ltr">'+esc(it.witnesses.join(', '))+'</span>'));
+    if(it.note) card.appendChild(el('div','app-note',esc(it.note)));
+    panel.appendChild(card);
+  }
+  c.appendChild(panel);
 }
 function buildAramaic(c, verses){
   const parts = verses.filter(v=>(v.sam_aramaic||'').trim())
@@ -662,6 +693,7 @@ function setView(){
 const BTN_BASE = {
   fontBtn:'#40406b', translateBtn:'#2a6e7a', dictBtn:'#405973', interpBtn:'#335959',
   compareBtn:'#593373', commentaryBtn:'#4d4d80', samSrcBtn:'#735438',
+  variantsBtn:'#7a3550',
 };
 function syncToolbar(isVerse){
   $('shareBtn').classList.toggle('hidden', !isVerse);
@@ -679,6 +711,7 @@ function syncToolbar(isVerse){
   setBtn('interpBtn',     isVerse, S.panel==='interpret');
   setBtn('compareBtn',    isVerse, S.panel==='compare');
   setBtn('commentaryBtn', isVerse, S.panel==='commentary');
+  setBtn('variantsBtn',   isVerse, S.panel==='variants');
   setBtn('samSrcBtn',     isVerse, S.panel==='samaritan_src');
   const transOn = S.english || S.panel==='aramaic' || S.panel==='arabic';
   setBtn('translateBtn',  isVerse, transOn);
@@ -743,6 +776,7 @@ $('interpBtn').onclick=()=>togglePanel('interpret');
 $('compareBtn').onclick=()=>togglePanel('compare');
 $('commentaryBtn').onclick=()=>togglePanel('commentary');
 $('samSrcBtn').onclick=()=>togglePanel('samaritan_src');
+$('variantsBtn').onclick=()=>togglePanel('variants');
 
 function goBack(){
   if(S.verseFilter!=null){ filterVerse(null); return; }

@@ -428,6 +428,46 @@ def get_tzdaka_commentary(verse_ids):
             for r in rows]
 
 
+_APP_TYPE = {'sub': 'חילוף', 'om': 'חיסור', 'add': 'תוספת', 'sic': 'sic!',
+             'transp': 'היפוך סדר', 'del': 'מחיקה', 'orth': 'כתיב/ניקוד'}
+
+
+def get_apparatus(verse_ids):
+    """von Gall textual-variant apparatus (חילופי נוסח) for the given verse(s).
+    Each item is a variant keyed to a word (lemma = its position marker) in the
+    verse: {verse, lemma, occurrence, reading, type, type_label, witnesses[],
+    register, confidence, note}. Ordered by verse, then apparatus register, then
+    position. Returns [] when nothing is relevant (panel then stays empty)."""
+    if not verse_ids:
+        return []
+    import json
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT a.*, v.number AS vnum FROM vongall_apparatus a
+                JOIN verses v ON v.id = a.verse_id
+                WHERE a.verse_id IN ({placeholders})
+                ORDER BY a.verse_id, a.register, a.sort_pos""",
+            verse_ids).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    out = []
+    for r in rows:
+        try:
+            wit = json.loads(r['witnesses'] or '[]')
+        except Exception:
+            wit = []
+        out.append({
+            'verse': r['vnum'], 'lemma': r['lemma'] or '', 'occurrence': r['occurrence'] or '',
+            'reading': r['reading'] or '', 'type': r['reading_type'] or '',
+            'type_label': _APP_TYPE.get(r['reading_type'], ''), 'witnesses': wit,
+            'register': r['register'], 'confidence': r['confidence'] or '', 'note': r['note'] or '',
+        })
+    return out
+
+
 # ── plain-search wildcards ─────────────────────────────────────────────────────
 # '?' = exactly one Hebrew letter; '*' = any run of letters (an unknown string).
 # A pattern of ONLY '?' matches a WHOLE word of that length ('????' = any 4-letter

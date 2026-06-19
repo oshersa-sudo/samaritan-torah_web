@@ -255,6 +255,11 @@ def api_tzdaka():
     return jsonify(db.get_tzdaka_commentary(_ids_arg()))
 
 
+@app.route('/api/apparatus')
+def api_apparatus():
+    return jsonify(db.get_apparatus(_ids_arg()))
+
+
 @app.route('/api/tal')
 def api_tal():
     word = request.args.get('word', '')
