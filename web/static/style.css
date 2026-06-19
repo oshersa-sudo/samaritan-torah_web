@@ -206,6 +206,9 @@ body{
 .flag input{ width:20px; height:20px; }
 .root-box-row input{ flex:1; padding:8px; border:1px solid var(--line); border-radius:6px; font-family:inherit; font-size:18px; }
 #searchStatus{ color:var(--accent); font-size:15px; padding:4px 2px; min-height:22px; }
+#searchStatus.searching{ font-size:22px; font-weight:800; color:var(--navy); text-align:center;
+                         padding:14px 2px; animation:blink 1s steps(2,start) infinite; }
+@keyframes blink{ 50%{ opacity:.2; } }
 #searchResults{ flex:1; overflow-y:auto; }
 .res-path{ display:block; width:100%; text-align:right; background:none; border:0; font-family:inherit;
            font-size:16.5px; padding:6px 2px; cursor:pointer; line-height:1.4; }

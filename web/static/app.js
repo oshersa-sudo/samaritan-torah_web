@@ -999,10 +999,14 @@ async function doSearch(){
   const rootLetters=$('rootBox').value.trim();
   const params=new URLSearchParams({q, exact:exact?'1':'0', root:rootFlag?'1':'0',
     aramaic:aram?'1':'0', root_letters:rootLetters, ignore_finals:ignoreFinals?'1':'0'});
+  // clear the previous results first, and show a prominent blinking "searching…"
+  $('searchResults').innerHTML='';
   $('searchStatus').textContent=t('searching');
+  $('searchStatus').classList.add('searching');
   const data = await api('search?'+params.toString());
   const root = data.root;
   const res=$('searchResults'); res.innerHTML='';
+  $('searchStatus').classList.remove('searching');
   const cnt = LANG==='en' ? `Found ${data.count} results` : LANG==='ar' ? `${data.count} نتيجة` : `נמצאו ${data.count} תוצאות`;
   $('searchStatus').textContent = cnt + (aram ? ' · '+t('flag_aram') : '');
   let curSub=null;
