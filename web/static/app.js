@@ -660,7 +660,7 @@ function setView(){
 // base colours of each mode button (matching the native app's palette);
 // disabled → grey, active → bright blue, otherwise its own colour.
 const BTN_BASE = {
-  fontBtn:'#40406b', translateBtn:'#6b4a2a', dictBtn:'#405973', interpBtn:'#335959',
+  fontBtn:'#40406b', translateBtn:'#2a6e7a', dictBtn:'#405973', interpBtn:'#335959',
   compareBtn:'#593373', commentaryBtn:'#4d4d80', samSrcBtn:'#735438',
 };
 function syncToolbar(isVerse){
@@ -697,6 +697,11 @@ function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=fa
 $('fontBtn').onclick=()=>{ const was=S.samFont; clearModes(); S.samFont=!was; syncToolbar(true); paintVerses(); };
 // "תרגומי התורה" — opens a small picker (ארמי / ערבי / אנגלי), marking the active one
 $('translateBtn').onclick=()=>{
+  // if a translation is already showing, this button turns it OFF → back to the text
+  if(S.english || S.panel==='aramaic' || S.panel==='arabic'){
+    clearModes(); syncToolbar(true); paintVerses(); return;
+  }
+  // otherwise open the picker (marking the active choice, if any)
   document.querySelectorAll('#transModal .trans-opt').forEach(b=>{
     const tr=b.dataset.tr;
     b.classList.toggle('sel', (tr==='english'&&S.english)||(!!tr&&S.panel===tr));
