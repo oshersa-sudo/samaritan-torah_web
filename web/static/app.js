@@ -21,6 +21,99 @@ const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g
 const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls)e.className=cls;
                                  if(html!=null)e.innerHTML=html; return e; };
 
+// ── i18n: interface translation (he / en / ar) ───────────────────────────────
+const I18N = {
+  he: {
+    app_title:'התורה השומרונית הישראלית', div_jewish:'חלוקה יהודית', div_sam:'חלוקה שומרונית',
+    spread:'פריסת פרקים', next_portion:'‹ פרשה הבאה', prev_portion:'פרשה קודמת ›',
+    share:'שתף', back:'‹ חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
+    font_sam:'כתב שומרוני', font_heb:'כתב עברי', interp:'פירוש הפסוק', commentary:'פרשנות יהודית',
+    compare:'השוואה לנ.מסורה', variants:'חילופי נוסח', samsrc:'ממקור שומרון', translate:'תרגומי התורה',
+    t_aramaic:'תרגום: ארמי', t_arabic:'תרגום: ערבי', t_english:'תרגום: אנגלית',
+    search_ph:'חפש מילה', adv_search:'⚙ חיפוש מתקדם', search_help_btn:'❔ עזרה לחיפוש',
+    flag_exact:'חיפוש מדויק', flag_meanings:'הצג פירוש המילים', flag_root:'לפי שורש המילה',
+    flag_finals:'התעלם מסופיות', flag_aram:'חפש בתרגום הארמי', root_label:'שורש לחיפוש:',
+    adv_hint:'או תוכל להשתמש ב-<b>?</b> או <b>*</b> כדי להחליף תו או מחרוזת תווים. לדוגמה: <b>א?ר</b> או <b>כא*</b>',
+    apply:'אישור', menu:'תפריט', m_calendar:'חשבן קשטה — לוח השנה השומרוני',
+    m_genealogy:'אילן היוחסין השומרוני המלא', m_install:'התקנת אפליקציה', m_lang:'שנה שפה',
+    m_whatsnew:'מה חדש?', m_help:'עזרה למשתמש', m_version:'גרסא נוכחית', m_contact:'צור קשר',
+    share_title:'שיתוף', email:'אימייל', close:'סגור',
+    to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
+    c_name:'שם מלא', c_email:'כתובת מייל', c_msg:'הודעה (עד 100 מילים)', c_send:'שלח', c_cancel:'ביטול',
+    lang_save_q:'האם ברצונך לשמור הגדרה זו?', lang_save_note:'הבחירה תישמר במכשיר זה לפעמים הבאות.',
+    save_yes:'כן, שמור', save_no:'לא, רק הפעם',
+    samsrc_pick:'ממקור שומרון — בחר מקור', checking_sources:'בודק מקורות זמינים…',
+    no_sam_source:'אין מקור שומרוני זמין לפסוקים אלה', back_sources:'‹ מקורות',
+    src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים',
+    variants_title:'חילופי נוסח — מהדורת פון גאל',
+    no_variants:'אין חילופי נוסח לפסוקים אלה. (האפראט של פון גאל מתועד כרגע לבראשית פרק א׳ בלבד.)',
+    dict_hint:'מילון מילים — הקש על שורה לערך המלא במילון א. טל', no_dict:'אין מילון זמין לפסוק זה',
+    col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'מילון טל', col_arabic:'ערבית',
+    searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
+    help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
+  },
+  en: {
+    app_title:'The Israelite Samaritan Torah', div_jewish:'Jewish division', div_sam:'Samaritan division',
+    spread:'All chapters', next_portion:'Next portion ›', prev_portion:'‹ Previous portion',
+    share:'Share', back:'‹ Back', browse:'Browse', search:'Search', dict:'Word dictionary',
+    font_sam:'Samaritan script', font_heb:'Hebrew script', interp:'Verse commentary', commentary:'Jewish commentary',
+    compare:'Compare to Masorah', variants:'Textual variants', samsrc:'Samaritan sources', translate:'Torah translations',
+    t_aramaic:'Translation: Aramaic', t_arabic:'Translation: Arabic', t_english:'Translation: English',
+    search_ph:'Search a word', adv_search:'⚙ Advanced search', search_help_btn:'❔ Search help',
+    flag_exact:'Exact match', flag_meanings:'Show word meanings', flag_root:'By word root',
+    flag_finals:'Ignore final letters', flag_aram:'Search the Aramaic', root_label:'Root to search:',
+    adv_hint:'You can use <b>?</b> or <b>*</b> to replace a letter or a string. E.g. <b>א?ר</b> or <b>כא*</b>',
+    apply:'Apply', menu:'Menu', m_calendar:'Samaritan calendar (Ḥešbon Qašta)',
+    m_genealogy:'Full Samaritan genealogy', m_install:'Install app', m_lang:'Change language',
+    m_whatsnew:"What's new?", m_help:'Help', m_version:'Current version', m_contact:'Contact us',
+    share_title:'Share', email:'Email', close:'Close',
+    to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
+    c_name:'Full name', c_email:'Email address', c_msg:'Message (up to 100 words)', c_send:'Send', c_cancel:'Cancel',
+    lang_save_q:'Save this language preference?', lang_save_note:'It will be saved on this device for next time.',
+    save_yes:'Yes, save', save_no:'No, just now',
+    samsrc_pick:'Samaritan sources — choose a source', checking_sources:'Checking available sources…',
+    no_sam_source:'No Samaritan source for these verses', back_sources:'‹ Sources',
+    src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary",
+    variants_title:'Textual variants — von Gall edition',
+    no_variants:"No textual variants for these verses. (Von Gall's apparatus is currently digitised for Genesis 1 only.)",
+    dict_hint:"Word dictionary — tap a row for the full entry in A. Tal's dictionary", no_dict:'No dictionary for this verse',
+    col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Tal dictionary', col_arabic:'Arabic',
+    searching:'Searching…', no_interp:'No commentary for these verses',
+    help_title:'Help', search_help_title:'Search help', install_title:'Install app',
+  },
+  ar: {
+    app_title:'التوراة السامرية الإسرائيلية', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
+    spread:'كل الأصحاحات', next_portion:'المقطع التالي ›', prev_portion:'‹ المقطع السابق',
+    share:'مشاركة', back:'‹ رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
+    font_sam:'الخط السامري', font_heb:'الخط العبري', interp:'تفسير الآية', commentary:'تفسير يهودي',
+    compare:'مقارنة بالنصّ الماسوري', variants:'اختلافات النصّ', samsrc:'مصادر سامرية', translate:'ترجمات التوراة',
+    t_aramaic:'ترجمة: آرامية', t_arabic:'ترجمة: عربية', t_english:'ترجمة: إنجليزية',
+    search_ph:'ابحث عن كلمة', adv_search:'⚙ بحث متقدم', search_help_btn:'❔ مساعدة البحث',
+    flag_exact:'تطابق تامّ', flag_meanings:'إظهار معاني الكلمات', flag_root:'حسب جذر الكلمة',
+    flag_finals:'تجاهل الحروف النهائية', flag_aram:'البحث في الترجمة الآرامية', root_label:'الجذر للبحث:',
+    adv_hint:'يمكنك استخدام <b>?</b> أو <b>*</b> لاستبدال حرف أو سلسلة أحرف. مثال: <b>א?ר</b> أو <b>כא*</b>',
+    apply:'تأكيد', menu:'القائمة', m_calendar:'التقويم السامري (حسبان قشطة)',
+    m_genealogy:'شجرة الأنساب السامرية الكاملة', m_install:'تثبيت التطبيق', m_lang:'تغيير اللغة',
+    m_whatsnew:'ما الجديد؟', m_help:'مساعدة المستخدم', m_version:'الإصدار الحالي', m_contact:'اتصل بنا',
+    share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق',
+    to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
+    c_name:'الاسم الكامل', c_email:'البريد الإلكتروني', c_msg:'رسالة (حتى 100 كلمة)', c_send:'إرسال', c_cancel:'إلغاء',
+    lang_save_q:'هل تريد حفظ هذا الإعداد؟', lang_save_note:'سيُحفظ على هذا الجهاز للمرّات القادمة.',
+    save_yes:'نعم، احفظ', save_no:'لا، هذه المرّة فقط',
+    samsrc_pick:'مصادر سامرية — اختر مصدراً', checking_sources:'جارٍ التحقق من المصادر…',
+    no_sam_source:'لا يوجد مصدر سامري لهذه الآيات', back_sources:'‹ المصادر',
+    src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم',
+    variants_title:'اختلافات النصّ — طبعة فون غال',
+    no_variants:'لا توجد اختلافات نصّية لهذه الآيات. (جهاز فون غال موثّق حالياً للإصحاح الأول من سفر التكوين فقط.)',
+    dict_hint:'معجم الكلمات — اضغط على صفّ لعرض المدخل الكامل في معجم أ. طال', no_dict:'لا يوجد معجم لهذه الآية',
+    col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'معجم طال', col_arabic:'العربية',
+    searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
+    help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
+  },
+};
+let LANG = (localStorage.getItem('uiLang') && I18N[localStorage.getItem('uiLang')]) ? localStorage.getItem('uiLang') : 'he';
+const t = k => (I18N[LANG] && I18N[LANG][k] != null) ? I18N[LANG][k] : (I18N.he[k] != null ? I18N.he[k] : k);
+
 // Pin the app to the REAL visible height. On mobile the browser's collapsing
 // address bar changes window.innerHeight, which 100vh does not follow — leaving
 // the bottom toolbar hidden behind the browser bar. Re-measure on every change.
@@ -363,15 +456,15 @@ async function buildInterpret(c, verses){
     row.appendChild(t); row.appendChild(num);
     c.appendChild(row);
   }
-  if(!any) c.appendChild(el('div','note','פירוש אינו זמין לפסוקים אלה'));
+  if(!any) c.appendChild(el('div','note',t('no_interp')));
 }
 // ── חילופי נוסח (von Gall critical apparatus) ───────────────────────────────
 async function buildVariants(c, verses){
   const items = await api('apparatus?verse_ids='+verses.map(v=>v.id).join(','));
   const panel=el('div','srcpanel');
-  panel.appendChild(el('div','ptitle','חילופי נוסח — מהדורת פון גאל'));
+  panel.appendChild(el('div','ptitle',t('variants_title')));
   if(!items.length){
-    panel.appendChild(el('div','note','אין חילופי נוסח לפסוקים אלה. (האפראט של פון גאל מתועד כרגע לבראשית פרק א׳ בלבד.)'));
+    panel.appendChild(el('div','note',t('no_variants')));
     c.appendChild(panel); return;
   }
   let curV=null;
@@ -463,18 +556,18 @@ async function buildSamSrc(c, verses){
   const ids = verses.map(v=>v.id).join(',');
   if(S.samSrcChoice===null){
     const panel=el('div','srcpanel');
-    panel.appendChild(el('div','ptitle','ממקור שומרון — בחר מקור'));
-    const loading=el('div','note','בודק מקורות זמינים…'); panel.appendChild(loading);
+    panel.appendChild(el('div','ptitle',t('samsrc_pick')));
+    const loading=el('div','note',t('checking_sources')); panel.appendChild(loading);
     c.appendChild(panel);
     // only show a source that actually has content on the current verse(s)
     const [tm, ey, tz] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
       api('eyalk?verse_ids='+ids), api('tzdaka?verse_ids='+ids)]);
     loading.remove();
     const avail=[];
-    if(tm.length) avail.push(['תיבת מרקה','tm']);
-    if(ey.length) avail.push(['מן המסורת השומרונית','eyalk']);
-    if(tz.length) avail.push(['פירוש צדקה אל-חכים','tzdaka']);
-    if(!avail.length){ panel.appendChild(el('div','note','אין מקור שומרוני זמין לפסוקים אלה')); return; }
+    if(tm.length) avail.push([t('src_tibat'),'tm']);
+    if(ey.length) avail.push([t('src_eyalk'),'eyalk']);
+    if(tz.length) avail.push([t('src_tzdaka'),'tzdaka']);
+    if(!avail.length){ panel.appendChild(el('div','note',t('no_sam_source'))); return; }
     for(const [label,ch] of avail){
       const b=el('button','picker-btn',label); b.onclick=()=>{ S.samSrcChoice=ch; S.tmSel=null; paintVerses(); };
       panel.appendChild(b);
@@ -485,8 +578,8 @@ async function buildSamSrc(c, verses){
     const items = await api('eyalk?verse_ids='+ids);
     const panel=el('div','srcpanel');
     const head=el('div','shead');
-    const back=el('button','miniback','‹ מקורות'); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
-    head.appendChild(back); head.appendChild(el('div','stitle','מן המסורת השומרונית'));
+    const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle',t('src_eyalk')));
     panel.appendChild(head);
     if(!items.length) panel.appendChild(el('div','note','אין פרשנות רלוונטית לפסוקים אלה'));
     for(const it of items){
@@ -501,8 +594,8 @@ async function buildSamSrc(c, verses){
     const items = await api('tzdaka?verse_ids='+ids);
     const panel=el('div','srcpanel');
     const head=el('div','shead');
-    const back=el('button','miniback','‹ מקורות'); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
-    head.appendChild(back); head.appendChild(el('div','stitle','פירוש צדקה אל-חכים'));
+    const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle',t('src_tzdaka')));
     panel.appendChild(head);
     if(!items.length) panel.appendChild(el('div','note','אין פרשנות רלוונטית לפסוקים אלה'));
     for(const it of items){
@@ -518,8 +611,8 @@ async function buildSamSrc(c, verses){
   const items = await api('tibat_marqe?verse_ids='+ids);
   const panel=el('div','srcpanel');
   const head=el('div','shead');
-  const back=el('button','miniback','‹ מקורות'); back.onclick=()=>{ S.samSrcChoice=null; S.tmSel=null; paintVerses(); };
-  head.appendChild(back); head.appendChild(el('div','stitle','תיבת מרקה'));
+  const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; S.tmSel=null; paintVerses(); };
+  head.appendChild(back); head.appendChild(el('div','stitle',t('src_tibat')));
   panel.appendChild(head);
   if(!items.length){ panel.appendChild(el('div','note','אין קטע רלוונטי מתיבת מרקה לפסוקים אלה')); c.appendChild(panel); return; }
   const cur = items.find(it=> S.tmSel && it.book===S.tmSel[0] && it.section===S.tmSel[1]);
@@ -554,7 +647,7 @@ async function renderDict(c, verses){
   const ids = verses.map(v=>v.id).join(',');
   const map = await api('word_table?verse_ids='+ids);
   const panel=el('div','dictpanel');
-  panel.appendChild(el('div','dhint-strong','מילון מילים — הקש על שורה לערך המלא במילון א. טל'));
+  panel.appendChild(el('div','dhint-strong',t('dict_hint')));
 
   // online Hebrew-Hebrew dictionary toggle (Wiktionary + Wikipedia, free)
   const orow=el('div','online-row');
@@ -565,12 +658,12 @@ async function renderDict(c, verses){
 
   const rows=[];
   for(const v of verses) for(const w of (map[v.id]||[])) rows.push(w);
-  if(!rows.length){ panel.appendChild(el('div','note','אין מילון זמין לפסוק זה')); c.appendChild(panel); return; }
+  if(!rows.length){ panel.appendChild(el('div','note',t('no_dict'))); c.appendChild(panel); return; }
 
   const scroll=el('div','dict-scroll');
   const tbl=el('table','wtbl');
   const hr=el('tr');
-  for(const h of ['מילה','תרגום ארמי','פירוש עברי','מילון טל','ערבית']) hr.appendChild(el('th',null,esc(h)));
+  for(const h of [t('col_word'),t('col_aram'),t('col_heb'),t('col_tal'),t('col_arabic')]) hr.appendChild(el('th',null,esc(h)));
   tbl.appendChild(hr);
   for(const w of rows){
     const tr=el('tr');
@@ -706,7 +799,7 @@ function syncToolbar(isVerse){
   // simply enabled in verse view and highlighted when it is the active one.
   const sam=S.samFont;
   setBtn('fontBtn', isVerse, sam);
-  $('fontBtn').textContent = sam?'כתב עברי':'כתב שומרוני';
+  $('fontBtn').textContent = sam ? t('font_heb') : t('font_sam');
   setBtn('dictBtn',       isVerse, S.dict);
   setBtn('interpBtn',     isVerse, S.panel==='interpret');
   setBtn('compareBtn',    isVerse, S.panel==='compare');
@@ -715,9 +808,9 @@ function syncToolbar(isVerse){
   setBtn('samSrcBtn',     isVerse, S.panel==='samaritan_src');
   const transOn = S.english || S.panel==='aramaic' || S.panel==='arabic';
   setBtn('translateBtn',  isVerse, transOn);
-  $('translateBtn').textContent = S.english ? 'תרגום: אנגלית'
-    : S.panel==='aramaic' ? 'תרגום: ארמי'
-    : S.panel==='arabic'  ? 'תרגום: ערבי' : 'תרגומי התורה';
+  $('translateBtn').textContent = S.english ? t('t_english')
+    : S.panel==='aramaic' ? t('t_aramaic')
+    : S.panel==='arabic'  ? t('t_arabic') : t('translate');
 }
 
 // ── toolbar handlers ─────────────────────────────────────────────────────────
@@ -903,12 +996,12 @@ async function doSearch(){
   const rootLetters=$('rootBox').value.trim();
   const params=new URLSearchParams({q, exact:exact?'1':'0', root:rootFlag?'1':'0',
     aramaic:aram?'1':'0', root_letters:rootLetters, ignore_finals:ignoreFinals?'1':'0'});
-  $('searchStatus').textContent='מחפש…';
+  $('searchStatus').textContent=t('searching');
   const data = await api('search?'+params.toString());
   const root = data.root;
   const res=$('searchResults'); res.innerHTML='';
-  const note = data.root_requested_multi ? ' (חיפוש לפי שורש זמין למילה אחת בלבד)':'';
-  $('searchStatus').textContent = `נמצאו ${data.count} תוצאות${aram?' בתרגום הארמי':''}${note}`;
+  const cnt = LANG==='en' ? `Found ${data.count} results` : LANG==='ar' ? `${data.count} نتيجة` : `נמצאו ${data.count} תוצאות`;
+  $('searchStatus').textContent = cnt + (aram ? ' · '+t('flag_aram') : '');
   let curSub=null;
   const heWords=new Set();          // Hebrew words to look up in the online dictionary
   for(const r of data.rows){
@@ -1014,6 +1107,7 @@ function menuAction(a){
   if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
   else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
   else if(a==='install')   doInstall();
+  else if(a==='lang')      $('langModal').classList.remove('hidden');
   else if(a==='whatsnew')  showWhatsNew();
   else if(a==='help')      showHelp();
   else if(a==='version')   showInfo('גרסא נוכחית', `<div class="ver-num">גרסה ${esc(window.APP_VERSION||'1.0')}</div>`);
@@ -1026,34 +1120,41 @@ function menuAction(a){
 let deferredInstall = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; });
 window.addEventListener('appinstalled', () => { deferredInstall = null; });
+const INSTALL_TXT = {
+  he:{ not_done:'ההתקנה לא הושלמה. אפשר לנסות שוב מהתפריט בכל עת.', already:'האפליקציה כבר מותקנת ופועלת כאפליקציה. 🎉',
+       ios_h:'התקנה באייפון / אייפד', ios:['פתח את האתר ב-<b>Safari</b>.','הקש על כפתור <b>השיתוף</b> (ריבוע עם חץ כלפי מעלה) שבתחתית המסך.','בחר <b>"הוסף למסך הבית"</b> ואשר.'],
+       other_h:'התקנה במחשב / אנדרואיד', other:['ב-<b>Chrome / Edge</b>: לחץ על סמל ההתקנה <b>⊕</b> בשורת הכתובת, או תפריט הדפדפן (⋮) → <b>"התקנת האפליקציה"</b>.','אשר את ההתקנה.'],
+       name:'ייווצר קיצור בשם ' },
+  en:{ not_done:'Installation was not completed. You can try again from the menu anytime.', already:'The app is already installed and running. 🎉',
+       ios_h:'Install on iPhone / iPad', ios:['Open the site in <b>Safari</b>.','Tap the <b>Share</b> button (a square with an up arrow) at the bottom.','Choose <b>"Add to Home Screen"</b> and confirm.'],
+       other_h:'Install on desktop / Android', other:['In <b>Chrome / Edge</b>: click the install icon <b>⊕</b> in the address bar, or the browser menu (⋮) → <b>"Install app"</b>.','Confirm the installation.'],
+       name:'A shortcut will be created named ' },
+  ar:{ not_done:'لم يكتمل التثبيت. يمكنك المحاولة ثانيةً من القائمة في أيّ وقت.', already:'التطبيق مثبّت ويعمل بالفعل. 🎉',
+       ios_h:'التثبيت على آيفون / آيباد', ios:['افتح الموقع في <b>Safari</b>.','اضغط على زرّ <b>المشاركة</b> (مربّع بسهم للأعلى) في الأسفل.','اختر <b>«إضافة إلى الشاشة الرئيسية»</b> وأكّد.'],
+       other_h:'التثبيت على الحاسوب / أندرويد', other:['في <b>Chrome / Edge</b>: اضغط رمز التثبيت <b>⊕</b> في شريط العنوان، أو قائمة المتصفّح (⋮) ← <b>«تثبيت التطبيق»</b>.','أكّد التثبيت.'],
+       name:'سيُنشأ اختصار باسم ' },
+};
 async function doInstall(){
+  const L = INSTALL_TXT[LANG] || INSTALL_TXT.he;
   if(deferredInstall){
     deferredInstall.prompt();
     let outcome='dismissed';
     try{ ({outcome} = await deferredInstall.userChoice); }catch(e){}
     deferredInstall = null;
-    if(outcome!=='accepted')
-      showInfo('התקנת אפליקציה', '<div class="note">ההתקנה לא הושלמה. אפשר לנסות שוב מהתפריט בכל עת.</div>');
+    if(outcome!=='accepted') showInfo(t('install_title'), `<div class="note">${L.not_done}</div>`);
     return;
   }
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const nameNote = `<div class="note">${L.name}<b>"${esc(t('app_title'))}"</b>.</div>`;
   let h;
-  if(standalone){
-    h = '<div class="note">האפליקציה כבר מותקנת ופועלת כאפליקציה. 🎉</div>';
-  } else if(ios){
-    h = '<div class="help-h">התקנה באייפון / אייפד</div><ul class="help-list">'
-      + '<li>פתח את האתר ב-<b>Safari</b>.</li>'
-      + '<li>הקש על כפתור <b>השיתוף</b> (ריבוע עם חץ כלפי מעלה) שבתחתית המסך.</li>'
-      + '<li>בחר <b>"הוסף למסך הבית"</b> ואשר.</li></ul>'
-      + '<div class="note">ייווצר קיצור בשם <b>"התורה השומרונית הישראלית"</b> על מסך הבית.</div>';
-  } else {
-    h = '<div class="help-h">התקנה במחשב / אנדרואיד</div><ul class="help-list">'
-      + '<li>ב-<b>Chrome / Edge</b>: לחץ על סמל ההתקנה <b>⊕</b> בקצה שורת הכתובת, או על תפריט הדפדפן (⋮) ובחר <b>"התקנת האפליקציה"</b>.</li>'
-      + '<li>אשר את ההתקנה.</li></ul>'
-      + '<div class="note">ייווצר קיצור בשם <b>"התורה השומרונית הישראלית"</b> על מסך הבית / שולחן העבודה.</div>';
+  if(standalone) h = `<div class="note">${L.already}</div>`;
+  else {
+    const steps = ios ? L.ios : L.other, head = ios ? L.ios_h : L.other_h;
+    h = `<div class="help-h">${head}</div><ul class="help-list">`
+      + steps.map(x=>`<li>${x}</li>`).join('') + '</ul>' + nameNote;
   }
-  showInfo('התקנת אפליקציה', h);
+  showInfo(t('install_title'), h);
 }
 
 function showInfo(title, html){
@@ -1094,79 +1195,156 @@ async function openWordSources(word){
   $('infoBody').innerHTML = h || '<div class="note">לא נמצאו מיקומים נוספים למילה זו.</div>';
 }
 
-// concise, organised help for all of the app's options
-const HELP_SECTIONS = [
-  ['חלוקה', [
-    'בראש המסך — <b>חלוקה יהודית</b> / <b>חלוקה שומרונית</b>: מעבר בין שתי חלוקות הפרקים והפרשות.',
-  ]],
-  ['עיון', [
-    'בחר <b>ספר → פרשה → פרק</b>, ואז מוצגים הפסוקים. <b>פריסת פרקים</b> מאפשר קפיצה לכל פרק.',
-    'שורת הניווט: <b>פרק/פרשה הבא/קודם</b> ו-<b>+ / −</b> לגודל הטקסט. שורת-הפירורים למעלה מאפשרת לחזור אחורה.',
-    'הקש על <b>מספר פסוק</b> כדי לראות רק אותו; <b>נקה סינון</b> מבטל.',
-  ]],
-  ['מצבי תצוגה (הסרגל התחתון)', [
-    'כפתורי התצוגה הם <b>קבוצת בחירה-יחידה</b>: לחיצה על כפתור מכבה אוטומטית את הקודם.',
-    '<b>כתב שומרוני</b> — מציג בכתב העברי-השומרוני, מיושר לשני הצדדים.',
-    '<b>תרגומי התורה</b> — כפתור אחד הפותח בחירה: <b>תרגום ארמי</b> · <b>תרגום לערבית</b> · <b>תרגום לאנגלית</b>. לחיצה חוזרת על הכפתור חוזרת לטקסט.',
-    '<b>פירוש הפסוק</b> — פירוש רציף לפסוק, מוצג <b>במקום הטקסט</b>, השוזר מקורות: התרגום השומרוני, מילון טל, צדקה אל-חכים, מימר מרקה, המסורת השומרונית ומדרשים (כרגע לבראשית א׳–ו׳).',
-    '<b>השוואה לנ.מסורה</b> — נוסח שומרון מול נוסח המסורה, עם סימון ההבדלים באדום.',
-    '<b>חילופי נוסח</b> — חילופי הנוסח מהמהדורה הביקורתית של פון גאל, עם עדי-הנוסח (כתבי-היד) לכל מילה (כרגע לבראשית א׳).',
-    '<b>פרשנות יהודית</b> — רש"י, רמב"ן, קאסוטו, בעל הטורים, ופרשנים נוספים מאתר ספריא.',
-    '<b>ממקור שומרון</b> — בחירת מקור: <b>תיבת מרקה</b> · <b>מן המסורת השומרונית</b> · <b>פירוש צדקה אל-חכים</b> (מוצגים רק מקורות שיש להם תוכן לפסוק).',
-    '<b>מילון מילים</b> — טבלה לכל מילה בפסוק: המילה · התרגום הארמי · פירוש עברי · משמעות ממילון א. טל · התרגום הערבי. לחיצה על שורה פותחת את הערך המלא במילון.',
-    '<b>שתף</b> — שיתוף בוואטסאפ, אימייל או פייסבוק.',
-  ]],
-  ['חיפוש', [
-    'הקלד מילה ולחץ <b>חפש</b>. במסך החיפוש יש כפתור <b>❔ עזרה לחיפוש</b> המסביר בפירוט כל אפשרות, עם דוגמאות.',
-    '<b>תווים כלליים:</b> <b>?</b> = תו אחד · <b>*</b> = מחרוזת לא ידועה · <b>+</b> = כל המילים באותו פסוק. הם גוברים על דגלי החיפוש המתקדם.',
-    '<b>חיפוש מתקדם:</b> חיפוש מדויק · לפי שורש המילה · בתרגום הארמי · התעלם מסופיות · הצג פירוש המילים.',
-    'כל תוצאה מציגה את הנתיב ב<b>חלוקה יהודית</b> וב<b>שומרונית</b> (לחיצה מעבירה לפסוק), את הטקסט עם המילה מודגשת, ואת ההגייה.',
-  ]],
-  ['תפריט', [
-    '<b>התקנת אפליקציה</b> — יוצר קיצור "התורה השומרונית הישראלית" במכשיר הנייד או במחשב (PWA), לשימוש מהיר ונוח.',
-    'לוח השנה השומרוני (חשבן קשטה) · אילן היוחסין · מה חדש · עזרה למשתמש · גרסה נוכחית · צור קשר.',
-  ]],
-];
+// concise, organised help for all of the app's options (per language)
+const HELP = {
+  he: [
+    ['חלוקה', ['בראש המסך — <b>חלוקה יהודית</b> / <b>חלוקה שומרונית</b>: מעבר בין שתי חלוקות הפרקים והפרשות.']],
+    ['עיון', [
+      'בחר <b>ספר → פרשה → פרק</b>, ואז מוצגים הפסוקים. <b>פריסת פרקים</b> מאפשר קפיצה לכל פרק.',
+      'שורת הניווט: <b>פרק/פרשה הבא/קודם</b> ו-<b>+ / −</b> לגודל הטקסט.',
+      'הקש על <b>מספר פסוק</b> כדי לראות רק אותו; <b>נקה סינון</b> מבטל.']],
+    ['מצבי תצוגה (הסרגל התחתון)', [
+      'כפתורי התצוגה הם <b>קבוצת בחירה-יחידה</b>: לחיצה על כפתור מכבה אוטומטית את הקודם.',
+      '<b>כתב שומרוני</b> — מציג בכתב העברי-השומרוני.',
+      '<b>תרגומי התורה</b> — כפתור אחד הפותח בחירה: תרגום ארמי · ערבי · אנגלי. לחיצה חוזרת חוזרת לטקסט.',
+      '<b>פירוש הפסוק</b> — פירוש רציף, מוצג במקום הטקסט, השוזר מקורות (כרגע לבראשית א׳–ו׳).',
+      '<b>השוואה לנ.מסורה</b> — נוסח שומרון מול המסורה, עם סימון ההבדלים באדום.',
+      '<b>חילופי נוסח</b> — חילופי הנוסח ממהדורת פון גאל עם עדי-הנוסח (כרגע לבראשית א׳).',
+      '<b>פרשנות יהודית</b> — רש"י, רמב"ן, קאסוטו, בעל הטורים ועוד, מאתר ספריא.',
+      '<b>ממקור שומרון</b> — תיבת מרקה · מן המסורת השומרונית · פירוש צדקה אל-חכים.',
+      '<b>מילון מילים</b> — טבלה לכל מילה: המילה · ארמי · פירוש עברי · מילון א. טל · ערבית.',
+      '<b>שתף</b> — וואטסאפ, אימייל או פייסבוק.']],
+    ['חיפוש', [
+      'הקלד מילה ולחץ <b>חפש</b>. יש כפתור <b>❔ עזרה לחיפוש</b> עם מדריך מפורט.',
+      '<b>תווים כלליים:</b> <b>?</b> = תו אחד · <b>*</b> = מחרוזת · <b>+</b> = כל המילים באותו פסוק.',
+      '<b>חיפוש מתקדם:</b> מדויק · לפי שורש · בתרגום הארמי · התעלם מסופיות · הצג פירוש המילים.']],
+    ['תפריט', [
+      '<b>התקנת אפליקציה</b> · <b>שנה שפה</b> · לוח השנה השומרוני · אילן היוחסין · עזרה · גרסה · צור קשר.']],
+  ],
+  en: [
+    ['Division', ['At the top — <b>Jewish division</b> / <b>Samaritan division</b>: switch between the two chapter/portion divisions.']],
+    ['Browse', [
+      'Choose <b>book → portion → chapter</b> to show the verses. <b>All chapters</b> jumps to any chapter.',
+      'Navigation bar: <b>next / previous chapter & portion</b> and <b>+ / −</b> for text size.',
+      'Tap a <b>verse number</b> to see only it; <b>clear filter</b> resets.']],
+    ['Display modes (bottom bar)', [
+      'The display buttons are a <b>single-select group</b>: tapping one turns the previous off.',
+      '<b>Samaritan script</b> — shows the text in the Samaritan-Hebrew script.',
+      '<b>Torah translations</b> — one button opening a choice: Aramaic · Arabic · English. Tapping it again returns to the text.',
+      '<b>Verse commentary</b> — a continuous commentary shown in place of the text, weaving the sources (currently Genesis 1–6).',
+      '<b>Compare to Masorah</b> — Samaritan vs. Masoretic text, with the differences marked in red.',
+      '<b>Textual variants</b> — variants from von Gall’s edition with the manuscript witnesses (currently Genesis 1).',
+      '<b>Jewish commentary</b> — Rashi, Ramban, Cassuto, Baal ha-Turim and more, from Sefaria.',
+      '<b>Samaritan sources</b> — Tībåt Mårqe · the Samaritan tradition · Ṣadaqah al-Ḥakīm’s commentary.',
+      '<b>Word dictionary</b> — a table per word: word · Aramaic · Hebrew meaning · A. Tal’s dictionary · Arabic.',
+      '<b>Share</b> — WhatsApp, email or Facebook.']],
+    ['Search', [
+      'Type a word and tap <b>Search</b>. A <b>❔ Search help</b> button gives a detailed guide.',
+      '<b>Wildcards:</b> <b>?</b> = one letter · <b>*</b> = a string · <b>+</b> = all words in the same verse.',
+      '<b>Advanced search:</b> exact · by root · in the Aramaic · ignore final letters · show word meanings.']],
+    ['Menu', [
+      '<b>Install app</b> · <b>Change language</b> · Samaritan calendar · genealogy · help · version · contact.']],
+  ],
+  ar: [
+    ['التقسيم', ['في الأعلى — <b>التقسيم اليهودي</b> / <b>التقسيم السامري</b>: التبديل بين تقسيمَي الأصحاحات والمقاطع.']],
+    ['التصفّح', [
+      'اختر <b>سفر ← مقطع ← أصحاح</b> لعرض الآيات. <b>كل الأصحاحات</b> للانتقال إلى أيّ أصحاح.',
+      'شريط التنقّل: <b>الأصحاح/المقطع التالي والسابق</b> و<b>+ / −</b> لحجم النصّ.',
+      'اضغط على <b>رقم الآية</b> لعرضها وحدها؛ <b>مسح التصفية</b> يلغي ذلك.']],
+    ['أوضاع العرض (الشريط السفلي)', [
+      'أزرار العرض <b>مجموعة اختيار واحد</b>: الضغط على زرّ يُطفئ السابق تلقائياً.',
+      '<b>الخط السامري</b> — يعرض النصّ بالخطّ العبري-السامري.',
+      '<b>ترجمات التوراة</b> — زرّ واحد يفتح اختياراً: آرامية · عربية · إنجليزية. الضغط ثانيةً يعيد إلى النصّ.',
+      '<b>تفسير الآية</b> — تفسير متّصل يُعرض مكان النصّ ويجمع المصادر (حالياً التكوين ١–٦).',
+      '<b>مقارنة بالنصّ الماسوري</b> — النصّ السامري مقابل الماسوري مع تمييز الفروق بالأحمر.',
+      '<b>اختلافات النصّ</b> — اختلافات من طبعة فون غال مع شهود النصّ (حالياً التكوين ١).',
+      '<b>تفسير يهودي</b> — راشي، رمبان، كاسوتو، بعل هاطوريم وغيرهم من موقع سفاريا.',
+      '<b>مصادر سامرية</b> — تيبات مارقه · التقليد السامري · تفسير صدقة الحكيم.',
+      '<b>معجم الكلمات</b> — جدول لكلّ كلمة: الكلمة · الآرامية · المعنى العبري · معجم أ. طال · العربية.',
+      '<b>مشاركة</b> — واتساب، بريد إلكتروني أو فيسبوك.']],
+    ['البحث', [
+      'اكتب كلمة واضغط <b>بحث</b>. يوجد زرّ <b>❔ مساعدة البحث</b> بدليل مفصّل.',
+      '<b>أحرف عامة:</b> <b>?</b> = حرف واحد · <b>*</b> = سلسلة · <b>+</b> = كلّ الكلمات في الآية نفسها.',
+      '<b>بحث متقدم:</b> تطابق تامّ · حسب الجذر · في الآرامية · تجاهل النهائية · إظهار المعاني.']],
+    ['القائمة', [
+      '<b>تثبيت التطبيق</b> · <b>تغيير اللغة</b> · التقويم السامري · شجرة الأنساب · مساعدة · الإصدار · اتصل بنا.']],
+  ],
+};
 function showHelp(){
   let h = '';
-  for(const [title, items] of HELP_SECTIONS){
+  for(const [title, items] of (HELP[LANG] || HELP.he)){
     h += `<div class="help-h">${title}</div><ul class="help-list">`;
     for(const it of items) h += `<li>${it}</li>`;
     h += '</ul>';
   }
-  showInfo('עזרה למשתמש', h);
+  showInfo(t('help_title'), h);
 }
 
 // focused, accurate help for the search screen (every option + examples)
-const SEARCH_HELP = [
-  ['חיפוש בסיסי', [
-    'הקלד מילה (או חלק ממילה) ולחץ <b>חפש</b> או Enter. נמצאים כל הפסוקים שהמילה מופיעה בהם — גם כשהיא חלק ממילה ארוכה יותר. לדוגמה: <b>אלהים</b>, או <b>אלה</b> שתמצא גם אלהים, האלה וכו׳.',
-    'כל תוצאה מציגה: את מיקום הפסוק ב<b>חלוקה היהודית</b> וב<b>חלוקה השומרונית</b> (לחיצה על הנתיב קופצת לפסוק), את טקסט הפסוק כשהמילה <b>מודגשת</b>, ואת ההגייה השומרונית.',
-  ]],
-  ['תווים כלליים (להחלפת אותיות)', [
-    '<b>?</b> — מחליף <b>תו אחד</b> כלשהו. לדוגמה: <b>א?ר</b> מוצא אוֹר, אָמַר, עָבָר — כל מילה עם אות אחת בין א ל-ר.',
-    '<b>????</b> (רק סימני שאלה) — מוצא <b>מילים שלמות</b> באורך המדויק (כאן: בנות 4 אותיות).',
-    '<b>*</b> — מחליף <b>מחרוזת אותיות</b> לא ידועה (מאורך כלשהו). <b>כא*</b> = מילים המתחילות ב-כא · <b>*כא</b> = מסתיימות ב-כא · <b>*כא*</b> = מכילות כא.',
-    '<b>+</b> — <b>וגם</b>: כל המילים חייבות להופיע באותו פסוק, בכל סדר. לדוגמה: <b>אור+חשך</b> מוצא פסוקים שיש בהם גם אור וגם חשך.',
-    'הערה חשובה: כשמשתמשים ב-<b>?</b> / <b>*</b> / <b>+</b> , הם <b>גוברים</b> על דגלי החיפוש המתקדם — תמיד יבוצע חיפוש-תבנית, גם אם סומן "מדויק" או "לפי שורש".',
-  ]],
-  ['חיפוש מתקדם — מה כל דגל עושה', [
-    '<b>חיפוש מדויק</b> — מוצא רק את <b>המילה השלמה</b> כפי שהקלדת, ולא כחלק ממילה. לדוגמה: <b>אל</b> מדויק → רק המילה "אל", לא "אלהים" או "אלה".',
-    '<b>לפי שורש המילה</b> — מוצא את <b>כל הנטיות</b> של אותו שורש (מתוך אינדקס השורשים). לדוגמה: <b>ברא</b> → ברא, בורא, נברא, בראשית. אפשר לתקן את השורש בתיבת <b>שורש לחיפוש</b>. פעיל למילה אחת בלבד.',
-    '<b>חפש בתרגום הארמי</b> — מחפש בטקסט <b>התרגום הארמי השומרוני</b> במקום בטקסט העברי.',
-    '<b>התעלם מסופיות</b> — אינו מבחין בין אות סופית לרגילה (ך=כ, ם=מ, ן=נ, ף=פ, ץ=צ). לדוגמה: <b>הציף</b> ימצא גם "הציפ".',
-    '<b>הצג פירוש המילים</b> — מתחת לכל תוצאה מוצגת משמעות המילה שנמצאה: <b>תרגום ארמי</b>, פירוש מ<b>מילון א. טל</b>, ו<b>פירוש עברי</b>. לחיצה על המילה הארמית פותחת חלון עם <b>מיקומים נוספים</b> שלה.',
-    '<b>אישור</b> — סוגר את הפאנל ומריץ את החיפוש עם הדגלים שבחרת.',
-  ]],
-];
+const SEARCH_HELP = {
+  he: [
+    ['חיפוש בסיסי', [
+      'הקלד מילה (או חלק ממילה) ולחץ <b>חפש</b>. נמצאים כל הפסוקים שהמילה מופיעה בהם — גם כחלק ממילה. לדוגמה: <b>אלה</b> תמצא גם אלהים, האלה.',
+      'כל תוצאה מציגה את מיקום הפסוק ב<b>חלוקה היהודית</b> וב<b>שומרונית</b> (לחיצה קופצת לפסוק), את הטקסט עם המילה <b>מודגשת</b>, ואת ההגייה.']],
+    ['תווים כלליים', [
+      '<b>?</b> — תו אחד כלשהו. <b>א?ר</b> מוצא אור, אמר, עבר.',
+      '<b>????</b> (רק ?) — מילים שלמות באורך המדויק (כאן 4 אותיות).',
+      '<b>*</b> — מחרוזת לא ידועה. <b>כא*</b> = מתחיל בכא · <b>*כא</b> = מסתיים · <b>*כא*</b> = מכיל.',
+      '<b>+</b> — וגם: כל המילים באותו פסוק. <b>אור+חשך</b>.',
+      'הערה: <b>?</b> / <b>*</b> / <b>+</b> גוברים על דגלי החיפוש המתקדם ופועלים תמיד.']],
+    ['חיפוש מתקדם — מה כל דגל עושה', [
+      '<b>חיפוש מדויק</b> — רק המילה השלמה, לא כחלק ממילה. <b>אל</b> → רק "אל".',
+      '<b>לפי שורש המילה</b> — כל הנטיות של השורש. <b>ברא</b> → ברא, בורא, נברא. למילה אחת.',
+      '<b>חפש בתרגום הארמי</b> — מחפש בתרגום הארמי במקום בעברי.',
+      '<b>התעלם מסופיות</b> — ך=כ, ם=מ, ן=נ, ף=פ, ץ=צ. <b>הציף</b> = הציפ.',
+      '<b>הצג פירוש המילים</b> — מתחת לתוצאה: תרגום ארמי, מילון טל, ופירוש עברי.',
+      '<b>אישור</b> — מריץ את החיפוש עם הדגלים שבחרת.']],
+  ],
+  en: [
+    ['Basic search', [
+      'Type a word (or part of one) and tap <b>Search</b>. All verses containing it are found — also as part of a longer word. E.g. <b>אלה</b> also finds אלהים, האלה.',
+      'Each result shows the verse location in the <b>Jewish</b> and <b>Samaritan</b> divisions (tap to jump), the text with the word <b>highlighted</b>, and the pronunciation.']],
+    ['Wildcards', [
+      '<b>?</b> — any single letter. <b>א?ר</b> finds אור, אמר, עבר.',
+      '<b>????</b> (only ?) — whole words of that exact length (here, 4 letters).',
+      '<b>*</b> — an unknown string. <b>כא*</b> = starts with כא · <b>*כא</b> = ends · <b>*כא*</b> = contains.',
+      '<b>+</b> — AND: all words in the same verse. <b>אור+חשך</b>.',
+      'Note: <b>?</b> / <b>*</b> / <b>+</b> override the advanced flags and always run a pattern search.']],
+    ['Advanced search — what each flag does', [
+      '<b>Exact match</b> — only the whole word, not as part of a word. <b>אל</b> → only "אל".',
+      '<b>By word root</b> — all inflections of the root. <b>ברא</b> → ברא, בורא, נברא. Single word only.',
+      '<b>Search the Aramaic</b> — searches the Aramaic translation instead of the Hebrew.',
+      '<b>Ignore final letters</b> — ך=כ, ם=מ, ן=נ, ף=פ, ץ=צ. <b>הציף</b> = הציפ.',
+      '<b>Show word meanings</b> — under each result: Aramaic translation, Tal’s dictionary, and a Hebrew meaning.',
+      '<b>Apply</b> — runs the search with the chosen flags.']],
+  ],
+  ar: [
+    ['البحث الأساسي', [
+      'اكتب كلمة (أو جزءاً منها) واضغط <b>بحث</b>. تُعرض كلّ الآيات التي تحوي الكلمة — حتى كجزء من كلمة أطول. مثال: <b>אלה</b> يجد أيضاً אלהים، האלה.',
+      'تُظهر كلّ نتيجة موضع الآية في <b>التقسيم اليهودي</b> و<b>السامري</b> (اضغط للانتقال)، والنصّ مع <b>تمييز</b> الكلمة، واللفظ.']],
+    ['الأحرف العامة', [
+      '<b>?</b> — أيّ حرف واحد. <b>א?ר</b> يجد אור، אמר، עבר.',
+      '<b>????</b> (؟ فقط) — كلمات كاملة بالطول المحدّد (هنا ٤ أحرف).',
+      '<b>*</b> — سلسلة غير معروفة. <b>כא*</b> = يبدأ بـכא · <b>*כא</b> = ينتهي · <b>*כא*</b> = يحتوي.',
+      '<b>+</b> — «و»: كلّ الكلمات في الآية نفسها. <b>אור+חשך</b>.',
+      'ملاحظة: <b>?</b> / <b>*</b> / <b>+</b> تتقدّم على خيارات البحث المتقدم وتعمل دائماً.']],
+    ['البحث المتقدم — ماذا يفعل كلّ خيار', [
+      '<b>تطابق تامّ</b> — الكلمة الكاملة فقط، لا كجزء من كلمة. <b>אל</b> → «אל» فقط.',
+      '<b>حسب جذر الكلمة</b> — كلّ تصريفات الجذر. <b>ברא</b> → ברא، בורא، נברא. لكلمة واحدة.',
+      '<b>البحث في الآرامية</b> — يبحث في الترجمة الآرامية بدل العبرية.',
+      '<b>تجاهل الحروف النهائية</b> — ך=כ، ם=מ، ן=נ، ף=פ، ץ=צ. <b>הציף</b> = הציפ.',
+      '<b>إظهار معاني الكلمات</b> — تحت كلّ نتيجة: الترجمة الآرامية، معجم طال، ومعنى عبري.',
+      '<b>تأكيد</b> — يُجري البحث بالخيارات المختارة.']],
+  ],
+};
 function showSearchHelp(){
   let h = '';
-  for(const [title, items] of SEARCH_HELP){
+  for(const [title, items] of (SEARCH_HELP[LANG] || SEARCH_HELP.he)){
     h += `<div class="help-h">${title}</div><ul class="help-list">`;
     for(const it of items) h += `<li>${it}</li>`;
     h += '</ul>';
   }
-  showInfo('עזרה לחיפוש', h);
+  showInfo(t('search_help_title'), h);
 }
 $('searchHelpBtn').onclick=showSearchHelp;
 
@@ -1208,5 +1386,45 @@ $('cSend').onclick=()=>{
   $('contactModal').classList.add('hidden');
 };
 
+// ── apply the chosen UI language ─────────────────────────────────────────────
+function applyI18n(){
+  const d = (LANG === 'en') ? 'ltr' : 'rtl';
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = d;
+  const app = $('app'); if(app) app.style.direction = d;
+  document.querySelectorAll('[data-i18n]').forEach(n=>{ const v=t(n.dataset.i18n); if(v!=null) n.innerHTML=v; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(n=>{ n.placeholder = t(n.dataset.i18nPh); });
+  if(typeof syncToolbar === 'function') syncToolbar(S.view === 'verses');
+  if(typeof paintVerses === 'function' && S.view === 'verses') paintVerses();
+}
+function setLang(lang){ if(!I18N[lang]) return; LANG = lang; applyI18n(); }
+// a small styled yes/no dialog → Promise<boolean>
+function askConfirm(title, msg, yes, no){
+  return new Promise(res=>{
+    const m = el('div','modal');
+    m.innerHTML = `<div class="modal-box"><div class="modal-title">${esc(title)}</div>`
+      + `<div class="note" style="text-align:center;margin-bottom:6px">${esc(msg)}</div>`
+      + `<button class="share-opt" style="background:#3a6b34">${esc(yes)}</button>`
+      + `<button class="share-opt close">${esc(no)}</button></div>`;
+    document.body.appendChild(m);
+    const [yb,nb] = m.querySelectorAll('button');
+    yb.onclick=()=>{ m.remove(); res(true); };
+    nb.onclick=()=>{ m.remove(); res(false); };
+  });
+}
+// language picker → switch immediately, then ask whether to persist on this device
+document.querySelectorAll('#langModal .lang-opt, #langModal .close').forEach(b=>{
+  b.onclick = async ()=>{
+    const lang = b.dataset.lang;
+    $('langModal').classList.add('hidden');
+    if(!lang) return;
+    setLang(lang);
+    const save = await askConfirm(t('m_lang'), t('lang_save_q') + ' ' + t('lang_save_note'),
+                                  t('save_yes'), t('save_no'));
+    if(save) localStorage.setItem('uiLang', lang); else localStorage.removeItem('uiLang');
+  };
+});
+
 // ── start ────────────────────────────────────────────────────────────────────
 showBooks();
+applyI18n();
