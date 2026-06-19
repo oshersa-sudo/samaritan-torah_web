@@ -1394,6 +1394,9 @@ function applyI18n(){
   const d = (LANG === 'en') ? 'ltr' : 'rtl';
   document.documentElement.lang = LANG;
   document.documentElement.dir = d;
+  // keep browser auto-translation off — the app does its own UI translation
+  document.documentElement.setAttribute('translate', 'no');
+  document.documentElement.classList.add('notranslate');
   const app = $('app'); if(app) app.style.direction = d;
   document.querySelectorAll('[data-i18n]').forEach(n=>{ const v=t(n.dataset.i18n); if(v!=null) n.innerHTML=v; });
   document.querySelectorAll('[data-i18n-ph]').forEach(n=>{ n.placeholder = t(n.dataset.i18nPh); });

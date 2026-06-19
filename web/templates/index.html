@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" translate="no">
 <head>
 <meta charset="utf-8">
+<!-- the app provides its own UI translation (he/en/ar); tell the browser not to
+     auto-translate the page, so its translation never clashes with ours -->
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>התורה השומרונית הישראלית</title>
 <link rel="icon" href="{{ url_for('static', filename='img/app_icon.png') }}">
