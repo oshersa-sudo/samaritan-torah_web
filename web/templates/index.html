@@ -70,6 +70,9 @@
     </div>
   </div>
 
+  <!-- floating "add bookmark" button (verse view) -->
+  <button id="bmAddBtn" class="bm-fab hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button>
+
   <!-- search screen -->
   <section id="searchScreen" class="hidden">
     <div class="search-bar">
@@ -151,6 +154,7 @@
   <div class="menu-head" data-i18n="menu">תפריט</div>
   <button class="menu-item" data-act="calendar" data-i18n="m_calendar">חשבן קשטה — לוח השנה השומרוני</button>
   <button class="menu-item" data-act="genealogy" data-i18n="m_genealogy">אילן היוחסין השומרוני המלא</button>
+  <button class="menu-item bm-item hidden" id="bmMenuItem" data-act="bookmarks" data-i18n="bm_my">הסימניות שלי</button>
   <button class="menu-item" data-act="install" data-i18n="m_install">התקנת אפליקציה</button>
   <button class="menu-item" data-act="lang" data-i18n="m_lang">שנה שפה</button>
   <!-- "מה חדש?" מעומעם עד פרסום הגרסה הראשונה — להסיר את disabled כדי להחזירו -->
@@ -219,6 +223,18 @@
     <div class="form-btns">
       <button id="editSave" class="form-send" data-i18n="edit_save">שמור שינוי</button>
       <button id="editCancel" class="popup-close" data-i18n="c_cancel">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- my bookmarks -->
+<div id="bmModal" class="modal hidden">
+  <div class="modal-box big">
+    <div class="modal-title" data-i18n="bm_my">הסימניות שלי</div>
+    <div id="bmList"></div>
+    <div class="form-btns">
+      <button id="bmDelete" class="form-send" data-i18n="bm_delete">מחק נבחרות</button>
+      <button id="bmClose" class="popup-close" data-i18n="close">סגור</button>
     </div>
   </div>
 </div>

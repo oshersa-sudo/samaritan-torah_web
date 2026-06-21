@@ -59,6 +59,9 @@ const I18N = {
     split_pick:'בחר את הפסוק שאחריו יחל הפרק החדש (לחץ על מספר פסוק)', split_cancel:'ביטול פיצול',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
+    bm_add:'הוסף סימניה לפרק זה', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
+    bm_note_ph:'הוסף הערה…', bm_max:'הגעת למקסימום של 20 סימניות.', bm_dup:'כבר קיימת סימניה לפרק זה.',
+    bm_added:'סימניה נוספה.', bm_empty:'אין סימניות.', bm_del_q:'למחוק את הסימניות שנבחרו?',
   },
   en: {
     app_title:'The Israelite Samaritan Torah', div_jewish:'Jewish division', div_sam:'Samaritan division',
@@ -96,6 +99,9 @@ const I18N = {
     split_pick:'Choose the verse after which the new chapter starts (tap a verse number)', split_cancel:'Cancel split',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
+    bm_add:'Bookmark this chapter', bm_my:'My bookmarks', bm_delete:'Delete selected',
+    bm_note_ph:'Add a note…', bm_max:'You have reached the maximum of 20 bookmarks.', bm_dup:'This chapter is already bookmarked.',
+    bm_added:'Bookmark added.', bm_empty:'No bookmarks.', bm_del_q:'Delete the selected bookmarks?',
   },
   ar: {
     app_title:'التوراة السامرية الإسرائيلية', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
@@ -133,6 +139,9 @@ const I18N = {
     split_pick:'اختر الآية التي يبدأ بعدها الأصحاح الجديد (اضغط رقم آية)', split_cancel:'إلغاء التقسيم',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
+    bm_add:'إضافة إشارة لهذا الأصحاح', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
+    bm_note_ph:'أضف ملاحظة…', bm_max:'وصلت إلى الحدّ الأقصى 20 إشارة.', bm_dup:'هذا الأصحاح مُؤشَّر بالفعل.',
+    bm_added:'تمت إضافة الإشارة.', bm_empty:'لا توجد إشارات.', bm_del_q:'حذف الإشارات المحدّدة؟',
   },
 };
 let LANG = (localStorage.getItem('uiLang') && I18N[localStorage.getItem('uiLang')]) ? localStorage.getItem('uiLang') : 'he';
@@ -820,6 +829,7 @@ function setView(){
   $('navbar').classList.toggle('hidden', !(isVerse || S.view==='chapters' || S.view==='sam_chapters'));
   $('spreadBtn').classList.toggle('hidden', !(S.view==='portions'));
   if(S.view==='books'||S.view==='portions'||S.view==='spread') $('navbar').classList.add('hidden');
+  $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
   syncToolbar(isVerse);
 }
 // base colours of each mode button (matching the native app's palette);
@@ -1152,6 +1162,7 @@ function menuAction(a){
   if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
   else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
   else if(a==='install')   doInstall();
+  else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
   else if(a==='lang')      $('langModal').classList.remove('hidden');
   else if(a==='whatsnew')  showWhatsNew();
@@ -1443,6 +1454,7 @@ function applyI18n(){
   const app = $('app'); if(app) app.style.direction = d;
   document.querySelectorAll('[data-i18n]').forEach(n=>{ const v=t(n.dataset.i18n); if(v!=null) n.innerHTML=v; });
   document.querySelectorAll('[data-i18n-ph]').forEach(n=>{ n.placeholder = t(n.dataset.i18nPh); });
+  document.querySelectorAll('[data-i18n-title]').forEach(n=>{ n.title = t(n.dataset.i18nTitle); });
   if(typeof syncToolbar === 'function') syncToolbar(S.view === 'verses');
   if(typeof paintVerses === 'function' && S.view === 'verses') paintVerses();
   // the prev/next buttons are set per-mode by navState — re-apply so they too translate
@@ -1549,6 +1561,64 @@ async function askSplit(v){
   showInfo(t('m_admin'), `<div class="note">${esc(r&&r.ok ? t('split_ok') : ((r&&r.error)||t('edit_err')))}</div>`);
 }
 
+// ── bookmarks (saved on this device; up to 20) ───────────────────────────────
+function loadBookmarks(){ try{ return JSON.parse(localStorage.getItem('bookmarks')||'[]'); }catch(e){ return []; } }
+function saveBookmarks(a){ localStorage.setItem('bookmarks', JSON.stringify(a)); }
+function updateBmMenu(){ $('bmMenuItem').classList.toggle('hidden', loadBookmarks().length===0); }
+function bmLabel(b){ return (b.division==='samaritan'?'פרק שומרוני ':'פרק ')+b.chNum; }
+function addBookmark(){
+  if(S.view!=='verses' || S.curChId==null) return;
+  const bms=loadBookmarks();
+  if(bms.length>=20){ showInfo(t('bm_my'), `<div class="note">${esc(t('bm_max'))}</div>`); return; }
+  if(bms.some(b=>b.division===S.chMode && b.chId===S.curChId)){ showInfo(t('bm_my'), `<div class="note">${esc(t('bm_dup'))}</div>`); return; }
+  bms.push({ id:'bm'+Date.now()+Math.random().toString(36).slice(2,8), division:S.chMode, book:S.book, bookName:S.bookName,
+             portionId:S.curPid, portionName:S.portionName||'', chId:S.curChId, chNum:S.curChNum, note:'', ts:Date.now() });
+  saveBookmarks(bms); updateBmMenu();
+  showInfo(t('bm_my'), `<div class="note">${esc(t('bm_added'))}</div>`);
+}
+$('bmAddBtn').onclick=addBookmark;
+function openBookmarks(){
+  const bms=loadBookmarks(); const list=$('bmList'); list.innerHTML='';
+  if(!bms.length) list.appendChild(el('div','note',t('bm_empty')));
+  for(const b of bms){
+    const row=el('div','bm-row');
+    const cb=el('input'); cb.type='checkbox'; cb.dataset.id=b.id; row.appendChild(cb);
+    const main=el('div','bm-main');
+    const path=el('div','bm-path', esc(`${b.bookName}  ›  ${b.portionName}  ›  ${bmLabel(b)}`));
+    path.onclick=()=>gotoBookmark(b);
+    main.appendChild(path);
+    main.appendChild(el('div','bm-div', b.division==='samaritan'?'חלוקה שומרונית':'חלוקה יהודית'));
+    const note=el('textarea','bm-note'); note.rows=1; note.value=b.note||''; note.placeholder=t('bm_note_ph');
+    note.onchange=()=>{ const all=loadBookmarks(); const x=all.find(z=>z.id===b.id); if(x){ x.note=note.value; saveBookmarks(all); } };
+    main.appendChild(note); row.appendChild(main); list.appendChild(row);
+  }
+  $('bmModal').classList.remove('hidden');
+}
+$('bmClose').onclick=()=>$('bmModal').classList.add('hidden');
+$('bmDelete').onclick=async ()=>{
+  const ids=[...$('bmList').querySelectorAll('input[type=checkbox]:checked')].map(c=>c.dataset.id);
+  if(!ids.length) return;
+  if(!await askConfirm(t('bm_my'), t('bm_del_q'), t('confirm_yes'), t('c_cancel'))) return;
+  saveBookmarks(loadBookmarks().filter(b=>!ids.includes(b.id))); updateBmMenu(); openBookmarks();
+};
+async function gotoBookmark(b){
+  $('bmModal').classList.add('hidden'); closeMenu();
+  S.division=b.division;
+  $('btnStandard').classList.toggle('active', b.division==='standard');
+  $('btnSamaritan').classList.toggle('active', b.division==='samaritan');
+  S.book=b.book; S.bookName=b.bookName;
+  const mode=b.division==='samaritan'?'samaritan':'standard';
+  try{
+    S.portions=await api(`portions?book_id=${b.book}&mode=${mode}`);
+    S.curPid=b.portionId; S.portionName=b.portionName;
+    const rows=b.division==='samaritan' ? await api('sam_chapters?portion_id='+b.portionId) : await api('chapters?portion_id='+b.portionId);
+    S.chList=rows.map(r=>({id:r.id, number:r.number}));
+    if(b.division==='samaritan') await openSamChapter(b.chId, b.chNum, b.portionId, b.portionName);
+    else await openChapter(b.chId, b.chNum, b.portionId, b.portionName);
+  }catch(e){ showInfo(t('bm_my'), '<div class="note">לא ניתן לפתוח את הסימניה (ייתכן שהמבנה השתנה).</div>'); }
+}
+
 // ── start ────────────────────────────────────────────────────────────────────
 showBooks();
 applyI18n();
+updateBmMenu();

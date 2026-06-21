@@ -317,6 +317,25 @@ footer a{ color:var(--accent); text-decoration:none; }
 .admin-btn.cancel{ background:#777; }
 .admin-hint{ flex:1 1 100%; color:var(--navy); font-weight:700; font-size:14px; }
 
+/* floating bookmark button + tooltip */
+.bm-fab{ position:fixed; left:8px; bottom:118px; z-index:40; width:46px; height:46px; border:0;
+         border-radius:50%; background:var(--accent); color:#fff; font-size:22px; cursor:pointer;
+         box-shadow:0 2px 8px rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; }
+.bm-fab:hover::after{ content:attr(title); position:absolute; left:54px; white-space:nowrap;
+         background:var(--navy); color:#fff; font-size:13px; padding:5px 9px; border-radius:6px;
+         box-shadow:0 1px 5px rgba(0,0,0,.3); }
+/* bookmarks list */
+#bmList{ max-height:55vh; overflow-y:auto; }
+.bm-row{ display:flex; align-items:flex-start; gap:8px; padding:8px 4px;
+         border-bottom:1px solid rgba(26,56,115,.12); }
+.bm-row input[type=checkbox]{ margin-top:6px; width:18px; height:18px; flex:0 0 auto; }
+.bm-main{ flex:1 1 auto; min-width:0; }
+.bm-path{ color:var(--navy); font-weight:700; font-size:15.5px; cursor:pointer; text-align:right; }
+.bm-path:hover{ text-decoration:underline; }
+.bm-div{ font-size:12px; color:var(--accent); }
+.bm-note{ width:100%; box-sizing:border-box; margin-top:4px; font-family:inherit; font-size:14px;
+          border:1px solid var(--line); border-radius:6px; padding:5px; direction:rtl; text-align:right; }
+
 /* contact form */
 .form-row{ display:flex; flex-direction:column; gap:4px; text-align:right; margin-bottom:4px; }
 .form-row label{ color:var(--navy); font-size:15px; font-weight:700; }
