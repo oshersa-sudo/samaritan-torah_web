@@ -41,9 +41,12 @@ def init_db():
         );
 
         CREATE TABLE IF NOT EXISTS sam_chapters (
-            id      INTEGER PRIMARY KEY,
-            book_id INTEGER NOT NULL REFERENCES books(id),
-            number  INTEGER NOT NULL
+            id         INTEGER PRIMARY KEY,
+            book_id    INTEGER NOT NULL REFERENCES books(id),
+            number     INTEGER NOT NULL,
+            portion_id INTEGER REFERENCES portions(id)   -- explicit Samaritan-portion
+                                                         -- override; NULL = derive from
+                                                         -- the first verse's Jewish chapter
         );
 
         CREATE TABLE IF NOT EXISTS verses (
@@ -146,8 +149,12 @@ def count_sam_chapters_in_portion(portion_id):
         JOIN   chapters c ON c.id  = v.chapter_id
         JOIN   portions p ON p.id  = ?
         WHERE  c.book_id  = p.book_id
-          AND  (c.number > p.start_ch OR (c.number = p.start_ch AND CAST(v.number AS INTEGER) >= p.start_v))
-          AND  (c.number < p.end_ch   OR (c.number = p.end_ch   AND CAST(v.number AS INTEGER) <= p.end_v))
+          AND  (
+                 sc.portion_id = p.id
+              OR (sc.portion_id IS NULL
+                  AND (c.number > p.start_ch OR (c.number = p.start_ch AND CAST(v.number AS INTEGER) >= p.start_v))
+                  AND (c.number < p.end_ch   OR (c.number = p.end_ch   AND CAST(v.number AS INTEGER) <= p.end_v)))
+               )
         """,
         (portion_id,)
     ).fetchone()
@@ -168,8 +175,12 @@ def get_sam_chapters_in_portion(portion_id):
         JOIN   chapters c ON c.id  = v.chapter_id
         JOIN   portions p ON p.id  = ?
         WHERE  c.book_id  = p.book_id
-          AND  (c.number > p.start_ch OR (c.number = p.start_ch AND CAST(v.number AS INTEGER) >= p.start_v))
-          AND  (c.number < p.end_ch   OR (c.number = p.end_ch   AND CAST(v.number AS INTEGER) <= p.end_v))
+          AND  (
+                 sc.portion_id = p.id
+              OR (sc.portion_id IS NULL
+                  AND (c.number > p.start_ch OR (c.number = p.start_ch AND CAST(v.number AS INTEGER) >= p.start_v))
+                  AND (c.number < p.end_ch   OR (c.number = p.end_ch   AND CAST(v.number AS INTEGER) <= p.end_v)))
+               )
         ORDER  BY sc.number
         """,
         (portion_id,)
@@ -230,10 +241,18 @@ def get_samaritan_location(verse_id):
            WHERE v.sam_ch_id = ? ORDER BY v.id LIMIT 1""",
         (row['sam_ch_id'],)).fetchone()
     jch = first['number'] if first else None
-    port = conn.execute(
-        """SELECT id, name FROM portions WHERE mode='samaritan' AND book_id=?
-           AND start_ch <= ? AND end_ch >= ? ORDER BY order_n LIMIT 1""",
-        (row['book_id'], jch, jch)).fetchone()
+    # explicit portion override on the Samaritan chapter wins; otherwise derive the
+    # portion from the chapter's first-verse Jewish chapter (the default grouping).
+    override = conn.execute(
+        "SELECT portion_id FROM sam_chapters WHERE id=?", (row['sam_ch_id'],)).fetchone()
+    if override and override['portion_id']:
+        port = conn.execute(
+            "SELECT id, name FROM portions WHERE id=?", (override['portion_id'],)).fetchone()
+    else:
+        port = conn.execute(
+            """SELECT id, name FROM portions WHERE mode='samaritan' AND book_id=?
+               AND start_ch <= ? AND end_ch >= ? ORDER BY order_n LIMIT 1""",
+            (row['book_id'], jch, jch)).fetchone()
     conn.close()
     return {
         'sam_ch_id':         row['sam_ch_id'],
