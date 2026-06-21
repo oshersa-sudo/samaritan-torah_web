@@ -24,7 +24,7 @@ const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls)e.c
 // ── i18n: interface translation (he / en / ar) ───────────────────────────────
 const I18N = {
   he: {
-    app_title:'התורה השומרונית הישראלית', div_jewish:'חלוקה יהודית', div_sam:'חלוקה שומרונית',
+    app_title:'התורה השומרונית הישראלית', brand_top:'אבני שהם', div_jewish:'חלוקה יהודית', div_sam:'חלוקה שומרונית',
     spread:'פריסת פרקים', next_portion:'‹ פרשה הבאה', prev_portion:'פרשה קודמת ›',
     next_chapter:'‹ פרק הבא', prev_chapter:'פרק קודם ›',
     share:'שתף', back:'‹ חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
@@ -64,7 +64,7 @@ const I18N = {
     bm_added:'סימניה נוספה.', bm_empty:'אין סימניות.', bm_del_q:'למחוק את הסימניות שנבחרו?',
   },
   en: {
-    app_title:'The Israelite Samaritan Torah', div_jewish:'Jewish division', div_sam:'Samaritan division',
+    app_title:'The Israelite Samaritan Torah', brand_top:'אבני שהם', div_jewish:'Jewish division', div_sam:'Samaritan division',
     spread:'All chapters', next_portion:'Next portion ›', prev_portion:'‹ Previous portion',
     next_chapter:'Next chapter ›', prev_chapter:'‹ Previous chapter',
     share:'Share', back:'‹ Back', browse:'Browse', search:'Search', dict:'Word dictionary',
@@ -104,7 +104,7 @@ const I18N = {
     bm_added:'Bookmark added.', bm_empty:'No bookmarks.', bm_del_q:'Delete the selected bookmarks?',
   },
   ar: {
-    app_title:'التوراة السامرية الإسرائيلية', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
+    app_title:'التوراة السامرية الإسرائيلية', brand_top:'אבני שהם', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
     spread:'كل الأصحاحات', next_portion:'المقطع التالي ›', prev_portion:'‹ المقطع السابق',
     next_chapter:'الأصحاح التالي ›', prev_chapter:'‹ الأصحاح السابق',
     share:'مشاركة', back:'‹ رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
