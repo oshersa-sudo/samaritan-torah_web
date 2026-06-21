@@ -372,6 +372,7 @@ async function renderVerses(chId, chNum, pid, pname){
   S.verses = isSam ? await api('sam_verses?sam_ch_id='+chId)
                    : await api('verses?chapter_id='+chId+(pid?('&portion_id='+pid):''));
   paintVerses();
+  positionBmFab();              // now the crumbs/verses are laid out → text-area top is final
 }
 
 // the actual verse-area painter (re-run on every mode/filter/font change)
@@ -1576,7 +1577,51 @@ function addBookmark(){
   saveBookmarks(bms); updateBmMenu();
   showInfo(t('bm_my'), `<div class="note">${esc(t('bm_added'))}</div>`);
 }
-$('bmAddBtn').onclick=addBookmark;
+// ── draggable bookmark FAB ───────────────────────────────────────────────────
+// The button can be dragged anywhere on screen so it never hides the text; its
+// position is remembered on this device. A real drag (>4px) is not a click, so
+// dragging never adds a bookmark — only a tap/click in place does.
+function clampFab(x, y){
+  const f=$('bmAddBtn'), w=f.offsetWidth||46, h=f.offsetHeight||46;
+  return [ Math.max(2, Math.min(window.innerWidth -w-2, x)),
+           Math.max(2, Math.min(window.innerHeight-h-2, y)) ];
+}
+function positionBmFab(){
+  const f=$('bmAddBtn');
+  let saved=null; try{ saved=JSON.parse(localStorage.getItem('bmFabPos')||'null'); }catch(e){}
+  if(saved && typeof saved.left==='number'){
+    const [x,y]=clampFab(saved.left, saved.top);
+    f.style.left=x+'px'; f.style.top=y+'px'; f.style.bottom='auto';
+  } else {                                   // default: top-left of the text area
+    const ct=$('content').getBoundingClientRect();
+    f.style.left='8px'; f.style.top=(Math.round(ct.top)+6)+'px'; f.style.bottom='auto';
+  }
+}
+(function(){
+  const f=$('bmAddBtn');
+  let drag=false, moved=false, sx=0, sy=0, ox=0, oy=0;
+  f.addEventListener('pointerdown', e=>{
+    drag=true; moved=false; const r=f.getBoundingClientRect();
+    sx=e.clientX; sy=e.clientY; ox=r.left; oy=r.top;
+    try{ f.setPointerCapture(e.pointerId); }catch(_){}
+    e.preventDefault();
+  });
+  f.addEventListener('pointermove', e=>{
+    if(!drag) return;
+    const dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)>4 || Math.abs(dy)>4) moved=true;
+    const [x,y]=clampFab(ox+dx, oy+dy);
+    f.style.left=x+'px'; f.style.top=y+'px'; f.style.bottom='auto';
+  });
+  f.addEventListener('pointerup', e=>{
+    if(!drag) return; drag=false;
+    try{ f.releasePointerCapture(e.pointerId); }catch(_){}
+    if(moved){
+      const r=f.getBoundingClientRect();
+      localStorage.setItem('bmFabPos', JSON.stringify({left:Math.round(r.left), top:Math.round(r.top)}));
+    } else { addBookmark(); }
+  });
+})();
 function openBookmarks(){
   const bms=loadBookmarks(); const list=$('bmList'); list.innerHTML='';
   if(!bms.length) list.appendChild(el('div','note',t('bm_empty')));

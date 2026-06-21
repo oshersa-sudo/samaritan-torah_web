@@ -35,7 +35,8 @@ body{
             letter-spacing:.5px; padding:7px 10px 0; }
 .title-row{ display:flex; align-items:center; gap:8px; padding:4px 10px 2px; }
 .title-row h1{ flex:1; font-size:20px; font-weight:600; text-align:center; margin:0; }
-.scroll-ico{ width:34px; height:34px; object-fit:contain; }
+.brand-stack{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; }
+.scroll-ico{ width:36px; height:36px; object-fit:contain; }
 .ver{ font-size:11px; color:#bcd0ff; white-space:nowrap; }
 .toggle-row{ display:flex; gap:4px; padding:4px 8px 8px; }
 .divbtn{ flex:1; padding:8px; border:0; border-radius:6px; background:#4d4d80; color:#fff;
@@ -320,8 +321,9 @@ footer a{ color:var(--accent); text-decoration:none; }
 .admin-hint{ flex:1 1 100%; color:var(--navy); font-weight:700; font-size:14px; }
 
 /* floating bookmark button + tooltip */
-.bm-fab{ position:fixed; left:8px; bottom:118px; z-index:40; width:46px; height:46px; border:0;
-         border-radius:50%; background:var(--accent); color:#fff; font-size:22px; cursor:pointer;
+.bm-fab{ position:fixed; left:8px; top:160px; z-index:40; width:46px; height:46px; border:0;
+         border-radius:50%; background:var(--accent); color:#fff; font-size:22px; cursor:move;
+         touch-action:none; user-select:none; -webkit-user-select:none;
          box-shadow:0 2px 8px rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; }
 .bm-fab:hover::after{ content:attr(title); position:absolute; left:54px; white-space:nowrap;
          background:var(--navy); color:#fff; font-size:13px; padding:5px 9px; border-radius:6px;

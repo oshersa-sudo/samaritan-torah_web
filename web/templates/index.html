@@ -23,8 +23,10 @@
   <header id="hdr">
     <div class="brand-top" data-i18n="brand_top">אבני שהם</div>
     <div class="title-row">
-      <button id="menuBtn" class="menu-btn" aria-label="תפריט">&#9776;</button>
-      <img class="scroll-ico" src="{{ url_for('static', filename='img/torah_scroll_nobg.png') }}" alt="">
+      <div class="brand-stack">
+        <img class="scroll-ico" src="{{ url_for('static', filename='img/torah_scroll_nobg.png') }}" alt="">
+        <button id="menuBtn" class="menu-btn" aria-label="תפריט">&#9776;</button>
+      </div>
       <h1 data-i18n="app_title">התורה השומרונית הישראלית</h1>
       <span class="ver">v{{ version }}</span>
     </div>
