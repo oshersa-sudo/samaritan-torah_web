@@ -312,6 +312,53 @@ def admin_split_sam():
         conn.close()
     return jsonify({'ok': True})
 
+
+# Split one verse into two in the Samaritan division. The new verse keeps the
+# integer base of the original and gets the next free maqaf sub-number
+# (10 -> 10-1, 10-1 -> 10-2, 11 -> 11-1). Because get_verses() filters
+# typeof(number)='integer', the maqaf verse shows ONLY in the Samaritan division
+# (same Jewish chapter and same Samaritan chapter as the original).
+@app.route('/api/admin/split_verse', methods=['POST'])
+def admin_split_verse():
+    d = request.get_json(silent=True) or {}
+    if d.get('token') not in _ADMIN_TOKENS:
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        verse_id = int(d.get('verse_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    text1, text2 = d.get('text1'), d.get('text2')
+    if not isinstance(text1, str) or not isinstance(text2, str) or not text1.strip() or not text2.strip():
+        return jsonify({'ok': False, 'error': 'שני החלקים חייבים להכיל טקסט'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        v = conn.execute('SELECT id, chapter_id, number, sam_ch_id FROM verses WHERE id=?', (verse_id,)).fetchone()
+        if not v:
+            return jsonify({'ok': False, 'error': 'verse not found'}), 404
+        base = str(v['number']).split('-')[0]
+        if not base.isdigit():
+            return jsonify({'ok': False, 'error': 'מספר פסוק לא תקין'}), 400
+        # highest existing maqaf sub-number for this base in the same Jewish chapter
+        mx = 0
+        for r in conn.execute('SELECT number FROM verses WHERE chapter_id=?', (v['chapter_id'],)):
+            s = str(r['number'])
+            if s.startswith(base + '-'):
+                tail = s[len(base) + 1:]
+                if tail.isdigit():
+                    mx = max(mx, int(tail))
+        new_number = '%s-%d' % (base, mx + 1)
+        conn.execute('UPDATE verses SET text=? WHERE id=?', (text1.strip(), verse_id))
+        conn.execute('INSERT INTO verses (chapter_id, number, text, sam_ch_id) VALUES (?,?,?,?)',
+                     (v['chapter_id'], new_number, text2.strip(), v['sam_ch_id']))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True, 'new_number': new_number})
+
 # columns returned for a verse (everything the UI's content modes need)
 _VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'sam_aramaic',
                'arabic_trans', 'interpretation', 'rashi', 'ramban', 'cassuto',

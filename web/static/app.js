@@ -55,8 +55,13 @@ const I18N = {
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
     edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
-    merge_next:'אחד עם הבא', split_chapter:'פצל פרק',
+    merge_next:'אחד עם הבא', split_chapter:'פצל פרק', split_verse:'פצל פסוק',
     split_pick:'בחר את הפסוק שאחריו יחל הפרק החדש (לחץ על מספר פסוק)', split_cancel:'ביטול פיצול',
+    vsplit_pick:'בחר פסוק לפיצול (לחץ על מספר פסוק)',
+    vsplit_title:'פיצול פסוק', vsplit_btn:'פצל פסוק',
+    vsplit_hint:'החלק הראשון יישאר במספר הפסוק הנוכחי; החלק השני יהפוך לפסוק חדש עם מקף ומספר רץ (נראה בחלוקה השומרונית בלבד).',
+    vsplit_p1:'חלק ראשון — נשאר פסוק', vsplit_p2:'חלק שני — פסוק חדש',
+    vsplit_err:'יש למלא את שני החלקים.', vsplit_ok:'הפסוק פוצל. הפסוק החדש:',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
     bm_add:'הוסף סימניה לפרק זה', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
@@ -95,8 +100,13 @@ const I18N = {
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
     edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
-    merge_next:'Merge with next', split_chapter:'Split chapter',
+    merge_next:'Merge with next', split_chapter:'Split chapter', split_verse:'Split verse',
     split_pick:'Choose the verse after which the new chapter starts (tap a verse number)', split_cancel:'Cancel split',
+    vsplit_pick:'Choose a verse to split (tap a verse number)',
+    vsplit_title:'Split verse', vsplit_btn:'Split verse',
+    vsplit_hint:'The first part keeps the current verse number; the second becomes a new verse with a hyphen and running number (shown in the Samaritan division only).',
+    vsplit_p1:'First part — stays verse', vsplit_p2:'Second part — new verse',
+    vsplit_err:'Both parts are required.', vsplit_ok:'Verse split. New verse:',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
     bm_add:'Bookmark this chapter', bm_my:'My bookmarks', bm_delete:'Delete selected',
@@ -135,8 +145,13 @@ const I18N = {
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
     edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
-    merge_next:'دمج مع التالي', split_chapter:'تقسيم الأصحاح',
+    merge_next:'دمج مع التالي', split_chapter:'تقسيم الأصحاح', split_verse:'تقسيم الآية',
     split_pick:'اختر الآية التي يبدأ بعدها الأصحاح الجديد (اضغط رقم آية)', split_cancel:'إلغاء التقسيم',
+    vsplit_pick:'اختر آية للتقسيم (اضغط رقم آية)',
+    vsplit_title:'تقسيم الآية', vsplit_btn:'تقسيم الآية',
+    vsplit_hint:'يبقى الجزء الأول برقم الآية الحالي؛ ويصبح الجزء الثاني آية جديدة بشَرطة ورقم متسلسل (تظهر في التقسيم السامري فقط).',
+    vsplit_p1:'الجزء الأول — يبقى آية', vsplit_p2:'الجزء الثاني — آية جديدة',
+    vsplit_err:'كلا الجزأين مطلوبان.', vsplit_ok:'تم تقسيم الآية. الآية الجديدة:',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
     bm_add:'إضافة إشارة لهذا الأصحاح', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
@@ -388,10 +403,21 @@ function paintVerses(){
       const cancel=el('button','admin-btn cancel', t('split_cancel'));
       cancel.onclick=()=>{ S.splitMode=false; paintVerses(); };
       bar.appendChild(cancel);
+    } else if(S.vsplitMode){
+      bar.appendChild(el('span','admin-hint', t('vsplit_pick')));
+      const cancel=el('button','admin-btn cancel', t('split_cancel'));
+      cancel.onclick=()=>{ S.vsplitMode=false; paintVerses(); };
+      bar.appendChild(cancel);
     } else {
       const mb=el('button','admin-btn', t('merge_next')); mb.onclick=mergeNext;
+      bar.appendChild(mb);
+      if(S.chMode==='samaritan'){          // verse split → Samaritan-only maqaf sub-verse
+        const vb=el('button','admin-btn', t('split_verse'));
+        vb.onclick=()=>{ S.vsplitMode=true; paintVerses(); };
+        bar.appendChild(vb);
+      }
       const sb=el('button','admin-btn', t('split_chapter')); sb.onclick=()=>{ S.splitMode=true; paintVerses(); };
-      bar.appendChild(mb); bar.appendChild(sb);
+      bar.appendChild(sb);
     }
     c.appendChild(bar);
   }
@@ -432,7 +458,11 @@ function addPlainRows(c, verses){
     const row = el('div','vrow');
     const numActive = S.verseFilter===v.id ? ' active':'';
     const num = el('button','num'+numActive, String(v.number));
-    num.onclick=()=> (ADMIN.token && S.splitMode) ? askSplit(v) : filterVerse(v.id);
+    num.onclick=()=>{
+      if(ADMIN.token && S.splitMode)  return askSplit(v);
+      if(ADMIN.token && S.vsplitMode) return openVsplit(v);
+      return filterVerse(v.id);
+    };
     const vh = verseHTML(v);
     const t = el('div', vh.cls, vh.html);
     t.style.fontSize = (S.english?17:fs)+'px';
@@ -1560,6 +1590,39 @@ async function askSplit(v){
   let r; try{ r=await apiPost(ep, {token:ADMIN.token, chapter_id:S.curChId, after_verse_id:v.id}); }catch(e){ r={ok:false}; }
   await reloadChapters();
   showInfo(t('m_admin'), `<div class="note">${esc(r&&r.ok ? t('split_ok') : ((r&&r.error)||t('edit_err')))}</div>`);
+}
+// split a single verse → a new Samaritan-only maqaf sub-verse (10 → 10-1, …).
+// The admin divides the text into two parts; part 1 stays, part 2 is the new verse.
+function openVsplit(v){
+  S.vsplitMode=false;
+  const base=String(v.number).split('-')[0];
+  let mx=0;                                  // best-effort projected sub-number for the label
+  for(const x of (S.verses||[])){ const s=String(x.number);
+    if(s.indexOf(base+'-')===0){ const tl=s.slice(base.length+1); if(/^\d+$/.test(tl)) mx=Math.max(mx,+tl); } }
+  const newNum=base+'-'+(mx+1);
+  const m=el('div','modal');
+  m.innerHTML=`<div class="modal-box">
+     <div class="modal-title">${esc(t('vsplit_title'))} ${esc(String(v.number))}</div>
+     <div class="note" style="margin-bottom:4px">${esc(t('vsplit_hint'))}</div>
+     <label class="vsplit-lab">${esc(t('vsplit_p1'))} ${esc(String(v.number))}</label>
+     <textarea id="vsP1" class="vsplit-area" dir="rtl"></textarea>
+     <label class="vsplit-lab">${esc(t('vsplit_p2'))} ${esc(newNum)}</label>
+     <textarea id="vsP2" class="vsplit-area" dir="rtl"></textarea>
+     <div class="note" id="vsErr" style="color:#b00;min-height:1em"></div>
+     <button class="share-opt" style="background:#3a6b34" id="vsGo">${esc(t('vsplit_btn'))}</button>
+     <button class="share-opt close" id="vsCancel">${esc(t('c_cancel'))}</button>
+   </div>`;
+  document.body.appendChild(m);
+  m.querySelector('#vsP1').value=v.text||'';
+  m.querySelector('#vsCancel').onclick=()=>{ m.remove(); paintVerses(); };
+  m.querySelector('#vsGo').onclick=async ()=>{
+    const text1=m.querySelector('#vsP1').value.trim(), text2=m.querySelector('#vsP2').value.trim();
+    if(!text1 || !text2){ m.querySelector('#vsErr').textContent=t('vsplit_err'); return; }
+    let r; try{ r=await apiPost('admin/split_verse', {token:ADMIN.token, verse_id:v.id, text1, text2}); }catch(e){ r={ok:false}; }
+    if(r && r.ok){ m.remove(); _apiCache.clear(); await reloadChapters();
+      showInfo(t('m_admin'), `<div class="note">${esc(t('vsplit_ok'))} ${esc(r.new_number||'')}</div>`); }
+    else { m.querySelector('#vsErr').textContent=(r&&r.error)||t('edit_err'); }
+  };
 }
 
 // ── bookmarks (saved on this device; up to 20) ───────────────────────────────

@@ -36,6 +36,9 @@ body{
 .title-row{ display:flex; align-items:center; gap:8px; padding:4px 10px 2px; }
 .title-row h1{ flex:1; font-size:20px; font-weight:600; text-align:center; margin:0; }
 .brand-stack{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; }
+.vsplit-lab{ display:block; text-align:right; font-size:13px; font-weight:600; margin:6px 2px 2px; color:var(--navy); }
+.vsplit-area{ width:100%; box-sizing:border-box; min-height:64px; font-family:inherit; font-size:16px;
+              border:1px solid #bbb; border-radius:6px; padding:7px; resize:vertical; }
 .scroll-ico{ width:36px; height:36px; object-fit:contain; }
 .ver{ font-size:11px; color:#bcd0ff; white-space:nowrap; }
 .toggle-row{ display:flex; gap:4px; padding:4px 8px 8px; }
