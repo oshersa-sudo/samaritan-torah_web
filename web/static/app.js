@@ -55,6 +55,10 @@ const I18N = {
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
     edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
+    merge_next:'אחד עם הבא', split_chapter:'פצל פרק',
+    split_pick:'בחר את הפסוק שאחריו יחל הפרק החדש (לחץ על מספר פסוק)', split_cancel:'ביטול פיצול',
+    merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
+    merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
   },
   en: {
     app_title:'The Israelite Samaritan Torah', div_jewish:'Jewish division', div_sam:'Samaritan division',
@@ -88,6 +92,10 @@ const I18N = {
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
     edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
+    merge_next:'Merge with next', split_chapter:'Split chapter',
+    split_pick:'Choose the verse after which the new chapter starts (tap a verse number)', split_cancel:'Cancel split',
+    merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
+    merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
   },
   ar: {
     app_title:'التوراة السامرية الإسرائيلية', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
@@ -121,6 +129,10 @@ const I18N = {
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
     edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
+    merge_next:'دمج مع التالي', split_chapter:'تقسيم الأصحاح',
+    split_pick:'اختر الآية التي يبدأ بعدها الأصحاح الجديد (اضغط رقم آية)', split_cancel:'إلغاء التقسيم',
+    merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
+    merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
   },
 };
 let LANG = (localStorage.getItem('uiLang') && I18N[localStorage.getItem('uiLang')]) ? localStorage.getItem('uiLang') : 'he';
@@ -358,6 +370,21 @@ function paintVerses(){
   const c=$('content'); c.innerHTML='';
   c.classList.toggle('sam', S.samFont && !S.english);   // enables Samaritan justify
   if(!S.verses.length){ c.appendChild(el('div','note','אין פסוקים')); return; }
+  // admin-only chapter tools (Jewish division): merge with next / split here
+  if(ADMIN.token && S.chMode==='standard'){
+    const bar=el('div','admin-bar');
+    if(S.splitMode){
+      bar.appendChild(el('span','admin-hint', t('split_pick')));
+      const cancel=el('button','admin-btn cancel', t('split_cancel'));
+      cancel.onclick=()=>{ S.splitMode=false; paintVerses(); };
+      bar.appendChild(cancel);
+    } else {
+      const mb=el('button','admin-btn', t('merge_next')); mb.onclick=mergeNext;
+      const sb=el('button','admin-btn', t('split_chapter')); sb.onclick=()=>{ S.splitMode=true; paintVerses(); };
+      bar.appendChild(mb); bar.appendChild(sb);
+    }
+    c.appendChild(bar);
+  }
   const all = S.verses;
   const verses = S.verseFilter!=null ? all.filter(v=>v.id===S.verseFilter) : all;
   // when a single verse is filtered (e.g. arrived from a search result), show a
@@ -395,7 +422,7 @@ function addPlainRows(c, verses){
     const row = el('div','vrow');
     const numActive = S.verseFilter===v.id ? ' active':'';
     const num = el('button','num'+numActive, String(v.number));
-    num.onclick=()=>filterVerse(v.id);
+    num.onclick=()=> (ADMIN.token && S.splitMode) ? askSplit(v) : filterVerse(v.id);
     const vh = verseHTML(v);
     const t = el('div', vh.cls, vh.html);
     t.style.fontSize = (S.english?17:fs)+'px';
@@ -1496,6 +1523,29 @@ $('editSave').onclick=async ()=>{
     $('editModal').classList.add('hidden'); paintVerses();
   } else { $('editErr').textContent=t('edit_err'); }
 };
+// admin chapter restructuring (merge with next / split here) — standard division
+async function reloadChapters(){
+  _apiCache.clear();
+  const rows = S.chMode==='samaritan' ? await api('sam_chapters?portion_id='+S.curPid)
+                                      : await api('chapters?portion_id='+S.curPid);
+  S.chList = rows.map(r=>({id:r.id, number:r.number}));
+  S.chIdx = Math.max(0, S.chList.findIndex(x=>x.id===S.curChId));
+  await renderVerses(S.curChId, S.curChNum, S.curPid, S.portionName);
+}
+async function mergeNext(){
+  if(!ADMIN.token) return;
+  if(!await askConfirm(t('merge_next'), t('merge_q'), t('confirm_yes'), t('c_cancel'))) return;
+  let r; try{ r=await apiPost('admin/merge_next', {token:ADMIN.token, chapter_id:S.curChId}); }catch(e){ r={ok:false}; }
+  if(r&&r.ok){ await reloadChapters(); showInfo(t('m_admin'), `<div class="note">${esc(t('merged_ok'))}</div>`); }
+  else showInfo(t('m_admin'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
+}
+async function askSplit(v){
+  if(!await askConfirm(t('split_chapter'), t('split_q')+v.number+'?', t('confirm_yes'), t('c_cancel'))) return;
+  S.splitMode=false;
+  let r; try{ r=await apiPost('admin/split', {token:ADMIN.token, chapter_id:S.curChId, after_verse_id:v.id}); }catch(e){ r={ok:false}; }
+  await reloadChapters();
+  showInfo(t('m_admin'), `<div class="note">${esc(r&&r.ok ? t('split_ok') : ((r&&r.error)||t('edit_err')))}</div>`);
+}
 
 // ── start ────────────────────────────────────────────────────────────────────
 showBooks();

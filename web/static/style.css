@@ -310,6 +310,12 @@ footer a{ color:var(--accent); text-decoration:none; }
 .edit-pencil:hover{ background:#ffd84d; }
 #editArea{ width:100%; box-sizing:border-box; font-family:inherit; font-size:18px; line-height:1.6;
            direction:rtl; text-align:right; border:1px solid var(--line); border-radius:8px; padding:8px; }
+.admin-bar{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:6px; margin-bottom:6px;
+            background:#fff4e0; border:1px solid rgba(122,53,80,.35); border-radius:8px; }
+.admin-btn{ border:0; border-radius:6px; background:var(--accent); color:#fff; padding:8px 12px;
+            font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; }
+.admin-btn.cancel{ background:#777; }
+.admin-hint{ flex:1 1 100%; color:var(--navy); font-weight:700; font-size:14px; }
 
 /* contact form */
 .form-row{ display:flex; flex-direction:column; gap:4px; text-align:right; margin-bottom:4px; }

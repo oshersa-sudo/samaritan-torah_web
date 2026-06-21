@@ -104,6 +104,141 @@ def admin_edit():
         conn.close()
     return jsonify({'ok': True})
 
+
+# ── admin chapter restructuring (merge / split) — local only, gated + backed up ─
+import shutil
+from datetime import datetime as _dt
+
+
+def _backup_db():
+    src = getattr(db, 'DB_PATH', None)
+    if src and os.path.exists(src):
+        shutil.copy2(src, '%s.bak_admin_%s' % (src, _dt.now().strftime('%Y%m%d_%H%M%S')))
+
+
+def _portion_spans(conn, book_id):
+    """For every portion of the book, the first/last verse_id it currently covers
+    (by standard chapter:verse), so its boundaries can be recomputed after a
+    re-chaptering. Returns {portion_id: (first_vid, last_vid, end_was_sentinel)}."""
+    out = {}
+    for p in conn.execute('SELECT id,start_ch,start_v,end_ch,end_v FROM portions WHERE book_id=?',
+                          (book_id,)).fetchall():
+        rows = conn.execute(
+            """SELECT v.id FROM verses v JOIN chapters c ON c.id=v.chapter_id
+               WHERE c.book_id=?
+                 AND (c.number>? OR (c.number=? AND CAST(v.number AS INTEGER)>=?))
+                 AND (c.number<? OR (c.number=? AND CAST(v.number AS INTEGER)<=?))
+               ORDER BY c.number, CAST(v.number AS INTEGER), v.id""",
+            (book_id, p['start_ch'], p['start_ch'], p['start_v'],
+             p['end_ch'], p['end_ch'], p['end_v'])).fetchall()
+        if rows:
+            out[p['id']] = (rows[0]['id'], rows[-1]['id'], p['end_v'] >= 9999)
+    return out
+
+
+def _pos(conn, vid):
+    r = conn.execute("""SELECT c.number ch, CAST(v.number AS INTEGER) vn
+                        FROM verses v JOIN chapters c ON c.id=v.chapter_id WHERE v.id=?""", (vid,)).fetchone()
+    return (r['ch'], r['vn']) if r else (None, None)
+
+
+def _fix_portions(conn, spans):
+    for pid, (fv, lv, sentinel) in spans.items():
+        sch, svn = _pos(conn, fv)
+        ech, evn = _pos(conn, lv)
+        if sch is None or ech is None:
+            continue
+        conn.execute('UPDATE portions SET start_ch=?,start_v=?,end_ch=?,end_v=? WHERE id=?',
+                     (sch, svn, ech, 9999 if sentinel else evn, pid))
+
+
+def _fix_root_index(conn, book_id):
+    for r in conn.execute("""SELECT v.id vid, c.number ch, v.number vn FROM verses v
+                             JOIN chapters c ON c.id=v.chapter_id WHERE c.book_id=?""", (book_id,)).fetchall():
+        conn.execute('UPDATE root_index SET chapter=?, verse=? WHERE verse_id=?', (r['ch'], r['vn'], r['vid']))
+
+
+@app.route('/api/admin/merge_next', methods=['POST'])
+def admin_merge_next():
+    d = request.get_json(silent=True) or {}
+    if d.get('token') not in _ADMIN_TOKENS:
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        chapter_id = int(d.get('chapter_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad chapter'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        cur = conn.execute('SELECT id,book_id,number FROM chapters WHERE id=?', (chapter_id,)).fetchone()
+        if not cur:
+            return jsonify({'ok': False, 'error': 'chapter not found'}), 404
+        nxt = conn.execute('SELECT id,number FROM chapters WHERE book_id=? AND number=?',
+                           (cur['book_id'], cur['number'] + 1)).fetchone()
+        if not nxt:
+            return jsonify({'ok': False, 'error': 'אין פרק הבא לאיחוד'}), 400
+        book_id, N = cur['book_id'], cur['number']
+        spans = _portion_spans(conn, book_id)
+        k = conn.execute('SELECT COALESCE(MAX(CAST(number AS INTEGER)),0) FROM verses WHERE chapter_id=?',
+                        (cur['id'],)).fetchone()[0]
+        moved = conn.execute('SELECT id FROM verses WHERE chapter_id=? ORDER BY CAST(number AS INTEGER), id',
+                            (nxt['id'],)).fetchall()
+        for i, r in enumerate(moved, 1):
+            conn.execute('UPDATE verses SET chapter_id=?, number=? WHERE id=?', (cur['id'], str(k + i), r['id']))
+        conn.execute('DELETE FROM chapters WHERE id=?', (nxt['id'],))
+        conn.execute('UPDATE chapters SET number=number-1 WHERE book_id=? AND number>?', (book_id, N + 1))
+        _fix_portions(conn, spans)
+        _fix_root_index(conn, book_id)
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True})
+
+
+@app.route('/api/admin/split', methods=['POST'])
+def admin_split():
+    d = request.get_json(silent=True) or {}
+    if d.get('token') not in _ADMIN_TOKENS:
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        chapter_id = int(d.get('chapter_id')); after_vid = int(d.get('after_verse_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        cur = conn.execute('SELECT id,book_id,number FROM chapters WHERE id=?', (chapter_id,)).fetchone()
+        if not cur:
+            return jsonify({'ok': False, 'error': 'chapter not found'}), 404
+        book_id, N = cur['book_id'], cur['number']
+        ids = [r['id'] for r in conn.execute(
+            'SELECT id FROM verses WHERE chapter_id=? ORDER BY CAST(number AS INTEGER), id', (cur['id'],)).fetchall()]
+        if after_vid not in ids:
+            return jsonify({'ok': False, 'error': 'הפסוק אינו בפרק זה'}), 400
+        pos = ids.index(after_vid)
+        if pos >= len(ids) - 1:
+            return jsonify({'ok': False, 'error': 'לא ניתן לפצל אחרי הפסוק האחרון'}), 400
+        moved = ids[pos + 1:]
+        spans = _portion_spans(conn, book_id)
+        conn.execute('UPDATE chapters SET number=number+1 WHERE book_id=? AND number>?', (book_id, N))
+        c2 = conn.cursor()
+        c2.execute('INSERT INTO chapters (book_id, number) VALUES (?,?)', (book_id, N + 1))
+        new_id = c2.lastrowid
+        for i, vid in enumerate(moved, 1):
+            conn.execute('UPDATE verses SET chapter_id=?, number=? WHERE id=?', (new_id, str(i), vid))
+        _fix_portions(conn, spans)
+        _fix_root_index(conn, book_id)
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True})
+
 # columns returned for a verse (everything the UI's content modes need)
 _VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'sam_aramaic',
                'arabic_trans', 'interpretation', 'rashi', 'ramban', 'cassuto',
