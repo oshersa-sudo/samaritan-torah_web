@@ -239,6 +239,79 @@ def admin_split():
         conn.close()
     return jsonify({'ok': True})
 
+
+# Samaritan-division chapter merge/split: only sam_ch_id + sam_chapters change, so
+# the Jewish division, parashot (standard chapter:verse) and root_index are untouched.
+@app.route('/api/admin/merge_next_sam', methods=['POST'])
+def admin_merge_next_sam():
+    d = request.get_json(silent=True) or {}
+    if d.get('token') not in _ADMIN_TOKENS:
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        sam_id = int(d.get('chapter_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad chapter'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        cur = conn.execute('SELECT id,book_id,number FROM sam_chapters WHERE id=?', (sam_id,)).fetchone()
+        if not cur:
+            return jsonify({'ok': False, 'error': 'chapter not found'}), 404
+        nxt = conn.execute('SELECT id FROM sam_chapters WHERE book_id=? AND number=?',
+                           (cur['book_id'], cur['number'] + 1)).fetchone()
+        if not nxt:
+            return jsonify({'ok': False, 'error': 'אין פרק הבא לאיחוד'}), 400
+        conn.execute('UPDATE verses SET sam_ch_id=? WHERE sam_ch_id=?', (cur['id'], nxt['id']))
+        conn.execute('DELETE FROM sam_chapters WHERE id=?', (nxt['id'],))
+        conn.execute('UPDATE sam_chapters SET number=number-1 WHERE book_id=? AND number>?',
+                     (cur['book_id'], cur['number'] + 1))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True})
+
+
+@app.route('/api/admin/split_sam', methods=['POST'])
+def admin_split_sam():
+    d = request.get_json(silent=True) or {}
+    if d.get('token') not in _ADMIN_TOKENS:
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        sam_id = int(d.get('chapter_id')); after_vid = int(d.get('after_verse_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        cur = conn.execute('SELECT id,book_id,number FROM sam_chapters WHERE id=?', (sam_id,)).fetchone()
+        if not cur:
+            return jsonify({'ok': False, 'error': 'chapter not found'}), 404
+        ids = [r['id'] for r in conn.execute(
+            """SELECT v.id FROM verses v JOIN chapters c ON c.id=v.chapter_id
+               WHERE v.sam_ch_id=? ORDER BY c.number, CAST(v.number AS INTEGER), v.id""", (cur['id'],)).fetchall()]
+        if after_vid not in ids:
+            return jsonify({'ok': False, 'error': 'הפסוק אינו בפרק זה'}), 400
+        pos = ids.index(after_vid)
+        if pos >= len(ids) - 1:
+            return jsonify({'ok': False, 'error': 'לא ניתן לפצל אחרי הפסוק האחרון'}), 400
+        moved = ids[pos + 1:]
+        conn.execute('UPDATE sam_chapters SET number=number+1 WHERE book_id=? AND number>?',
+                     (cur['book_id'], cur['number']))
+        c2 = conn.cursor()
+        c2.execute('INSERT INTO sam_chapters (book_id, number) VALUES (?,?)', (cur['book_id'], cur['number'] + 1))
+        new_id = c2.lastrowid
+        conn.executemany('UPDATE verses SET sam_ch_id=? WHERE id=?', [(new_id, vid) for vid in moved])
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True})
+
 # columns returned for a verse (everything the UI's content modes need)
 _VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'sam_aramaic',
                'arabic_trans', 'interpretation', 'rashi', 'ramban', 'cassuto',

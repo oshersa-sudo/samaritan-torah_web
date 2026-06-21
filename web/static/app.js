@@ -370,8 +370,8 @@ function paintVerses(){
   const c=$('content'); c.innerHTML='';
   c.classList.toggle('sam', S.samFont && !S.english);   // enables Samaritan justify
   if(!S.verses.length){ c.appendChild(el('div','note','אין פסוקים')); return; }
-  // admin-only chapter tools (Jewish division): merge with next / split here
-  if(ADMIN.token && S.chMode==='standard'){
+  // admin-only chapter tools: merge with next / split here (current division)
+  if(ADMIN.token){
     const bar=el('div','admin-bar');
     if(S.splitMode){
       bar.appendChild(el('span','admin-hint', t('split_pick')));
@@ -1535,14 +1535,16 @@ async function reloadChapters(){
 async function mergeNext(){
   if(!ADMIN.token) return;
   if(!await askConfirm(t('merge_next'), t('merge_q'), t('confirm_yes'), t('c_cancel'))) return;
-  let r; try{ r=await apiPost('admin/merge_next', {token:ADMIN.token, chapter_id:S.curChId}); }catch(e){ r={ok:false}; }
+  const ep = S.chMode==='samaritan' ? 'admin/merge_next_sam' : 'admin/merge_next';
+  let r; try{ r=await apiPost(ep, {token:ADMIN.token, chapter_id:S.curChId}); }catch(e){ r={ok:false}; }
   if(r&&r.ok){ await reloadChapters(); showInfo(t('m_admin'), `<div class="note">${esc(t('merged_ok'))}</div>`); }
   else showInfo(t('m_admin'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
 }
 async function askSplit(v){
   if(!await askConfirm(t('split_chapter'), t('split_q')+v.number+'?', t('confirm_yes'), t('c_cancel'))) return;
   S.splitMode=false;
-  let r; try{ r=await apiPost('admin/split', {token:ADMIN.token, chapter_id:S.curChId, after_verse_id:v.id}); }catch(e){ r={ok:false}; }
+  const ep = S.chMode==='samaritan' ? 'admin/split_sam' : 'admin/split';
+  let r; try{ r=await apiPost(ep, {token:ADMIN.token, chapter_id:S.curChId, after_verse_id:v.id}); }catch(e){ r={ok:false}; }
   await reloadChapters();
   showInfo(t('m_admin'), `<div class="note">${esc(r&&r.ok ? t('split_ok') : ((r&&r.error)||t('edit_err')))}</div>`);
 }
