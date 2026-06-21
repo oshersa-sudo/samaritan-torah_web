@@ -37,6 +37,73 @@ except Exception:
 APP_VERSION = '1.0'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 
+
+# ── admin text editing (LOCAL only; secured entirely server-side) ─────────────
+# Secrets come from a gitignored .env that exists only on the maintainer's
+# machine; the public deployment has no .env, so ADMIN_PASSWORD is empty and
+# admin login / editing is disabled there. The password is NEVER sent to the
+# client. Edits are restricted to a whitelist of (table, column) pairs and
+# require a valid session token, so nothing else can be written.
+def _load_dotenv():
+    p = os.path.join(_ROOT, '.env')
+    if os.path.exists(p):
+        for line in open(p, encoding='utf-8'):
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                k, v = line.split('=', 1)
+                os.environ.setdefault(k.strip(), v.strip().strip('"\''))
+
+
+_load_dotenv()
+import secrets, hmac
+ADMIN_USER = os.environ.get('ADMIN_USER', 'oshersa')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
+_ADMIN_TOKENS = set()
+_EDITABLE = {'verses': {'text', 'masoretic_text', 'interpretation', 'sam_aramaic',
+                        'sam_hebrew', 'simple_hebrew', 'english', 'arabic_trans'}}
+
+
+@app.route('/api/admin/status')
+def admin_status():
+    return jsonify({'enabled': bool(ADMIN_PASSWORD)})
+
+
+@app.route('/api/admin/login', methods=['POST'])
+def admin_login():
+    if not ADMIN_PASSWORD:
+        return jsonify({'ok': False, 'disabled': True})
+    d = request.get_json(silent=True) or {}
+    u, p = str(d.get('user', '')), str(d.get('password', ''))
+    if hmac.compare_digest(u, ADMIN_USER) and hmac.compare_digest(p, ADMIN_PASSWORD):
+        tok = secrets.token_urlsafe(24)
+        _ADMIN_TOKENS.add(tok)
+        return jsonify({'ok': True, 'token': tok})
+    return jsonify({'ok': False})
+
+
+@app.route('/api/admin/edit', methods=['POST'])
+def admin_edit():
+    d = request.get_json(silent=True) or {}
+    if d.get('token') not in _ADMIN_TOKENS:
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    table, col = d.get('table'), d.get('column')
+    if table not in _EDITABLE or col not in _EDITABLE[table]:
+        return jsonify({'ok': False, 'error': 'field not editable'}), 400
+    try:
+        vid = int(d.get('id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad id'}), 400
+    val = d.get('value', '')
+    if not isinstance(val, str):
+        return jsonify({'ok': False, 'error': 'bad value'}), 400
+    conn = db.get_connection()
+    try:
+        conn.execute('UPDATE %s SET %s = ? WHERE id = ?' % (table, col), (val, vid))
+        conn.commit()
+    finally:
+        conn.close()
+    return jsonify({'ok': True})
+
 # columns returned for a verse (everything the UI's content modes need)
 _VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'sam_aramaic',
                'arabic_trans', 'interpretation', 'rashi', 'ramban', 'cassuto',

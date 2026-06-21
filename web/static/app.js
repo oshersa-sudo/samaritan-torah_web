@@ -52,6 +52,9 @@ const I18N = {
     col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'מילון טל', col_arabic:'ערבית',
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
+    m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
+    adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
+    edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
   },
   en: {
     app_title:'The Israelite Samaritan Torah', div_jewish:'Jewish division', div_sam:'Samaritan division',
@@ -82,6 +85,9 @@ const I18N = {
     col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Tal dictionary', col_arabic:'Arabic',
     searching:'Searching…', no_interp:'No commentary for these verses',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
+    m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
+    adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
+    edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
   },
   ar: {
     app_title:'التوراة السامرية الإسرائيلية', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
@@ -112,6 +118,9 @@ const I18N = {
     col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'معجم طال', col_arabic:'العربية',
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
+    m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
+    adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
+    edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
   },
 };
 let LANG = (localStorage.getItem('uiLang') && I18N[localStorage.getItem('uiLang')]) ? localStorage.getItem('uiLang') : 'he';
@@ -392,6 +401,7 @@ function addPlainRows(c, verses){
     t.style.fontSize = (S.english?17:fs)+'px';
     if(S.english){ row.appendChild(num); row.appendChild(t); }
     else { row.appendChild(t); row.appendChild(num); }
+    addPencil(row, v.id, S.english?'english':'text', ()=> S.english?(v.english||''):(v.text||''));
     c.appendChild(row);
   }
 }
@@ -457,6 +467,7 @@ async function buildInterpret(c, verses){
     const t = el('div','vtext interp', esc(txt));
     t.style.fontSize = fs+'px';
     row.appendChild(t); row.appendChild(num);
+    addPencil(row, v.id, 'interpretation', ()=>(m[v.id]||''));
     c.appendChild(row);
   }
   if(!any) c.appendChild(el('div','note',t('no_interp')));
@@ -1114,6 +1125,7 @@ function menuAction(a){
   if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
   else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
   else if(a==='install')   doInstall();
+  else if(a==='adminlogin') openAdminLogin();
   else if(a==='lang')      $('langModal').classList.remove('hidden');
   else if(a==='whatsnew')  showWhatsNew();
   else if(a==='help')      showHelp();
@@ -1436,6 +1448,54 @@ document.querySelectorAll('#langModal .lang-opt, #langModal .close').forEach(b=>
     if(save) localStorage.setItem('uiLang', lang); else localStorage.removeItem('uiLang');
   };
 });
+
+// ── admin editing (login + floating-pencil edit; gated entirely server-side) ──
+const ADMIN = { token:null };
+// reveal "כניסת מנהל" only where admin is enabled (the local server has a password)
+api('admin/status').then(s=>{ if(s && s.enabled){ $('adminSep').classList.remove('hidden'); $('adminMenuItem').classList.remove('hidden'); } }).catch(()=>{});
+function openAdminLogin(){
+  if(ADMIN.token){ ADMIN.token=null; $('adminMenuItem').textContent=t('m_admin'); paintVerses(); return; } // logout
+  $('admErr').textContent=''; $('admUser').value=''; $('admPass').value='';
+  $('adminModal').classList.remove('hidden'); $('admUser').focus();
+}
+$('admCancel').onclick=()=>$('adminModal').classList.add('hidden');
+$('admLogin').onclick=async ()=>{
+  const user=$('admUser').value.trim(), password=$('admPass').value;
+  $('admErr').textContent='';
+  let r; try{ r=await apiPost('admin/login', {user, password}); }catch(e){ r={ok:false}; }
+  if(r && r.ok){
+    ADMIN.token=r.token; $('adminModal').classList.add('hidden');
+    $('adminMenuItem').textContent='✓ '+t('m_admin');
+    showInfo(t('m_admin'), `<div class="note">${esc(t('admin_on'))}</div>`);
+    paintVerses();
+  } else { $('admErr').textContent=t('adm_bad'); }
+};
+$('admPass').addEventListener('keydown',e=>{ if(e.key==='Enter') $('admLogin').click(); });
+// add a floating edit pencil (admin only) to a text row → opens the edit window
+function addPencil(rowEl, verseId, column, getText){
+  if(!ADMIN.token) return;
+  rowEl.classList.add('editable-row');
+  const p=el('button','edit-pencil','✎'); p.title=t('edit_title');
+  p.onclick=(ev)=>{ ev.stopPropagation(); openEdit(verseId, column, getText()); };
+  rowEl.prepend(p);   // leftmost (the row is LTR) → floats to the left of the text
+}
+let _editCtx=null;
+function openEdit(verseId, column, text){
+  _editCtx={verseId, column};
+  $('editTitle').textContent=t('edit_title'); $('editErr').textContent=''; $('editArea').value=text||'';
+  $('editModal').classList.remove('hidden'); $('editArea').focus();
+}
+$('editCancel').onclick=()=>$('editModal').classList.add('hidden');
+$('editSave').onclick=async ()=>{
+  if(!_editCtx || !ADMIN.token) return;
+  const value=$('editArea').value; $('editErr').textContent='';
+  let r; try{ r=await apiPost('admin/edit', {token:ADMIN.token, table:'verses', column:_editCtx.column, id:_editCtx.verseId, value}); }catch(e){ r={ok:false}; }
+  if(r && r.ok){
+    const v=(S.verses||[]).find(x=>x.id===_editCtx.verseId); if(v) v[_editCtx.column]=value;
+    _apiCache.clear();                 // drop cached responses holding the old text
+    $('editModal').classList.add('hidden'); paintVerses();
+  } else { $('editErr').textContent=t('edit_err'); }
+};
 
 // ── start ────────────────────────────────────────────────────────────────────
 showBooks();

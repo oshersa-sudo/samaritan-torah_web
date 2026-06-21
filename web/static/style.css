@@ -302,6 +302,14 @@ footer a{ color:var(--accent); text-decoration:none; }
             font-family:inherit; font-size:17px; cursor:pointer; }
 .menu-item:hover{ background:#e7ecfb; }
 .menu-item:disabled{ opacity:.4; cursor:default; pointer-events:none; }
+.menu-sep{ height:1px; background:rgba(26,56,115,.28); margin:8px 14px; }
+.menu-item.admin-item{ color:var(--accent); font-weight:700; }
+.edit-pencil{ flex:0 0 auto; align-self:flex-start; width:28px; height:28px; border:0;
+              border-radius:50%; background:#f0c33c; color:#3a2d00; font-size:15px; cursor:pointer;
+              box-shadow:0 1px 4px rgba(0,0,0,.3); line-height:1; }
+.edit-pencil:hover{ background:#ffd84d; }
+#editArea{ width:100%; box-sizing:border-box; font-family:inherit; font-size:18px; line-height:1.6;
+           direction:rtl; text-align:right; border:1px solid var(--line); border-radius:8px; padding:8px; }
 
 /* contact form */
 .form-row{ display:flex; flex-direction:column; gap:4px; text-align:right; margin-bottom:4px; }

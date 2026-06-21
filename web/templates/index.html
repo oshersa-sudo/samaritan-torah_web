@@ -158,6 +158,8 @@
   <button class="menu-item" data-act="help" data-i18n="m_help">עזרה למשתמש</button>
   <button class="menu-item" data-act="version" data-i18n="m_version">גרסא נוכחית</button>
   <button class="menu-item" data-act="contact" data-i18n="m_contact">צור קשר</button>
+  <div id="adminSep" class="menu-sep hidden"></div>
+  <button id="adminMenuItem" class="menu-item admin-item hidden" data-act="adminlogin" data-i18n="m_admin">כניסת מנהל</button>
 </nav>
 
 <!-- info window (what's new / current version) -->
@@ -191,6 +193,33 @@
     <div class="modal-title" id="popupTitle"></div>
     <div id="popupBody"></div>
     <button id="popupClose" class="popup-close" data-i18n="close">סגור</button>
+  </div>
+</div>
+
+<!-- admin login -->
+<div id="adminModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title" data-i18n="m_admin">כניסת מנהל</div>
+    <div class="form-row"><label for="admUser" data-i18n="adm_user">שם משתמש</label><input id="admUser" type="text" dir="ltr" autocomplete="off"></div>
+    <div class="form-row"><label for="admPass" data-i18n="adm_pass">סיסמה</label><input id="admPass" type="password" dir="ltr" autocomplete="off"></div>
+    <div id="admErr" class="form-err"></div>
+    <div class="form-btns">
+      <button id="admLogin" class="form-send" data-i18n="adm_login">כניסה</button>
+      <button id="admCancel" class="popup-close" data-i18n="c_cancel">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- admin text-edit window -->
+<div id="editModal" class="modal hidden">
+  <div class="modal-box big">
+    <div class="modal-title" id="editTitle" data-i18n="edit_title">עריכת טקסט</div>
+    <textarea id="editArea" rows="7"></textarea>
+    <div id="editErr" class="form-err"></div>
+    <div class="form-btns">
+      <button id="editSave" class="form-send" data-i18n="edit_save">שמור שינוי</button>
+      <button id="editCancel" class="popup-close" data-i18n="c_cancel">ביטול</button>
+    </div>
   </div>
 </div>
 
