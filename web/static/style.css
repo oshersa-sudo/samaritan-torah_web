@@ -324,13 +324,12 @@ footer a{ color:var(--accent); text-decoration:none; }
 .admin-hint{ flex:1 1 100%; color:var(--navy); font-weight:700; font-size:14px; }
 
 /* floating bookmark button + tooltip */
-.bm-fab{ position:fixed; left:8px; top:160px; z-index:40; width:46px; height:46px; border:0;
-         border-radius:50%; background:var(--accent); color:#fff; font-size:22px; cursor:move;
-         touch-action:none; user-select:none; -webkit-user-select:none;
-         box-shadow:0 2px 8px rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; }
-.bm-fab:hover::after{ content:attr(title); position:absolute; left:54px; white-space:nowrap;
-         background:var(--navy); color:#fff; font-size:13px; padding:5px 9px; border-radius:6px;
-         box-shadow:0 1px 5px rgba(0,0,0,.3); }
+/* bookmark sign — sits inside the navbar between − and +, no background */
+.bm-nav{ flex:0 0 auto; border:0; background:transparent; padding:0 6px; font-size:26px;
+         line-height:1; cursor:pointer; position:relative; }
+.bm-nav:hover::after{ content:attr(title); position:absolute; bottom:48px; left:50%;
+         transform:translateX(-50%); white-space:nowrap; background:var(--navy); color:#fff;
+         font-size:13px; padding:5px 9px; border-radius:6px; box-shadow:0 1px 5px rgba(0,0,0,.3); z-index:50; }
 /* bookmarks list */
 #bmList{ max-height:55vh; overflow-y:auto; }
 .bm-row{ display:flex; align-items:flex-start; gap:8px; padding:8px 4px;
