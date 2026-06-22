@@ -199,6 +199,12 @@ body{
 .tb.accent{ background:var(--accent); }
 /* search button gets its own colour so it stands out from "עיון" next to it */
 #searchBtn{ background:#1f8a8a; }
+/* small magnifying-glass icon before the "חיפוש" label (i18n sets the text; this
+   pseudo-element is independent so it isn't wiped) */
+#searchBtn::before{ content:''; display:inline-block; width:13px; height:13px; margin-inline-end:5px;
+   vertical-align:-1px; background-color:currentColor;
+   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cline x1='21' y1='21' x2='15.2' y2='15.2'/%3E%3C/svg%3E") center/contain no-repeat;
+           mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cline x1='21' y1='21' x2='15.2' y2='15.2'/%3E%3C/svg%3E") center/contain no-repeat; }
 .tb.green{ background:var(--share); flex:0 0 auto; min-width:54px; }
 #shareBtn{ display:flex; align-items:center; justify-content:center; padding:10px 12px; }
 #shareBtn svg{ display:block; }
