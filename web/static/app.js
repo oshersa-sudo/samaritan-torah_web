@@ -39,7 +39,7 @@ const I18N = {
     m_genealogy:'אילן היוחסין השומרוני המלא', m_install:'התקנת אפליקציה', m_lang:'שנה שפה',
     m_whatsnew:'מה חדש?', m_help:'עזרה למשתמש', m_version:'גרסא נוכחית', m_contact:'צור קשר',
     share_title:'שיתוף', email:'אימייל', close:'סגור',
-    copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה',
+    copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה', share_copy:'העתקה ללוח',
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
     c_name:'שם מלא', c_email:'כתובת מייל', c_msg:'הודעה (עד 100 מילים)', c_send:'שלח', c_cancel:'ביטול',
     lang_save_q:'האם ברצונך לשמור הגדרה זו?', lang_save_note:'הבחירה תישמר במכשיר זה לפעמים הבאות.',
@@ -85,7 +85,7 @@ const I18N = {
     m_genealogy:'Full Samaritan genealogy', m_install:'Install app', m_lang:'Change language',
     m_whatsnew:"What's new?", m_help:'Help', m_version:'Current version', m_contact:'Contact us',
     share_title:'Share', email:'Email', close:'Close',
-    copied:'Text copied', copy_fail:'Copy failed',
+    copied:'Text copied', copy_fail:'Copy failed', share_copy:'Copy to clipboard',
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
     c_name:'Full name', c_email:'Email address', c_msg:'Message (up to 100 words)', c_send:'Send', c_cancel:'Cancel',
     lang_save_q:'Save this language preference?', lang_save_note:'It will be saved on this device for next time.',
@@ -131,7 +131,7 @@ const I18N = {
     m_genealogy:'شجرة الأنساب السامرية الكاملة', m_install:'تثبيت التطبيق', m_lang:'تغيير اللغة',
     m_whatsnew:'ما الجديد؟', m_help:'مساعدة المستخدم', m_version:'الإصدار الحالي', m_contact:'اتصل بنا',
     share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق',
-    copied:'تم نسخ النص', copy_fail:'فشل النسخ',
+    copied:'تم نسخ النص', copy_fail:'فشل النسخ', share_copy:'نسخ إلى الحافظة',
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
     c_name:'الاسم الكامل', c_email:'البريد الإلكتروني', c_msg:'رسالة (حتى 100 كلمة)', c_send:'إرسال', c_cancel:'إلغاء',
     lang_save_q:'هل تريد حفظ هذا الإعداد؟', lang_save_note:'سيُحفظ على هذا الجهاز للمرّات القادمة.',
@@ -247,7 +247,8 @@ function setDivision(d){
 
 // ── breadcrumb ───────────────────────────────────────────────────────────────
 function setCrumbs(items){            // items: [{t, fn}]  (rightmost = first)
-  const bar = $('crumbs'); bar.innerHTML='';
+  const bar = $('crumbs');
+  bar.querySelectorAll('.crumb, .sep').forEach(e=>e.remove());   // keep #bmAddBtn pinned in the corner
   items.forEach((it,i)=>{
     const c = el('button', 'crumb'+(it.fn?'':' static'), esc(it.t));
     if(it.fn) c.onclick = it.fn;
@@ -970,17 +971,15 @@ function goBack(){
 
 // ── share ────────────────────────────────────────────────────────────────────
 function openShare(){ $('shareModal').classList.remove('hidden'); }
-// share (text screens) → copy the text currently on screen, not a link
-$('shareBtn').onclick=async ()=>{ const ok=await copyToClipboard(shareText()); toast(t(ok?'copied':'copy_fail')); };
+$('shareBtn').onclick=openShare;
 $('sShareBtn').onclick=openShare;
 document.querySelectorAll('#shareModal .share-opt').forEach(b=>b.onclick=()=>{
-  const t=b.dataset.t; $('shareModal').classList.add('hidden');
-  if(!t) return;
-  const text = shareText();
-  const url = location.href;
-  if(t==='whatsapp') open('https://wa.me/?text='+encodeURIComponent(text+'\n'+url),'_blank');
-  else if(t==='email') open('mailto:?subject='+encodeURIComponent('התורה השומרונית')+'&body='+encodeURIComponent(text+'\n'+url),'_blank');
-  else if(t==='facebook') open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),'_blank');
+  const act=b.dataset.t; $('shareModal').classList.add('hidden');
+  if(!act) return;
+  const payload = shareText()+'\n'+location.href;   // on-screen text (mode-aware) + app link
+  if(act==='whatsapp') open('https://wa.me/?text='+encodeURIComponent(payload),'_blank');
+  else if(act==='email') open('mailto:?subject='+encodeURIComponent(t('app_title'))+'&body='+encodeURIComponent(payload),'_blank');
+  else if(act==='copy') copyToClipboard(payload).then(ok=>toast(t(ok?'copied':'copy_fail')));
 });
 // the text currently shown in the verse area, following the active display mode
 // (original / a translation / the verse commentary) and any single-verse filter.

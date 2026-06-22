@@ -48,7 +48,7 @@ body{
 
 /* breadcrumb */
 #crumbs{ flex:0 0 auto; min-height:40px; display:flex; align-items:center; justify-content:flex-start;
-         gap:5px; padding:6px 10px; flex-wrap:wrap; font-size:15.5px; }
+         gap:5px; padding:6px 10px 6px 44px; flex-wrap:wrap; font-size:15.5px; position:relative; }
 #crumbs .crumb{ color:var(--accent); cursor:pointer; background:none; border:0; font-family:inherit; font-size:15.5px; padding:0; }
 
 /* clear-filter bar — shown above the verses when a single verse is filtered */
@@ -331,12 +331,13 @@ footer a{ color:var(--accent); text-decoration:none; }
 .admin-hint{ flex:1 1 100%; color:var(--navy); font-weight:700; font-size:14px; }
 
 /* floating bookmark button + tooltip */
-/* bookmark sign — sits inside the navbar between − and +, no background */
-.bm-nav{ flex:0 0 auto; border:0; background:transparent; padding:0 6px; font-size:26px;
-         line-height:1; cursor:pointer; position:relative; }
-.bm-nav:hover::after{ content:attr(title); position:absolute; bottom:48px; left:50%;
-         transform:translateX(-50%); white-space:nowrap; background:var(--navy); color:#fff;
-         font-size:13px; padding:5px 9px; border-radius:6px; box-shadow:0 1px 5px rgba(0,0,0,.3); z-index:50; }
+/* bookmark sign — pinned to the left corner of the breadcrumb row, no background */
+.bm-nav{ position:absolute; left:6px; top:50%; transform:translateY(-50%); border:0; background:transparent;
+         padding:0 4px; font-size:24px; line-height:1; cursor:pointer; z-index:5; }
+.bm-nav.hidden{ display:none; }
+.bm-nav:hover::after{ content:attr(title); position:absolute; top:34px; left:0; white-space:nowrap;
+         background:var(--navy); color:#fff; font-size:13px; padding:5px 9px; border-radius:6px;
+         box-shadow:0 1px 5px rgba(0,0,0,.3); z-index:50; }
 /* bookmarks list */
 #bmList{ max-height:55vh; overflow-y:auto; }
 .bm-row{ display:flex; align-items:flex-start; gap:8px; padding:8px 4px;

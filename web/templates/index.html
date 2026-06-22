@@ -36,8 +36,8 @@
     </div>
   </header>
 
-  <!-- breadcrumb -->
-  <nav id="crumbs"></nav>
+  <!-- breadcrumb (with the bookmark sign pinned to its left corner) -->
+  <nav id="crumbs"><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button></nav>
 
   <!-- main scrolling content -->
   <main id="content"></main>
@@ -49,7 +49,6 @@
   <div id="navbar" class="hidden">
     <button id="nextBtn" class="nav-arrow" data-i18n="next_portion">‹ פרשה הבאה</button>
     <button id="minusBtn" class="round">−</button>
-    <button id="bmAddBtn" class="bm-nav" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button>
     <button id="plusBtn" class="round">+</button>
     <button id="prevBtn" class="nav-arrow" data-i18n="prev_portion">פרשה קודמת ›</button>
   </div>
@@ -122,7 +121,7 @@
     <div class="modal-title" data-i18n="share_title">שיתוף</div>
     <button class="share-opt" data-t="whatsapp" style="background:#26ad60">WhatsApp</button>
     <button class="share-opt" data-t="email" style="background:#3473b8" data-i18n="email">אימייל</button>
-    <button class="share-opt" data-t="facebook" style="background:#3b5998">Facebook</button>
+    <button class="share-opt" data-t="copy" style="background:#555" data-i18n="share_copy">העתקה ללוח</button>
     <button class="share-opt close" data-t="" data-i18n="close">סגור</button>
   </div>
 </div>
