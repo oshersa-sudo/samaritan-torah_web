@@ -450,6 +450,11 @@ function paintVerses(){
     if(S.english) c.appendChild(el('div','eng-credit',
       '<b>The Samaritan Pentateuch</b><br>An English Translation with a Parallel Annotated Hebrew Text<br>Moshe Florentin and Abraham Tal'));
     addPlainRows(c, verses);
+    // three centered asterisks marking the end of a Samaritan portion: shown
+    // after the last verse of the portion's last chapter (Samaritan original text).
+    if(S.chMode==='samaritan' && !S.english && S.verseFilter==null
+       && Array.isArray(S.chList) && S.chList.length && S.chIdx===S.chList.length-1)
+      c.appendChild(el('div','portion-end','✶ ✶ ✶'));
     if(S.dict && !S.english) buildDict(c, verses);
   }
 }
