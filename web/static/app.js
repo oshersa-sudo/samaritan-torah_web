@@ -39,6 +39,7 @@ const I18N = {
     m_genealogy:'אילן היוחסין השומרוני המלא', m_install:'התקנת אפליקציה', m_lang:'שנה שפה',
     m_whatsnew:'מה חדש?', m_help:'עזרה למשתמש', m_version:'גרסא נוכחית', m_contact:'צור קשר',
     share_title:'שיתוף', email:'אימייל', close:'סגור',
+    copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה',
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
     c_name:'שם מלא', c_email:'כתובת מייל', c_msg:'הודעה (עד 100 מילים)', c_send:'שלח', c_cancel:'ביטול',
     lang_save_q:'האם ברצונך לשמור הגדרה זו?', lang_save_note:'הבחירה תישמר במכשיר זה לפעמים הבאות.',
@@ -84,6 +85,7 @@ const I18N = {
     m_genealogy:'Full Samaritan genealogy', m_install:'Install app', m_lang:'Change language',
     m_whatsnew:"What's new?", m_help:'Help', m_version:'Current version', m_contact:'Contact us',
     share_title:'Share', email:'Email', close:'Close',
+    copied:'Text copied', copy_fail:'Copy failed',
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
     c_name:'Full name', c_email:'Email address', c_msg:'Message (up to 100 words)', c_send:'Send', c_cancel:'Cancel',
     lang_save_q:'Save this language preference?', lang_save_note:'It will be saved on this device for next time.',
@@ -129,6 +131,7 @@ const I18N = {
     m_genealogy:'شجرة الأنساب السامرية الكاملة', m_install:'تثبيت التطبيق', m_lang:'تغيير اللغة',
     m_whatsnew:'ما الجديد؟', m_help:'مساعدة المستخدم', m_version:'الإصدار الحالي', m_contact:'اتصل بنا',
     share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق',
+    copied:'تم نسخ النص', copy_fail:'فشل النسخ',
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
     c_name:'الاسم الكامل', c_email:'البريد الإلكتروني', c_msg:'رسالة (حتى 100 كلمة)', c_send:'إرسال', c_cancel:'إلغاء',
     lang_save_q:'هل تريد حفظ هذا الإعداد؟', lang_save_note:'سيُحفظ على هذا الجهاز للمرّات القادمة.',
@@ -967,7 +970,8 @@ function goBack(){
 
 // ── share ────────────────────────────────────────────────────────────────────
 function openShare(){ $('shareModal').classList.remove('hidden'); }
-$('shareBtn').onclick=openShare;
+// share (text screens) → copy the text currently on screen, not a link
+$('shareBtn').onclick=async ()=>{ const ok=await copyToClipboard(shareText()); toast(t(ok?'copied':'copy_fail')); };
 $('sShareBtn').onclick=openShare;
 document.querySelectorAll('#shareModal .share-opt').forEach(b=>b.onclick=()=>{
   const t=b.dataset.t; $('shareModal').classList.add('hidden');
@@ -978,15 +982,38 @@ document.querySelectorAll('#shareModal .share-opt').forEach(b=>b.onclick=()=>{
   else if(t==='email') open('mailto:?subject='+encodeURIComponent('התורה השומרונית')+'&body='+encodeURIComponent(text+'\n'+url),'_blank');
   else if(t==='facebook') open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),'_blank');
 });
+// the text currently shown in the verse area, following the active display mode
+// (original / a translation / the verse commentary) and any single-verse filter.
 function shareText(){
-  if(S.view==='verses' && S.verses.length){
+  if(S.view==='verses' && Array.isArray(S.verses) && S.verses.length){
     const isSam=S.chMode==='samaritan';
     const head = `${S.bookName} ${isSam?'פרק שומרוני':'פרק'} ${S.curChNum}`;
-    const body = S.verses.filter(v=>(v.text||'').trim())
-      .map(v=>`${v.number} ${v.text}`).join('\n');
+    const col = S.english ? 'english'
+      : S.panel==='aramaic'   ? 'sam_aramaic'
+      : S.panel==='arabic'    ? 'arabic_trans'
+      : S.panel==='interpret' ? 'interpretation'
+      : 'text';
+    const vs = S.verseFilter!=null ? S.verses.filter(v=>v.id===S.verseFilter) : S.verses;
+    const body = vs.map(v=>{ const tx=(v[col]||'').trim(); return tx ? `${v.number} ${tx}` : ''; })
+                   .filter(Boolean).join('\n');
     return head+'\n'+body;
   }
   return 'התורה השומרונית הישראלית';
+}
+async function copyToClipboard(txt){
+  try{ await navigator.clipboard.writeText(txt); return true; }
+  catch(e){
+    try{ const ta=document.createElement('textarea'); ta.value=txt;
+      ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+      ta.focus(); ta.select(); const ok=document.execCommand('copy'); ta.remove(); return ok;
+    }catch(_){ return false; }
+  }
+}
+let _toastT=null;
+function toast(msg){
+  let d=$('toast'); if(!d){ d=el('div'); d.id='toast'; d.className='toast'; document.body.appendChild(d); }
+  d.textContent=msg; d.classList.add('show');
+  clearTimeout(_toastT); _toastT=setTimeout(()=>d.classList.remove('show'), 1700);
 }
 
 // ── search screen ────────────────────────────────────────────────────────────

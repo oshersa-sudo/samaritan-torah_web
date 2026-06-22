@@ -200,6 +200,13 @@ body{
 /* search button gets its own colour so it stands out from "עיון" next to it */
 #searchBtn{ background:#1f8a8a; }
 .tb.green{ background:var(--share); flex:0 0 auto; min-width:54px; }
+#shareBtn{ display:flex; align-items:center; justify-content:center; padding:10px 12px; }
+#shareBtn svg{ display:block; }
+.toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%) translateY(8px);
+        background:var(--navy); color:#fff; font-size:14px; padding:9px 16px; border-radius:8px;
+        box-shadow:0 2px 10px rgba(0,0,0,.35); z-index:80; opacity:0; pointer-events:none;
+        transition:opacity .2s, transform .2s; max-width:80%; text-align:center; }
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 .tb.on{ background:var(--active); }
 .tb:disabled{ background:#555 !important; opacity:.6; cursor:default; }
 .tb.hidden{ display:none; }
