@@ -422,8 +422,39 @@ def get_eyalk_commentary(verse_ids):
             ORDER BY s.ord""",
         verse_ids
     ).fetchall()
+    out = [{'parsha': r['parsha'] or '', 'text': r['text'] or ''} for r in rows]
+    # the responsa of Jacob ben Aaron ("שו"ת") are also shown under this source
+    try:
+        srows = conn.execute(
+            f"""SELECT DISTINCT s.title, s.ord, s.text FROM shyt_sections s
+                JOIN shyt_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders}) ORDER BY s.ord""",
+            verse_ids).fetchall()
+        out += [{'parsha': 'שו"ת — ' + (r['title'] or ''), 'text': r['text'] or ''}
+                for r in srows]
+    except Exception:
+        pass
     conn.close()
-    return [{'parsha': r['parsha'] or '', 'text': r['text'] or ''} for r in rows]
+    return out
+
+
+def get_shyt_commentary(verse_ids):
+    """שו"ת של יעקב בן אהרן הכהן (responsa, from ספר ההארה) relevant to any of the
+    given verses, in reading order. Each item is {title, text}."""
+    if not verse_ids:
+        return []
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT DISTINCT s.title, s.ord, s.text FROM shyt_sections s
+                JOIN shyt_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders}) ORDER BY s.ord""",
+            verse_ids).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    return [{'title': r['title'] or '', 'text': r['text'] or ''} for r in rows]
 
 
 def get_tzdaka_commentary(verse_ids):

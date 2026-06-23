@@ -653,6 +653,11 @@ def api_sir():
     return jsonify(db.get_sir_commentary(_ids_arg()))
 
 
+@app.route('/api/shyt')
+def api_shyt():
+    return jsonify(db.get_shyt_commentary(_ids_arg()))
+
+
 @app.route('/api/apparatus')
 def api_apparatus():
     return jsonify(db.get_apparatus(_ids_arg()))
