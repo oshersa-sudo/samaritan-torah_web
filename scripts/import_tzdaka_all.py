@@ -31,9 +31,13 @@ APPLY = '--apply' in sys.argv
 DB = 'data/torah.db'
 BOOK = 'בראשית'
 TZDIR = 'תרגום צדקה אלכים'        # the source docx were moved into this subfolder
-FILES = [os.path.join(TZDIR, 'tzdaka_bereshit_alef_bet_39.docx'),
-         os.path.join(TZDIR, 'tzdaka_bereshit_yod-bet_yod-chet.docx'),
-         os.path.join(TZDIR, 'tzdaka_bereshit_18-20.docx')]
+FILES = [os.path.join(TZDIR, n) for n in (
+    'tzdaka_bereshit_alef_bet_39.docx',
+    'tzdaka_bereshit_yod-bet_yod-chet.docx',
+    'tzdaka_bereshit_18-20.docx',
+    # ch 43-46 use the ref-line format ("מג:א — „incipit” …") handled by parse_file
+    'sadaqah_gen43_full.docx', 'sadaqah_gen44_full.docx',
+    'sadaqah_gen45_full.docx', 'sadaqah_gen46_full.docx')]
 # manuscripts in the "(verse-number) <verse text>  + commentary paragraphs" format
 # (Gen 21–30). The "SP_aligned" ch21 files are skipped — their commentary is an
 # OCR-failure placeholder, superseded by the full ch21 file. gen25b_26 spans two
@@ -54,6 +58,9 @@ NUM = r'[א-ת]+(?:[״׳][א-ת]*)*'                       # numeral, gershayim/
 REF_RE = re.compile(r'^(%s)\s*:\s*(%s(?:[–\-]%s)?)' % (NUM, NUM, NUM))
 # a standalone ref-line in a headingless file: ref + separator (· or —) + incipit
 LINE_RE = re.compile(r'^(%s)\s*:\s*(%s(?:[–\-]%s)?)\s*[·—]\s*[„"]' % (NUM, NUM, NUM))
+# an authoritative bracketed ref at the line end, e.g. '… [מה:כד]'; the gen43-46
+# files carry it and it overrides a typo in the leading ref.
+BRACK_RE = re.compile(r'\[(%s)\s*:\s*(%s(?:[–\-]%s)?)\]' % (NUM, NUM, NUM))
 
 
 def gem(s):
@@ -69,8 +76,12 @@ def parse_ref(h):
     m = REF_RE.match(h.strip())
     if not m:
         return None
-    ch = gem(m.group(1))
-    vs = re.split(r'[–\-]', m.group(2))
+    rch, rvs = m.group(1), m.group(2)
+    mb = BRACK_RE.search(h)                 # a bracketed ref overrides the leading one
+    if mb:
+        rch, rvs = mb.group(1), mb.group(2)
+    ch = gem(rch)
+    vs = re.split(r'[–\-]', rvs)
     v1 = gem(vs[0]); v2 = gem(vs[1]) if len(vs) > 1 and gem(vs[1]) else v1
     rest = h[m.end():]
     inc = ''
@@ -78,7 +89,9 @@ def parse_ref(h):
     if mi:
         inc = mi.group(1).strip()
     topic = rest.split('·', 1)[1].strip() if '·' in rest else ''
-    ref = '%s:%s' % (m.group(1), m.group(2))
+    # strip a trailing bracketed ref from the topic so it isn't shown as the title
+    topic = re.sub(r'\s*\[%s\s*:\s*%s(?:[–\-]%s)?\]\s*$' % (NUM, NUM, NUM), '', topic).strip()
+    ref = '%s:%s' % (rch, rvs)
     return ch, list(range(v1, v2 + 1)), inc, topic, ref
 
 

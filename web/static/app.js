@@ -44,6 +44,8 @@ const I18N = {
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
     cmp_title:'בחר נוסח להשוואה', cv_masoretic:'נוסח המסורה', cv_septuagint:'תרגום השבעים',
     cmp_sam:'נוסח שומרון', cmp_info:'מידע על הנוסח',
+    ci_masoretic:'נוסח המסורה הוא הנוסח היהודי המקובל של המקרא, שנמסר, נוקד וטוים בידי בעלי המסורה בטבריה (סוף האלף הראשון לסה״נ). הוא הבסיס לרוב מהדורות התנ״ך הנדפסות.',
+    ci_septuagint:'תרגום השבעים (LXX) הוא התרגום היווני הקדום של התורה, שנעשה באלכסנדריה במאה ה־3 לפנה״ס. הוא משקף לעיתים נוסח עברי קדום השונה מן המסורה, ובמקומות רבים קרוב דווקא לנוסח השומרוני.',
     c_name:'שם מלא', c_email:'כתובת מייל', c_msg:'הודעה (עד 100 מילים)', c_send:'שלח', c_cancel:'ביטול',
     lang_save_q:'האם ברצונך לשמור הגדרה זו?', lang_save_note:'הבחירה תישמר במכשיר זה לפעמים הבאות.',
     save_yes:'כן, שמור', save_no:'לא, רק הפעם',
@@ -98,6 +100,8 @@ const I18N = {
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
     cmp_title:'Choose a version to compare', cv_masoretic:'Masoretic Text', cv_septuagint:'Septuagint',
     cmp_sam:'Samaritan', cmp_info:'About this version',
+    ci_masoretic:'The Masoretic Text is the authoritative Jewish text of the Hebrew Bible, transmitted and vocalised by the Masoretes of Tiberias (late 1st millennium CE). It underlies most printed editions of the Bible.',
+    ci_septuagint:'The Septuagint (LXX) is the ancient Greek translation of the Torah, made in Alexandria in the 3rd century BCE. It sometimes reflects an early Hebrew text differing from the Masoretic — and in many places agrees with the Samaritan.',
     c_name:'Full name', c_email:'Email address', c_msg:'Message (up to 100 words)', c_send:'Send', c_cancel:'Cancel',
     lang_save_q:'Save this language preference?', lang_save_note:'It will be saved on this device for next time.',
     save_yes:'Yes, save', save_no:'No, just now',
@@ -152,6 +156,8 @@ const I18N = {
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
     cmp_title:'اختر النصّ للمقارنة', cv_masoretic:'النصّ الماسوري', cv_septuagint:'الترجمة السبعينية',
     cmp_sam:'النصّ السامري', cmp_info:'حول هذا النصّ',
+    ci_masoretic:'النصّ الماسوري هو النصّ اليهودي المعتمد للكتاب المقدّس العبري، نقله وشكّله علماء المسورة في طبريّة (أواخر الألفية الأولى م). وهو أساس معظم الطبعات المطبوعة.',
+    ci_septuagint:'الترجمة السبعينية (LXX) هي الترجمة اليونانية القديمة للتوراة، أُنجزت في الإسكندرية في القرن الثالث ق.م. تعكس أحيانًا نصًّا عبريًّا قديمًا يختلف عن الماسوري، ويقارب في مواضع كثيرة النصّ السامري.',
     c_name:'الاسم الكامل', c_email:'البريد الإلكتروني', c_msg:'رسالة (حتى 100 كلمة)', c_send:'إرسال', c_cancel:'إلغاء',
     lang_save_q:'هل تريد حفظ هذا الإعداد؟', lang_save_note:'سيُحفظ على هذا الجهاز للمرّات القادمة.',
     save_yes:'نعم، احفظ', save_no:'لا، هذه المرّة فقط',
@@ -542,11 +548,6 @@ function origPanel(verses){
   return panelEl('הטקסט המקורי', txt);
 }
 
-// Wikipedia article (Hebrew) for each compared version — opened from the info icon.
-const CMP_WIKI = {
-  masoretic:  'https://he.wikipedia.org/wiki/נוסח_המסורה',
-  septuagint: 'https://he.wikipedia.org/wiki/תרגום_השבעים'
-};
 async function buildCompare(c, verses){
   const ver = S.cmpVersion || 'masoretic';
   // the "other" side: Masoretic text, or — for the Septuagint — the Masoretic text
@@ -568,12 +569,18 @@ async function buildCompare(c, verses){
   // (source-version cell | Samaritan cell). Grid rows stay aligned even when a verse
   // wraps. Where a verse has no counterpart on a side, that cell shows "---".
   const grid=el('div','cmp-grid');
-  // left header carries the version name + a small info icon linking to Wikipedia
+  // left header carries the version name + a small info icon; tapping it opens a
+  // concise in-app floating popup about the version (Masoretic / Septuagint)
+  const verName = t(ver==='septuagint'?'cv_septuagint':'cv_masoretic');
   const lh=el('div','cmp-cell cmp-head');
-  lh.appendChild(document.createTextNode(t(ver==='septuagint'?'cv_septuagint':'cv_masoretic')+' '));
-  const info=el('a','cmp-info'); info.href=CMP_WIKI[ver]||CMP_WIKI.masoretic;
-  info.target='_blank'; info.rel='noopener'; info.title=t('cmp_info');
-  info.setAttribute('aria-label',t('cmp_info')); info.textContent='ⓘ';
+  lh.appendChild(document.createTextNode(verName+' '));
+  const info=el('span','cmp-info'); info.textContent='ⓘ';
+  info.title=t('cmp_info'); info.setAttribute('role','button'); info.tabIndex=0;
+  info.setAttribute('aria-label',t('cmp_info'));
+  const showVer=()=>showInfo(verName,
+    `<div class="ver-info">${esc(t(ver==='septuagint'?'ci_septuagint':'ci_masoretic'))}</div>`);
+  info.onclick=showVer;
+  info.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); showVer(); } };
   lh.appendChild(info);
   grid.appendChild(lh);
   grid.appendChild(el('div','cmp-cell cmp-head', t('cmp_sam')));
