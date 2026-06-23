@@ -509,3 +509,19 @@ footer a{ color:var(--accent); text-decoration:none; }
 @media (prefers-reduced-motion:reduce){
   #samaritan-splash *{ animation-duration:.01ms!important; animation-delay:0ms!important; transition-duration:.2s!important; }
 }
+/* transition layer — the dimmed etching the splash dissolves through before the
+   app appears; it then fades slowly into the app */
+#splash-image{
+  position:fixed; inset:0; z-index:99998; background:#f1ead7;
+  opacity:1; transition:opacity 2.4s ease;
+}
+#splash-image .pic{
+  position:absolute; inset:0;
+  background:url('/static/img/splash_elder.jpg') center/cover no-repeat;
+  opacity:.55; filter:sepia(.18) contrast(.96) brightness(1.02);
+}
+#splash-image::after{   /* soft vignette to settle it into the page */
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(120% 100% at 50% 42%, transparent 55%, rgba(120,104,70,.22) 100%);
+}
+#splash-image.is-gone{ opacity:0; pointer-events:none; }

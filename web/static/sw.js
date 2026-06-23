@@ -1,13 +1,13 @@
 /* Service worker: NETWORK-FIRST so the app always loads the latest code when
    online (an earlier cache-first version served stale assets after updates),
    falling back to the cache only when offline. /api/* always hits the network. */
-const CACHE = 'torah-web-v51';
+const CACHE = 'torah-web-v52';
 const SHELL = [
   '/', '/static/style.css', '/static/app.js', '/manifest.json',
   '/static/img/icon-192.png', '/static/img/icon-512.png',
   '/static/img/app_icon.png', '/static/img/torah_scroll_nobg.png',
   '/static/img/icon_book_dark.png', '/static/img/icon_portion_dark.png',
-  '/static/img/background.jpg',
+  '/static/img/background.jpg', '/static/img/splash_elder.jpg',
   '/fonts/SBL_Hbrw.ttf', '/fonts/Sam_font.ttf',
   '/fonts/Amiri-Regular.ttf', '/fonts/CharisSIL-Regular.ttf'
 ];

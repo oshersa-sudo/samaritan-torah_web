@@ -115,6 +115,10 @@
   </div>
 </div>
 
+<!-- ░ transition layer: a dimmed etching the splash dissolves through on its way
+     into the app, then slowly fades away itself ░ -->
+<div id="splash-image" aria-hidden="true"><div class="pic"></div></div>
+
 <div id="app">
 
   <!-- header -->
@@ -399,13 +403,31 @@
     });
   }
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  // transition layer (a dimmed etching the splash dissolves through, then it fades
+  // slowly into the app). Skipped gracefully if the image can't be loaded.
+  const imgLayer=document.getElementById('splash-image');
+  if(imgLayer){ const probe=new Image(); probe.onerror=()=>{ state.imgFailed=true; }; probe.src='/static/img/splash_elder.jpg'; }
+  const IMG_HOLD=1200, IMG_FADE_MS=2400;
   function finish(){
     if(state.done) return; state.done=true;
     if(SPLASH_CONFIG.redirectUrl){ window.location.href=SPLASH_CONFIG.redirectUrl; return; }
-    overlay.classList.add('is-done');
-    overlay.addEventListener('transitionend', ()=>overlay.remove(), {once:true});
-    setTimeout(()=>{ if(overlay.isConnected) overlay.remove(); }, 1400);
-    window.dispatchEvent(new CustomEvent('samaritanSplashComplete'));
+    const useImg = imgLayer && !state.imgFailed;
+    let revealed=false;
+    const reveal=()=>{                 // after the splash fades, the etching is shown
+      if(revealed) return; revealed=true;
+      if(overlay.isConnected) overlay.remove();
+      if(useImg){
+        setTimeout(()=>{               // hold the dimmed etching, then fade into the app
+          imgLayer.classList.add('is-gone');
+          imgLayer.addEventListener('transitionend', ()=>imgLayer.remove(), {once:true});
+          setTimeout(()=>{ if(imgLayer.isConnected) imgLayer.remove(); }, IMG_FADE_MS+700);
+        }, IMG_HOLD);
+      } else if(imgLayer){ imgLayer.remove(); }
+      window.dispatchEvent(new CustomEvent('samaritanSplashComplete'));
+    };
+    overlay.classList.add('is-done');               // fade the splash → reveals the etching
+    overlay.addEventListener('transitionend', reveal, {once:true});
+    setTimeout(reveal, 1400);                        // safety net
   }
   function skip(){ if(state.done) return; state.cancelled=true;
     lines.forEach(l=>l.style.clipPath='none'); pen.style.opacity='0'; verse.classList.add('lit'); finish(); }
