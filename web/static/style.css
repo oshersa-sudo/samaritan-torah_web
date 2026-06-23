@@ -474,7 +474,7 @@ footer a{ color:var(--accent); text-decoration:none; }
 #samaritan-splash .stage::after{ bottom:0; }
 #samaritan-splash .verse{
   direction:rtl; font-family:'Samaritan',serif; color:var(--gold-bright);
-  line-height:1.85; letter-spacing:.06em; text-shadow:0 0 0 transparent; transition:text-shadow 1.1s ease;
+  line-height:1.85; letter-spacing:.01em; text-shadow:0 0 0 transparent; transition:text-shadow 1.1s ease;
 }
 #samaritan-splash .verse.lit{ text-shadow:0 0 22px rgba(236,205,132,.45), 0 0 4px rgba(236,205,132,.5); }
 /* the verse starts fully hidden and is revealed only as the quill writes it */
@@ -482,7 +482,8 @@ footer a{ color:var(--accent); text-decoration:none; }
   white-space:nowrap; clip-path:inset(0 0 0 100%); max-width:100%; }
 /* Samaritan word-separator dot, centred in the gap between words */
 #samaritan-splash .verse .wsep{ font-style:normal; font-family:'Heebo',sans-serif;
-  margin:0 .2em; font-size:.4em; vertical-align:.36em; color:var(--gold); opacity:.85; }
+  margin:0 .07em; font-size:.62em; font-weight:700; vertical-align:.2em;
+  color:var(--gold-bright); opacity:1; }
 #samaritan-splash .pen{
   position:absolute; left:0; top:0; width:96px; height:auto; opacity:0;
   pointer-events:none; will-change:transform; filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));
