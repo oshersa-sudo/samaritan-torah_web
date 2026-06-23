@@ -30,9 +30,16 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 APPLY = '--apply' in sys.argv
 DB = 'data/torah.db'
 BOOK = 'בראשית'
-FILES = ['tzdaka_bereshit_alef_bet_39.docx',
-         'tzdaka_bereshit_yod-bet_yod-chet.docx',
-         'tzdaka_bereshit_18-20.docx']
+TZDIR = 'תרגום צדקה אלכים'        # the source docx were moved into this subfolder
+FILES = [os.path.join(TZDIR, 'tzdaka_bereshit_alef_bet_39.docx'),
+         os.path.join(TZDIR, 'tzdaka_bereshit_yod-bet_yod-chet.docx'),
+         os.path.join(TZDIR, 'tzdaka_bereshit_18-20.docx')]
+# manuscripts in the "(verse-number) <verse text>  + commentary paragraphs" format
+# (Gen 21 / Gen 24). The ch21 "SP_aligned" file is skipped — its commentary is an
+# OCR-failure placeholder, superseded by the full ch21 file.
+_DL = os.path.join(os.path.expanduser('~'), 'Downloads')
+MARKER_FILES = [os.path.join(_DL, 'sadaqah_gen21_full_1.docx'),
+                os.path.join(_DL, 'sadaqah_gen24_full.docx')]
 
 GEM = {'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,
        'ך':20,'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,'ס':60,'ע':70,'פ':80,'ף':80,
@@ -68,6 +75,53 @@ def parse_ref(h):
     topic = rest.split('·', 1)[1].strip() if '·' in rest else ''
     ref = '%s:%s' % (m.group(1), m.group(2))
     return ch, list(range(v1, v2 + 1)), inc, topic, ref
+
+
+# "(<gematria>) <verse text>" — the verse number may be a range, e.g. (ה-ו)
+VERSE_RE = re.compile(r'^\(\s*([א-ת]{1,3})(?:\s*[-–]\s*([א-ת]{1,3}))?\s*\)\s*(.*)')
+PEREK_RE = re.compile(r'פרק\s+(%s)' % NUM)                 # chapter heading
+
+
+def parse_marker_file(path, vidx):
+    """Parse a manuscript where each verse is introduced by '(<gematria>) <verse
+    text>' and the following paragraphs are its commentary (Gen 21 / Gen 24).
+    Single-chapter files; the chapter is taken from the first 'פרק <num>' heading."""
+    import docx
+    doc = docx.Document(path)
+    sections = []; cur = None; chap = None; chap_he = None
+    for p in doc.paragraphs:
+        t = p.text.strip()
+        if not t:
+            continue
+        plain = bare(t)
+        if chap is None:                                   # lock the chapter once
+            mc = PEREK_RE.search(plain)
+            if mc and 'פרקים' not in plain:
+                c = gem(mc.group(1))
+                if 1 <= c <= 50:
+                    chap, chap_he = c, mc.group(1)
+        mv = VERSE_RE.match(plain)
+        if mv and chap:
+            if cur:
+                sections.append(cur)
+            v1 = gem(mv.group(1)); v2 = gem(mv.group(2)) if mv.group(2) else v1
+            vns = list(range(v1, v2 + 1))
+            vids = [vidx[(chap, vn)] for vn in vns if (chap, vn) in vidx]
+            ref_v = mv.group(1) + ('-' + mv.group(2) if mv.group(2) else '')
+            cur = {'ch': chap, 'ref': '%s:%s' % (chap_he, ref_v), 'title': '',
+                   'incipit': mv.group(3).strip(), 'vids': vids,
+                   'missing': [vn for vn in vns if (chap, vn) not in vidx], 'body': []}
+        elif cur is not None:
+            cur['body'].append(t)
+    if cur:
+        sections.append(cur)
+    out = []
+    for s in sections:                                     # drop OCR-failure placeholders
+        body = ' '.join(s['body'])
+        if 'לא ניתן לשחזור' in body or not body.strip():
+            continue
+        out.append(s)
+    return out
 
 
 def parse_file(path, vidx):
@@ -121,12 +175,13 @@ def main():
     # file #3's brief note is replaced by file #1's dedicated treatment).
     final = {}          # ref -> list[section]  (from the last file that defines it)
     order = []
-    for f in FILES:
+    jobs = [(f, parse_file) for f in FILES] + [(f, parse_marker_file) for f in MARKER_FILES]
+    for f, parser in jobs:
         if not os.path.exists(f):
             print('MISSING file:', f); continue
-        secs = parse_file(f, vidx)
-        print('%-42s -> %d sections (chapters %s)'
-              % (f, len(secs), sorted(set(s['ch'] for s in secs))))
+        secs = parser(f, vidx)
+        print('%-46s -> %d sections (chapters %s)'
+              % (os.path.basename(f), len(secs), sorted(set(s['ch'] for s in secs))))
         grouped = {}
         for s in secs:
             s['text'] = re.sub(r'\s+', ' ', ' '.join(s['body'])).strip()
