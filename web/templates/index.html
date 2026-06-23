@@ -15,8 +15,58 @@
 <meta name="apple-mobile-web-app-title" content="תורה שומרונית">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!-- splash display fonts (Hebrew); degrade gracefully to system fonts if offline -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;500;700;900&family=Heebo:wght@300;400&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<!-- ░░ entry splash — "אבני שהם". Floats above the app, writes the verse, then fades
+     and removes itself, revealing the app underneath. ░░ -->
+<div id="samaritan-splash" role="dialog" aria-label="מסך כניסה — אבני שהם">
+  <div class="pages" aria-hidden="true"></div>
+  <div class="core">
+    <div class="imprint" id="sp-imprint">אבני שהם</div>
+    <div class="app-name" id="sp-name">התורה השומרונית הישראלית</div>
+    <div class="version" id="sp-version">גרסה 1.0</div>
+    <div class="stage">
+      <div class="verse" aria-label="תורה צוה לנו משה מורשה קהלת יעקב">
+        <span class="verse-line">ࠕࠅࠓࠄ ࠑࠅࠄ ࠋࠍࠅ ࠌࠔࠄ</span>
+        <span class="verse-line">ࠌࠅࠓࠔࠄ ࠒࠄࠋࠕ ࠉࠏࠒࠁ</span>
+      </div>
+      <svg class="pen" viewBox="0 0 120 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="plume" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#f5edd6"/><stop offset=".55" stop-color="#dcc491"/><stop offset="1" stop-color="#c2a052"/>
+          </linearGradient>
+          <linearGradient id="shaft" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#efe6cc"/><stop offset="1" stop-color="#c9b277"/>
+          </linearGradient>
+          <linearGradient id="nibink" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#2a3358"/><stop offset="1" stop-color="#0b1024"/>
+          </linearGradient>
+        </defs>
+        <path d="M55 62 C 22 112, 20 178, 42 214 L 56 200 L 57 122 Z" fill="url(#plume)"/>
+        <path d="M58 58 C 94 110, 98 174, 76 216 L 58 200 L 55 122 Z" fill="url(#plume)" opacity=".96"/>
+        <g stroke="#b69a55" stroke-width="1" stroke-linecap="round" opacity=".5" fill="none">
+          <path d="M56 92 L 80 84"/><path d="M56 120 L 87 118"/><path d="M55 150 L 85 156"/><path d="M54 176 L 78 187"/><path d="M54 196 L 71 206"/>
+          <path d="M55 96 L 35 90"/><path d="M55 126 L 29 128"/><path d="M54 156 L 30 164"/><path d="M54 180 L 36 192"/><path d="M54 198 L 45 208"/>
+        </g>
+        <path d="M42 336 C 50 300, 53 250, 55 212 C 57 150, 59 100, 59 58 L 56 58 C 56 100, 53 150, 51 212 C 49 250, 46 300, 39 336 Z" fill="url(#shaft)"/>
+        <path d="M57 64 C 56 130, 53 240, 44 332" stroke="#f5edd6" stroke-width="1.2" fill="none" opacity=".7"/>
+        <path d="M45 330 L 54 330 L 42 352 Z" fill="url(#nibink)"/>
+        <path d="M48.5 336 L 42 352" stroke="#000" stroke-width="1" opacity=".5"/>
+      </svg>
+    </div>
+  </div>
+  <button class="skip" id="sp-skip" type="button">דלג ›</button>
+  <div class="copyright" aria-label="זכויות יוצרים">
+    <span class="he">© כל הזכויות שמורות לאושר ששוני</span>
+    <span class="en">All Rights reserved to Osher Sassoni</span>
+  </div>
+</div>
+
 <div id="app">
 
   <!-- header -->
@@ -251,6 +301,87 @@
 </div>
 
 <script>window.APP_VERSION = "{{ version }}";</script>
+<script>
+/* entry splash — writes the verse with a quill, then fades and reveals the app */
+(function(){
+  "use strict";
+  const SPLASH_CONFIG = {
+    imprint:'אבני שהם', appName:'התורה השומרונית הישראלית',
+    version:'גרסה ' + (window.APP_VERSION || '1.0'),
+    redirectUrl:null, holdAfterWrite:3000, lineDuration:2200, interLineGap:260
+  };
+  const overlay = document.getElementById('samaritan-splash');
+  if(!overlay) return;
+  const pen=overlay.querySelector('.pen'), verse=overlay.querySelector('.verse');
+  const lines=Array.from(overlay.querySelectorAll('.verse-line'));
+  const stage=overlay.querySelector('.stage'), pagesEl=overlay.querySelector('.pages');
+  const skipBtn=document.getElementById('sp-skip');
+  document.getElementById('sp-imprint').textContent = SPLASH_CONFIG.imprint;
+  document.getElementById('sp-name').textContent    = SPLASH_CONFIG.appName;
+  document.getElementById('sp-version').textContent = SPLASH_CONFIG.version;
+  const PEN_NIB_X=22, PEN_NIB_Y=188;
+  const ALPHA=['ࠀ','ࠁ','ࠂ','ࠃ','ࠄ','ࠅ','ࠆ','ࠇ','ࠈ','ࠉ','ࠊ','ࠋ','ࠌ','ࠍ','ࠎ','ࠏ','ࠐ','ࠑ','ࠒ','ࠓ','ࠔ','ࠕ'];
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const state={cancelled:false, done:false};
+  function buildPages(){
+    const cols = window.innerWidth < 560 ? 5 : 9;
+    let html='';
+    for(let c=0;c<cols;c++){ let s='';
+      for(let i=0;i<46;i++){ s+=ALPHA[(Math.random()*ALPHA.length)|0]; if(Math.random()<0.16) s+=' '; }
+      html+='<div class="col">'+s+'</div>'; }
+    pagesEl.innerHTML=html;
+  }
+  const easeInOut=t=> t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+  function writeLine(lineEl){
+    return new Promise(resolve=>{
+      const sRect=stage.getBoundingClientRect(), lRect=lineEl.getBoundingClientRect();
+      const baseY=(lRect.top-sRect.top)+lRect.height*0.80, start=performance.now();
+      pen.style.opacity='1'; lineEl.style.clipPath='inset(0 0 0 100%)';
+      function frame(now){
+        if(state.cancelled){ lineEl.style.clipPath='none'; return resolve(); }
+        const p=Math.min(1,(now-start)/SPLASH_CONFIG.lineDuration), e=easeInOut(p);
+        lineEl.style.clipPath='inset(0 0 0 '+((1-e)*100).toFixed(2)+'%)';
+        const boundaryX=(lRect.left-sRect.left)+(1-e)*lRect.width+2;
+        const wobble=(p>0&&p<1)?Math.sin(now/38)*2.4:0;
+        pen.style.transformOrigin=PEN_NIB_X+'px '+PEN_NIB_Y+'px';
+        pen.style.transform='translate('+(boundaryX-PEN_NIB_X).toFixed(1)+'px,'+(baseY-PEN_NIB_Y+wobble).toFixed(1)+'px) rotate(-26deg)';
+        if(p<1) requestAnimationFrame(frame); else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  function finish(){
+    if(state.done) return; state.done=true;
+    if(SPLASH_CONFIG.redirectUrl){ window.location.href=SPLASH_CONFIG.redirectUrl; return; }
+    overlay.classList.add('is-done');
+    overlay.addEventListener('transitionend', ()=>overlay.remove(), {once:true});
+    setTimeout(()=>{ if(overlay.isConnected) overlay.remove(); }, 1400);
+    window.dispatchEvent(new CustomEvent('samaritanSplashComplete'));
+  }
+  function skip(){ if(state.done) return; state.cancelled=true;
+    lines.forEach(l=>l.style.clipPath='none'); pen.style.opacity='0'; verse.classList.add('lit'); finish(); }
+  skipBtn.addEventListener('click', skip);
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) skip(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') skip(); });
+  async function run(){
+    buildPages();
+    if(reduce){ lines.forEach(l=>l.style.clipPath='none'); verse.classList.add('lit'); await wait(1500); return finish(); }
+    await wait(1250); if(state.cancelled) return;
+    await writeLine(lines[0]); if(state.cancelled) return;
+    await wait(SPLASH_CONFIG.interLineGap); if(state.cancelled) return;
+    await writeLine(lines[1]); if(state.cancelled) return;
+    pen.style.opacity='0'; verse.classList.add('lit');
+    await wait(SPLASH_CONFIG.holdAfterWrite); finish();
+  }
+  const ready=(document.fonts&&document.fonts.ready)
+    ? Promise.race([document.fonts.ready, new Promise(r=>setTimeout(r,1200))]) : Promise.resolve();
+  ready.then(run);
+  const maxMs=1250 + SPLASH_CONFIG.lineDuration*2 + SPLASH_CONFIG.interLineGap + SPLASH_CONFIG.holdAfterWrite + 3000;
+  setTimeout(()=>{ if(!state.done){ lines.forEach(l=>l.style.clipPath='none'); pen.style.opacity='0'; finish(); } }, maxMs);
+  window.SamaritanSplash={ skip, finish, config:SPLASH_CONFIG };
+})();
+</script>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 <script>
   if ('serviceWorker' in navigator) {
