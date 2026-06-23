@@ -97,7 +97,7 @@ def build_prompt(verses, window):
 
 
 def call(cl, verses, window):
-    m = cl.messages.create(model=MODEL, max_tokens=3000, system=SYS,
+    m = cl.messages.create(model=MODEL, max_tokens=4096, system=SYS,
                            messages=[{'role': 'user', 'content': build_prompt(verses, window)}])
     txt = ''.join(b.text for b in m.content if b.type == 'text')
     mt = re.search(r'\{.*\}', txt, re.S)
@@ -159,7 +159,21 @@ def main():
                     help='verify EVERY verse (re-align), not only the missing ones')
     ap.add_argument('--out', default=REVIEW)
     ap.add_argument('--book', default='בראשית')
+    ap.add_argument('--start-sam', type=int, default=0,
+                    help='only process chapters with sam>=this (targeted re-run)')
+    ap.add_argument('--end-sam', type=int, default=0,
+                    help='stop after this sam (inclusive); 0 = no limit')
+    ap.add_argument('--start-pos', type=int, default=-1,
+                    help='seed the character cursor here (use the logged pos of the '
+                         'chapter just BEFORE --start-sam, so drift is re-corrected)')
+    ap.add_argument('--win', type=int, default=0, help='override window width')
+    ap.add_argument('--fixed-pos', type=int, default=-1,
+                    help='fixed-window mode: same window for every chapter (no cursor '
+                         'advance). Use for reordered sections, e.g. the Tabernacle, '
+                         'where the Samaritan Arabic order differs from the DB order.')
+    ap.add_argument('--fixed-end', type=int, default=-1)
     args = ap.parse_args()
+    fixed = args.fixed_pos >= 0 and args.fixed_end >= 0
 
     import anthropic, book_arabic
     cl = anthropic.Anthropic(api_key=api_key())
@@ -173,11 +187,15 @@ def main():
                 v['missing'] = True
     print('DB %s sam chapters:' % args.book, len(chapters), '| mode:', 'ALL' if args.all else 'missing-only')
 
+    win_w = args.win or WIN
     out = open(args.out, 'w', encoding='utf-8')
-    pos = 0; processed = 0
+    pos = args.start_pos if args.start_pos >= 0 else 0
+    processed = 0
     for ch in chapters:
         N = ch['sam']
-        window = stream[pos:pos + WIN]
+        if args.start_sam and N < args.start_sam:
+            continue                       # skip until the targeted range
+        window = stream[args.fixed_pos:args.fixed_end] if fixed else stream[pos:pos + win_w]
         for attempt in range(3):
             try:
                 res = call(cl, ch['verses'], window); break
@@ -196,7 +214,7 @@ def main():
             # nothing located — advance CONSERVATIVELY (undershoot) so we never skip
             # text; the overlap self-corrects on the next chapter. Flag in the log.
             est = int(sum(len(v['he']) for v in ch['verses']) * 1.0) or 150
-            end_off = min(est, WIN - 400)
+            end_off = min(est, win_w - 400)
             print('  [sam %d] WARN no span located; advancing ~%d (conservative)'
                   % (N, end_off))
 
@@ -208,9 +226,12 @@ def main():
         nf = sum(1 for v in keep if not v.get('matches'))
         print('  sam %3d (pos %d) missing:%d  match:%d  flagged:%d'
               % (N, pos, len(keep), nm, nf))
-        pos += end_off
+        if not fixed:
+            pos += end_off                 # fixed-window mode keeps the window constant
         processed += 1
         if args.max_chapters and processed >= args.max_chapters:
+            break
+        if args.end_sam and N >= args.end_sam:
             break
     out.close()
     print('done. review ->', args.out)
