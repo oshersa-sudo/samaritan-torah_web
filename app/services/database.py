@@ -451,6 +451,29 @@ def get_tzdaka_commentary(verse_ids):
             for r in rows]
 
 
+def get_sir_commentary(verse_ids):
+    """סוד הלבבות (Sīr al-Qulūb, ch.4, Abraham al-Kabatzi) relevant to any of the
+    given verses, in reading order. Each item is {title, text}; a section linked to
+    several verses appears once. Returns [] when nothing is relevant."""
+    if not verse_ids:
+        return []
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT DISTINCT s.id, s.title, s.ord, s.text
+                FROM sir_sections s
+                JOIN sir_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders})
+                ORDER BY s.ord""",
+            verse_ids
+        ).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    return [{'title': r['title'] or '', 'text': r['text'] or ''} for r in rows]
+
+
 _APP_TYPE = {'sub': 'חילוף', 'om': 'חיסור', 'add': 'תוספת', 'sic': 'sic!',
              'transp': 'היפוך סדר', 'del': 'מחיקה', 'orth': 'כתיב/ניקוד'}
 

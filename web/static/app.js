@@ -50,6 +50,7 @@ const I18N = {
     samsrc_pick:'ממקור שומרון — בחר מקור', checking_sources:'בודק מקורות זמינים…',
     no_sam_source:'אין מקור שומרוני זמין לפסוקים אלה', back_sources:'‹ מקורות',
     src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים',
+    src_sir:'סוד הלבבות',
     variants_title:'חילופי נוסח — מהדורת פון גאל',
     no_variants:'אין חילופי נוסח לפסוקים אלה. (האפראט של פון גאל מתועד כרגע לבראשית פרק א׳ בלבד.)',
     dict_hint:'מילון מילים — הקש על שורה לערך המלא במילון א. טל', no_dict:'אין מילון זמין לפסוק זה',
@@ -103,6 +104,7 @@ const I18N = {
     samsrc_pick:'Samaritan sources — choose a source', checking_sources:'Checking available sources…',
     no_sam_source:'No Samaritan source for these verses', back_sources:'‹ Sources',
     src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary",
+    src_sir:'Sīr al-Qulūb (Secret of Hearts)',
     variants_title:'Textual variants — von Gall edition',
     no_variants:"No textual variants for these verses. (Von Gall's apparatus is currently digitised for Genesis 1 only.)",
     dict_hint:"Word dictionary — tap a row for the full entry in A. Tal's dictionary", no_dict:'No dictionary for this verse',
@@ -156,6 +158,7 @@ const I18N = {
     samsrc_pick:'مصادر سامرية — اختر مصدراً', checking_sources:'جارٍ التحقق من المصادر…',
     no_sam_source:'لا يوجد مصدر سامري لهذه الآيات', back_sources:'‹ المصادر',
     src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم',
+    src_sir:'سرّ القلوب',
     variants_title:'اختلافات النصّ — طبعة فون غال',
     no_variants:'لا توجد اختلافات نصّية لهذه الآيات. (جهاز فون غال موثّق حالياً للإصحاح الأول من سفر التكوين فقط.)',
     dict_hint:'معجم الكلمات — اضغط على صفّ لعرض المدخل الكامل في معجم أ. طال', no_dict:'لا يوجد معجم لهذه الآية',
@@ -710,13 +713,14 @@ async function buildSamSrc(c, verses){
     const loading=el('div','note',t('checking_sources')); panel.appendChild(loading);
     c.appendChild(panel);
     // only show a source that actually has content on the current verse(s)
-    const [tm, ey, tz] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
-      api('eyalk?verse_ids='+ids), api('tzdaka?verse_ids='+ids)]);
+    const [tm, ey, tz, sir] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
+      api('eyalk?verse_ids='+ids), api('tzdaka?verse_ids='+ids), api('sir?verse_ids='+ids)]);
     loading.remove();
     const avail=[];
     if(tm.length) avail.push([t('src_tibat'),'tm']);
     if(ey.length) avail.push([t('src_eyalk'),'eyalk']);
     if(tz.length) avail.push([t('src_tzdaka'),'tzdaka']);
+    if(sir.length) avail.push([t('src_sir'),'sir']);
     if(!avail.length){ panel.appendChild(el('div','note',t('no_sam_source'))); return; }
     for(const [label,ch] of avail){
       const b=el('button','picker-btn',label); b.onclick=()=>{ S.samSrcChoice=ch; S.tmSel=null; paintVerses(); };
@@ -752,6 +756,22 @@ async function buildSamSrc(c, verses){
       const card=el('div','card');
       const lbl=[it.ref, it.title].filter(Boolean).join('  ·  ');
       if(lbl) card.appendChild(el('div','chead',esc(lbl)));
+      const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      panel.appendChild(card);
+    }
+    c.appendChild(panel); return;
+  }
+  if(S.samSrcChoice==='sir'){
+    const items = await api('sir?verse_ids='+ids);
+    const panel=el('div','srcpanel');
+    const head=el('div','shead');
+    const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle',t('src_sir')));
+    panel.appendChild(head);
+    if(!items.length) panel.appendChild(el('div','note','אין פרשנות רלוונטית לפסוקים אלה'));
+    for(const it of items){
+      const card=el('div','card');
+      if(it.title) card.appendChild(el('div','chead',esc(it.title)));
       const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
       panel.appendChild(card);
     }
