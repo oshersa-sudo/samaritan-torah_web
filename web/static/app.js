@@ -1074,16 +1074,35 @@ document.querySelectorAll('#shareModal .share-opt').forEach(b=>b.onclick=()=>{
 // the text currently shown in the verse area, following the active display mode
 // (original / a translation / the verse commentary) and any single-verse filter.
 function shareText(){
-  // on the search screen, share the search RESULTS (path + the matching verse)
+  // on the search screen, share the search RESULTS exactly as shown — every field:
+  // Jewish path, Samaritan path, the verse, the word's transliteration + binyan/
+  // form, and the meaning. Nothing is dropped.
   if(!$('searchScreen').classList.contains('hidden') && S.searchData && S.searchData.rows && S.searchData.rows.length){
     const d=S.searchData;
     const head = t('search')+': '+($('searchInput').value.trim());
     const body = d.rows.map(r=>{
-      const jp=`${r.book_name} › פרק ${r.chapter_num} פסוק ${r.number}`;
-      const verse=((d.aramaic? r.sam_aramaic : r.text)||'').trim();
-      return jp+'\n'+verse;
+      const lines=[];
+      lines.push(`יהודית: ${r.book_name} › ${r.portion_name||''} › פרק ${r.chapter_num} פסוק ${r.number}`);
+      if(r.sam){
+        const op=r.sam.opening?`  (${r.sam.opening})`:'';
+        lines.push(`שומרונית: ${r.book_name} › ${r.sam.sam_portion_name||''} › פרק שומרוני ${r.sam.sam_ch_num} פסוק ${r.sam.number}${op}`);
+      }
+      lines.push(((d.aramaic? r.sam_aramaic : r.text)||'').trim());
+      if(r.occ && r.occ.length){
+        const occs=r.occ.map(([pron,binyan,form])=>{
+          const cp=cleanPron(pron); if(!cp) return '';
+          const extra=[binyan,form].filter(Boolean).join(' ');
+          return `‹ ${cp} ›`+(extra?` ${extra}`:'');
+        }).filter(Boolean);
+        if(occs.length) lines.push(occs.join('    '));
+      }
+      const mparts=[];
+      if(r.aramaic) mparts.push('תרגום ארמי: '+r.aramaic);
+      if(r.meaning) mparts.push('מילון טל: '+r.meaning);
+      if(mparts.length) lines.push(mparts.join('  ·  '));
+      return lines.join('\n');
     }).join('\n\n');
-    return head+'\n'+body;
+    return head+'\n\n'+body;
   }
   if(S.view==='verses' && Array.isArray(S.verses) && S.verses.length){
     const isSam=S.chMode==='samaritan';
