@@ -39,6 +39,8 @@ body{
 .vsplit-lab{ display:block; text-align:right; font-size:13px; font-weight:600; margin:6px 2px 2px; color:var(--navy); }
 .vsplit-area{ width:100%; box-sizing:border-box; min-height:64px; font-family:inherit; font-size:16px;
               border:1px solid #bbb; border-radius:6px; padding:7px; resize:vertical; }
+.renum-inp{ width:100%; box-sizing:border-box; height:44px; font-family:inherit; font-size:20px;
+            text-align:center; border:1px solid #bbb; border-radius:6px; padding:6px; margin-bottom:4px; }
 .scroll-ico{ width:36px; height:36px; object-fit:contain; }
 .ver{ font-size:11px; color:#bcd0ff; white-space:nowrap; }
 .toggle-row{ display:flex; gap:4px; padding:4px 8px 8px; }
@@ -107,6 +109,14 @@ body{
 /* LTR pair so the translation/Masoretic panel sits on the LEFT and the original
    on the RIGHT (as in the source app); the Hebrew text inside each panel is RTL. */
 .pair{ display:flex; gap:8px; padding:4px 2px; align-items:stretch; direction:ltr; }
+/* Masoretic-comparison grid: one row per verse → exact verse-opposite-verse alignment */
+.cmp-grid{ display:grid; grid-template-columns:1fr 1fr; column-gap:8px; direction:ltr;
+           padding:4px 2px; background:var(--cream); border:1.3px solid rgba(26,56,115,.55); border-radius:6px; }
+.cmp-cell{ direction:rtl; text-align:right; line-height:1.6; padding:5px 8px;
+           border-bottom:1px solid rgba(26,56,115,.18); }
+.cmp-head{ text-align:center; font-weight:700; color:var(--navy); font-size:17px;
+           position:sticky; top:0; background:var(--cream); border-bottom:1.3px solid rgba(26,56,115,.5); }
+.cmp-missing{ color:#b00020; letter-spacing:2px; font-weight:700; }
 .panel{ flex:1; background:var(--cream); border:1.3px solid rgba(26,56,115,.55);
         border-radius:12px; padding:8px; }
 .panel .ptitle{ text-align:center; font-weight:700; color:var(--navy); font-size:17px; margin-bottom:4px; }

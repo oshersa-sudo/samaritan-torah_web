@@ -63,6 +63,10 @@ const I18N = {
     vsplit_hint:'החלק הראשון יישאר במספר הפסוק הנוכחי; החלק השני יהפוך לפסוק חדש עם מקף ומספר רץ (נראה בחלוקה השומרונית בלבד).',
     vsplit_p1:'חלק ראשון — נשאר פסוק', vsplit_p2:'חלק שני — פסוק חדש',
     vsplit_err:'יש למלא את שני החלקים.', vsplit_ok:'הפסוק פוצל. הפסוק החדש:',
+    renum:'שנה מספר', renum_pick:'בחר פסוק לשינוי מספר (לחץ על מספר פסוק)',
+    renum_title:'שינוי מספר פסוק', renum_cur:'מספר נוכחי:', renum_empty:'יש להזין מספר.',
+    renum_cascade_q:'לשנות את כל הפסוקים הבאים בהתאם?', renum_cascade_yes:'כן, שנה את כל הבאים',
+    renum_only_this:'רק פסוק זה', renum_ok:'מספר הפסוק עודכן.',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
     bm_add:'הוסף סימניה לפרק זה', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
@@ -109,6 +113,10 @@ const I18N = {
     vsplit_hint:'The first part keeps the current verse number; the second becomes a new verse with a hyphen and running number (shown in the Samaritan division only).',
     vsplit_p1:'First part — stays verse', vsplit_p2:'Second part — new verse',
     vsplit_err:'Both parts are required.', vsplit_ok:'Verse split. New verse:',
+    renum:'Change number', renum_pick:'Choose a verse to renumber (tap a verse number)',
+    renum_title:'Change verse number', renum_cur:'Current number:', renum_empty:'Enter a number.',
+    renum_cascade_q:'Renumber all following verses accordingly?', renum_cascade_yes:'Yes, all following',
+    renum_only_this:'Only this verse', renum_ok:'Verse number updated.',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
     bm_add:'Bookmark this chapter', bm_my:'My bookmarks', bm_delete:'Delete selected',
@@ -155,6 +163,10 @@ const I18N = {
     vsplit_hint:'يبقى الجزء الأول برقم الآية الحالي؛ ويصبح الجزء الثاني آية جديدة بشَرطة ورقم متسلسل (تظهر في التقسيم السامري فقط).',
     vsplit_p1:'الجزء الأول — يبقى آية', vsplit_p2:'الجزء الثاني — آية جديدة',
     vsplit_err:'كلا الجزأين مطلوبان.', vsplit_ok:'تم تقسيم الآية. الآية الجديدة:',
+    renum:'تغيير الرقم', renum_pick:'اختر آية لتغيير رقمها (اضغط رقم آية)',
+    renum_title:'تغيير رقم الآية', renum_cur:'الرقم الحالي:', renum_empty:'أدخل رقمًا.',
+    renum_cascade_q:'إعادة ترقيم كل الآيات التالية تبعًا لذلك؟', renum_cascade_yes:'نعم، كل التالية',
+    renum_only_this:'هذه الآية فقط', renum_ok:'تم تحديث رقم الآية.',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
     bm_add:'إضافة إشارة لهذا الأصحاح', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
@@ -411,6 +423,11 @@ function paintVerses(){
       const cancel=el('button','admin-btn cancel', t('split_cancel'));
       cancel.onclick=()=>{ S.vsplitMode=false; paintVerses(); };
       bar.appendChild(cancel);
+    } else if(S.renumMode){
+      bar.appendChild(el('span','admin-hint', t('renum_pick')));
+      const cancel=el('button','admin-btn cancel', t('split_cancel'));
+      cancel.onclick=()=>{ S.renumMode=false; paintVerses(); };
+      bar.appendChild(cancel);
     } else {
       const mb=el('button','admin-btn', t('merge_next')); mb.onclick=mergeNext;
       bar.appendChild(mb);
@@ -419,6 +436,8 @@ function paintVerses(){
         vb.onclick=()=>{ S.vsplitMode=true; paintVerses(); };
         bar.appendChild(vb);
       }
+      const rb=el('button','admin-btn', t('renum')); rb.onclick=()=>{ S.renumMode=true; paintVerses(); };
+      bar.appendChild(rb);
       const sb=el('button','admin-btn', t('split_chapter')); sb.onclick=()=>{ S.splitMode=true; paintVerses(); };
       bar.appendChild(sb);
     }
@@ -469,6 +488,7 @@ function addPlainRows(c, verses){
     num.onclick=()=>{
       if(ADMIN.token && S.splitMode)  return askSplit(v);
       if(ADMIN.token && S.vsplitMode) return openVsplit(v);
+      if(ADMIN.token && S.renumMode)  return openRenumber(v);
       return filterVerse(v.id);
     };
     const vh = verseHTML(v);
@@ -513,15 +533,21 @@ async function buildCompare(c, verses){
   ph.remove();
   const fs=fsize();
   const render = toks => toks.map(t=> t[1]?`<span class="diff">${esc(t[0])}</span>`:esc(t[0])).join(' ');
-  // ALL verses go into ONE pair of panels (Masoretic | Samaritan), one verse per
-  // line — matching the source app (each verse is not its own separate pair).
-  const masHTML = data.map(d=>render(d.mas)).filter(s=>s).join('\n');
-  const samHTML = data.map(d=>render(d.sam)).filter(s=>s).join('\n');
-  const mas = el('div','panel'); mas.appendChild(el('div','ptitle','נוסח מסורה'));
-  const mb=el('div','pbody', masHTML); mb.style.fontSize=fs+'px'; mas.appendChild(mb);
-  const sam = el('div','panel'); sam.appendChild(el('div','ptitle','נוסח שומרון'));
-  const sb=el('div','pbody', samHTML); sb.style.fontSize=fs+'px'; sam.appendChild(sb);
-  c.appendChild(pairEl(mas,sam));
+  // Verse-opposite-verse: a 2-column CSS grid where every verse is one grid row
+  // (Masoretic cell | Samaritan cell). Grid rows stay aligned even when a verse
+  // wraps. Where a verse has no counterpart on a side, that cell shows "---".
+  const grid=el('div','cmp-grid');
+  grid.appendChild(el('div','cmp-cell cmp-head','נוסח מסורה'));
+  grid.appendChild(el('div','cmp-cell cmp-head','נוסח שומרון'));
+  for(const d of data){
+    const m=render(d.mas).trim(), s=render(d.sam).trim();
+    if(!m && !s) continue;
+    const mc=el('div','cmp-cell', m || '<span class="cmp-missing">- - -</span>');
+    const sc=el('div','cmp-cell', s || '<span class="cmp-missing">- - -</span>');
+    mc.style.fontSize=fs+'px'; sc.style.fontSize=fs+'px';
+    grid.appendChild(mc); grid.appendChild(sc);
+  }
+  c.appendChild(grid);
 }
 async function buildInterpret(c, verses){
   // Show the verse commentary INLINE, in place of the original verse text
@@ -1652,6 +1678,33 @@ function openVsplit(v){
     if(r && r.ok){ m.remove(); _apiCache.clear(); await reloadChapters();
       showInfo(t('m_admin'), `<div class="note">${esc(t('vsplit_ok'))} ${esc(r.new_number||'')}</div>`); }
     else { m.querySelector('#vsErr').textContent=(r&&r.error)||t('edit_err'); }
+  };
+}
+// change a verse's number → optionally cascade the change to all following verses.
+function openRenumber(v){
+  S.renumMode=false;
+  const m=el('div','modal');
+  m.innerHTML=`<div class="modal-box">
+     <div class="modal-title">${esc(t('renum_title'))}</div>
+     <div class="note" style="margin-bottom:6px">${esc(t('renum_cur'))} ${esc(String(v.number))}</div>
+     <input id="renumInp" class="renum-inp" value="${esc(String(v.number))}">
+     <div class="note" id="renumErr" style="color:#b00;min-height:1em"></div>
+     <button class="share-opt" style="background:#3a6b34" id="renumGo">${esc(t('apply'))}</button>
+     <button class="share-opt close" id="renumCancel">${esc(t('c_cancel'))}</button>
+   </div>`;
+  document.body.appendChild(m);
+  const inp=m.querySelector('#renumInp'); inp.focus(); inp.select();
+  m.querySelector('#renumCancel').onclick=()=>{ m.remove(); paintVerses(); };
+  m.querySelector('#renumGo').onclick=async ()=>{
+    const nn=inp.value.trim();
+    if(!nn){ m.querySelector('#renumErr').textContent=t('renum_empty'); return; }
+    if(nn===String(v.number)){ m.remove(); paintVerses(); return; }
+    m.remove();
+    // ask whether to also renumber all following verses accordingly
+    const cascade=await askConfirm(t('renum_title'), t('renum_cascade_q'), t('renum_cascade_yes'), t('renum_only_this'));
+    let r; try{ r=await apiPost('admin/renumber_verse', {token:ADMIN.token, verse_id:v.id, new_number:nn, cascade}); }catch(e){ r={ok:false}; }
+    if(r && r.ok){ _apiCache.clear(); await reloadChapters(); showInfo(t('m_admin'), `<div class="note">${esc(t('renum_ok'))}</div>`); }
+    else showInfo(t('m_admin'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
   };
 }
 

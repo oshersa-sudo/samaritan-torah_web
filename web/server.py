@@ -359,6 +359,54 @@ def admin_split_verse():
         conn.close()
     return jsonify({'ok': True, 'new_number': new_number})
 
+
+# Change a verse's number. With cascade=True, every following verse in the same
+# Jewish chapter (integer base >= the target's old base) is shifted by the same
+# delta, preserving any maqaf suffix; otherwise only the target verse changes.
+@app.route('/api/admin/renumber_verse', methods=['POST'])
+def admin_renumber_verse():
+    d = request.get_json(silent=True) or {}
+    if d.get('token') not in _ADMIN_TOKENS:
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        verse_id = int(d.get('verse_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    new_number = str(d.get('new_number') or '').strip()
+    cascade = bool(d.get('cascade'))
+    if not new_number:
+        return jsonify({'ok': False, 'error': 'מספר חדש חסר'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        v = conn.execute('SELECT id, chapter_id, number FROM verses WHERE id=?', (verse_id,)).fetchone()
+        if not v:
+            return jsonify({'ok': False, 'error': 'verse not found'}), 404
+        cid = v['chapter_id']
+        old_base_s = str(v['number']).split('-')[0]
+        if not cascade:
+            conn.execute('UPDATE verses SET number=? WHERE id=?', (new_number, verse_id))
+        else:
+            new_base_s = new_number.split('-')[0]
+            if not old_base_s.isdigit() or not new_base_s.isdigit():
+                return jsonify({'ok': False, 'error': 'נדרש מספר שלם לשינוי מדורג'}), 400
+            old_base = int(old_base_s); delta = int(new_base_s) - old_base
+            for r in conn.execute('SELECT id, number FROM verses WHERE chapter_id=?', (cid,)).fetchall():
+                s = str(r['number']); b = s.split('-')[0]
+                if b.isdigit() and int(b) >= old_base:
+                    conn.execute('UPDATE verses SET number=? WHERE id=?',
+                                 (str(int(b) + delta) + s[len(b):], r['id']))
+        bk = conn.execute('SELECT book_id FROM chapters WHERE id=?', (cid,)).fetchone()
+        if bk:
+            _fix_root_index(conn, bk['book_id'])
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True})
+
 # columns returned for a verse (everything the UI's content modes need)
 _VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'sam_aramaic',
                'arabic_trans', 'interpretation', 'rashi', 'ramban', 'cassuto',
