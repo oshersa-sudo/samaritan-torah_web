@@ -29,7 +29,7 @@ const I18N = {
     next_chapter:'‹ פרק הבא', prev_chapter:'פרק קודם ›',
     share:'שתף', back:'‹ חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
     font_sam:'כתב שומרוני', font_heb:'כתב עברי', interp:'פירוש הפסוק', commentary:'פרשנות יהודית',
-    compare:'השוואה לנ.מסורה', variants:'חילופי נוסח', samsrc:'ממקור שומרון', translate:'תרגומי התורה',
+    compare:'השוואת נוסחים', variants:'חילופי נוסח', samsrc:'ממקור שומרון', translate:'תרגומי התורה',
     t_aramaic:'תרגום: ארמי', t_arabic:'תרגום: ערבי', t_english:'תרגום: אנגלית',
     search_ph:'חפש מילה', adv_search:'⚙ חיפוש מתקדם', search_help_btn:'❔ עזרה לחיפוש',
     flag_exact:'חיפוש מדויק', flag_meanings:'הצג פירוש המילים', flag_root:'לפי שורש המילה',
@@ -41,6 +41,8 @@ const I18N = {
     share_title:'שיתוף', email:'אימייל', close:'סגור',
     copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה', share_copy:'העתקה ללוח',
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
+    cmp_title:'בחר נוסח להשוואה', cv_masoretic:'נוסח המסורה', cv_septuagint:'תרגום השבעים',
+    cmp_sam:'נוסח שומרון', cmp_info:'מידע על הנוסח',
     c_name:'שם מלא', c_email:'כתובת מייל', c_msg:'הודעה (עד 100 מילים)', c_send:'שלח', c_cancel:'ביטול',
     lang_save_q:'האם ברצונך לשמור הגדרה זו?', lang_save_note:'הבחירה תישמר במכשיר זה לפעמים הבאות.',
     save_yes:'כן, שמור', save_no:'לא, רק הפעם',
@@ -79,7 +81,7 @@ const I18N = {
     next_chapter:'Next chapter ›', prev_chapter:'‹ Previous chapter',
     share:'Share', back:'‹ Back', browse:'Browse', search:'Search', dict:'Word dictionary',
     font_sam:'Samaritan script', font_heb:'Hebrew script', interp:'Verse commentary', commentary:'Jewish commentary',
-    compare:'Compare to Masorah', variants:'Textual variants', samsrc:'Samaritan sources', translate:'Torah translations',
+    compare:'Compare versions', variants:'Textual variants', samsrc:'Samaritan sources', translate:'Torah translations',
     t_aramaic:'Translation: Aramaic', t_arabic:'Translation: Arabic', t_english:'Translation: English',
     search_ph:'Search a word', adv_search:'⚙ Advanced search', search_help_btn:'❔ Search help',
     flag_exact:'Exact match', flag_meanings:'Show word meanings', flag_root:'By word root',
@@ -91,6 +93,8 @@ const I18N = {
     share_title:'Share', email:'Email', close:'Close',
     copied:'Text copied', copy_fail:'Copy failed', share_copy:'Copy to clipboard',
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
+    cmp_title:'Choose a version to compare', cv_masoretic:'Masoretic Text', cv_septuagint:'Septuagint',
+    cmp_sam:'Samaritan', cmp_info:'About this version',
     c_name:'Full name', c_email:'Email address', c_msg:'Message (up to 100 words)', c_send:'Send', c_cancel:'Cancel',
     lang_save_q:'Save this language preference?', lang_save_note:'It will be saved on this device for next time.',
     save_yes:'Yes, save', save_no:'No, just now',
@@ -129,7 +133,7 @@ const I18N = {
     next_chapter:'الأصحاح التالي ›', prev_chapter:'‹ الأصحاح السابق',
     share:'مشاركة', back:'‹ رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
     font_sam:'الخط السامري', font_heb:'الخط العبري', interp:'تفسير الآية', commentary:'تفسير يهودي',
-    compare:'مقارنة بالنصّ الماسوري', variants:'اختلافات النصّ', samsrc:'مصادر سامرية', translate:'ترجمات التوراة',
+    compare:'مقارنة النصوص', variants:'اختلافات النصّ', samsrc:'مصادر سامرية', translate:'ترجمات التوراة',
     t_aramaic:'ترجمة: آرامية', t_arabic:'ترجمة: عربية', t_english:'ترجمة: إنجليزية',
     search_ph:'ابحث عن كلمة', adv_search:'⚙ بحث متقدم', search_help_btn:'❔ مساعدة البحث',
     flag_exact:'تطابق تامّ', flag_meanings:'إظهار معاني الكلمات', flag_root:'حسب جذر الكلمة',
@@ -141,6 +145,8 @@ const I18N = {
     share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق',
     copied:'تم نسخ النص', copy_fail:'فشل النسخ', share_copy:'نسخ إلى الحافظة',
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
+    cmp_title:'اختر النصّ للمقارنة', cv_masoretic:'النصّ الماسوري', cv_septuagint:'الترجمة السبعينية',
+    cmp_sam:'النصّ السامري', cmp_info:'حول هذا النصّ',
     c_name:'الاسم الكامل', c_email:'البريد الإلكتروني', c_msg:'رسالة (حتى 100 كلمة)', c_send:'إرسال', c_cancel:'إلغاء',
     lang_save_q:'هل تريد حفظ هذا الإعداد؟', lang_save_note:'سيُحفظ على هذا الجهاز للمرّات القادمة.',
     save_yes:'نعم، احفظ', save_no:'لا، هذه المرّة فقط',
@@ -530,24 +536,41 @@ function origPanel(verses){
   return panelEl('הטקסט המקורי', txt);
 }
 
+// Wikipedia article (Hebrew) for each compared version — opened from the info icon.
+const CMP_WIKI = {
+  masoretic:  'https://he.wikipedia.org/wiki/נוסח_המסורה',
+  septuagint: 'https://he.wikipedia.org/wiki/תרגום_השבעים'
+};
 async function buildCompare(c, verses){
+  const ver = S.cmpVersion || 'masoretic';
+  // the "other" side: Masoretic text, or — for the Septuagint — the Masoretic text
+  // with the LXX variant readings substituted in (lxx_text); verses with no recorded
+  // LXX variant fall back to the Masoretic text.
+  const otherText = v => (ver==='septuagint') ? (v.lxx_text || v.masoretic_text) : v.masoretic_text;
   const ph = el('div','note','טוען השוואה…'); c.appendChild(ph);
   const data = await apiPost('compare', {verses: verses.map(v=>{
     const mas = String(v.masnum!=null ? v.masnum : v.number);
-    // on the Masoretic side, prefix the chapter before verse 1 (e.g. "20:1") so the
-    // reader sees which Masoretic chapter the verse belongs to
+    // on the source side, prefix the chapter before verse 1 (e.g. "20:1") so the
+    // reader sees which chapter the verse belongs to
     const masLabel = (mas==='1') ? ((v.jchapter!=null?v.jchapter:S.curChNum)+':1') : mas;
-    return {sam_num:v.number, mas_num:masLabel, text:v.text, masoretic_text:v.masoretic_text};
+    return {sam_num:v.number, mas_num:masLabel, text:v.text, masoretic_text:otherText(v)};
   })});
   ph.remove();
   const fs=fsize();
   const render = toks => toks.map(t=> t[1]?`<span class="diff">${esc(t[0])}</span>`:esc(t[0])).join(' ');
   // Verse-opposite-verse: a 2-column CSS grid where every verse is one grid row
-  // (Masoretic cell | Samaritan cell). Grid rows stay aligned even when a verse
+  // (source-version cell | Samaritan cell). Grid rows stay aligned even when a verse
   // wraps. Where a verse has no counterpart on a side, that cell shows "---".
   const grid=el('div','cmp-grid');
-  grid.appendChild(el('div','cmp-cell cmp-head','נוסח מסורה'));
-  grid.appendChild(el('div','cmp-cell cmp-head','נוסח שומרון'));
+  // left header carries the version name + a small info icon linking to Wikipedia
+  const lh=el('div','cmp-cell cmp-head');
+  lh.appendChild(document.createTextNode(t(ver==='septuagint'?'cv_septuagint':'cv_masoretic')+' '));
+  const info=el('a','cmp-info'); info.href=CMP_WIKI[ver]||CMP_WIKI.masoretic;
+  info.target='_blank'; info.rel='noopener'; info.title=t('cmp_info');
+  info.setAttribute('aria-label',t('cmp_info')); info.textContent='ⓘ';
+  lh.appendChild(info);
+  grid.appendChild(lh);
+  grid.appendChild(el('div','cmp-cell cmp-head', t('cmp_sam')));
   for(const d of data){
     const m=render(d.mas).trim(), s=render(d.sam).trim();
     if(!m && !s) continue;
@@ -991,7 +1014,22 @@ function togglePanel(name){
   if(S.panel) scrollToEl('.pair, .srcpanel');
 }
 $('interpBtn').onclick=()=>togglePanel('interpret');
-$('compareBtn').onclick=()=>togglePanel('compare');
+// "השוואת נוסחים": if the comparison is open, close it; otherwise open the version
+// picker (Masoretic / Septuagint) and show the chosen comparison.
+$('compareBtn').onclick=()=>{
+  if(S.panel==='compare'){ clearModes(); syncToolbar(true); paintVerses(); return; }
+  document.querySelectorAll('#cmpModal .cv-opt').forEach(b=>
+    b.classList.toggle('sel', !!b.dataset.cv && b.dataset.cv===(S.cmpVersion||'masoretic')));
+  $('cmpModal').classList.remove('hidden');
+};
+document.querySelectorAll('#cmpModal .cv-opt').forEach(b=>{
+  b.onclick=()=>{
+    const cv=b.dataset.cv; $('cmpModal').classList.add('hidden');
+    if(!cv) return;                       // "סגור"
+    S.cmpVersion=cv; clearModes(); S.panel='compare';
+    syncToolbar(true); paintVerses(); scrollToEl('.cmp-grid');
+  };
+});
 $('commentaryBtn').onclick=()=>togglePanel('commentary');
 $('samSrcBtn').onclick=()=>togglePanel('samaritan_src');
 $('variantsBtn').onclick=()=>togglePanel('variants');

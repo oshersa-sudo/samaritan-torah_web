@@ -117,6 +117,10 @@ body{
 .cmp-head{ text-align:center; font-weight:700; color:var(--navy); font-size:17px;
            position:sticky; top:0; background:var(--cream); border-bottom:1.3px solid rgba(26,56,115,.5); }
 .cmp-missing{ color:#b00020; letter-spacing:2px; font-weight:700; }
+/* small "info" icon next to the compared-version name; links to a web article */
+.cmp-info{ display:inline-block; font-size:.72em; color:var(--navy); opacity:.72;
+           text-decoration:none; vertical-align:super; cursor:pointer; }
+.cmp-info:hover{ opacity:1; }
 .panel{ flex:1; background:var(--cream); border:1.3px solid rgba(26,56,115,.55);
         border-radius:12px; padding:8px; }
 .panel .ptitle{ text-align:center; font-weight:700; color:var(--navy); font-size:17px; margin-bottom:4px; }

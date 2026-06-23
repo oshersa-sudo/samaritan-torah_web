@@ -411,9 +411,9 @@ def admin_renumber_verse():
     return jsonify({'ok': True})
 
 # columns returned for a verse (everything the UI's content modes need)
-_VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'sam_aramaic',
-               'arabic_trans', 'interpretation', 'rashi', 'ramban', 'cassuto',
-               'baal_haturim')
+_VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'lxx_text',
+               'sam_aramaic', 'arabic_trans', 'interpretation', 'rashi', 'ramban',
+               'cassuto', 'baal_haturim')
 _NIKUD_RE = re.compile(u'[֑-ׇ]')
 # everything that is NOT a Hebrew consonant (incl. niqqud, te'amim, U+034F and
 # punctuation); used to reduce a word to bare consonants for the compare diff.
