@@ -35,11 +35,14 @@ FILES = [os.path.join(TZDIR, 'tzdaka_bereshit_alef_bet_39.docx'),
          os.path.join(TZDIR, 'tzdaka_bereshit_yod-bet_yod-chet.docx'),
          os.path.join(TZDIR, 'tzdaka_bereshit_18-20.docx')]
 # manuscripts in the "(verse-number) <verse text>  + commentary paragraphs" format
-# (Gen 21 / Gen 24). The ch21 "SP_aligned" file is skipped — its commentary is an
-# OCR-failure placeholder, superseded by the full ch21 file.
-_DL = os.path.join(os.path.expanduser('~'), 'Downloads')
-MARKER_FILES = [os.path.join(_DL, 'sadaqah_gen21_full_1.docx'),
-                os.path.join(_DL, 'sadaqah_gen24_full.docx')]
+# (Gen 21–30). The "SP_aligned" ch21 files are skipped — their commentary is an
+# OCR-failure placeholder, superseded by the full ch21 file. gen25b_26 spans two
+# chapters (25 & 26).
+MARKER_FILES = [os.path.join(TZDIR, n) for n in (
+    'sadaqah_gen21_full_1.docx', 'sadaqah_gen24_full.docx',
+    'sadaqah_gen25b_26_full.docx', 'sadaqah_gen27_full.docx',
+    'sadaqah_gen28_full.docx', 'sadaqah_gen29_full.docx',
+    'sadaqah_gen30_full.docx')]
 
 GEM = {'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,
        'ך':20,'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,'ס':60,'ע':70,'פ':80,'ף':80,
@@ -79,13 +82,15 @@ def parse_ref(h):
 
 # "(<gematria>) <verse text>" — the verse number may be a range, e.g. (ה-ו)
 VERSE_RE = re.compile(r'^\(\s*([א-ת]{1,3})(?:\s*[-–]\s*([א-ת]{1,3}))?\s*\)\s*(.*)')
-PEREK_RE = re.compile(r'פרק\s+(%s)' % NUM)                 # chapter heading
+# a chapter heading line: 'בראשית · פרק כ״ו' or 'פרק כ״ו' (anchored, so prose
+# mentions of "פרק" don't trigger). Files may span several chapters (e.g. 25 & 26).
+HEAD_RE = re.compile(r'^(?:בראשית\s*[·]\s*)?פרק\s+(%s)' % NUM)
 
 
 def parse_marker_file(path, vidx):
     """Parse a manuscript where each verse is introduced by '(<gematria>) <verse
-    text>' and the following paragraphs are its commentary (Gen 21 / Gen 24).
-    Single-chapter files; the chapter is taken from the first 'פרק <num>' heading."""
+    text>' and the following paragraphs are its commentary (Gen 21–30). The chapter
+    is tracked from 'פרק <num>' headings and may change within a file."""
     import docx
     doc = docx.Document(path)
     sections = []; cur = None; chap = None; chap_he = None
@@ -94,12 +99,12 @@ def parse_marker_file(path, vidx):
         if not t:
             continue
         plain = bare(t)
-        if chap is None:                                   # lock the chapter once
-            mc = PEREK_RE.search(plain)
-            if mc and 'פרקים' not in plain:
-                c = gem(mc.group(1))
-                if 1 <= c <= 50:
-                    chap, chap_he = c, mc.group(1)
+        mh = HEAD_RE.match(plain)
+        if mh and 'פרקים' not in plain:                    # chapter heading (transition)
+            c = gem(mh.group(1))
+            if 1 <= c <= 50:
+                chap, chap_he = c, mh.group(1)
+            continue                                       # not a verse, not body
         mv = VERSE_RE.match(plain)
         if mv and chap:
             if cur:
