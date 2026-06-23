@@ -221,6 +221,10 @@ body{
            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cline x1='21' y1='21' x2='15.2' y2='15.2'/%3E%3C/svg%3E") center/contain no-repeat; }
 .tb.green{ background:var(--share); flex:0 0 auto; min-width:54px; }
 #shareBtn{ display:flex; align-items:center; justify-content:center; padding:10px 12px; }
+/* compact icon buttons in the search footer (share + Excel export) */
+.tb.icon-btn{ flex:0 0 auto; min-width:48px; display:inline-flex; align-items:center;
+              justify-content:center; padding:10px 12px; }
+.tb.excel{ background:#1d7044; }
 #shareBtn svg{ display:block; }
 .toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%) translateY(8px);
         background:var(--navy); color:#fff; font-size:14px; padding:9px 16px; border-radius:8px;

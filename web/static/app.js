@@ -27,7 +27,8 @@ const I18N = {
     app_title:'התורה השומרונית הישראלית', brand_top:'אבני שהם', div_jewish:'חלוקה יהודית', div_sam:'חלוקה שומרונית',
     spread:'פריסת פרקים', next_portion:'‹ פרשה הבאה', prev_portion:'פרשה קודמת ›',
     next_chapter:'‹ פרק הבא', prev_chapter:'פרק קודם ›',
-    share:'שתף', back:'‹ חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
+    share:'שתף', export_excel:'ייצוא לאקסל', no_results_xls:'אין תוצאות לייצוא',
+    back:'‹ חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
     font_sam:'כתב שומרוני', font_heb:'כתב עברי', interp:'פירוש הפסוק', commentary:'פרשנות יהודית',
     compare:'השוואת נוסחים', variants:'חילופי נוסח', samsrc:'ממקור שומרון', translate:'תרגומי התורה',
     t_aramaic:'תרגום: ארמי', t_arabic:'תרגום: ערבי', t_english:'תרגום: אנגלית',
@@ -79,7 +80,8 @@ const I18N = {
     app_title:'The Israelite Samaritan Torah', brand_top:'אבני שהם', div_jewish:'Jewish division', div_sam:'Samaritan division',
     spread:'All chapters', next_portion:'Next portion ›', prev_portion:'‹ Previous portion',
     next_chapter:'Next chapter ›', prev_chapter:'‹ Previous chapter',
-    share:'Share', back:'‹ Back', browse:'Browse', search:'Search', dict:'Word dictionary',
+    share:'Share', export_excel:'Export to Excel', no_results_xls:'No results to export',
+    back:'‹ Back', browse:'Browse', search:'Search', dict:'Word dictionary',
     font_sam:'Samaritan script', font_heb:'Hebrew script', interp:'Verse commentary', commentary:'Jewish commentary',
     compare:'Compare versions', variants:'Textual variants', samsrc:'Samaritan sources', translate:'Torah translations',
     t_aramaic:'Translation: Aramaic', t_arabic:'Translation: Arabic', t_english:'Translation: English',
@@ -131,7 +133,8 @@ const I18N = {
     app_title:'التوراة السامرية الإسرائيلية', brand_top:'אבני שהם', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
     spread:'كل الأصحاحات', next_portion:'المقطع التالي ›', prev_portion:'‹ المقطع السابق',
     next_chapter:'الأصحاح التالي ›', prev_chapter:'‹ الأصحاح السابق',
-    share:'مشاركة', back:'‹ رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
+    share:'مشاركة', export_excel:'تصدير إلى إكسل', no_results_xls:'لا توجد نتائج للتصدير',
+    back:'‹ رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
     font_sam:'الخط السامري', font_heb:'الخط العبري', interp:'تفسير الآية', commentary:'تفسير يهودي',
     compare:'مقارنة النصوص', variants:'اختلافات النصّ', samsrc:'مصادر سامرية', translate:'ترجمات التوراة',
     t_aramaic:'ترجمة: آرامية', t_arabic:'ترجمة: عربية', t_english:'ترجمة: إنجليزية',
@@ -1051,6 +1054,15 @@ function goBack(){
 function openShare(){ $('shareModal').classList.remove('hidden'); }
 $('shareBtn').onclick=openShare;
 $('sShareBtn').onclick=openShare;
+// export the current search results to an .xlsx (downloads, then opens in Excel)
+$('sExcelBtn').onclick=()=>{
+  if(!S.lastSearchParams || !(S.searchData && S.searchData.rows && S.searchData.rows.length)){
+    toast(t('no_results_xls')); return;
+  }
+  const a=document.createElement('a');
+  a.href='/api/search_export?'+S.lastSearchParams;
+  document.body.appendChild(a); a.click(); a.remove();
+};
 document.querySelectorAll('#shareModal .share-opt').forEach(b=>b.onclick=()=>{
   const act=b.dataset.t; $('shareModal').classList.add('hidden');
   if(!act) return;
@@ -1062,6 +1074,17 @@ document.querySelectorAll('#shareModal .share-opt').forEach(b=>b.onclick=()=>{
 // the text currently shown in the verse area, following the active display mode
 // (original / a translation / the verse commentary) and any single-verse filter.
 function shareText(){
+  // on the search screen, share the search RESULTS (path + the matching verse)
+  if(!$('searchScreen').classList.contains('hidden') && S.searchData && S.searchData.rows && S.searchData.rows.length){
+    const d=S.searchData;
+    const head = t('search')+': '+($('searchInput').value.trim());
+    const body = d.rows.map(r=>{
+      const jp=`${r.book_name} › פרק ${r.chapter_num} פסוק ${r.number}`;
+      const verse=((d.aramaic? r.sam_aramaic : r.text)||'').trim();
+      return jp+'\n'+verse;
+    }).join('\n\n');
+    return head+'\n'+body;
+  }
   if(S.view==='verses' && Array.isArray(S.verses) && S.verses.length){
     const isSam=S.chMode==='samaritan';
     const head = `${S.bookName} ${isSam?'פרק שומרוני':'פרק'} ${S.curChNum}`;
@@ -1185,7 +1208,9 @@ async function doSearch(){
   $('searchResults').innerHTML='';
   $('searchStatus').textContent=t('searching');
   $('searchStatus').classList.add('searching');
+  S.lastSearchParams = params.toString();
   const data = await api('search?'+params.toString());
+  S.searchData = data;                       // kept for share + Excel export
   const root = data.root;
   const res=$('searchResults'); res.innerHTML='';
   $('searchStatus').classList.remove('searching');

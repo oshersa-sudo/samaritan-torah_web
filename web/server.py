@@ -18,7 +18,7 @@ _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
-from flask import Flask, jsonify, request, render_template, send_from_directory
+from flask import Flask, jsonify, request, render_template, send_from_directory, send_file
 
 from app.services import database as db
 from app.services.interpreter import get_chapter_interpretations
@@ -775,17 +775,18 @@ def api_compare():
 
 
 # ── search ─────────────────────────────────────────────────────────────────
-@app.route('/api/search')
-def api_search():
-    query = request.args.get('q', '').strip()
+def _do_search(args):
+    """Run a verse search and return the JSON-able result dict (rows + meta).
+    Shared by /api/search and the Excel export so both are identical."""
+    query = args.get('q', '').strip()
     if not query:
-        return jsonify({'rows': [], 'count': 0})
-    exact = request.args.get('exact') == '1'
-    aramaic = request.args.get('aramaic') == '1'
-    root_flag = request.args.get('root') == '1'
+        return {'rows': [], 'count': 0}
+    exact = args.get('exact') == '1'
+    aramaic = args.get('aramaic') == '1'
+    root_flag = args.get('root') == '1'
     root = root_flag and len(query.split()) == 1
-    root_letters = request.args.get('root_letters') or None
-    ignore_finals = request.args.get('ignore_finals') == '1'
+    root_letters = args.get('root_letters') or None
+    ignore_finals = args.get('ignore_finals') == '1'
     if exact and root:
         root = False
 
@@ -859,12 +860,92 @@ def api_search():
         item['meaning'] = _tal_gloss(aramaic_w)
         out.append(item)
 
-    return jsonify({
+    return {
         'rows': out, 'count': len(out),
-        'aramaic': aramaic, 'root': root, 'exact': exact,
+        'aramaic': aramaic, 'root': root, 'exact': exact, 'query': query,
         'searched_root': searched_root,
         'root_requested_multi': (root_flag and not root),
-    })
+    }
+
+
+@app.route('/api/search')
+def api_search():
+    return jsonify(_do_search(request.args))
+
+
+def _clean_pron(p):
+    """Latin transliteration only (drop Hebrew/Arabic and parentheticals that hold
+    them) — mirrors cleanPron() in the client so the export matches the screen."""
+    p = re.sub(r'\([^)]*[א-ת؀-ۿ][^)]*\)', '', p or '')
+    p = re.sub(r'[א-ת؀-ۿ]', '', p)
+    return re.sub(r'\s+', ' ', p).strip()
+
+
+def _uniq(seq):
+    out = []
+    for x in seq:
+        if x and x not in out:
+            out.append(x)
+    return out
+
+
+@app.route('/api/search_export')
+def api_search_export():
+    """Export the current search results to an .xlsx with the columns the user asked
+    for: Samaritan path · Jewish path · the verse · the matched word(s) · binyan ·
+    Latin transliteration · the word's meaning."""
+    import io as _io
+    import openpyxl
+    from openpyxl.styles import Font, Alignment, PatternFill
+    data = _do_search(request.args)
+    rows = data.get('rows', [])
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'תוצאות חיפוש'
+    ws.sheet_view.rightToLeft = True
+    headers = ['נתיב שומרוני', 'נתיב יהודי', 'המשפט', 'המילים בתוצאה',
+               'בניין', 'הגייה לטינית', 'פירוש המילה']
+    ws.append(headers)
+    hfill = PatternFill('solid', fgColor='1A3873')
+    for c in ws[1]:
+        c.font = Font(bold=True, color='FFFFFF')
+        c.fill = hfill
+        c.alignment = Alignment(horizontal='center', vertical='center')
+
+    for r in rows:
+        sam = r.get('sam') or {}
+        sam_path = ''
+        if sam:
+            op = ('  (%s)' % sam['opening']) if sam.get('opening') else ''
+            sam_path = '%s › %s › פרק שומרוני %s פסוק %s%s' % (
+                r['book_name'], sam.get('sam_portion_name', ''),
+                sam.get('sam_ch_num', ''), sam.get('number', ''), op)
+        jew_path = '%s › %s › פרק %s פסוק %s' % (
+            r['book_name'], r.get('portion_name', ''), r['chapter_num'], r['number'])
+        verse = (r.get('sam_aramaic') if data.get('aramaic') else r.get('text')) or ''
+        words = ' '.join(r['match_words']) if r.get('match_words') else (r.get('matched_word') or '')
+        occ = r.get('occ') or []
+        binyan = ' · '.join(_uniq(o[1] for o in occ if len(o) > 1))
+        pron = ' · '.join(_uniq(_clean_pron(o[0]) for o in occ if o))
+        meaning = r.get('meaning') or ''
+        if r.get('aramaic'):
+            meaning = (meaning + '  ·  ' if meaning else '') + 'ארמית: ' + r['aramaic']
+        ws.append([sam_path, jew_path, verse, words, binyan, pron, meaning])
+
+    widths = [42, 38, 60, 20, 16, 22, 40]
+    for i, w in enumerate(widths, 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
+    for row in ws.iter_rows(min_row=2):
+        for c in row:
+            c.alignment = Alignment(vertical='top', wrap_text=True,
+                                    horizontal='right')
+
+    buf = _io.BytesIO(); wb.save(buf); buf.seek(0)
+    q = re.sub(r'[^\w֐-׿]+', '_', data.get('query', 'search'))[:40] or 'search'
+    return send_file(buf, as_attachment=True,
+                     download_name='תוצאות_חיפוש_%s.xlsx' % q,
+                     mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 
 def _snippet(text, word, span=70):
