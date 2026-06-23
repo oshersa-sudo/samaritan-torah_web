@@ -1721,14 +1721,18 @@ function openRenumber(v){
 function loadBookmarks(){ try{ return JSON.parse(localStorage.getItem('bookmarks')||'[]'); }catch(e){ return []; } }
 function saveBookmarks(a){ localStorage.setItem('bookmarks', JSON.stringify(a)); }
 function updateBmMenu(){ $('bmMenuItem').classList.toggle('hidden', loadBookmarks().length===0); }
-function bmLabel(b){ return (b.division==='samaritan'?'פרק שומרוני ':'פרק ')+b.chNum; }
+function bmLabel(b){ return (b.division==='samaritan'?'פרק שומרוני ':'פרק ')+b.chNum
+                          + (b.division==='samaritan' && b.chName ? ' ('+b.chName+')' : ''); }
 function addBookmark(){
   if(S.view!=='verses' || S.curChId==null) return;
   const bms=loadBookmarks();
   if(bms.length>=20){ showInfo(t('bm_my'), `<div class="note">${esc(t('bm_max'))}</div>`); return; }
   if(bms.some(b=>b.division===S.chMode && b.chId===S.curChId)){ showInfo(t('bm_my'), `<div class="note">${esc(t('bm_dup'))}</div>`); return; }
+  // for a Samaritan chapter, store its 4 opening words (same as the breadcrumb)
+  const chName = (S.chMode==='samaritan' && S.verses && S.verses[0])
+    ? (S.verses[0].text||'').trim().split(/\s+/).filter(Boolean).slice(0,4).join(' ') : '';
   bms.push({ id:'bm'+Date.now()+Math.random().toString(36).slice(2,8), division:S.chMode, book:S.book, bookName:S.bookName,
-             portionId:S.curPid, portionName:S.portionName||'', chId:S.curChId, chNum:S.curChNum, note:'', ts:Date.now() });
+             portionId:S.curPid, portionName:S.portionName||'', chId:S.curChId, chNum:S.curChNum, chName:chName, note:'', ts:Date.now() });
   saveBookmarks(bms); updateBmMenu();
   showInfo(t('bm_my'), `<div class="note">${esc(t('bm_added'))}</div>`);
 }
