@@ -477,9 +477,11 @@ footer a{ color:var(--accent); text-decoration:none; }
   line-height:1.85; letter-spacing:.06em; text-shadow:0 0 0 transparent; transition:text-shadow 1.1s ease;
 }
 #samaritan-splash .verse.lit{ text-shadow:0 0 22px rgba(236,205,132,.45), 0 0 4px rgba(236,205,132,.5); }
-#samaritan-splash .verse-line{ display:block; font-size:clamp(30px,6.6vw,62px); white-space:nowrap; }
+/* the verse starts fully hidden and is revealed only as the quill writes it */
+#samaritan-splash .verse-line{ display:block; font-size:clamp(30px,6.6vw,62px);
+  white-space:nowrap; clip-path:inset(0 0 0 100%); }
 #samaritan-splash .pen{
-  position:absolute; left:0; top:0; width:64px; height:auto; opacity:0;
+  position:absolute; left:0; top:0; width:96px; height:auto; opacity:0;
   pointer-events:none; will-change:transform; filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));
 }
 #samaritan-splash .skip{
