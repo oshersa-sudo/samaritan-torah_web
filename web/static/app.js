@@ -393,15 +393,19 @@ async function openSamChapter(samId, samNum, pid, pname, fromSearch){
 async function renderVerses(chId, chNum, pid, pname){
   S.view='verses'; S.curChId=chId; S.curChNum=chNum; setView();
   const isSam = S.chMode==='samaritan';
-  const chLabel = isSam ? ('פרק שומרוני '+chNum) : ('פרק '+chNum);
+  S.verses = isSam ? await api('sam_verses?sam_ch_id='+chId)
+                   : await api('verses?chapter_id='+chId+(pid?('&portion_id='+pid):''));
+  let chLabel = isSam ? ('פרק שומרוני '+chNum) : ('פרק '+chNum);
+  if(isSam && S.verses.length){          // append the 4 words that open the chapter
+    const w=(S.verses[0].text||'').trim().split(/\s+/).filter(Boolean).slice(0,4).join(' ');
+    if(w) chLabel += ' (' + w + ')';
+  }
   setCrumbs([
     {t:S.bookName, fn:()=>showPortions(S.book,S.bookName)},
     {t:pname, fn:()=> isSam ? showSamChapters(pid,pname) : showChapters(pid,pname)},
     {t:chLabel},
   ]);
   navState('chapter');
-  S.verses = isSam ? await api('sam_verses?sam_ch_id='+chId)
-                   : await api('verses?chapter_id='+chId+(pid?('&portion_id='+pid):''));
   paintVerses();
 }
 
@@ -528,8 +532,13 @@ function origPanel(verses){
 
 async function buildCompare(c, verses){
   const ph = el('div','note','טוען השוואה…'); c.appendChild(ph);
-  const data = await apiPost('compare', {verses: verses.map(v=>(
-    {number:v.number, text:v.text, masoretic_text:v.masoretic_text}))});
+  const data = await apiPost('compare', {verses: verses.map(v=>{
+    const mas = String(v.masnum!=null ? v.masnum : v.number);
+    // on the Masoretic side, prefix the chapter before verse 1 (e.g. "20:1") so the
+    // reader sees which Masoretic chapter the verse belongs to
+    const masLabel = (mas==='1') ? ((v.jchapter!=null?v.jchapter:S.curChNum)+':1') : mas;
+    return {sam_num:v.number, mas_num:masLabel, text:v.text, masoretic_text:v.masoretic_text};
+  })});
   ph.remove();
   const fs=fsize();
   const render = toks => toks.map(t=> t[1]?`<span class="diff">${esc(t[0])}</span>`:esc(t[0])).join(' ');

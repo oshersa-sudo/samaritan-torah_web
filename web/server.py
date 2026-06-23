@@ -581,7 +581,14 @@ def api_verses():
     cid = int(request.args['chapter_id'])
     pid = request.args.get('portion_id')
     rows = db.get_verses(cid, portion_id=int(pid) if pid else None)
-    return jsonify([_verse_dict(r) for r in rows])
+    out = []
+    for r in rows:
+        dd = _verse_dict(r)
+        dd['jchapter'] = r['jchapter'] if 'jchapter' in r.keys() else None
+        mn = r['mas_number'] if 'mas_number' in r.keys() else None
+        dd['masnum'] = mn if mn else dd['number']     # Masoretic-comparison number
+        out.append(dd)
+    return jsonify(out)
 
 
 @app.route('/api/sam_verses')
@@ -592,6 +599,9 @@ def api_sam_verses():
     out = []
     for r in rows:
         dd = _verse_dict(r)
+        dd['jchapter'] = r['jchapter'] if 'jchapter' in r.keys() else None
+        mn = r['mas_number'] if 'mas_number' in r.keys() else None
+        dd['masnum'] = mn if mn else dd['number']     # Masoretic-comparison number (real)
         sn = r['sam_number'] if 'sam_number' in r.keys() else None
         if sn:                          # Samaritan division shows the Samaritan number
             dd['number'] = sn
@@ -691,19 +701,22 @@ def api_online_dict():
 
 
 # ── compare (Masoretic vs Samaritan) diff, computed server-side ─────────────
-def _diff_tokens(verse_num, sam_raw, mas_raw):
-    """Port of BrowseScreen._diff_tokens. Returns (sam_tokens, mas_tokens); each
-    token is [word, is_diff]. Atom-level, maqaf-aware, niqqud-insensitive."""
+def _diff_tokens(sam_num, mas_num, sam_raw, mas_raw):
+    """Returns (sam_tokens, mas_tokens); each token is [word, is_diff]. Atom-level,
+    maqaf-aware, niqqud-insensitive. The two columns carry their own leading number
+    token (Samaritan number on the Samaritan side, Masoretic number on the Masoretic
+    side — they can differ)."""
     MAQAF = u'־'
     sam_words = sam_raw.split() if sam_raw else []
     mas_words = mas_raw.split() if mas_raw else []
-    numtok = [str(verse_num), False]
+    sam_numtok = [str(sam_num), False]
+    mas_numtok = [str(mas_num), False]
     if not sam_words and not mas_words:
         return [], []
     if not sam_words:
-        return [], [numtok] + [[w, False] for w in mas_words]
+        return [], [mas_numtok] + [[w, False] for w in mas_words]
     if not mas_words:
-        return [numtok] + [[w, False] for w in sam_words], []
+        return [sam_numtok] + [[w, False] for w in sam_words], []
 
     def tokenize(words):
         tokens = []
@@ -733,8 +746,8 @@ def _diff_tokens(verse_num, sam_raw, mas_raw):
                 sam_diff[sam_a2t[ai]] = True
             for aj in range(j1, j2):
                 mas_diff[mas_a2t[aj]] = True
-    sam_tokens = [numtok] + [[w, sam_diff[i]] for i, (w, _) in enumerate(sam_tok)]
-    mas_tokens = [numtok] + [[w, mas_diff[i]] for i, (w, _) in enumerate(mas_tok)]
+    sam_tokens = [sam_numtok] + [[w, sam_diff[i]] for i, (w, _) in enumerate(sam_tok)]
+    mas_tokens = [mas_numtok] + [[w, mas_diff[i]] for i, (w, _) in enumerate(mas_tok)]
     return sam_tokens, mas_tokens
 
 
@@ -745,9 +758,9 @@ def api_compare():
     data = request.get_json(force=True)
     out = []
     for v in data.get('verses', []):
-        st, mt = _diff_tokens(v.get('number'), v.get('text') or '',
-                              v.get('masoretic_text') or '')
-        out.append({'number': v.get('number'), 'sam': st, 'mas': mt})
+        st, mt = _diff_tokens(v.get('sam_num'), v.get('mas_num'),
+                              v.get('text') or '', v.get('masoretic_text') or '')
+        out.append({'sam': st, 'mas': mt})
     return jsonify(out)
 
 

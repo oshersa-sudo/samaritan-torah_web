@@ -55,7 +55,9 @@ def init_db():
             number      INTEGER NOT NULL,
             text        TEXT NOT NULL,
             sam_ch_id   INTEGER REFERENCES sam_chapters(id),
-            sam_number  TEXT          -- Samaritan-division verse number override;
+            sam_number  TEXT,         -- Samaritan-division verse number override;
+                                      -- NULL = display the Jewish `number`
+            mas_number  TEXT          -- Masoretic-comparison verse number override;
                                       -- NULL = display the Jewish `number`
         );
 
@@ -111,7 +113,7 @@ def get_verses(chapter_id, portion_id=None):
     # only in the Samaritan-division view (get_verses_by_sam_ch).
     if portion_id:
         rows = conn.execute(
-            """SELECT v.* FROM verses v
+            """SELECT v.*, c.number AS jchapter FROM verses v
                JOIN chapters c ON c.id = v.chapter_id
                JOIN portions p ON p.id = ?
                WHERE v.chapter_id = ?
@@ -123,8 +125,8 @@ def get_verses(chapter_id, portion_id=None):
         ).fetchall()
     else:
         rows = conn.execute(
-            "SELECT * FROM verses WHERE chapter_id=? AND typeof(number)='integer' "
-            "ORDER BY number", (chapter_id,)
+            "SELECT v.*, c.number AS jchapter FROM verses v JOIN chapters c ON c.id=v.chapter_id "
+            "WHERE v.chapter_id=? AND typeof(v.number)='integer' ORDER BY v.number", (chapter_id,)
         ).fetchall()
     conn.close()
     return rows
@@ -202,7 +204,7 @@ def get_verses_by_sam_ch(sam_ch_id):
     # 18, 18-1, 18-2 … 18-10 sort right; a plain verse has sub 0 and comes first).
     conn = get_connection()
     rows = conn.execute(
-        """SELECT v.* FROM verses v JOIN chapters ch ON ch.id = v.chapter_id
+        """SELECT v.*, ch.number AS jchapter FROM verses v JOIN chapters ch ON ch.id = v.chapter_id
            WHERE v.sam_ch_id=?
            ORDER BY ch.number,
                     CAST(v.number AS INTEGER),
