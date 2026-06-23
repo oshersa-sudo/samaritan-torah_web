@@ -54,7 +54,9 @@ def init_db():
             chapter_id  INTEGER NOT NULL REFERENCES chapters(id),
             number      INTEGER NOT NULL,
             text        TEXT NOT NULL,
-            sam_ch_id   INTEGER REFERENCES sam_chapters(id)
+            sam_ch_id   INTEGER REFERENCES sam_chapters(id),
+            sam_number  TEXT          -- Samaritan-division verse number override;
+                                      -- NULL = display the Jewish `number`
         );
 
         CREATE INDEX IF NOT EXISTS idx_verses_text ON verses(text);

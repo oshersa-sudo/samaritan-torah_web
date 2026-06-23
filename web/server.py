@@ -360,9 +360,12 @@ def admin_split_verse():
     return jsonify({'ok': True, 'new_number': new_number})
 
 
-# Change a verse's number. With cascade=True, every following verse in the same
-# Jewish chapter (integer base >= the target's old base) is shifted by the same
-# delta, preserving any maqaf suffix; otherwise only the target verse changes.
+# Change a verse's SAMARITAN-division number (verses.sam_number) — the Jewish
+# `number` is never touched. With cascade=True, every following verse in the same
+# Jewish chapter (real integer base >= the target's) has its effective Samaritan
+# number shifted by the same delta (maqaf suffix preserved); otherwise only the
+# target verse changes. sam_number does not affect root_index (which keys on the
+# Jewish number), so no reindex is needed.
 @app.route('/api/admin/renumber_verse', methods=['POST'])
 def admin_renumber_verse():
     d = request.get_json(silent=True) or {}
@@ -379,26 +382,26 @@ def admin_renumber_verse():
     _backup_db()
     conn = db.get_connection()
     try:
-        v = conn.execute('SELECT id, chapter_id, number FROM verses WHERE id=?', (verse_id,)).fetchone()
+        v = conn.execute('SELECT id, chapter_id, number, sam_number FROM verses WHERE id=?', (verse_id,)).fetchone()
         if not v:
             return jsonify({'ok': False, 'error': 'verse not found'}), 404
         cid = v['chapter_id']
-        old_base_s = str(v['number']).split('-')[0]
         if not cascade:
-            conn.execute('UPDATE verses SET number=? WHERE id=?', (new_number, verse_id))
+            conn.execute('UPDATE verses SET sam_number=? WHERE id=?', (new_number, verse_id))
         else:
+            eff_old = str(v['sam_number'] or v['number']).split('-')[0]
             new_base_s = new_number.split('-')[0]
-            if not old_base_s.isdigit() or not new_base_s.isdigit():
+            real_base_s = str(v['number']).split('-')[0]
+            if not (eff_old.isdigit() and new_base_s.isdigit() and real_base_s.isdigit()):
                 return jsonify({'ok': False, 'error': 'נדרש מספר שלם לשינוי מדורג'}), 400
-            old_base = int(old_base_s); delta = int(new_base_s) - old_base
-            for r in conn.execute('SELECT id, number FROM verses WHERE chapter_id=?', (cid,)).fetchall():
-                s = str(r['number']); b = s.split('-')[0]
-                if b.isdigit() and int(b) >= old_base:
-                    conn.execute('UPDATE verses SET number=? WHERE id=?',
-                                 (str(int(b) + delta) + s[len(b):], r['id']))
-        bk = conn.execute('SELECT book_id FROM chapters WHERE id=?', (cid,)).fetchone()
-        if bk:
-            _fix_root_index(conn, bk['book_id'])
+            delta = int(new_base_s) - int(eff_old); real_base = int(real_base_s)
+            for r in conn.execute('SELECT id, number, sam_number FROM verses WHERE chapter_id=?', (cid,)).fetchall():
+                rb = str(r['number']).split('-')[0]
+                if rb.isdigit() and int(rb) >= real_base:
+                    eff = str(r['sam_number'] or r['number']); eb = eff.split('-')[0]
+                    if eb.isdigit():
+                        conn.execute('UPDATE verses SET sam_number=? WHERE id=?',
+                                     (str(int(eb) + delta) + eff[len(eb):], r['id']))
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -586,7 +589,14 @@ def api_sam_verses():
     """Samaritan-division verses of a Samaritan chapter."""
     sid = int(request.args['sam_ch_id'])
     rows = db.get_verses_by_sam_ch(sid)
-    return jsonify([_verse_dict(r) for r in rows])
+    out = []
+    for r in rows:
+        dd = _verse_dict(r)
+        sn = r['sam_number'] if 'sam_number' in r.keys() else None
+        if sn:                          # Samaritan division shows the Samaritan number
+            dd['number'] = sn
+        out.append(dd)
+    return jsonify(out)
 
 
 # ── content-mode API ───────────────────────────────────────────────────────

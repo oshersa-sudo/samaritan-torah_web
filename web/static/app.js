@@ -431,13 +431,13 @@ function paintVerses(){
     } else {
       const mb=el('button','admin-btn', t('merge_next')); mb.onclick=mergeNext;
       bar.appendChild(mb);
-      if(S.chMode==='samaritan'){          // verse split → Samaritan-only maqaf sub-verse
+      if(S.chMode==='samaritan'){          // verse split + renumber → Samaritan-only
         const vb=el('button','admin-btn', t('split_verse'));
         vb.onclick=()=>{ S.vsplitMode=true; paintVerses(); };
         bar.appendChild(vb);
+        const rb=el('button','admin-btn', t('renum')); rb.onclick=()=>{ S.renumMode=true; paintVerses(); };
+        bar.appendChild(rb);
       }
-      const rb=el('button','admin-btn', t('renum')); rb.onclick=()=>{ S.renumMode=true; paintVerses(); };
-      bar.appendChild(rb);
       const sb=el('button','admin-btn', t('split_chapter')); sb.onclick=()=>{ S.splitMode=true; paintVerses(); };
       bar.appendChild(sb);
     }

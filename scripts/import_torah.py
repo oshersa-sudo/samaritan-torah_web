@@ -153,7 +153,8 @@ def init_schema(conn):
             chapter_id INTEGER NOT NULL REFERENCES chapters(id),
             number     INTEGER NOT NULL,
             text       TEXT NOT NULL,
-            sam_ch_id  INTEGER REFERENCES sam_chapters(id)
+            sam_ch_id  INTEGER REFERENCES sam_chapters(id),
+            sam_number TEXT
         );
 
         CREATE INDEX idx_chapters_book   ON chapters(book_id, number);
