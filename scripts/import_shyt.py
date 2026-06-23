@@ -31,6 +31,17 @@ def gem(s):
     return sum(GEM.get(c, 0) for c in s)
 
 
+def process_body(body):
+    """Tidy a question body and split off its biblical-anchor tail.
+    Returns (text, anchors): 'הר גריזים' is written as one word 'הרגריזים', and the
+    "עיגון מקראי:" list at the end is separated so it can be shown small, at the foot."""
+    body = re.sub(r'הר[\s־]+גריזים', 'הרגריזים', body)
+    i = body.find('עיגון מקראי')
+    if i >= 0:
+        return body[:i].strip(' ·•—-'), body[i:].strip()
+    return body.strip(), ''
+
+
 def parse_questions(doc):
     """{qnum: {'heb','title','body'}} from the Part-B 'פרק <heb> (<roman>) · topic'."""
     qs = {}
@@ -126,15 +137,16 @@ def main():
     cu.execute('DROP TABLE IF EXISTS shyt_verse_links')
     cu.execute('DROP TABLE IF EXISTS shyt_sections')
     cu.execute('CREATE TABLE shyt_sections (id INTEGER PRIMARY KEY, qnum INTEGER, '
-               'title TEXT, ord INTEGER, text TEXT)')
+               'title TEXT, ord INTEGER, text TEXT, anchors TEXT)')
     cu.execute('CREATE TABLE shyt_verse_links (id INTEGER PRIMARY KEY, '
                'verse_id INTEGER, section_id INTEGER)')
     for q in sorted(qs):
         body = re.sub(r'\s+', ' ', ' '.join(qs[q]['body'])).strip()
         if not body or not by_q.get(q):
             continue
-        cu.execute('INSERT INTO shyt_sections (qnum, title, ord, text) VALUES (?,?,?,?)',
-                   (q, qs[q]['title'], q, body))
+        text, anchors = process_body(body)
+        cu.execute('INSERT INTO shyt_sections (qnum, title, ord, text, anchors) VALUES (?,?,?,?,?)',
+                   (q, qs[q]['title'], q, text, anchors))
         sid = cu.lastrowid
         for vid in sorted(by_q[q]):
             cu.execute('INSERT INTO shyt_verse_links (verse_id, section_id) VALUES (?,?)',

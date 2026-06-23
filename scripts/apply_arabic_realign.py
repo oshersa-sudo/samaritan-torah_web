@@ -65,10 +65,13 @@ def letters(s):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--apply', action='store_true')
+    ap.add_argument('--book', default='בראשית')
+    ap.add_argument('--review', default=REVIEW)
     args = ap.parse_args()
+    is_gen = (args.book == 'בראשית')   # the early-range + manual-band logic is Gen-only
 
     con = sqlite3.connect(DB); con.row_factory = sqlite3.Row
-    gid = con.execute("SELECT id FROM books WHERE name='בראשית'").fetchone()[0]
+    gid = con.execute("SELECT id FROM books WHERE name=?", (args.book,)).fetchone()[0]
     cur = {}
     for r in con.execute("""SELECT c.number jch, v.number jn, v.id id, v.text he,
                                    TRIM(COALESCE(v.arabic_trans,'')) ar
@@ -78,7 +81,7 @@ def main():
 
     overwrite, unchanged, flagged, noverse = [], 0, [], 0
     seen = set()
-    for l in open(REVIEW, encoding='utf-8'):
+    for l in open(args.review, encoding='utf-8'):
         rec = json.loads(l)
         for v in rec.get('verses', []):
             ref = v.get('ref')
@@ -89,7 +92,7 @@ def main():
             if not info:
                 noverse += 1; continue
             vid, old, he = info
-            if is_early(ref):
+            if is_gen and is_early(ref):
                 unchanged += 1                # preserve the original early edition
                 continue
             new = clean_ar(v.get('arabic', ''))
@@ -104,15 +107,21 @@ def main():
             # difference (keep) by their content similarity, with a few manual calls
             # for the ambiguous 0.42–0.80 band (read by content, see notes below).
             r = difflib.SequenceMatcher(None, lo, ln).ratio()
-            if ref in MANUAL_KEEP:
+            mkeep = is_gen and ref in MANUAL_KEEP
+            mover = is_gen and ref in MANUAL_OVERWRITE
+            if mkeep:
                 unchanged += 1
-            elif r < 0.42 or ref in MANUAL_OVERWRITE:
+            elif r < 0.42 or mover:
                 overwrite.append((vid, ref, old, new, he))     # scrambled → fix
             elif r >= 0.80:
                 unchanged += 1                                  # same verse, edition diff → keep
-            else:
-                # an unclassified mid-band verse — keep it and flag for a look
+            elif is_gen:
+                # an unclassified Gen mid-band verse — keep it and flag for a look
                 flagged.append((ref, he, old, new, 'mid-band r=%.2f (kept)' % r))
+            else:
+                # other books had no correct edition to preserve — the verified docx
+                # reading replaces the scrambled one.
+                overwrite.append((vid, ref, old, new, he))
 
     print('verses verified & changed (to overwrite):', len(overwrite))
     print('verses already correct (unchanged)      :', unchanged)

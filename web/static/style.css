@@ -528,3 +528,7 @@ footer a{ color:var(--accent); text-decoration:none; }
   background:radial-gradient(120% 100% at 50% 42%, transparent 55%, rgba(120,104,70,.22) 100%);
 }
 #splash-image.is-gone{ opacity:0; pointer-events:none; }
+
+/* small biblical-anchor footnote at the foot of a source card (שו"ת / eyalk) */
+.srcpanel .card .canchors{ margin-top:8px; padding-top:6px; border-top:1px dashed rgba(26,56,115,.3);
+  font-size:12.5px; line-height:1.6; color:var(--muted); }

@@ -749,6 +749,7 @@ async function buildSamSrc(c, verses){
       const card=el('div','card');
       if(it.parsha) card.appendChild(el('div','chead',esc(it.parsha)));
       const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
     c.appendChild(panel); return;
@@ -766,6 +767,7 @@ async function buildSamSrc(c, verses){
       const lbl=[it.ref, it.title].filter(Boolean).join('  ·  ');
       if(lbl) card.appendChild(el('div','chead',esc(lbl)));
       const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
     c.appendChild(panel); return;
@@ -782,6 +784,7 @@ async function buildSamSrc(c, verses){
       const card=el('div','card');
       if(it.title) card.appendChild(el('div','chead',esc(it.title)));
       const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
     c.appendChild(panel); return;
@@ -798,6 +801,7 @@ async function buildSamSrc(c, verses){
       const card=el('div','card');
       if(it.title) card.appendChild(el('div','chead',esc(it.title)));
       const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
     c.appendChild(panel); return;

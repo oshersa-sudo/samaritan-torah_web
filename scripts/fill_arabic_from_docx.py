@@ -133,8 +133,8 @@ def find_span(window, arabic, frm=0):
     return (start, end)
 
 
-def genesis_chapters(conn):
-    gid = conn.execute("SELECT id FROM books WHERE name='בראשית'").fetchone()[0]
+def book_chapters(conn, book):
+    gid = conn.execute("SELECT id FROM books WHERE name=?", (book,)).fetchone()[0]
     out = []
     for sc in conn.execute("SELECT id, number FROM sam_chapters WHERE book_id=? ORDER BY number", (gid,)):
         vs = []
@@ -143,7 +143,7 @@ def genesis_chapters(conn):
                           TRIM(COALESCE(v.arabic_trans,'')) ar
                    FROM verses v JOIN chapters c ON c.id=v.chapter_id
                    WHERE v.sam_ch_id=? ORDER BY v.id""", (sc[0],)):
-            vs.append(dict(id=v['id'], ref='%d:%d' % (v['jch'], v['jn']),
+            vs.append(dict(id=v['id'], ref='%s:%s' % (v['jch'], v['jn']),
                            he=v['he'] or '', missing=not v['ar']))
         out.append(dict(sam=sc[1], verses=vs))
     return out
@@ -155,17 +155,25 @@ WIN = 2600          # chars of stream shown per chapter (covers a chapter + marg
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--max-chapters', type=int, default=0)
+    ap.add_argument('--all', action='store_true',
+                    help='verify EVERY verse (re-align), not only the missing ones')
+    ap.add_argument('--out', default=REVIEW)
+    ap.add_argument('--book', default='בראשית')
     args = ap.parse_args()
 
-    import anthropic
+    import anthropic, book_arabic
     cl = anthropic.Anthropic(api_key=api_key())
-    stream = load_stream()
-    print('stream chars:', len(stream))
+    stream = book_arabic.load_stream(args.book) if args.book != 'בראשית' else load_stream()
+    print('book:', args.book, '| stream chars:', len(stream))
     conn = sqlite3.connect(DB); conn.row_factory = sqlite3.Row
-    chapters = genesis_chapters(conn)
-    print('DB Genesis sam chapters:', len(chapters))
+    chapters = book_chapters(conn, args.book)
+    if args.all:                       # treat every verse as needing extraction+verify
+        for ch in chapters:
+            for v in ch['verses']:
+                v['missing'] = True
+    print('DB %s sam chapters:' % args.book, len(chapters), '| mode:', 'ALL' if args.all else 'missing-only')
 
-    out = open(REVIEW, 'w', encoding='utf-8')
+    out = open(args.out, 'w', encoding='utf-8')
     pos = 0; processed = 0
     for ch in chapters:
         N = ch['sam']
@@ -205,7 +213,7 @@ def main():
         if args.max_chapters and processed >= args.max_chapters:
             break
     out.close()
-    print('done. review ->', REVIEW)
+    print('done. review ->', args.out)
 
 
 if __name__ == '__main__':
