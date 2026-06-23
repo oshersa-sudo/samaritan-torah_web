@@ -415,6 +415,9 @@ _VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'sam_aramaic
                'arabic_trans', 'interpretation', 'rashi', 'ramban', 'cassuto',
                'baal_haturim')
 _NIKUD_RE = re.compile(u'[֑-ׇ]')
+# everything that is NOT a Hebrew consonant (incl. niqqud, te'amim, U+034F and
+# punctuation); used to reduce a word to bare consonants for the compare diff.
+_HEB_LETTERS_RE = re.compile(u'[^א-ת]')
 
 
 def _verse_dict(row):
@@ -702,10 +705,13 @@ def api_online_dict():
 
 # ── compare (Masoretic vs Samaritan) diff, computed server-side ─────────────
 def _diff_tokens(sam_num, mas_num, sam_raw, mas_raw):
-    """Returns (sam_tokens, mas_tokens); each token is [word, is_diff]. Atom-level,
-    maqaf-aware, niqqud-insensitive. The two columns carry their own leading number
-    token (Samaritan number on the Samaritan side, Masoretic number on the Masoretic
-    side — they can differ)."""
+    """Returns (sam_tokens, mas_tokens); each token is [word, is_diff]. Comparison is
+    consonant-only: niqqud, cantillation, the combining grapheme joiner (U+034F) and
+    punctuation (periods, dashes, colons, maqaf) are all ignored, so only genuine
+    letter differences between the versions are highlighted — the displayed words keep
+    their original spelling and marks. Each column carries its own leading number token
+    (Samaritan number on the Samaritan side, Masoretic number on the Masoretic side —
+    they can differ)."""
     MAQAF = u'־'
     sam_words = sam_raw.split() if sam_raw else []
     mas_words = mas_raw.split() if mas_raw else []
@@ -719,10 +725,14 @@ def _diff_tokens(sam_num, mas_num, sam_raw, mas_raw):
         return [sam_numtok] + [[w, False] for w in sam_words], []
 
     def tokenize(words):
+        # token -> list of consonant-only atoms (maqaf-separated). Atoms that hold no
+        # Hebrew letter (pure punctuation: '.', '--', ':--', …) are dropped, so such
+        # tokens never count as a difference.
         tokens = []
         for w in words:
-            atoms = [_NIKUD_RE.sub(u'', a) for a in w.split(MAQAF) if a]
-            tokens.append((w, atoms or [_NIKUD_RE.sub(u'', w)]))
+            atoms = [_HEB_LETTERS_RE.sub(u'', a) for a in w.split(MAQAF)]
+            atoms = [a for a in atoms if a]
+            tokens.append((w, atoms))
         return tokens
 
     sam_tok = tokenize(sam_words)
