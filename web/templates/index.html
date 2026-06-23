@@ -407,7 +407,17 @@
   // slowly into the app). Skipped gracefully if the image can't be loaded.
   const imgLayer=document.getElementById('splash-image');
   if(imgLayer){ const probe=new Image(); probe.onerror=()=>{ state.imgFailed=true; }; probe.src='/static/img/splash_elder.jpg'; }
-  const IMG_HOLD=1200, IMG_FADE_MS=2400;
+  const IMG_HOLD=300, IMG_FADE_MS=1200;          // dimmed etching ~1.5s total
+  // shrink the verse font until the longest line fits the screen width
+  function fitVerse(){
+    let ratio=1;
+    lines.forEach(l=>{ if(l.scrollWidth>l.clientWidth && l.clientWidth>0)
+      ratio=Math.min(ratio, l.clientWidth/l.scrollWidth); });
+    if(ratio<1){
+      const fs=parseFloat(getComputedStyle(lines[0]).fontSize)*ratio*0.96;
+      lines.forEach(l=> l.style.fontSize=Math.max(16,fs)+'px');
+    }
+  }
   function finish(){
     if(state.done) return; state.done=true;
     if(SPLASH_CONFIG.redirectUrl){ window.location.href=SPLASH_CONFIG.redirectUrl; return; }
@@ -435,7 +445,7 @@
   overlay.addEventListener('click', e=>{ if(e.target===overlay) skip(); });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') skip(); });
   async function run(){
-    buildPages();
+    buildPages(); fitVerse();
     if(reduce){ lines.forEach(l=>l.style.clipPath='none'); verse.classList.add('lit'); await wait(1500); return finish(); }
     await wait(1250); if(state.cancelled) return;
     await writeLine(lines[0]); if(state.cancelled) return;

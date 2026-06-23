@@ -478,11 +478,11 @@ footer a{ color:var(--accent); text-decoration:none; }
 }
 #samaritan-splash .verse.lit{ text-shadow:0 0 22px rgba(236,205,132,.45), 0 0 4px rgba(236,205,132,.5); }
 /* the verse starts fully hidden and is revealed only as the quill writes it */
-#samaritan-splash .verse-line{ display:block; font-size:clamp(30px,6.6vw,62px);
-  white-space:nowrap; clip-path:inset(0 0 0 100%); }
+#samaritan-splash .verse-line{ display:block; font-size:clamp(22px,5.6vw,54px);
+  white-space:nowrap; clip-path:inset(0 0 0 100%); max-width:100%; }
 /* Samaritan word-separator dot, centred in the gap between words */
 #samaritan-splash .verse .wsep{ font-style:normal; font-family:'Heebo',sans-serif;
-  margin:0 .34em; font-size:.42em; vertical-align:.34em; color:var(--gold); opacity:.85; }
+  margin:0 .2em; font-size:.4em; vertical-align:.36em; color:var(--gold); opacity:.85; }
 #samaritan-splash .pen{
   position:absolute; left:0; top:0; width:96px; height:auto; opacity:0;
   pointer-events:none; will-change:transform; filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));
@@ -513,12 +513,12 @@ footer a{ color:var(--accent); text-decoration:none; }
    app appears; it then fades slowly into the app */
 #splash-image{
   position:fixed; inset:0; z-index:99998; background:#f1ead7;
-  opacity:1; transition:opacity 2.4s ease;
+  opacity:1; transition:opacity 1.2s ease;
 }
-#splash-image .pic{
+#splash-image .pic{   /* dimmed + washed-out (faded) colours */
   position:absolute; inset:0;
   background:url('/static/img/splash_elder.jpg') center/cover no-repeat;
-  opacity:.55; filter:sepia(.18) contrast(.96) brightness(1.02);
+  opacity:.4; filter:saturate(.4) sepia(.22) brightness(1.12) contrast(.85);
 }
 #splash-image::after{   /* soft vignette to settle it into the page */
   content:""; position:absolute; inset:0;
