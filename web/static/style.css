@@ -480,6 +480,9 @@ footer a{ color:var(--accent); text-decoration:none; }
 /* the verse starts fully hidden and is revealed only as the quill writes it */
 #samaritan-splash .verse-line{ display:block; font-size:clamp(30px,6.6vw,62px);
   white-space:nowrap; clip-path:inset(0 0 0 100%); }
+/* Samaritan word-separator dot, centred in the gap between words */
+#samaritan-splash .verse .wsep{ font-style:normal; font-family:'Heebo',sans-serif;
+  margin:0 .34em; font-size:.42em; vertical-align:.34em; color:var(--gold); opacity:.85; }
 #samaritan-splash .pen{
   position:absolute; left:0; top:0; width:96px; height:auto; opacity:0;
   pointer-events:none; will-change:transform; filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));
