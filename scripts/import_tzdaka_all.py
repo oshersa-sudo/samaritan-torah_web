@@ -39,10 +39,12 @@ FILES = [os.path.join(TZDIR, 'tzdaka_bereshit_alef_bet_39.docx'),
 # OCR-failure placeholder, superseded by the full ch21 file. gen25b_26 spans two
 # chapters (25 & 26).
 MARKER_FILES = [os.path.join(TZDIR, n) for n in (
-    'sadaqah_gen21_full_1.docx', 'sadaqah_gen24_full.docx',
-    'sadaqah_gen25b_26_full.docx', 'sadaqah_gen27_full.docx',
-    'sadaqah_gen28_full.docx', 'sadaqah_gen29_full.docx',
-    'sadaqah_gen30_full.docx')]
+    'sadaqah_gen21_full_1.docx', 'sadaqah_gen22_full.docx',
+    'sadaqah_gen23_full.docx', 'sadaqah_gen24_full.docx',
+    'sadaqah_gen25_full_1.docx',                 # ch25:1-11
+    'sadaqah_gen25b_26_full.docx',               # ch25:29-34 + ch26
+    'sadaqah_gen27_full.docx', 'sadaqah_gen28_full.docx',
+    'sadaqah_gen29_full.docx', 'sadaqah_gen30_full.docx')]
 
 GEM = {'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,
        'ך':20,'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,'ס':60,'ע':70,'פ':80,'ף':80,
