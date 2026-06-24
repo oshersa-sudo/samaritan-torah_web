@@ -525,7 +525,30 @@ async function renderVerses(chId, chNum, pid, pname){
     {t:chLabel},
   ]);
   navState('chapter');
+  document.querySelectorAll('.verse-bless').forEach(e=>e.remove());   // clear on navigation
   paintVerses();
+  // Samaritan division only: landing on "וילך איש מבית לוי" (Moses' birth, Exod 2:1)
+  // floats a slow-dissolving blessing over the text, replayed on each landing.
+  if(isSam && S.verses.some(v=>_vfold(v.text||'').startsWith(BLESS_KEY))) playVerseBlessing();
+}
+const BLESS_KEY = 'וילכאישמביתלוי';   // _vfold of "וילך איש מבית לוי"
+function playVerseBlessing(){
+  document.querySelectorAll('.verse-bless').forEach(e=>e.remove());
+  const c=$('content'); const rect=c.getBoundingClientRect();
+  if(rect.width<10) return;
+  const ov=el('div','verse-bless','שלום יהוה על משה');
+  Object.assign(ov.style,{ left:rect.left+'px', top:rect.top+'px',
+    width:rect.width+'px', height:rect.height+'px' });
+  document.body.appendChild(ov);
+  // a translucent rise-and-dissolve so the verse behind stays readable throughout
+  const a=ov.animate([
+    { opacity:0,   transform:'scale(.94)' },
+    { opacity:.42, transform:'scale(1)',    offset:.18 },
+    { opacity:.34, transform:'scale(1.03)', offset:.55 },
+    { opacity:0,   transform:'scale(1.08)' },
+  ], { duration:5200, easing:'ease-in-out' });
+  let gone=false; const done=()=>{ if(gone) return; gone=true; ov.remove(); };
+  a.onfinish=done; a.oncancel=done; setTimeout(done, 5600);
 }
 
 // the actual verse-area painter (re-run on every mode/filter/font change)
