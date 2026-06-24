@@ -40,6 +40,8 @@
     </div>
   </div>
   <button class="skip" id="sp-skip" type="button">דלג ›</button>
+  <!-- "always skip" — shown only on the installed app; persists locally -->
+  <button class="skip-always hidden" id="sp-skip-always" type="button">דלג תמיד ⏭</button>
   <div class="copyright" aria-label="זכויות יוצרים">
     <span class="he">© כל הזכויות שמורות לאושר ששוני</span>
     <span class="en">All Rights reserved to Osher Sassoni</span>
@@ -341,6 +343,33 @@
   const ALPHA=['ࠀ','ࠁ','ࠂ','ࠃ','ࠄ','ࠅ','ࠆ','ࠇ','ࠈ','ࠉ','ࠊ','ࠋ','ࠌ','ࠍ','ࠎ','ࠏ','ࠐ','ࠑ','ࠒ','ࠓ','ࠔ','ࠕ'];
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   const state={cancelled:false, done:false};
+  const skipAlwaysBtn=document.getElementById('sp-skip-always');
+  const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
+
+  // ── writing sound: a soft quill-on-paper scratch, synthesised with Web Audio ──
+  let actx=null, scratchGain=null;
+  function initAudio(){
+    if(actx) return;
+    try{
+      actx = new (window.AudioContext||window.webkitAudioContext)();
+      const buf=actx.createBuffer(1, Math.floor(actx.sampleRate*1.2), actx.sampleRate);
+      const ch=buf.getChannelData(0);
+      for(let i=0;i<ch.length;i++) ch[i]=Math.random()*2-1;       // white noise = paper texture
+      const src=actx.createBufferSource(); src.buffer=buf; src.loop=true;
+      const bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2700; bp.Q.value=0.6;
+      const hp=actx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1400;
+      scratchGain=actx.createGain(); scratchGain.gain.value=0;
+      src.connect(bp); bp.connect(hp); hp.connect(scratchGain); scratchGain.connect(actx.destination);
+      src.start();
+    }catch(e){ actx=null; }
+  }
+  function resumeAudio(){ if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); }
+  // autoplay is blocked until a gesture — resume the sound on the first interaction
+  ['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev, resumeAudio, {passive:true}));
+  function scratch(level){ if(scratchGain&&actx) scratchGain.gain.setTargetAtTime(Math.max(0,level)*0.09, actx.currentTime, 0.02); }
+  function stopScratch(){ if(scratchGain&&actx) scratchGain.gain.setTargetAtTime(0, actx.currentTime, 0.06); }
+  function closeAudio(){ stopScratch(); if(actx){ const a=actx; setTimeout(()=>{ try{ a.close(); }catch(e){} }, 400); actx=null; scratchGain=null; } }
+
   function buildPages(){
     const cols = window.innerWidth < 560 ? 5 : 9;
     let html='';
@@ -361,10 +390,18 @@
         const p=Math.min(1,(now-start)/SPLASH_CONFIG.lineDuration), e=easeInOut(p);
         lineEl.style.clipPath='inset(0 0 0 '+((1-e)*100).toFixed(2)+'%)';
         const boundaryX=(lRect.left-sRect.left)+(1-e)*lRect.width+2;
-        const wobble=(p>0&&p<1)?Math.sin(now/38)*2.4:0;
+        // move the hand as if forming the Samaritan letters: a down/up stroke per
+        // letter — keyed to the horizontal position, so the writing SPEED is
+        // unchanged — plus a fine scratch jitter and a matching tilt of the pen.
+        const writing = p>0 && p<1;
+        const letterW = Math.max(10, lRect.height*0.62);          // ~Samaritan letter advance
+        const stroke = Math.sin(((1-e)*lRect.width)/letterW*6.2831853);   // one stroke per letter
+        const vy  = writing ? (stroke*4.5 + Math.sin(now/22)*0.9) : 0;
+        const rot = PEN_ROT + (writing ? stroke*3.5 : 0);
         pen.style.transformOrigin=nib.x+'px '+nib.y+'px';
-        pen.style.transform='translate('+(boundaryX-nib.x).toFixed(1)+'px,'+(baseY-nib.y+wobble).toFixed(1)+'px) rotate('+PEN_ROT+'deg)';
-        if(p<1) requestAnimationFrame(frame); else resolve();
+        pen.style.transform='translate('+(boundaryX-nib.x).toFixed(1)+'px,'+(baseY-nib.y+vy).toFixed(1)+'px) rotate('+rot.toFixed(2)+'deg)';
+        if(writing) scratch(0.55 + 0.45*Math.abs(stroke));        // louder on the strokes
+        if(p<1) requestAnimationFrame(frame); else { stopScratch(); resolve(); }
       }
       requestAnimationFrame(frame);
     });
@@ -406,24 +443,39 @@
     overlay.addEventListener('transitionend', reveal, {once:true});
     setTimeout(reveal, 1400);                        // safety net
   }
-  function skip(){ if(state.done) return; state.cancelled=true;
+  function skip(){ if(state.done) return; state.cancelled=true; closeAudio();
     lines.forEach(l=>l.style.clipPath='none'); pen.style.opacity='0'; verse.classList.add('lit'); finish(); }
   skipBtn.addEventListener('click', skip);
   overlay.addEventListener('click', e=>{ if(e.target===overlay) skip(); });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') skip(); });
+  // "always skip" — offered only on the installed app; the choice is stored locally
+  if(installed && skipAlwaysBtn) skipAlwaysBtn.classList.remove('hidden');
+  if(skipAlwaysBtn) skipAlwaysBtn.addEventListener('click', ()=>{
+    try{ localStorage.setItem('as_skip_splash','1'); }catch(e){} skip();
+  });
+  // an installed user who chose "always skip" jumps straight into the app
+  function quickEnter(){
+    if(state.done) return; state.done=true; state.cancelled=true;
+    if(overlay.isConnected) overlay.remove();
+    if(imgLayer && imgLayer.isConnected) imgLayer.remove();
+    window.dispatchEvent(new CustomEvent('samaritanSplashComplete'));
+  }
   async function run(){
     buildPages(); fitVerse();
     if(reduce){ lines.forEach(l=>l.style.clipPath='none'); verse.classList.add('lit'); await wait(1500); return finish(); }
+    initAudio(); resumeAudio();
     await wait(1250); if(state.cancelled) return;
     await writeLine(lines[0]); if(state.cancelled) return;
     await wait(SPLASH_CONFIG.interLineGap); if(state.cancelled) return;
     await writeLine(lines[1]); if(state.cancelled) return;
-    pen.style.opacity='0'; verse.classList.add('lit');
+    pen.style.opacity='0'; verse.classList.add('lit'); closeAudio();
     await wait(SPLASH_CONFIG.holdAfterWrite); finish();
   }
+  let alwaysSkip=false; try{ alwaysSkip = installed && localStorage.getItem('as_skip_splash')==='1'; }catch(e){}
   const ready=(document.fonts&&document.fonts.ready)
     ? Promise.race([document.fonts.ready, new Promise(r=>setTimeout(r,1200))]) : Promise.resolve();
-  ready.then(run);
+  if(alwaysSkip){ quickEnter(); }
+  else { ready.then(run); }
   const maxMs=1250 + SPLASH_CONFIG.lineDuration*2 + SPLASH_CONFIG.interLineGap + SPLASH_CONFIG.holdAfterWrite + 3000;
   setTimeout(()=>{ if(!state.done){ lines.forEach(l=>l.style.clipPath='none'); pen.style.opacity='0'; finish(); } }, maxMs);
   window.SamaritanSplash={ skip, finish, config:SPLASH_CONFIG };
