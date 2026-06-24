@@ -358,8 +358,8 @@
       const ch=buf.getChannelData(0);
       for(let i=0;i<ch.length;i++) ch[i]=Math.random()*2-1;       // white noise = paper texture
       const src=actx.createBufferSource(); src.buffer=buf; src.loop=true;
-      const bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2700; bp.Q.value=0.6;
-      const hp=actx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1400;
+      const bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2400; bp.Q.value=1.1;
+      const hp=actx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1500;
       scratchGain=actx.createGain(); scratchGain.gain.value=0;
       src.connect(bp); bp.connect(hp); hp.connect(scratchGain); scratchGain.connect(actx.destination);
       src.start();
@@ -368,8 +368,10 @@
   function resumeAudio(){ if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); }
   // autoplay is blocked until a gesture — resume the sound on the first interaction
   ['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev, resumeAudio, {passive:true}));
-  function scratch(level){ if(scratchGain&&actx) scratchGain.gain.setTargetAtTime(Math.max(0,level)*0.09, actx.currentTime, 0.02); }
-  function stopScratch(){ if(scratchGain&&actx) scratchGain.gain.setTargetAtTime(0, actx.currentTime, 0.06); }
+  // a CRISP ramp so each stroke is a distinct scratch and the gaps fall to silence
+  // (the nib lifting off the paper between strokes)
+  function scratch(level){ if(scratchGain&&actx) scratchGain.gain.setTargetAtTime(Math.max(0,level)*0.17, actx.currentTime, 0.006); }
+  function stopScratch(){ if(scratchGain&&actx) scratchGain.gain.setTargetAtTime(0, actx.currentTime, 0.04); }
   function closeAudio(){ stopScratch(); if(actx){ const a=actx; setTimeout(()=>{ try{ a.close(); }catch(e){} }, 400); actx=null; scratchGain=null; } }
 
   function buildPages(){
@@ -397,12 +399,20 @@
         // unchanged — plus a fine scratch jitter and a matching tilt of the pen.
         const writing = p>0 && p<1;
         const letterW = Math.max(10, lRect.height*0.62);          // ~Samaritan letter advance
-        const stroke = Math.sin(((1-e)*lRect.width)/letterW*6.2831853);   // one stroke per letter
+        const ph = ((1-e)*lRect.width)/letterW;                   // letter phase
+        const stroke = Math.sin(ph*6.2831853);                    // one stroke per letter
         const vy  = writing ? (stroke*4.5 + Math.sin(now/22)*0.9) : 0;
         const rot = PEN_ROT + (writing ? stroke*3.5 : 0);
         pen.style.transformOrigin=nib.x+'px '+nib.y+'px';
         pen.style.transform='translate('+(boundaryX-nib.x).toFixed(1)+'px,'+(baseY-nib.y+vy).toFixed(1)+'px) rotate('+rot.toFixed(2)+'deg)';
-        if(writing) scratch(0.55 + 0.45*Math.abs(stroke));        // louder on the strokes
+        // the nib presses on the paper only on the down-strokes and LIFTS between
+        // them — a spiky envelope (cubed peaks + a finer sub-stroke), near-silent in
+        // the gaps, with a random flutter for the raspy ink-on-paper texture.
+        if(writing){
+          const s1=Math.max(0,stroke), s2=Math.max(0,Math.sin(ph*12.566371+0.7));
+          const press=(s1*s1*s1*0.9 + s2*s2*s2*s2*0.45)*(0.5 + 0.5*Math.random());
+          scratch(press);
+        } else scratch(0);
         if(p<1) requestAnimationFrame(frame); else { stopScratch(); resolve(); }
       }
       requestAnimationFrame(frame);
