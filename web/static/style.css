@@ -195,6 +195,16 @@ body{
 .app-type{ background:#7a3550; color:#fff; font-size:12px; padding:1px 7px; border-radius:8px; }
 .app-wit{ font-size:13.5px; color:var(--accent); font-weight:700; margin-top:2px; }
 .app-note{ font-size:12.5px; color:var(--muted); margin-top:2px; }
+/* a verse word that carries a textual variant — emphasised + clickable (inline) */
+.vtext .app-word{ color:#7a3550; font-weight:700; cursor:pointer;
+  border-bottom:2px dotted #7a3550; padding-bottom:1px; }
+.vtext .app-word:hover{ background:rgba(122,53,80,.12); }
+.app-card{ scroll-margin-top:60px; }
+.app-hint{ color:var(--muted); font-size:13px; line-height:1.5; margin-bottom:6px; }
+/* brief flash when jumping between a word and its variant card */
+@keyframes appFlash{ 0%{ background:rgba(122,53,80,.45); } 100%{ background:transparent; } }
+.app-flash{ animation:appFlash 1.3s ease-out; }
+.vtext .app-word.app-flash{ border-radius:4px; }
 
 /* spread + navbar */
 .wide-btn{ flex:0 0 auto; margin:2px 6px; padding:13px; border:0; border-radius:6px;

@@ -54,7 +54,8 @@ const I18N = {
     src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים',
     src_sir:'סוד הלבבות', src_shyt:'שו"ת — יעקב בן אהרן הכהן',
     variants_title:'חילופי נוסח — מהדורת פון גאל',
-    no_variants:'אין חילופי נוסח לפסוקים אלה. (האפראט של פון גאל מתועד כרגע לבראשית פרק א׳ בלבד.)',
+    no_variants:'אין חילופי נוסח לפסוקים אלה. (האפראט של פון גאל מתועד כרגע לספר בראשית.)',
+    app_hint:'המילים המודגשות בפסוק נושאות חילופי נוסח — לחץ על מילה כדי לקפוץ לחילופיה, ולחץ על חילוף כדי לחזור למילה.',
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך מילון א. טל', no_dict:'אין מילון זמין לפסוק זה',
     more_results:'תוצאות נוספות', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי השומרוני',
@@ -113,7 +114,8 @@ const I18N = {
     src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary",
     src_sir:'Sīr al-Qulūb (Secret of Hearts)', src_shyt:'Responsa of Jacob ben Aaron',
     variants_title:'Textual variants — von Gall edition',
-    no_variants:"No textual variants for these verses. (Von Gall's apparatus is currently digitised for Genesis 1 only.)",
+    no_variants:"No textual variants for these verses. (Von Gall's apparatus is currently digitised for Genesis.)",
+    app_hint:'The emphasised words in the verse carry textual variants — tap a word to jump to its variants, and tap a variant to jump back to the word.',
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from A. Tal's dictionary", no_dict:'No dictionary for this verse',
     more_results:'More results', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
     m_library:'The Samaritan Library', m_dict_aram:'The Samaritan Aramaic–Hebrew Dictionary',
@@ -172,7 +174,8 @@ const I18N = {
     src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم',
     src_sir:'سرّ القلوب', src_shyt:'أجوبة يعقوب بن هارون الكاهن',
     variants_title:'اختلافات النصّ — طبعة فون غال',
-    no_variants:'لا توجد اختلافات نصّية لهذه الآيات. (جهاز فون غال موثّق حالياً للإصحاح الأول من سفر التكوين فقط.)',
+    no_variants:'لا توجد اختلافات نصّية لهذه الآيات. (جهاز فون غال موثّق حالياً لسفر التكوين.)',
+    app_hint:'الكلمات المميّزة في الآية تحمل اختلافات نصّية — اضغط على كلمة للانتقال إلى اختلافاتها، واضغط على اختلاف للعودة إلى الكلمة.',
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من معجم أ. طال', no_dict:'لا يوجد معجم لهذه الآية',
     more_results:'نتائج إضافية', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري السامري',
@@ -490,7 +493,7 @@ function paintVerses(){
     addNumStrip(c, all);
     if(S.panel==='commentary'){ addPlainRows(c, verses); buildCommentary(c, verses); }
     else if(S.panel==='samaritan_src'){ addPlainRows(c, verses); buildSamSrc(c, verses); }
-    else if(S.panel==='variants'){ addPlainRows(c, verses); buildVariants(c, verses); }
+    else if(S.panel==='variants'){ buildVariantsView(c, verses); }
     else if(S.panel==='interpret'){ buildInterpret(c, verses); maybeDict(c, verses); }
     else if(S.panel==='aramaic'){ buildAramaic(c, verses); maybeDict(c, verses); }
     else if(S.panel==='arabic'){ buildArabic(c, verses); maybeDict(c, verses); }
@@ -628,31 +631,78 @@ async function buildInterpret(c, verses){
   if(!any) c.appendChild(el('div','note',t('no_interp')));
 }
 // ── חילופי נוסח (von Gall critical apparatus) ───────────────────────────────
-async function buildVariants(c, verses){
+// consonantal fold for matching an apparatus lemma to a word in the verse text
+function _vfold(s){
+  return (s||'').replace(/[֑-ׇ]/g,'').replace(/[^א-ת]/g,'')
+    .replace(/[ךםןףץ]/g, m=>({'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'}[m]));
+}
+function _appReadHTML(it){
+  if(it.type==='om') return 'חֲסֵרָה';
+  if(it.type==='add') return 'נוסף: '+esc(it.reading);
+  if(it.type==='transp') return 'היפוך סדר'+(it.reading?': '+esc(it.reading):'');
+  if(it.type==='del') return 'מחיקת מגיה'+(it.reading?': '+esc(it.reading):'');
+  return esc(it.reading||'—');
+}
+function _flash(id){
+  const node=document.getElementById(id); if(!node) return;
+  node.scrollIntoView({behavior:'smooth', block:'center'});
+  node.classList.remove('app-flash'); void node.offsetWidth; node.classList.add('app-flash');
+}
+// the variants view: the verse text with the apparatus lemmas EMPHASISED and tied
+// to their reading cards — tap a marked word to jump to its variants, tap a variant
+// to jump back to the word in the text. (Words are inline spans, not buttons.)
+async function buildVariantsView(c, verses){
   const items = await api('apparatus?verse_ids='+verses.map(v=>v.id).join(','));
+  items.forEach((it,i)=>{ it._idx=i; });
+  const byVerse={};
+  for(const it of items){ (byVerse[it.verse]=byVerse[it.verse]||[]).push(it); }
+  const fs=fsize();
+
+  // verse rows, with each apparatus lemma highlighted and linked to its card
+  for(const v of verses){
+    if(!(v.text||'').trim()) continue;
+    const row=el('div','vrow'); row.id='appverse-'+v.number;
+    const num=el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
+    num.onclick=()=>filterVerse(v.id);
+    const td=el('div','vtext'); td.style.fontSize=fs+'px';
+    const pend=(byVerse[v.number]||[]).map(it=>({f:_vfold(it.lemma), idx:it._idx, used:false}))
+                                      .filter(p=>p.f.length>=1);
+    const tokens=(v.text||'').split(/(\s+)/);   // keep whitespace tokens
+    td.innerHTML = tokens.map(tok=>{
+      if(/^\s+$/.test(tok) || !tok) return esc(tok);
+      const tf=_vfold(tok);
+      const p = tf && pend.find(x=>!x.used && x.f===tf);
+      if(p){ p.used=true;
+        return '<span class="app-word" id="appw-'+p.idx+'" data-idx="'+p.idx+'">'+esc(tok)+'</span>'; }
+      return esc(tok);
+    }).join('');
+    td.querySelectorAll('.app-word').forEach(sp=>{
+      sp.onclick=()=>_flash('appcard-'+sp.dataset.idx);
+      sp.title='לחץ לראות את חילופי הנוסח';
+    });
+    row.appendChild(td); row.appendChild(num);
+    c.appendChild(row);
+  }
+
   const panel=el('div','srcpanel');
   panel.appendChild(el('div','ptitle',t('variants_title')));
-  if(!items.length){
-    panel.appendChild(el('div','note',t('no_variants')));
-    c.appendChild(panel); return;
-  }
+  if(!items.length){ panel.appendChild(el('div','note',t('no_variants'))); c.appendChild(panel); return; }
+  panel.appendChild(el('div','app-hint',t('app_hint')));
   let curV=null;
   for(const it of items){
     if(it.verse!==curV){ curV=it.verse; panel.appendChild(el('div','app-vhead','פסוק '+esc(String(it.verse)))); }
-    const card=el('div','app-card');
+    const card=el('div','app-card'); card.id='appcard-'+it._idx;
     const occ = it.occurrence?'<sup>'+esc(it.occurrence)+'</sup>':'';
     const reg = it.register===2?' <span class="app-reg">כתיב/ניקוד</span>':'';
-    card.appendChild(el('div','app-lemma','<b>'+esc(it.lemma||'—')+'</b>'+occ+reg+'  <span class="app-mark">⟵ מצביע</span>'));
-    let rd;
-    if(it.type==='om') rd='חֲסֵרָה';
-    else if(it.type==='add') rd='נוסף: '+esc(it.reading);
-    else if(it.type==='transp') rd='היפוך סדר'+(it.reading?': '+esc(it.reading):'');
-    else if(it.type==='del') rd='מחיקת מגיה'+(it.reading?': '+esc(it.reading):'');
-    else rd=esc(it.reading||'—');
-    card.appendChild(el('div','app-read','<span class="app-type">'+esc(it.type_label)+'</span> '+rd));
+    const lemma=el('div','app-lemma','<b>'+esc(it.lemma||'—')+'</b>'+occ+reg);
+    card.appendChild(lemma);
+    card.appendChild(el('div','app-read','<span class="app-type">'+esc(it.type_label)+'</span> '+_appReadHTML(it)));
     if(it.witnesses && it.witnesses.length)
       card.appendChild(el('div','app-wit','עדים: <span dir="ltr">'+esc(it.witnesses.join(', '))+'</span>'));
     if(it.note) card.appendChild(el('div','app-note',esc(it.note)));
+    // tapping the variant jumps back to the word in the verse line (or the verse)
+    card.onclick=()=>_flash(document.getElementById('appw-'+it._idx)?('appw-'+it._idx):('appverse-'+it.verse));
+    card.style.cursor='pointer'; card.title='לחץ לחזרה למילה בפסוק';
     panel.appendChild(card);
   }
   c.appendChild(panel);
@@ -744,6 +794,8 @@ async function buildSamSrc(c, verses){
       const b=el('button','picker-btn',label); b.onclick=()=>{ S.samSrcChoice=ch; S.tmSel=null; paintVerses(); };
       panel.appendChild(b);
     }
+    // bring the screen up so ALL available sources for this chapter/verse are visible
+    panel.scrollIntoView({behavior:'smooth', block:'start'});
     return;
   }
   if(S.samSrcChoice==='eyalk'){
@@ -1587,18 +1639,21 @@ const HELP = {
       '<b>כתב שומרוני</b> — מציג בכתב העברי-השומרוני.',
       '<b>תרגומי התורה</b> — כפתור אחד הפותח בחירה: תרגום ארמי · ערבי · אנגלי. לחיצה חוזרת חוזרת לטקסט.',
       '<b>פירוש הפסוק</b> — פירוש רציף, מוצג במקום הטקסט, השוזר מקורות (כרגע לבראשית א׳–ו׳).',
-      '<b>השוואה לנ.מסורה</b> — נוסח שומרון מול המסורה, עם סימון ההבדלים באדום.',
-      '<b>חילופי נוסח</b> — חילופי הנוסח ממהדורת פון גאל עם עדי-הנוסח (כרגע לבראשית א׳).',
+      '<b>השוואה לנ.מסורה</b> — נוסח שומרון מול המסורה (וגם מול תרגום השבעים), עם סימון ההבדלים באדום.',
+      '<b>חילופי נוסח</b> — חילופי הנוסח ממהדורת פון גאל עם עדי-הנוסח (כרגע לספר בראשית). <b>המילים שיש להן חילופי נוסח מודגשות בפסוק</b> — לחיצה על מילה קופצת לחילופיה, ולחיצה על חילוף חוזרת אל המילה בשורת הטקסט.',
       '<b>פרשנות יהודית</b> — רש"י, רמב"ן, קאסוטו, בעל הטורים ועוד, מאתר ספריא.',
-      '<b>ממקור שומרון</b> — תיבת מרקה · מן המסורת השומרונית · פירוש צדקה אל-חכים.',
-      '<b>מילון מילים</b> — טבלה לכל מילה: המילה · ארמי · פירוש עברי · מילון א. טל · ערבית.',
+      '<b>ממקור שומרון</b> — כל מקורות הפרשנות השומרוניים, והפאנל קופץ מעלה ומציג את כל הקיימים לפרק/לפסוק: <b>תיבת מרקה</b> · <b>מן המסורת השומרונית</b> (כולל השו"ת של יעקב בן אהרן הכהן, ופרשנויות בשם פנחס בן אברהם הכהן ואלעזר בן צדקה הכהן) · <b>פירוש צדקה אל-חכים</b> · <b>סוד הלבבות</b>.',
+      '<b>מילון מילים</b> — טבלה לכל מילה: המילה · ארמי · פירוש עברי · מילון א. טל · ערבית. הפירוש נקרא מתוך מילון הארמית של א. טל. <b>חץ ⬆ ליד התרגום הארמי מציין תוצאות נוספות</b> — לחיצה על שורה פותחת את הפירוש המלא מהמילון, מופעי המילה בתורה, וצורות נוספות.',
       '<b>שתף</b> — וואטסאפ, אימייל או פייסבוק.']],
     ['חיפוש', [
       'הקלד מילה ולחץ <b>חפש</b>. יש כפתור <b>❔ עזרה לחיפוש</b> עם מדריך מפורט.',
       '<b>תווים כלליים:</b> <b>?</b> = תו אחד · <b>*</b> = מחרוזת · <b>+</b> = כל המילים באותו פסוק.',
-      '<b>חיפוש מתקדם:</b> מדויק · לפי שורש · בתרגום הארמי · התעלם מסופיות · הצג פירוש המילים.']],
+      '<b>חיפוש מתקדם:</b> מדויק · לפי שורש · בתרגום הארמי · התעלם מסופיות · הצג פירוש המילים.',
+      'כשהאפשרות <b>הצג פירוש המילים</b> דלוקה, מתחת לכל תוצאה מודגש הפירוש מתוך מילון א. טל, וניתן ללחוץ עליו לקבלת הערך המדויק מהמילון.']],
+    ['הספרייה השומרונית', [
+      'בתפריט, תחת <b>הספרייה השומרונית</b>, נמצא <b>המילון הארמי-עברי השומרוני</b> — אפליקציית מילון: הקלד מילה בארמית (או שורש) וקבל את שורשה, פירושה העברי מתוך מילון א. טל, ומופעיה בתורה.']],
     ['תפריט', [
-      '<b>התקנת אפליקציה</b> · <b>שנה שפה</b> · לוח השנה השומרוני · אילן היוחסין · עזרה · גרסה · צור קשר.']],
+      '<b>התקנת אפליקציה</b> · <b>שנה שפה</b> · לוח השנה השומרוני · אילן היוחסין · <b>הספרייה השומרונית → המילון הארמי-עברי השומרוני</b> · עזרה · גרסה · צור קשר.']],
   ],
   en: [
     ['Division', ['At the top — <b>Jewish division</b> / <b>Samaritan division</b>: switch between the two chapter/portion divisions.']],
@@ -1611,18 +1666,21 @@ const HELP = {
       '<b>Samaritan script</b> — shows the text in the Samaritan-Hebrew script.',
       '<b>Torah translations</b> — one button opening a choice: Aramaic · Arabic · English. Tapping it again returns to the text.',
       '<b>Verse commentary</b> — a continuous commentary shown in place of the text, weaving the sources (currently Genesis 1–6).',
-      '<b>Compare to Masorah</b> — Samaritan vs. Masoretic text, with the differences marked in red.',
-      '<b>Textual variants</b> — variants from von Gall’s edition with the manuscript witnesses (currently Genesis 1).',
+      '<b>Compare to Masorah</b> — Samaritan vs. Masoretic text (and vs. the Septuagint), with the differences marked in red.',
+      '<b>Textual variants</b> — variants from von Gall’s edition with the manuscript witnesses (currently Genesis). <b>Words that carry a variant are emphasised in the verse</b> — tap a word to jump to its variants, tap a variant to jump back to the word.',
       '<b>Jewish commentary</b> — Rashi, Ramban, Cassuto, Baal ha-Turim and more, from Sefaria.',
-      '<b>Samaritan sources</b> — Tībåt Mårqe · the Samaritan tradition · Ṣadaqah al-Ḥakīm’s commentary.',
-      '<b>Word dictionary</b> — a table per word: word · Aramaic · Hebrew meaning · A. Tal’s dictionary · Arabic.',
+      '<b>Samaritan sources</b> — all the Samaritan commentary sources (the panel scrolls up to show every one available for the chapter/verse): <b>Tībåt Mårqe</b> · <b>the Samaritan tradition</b> (incl. the responsa of Jacob ben Aaron, and pieces by Phinehas ben Abraham and Eleazar ben Tsedaka) · <b>Ṣadaqah al-Ḥakīm’s commentary</b> · <b>Sīr al-Qulūb</b>.',
+      '<b>Word dictionary</b> — a table per word: word · Aramaic · Hebrew meaning · A. Tal’s dictionary · Arabic. The meaning is read from Tal’s dictionary. <b>A ⬆ arrow by the Aramaic marks more results</b> — tap a row for the full entry, the word’s Torah occurrences and related forms.',
       '<b>Share</b> — WhatsApp, email or Facebook.']],
     ['Search', [
       'Type a word and tap <b>Search</b>. A <b>❔ Search help</b> button gives a detailed guide.',
       '<b>Wildcards:</b> <b>?</b> = one letter · <b>*</b> = a string · <b>+</b> = all words in the same verse.',
-      '<b>Advanced search:</b> exact · by root · in the Aramaic · ignore final letters · show word meanings.']],
+      '<b>Advanced search:</b> exact · by root · in the Aramaic · ignore final letters · show word meanings.',
+      'With <b>show word meanings</b> on, each result shows the meaning from A. Tal’s dictionary, clickable for the exact entry.']],
+    ['The Samaritan Library', [
+      'In the menu, under <b>The Samaritan Library</b>, is <b>The Samaritan Aramaic–Hebrew Dictionary</b> — type an Aramaic word (or root) to get its root, its Hebrew meaning from A. Tal’s dictionary, and its Torah occurrences.']],
     ['Menu', [
-      '<b>Install app</b> · <b>Change language</b> · Samaritan calendar · genealogy · help · version · contact.']],
+      '<b>Install app</b> · <b>Change language</b> · Samaritan calendar · genealogy · <b>The Samaritan Library → the Aramaic–Hebrew dictionary</b> · help · version · contact.']],
   ],
   ar: [
     ['التقسيم', ['في الأعلى — <b>التقسيم اليهودي</b> / <b>التقسيم السامري</b>: التبديل بين تقسيمَي الأصحاحات والمقاطع.']],
@@ -1636,17 +1694,20 @@ const HELP = {
       '<b>ترجمات التوراة</b> — زرّ واحد يفتح اختياراً: آرامية · عربية · إنجليزية. الضغط ثانيةً يعيد إلى النصّ.',
       '<b>تفسير الآية</b> — تفسير متّصل يُعرض مكان النصّ ويجمع المصادر (حالياً التكوين ١–٦).',
       '<b>مقارنة بالنصّ الماسوري</b> — النصّ السامري مقابل الماسوري مع تمييز الفروق بالأحمر.',
-      '<b>اختلافات النصّ</b> — اختلافات من طبعة فون غال مع شهود النصّ (حالياً التكوين ١).',
+      '<b>اختلافات النصّ</b> — اختلافات من طبعة فون غال مع شهود النصّ (حالياً سفر التكوين). <b>الكلمات التي لها اختلاف مميّزة في الآية</b> — اضغط كلمة للانتقال إلى اختلافاتها، واضغط اختلافاً للعودة إلى الكلمة.',
       '<b>تفسير يهودي</b> — راشي، رمبان، كاسوتو، بعل هاطوريم وغيرهم من موقع سفاريا.',
-      '<b>مصادر سامرية</b> — تيبات مارقه · التقليد السامري · تفسير صدقة الحكيم.',
-      '<b>معجم الكلمات</b> — جدول لكلّ كلمة: الكلمة · الآرامية · المعنى العبري · معجم أ. طال · العربية.',
+      '<b>مصادر سامرية</b> — كلّ مصادر التفسير السامرية (تنتقل اللوحة للأعلى لعرض كلّ المتوفّر للأصحاح/الآية): <b>تيبات مارقه</b> · <b>التقليد السامري</b> (يشمل مسائل يعقوب بن هارون، ونصوصاً لفنحاس بن إبراهيم وألعازار بن صدقة) · <b>تفسير صدقة الحكيم</b> · <b>سرّ القلوب</b>.',
+      '<b>معجم الكلمات</b> — جدول لكلّ كلمة: الكلمة · الآرامية · المعنى العبري · معجم أ. طال · العربية. المعنى مأخوذ من معجم طال. <b>السهم ⬆ بجانب الآرامية يدلّ على نتائج إضافية</b> — اضغط الصفّ للمدخل الكامل ومواضع الكلمة في التوراة والصيغ المتعلّقة.',
       '<b>مشاركة</b> — واتساب، بريد إلكتروني أو فيسبوك.']],
     ['البحث', [
       'اكتب كلمة واضغط <b>بحث</b>. يوجد زرّ <b>❔ مساعدة البحث</b> بدليل مفصّل.',
       '<b>أحرف عامة:</b> <b>?</b> = حرف واحد · <b>*</b> = سلسلة · <b>+</b> = كلّ الكلمات في الآية نفسها.',
-      '<b>بحث متقدم:</b> تطابق تامّ · حسب الجذر · في الآرامية · تجاهل النهائية · إظهار المعاني.']],
+      '<b>بحث متقدم:</b> تطابق تامّ · حسب الجذر · في الآرامية · تجاهل النهائية · إظهار المعاني.',
+      'عند تفعيل <b>إظهار المعاني</b>، يظهر تحت كلّ نتيجة المعنى من معجم أ. طال، ويمكن الضغط عليه للمدخل الدقيق.']],
+    ['المكتبة السامرية', [
+      'في القائمة، ضمن <b>المكتبة السامرية</b>، يوجد <b>المعجم الآرامي-العبري السامري</b> — اكتب كلمة آرامية (أو جذراً) لتحصل على جذرها ومعناها العبري من معجم أ. طال ومواضعها في التوراة.']],
     ['القائمة', [
-      '<b>تثبيت التطبيق</b> · <b>تغيير اللغة</b> · التقويم السامري · شجرة الأنساب · مساعدة · الإصدار · اتصل بنا.']],
+      '<b>تثبيت التطبيق</b> · <b>تغيير اللغة</b> · التقويم السامري · شجرة الأنساب · <b>المكتبة السامرية ← المعجم الآرامي-العبري</b> · مساعدة · الإصدار · اتصل بنا.']],
   ],
 };
 function showHelp(){
