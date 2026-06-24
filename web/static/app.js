@@ -286,22 +286,51 @@ function addWordDots(text){
   return out.join('\n').replace(/ ?\./g, ' .');
 }
 function samMarkup(text){
-  // Hebrew letter runs and the verse-pause period render in the Samaritan font.
-  let html=''; const re=/([א-ת]+|\.)/g; let last=0, m;
+  // Hebrew letter runs and the verse-pause period render in the Samaritan font; the
+  // word-separating middot is wrapped in its own .wsep span so trimEdgeDots() can
+  // drop the ones that land at a line break.
+  let html=''; const re=/([א-ת]+|\.|·)/g; let last=0, m;
   while((m=re.exec(text))!==null){
     if(m.index>last) html += esc(text.slice(last,m.index));
-    html += '<span class="samchar">'+esc(m[0])+'</span>';
+    html += (m[0]==='·') ? '<span class="wsep">·</span>'
+                         : '<span class="samchar">'+esc(m[0])+'</span>';
     last = re.lastIndex;
   }
   if(last<text.length) html += esc(text.slice(last));
   return html;
 }
+// After layout, hide every separator middot that ends a visual line (the next word
+// wrapped to the line below). Re-run on zoom/resize so dots reappear when reducing
+// the text pulls more words up onto the line. Two passes: reset → measure → hide.
+function trimEdgeDots(vtext){
+  const seps=[...vtext.querySelectorAll('.wsep')];
+  if(!seps.length) return;
+  seps.forEach(s=>{ s.style.display=''; });
+  const toHide=[];
+  for(const s of seps){
+    let n=s.nextElementSibling;
+    while(n && !n.classList.contains('samchar')) n=n.nextElementSibling;
+    if(!n || n.getBoundingClientRect().top > s.getBoundingClientRect().top + 1) toHide.push(s);
+  }
+  toHide.forEach(s=>{ s.style.display='none'; });
+}
+function trimAllEdgeDots(){
+  if(!(S.samFont && !S.english)) return;
+  document.querySelectorAll('#content .vrow .vtext').forEach(trimEdgeDots);
+}
+function scheduleDotTrim(){
+  if(!(S.samFont && !S.english)) return;
+  const run=()=>requestAnimationFrame(trimAllEdgeDots);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(run); else run();
+}
+let _dotTimer=null;
+window.addEventListener('resize', ()=>{ clearTimeout(_dotTimer); _dotTimer=setTimeout(trimAllEdgeDots,160); });
 function verseHTML(v){
   if(S.english){ const e=v.english||('[verse '+v.number+']'); return {html:esc(e), cls:'vtext eng'}; }
   if(S.samFont) return {html:samMarkup(addWordDots(v.text||'')), cls:'vtext'};
   return {html:esc(v.text||''), cls:'vtext'};
 }
-function fsize(){ return (S.samFont?22:20) + S.fontOffset; }
+function fsize(){ return (S.samFont?19:20) + S.fontOffset; }
 
 // ── division toggle ──────────────────────────────────────────────────────────
 $('btnStandard').onclick = () => setDivision('standard');
@@ -557,6 +586,7 @@ function paintVerses(){
       c.appendChild(el('div','portion-end','✶ ✶ ✶'));
     if(S.dict && !S.english) buildDict(c, verses);
   }
+  scheduleDotTrim();   // drop justification dots that fall at a line edge (Samaritan font)
 }
 
 function addPlainRows(c, verses){
@@ -1157,20 +1187,37 @@ function makeFlipGhost(){
 function runFlipGhost(ghost, delta){
   if(!ghost) return;
   const exitLeft = (delta>0) !== !!S.english;   // English reverses the turn direction
+  const s = exitLeft ? -1 : 1;                   // sign of the rotation
   ghost.style.transformOrigin = (exitLeft?'left':'right')+' center';
-  const endDeg = exitLeft ? -108 : 108;
+  // a real page doesn't pivot rigidly — it flexes and ripples as it lifts. We bow the
+  // leaf with an oscillating skew (the "wave") whose strength is randomised a touch so
+  // each turn looks a little different, and bend it slightly out of plane with rotateX.
+  const w = 1.6 + Math.random()*1.8;             // wave amplitude (deg)
+  const P = 'perspective(1500px)';
+  const fr = (offset, ry, skew, rx, sc) =>
+    ({ offset, transform:`${P} rotateY(${s*ry}deg) skewY(${skew}deg) rotateX(${rx}deg) scale(${sc})` });
+  const a=ghost.animate([
+    fr(0,    0,   0,        0,    1),
+    fr(.22,  22,  s*w,      1.4,  1.012),
+    fr(.46,  56, -s*w*1.1, -1.0,  1.008),
+    fr(.72,  90,  s*w*0.6,  0.6,  1.003),
+    fr(1,    120, 0,        0,    1),
+  ], {duration:560, easing:'cubic-bezier(.42,.04,.28,1)'});
   $('content').animate([{opacity:.5, transform:'scale(.99)'},{opacity:1, transform:'none'}],
-                       {duration:340, easing:'ease-out'});
-  const a=ghost.animate(
-    [{transform:'perspective(1700px) rotateY(0deg)'},
-     {transform:`perspective(1700px) rotateY(${endDeg}deg)`}],
-    {duration:460, easing:'cubic-bezier(.36,0,.22,1)'});
+                       {duration:380, easing:'ease-out'});
+  // the curl shadow pools toward the page's free edge, deepening as it stands up then
+  // releasing as the leaf falls away — gives the turn its sense of light and volume.
   const shade=ghost.querySelector('.flip-ghost-shade');
-  if(shade) shade.animate([{opacity:0},{opacity:.3}],{duration:460, easing:'ease-in'});
+  if(shade){
+    shade.style.background = `linear-gradient(${exitLeft?90:270}deg,`
+      + ' rgba(0,0,0,0) 28%, rgba(0,0,0,.08) 58%, rgba(0,0,0,.30) 88%, rgba(0,0,0,.42) 100%)';
+    shade.animate([{opacity:0},{opacity:.55,offset:.5},{opacity:.12}],
+                  {duration:560, easing:'ease-in-out'});
+  }
   // remove the ghost when the turn ends — plus a hard fallback in case the page
   // is backgrounded (a frozen animation timeline would otherwise never fire onfinish)
   let gone=false; const done=()=>{ if(gone) return; gone=true; ghost.remove(); };
-  a.onfinish=done; a.oncancel=done; setTimeout(done, 700);
+  a.onfinish=done; a.oncancel=done; setTimeout(done, 800);
 }
 async function crossPortion(delta){
   const ids=S.portions.map(p=>p.id); const pidx=ids.indexOf(S.curPid);
@@ -1309,7 +1356,7 @@ function syncToolbar(isVerse){
   // the button shows just "א-ב" in the script you'd switch TO: Samaritan ࠀࠁ when
   // currently Hebrew, regular Hebrew אב when currently Samaritan.
   const _ab=$('fontBtn').querySelector('.font-ab');
-  _ab.textContent = sam ? 'אב' : 'ࠀࠁ';
+  _ab.textContent = sam ? 'א.ב' : 'ࠀ.ࠁ';
   _ab.classList.toggle('sam-script', !sam);
   $('fontBtn').title = sam ? t('font_heb') : t('font_sam');
   $('fontBtn').setAttribute('aria-label', sam ? t('font_heb') : t('font_sam'));

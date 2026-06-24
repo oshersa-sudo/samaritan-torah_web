@@ -104,7 +104,7 @@ body{
 .vrow .vtext.eng{ direction:ltr; text-align:left; font-family:'Translit',serif; font-size:17px; }
 .vrow .vtext.interp{ white-space:pre-wrap; text-align:justify; text-align-last:right;
                      overflow-wrap:break-word; word-break:break-word; }
-.sam .vrow .vtext{ font-size:22px; text-align:justify; text-align-last:right;
+.sam .vrow .vtext{ font-size:19px; text-align:justify; text-align-last:right;
                    overflow-wrap:break-word; word-break:break-word; }
 
 .numstrip{ display:flex; flex-wrap:wrap; gap:5px; padding:5px 2px; justify-content:flex-end; direction:ltr; }
