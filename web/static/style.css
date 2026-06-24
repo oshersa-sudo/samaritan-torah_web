@@ -224,8 +224,9 @@ body{
 .nav-arrow{ flex:1; padding:10px 4px; border:0; border-radius:6px; background:var(--navy); color:#fff;
             font-family:inherit; font-size:13px; cursor:pointer; }
 .nav-arrow:disabled{ opacity:.4; cursor:default; }
-.round{ flex:0 0 auto; width:50px; padding:8px 0; border:0; border-radius:8px; background:var(--accent);
-        color:#fff; font-size:24px; font-weight:700; cursor:pointer; }
+.round{ flex:0 0 auto; width:50px; padding:8px 0; border:0; border-radius:8px; background:transparent;
+        color:var(--accent); font-size:24px; font-weight:700; cursor:pointer; }
+.round:hover{ background:rgba(46,97,184,.10); }
 
 /* toolbar */
 #toolbar{ flex:0 0 auto; background:var(--navy); padding:3px; display:flex; flex-direction:column; gap:2px; }
@@ -236,12 +237,16 @@ body{
 /* drag handle / fold control at the top of the bottom toolbar */
 .tb-handle{ display:flex; align-items:center; justify-content:center; gap:10px; position:relative;
   width:100%; height:14px; padding:0; border:0; background:transparent; cursor:pointer; touch-action:none; }
-#toolbar.folded .tb-handle{ height:24px; }
+#toolbar.folded .tb-handle{ height:30px; }
 .tb-grip{ width:42px; height:4px; border-radius:3px; background:rgba(255,255,255,.40); transition:background .2s; }
 .tb-handle:hover .tb-grip{ background:rgba(255,255,255,.7); }
-.tb-uparrow{ display:none; font-size:17px; line-height:1; color:var(--gold-bright); font-weight:700; }
-#toolbar.folded.show-arrow .tb-uparrow{ display:inline-block; animation:tbArrowBlink .5s ease-in-out infinite alternate; }
-@keyframes tbArrowBlink{ from{ opacity:.2; transform:translateY(2px); } to{ opacity:1; transform:translateY(-3px); } }
+/* prominent blinking up-arrow shown right after the bar folds — "pull up to reopen" */
+.tb-uparrow{ display:none; position:absolute; left:50%; top:-1px; font-size:22px; line-height:1;
+  color:#ffd86b; font-weight:900; text-shadow:0 0 9px rgba(255,216,107,.9); pointer-events:none; }
+#toolbar.folded.show-arrow .tb-uparrow{ display:block; animation:tbArrowBlink .5s ease-in-out infinite alternate; }
+@keyframes tbArrowBlink{
+  from{ opacity:.25; transform:translate(-50%,5px) scale(.92); }
+  to{   opacity:1;   transform:translate(-50%,-7px) scale(1.12); } }
 /* zoom (magnifier ±) buttons centre their icon */
 .round{ display:inline-flex; align-items:center; justify-content:center; }
 .round .zoomi{ width:26px; height:26px; }

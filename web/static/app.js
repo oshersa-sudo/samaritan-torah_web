@@ -1142,8 +1142,8 @@ function setToolbarFolded(folded, withArrow){
   tbFolded=folded;
   const tb=$('toolbar'); tb.classList.toggle('folded', folded); tb.classList.remove('show-arrow');
   if(folded && withArrow){
-    void tb.offsetWidth; tb.classList.add('show-arrow');     // flash an up-arrow ~2s
-    setTimeout(()=>tb.classList.remove('show-arrow'), 2000);
+    void tb.offsetWidth; tb.classList.add('show-arrow');     // flash a prominent up-arrow
+    setTimeout(()=>tb.classList.remove('show-arrow'), 3000);
   }
 }
 function updateToolbarFold(isVerse){
