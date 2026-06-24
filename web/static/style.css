@@ -260,7 +260,9 @@ body{
 /* toolbar icons: book (עיון) · scroll (פירוש) · Samaritan א.ב (כתב שומרוני) */
 .tb.has-ico{ display:inline-flex; align-items:center; justify-content:center; gap:5px; }
 .tb .tbi{ width:15px; height:15px; flex:0 0 auto; }
-.tb .sam-ab{ font-family:'Samaritan',serif; font-size:1.05em; line-height:1; flex:0 0 auto; }
+/* the כתב-שומרוני button shows only "א-ב", in Samaritan or Hebrew script */
+.tb.font-btn .font-ab{ font-size:1.15em; font-weight:700; line-height:1; letter-spacing:.04em; }
+.tb.font-btn .font-ab.sam-script{ font-family:'Samaritan',serif; font-size:1.35em; }
 /* round "back" button — icon only, spins a full turn on press */
 .tb.ico-btn{ flex:0 0 auto; min-width:44px; display:inline-flex; align-items:center; justify-content:center; }
 .tb.ico-btn .tbi{ width:18px; height:18px; }

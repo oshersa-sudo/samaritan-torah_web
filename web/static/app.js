@@ -1123,7 +1123,13 @@ function syncToolbar(isVerse){
   // simply enabled in verse view and highlighted when it is the active one.
   const sam=S.samFont;
   setBtn('fontBtn', isVerse, sam);
-  $('fontBtn').querySelector('.tb-label').textContent = sam ? t('font_heb') : t('font_sam');
+  // the button shows just "א-ב" in the script you'd switch TO: Samaritan ࠀࠁ when
+  // currently Hebrew, regular Hebrew אב when currently Samaritan.
+  const _ab=$('fontBtn').querySelector('.font-ab');
+  _ab.textContent = sam ? 'אב' : 'ࠀࠁ';
+  _ab.classList.toggle('sam-script', !sam);
+  $('fontBtn').title = sam ? t('font_heb') : t('font_sam');
+  $('fontBtn').setAttribute('aria-label', sam ? t('font_heb') : t('font_sam'));
   setBtn('dictBtn',       isVerse, S.dict);
   setBtn('interpBtn',     isVerse, S.panel==='interpret');
   setBtn('compareBtn',    isVerse, S.panel==='compare');
