@@ -237,9 +237,14 @@ body{
 /* drag handle / fold control at the top of the bottom toolbar */
 .tb-handle{ display:flex; align-items:center; justify-content:center; gap:10px; position:relative;
   width:100%; height:14px; padding:0; border:0; background:transparent; cursor:pointer; touch-action:none; }
-#toolbar.folded .tb-handle{ height:30px; }
-.tb-grip{ width:42px; height:4px; border-radius:3px; background:rgba(255,255,255,.40); transition:background .2s; }
-.tb-handle:hover .tb-grip{ background:rgba(255,255,255,.7); }
+#toolbar.folded .tb-handle{ height:32px; }
+/* a chunky "shutter handle" — a rounded bar with a groove line down its middle */
+.tb-grip{ position:relative; width:60px; height:12px; border-radius:6px;
+  background:linear-gradient(#ffffff55,#ffffff2e); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 1px 2px rgba(0,0,0,.3);
+  transition:background .2s; }
+.tb-grip::after{ content:''; position:absolute; left:9px; right:9px; top:50%; height:2.5px; transform:translateY(-50%);
+  background:rgba(16,26,56,.5); border-radius:2px; }
+.tb-handle:hover .tb-grip{ background:linear-gradient(#ffffff77,#ffffff44); }
 /* prominent blinking arrows on the handle: UP right after folding ("pull up to
    reopen"), DOWN for a moment right after opening ("you can fold it back down") */
 .tb-uparrow, .tb-downarrow{ display:none; position:absolute; left:50%; top:-2px; font-size:28px;
