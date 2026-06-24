@@ -1186,7 +1186,9 @@ function makeFlipGhost(){
 }
 function runFlipGhost(ghost, delta){
   if(!ghost) return;
-  const exitLeft = (delta>0) !== !!S.english;   // English reverses the turn direction
+  // Hebrew: NEXT chapter turns the page to the right, PREV to the left; the English
+  // translation (LTR reading) reverses it.
+  const exitLeft = (delta<0) !== !!S.english;
   const s = exitLeft ? -1 : 1;                   // sign of the rotation
   ghost.style.transformOrigin = (exitLeft?'left':'right')+' center';
   // a real page doesn't pivot rigidly — it flexes and ripples as it lifts. We bow the
@@ -1356,8 +1358,12 @@ function syncToolbar(isVerse){
   // the button shows just "א-ב" in the script you'd switch TO: Samaritan ࠀࠁ when
   // currently Hebrew, regular Hebrew אב when currently Samaritan.
   const _ab=$('fontBtn').querySelector('.font-ab');
-  _ab.textContent = sam ? 'א.ב' : 'ࠀ.ࠁ';
-  _ab.classList.toggle('sam-script', !sam);
+  // the button shows "א.ב" in the script you'd switch TO. In the Samaritan form only
+  // the two LETTERS use the Samaritan font; the separating dot stays a normal "."
+  // (default font) so it looks exactly like the dot in the Hebrew "א.ב".
+  _ab.classList.remove('sam-script');
+  if(sam) _ab.textContent = 'א.ב';
+  else    _ab.innerHTML = '<span class="sam-let">ࠀ</span>.<span class="sam-let">ࠁ</span>';
   $('fontBtn').title = sam ? t('font_heb') : t('font_sam');
   $('fontBtn').setAttribute('aria-label', sam ? t('font_heb') : t('font_sam'));
   setBtn('dictBtn',       isVerse, S.dict);

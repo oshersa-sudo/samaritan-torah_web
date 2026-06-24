@@ -303,6 +303,9 @@ body{
 /* the כתב-שומרוני button shows only "א-ב", in Samaritan or Hebrew script */
 .tb.font-btn .font-ab{ font-size:1.15em; font-weight:700; line-height:1; letter-spacing:.04em; }
 .tb.font-btn .font-ab.sam-script{ font-family:'Samaritan',serif; font-size:1.35em; }
+/* Samaritan א.ב: only the LETTERS use the Samaritan font; the "." between them stays
+   in the default font so it matches the dot in the Hebrew א.ב exactly. */
+.tb.font-btn .font-ab .sam-let{ font-family:'Samaritan',serif; font-size:1.18em; }
 /* round "back" button — icon only, spins a full turn on press */
 .tb.ico-btn{ flex:0 0 auto; min-width:44px; display:inline-flex; align-items:center; justify-content:center; }
 .tb.ico-btn .tbi{ width:18px; height:18px; }
