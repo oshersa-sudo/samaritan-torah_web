@@ -606,13 +606,13 @@ footer a{ color:var(--accent); text-decoration:none; }
 /* "always skip" pill — centred on the page, on the line just above the copyright
    (installed app only) */
 #samaritan-splash .skip-always{
-  position:absolute; bottom:max(58px,9vh); left:50%; transform:translateX(-50%); z-index:3;
+  position:absolute; bottom:max(120px,17vh); left:50%; transform:translateX(-50%); z-index:3;
   background:rgba(200,164,86,.12); border:1px solid var(--gold); border-radius:20px; cursor:pointer;
   font-family:'Heebo',sans-serif; font-weight:300; font-size:13px; letter-spacing:.06em;
   color:var(--gold-bright); padding:7px 16px; opacity:0; animation:sp-rise .8s ease 2.6s forwards;
   white-space:nowrap;
 }
-@media (max-width:560px){ #samaritan-splash .skip-always{ bottom:max(74px,11vh); } }
+@media (max-width:560px){ #samaritan-splash .skip-always{ bottom:max(132px,19vh); } }
 #samaritan-splash .skip-always:hover{ background:rgba(200,164,86,.22); }
 #samaritan-splash .skip-always.hidden{ display:none; }
 /* enable-sound button (top corner opposite the skip control) */
