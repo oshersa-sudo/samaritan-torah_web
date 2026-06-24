@@ -26,7 +26,7 @@ const I18N = {
   he: {
     app_title:'התורה השומרונית הישראלית', brand_top:'אבני שהם', div_jewish:'חלוקה יהודית', div_sam:'חלוקה שומרונית',
     spread:'פריסת פרקים', next_portion:'‹ פרשה הבאה', prev_portion:'פרשה קודמת ›',
-    next_chapter:'‹ פרק הבא', prev_chapter:'פרק קודם ›',
+    next_chapter:'‹ פרק הבא', prev_chapter:'פרק קודם ›', goto_book:'עבור ל',
     share:'שתף', export_excel:'ייצוא לאקסל', no_results_xls:'אין תוצאות לייצוא',
     back:'‹ חזור', back_t:'חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
     font_sam:'כתב שומרוני', font_heb:'כתב עברי', interp:'פירוש הפסוק', commentary:'פרשנות יהודית',
@@ -95,7 +95,7 @@ const I18N = {
   en: {
     app_title:'The Israelite Samaritan Torah', brand_top:'אבני שהם', div_jewish:'Jewish division', div_sam:'Samaritan division',
     spread:'All chapters', next_portion:'Next portion ›', prev_portion:'‹ Previous portion',
-    next_chapter:'Next chapter ›', prev_chapter:'‹ Previous chapter',
+    next_chapter:'Next chapter ›', prev_chapter:'‹ Previous chapter', goto_book:'Go to ',
     share:'Share', export_excel:'Export to Excel', no_results_xls:'No results to export',
     back:'‹ Back', back_t:'Back', browse:'Browse', search:'Search', dict:'Word dictionary',
     font_sam:'Samaritan script', font_heb:'Hebrew script', interp:'Verse commentary', commentary:'Jewish commentary',
@@ -164,7 +164,7 @@ const I18N = {
   ar: {
     app_title:'التوراة السامرية الإسرائيلية', brand_top:'אבני שהם', div_jewish:'التقسيم اليهودي', div_sam:'التقسيم السامري',
     spread:'كل الأصحاحات', next_portion:'المقطع التالي ›', prev_portion:'‹ المقطع السابق',
-    next_chapter:'الأصحاح التالي ›', prev_chapter:'‹ الأصحاح السابق',
+    next_chapter:'الأصحاح التالي ›', prev_chapter:'‹ الأصحاح السابق', goto_book:'الانتقال إلى ',
     share:'مشاركة', export_excel:'تصدير إلى إكسل', no_results_xls:'لا توجد نتائج للتصدير',
     back:'‹ رجوع', back_t:'رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
     font_sam:'الخط السامري', font_heb:'الخط العبري', interp:'تفسير الآية', commentary:'تفسير يهودي',
@@ -331,7 +331,9 @@ async function showBooks(){
   S.view='books'; S.stack=[]; setView();
   setCrumbs([{t:'בחר ספר'}]);
   $('backBtn').disabled = true;
-  const books = await api('books?mode='+(S.division==='samaritan'?'samaritan':'standard'));
+  const mode = S.division==='samaritan'?'samaritan':'standard';
+  const books = await api('books?mode='+mode);
+  S.books = books; S.booksMode = mode;          // cached for cross-book chapter paging
   const c = $('content'); c.innerHTML='';
   for(const b of books){
     const label = S.division==='samaritan'
@@ -341,6 +343,14 @@ async function showBooks(){
     btn.onclick = ()=>showPortions(b.id, b.name);
     c.appendChild(btn);
   }
+}
+
+// make sure the book list (for the current division) is cached, so chapter paging
+// can carry the reader across book boundaries even on a deep-linked verse page.
+async function ensureBooks(){
+  const mode = S.division==='samaritan'?'samaritan':'standard';
+  if(S.books && S.booksMode===mode) return;
+  S.books = await api('books?mode='+mode); S.booksMode = mode;
 }
 
 // ── portions ─────────────────────────────────────────────────────────────────
@@ -458,6 +468,7 @@ async function openSamChapter(samId, samNum, pid, pname, fromSearch){
 
 async function renderVerses(chId, chNum, pid, pname){
   S.view='verses'; S.curChId=chId; S.curChNum=chNum; setView();
+  await ensureBooks();   // populate S.books so the nav buttons can relabel at book edges
   const isSam = S.chMode==='samaritan';
   S.verses = isSam ? await api('sam_verses?sam_ch_id='+chId)
                    : await api('verses?chapter_id='+chId+(pid?('&portion_id='+pid):''));
@@ -1077,12 +1088,27 @@ function navState(mode){
   $('prevBtn').textContent = mode==='chapter' ? t('prev_chapter') : t('prev_portion');
   updateNavDisabled();
 }
+// the prev/next labels when a step would carry the reader into an adjacent book:
+// "עבור ל<שם הספר>" (arrow side matches the regular chapter labels per language)
+function gotoBookLabel(name, isNext){
+  const txt = t('goto_book')+name;
+  if(LANG==='en' || LANG==='ar') return isNext ? (txt+' ›') : ('‹ '+txt);
+  return isNext ? ('‹ '+txt) : (txt+' ›');                  // Hebrew
+}
 function updateNavDisabled(){
   const ids = S.portions.map(p=>p.id); const pidx = ids.indexOf(S.curPid);
   if(S.navMode==='chapter'){
-    const firstP = pidx<=0, lastP = pidx>=ids.length-1;
-    $('prevBtn').disabled = (S.chIdx<=0) && firstP;
-    $('nextBtn').disabled = (S.chIdx>=S.chList.length-1) && lastP;
+    // chapter paging carries across parashot within a book; at a BOOK edge the
+    // button relabels to "go to <adjacent book>" and only the Torah's very ends stop.
+    const atBookStart = (S.chIdx<=0) && (pidx<=0);
+    const atBookEnd   = (S.chIdx>=S.chList.length-1) && (pidx>=ids.length-1);
+    const books = S.books||[]; const bIdx = books.findIndex(b=>b.id===S.book);
+    const prevBook = bIdx>0 ? books[bIdx-1] : null;
+    const nextBook = (bIdx>=0 && bIdx<books.length-1) ? books[bIdx+1] : null;
+    if(atBookStart && prevBook){ $('prevBtn').textContent = gotoBookLabel(prevBook.name,false); $('prevBtn').disabled=false; }
+    else { $('prevBtn').textContent = t('prev_chapter'); $('prevBtn').disabled = atBookStart; }
+    if(atBookEnd && nextBook){ $('nextBtn').textContent = gotoBookLabel(nextBook.name,true); $('nextBtn').disabled=false; }
+    else { $('nextBtn').textContent = t('next_chapter'); $('nextBtn').disabled = atBookEnd; }
   } else {
     $('prevBtn').disabled = pidx<=0;
     $('nextBtn').disabled = pidx>=ids.length-1;
@@ -1098,7 +1124,12 @@ async function stepChapter(delta){
   if(ni>=0 && ni<S.chList.length){
     S.chIdx=ni; const ch=S.chList[ni];
     await renderVerses(ch.id, ch.number, S.curPid, S.portionName);
-  } else { await crossPortion(delta); }
+  } else {
+    const ids=S.portions.map(p=>p.id); const pidx=ids.indexOf(S.curPid);
+    const np=pidx+delta;
+    if(np>=0 && np<S.portions.length) await crossPortion(delta);  // next/prev parasha (same book)
+    else await crossBook(delta);                                   // book edge → adjacent book
+  }
   runFlipGhost(ghost, delta);             // turn the old page away, revealing the new one
 }
 // ── page-turn animation (chapter↔chapter, plain text mode without extra panels) ─
@@ -1152,6 +1183,27 @@ async function crossPortion(delta){
   S.chIdx = delta>0 ? 0 : S.chList.length-1;
   S.curPid=p.id; S.portionName=p.name;
   const ch=S.chList[S.chIdx];
+  await renderVerses(ch.id, ch.number, p.id, p.name);
+}
+// crossing a book boundary: load the adjacent book's portions and open its first
+// (forward) or last (backward) chapter — keeps the reader in continuous verse view.
+async function crossBook(delta){
+  await ensureBooks();
+  const bIdx = (S.books||[]).findIndex(b=>b.id===S.book);
+  const nb = bIdx+delta; if(bIdx<0 || nb<0 || nb>=S.books.length) return;
+  const book = S.books[nb];
+  const mode = S.division==='samaritan'?'samaritan':'standard';
+  S.book = book.id; S.bookName = book.name;
+  S.portions = await api(`portions?book_id=${book.id}&mode=${mode}`);
+  if(!S.portions.length) return;
+  const p = delta>0 ? S.portions[0] : S.portions[S.portions.length-1];
+  const rows = S.chMode==='standard'
+    ? await api('chapters?portion_id='+p.id) : await api('sam_chapters?portion_id='+p.id);
+  if(!rows.length) return;
+  S.chList = rows.map(r=>({id:r.id,number:r.number}));
+  S.chIdx = delta>0 ? 0 : S.chList.length-1;
+  S.curPid = p.id; S.portionName = p.name;
+  const ch = S.chList[S.chIdx];
   await renderVerses(ch.id, ch.number, p.id, p.name);
 }
 async function stepPortion(delta){
