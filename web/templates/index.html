@@ -198,6 +198,10 @@
   <div class="menu-head" data-i18n="menu">תפריט</div>
   <button class="menu-item" data-act="calendar" data-i18n="m_calendar">חשבן קשטה — לוח השנה השומרוני</button>
   <button class="menu-item" data-act="genealogy" data-i18n="m_genealogy">אילן היוחסין השומרוני המלא</button>
+  <button class="menu-item menu-sub-head" data-act="library" id="libraryHead" data-i18n="m_library">הספרייה השומרונית</button>
+  <div class="menu-sub-items hidden" id="librarySub">
+    <button class="menu-item menu-sub-item" data-act="dict_app" data-i18n="m_dict_aram">המילון הארמי-עברי השומרוני</button>
+  </div>
   <button class="menu-item bm-item hidden" id="bmMenuItem" data-act="bookmarks" data-i18n="bm_my">הסימניות שלי</button>
   <button class="menu-item" data-act="install" data-i18n="m_install">התקנת אפליקציה</button>
   <button class="menu-item" data-act="lang" data-i18n="m_lang">שנה שפה</button>
@@ -209,6 +213,20 @@
   <div id="adminSep" class="menu-sep hidden"></div>
   <button id="adminMenuItem" class="menu-item admin-item hidden" data-act="adminlogin" data-i18n="m_admin">כניסת מנהל</button>
 </nav>
+
+<!-- Samaritan Aramaic–Hebrew dictionary (A. Tal) — standalone in-app dictionary -->
+<div id="dictModal" class="modal hidden">
+  <div class="modal-box big dict-app">
+    <div class="modal-title" id="dictAppTitle" data-i18n="dict_app_title">המילון הארמי-עברי השומרוני — א. טל</div>
+    <div class="dict-app-search">
+      <input id="dictAppInput" type="text" dir="rtl" data-i18n-ph="dict_app_ph" placeholder="הקלד מילה בארמית או שורש…">
+      <button id="dictAppBtn" class="dict-app-go" data-i18n="dict_app_search">חפש</button>
+    </div>
+    <div class="dict-app-hint" id="dictAppHint" data-i18n="dict_app_hint"></div>
+    <div id="dictAppBody"></div>
+    <button class="popup-close" id="dictAppClose" data-i18n="close">סגור</button>
+  </div>
+</div>
 
 <!-- info window (what's new / current version) -->
 <div id="infoModal" class="modal hidden">

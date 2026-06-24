@@ -456,18 +456,27 @@ _TAL_GLOSS_CACHE = {}
 
 
 def _tal_gloss(aramaic_word):
-    """Short meaning of an Aramaic word from Tal's dictionary (gloss, else the
-    start of the entry text). Cached — the dictionary is static."""
+    """Short HEBREW meaning of an Aramaic word, read off the authoritative Tal
+    extraction (the root's primary sense). Cached — the dictionary is static."""
     if not aramaic_word:
         return ''
     if aramaic_word in _TAL_GLOSS_CACHE:
         return _TAL_GLOSS_CACHE[aramaic_word]
     g = ''
     try:
-        res = db.lookup_tal_dictionary(aramaic_word, limit=1)
-        if res:
-            r = res[0]
-            g = (r.get('gloss_en') or '').strip() or (r.get('notes') or '').strip()[:90]
+        d = db.tal_full_lookup(aramaic_word)
+        for rt in d.get('roots', []):
+            for s in rt.get('senses', []):
+                gl = (s.get('gloss') or '').strip()
+                if gl:
+                    m = re.search('[A-Za-z]', gl)      # keep the Hebrew part, drop English tail
+                    if m and m.start() > 2:
+                        gl = gl[:m.start()].strip(' ,;·—-')
+                    if re.search('[א-ת]', gl):
+                        g = gl[:90]
+                        break
+            if g:
+                break
     except Exception:
         g = ''
     _TAL_GLOSS_CACHE[aramaic_word] = g
@@ -667,6 +676,15 @@ def api_apparatus():
 def api_tal():
     word = request.args.get('word', '')
     return jsonify(db.lookup_tal_dictionary(word))
+
+
+@app.route('/api/tal_lookup')
+def api_tal_lookup():
+    """Authoritative Tal-dictionary entry for an Aramaic word — root(s), the Hebrew
+    senses read off the dictionary, the word's Torah occurrences, and related forms.
+    Powers the in-app dictionary, the word-table 'more results', and search."""
+    word = request.args.get('word', '')
+    return jsonify(db.tal_full_lookup(word))
 
 
 @app.route('/api/root_box')

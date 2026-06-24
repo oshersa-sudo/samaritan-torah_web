@@ -284,10 +284,26 @@ def get_verse_dictionary(verse_ids):
     return result
 
 
+def _auth_root_gloss(root_norm, conn):
+    """A concise HEBREW gloss for a root, read off the authoritative page extraction
+    (tal_auth_entries). Takes the root's primary sense and keeps its Hebrew part."""
+    for r in conn.execute("SELECT gloss_he FROM tal_auth_entries WHERE root_norm=? "
+                          "ORDER BY pdf, ord", (root_norm,)):
+        g = (r['gloss_he'] or '').strip()
+        if not g:
+            continue
+        m = re.search('[A-Za-z]', g)              # drop a trailing English gloss
+        if m and m.start() > 2:
+            g = g[:m.start()].strip(' ,;·—-')
+        if re.search('[א-ת]', g):
+            return re.sub(r'\s+', ' ', g)[:120]
+    return ''
+
+
 def tal_concise(word, conn=None):
-    """A SHORT meaning for an Aramaic word, via Tal's authoritative index only
-    (word → root → entry). Returns {'root','lemma','gloss'} or None when the word
-    is not in the index — so the noisy fallback matches are never shown here.
+    """A SHORT meaning for an Aramaic word. Prefers the AUTHORITATIVE gloss read off
+    Tal's dictionary pages (word → root → page entry); falls back to the distilled
+    gloss table and the published index. Returns {'root','lemma','gloss'} or None.
     Pass an open `conn` to avoid per-word connections."""
     base = _tal_bare(word)
     if not base or len(base) < 2:
@@ -296,17 +312,27 @@ def tal_concise(word, conn=None):
     if own:
         conn = get_connection()
     res = None
-    # (1) The distilled gloss table covers ~every Targum word with a clean Hebrew
-    # meaning (and root) — anchored on the word's Hebrew equivalent and grounded
-    # in Tal where available. This is the primary source.
+    # (0) Authoritative: resolve the root (dictionary head-word first) and read the
+    # root's own Hebrew gloss straight off Tal's pages.
     try:
-        g = conn.execute("SELECT root, gloss FROM tal_word_gloss WHERE word = ? LIMIT 1",
-                         (base,)).fetchone()
-        if g and ((g['root'] or '').strip() or (g['gloss'] or '').strip()):
-            res = {'root': (g['root'] or '').strip(), 'lemma': '',
-                   'gloss': (g['gloss'] or '').strip()}
+        for root in _tal_roots(word, conn):
+            g = _auth_root_gloss(_norm_fin(root), conn)
+            if g:
+                res = {'root': root, 'lemma': '', 'gloss': g}
+                break
     except Exception:
         res = None
+    # (1) The distilled gloss table covers ~every Targum word with a clean Hebrew
+    # meaning (and root) — the fallback when the page entry isn't resolved.
+    if res is None:
+        try:
+            g = conn.execute("SELECT root, gloss FROM tal_word_gloss WHERE word = ? LIMIT 1",
+                             (base,)).fetchone()
+            if g and ((g['root'] or '').strip() or (g['gloss'] or '').strip()):
+                res = {'root': (g['root'] or '').strip(), 'lemma': '',
+                       'gloss': (g['gloss'] or '').strip()}
+        except Exception:
+            res = None
     # (2) Fallback: resolve the root from Tal's published index (root only),
     # trying the determined-state / proclitic variants of the surface form.
     if res is None:
@@ -1095,6 +1121,126 @@ def lookup_tal_dictionary(word, limit=6):
             'notes':     e['notes'],
             'citations': [(c['quote'], c['source_ref']) for c in cites],
         })
+    conn.close()
+    return out
+
+
+_FINALS = {'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ'}
+
+
+def _norm_fin(w):
+    """Niqqud-stripped, final-letters folded — the shared key used by tal_forms,
+    root_index and tal_auth_entries (all fold ם→מ, ן→נ, ץ→צ …)."""
+    return ''.join(_FINALS.get(c, c) for c in _tal_bare(w))
+
+
+def _tal_variants(base):
+    """(full, prefixed) candidate groups. `full` = the surface form and its
+    emphatic-state (-א/-ה) variant; `prefixed` = the same after stripping ONE
+    proclitic (ובלכדמ). A letter is stripped only when ≥3 letters remain (so a
+    2-letter spurious match like מיא→מי can't fire), and ש is never a proclitic
+    (usually a root letter — שמיא, שמש). The full group is resolved first so a real
+    word is never mis-stripped (כהניא stays כהן rather than becoming הני)."""
+    full = [base]
+    if len(base) >= 4 and base[-1] in 'אה':
+        full.append(base[:-1])
+    prefixed = []
+    if len(base) >= 4 and base[0] in 'ובלכדמ':
+        s = base[1:]
+        prefixed.append(s)
+        if len(s) >= 4 and s[-1] in 'אה':
+            prefixed.append(s[:-1])
+    return full, prefixed
+
+
+def _tal_roots(word, conn):
+    """Resolve an Aramaic surface word to its Tal root(s), most authoritative first:
+    the dictionary's own head-word (lemma), the word as a root, Tal's forms index,
+    then the word→root gloss and the Torah-text root index. The full surface form is
+    resolved completely before any proclitic-stripped variant is tried."""
+    base = _tal_bare(word)
+    if not base or len(base) < 2:
+        return []
+
+    def dedup(rs):
+        out = []
+        for r in rs:
+            r = (r or '').strip()
+            if r and r not in out:
+                out.append(r)
+        return out
+
+    def resolve(cands):
+        cnorms = [_norm_fin(c) for c in cands]
+        for cn in cnorms:                       # 1) dictionary head-word (lemma → root)
+            rs = [r['root'] for r in conn.execute(
+                "SELECT DISTINCT root FROM tal_auth_entries "
+                "WHERE lemma_norm=? AND TRIM(COALESCE(root,''))<>''", (cn,))]
+            if rs:
+                return dedup(rs)
+        for cn in cnorms:                       # 2) the word IS itself a root
+            row = (conn.execute("SELECT root FROM tal_auth_entries WHERE root_norm=? LIMIT 1", (cn,)).fetchone()
+                   or conn.execute("SELECT root FROM root_index WHERE root_norm=? LIMIT 1", (cn,)).fetchone())
+            if row:
+                return [row['root']]
+        for cn in cnorms:                       # 3) Tal's own forms index
+            rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM tal_forms WHERE form_norm=?", (cn,))]
+            if rs:
+                return dedup(rs)
+        for c in cands:                         # 4) word→root gloss (every Torah word)
+            rs = [r['root'] for r in conn.execute(
+                "SELECT root FROM tal_word_gloss WHERE word=? AND TRIM(COALESCE(root,''))<>''", (c,))]
+            if rs:
+                return dedup(rs)
+        for cn in cnorms:                       # 5) Torah-text root index
+            rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM root_index WHERE form_norm=?", (cn,))]
+            if rs:
+                return dedup(rs)
+        for c in cands:                         # 6) old forms index
+            rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM dict_root_index WHERE word=?", (c,))]
+            if rs:
+                return dedup(rs)
+        return []
+
+    full, prefixed = _tal_variants(base)
+    return resolve(full) or (resolve(prefixed) if prefixed else [])
+
+
+def tal_full_lookup(word, torah_limit=16):
+    """Everything Tal's dictionary holds for an Aramaic word, grounded in the
+    authoritative page extraction. Returns {word, roots:[{root, senses, torah,
+    torah_count, forms}]} where each sense is {lemma, pos, gloss, page} read off
+    the dictionary itself, torah are the word's occurrences across the Torah
+    (book/ch/verse/verse_id), and forms are other surface forms of the root."""
+    conn = get_connection()
+    roots = _tal_roots(word, conn)
+    out = {'word': word, 'roots': []}
+    for root in roots:
+        rn = _norm_fin(root)
+        senses = []
+        for r in conn.execute(
+                "SELECT lemma, pos, gloss_he, printed FROM tal_auth_entries "
+                "WHERE root_norm=? ORDER BY pdf, ord", (rn,)):
+            g = (r['gloss_he'] or '').strip()
+            if g:
+                senses.append({'lemma': r['lemma'] or '', 'pos': r['pos'] or '',
+                               'gloss': g, 'page': r['printed']})
+        if not senses:                      # fall back to the older entries (English gloss)
+            for r in conn.execute(
+                    "SELECT e.lemma, e.pos, e.gloss_en, e.page FROM dict_root_entries dre "
+                    "JOIN dict_entries e ON e.id=dre.entry_id WHERE dre.root=? ORDER BY dre.tier",
+                    (root,)):
+                senses.append({'lemma': r['lemma'] or '', 'pos': r['pos'] or '',
+                               'gloss': r['gloss_en'] or '', 'page': r['page']})
+        locs = conn.execute(
+            "SELECT book, chapter, verse, verse_id FROM root_index "
+            "WHERE root_norm=? ORDER BY verse_id", (rn,)).fetchall()
+        torah = [{'book': r['book'], 'ch': r['chapter'], 'vn': r['verse'],
+                  'verse_id': r['verse_id']} for r in locs[:torah_limit]]
+        forms = [r['form'] for r in conn.execute(
+            "SELECT DISTINCT form FROM tal_forms WHERE root_norm=? LIMIT 24", (rn,))]
+        out['roots'].append({'root': root, 'senses': senses, 'torah': torah,
+                             'torah_count': len(locs), 'forms': forms})
     conn.close()
     return out
 
