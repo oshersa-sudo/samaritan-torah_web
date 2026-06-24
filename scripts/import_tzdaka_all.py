@@ -49,6 +49,9 @@ MARKER_FILES = [os.path.join(TZDIR, n) for n in (
     'sadaqah_gen25b_26_full.docx',               # ch25:29-34 + ch26
     'sadaqah_gen27_full.docx', 'sadaqah_gen28_full.docx',
     'sadaqah_gen29_full.docx', 'sadaqah_gen30_full.docx')]
+# Gen 47-50: Heading-1 'פרק <heb>' sets the chapter, Heading-2 is a vocalised verse
+# incipit ending in a comma-bracketed ref '[מז, א]', then the commentary paragraphs.
+PART5_FILES = [os.path.join(TZDIR, 'part5_continued_ch47-50.docx')]
 
 GEM = {'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,
        'ך':20,'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,'ס':60,'ע':70,'פ':80,'ף':80,
@@ -61,6 +64,9 @@ LINE_RE = re.compile(r'^(%s)\s*:\s*(%s(?:[–\-]%s)?)\s*[·—]\s*[„"]' % (NUM
 # an authoritative bracketed ref at the line end, e.g. '… [מה:כד]'; the gen43-46
 # files carry it and it overrides a typo in the leading ref.
 BRACK_RE = re.compile(r'\[(%s)\s*:\s*(%s(?:[–\-]%s)?)\]' % (NUM, NUM, NUM))
+# the Gen 47-50 (part5_continued) headings end with a COMMA-separated bracketed ref,
+# e.g. '… [מז, א]' (chapter, verse) — not a colon.
+BRACK_COMMA = re.compile(r'\[(%s)\s*[,،]\s*(%s(?:[–\-]%s)?)\]' % (NUM, NUM, NUM))
 
 
 def gem(s):
@@ -144,6 +150,45 @@ def parse_marker_file(path, vidx):
     return out
 
 
+def parse_part5_file(path, vidx):
+    """Gen 47-50: 'פרק <heb>' (Heading 1) sets the chapter; each Heading-2 is a verse
+    incipit ending with a comma-bracketed ref '[מז, א]', and the paragraphs after it
+    are its commentary. The bracket ref (chapter+verse) is authoritative."""
+    import docx
+    doc = docx.Document(path)
+    sections = []; cur = None; chap = None; chap_he = None
+    for p in doc.paragraphs:
+        t = p.text.strip()
+        if not t:
+            continue
+        sty = (p.style.name if p.style else '') or ''
+        plain = bare(t)
+        mh = HEAD_RE.match(plain)
+        if sty.startswith('Heading 1') and mh and 'פרקים' not in plain:
+            c = gem(mh.group(1))
+            if 1 <= c <= 50:
+                chap, chap_he = c, mh.group(1)
+            continue
+        mb = BRACK_COMMA.search(t)
+        if sty.startswith('Heading 2') and mb:
+            if cur:
+                sections.append(cur)
+            rch = gem(mb.group(1)); rvs = mb.group(2)
+            vs = re.split(r'[–\-]', rvs)
+            v1 = gem(vs[0]); v2 = gem(vs[1]) if len(vs) > 1 and gem(vs[1]) else v1
+            vns = list(range(v1, v2 + 1))
+            vids = [vidx[(rch, vn)] for vn in vns if (rch, vn) in vidx]
+            incipit = BRACK_COMMA.sub('', t).strip(' ·—-')
+            cur = {'ch': rch, 'ref': '%s:%s' % (mb.group(1), rvs), 'title': '',
+                   'incipit': incipit, 'vids': vids,
+                   'missing': [vn for vn in vns if (rch, vn) not in vidx], 'body': []}
+        elif cur is not None and not sty.startswith('Heading 1'):
+            cur['body'].append(t)
+    if cur:
+        sections.append(cur)
+    return sections
+
+
 def parse_file(path, vidx):
     """Yield section dicts from one docx (heading-based or headingless)."""
     import docx
@@ -195,7 +240,8 @@ def main():
     # file #3's brief note is replaced by file #1's dedicated treatment).
     final = {}          # ref -> list[section]  (from the last file that defines it)
     order = []
-    jobs = [(f, parse_file) for f in FILES] + [(f, parse_marker_file) for f in MARKER_FILES]
+    jobs = ([(f, parse_file) for f in FILES] + [(f, parse_marker_file) for f in MARKER_FILES]
+            + [(f, parse_part5_file) for f in PART5_FILES])
     for f, parser in jobs:
         if not os.path.exists(f):
             print('MISSING file:', f); continue
