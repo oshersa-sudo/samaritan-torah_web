@@ -567,6 +567,73 @@ def get_tm_words(book):
     return out
 
 
+# ── Ṣadaqah al-Ḥakīm full-book reader (Genesis commentary, Samaritan Library) ──
+_NUM_HE = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'י״א', 'י״ב', 'י״ג',
+           'י״ד', 'ט״ו', 'ט״ז', 'י״ז', 'י״ח', 'י״ט', 'כ', 'כ״א', 'כ״ב', 'כ״ג', 'כ״ד',
+           'כ״ה', 'כ״ו', 'כ״ז', 'כ״ח', 'כ״ט', 'ל', 'ל״א', 'ל״ב', 'ל״ג', 'ל״ד', 'ל״ה',
+           'ל״ו', 'ל״ז', 'ל״ח', 'ל״ט', 'מ', 'מ״א', 'מ״ב', 'מ״ג', 'מ״ד', 'מ״ה', 'מ״ו',
+           'מ״ז', 'מ״ח', 'מ״ט', 'נ']
+
+
+def _num_he(n):
+    return _NUM_HE[n] if 0 <= n < len(_NUM_HE) else str(n)
+
+
+def get_tz_toc():
+    """Genesis chapters that carry Ṣadaqah al-Ḥakīm's commentary — the contents."""
+    conn = get_connection()
+    rows = conn.execute("SELECT chap, COUNT(*) n FROM tzdaka_sections WHERE book='בראשית' "
+                        "GROUP BY chap ORDER BY chap").fetchall()
+    conn.close()
+    return [{'chap': r['chap'], 'heb': _num_he(r['chap']), 'count': r['n']} for r in rows]
+
+
+def get_tz_chapter(chap):
+    """All commentary sections of one Genesis chapter, in order, each with its
+    Hebrew + Arabic text, the verse it expounds (for the citation jump), and inline
+    verse refs made clickable."""
+    try:
+        chap = int(chap)
+    except (TypeError, ValueError):
+        return {'chap': None, 'sections': []}
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    vlink = {}
+    for r in conn.execute("""SELECT l.section_id sid, MIN(l.verse_id) vid
+        FROM tzdaka_verse_links l JOIN tzdaka_sections s ON s.id=l.section_id
+        WHERE s.book='בראשית' AND s.chap=? GROUP BY l.section_id""", (chap,)):
+        vlink[r['sid']] = r['vid']
+    secs = conn.execute("SELECT id, ref, title, text, arabic FROM tzdaka_sections "
+                        "WHERE book='בראשית' AND chap=? ORDER BY ord", (chap,)).fetchall()
+    conn.close()
+    out = [{'id': s['id'], 'ref': s['ref'], 'title': s['title'] or '',
+            'hebrew': s['text'] or '', 'arabic': s['arabic'] or '',
+            'hebrew_html': _tm_mark_refs(s['text'] or '', vmap),
+            'verse_id': vlink.get(s['id'])} for s in secs]
+    return {'chap': chap, 'heb': _num_he(chap), 'sections': out}
+
+
+def search_tz(q, limit=80):
+    """Search Ṣadaqah al-Ḥakīm's Genesis commentary (Hebrew + Arabic)."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    rows = conn.execute("SELECT id, chap, ref, title, text, arabic FROM tzdaka_sections "
+                        "WHERE book='בראשית' AND (text LIKE ? OR arabic LIKE ?) "
+                        "ORDER BY ord LIMIT ?", (like, like, limit)).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        txt = r['text'] if (r['text'] and q in r['text']) else (r['arabic'] or '')
+        i = txt.find(q)
+        snip = ('…' + txt[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0 else txt[:90]
+        out.append({'id': r['id'], 'chap': r['chap'], 'heb': _num_he(r['chap']), 'ref': r['ref'],
+                    'title': r['title'] or '', 'snippet': snip})
+    return out
+
+
 def get_eyalk_commentary(verse_ids):
     """Samaritan-tradition commentary ("מן המסורת השומרונית") relevant to any of
     the given verses, in reading order. Each item is a dict {parsha, text}.
@@ -1408,6 +1475,96 @@ def tal_full_lookup(word, torah_limit=16):
                              'torah_count': len(locs), 'forms': forms})
     conn.close()
     return out
+
+
+# ── dictionary app: page-browse, index-browse, direct word search, form locations ──
+def get_dict_page(printed):
+    """One printed page of Tal's dictionary (its head-words), with prev/next nav."""
+    try:
+        p = int(printed)
+    except (TypeError, ValueError):
+        p = 1
+    conn = get_connection()
+    pages = [r['printed'] for r in conn.execute(
+        "SELECT DISTINCT printed FROM tal_auth_entries WHERE printed IS NOT NULL ORDER BY printed")]
+    if not pages:
+        conn.close(); return {'page': p, 'entries': [], 'prev': None, 'next': None}
+    p = min(max(p, pages[0]), pages[-1])
+    while p not in pages and p < pages[-1]:
+        p += 1
+    rows = conn.execute("SELECT lemma, root, pos, gloss_he FROM tal_auth_entries "
+                        "WHERE printed=? ORDER BY ord", (p,)).fetchall()
+    hd = conn.execute("SELECT head FROM tal_pages WHERE printed=? LIMIT 1", (p,)).fetchone()
+    conn.close()
+    i = pages.index(p)
+    return {'page': p, 'head': hd['head'] if hd else '',
+            'prev': pages[i - 1] if i > 0 else None,
+            'next': pages[i + 1] if i < len(pages) - 1 else None,
+            'first': pages[0], 'last': pages[-1],
+            'entries': [{'lemma': r['lemma'] or '', 'root': r['root'] or '',
+                         'pos': r['pos'] or '', 'gloss': (r['gloss_he'] or '').strip()} for r in rows]}
+
+
+def get_dict_index(start=0, limit=80, prefix=''):
+    """A window of the alphabetical index of dictionary head-words (for flipping
+    through the index). `prefix` jumps to the first head-word from that letter on."""
+    conn = get_connection()
+    WH = "WHERE TRIM(COALESCE(lemma,''))<>''"
+    total = conn.execute("SELECT COUNT(*) FROM tal_auth_entries " + WH).fetchone()[0]
+    if prefix:
+        pn = _norm_fin(prefix)
+        start = conn.execute("SELECT COUNT(*) FROM tal_auth_entries " + WH +
+                             " AND lemma_norm < ?", (pn,)).fetchone()[0]
+    try:
+        start = max(0, int(start))
+    except (TypeError, ValueError):
+        start = 0
+    rows = conn.execute("SELECT lemma, root, printed FROM tal_auth_entries " + WH +
+                        " ORDER BY lemma_norm, ord LIMIT ? OFFSET ?", (limit, start)).fetchall()
+    conn.close()
+    return {'start': start, 'limit': limit, 'total': total,
+            'items': [{'lemma': r['lemma'] or '', 'root': r['root'] or '', 'page': r['printed']} for r in rows]}
+
+
+def dict_word_search(word, limit=40):
+    """Dictionary entries that contain the word DIRECTLY as a head-word, regardless
+    of whether the word is itself a root (so a plain inflected form still hits, as
+    long as it stands as a head-word in Tal). Complements the root resolution."""
+    base = _tal_bare(word)
+    if not base or len(base) < 2:
+        return []
+    bn = _norm_fin(base)
+    conn = get_connection()
+    rows = conn.execute("SELECT lemma, root, pos, gloss_he, printed FROM tal_auth_entries "
+                        "WHERE lemma_norm=? ORDER BY pdf, ord LIMIT ?", (bn, limit)).fetchall()
+    conn.close()
+    out, seen = [], set()
+    for r in rows:
+        k = (r['lemma'], r['printed'], (r['gloss_he'] or '')[:20])
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append({'lemma': r['lemma'] or '', 'root': r['root'] or '', 'pos': r['pos'] or '',
+                    'gloss': (r['gloss_he'] or '').strip(), 'page': r['printed']})
+    return out
+
+
+def dict_form_locations(word, limit=80):
+    """Every place a surface form is cited inside Tal's dictionary — the location
+    reference (source_ref) plus the citation quote — for the "tap a form to see all
+    its occurrences in the dictionary" feature."""
+    base = _tal_bare(word)
+    if not base:
+        return {'form': word, 'count': 0, 'locations': []}
+    conn = get_connection()
+    rows = conn.execute(
+        "SELECT c.quote, c.source_ref FROM dict_forms f JOIN dict_citations c ON c.form_id=f.id "
+        "WHERE f.form=? OR f.form=? ORDER BY c.order_n LIMIT ?",
+        (word, base, limit)).fetchall()
+    conn.close()
+    locs = [{'ref': r['source_ref'] or '', 'quote': (r['quote'] or '').strip()}
+            for r in rows if (r['source_ref'] or '').strip()]
+    return {'form': word, 'count': len(locs), 'locations': locs}
 
 
 def root_from_index(word):

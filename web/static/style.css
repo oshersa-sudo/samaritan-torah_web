@@ -468,8 +468,11 @@ footer a{ color:var(--accent); text-decoration:none; }
 .menu-item.menu-sub-head{ font-weight:700; }
 .menu-item.menu-sub-head::after{ content:'▾'; float:left; opacity:.55; font-size:13px; }
 .menu-item.menu-sub-head.open::after{ content:'▴'; }
-.menu-sub-items{ background:rgba(26,56,115,.05); }
-.menu-item.menu-sub-item{ padding-inline-start:34px; font-size:15.5px; color:var(--accent); }
+/* the Samaritan-Library submenu sits offset to the left of the main menu, with a
+   branch line marking it as a nested group */
+.menu-sub-items{ background:rgba(26,56,115,.05); margin-inline-start:18px;
+  border-inline-start:2px solid rgba(26,56,115,.22); }
+.menu-item.menu-sub-item{ padding-inline-start:22px; font-size:15.5px; color:var(--accent); }
 
 /* dictionary app modal */
 .modal-box.dict-app{ max-width:620px; }
@@ -481,14 +484,55 @@ footer a{ color:var(--accent); text-decoration:none; }
 #dictAppBody{ overflow-y:auto; }
 #dictAppBody .dict-entry{ border-top:1px solid rgba(26,56,115,.15); padding-top:6px; margin-top:8px; }
 #dictAppBody .tal-head{ color:var(--navy); font-weight:700; font-size:19px; }
+/* dictionary app: mode tabs, page/index nav, clickable forms + locations */
+.dict-tabs{ display:flex; gap:6px; }
+.dict-tab{ flex:1 1 0; padding:8px 4px; border:1px solid #cfd6e6; border-radius:8px; background:#fff;
+  color:var(--navy); font:inherit; font-size:14px; cursor:pointer; }
+.dict-tab.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+.dict-nav{ display:flex; align-items:center; justify-content:center; gap:10px; }
+.dict-nav-btn{ border:1px solid #cfd6e6; background:#fff; color:var(--navy); border-radius:8px;
+  padding:6px 12px; font:inherit; font-size:14px; cursor:pointer; }
+.dict-nav-btn:disabled{ opacity:.4; cursor:default; }
+.dict-nav-lbl{ color:var(--navy); font-weight:600; font-size:14px; }
+.dict-index{ display:flex; flex-direction:column; }
+.dict-index-row{ display:flex; align-items:baseline; gap:10px; width:100%; text-align:right;
+  border:0; border-top:1px solid rgba(26,56,115,.1); background:transparent; padding:8px 4px; cursor:pointer; font:inherit; }
+.dict-index-row:hover{ background:#f3f5fb; }
+.dict-ix-lemma{ flex:1 1 auto; color:var(--navy); font-weight:600; font-size:16px; }
+.dict-ix-root{ color:var(--muted); font-size:13px; }
+.dict-ix-page{ color:var(--accent); font-size:12.5px; }
+.dict-pageentry{ border-top:1px solid rgba(26,56,115,.1); padding:7px 2px; color:var(--dark); font-size:15px; line-height:1.6; }
+.dict-direct-sec{ margin-top:2px; }
+.dict-direct{ border-inline-start:3px solid var(--accent); padding:5px 8px; margin:4px 0; color:var(--dark);
+  font-size:15.5px; line-height:1.6; background:#f7f9ff; border-radius:0 6px 6px 0; }
+.dict-direct-root{ color:var(--muted); font-size:13px; }
+.dict-form-hint{ color:var(--muted); font-size:12.5px; margin:2px 0; }
+.tal-formlist.clickable-forms{ display:flex; flex-wrap:wrap; gap:6px; }
+.dict-form{ display:inline-flex; align-items:center; gap:3px; border:1px solid rgba(46,97,184,.4);
+  border-radius:14px; padding:3px 10px; color:var(--accent); font-size:15px; cursor:pointer; background:#fff; }
+.dict-form:hover{ background:#eef3fc; }
+.dict-form.open{ background:var(--accent); color:#fff; }
+.dict-form-i{ font-size:11px; opacity:.85; }
+.dict-loclist{ flex-basis:100%; margin-top:6px; border:1px solid rgba(46,97,184,.25); border-radius:8px; padding:6px 8px; background:#fbfcff; }
+.dict-loc-head{ color:var(--navy); font-weight:700; font-size:13.5px; margin-bottom:4px; }
+.dict-loc-row{ display:flex; gap:8px; padding:3px 0; border-top:1px dashed rgba(26,56,115,.12); font-size:14px; }
+.dict-loc-ref{ flex:0 0 auto; color:var(--accent); font-weight:600; min-width:70px; }
+.dict-loc-q{ color:var(--dark); opacity:.85; }
 
-/* ── Tibåt Mårqe full-book reader ── */
-.modal-box.tm-reader{ max-width:640px; width:94%; max-height:88vh; gap:10px; }
-.tm-top{ display:flex; align-items:center; gap:8px; }
+/* ── full-book reader (Tibåt Mårqe / Ṣadaqah al-Ḥakīm) — its own full window ── */
+.modal.book-full{ align-items:stretch; justify-content:stretch; padding:0; }
+.modal-box.book-reader{ max-width:none; width:100%; height:100%; max-height:100%;
+  border-radius:0; gap:10px; padding:14px; }
+.rd-top{ display:flex; align-items:center; gap:8px; }
 .tm-back{ flex:0 0 auto; border:1px solid #cfd6e6; background:#fff; color:var(--navy);
   border-radius:8px; padding:6px 12px; font:inherit; font-size:14px; cursor:pointer; }
 .tm-back:hover{ background:#eef2fb; }
-.tm-top .modal-title{ flex:1 1 auto; text-align:right; }
+.rd-top .modal-title{ flex:1 1 auto; text-align:center; font-size:17px; }
+.rd-lang{ flex:0 0 auto; border:0; border-radius:8px; background:var(--navy); color:#fff;
+  padding:7px 12px; font:inherit; font-size:13.5px; cursor:pointer; white-space:nowrap; }
+.rd-lang:hover{ background:var(--accent); }
+.tm-secnum.tm-jump{ cursor:pointer; text-decoration:underline dotted; }
+.tm-secnum.tm-jump:hover{ color:var(--active); }
 .tm-search-row{ display:flex; gap:8px; }
 .tm-search-row input{ flex:1; padding:9px 12px; border:1px solid #cfd6e6; border-radius:8px; font:inherit; font-size:16px; }
 .tm-body{ flex:1 1 auto; min-height:0; overflow-y:auto; padding:2px 2px 4px; }

@@ -688,6 +688,22 @@ def api_locate_verse():
     return jsonify(db.locate_verse(vid))
 
 
+# ── Ṣadaqah al-Ḥakīm full-book reader (Genesis) ──
+@app.route('/api/tz_toc')
+def api_tz_toc():
+    return jsonify(db.get_tz_toc())
+
+
+@app.route('/api/tz_chapter')
+def api_tz_chapter():
+    return jsonify(db.get_tz_chapter(request.args.get('chap', '')))
+
+
+@app.route('/api/tz_search')
+def api_tz_search():
+    return jsonify(db.search_tz(request.args.get('q', '')))
+
+
 @app.route('/api/eyalk')
 def api_eyalk():
     return jsonify(db.get_eyalk_commentary(_ids_arg()))
@@ -726,6 +742,28 @@ def api_tal_lookup():
     Powers the in-app dictionary, the word-table 'more results', and search."""
     word = request.args.get('word', '')
     return jsonify(db.tal_full_lookup(word))
+
+
+# ── dictionary app: page-browse · index-browse · direct word search · form locations ──
+@app.route('/api/dict_page')
+def api_dict_page():
+    return jsonify(db.get_dict_page(request.args.get('page', '1')))
+
+
+@app.route('/api/dict_index')
+def api_dict_index():
+    return jsonify(db.get_dict_index(request.args.get('start', '0'),
+                                     prefix=request.args.get('prefix', '')))
+
+
+@app.route('/api/dict_word')
+def api_dict_word():
+    return jsonify(db.dict_word_search(request.args.get('word', '')))
+
+
+@app.route('/api/dict_locations')
+def api_dict_locations():
+    return jsonify(db.dict_form_locations(request.args.get('word', '')))
 
 
 @app.route('/api/root_box')

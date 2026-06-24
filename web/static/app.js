@@ -63,7 +63,15 @@ const I18N = {
     tm_toc_hint:'בחר מימר לעיון:', tm_back_toc:'‹ תוכן העניינים', tm_back_chapter:'‹ חזרה לפרק',
     tm_words_btn:'מילון מילים', tm_words_title:'מילון מילים — מתוך מילון א. טל', tm_col_root:'שורש',
     tm_no_results:'לא נמצאו תוצאות', tm_sections_n:'קטעים', tm_open_verse:'פתח את הפסוק באפליקציה',
+    m_tz_book:'פירוש צדקה אל-חכים (בראשית)', tz_title:'פירוש צדקה אל-חכים — בראשית',
+    tz_toc_hint:'בחר פרק לעיון:', tz_chapter_label:'פרק', tz_arabic_pending:'התרגום לערבית בהכנה — מוצג הנוסח העברי.',
+    rd_he:'עברית', rd_ar:'ערבית', rd_aram:'ארמית', rd_show:'הצג:',
     dict_app_title:'המילון הארמי-עברי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
+    dict_tab_search:'חיפוש', dict_tab_index:'אינדקס', dict_tab_pages:'דפדוף עמודים',
+    dict_index_hint:'דפדף באינדקס המילון (לפי סדר א״ב). הקלד אות/מילה לקפיצה.', dict_index_ph:'קפוץ לאות/מילה…',
+    dict_pages_hint:'דפדף בעמודי המילון.', dict_page_label:'עמוד', dict_prev:'‹ הקודם', dict_next:'הבא ›',
+    dict_in_dict:'נמצא במילון כערך:', dict_form_hint:'לחץ על צורה לקבלת כל מיקומיה במילון',
+    dict_locations_title:'מיקומים במילון', dict_loc_count:'מופעים', dict_open_page:'פתח עמוד במילון',
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     interp_unavail:'פונקציה זו אינה פעילה באופן זמני.',
     welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
@@ -141,7 +149,15 @@ const I18N = {
     tm_toc_hint:'Choose a Memar to read:', tm_back_toc:'‹ Contents', tm_back_chapter:'‹ Back to the chapter',
     tm_words_btn:'Word glossary', tm_words_title:'Word glossary — from A. Tal’s dictionary', tm_col_root:'Root',
     tm_no_results:'No results found', tm_sections_n:'sections', tm_open_verse:'Open the verse in the app',
+    m_tz_book:'Ṣadaqah al-Ḥakīm (Genesis)', tz_title:'Ṣadaqah al-Ḥakīm — Genesis',
+    tz_toc_hint:'Choose a chapter:', tz_chapter_label:'Chapter', tz_arabic_pending:'The Arabic is being prepared — showing the Hebrew.',
+    rd_he:'Hebrew', rd_ar:'Arabic', rd_aram:'Aramaic', rd_show:'Show:',
     dict_app_title:'The Samaritan Aramaic–Hebrew Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
+    dict_tab_search:'Search', dict_tab_index:'Index', dict_tab_pages:'Browse pages',
+    dict_index_hint:'Browse the dictionary index (A–Z). Type a letter/word to jump.', dict_index_ph:'Jump to a letter/word…',
+    dict_pages_hint:'Browse the dictionary pages.', dict_page_label:'Page', dict_prev:'‹ Prev', dict_next:'Next ›',
+    dict_in_dict:'Found in the dictionary as a head-word:', dict_form_hint:'Tap a form for all its locations in the dictionary',
+    dict_locations_title:'Locations in the dictionary', dict_loc_count:'occurrences', dict_open_page:'Open the dictionary page',
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     interp_unavail:'This feature is temporarily unavailable.',
     welcome_title:'Welcome to the Avnei Shoham project',
@@ -219,7 +235,15 @@ const I18N = {
     tm_toc_hint:'اختر ميمراً للمطالعة:', tm_back_toc:'‹ المحتويات', tm_back_chapter:'‹ العودة إلى الفصل',
     tm_words_btn:'معجم الكلمات', tm_words_title:'معجم الكلمات — من معجم أ. طال', tm_col_root:'الجذر',
     tm_no_results:'لا توجد نتائج', tm_sections_n:'مقاطع', tm_open_verse:'افتح الآية في التطبيق',
+    m_tz_book:'تفسير صدقة الحكيم (التكوين)', tz_title:'تفسير صدقة الحكيم — التكوين',
+    tz_toc_hint:'اختر أصحاحاً:', tz_chapter_label:'أصحاح', tz_arabic_pending:'الترجمة العربية قيد الإعداد — يُعرض النصّ العبري.',
+    rd_he:'العبرية', rd_ar:'العربية', rd_aram:'الآرامية', rd_show:'اعرض:',
     dict_app_title:'المعجم الآرامي-العبري السامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
+    dict_tab_search:'بحث', dict_tab_index:'الفهرس', dict_tab_pages:'تصفّح الصفحات',
+    dict_index_hint:'تصفّح فهرس المعجم (أ–ي). اكتب حرفاً/كلمة للقفز.', dict_index_ph:'اقفز إلى حرف/كلمة…',
+    dict_pages_hint:'تصفّح صفحات المعجم.', dict_page_label:'صفحة', dict_prev:'‹ السابق', dict_next:'التالي ›',
+    dict_in_dict:'موجودة في المعجم كمدخل:', dict_form_hint:'اضغط صيغةً لكلّ مواضعها في المعجم',
+    dict_locations_title:'المواضع في المعجم', dict_loc_count:'مواضع', dict_open_page:'افتح صفحة المعجم',
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     interp_unavail:'هذه الميزة غير متاحة مؤقّتًا.',
     welcome_title:'أهلًا بكم في مشروع «أبني شوهم»',
@@ -1846,6 +1870,7 @@ function menuAction(a){
   else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
   else if(a==='dict_app')  openDictApp();
   else if(a==='tm_book')   openTmBook();
+  else if(a==='tz_book')   openTzBook();
   else if(a==='install')   doInstall();
   else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
@@ -1857,127 +1882,315 @@ function menuAction(a){
 }
 
 // ── Samaritan Aramaic–Hebrew dictionary (A. Tal) — standalone in-app dictionary ──
+let DICT_MODE='search';
 function openDictApp(){
-  $('dictAppBody').innerHTML='';
   $('dictModal').classList.remove('hidden');
+  dictSetMode('search');
   setTimeout(()=>$('dictAppInput').focus(), 50);
+}
+function dictSetMode(mode){
+  DICT_MODE=mode;
+  document.querySelectorAll('.dict-tab').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
+  $('dictAppBody').innerHTML=''; $('dictNav').innerHTML=''; $('dictNav').classList.add('hidden');
+  $('dictSearchRow').classList.toggle('hidden', mode==='pages');
+  const inp=$('dictAppInput'); inp.value='';
+  if(mode==='search'){ $('dictAppHint').textContent=t('dict_app_hint'); inp.placeholder=t('dict_app_ph'); }
+  else if(mode==='index'){ $('dictAppHint').textContent=t('dict_index_hint'); inp.placeholder=t('dict_index_ph'); dictIndex(0); }
+  else if(mode==='pages'){ $('dictAppHint').textContent=t('dict_pages_hint'); dictPage(1); }
+}
+document.querySelectorAll('.dict-tab').forEach(b=>b.onclick=()=>dictSetMode(b.dataset.mode));
+
+// the search box doubles as the index "jump to letter/word" box
+function dictGo(){ if(DICT_MODE==='index') dictIndex(0, ($('dictAppInput').value||'').trim());
+                   else dictAppSearch(); }
+
+// ── tap a form → all its locations in the dictionary (inline expand) ─────────
+async function dictToggleLocations(form, chip){
+  const sib=chip.nextElementSibling;
+  if(sib && sib.classList.contains('dict-loclist')){ sib.remove(); chip.classList.remove('open'); return; }
+  chip.classList.add('open');
+  const box=el('div','dict-loclist'); box.appendChild(el('div','note',t('searching'))); chip.after(box);
+  let d; try{ d=await api('dict_locations?word='+encodeURIComponent(form)); }catch(e){ box.innerHTML=''; box.appendChild(el('div','note','—')); return; }
+  box.innerHTML='';
+  box.appendChild(el('div','dict-loc-head', esc(t('dict_locations_title'))+' · '+esc(form)+' ('+(d.count||0)+' '+esc(t('dict_loc_count'))+')'));
+  if(!d.locations || !d.locations.length){ box.appendChild(el('div','note','—')); return; }
+  for(const loc of d.locations){
+    const row=el('div','dict-loc-row');
+    row.appendChild(el('span','dict-loc-ref', esc(loc.ref)));
+    if(loc.quote) row.appendChild(el('span','dict-loc-q', esc(loc.quote)));
+    box.appendChild(row);
+  }
+}
+function dictFormChip(form){
+  const chip=el('span','dict-form', esc(form)+' <span class="dict-form-i">📍</span>');
+  chip.title=t('dict_form_hint');
+  chip.onclick=()=>dictToggleLocations(form, chip);
+  return chip;
+}
+function dictRootCard(rt){
+  const card=el('div','dict-entry');
+  card.appendChild(el('div','tal-head','שורש '+esc(rt.root)));
+  if(rt.senses && rt.senses.length){
+    card.appendChild(el('div','tal-sec',t('tal_meaning')));
+    for(const s of rt.senses){
+      const it=el('div','tal-sense');
+      if(s.lemma){ it.appendChild(dictFormChip(s.lemma)); it.appendChild(document.createTextNode(' ')); }
+      if(s.pos) it.appendChild(el('span','pos', esc(s.pos)+' '));
+      it.appendChild(document.createTextNode(s.gloss||''));
+      if(s.page) it.appendChild(el('span','tal-pg','  ('+t('tal_page')+' '+esc(String(s.page))+')'));
+      card.appendChild(it);
+    }
+  }
+  if(rt.torah && rt.torah.length){
+    card.appendChild(el('div','tal-sec',t('tal_torah')+' ('+rt.torah_count+')'));
+    const wrap=el('div','tal-locs');
+    for(const loc of rt.torah) wrap.appendChild(el('span','tal-loc', esc(loc.book+' '+loc.ch+':'+loc.vn)));
+    if(rt.torah_count>rt.torah.length) wrap.appendChild(el('span','tal-more','…'));
+    card.appendChild(wrap);
+  }
+  if(rt.forms && rt.forms.length){
+    card.appendChild(el('div','tal-sec',t('tal_forms')));
+    card.appendChild(el('div','dict-form-hint', esc(t('dict_form_hint'))));
+    const fl=el('div','tal-formlist clickable-forms');
+    for(const f of rt.forms) fl.appendChild(dictFormChip(f));
+    card.appendChild(fl);
+  }
+  return card;
 }
 async function dictAppSearch(){
   const word=($('dictAppInput').value||'').trim();
   const body=$('dictAppBody'); body.innerHTML='';
   if(!word) return;
   body.appendChild(el('div','note',t('searching')));
-  let d; try{ d=await api('tal_lookup?word='+encodeURIComponent(word)); }
+  let d, direct;
+  try{ [d, direct]=await Promise.all([
+      api('tal_lookup?word='+encodeURIComponent(word)),
+      api('dict_word?word='+encodeURIComponent(word)) ]); }
   catch(e){ body.innerHTML=''; body.appendChild(el('div','note',t('dict_app_empty'))); return; }
   body.innerHTML='';
   const roots=(d&&d.roots)||[];
-  if(!roots.length){ body.appendChild(el('div','note',t('dict_app_empty'))); return; }
-  for(const rt of roots){
-    const card=el('div','dict-entry');
-    card.appendChild(el('div','tal-head','שורש '+esc(rt.root)));
-    if(rt.senses && rt.senses.length){
-      card.appendChild(el('div','tal-sec',t('tal_meaning')));
-      for(const s of rt.senses){
-        const it=el('div','tal-sense');
-        let lead=''; if(s.lemma) lead+='<b>'+esc(s.lemma)+'</b> '; if(s.pos) lead+='<span class="pos">'+esc(s.pos)+'</span> ';
-        it.innerHTML=lead+esc(s.gloss||'');
-        if(s.page) it.appendChild(el('span','tal-pg','  ('+t('tal_page')+' '+esc(String(s.page))+')'));
-        card.appendChild(it);
+  // direct head-word matches (the word itself stands in the dictionary), regardless of root
+  if(direct && direct.length){
+    const have=new Set(roots.map(r=>r.root));
+    const fresh=direct.filter(e=>!e.root || !have.has(e.root));
+    if(fresh.length){
+      body.appendChild(el('div','tal-sec dict-direct-sec', esc(t('dict_in_dict'))));
+      for(const e of fresh){
+        const it=el('div','dict-direct');
+        if(e.lemma){ it.appendChild(dictFormChip(e.lemma)); it.appendChild(document.createTextNode(' ')); }
+        if(e.pos) it.appendChild(el('span','pos', esc(e.pos)+' '));
+        if(e.root) it.appendChild(el('span','dict-direct-root', '('+t('tm_col_root')+' '+esc(e.root)+') '));
+        it.appendChild(document.createTextNode(e.gloss||''));
+        if(e.page) it.appendChild(el('span','tal-pg','  ('+t('tal_page')+' '+esc(String(e.page))+')'));
+        body.appendChild(it);
       }
     }
-    if(rt.torah && rt.torah.length){
-      card.appendChild(el('div','tal-sec',t('tal_torah')+' ('+rt.torah_count+')'));
-      const wrap=el('div','tal-locs');
-      for(const loc of rt.torah) wrap.appendChild(el('span','tal-loc', esc(loc.book+' '+loc.ch+':'+loc.vn)));
-      if(rt.torah_count>rt.torah.length) wrap.appendChild(el('span','tal-more','…'));
-      card.appendChild(wrap);
-    }
-    if(rt.forms && rt.forms.length){
-      card.appendChild(el('div','tal-sec',t('tal_forms')));
-      card.appendChild(el('div','tal-formlist', rt.forms.map(esc).join('  ·  ')));
-    }
-    body.appendChild(card);
+  }
+  if(!roots.length && !(direct&&direct.length)){ body.appendChild(el('div','note',t('dict_app_empty'))); return; }
+  for(const rt of roots) body.appendChild(dictRootCard(rt));
+}
+// ── index browsing ──────────────────────────────────────────────────────────
+let DICT_IDX={start:0, limit:80, total:0};
+async function dictIndex(start, prefix){
+  const body=$('dictAppBody'); body.innerHTML=''; body.appendChild(el('div','note',t('searching')));
+  let d; try{ d=await api('dict_index?start='+(start||0)+(prefix?('&prefix='+encodeURIComponent(prefix)):'')); }
+  catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
+  body.innerHTML=''; DICT_IDX={start:d.start, limit:d.limit, total:d.total};
+  const list=el('div','dict-index');
+  for(const it of d.items){
+    const row=el('button','dict-index-row',
+      '<span class="dict-ix-lemma">'+esc(it.lemma)+'</span>'
+      +(it.root?'<span class="dict-ix-root">'+esc(it.root)+'</span>':'')
+      +(it.page?'<span class="dict-ix-page">'+t('dict_page_label')+' '+it.page+'</span>':''));
+    row.onclick=()=>{                                  // open this head-word's dictionary page
+      DICT_MODE='pages';
+      document.querySelectorAll('.dict-tab').forEach(b=>b.classList.toggle('active', b.dataset.mode==='pages'));
+      $('dictSearchRow').classList.add('hidden'); $('dictAppHint').textContent=t('dict_pages_hint');
+      dictPage(it.page||1);
+    };
+    list.appendChild(row);
+  }
+  body.appendChild(list); body.scrollTop=0;
+  dictNav([
+    {label:t('dict_prev'), disabled:d.start<=0, fn:()=>dictIndex(Math.max(0,d.start-d.limit))},
+    {text:(d.start+1)+'–'+Math.min(d.total,d.start+d.items.length)+' / '+d.total},
+    {label:t('dict_next'), disabled:d.start+d.limit>=d.total, fn:()=>dictIndex(d.start+d.limit)},
+  ]);
+}
+// ── page browsing ───────────────────────────────────────────────────────────
+async function dictPage(p){
+  const body=$('dictAppBody'); body.innerHTML=''; body.appendChild(el('div','note',t('searching')));
+  let d; try{ d=await api('dict_page?page='+(p||1)); }catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
+  body.innerHTML='';
+  for(const e of d.entries){
+    const it=el('div','dict-pageentry');
+    let h='<b>'+esc(e.lemma)+'</b> ';
+    if(e.pos) h+='<span class="pos">'+esc(e.pos)+'</span> ';
+    it.innerHTML=h+esc(e.gloss||'');
+    body.appendChild(it);
+  }
+  if(!d.entries.length) body.appendChild(el('div','note','—'));
+  body.scrollTop=0;
+  const head=(d.head&&/^[א-תְ-ֽ\s\-–]{3,}$/.test(d.head.trim()))?d.head.trim():'';  // skip OCR-garbled heads
+  dictNav([
+    {label:t('dict_prev'), disabled:d.prev==null, fn:()=>dictPage(d.prev)},
+    {text:t('dict_page_label')+' '+d.page+(head?(' · '+head):'')},
+    {label:t('dict_next'), disabled:d.next==null, fn:()=>dictPage(d.next)},
+  ]);
+}
+function dictNav(items){
+  const nav=$('dictNav'); nav.innerHTML=''; nav.classList.remove('hidden');
+  for(const it of items){
+    if(it.text){ nav.appendChild(el('span','dict-nav-lbl', esc(it.text))); continue; }
+    const b=el('button','dict-nav-btn', esc(it.label)); b.disabled=!!it.disabled;
+    if(it.fn) b.onclick=it.fn; nav.appendChild(b);
   }
 }
-$('dictAppBtn').onclick=dictAppSearch;
+$('dictAppBtn').onclick=dictGo;
 $('dictAppClose').onclick=()=>$('dictModal').classList.add('hidden');
-$('dictAppInput').addEventListener('keydown',e=>{ if(e.key==='Enter') dictAppSearch(); });
+$('dictAppInput').addEventListener('keydown',e=>{ if(e.key==='Enter') dictGo(); });
 
-// ── Tibåt Mårqe — full-book reader (Samaritan Library) ───────────────────────
-const TM = { view:'toc', book:null };
-function openTmBook(){ $('tmInput').value=''; $('tmModal').classList.remove('hidden'); tmShowToc(); }
-function tmSetBack(mode){           // '' hidden · 'toc' · 'chapter'
-  const b=$('tmBack');
+// ── generic full-book reader (Samaritan Library) ─────────────────────────────
+// Drives both Tibåt Mårqe (Aramaic⇄Hebrew) and Ṣadaqah al-Ḥakīm (Hebrew⇄Arabic):
+// a full-screen window with a table of contents, per-chapter reading, a header
+// language toggle, in-book search, and verse-citation jumps into the Torah app.
+const BOOK_CFG = {
+  tm: {
+    titleKey:'tm_title', tocHintKey:'tm_toc_hint',
+    toc:()=>api('tm_toc'),
+    chapter:(id)=>api('tm_chapter?book='+encodeURIComponent(id)),
+    search:(q)=>api('tm_search?q='+encodeURIComponent(q)),
+    words:(id)=>api('tm_words?book='+encodeURIComponent(id)),
+    tocItem:(b)=>({id:b.book, letter:b.letter, title:b.title, count:b.count}),
+    chapterTitle:(ch)=>esc(ch.letter)+'. '+esc(ch.title),
+    unitLabel:(s)=>'§ '+esc(s.section),
+    unitVid:()=>null,
+    unitDom:(s)=>'rdsec-'+s.section,
+    searchRef:(r)=>esc(r.letter)+' §'+esc(r.section),
+    searchTo:(r)=>({chap:r.book, dom:'rdsec-'+r.section}),
+    langs:[{key:'aramaic', labelKey:'rd_aram'},
+           {key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+  },
+  tz: {
+    titleKey:'tz_title', tocHintKey:'tz_toc_hint',
+    toc:()=>api('tz_toc'),
+    chapter:(id)=>api('tz_chapter?chap='+encodeURIComponent(id)),
+    search:(q)=>api('tz_search?q='+encodeURIComponent(q)),
+    words:null,
+    tocItem:(c)=>({id:c.chap, letter:c.heb, title:t('tz_chapter_label')+' '+c.heb, count:c.count}),
+    chapterTitle:(ch)=>t('tz_chapter_label')+' '+esc(ch.heb),
+    unitLabel:(s)=>esc(s.ref)+(s.title?(' · '+esc(s.title)):''),
+    unitVid:(s)=>s.verse_id,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>t('tz_chapter_label')+' '+esc(r.heb)+' · '+esc(r.ref),
+    searchTo:(r)=>({chap:r.chap, dom:'rdsec-'+r.id}),
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'},
+           {key:'arabic', labelKey:'rd_ar', dir:'rtl'}],
+  },
+};
+let RD = { key:null, cfg:null, chapter:null, lang:null };
+function openReader(key){
+  RD.key=key; RD.cfg=BOOK_CFG[key]; RD.chapter=null; RD.lang=RD.cfg.langs[0].key;
+  $('rdInput').value=''; $('rdLang').classList.add('hidden');
+  $('bookModal').classList.remove('hidden');
+  rdShowToc();
+}
+function openTmBook(){ openReader('tm'); }
+function openTzBook(){ openReader('tz'); }
+function rdSetBack(mode){           // '' hidden · 'toc' · 'chapter'
+  const b=$('rdBack');
   if(!mode){ b.classList.add('hidden'); return; }
   b.classList.remove('hidden');
   b.textContent = mode==='toc' ? t('tm_back_toc') : t('tm_back_chapter');
-  b.onclick = mode==='toc' ? tmShowToc : ()=>openTmChapter(TM.book);
+  b.onclick = mode==='toc' ? rdShowToc : ()=>openRdChapter(RD.chapter);
 }
-async function tmShowToc(){
-  TM.view='toc'; TM.book=null; tmSetBack('');
-  $('tmTitle').textContent=t('tm_title');
-  const body=$('tmBody'); body.innerHTML=''; body.scrollTop=0;
-  body.appendChild(el('div','tm-hint',esc(t('tm_toc_hint'))));
-  let toc; try{ toc=await api('tm_toc'); }catch(e){ body.appendChild(el('div','note','—')); return; }
+async function rdShowToc(){
+  RD.chapter=null; rdSetBack(''); $('rdLang').classList.add('hidden');
+  $('rdTitle').textContent=t(RD.cfg.titleKey);
+  const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
+  body.appendChild(el('div','tm-hint',esc(t(RD.cfg.tocHintKey))));
+  let toc; try{ toc=await RD.cfg.toc(); }catch(e){ body.appendChild(el('div','note','—')); return; }
   const list=el('div','tm-toc');
-  toc.forEach(b=>{
+  toc.forEach(raw=>{ const b=RD.cfg.tocItem(raw);
     const card=el('button','tm-toc-item',
       '<span class="tm-toc-letter">'+esc(b.letter)+'</span>'
       +'<span class="tm-toc-title">'+esc(b.title)+'</span>'
       +'<span class="tm-toc-count">'+b.count+' '+esc(t('tm_sections_n'))+'</span>');
-    card.onclick=()=>openTmChapter(b.book);
+    card.onclick=()=>openRdChapter(b.id);
     list.appendChild(card);
   });
   body.appendChild(list);
 }
-async function openTmChapter(book, scrollSection){
-  TM.view='chapter'; TM.book=book; tmSetBack('toc');
-  const body=$('tmBody'); body.innerHTML=''; body.scrollTop=0;
+function rdTopSection(){      // the section currently nearest the top (to keep place on lang toggle)
+  const body=$('rdBody'), top=body.getBoundingClientRect().top;
+  let best=null, bd=1e9;
+  body.querySelectorAll('.tm-sec').forEach(s=>{ const d=s.getBoundingClientRect().top-top;
+    if(d>=-24 && d<bd){ bd=d; best=s; } });
+  return best ? best.id : null;
+}
+function rdLangBtn(){
+  const cfg=RD.cfg, b=$('rdLang');
+  if(cfg.langs.length<2){ b.classList.add('hidden'); return; }
+  const other=cfg.langs.find(l=>l.key!==RD.lang) || cfg.langs[0];
+  b.classList.remove('hidden');
+  b.textContent = t('rd_show')+' '+t(other.labelKey);
+  b.onclick = ()=>{ RD.lang=other.key; openRdChapter(RD.chapter, rdTopSection()); };
+}
+async function openRdChapter(id, scrollDom){
+  RD.chapter=id; rdSetBack('toc');
+  const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
   body.appendChild(el('div','note',t('searching')));
-  let ch; try{ ch=await api('tm_chapter?book='+encodeURIComponent(book)); }
+  let ch; try{ ch=await RD.cfg.chapter(id); }
   catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
   body.innerHTML='';
-  $('tmTitle').textContent=esc(ch.letter)+'. '+esc(ch.title);
-  const tools=el('div','tm-tools');
-  const wbtn=el('button','tm-words-btn',esc(t('tm_words_btn')));
-  wbtn.onclick=()=>tmShowWords(book);
-  tools.appendChild(wbtn); body.appendChild(tools);
+  $('rdTitle').innerHTML=RD.cfg.chapterTitle(ch);
+  rdLangBtn();
+  if(RD.cfg.words){
+    const tools=el('div','tm-tools');
+    const wbtn=el('button','tm-words-btn',esc(t('tm_words_btn')));
+    wbtn.onclick=()=>rdShowWords(id);
+    tools.appendChild(wbtn); body.appendChild(tools);
+  }
+  const lc=RD.cfg.langs.find(l=>l.key===RD.lang)||RD.cfg.langs[0];
+  if(lc.key==='arabic' && ch.sections.every(s=>!s.arabic))
+    body.appendChild(el('div','tm-hint',esc(t('tz_arabic_pending'))));
   for(const s of ch.sections){
-    const sec=el('div','tm-sec'); sec.id='tmsec-'+s.section;
-    sec.appendChild(el('div','tm-secnum','§ '+esc(s.section)));
-    if(s.aramaic)     sec.appendChild(el('div','tm-aram', esc(s.aramaic)));
-    if(s.hebrew_html) sec.appendChild(el('div','tm-heb', s.hebrew_html));
+    const sec=el('div','tm-sec'); sec.id=RD.cfg.unitDom(s);
+    const vid=RD.cfg.unitVid(s);
+    const num=el('div','tm-secnum'+(vid?' tm-jump':''), RD.cfg.unitLabel(s));
+    if(vid){ num.dataset.vid=vid; num.title=t('tm_open_verse'); }
+    sec.appendChild(num);
+    const html=(lc.htmlKey && s[lc.htmlKey]) ? s[lc.htmlKey] : esc(s[lc.key]||'');
+    const td=el('div', lc.key==='aramaic' ? 'tm-aram' : 'tm-heb', html || '—');
+    if(lc.dir) td.dir=lc.dir;
+    sec.appendChild(td);
     body.appendChild(sec);
   }
-  if(scrollSection){
-    const tgt=document.getElementById('tmsec-'+scrollSection);
+  if(scrollDom){ const tgt=document.getElementById(scrollDom);
     if(tgt){ tgt.scrollIntoView({block:'start'}); tgt.classList.add('tm-flash');
-      setTimeout(()=>tgt.classList.remove('tm-flash'),1600); }
-  }
+      setTimeout(()=>tgt.classList.remove('tm-flash'),1600); } }
 }
-// jump from a verse citation in the book to that verse in the Torah app
-$('tmBody').addEventListener('click', async e=>{
-  const a=e.target.closest('.tm-ref'); if(!a) return;
+// jumps: inline verse refs (.tm-ref) and clickable unit headers (.tm-jump)
+$('rdBody').addEventListener('click', async e=>{
+  const a=e.target.closest('.tm-ref, .tm-jump'); if(!a) return;
   const vid=parseInt(a.dataset.vid,10); if(!vid) return;
   let rec; try{ rec=await api('locate_verse?verse_id='+vid); }catch(_){ return; }
   if(!rec || !rec.portion_id) return;
-  $('tmModal').classList.add('hidden');
-  goToJewish(rec);
+  $('bookModal').classList.add('hidden'); goToJewish(rec);
 });
-async function tmShowWords(book){
-  TM.view='words'; tmSetBack('chapter');
-  $('tmTitle').textContent=t('tm_words_title');
-  const body=$('tmBody'); body.innerHTML=''; body.scrollTop=0;
+async function rdShowWords(id){
+  rdSetBack('chapter'); $('rdLang').classList.add('hidden');
+  $('rdTitle').textContent=t('tm_words_title');
+  const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
   body.appendChild(el('div','note',t('searching')));
-  let words; try{ words=await api('tm_words?book='+encodeURIComponent(book)); }
+  let words; try{ words=await RD.cfg.words(id); }
   catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
   body.innerHTML='';
   if(!words.length){ body.appendChild(el('div','note',t('tm_no_results'))); return; }
   const tbl=el('table','wtbl tm-wtbl');
   const hr=el('tr'); for(const h of [t('col_word'),t('tm_col_root'),t('col_heb')]) hr.appendChild(el('th',null,esc(h)));
   tbl.appendChild(hr);
-  for(const w of words){
-    const tr=el('tr');
+  for(const w of words){ const tr=el('tr');
     tr.appendChild(el('td','wt-word',esc(w.word)));
     tr.appendChild(el('td','wt-tal',esc(w.root||'—')));
     tr.appendChild(el('td','wt-mean',esc(w.gloss||'—')));
@@ -1986,28 +2199,29 @@ async function tmShowWords(book){
   }
   body.appendChild(tbl);
 }
-async function tmSearch(){
-  const q=($('tmInput').value||'').trim(); if(!q) return;
-  TM.view='search'; tmSetBack('toc');
-  $('tmTitle').textContent=t('tm_title');
-  const body=$('tmBody'); body.innerHTML=''; body.scrollTop=0;
+async function rdSearch(){
+  const q=($('rdInput').value||'').trim(); if(!q) return;
+  rdSetBack('toc'); $('rdLang').classList.add('hidden');
+  $('rdTitle').textContent=t(RD.cfg.titleKey);
+  const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
   body.appendChild(el('div','note',t('searching')));
-  let res; try{ res=await api('tm_search?q='+encodeURIComponent(q)); }
+  let res; try{ res=await RD.cfg.search(q); }
   catch(e){ body.innerHTML=''; body.appendChild(el('div','note',t('tm_no_results'))); return; }
   body.innerHTML='';
   if(!res.length){ body.appendChild(el('div','note',t('tm_no_results'))); return; }
   body.appendChild(el('div','tm-hint', res.length+' '+esc(t('tm_sections_n'))));
   for(const r of res){
     const it=el('button','tm-result',
-      '<span class="tm-res-ref">'+esc(r.letter)+' §'+esc(r.section)+'</span>'
+      '<span class="tm-res-ref">'+RD.cfg.searchRef(r)+'</span>'
       +'<span class="tm-res-snip">'+esc(r.snippet)+'</span>');
-    it.onclick=()=>openTmChapter(r.book, r.section);
+    const to=RD.cfg.searchTo(r);
+    it.onclick=()=>openRdChapter(to.chap, to.dom);
     body.appendChild(it);
   }
 }
-$('tmSearchBtn').onclick=tmSearch;
-$('tmInput').addEventListener('keydown',e=>{ if(e.key==='Enter') tmSearch(); });
-$('tmClose').onclick=()=>$('tmModal').classList.add('hidden');
+$('rdSearchBtn').onclick=rdSearch;
+$('rdInput').addEventListener('keydown',e=>{ if(e.key==='Enter') rdSearch(); });
+$('rdClose').onclick=()=>$('bookModal').classList.add('hidden');
 
 // ── PWA install ("התקנת אפליקציה") ───────────────────────────────────────────
 // Capture the browser's install prompt so the menu button can trigger it; fall
