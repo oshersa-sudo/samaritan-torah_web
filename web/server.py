@@ -584,7 +584,18 @@ def api_sam_chapters():
         rows = db.get_sam_chapters_in_portion(int(pid))
     else:
         rows = db.get_sam_chapters(int(bid))
-    return jsonify([{'id': r['id'], 'number': r['number']} for r in rows])
+    return jsonify([{'id': r['id'], 'number': r['number'],
+                     'opening': _opening_words(r['first_text'] if 'first_text' in r.keys() else '')}
+                    for r in rows])
+
+
+def _opening_words(text, n=2):
+    """The first n words of a verse, for the chapter-grid incipit: drop a leading
+    brace/angle gloss (e.g. '{ובקצריכם}') and Samaritan stop-marks/punctuation."""
+    t = re.sub(r'^[\s]*[{<\[][^}>\]]*[}>\]][\s]*', '', text or '')   # strip a leading {..}/<..> gloss
+    words = [re.sub(r'[^֐-תࠀ-࠿]', '', w) for w in t.split()]
+    words = [w for w in words if w]
+    return ' '.join(words[:n])
 
 
 @app.route('/api/verses')

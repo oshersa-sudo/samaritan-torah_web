@@ -397,8 +397,17 @@ async function showSamChapters(pid, pname){
 function renderChapterGrid(rows, hint, onClick){
   const c=$('content'); c.innerHTML='';
   c.appendChild(el('div','hint',hint));
-  const grid=el('div','grid g5');
-  for(const r of rows){ const b=el('button','cell',String(r.number)); b.onclick=()=>onClick(r); grid.appendChild(b); }
+  // Samaritan chapters carry their opening two words (incipit) under the number, to
+  // help identify each chapter; standard chapters have no 'opening' and stay compact.
+  const hasIncipit = rows.some(r=>r.opening);
+  const grid=el('div','grid '+(hasIncipit?'g3 incipit-grid':'g5'));
+  for(const r of rows){
+    const b=el('button','cell'+(r.opening?' has-incipit':''));
+    b.appendChild(el('span','cell-num',String(r.number)));
+    if(r.opening) b.appendChild(el('span','cell-incipit',esc(r.opening)));
+    b.onclick=()=>onClick(r);
+    grid.appendChild(b);
+  }
   c.appendChild(grid);
 }
 

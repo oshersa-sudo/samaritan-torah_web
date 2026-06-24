@@ -135,7 +135,12 @@ def get_verses(chapter_id, portion_id=None):
 def get_sam_chapters(book_id):
     conn = get_connection()
     rows = conn.execute(
-        "SELECT * FROM sam_chapters WHERE book_id=? ORDER BY number", (book_id,)
+        """SELECT sc.*, v.text AS first_text
+           FROM sam_chapters sc
+           LEFT JOIN (SELECT sam_ch_id, MIN(id) AS first_v_id FROM verses GROUP BY sam_ch_id) fv
+                  ON fv.sam_ch_id = sc.id
+           LEFT JOIN verses v ON v.id = fv.first_v_id
+           WHERE sc.book_id=? ORDER BY sc.number""", (book_id,)
     ).fetchall()
     conn.close()
     return rows
@@ -171,7 +176,7 @@ def get_sam_chapters_in_portion(portion_id):
     conn = get_connection()
     rows = conn.execute(
         """
-        SELECT DISTINCT sc.*
+        SELECT DISTINCT sc.*, v.text AS first_text
         FROM   sam_chapters sc
         JOIN   (SELECT sam_ch_id, MIN(id) AS first_v_id FROM verses GROUP BY sam_ch_id) fv
                ON fv.sam_ch_id = sc.id
