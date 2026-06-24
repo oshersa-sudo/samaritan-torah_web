@@ -636,6 +636,9 @@ function _vfold(s){
   return (s||'').replace(/[֑-ׇ]/g,'').replace(/[^א-ת]/g,'')
     .replace(/[ךםןףץ]/g, m=>({'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'}[m]));
 }
+// the consonantal skeleton — drops the matres lectionis (א ה ו י) so orthographic
+// variants of the same word (ויבדל ↔ ויבדיל) share a key
+function _vskel(s){ return _vfold(s).replace(/[אהוי]/g,''); }
 function _appReadHTML(it){
   if(it.type==='om') return 'חֲסֵרָה';
   if(it.type==='add') return 'נוסף: '+esc(it.reading);
@@ -665,15 +668,28 @@ async function buildVariantsView(c, verses){
     const num=el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
     const td=el('div','vtext'); td.style.fontSize=fs+'px';
-    const pend=(byVerse[v.number]||[]).map(it=>({f:_vfold(it.lemma), idx:it._idx, used:false}))
-                                      .filter(p=>p.f.length>=1);
     const tokens=(v.text||'').split(/(\s+)/);   // keep whitespace tokens
-    td.innerHTML = tokens.map(tok=>{
-      if(/^\s+$/.test(tok) || !tok) return esc(tok);
-      const tf=_vfold(tok);
-      const p = tf && pend.find(x=>!x.used && x.f===tf);
-      if(p){ p.used=true;
-        return '<span class="app-word" id="appw-'+p.idx+'" data-idx="'+p.idx+'">'+esc(tok)+'</span>'; }
+    const wordIx=[]; const tfold=[]; const tskel=[];
+    tokens.forEach((tok,i)=>{ if(tok && !/^\s+$/.test(tok)){ const f=_vfold(tok);
+      if(f){ wordIx.push(i); tfold[i]=f; tskel[i]=_vskel(tok); } } });
+    const litems=(byVerse[v.number]||[]);
+    const assigned={};               // token index → apparatus item._idx
+    const usedTok=new Set();
+    // pass 1 — exact consonantal match; pass 2 — matres-lectionis-insensitive
+    // skeleton match (so ויבדל ↔ ויבדיל etc. still light up the word).
+    for(const pass of [0,1]){
+      for(const it of litems){
+        if(it._mt) continue;
+        const key = pass===0 ? _vfold(it.lemma) : _vskel(it.lemma);
+        if(!key || (pass===1 && key.length<2)) continue;
+        const ti = wordIx.find(i=>!usedTok.has(i) && (pass===0?tfold[i]:tskel[i])===key);
+        if(ti!==undefined){ usedTok.add(ti); assigned[ti]=it._idx; it._mt=1; }
+      }
+    }
+    litems.forEach(it=>{ delete it._mt; });
+    td.innerHTML = tokens.map((tok,i)=>{
+      if(assigned[i]!==undefined)
+        return '<span class="app-word" id="appw-'+assigned[i]+'" data-idx="'+assigned[i]+'">'+esc(tok)+'</span>';
       return esc(tok);
     }).join('');
     td.querySelectorAll('.app-word').forEach(sp=>{
@@ -697,8 +713,20 @@ async function buildVariantsView(c, verses){
     const lemma=el('div','app-lemma','<b>'+esc(it.lemma||'—')+'</b>'+occ+reg);
     card.appendChild(lemma);
     card.appendChild(el('div','app-read','<span class="app-type">'+esc(it.type_label)+'</span> '+_appReadHTML(it)));
-    if(it.witnesses && it.witnesses.length)
+    if(it.witness_info && it.witness_info.length){
+      const wbox=el('div','app-wit'); wbox.appendChild(el('div','app-wit-h','עדי נוסח:'));
+      for(const w of it.witness_info){
+        const desc=[w.repository, w.shelfmark].filter(x=>x && x!=='—').join(' · ');
+        const dt=w.date && w.date!=='—' ? '  ('+w.date+')' : '';
+        const ln=el('div','app-wit-ms');
+        ln.innerHTML='<span class="app-sig" dir="ltr">'+esc(w.siglum)+'</span> '+
+                     (desc?esc(desc):'<span class="app-wit-unk">לא זוהה</span>')+esc(dt);
+        wbox.appendChild(ln);
+      }
+      card.appendChild(wbox);
+    } else if(it.witnesses && it.witnesses.length){
       card.appendChild(el('div','app-wit','עדים: <span dir="ltr">'+esc(it.witnesses.join(', '))+'</span>'));
+    }
     if(it.note) card.appendChild(el('div','app-note',esc(it.note)));
     // tapping the variant jumps back to the word in the verse line (or the verse)
     card.onclick=()=>_flash(document.getElementById('appw-'+it._idx)?('appw-'+it._idx):('appverse-'+it.verse));

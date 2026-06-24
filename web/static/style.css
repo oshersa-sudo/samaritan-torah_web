@@ -193,7 +193,12 @@ body{
 .app-reg{ background:#7a3550; color:#fff; font-size:11px; padding:1px 6px; border-radius:8px; }
 .app-read{ font-size:16px; color:var(--dark); margin-top:2px; }
 .app-type{ background:#7a3550; color:#fff; font-size:12px; padding:1px 7px; border-radius:8px; }
-.app-wit{ font-size:13.5px; color:var(--accent); font-weight:700; margin-top:2px; }
+.app-wit{ font-size:13.5px; color:var(--accent); margin-top:3px; }
+.app-wit .app-wit-h{ font-weight:700; font-size:12.5px; color:var(--accent); }
+.app-wit .app-wit-ms{ font-size:12.5px; color:var(--dark); line-height:1.5; padding-inline-start:6px; }
+.app-wit .app-sig{ display:inline-block; min-width:22px; background:#7a3550; color:#fff;
+  border-radius:5px; padding:0 5px; font-weight:700; font-size:11.5px; margin-inline-end:4px; }
+.app-wit .app-wit-unk{ color:var(--muted); }
 .app-note{ font-size:12.5px; color:var(--muted); margin-top:2px; }
 /* a verse word that carries a textual variant — emphasised + clickable (inline) */
 .vtext .app-word{ color:#7a3550; font-weight:700; cursor:pointer;

@@ -568,6 +568,7 @@ def get_apparatus(verse_ids):
             verse_ids).fetchall()
     except Exception:
         rows = []
+    legend = _vongall_legend(conn)
     conn.close()
     out = []
     for r in rows:
@@ -579,9 +580,36 @@ def get_apparatus(verse_ids):
             'verse': r['vnum'], 'lemma': r['lemma'] or '', 'occurrence': r['occurrence'] or '',
             'reading': r['reading'] or '', 'type': r['reading_type'] or '',
             'type_label': _APP_TYPE.get(r['reading_type'], ''), 'witnesses': wit,
+            'witness_info': [_describe_witness(w, legend) for w in wit],
             'register': r['register'], 'confidence': r['confidence'] or '', 'note': r['note'] or '',
         })
     return out
+
+
+def _vongall_legend(conn):
+    """{base-siglum: {repository, shelfmark, date, note}} from von Gall's manuscript
+    legend. Cached for the process (the legend is static)."""
+    global _VG_LEGEND
+    if _VG_LEGEND is None:
+        d = {}
+        try:
+            for r in conn.execute("SELECT siglum, repository, shelfmark, date_ad, note "
+                                  "FROM vongall_manuscripts"):
+                d[r['siglum']] = {'repository': r['repository'] or '', 'shelfmark': r['shelfmark'] or '',
+                                  'date': r['date_ad'] or '', 'note': r['note'] or ''}
+        except Exception:
+            d = {}
+        _VG_LEGEND = d
+    return _VG_LEGEND
+
+
+def _describe_witness(siglum, legend):
+    """A witness siglum carries a hand suffix (C2, E3, X2); the legend is keyed by the
+    base letter. Returns {siglum, repository, shelfmark, date}."""
+    base = re.sub(r'[0-9¹²³⁴⁵]+$', '', siglum or '')
+    info = legend.get(base) or legend.get(siglum) or {}
+    return {'siglum': siglum, 'repository': info.get('repository', ''),
+            'shelfmark': info.get('shelfmark', ''), 'date': info.get('date', '')}
 
 
 # ── plain-search wildcards ─────────────────────────────────────────────────────
@@ -1025,6 +1053,7 @@ def _cons_sim(a, b):
 # in Tal's dictionary" feature. Does not touch any Torah-project table.
 
 _TAL_CACHE = None
+_VG_LEGEND = None
 _WEAK_TAL = str.maketrans('', '', 'אהויםןףךץ')   # matres lectionis + finals
 
 
