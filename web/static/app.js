@@ -60,9 +60,13 @@ const I18N = {
     more_results:'תוצאות נוספות', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי השומרוני',
     dict_app_title:'המילון הארמי-עברי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
-    ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור',
+    ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
-    welcome_body:'<p>פרויקט האב <b>"אבני שוהם"</b>, לזכרו של המנוח אבי שהם ששוני ז"ל, מתיימר להפוך את הספרייה השומרונית לנגישה לכל דורש. במסגרתו נעשית דיגיטציה ותרגום של ספרי הלכה, לשון, פרשנות ועוד מתוך "המדף השומרוני" — ברובה בעזרת כלי AI מתקדמים — במטרה להביא את הספרייה אל כף ידו של המתעניין הממוצע. הפרויקט כולו וולנטרי וללא מטרות רווח.</p><p>במסגרת פרויקט האב כבר בוצעו כמה פרויקטים:</p><ul><li><b>חשבון קשט</b> — אפליקציה לחישוב לוח השנה העברי-השומרוני</li><li><b>מילון ארמי–עברי</b></li><li><b>אילן יוחסין</b> כולל של הקהילה השומרונית</li></ul><p>הפרויקט הנוכחי — <b>התורה השומרונית הישראלית</b>: אפליקציה לעיון, למידה ומחקר של הנוסח השומרוני לתורה, הנוסח המצוי בידי העדה השומרונית והנמסר בה מדור לדור זה אלפי שנים. האפליקציה מציגה פרשנויות ממילונים וממקורות שומרוניים — מימר מרקה, המילון הארמי, התרגום הארמי, התרגום הערבי, פירוש צדקה אל-חכים, ספר האסאטיר, ספר החילופים ועוד — ומאפשרת לצפות בחילופי נוסח מכתבי-יד שונים. בהמשך יתווספו הצלבה מול מקורות נוספים, הקראה קולית, אופן הגייה ועוד.</p><p>אנו ממליצים לאשר לאפליקציה לשלוח התראות, כדי שתוכלו להתעדכן בחידושים. מאחר ונעשה שימוש בכלים אוטומטיים, ייתכנו מפעם לפעם תקלות ושיבושי טקסט — עמכם הסליחה, ונשמח אם תכתבו לנו על כך.</p><p>האפליקציה ניתנת להתקנה, ומומלץ לקרוא תחילה את תפריט ההמבורגר (☰ בפינה העליונה); באותו תפריט ניתן גם להחליף את שפת הממשק ולהתעדכן ב"מה חדש".</p><p><b>תהנו!</b></p>',
+    welcome_pages:[
+      '<p>פרויקט האב <b>"אבני שוהם"</b>, לזכרו של המנוח אבי שהם ששוני ז"ל, מתיימר להפוך את הספרייה השומרונית לנגישה לכל דורש. במסגרתו נעשית דיגיטציה ותרגום של ספרי הלכה, לשון, פרשנות ועוד מתוך "המדף השומרוני" — ברובה בעזרת כלי AI מתקדמים — במטרה להביא את הספרייה אל כף ידו של המתעניין הממוצע. הפרויקט כולו וולנטרי וללא מטרות רווח.</p><p>במסגרת פרויקט האב כבר בוצעו כמה פרויקטים:</p><ul><li><b>חשבון קשט</b> — אפליקציה לחישוב לוח השנה העברי-השומרוני</li><li><b>מילון ארמי–עברי</b></li><li><b>אילן יוחסין</b> כולל של הקהילה השומרונית</li></ul>',
+      '<p>הפרויקט הנוכחי — <b>התורה השומרונית הישראלית</b>: אפליקציה לעיון, למידה ומחקר של הנוסח השומרוני לתורה, הנוסח המצוי בידי העדה השומרונית והנמסר בה מדור לדור זה אלפי שנים.</p><p>האפליקציה מציגה פרשנויות ממילונים וממקורות שומרוניים — מימר מרקה, המילון הארמי, התרגום הארמי, התרגום הערבי, פירוש צדקה אל-חכים, ספר האסאטיר, ספר החילופים ועוד — ומאפשרת לצפות בחילופי נוסח מכתבי-יד שונים. בהמשך יתווספו הצלבה מול מקורות נוספים, הקראה קולית, אופן הגייה ועוד.</p>',
+      '<p>אנו ממליצים לאשר לאפליקציה לשלוח התראות, כדי שתוכלו להתעדכן בחידושים. מאחר ונעשה שימוש בכלים אוטומטיים, ייתכנו מפעם לפעם תקלות ושיבושי טקסט — עמכם הסליחה, ונשמח אם תכתבו לנו על כך.</p><p>האפליקציה ניתנת להתקנה, ומומלץ לקרוא תחילה את תפריט ההמבורגר (☰ בפינה העליונה); באותו תפריט ניתן גם להחליף את שפת הממשק ולהתעדכן ב"מה חדש".</p><p><b>תהנו!</b></p>',
+    ],
     install_rec_title:'התקנת האפליקציה',
     install_rec_body:'מומלץ להתקין את האפליקציה על מסך הבית — לגישה מהירה, חוויה מלאה ושימוש גם ללא חיבור לאינטרנט.',
     install_rec_btn:'התקן עכשיו',
@@ -129,9 +133,13 @@ const I18N = {
     more_results:'More results', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
     m_library:'The Samaritan Library', m_dict_aram:'The Samaritan Aramaic–Hebrew Dictionary',
     dict_app_title:'The Samaritan Aramaic–Hebrew Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
-    ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close',
+    ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     welcome_title:'Welcome to the Avnei Shoham project',
-    welcome_body:'<p>The <b>“Avnei Shoham”</b> parent project, in memory of the late Avi Shoham Sassoni, aims to make the Samaritan library accessible to all. It digitises and translates works of law, language, commentary and more from the “Samaritan shelf” — largely with advanced AI tools — to bring the library to the palm of the everyday reader. The project is entirely voluntary and non-profit.</p><p>Projects already completed under it include:</p><ul><li><b>Ḥeshbon Qesheṭ</b> — an app for computing the Samaritan-Hebrew calendar</li><li>an <b>Aramaic–Hebrew dictionary</b></li><li>a complete <b>genealogy</b> of the Samaritan community</li></ul><p>The current project — <b>the Israelite Samaritan Torah</b>: an app for studying and researching the Samaritan version of the Torah, the text held by the Samaritan community and handed down for thousands of years. It presents commentary from dictionaries and Samaritan sources — Tībåt Mårqe, the Aramaic dictionary, the Aramaic and Arabic translations, Ṣadaqah al-Ḥakīm’s commentary, the Book of Asatir, von Gall’s variants and more — and lets you view textual variants from different manuscripts. Cross-referencing with further sources, audio recitation and pronunciation are planned.</p><p>We recommend allowing notifications so you can hear about new additions. As automated tools are used, occasional glitches or text errors may occur — our apologies, and we’d be glad if you let us know.</p><p>The app can be installed; we suggest first reading the menu (☰, top corner), where you can also change the interface language and see “What’s new”.</p><p><b>Enjoy!</b></p>',
+    welcome_pages:[
+      '<p>The <b>“Avnei Shoham”</b> parent project, in memory of the late Avi Shoham Sassoni, aims to make the Samaritan library accessible to all. It digitises and translates works of law, language, commentary and more from the “Samaritan shelf” — largely with advanced AI tools — to bring the library to the palm of the everyday reader. The project is entirely voluntary and non-profit.</p><p>Projects already completed under it include:</p><ul><li><b>Ḥeshbon Qesheṭ</b> — an app for computing the Samaritan-Hebrew calendar</li><li>an <b>Aramaic–Hebrew dictionary</b></li><li>a complete <b>genealogy</b> of the Samaritan community</li></ul>',
+      '<p>The current project — <b>the Israelite Samaritan Torah</b>: an app for studying and researching the Samaritan version of the Torah, the text held by the Samaritan community and handed down for thousands of years.</p><p>It presents commentary from dictionaries and Samaritan sources — Tībåt Mårqe, the Aramaic dictionary, the Aramaic and Arabic translations, Ṣadaqah al-Ḥakīm’s commentary, the Book of Asatir, von Gall’s variants and more — and lets you view textual variants from different manuscripts. Cross-referencing with further sources, audio recitation and pronunciation are planned.</p>',
+      '<p>We recommend allowing notifications so you can hear about new additions. As automated tools are used, occasional glitches or text errors may occur — our apologies, and we’d be glad if you let us know.</p><p>The app can be installed; we suggest first reading the menu (☰, top corner), where you can also change the interface language and see “What’s new”.</p><p><b>Enjoy!</b></p>',
+    ],
     install_rec_title:'Install the app',
     install_rec_body:'We recommend installing the app to your home screen — for quick access, the full experience, and offline use.',
     install_rec_btn:'Install now',
@@ -198,9 +206,13 @@ const I18N = {
     more_results:'نتائج إضافية', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري السامري',
     dict_app_title:'المعجم الآرامي-العبري السامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
-    ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق',
+    ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     welcome_title:'أهلًا بكم في مشروع «أبني شوهم»',
-    welcome_body:'<p>مشروع <b>«أبني شوهم»</b> الأمّ، إحياءً لذكرى الراحل آبي شوهم ساسوني، يسعى إلى جعل المكتبة السامرية في متناول كلّ راغب. يجري فيه رقمنة وترجمة كتب الشريعة واللغة والتفسير وغيرها من «الرفّ السامري» — بمعظمها بأدوات ذكاء اصطناعي متقدّمة — بهدف وضع المكتبة في كفّ المهتمّ العاديّ. المشروع تطوّعيّ بالكامل وغير ربحيّ.</p><p>أُنجزت ضمنه مشاريع عدّة:</p><ul><li><b>حسبون قشط</b> — تطبيق لحساب التقويم العبري-السامري</li><li><b>معجم آرامي–عبري</b></li><li><b>شجرة أنساب</b> كاملة للطائفة السامرية</li></ul><p>المشروع الحاليّ — <b>التوراة السامرية الإسرائيلية</b>: تطبيق لمطالعة النصّ السامري للتوراة ودراسته وبحثه، وهو النصّ الذي تحفظه الطائفة السامرية ويُتناقَل جيلاً عن جيل منذ آلاف السنين. يعرض تفاسير من معاجم ومصادر سامرية — تيبات مارقه، المعجم الآرامي، الترجمتان الآرامية والعربية، تفسير صدقة الحكيم، كتاب الأساطير، اختلافات فون غال وغيرها — ويتيح الاطّلاع على اختلافات النصّ من مخطوطات مختلفة. وسيُضاف لاحقاً التقاطع مع مصادر أخرى، والتلاوة الصوتية، وكيفية النطق.</p><p>ننصح بالسماح بالإشعارات لتبقَوا على اطّلاع بالجديد. ولأنّ المشروع يستخدم أدوات آلية، قد تقع أحياناً أخطاء أو تشوّهات في النصّ — نعتذر، ويسعدنا أن تكتبوا لنا عنها.</p><p>يمكن تثبيت التطبيق، ويُنصح أولاً بقراءة القائمة (☰ في الزاوية العليا)؛ وفيها أيضاً يمكن تغيير لغة الواجهة والاطّلاع على «ما الجديد».</p><p><b>استمتعوا!</b></p>',
+    welcome_pages:[
+      '<p>مشروع <b>«أبني شوهم»</b> الأمّ، إحياءً لذكرى الراحل آبي شوهم ساسوني، يسعى إلى جعل المكتبة السامرية في متناول كلّ راغب. يجري فيه رقمنة وترجمة كتب الشريعة واللغة والتفسير وغيرها من «الرفّ السامري» — بمعظمها بأدوات ذكاء اصطناعي متقدّمة — بهدف وضع المكتبة في كفّ المهتمّ العاديّ. المشروع تطوّعيّ بالكامل وغير ربحيّ.</p><p>أُنجزت ضمنه مشاريع عدّة:</p><ul><li><b>حسبون قشط</b> — تطبيق لحساب التقويم العبري-السامري</li><li><b>معجم آرامي–عبري</b></li><li><b>شجرة أنساب</b> كاملة للطائفة السامرية</li></ul>',
+      '<p>المشروع الحاليّ — <b>التوراة السامرية الإسرائيلية</b>: تطبيق لمطالعة النصّ السامري للتوراة ودراسته وبحثه، وهو النصّ الذي تحفظه الطائفة السامرية ويُتناقَل جيلاً عن جيل منذ آلاف السنين.</p><p>يعرض تفاسير من معاجم ومصادر سامرية — تيبات مارقه، المعجم الآرامي، الترجمتان الآرامية والعربية، تفسير صدقة الحكيم، كتاب الأساطير، اختلافات فون غال وغيرها — ويتيح الاطّلاع على اختلافات النصّ من مخطوطات مختلفة. وسيُضاف لاحقاً التقاطع مع مصادر أخرى، والتلاوة الصوتية، وكيفية النطق.</p>',
+      '<p>ننصح بالسماح بالإشعارات لتبقَوا على اطّلاع بالجديد. ولأنّ المشروع يستخدم أدوات آلية، قد تقع أحياناً أخطاء أو تشوّهات في النصّ — نعتذر، ويسعدنا أن تكتبوا لنا عنها.</p><p>يمكن تثبيت التطبيق، ويُنصح أولاً بقراءة القائمة (☰ في الزاوية العليا)؛ وفيها أيضاً يمكن تغيير لغة الواجهة والاطّلاع على «ما الجديد».</p><p><b>استمتعوا!</b></p>',
+    ],
     install_rec_title:'تثبيت التطبيق',
     install_rec_body:'نوصي بتثبيت التطبيق على الشاشة الرئيسية — لوصول سريع، وتجربة كاملة، واستخدام دون اتصال بالإنترنت.',
     install_rec_btn:'ثبّت الآن',
@@ -2429,12 +2441,48 @@ function showOnboard(opts){
     $('onboardModal').classList.remove('hidden');
   });
 }
+// ── welcome carousel ───────────────────────────────────────────────────────────
+// which page is centred in the (direction-agnostic) horizontal track
+function wcActiveIndex(track){
+  const tr=track.getBoundingClientRect(), tc=tr.left+tr.width/2;
+  let best=0, bd=Infinity;
+  [...track.children].forEach((pg,i)=>{ const r=pg.getBoundingClientRect();
+    const d=Math.abs((r.left+r.width/2)-tc); if(d<bd){ bd=d; best=i; } });
+  return best;
+}
+function showWelcome(){
+  return new Promise(resolve=>{
+    const L=I18N[LANG]||I18N.he;
+    const pages = L.welcome_pages || [L.welcome_body || ''];
+    $('wcTitle').textContent = t('welcome_title');
+    const track=$('wcTrack'); track.innerHTML='';
+    track.style.direction = (LANG==='en') ? 'ltr' : 'rtl';
+    pages.forEach(html=>{ const pg=el('div','wc-page'); pg.innerHTML=html; track.appendChild(pg); });
+    const dots=$('wcDots'); dots.innerHTML='';
+    const setActive=i=>[...dots.children].forEach((d,j)=>d.classList.toggle('active', j===i));
+    pages.forEach((_,i)=>{ const d=el('button','wc-dot'+(i===0?' active':''));
+      d.setAttribute('aria-label', String(i+1));
+      d.onclick=()=>{ setActive(i);   // update immediately (don't rely only on the scroll event)
+        track.children[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); };
+      dots.appendChild(d); });
+    let st=null;
+    track.onscroll=()=>{ clearTimeout(st); st=setTimeout(()=>setActive(wcActiveIndex(track)), 60); };
+    const read=$('wcRead'); read.checked=false;          // off by default
+    read.onchange=()=>{ if(read.checked) localStorage.setItem('as_welcome_read','1');
+                        else localStorage.removeItem('as_welcome_read'); };
+    const done=()=>{ if(read.checked) localStorage.setItem('as_welcome_read','1');
+                     $('welcomeModal').classList.add('hidden'); resolve(); };
+    $('wcClose').onclick=done;
+    $('welcomeModal').classList.remove('hidden');
+    requestAnimationFrame(()=>{ track.children[0].scrollIntoView({inline:'center', block:'nearest'}); setActive(0); });
+  });
+}
 async function requestNotif(){ try{ if('Notification' in window) await Notification.requestPermission(); }catch(e){} }
 async function runOnboarding(){
-  // 1. welcome — only on the very first entry ever
-  if(localStorage.getItem('as_welcomed')!=='1'){
-    localStorage.setItem('as_welcomed','1');
-    await showOnboard({ title:t('welcome_title'), body:t('welcome_body') });
+  // 1. welcome — a paginated carousel shown on EVERY entry until the reader ticks
+  //    "I have read" (which persists as_welcome_read='1').
+  if(localStorage.getItem('as_welcome_read')!=='1'){
+    await showWelcome();
   }
   // 2. recommend installing — unless already installed, or the user said "don't show again"
   if(!isInstalled() && localStorage.getItem('as_install_hide')!=='1'){

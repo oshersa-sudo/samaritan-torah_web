@@ -407,6 +407,25 @@ footer a{ color:var(--accent); text-decoration:none; }
 #onboardModal .ob-primary{ flex:1 1 auto; padding:12px; border:0; border-radius:8px; background:var(--navy); color:#fff; font:inherit; font-size:16px; cursor:pointer; }
 #onboardModal .ob-primary:hover{ background:var(--accent); }
 #onboardModal .ob-later{ flex:0 0 auto; padding:12px 16px; border:1px solid #cfd6e6; border-radius:8px; background:#fff; color:var(--dark); font:inherit; font-size:15px; cursor:pointer; }
+/* welcome carousel: parchment card so a white-filled "current" dot reads against it */
+.modal-box.wc-box{ max-width:400px; width:90%; max-height:86vh; gap:12px; background:#f2ecdb; }
+.wc-track{ display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.wc-track::-webkit-scrollbar{ display:none; }
+.wc-page{ flex:0 0 100%; min-width:100%; scroll-snap-align:center; box-sizing:border-box;
+  padding:2px 6px; max-height:54vh; overflow-y:auto; color:var(--dark); font-size:15.5px; line-height:1.7; }
+.wc-page b{ color:var(--navy); }
+.wc-page p{ margin:0 0 10px; }
+.wc-page p:last-child{ margin-bottom:0; }
+.wc-page ul{ margin:6px 0; padding-inline-start:20px; }
+.wc-page li{ margin-bottom:3px; }
+.wc-dots{ display:flex; justify-content:center; gap:10px; padding:2px 0 0; }
+.wc-dot{ width:12px; height:12px; border-radius:50%; border:1.6px solid #000;
+  background:transparent; padding:0; cursor:pointer; transition:background .15s; }
+.wc-dot.active{ background:#fff; }
+.wc-read{ display:flex; align-items:center; justify-content:center; gap:8px;
+  font-size:14.5px; font-weight:600; color:var(--navy); cursor:pointer; }
+.wc-read input{ width:18px; height:18px; flex:0 0 auto; cursor:pointer; }
 .popup-close{ padding:14px; border:0; border-radius:8px; background:var(--navy); color:#fff;
               font-family:inherit; font-size:17px; cursor:pointer; margin-top:8px; }
 #popupBody, #infoBody{ flex:1 1 auto; min-height:0; overflow-y:auto; }

@@ -252,6 +252,20 @@
   </div>
 </div>
 
+<!-- welcome: a paginated carousel (dots below) + a "I have read" flag that, once
+     ticked, stops it from showing again -->
+<div id="welcomeModal" class="modal hidden">
+  <div class="modal-box wc-box">
+    <div class="modal-title" id="wcTitle"></div>
+    <div id="wcTrack" class="wc-track"></div>
+    <div id="wcDots" class="wc-dots"></div>
+    <label class="wc-read"><input type="checkbox" id="wcRead"><span data-i18n="wc_read">קראתי</span></label>
+    <div class="ob-actions">
+      <button id="wcClose" class="ob-later" data-i18n="ob_close">סגור</button>
+    </div>
+  </div>
+</div>
+
 <!-- info window (what's new / current version) -->
 <div id="infoModal" class="modal hidden">
   <div class="modal-box big">
