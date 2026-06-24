@@ -278,6 +278,8 @@ body{
 .round .zoomi{ width:31px; height:31px; }
 .tb{ flex:1 1 0; min-width:0; padding:12px 3px; border:0; border-radius:5px; background:#414166; color:#fff;
      font-family:inherit; font-size:13.5px; line-height:1.2; cursor:pointer; white-space:normal; }
+/* a temporarily-disabled toolbar button: looks unavailable but still tappable (shows a notice) */
+.tb.unavail{ opacity:.5; }
 .tb.navy{ background:var(--navy); }
 .tb.accent{ background:var(--accent); }
 /* search button gets its own colour so it stands out from "עיון" next to it */

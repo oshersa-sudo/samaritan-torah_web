@@ -61,6 +61,7 @@ const I18N = {
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי השומרוני',
     dict_app_title:'המילון הארמי-עברי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
+    interp_unavail:'פונקציה זו אינה פעילה באופן זמני.',
     welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
     welcome_pages:[
       '<p><b>אבני שוהם</b> הוא פרויקט שנוצר לזכרו של המנוח אבי שהם ששוני ז״ל, מתוך שאיפה אחת — לפתוח את שערי הספרייה השומרונית לכל מבקש.</p><p>במסגרתו אנו מביאים לדיגיטציה ולתרגום אוצר של ספרי הלכה, לשון ופרשנות מן <b>המדף השומרוני</b>, רובם בסיוע כלי בינה מלאכותית מתקדמים, כדי להניח את הספרייה כולה בכף ידכם. הכול בהתנדבות מלאה וללא מטרות רווח.</p><p>בין הפרויקטים שכבר ראו אור:</p><ul><li><b>חשבון קשט</b> — לוח השנה העברי-השומרוני</li><li><b>מילון ארמי–עברי</b></li><li><b>אילן היוחסין</b> המלא של העדה השומרונית</li></ul>',
@@ -134,6 +135,7 @@ const I18N = {
     m_library:'The Samaritan Library', m_dict_aram:'The Samaritan Aramaic–Hebrew Dictionary',
     dict_app_title:'The Samaritan Aramaic–Hebrew Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
+    interp_unavail:'This feature is temporarily unavailable.',
     welcome_title:'Welcome to the Avnei Shoham project',
     welcome_pages:[
       '<p><b>Avnei Shoham</b> is a project created in memory of the late Avi Shoham Sassoni, with a single aspiration — to open the gates of the Samaritan library to everyone who seeks it.</p><p>Within it we digitise and translate a treasury of works on law, language and commentary from the <b>Samaritan shelf</b>, most of them with the help of advanced AI tools, so that the whole library may rest in the palm of your hand. All of it is entirely voluntary and non-profit.</p><p>Among the projects already released:</p><ul><li><b>Ḥeshbon Qesheṭ</b> — the Samaritan-Hebrew calendar</li><li>an <b>Aramaic–Hebrew dictionary</b></li><li>the complete <b>genealogy</b> of the Samaritan community</li></ul>',
@@ -207,6 +209,7 @@ const I18N = {
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري السامري',
     dict_app_title:'المعجم الآرامي-العبري السامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
+    interp_unavail:'هذه الميزة غير متاحة مؤقّتًا.',
     welcome_title:'أهلًا بكم في مشروع «أبني شوهم»',
     welcome_pages:[
       '<p><b>«أبني شوهم»</b> مشروعٌ أُنشئ إحياءً لذكرى الراحل آبي شوهم ساسوني، بغايةٍ واحدة — أن تُفتَح أبواب المكتبة السامرية أمام كلّ طالبٍ لها.</p><p>نعمل في إطاره على رقمنة وترجمة كنزٍ من كتب الشريعة واللغة والتفسير من <b>الرفّ السامري</b>، معظمها بمعونة أدوات ذكاء اصطناعي متقدّمة، كي تستقرّ المكتبة كلّها في كفّ أيديكم. وكلّ ذلك تطوّعيٌّ بالكامل وبلا غاياتٍ ربحية.</p><p>ومن المشاريع التي صدرت بالفعل:</p><ul><li><b>حسبون قشط</b> — التقويم العبري-السامري</li><li><b>معجم آرامي–عبري</b></li><li><b>شجرة الأنساب</b> الكاملة للطائفة السامرية</li></ul>',
@@ -1415,7 +1418,10 @@ function syncToolbar(isVerse){
   $('fontBtn').title = sam ? t('font_heb') : t('font_sam');
   $('fontBtn').setAttribute('aria-label', sam ? t('font_heb') : t('font_sam'));
   setBtn('dictBtn',       isVerse, S.dict);
-  setBtn('interpBtn',     isVerse, S.panel==='interpret');
+  // "פירוש הפסוק" is TEMPORARILY disabled: keep it tappable in verse view (to show a
+  // notice) but styled as unavailable — never highlighted/active.
+  { const b=$('interpBtn'); b.disabled=!isVerse; b.classList.remove('on');
+    b.classList.toggle('unavail', isVerse); b.style.background = '#555'; }
   setBtn('compareBtn',    isVerse, S.panel==='compare');
   setBtn('commentaryBtn', isVerse, S.panel==='commentary');
   setBtn('variantsBtn',   isVerse, S.panel==='variants');
@@ -1484,7 +1490,7 @@ function togglePanel(name){
   syncToolbar(true); paintVerses();
   if(S.panel) scrollToEl('.pair, .srcpanel');
 }
-$('interpBtn').onclick=()=>togglePanel('interpret');
+$('interpBtn').onclick=()=> showInfo(t('interp'), '<div class="note">'+t('interp_unavail')+'</div>');
 // "השוואת נוסחים": if the comparison is open, close it; otherwise open the version
 // picker (Masoretic / Septuagint) and show the chosen comparison.
 $('compareBtn').onclick=()=>{
