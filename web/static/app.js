@@ -62,7 +62,7 @@ const I18N = {
     dict_app_title:'המילון הארמי-עברי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור',
     welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
-    welcome_body:'<b>אבני שהם</b> — התורה השומרונית הישראלית: עיון בנוסח שומרון בכתב העברי-השומרוני ובכתב העברי, תרגומים (ארמי · ערבי · אנגלי), השוואת נוסחים, חילופי נוסח, פרשנות יהודית ושומרונית, ומילון הארמית של א. טל. אנו שמחים שהצטרפת — מסע מרתק בתורת שומרון מחכה לך.',
+    welcome_body:'<p>פרויקט האב <b>"אבני שוהם"</b>, לזכרו של המנוח אבי שהם ששוני ז"ל, מתיימר להפוך את הספרייה השומרונית לנגישה לכל דורש. במסגרתו נעשית דיגיטציה ותרגום של ספרי הלכה, לשון, פרשנות ועוד מתוך "המדף השומרוני" — ברובה בעזרת כלי AI מתקדמים — במטרה להביא את הספרייה אל כף ידו של המתעניין הממוצע. הפרויקט כולו וולנטרי וללא מטרות רווח.</p><p>במסגרת פרויקט האב כבר בוצעו כמה פרויקטים:</p><ul><li><b>חשבון קשט</b> — אפליקציה לחישוב לוח השנה העברי-השומרוני</li><li><b>מילון ארמי–עברי</b></li><li><b>אילן יוחסין</b> כולל של הקהילה השומרונית</li></ul><p>הפרויקט הנוכחי — <b>התורה השומרונית הישראלית</b>: אפליקציה לעיון, למידה ומחקר של הנוסח השומרוני לתורה, הנוסח המצוי בידי העדה השומרונית והנמסר בה מדור לדור זה אלפי שנים. האפליקציה מציגה פרשנויות ממילונים וממקורות שומרוניים — מימר מרקה, המילון הארמי, התרגום הארמי, התרגום הערבי, פירוש צדקה אל-חכים, ספר האסאטיר, ספר החילופים ועוד — ומאפשרת לצפות בחילופי נוסח מכתבי-יד שונים. בהמשך יתווספו הצלבה מול מקורות נוספים, הקראה קולית, אופן הגייה ועוד.</p><p>אנו ממליצים לאשר לאפליקציה לשלוח התראות, כדי שתוכלו להתעדכן בחידושים. מאחר ונעשה שימוש בכלים אוטומטיים, ייתכנו מפעם לפעם תקלות ושיבושי טקסט — עמכם הסליחה, ונשמח אם תכתבו לנו על כך.</p><p>האפליקציה ניתנת להתקנה, ומומלץ לקרוא תחילה את תפריט ההמבורגר (☰ בפינה העליונה); באותו תפריט ניתן גם להחליף את שפת הממשק ולהתעדכן ב"מה חדש".</p><p><b>תהנו!</b></p>',
     install_rec_title:'התקנת האפליקציה',
     install_rec_body:'מומלץ להתקין את האפליקציה על מסך הבית — לגישה מהירה, חוויה מלאה ושימוש גם ללא חיבור לאינטרנט.',
     install_rec_btn:'התקן עכשיו',
@@ -131,7 +131,7 @@ const I18N = {
     dict_app_title:'The Samaritan Aramaic–Hebrew Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close',
     welcome_title:'Welcome to the Avnei Shoham project',
-    welcome_body:'<b>Avnei Shoham</b> — the Israelite Samaritan Torah: study the Samaritan version in the Samaritan-Hebrew and Hebrew scripts, translations (Aramaic · Arabic · English), version comparison, textual variants, Jewish and Samaritan commentary, and A. Tal\'s Dictionary of Samaritan Aramaic. We\'re glad you joined — a fascinating journey through the Samaritan Torah awaits.',
+    welcome_body:'<p>The <b>“Avnei Shoham”</b> parent project, in memory of the late Avi Shoham Sassoni, aims to make the Samaritan library accessible to all. It digitises and translates works of law, language, commentary and more from the “Samaritan shelf” — largely with advanced AI tools — to bring the library to the palm of the everyday reader. The project is entirely voluntary and non-profit.</p><p>Projects already completed under it include:</p><ul><li><b>Ḥeshbon Qesheṭ</b> — an app for computing the Samaritan-Hebrew calendar</li><li>an <b>Aramaic–Hebrew dictionary</b></li><li>a complete <b>genealogy</b> of the Samaritan community</li></ul><p>The current project — <b>the Israelite Samaritan Torah</b>: an app for studying and researching the Samaritan version of the Torah, the text held by the Samaritan community and handed down for thousands of years. It presents commentary from dictionaries and Samaritan sources — Tībåt Mårqe, the Aramaic dictionary, the Aramaic and Arabic translations, Ṣadaqah al-Ḥakīm’s commentary, the Book of Asatir, von Gall’s variants and more — and lets you view textual variants from different manuscripts. Cross-referencing with further sources, audio recitation and pronunciation are planned.</p><p>We recommend allowing notifications so you can hear about new additions. As automated tools are used, occasional glitches or text errors may occur — our apologies, and we’d be glad if you let us know.</p><p>The app can be installed; we suggest first reading the menu (☰, top corner), where you can also change the interface language and see “What’s new”.</p><p><b>Enjoy!</b></p>',
     install_rec_title:'Install the app',
     install_rec_body:'We recommend installing the app to your home screen — for quick access, the full experience, and offline use.',
     install_rec_btn:'Install now',
@@ -200,7 +200,7 @@ const I18N = {
     dict_app_title:'المعجم الآرامي-العبري السامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق',
     welcome_title:'أهلًا بكم في مشروع «أبني شوهم»',
-    welcome_body:'<b>أبني شوهم</b> — التوراة السامرية الإسرائيلية: تصفّح النصّ السامري بالخطّ العبري-السامري والعبري، الترجمات (آرامية · عربية · إنجليزية)، مقارنة النصوص، اختلافات النصّ، التفسير اليهودي والسامري، ومعجم الآرامية السامرية لأ. طال. يسعدنا انضمامك — رحلة شيّقة في توراة السامريين بانتظارك.',
+    welcome_body:'<p>مشروع <b>«أبني شوهم»</b> الأمّ، إحياءً لذكرى الراحل آبي شوهم ساسوني، يسعى إلى جعل المكتبة السامرية في متناول كلّ راغب. يجري فيه رقمنة وترجمة كتب الشريعة واللغة والتفسير وغيرها من «الرفّ السامري» — بمعظمها بأدوات ذكاء اصطناعي متقدّمة — بهدف وضع المكتبة في كفّ المهتمّ العاديّ. المشروع تطوّعيّ بالكامل وغير ربحيّ.</p><p>أُنجزت ضمنه مشاريع عدّة:</p><ul><li><b>حسبون قشط</b> — تطبيق لحساب التقويم العبري-السامري</li><li><b>معجم آرامي–عبري</b></li><li><b>شجرة أنساب</b> كاملة للطائفة السامرية</li></ul><p>المشروع الحاليّ — <b>التوراة السامرية الإسرائيلية</b>: تطبيق لمطالعة النصّ السامري للتوراة ودراسته وبحثه، وهو النصّ الذي تحفظه الطائفة السامرية ويُتناقَل جيلاً عن جيل منذ آلاف السنين. يعرض تفاسير من معاجم ومصادر سامرية — تيبات مارقه، المعجم الآرامي، الترجمتان الآرامية والعربية، تفسير صدقة الحكيم، كتاب الأساطير، اختلافات فون غال وغيرها — ويتيح الاطّلاع على اختلافات النصّ من مخطوطات مختلفة. وسيُضاف لاحقاً التقاطع مع مصادر أخرى، والتلاوة الصوتية، وكيفية النطق.</p><p>ننصح بالسماح بالإشعارات لتبقَوا على اطّلاع بالجديد. ولأنّ المشروع يستخدم أدوات آلية، قد تقع أحياناً أخطاء أو تشوّهات في النصّ — نعتذر، ويسعدنا أن تكتبوا لنا عنها.</p><p>يمكن تثبيت التطبيق، ويُنصح أولاً بقراءة القائمة (☰ في الزاوية العليا)؛ وفيها أيضاً يمكن تغيير لغة الواجهة والاطّلاع على «ما الجديد».</p><p><b>استمتعوا!</b></p>',
     install_rec_title:'تثبيت التطبيق',
     install_rec_body:'نوصي بتثبيت التطبيق على الشاشة الرئيسية — لوصول سريع، وتجربة كاملة، واستخدام دون اتصال بالإنترنت.',
     install_rec_btn:'ثبّت الآن',
@@ -231,7 +231,20 @@ const I18N = {
     bm_added:'تمت إضافة الإشارة.', bm_empty:'لا توجد إشارات.', bm_del_q:'حذف الإشارات المحدّدة؟',
   },
 };
-let LANG = (localStorage.getItem('uiLang') && I18N[localStorage.getItem('uiLang')]) ? localStorage.getItem('uiLang') : 'he';
+// pick the UI language: a saved choice wins; otherwise fall back to the device's
+// language so a non-Hebrew phone sees the welcome / UI in its own language —
+// Hebrew→he, Arabic→ar, anything else→en (the international fallback).
+function _detectLang(){
+  const saved = localStorage.getItem('uiLang');
+  if(saved && I18N[saved]) return saved;
+  const codes = (navigator.languages && navigator.languages.length) ? navigator.languages
+              : [navigator.language || ''];
+  const p = (codes[0] || '').toLowerCase();
+  if(p.startsWith('he') || p.startsWith('iw')) return 'he';   // Hebrew (iw = legacy code)
+  if(p.startsWith('ar')) return 'ar';                         // Arabic
+  return p ? 'en' : 'he';                                     // any other language → English
+}
+let LANG = _detectLang();
 const t = k => (I18N[LANG] && I18N[LANG][k] != null) ? I18N[LANG][k] : (I18N.he[k] != null ? I18N.he[k] : k);
 
 // Pin the app to the REAL visible height. On mobile the browser's collapsing
@@ -1923,12 +1936,13 @@ const HELP = {
     ['חלוקה', ['בראש המסך — <b>חלוקה יהודית</b> / <b>חלוקה שומרונית</b>: מעבר בין שתי חלוקות הפרקים והפרשות.']],
     ['עיון', [
       'בחר <b>ספר → פרשה → פרק</b>, ואז מוצגים הפסוקים. <b>פריסת פרקים</b> מאפשר קפיצה לכל פרק. בחלוקה השומרונית מוצגות תחת מספר כל פרק שתי מילות הפתיחה שלו לזיהוי מהיר.',
-      'שורת הניווט: <b>פרק/פרשה הבא/קודם</b> ואייקוני <b>זכוכית-מגדלת ＋ / －</b> להגדלת/הקטנת הטקסט.',
+      'שורת הניווט: <b>פרק/פרשה הבא/קודם</b> ואייקוני <b>זכוכית-מגדלת ＋ / －</b> להגדלת/הקטנת הטקסט (הזכוכיות מתעמעמות כשאין טקסט להגדיל, והזום מוגבל לטווח קריא).',
+      '<b>דפדוף רציף בין פרקים</b> — פרק הבא/קודם ממשיכים גם מעבר לגבולות הפרשה; בגבול הספר הכפתור משתנה ל<b>"עבור ל&lt;שם הספר&gt;"</b> ולחיצה עליו עוברת לספר הסמוך. במצב הטקסט המעבר מלווה ב<b>אנימציית הפיכת דף</b> (בעברית: הבא ימינה, קודם שמאלה; באנגלית הפוך).',
       'הקש על <b>מספר פסוק</b> כדי לראות רק אותו; <b>נקה סינון</b> מבטל.']],
     ['מצבי תצוגה (הסרגל התחתון)', [
       'כפתורי התצוגה הם <b>קבוצת בחירה-יחידה</b>: לחיצה על כפתור מכבה אוטומטית את הקודם.',
       'במסכי הטקסט וההשוואות הסרגל <b>מתקפל מטה אוטומטית</b> לאחר כמה שניות (כפתורי הבא/קודם וההגדלה/הקטנה נשארים). חץ מהבהב וידית גרירה קטנה מסמנים שניתן <b>לגרור/להקיש על הידית</b> כדי לפתוח אותו שוב.',
-      '<b>כתב שומרוני</b> (הכפתור ࠀࠁ / אב) — מחליף בין הכתב העברי-השומרוני לכתב העברי הרגיל; הכפתור מציג א-ב בכתב שאליו עוברים.',
+      '<b>כתב שומרוני</b> (הכפתור א.ב) — מחליף בין הכתב העברי-השומרוני לכתב העברי הרגיל; הכפתור מציג א.ב בכתב שאליו עוברים. הטקסט השומרוני מיושר לשני הצדדים, ונקודות-ההפרדה הנופלות בקצה השורה מושמטות וחוזרות כשמקטינים את הטקסט.',
       '<b>תרגומי התורה</b> — כפתור אחד הפותח בחירה: תרגום ארמי · ערבי · אנגלי. לחיצה חוזרת חוזרת לטקסט.',
       '<b>פירוש הפסוק</b> — פירוש רציף, מוצג במקום הטקסט, השוזר מקורות (כרגע לבראשית א׳–ו׳).',
       '<b>השוואה לנ.מסורה</b> — נוסח שומרון מול המסורה (וגם מול תרגום השבעים), עם סימון ההבדלים באדום.',
@@ -1954,12 +1968,13 @@ const HELP = {
     ['Division', ['At the top — <b>Jewish division</b> / <b>Samaritan division</b>: switch between the two chapter/portion divisions.']],
     ['Browse', [
       'Choose <b>book → portion → chapter</b> to show the verses. <b>All chapters</b> jumps to any chapter. In the Samaritan division each chapter cell also shows its opening two words.',
-      'Navigation bar: <b>next / previous chapter & portion</b> and <b>magnifier ＋ / －</b> icons for text size.',
+      'Navigation bar: <b>next / previous chapter & portion</b> and <b>magnifier ＋ / －</b> icons for text size (the magnifiers dim when there is no text to resize, and zoom is capped to a readable range).',
+      '<b>Continuous chapter paging</b> — next / previous keep going across portion boundaries; at a book edge the button changes to <b>“Go to &lt;book&gt;”</b> and tapping it moves to the adjacent book. In text mode the move is accompanied by a <b>page-turn animation</b> (Hebrew: next turns right, previous left; English reversed).',
       'Tap a <b>verse number</b> to see only it; <b>clear filter</b> resets.']],
     ['Display modes (bottom bar)', [
       'The display buttons are a <b>single-select group</b>: tapping one turns the previous off.',
       'On the text/comparison screens the bar <b>auto-collapses</b> after a few seconds (next/prev and zoom stay). A blinking arrow and a small grip show that you can <b>drag/tap the handle</b> to reopen it.',
-      '<b>Samaritan script</b> (the ࠀࠁ / אב button) — switches between the Samaritan-Hebrew and ordinary Hebrew scripts; the button shows an A-B in the script you switch to.',
+      '<b>Samaritan script</b> (the א.ב button) — switches between the Samaritan-Hebrew and ordinary Hebrew scripts; the button shows an A-B in the script you switch to. The Samaritan text is justified to both edges, and separator dots that fall at a line break are dropped (and return when the text is made smaller).',
       '<b>Torah translations</b> — one button opening a choice: Aramaic · Arabic · English. Tapping it again returns to the text.',
       '<b>Verse commentary</b> — a continuous commentary shown in place of the text, weaving the sources (currently Genesis 1–6).',
       '<b>Compare to Masorah</b> — Samaritan vs. Masoretic text (and vs. the Septuagint), with the differences marked in red.',
@@ -1985,12 +2000,13 @@ const HELP = {
     ['التقسيم', ['في الأعلى — <b>التقسيم اليهودي</b> / <b>التقسيم السامري</b>: التبديل بين تقسيمَي الأصحاحات والمقاطع.']],
     ['التصفّح', [
       'اختر <b>سفر ← مقطع ← أصحاح</b> لعرض الآيات. <b>كل الأصحاحات</b> للانتقال إلى أيّ أصحاح. في التقسيم السامري يظهر تحت رقم كلّ أصحاح أوّل كلمتين منه.',
-      'شريط التنقّل: <b>الأصحاح/المقطع التالي والسابق</b> وأيقونتا <b>عدسة مكبّرة ＋ / －</b> لحجم النصّ.',
+      'شريط التنقّل: <b>الأصحاح/المقطع التالي والسابق</b> وأيقونتا <b>عدسة مكبّرة ＋ / －</b> لحجم النصّ (تخفت العدسات عند غياب نصّ للتكبير، والتكبير محدود بمدى مقروء).',
+      '<b>تصفّح متّصل بين الأصحاحات</b> — التالي/السابق يستمرّان حتى عبر حدود المقطع؛ وعند حدّ السفر يتغيّر الزرّ إلى <b>«الانتقال إلى &lt;السفر&gt;»</b> والضغط عليه ينقلك إلى السفر المجاور. في وضع النصّ يرافق الانتقالَ <b>تأثير قلب صفحة</b> (بالعبرية: التالي يميناً والسابق يساراً؛ وبالإنجليزية بالعكس).',
       'اضغط على <b>رقم الآية</b> لعرضها وحدها؛ <b>مسح التصفية</b> يلغي ذلك.']],
     ['أوضاع العرض (الشريط السفلي)', [
       'أزرار العرض <b>مجموعة اختيار واحد</b>: الضغط على زرّ يُطفئ السابق تلقائياً.',
       'في شاشات النصّ والمقارنات <b>يُطوى الشريط تلقائياً</b> بعد بضع ثوانٍ (يبقى التالي/السابق والتكبير/التصغير). سهم وامض ومقبض صغير يدلّان على أنّه يمكن <b>سحب/الضغط على المقبض</b> لإعادة فتحه.',
-      '<b>الخط السامري</b> (الزرّ ࠀࠁ / אب) — يبدّل بين الخطّ العبري-السامري والعبري العادي؛ يعرض الزرّ أ-ب بالخطّ الذي ستنتقل إليه.',
+      '<b>الخط السامري</b> (الزرّ ࠀࠁ / אب) — يبدّل بين الخطّ العبري-السامري والعبري العادي؛ يعرض الزرّ أ.ب بالخطّ الذي ستنتقل إليه. النصّ السامري مضبوط على الحافّتين، ونقاط الفصل التي تقع في نهاية السطر تُحذف وتعود عند تصغير النصّ.',
       '<b>ترجمات التوراة</b> — زرّ واحد يفتح اختياراً: آرامية · عربية · إنجليزية. الضغط ثانيةً يعيد إلى النصّ.',
       '<b>تفسير الآية</b> — تفسير متّصل يُعرض مكان النصّ ويجمع المصادر (حالياً التكوين ١–٦).',
       '<b>مقارنة بالنصّ الماسوري</b> — النصّ السامري مقابل الماسوري مع تمييز الفروق بالأحمر.',
