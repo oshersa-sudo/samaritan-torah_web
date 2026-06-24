@@ -227,6 +227,9 @@ body{
 .round{ flex:0 0 auto; width:50px; padding:8px 0; border:0; border-radius:8px; background:transparent;
         color:var(--accent); font-size:24px; font-weight:700; cursor:pointer; }
 .round:hover{ background:rgba(46,97,184,.10); }
+/* magnifier shown as unavailable (no text to zoom / no search results) */
+.round:disabled{ opacity:.3; cursor:default; pointer-events:none; }
+.round:disabled:hover{ background:transparent; }
 
 /* toolbar */
 #toolbar{ flex:0 0 auto; background:var(--navy); padding:3px; display:flex; flex-direction:column; gap:2px; }

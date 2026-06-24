@@ -1120,8 +1120,19 @@ async function stepPortion(delta){
 }
 
 // ── font size ────────────────────────────────────────────────────────────────
-$('minusBtn').onclick=()=>{ S.fontOffset-=2; paintVerses(); };
-$('plusBtn').onclick=()=>{ S.fontOffset+=2; paintVerses(); };
+// reasonable zoom bounds: fsize()=(samFont?22:20)+offset, so the body text
+// stays between ~14px (still readable) and ~40px (won't overflow the screen).
+const FONT_MIN=-6, FONT_MAX=18;
+$('minusBtn').onclick=()=>{ S.fontOffset=Math.max(FONT_MIN,S.fontOffset-2); paintVerses(); updateZoomButtons(); };
+$('plusBtn').onclick=()=>{ S.fontOffset=Math.min(FONT_MAX,S.fontOffset+2); paintVerses(); updateZoomButtons(); };
+// the navbar magnifiers only do something in verse view (there is body text to
+// resize); on the chapter-list screens they are shown dimmed and non-clickable,
+// and within verse view they dim once the min/max font size is reached.
+function updateZoomButtons(){
+  const isVerse = S.view==='verses';
+  $('minusBtn').disabled = !isVerse || S.fontOffset<=FONT_MIN;
+  $('plusBtn').disabled  = !isVerse || S.fontOffset>=FONT_MAX;
+}
 
 // ── view chrome (show/hide nav + enable toolbar) ─────────────────────────────
 function setView(){
@@ -1132,6 +1143,7 @@ function setView(){
   $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
   syncToolbar(isVerse);
   updateToolbarFold(isVerse);
+  updateZoomButtons();
 }
 
 // ── collapsible bottom toolbar (text / comparison screens) ─────────────────────
@@ -1394,7 +1406,7 @@ function showSearch(on){
   $('toolbar').classList.toggle('hidden', on);
   $('navbar').classList.add('hidden');
   $('spreadBtn').classList.add('hidden');
-  if(on) $('searchInput').focus();
+  if(on){ $('searchInput').focus(); updateSearchZoomButtons($('searchResults').children.length>0); }
 }
 $('sBackBtn').onclick=()=>{ spinBack($('sBackBtn')); showSearch(false); restoreFromSearch(); };
 $('sBrowseBtn').onclick=()=>{ showSearch(false); showBooks(); };
@@ -1420,8 +1432,14 @@ $('cbRoot').addEventListener('change',e=>{
 });
 $('cbExact').addEventListener('change',e=>{ if(e.target.checked) $('cbRoot').checked=false, $('rootBoxRow').classList.add('hidden'); });
 $('searchInput').addEventListener('input',()=>{ if($('cbRoot').checked) fillRootBox(); });
-$('sMinusBtn').onclick=()=>{ S.searchFontOffset=Math.max(-6,S.searchFontOffset-2); doSearch(); };
-$('sPlusBtn').onclick=()=>{ S.searchFontOffset=Math.min(40,S.searchFontOffset+2); doSearch(); };
+const SFONT_MIN=-6, SFONT_MAX=18;
+$('sMinusBtn').onclick=()=>{ S.searchFontOffset=Math.max(SFONT_MIN,S.searchFontOffset-2); doSearch(); };
+$('sPlusBtn').onclick=()=>{ S.searchFontOffset=Math.min(SFONT_MAX,S.searchFontOffset+2); doSearch(); };
+// dim the search magnifiers when there are no results to resize / at zoom limits
+function updateSearchZoomButtons(hasResults){
+  $('sMinusBtn').disabled = !hasResults || S.searchFontOffset<=SFONT_MIN;
+  $('sPlusBtn').disabled  = !hasResults || S.searchFontOffset>=SFONT_MAX;
+}
 
 async function fillRootBox(){
   const q=$('searchInput').value.trim();
@@ -1486,6 +1504,7 @@ async function doSearch(){
   $('searchStatus').classList.remove('searching');
   const cnt = LANG==='en' ? `Found ${data.count} results` : LANG==='ar' ? `${data.count} نتيجة` : `נמצאו ${data.count} תוצאות`;
   $('searchStatus').textContent = cnt + (aram ? ' · '+t('flag_aram') : '');
+  updateSearchZoomButtons(data.count>0);
   let curSub=null;
   const heWords=new Set();          // Hebrew words to look up in the online dictionary
   for(const r of data.rows){
