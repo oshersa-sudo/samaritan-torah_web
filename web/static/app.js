@@ -28,7 +28,7 @@ const I18N = {
     spread:'פריסת פרקים', next_portion:'‹ פרשה הבאה', prev_portion:'פרשה קודמת ›',
     next_chapter:'‹ פרק הבא', prev_chapter:'פרק קודם ›',
     share:'שתף', export_excel:'ייצוא לאקסל', no_results_xls:'אין תוצאות לייצוא',
-    back:'‹ חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
+    back:'‹ חזור', back_t:'חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
     font_sam:'כתב שומרוני', font_heb:'כתב עברי', interp:'פירוש הפסוק', commentary:'פרשנות יהודית',
     compare:'השוואת נוסחים', variants:'חילופי נוסח', samsrc:'ממקור שומרון', translate:'תרגומי התורה',
     t_aramaic:'תרגום: ארמי', t_arabic:'תרגום: ערבי', t_english:'תרגום: אנגלית',
@@ -88,7 +88,7 @@ const I18N = {
     spread:'All chapters', next_portion:'Next portion ›', prev_portion:'‹ Previous portion',
     next_chapter:'Next chapter ›', prev_chapter:'‹ Previous chapter',
     share:'Share', export_excel:'Export to Excel', no_results_xls:'No results to export',
-    back:'‹ Back', browse:'Browse', search:'Search', dict:'Word dictionary',
+    back:'‹ Back', back_t:'Back', browse:'Browse', search:'Search', dict:'Word dictionary',
     font_sam:'Samaritan script', font_heb:'Hebrew script', interp:'Verse commentary', commentary:'Jewish commentary',
     compare:'Compare versions', variants:'Textual variants', samsrc:'Samaritan sources', translate:'Torah translations',
     t_aramaic:'Translation: Aramaic', t_arabic:'Translation: Arabic', t_english:'Translation: English',
@@ -148,7 +148,7 @@ const I18N = {
     spread:'كل الأصحاحات', next_portion:'المقطع التالي ›', prev_portion:'‹ المقطع السابق',
     next_chapter:'الأصحاح التالي ›', prev_chapter:'‹ الأصحاح السابق',
     share:'مشاركة', export_excel:'تصدير إلى إكسل', no_results_xls:'لا توجد نتائج للتصدير',
-    back:'‹ رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
+    back:'‹ رجوع', back_t:'رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
     font_sam:'الخط السامري', font_heb:'الخط العبري', interp:'تفسير الآية', commentary:'تفسير يهودي',
     compare:'مقارنة النصوص', variants:'اختلافات النصّ', samsrc:'مصادر سامرية', translate:'ترجمات التوراة',
     t_aramaic:'ترجمة: آرامية', t_arabic:'ترجمة: عربية', t_english:'ترجمة: إنجليزية',
@@ -1086,7 +1086,7 @@ function syncToolbar(isVerse){
   // simply enabled in verse view and highlighted when it is the active one.
   const sam=S.samFont;
   setBtn('fontBtn', isVerse, sam);
-  $('fontBtn').textContent = sam ? t('font_heb') : t('font_sam');
+  $('fontBtn').querySelector('.tb-label').textContent = sam ? t('font_heb') : t('font_sam');
   setBtn('dictBtn',       isVerse, S.dict);
   setBtn('interpBtn',     isVerse, S.panel==='interpret');
   setBtn('compareBtn',    isVerse, S.panel==='compare');
@@ -1101,9 +1101,14 @@ function syncToolbar(isVerse){
 }
 
 // ── toolbar handlers ─────────────────────────────────────────────────────────
+// spin the round "back" icon a full 360° on each press
+function spinBack(btn){
+  const ic=btn && btn.querySelector('.tbi'); if(!ic) return;
+  ic.classList.remove('spin360'); void ic.offsetWidth; ic.classList.add('spin360');
+}
 $('browseBtn').onclick=()=>{ showSearch(false); showBooks(); };
 $('searchBtn').onclick=()=>showSearch(true);
-$('backBtn').onclick=()=>goBack();
+$('backBtn').onclick=()=>{ spinBack($('backBtn')); goBack(); };
 
 // every content/display mode is mutually exclusive — turning one on clears the rest
 function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=false; }
@@ -1281,7 +1286,7 @@ function showSearch(on){
   $('spreadBtn').classList.add('hidden');
   if(on) $('searchInput').focus();
 }
-$('sBackBtn').onclick=()=>{ showSearch(false); restoreFromSearch(); };
+$('sBackBtn').onclick=()=>{ spinBack($('sBackBtn')); showSearch(false); restoreFromSearch(); };
 $('sBrowseBtn').onclick=()=>{ showSearch(false); showBooks(); };
 // re-render the view we came from, so its nav bar / chrome is restored (showSearch
 // hides the nav bar; without a re-render the prev/next + font buttons stay gone).
