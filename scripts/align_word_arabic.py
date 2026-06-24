@@ -31,18 +31,21 @@ def api_key():
 
 
 def reliable_verses(conn):
-    """ids of verses whose arabic_trans is trustworthy: Gen ch1 + ch2 v1-17."""
+    """ids of every verse whose arabic_trans is now trustworthy. Originally only
+    Gen 1:1–2:17, but the whole Torah's arabic_trans has since been re-aligned from
+    the manuscript (Genesis re-align + Exodus/Leviticus/Numbers/Deuteronomy fill),
+    so we now align word-by-word across all five books — every verse that has an
+    Arabic translation and dictionary rows."""
     out = []
     for r in conn.execute(
-            """SELECT v.id, c.number ch, v.number vn, v.arabic_trans ar
-               FROM verses v JOIN chapters c ON c.id=v.chapter_id
+            """SELECT v.id
+               FROM verses v
+               JOIN chapters c ON c.id=v.chapter_id
                JOIN books b ON b.id=c.book_id
-               WHERE b.name='בראשית' AND c.number<=2 ORDER BY c.number, CAST(v.number AS INTEGER)"""):
-        if not str(r['vn']).isdigit():
-            continue
-        vn = int(r['vn'])
-        if (r['ch'] == 1 or (r['ch'] == 2 and vn <= 17)) and (r['ar'] or '').strip():
-            out.append(r['id'])
+               WHERE TRIM(COALESCE(v.arabic_trans,'')) <> ''
+                 AND EXISTS (SELECT 1 FROM verse_dictionary d WHERE d.verse_id=v.id)
+               ORDER BY b.id, c.number, CAST(v.number AS INTEGER)"""):
+        out.append(r['id'])
     return out
 
 
@@ -98,6 +101,9 @@ def main():
         conn.commit()
         done[str(vid)] = 1
         json.dump(done, open(PROG, 'w', encoding='utf-8'))
+        if n % 100 == 0:
+            print('  ... %d verses aligned (last vid=%d)  ~$%.2f so far'
+                  % (n, vid, tin / 1e6 * 3 + tout / 1e6 * 15), flush=True)
     print('DONE. aligned %d verses.  tokens in=%d out=%d  cost ~$%.2f'
           % (n, tin, tout, tin / 1e6 * 3 + tout / 1e6 * 15), flush=True)
     conn.close()

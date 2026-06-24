@@ -434,6 +434,18 @@ def get_eyalk_commentary(verse_ids):
                  'anchors': r['anchors'] or ''} for r in srows]
     except Exception:
         pass
+    # Samaritan-tradition commentary articles, each presented in the name of its
+    # author (בשם אומרם): פנחס בן אברהם הכהן, אלעזר בן צדקה הכהן.
+    try:
+        arows = conn.execute(
+            f"""SELECT DISTINCT s.title, s.author, s.ord, s.text FROM tradart_sections s
+                JOIN tradart_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders}) ORDER BY s.ord""",
+            verse_ids).fetchall()
+        out += [{'parsha': (r['title'] or ''), 'text': r['text'] or '',
+                 'anchors': '— ' + (r['author'] or '')} for r in arows]
+    except Exception:
+        pass
     conn.close()
     return out
 
