@@ -40,6 +40,8 @@
     </div>
   </div>
   <button class="skip" id="sp-skip" type="button">דלג ›</button>
+  <!-- enable the quill writing sound (a user tap unblocks audio without skipping) -->
+  <button class="sp-sound" id="sp-sound" type="button" title="הפעל צליל כתיבה" aria-label="הפעל צליל כתיבה">🔊</button>
   <!-- "always skip" — shown only on the installed app; persists locally -->
   <button class="skip-always hidden" id="sp-skip-always" type="button">דלג תמיד ⏭</button>
   <div class="copyright" aria-label="זכויות יוצרים">
@@ -448,6 +450,12 @@
   skipBtn.addEventListener('click', skip);
   overlay.addEventListener('click', e=>{ if(e.target===overlay) skip(); });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') skip(); });
+  // tapping the sound button is a user gesture, so it unblocks/starts the quill
+  // scratch sound — and (unlike tapping the backdrop) does NOT skip the splash.
+  const soundBtn=document.getElementById('sp-sound');
+  if(soundBtn) soundBtn.addEventListener('click', e=>{
+    e.stopPropagation(); initAudio(); resumeAudio(); soundBtn.classList.add('on');
+  });
   // "always skip" — offered only on the installed app; the choice is stored locally
   if(installed && skipAlwaysBtn) skipAlwaysBtn.classList.remove('hidden');
   if(skipAlwaysBtn) skipAlwaysBtn.addEventListener('click', ()=>{

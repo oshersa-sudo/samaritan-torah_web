@@ -597,6 +597,15 @@ footer a{ color:var(--accent); text-decoration:none; }
 }
 #samaritan-splash .skip-always:hover{ background:rgba(200,164,86,.22); }
 #samaritan-splash .skip-always.hidden{ display:none; }
+/* enable-sound button (top corner opposite the skip control) */
+#samaritan-splash .sp-sound{
+  position:absolute; top:max(18px,2.4vh); inset-inline-start:max(20px,3vw); z-index:3;
+  width:38px; height:38px; border-radius:50%; cursor:pointer; line-height:1; font-size:17px;
+  background:rgba(200,164,86,.12); border:1px solid var(--gold); color:var(--gold-bright);
+  opacity:0; animation:sp-rise .8s ease 1.6s forwards;
+}
+#samaritan-splash .sp-sound:hover{ background:rgba(200,164,86,.22); }
+#samaritan-splash .sp-sound.on{ background:rgba(200,164,86,.32); border-color:var(--gold-bright); }
 #samaritan-splash .copyright{
   position:absolute; left:0; right:0; bottom:max(16px,2.4vh); z-index:3;
   display:flex; justify-content:space-between; align-items:center; gap:16px;
