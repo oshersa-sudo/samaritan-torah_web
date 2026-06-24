@@ -1139,11 +1139,16 @@ function setView(){
 // the next/prev and zoom controls (in #navbar) stay put.
 let tbFolded=false, tbUserOpened=false, tbFoldTimer=null;
 function setToolbarFolded(folded, withArrow){
+  const wasFolded=tbFolded;
   tbFolded=folded;
-  const tb=$('toolbar'); tb.classList.toggle('folded', folded); tb.classList.remove('show-arrow');
+  const tb=$('toolbar'); tb.classList.toggle('folded', folded);
+  tb.classList.remove('show-arrow'); tb.classList.remove('show-down');
   if(folded && withArrow){
-    void tb.offsetWidth; tb.classList.add('show-arrow');     // flash a prominent up-arrow
+    void tb.offsetWidth; tb.classList.add('show-arrow');             // up-arrow ~3s after folding
     setTimeout(()=>tb.classList.remove('show-arrow'), 3000);
+  } else if(!folded && withArrow && wasFolded){
+    void tb.offsetWidth; tb.classList.add('show-down');              // reverse: down-arrow ~2s after opening
+    setTimeout(()=>tb.classList.remove('show-down'), 2000);
   }
 }
 function updateToolbarFold(isVerse){
@@ -1159,10 +1164,10 @@ function updateToolbarFold(isVerse){
   h.addEventListener('pointerdown', e=>{ downY=e.clientY; });
   const release=(e)=>{
     const dy = downY==null ? 0 : (e.clientY-downY); downY=null;
-    if(dy < -12){ tbUserOpened=true; setToolbarFolded(false,false); }       // drag up → open
+    if(dy < -12){ tbUserOpened=true; setToolbarFolded(false,true); }        // drag up → open (down-arrow)
     else if(dy > 12){ tbUserOpened=false; setToolbarFolded(true,true); }    // drag down → fold
-    else if(tbFolded){ tbUserOpened=true; setToolbarFolded(false,false); }  // tap → toggle
-    else { tbUserOpened=false; setToolbarFolded(true,true); }
+    else if(tbFolded){ tbUserOpened=true; setToolbarFolded(false,true); }   // tap → open (down-arrow)
+    else { tbUserOpened=false; setToolbarFolded(true,true); }               // tap → fold
   };
   h.addEventListener('pointerup', release);
   h.addEventListener('pointercancel', ()=>{ downY=null; });

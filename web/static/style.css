@@ -240,13 +240,19 @@ body{
 #toolbar.folded .tb-handle{ height:30px; }
 .tb-grip{ width:42px; height:4px; border-radius:3px; background:rgba(255,255,255,.40); transition:background .2s; }
 .tb-handle:hover .tb-grip{ background:rgba(255,255,255,.7); }
-/* prominent blinking up-arrow shown right after the bar folds — "pull up to reopen" */
-.tb-uparrow{ display:none; position:absolute; left:50%; top:-1px; font-size:22px; line-height:1;
-  color:#ffd86b; font-weight:900; text-shadow:0 0 9px rgba(255,216,107,.9); pointer-events:none; }
-#toolbar.folded.show-arrow .tb-uparrow{ display:block; animation:tbArrowBlink .5s ease-in-out infinite alternate; }
+/* prominent blinking arrows on the handle: UP right after folding ("pull up to
+   reopen"), DOWN for a moment right after opening ("you can fold it back down") */
+.tb-uparrow, .tb-downarrow{ display:none; position:absolute; left:50%; top:-2px; font-size:28px;
+  line-height:1; color:#ffd86b; font-weight:900; text-shadow:0 0 12px rgba(255,216,107,1),0 0 4px rgba(255,216,107,1);
+  pointer-events:none; }
+#toolbar.folded.show-arrow .tb-uparrow{ display:block; animation:tbArrowBlink .46s ease-in-out infinite alternate; }
+#toolbar.show-down:not(.folded) .tb-downarrow{ display:block; animation:tbArrowBlinkDown .46s ease-in-out infinite alternate; }
 @keyframes tbArrowBlink{
-  from{ opacity:.25; transform:translate(-50%,5px) scale(.92); }
-  to{   opacity:1;   transform:translate(-50%,-7px) scale(1.12); } }
+  from{ opacity:.18; transform:translate(-50%,7px) scale(.8); }
+  to{   opacity:1;   transform:translate(-50%,-10px) scale(1.28); } }
+@keyframes tbArrowBlinkDown{
+  from{ opacity:.18; transform:translate(-50%,-7px) scale(.8); }
+  to{   opacity:1;   transform:translate(-50%,10px) scale(1.28); } }
 /* zoom (magnifier ±) buttons centre their icon */
 .round{ display:inline-flex; align-items:center; justify-content:center; }
 .round .zoomi{ width:31px; height:31px; }
