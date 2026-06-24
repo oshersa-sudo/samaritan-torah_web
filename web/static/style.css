@@ -347,6 +347,17 @@ footer a{ color:var(--accent); text-decoration:none; }
 .share-opt{ padding:14px; border:0; border-radius:8px; color:#fff; font-family:inherit; font-size:17px; cursor:pointer; }
 .share-opt.close{ background:var(--navy); }
 .trans-opt.sel{ outline:3px solid #fff; outline-offset:-3px; box-shadow:0 0 0 2px var(--navy); }
+
+/* onboarding cards (welcome · install · notifications) */
+.modal-box.ob-box{ max-width:390px; }
+#onboardModal .ob-body{ color:var(--dark); font-size:15.5px; line-height:1.7; }
+#onboardModal .ob-body b{ color:var(--navy); }
+#onboardModal .ob-dont{ display:flex; align-items:center; gap:8px; font-size:14px; color:var(--muted); cursor:pointer; }
+#onboardModal .ob-dont input{ width:17px; height:17px; flex:0 0 auto; }
+#onboardModal .ob-actions{ display:flex; gap:8px; margin-top:2px; }
+#onboardModal .ob-primary{ flex:1 1 auto; padding:12px; border:0; border-radius:8px; background:var(--navy); color:#fff; font:inherit; font-size:16px; cursor:pointer; }
+#onboardModal .ob-primary:hover{ background:var(--accent); }
+#onboardModal .ob-later{ flex:0 0 auto; padding:12px 16px; border:1px solid #cfd6e6; border-radius:8px; background:#fff; color:var(--dark); font:inherit; font-size:15px; cursor:pointer; }
 .popup-close{ padding:14px; border:0; border-radius:8px; background:var(--navy); color:#fff;
               font-family:inherit; font-size:17px; cursor:pointer; margin-top:8px; }
 #popupBody, #infoBody{ flex:1 1 auto; min-height:0; overflow-y:auto; }

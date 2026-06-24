@@ -228,6 +228,19 @@
   </div>
 </div>
 
+<!-- onboarding: welcome / install recommendation / notification recommendation -->
+<div id="onboardModal" class="modal hidden">
+  <div class="modal-box ob-box">
+    <div class="modal-title" id="obTitle"></div>
+    <div id="obBody" class="ob-body"></div>
+    <label class="ob-dont hidden" id="obDontWrap"><input type="checkbox" id="obDontShow"><span data-i18n="ob_dont">אל תציג שוב</span></label>
+    <div class="ob-actions">
+      <button id="obPrimary" class="ob-primary hidden"></button>
+      <button id="obLater" class="ob-later" data-i18n="ob_later">סגור</button>
+    </div>
+  </div>
+</div>
+
 <!-- info window (what's new / current version) -->
 <div id="infoModal" class="modal hidden">
   <div class="modal-box big">

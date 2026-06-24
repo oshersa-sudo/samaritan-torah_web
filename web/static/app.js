@@ -60,6 +60,15 @@ const I18N = {
     more_results:'תוצאות נוספות', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי השומרוני',
     dict_app_title:'המילון הארמי-עברי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
+    ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור',
+    welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
+    welcome_body:'<b>אבני שהם</b> — התורה השומרונית הישראלית: עיון בנוסח שומרון בכתב העברי-השומרוני ובכתב העברי, תרגומים (ארמי · ערבי · אנגלי), השוואת נוסחים, חילופי נוסח, פרשנות יהודית ושומרונית, ומילון הארמית של א. טל. אנו שמחים שהצטרפת — מסע מרתק בתורת שומרון מחכה לך.',
+    install_rec_title:'התקנת האפליקציה',
+    install_rec_body:'מומלץ להתקין את האפליקציה על מסך הבית — לגישה מהירה, חוויה מלאה ושימוש גם ללא חיבור לאינטרנט.',
+    install_rec_btn:'התקן עכשיו',
+    notif_rec_title:'קבלת התראות',
+    notif_rec_body:'אפשר התראות כדי לקבל עדכונים על חידושים, תוספות וגרסאות חדשות של האפליקציה.',
+    notif_rec_btn:'אפשר התראות',
     col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'מילון טל', col_arabic:'ערבית',
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
@@ -120,6 +129,15 @@ const I18N = {
     more_results:'More results', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
     m_library:'The Samaritan Library', m_dict_aram:'The Samaritan Aramaic–Hebrew Dictionary',
     dict_app_title:'The Samaritan Aramaic–Hebrew Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
+    ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close',
+    welcome_title:'Welcome to the Avnei Shoham project',
+    welcome_body:'<b>Avnei Shoham</b> — the Israelite Samaritan Torah: study the Samaritan version in the Samaritan-Hebrew and Hebrew scripts, translations (Aramaic · Arabic · English), version comparison, textual variants, Jewish and Samaritan commentary, and A. Tal\'s Dictionary of Samaritan Aramaic. We\'re glad you joined — a fascinating journey through the Samaritan Torah awaits.',
+    install_rec_title:'Install the app',
+    install_rec_body:'We recommend installing the app to your home screen — for quick access, the full experience, and offline use.',
+    install_rec_btn:'Install now',
+    notif_rec_title:'Enable notifications',
+    notif_rec_body:'Allow notifications to get updates about new features, additions and new versions of the app.',
+    notif_rec_btn:'Enable notifications',
     col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Tal dictionary', col_arabic:'Arabic',
     searching:'Searching…', no_interp:'No commentary for these verses',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
@@ -180,6 +198,15 @@ const I18N = {
     more_results:'نتائج إضافية', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري السامري',
     dict_app_title:'المعجم الآرامي-العبري السامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
+    ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق',
+    welcome_title:'أهلًا بكم في مشروع «أبني شوهم»',
+    welcome_body:'<b>أبني شوهم</b> — التوراة السامرية الإسرائيلية: تصفّح النصّ السامري بالخطّ العبري-السامري والعبري، الترجمات (آرامية · عربية · إنجليزية)، مقارنة النصوص، اختلافات النصّ، التفسير اليهودي والسامري، ومعجم الآرامية السامرية لأ. طال. يسعدنا انضمامك — رحلة شيّقة في توراة السامريين بانتظارك.',
+    install_rec_title:'تثبيت التطبيق',
+    install_rec_body:'نوصي بتثبيت التطبيق على الشاشة الرئيسية — لوصول سريع، وتجربة كاملة، واستخدام دون اتصال بالإنترنت.',
+    install_rec_btn:'ثبّت الآن',
+    notif_rec_title:'تفعيل الإشعارات',
+    notif_rec_body:'اسمح بالإشعارات لتصلك تحديثات حول الميزات الجديدة والإضافات والإصدارات الجديدة للتطبيق.',
+    notif_rec_btn:'تفعيل الإشعارات',
     col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'معجم طال', col_arabic:'العربية',
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
@@ -2113,6 +2140,64 @@ async function gotoBookmark(b){
     else await openChapter(b.chId, b.chNum, b.portionId, b.portionName);
   }catch(e){ showInfo(t('bm_my'), '<div class="note">לא ניתן לפתוח את הסימניה (ייתכן שהמבנה השתנה).</div>'); }
 }
+
+// ── onboarding: welcome (first entry) + install & notification recommendations ──
+function isInstalled(){
+  return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
+}
+// a single reusable onboarding card; resolves {primary, dont}
+function showOnboard(opts){
+  return new Promise(resolve=>{
+    $('obTitle').textContent = opts.title || '';
+    $('obBody').innerHTML = opts.body || '';
+    const dont=$('obDontShow'); dont.checked=false;
+    $('obDontWrap').classList.toggle('hidden', !opts.dont);
+    const prim=$('obPrimary');
+    if(opts.primaryLabel){ prim.textContent=opts.primaryLabel; prim.classList.remove('hidden'); }
+    else prim.classList.add('hidden');
+    $('obLater').textContent = opts.dont ? t('ob_later') : t('ob_close');
+    const done=(didPrimary)=>{ $('onboardModal').classList.add('hidden'); resolve({primary:didPrimary, dont:dont.checked}); };
+    prim.onclick=async ()=>{ try{ if(opts.onPrimary) await opts.onPrimary(); }catch(e){} done(true); };
+    $('obLater').onclick=()=>done(false);
+    $('onboardModal').classList.remove('hidden');
+  });
+}
+async function requestNotif(){ try{ if('Notification' in window) await Notification.requestPermission(); }catch(e){} }
+async function runOnboarding(){
+  // 1. welcome — only on the very first entry ever
+  if(localStorage.getItem('as_welcomed')!=='1'){
+    localStorage.setItem('as_welcomed','1');
+    await showOnboard({ title:t('welcome_title'), body:t('welcome_body') });
+  }
+  // 2. recommend installing — unless already installed, or the user said "don't show again"
+  if(!isInstalled() && localStorage.getItem('as_install_hide')!=='1'){
+    const r=await showOnboard({ title:t('install_rec_title'), body:t('install_rec_body'),
+      primaryLabel:t('install_rec_btn'), onPrimary:doInstall, dont:true });
+    if(r.dont) localStorage.setItem('as_install_hide','1');
+  }
+  // 3. recommend notifications — only if permission is still undecided (not granted/denied)
+  //    and the user hasn't dismissed it for good
+  if(('Notification' in window) && Notification.permission==='default'
+     && localStorage.getItem('as_notif_hide')!=='1'){
+    const r=await showOnboard({ title:t('notif_rec_title'), body:t('notif_rec_body'),
+      primaryLabel:t('notif_rec_btn'), onPrimary:requestNotif, dont:true });
+    if(r.dont) localStorage.setItem('as_notif_hide','1');
+  }
+}
+let _onboardRan=false;
+function triggerOnboarding(){
+  if(_onboardRan) return; _onboardRan=true;
+  // wait until the splash overlay AND the etching transition are fully gone
+  const waitClear=()=>{
+    if(document.getElementById('samaritan-splash') || document.getElementById('splash-image'))
+      return setTimeout(waitClear, 200);
+    runOnboarding();
+  };
+  setTimeout(waitClear, 300);
+}
+window.addEventListener('samaritanSplashComplete', triggerOnboarding);
+// fallback if the splash is absent/skipped (e.g. reduced-motion): run shortly after load
+setTimeout(triggerOnboarding, 2500);
 
 // ── start ────────────────────────────────────────────────────────────────────
 showBooks();
