@@ -249,7 +249,7 @@ body{
   to{   opacity:1;   transform:translate(-50%,-7px) scale(1.12); } }
 /* zoom (magnifier ±) buttons centre their icon */
 .round{ display:inline-flex; align-items:center; justify-content:center; }
-.round .zoomi{ width:26px; height:26px; }
+.round .zoomi{ width:31px; height:31px; }
 .tb{ flex:1 1 0; min-width:0; padding:12px 3px; border:0; border-radius:5px; background:#414166; color:#fff;
      font-family:inherit; font-size:13.5px; line-height:1.2; cursor:pointer; white-space:normal; }
 .tb.navy{ background:var(--navy); }
