@@ -59,9 +59,36 @@ def align(cl, words, arabic):
     m = cl.messages.create(model='claude-sonnet-4-6', max_tokens=1500, system=SYS,
                            messages=[{'role': 'user', 'content': instr}])
     txt = ''.join(b.text for b in m.content if b.type == 'text')
-    mt = re.search(r'\[.*\]', txt, re.S)
-    arr = json.loads(mt.group(0)) if mt else []
+    arr = _first_json_array(txt)
     return arr, m.usage
+
+
+def _first_json_array(txt):
+    """Return the first complete top-level JSON array in txt. The model sometimes
+    appends extra text or a second array after the first, which broke a greedy
+    `\\[.*\\]` match ("Extra data"); scan brackets (string-aware) for the first
+    balanced [...] instead."""
+    i = txt.find('[')
+    if i < 0:
+        return []
+    depth = 0; instr = False; esc = False
+    for j in range(i, len(txt)):
+        ch = txt[j]
+        if instr:
+            if esc: esc = False
+            elif ch == '\\': esc = True
+            elif ch == '"': instr = False
+        else:
+            if ch == '"': instr = True
+            elif ch == '[': depth += 1
+            elif ch == ']':
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(txt[i:j + 1])
+                    except Exception:
+                        return []
+    return []
 
 
 def main():
