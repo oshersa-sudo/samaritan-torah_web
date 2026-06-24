@@ -419,6 +419,7 @@ footer a{ color:var(--accent); text-decoration:none; }
 .wc-page p:last-child{ margin-bottom:0; }
 .wc-page ul{ margin:6px 0; padding-inline-start:20px; }
 .wc-page li{ margin-bottom:3px; }
+.wc-page .wc-sign{ text-align:center; margin-top:14px; color:var(--navy); font-size:16px; }
 .wc-dots{ display:flex; justify-content:center; gap:10px; padding:2px 0 0; }
 .wc-dot{ width:12px; height:12px; border-radius:50%; border:1.6px solid #000;
   background:transparent; padding:0; cursor:pointer; transition:background .15s; }
