@@ -59,6 +59,10 @@ const I18N = {
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך מילון א. טל', no_dict:'אין מילון זמין לפסוק זה',
     more_results:'תוצאות נוספות', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי השומרוני',
+    m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
+    tm_toc_hint:'בחר מימר לעיון:', tm_back_toc:'‹ תוכן העניינים', tm_back_chapter:'‹ חזרה לפרק',
+    tm_words_btn:'מילון מילים', tm_words_title:'מילון מילים — מתוך מילון א. טל', tm_col_root:'שורש',
+    tm_no_results:'לא נמצאו תוצאות', tm_sections_n:'קטעים', tm_open_verse:'פתח את הפסוק באפליקציה',
     dict_app_title:'המילון הארמי-עברי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     interp_unavail:'פונקציה זו אינה פעילה באופן זמני.',
@@ -133,6 +137,10 @@ const I18N = {
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from A. Tal's dictionary", no_dict:'No dictionary for this verse',
     more_results:'More results', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
     m_library:'The Samaritan Library', m_dict_aram:'The Samaritan Aramaic–Hebrew Dictionary',
+    m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
+    tm_toc_hint:'Choose a Memar to read:', tm_back_toc:'‹ Contents', tm_back_chapter:'‹ Back to the chapter',
+    tm_words_btn:'Word glossary', tm_words_title:'Word glossary — from A. Tal’s dictionary', tm_col_root:'Root',
+    tm_no_results:'No results found', tm_sections_n:'sections', tm_open_verse:'Open the verse in the app',
     dict_app_title:'The Samaritan Aramaic–Hebrew Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     interp_unavail:'This feature is temporarily unavailable.',
@@ -207,6 +215,10 @@ const I18N = {
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من معجم أ. طال', no_dict:'لا يوجد معجم لهذه الآية',
     more_results:'نتائج إضافية', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري السامري',
+    m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
+    tm_toc_hint:'اختر ميمراً للمطالعة:', tm_back_toc:'‹ المحتويات', tm_back_chapter:'‹ العودة إلى الفصل',
+    tm_words_btn:'معجم الكلمات', tm_words_title:'معجم الكلمات — من معجم أ. طال', tm_col_root:'الجذر',
+    tm_no_results:'لا توجد نتائج', tm_sections_n:'مقاطع', tm_open_verse:'افتح الآية في التطبيق',
     dict_app_title:'المعجم الآرامي-العبري السامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     interp_unavail:'هذه الميزة غير متاحة مؤقّتًا.',
@@ -1833,6 +1845,7 @@ function menuAction(a){
   if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
   else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
   else if(a==='dict_app')  openDictApp();
+  else if(a==='tm_book')   openTmBook();
   else if(a==='install')   doInstall();
   else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
@@ -1889,6 +1902,112 @@ async function dictAppSearch(){
 $('dictAppBtn').onclick=dictAppSearch;
 $('dictAppClose').onclick=()=>$('dictModal').classList.add('hidden');
 $('dictAppInput').addEventListener('keydown',e=>{ if(e.key==='Enter') dictAppSearch(); });
+
+// ── Tibåt Mårqe — full-book reader (Samaritan Library) ───────────────────────
+const TM = { view:'toc', book:null };
+function openTmBook(){ $('tmInput').value=''; $('tmModal').classList.remove('hidden'); tmShowToc(); }
+function tmSetBack(mode){           // '' hidden · 'toc' · 'chapter'
+  const b=$('tmBack');
+  if(!mode){ b.classList.add('hidden'); return; }
+  b.classList.remove('hidden');
+  b.textContent = mode==='toc' ? t('tm_back_toc') : t('tm_back_chapter');
+  b.onclick = mode==='toc' ? tmShowToc : ()=>openTmChapter(TM.book);
+}
+async function tmShowToc(){
+  TM.view='toc'; TM.book=null; tmSetBack('');
+  $('tmTitle').textContent=t('tm_title');
+  const body=$('tmBody'); body.innerHTML=''; body.scrollTop=0;
+  body.appendChild(el('div','tm-hint',esc(t('tm_toc_hint'))));
+  let toc; try{ toc=await api('tm_toc'); }catch(e){ body.appendChild(el('div','note','—')); return; }
+  const list=el('div','tm-toc');
+  toc.forEach(b=>{
+    const card=el('button','tm-toc-item',
+      '<span class="tm-toc-letter">'+esc(b.letter)+'</span>'
+      +'<span class="tm-toc-title">'+esc(b.title)+'</span>'
+      +'<span class="tm-toc-count">'+b.count+' '+esc(t('tm_sections_n'))+'</span>');
+    card.onclick=()=>openTmChapter(b.book);
+    list.appendChild(card);
+  });
+  body.appendChild(list);
+}
+async function openTmChapter(book, scrollSection){
+  TM.view='chapter'; TM.book=book; tmSetBack('toc');
+  const body=$('tmBody'); body.innerHTML=''; body.scrollTop=0;
+  body.appendChild(el('div','note',t('searching')));
+  let ch; try{ ch=await api('tm_chapter?book='+encodeURIComponent(book)); }
+  catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
+  body.innerHTML='';
+  $('tmTitle').textContent=esc(ch.letter)+'. '+esc(ch.title);
+  const tools=el('div','tm-tools');
+  const wbtn=el('button','tm-words-btn',esc(t('tm_words_btn')));
+  wbtn.onclick=()=>tmShowWords(book);
+  tools.appendChild(wbtn); body.appendChild(tools);
+  for(const s of ch.sections){
+    const sec=el('div','tm-sec'); sec.id='tmsec-'+s.section;
+    sec.appendChild(el('div','tm-secnum','§ '+esc(s.section)));
+    if(s.aramaic)     sec.appendChild(el('div','tm-aram', esc(s.aramaic)));
+    if(s.hebrew_html) sec.appendChild(el('div','tm-heb', s.hebrew_html));
+    body.appendChild(sec);
+  }
+  if(scrollSection){
+    const tgt=document.getElementById('tmsec-'+scrollSection);
+    if(tgt){ tgt.scrollIntoView({block:'start'}); tgt.classList.add('tm-flash');
+      setTimeout(()=>tgt.classList.remove('tm-flash'),1600); }
+  }
+}
+// jump from a verse citation in the book to that verse in the Torah app
+$('tmBody').addEventListener('click', async e=>{
+  const a=e.target.closest('.tm-ref'); if(!a) return;
+  const vid=parseInt(a.dataset.vid,10); if(!vid) return;
+  let rec; try{ rec=await api('locate_verse?verse_id='+vid); }catch(_){ return; }
+  if(!rec || !rec.portion_id) return;
+  $('tmModal').classList.add('hidden');
+  goToJewish(rec);
+});
+async function tmShowWords(book){
+  TM.view='words'; tmSetBack('chapter');
+  $('tmTitle').textContent=t('tm_words_title');
+  const body=$('tmBody'); body.innerHTML=''; body.scrollTop=0;
+  body.appendChild(el('div','note',t('searching')));
+  let words; try{ words=await api('tm_words?book='+encodeURIComponent(book)); }
+  catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
+  body.innerHTML='';
+  if(!words.length){ body.appendChild(el('div','note',t('tm_no_results'))); return; }
+  const tbl=el('table','wtbl tm-wtbl');
+  const hr=el('tr'); for(const h of [t('col_word'),t('tm_col_root'),t('col_heb')]) hr.appendChild(el('th',null,esc(h)));
+  tbl.appendChild(hr);
+  for(const w of words){
+    const tr=el('tr');
+    tr.appendChild(el('td','wt-word',esc(w.word)));
+    tr.appendChild(el('td','wt-tal',esc(w.root||'—')));
+    tr.appendChild(el('td','wt-mean',esc(w.gloss||'—')));
+    tr.classList.add('tappable'); tr.onclick=()=>showTalFull(w.word);
+    tbl.appendChild(tr);
+  }
+  body.appendChild(tbl);
+}
+async function tmSearch(){
+  const q=($('tmInput').value||'').trim(); if(!q) return;
+  TM.view='search'; tmSetBack('toc');
+  $('tmTitle').textContent=t('tm_title');
+  const body=$('tmBody'); body.innerHTML=''; body.scrollTop=0;
+  body.appendChild(el('div','note',t('searching')));
+  let res; try{ res=await api('tm_search?q='+encodeURIComponent(q)); }
+  catch(e){ body.innerHTML=''; body.appendChild(el('div','note',t('tm_no_results'))); return; }
+  body.innerHTML='';
+  if(!res.length){ body.appendChild(el('div','note',t('tm_no_results'))); return; }
+  body.appendChild(el('div','tm-hint', res.length+' '+esc(t('tm_sections_n'))));
+  for(const r of res){
+    const it=el('button','tm-result',
+      '<span class="tm-res-ref">'+esc(r.letter)+' §'+esc(r.section)+'</span>'
+      +'<span class="tm-res-snip">'+esc(r.snippet)+'</span>');
+    it.onclick=()=>openTmChapter(r.book, r.section);
+    body.appendChild(it);
+  }
+}
+$('tmSearchBtn').onclick=tmSearch;
+$('tmInput').addEventListener('keydown',e=>{ if(e.key==='Enter') tmSearch(); });
+$('tmClose').onclick=()=>$('tmModal').classList.add('hidden');
 
 // ── PWA install ("התקנת אפליקציה") ───────────────────────────────────────────
 // Capture the browser's install prompt so the menu button can trigger it; fall

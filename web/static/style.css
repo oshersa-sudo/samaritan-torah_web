@@ -482,6 +482,48 @@ footer a{ color:var(--accent); text-decoration:none; }
 #dictAppBody .dict-entry{ border-top:1px solid rgba(26,56,115,.15); padding-top:6px; margin-top:8px; }
 #dictAppBody .tal-head{ color:var(--navy); font-weight:700; font-size:19px; }
 
+/* ── Tibåt Mårqe full-book reader ── */
+.modal-box.tm-reader{ max-width:640px; width:94%; max-height:88vh; gap:10px; }
+.tm-top{ display:flex; align-items:center; gap:8px; }
+.tm-back{ flex:0 0 auto; border:1px solid #cfd6e6; background:#fff; color:var(--navy);
+  border-radius:8px; padding:6px 12px; font:inherit; font-size:14px; cursor:pointer; }
+.tm-back:hover{ background:#eef2fb; }
+.tm-top .modal-title{ flex:1 1 auto; text-align:right; }
+.tm-search-row{ display:flex; gap:8px; }
+.tm-search-row input{ flex:1; padding:9px 12px; border:1px solid #cfd6e6; border-radius:8px; font:inherit; font-size:16px; }
+.tm-body{ flex:1 1 auto; min-height:0; overflow-y:auto; padding:2px 2px 4px; }
+.tm-hint{ color:var(--muted); font-size:14px; margin:2px 0 8px; }
+/* table of contents */
+.tm-toc{ display:flex; flex-direction:column; gap:8px; }
+.tm-toc-item{ display:flex; align-items:center; gap:12px; width:100%; text-align:right;
+  border:1px solid rgba(26,56,115,.18); border-radius:10px; background:#fbfaf5; padding:12px 14px;
+  cursor:pointer; font:inherit; }
+.tm-toc-item:hover{ background:#f1eede; border-color:var(--accent); }
+.tm-toc-letter{ flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--navy);
+  color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:17px; }
+.tm-toc-title{ flex:1 1 auto; color:var(--navy); font-weight:600; font-size:17px; }
+.tm-toc-count{ flex:0 0 auto; color:var(--muted); font-size:12.5px; }
+/* chapter view */
+.tm-tools{ display:flex; gap:8px; margin-bottom:8px; position:sticky; top:0; background:#fff; padding:2px 0; z-index:1; }
+.tm-words-btn{ border:0; border-radius:8px; background:#735438; color:#fff; padding:8px 14px;
+  font:inherit; font-size:14px; cursor:pointer; }
+.tm-words-btn:hover{ filter:brightness(1.1); }
+.tm-sec{ border-top:1px solid rgba(26,56,115,.14); padding:9px 2px; }
+.tm-sec.tm-flash{ background:rgba(255,216,107,.35); border-radius:8px; transition:background 1.4s; }
+.tm-secnum{ color:var(--accent); font-weight:700; font-size:13px; margin-bottom:3px; }
+.tm-aram{ direction:rtl; text-align:right; color:#5a4326; font-size:16px; line-height:1.75; margin-bottom:5px; }
+.tm-heb{ direction:rtl; text-align:right; color:var(--dark); font-size:16px; line-height:1.8; }
+.tm-ref{ color:var(--accent); font-weight:600; cursor:pointer; text-decoration:underline dotted; }
+.tm-ref:hover{ color:var(--active); }
+/* search results */
+.tm-result{ display:block; width:100%; text-align:right; border:0; border-top:1px solid rgba(26,56,115,.12);
+  background:transparent; padding:9px 4px; cursor:pointer; font:inherit; }
+.tm-result:hover{ background:#f3f5fb; }
+.tm-res-ref{ display:block; color:var(--accent); font-weight:700; font-size:13.5px; }
+.tm-res-snip{ display:block; color:var(--dark); font-size:15px; line-height:1.6; }
+/* per-chapter glossary reuses .wtbl */
+.tm-wtbl{ width:100%; }
+
 /* hamburger menu */
 .menu-btn{ flex:0 0 auto; width:38px; height:38px; border:0; background:transparent; color:#fff;
            font-size:24px; line-height:1; cursor:pointer; border-radius:6px; }

@@ -658,6 +658,36 @@ def api_tibat_marqe():
     return jsonify(db.get_tibat_marqe(_ids_arg()))
 
 
+# ── Tibåt Mårqe full-book reader (Samaritan Library) ──
+@app.route('/api/tm_toc')
+def api_tm_toc():
+    return jsonify(db.get_tm_toc())
+
+
+@app.route('/api/tm_chapter')
+def api_tm_chapter():
+    return jsonify(db.get_tm_chapter(request.args.get('book', '')))
+
+
+@app.route('/api/tm_search')
+def api_tm_search():
+    return jsonify(db.search_tm(request.args.get('q', '')))
+
+
+@app.route('/api/tm_words')
+def api_tm_words():
+    return jsonify(db.get_tm_words(request.args.get('book', '')))
+
+
+@app.route('/api/locate_verse')
+def api_locate_verse():
+    try:
+        vid = int(request.args.get('verse_id', ''))
+    except ValueError:
+        return jsonify(None)
+    return jsonify(db.locate_verse(vid))
+
+
 @app.route('/api/eyalk')
 def api_eyalk():
     return jsonify(db.get_eyalk_commentary(_ids_arg()))

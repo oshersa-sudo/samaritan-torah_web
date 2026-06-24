@@ -436,6 +436,137 @@ def get_tibat_marqe(verse_ids):
     return out
 
 
+# ── Tibåt Mårqe full-book reader (Samaritan Library) ──────────────────────────
+_TM_BORD = {'בראשית': 1, 'שמות': 2, 'ויקרא': 3, 'במדבר': 4, 'דברים': 5}
+_TM_GEM = {'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,'ך':20,
+           'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,'ס':60,'ע':70,'פ':80,'ף':80,'צ':90,'ץ':90,
+           'ק':100,'ר':200,'ש':300,'ת':400}
+_TM_REF = re.compile(r'\((בראשית|שמות|ויקרא|במדבר|דברים)\s+([א-ת]{1,3})\s*[,，،]\s*([א-ת]{1,3})\)')
+
+
+def _tm_gem(s):
+    return sum(_TM_GEM.get(c, 0) for c in s)
+
+
+def _tm_esc(s):
+    return (s or '').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+
+def _tm_mark_refs(text, vmap):
+    """Escape `text`, wrapping each inline verse ref '(שמות ג,ז)' in a clickable
+    <a class="tm-ref" data-vid=N> so the reader can jump to that verse in the app."""
+    out, last = [], 0
+    for m in _TM_REF.finditer(text or ''):
+        out.append(_tm_esc(text[last:m.start()]))
+        vid = vmap.get((_TM_BORD[m.group(1)], _tm_gem(m.group(2)), _tm_gem(m.group(3))))
+        lbl = _tm_esc(m.group(0))
+        out.append('<a class="tm-ref" data-vid="%d">%s</a>' % (vid, lbl) if vid else lbl)
+        last = m.end()
+    out.append(_tm_esc((text or '')[last:]))
+    return ''.join(out)
+
+
+def _tm_vmap(conn):
+    vmap = {}
+    for r in conn.execute("""SELECT v.id, b.order_n bo, c.number cn, v.number vn FROM verses v
+        JOIN chapters c ON c.id=v.chapter_id JOIN books b ON b.id=c.book_id"""):
+        if str(r['vn']).isdigit():
+            vmap[(r['bo'], r['cn'], int(r['vn']))] = r['id']
+    return vmap
+
+
+def get_tm_toc():
+    """The six 'books' (מימרים) of Tibåt Mårqe — the table of contents."""
+    conn = get_connection()
+    rows = conn.execute("SELECT book, book_title, COUNT(*) n, MIN(sort_key) mn "
+                        "FROM tm_sections GROUP BY book, book_title ORDER BY mn").fetchall()
+    conn.close()
+    return [{'book': r['book'], 'letter': _TM_HE_LETTER.get(r['book'], r['book']),
+             'title': r['book_title'], 'count': r['n']} for r in rows]
+
+
+def get_tm_chapter(book):
+    """All sections of one TM book, in order, with inline verse refs made clickable."""
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    secs = conn.execute("SELECT id, section, book_title, aramaic, hebrew FROM tm_sections "
+                        "WHERE book=? ORDER BY sort_key", (book,)).fetchall()
+    conn.close()
+    title = secs[0]['book_title'] if secs else ''
+    out = [{'id': s['id'], 'section': s['section'],
+            'aramaic': s['aramaic'] or '', 'hebrew': s['hebrew'] or '',
+            'hebrew_html': _tm_mark_refs(s['hebrew'] or '', vmap)} for s in secs]
+    return {'book': book, 'letter': _TM_HE_LETTER.get(book, book), 'title': title, 'sections': out}
+
+
+def search_tm(q, limit=80):
+    """Search the book text (Aramaic + Hebrew); returns matching sections + a snippet."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    rows = conn.execute("SELECT book, book_title, section, sort_key, aramaic, hebrew "
+                        "FROM tm_sections WHERE aramaic LIKE ? OR hebrew LIKE ? "
+                        "ORDER BY sort_key LIMIT ?", (like, like, limit)).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        txt = r['hebrew'] if (r['hebrew'] and q in r['hebrew']) else (r['aramaic'] or '')
+        i = txt.find(q)
+        snip = ('…' + txt[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0 else txt[:90]
+        out.append({'book': r['book'], 'letter': _TM_HE_LETTER.get(r['book'], r['book']),
+                    'title': r['book_title'], 'section': r['section'], 'snippet': snip})
+    return out
+
+
+def locate_verse(verse_id):
+    """Navigation record for a verse_id (for jumping from a TM citation to the app)."""
+    conn = get_connection()
+    r = conn.execute("""SELECT v.id, v.number, c.id chapter_id, c.number chapter_num,
+            b.id book_id, b.name book_name FROM verses v
+            JOIN chapters c ON c.id=v.chapter_id JOIN books b ON b.id=c.book_id
+            WHERE v.id=?""", (verse_id,)).fetchone()
+    if not r:
+        conn.close(); return None
+    p = conn.execute("SELECT id, name FROM portions WHERE mode='jewish' AND book_id=? "
+                     "AND start_ch<=? AND end_ch>=? LIMIT 1",
+                     (r['book_id'], r['chapter_num'], r['chapter_num'])).fetchone()
+    conn.close()
+    return {'id': r['id'], 'number': r['number'], 'chapter_id': r['chapter_id'],
+            'chapter_num': r['chapter_num'], 'book_id': r['book_id'], 'book_name': r['book_name'],
+            'portion_id': p['id'] if p else None, 'portion_name': p['name'] if p else ''}
+
+
+def get_tm_words(book):
+    """A per-chapter glossary: the distinct Aramaic words of a TM book that have a
+    gloss in A. Tal's dictionary (word · root · Hebrew meaning), in order of first
+    appearance."""
+    conn = get_connection()
+    rows = conn.execute("SELECT aramaic FROM tm_sections WHERE book=? ORDER BY sort_key",
+                        (book,)).fetchall()
+    order, seen = [], set()
+    for r in rows:
+        for w in re.findall(r'[א-ת]{2,}', r['aramaic'] or ''):
+            if w not in seen:
+                seen.add(w); order.append(w)
+    gloss = {}
+    words = list(seen)
+    for i in range(0, len(words), 400):
+        chunk = words[i:i + 400]
+        ph = ','.join('?' * len(chunk))
+        for g in conn.execute("SELECT word, root, gloss FROM tal_word_gloss "
+                              "WHERE word IN (%s) AND TRIM(COALESCE(gloss,''))<>''" % ph, chunk):
+            if g['word'] not in gloss:
+                gloss[g['word']] = (g['root'] or '', g['gloss'] or '')
+    conn.close()
+    out = []
+    for w in order:
+        if w in gloss:
+            out.append({'word': w, 'root': gloss[w][0], 'gloss': gloss[w][1]})
+    return out
+
+
 def get_eyalk_commentary(verse_ids):
     """Samaritan-tradition commentary ("מן המסורת השומרונית") relevant to any of
     the given verses, in reading order. Each item is a dict {parsha, text}.
