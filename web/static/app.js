@@ -1093,11 +1093,53 @@ $('nextBtn').onclick=()=> S.navMode==='chapter'? stepChapter(1)  : stepPortion(1
 
 async function stepChapter(delta){
   S.verseFilter=null;
+  const ghost = makeFlipGhost();          // snapshot the current page (plain text mode only)
   const ni = S.chIdx+delta;
   if(ni>=0 && ni<S.chList.length){
     S.chIdx=ni; const ch=S.chList[ni];
     await renderVerses(ch.id, ch.number, S.curPid, S.portionName);
   } else { await crossPortion(delta); }
+  runFlipGhost(ghost, delta);             // turn the old page away, revealing the new one
+}
+// ── page-turn animation (chapter↔chapter, plain text mode without extra panels) ─
+// In the Hebrew text a forward step turns the page leftwards; in the English
+// translation the reading direction flips, so the page turns the opposite way.
+function plainTextMode(){
+  const usePanel = S.panel && !S.samFont;          // compare / commentary / aramaic …
+  return !usePanel && !(S.dict && !S.english);     // no comparison/commentary/dict panel
+}
+function makeFlipGhost(){
+  if(!plainTextMode()) return null;
+  document.querySelectorAll('.flip-ghost').forEach(g=>g.remove());  // clear any in-flight turn
+  const c=$('content'); const rect=c.getBoundingClientRect();
+  if(rect.width<10 || rect.height<10) return null;
+  const ghost=el('div','flip-ghost');
+  Object.assign(ghost.style,{left:rect.left+'px', top:rect.top+'px',
+    width:rect.width+'px', height:rect.height+'px'});
+  const inner=el('div','flip-ghost-inner'); inner.style.top=(-c.scrollTop)+'px';
+  for(const ch of c.children) inner.appendChild(ch.cloneNode(true));
+  ghost.appendChild(inner);
+  ghost.appendChild(el('div','flip-ghost-shade'));
+  document.body.appendChild(ghost);
+  return ghost;
+}
+function runFlipGhost(ghost, delta){
+  if(!ghost) return;
+  const exitLeft = (delta>0) !== !!S.english;   // English reverses the turn direction
+  ghost.style.transformOrigin = (exitLeft?'left':'right')+' center';
+  const endDeg = exitLeft ? -108 : 108;
+  $('content').animate([{opacity:.5, transform:'scale(.99)'},{opacity:1, transform:'none'}],
+                       {duration:340, easing:'ease-out'});
+  const a=ghost.animate(
+    [{transform:'perspective(1700px) rotateY(0deg)'},
+     {transform:`perspective(1700px) rotateY(${endDeg}deg)`}],
+    {duration:460, easing:'cubic-bezier(.36,0,.22,1)'});
+  const shade=ghost.querySelector('.flip-ghost-shade');
+  if(shade) shade.animate([{opacity:0},{opacity:.3}],{duration:460, easing:'ease-in'});
+  // remove the ghost when the turn ends — plus a hard fallback in case the page
+  // is backgrounded (a frozen animation timeline would otherwise never fire onfinish)
+  let gone=false; const done=()=>{ if(gone) return; gone=true; ghost.remove(); };
+  a.onfinish=done; a.oncancel=done; setTimeout(done, 700);
 }
 async function crossPortion(delta){
   const ids=S.portions.map(p=>p.id); const pidx=ids.indexOf(S.curPid);
@@ -1149,7 +1191,7 @@ function setView(){
 // ── collapsible bottom toolbar (text / comparison screens) ─────────────────────
 // the two display-mode rows fold away after a few seconds, leaving a drag handle;
 // the next/prev and zoom controls (in #navbar) stay put.
-let tbFolded=false, tbUserOpened=false, tbFoldTimer=null;
+let tbFolded=false, tbUserOpened=false, tbFoldTimer=null, tbInVerse=false;
 function setToolbarFolded(folded, withArrow){
   const wasFolded=tbFolded;
   tbFolded=folded;
@@ -1163,12 +1205,22 @@ function setToolbarFolded(folded, withArrow){
     setTimeout(()=>tb.classList.remove('show-down'), 2000);
   }
 }
+function armAutoFold(){   // fold (with the arrow animation) after 3s
+  clearTimeout(tbFoldTimer);
+  tbFoldTimer=setTimeout(()=>{ if(S.view==='verses' && !tbUserOpened) setToolbarFolded(true,true); }, 3000);
+}
 function updateToolbarFold(isVerse){
   clearTimeout(tbFoldTimer);
-  if(!isVerse){ setToolbarFolded(false,false); return; }     // never folded outside verse view
-  if(tbUserOpened){ setToolbarFolded(false,false); return; } // the user chose to keep it open
-  if(tbFolded){ setToolbarFolded(true,false); return; }      // stay folded across chapters
-  tbFoldTimer=setTimeout(()=>{ if(S.view==='verses' && !tbUserOpened) setToolbarFolded(true,true); }, 4500);
+  if(!isVerse){ tbInVerse=false; setToolbarFolded(false,false); return; }  // not a text screen
+  const fresh = !tbInVerse;   // arriving at a text/comparison screen from elsewhere
+  tbInVerse=true;
+  // every fresh entry: show the bar open, then auto-fold (with animation) after 3s —
+  // not just the first time, so re-entering these screens always re-runs the fold.
+  if(fresh){ tbUserOpened=false; setToolbarFolded(false,false); armAutoFold(); return; }
+  // moving chapter-to-chapter within the text view: keep the user's current choice
+  if(tbUserOpened){ setToolbarFolded(false,false); return; }
+  if(tbFolded){ setToolbarFolded(true,false); return; }
+  armAutoFold();
 }
 (function(){
   const h=document.getElementById('tbHandle'); if(!h) return;
