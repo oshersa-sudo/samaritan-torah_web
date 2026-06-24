@@ -1131,7 +1131,42 @@ function setView(){
   if(S.view==='books'||S.view==='portions'||S.view==='spread') $('navbar').classList.add('hidden');
   $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
   syncToolbar(isVerse);
+  updateToolbarFold(isVerse);
 }
+
+// ── collapsible bottom toolbar (text / comparison screens) ─────────────────────
+// the two display-mode rows fold away after a few seconds, leaving a drag handle;
+// the next/prev and zoom controls (in #navbar) stay put.
+let tbFolded=false, tbUserOpened=false, tbFoldTimer=null;
+function setToolbarFolded(folded, withArrow){
+  tbFolded=folded;
+  const tb=$('toolbar'); tb.classList.toggle('folded', folded); tb.classList.remove('show-arrow');
+  if(folded && withArrow){
+    void tb.offsetWidth; tb.classList.add('show-arrow');     // flash an up-arrow ~2s
+    setTimeout(()=>tb.classList.remove('show-arrow'), 2000);
+  }
+}
+function updateToolbarFold(isVerse){
+  clearTimeout(tbFoldTimer);
+  if(!isVerse){ setToolbarFolded(false,false); return; }     // never folded outside verse view
+  if(tbUserOpened){ setToolbarFolded(false,false); return; } // the user chose to keep it open
+  if(tbFolded){ setToolbarFolded(true,false); return; }      // stay folded across chapters
+  tbFoldTimer=setTimeout(()=>{ if(S.view==='verses' && !tbUserOpened) setToolbarFolded(true,true); }, 4500);
+}
+(function(){
+  const h=document.getElementById('tbHandle'); if(!h) return;
+  let downY=null;
+  h.addEventListener('pointerdown', e=>{ downY=e.clientY; });
+  const release=(e)=>{
+    const dy = downY==null ? 0 : (e.clientY-downY); downY=null;
+    if(dy < -12){ tbUserOpened=true; setToolbarFolded(false,false); }       // drag up → open
+    else if(dy > 12){ tbUserOpened=false; setToolbarFolded(true,true); }    // drag down → fold
+    else if(tbFolded){ tbUserOpened=true; setToolbarFolded(false,false); }  // tap → toggle
+    else { tbUserOpened=false; setToolbarFolded(true,true); }
+  };
+  h.addEventListener('pointerup', release);
+  h.addEventListener('pointercancel', ()=>{ downY=null; });
+})();
 // base colours of each mode button (matching the native app's palette);
 // disabled → grey, active → bright blue, otherwise its own colour.
 const BTN_BASE = {

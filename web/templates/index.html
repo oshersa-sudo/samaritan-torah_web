@@ -85,13 +85,18 @@
   <!-- chapter nav + font size (verse pages only) -->
   <div id="navbar" class="hidden">
     <button id="nextBtn" class="nav-arrow" data-i18n="next_portion">‹ פרשה הבאה</button>
-    <button id="minusBtn" class="round">−</button>
-    <button id="plusBtn" class="round">+</button>
+    <button id="minusBtn" class="round" aria-label="הקטן טקסט" title="הקטן טקסט"><svg class="zoomi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.8" y2="15.8"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/></svg></button>
+    <button id="plusBtn" class="round" aria-label="הגדל טקסט" title="הגדל טקסט"><svg class="zoomi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.8" y2="15.8"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"/></svg></button>
     <button id="prevBtn" class="nav-arrow" data-i18n="prev_portion">פרשה קודמת ›</button>
   </div>
 
   <!-- bottom toolbar -->
   <div id="toolbar">
+    <button id="tbHandle" class="tb-handle" type="button" aria-label="פתח/קפל את הסרגל">
+      <span class="tb-grip"></span>
+      <span class="tb-uparrow" aria-hidden="true">⌃</span>
+    </button>
+    <div class="tb-rows">
     <div class="tb-row">
       <button id="shareBtn" class="tb green hidden" data-i18n-title="share" title="שתף" aria-label="שתף"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
       <button id="backBtn" class="tb accent ico-btn back-btn" disabled data-i18n-title="back_t" title="חזור" aria-label="חזור"><svg class="tbi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
@@ -107,6 +112,7 @@
       <button id="variantsBtn" class="tb" disabled data-i18n="variants">חילופי נוסח</button>
       <button id="samSrcBtn" class="tb" disabled data-i18n="samsrc">ממקור שומרון</button>
       <button id="translateBtn" class="tb" disabled data-i18n="translate">תרגומי התורה</button>
+    </div>
     </div>
   </div>
 
@@ -142,8 +148,8 @@
       <button id="sBackBtn" class="tb accent ico-btn back-btn" data-i18n-title="back_t" title="חזור" aria-label="חזור"><svg class="tbi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
       <button id="sBrowseBtn" class="tb navy has-ico"><svg class="tbi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="tb-label" data-i18n="browse">עיון</span></button>
       <span class="grow"></span>
-      <button id="sMinusBtn" class="round">−</button>
-      <button id="sPlusBtn" class="round">+</button>
+      <button id="sMinusBtn" class="round" aria-label="הקטן טקסט" title="הקטן טקסט"><svg class="zoomi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.8" y2="15.8"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/></svg></button>
+      <button id="sPlusBtn" class="round" aria-label="הגדל טקסט" title="הגדל טקסט"><svg class="zoomi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.8" y2="15.8"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"/></svg></button>
     </div>
   </section>
 
