@@ -487,8 +487,8 @@ footer a{ color:var(--accent); text-decoration:none; }
   margin:0 .07em; font-size:.62em; font-weight:700; vertical-align:.2em;
   color:var(--gold-bright); opacity:1; }
 #samaritan-splash .pen{
-  position:absolute; left:0; top:0; width:96px; height:auto; opacity:0;
-  pointer-events:none; will-change:transform; filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));
+  position:absolute; left:0; top:0; width:clamp(132px,23vw,196px); height:auto; opacity:0;
+  pointer-events:none; will-change:transform; filter:drop-shadow(0 10px 16px rgba(0,0,0,.55));
 }
 #samaritan-splash .skip{
   position:absolute; top:max(18px,2.4vh); inset-inline-end:max(20px,3vw); z-index:3;
