@@ -2406,6 +2406,8 @@ async function openWordSources(word){
 // concise, organised help for all of the app's options (per language)
 const HELP = {
   he: [
+    ['סרטון הסבר מודרך 🎬', [
+      'מומלץ להתחיל ב<b>סרטון ההסבר המודרך</b> — סיור קולי קצר שמסביר ומדגים על המערכת עצמה את כל הכפתורים והאפשרויות, עם חיצים מצביעים וכיתוב בשפת הממשק. הסיור נפתח אוטומטית בכניסה הראשונה, וניתן לחזור אליו בכל עת מ<b>תפריט ההמבורגר ← מתחת ל"עזרה" ← "סרטון הסבר מודרך"</b>. אפשר להשתיק את הקריינות (ולקרוא רק את הכיתובים), לדלג קדימה/אחורה או לסגור בכל שלב.']],
     ['חלוקה', ['בראש המסך — <b>חלוקה יהודית</b> / <b>חלוקה שומרונית</b>: מעבר בין שתי חלוקות הפרקים והפרשות.']],
     ['עיון', [
       'בחר <b>ספר → פרשה → פרק</b>, ואז מוצגים הפסוקים. <b>פריסת פרקים</b> מאפשר קפיצה לכל פרק. בחלוקה השומרונית מוצגות תחת מספר כל פרק שתי מילות הפתיחה שלו לזיהוי מהיר.',
@@ -2435,9 +2437,11 @@ const HELP = {
       'בכניסה מוצג מסך פתיחה שבו יד כותבת את הפסוק בכתב השומרוני (עם צליל כתיבה — ניתן להפעילו בכפתור 🔊). <b>דלג ›</b> מדלג עליו; במכשיר שבו האפליקציה מותקנת מופיע גם <b>דלג תמיד</b> שנכנס ישר לאפליקציה בפעמים הבאות.',
       'בכניסה הראשונה מוצג חלון <b>ברוכים הבאים</b>. אם האפליקציה אינה מותקנת תוצע <b>התקנה</b>, ואם ההתראות לא אושרו עדיין תוצע אפשרות <b>לאשר התראות</b> על חידושים ועדכוני גרסה — לכל הצעה יש <b>אל תציג שוב</b>.']],
     ['תפריט', [
-      '<b>התקנת אפליקציה</b> · <b>שנה שפה</b> · לוח השנה השומרוני · אילן היוחסין · <b>הספרייה השומרונית → המילון הארמי-עברי השומרוני</b> · עזרה · גרסה · צור קשר.']],
+      '<b>התקנת אפליקציה</b> · <b>שנה שפה</b> · לוח השנה השומרוני · אילן היוחסין · <b>הספרייה השומרונית → המילון הארמי-עברי השומרוני</b> · <b>סרטון הסבר מודרך</b> (מתחת לעזרה) · עזרה · גרסה · צור קשר.']],
   ],
   en: [
+    ['Guided tour 🎬', [
+      'A great place to start is the <b>guided tour</b> — a short voiced walkthrough that explains and demonstrates every button and option on the app itself, with pointing arrows and captions in your language. It opens automatically on your first visit, and you can return to it any time from the <b>menu → under “Help” → “Guided tour”</b>. You can mute the narration (and just read the captions), step forward/back, or close it at any point.']],
     ['Division', ['At the top — <b>Jewish division</b> / <b>Samaritan division</b>: switch between the two chapter/portion divisions.']],
     ['Browse', [
       'Choose <b>book → portion → chapter</b> to show the verses. <b>All chapters</b> jumps to any chapter. In the Samaritan division each chapter cell also shows its opening two words.',
@@ -2467,9 +2471,11 @@ const HELP = {
       'On entry a splash shows a hand writing the verse in Samaritan script (with a writing sound — tap 🔊 to enable it). <b>Skip ›</b> skips it; on the installed app an <b>Always skip</b> option goes straight in next time.',
       'On the first visit a <b>Welcome</b> window appears. If the app isn’t installed you’ll be offered to <b>install</b> it, and if notifications aren’t enabled yet you’ll be offered to <b>allow notifications</b> about new features and versions — each prompt has a <b>Don’t show again</b> option.']],
     ['Menu', [
-      '<b>Install app</b> · <b>Change language</b> · Samaritan calendar · genealogy · <b>The Samaritan Library → the Aramaic–Hebrew dictionary</b> · help · version · contact.']],
+      '<b>Install app</b> · <b>Change language</b> · Samaritan calendar · genealogy · <b>The Samaritan Library → the Aramaic–Hebrew dictionary</b> · <b>Guided tour</b> (under Help) · help · version · contact.']],
   ],
   ar: [
+    ['جولة إرشادية 🎬', [
+      'من الأفضل أن تبدأ بـ<b>الجولة الإرشادية</b> — جولة صوتية قصيرة تشرح وتعرض على التطبيق نفسه كلّ الأزرار والخيارات، مع أسهم مؤشِّرة وتعليقات بلغة الواجهة. تُفتح تلقائياً في أوّل زيارة، ويمكنك العودة إليها في أيّ وقت من <b>القائمة ← تحت «مساعدة» ← «جولة إرشادية»</b>. يمكنك كتم الصوت (وقراءة التعليقات فقط)، أو التقدّم/الرجوع، أو الإغلاق في أيّ لحظة.']],
     ['التقسيم', ['في الأعلى — <b>التقسيم اليهودي</b> / <b>التقسيم السامري</b>: التبديل بين تقسيمَي الأصحاحات والمقاطع.']],
     ['التصفّح', [
       'اختر <b>سفر ← مقطع ← أصحاح</b> لعرض الآيات. <b>كل الأصحاحات</b> للانتقال إلى أيّ أصحاح. في التقسيم السامري يظهر تحت رقم كلّ أصحاح أوّل كلمتين منه.',
@@ -2499,7 +2505,7 @@ const HELP = {
       'عند الدخول تظهر شاشة بداية فيها يد تكتب الآية بالخطّ السامري (مع صوت كتابة — اضغط 🔊 لتفعيله). <b>تخطٍّ ›</b> يتخطّاها؛ وعلى التطبيق المثبّت يظهر <b>تخطٍّ دائماً</b> للدخول مباشرةً في المرّات التالية.',
       'في أوّل زيارة تظهر نافذة <b>ترحيب</b>. إن لم يكن التطبيق مثبّتاً يُقترح <b>تثبيته</b>، وإن لم تُفعّل الإشعارات بعد يُقترح <b>السماح بالإشعارات</b> حول الميزات والإصدارات الجديدة — ولكلّ اقتراح خيار <b>لا تُظهر مرّة أخرى</b>.']],
     ['القائمة', [
-      '<b>تثبيت التطبيق</b> · <b>تغيير اللغة</b> · التقويم السامري · شجرة الأنساب · <b>المكتبة السامرية ← المعجم الآرامي-العبري</b> · مساعدة · الإصدار · اتصل بنا.']],
+      '<b>تثبيت التطبيق</b> · <b>تغيير اللغة</b> · التقويم السامري · شجرة الأنساب · <b>المكتبة السامرية ← المعجم الآرامي-العبري</b> · <b>جولة إرشادية</b> (تحت مساعدة) · مساعدة · الإصدار · اتصل بنا.']],
   ],
 };
 function showHelp(){
