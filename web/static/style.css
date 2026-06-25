@@ -165,6 +165,29 @@ body{
 /* dictionary */
 .dictpanel{ background:#f5f5ec; border:1.2px solid rgba(26,56,115,.45); border-radius:12px;
             padding:8px; margin:6px 2px; }
+/* word-by-word picker: the hint, the underlined clickable words, the single-word row */
+.dict-pick-hint{ background:#eef2fb; border:1px solid rgba(26,56,115,.2); border-radius:10px;
+  color:var(--navy); font-size:14.5px; line-height:1.5; padding:8px 12px; margin:2px 2px 8px; text-align:center; }
+.vrow .vtext .dw{ cursor:default; }
+.vrow .vtext .dw.on{ cursor:pointer; text-decoration:underline; text-decoration-color:rgba(46,97,184,.5);
+  text-underline-offset:3px; text-decoration-thickness:1.5px; border-radius:3px; transition:background .12s; }
+.vrow .vtext .dw.on:hover{ background:#e2ebfb; }
+.vrow .vtext .dw.sel{ background:var(--accent); color:#fff; text-decoration:none; padding:0 2px; }
+.dict-one{ position:relative; }
+.dict-one.hidden{ display:none; }
+.dict-one-close{ position:absolute; top:5px; inset-inline-start:7px; z-index:1; width:28px; height:28px;
+  border:0; border-radius:50%; background:var(--navy); color:#fff; font-size:15px; line-height:1; cursor:pointer; }
+.dict-one-close:hover{ background:var(--accent); }
+.wt-trans .wt-he{ font-weight:700; color:var(--navy); }
+.wt-trans .wt-arhe{ font-weight:400; color:#8c5a1a; font-size:13px; margin-top:1px; }
+.wt-trans .wt-arhe::before{ content:'ع '; font-size:11px; opacity:.7; }
+.dict-one-tap{ text-align:center; color:var(--muted); font-size:12.5px; padding:6px 2px 2px; }
+/* the per-source breakdown popup */
+.ws-h{ color:var(--navy); font-weight:700; font-size:15px; margin:10px 0 3px; border-bottom:1px solid rgba(26,56,115,.15); padding-bottom:2px; }
+.ws-block{ background:#f7f9ff; border-radius:8px; padding:6px 10px; margin-bottom:4px; }
+.ws-val{ color:var(--dark); font-size:16px; line-height:1.5; }
+.ws-from{ color:var(--accent); font-size:12.5px; margin-top:1px; }
+.ws-from.ws-pending{ color:var(--muted); font-style:italic; }
 .dictpanel .dtitle{ text-align:center; font-weight:700; color:var(--navy); font-size:17px; }
 .dictpanel .dhint{ text-align:center; color:var(--muted); font-size:12px; margin-bottom:4px; }
 .dictpanel .dhint-strong{ text-align:center; color:var(--navy); font-size:16px; font-weight:700; margin-bottom:8px; }
@@ -380,6 +403,52 @@ body{
 #infoBody .help-list{ margin:0; padding:0 18px 0 0; }
 #infoBody .help-list li{ font-size:15.5px; line-height:1.65; margin-bottom:4px; color:var(--dark); }
 #infoBody .help-list b{ color:var(--navy); }
+/* ── install card (navy + gold parchment, the dedicated install-module look) ── */
+.pwa-card{ width:92%; max-width:430px; background:#FBF8F0; border:1px solid #E4D9BE; border-radius:18px;
+  overflow:hidden; box-shadow:0 18px 50px -18px rgba(20,33,61,.45); font-family:inherit;
+  animation:pwaRise .4s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes pwaRise{ from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+.pwa-head{ display:flex; align-items:center; gap:12px; padding:16px 18px 12px; position:relative;
+  background:linear-gradient(180deg,#F4EEDF,#FBF8F0); border-bottom:1px solid #E4D9BE; }
+.pwa-head::after{ content:""; position:absolute; inset-inline:18px; bottom:-1px; height:2px;
+  background:linear-gradient(90deg,transparent,#B8860B,transparent); opacity:.5; }
+.pwa-mark{ flex:none; width:42px; height:42px; border-radius:11px; display:grid; place-items:center;
+  background:#1F3864; box-shadow:inset 0 0 0 1px rgba(255,255,255,.12), 0 2px 8px rgba(20,33,61,.3); }
+.pwa-titles{ flex:1; min-width:0; }
+.pwa-title{ margin:0; font-size:18px; font-weight:700; color:#14213D; }
+.pwa-sub{ margin:2px 0 0; font-size:13.5px; color:#6B6B63; }
+.pwa-x{ flex:none; width:32px; height:32px; border:none; border-radius:9px; background:transparent; color:#6B6B63;
+  cursor:pointer; font-size:22px; line-height:1; display:grid; place-items:center; }
+.pwa-x:hover{ background:#F4EEDF; color:#1F3864; }
+.pwa-body{ padding:14px 18px 16px; }
+.pwa-btn{ width:100%; border:none; cursor:pointer; font-family:inherit; font-size:17px; font-weight:700;
+  color:#FBF8F0; background:#1F3864; padding:14px 16px; border-radius:12px; display:flex; align-items:center;
+  justify-content:center; gap:10px; box-shadow:0 6px 16px -6px rgba(20,33,61,.55); }
+.pwa-btn:hover{ background:#14213D; } .pwa-btn:active{ transform:translateY(1px); }
+.pwa-hint{ margin:12px 2px 0; font-size:13px; color:#6B6B63; text-align:center; }
+.pwa-steps{ list-style:none; margin:0; padding:0; counter-reset:s; }
+.pwa-step{ display:flex; align-items:center; gap:13px; padding:11px 0; counter-increment:s; border-bottom:1px dashed #E4D9BE; }
+.pwa-step:last-child{ border-bottom:none; }
+.pwa-num{ flex:none; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:#F4EEDF;
+  color:#7F6000; border:1px solid #E4D9BE; font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; }
+.pwa-num::before{ content:counter(s); }
+.pwa-text{ flex:1; font-size:15.5px; color:#2A2A28; line-height:1.45; }
+.pwa-text b{ color:#14213D; }
+.pwa-glyph{ flex:none; width:38px; height:38px; border-radius:10px; display:grid; place-items:center; background:#fff;
+  border:1px solid #E4D9BE; box-shadow:0 1px 3px rgba(20,33,61,.08); }
+.pwa-glyph svg{ display:block; }
+.pwa-warn{ display:flex; gap:12px; align-items:flex-start; background:#FBF1E6; border:1px solid #E8C9A0;
+  border-radius:12px; padding:13px 14px; margin-bottom:12px; }
+.pwa-warn svg{ flex:none; margin-top:1px; } .pwa-warn p{ margin:0; font-size:14.5px; color:#7A4A12; line-height:1.5; }
+.pwa-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 14px 11px;
+  border-top:1px solid #E4D9BE; background:#FBF8F0; }
+.pwa-langs{ display:inline-flex; gap:2px; padding:2px; background:#F4EEDF; border:1px solid #E4D9BE; border-radius:9px; }
+.pwa-lang{ border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; color:#6B6B63;
+  padding:4px 9px; border-radius:7px; line-height:1; }
+.pwa-lang:hover{ color:#1F3864; } .pwa-lang.is-on{ background:#1F3864; color:#FBF8F0; }
+.pwa-snooze{ background:none; border:none; cursor:pointer; font-family:inherit; color:#6B6B63; font-size:13.5px;
+  padding:4px 8px; border-radius:7px; text-decoration:underline; text-underline-offset:3px; }
+.pwa-snooze:hover{ color:#1F3864; background:#F4EEDF; }
 .res-subroot{ font-size:25px; font-weight:700; text-decoration:underline; padding:8px 2px 2px; }
 .search-foot{ display:flex; align-items:center; gap:6px; padding-top:6px; }
 .search-foot .grow{ flex:1; }

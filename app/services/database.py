@@ -365,6 +365,31 @@ def tal_concise(word, conn=None):
     return res
 
 
+def tal_context_gloss(aramaic, verse_id, conn):
+    """The Tal-dictionary gloss CLOSEST to how the word is used in THIS verse. When
+    the word's root carries several senses and the verse was sense-tagged (Phase 2),
+    return that verse's sense label; otherwise fall back to the root's generic gloss.
+    Returns {'root','gloss','ctx'(bool: came from the verse-specific sense)} or None."""
+    try:
+        roots = _tal_roots(aramaic, conn)
+    except Exception:
+        roots = []
+    for root in roots:
+        rn = _norm_fin(root)
+        srow = conn.execute(
+            "SELECT sense_id FROM dict_torah_sense WHERE verse_id=? AND root_norm=?",
+            (verse_id, rn)).fetchone()
+        if srow:
+            lab = conn.execute("SELECT label FROM dict_sense WHERE root_norm=? AND sense_id=?",
+                               (rn, srow['sense_id'])).fetchone()
+            if lab and (lab['label'] or '').strip():
+                return {'root': root, 'gloss': lab['label'].strip(), 'ctx': True}
+    tc = tal_concise(aramaic, conn)
+    if tc:
+        return {'root': tc['root'], 'gloss': tc['gloss'], 'ctx': False}
+    return None
+
+
 def get_word_table(verse_ids):
     """Per-word table rows for the "מילון מילים" panel. For each Targum word of
     the given verse(s): {word (Hebrew), meaning (Hebrew), aramaic, tal (concise
@@ -378,23 +403,102 @@ def get_word_table(verse_ids):
     rows = conn.execute(
         f'SELECT {cols} FROM verse_dictionary WHERE verse_id IN ({placeholders}) ORDER BY id',
         verse_ids).fetchall()
+    # independent Arabic→Hebrew (cross-check source), loaded once when available
+    ar_he = {}
+    try:
+        ar_he = {r[0]: r[1] for r in conn.execute("SELECT arabic, hebrew FROM arabic_he")}
+    except Exception:
+        ar_he = {}
     out = {}
     for r in rows:
-        heb = r['hebrew'] or ''
+        heb = (r['hebrew'] or '').strip()           # the curated, context-accurate Hebrew
         parts = [p.strip() for p in heb.split(',', 1)]
         word = parts[0]
         inline = parts[1] if len(parts) > 1 else ''
-        tc = tal_concise(r['aramaic'], conn)
+        # the Tal gloss CLOSEST to this verse's usage (sense-tagged when available)
+        ctx = tal_context_gloss(r['aramaic'], r['verse_id'], conn)
         tal = ''
-        if tc:
-            tal = tc['root'] + (' · ' + tc['gloss'] if tc['gloss'] else '')
-        # verse_dictionary rarely carries an inline gloss, so fall back to the
-        # distilled Hebrew meaning, then to the word itself — never blank.
-        meaning = inline or (tc['gloss'] if tc and tc['gloss'] else word)
+        if ctx:
+            tal = ctx['root'] + (' · ' + ctx['gloss'] if ctx['gloss'] else '')
+        # the accurate word-translation is the curated Hebrew itself; keep `meaning`
+        # for backwards compatibility but prefer the curated text over a generic gloss.
+        meaning = inline or heb or (ctx['gloss'] if ctx and ctx['gloss'] else word)
+        ar = (r['arabic'] if has_ar else '') or ''
         out.setdefault(r['verse_id'], []).append({
             'word': word, 'meaning': meaning, 'aramaic': r['aramaic'] or '',
-            'tal': tal, 'arabic': (r['arabic'] if has_ar else '') or '',
+            'he': heb, 'tal': tal, 'tal_ctx': bool(ctx and ctx.get('ctx')),
+            'arabic': ar, 'ar_he': ar_he.get(ar, ''),
         })
+    conn.close()
+    return out
+
+
+# ── word-by-word picker for "מילון מילים": tie each Hebrew word in the verse text
+#    to its curated dictionary row (verse_dictionary is accurate but uses shifted
+#    forms — אלהים/אלוהים, prefixes, reordering — so we match by a folded key, then
+#    a particle-stripped key, then a matres-lectionis skeleton). ─────────────────
+_DS_FIN = {'ם': 'מ', 'ן': 'נ', 'ץ': 'צ', 'ף': 'פ', 'ך': 'כ'}
+_DS_PUNCT = ' .,;:!?"\'־׳״-()[]׃׀'
+
+
+def _ds_fold(w):
+    w = re.sub('[֑-ׇ]', '', w or '').strip(_DS_PUNCT)
+    return ''.join(_DS_FIN.get(c, c) for c in w)
+
+
+def _ds_strip(w):                       # drop up to two leading one-letter particles
+    for _ in range(2):
+        if len(w) > 2 and w[0] in 'והבלכמש':
+            w = w[1:]
+        else:
+            break
+    return w
+
+
+def _ds_skel(w):
+    return re.sub('[אהוי]', '', w)
+
+
+def _ds_match(tok, entry_word):
+    ft = _ds_fold(tok)
+    ew = (entry_word or '').split()[0].split('(')[0] if entry_word else ''
+    few = _ds_fold(ew)
+    if not ft or not few:
+        return False
+    if ft == few:
+        return True
+    a, b = _ds_strip(ft), _ds_strip(few)
+    if a == b:
+        return True
+    sa, sb = _ds_skel(a), _ds_skel(b)
+    return len(sa) >= 2 and sa == sb
+
+
+def get_dict_select(verse_ids):
+    """For each verse, map the index of each (whitespace-split) word to its
+    dictionary row, so the UI can underline the words that have an entry and open
+    that single word's row on tap. Index is over ALL non-space tokens, matching the
+    client's tokenisation. Returns {verse_id: {word_index(str): row}}."""
+    if not verse_ids:
+        return {}
+    wt = get_word_table(verse_ids)
+    conn = get_connection()
+    out = {}
+    for vid in verse_ids:
+        row = conn.execute("SELECT text FROM verses WHERE id=?", (vid,)).fetchone()
+        if not row or not (row['text'] or '').strip():
+            continue
+        toks = (row['text'] or '').split()
+        entries = wt.get(vid, [])
+        used, m = set(), {}
+        for e in entries:                       # greedily claim the first free token
+            for i, tk in enumerate(toks):
+                if i in used:
+                    continue
+                if _ds_match(tk, e['word']):
+                    used.add(i); m[str(i)] = e; break
+        if m:
+            out[vid] = m
     conn.close()
     return out
 

@@ -653,6 +653,14 @@ def api_word_table():
     return jsonify({str(k): v for k, v in m.items()})
 
 
+@app.route('/api/dict_select')
+def api_dict_select():
+    """Per verse, which word-index maps to which dictionary row — powers the
+    word-by-word picker of the 'מילון מילים' mode (underline a word, tap to open it)."""
+    m = db.get_dict_select(_ids_arg())
+    return jsonify({str(k): v for k, v in m.items()})
+
+
 @app.route('/api/tibat_marqe')
 def api_tibat_marqe():
     return jsonify(db.get_tibat_marqe(_ids_arg()))

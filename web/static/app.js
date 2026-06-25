@@ -80,6 +80,7 @@ const I18N = {
     no_variants:'אין חילופי נוסח לפסוקים אלה.',
     app_hint:'המילים המודגשות בפסוק נושאות חילופי נוסח — לחץ על מילה כדי לקפוץ לחילופיה, ולחץ על חילוף כדי לחזור למילה.',
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך מילון א. טל', no_dict:'אין מילון זמין לפסוק זה',
+    dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
     more_results:'תוצאות נוספות', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי השומרוני',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
@@ -119,6 +120,10 @@ const I18N = {
     notif_rec_body:'אפשר התראות כדי לקבל עדכונים על חידושים, תוספות וגרסאות חדשות של האפליקציה.',
     notif_rec_btn:'אפשר התראות',
     col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'מילון טל', col_arabic:'ערבית',
+    col_wordtrans:'תרגום המילה',
+    ws_tap_hint:'לחץ על השורה לפירוט מקורות התרגום', ws_translation:'תרגום המילה', ws_from_targum:'מהתרגום הארמי (פירוש הפסוק)',
+    ws_tal:'מילון א. טל', ws_tal_ctx:'מילון טל — לפי ההקשר בפסוק', ws_tal_gen:'מילון טל — פירוש כללי',
+    ws_arabic:'מהתרגום הערבי', ws_from_arabic:'תרגום מהערבית לעברית', ws_arabic_pending:'התרגום מהערבית לעברית בהכנה',
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
@@ -198,6 +203,7 @@ const I18N = {
     no_variants:"No textual variants for these verses.",
     app_hint:'The emphasised words in the verse carry textual variants — tap a word to jump to its variants, and tap a variant to jump back to the word.',
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from A. Tal's dictionary", no_dict:'No dictionary for this verse',
+    dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
     more_results:'More results', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
     m_library:'The Samaritan Library', m_dict_aram:'The Samaritan Aramaic–Hebrew Dictionary',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
@@ -237,6 +243,10 @@ const I18N = {
     notif_rec_body:'Allow notifications to get updates about new features, additions and new versions of the app.',
     notif_rec_btn:'Enable notifications',
     col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Tal dictionary', col_arabic:'Arabic',
+    col_wordtrans:'Word translation',
+    ws_tap_hint:'Tap the row to break the translation down by source', ws_translation:'Word translation', ws_from_targum:'from the Aramaic Targum (verse reading)',
+    ws_tal:'A. Tal’s dictionary', ws_tal_ctx:'Tal dictionary — by the verse context', ws_tal_gen:'Tal dictionary — general gloss',
+    ws_arabic:'from the Arabic', ws_from_arabic:'Arabic → Hebrew', ws_arabic_pending:'Arabic→Hebrew translation in preparation',
     searching:'Searching…', no_interp:'No commentary for these verses',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
@@ -316,6 +326,7 @@ const I18N = {
     no_variants:'لا توجد اختلافات نصّية لهذه الآيات.',
     app_hint:'الكلمات المميّزة في الآية تحمل اختلافات نصّية — اضغط على كلمة للانتقال إلى اختلافاتها، واضغط على اختلاف للعودة إلى الكلمة.',
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من معجم أ. طال', no_dict:'لا يوجد معجم لهذه الآية',
+    dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
     more_results:'نتائج إضافية', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري السامري',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
@@ -355,6 +366,10 @@ const I18N = {
     notif_rec_body:'اسمح بالإشعارات لتصلك تحديثات حول الميزات الجديدة والإضافات والإصدارات الجديدة للتطبيق.',
     notif_rec_btn:'تفعيل الإشعارات',
     col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'معجم طال', col_arabic:'العربية',
+    col_wordtrans:'ترجمة الكلمة',
+    ws_tap_hint:'اضغط الصفّ لتفصيل مصادر الترجمة', ws_translation:'ترجمة الكلمة', ws_from_targum:'من الترجمة الآرامية (قراءة الآية)',
+    ws_tal:'معجم أ. طال', ws_tal_ctx:'معجم طال — حسب سياق الآية', ws_tal_gen:'معجم طال — معنى عام',
+    ws_arabic:'من العربية', ws_from_arabic:'العربية ← العبرية', ws_arabic_pending:'ترجمة العربية إلى العبرية قيد الإعداد',
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
@@ -758,6 +773,8 @@ function paintVerses(){
     else if(S.panel==='arabic'){ buildArabic(c, verses); maybeDict(c, verses); }
   } else if(usePanel && S.panel==='compare'){
     addNumStrip(c, all); buildCompare(c, verses);
+  } else if(S.dict && !S.english){
+    buildDictSelect(c, verses);               // word-by-word picker (underline → tap a word)
   } else {
     if(S.english) c.appendChild(el('div','eng-credit',
       '<b>The Samaritan Pentateuch</b><br>An English Translation with a Parallel Annotated Hebrew Text<br>Moshe Florentin and Abraham Tal'));
@@ -767,7 +784,6 @@ function paintVerses(){
     if(S.chMode==='samaritan' && !S.english && S.verseFilter==null
        && Array.isArray(S.chList) && S.chList.length && S.chIdx===S.chList.length-1)
       c.appendChild(el('div','portion-end','✶ ✶ ✶'));
-    if(S.dict && !S.english) buildDict(c, verses);
   }
   scheduleDotTrim();   // drop justification dots that fall at a line edge (Samaritan font)
 }
@@ -1188,7 +1204,145 @@ async function buildSamSrc(c, verses){
   c.appendChild(panel);
 }
 
-// ── dictionary ───────────────────────────────────────────────────────────────
+// ── "מילון מילים": word-by-word picker ───────────────────────────────────────
+// Tapping the button no longer dumps the whole table. Instead it underlines every
+// word that has a dictionary entry; tap a word to open ITS row (same 5-column
+// format), tap another to swap it, close the row to keep picking, and tap the
+// button again to turn the whole mode (underlines + row) off.
+let DICT_SELECT_MAP = {};
+function buildDictSelect(c, verses){
+  c.appendChild(el('div','dict-pick-hint', t('dict_pick_word')));
+  const fs=fsize();
+  const spanMap={};
+  for(const v of verses){
+    if(!(v.text||'').trim()) continue;
+    const row=el('div','vrow');
+    const num=el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
+    num.onclick=()=>filterVerse(v.id);
+    const td=el('div','vtext'); td.style.fontSize=fs+'px';
+    const toks=(v.text||'').split(/(\s+)/);
+    let wi=0;
+    td.innerHTML = toks.map(tok=>{
+      if(tok && !/^\s+$/.test(tok)) return '<span class="dw" data-k="'+v.id+':'+(wi++)+'">'+esc(tok)+'</span>';
+      return esc(tok);
+    }).join('');
+    td.querySelectorAll('.dw').forEach(sp=>{ spanMap[sp.dataset.k]=sp; });
+    row.appendChild(td); row.appendChild(num);
+    c.appendChild(row);
+  }
+  const panel=el('div','dictpanel dict-one hidden'); panel.id='dictOnePanel';
+  c.appendChild(panel);
+  api('dict_select?verse_ids='+verses.map(v=>v.id).join(',')).then(map=>{
+    DICT_SELECT_MAP=map||{};
+    for(const vid in DICT_SELECT_MAP){
+      for(const idx in DICT_SELECT_MAP[vid]){
+        const sp=spanMap[vid+':'+idx];
+        if(sp){ sp.classList.add('on'); sp.onclick=()=>pickDictWord(vid, idx, sp); }
+      }
+    }
+    if(S.dictWord){                                  // restore selection after a repaint
+      const sp=spanMap[S.dictWord.k];
+      if(sp){ sp.classList.add('sel'); renderOneWord(S.dictWord, false); }
+    }
+  }).catch(()=>{});
+}
+function pickDictWord(vid, idx, sp){
+  const entry=(DICT_SELECT_MAP[vid]||{})[idx]; if(!entry) return;
+  document.querySelectorAll('.dw.sel').forEach(x=>x.classList.remove('sel'));
+  sp.classList.add('sel');
+  S.dictWord={k:vid+':'+idx, entry, vid, word:(sp.textContent||'').trim()};
+  renderOneWord(S.dictWord, true);
+}
+// the single-word row: מילה · תרגום ארמי · ערבית · תרגום המילה (the accurate,
+// context Hebrew). Tapping the row opens the full breakdown by source.
+function renderOneWord(sel, scroll){
+  const entry=sel.entry||{};
+  const panel=$('dictOnePanel'); if(!panel) return;
+  panel.classList.remove('hidden'); panel.innerHTML='';
+  const close=el('button','dict-one-close','✕'); close.title=t('close'); close.setAttribute('aria-label',t('close'));
+  close.onclick=()=>{ panel.classList.add('hidden'); panel.innerHTML=''; S.dictWord=null;
+    document.querySelectorAll('.dw.sel').forEach(x=>x.classList.remove('sel')); };
+  panel.appendChild(close);
+  const sc=el('div','dict-scroll'); const tbl=el('table','wtbl');
+  const hr=el('tr');
+  for(const h of [t('col_word'),t('col_aram'),t('col_arabic'),t('col_wordtrans')]) hr.appendChild(el('th',null,esc(h)));
+  tbl.appendChild(hr);
+  const tr=el('tr');
+  tr.appendChild(el('td','wt-word',esc(sel.word||entry.word||'—')));
+  const aramTd=el('td','wt-aram'); aramTd.innerHTML=esc(entry.aramaic||'—');
+  if(entry.aramaic) aramTd.appendChild(el('span','more-arrow','⬆'));
+  tr.appendChild(aramTd);
+  tr.appendChild(el('td','wt-ar', entry.arabic?('<span dir="rtl">'+esc(entry.arabic)+'</span>'):'—'));
+  const transTd=el('td','wt-trans');
+  transTd.appendChild(el('div','wt-he', esc(entry.he||entry.meaning||'—')));
+  if(entry.ar_he && entry.ar_he!==entry.he){            // the Arabic→Hebrew cross-check, when it adds something
+    const a=el('div','wt-arhe', esc(entry.ar_he)); a.title=t('ws_from_arabic'); transTd.appendChild(a);
+  }
+  tr.appendChild(transTd);
+  tr.classList.add('tappable'); tr.onclick=()=>showWordSources(sel);
+  tbl.appendChild(tr); sc.appendChild(tbl); panel.appendChild(sc);
+  panel.appendChild(el('div','dict-one-tap', t('ws_tap_hint')));
+  if(scroll) scrollToEl('#dictOnePanel');
+}
+// the word's translation broken down by source: the accurate verse translation, the
+// Tal-dictionary entry (the verse-context sense first, then the full entry), and the
+// Arabic (with its back-translation once generated).
+async function showWordSources(sel){
+  const entry=sel.entry||{};
+  const body=$('popupBody'); body.innerHTML=''; $('popupTitle').textContent=sel.word||entry.word||entry.he||'';
+  $('popup').classList.remove('hidden');
+  // 1) the accurate word translation (closest to the verse)
+  if(entry.he){
+    body.appendChild(el('div','ws-h', t('ws_translation')));
+    const blk=el('div','ws-block');
+    blk.appendChild(el('div','ws-val', esc(entry.he)));
+    blk.appendChild(el('div','ws-from', t('ws_from_targum')));
+    body.appendChild(blk);
+  }
+  // 2) Tal's dictionary — the verse-context gloss first, then the full entry
+  body.appendChild(el('div','ws-h', t('ws_tal')));
+  if(entry.tal){
+    const blk=el('div','ws-block');
+    blk.appendChild(el('div','ws-val', esc(entry.tal)));
+    blk.appendChild(el('div','ws-from', entry.tal_ctx?t('ws_tal_ctx'):t('ws_tal_gen')));
+    body.appendChild(blk);
+  }
+  const loading=el('div','note',t('searching')); body.appendChild(loading);
+  let d=null; try{ d=await api('tal_lookup?word='+encodeURIComponent(entry.aramaic||'')); }catch(e){}
+  loading.remove();
+  const roots=(d&&d.roots)||[];
+  for(const rt of roots){
+    body.appendChild(el('div','tal-head','שורש '+esc(rt.root)));
+    if(rt.senses && rt.senses.length){
+      for(const s of rt.senses){
+        const it=el('div','tal-sense');
+        let lead=''; if(s.lemma) lead+='<b>'+esc(s.lemma)+'</b> '; if(s.pos) lead+='<span class="pos">'+esc(s.pos)+'</span> ';
+        it.innerHTML=lead+esc(s.gloss||'');
+        if(s.page) it.appendChild(el('span','tal-pg','  ('+t('tal_page')+' '+esc(String(s.page))+')'));
+        body.appendChild(it);
+      }
+    }
+    if(rt.torah && rt.torah.length){
+      body.appendChild(el('div','tal-sec',t('tal_torah')+' ('+rt.torah_count+')'));
+      const wrap=el('div','tal-locs');
+      for(const loc of rt.torah) wrap.appendChild(el('span','tal-loc', esc(loc.book+' '+loc.ch+':'+loc.vn)));
+      if(rt.torah_count>rt.torah.length) wrap.appendChild(el('span','tal-more','…'));
+      body.appendChild(wrap);
+    }
+  }
+  // 3) the Arabic source (its Hebrew back-translation will be added once generated)
+  if(entry.arabic){
+    body.appendChild(el('div','ws-h', t('ws_arabic')));
+    const blk=el('div','ws-block');
+    blk.appendChild(el('div','ws-val','<span dir="rtl">'+esc(entry.arabic)+'</span>'));
+    if(entry.ar_he){ blk.appendChild(el('div','ws-val', esc(entry.ar_he)));
+                     blk.appendChild(el('div','ws-from', t('ws_from_arabic'))); }
+    else blk.appendChild(el('div','ws-from ws-pending', t('ws_arabic_pending')));
+    body.appendChild(blk);
+  }
+}
+
+// ── dictionary (legacy full-table — still used under translation panels) ──────
 async function buildDict(c, verses){ await renderDict(c, verses); }
 function maybeDict(c, verses){ if(S.dict) renderDict(c, verses); }
 async function renderDict(c, verses){
@@ -1576,7 +1730,7 @@ $('searchBtn').onclick=()=>showSearch(true);
 $('backBtn').onclick=()=>{ spinBack($('backBtn')); goBack(); };
 
 // every content/display mode is mutually exclusive — turning one on clears the rest
-function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=false; }
+function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=false; S.dictWord=null; DICT_SELECT_MAP={}; }
 $('fontBtn').onclick=()=>{ const was=S.samFont; clearModes(); S.samFont=!was; syncToolbar(true); paintVerses(); };
 // "תרגומי התורה" — opens a small picker (ארמי / ערבי / אנגלי), marking the active one
 $('translateBtn').onclick=()=>{
@@ -1610,7 +1764,7 @@ function scrollToEl(selector){
   };
   setTimeout(tick,60);
 }
-$('dictBtn').onclick=()=>{ const was=S.dict; clearModes(); S.dict=!was; syncToolbar(true); paintVerses(); if(S.dict) scrollToEl('.dictpanel'); };
+$('dictBtn').onclick=()=>{ const was=S.dict; clearModes(); S.dict=!was; syncToolbar(true); paintVerses(); };
 function togglePanel(name){
   const was = (S.panel===name);
   clearModes();
@@ -2421,39 +2575,112 @@ window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferr
 window.addEventListener('appinstalled', () => { deferredInstall = null; });
 const INSTALL_TXT = {
   he:{ not_done:'ההתקנה לא הושלמה. אפשר לנסות שוב מהתפריט בכל עת.', already:'האפליקציה כבר מותקנת ופועלת כאפליקציה. 🎉',
-       ios_h:'התקנה באייפון / אייפד', ios:['פתח את האתר ב-<b>Safari</b>.','הקש על כפתור <b>השיתוף</b> (ריבוע עם חץ כלפי מעלה) שבתחתית המסך.','בחר <b>"הוסף למסך הבית"</b> ואשר.'],
-       other_h:'התקנה במחשב / אנדרואיד', other:['ב-<b>Chrome / Edge</b>: לחץ על סמל ההתקנה <b>⊕</b> בשורת הכתובת, או תפריט הדפדפן (⋮) → <b>"התקנת האפליקציה"</b>.','אשר את ההתקנה.'],
+       ios_h:'התקנה באייפון / אייפד', ios:['הקש על כפתור <b>השיתוף</b> (ריבוע עם חץ כלפי מעלה) בסרגל התחתון של Safari.','גלול ובחר <b>„הוסף למסך הבית"</b>.','הקש <b>„הוסף"</b> בפינה העליונה — וזהו.'],
+       ios_only:'פעולה זו אפשרית רק בדפדפן <b>Safari</b>.',
+       android_h:'התקנה באנדרואיד', android:['הקש על תפריט <b>שלוש הנקודות</b> (⋮) בפינה העליונה.','בחר <b>„התקנת אפליקציה"</b> או <b>„הוספה למסך הבית"</b>.','אשר את ההוספה.'],
+       desktop_h:'התקנה במחשב', desktop:['ב-<b>Chrome / Edge</b>: לחץ על סמל ההתקנה <b>⊕</b> בשורת הכתובת, או תפריט הדפדפן (⋮) → <b>„התקנת האפליקציה"</b>.','אשר את ההתקנה.'],
+       inapp_warn:'אתה גולש מתוך דפדפן פנימי של אפליקציה אחרת (וואטסאפ / פייסבוק וכד׳) שאינו תומך בהתקנה. יש לפתוח תחילה את הדף בדפדפן רגיל.',
+       inapp:['הקש על תפריט <b>שלוש הנקודות</b> בפינה.','בחר <b>„פתח בדפדפן"</b> או <b>„פתח ב-Safari / Chrome"</b>.','בדפדפן: הקש <b>שיתוף</b> ← <b>„הוסף למסך הבית"</b>, או תפריט (⋮) ← <b>„התקנת אפליקציה"</b>.'],
        name:'ייווצר קיצור בשם ' },
   en:{ not_done:'Installation was not completed. You can try again from the menu anytime.', already:'The app is already installed and running. 🎉',
-       ios_h:'Install on iPhone / iPad', ios:['Open the site in <b>Safari</b>.','Tap the <b>Share</b> button (a square with an up arrow) at the bottom.','Choose <b>"Add to Home Screen"</b> and confirm.'],
-       other_h:'Install on desktop / Android', other:['In <b>Chrome / Edge</b>: click the install icon <b>⊕</b> in the address bar, or the browser menu (⋮) → <b>"Install app"</b>.','Confirm the installation.'],
+       ios_h:'Install on iPhone / iPad', ios:['Tap the <b>Share</b> button (a square with an up arrow) in Safari’s bottom bar.','Scroll and choose <b>“Add to Home Screen”</b>.','Tap <b>“Add”</b> in the top corner — done.'],
+       ios_only:'This works only in the <b>Safari</b> browser.',
+       android_h:'Install on Android', android:['Tap the <b>three-dots</b> menu (⋮) at the top corner.','Choose <b>“Install app”</b> or <b>“Add to Home screen”</b>.','Confirm to add.'],
+       desktop_h:'Install on desktop', desktop:['In <b>Chrome / Edge</b>: click the install icon <b>⊕</b> in the address bar, or the browser menu (⋮) → <b>“Install app”</b>.','Confirm the installation.'],
+       inapp_warn:'You’re browsing inside another app’s built-in browser (WhatsApp / Facebook etc.), which can’t install. Open the page in a regular browser first.',
+       inapp:['Tap the <b>three-dots</b> menu in the corner.','Choose <b>“Open in browser”</b> or <b>“Open in Safari / Chrome”</b>.','In the browser: tap <b>Share</b> → <b>“Add to Home Screen”</b>, or menu (⋮) → <b>“Install app”</b>.'],
        name:'A shortcut will be created named ' },
   ar:{ not_done:'لم يكتمل التثبيت. يمكنك المحاولة ثانيةً من القائمة في أيّ وقت.', already:'التطبيق مثبّت ويعمل بالفعل. 🎉',
-       ios_h:'التثبيت على آيفون / آيباد', ios:['افتح الموقع في <b>Safari</b>.','اضغط على زرّ <b>المشاركة</b> (مربّع بسهم للأعلى) في الأسفل.','اختر <b>«إضافة إلى الشاشة الرئيسية»</b> وأكّد.'],
-       other_h:'التثبيت على الحاسوب / أندرويد', other:['في <b>Chrome / Edge</b>: اضغط رمز التثبيت <b>⊕</b> في شريط العنوان، أو قائمة المتصفّح (⋮) ← <b>«تثبيت التطبيق»</b>.','أكّد التثبيت.'],
+       ios_h:'التثبيت على آيفون / آيباد', ios:['اضغط على زرّ <b>المشاركة</b> (مربّع بسهم للأعلى) في الشريط السفلي في Safari.','مرّر واختر <b>«إضافة إلى الشاشة الرئيسية»</b>.','اضغط <b>«إضافة»</b> في الزاوية العلوية — وانتهى.'],
+       ios_only:'تعمل هذه الميزة في متصفح <b>Safari</b> فقط.',
+       android_h:'التثبيت على أندرويد', android:['اضغط على قائمة <b>النقاط الثلاث</b> (⋮) في الزاوية العلوية.','اختر <b>«تثبيت التطبيق»</b> أو <b>«إضافة إلى الشاشة الرئيسية»</b>.','أكّد الإضافة.'],
+       desktop_h:'التثبيت على الحاسوب', desktop:['في <b>Chrome / Edge</b>: اضغط رمز التثبيت <b>⊕</b> في شريط العنوان، أو قائمة المتصفّح (⋮) ← <b>«تثبيت التطبيق»</b>.','أكّد التثبيت.'],
+       inapp_warn:'أنت تتصفّح داخل متصفح مدمج لتطبيق آخر (واتساب / فيسبوك وغيرها) لا يدعم التثبيت. افتح الصفحة في متصفح عادي أولًا.',
+       inapp:['اضغط على قائمة <b>النقاط الثلاث</b> في الزاوية.','اختر <b>«فتح في المتصفح»</b> أو <b>«فتح في Safari / Chrome»</b>.','في المتصفح: اضغط <b>مشاركة</b> ← <b>«إضافة إلى الشاشة الرئيسية»</b>، أو القائمة (⋮) ← <b>«تثبيت التطبيق»</b>.'],
        name:'سيُنشأ اختصار باسم ' },
 };
-async function doInstall(){
-  const L = INSTALL_TXT[LANG] || INSTALL_TXT.he;
-  if(deferredInstall){
+// platform detection (incl. in-app browsers, where install is blocked) — mirrors
+// the dedicated install module so the menu/welcome flow gives the same guidance.
+function installPlatform(){
+  const ua = navigator.userAgent || '';
+  if(window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true) return 'installed';
+  const iOS = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const android = /Android/.test(ua);
+  const inApp = /FBAN|FBAV|FB_IAB|Instagram|Line\/|Twitter|WhatsApp|Snapchat|MicroMessenger/i.test(ua);
+  if(iOS) return (!inApp && !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua)) ? 'ios-safari' : 'ios-inapp';
+  if(android) return inApp ? 'android-inapp' : 'android';
+  return 'desktop';
+}
+// card strings (title / subtitle / button) and icons, styled like the dedicated
+// install module: a navy-and-gold parchment card with the אבני שהם logo.
+const INSTALL_UI = {
+  he:{ title:'הוספת התורה למסך הבית', sub:'גישה מהירה במסך מלא, גם ללא רשת.', install:'התקנת האפליקציה', close:'סגירה',
+       hint_and:'ההתקנה מוסיפה אייקון למסך הבית ופותחת את האפליקציה במסך מלא.', hint_desk:'יתווסף קיצור לאפליקציה שייפתח בחלון נפרד.' },
+  en:{ title:'Add the Torah to your home screen', sub:'Quick full-screen access, even offline.', install:'Install the app', close:'Close',
+       hint_and:'Installing adds an icon to your home screen and opens the app full-screen.', hint_desk:'A shortcut will be added that opens in its own window.' },
+  ar:{ title:'أضِف التوراة إلى الشاشة الرئيسية', sub:'وصول سريع بملء الشاشة، حتى دون اتصال.', install:'تثبيت التطبيق', close:'إغلاق',
+       hint_and:'يضيف التثبيت أيقونة إلى شاشتك الرئيسية ويفتح التطبيق بملء الشاشة.', hint_desk:'ستتم إضافة اختصار يُفتح في نافذة مستقلة.' },
+};
+const INSTALL_ICONS = {
+  share:'<svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 1.5v12" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round"/><path d="M6 5l4-4 4 4" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9H3.2A1.2 1.2 0 0 0 2 10.2v9.1A1.2 1.2 0 0 0 3.2 20.5h13.6A1.2 1.2 0 0 0 18 19.3v-9.1A1.2 1.2 0 0 0 16.8 9H15" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  add:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2.2" y="2.2" width="17.6" height="17.6" rx="4.4" stroke="#1F3864" stroke-width="1.7"/><path d="M11 7v8M7 11h8" stroke="#B8860B" stroke-width="1.9" stroke-linecap="round"/></svg>',
+  check:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  dots:'<svg width="6" height="22" viewBox="0 0 6 22" fill="none"><circle cx="3" cy="3" r="2.1" fill="#1F3864"/><circle cx="3" cy="11" r="2.1" fill="#1F3864"/><circle cx="3" cy="19" r="2.1" fill="#1F3864"/></svg>',
+  down:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v10" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round"/><path d="M6 8.5l4 4 4-4" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 16.5h13" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round"/></svg>',
+  warn:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2.5l8.7 15.1H2.3L11 2.5z" stroke="#B5731B" stroke-width="1.7" stroke-linejoin="round"/><path d="M11 8.5v4" stroke="#B5731B" stroke-width="1.8" stroke-linecap="round"/><circle cx="11" cy="15.4" r="1.05" fill="#B5731B"/></svg>',
+  logo:'<svg width="30" height="30" viewBox="0 2 40 36" fill="none" aria-hidden="true"><defs><linearGradient id="gShoham" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2D77E"/><stop offset=".5" stop-color="#C9A227"/><stop offset="1" stop-color="#8A6A12"/></linearGradient></defs><path d="M13 12 Q20 7 27 12" stroke="#C9A227" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="20" cy="9.4" r="1.9" fill="#C9A227" stroke="#6E5210" stroke-width=".6"/><ellipse cx="27" cy="21.5" rx="6.4" ry="8.6" fill="url(#gShoham)" stroke="#6E5210" stroke-width="1"/><ellipse cx="24.9" cy="18" rx="2.1" ry="3" fill="#FBEFC0" opacity=".55"/><line x1="22.3" y1="20" x2="31.7" y2="20" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="21.9" y1="22.4" x2="32.1" y2="22.4" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="22.3" y1="24.8" x2="31.7" y2="24.8" stroke="#6E5210" stroke-width=".65" opacity=".4"/><ellipse cx="13" cy="21.5" rx="6.4" ry="8.6" fill="url(#gShoham)" stroke="#6E5210" stroke-width="1"/><ellipse cx="10.9" cy="18" rx="2.1" ry="3" fill="#FBEFC0" opacity=".55"/><line x1="8.3" y1="20" x2="17.7" y2="20" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="7.9" y1="22.4" x2="18.1" y2="22.4" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="8.3" y1="24.8" x2="17.7" y2="24.8" stroke="#6E5210" stroke-width=".65" opacity=".4"/></svg>',
+};
+function instStep(glyph, html){
+  return '<li class="pwa-step"><span class="pwa-num"></span>'+
+         (glyph?'<span class="pwa-glyph">'+glyph+'</span>':'')+
+         '<span class="pwa-text">'+html+'</span></li>';
+}
+function instBody(plat, L, U){
+  const I = INSTALL_ICONS;
+  const btn = '<button class="pwa-btn" id="pwaCardInstall">'+I.down+' '+U.install+'</button>';
+  if(plat === 'installed') return '<p class="pwa-hint">'+L.already+'</p>';
+  if(plat === 'ios-safari')
+    return '<ul class="pwa-steps">'+instStep(I.share,L.ios[0])+instStep(I.add,L.ios[1])+instStep(I.check,L.ios[2])+
+           '</ul><p class="pwa-hint">'+L.ios_only+'</p>';
+  if(plat === 'ios-inapp' || plat === 'android-inapp')
+    return '<div class="pwa-warn">'+I.warn+'<p>'+L.inapp_warn+'</p></div><ul class="pwa-steps">'+
+           instStep(I.dots,L.inapp[0])+instStep('',L.inapp[1])+instStep(I.share,L.inapp[2])+'</ul>';
+  if(plat === 'android'){
+    if(deferredInstall) return btn+'<p class="pwa-hint">'+U.hint_and+'</p>';
+    return '<ul class="pwa-steps">'+instStep(I.dots,L.android[0])+instStep(I.add,L.android[1])+instStep(I.check,L.android[2])+'</ul>';
+  }
+  if(deferredInstall) return btn+'<p class="pwa-hint">'+U.hint_desk+'</p>';      // desktop
+  return '<ul class="pwa-steps">'+instStep('',L.desktop[0])+instStep('',L.desktop[1])+'</ul>';
+}
+function renderInstallCard(){
+  const L = INSTALL_TXT[LANG] || INSTALL_TXT.he, U = INSTALL_UI[LANG] || INSTALL_UI.he, I = INSTALL_ICONS;
+  const plat = installPlatform();
+  const card = $('installCard');
+  card.dir = LANG === 'en' ? 'ltr' : 'rtl';
+  const lbtn = (c,l)=>'<button class="pwa-lang'+(LANG===c?' is-on':'')+'" data-lang="'+c+'" type="button">'+l+'</button>';
+  card.innerHTML =
+    '<div class="pwa-head">'+
+      '<span class="pwa-mark" aria-hidden="true">'+I.logo+'</span>'+
+      '<div class="pwa-titles"><p class="pwa-title">'+U.title+'</p><p class="pwa-sub">'+U.sub+'</p></div>'+
+      '<button class="pwa-x" id="pwaCardClose" type="button" aria-label="'+U.close+'">×</button>'+
+    '</div>'+
+    '<div class="pwa-body">'+ instBody(plat, L, U) +'</div>'+
+    '<div class="pwa-foot"><div class="pwa-langs">'+lbtn('he','עב')+lbtn('en','EN')+lbtn('ar','ع')+'</div>'+
+      '<button class="pwa-snooze" id="pwaCardClose2" type="button">'+U.close+'</button></div>';
+  $('pwaCardClose').onclick = $('pwaCardClose2').onclick = ()=>$('installModal').classList.add('hidden');
+  card.querySelectorAll('.pwa-lang').forEach(b=>{ b.onclick=()=>{ setLang(b.dataset.lang); renderInstallCard(); }; });
+  const ib = $('pwaCardInstall');
+  if(ib) ib.onclick = async ()=>{
+    if(!deferredInstall) return;
     deferredInstall.prompt();
-    let outcome='dismissed';
-    try{ ({outcome} = await deferredInstall.userChoice); }catch(e){}
+    let outcome='dismissed'; try{ ({outcome}=await deferredInstall.userChoice); }catch(e){}
     deferredInstall = null;
-    if(outcome!=='accepted') showInfo(t('install_title'), `<div class="note">${L.not_done}</div>`);
-    return;
-  }
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-  const nameNote = `<div class="note">${L.name}<b>"${esc(t('app_title'))}"</b>.</div>`;
-  let h;
-  if(standalone) h = `<div class="note">${L.already}</div>`;
-  else {
-    const steps = ios ? L.ios : L.other, head = ios ? L.ios_h : L.other_h;
-    h = `<div class="help-h">${head}</div><ul class="help-list">`
-      + steps.map(x=>`<li>${x}</li>`).join('') + '</ul>' + nameNote;
-  }
-  showInfo(t('install_title'), h);
+    if(outcome === 'accepted') $('installModal').classList.add('hidden'); else renderInstallCard();
+  };
+}
+function doInstall(){
+  $('installModal').classList.remove('hidden');
+  renderInstallCard();
 }
 
 function showInfo(title, html){
