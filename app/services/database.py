@@ -1567,6 +1567,141 @@ def dict_form_locations(word, limit=80):
     return {'form': word, 'count': len(locs), 'locations': locs}
 
 
+# ── comprehensive word index: browse every dictionary word, then drill into one ──
+def dict_words_browse(start=0, limit=60, prefix=''):
+    """A page of the comprehensive word index (dict_word_index) — every Aramaic
+    word the dictionary knows, collapsed to one row per word with its meaning count
+    and Torah/Memar presence badges. `prefix` jumps to the first word from there on."""
+    conn = get_connection()
+    total = conn.execute(
+        "SELECT COUNT(*) FROM (SELECT word_norm FROM dict_word_index GROUP BY word_norm)").fetchone()[0]
+    if prefix:
+        pn = _norm_fin(prefix)
+        start = conn.execute(
+            "SELECT COUNT(*) FROM (SELECT word_norm FROM dict_word_index "
+            "WHERE word_norm < ? GROUP BY word_norm)", (pn,)).fetchone()[0]
+    try:
+        start = max(0, int(start))
+    except (TypeError, ValueError):
+        start = 0
+    rows = conn.execute(
+        "SELECT MIN(word) AS word, MAX(in_torah) AS it, MAX(in_memar) AS im, "
+        "COUNT(*) AS nm FROM dict_word_index GROUP BY word_norm "
+        "ORDER BY word_norm LIMIT ? OFFSET ?", (limit, start)).fetchall()
+    conn.close()
+    return {'start': start, 'limit': limit, 'total': total,
+            'items': [{'word': r['word'] or '', 'meanings': r['nm'],
+                       'in_torah': bool(r['it']), 'in_memar': bool(r['im'])} for r in rows]}
+
+
+def _hl_forms(norm_set, tokens_src):
+    """Of the whole-word tokens in `tokens_src`, the distinct ones whose folded key
+    is in `norm_set` — the surface forms a client should emphasise (used for Memar,
+    where the Aramaic forms match the dictionary's forms directly)."""
+    out, seen = [], set()
+    for w in re.findall(r'[א-ת]{2,}', tokens_src or ''):
+        if w in seen:
+            continue
+        seen.add(w)
+        if _norm_fin(w) in norm_set:
+            out.append(w)
+    return out
+
+
+def _hl_core(text, root_core):
+    """Hebrew Torah tokens whose weak-letter-stripped core equals the root's core —
+    the bridge for highlighting a root's word inside the Hebrew verse, where no
+    surface form is recorded (root_index.form is usually null). Conservative: an
+    exact core match, and only for cores of two letters or more."""
+    if not root_core or len(root_core) < 2:
+        return []
+    out, seen = [], set()
+    for w in re.findall(r'[א-ת]{2,}', text or ''):
+        if w in seen:
+            continue
+        seen.add(w)
+        if _norm_fin(w).translate(_WEAK_TAL) == root_core:
+            out.append(w)
+    return out
+
+
+def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
+    """Everything a clicked index word opens to, grouped by meaning (= root, the only
+    bridge between the Aramaic dictionary and the Hebrew Torah). For each meaning:
+    its Tal sense(s); the Torah verses where the SAME ROOT occurs (its full text,
+    plus the Hebrew surface forms to highlight); and the Tibåt Mårqe (Memar) passages
+    where an Aramaic form of the same root occurs (text + forms to highlight). The
+    'same meaning' guarantee is the shared root — homographs of different roots are
+    split into separate meanings, never mixed."""
+    wn = _norm_fin(word)
+    conn = get_connection()
+    q = "SELECT DISTINCT root, root_norm FROM dict_word_index WHERE word_norm=?"
+    args = [wn]
+    if root:
+        q += " AND root_norm=?"; args.append(_norm_fin(root))
+    wr = [r for r in conn.execute(q, args).fetchall() if (r['root_norm'] or '').strip()]
+
+    # all TM passages once (small), for the Memar scan
+    tm_rows = conn.execute(
+        "SELECT id, book_title, section, aramaic, hebrew FROM tm_sections ORDER BY sort_key").fetchall()
+
+    meanings = []
+    for row in wr:
+        rn, rt = row['root_norm'], row['root'] or ''
+        # senses straight off the dictionary, de-duplicated by gloss text
+        senses, seen_g = [], set()
+        for s in conn.execute(
+                "SELECT lemma, pos, gloss_he, printed FROM tal_auth_entries "
+                "WHERE root_norm=? AND TRIM(COALESCE(gloss_he,''))<>'' ORDER BY pdf, ord", (rn,)):
+            g = (s['gloss_he'] or '').strip()
+            if g in seen_g:
+                continue
+            seen_g.add(g)
+            senses.append({'lemma': s['lemma'] or '', 'pos': s['pos'] or '',
+                           'gloss': g, 'page': s['printed']})
+
+        # the root's Aramaic forms (for highlighting + the Memar scan) and Hebrew
+        # forms (for highlighting in the Torah verses)
+        aram_norm = set(r['word_norm'] for r in conn.execute(
+            "SELECT DISTINCT word_norm FROM dict_word_index WHERE root_norm=?", (rn,)))
+        aram_norm.add(wn)
+        root_core = rn.translate(_WEAK_TAL)         # for highlighting in Hebrew verses
+
+        # Torah occurrences of the root (same meaning), de-duplicated by verse
+        torah, seen_v = [], set()
+        for o in conn.execute(
+                "SELECT book, chapter, verse, verse_id FROM root_index "
+                "WHERE root_norm=? AND verse_id IS NOT NULL ORDER BY verse_id", (rn,)):
+            if o['verse_id'] in seen_v:
+                continue
+            seen_v.add(o['verse_id'])
+            torah.append(o)
+        torah_count = len(torah)
+        torah_out = []
+        for o in torah[:torah_limit]:
+            vt = conn.execute("SELECT text FROM verses WHERE id=?", (o['verse_id'],)).fetchone()
+            text = (vt['text'] if vt else '') or ''
+            torah_out.append({'book': o['book'], 'ch': o['chapter'], 'vn': o['verse'],
+                              'verse_id': o['verse_id'], 'text': text,
+                              'hi': _hl_core(text, root_core)})
+
+        # Memar (Tibåt Mårqe) passages with an Aramaic form of the same root
+        memar_all = []
+        for s in tm_rows:
+            hi = _hl_forms(aram_norm, s['aramaic'])
+            if hi:
+                memar_all.append({'id': s['id'], 'title': s['book_title'] or '',
+                                  'section': s['section'] or '',
+                                  'aramaic': s['aramaic'] or '', 'hebrew': s['hebrew'] or '',
+                                  'hi': hi})
+        memar_count = len(memar_all)
+        meanings.append({'root': rt, 'senses': senses,
+                         'torah': torah_out, 'torah_count': torah_count,
+                         'memar': memar_all[:memar_limit], 'memar_count': memar_count})
+    conn.close()
+    return {'word': word, 'meanings': meanings}
+
+
 def root_from_index(word):
     """A word's root from the index: find where the word occurs in the text, then
     match the typed word to the transliteration (pron) recorded for the occurrence

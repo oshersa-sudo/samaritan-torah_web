@@ -522,6 +522,40 @@ footer a{ color:var(--accent); text-decoration:none; }
 .dict-loc-ref{ flex:0 0 auto; color:var(--accent); font-weight:600; min-width:70px; }
 .dict-loc-q{ color:var(--dark); opacity:.85; }
 
+/* ── comprehensive word index: browsable grid + per-word detail ── */
+.dict-wgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(118px,1fr)); gap:6px; }
+.dict-wcell{ display:flex; flex-direction:column; align-items:flex-start; gap:3px; text-align:right;
+  border:1px solid #dfe4f0; border-radius:9px; background:#fff; padding:7px 9px; cursor:pointer; font:inherit; }
+.dict-wcell:hover{ background:#f3f5fb; border-color:var(--accent); }
+.dict-wword{ color:var(--navy); font-weight:700; font-size:calc(16px*var(--dict-fs,1)); }
+.dict-wbadges{ display:flex; gap:4px; }
+.dict-wb{ font-size:11px; line-height:1; padding:2px 5px; border-radius:9px; font-weight:700; }
+.dict-wb.tor{ background:#e8f0ff; color:var(--accent); }
+.dict-wb.mem{ background:#fdf0e3; color:#b9711e; }
+.dict-wb.mng{ background:#eef0f4; color:var(--muted); }
+.dict-back{ border:1px solid #cfd6e6; background:#fff; color:var(--navy); border-radius:8px;
+  padding:5px 12px; cursor:pointer; font:inherit; font-weight:600; margin-bottom:8px; }
+.dict-back:hover{ background:#f3f5fb; }
+.dict-detail-word{ color:var(--navy); font-weight:800; font-size:calc(22px*var(--dict-fs,1)); margin-bottom:6px; }
+.dict-mcard{ border-top:2px solid rgba(26,56,115,.15); padding-top:8px; margin-top:10px; }
+.dict-mroot{ color:var(--accent); font-weight:700; font-size:calc(15px*var(--dict-fs,1)); margin-bottom:3px; }
+.dict-senses{ background:#f7f9ff; border-radius:7px; padding:6px 9px; margin-bottom:6px; }
+.dict-sense{ color:var(--dark); font-size:calc(15px*var(--dict-fs,1)); line-height:1.55; padding:1px 0; }
+.dict-occ-h{ color:var(--navy); font-weight:700; font-size:calc(13.5px*var(--dict-fs,1));
+  margin:8px 0 4px; border-bottom:1px solid rgba(26,56,115,.12); padding-bottom:2px; }
+.dict-occ-list{ display:flex; flex-direction:column; }
+.dict-occ{ padding:5px 2px; border-top:1px dashed rgba(26,56,115,.1); }
+.dict-occ-ref{ display:inline-block; color:var(--accent); font-weight:600; font-size:calc(13px*var(--dict-fs,1)); margin-inline-end:7px; }
+.dict-occ-txt{ color:var(--dark); font-size:calc(15px*var(--dict-fs,1)); line-height:1.65; }
+.dict-occ-txt.aram{ color:#5a4326; }
+.dict-occ-heb{ color:var(--muted); font-size:calc(14px*var(--dict-fs,1)); line-height:1.55; margin-top:2px; }
+.dict-hl{ background:#fff1bf; border-radius:3px; padding:0 1px; font-weight:700; color:var(--navy); }
+.dict-noocc{ font-style:italic; }
+.dict-more{ color:var(--muted); font-size:12.5px; padding:4px 2px; }
+.dict-occ-btn{ display:inline-block; margin-top:8px; border:1px solid var(--accent); background:#f3f7ff;
+  color:var(--accent); border-radius:9px; padding:6px 12px; cursor:pointer; font:inherit; font-weight:600; }
+.dict-occ-btn:hover{ background:var(--accent); color:#fff; }
+
 /* ── full-book reader (Tibåt Mårqe / Ṣadaqah al-Ḥakīm) — its own full window ── */
 .modal.book-full{ align-items:stretch; justify-content:stretch; padding:0; }
 .modal-box.book-reader{ max-width:none; width:100%; height:100%; max-height:100%;

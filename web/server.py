@@ -766,6 +766,22 @@ def api_dict_locations():
     return jsonify(db.dict_form_locations(request.args.get('word', '')))
 
 
+# ── comprehensive word index: browse every dictionary word · drill into one word ──
+@app.route('/api/dict_words')
+def api_dict_words():
+    return jsonify(db.dict_words_browse(request.args.get('start', '0'),
+                                        prefix=request.args.get('prefix', '')))
+
+
+@app.route('/api/dict_word_detail')
+def api_dict_word_detail():
+    """A clicked index word, grouped by meaning (root): Tal sense(s), the Torah
+    verses where that root occurs, and the Tibåt Mårqe passages with the same root —
+    every result guaranteed to share the word's meaning via its root."""
+    return jsonify(db.dict_word_detail(request.args.get('word', ''),
+                                       root=request.args.get('root') or None))
+
+
 @app.route('/api/root_box')
 def api_root_box():
     """Index-extracted root for the editable root box (runs as the user types)."""
