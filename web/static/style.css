@@ -555,6 +555,8 @@ footer a{ color:var(--accent); text-decoration:none; }
 .dict-occ-btn{ display:inline-block; margin-top:8px; border:1px solid var(--accent); background:#f3f7ff;
   color:var(--accent); border-radius:9px; padding:6px 12px; cursor:pointer; font:inherit; font-weight:600; }
 .dict-occ-btn:hover{ background:var(--accent); color:#fff; }
+.dict-sense-banner{ display:inline-block; background:#fff6da; border:1px solid #e9c97a; color:#6b531a;
+  border-radius:7px; padding:3px 10px; font-weight:700; font-size:calc(14px*var(--dict-fs,1)); margin:2px 0 4px; }
 
 /* ── full-book reader (Tibåt Mårqe / Ṣadaqah al-Ḥakīm) — its own full window ── */
 .modal.book-full{ align-items:stretch; justify-content:stretch; padding:0; }

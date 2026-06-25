@@ -2152,6 +2152,8 @@ async function dictWordDetail(word, root){
   for(const m of d.meanings){
     const card=el('div','dict-mcard');
     card.appendChild(el('div','dict-mroot', esc(t('tm_col_root')+' '+m.root)));
+    if(m.sense_label) card.appendChild(el('div','dict-sense-banner', '◆ '+esc(m.sense_label)));
+    const meaningTag=m.sense_label ? ('「'+m.sense_label+'」') : t('dict_same_meaning');
     if(m.senses && m.senses.length){
       const sl=el('div','dict-senses');
       for(const s of m.senses){
@@ -2165,7 +2167,7 @@ async function dictWordDetail(word, root){
     }
     // Torah occurrences (same meaning)
     card.appendChild(el('div','dict-occ-h',
-      esc(t('dict_in_torah_sec'))+' ('+m.torah_count+') · '+esc(t('dict_same_meaning'))));
+      esc(t('dict_in_torah_sec'))+' ('+m.torah_count+') · '+esc(meaningTag)));
     if(m.torah && m.torah.length){
       const wrap=el('div','dict-occ-list');
       for(const o of m.torah){
@@ -2180,7 +2182,7 @@ async function dictWordDetail(word, root){
     } else card.appendChild(el('div','note dict-noocc', t('dict_no_occ')));
     // Tibåt Mårqe occurrences (same meaning)
     card.appendChild(el('div','dict-occ-h',
-      esc(t('dict_in_memar_sec'))+' ('+m.memar_count+') · '+esc(t('dict_same_meaning'))));
+      esc(t('dict_in_memar_sec'))+' ('+m.memar_count+') · '+esc(meaningTag)));
     if(m.memar && m.memar.length){
       const wrap=el('div','dict-occ-list');
       for(const o of m.memar){

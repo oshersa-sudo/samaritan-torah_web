@@ -1660,21 +1660,42 @@ def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
             senses.append({'lemma': s['lemma'] or '', 'pos': s['pos'] or '',
                            'gloss': g, 'page': s['printed']})
 
-        # the root's Aramaic forms (for highlighting + the Memar scan) and Hebrew
-        # forms (for highlighting in the Torah verses)
+        # precise-meaning split (Phase 2): if the root carries more than one sense
+        # and the clicked word is pinned to one of them, filter the occurrences to
+        # that sense; otherwise fall back to the whole root (same behaviour as before
+        # tagging existed). `t_sense` / `m_sense` are empty when the root is untagged.
+        sense_labels = {r['sense_id']: (r['label'] or '')
+                        for r in conn.execute(
+                            "SELECT sense_id, label FROM dict_sense WHERE root_norm=?", (rn,))}
+        target = None
+        if len(sense_labels) > 1:
+            tr = conn.execute("SELECT sense_id FROM dict_word_sense "
+                              "WHERE word_norm=? AND root_norm=?", (wn, rn)).fetchone()
+            target = tr['sense_id'] if tr else None
+        t_sense, m_sense = {}, {}
+        if target is not None:
+            t_sense = {r['verse_id']: r['sense_id'] for r in conn.execute(
+                "SELECT verse_id, sense_id FROM dict_torah_sense WHERE root_norm=?", (rn,))}
+            m_sense = {r['section_id']: r['sense_id'] for r in conn.execute(
+                "SELECT section_id, sense_id FROM dict_memar_sense WHERE root_norm=?", (rn,))}
+
+        # the root's Aramaic forms (for highlighting + the Memar scan)
         aram_norm = set(r['word_norm'] for r in conn.execute(
             "SELECT DISTINCT word_norm FROM dict_word_index WHERE root_norm=?", (rn,)))
         aram_norm.add(wn)
         root_core = rn.translate(_WEAK_TAL)         # for highlighting in Hebrew verses
 
-        # Torah occurrences of the root (same meaning), de-duplicated by verse
+        # Torah occurrences (de-duplicated by verse, filtered to the sense if pinned)
         torah, seen_v = [], set()
         for o in conn.execute(
                 "SELECT book, chapter, verse, verse_id FROM root_index "
                 "WHERE root_norm=? AND verse_id IS NOT NULL ORDER BY verse_id", (rn,)):
-            if o['verse_id'] in seen_v:
+            vid = o['verse_id']
+            if vid in seen_v:
                 continue
-            seen_v.add(o['verse_id'])
+            if t_sense and t_sense.get(vid) != target:   # wrong sense for this verse
+                continue
+            seen_v.add(vid)
             torah.append(o)
         torah_count = len(torah)
         torah_out = []
@@ -1685,9 +1706,11 @@ def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
                               'verse_id': o['verse_id'], 'text': text,
                               'hi': _hl_core(text, root_core)})
 
-        # Memar (Tibåt Mårqe) passages with an Aramaic form of the same root
+        # Memar passages with an Aramaic form of the root (filtered to the sense)
         memar_all = []
         for s in tm_rows:
+            if m_sense and m_sense.get(s['id']) != target:
+                continue
             hi = _hl_forms(aram_norm, s['aramaic'])
             if hi:
                 memar_all.append({'id': s['id'], 'title': s['book_title'] or '',
@@ -1696,6 +1719,8 @@ def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
                                   'hi': hi})
         memar_count = len(memar_all)
         meanings.append({'root': rt, 'senses': senses,
+                         'sense_label': sense_labels.get(target) if target is not None else '',
+                         'sense_split': bool(target is not None and (t_sense or m_sense)),
                          'torah': torah_out, 'torah_count': torah_count,
                          'memar': memar_all[:memar_limit], 'memar_count': memar_count})
     conn.close()
