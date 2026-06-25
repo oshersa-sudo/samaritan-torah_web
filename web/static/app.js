@@ -73,6 +73,11 @@ const I18N = {
     dict_in_dict:'נמצא במילון כערך:', dict_form_hint:'לחץ על צורה לקבלת כל מיקומיה במילון',
     dict_locations_title:'מיקומים במילון', dict_loc_count:'מופעים', dict_open_page:'פתח עמוד במילון',
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
+    whatsnew_pages:[
+      '<p><b>גרסה 1.0 — המהדורה הוובית</b></p><ul><li>עיון בתורה השומרונית בחלוקה יהודית ושומרונית</li><li>כתב עברי-שומרוני ועברי; תרגומים: ארמי · ערבי · אנגלי</li><li>השוואה לנוסח המסורה, פרשנות יהודית, חיפוש ושיתוף</li></ul><p><b>גרסה 1.1 — מילונים ושורשים</b></p><ul><li>מילון הארמית של א. טל; "מילון מילים" טבלאי לכל מילה בפסוק</li><li>חיפוש מתקדם לפי שורש, בארמית, והצגת פירושים</li></ul>',
+      '<p><b>גרסה 1.2 — ממקור שומרון</b></p><ul><li>תיבת מרקה, המסורת השומרונית, פירוש צדקה אל-חכים, סוד הלבבות, ספר האסאטיר</li><li>"פירוש הפסוק" — פירוש רציף רב-מקורי מוטמע</li></ul><p><b>גרסה 1.3 — חילופי נוסח והשוואות</b></p><ul><li>חילופי נוסח ממהדורת פון גאל, עם עדי-נוסח ותיאורי כתבי-יד</li><li>השוואה גם לתרגום השבעים; מחליף שפת ממשק (עברית/אנגלית/ערבית)</li></ul>',
+      '<p><b>גרסה 1.4 — חוויית משתמש</b></p><ul><li>מסך פתיחה, חלון "ברוכים הבאים", אנימציית הפיכת דף, דפדוף רציף בין פרקים וספרים</li><li>כתב שומרוני מיושר, זום טקסט וקיפול הסרגל</li></ul><p><b>גרסה 1.5 — הספרייה השומרונית</b></p><ul><li>קוראי ספר מלאים: <b>תיבת מרקה</b> (ארמית/עברית) ו<b>פירוש צדקה אל-חכים</b> לכל בראשית (עברית/ערבית) — עם תוכן עניינים, חיפוש וקפיצה לפסוק</li><li>המילון הארמי שודרג: דפדוף עמודים, אינדקס, וכל מיקומי המילה במילון</li><li>כפתורי הגדלת טקסט בקוראים ובמילון</li></ul><p class="wc-sign"><b>תהנו!</b></p>',
+    ],
     interp_unavail:'פונקציה זו אינה פעילה באופן זמני.',
     welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
     welcome_pages:[
@@ -159,6 +164,11 @@ const I18N = {
     dict_in_dict:'Found in the dictionary as a head-word:', dict_form_hint:'Tap a form for all its locations in the dictionary',
     dict_locations_title:'Locations in the dictionary', dict_loc_count:'occurrences', dict_open_page:'Open the dictionary page',
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
+    whatsnew_pages:[
+      '<p><b>v1.0 — the web edition</b></p><ul><li>Study the Samaritan Torah in the Jewish and Samaritan divisions</li><li>Samaritan-Hebrew & Hebrew scripts; translations: Aramaic · Arabic · English</li><li>Comparison to the Masorah, Jewish commentary, search and sharing</li></ul><p><b>v1.1 — dictionaries & roots</b></p><ul><li>A. Tal’s Aramaic dictionary; a per-word table for every word in a verse</li><li>Advanced search by root, in the Aramaic, with meanings</li></ul>',
+      '<p><b>v1.2 — Samaritan sources</b></p><ul><li>Tībåt Mårqe, the Samaritan tradition, Ṣadaqah al-Ḥakīm, Sīr al-Qulūb, the Book of Asatir</li><li>“Verse commentary” — a continuous, multi-source reading</li></ul><p><b>v1.3 — textual variants & comparisons</b></p><ul><li>von Gall’s variants, with witnesses and manuscript descriptions</li><li>Comparison to the Septuagint; UI language switcher (he/en/ar)</li></ul>',
+      '<p><b>v1.4 — user experience</b></p><ul><li>Entry splash, a Welcome screen, a page-turn animation, continuous chapter & book paging</li><li>Justified Samaritan script, text zoom, and a collapsible bar</li></ul><p><b>v1.5 — the Samaritan Library</b></p><ul><li>Full-book readers: <b>Tībåt Mårqe</b> (Aramaic/Hebrew) and <b>Ṣadaqah al-Ḥakīm</b> on all of Genesis (Hebrew/Arabic) — with contents, search and verse jumps</li><li>The Aramaic dictionary upgraded: page browsing, an index, and every location of a word</li><li>Text-zoom buttons in the readers and the dictionary</li></ul><p class="wc-sign"><b>Enjoy!</b></p>',
+    ],
     interp_unavail:'This feature is temporarily unavailable.',
     welcome_title:'Welcome to the Avnei Shoham project',
     welcome_pages:[
@@ -245,6 +255,11 @@ const I18N = {
     dict_in_dict:'موجودة في المعجم كمدخل:', dict_form_hint:'اضغط صيغةً لكلّ مواضعها في المعجم',
     dict_locations_title:'المواضع في المعجم', dict_loc_count:'مواضع', dict_open_page:'افتح صفحة المعجم',
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
+    whatsnew_pages:[
+      '<p><b>الإصدار 1.0 — النسخة الويبية</b></p><ul><li>مطالعة التوراة السامرية بالتقسيمين اليهودي والسامري</li><li>الخطّان العبري-السامري والعبري؛ ترجمات: آرامية · عربية · إنجليزية</li><li>مقارنة بالنصّ الماسوري، تفسير يهودي، بحث ومشاركة</li></ul><p><b>الإصدار 1.1 — المعاجم والجذور</b></p><ul><li>معجم أ. طال الآرامي؛ جدول لكلّ كلمة في الآية</li><li>بحث متقدّم حسب الجذر، في الآرامية، مع المعاني</li></ul>',
+      '<p><b>الإصدار 1.2 — مصادر سامرية</b></p><ul><li>تيبات مارقه، التقليد السامري، تفسير صدقة الحكيم، سرّ القلوب، كتاب الأساطير</li><li>«تفسير الآية» — قراءة متّصلة متعدّدة المصادر</li></ul><p><b>الإصدار 1.3 — اختلافات النصّ والمقارنات</b></p><ul><li>اختلافات فون غال، مع الشهود وأوصاف المخطوطات</li><li>مقارنة بالسبعينية؛ مبدّل لغة الواجهة (he/en/ar)</li></ul>',
+      '<p><b>الإصدار 1.4 — تجربة المستخدم</b></p><ul><li>شاشة بداية، نافذة ترحيب، تأثير قلب صفحة، تصفّح متّصل بين الأصحاحات والأسفار</li><li>ضبط الخطّ السامري، تكبير النصّ، وشريط قابل للطيّ</li></ul><p><b>الإصدار 1.5 — المكتبة السامرية</b></p><ul><li>قارئان كاملان: <b>تيبات مارقه</b> (آرامية/عبرية) و<b>تفسير صدقة الحكيم</b> لكامل التكوين (عبرية/عربية) — مع محتويات وبحث وقفزٍ إلى الآية</li><li>تطوير المعجم الآرامي: تصفّح الصفحات، فهرس، وكلّ مواضع الكلمة في المعجم</li><li>أزرار تكبير النصّ في القارئَين والمعجم</li></ul><p class="wc-sign"><b>استمتعوا!</b></p>',
+    ],
     interp_unavail:'هذه الميزة غير متاحة مؤقّتًا.',
     welcome_title:'أهلًا بكم في مشروع «أبني شوهم»',
     welcome_pages:[
@@ -1875,7 +1890,7 @@ function menuAction(a){
   else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
   else if(a==='lang')      $('langModal').classList.remove('hidden');
-  else if(a==='whatsnew')  showWhatsNew();
+  else if(a==='whatsnew')  showWhatsNewCarousel();
   else if(a==='help')      showHelp();
   else if(a==='version')   showInfo('גרסא נוכחית', `<div class="ver-num">גרסה ${esc(window.APP_VERSION||'1.0')}</div>`);
   else if(a==='contact')   openContact();
@@ -1885,9 +1900,17 @@ function menuAction(a){
 let DICT_MODE='search';
 function openDictApp(){
   $('dictModal').classList.remove('hidden');
+  dictApplyFs();
   dictSetMode('search');
   setTimeout(()=>$('dictAppInput').focus(), 50);
 }
+// text zoom for the dictionary app
+let DICT_FS = parseFloat(localStorage.getItem('as_dict_fs')||'1')||1;
+function dictApplyFs(){ $('dictAppBody').style.setProperty('--dict-fs', DICT_FS); }
+function dictZoom(d){ DICT_FS=Math.min(2.2, Math.max(0.8, +(DICT_FS+d).toFixed(2)));
+  localStorage.setItem('as_dict_fs', DICT_FS); dictApplyFs(); }
+$('dZoomIn').onclick=()=>dictZoom(0.12);
+$('dZoomOut').onclick=()=>dictZoom(-0.12);
 function dictSetMode(mode){
   DICT_MODE=mode;
   document.querySelectorAll('.dict-tab').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
@@ -2088,11 +2111,17 @@ const BOOK_CFG = {
            {key:'arabic', labelKey:'rd_ar', dir:'rtl'}],
   },
 };
-let RD = { key:null, cfg:null, chapter:null, lang:null };
+let RD = { key:null, cfg:null, chapter:null, lang:null, fs:parseFloat(localStorage.getItem('as_rd_fs')||'1')||1 };
+function rdApplyFs(){ $('rdBody').style.setProperty('--rd-fs', RD.fs); }
+function rdZoom(d){ RD.fs=Math.min(2.2, Math.max(0.8, +(RD.fs+d).toFixed(2)));
+  localStorage.setItem('as_rd_fs', RD.fs); rdApplyFs(); }
+$('rdZoomIn').onclick=()=>rdZoom(0.12);
+$('rdZoomOut').onclick=()=>rdZoom(-0.12);
 function openReader(key){
   RD.key=key; RD.cfg=BOOK_CFG[key]; RD.chapter=null; RD.lang=RD.cfg.langs[0].key;
   $('rdInput').value=''; $('rdLang').classList.add('hidden');
   $('bookModal').classList.remove('hidden');
+  rdApplyFs();
   rdShowToc();
 }
 function openTmBook(){ openReader('tm'); }
@@ -2789,11 +2818,12 @@ function wcActiveIndex(track){
     const d=Math.abs((r.left+r.width/2)-tc); if(d<bd){ bd=d; best=i; } });
   return best;
 }
-function showWelcome(){
+// a paginated carousel (dots, swipe) in #welcomeModal — used by both the welcome
+// screen (with the "קראתי" flag) and the "what's new" screen (no flag).
+function showCarousel(opts){
   return new Promise(resolve=>{
-    const L=I18N[LANG]||I18N.he;
-    const pages = L.welcome_pages || [L.welcome_body || ''];
-    $('wcTitle').textContent = t('welcome_title');
+    const pages = opts.pages || [];
+    $('wcTitle').textContent = opts.title || '';
     const track=$('wcTrack'); track.innerHTML='';
     track.style.direction = (LANG==='en') ? 'ltr' : 'rtl';
     pages.forEach(html=>{ const pg=el('div','wc-page'); pg.innerHTML=html; track.appendChild(pg); });
@@ -2801,28 +2831,42 @@ function showWelcome(){
     const setActive=i=>[...dots.children].forEach((d,j)=>d.classList.toggle('active', j===i));
     pages.forEach((_,i)=>{ const d=el('button','wc-dot'+(i===0?' active':''));
       d.setAttribute('aria-label', String(i+1));
-      d.onclick=()=>{ setActive(i);   // update immediately (don't rely only on the scroll event)
-        track.children[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); };
+      d.onclick=()=>{ setActive(i); track.children[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); };
       dots.appendChild(d); });
     let st=null;
     track.onscroll=()=>{ clearTimeout(st); st=setTimeout(()=>setActive(wcActiveIndex(track)), 60); };
-    const read=$('wcRead'); read.checked=false;          // off by default
-    read.onchange=()=>{ if(read.checked) localStorage.setItem('as_welcome_read','1');
-                        else localStorage.removeItem('as_welcome_read'); };
-    const done=()=>{ if(read.checked) localStorage.setItem('as_welcome_read','1');
+    const readWrap=document.querySelector('#welcomeModal .wc-read'), read=$('wcRead');
+    if(opts.withRead){ readWrap.classList.remove('hidden'); read.checked=false;
+      read.onchange=()=>{ if(read.checked) localStorage.setItem('as_welcome_read','1');
+                          else localStorage.removeItem('as_welcome_read'); };
+    } else { readWrap.classList.add('hidden'); }
+    const done=()=>{ if(opts.withRead && read.checked) localStorage.setItem('as_welcome_read','1');
                      $('welcomeModal').classList.add('hidden'); resolve(); };
     $('wcClose').onclick=done;
     $('welcomeModal').classList.remove('hidden');
-    requestAnimationFrame(()=>{ track.children[0].scrollIntoView({inline:'center', block:'nearest'}); setActive(0); });
+    requestAnimationFrame(()=>{ if(track.children[0]) track.children[0].scrollIntoView({inline:'center', block:'nearest'}); setActive(0); });
   });
+}
+function showWelcome(){
+  const L=I18N[LANG]||I18N.he;
+  return showCarousel({ title:t('welcome_title'), pages:L.welcome_pages||[L.welcome_body||''], withRead:true });
+}
+function showWhatsNewCarousel(){
+  const L=I18N[LANG]||I18N.he;
+  return showCarousel({ title:t('m_whatsnew'), pages:L.whatsnew_pages||[], withRead:false });
 }
 async function requestNotif(){ try{ if('Notification' in window) await Notification.requestPermission(); }catch(e){} }
 async function runOnboarding(){
-  // 1. welcome — a paginated carousel shown on EVERY entry until the reader ticks
-  //    "I have read" (which persists as_welcome_read='1').
+  const ver = window.APP_VERSION || '1.0';
+  // 1a. welcome — shown on EVERY entry until the reader ticks "קראתי" (as_welcome_read).
   if(localStorage.getItem('as_welcome_read')!=='1'){
     await showWelcome();
   }
+  // 1b. returning user: on re-entry after a version update, show "what's new" once.
+  else if(localStorage.getItem('as_seen_ver') !== ver){
+    await showWhatsNewCarousel();
+  }
+  localStorage.setItem('as_seen_ver', ver);
   // 2. recommend installing — unless already installed, or the user said "don't show again"
   if(!isInstalled() && localStorage.getItem('as_install_hide')!=='1'){
     const r=await showOnboard({ title:t('install_rec_title'), body:t('install_rec_body'),

@@ -219,7 +219,7 @@
   <button class="menu-item" data-act="install"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="mi-label" data-i18n="m_install">התקנת אפליקציה</span></button>
   <button class="menu-item" data-act="lang"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="mi-label" data-i18n="m_lang">שנה שפה</span></button>
   <!-- "מה חדש?" מעומעם עד פרסום הגרסה הראשונה — להסיר את disabled כדי להחזירו -->
-  <button class="menu-item" data-act="whatsnew" disabled><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span class="mi-label" data-i18n="m_whatsnew">מה חדש?</span></button>
+  <button class="menu-item" data-act="whatsnew"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span class="mi-label" data-i18n="m_whatsnew">מה חדש?</span></button>
   <button class="menu-item" data-act="help"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span class="mi-label" data-i18n="m_help">עזרה למשתמש</span></button>
   <button class="menu-item" data-act="version"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="mi-label" data-i18n="m_version">גרסא נוכחית</span></button>
   <button class="menu-item" data-act="contact"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="mi-label" data-i18n="m_contact">צור קשר</span></button>
@@ -230,7 +230,10 @@
 <!-- Samaritan Aramaic–Hebrew dictionary (A. Tal) — standalone in-app dictionary -->
 <div id="dictModal" class="modal hidden">
   <div class="modal-box big dict-app">
-    <div class="modal-title" id="dictAppTitle" data-i18n="dict_app_title">המילון הארמי-עברי השומרוני — א. טל</div>
+    <div class="dict-app-head">
+      <div class="modal-title" id="dictAppTitle" data-i18n="dict_app_title">המילון הארמי-עברי השומרוני — א. טל</div>
+      <div class="rd-zoom"><button id="dZoomOut" class="rd-zbtn" aria-label="הקטן טקסט">A−</button><button id="dZoomIn" class="rd-zbtn" aria-label="הגדל טקסט">A+</button></div>
+    </div>
     <div class="dict-tabs">
       <button class="dict-tab active" data-mode="search" data-i18n="dict_tab_search">חיפוש</button>
       <button class="dict-tab" data-mode="index" data-i18n="dict_tab_index">אינדקס</button>
@@ -253,6 +256,7 @@
     <div class="rd-top">
       <button id="rdBack" class="tm-back hidden"></button>
       <div class="modal-title" id="rdTitle"></div>
+      <div class="rd-zoom"><button id="rdZoomOut" class="rd-zbtn" aria-label="הקטן טקסט">A−</button><button id="rdZoomIn" class="rd-zbtn" aria-label="הגדל טקסט">A+</button></div>
       <button id="rdLang" class="rd-lang hidden"></button>
     </div>
     <div class="tm-search-row">

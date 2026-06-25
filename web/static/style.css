@@ -501,10 +501,13 @@ footer a{ color:var(--accent); text-decoration:none; }
 .dict-ix-lemma{ flex:1 1 auto; color:var(--navy); font-weight:600; font-size:16px; }
 .dict-ix-root{ color:var(--muted); font-size:13px; }
 .dict-ix-page{ color:var(--accent); font-size:12.5px; }
-.dict-pageentry{ border-top:1px solid rgba(26,56,115,.1); padding:7px 2px; color:var(--dark); font-size:15px; line-height:1.6; }
+.dict-pageentry{ border-top:1px solid rgba(26,56,115,.1); padding:7px 2px; color:var(--dark); font-size:calc(15px*var(--dict-fs,1)); line-height:1.6; }
 .dict-direct-sec{ margin-top:2px; }
 .dict-direct{ border-inline-start:3px solid var(--accent); padding:5px 8px; margin:4px 0; color:var(--dark);
-  font-size:15.5px; line-height:1.6; background:#f7f9ff; border-radius:0 6px 6px 0; }
+  font-size:calc(15.5px*var(--dict-fs,1)); line-height:1.6; background:#f7f9ff; border-radius:0 6px 6px 0; }
+#dictAppBody .tal-sense{ font-size:calc(15.5px*var(--dict-fs,1)); }
+#dictAppBody .dict-ix-lemma{ font-size:calc(16px*var(--dict-fs,1)); }
+#dictAppBody .tm-wtbl td{ font-size:calc(15px*var(--dict-fs,1)); }
 .dict-direct-root{ color:var(--muted); font-size:13px; }
 .dict-form-hint{ color:var(--muted); font-size:12.5px; margin:2px 0; }
 .tal-formlist.clickable-forms{ display:flex; flex-wrap:wrap; gap:6px; }
@@ -555,8 +558,15 @@ footer a{ color:var(--accent); text-decoration:none; }
 .tm-sec{ border-top:1px solid rgba(26,56,115,.14); padding:9px 2px; }
 .tm-sec.tm-flash{ background:rgba(255,216,107,.35); border-radius:8px; transition:background 1.4s; }
 .tm-secnum{ color:var(--accent); font-weight:700; font-size:13px; margin-bottom:3px; }
-.tm-aram{ direction:rtl; text-align:right; color:#5a4326; font-size:16px; line-height:1.75; margin-bottom:5px; }
-.tm-heb{ direction:rtl; text-align:right; color:var(--dark); font-size:16px; line-height:1.8; }
+.tm-aram{ direction:rtl; text-align:right; color:#5a4326; font-size:calc(16px*var(--rd-fs,1)); line-height:1.75; margin-bottom:5px; }
+.tm-heb{ direction:rtl; text-align:right; color:var(--dark); font-size:calc(16px*var(--rd-fs,1)); line-height:1.8; }
+/* text-zoom control shared by the readers + dictionary (A− / A+) */
+.rd-zoom{ flex:0 0 auto; display:flex; gap:4px; }
+.rd-zbtn{ border:1px solid #cfd6e6; background:#fff; color:var(--navy); border-radius:7px;
+  min-width:30px; padding:5px 7px; font:inherit; font-size:14px; font-weight:700; cursor:pointer; line-height:1; }
+.rd-zbtn:hover{ background:#eef2fb; }
+.dict-app-head{ display:flex; align-items:center; gap:8px; }
+.dict-app-head .modal-title{ flex:1 1 auto; text-align:right; }
 .tm-ref{ color:var(--accent); font-weight:600; cursor:pointer; text-decoration:underline dotted; }
 .tm-ref:hover{ color:var(--active); }
 /* search results */
