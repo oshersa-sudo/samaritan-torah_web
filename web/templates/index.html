@@ -221,6 +221,7 @@
   <!-- "מה חדש?" מעומעם עד פרסום הגרסה הראשונה — להסיר את disabled כדי להחזירו -->
   <button class="menu-item" data-act="whatsnew"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span class="mi-label" data-i18n="m_whatsnew">מה חדש?</span></button>
   <button class="menu-item" data-act="help"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span class="mi-label" data-i18n="m_help">עזרה למשתמש</span></button>
+  <button class="menu-item" data-act="tour"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg><span class="mi-label" data-i18n="m_tour">סרטון הסבר מודרך</span></button>
   <button class="menu-item" data-act="version"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="mi-label" data-i18n="m_version">גרסא נוכחית</span></button>
   <button class="menu-item" data-act="contact"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="mi-label" data-i18n="m_contact">צור קשר</span></button>
   <div id="adminSep" class="menu-sep hidden"></div>
@@ -291,6 +292,34 @@
     <label class="wc-read"><input type="checkbox" id="wcRead"><span data-i18n="wc_read">קראתי</span></label>
     <div class="ob-actions">
       <button id="wcClose" class="ob-later" data-i18n="ob_close">סגור</button>
+    </div>
+  </div>
+</div>
+
+<!-- guided interactive tour ("סרטון הסבר"): spotlight + arrow + caption + voice -->
+<div id="tourOverlay" class="tour hidden">
+  <div class="tour-ring" id="tourRing"></div>
+  <div class="tour-arrow" id="tourArrow"></div>
+  <div class="tour-caption" id="tourCaption">
+    <div class="tour-cap-text" id="tourText"></div>
+    <div class="tour-controls">
+      <button id="tourMute" class="tour-btn" aria-label="קול">🔊</button>
+      <button id="tourPrev" class="tour-btn" aria-label="הקודם">‹</button>
+      <span id="tourStep" class="tour-step"></span>
+      <button id="tourNext" class="tour-btn" aria-label="הבא">›</button>
+      <button id="tourEnd" class="tour-btn tour-end" aria-label="סיום">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- first-entry prompt offering the guided tour -->
+<div id="tourPrompt" class="modal hidden">
+  <div class="modal-box ob-box">
+    <div class="modal-title" id="tourPromptTitle" data-i18n="tour_prompt_title">סרטון הסבר מודרך</div>
+    <div class="ob-body" id="tourPromptBody" data-i18n="tour_prompt_body"></div>
+    <div class="ob-actions">
+      <button id="tourPromptStart" class="ob-primary" data-i18n="tour_prompt_start">התחל הסבר</button>
+      <button id="tourPromptSkip" class="ob-later" data-i18n="ob_later">אחר כך</button>
     </div>
   </div>
 </div>

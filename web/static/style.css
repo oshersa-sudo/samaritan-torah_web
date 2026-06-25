@@ -578,6 +578,31 @@ footer a{ color:var(--accent); text-decoration:none; }
 /* per-chapter glossary reuses .wtbl */
 .tm-wtbl{ width:100%; }
 
+/* ── guided interactive tour ("סרטון הסבר") ── */
+.tour{ position:fixed; inset:0; z-index:200; pointer-events:none; }
+.tour.hidden{ display:none; }
+.tour-ring{ position:fixed; border-radius:10px; opacity:0;
+  box-shadow:0 0 0 3px var(--gold-bright,#e9c97a), 0 0 0 9999px rgba(10,18,40,.60);
+  transition:left .4s cubic-bezier(.4,0,.2,1), top .4s cubic-bezier(.4,0,.2,1),
+             width .4s cubic-bezier(.4,0,.2,1), height .4s cubic-bezier(.4,0,.2,1), opacity .3s; }
+.tour-ring.on{ opacity:1; }
+.tour-arrow{ position:fixed; font-size:30px; line-height:1; color:var(--gold-bright,#e9c97a);
+  text-shadow:0 1px 3px rgba(0,0,0,.6); pointer-events:none; opacity:0; transition:all .35s ease;
+  animation:tourArrow 1s ease-in-out infinite alternate; }
+.tour-arrow.on{ opacity:1; }
+@keyframes tourArrow{ from{ transform:translate(0,0); } to{ transform:translate(0,-7px); } }
+.tour-caption{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); width:min(93%,540px);
+  background:#fff; border-radius:14px; box-shadow:0 10px 34px rgba(0,0,0,.45); padding:14px 16px;
+  pointer-events:auto; z-index:201; }
+.tour-caption.top{ bottom:auto; top:22px; }
+.tour-cap-text{ color:var(--dark); font-size:16.5px; line-height:1.65; margin-bottom:10px; min-height:1.6em; }
+.tour-controls{ display:flex; align-items:center; gap:7px; justify-content:center; }
+.tour-btn{ border:1px solid #cfd6e6; background:#fff; color:var(--navy); border-radius:8px;
+  min-width:42px; padding:8px 10px; font:inherit; font-size:17px; cursor:pointer; }
+.tour-btn:hover{ background:#eef2fb; }
+.tour-btn.tour-end{ color:#bf3930; }
+.tour-step{ color:var(--muted); font-size:13px; min-width:48px; text-align:center; }
+
 /* hamburger menu */
 .menu-btn{ flex:0 0 auto; width:38px; height:38px; border:0; background:transparent; color:#fff;
            font-size:24px; line-height:1; cursor:pointer; border-radius:6px; }

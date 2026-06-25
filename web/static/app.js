@@ -39,6 +39,29 @@ const I18N = {
     apply:'אישור', menu:'תפריט', m_calendar:'חשבן קשטה — לוח השנה השומרוני',
     m_genealogy:'אילן היוחסין השומרוני המלא', m_install:'התקנת אפליקציה', m_lang:'שנה שפה',
     m_whatsnew:'מה חדש?', m_help:'עזרה למשתמש', m_version:'גרסא נוכחית', m_contact:'צור קשר',
+    m_tour:'סרטון הסבר מודרך', tour_prompt_title:'סרטון הסבר מודרך',
+    tour_prompt_body:'רוצים סיור קצר ומונחה שמסביר ומדגים כיצד להשתמש במערכת? אפשר תמיד לחזור אליו מהתפריט, תחת העזרה.', tour_prompt_start:'התחל הסבר',
+    tour:[
+      'ברוכים הבאים לתורה השומרונית הישראלית. בהדגמה קצרה זו אלווה אתכם על המסך ואסביר מה עושה כל כפתור. אפשר לדלג קדימה ואחורה, או להשתיק את הקול, בכל רגע.',
+      'בראש המסך בוחרים את חלוקת התורה: החלוקה היהודית המוכרת, או החלוקה השומרונית המקורית. לחיצה כאן מחליפה ביניהן.',
+      'תחילה בוחרים ספר, אחר כך פרשה, ואז פרק — וכך מגיעים אל הפסוקים.',
+      'אלו פסוקי הפרק. ליד כל פסוק מספרו; לחיצה על מספר מציגה רק אותו פסוק.',
+      'שימו לב לסרגל הכלים שבתחתית. הוא מתקפל אוטומטית כדי לפנות מקום לקריאה — ראיתם איך נסגר ונפתח. גררו או הקישו על הידית שבמרכזו כדי לפתוח אותו שוב בכל עת.',
+      'כפתור הכתב מחליף בין הכתב העברי הרגיל לבין הכתב העברי-השומרוני העתיק.',
+      'כאן בוחרים תרגום — ארמי, ערבי או אנגלי — והוא מוצג במקום הטקסט.',
+      'השוואת נוסחים מציגה את נוסח שומרון מול נוסח המסורה, וגם מול תרגום השבעים, עם סימון ההבדלים.',
+      'חילופי נוסח מציג את גרסאות הנוסח מכתבי-יד שונים, ממהדורת פון גאל, עם עדי-הנוסח.',
+      'ממקור שומרון פותח את הפרשנות השומרונית לפסוק: תיבת מרקה, פירוש צדקה אל-חכים, המסורת השומרונית ועוד.',
+      'מילון מילים מציג לכל מילה בפסוק את תרגומה הארמי ואת פירושה מתוך מילון א. טל.',
+      'בכפתורי פרק הבא והקודם מדפדפים בין הפרקים ברצף, גם מעבר לגבולות הספר. הזכוכיות מגדילות ומקטינות את הטקסט.',
+      'כעת נדגים חיפוש. נפתח את מסך החיפוש ונקליד מילה — למשל, בראשית.',
+      'אלו תוצאות החיפוש. כל תוצאה מציינת את מיקום הפסוק; לחיצה עליה קופצת ישירות אל הפסוק באפליקציה.',
+      'בחיפוש המתקדם אפשר לחפש לפי שורש, בתרגום הארמי, או להתעלם מסופיות. אפשר גם להשתמש בתווים כלליים: סימן שאלה לתו אחד, כוכבית למחרוזת, ופלוס לכל המילים באותו פסוק.',
+      'בתפריט ההמבורגר נמצאים: התקנת האפליקציה, החלפת שפה, לוח השנה השומרוני, אילן היוחסין, מה חדש, עזרה ועוד.',
+      'תחת הספרייה השומרונית נמצאים המילון הארמי-עברי, ושני ספרים מלאים לעיון: תיבת מרקה ופירוש צדקה אל-חכים.',
+      'כך נראה המילון: אפשר לחפש מילה, לדפדף באינדקס או בעמודי המילון, וללחוץ על מילה כדי לראות את כל מיקומיה.',
+      'בכך תם הסיור. תוכלו לחזור אליו בכל עת מתפריט ההמבורגר, תחת העזרה. קריאה נעימה ומועילה!',
+    ],
     share_title:'שיתוף', email:'אימייל', close:'סגור',
     copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה', share_copy:'העתקה ללוח',
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
@@ -130,6 +153,29 @@ const I18N = {
     apply:'Apply', menu:'Menu', m_calendar:'Samaritan calendar (Ḥešbon Qašta)',
     m_genealogy:'Full Samaritan genealogy', m_install:'Install app', m_lang:'Change language',
     m_whatsnew:"What's new?", m_help:'Help', m_version:'Current version', m_contact:'Contact us',
+    m_tour:'Guided tour', tour_prompt_title:'Guided tour',
+    tour_prompt_body:'Would you like a short guided tour that explains and demonstrates how to use the app? You can always return to it from the menu, under Help.', tour_prompt_start:'Start tour',
+    tour:[
+      'Welcome to the Israelite Samaritan Torah. In this short walkthrough I’ll guide you on screen and explain what each button does. You can move forward and back, or mute the voice, at any time.',
+      'At the top you choose the Torah’s division: the familiar Jewish division, or the original Samaritan one. Tapping here switches between them.',
+      'First pick a book, then a portion, then a chapter — and you reach the verses.',
+      'These are the chapter’s verses. Each verse shows its number; tapping a number shows just that verse.',
+      'Notice the toolbar at the bottom. It folds away automatically to make room for reading — you just saw it close and open. Drag or tap the handle in its middle to reopen it any time.',
+      'The script button switches between ordinary Hebrew and the ancient Samaritan-Hebrew script.',
+      'Here you choose a translation — Aramaic, Arabic or English — shown in place of the text.',
+      'Compare versions shows the Samaritan text against the Masoretic, and the Septuagint, with the differences marked.',
+      'Textual variants shows readings from different manuscripts, from von Gall’s edition, with their witnesses.',
+      'Samaritan sources opens the Samaritan commentary on the verse: Tibåt Mårqe, Ṣadaqah al-Ḥakīm’s commentary, the Samaritan tradition and more.',
+      'The word dictionary shows, for each word in the verse, its Aramaic translation and meaning from A. Tal’s dictionary.',
+      'The next and previous buttons page through the chapters continuously, even across books. The magnifiers enlarge and shrink the text.',
+      'Now let’s try a search. We open the search screen and type a word — for example, Bereshit.',
+      'These are the search results. Each one shows the verse’s location; tapping it jumps straight to that verse.',
+      'Advanced search lets you search by root, in the Aramaic, or ignore final letters. You can also use wildcards: a question mark for one letter, an asterisk for a string, and a plus for all words in the same verse.',
+      'The menu holds: install the app, change language, the Samaritan calendar, the genealogy, what’s new, help and more.',
+      'Under the Samaritan Library are the Aramaic–Hebrew dictionary and two full books to read: Tibåt Mårqe and Ṣadaqah al-Ḥakīm’s commentary.',
+      'This is the dictionary: you can search a word, browse the index or the pages, and tap a word to see all its locations.',
+      'That’s the end of the tour. You can return to it any time from the menu, under Help. Enjoy your study!',
+    ],
     share_title:'Share', email:'Email', close:'Close',
     copied:'Text copied', copy_fail:'Copy failed', share_copy:'Copy to clipboard',
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
@@ -221,6 +267,29 @@ const I18N = {
     apply:'تأكيد', menu:'القائمة', m_calendar:'التقويم السامري (حسبان قشطة)',
     m_genealogy:'شجرة الأنساب السامرية الكاملة', m_install:'تثبيت التطبيق', m_lang:'تغيير اللغة',
     m_whatsnew:'ما الجديد؟', m_help:'مساعدة المستخدم', m_version:'الإصدار الحالي', m_contact:'اتصل بنا',
+    m_tour:'جولة إرشادية', tour_prompt_title:'جولة إرشادية',
+    tour_prompt_body:'هل تريدون جولة قصيرة موجَّهة تشرح وتعرض كيفية استخدام التطبيق؟ يمكنكم دائمًا العودة إليها من القائمة، تحت المساعدة.', tour_prompt_start:'ابدأ الجولة',
+    tour:[
+      'أهلًا بكم في التوراة السامرية الإسرائيلية. في هذا العرض القصير سأرافقكم على الشاشة وأشرح ما يفعله كلّ زرّ. يمكنكم التقدّم والرجوع، أو كتم الصوت، في أيّ وقت.',
+      'في الأعلى تختارون تقسيم التوراة: التقسيم اليهودي المعروف، أو التقسيم السامري الأصلي. الضغط هنا يبدّل بينهما.',
+      'أولًا اختاروا سفرًا، ثم مقطعًا، ثم أصحاحًا — فتصلون إلى الآيات.',
+      'هذه آيات الأصحاح. بجانب كلّ آية رقمها؛ والضغط على الرقم يعرض تلك الآية وحدها.',
+      'انتبهوا إلى شريط الأدوات في الأسفل. يُطوى تلقائيًا لإفساح مجال القراءة — رأيتموه يُغلق ويُفتح. اسحبوا أو اضغطوا المقبض في وسطه لإعادة فتحه في أيّ وقت.',
+      'زرّ الخطّ يبدّل بين العبرية العادية والخطّ العبري-السامري القديم.',
+      'هنا تختارون ترجمة — آرامية أو عربية أو إنجليزية — تُعرض مكان النصّ.',
+      'مقارنة النصوص تعرض النصّ السامري مقابل الماسوري، والسبعينية، مع تمييز الفروق.',
+      'اختلافات النصّ تعرض قراءات من مخطوطات مختلفة، من طبعة فون غال، مع شهودها.',
+      'مصادر سامرية تفتح التفسير السامري للآية: تيبات مارقه، تفسير صدقة الحكيم، التقليد السامري وغيرها.',
+      'معجم الكلمات يعرض لكلّ كلمة في الآية ترجمتها الآرامية ومعناها من معجم أ. طال.',
+      'زرّا الأصحاح التالي والسابق يقلّبان بين الأصحاحات بسلاسة، حتى عبر الأسفار. والعدسات تكبّر النصّ وتصغّره.',
+      'والآن لنجرّب البحث. نفتح شاشة البحث ونكتب كلمة — مثلًا، بيريشيت.',
+      'هذه نتائج البحث. كلّ نتيجة تبيّن موضع الآية؛ والضغط عليها يقفز مباشرة إلى تلك الآية.',
+      'البحث المتقدّم يتيح البحث حسب الجذر، في الآرامية، أو تجاهل الحروف النهائية. ويمكن استخدام أحرف عامة: علامة استفهام لحرفٍ واحد، ونجمة لسلسلة، وزائد لكلّ الكلمات في الآية نفسها.',
+      'تضمّ القائمة: تثبيت التطبيق، تغيير اللغة، التقويم السامري، شجرة الأنساب، ما الجديد، المساعدة وغيرها.',
+      'ضمن المكتبة السامرية يوجد المعجم الآرامي-العبري، وكتابان كاملان للمطالعة: تيبات مارقه وتفسير صدقة الحكيم.',
+      'هكذا يبدو المعجم: يمكنكم البحث عن كلمة، وتصفّح الفهرس أو صفحات المعجم، والضغط على كلمة لرؤية كلّ مواضعها.',
+      'بهذا انتهت الجولة. يمكنكم العودة إليها في أيّ وقت من القائمة، تحت المساعدة. قراءةً ممتعة ونافعة!',
+    ],
     share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق',
     copied:'تم نسخ النص', copy_fail:'فشل النسخ', share_copy:'نسخ إلى الحافظة',
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
@@ -1892,6 +1961,7 @@ function menuAction(a){
   else if(a==='lang')      $('langModal').classList.remove('hidden');
   else if(a==='whatsnew')  showWhatsNewCarousel();
   else if(a==='help')      showHelp();
+  else if(a==='tour')      startTour();
   else if(a==='version')   showInfo('גרסא נוכחית', `<div class="ver-num">גרסה ${esc(window.APP_VERSION||'1.0')}</div>`);
   else if(a==='contact')   openContact();
 }
@@ -2881,7 +2951,15 @@ async function runOnboarding(){
       primaryLabel:t('notif_rec_btn'), onPrimary:requestNotif, dont:true });
     if(r.dont) localStorage.setItem('as_notif_hide','1');
   }
+  // 4. first entry: offer the guided tour (audio needs a tap, so we prompt, not autoplay)
+  if(localStorage.getItem('as_tour_seen')!=='1'){
+    localStorage.setItem('as_tour_seen','1');
+    $('tourPromptBody').textContent = t('tour_prompt_body');
+    $('tourPrompt').classList.remove('hidden');
+  }
 }
+$('tourPromptStart').onclick=()=>{ $('tourPrompt').classList.add('hidden'); startTour(); };
+$('tourPromptSkip').onclick=()=>$('tourPrompt').classList.add('hidden');
 let _onboardRan=false;
 function triggerOnboarding(){
   if(_onboardRan) return; _onboardRan=true;
@@ -2896,6 +2974,142 @@ function triggerOnboarding(){
 window.addEventListener('samaritanSplashComplete', triggerOnboarding);
 // fallback if the splash is absent/skipped (e.g. reduced-motion): run shortly after load
 setTimeout(triggerOnboarding, 2500);
+
+// ── guided interactive tour ("סרטון הסבר") ───────────────────────────────────
+// A live voiced walkthrough: it narrates (TTS, male-ish voice, in the UI language),
+// spotlights each control with an arrow + caption, and DRIVES the real app as the
+// demo (opens menus, runs a live search, opens the library …). Auto-advances per
+// narration, with prev/next/mute/close; opens on first entry and from the menu.
+const TOUR = { i:0, token:0, running:false, muted:false, auto:true, _t:null };
+let TOUR_VOICES = [];
+function tourLoadVoices(){ try{ TOUR_VOICES = speechSynthesis.getVoices()||[]; }catch(e){} }
+if('speechSynthesis' in window){ tourLoadVoices(); speechSynthesis.onvoiceschanged = tourLoadVoices; }
+function tourWait(ms){ return new Promise(r=>setTimeout(r, ms)); }
+function tourPickVoice(){
+  const lp = {he:'he', en:'en', ar:'ar'}[LANG] || 'he';
+  const cands = TOUR_VOICES.filter(v=>(v.lang||'').toLowerCase().startsWith(lp));
+  const male = cands.find(v=>/\b(male|david|daniel|maged|majed|fahad|fahed|tarik|naayf|hamza)\b/i.test(v.name||''));
+  return male || cands[0] || TOUR_VOICES.find(v=>(v.lang||'').toLowerCase().startsWith(lp)) || null;
+}
+function tourSpeak(text, adv){
+  clearTimeout(TOUR._t);
+  const fallback = Math.max(3200, (text||'').length*60);
+  if(TOUR.muted || !('speechSynthesis' in window) || !text){ TOUR._t=setTimeout(adv, fallback); return; }
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const u=new SpeechSynthesisUtterance(text);
+  const v=tourPickVoice();
+  if(v){ u.voice=v; u.lang=v.lang; } else u.lang={he:'he-IL', en:'en-US', ar:'ar-SA'}[LANG]||'he-IL';
+  u.pitch=0.8; u.rate=0.97; u.onend=adv;
+  try{ speechSynthesis.speak(u); }catch(e){ TOUR._t=setTimeout(adv, fallback); return; }
+  TOUR._t=setTimeout(adv, fallback+4000);   // safety, in case onend never fires
+}
+function tourPlace(el){
+  const ring=$('tourRing'), arrow=$('tourArrow'), cap=$('tourCaption');
+  if(!el){ ring.classList.remove('on'); arrow.classList.remove('on'); cap.classList.remove('top'); return; }
+  const r=el.getBoundingClientRect();
+  if(r.width<2 || r.height<2){ ring.classList.remove('on'); arrow.classList.remove('on'); return; }
+  const pad=6;
+  ring.style.left=(r.left-pad)+'px'; ring.style.top=(r.top-pad)+'px';
+  ring.style.width=(r.width+pad*2)+'px'; ring.style.height=(r.height+pad*2)+'px';
+  ring.classList.add('on');
+  const lower = r.top > innerHeight*0.52;          // caption goes opposite the target
+  cap.classList.toggle('top', lower);
+  arrow.textContent = lower ? '▼' : '▲';
+  arrow.style.left=(Math.min(Math.max(r.left+r.width/2-13, 8), innerWidth-26))+'px';
+  arrow.style.top = lower ? (r.top-40)+'px' : (r.bottom+6)+'px';
+  arrow.classList.add('on');
+}
+// scene setup helpers (drive the real app). Each navigation waits for the view to
+// actually settle (the renders are async), so the demo never races ahead.
+function tourWaitFor(cond, timeout=3000){
+  return new Promise(res=>{ const t0=Date.now(); (function p(){
+    let ok=false; try{ ok=cond(); }catch(e){}
+    if(ok || Date.now()-t0>timeout) return res(ok);
+    setTimeout(p, 80);
+  })(); });
+}
+function tourClickFirst(sel){ const e=document.querySelector(sel); if(e){ e.click(); return true; } return false; }
+async function tourToVerses(){
+  if(S.view!=='verses'){
+    try{ setDivision('standard'); }catch(e){}
+    showBooks();                                              await tourWait(500);
+    tourClickFirst('#content .listbtn, #content button');    await tourWait(560);  // → portion list
+    tourClickFirst('#content .listbtn, #content button');    await tourWait(560);  // → chapter grid
+    tourClickFirst('#content .cell, #content .grid button'); await tourWait(680);  // → verses
+  }
+  setToolbarFolded(false,false);
+}
+const TOUR_STEPS = [
+  { pre:async()=>{ closeMenu(); showSearch(false); $('bookModal') && $('bookModal').classList.add('hidden');
+                   $('dictModal').classList.add('hidden'); showBooks(); }, el:()=>null },
+  { el:()=>$('btnSamaritan') },
+  { pre:async()=>{ showBooks(); await tourWait(120); }, el:()=>document.querySelector('#content button') },
+  { pre:tourToVerses, el:()=>document.querySelector('#content .vrow .num') || $('content') },
+  { pre:async()=>{ await tourToVerses(); setToolbarFolded(true,true); await tourWait(1300); setToolbarFolded(false,true); await tourWait(300); },
+    el:()=>$('tbHandle') },
+  { pre:async()=>{ await tourToVerses(); }, el:()=>$('fontBtn') },
+  { el:()=>$('translateBtn') },
+  { el:()=>$('compareBtn') },
+  { el:()=>$('variantsBtn') },
+  { el:()=>$('samSrcBtn') },
+  { el:()=>$('dictBtn') },
+  { el:()=>$('nextBtn') },
+  { pre:async()=>{ showSearch(true); await tourWait(280); $('searchInput').value='בראשית'; }, el:()=>$('searchInput') },
+  { pre:async()=>{ $('searchInput').value='בראשית'; doSearch(); await tourWait(750); },
+    el:()=>document.querySelector('#searchResults .res-path') || $('searchResults') },
+  { pre:async()=>{ if($('advPanel').classList.contains('hidden')) $('advBtn').click(); await tourWait(250); }, el:()=>$('advPanel') },
+  { pre:async()=>{ $('advPanel') && $('advPanel').classList.add('hidden'); showSearch(false); showBooks(); openMenu(); await tourWait(300); },
+    el:()=>document.querySelector('.menu-item[data-act="lang"]') },
+  { pre:async()=>{ openMenu(); $('librarySub').classList.remove('hidden'); $('libraryHead').classList.add('open'); await tourWait(250); },
+    el:()=>$('librarySub') },
+  { pre:async()=>{ closeMenu(); openDictApp(); await tourWait(350); }, el:()=>document.querySelector('.dict-tabs') },
+  { pre:async()=>{ $('dictModal').classList.add('hidden'); }, el:()=>null },
+];
+function tourNarration(){ return (I18N[LANG]||I18N.he).tour || []; }
+function tourSetMuteIcon(){ $('tourMute').textContent = TOUR.muted ? '🔇' : '🔊'; }
+function tourGo(i){
+  if(!TOUR.running) return;
+  if(i<0) i=0;
+  if(i>=TOUR_STEPS.length) return endTour();
+  TOUR.i=i; const tok=++TOUR.token; const step=TOUR_STEPS[i];
+  $('tourPrev').disabled = (i===0);
+  (async()=>{
+    if(step.pre){ try{ await step.pre(); }catch(e){} }
+    if(tok!==TOUR.token || !TOUR.running) return;
+    await tourWait(step.wait||320);
+    if(tok!==TOUR.token || !TOUR.running) return;
+    const text=tourNarration()[i]||'';
+    $('tourText').textContent=text;
+    $('tourStep').textContent=(i+1)+' / '+TOUR_STEPS.length;
+    tourPlace(step.el ? step.el() : null);
+    let done=false;
+    const adv=()=>{ if(done || tok!==TOUR.token || !TOUR.running) return; done=true; if(TOUR.auto) tourGo(i+1); };
+    tourSpeak(text, adv);
+  })();
+}
+function startTour(){
+  closeMenu();
+  ['welcomeModal','tourPrompt','onboardModal','infoModal'].forEach(id=>{ const m=$(id); if(m) m.classList.add('hidden'); });
+  TOUR.running=true; TOUR.auto=true; TOUR.i=0;
+  $('tourOverlay').classList.remove('hidden');
+  tourSetMuteIcon();
+  tourLoadVoices();
+  tourGo(0);
+}
+function endTour(){
+  TOUR.running=false; TOUR.token++;
+  clearTimeout(TOUR._t);
+  try{ speechSynthesis.cancel(); }catch(e){}
+  $('tourOverlay').classList.add('hidden');
+  $('bookModal') && $('bookModal').classList.add('hidden');
+  $('dictModal').classList.add('hidden'); closeMenu();
+  localStorage.setItem('as_tour_seen','1');
+}
+$('tourNext').onclick=()=>{ TOUR.auto=true; tourGo(TOUR.i+1); };
+$('tourPrev').onclick=()=>{ TOUR.auto=true; tourGo(TOUR.i-1); };
+$('tourEnd').onclick=endTour;
+$('tourMute').onclick=()=>{ TOUR.muted=!TOUR.muted; tourSetMuteIcon();
+  if(TOUR.muted){ try{ speechSynthesis.cancel(); }catch(e){} } };
 
 // ── start ────────────────────────────────────────────────────────────────────
 showBooks();
