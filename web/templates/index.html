@@ -240,6 +240,10 @@
       <div class="modal-title" id="dictAppTitle" data-i18n="dict_app_title">המילון הארמי-עברי השומרוני — א. טל</div>
       <div class="rd-zoom"><button id="dZoomOut" class="rd-zbtn" aria-label="הקטן טקסט">A−</button><button id="dZoomIn" class="rd-zbtn" aria-label="הגדל טקסט">A+</button></div>
     </div>
+    <div class="dict-dir">
+      <button class="dict-dir-btn active" data-dir="aram" data-i18n="dict_dir_aram">ארמית → עברית</button>
+      <button class="dict-dir-btn" data-dir="he" data-i18n="dict_dir_he">עברית → ארמית</button>
+    </div>
     <div class="dict-tabs">
       <button class="dict-tab active" data-mode="search" data-i18n="dict_tab_search">חיפוש</button>
       <button class="dict-tab" data-mode="index" data-i18n="dict_tab_index">אינדקס</button>
@@ -360,6 +364,15 @@
     <div class="modal-title" id="popupTitle"></div>
     <div id="popupBody"></div>
     <button id="popupClose" class="popup-close" data-i18n="close">סגור</button>
+  </div>
+</div>
+
+<!-- a single occurrence (Torah verse / Tibåt Mårqe passage) with the word highlighted -->
+<div id="occModal" class="modal hidden" style="z-index:70">
+  <div class="modal-box big">
+    <div class="modal-title" id="occTitle"></div>
+    <div id="occBody"></div>
+    <button id="occClose" class="popup-close" data-i18n="close">סגור</button>
   </div>
 </div>
 

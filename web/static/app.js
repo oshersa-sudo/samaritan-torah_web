@@ -82,7 +82,7 @@ const I18N = {
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך מילון א. טל', no_dict:'אין מילון זמין לפסוק זה',
     dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
     more_results:'תוצאות נוספות', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
-    m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי השומרוני',
+    m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
     tm_toc_hint:'בחר מימר לעיון:', tm_back_toc:'‹ תוכן העניינים', tm_back_chapter:'‹ חזרה לפרק',
     tm_words_btn:'מילון מילים', tm_words_title:'מילון מילים — מתוך מילון א. טל', tm_col_root:'שורש',
@@ -90,9 +90,13 @@ const I18N = {
     m_tz_book:'פירוש צדקה אל-חכים (בראשית)', tz_title:'פירוש צדקה אל-חכים — בראשית',
     tz_toc_hint:'בחר פרק לעיון:', tz_chapter_label:'פרק', tz_arabic_pending:'התרגום לערבית בהכנה — מוצג הנוסח העברי.',
     rd_he:'עברית', rd_ar:'ערבית', rd_aram:'ארמית', rd_show:'הצג:',
-    dict_app_title:'המילון הארמי-עברי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
+    dict_app_title:'מילון ארמי-עברי ועברי-ארמי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
     dict_tab_search:'חיפוש', dict_tab_index:'אינדקס מילים', dict_tab_pages:'דפדוף עמודים',
     dict_index_hint:'דפדף בכל מילות המילון (לפי א״ב). הקלד אות/מילה לקפיצה. לחץ על מילה כדי לראות את מופעיה בתורה ובתיבת מרקה — באותה משמעות.', dict_index_ph:'קפוץ לאות/מילה…',
+    dict_dir_aram:'ארמית → עברית', dict_dir_he:'עברית → ארמית', dict_he_ph:'הקלד מילה בעברית…',
+    dict_he_index_hint:'דפדף במילים בעברית (לפי א״ב). לחץ על מילה כדי להגיע לפירושה הארמי.',
+    dict_he_search_hint:'חפש מילה בעברית — התוצאה תוביל אל פירושה (השורש) הארמי.', dict_he_roots:'שורשים ארמיים',
+    dict_word_panel_btn:'פתח פירוש מלא',
     dict_w_torah:'מופיעה בתורה', dict_w_memar:'מופיעה בתיבת מרקה', dict_w_meanings:'משמעויות',
     dict_back_index:'‹ חזרה לאינדקס', dict_in_torah_sec:'מופעים בתורה', dict_in_memar_sec:'מופעים בתיבת מרקה',
     dict_same_meaning:'באותה משמעות (לפי השורש)', dict_more:'נוספים', dict_no_occ:'אין מופעים במשמעות זו.',
@@ -120,9 +124,11 @@ const I18N = {
     notif_rec_body:'אפשר התראות כדי לקבל עדכונים על חידושים, תוספות וגרסאות חדשות של האפליקציה.',
     notif_rec_btn:'אפשר התראות',
     col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'מילון טל', col_arabic:'ערבית',
-    col_wordtrans:'תרגום המילה',
-    ws_tap_hint:'לחץ על השורה לפירוט מקורות התרגום', ws_translation:'תרגום המילה', ws_from_targum:'מהתרגום הארמי (פירוש הפסוק)',
-    ws_tal:'מילון א. טל', ws_tal_ctx:'מילון טל — לפי ההקשר בפסוק', ws_tal_gen:'מילון טל — פירוש כללי',
+    col_wordtrans:'תרגום המילה', col_src:'מילת המקור', col_arab:'תרגום ערבי', col_eng:'תרגום אנגלי', col_hetrans:'תרגום עברי',
+    ws_tap_hint:'👆 לחץ על השורה לקבלת פירוש מורחב — כל תרגום ופירוש מהמקור שלו', ws_translation:'תרגום עברי', ws_from_targum:'מהתרגום הארמי (פירוש הפסוק)', ws_web:'פירושים מן הרשת', ws_jewish:'פרשנות יהודית', ws_samaritan:'ממקורות שומרון',
+    ws_tal:'תרגום מהארמית', ws_tal_ctx:'מהארמית — לפי ההקשר בפסוק', ws_tal_gen:'מהארמית — תרגום כללי',
+    ws_english:'מהתרגום האנגלי', ws_from_english:'אנגלית → עברית', ws_english_pending:'התרגום מהאנגלית בהכנה',
+    ws_melitz:'מן המליץ', ws_melitz_pending:'מקור המליץ טרם נוסף', ws_torah_occ:'מופעים בתורה (ארמית)', ws_marqe_occ:'מופעים בתיבת מרקה',
     ws_arabic:'מהתרגום הערבי', ws_from_arabic:'תרגום מהערבית לעברית', ws_arabic_pending:'התרגום מהערבית לעברית בהכנה',
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
@@ -205,7 +211,7 @@ const I18N = {
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from A. Tal's dictionary", no_dict:'No dictionary for this verse',
     dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
     more_results:'More results', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
-    m_library:'The Samaritan Library', m_dict_aram:'The Samaritan Aramaic–Hebrew Dictionary',
+    m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
     tm_toc_hint:'Choose a Memar to read:', tm_back_toc:'‹ Contents', tm_back_chapter:'‹ Back to the chapter',
     tm_words_btn:'Word glossary', tm_words_title:'Word glossary — from A. Tal’s dictionary', tm_col_root:'Root',
@@ -213,9 +219,13 @@ const I18N = {
     m_tz_book:'Ṣadaqah al-Ḥakīm (Genesis)', tz_title:'Ṣadaqah al-Ḥakīm — Genesis',
     tz_toc_hint:'Choose a chapter:', tz_chapter_label:'Chapter', tz_arabic_pending:'The Arabic is being prepared — showing the Hebrew.',
     rd_he:'Hebrew', rd_ar:'Arabic', rd_aram:'Aramaic', rd_show:'Show:',
-    dict_app_title:'The Samaritan Aramaic–Hebrew Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
+    dict_app_title:'Samaritan Aramaic–Hebrew & Hebrew–Aramaic Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
     dict_tab_search:'Search', dict_tab_index:'Word index', dict_tab_pages:'Browse pages',
     dict_index_hint:'Browse every word in the dictionary (A–Z). Type a letter/word to jump. Tap a word to see where it occurs in the Torah and in Tībåt Mårqe — in the same meaning.', dict_index_ph:'Jump to a letter/word…',
+    dict_dir_aram:'Aramaic → Hebrew', dict_dir_he:'Hebrew → Aramaic', dict_he_ph:'Type a Hebrew word…',
+    dict_he_index_hint:'Browse the Hebrew words (A–Z). Tap a word to reach its Aramaic entry.',
+    dict_he_search_hint:'Search a Hebrew word — the result leads to its Aramaic (root) entry.', dict_he_roots:'Aramaic roots',
+    dict_word_panel_btn:'Open full entry',
     dict_w_torah:'Occurs in the Torah', dict_w_memar:'Occurs in Tībåt Mårqe', dict_w_meanings:'meanings',
     dict_back_index:'‹ Back to the index', dict_in_torah_sec:'Occurrences in the Torah', dict_in_memar_sec:'Occurrences in Tībåt Mårqe',
     dict_same_meaning:'in the same meaning (by root)', dict_more:'more', dict_no_occ:'No occurrences in this meaning.',
@@ -243,9 +253,11 @@ const I18N = {
     notif_rec_body:'Allow notifications to get updates about new features, additions and new versions of the app.',
     notif_rec_btn:'Enable notifications',
     col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Tal dictionary', col_arabic:'Arabic',
-    col_wordtrans:'Word translation',
-    ws_tap_hint:'Tap the row to break the translation down by source', ws_translation:'Word translation', ws_from_targum:'from the Aramaic Targum (verse reading)',
-    ws_tal:'A. Tal’s dictionary', ws_tal_ctx:'Tal dictionary — by the verse context', ws_tal_gen:'Tal dictionary — general gloss',
+    col_wordtrans:'Word translation', col_src:'Source word', col_arab:'Arabic', col_eng:'English', col_hetrans:'Hebrew translation',
+    ws_tap_hint:'👆 Tap the row for an expanded interpretation — every translation from its source', ws_translation:'Hebrew translation', ws_from_targum:'from the Aramaic Targum (verse reading)', ws_web:'web dictionaries', ws_jewish:'Jewish commentary', ws_samaritan:'from Samaritan sources',
+    ws_tal:'from the Aramaic', ws_tal_ctx:'from the Aramaic — by the verse context', ws_tal_gen:'from the Aramaic — general gloss',
+    ws_english:'from the English', ws_from_english:'English → Hebrew', ws_english_pending:'English translation in preparation',
+    ws_melitz:'from the Meliṣ', ws_melitz_pending:'the Meliṣ source is not yet added', ws_torah_occ:'occurrences in the Torah (Aramaic)', ws_marqe_occ:'occurrences in Tībåt Mårqe',
     ws_arabic:'from the Arabic', ws_from_arabic:'Arabic → Hebrew', ws_arabic_pending:'Arabic→Hebrew translation in preparation',
     searching:'Searching…', no_interp:'No commentary for these verses',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
@@ -328,7 +340,7 @@ const I18N = {
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من معجم أ. طال', no_dict:'لا يوجد معجم لهذه الآية',
     dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
     more_results:'نتائج إضافية', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
-    m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري السامري',
+    m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
     tm_toc_hint:'اختر ميمراً للمطالعة:', tm_back_toc:'‹ المحتويات', tm_back_chapter:'‹ العودة إلى الفصل',
     tm_words_btn:'معجم الكلمات', tm_words_title:'معجم الكلمات — من معجم أ. طال', tm_col_root:'الجذر',
@@ -336,9 +348,13 @@ const I18N = {
     m_tz_book:'تفسير صدقة الحكيم (التكوين)', tz_title:'تفسير صدقة الحكيم — التكوين',
     tz_toc_hint:'اختر أصحاحاً:', tz_chapter_label:'أصحاح', tz_arabic_pending:'الترجمة العربية قيد الإعداد — يُعرض النصّ العبري.',
     rd_he:'العبرية', rd_ar:'العربية', rd_aram:'الآرامية', rd_show:'اعرض:',
-    dict_app_title:'المعجم الآرامي-العبري السامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
+    dict_app_title:'معجم آرامي-عبري وعبري-آرامي سامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
     dict_tab_search:'بحث', dict_tab_index:'فهرس الكلمات', dict_tab_pages:'تصفّح الصفحات',
     dict_index_hint:'تصفّح كلّ كلمات المعجم (أ–ي). اكتب حرفاً/كلمة للقفز. اضغط كلمة لرؤية مواضعها في التوراة وفي تيبات مارقه — بالمعنى نفسه.', dict_index_ph:'اقفز إلى حرف/كلمة…',
+    dict_dir_aram:'آرامية → عبرية', dict_dir_he:'عبرية → آرامية', dict_he_ph:'اكتب كلمة عبرية…',
+    dict_he_index_hint:'تصفّح الكلمات العبرية (أ–ي). اضغط كلمة للوصول إلى مدخلها الآرامي.',
+    dict_he_search_hint:'ابحث كلمة عبرية — تقودك النتيجة إلى مدخلها (جذرها) الآرامي.', dict_he_roots:'جذور آرامية',
+    dict_word_panel_btn:'افتح المدخل الكامل',
     dict_w_torah:'ترد في التوراة', dict_w_memar:'ترد في تيبات مارقه', dict_w_meanings:'معانٍ',
     dict_back_index:'‹ العودة إلى الفهرس', dict_in_torah_sec:'المواضع في التوراة', dict_in_memar_sec:'المواضع في تيبات مارقه',
     dict_same_meaning:'بالمعنى نفسه (حسب الجذر)', dict_more:'أخرى', dict_no_occ:'لا مواضع بهذا المعنى.',
@@ -366,9 +382,11 @@ const I18N = {
     notif_rec_body:'اسمح بالإشعارات لتصلك تحديثات حول الميزات الجديدة والإضافات والإصدارات الجديدة للتطبيق.',
     notif_rec_btn:'تفعيل الإشعارات',
     col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'معجم طال', col_arabic:'العربية',
-    col_wordtrans:'ترجمة الكلمة',
-    ws_tap_hint:'اضغط الصفّ لتفصيل مصادر الترجمة', ws_translation:'ترجمة الكلمة', ws_from_targum:'من الترجمة الآرامية (قراءة الآية)',
-    ws_tal:'معجم أ. طال', ws_tal_ctx:'معجم طال — حسب سياق الآية', ws_tal_gen:'معجم طال — معنى عام',
+    col_wordtrans:'ترجمة الكلمة', col_src:'الكلمة الأصلية', col_arab:'ترجمة عربية', col_eng:'ترجمة إنجليزية', col_hetrans:'ترجمة عبرية',
+    ws_tap_hint:'👆 اضغط الصفّ لتفسير موسّع — كلّ ترجمة من مصدرها', ws_translation:'ترجمة عبرية', ws_from_targum:'من الترجمة الآرامية (قراءة الآية)', ws_web:'معاجم الشبكة', ws_jewish:'تفسير يهودي', ws_samaritan:'من مصادر سامرية',
+    ws_tal:'من الآرامية', ws_tal_ctx:'من الآرامية — حسب سياق الآية', ws_tal_gen:'من الآرامية — ترجمة عامة',
+    ws_english:'من الإنجليزية', ws_from_english:'الإنجليزية ← العبرية', ws_english_pending:'الترجمة من الإنجليزية قيد الإعداد',
+    ws_melitz:'من المليص', ws_melitz_pending:'مصدر المليص لم يُضَف بعد', ws_torah_occ:'مواضع في التوراة (آرامية)', ws_marqe_occ:'مواضع في تيبات مارقه',
     ws_arabic:'من العربية', ws_from_arabic:'العربية ← العبرية', ws_arabic_pending:'ترجمة العربية إلى العبرية قيد الإعداد',
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
@@ -1232,14 +1250,19 @@ function buildDictSelect(c, verses){
   }
   const panel=el('div','dictpanel dict-one hidden'); panel.id='dictOnePanel';
   c.appendChild(panel);
+  // EVERY word is underlined and tappable; words with a dictionary entry are marked
+  // (a touch stronger) so the user sees which carry full data.
+  Object.keys(spanMap).forEach(k=>{
+    const sp=spanMap[k]; sp.classList.add('on');
+    const p=k.indexOf(':'); const vid=k.slice(0,p), idx=k.slice(p+1);
+    sp.onclick=()=>pickDictWord(vid, idx, sp);
+  });
   api('dict_select?verse_ids='+verses.map(v=>v.id).join(',')).then(map=>{
     DICT_SELECT_MAP=map||{};
-    for(const vid in DICT_SELECT_MAP){
+    for(const vid in DICT_SELECT_MAP)
       for(const idx in DICT_SELECT_MAP[vid]){
-        const sp=spanMap[vid+':'+idx];
-        if(sp){ sp.classList.add('on'); sp.onclick=()=>pickDictWord(vid, idx, sp); }
+        const sp=spanMap[vid+':'+idx]; if(sp) sp.classList.add('has-data');
       }
-    }
     if(S.dictWord){                                  // restore selection after a repaint
       const sp=spanMap[S.dictWord.k];
       if(sp){ sp.classList.add('sel'); renderOneWord(S.dictWord, false); }
@@ -1247,10 +1270,13 @@ function buildDictSelect(c, verses){
   }).catch(()=>{});
 }
 function pickDictWord(vid, idx, sp){
-  const entry=(DICT_SELECT_MAP[vid]||{})[idx]; if(!entry) return;
+  const word=(sp.textContent||'').trim();
+  // a word without a curated entry still opens — showing what other sources have
+  const entry=(DICT_SELECT_MAP[vid]||{})[idx] ||
+              {word:word, aramaic:'', arabic:'', english:'', he:'', he_combined:'', tal_he:''};
   document.querySelectorAll('.dw.sel').forEach(x=>x.classList.remove('sel'));
   sp.classList.add('sel');
-  S.dictWord={k:vid+':'+idx, entry, vid, word:(sp.textContent||'').trim()};
+  S.dictWord={k:vid+':'+idx, entry, vid, word};
   renderOneWord(S.dictWord, true);
 }
 // the single-word row: מילה · תרגום ארמי · ערבית · תרגום המילה (the accurate,
@@ -1265,7 +1291,7 @@ function renderOneWord(sel, scroll){
   panel.appendChild(close);
   const sc=el('div','dict-scroll'); const tbl=el('table','wtbl');
   const hr=el('tr');
-  for(const h of [t('col_word'),t('col_aram'),t('col_arabic'),t('col_wordtrans')]) hr.appendChild(el('th',null,esc(h)));
+  for(const h of [t('col_src'),t('col_aram'),t('col_arab'),t('col_eng'),t('col_hetrans'),t('ws_jewish')]) hr.appendChild(el('th',null,esc(h)));
   tbl.appendChild(hr);
   const tr=el('tr');
   tr.appendChild(el('td','wt-word',esc(sel.word||entry.word||'—')));
@@ -1273,64 +1299,22 @@ function renderOneWord(sel, scroll){
   if(entry.aramaic) aramTd.appendChild(el('span','more-arrow','⬆'));
   tr.appendChild(aramTd);
   tr.appendChild(el('td','wt-ar', entry.arabic?('<span dir="rtl">'+esc(entry.arabic)+'</span>'):'—'));
-  const transTd=el('td','wt-trans');
-  transTd.appendChild(el('div','wt-he', esc(entry.he||entry.meaning||'—')));
-  if(entry.ar_he && entry.ar_he!==entry.he){            // the Arabic→Hebrew cross-check, when it adds something
-    const a=el('div','wt-arhe', esc(entry.ar_he)); a.title=t('ws_from_arabic'); transTd.appendChild(a);
-  }
-  tr.appendChild(transTd);
+  tr.appendChild(el('td','wt-eng', entry.english?('<span dir="ltr">'+esc(entry.english)+'</span>'):'—'));
+  tr.appendChild(el('td','wt-trans', esc(entry.he_combined||entry.he||entry.meaning||'—')));
+  tr.appendChild(el('td','wt-jewish', esc(entry.jewish||'—')));
   tr.classList.add('tappable'); tr.onclick=()=>showWordSources(sel);
   tbl.appendChild(tr); sc.appendChild(tbl); panel.appendChild(sc);
   panel.appendChild(el('div','dict-one-tap', t('ws_tap_hint')));
   if(scroll) scrollToEl('#dictOnePanel');
 }
-// the word's translation broken down by source: the accurate verse translation, the
-// Tal-dictionary entry (the verse-context sense first, then the full entry), and the
-// Arabic (with its back-translation once generated).
+// the word's translation broken down by source: Arabic (+ its Hebrew), the Aramaic
+// dictionary (closest translations + Torah & Tibåt Mårqe occurrences), English (+ its
+// Hebrew), and the Meliṣ (a source not yet available).
 async function showWordSources(sel){
   const entry=sel.entry||{};
   const body=$('popupBody'); body.innerHTML=''; $('popupTitle').textContent=sel.word||entry.word||entry.he||'';
   $('popup').classList.remove('hidden');
-  // 1) the accurate word translation (closest to the verse)
-  if(entry.he){
-    body.appendChild(el('div','ws-h', t('ws_translation')));
-    const blk=el('div','ws-block');
-    blk.appendChild(el('div','ws-val', esc(entry.he)));
-    blk.appendChild(el('div','ws-from', t('ws_from_targum')));
-    body.appendChild(blk);
-  }
-  // 2) Tal's dictionary — the verse-context gloss first, then the full entry
-  body.appendChild(el('div','ws-h', t('ws_tal')));
-  if(entry.tal){
-    const blk=el('div','ws-block');
-    blk.appendChild(el('div','ws-val', esc(entry.tal)));
-    blk.appendChild(el('div','ws-from', entry.tal_ctx?t('ws_tal_ctx'):t('ws_tal_gen')));
-    body.appendChild(blk);
-  }
-  const loading=el('div','note',t('searching')); body.appendChild(loading);
-  let d=null; try{ d=await api('tal_lookup?word='+encodeURIComponent(entry.aramaic||'')); }catch(e){}
-  loading.remove();
-  const roots=(d&&d.roots)||[];
-  for(const rt of roots){
-    body.appendChild(el('div','tal-head','שורש '+esc(rt.root)));
-    if(rt.senses && rt.senses.length){
-      for(const s of rt.senses){
-        const it=el('div','tal-sense');
-        let lead=''; if(s.lemma) lead+='<b>'+esc(s.lemma)+'</b> '; if(s.pos) lead+='<span class="pos">'+esc(s.pos)+'</span> ';
-        it.innerHTML=lead+esc(s.gloss||'');
-        if(s.page) it.appendChild(el('span','tal-pg','  ('+t('tal_page')+' '+esc(String(s.page))+')'));
-        body.appendChild(it);
-      }
-    }
-    if(rt.torah && rt.torah.length){
-      body.appendChild(el('div','tal-sec',t('tal_torah')+' ('+rt.torah_count+')'));
-      const wrap=el('div','tal-locs');
-      for(const loc of rt.torah) wrap.appendChild(el('span','tal-loc', esc(loc.book+' '+loc.ch+':'+loc.vn)));
-      if(rt.torah_count>rt.torah.length) wrap.appendChild(el('span','tal-more','…'));
-      body.appendChild(wrap);
-    }
-  }
-  // 3) the Arabic source (its Hebrew back-translation will be added once generated)
+  // 1) Arabic + Arabic→Hebrew
   if(entry.arabic){
     body.appendChild(el('div','ws-h', t('ws_arabic')));
     const blk=el('div','ws-block');
@@ -1340,7 +1324,93 @@ async function showWordSources(sel){
     else blk.appendChild(el('div','ws-from ws-pending', t('ws_arabic_pending')));
     body.appendChild(blk);
   }
+  // 2) from the Aramaic: the closest gloss, then the dictionary entry with its Torah
+  //    (Aramaic) and Tibåt Mårqe occurrences
+  body.appendChild(el('div','ws-h', t('ws_tal')));
+  if(entry.tal_he){
+    const blk=el('div','ws-block');
+    blk.appendChild(el('div','ws-val', esc(entry.tal_he)));
+    blk.appendChild(el('div','ws-from', entry.tal_ctx?t('ws_tal_ctx'):t('ws_tal_gen')));
+    body.appendChild(blk);
+  }
+  const loading=el('div','note',t('searching')); body.appendChild(loading);
+  let d=null; try{ d=await api('dict_word_detail?word='+encodeURIComponent(entry.aramaic||'')); }catch(e){}
+  loading.remove();
+  for(const m of ((d&&d.meanings)||[])){
+    body.appendChild(el('div','tal-head','שורש '+esc(m.root)+(m.sense_label?(' — '+esc(m.sense_label)):'')));
+    for(const s of (m.senses||[]).slice(0,4)) body.appendChild(el('div','tal-sense', esc(s.gloss||'')));
+    if(m.torah_count){
+      body.appendChild(el('div','tal-sec', t('ws_torah_occ')+' ('+m.torah_count+')'));
+      const wrap=el('div','tal-locs');
+      for(const o of (m.torah||[]).slice(0,12)){
+        const sp=el('span','tal-loc occ-link', esc(o.book+' '+o.ch+':'+o.vn));
+        sp.onclick=()=>openOccurrence('torah', o); wrap.appendChild(sp);
+      }
+      if(m.torah_count>(m.torah||[]).length) wrap.appendChild(el('span','tal-more','…'));
+      body.appendChild(wrap);
+    }
+    if(m.memar_count){
+      body.appendChild(el('div','tal-sec', t('ws_marqe_occ')+' ('+m.memar_count+')'));
+      const wrap=el('div','tal-locs');
+      for(const o of (m.memar||[]).slice(0,8)){
+        const sp=el('span','tal-loc occ-link', esc(((o.title||'')+' '+(o.section||'')).trim()));
+        sp.onclick=()=>openOccurrence('memar', o); wrap.appendChild(sp);
+      }
+      if(m.memar_count>(m.memar||[]).length) wrap.appendChild(el('span','tal-more','…'));
+      body.appendChild(wrap);
+    }
+  }
+  // 3) Samaritan sources (synthesised note) + Jewish commentary (synthesised note)
+  if(entry.samaritan){
+    body.appendChild(el('div','ws-h', t('ws_samaritan')));
+    const blk=el('div','ws-block'); blk.appendChild(el('div','ws-val', esc(entry.samaritan))); body.appendChild(blk);
+  }
+  if(entry.jewish){
+    body.appendChild(el('div','ws-h', t('ws_jewish')));
+    const blk=el('div','ws-block'); blk.appendChild(el('div','ws-val', esc(entry.jewish))); body.appendChild(blk);
+  }
+  // 4) English + English→Hebrew (pending generation)
+  body.appendChild(el('div','ws-h', t('ws_english')));
+  { const blk=el('div','ws-block');
+    if(entry.english) blk.appendChild(el('div','ws-val','<span dir="ltr">'+esc(entry.english)+'</span>'));
+    if(entry.en_he){ blk.appendChild(el('div','ws-val', esc(entry.en_he)));
+                     blk.appendChild(el('div','ws-from', t('ws_from_english'))); }
+    else blk.appendChild(el('div','ws-from ws-pending', t('ws_english_pending')));
+    body.appendChild(blk); }
+  // 4) web dictionaries (free, live — Wiktionary / Wikipedia)
+  body.appendChild(el('div','ws-h', t('ws_web')));
+  { const wword = sel.word || entry.word || '';
+    const blk=el('div','ws-block'); blk.appendChild(el('div','note',t('searching'))); body.appendChild(blk);
+    api('online_dict?words='+encodeURIComponent(wword)).then(res=>{
+      blk.innerHTML='';
+      const r = res && res[wword];
+      if(r && r.summary){
+        blk.appendChild(el('div','ws-val', esc(r.summary)));
+        const credit=(r.sources||[]).map(s=>s[0]+' ('+s[1]+')').join(' · ');
+        if(credit) blk.appendChild(el('div','ws-from', esc(credit)));
+      } else blk.appendChild(el('div','ws-from ws-pending','—'));
+    }).catch(()=>{ blk.innerHTML=''; blk.appendChild(el('div','ws-from ws-pending','—')); }); }
+  // 5) the Meliṣ — a further source, not yet added
+  body.appendChild(el('div','ws-h', t('ws_melitz')));
+  { const blk=el('div','ws-block'); blk.appendChild(el('div','ws-from ws-pending', t('ws_melitz_pending'))); body.appendChild(blk); }
 }
+// tap an occurrence reference → the verse (Torah) or passage (Tibåt Mårqe) itself,
+// with the matched word(s) highlighted (reuses dictHlSpan from the word index)
+function openOccurrence(type, o){
+  const body=$('occBody'); body.innerHTML='';
+  let title;
+  if(type==='torah'){
+    title = ((o.book||'')+' '+(o.ch||'')+':'+(o.vn||'')).trim();
+    body.appendChild(dictHlSpan(o.text||'', o.hi||[], 'occ-text'));
+  } else {
+    title = ((o.title||'')+' '+(o.section||'')).trim();
+    body.appendChild(dictHlSpan(o.aramaic||'', o.hi||[], 'occ-text aram'));
+    if(o.hebrew) body.appendChild(el('div','occ-heb', esc(o.hebrew)));
+  }
+  $('occTitle').textContent = title;
+  $('occModal').classList.remove('hidden');
+}
+$('occClose').onclick=()=>$('occModal').classList.add('hidden');
 
 // ── dictionary (legacy full-table — still used under translation panels) ──────
 async function buildDict(c, verses){ await renderDict(c, verses); }
@@ -2033,34 +2103,14 @@ async function doSearch(){
       if(spans.length){ const ol=el('div','res-occ',spans.join('    '));
         ol.style.fontSize=(20+S.searchFontOffset)+'px'; res.appendChild(ol); }
     }
-    // meaning of the HIGHLIGHTED word (only when the "show meanings" flag is on):
-    // Aramaic translation + an EMPHASISED dictionary meaning the user can click to
-    // open the exact entry from A. Tal's dictionary, plus an online Hebrew gloss.
+    // "show meanings" flag → open the word's FULL interpretation panel (the מילון
+    // מילים format) on click, instead of an inline gloss.
     if(showMeanings){
-      const heWord = r.matched_word || q;
-      const ml=el('div','res-meaning');
-      let hasParts=false;
-      if(r.aramaic){
-        const a=el('span','aram-link', 'תרגום ארמי: ');
-        a.appendChild(el('b','', esc(r.aramaic)));
-        a.title='לחץ לפירוש המלא של המילה';
-        a.onclick=()=>showTalFull(r.aramaic);
-        ml.appendChild(a); hasParts=true;
-      }
-      // the dictionary meaning, emphasised, and clickable to the precise Tal entry
-      if(r.aramaic || r.meaning){
-        const dl=el('div','res-dict');
-        if(r.meaning){ dl.appendChild(el('span','dict-label','מילון א. טל: '));
-          dl.appendChild(el('b','dict-gloss', esc(r.meaning))); }
-        const link=el('span','dict-precise', t('tal_click_precise'));
-        link.onclick=()=>showTalFull(r.aramaic||heWord);
-        dl.appendChild(link);
-        ml.appendChild(dl);
-      }
-      const heSpan=el('span','he-mean');
-      heSpan.dataset.word=heWord; heSpan.dataset.sep='0';
-      ml.appendChild(heSpan); res.appendChild(ml);
-      if(heWord) heWords.add(heWord);
+      const heWord = (r.matched_word || q || '').trim();
+      const mb=el('button','res-meaning-btn');
+      mb.innerHTML = '📖 '+esc(t('dict_word_panel_btn'))+(heWord?(' — <b>'+esc(heWord)+'</b>'):'');
+      mb.onclick=()=>openSearchWord(r);
+      res.appendChild(mb);
     }
   }
   // fill every result's Hebrew-dictionary meaning in one bulk request
@@ -2075,6 +2125,24 @@ async function doSearch(){
       });
     }).catch(()=>{});
   }
+}
+// a search result's word → its full interpretation panel (the same sources view as
+// the מילון מילים picker), pulling the verse's full entry where available.
+async function openSearchWord(r){
+  const word=(r.matched_word||'').trim();
+  let entry=null;
+  if(r.id){
+    try{
+      const map=await api('dict_select?verse_ids='+r.id);
+      const es=map[String(r.id)]||map[r.id]||{};
+      const wc=word.replace(/[^א-ת]/g,'');
+      for(const k in es){ if(r.aramaic && es[k].aramaic===r.aramaic){ entry=es[k]; break; } }
+      if(!entry) for(const k in es){ if((es[k].word||'').replace(/[^א-ת]/g,'')===wc){ entry=es[k]; break; } }
+    }catch(e){}
+  }
+  if(!entry) entry={word:word||'', aramaic:r.aramaic||'', arabic:'', english:'',
+                    he:r.meaning||'', he_combined:r.meaning||'', tal_he:''};
+  showWordSources({entry, vid:r.id, word: word||entry.word||''});
 }
 function cleanPron(p){ return (p||'').replace(/\([^)]*[א-ת؀-ۿ][^)]*\)/g,'').replace(/[א-ת؀-ۿ]/g,'').replace(/\s+/g,' ').trim(); }
 
@@ -2137,6 +2205,9 @@ let DICT_MODE='search';
 function openDictApp(){
   $('dictModal').classList.remove('hidden');
   dictApplyFs();
+  DICT_DIR='aram';
+  document.querySelectorAll('.dict-dir-btn').forEach(b=>b.classList.toggle('active', b.dataset.dir==='aram'));
+  const pagesTab=document.querySelector('.dict-tab[data-mode="pages"]'); if(pagesTab) pagesTab.classList.remove('hidden');
   dictSetMode('search');
   setTimeout(()=>$('dictAppInput').focus(), 50);
 }
@@ -2147,21 +2218,80 @@ function dictZoom(d){ DICT_FS=Math.min(2.2, Math.max(0.8, +(DICT_FS+d).toFixed(2
   localStorage.setItem('as_dict_fs', DICT_FS); dictApplyFs(); }
 $('dZoomIn').onclick=()=>dictZoom(0.12);
 $('dZoomOut').onclick=()=>dictZoom(-0.12);
+let DICT_DIR='aram';                           // 'aram' (ארמית→עברית) | 'he' (עברית→ארמית)
+function dictSetDir(dir){
+  DICT_DIR=dir;
+  document.querySelectorAll('.dict-dir-btn').forEach(b=>b.classList.toggle('active', b.dataset.dir===dir));
+  const pagesTab=document.querySelector('.dict-tab[data-mode="pages"]');   // pages = Aramaic dictionary only
+  if(pagesTab) pagesTab.classList.toggle('hidden', dir==='he');
+  dictSetMode(dir==='he' && DICT_MODE==='pages' ? 'search' : DICT_MODE);
+}
+document.querySelectorAll('.dict-dir-btn').forEach(b=>b.onclick=()=>dictSetDir(b.dataset.dir));
+
 function dictSetMode(mode){
   DICT_MODE=mode;
   document.querySelectorAll('.dict-tab').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
   $('dictAppBody').innerHTML=''; $('dictNav').innerHTML=''; $('dictNav').classList.add('hidden');
   $('dictSearchRow').classList.toggle('hidden', mode==='pages');
   const inp=$('dictAppInput'); inp.value='';
-  if(mode==='search'){ $('dictAppHint').textContent=t('dict_app_hint'); inp.placeholder=t('dict_app_ph'); }
-  else if(mode==='index'){ $('dictAppHint').textContent=t('dict_index_hint'); inp.placeholder=t('dict_index_ph'); dictWords(0); }
+  const he = DICT_DIR==='he';
+  if(mode==='search'){ $('dictAppHint').textContent=t(he?'dict_he_search_hint':'dict_app_hint'); inp.placeholder=t(he?'dict_he_ph':'dict_app_ph'); }
+  else if(mode==='index'){ $('dictAppHint').textContent=t(he?'dict_he_index_hint':'dict_index_hint'); inp.placeholder=t(he?'dict_he_ph':'dict_index_ph'); (he?dictHeBrowse:dictWords)(0); }
   else if(mode==='pages'){ $('dictAppHint').textContent=t('dict_pages_hint'); dictPage(1); }
 }
 document.querySelectorAll('.dict-tab').forEach(b=>b.onclick=()=>dictSetMode(b.dataset.mode));
 
-// the search box doubles as the index "jump to letter/word" box
-function dictGo(){ if(DICT_MODE==='index') dictWords(0, ($('dictAppInput').value||'').trim());
-                   else dictAppSearch(); }
+// the search box doubles as the index "jump to letter/word" box; in the Hebrew
+// direction, search runs a results search (not an index jump) per the spec.
+function dictGo(){
+  const q=($('dictAppInput').value||'').trim();
+  if(DICT_DIR==='he'){ if(DICT_MODE==='index') dictHeBrowse(0, q); else dictHeSearch(q); return; }
+  if(DICT_MODE==='index') dictWords(0, q); else dictAppSearch();
+}
+
+// ── Hebrew → Aramaic: browse the Hebrew index, or search a Hebrew word → its roots ──
+async function dictHeBrowse(start, prefix){
+  const body=$('dictAppBody'); body.innerHTML=''; body.appendChild(el('div','note',t('searching')));
+  let d; try{ d=await api('dict_he?start='+(start||0)+(prefix?('&prefix='+encodeURIComponent(prefix)):'')); }
+  catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
+  body.innerHTML='';
+  const grid=el('div','dict-wgrid');
+  for(const it of d.items){
+    const cell=el('button','dict-wcell');
+    cell.appendChild(el('span','dict-wword', esc(it.word)));
+    if(it.roots>1){ const b=el('span','dict-wb mng', it.roots+'·'); b.title=t('dict_he_roots'); cell.appendChild(b); }
+    cell.onclick=()=>{ dictSetMode('search'); $('dictAppInput').value=it.word; dictHeSearch(it.word); };
+    grid.appendChild(cell);
+  }
+  body.appendChild(grid); body.scrollTop=0;
+  dictNav([
+    {label:t('dict_prev'), disabled:d.start<=0, fn:()=>dictHeBrowse(Math.max(0,d.start-d.limit))},
+    {text:(d.start+1)+'–'+Math.min(d.total,d.start+d.items.length)+' / '+d.total},
+    {label:t('dict_next'), disabled:d.start+d.limit>=d.total, fn:()=>dictHeBrowse(d.start+d.limit)},
+  ]);
+}
+async function dictHeSearch(word){
+  const body=$('dictAppBody'); body.innerHTML='';
+  if(!word) return;
+  body.appendChild(el('div','note',t('searching')));
+  let d; try{ d=await api('dict_he_search?word='+encodeURIComponent(word)); }
+  catch(e){ body.innerHTML=''; body.appendChild(el('div','note',t('dict_app_empty'))); return; }
+  body.innerHTML='';
+  if(!d.results || !d.results.length){ body.appendChild(el('div','note',t('dict_app_empty'))); return; }
+  for(const r of d.results){
+    const card=el('div','dict-he-res');
+    card.appendChild(el('div','dict-he-word', esc(r.word)));
+    card.appendChild(el('div','dict-he-rlabel', esc(t('dict_he_roots'))+':'));
+    const rl=el('div','dict-he-roots');
+    for(const root of (r.roots||[])){
+      const chip=el('button','dict-he-root', esc(root));
+      chip.onclick=()=>dictWordDetail(root, root);    // → the Aramaic interpretation (root entry)
+      rl.appendChild(chip);
+    }
+    card.appendChild(rl);
+    body.appendChild(card);
+  }
+}
 
 // ── tap a form → all its locations in the dictionary (inline expand) ─────────
 async function dictToggleLocations(form, chip){

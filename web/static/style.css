@@ -178,9 +178,8 @@ body{
 .dict-one-close{ position:absolute; top:5px; inset-inline-start:7px; z-index:1; width:28px; height:28px;
   border:0; border-radius:50%; background:var(--navy); color:#fff; font-size:15px; line-height:1; cursor:pointer; }
 .dict-one-close:hover{ background:var(--accent); }
-.wt-trans .wt-he{ font-weight:700; color:var(--navy); }
-.wt-trans .wt-arhe{ font-weight:400; color:#8c5a1a; font-size:13px; margin-top:1px; }
-.wt-trans .wt-arhe::before{ content:'ع '; font-size:11px; opacity:.7; }
+.wt-trans{ font-weight:700; color:var(--navy); }
+.wt-eng{ direction:ltr; text-align:left; color:#3a4a66; }
 .dict-one-tap{ text-align:center; color:var(--muted); font-size:12.5px; padding:6px 2px 2px; }
 /* the per-source breakdown popup */
 .ws-h{ color:var(--navy); font-weight:700; font-size:15px; margin:10px 0 3px; border-bottom:1px solid rgba(26,56,115,.15); padding-bottom:2px; }
@@ -378,6 +377,10 @@ body{
 .res-occ{ font-family:'Translit',serif; color:#337373; font-size:18px; padding:0 2px 2px; }
 .res-occ .extra{ color:#8a8a8a; font-family:'Hebrew'; }
 .res-meaning{ color:#555; font-size:15px; padding:0 2px 8px; line-height:1.5; }
+.res-meaning-btn{ display:inline-block; margin:2px 2px 8px; border:1px solid var(--accent); background:#f3f7ff;
+  color:var(--accent); border-radius:9px; padding:6px 12px; font-family:inherit; font-size:14.5px; cursor:pointer; }
+.res-meaning-btn:hover{ background:var(--accent); color:#fff; }
+.res-meaning-btn b{ color:inherit; }
 .res-meaning b{ color:var(--navy); }
 .res-meaning .aram-link{ color:var(--accent); cursor:pointer; }
 .res-meaning .aram-link:hover{ text-decoration:underline; }
@@ -522,6 +525,11 @@ footer a{ color:var(--accent); text-decoration:none; }
 .tal-sense .tal-pg{ color:var(--muted); font-size:12px; }
 .tal-locs{ display:flex; flex-wrap:wrap; gap:5px; }
 .tal-loc{ background:#eef2fd; color:var(--navy); border-radius:5px; padding:2px 7px; font-size:13px; white-space:nowrap; }
+.tal-loc.occ-link{ cursor:pointer; border:1px solid transparent; }
+.tal-loc.occ-link:hover{ background:#dde7fb; border-color:var(--accent); }
+#occBody .occ-text{ display:block; font-size:19px; line-height:1.7; color:var(--dark); text-align:right; direction:rtl; padding:4px 2px; }
+#occBody .occ-text.aram{ color:#5a4326; }
+#occBody .occ-heb{ margin-top:8px; padding-top:8px; border-top:1px solid rgba(26,56,115,.15); color:var(--muted); font-size:16px; line-height:1.6; }
 .tal-more{ color:var(--muted); }
 .tal-formlist{ color:var(--accent); font-size:14px; line-height:1.7; }
 
@@ -554,7 +562,19 @@ footer a{ color:var(--accent); text-decoration:none; }
 #dictAppBody .dict-entry{ border-top:1px solid rgba(26,56,115,.15); padding-top:6px; margin-top:8px; }
 #dictAppBody .tal-head{ color:var(--navy); font-weight:700; font-size:19px; }
 /* dictionary app: mode tabs, page/index nav, clickable forms + locations */
+.dict-dir{ display:flex; gap:6px; margin-bottom:6px; }
+.dict-dir-btn{ flex:1 1 0; padding:8px 4px; border:1px solid var(--accent); border-radius:8px; background:#fff;
+  color:var(--accent); font-family:inherit; font-size:14.5px; font-weight:600; cursor:pointer; }
+.dict-dir-btn.active{ background:var(--accent); color:#fff; }
+.dict-he-res{ border-top:1px solid rgba(26,56,115,.12); padding:8px 2px; }
+.dict-he-word{ color:var(--navy); font-weight:800; font-size:calc(19px*var(--dict-fs,1)); }
+.dict-he-rlabel{ color:var(--muted); font-size:13px; margin:3px 0 2px; }
+.dict-he-roots{ display:flex; flex-wrap:wrap; gap:6px; }
+.dict-he-root{ border:1px solid var(--accent); background:#f3f7ff; color:var(--accent); border-radius:14px;
+  padding:4px 12px; font-family:inherit; font-size:calc(16px*var(--dict-fs,1)); cursor:pointer; }
+.dict-he-root:hover{ background:var(--accent); color:#fff; }
 .dict-tabs{ display:flex; gap:6px; }
+.dict-tab.hidden{ display:none; }
 .dict-tab{ flex:1 1 0; padding:8px 4px; border:1px solid #cfd6e6; border-radius:8px; background:#fff;
   color:var(--navy); font:inherit; font-size:14px; cursor:pointer; }
 .dict-tab.active{ background:var(--navy); color:#fff; border-color:var(--navy); }

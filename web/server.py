@@ -781,6 +781,19 @@ def api_dict_words():
                                         prefix=request.args.get('prefix', '')))
 
 
+@app.route('/api/dict_he')
+def api_dict_he():
+    """Hebrew-side word index — Hebrew words leading to their Aramaic root(s)."""
+    return jsonify(db.dict_he_browse(request.args.get('start', '0'),
+                                     prefix=request.args.get('prefix', '')))
+
+
+@app.route('/api/dict_he_search')
+def api_dict_he_search():
+    """Search a Hebrew word among the results → the Aramaic root(s) it renders."""
+    return jsonify(db.dict_he_search(request.args.get('word', '')))
+
+
 @app.route('/api/dict_word_detail')
 def api_dict_word_detail():
     """A clicked index word, grouped by meaning (root): Tal sense(s), the Torah

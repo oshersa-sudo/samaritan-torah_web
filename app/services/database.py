@@ -390,6 +390,22 @@ def tal_context_gloss(aramaic, verse_id, conn):
     return None
 
 
+def _dedup_he(items):
+    """De-duplicate Hebrew gloss candidates (by niqqud/finals-folded key), preserving
+    first-seen order — so the combined translation field never repeats the same
+    meaning that arrived from two different sources."""
+    out, seen = [], set()
+    for x in items:
+        x = (x or '').strip(' .,;:־׳״')
+        if not x:
+            continue
+        k = _norm_fin(x)
+        if k in seen:
+            continue
+        seen.add(k); out.append(x)
+    return out
+
+
 def get_word_table(verse_ids):
     """Per-word table rows for the "מילון מילים" panel. For each Targum word of
     the given verse(s): {word (Hebrew), meaning (Hebrew), aramaic, tal (concise
@@ -409,25 +425,35 @@ def get_word_table(verse_ids):
         ar_he = {r[0]: r[1] for r in conn.execute("SELECT arabic, hebrew FROM arabic_he")}
     except Exception:
         ar_he = {}
+    # per-word English (aligned to the verse) + its Hebrew back-translation, by vd id
+    word_en = {}
+    try:
+        word_en = {r['vd_id']: (r['en'], r['en_he']) for r in conn.execute(
+            "SELECT vd_id, en, en_he FROM word_english")}
+    except Exception:
+        word_en = {}
     out = {}
     for r in rows:
         heb = (r['hebrew'] or '').strip()           # the curated, context-accurate Hebrew
-        parts = [p.strip() for p in heb.split(',', 1)]
-        word = parts[0]
-        inline = parts[1] if len(parts) > 1 else ''
-        # the Tal gloss CLOSEST to this verse's usage (sense-tagged when available)
+        word = heb.split(',', 1)[0].strip()
+        # the dictionary gloss CLOSEST to this verse's usage (sense-tagged when available)
         ctx = tal_context_gloss(r['aramaic'], r['verse_id'], conn)
-        tal = ''
-        if ctx:
-            tal = ctx['root'] + (' · ' + ctx['gloss'] if ctx['gloss'] else '')
-        # the accurate word-translation is the curated Hebrew itself; keep `meaning`
-        # for backwards compatibility but prefer the curated text over a generic gloss.
-        meaning = inline or heb or (ctx['gloss'] if ctx and ctx['gloss'] else word)
         ar = (r['arabic'] if has_ar else '') or ''
+        arh = ar_he.get(ar, '')
+        tal_he = (ctx['gloss'] if ctx and ctx.get('gloss') else '')   # closest gloss, no root/label
+        tal_root = ctx['root'] if ctx else ''
+        en_word, en_he = word_en.get(r['id'], ('', ''))              # word-level English (aligned) + its Hebrew
+        # the combined Hebrew-translation field: the closest dictionary gloss, the DB's
+        # curated Hebrew, then the Arabic and English back-translations — each split into
+        # its atomic glosses and de-duplicated, so no meaning repeats across sources.
+        def _atoms(s):
+            return [p.strip() for p in re.split('[,،/]', s or '') if p.strip()]
+        he_combined = _dedup_he(_atoms(tal_he) + _atoms(heb) + _atoms(arh) + _atoms(en_he))
         out.setdefault(r['verse_id'], []).append({
-            'word': word, 'meaning': meaning, 'aramaic': r['aramaic'] or '',
-            'he': heb, 'tal': tal, 'tal_ctx': bool(ctx and ctx.get('ctx')),
-            'arabic': ar, 'ar_he': ar_he.get(ar, ''),
+            'word': word, 'meaning': heb or word, 'aramaic': r['aramaic'] or '',
+            'arabic': ar, 'english': en_word,
+            'he': heb, 'tal_he': tal_he, 'tal_root': tal_root, 'tal_ctx': bool(ctx and ctx.get('ctx')),
+            'ar_he': arh, 'en_he': en_he, 'he_combined': ', '.join(he_combined),
         })
     conn.close()
     return out
@@ -483,6 +509,23 @@ def get_dict_select(verse_ids):
         return {}
     wt = get_word_table(verse_ids)
     conn = get_connection()
+    # full per-word Hebrew gloss (gap coverage) — used only where the curated entry
+    # is missing, so every token still opens to a meaning
+    ph = ','.join('?' * len(verse_ids))
+    # position-keyed per-word data: full Hebrew gloss (gap coverage), the Samaritan
+    # note (folded into the Hebrew column) and the Jewish note (its own column)
+    def _pos_map(table, col):
+        out = {}
+        try:
+            for r in conn.execute("SELECT verse_id, pos, %s AS v FROM %s WHERE verse_id IN (%s)"
+                                  % (col, table, ph), verse_ids):
+                out[(r['verse_id'], r['pos'])] = r['v'] or ''
+        except Exception:
+            pass
+        return out
+    gloss = _pos_map('word_gloss', 'he')
+    samaritan = _pos_map('word_samaritan', 'note')
+    jewish = _pos_map('word_jewish', 'note')
     out = {}
     for vid in verse_ids:
         row = conn.execute("SELECT text FROM verses WHERE id=?", (vid,)).fetchone()
@@ -496,7 +539,32 @@ def get_dict_select(verse_ids):
                 if i in used:
                     continue
                 if _ds_match(tk, e['word']):
-                    used.add(i); m[str(i)] = e; break
+                    used.add(i); m[str(i)] = dict(e); break
+        # fill every remaining token from the full gloss, so no word is left empty
+        for i, tk in enumerate(toks):
+            if str(i) in m:
+                continue
+            he = gloss.get((vid, i), '')
+            if he:
+                m[str(i)] = {'word': tk, 'meaning': he, 'aramaic': '', 'arabic': '',
+                             'english': '', 'he': he, 'tal_he': '', 'tal_root': '',
+                             'tal_ctx': False, 'ar_he': '', 'en_he': '', 'he_combined': he}
+        # attach the Samaritan note (into the Hebrew column, de-duplicated) and the
+        # Jewish note (its own column) to whichever token they sit on
+        for i in range(len(toks)):
+            e = m.get(str(i))
+            if not e:
+                continue
+            sam = samaritan.get((vid, i), '')
+            jew = jewish.get((vid, i), '')
+            if sam:
+                e['samaritan'] = sam                 # appended whole (an interpretation, not a gloss)
+                parts = [a.strip() for a in (e.get('he_combined') or '').split(',') if a.strip()]
+                if _norm_fin(sam) not in {_norm_fin(p) for p in parts}:
+                    parts.append(sam)
+                e['he_combined'] = ', '.join(parts)
+            if jew:
+                e['jewish'] = jew
         if m:
             out[vid] = m
     conn.close()
@@ -1698,6 +1766,63 @@ def dict_words_browse(start=0, limit=60, prefix=''):
                        'in_torah': bool(r['it']), 'in_memar': bool(r['im'])} for r in rows]}
 
 
+# ── Hebrew → Aramaic side: a Hebrew index that leads to the Aramaic entry, and a
+#    Hebrew search that finds words IN THE RESULTS (not by jumping in the index) ──
+def dict_he_browse(start=0, limit=60, prefix=''):
+    """A page of the Hebrew word index (dict_he_index) — Hebrew words that lead to
+    their Aramaic root(s). One row per Hebrew word with its root count."""
+    conn = get_connection()
+    total = conn.execute(
+        "SELECT COUNT(*) FROM (SELECT he_norm FROM dict_he_index GROUP BY he_norm)").fetchone()[0]
+    if prefix:
+        pn = _norm_fin(prefix)
+        start = conn.execute(
+            "SELECT COUNT(*) FROM (SELECT he_norm FROM dict_he_index "
+            "WHERE he_norm < ? GROUP BY he_norm)", (pn,)).fetchone()[0]
+    try:
+        start = max(0, int(start))
+    except (TypeError, ValueError):
+        start = 0
+    rows = conn.execute(
+        "SELECT MIN(he_word) AS word, COUNT(DISTINCT root_norm) AS nr FROM dict_he_index "
+        "GROUP BY he_norm ORDER BY he_norm LIMIT ? OFFSET ?", (limit, start)).fetchall()
+    conn.close()
+    return {'start': start, 'limit': limit, 'total': total,
+            'items': [{'word': r['word'] or '', 'roots': r['nr']} for r in rows]}
+
+
+def dict_he_search(word, limit=60):
+    """Search a Hebrew word among the RESULTS: every Hebrew head-word that matches
+    (exact, then contains) with the Aramaic root(s) it renders, so the user lands on
+    the Aramaic interpretation. Unlike the Aramaic side, this returns a result list."""
+    base = _norm_fin(word)
+    if not base or len(base) < 2:
+        return {'word': word, 'results': []}
+    conn = get_connection()
+    seen, results = set(), []
+    # exact head-word first, then words that contain the query
+    for clause, arg in [("he_norm=?", base), ("he_norm LIKE ? AND he_norm<>?", ('%' + base + '%', base))]:
+        if len(results) >= limit:
+            break
+        params = arg if isinstance(arg, tuple) else (arg,)
+        rows = conn.execute(
+            "SELECT he_word, root FROM dict_he_index WHERE " + clause +
+            " ORDER BY he_norm LIMIT ?", params + (limit * 4,)).fetchall()
+        byword = {}
+        for r in rows:
+            byword.setdefault(r['he_word'], [])
+            if r['root'] and r['root'] not in byword[r['he_word']]:
+                byword[r['he_word']].append(r['root'])
+        for hw, roots in byword.items():
+            if hw in seen:
+                continue
+            seen.add(hw); results.append({'word': hw, 'roots': roots[:8]})
+            if len(results) >= limit:
+                break
+    conn.close()
+    return {'word': word, 'results': results}
+
+
 def _hl_forms(norm_set, tokens_src):
     """Of the whole-word tokens in `tokens_src`, the distinct ones whose folded key
     is in `norm_set` — the surface forms a client should emphasise (used for Memar,
@@ -1712,11 +1837,13 @@ def _hl_forms(norm_set, tokens_src):
     return out
 
 
-def _hl_core(text, root_core):
-    """Hebrew Torah tokens whose weak-letter-stripped core equals the root's core —
-    the bridge for highlighting a root's word inside the Hebrew verse, where no
-    surface form is recorded (root_index.form is usually null). Conservative: an
-    exact core match, and only for cores of two letters or more."""
+def _hl_root(text, root_core):
+    """Tokens to emphasise in a sentence: those whose weak-letter-stripped core —
+    after peeling leading proclitics (ו/ב/ל/כ/מ/ה/ש/ד) — equals the root core, or
+    begins with it (so prefixed forms like מקדם and suffixed forms like קדמת light
+    up, while unrelated prepositions like מן/על do not). Works for both the Hebrew
+    Torah verse and the Aramaic Tibåt Mårqe passage — the bridge is the root
+    skeleton, so no per-occurrence surface form is needed."""
     if not root_core or len(root_core) < 2:
         return []
     out, seen = [], set()
@@ -1724,7 +1851,16 @@ def _hl_core(text, root_core):
         if w in seen:
             continue
         seen.add(w)
-        if _norm_fin(w).translate(_WEAK_TAL) == root_core:
+        c = _norm_fin(w).translate(_WEAK_TAL)
+        ok = False
+        for _ in range(3):                       # peel up to two proclitics
+            if c == root_core or (len(root_core) >= 3 and c.startswith(root_core)):
+                ok = True; break
+            if len(c) > len(root_core) and c and c[0] in 'ובלכמהשד':
+                c = c[1:]
+            else:
+                break
+        if ok:
             out.append(w)
     return out
 
@@ -1808,14 +1944,14 @@ def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
             text = (vt['text'] if vt else '') or ''
             torah_out.append({'book': o['book'], 'ch': o['chapter'], 'vn': o['verse'],
                               'verse_id': o['verse_id'], 'text': text,
-                              'hi': _hl_core(text, root_core)})
+                              'hi': _hl_root(text, root_core)})
 
         # Memar passages with an Aramaic form of the root (filtered to the sense)
         memar_all = []
         for s in tm_rows:
             if m_sense and m_sense.get(s['id']) != target:
                 continue
-            hi = _hl_forms(aram_norm, s['aramaic'])
+            hi = _hl_root(s['aramaic'], root_core)
             if hi:
                 memar_all.append({'id': s['id'], 'title': s['book_title'] or '',
                                   'section': s['section'] or '',
