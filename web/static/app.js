@@ -76,6 +76,8 @@ const I18N = {
     no_sam_source:'אין מקור שומרוני זמין לפסוקים אלה', back_sources:'‹ מקורות',
     src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים',
     src_sir:'סוד הלבבות', src_shyt:'שו"ת — יעקב בן אהרן הכהן',
+    src_translit:'תעתיק הגייה', tr_source:'טקסט המקור', tr_translit:'תעתיק ההגייה השומרוני',
+    no_translit:'אין תעתיק הגייה לפסוקים אלה',
     variants_title:'חילופי נוסח — מהדורת פון גאל',
     no_variants:'אין חילופי נוסח לפסוקים אלה.',
     app_hint:'המילים המודגשות בפסוק נושאות חילופי נוסח — לחץ על מילה כדי לקפוץ לחילופיה, ולחץ על חילוף כדי לחזור למילה.',
@@ -205,6 +207,8 @@ const I18N = {
     no_sam_source:'No Samaritan source for these verses', back_sources:'‹ Sources',
     src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary",
     src_sir:'Sīr al-Qulūb (Secret of Hearts)', src_shyt:'Responsa of Jacob ben Aaron',
+    src_translit:'Pronunciation transcription', tr_source:'Source text', tr_translit:'Samaritan pronunciation',
+    no_translit:'No pronunciation transcription for these verses',
     variants_title:'Textual variants — von Gall edition',
     no_variants:"No textual variants for these verses.",
     app_hint:'The emphasised words in the verse carry textual variants — tap a word to jump to its variants, and tap a variant to jump back to the word.',
@@ -334,6 +338,8 @@ const I18N = {
     no_sam_source:'لا يوجد مصدر سامري لهذه الآيات', back_sources:'‹ المصادر',
     src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم',
     src_sir:'سرّ القلوب', src_shyt:'أجوبة يعقوب بن هارون الكاهن',
+    src_translit:'نسخ النطق', tr_source:'النصّ المصدر', tr_translit:'نطق السامريين',
+    no_translit:'لا يوجد نسخ نطق لهذه الآيات',
     variants_title:'اختلافات النصّ — طبعة فون غال',
     no_variants:'لا توجد اختلافات نصّية لهذه الآيات.',
     app_hint:'الكلمات المميّزة في الآية تحمل اختلافات نصّية — اضغط على كلمة للانتقال إلى اختلافاتها، واضغط على اختلاف للعودة إلى الكلمة.',
@@ -784,7 +790,7 @@ function paintVerses(){
   if(usePanel && S.panel!=='compare'){
     addNumStrip(c, all);
     if(S.panel==='commentary'){ addPlainRows(c, verses); buildCommentary(c, verses); }
-    else if(S.panel==='samaritan_src'){ addPlainRows(c, verses); buildSamSrc(c, verses); }
+    else if(S.panel==='samaritan_src'){ if(S.samSrcChoice!=='translit') addPlainRows(c, verses); buildSamSrc(c, verses); }
     else if(S.panel==='variants'){ buildVariantsView(c, verses); }
     else if(S.panel==='interpret'){ buildInterpret(c, verses); maybeDict(c, verses); }
     else if(S.panel==='aramaic'){ buildAramaic(c, verses); maybeDict(c, verses); }
@@ -1101,9 +1107,9 @@ async function buildSamSrc(c, verses){
     const loading=el('div','note',t('checking_sources')); panel.appendChild(loading);
     c.appendChild(panel);
     // only show a source that actually has content on the current verse(s)
-    const [tm, ey, tz, sir, shyt] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
+    const [tm, ey, tz, sir, shyt, tr] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
       api('eyalk?verse_ids='+ids), api('tzdaka?verse_ids='+ids), api('sir?verse_ids='+ids),
-      api('shyt?verse_ids='+ids)]);
+      api('shyt?verse_ids='+ids), api('translit?verse_ids='+ids)]);
     loading.remove();
     const avail=[];
     if(tm.length) avail.push([t('src_tibat'),'tm']);
@@ -1111,12 +1117,46 @@ async function buildSamSrc(c, verses){
     if(tz.length) avail.push([t('src_tzdaka'),'tzdaka']);
     if(sir.length) avail.push([t('src_sir'),'sir']);
     if(shyt.length) avail.push([t('src_shyt'),'shyt']);
+    if(tr && Object.keys(tr).length) avail.push([t('src_translit'),'translit']);
     if(!avail.length){ panel.appendChild(el('div','note',t('no_sam_source'))); return; }
     for(const [label,ch] of avail){
       const b=el('button','picker-btn',label); b.onclick=()=>{ S.samSrcChoice=ch; S.tmSel=null; paintVerses(); };
       panel.appendChild(b);
     }
     // bring the screen up so ALL available sources for this chapter/verse are visible
+    panel.scrollIntoView({behavior:'smooth', block:'start'});
+    return;
+  }
+  if(S.samSrcChoice==='translit'){
+    // verse-opposite-verse: right = the source (Samaritan) text, left = the
+    // Ben-Ḥayyim phonetic transcription, mirroring the version-comparison grid.
+    const data = await api('translit?verse_ids='+ids);
+    const panel=el('div','srcpanel');
+    const head=el('div','shead');
+    const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle',t('src_translit')));
+    panel.appendChild(head);
+    const fs=fsize();
+    // grid is direction:ltr → first cell is LEFT. Transcription on the left,
+    // source text on the right (matching the version-comparison layout).
+    const grid=el('div','cmp-grid');
+    grid.appendChild(el('div','cmp-cell cmp-head', t('tr_translit')));
+    grid.appendChild(el('div','cmp-cell cmp-head', t('tr_source')));
+    let any=false;
+    for(const v of verses){
+      const tr=(data[v.id]||'').trim(), src=(v.text||'').trim();
+      if(!src && !tr) continue;
+      any=true;
+      const num = v.number!=null ? ('<b>'+esc(String(v.number))+'</b>  ') : '';
+      const tc=el('div','cmp-cell tr-latin', tr ? esc(tr) : '<span class="cmp-missing">- - -</span>');
+      tc.setAttribute('dir','ltr'); tc.style.textAlign='left';
+      const sc=el('div','cmp-cell', src ? (num+esc(src)) : '<span class="cmp-missing">- - -</span>');
+      sc.style.fontSize=fs+'px'; tc.style.fontSize=fs+'px';
+      grid.appendChild(tc); grid.appendChild(sc);
+    }
+    if(!any) panel.appendChild(el('div','note',t('no_translit')));
+    else panel.appendChild(grid);
+    c.appendChild(panel);
     panel.scrollIntoView({behavior:'smooth', block:'start'});
     return;
   }

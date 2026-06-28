@@ -529,6 +529,21 @@ def get_dict_select(verse_ids):
     gloss = _pos_map('word_gloss', 'he')
     samaritan = _pos_map('word_samaritan', 'note')
     jewish = _pos_map('word_jewish', 'note')
+    # per-token alignment that FILLS words the original glossary never covered
+    # (e.g. יהוה, proper nouns, wayyiqtol forms) — Aramaic/Arabic/English/Hebrew
+    # aligned directly from the verse's three translations. Keyed by (verse_id, pos).
+    word_align = {}
+    try:
+        for r in conn.execute("SELECT verse_id, pos, ar, arab, en, he FROM word_align "
+                              "WHERE verse_id IN (%s)" % ph, verse_ids):
+            word_align[(r['verse_id'], r['pos'])] = r
+    except Exception:
+        pass
+    ar_he_map = {}
+    try:
+        ar_he_map = {r[0]: r[1] for r in conn.execute("SELECT arabic, hebrew FROM arabic_he")}
+    except Exception:
+        pass
     out = {}
     for vid in verse_ids:
         row = conn.execute("SELECT text FROM verses WHERE id=?", (vid,)).fetchone()
@@ -557,9 +572,42 @@ def get_dict_select(verse_ids):
                 for p in run:
                     used.add(p); m[str(p)] = dict(e)
                 break
-        # fill every remaining token from the full gloss, so no word is left empty
+        # pre-index single-word dictionary entries by their match key, so a token that
+        # found no UNUSED entry (a repeated word like אלהים twice, or one the greedy
+        # first pass mis-claimed, or a scrambled-order verse) can still REUSE the
+        # matching entry's full data — aramaic/arabic/english — instead of being blanked.
+        single = [e for e in entries
+                  if len([w for w in re.sub(r'\([^)]*\)', '', e['word'] or '').split()
+                          if re.search('[א-ת]', w)]) == 1]
+        def _reuse(tk):
+            for e in single:
+                ew = re.sub(r'\([^)]*\)', '', e['word'] or '').split()
+                if ew and _ds_match(tk, ew[0]):
+                    return e
+            return None
+        # fill every remaining token: reuse a matching entry when possible (keeps its
+        # aramaic/arabic/english), else fall back to the Hebrew-only gloss.
         for i, tk in enumerate(toks):
             if str(i) in m:
+                continue
+            e = _reuse(tk)
+            if e:
+                e2 = dict(e); e2['word'] = tk.strip(_DS_PUNCT) or tk
+                m[str(i)] = e2
+                continue
+            # words the glossary never covered: use the per-token alignment built from
+            # the three translations, so this token still shows Aramaic/Arabic/English.
+            wa = word_align.get((vid, i))
+            if wa and ((wa['ar'] or '').strip() or (wa['arab'] or '').strip() or (wa['en'] or '').strip()):
+                wa_he = (wa['he'] or '').strip()
+                arh = ar_he_map.get((wa['arab'] or '').strip(), '')
+                combined = _dedup_he([p.strip() for p in re.split('[,،/]', wa_he) if p.strip()]
+                                     + [p.strip() for p in re.split('[,،/]', arh) if p.strip()])
+                m[str(i)] = {'word': tk.strip(_DS_PUNCT) or tk, 'meaning': wa_he or tk,
+                             'aramaic': (wa['ar'] or '').strip(), 'arabic': (wa['arab'] or '').strip(),
+                             'english': (wa['en'] or '').strip(), 'he': wa_he, 'tal_he': '',
+                             'tal_root': '', 'tal_ctx': False, 'ar_he': arh,
+                             'en_he': '', 'he_combined': ', '.join(combined) or wa_he}
                 continue
             he = gloss.get((vid, i), '')
             if he:
@@ -586,6 +634,47 @@ def get_dict_select(verse_ids):
             out[vid] = m
     conn.close()
     return out
+
+
+# ── Samaritan oral-reading phonetic transcription (Ben-Ḥayyim) ───────────────
+def get_translit(verse_ids):
+    """{verse_id: phonetic transcription text} for the given verses (those that
+    have one in verse_translit). Used by the תעתיק הגייה two-panel view."""
+    if not verse_ids:
+        return {}
+    conn = get_connection()
+    out = {}
+    try:
+        ph = ','.join('?' * len(verse_ids))
+        for r in conn.execute("SELECT verse_id, text FROM verse_translit "
+                              "WHERE verse_id IN (%s)" % ph, verse_ids):
+            if (r['text'] or '').strip():
+                out[r['verse_id']] = r['text']
+    except Exception:
+        pass
+    conn.close()
+    return out
+
+
+def translit_word(verse_id, word_index):
+    """The phonetic transcription of one word of a verse, by its position index
+    over the verse text's whitespace tokens. The transcription renders the same
+    text in the same word order, so token i ↔ word i. Returns '' when there is no
+    transcription for the verse or the index is out of range."""
+    if verse_id is None or word_index is None:
+        return ''
+    conn = get_connection()
+    try:
+        r = conn.execute("SELECT text FROM verse_translit WHERE verse_id=?", (verse_id,)).fetchone()
+    except Exception:
+        r = None
+    conn.close()
+    if not r or not (r['text'] or '').strip():
+        return ''
+    toks = r['text'].split()
+    if 0 <= word_index < len(toks):
+        return toks[word_index].strip(' .,:;׃')
+    return ''
 
 
 _TM_HE_LETTER = {'I': 'א', 'II': 'ב', 'III': 'ג', 'IV': 'ד', 'V': 'ה', 'VI': 'ו'}
@@ -1232,6 +1321,7 @@ def get_root_occurrences(root_norm, verses):
             WHERE root_norm = ? AND pron IS NOT NULL AND TRIM(pron) <> ''
               AND verse_id IN ({ph}) ORDER BY id""",
         [root_norm] + vids).fetchall()
+    translit = _translit_tokens(conn, vids)   # corrected pronunciation source
     conn.close()
     bm = _binyan_map()
     by_verse = {}
@@ -1273,15 +1363,46 @@ def get_root_occurrences(root_norm, verses):
         # index now (root_index.sublemma), not guessed from the inflected form
         sr = next((sub for _i, _w, _p, _b, sub in matched if sub), '')
         words, occ, seen, wseen = [], [], set(), set()
+        toks = translit.get(vid, [])
         for _id, w, pron, b, sub in matched:
             if w not in wseen:
                 wseen.add(w)
                 words.append(w)
-            k = (pron, b)
+            # prefer the Ben-Ḥayyim transcription of this word over the index's OCR pron
+            cpron = _best_translit(w, toks) or pron
+            k = (cpron, b)
             if k not in seen:
                 seen.add(k)
-                occ.append((pron, b, ''))
+                occ.append((cpron, b, ''))
         out[vid] = {'order': matched[0][0], 'subroot': sr, 'words': words, 'occ': occ}
+    return out
+
+
+def _best_translit(word, tokens):
+    """The transcription token (from verse_translit) that best renders `word`,
+    by the same consonant-skeleton score used to match search hits. Returns '' when
+    nothing matches well enough, so the caller keeps the index's own pron."""
+    best = None
+    for tk in tokens:
+        clean = tk.strip(" .,:;׃'\"")
+        if not clean:
+            continue
+        sc = _word_pron_score(word, clean)
+        if best is None or sc > best[0]:
+            best = (sc, clean)
+    return best[1] if (best and best[0][0] >= 0.5) else ''
+
+
+def _translit_tokens(conn, vids):
+    """{verse_id: [transcription tokens]} for the given verses, when available."""
+    out = {}
+    try:
+        ph = ','.join('?' * len(vids))
+        for r in conn.execute("SELECT verse_id, text FROM verse_translit "
+                              "WHERE verse_id IN (%s)" % ph, list(vids)):
+            out[r['verse_id']] = (r['text'] or '').split()
+    except Exception:
+        pass
     return out
 
 
@@ -1315,6 +1436,7 @@ def get_word_occurrences(word, verse_ids):
         f"""SELECT id, verse_id, root_norm, pron, binyan, form FROM root_index
             WHERE verse_id IN ({ph}) AND pron IS NOT NULL AND TRIM(pron) <> ''""",
         list(verse_ids)).fetchall()
+    translit = _translit_tokens(conn, verse_ids)   # corrected pronunciation source
     conn.close()
     bm = _binyan_map()
     best = {}   # verse_id -> (sim, pron, binyan, form)
@@ -1322,8 +1444,11 @@ def get_word_occurrences(word, verse_ids):
         s, _ = _word_cons(word, _lat_cons(r['pron']))
         if s >= 0.5 and s > best.get(r['verse_id'], (-1.0,))[0]:
             best[r['verse_id']] = (s, r['pron'], bm.get(r['id']), r['form'])
-    return {vid: {'order': 0, 'subroot': '', 'words': [], 'occ': [(p, b, f)]}
-            for vid, (s, p, b, f) in best.items()}
+    out = {}
+    for vid, (s, p, b, f) in best.items():
+        cpron = _best_translit(word, translit.get(vid, [])) or p
+        out[vid] = {'order': 0, 'subroot': '', 'words': [], 'occ': [(cpron, b, f)]}
+    return out
 
 
 _ROOT_INVENTORY = None

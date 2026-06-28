@@ -666,6 +666,11 @@ def api_tibat_marqe():
     return jsonify(db.get_tibat_marqe(_ids_arg()))
 
 
+@app.route('/api/translit')
+def api_translit():
+    return jsonify(db.get_translit(_ids_arg()))
+
+
 # ── Tibåt Mårqe full-book reader (Samaritan Library) ──
 @app.route('/api/tm_toc')
 def api_tm_toc():
