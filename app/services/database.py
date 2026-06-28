@@ -443,12 +443,15 @@ def get_word_table(verse_ids):
         tal_he = (ctx['gloss'] if ctx and ctx.get('gloss') else '')   # closest gloss, no root/label
         tal_root = ctx['root'] if ctx else ''
         en_word, en_he = word_en.get(r['id'], ('', ''))              # word-level English (aligned) + its Hebrew
-        # the combined Hebrew-translation field: the closest dictionary gloss, the DB's
-        # curated Hebrew, then the Arabic and English back-translations — each split into
-        # its atomic glosses and de-duplicated, so no meaning repeats across sources.
+        # the combined Hebrew-translation field: LEAD with the curated, context-accurate
+        # Hebrew (always reliable), then the Arabic and English back-translations. The
+        # Tal dictionary gloss is included only when it is the verse-specific SENSE
+        # (ctx) — the generic gloss is unreliable for homographs (e.g. it resolves the
+        # Aramaic אתרה, "his place", to root אתר glossed "אתון, donkey").
         def _atoms(s):
             return [p.strip() for p in re.split('[,،/]', s or '') if p.strip()]
-        he_combined = _dedup_he(_atoms(tal_he) + _atoms(heb) + _atoms(arh) + _atoms(en_he))
+        tal_part = _atoms(tal_he) if (ctx and ctx.get('ctx')) else []
+        he_combined = _dedup_he(_atoms(heb) + tal_part + _atoms(arh) + _atoms(en_he))
         out.setdefault(r['verse_id'], []).append({
             'word': word, 'meaning': heb or word, 'aramaic': r['aramaic'] or '',
             'arabic': ar, 'english': en_word,
@@ -534,12 +537,26 @@ def get_dict_select(verse_ids):
         toks = (row['text'] or '').split()
         entries = wt.get(vid, [])
         used, m = set(), {}
-        for e in entries:                       # greedily claim the first free token
-            for i, tk in enumerate(toks):
-                if i in used:
+        for e in entries:
+            # a curated entry may be a MULTI-WORD expression (e.g. "עד שים" = "until
+            # satisfied"); claim ALL the consecutive tokens it covers so each of them
+            # opens to the COMBINED meaning, instead of glossing the words separately.
+            ews = [w for w in re.sub(r'\([^)]*\)', '', e['word'] or '').split() if re.search('[א-ת]', w)]
+            if not ews:
+                continue
+            for i in range(len(toks)):
+                if i in used or not _ds_match(toks[i], ews[0]):
                     continue
-                if _ds_match(tk, e['word']):
-                    used.add(i); m[str(i)] = dict(e); break
+                run = [i]
+                for j in range(1, len(ews)):
+                    k = i + j
+                    if k < len(toks) and k not in used and _ds_match(toks[k], ews[j]):
+                        run.append(k)
+                    else:
+                        run = [i]; break        # not a clean consecutive run → just the head token
+                for p in run:
+                    used.add(p); m[str(p)] = dict(e)
+                break
         # fill every remaining token from the full gloss, so no word is left empty
         for i, tk in enumerate(toks):
             if str(i) in m:

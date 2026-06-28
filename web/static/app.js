@@ -1215,9 +1215,15 @@ async function buildSamSrc(c, verses){
     const b2=el('button','miniback','‹ חזרה'); b2.onclick=()=>{ S.tmSel=null; paintVerses(); };
     sub.appendChild(b2); sub.appendChild(el('div','stitle', esc(cur.label+' ('+cur.book_title+')')));
     panel.appendChild(sub);
-    const he=panelEl('תרגום לעברית', esc(cur.hebrew||'התרגום העברי בהכנה'));
-    const ar=panelEl('מקור ארמי', esc(cur.aramaic||'המקור הארמי אינו זמין'));
-    panel.appendChild(pairEl(he,ar));
+    // show both panels only when the Aramaic original exists; otherwise the Hebrew
+    // translation alone, full-width (some passages have no Aramaic in the source).
+    if((cur.aramaic||'').trim()){
+      const he=panelEl('תרגום לעברית', esc(cur.hebrew||'התרגום העברי בהכנה'));
+      const ar=panelEl('מקור ארמי', esc(cur.aramaic));
+      panel.appendChild(pairEl(he,ar));
+    } else {
+      panel.appendChild(panelEl('תרגום לעברית', esc(cur.hebrew||'—')));
+    }
   }
   c.appendChild(panel);
 }
