@@ -14,7 +14,7 @@ import argparse, json, os, re, sqlite3, sys, time
 
 DB = os.path.join(os.path.dirname(__file__), '..', 'data', 'torah.db')
 MODEL = os.environ.get('EN_MODEL', 'claude-haiku-4-5')
-BATCH = 8
+BATCH = 3
 
 SYS = ("You align a published English translation of a Torah verse to the verse's word "
        "list. The English is NOT word-for-word, so for each Hebrew word return the "
@@ -86,7 +86,7 @@ def main():
         msg = None
         for attempt in range(5):                      # ride out transient 429/529 overloads
             try:
-                msg = client.messages.create(model=MODEL, max_tokens=3000, system=SYS,
+                msg = client.messages.create(model=MODEL, max_tokens=8000, system=SYS,
                                              messages=[{'role': 'user', 'content': '\n\n'.join(parts)}])
                 break
             except Exception as e:
