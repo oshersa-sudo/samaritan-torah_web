@@ -650,6 +650,11 @@ def get_translit(verse_ids):
                               "WHERE verse_id IN (%s)" % ph, verse_ids):
             if (r['text'] or '').strip():
                 out[r['verse_id']] = r['text']
+        # the Samaritan-anchored correction (verse_translit_fix) overrides the raw OCR
+        for r in conn.execute("SELECT verse_id, text FROM verse_translit_fix "
+                              "WHERE verse_id IN (%s)" % ph, verse_ids):
+            if (r['text'] or '').strip():
+                out[r['verse_id']] = r['text']
     except Exception:
         pass
     conn.close()
@@ -665,7 +670,9 @@ def translit_word(verse_id, word_index):
         return ''
     conn = get_connection()
     try:
-        r = conn.execute("SELECT text FROM verse_translit WHERE verse_id=?", (verse_id,)).fetchone()
+        r = conn.execute("SELECT COALESCE((SELECT text FROM verse_translit_fix f WHERE f.verse_id=?), "
+                         "text) AS text FROM verse_translit WHERE verse_id=?",
+                         (verse_id, verse_id)).fetchone()
     except Exception:
         r = None
     conn.close()
@@ -1401,6 +1408,10 @@ def _translit_tokens(conn, vids):
         for r in conn.execute("SELECT verse_id, text FROM verse_translit "
                               "WHERE verse_id IN (%s)" % ph, list(vids)):
             out[r['verse_id']] = (r['text'] or '').split()
+        for r in conn.execute("SELECT verse_id, text FROM verse_translit_fix "
+                              "WHERE verse_id IN (%s)" % ph, list(vids)):
+            if (r['text'] or '').strip():
+                out[r['verse_id']] = r['text'].split()
     except Exception:
         pass
     return out
