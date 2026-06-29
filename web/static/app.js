@@ -2123,9 +2123,16 @@ async function doSearch(){
   const root = data.root;
   const res=$('searchResults'); res.innerHTML='';
   $('searchStatus').classList.remove('searching');
-  const cnt = LANG==='en' ? `Found ${data.count} results` : LANG==='ar' ? `${data.count} نتيجة` : `נמצאו ${data.count} תוצאות`;
-  $('searchStatus').textContent = cnt + (aram ? ' · '+t('flag_aram') : '');
-  updateSearchZoomButtons(data.count>0);
+  const cTot = data.count, cShown = (data.shown!=null ? data.shown : cTot);
+  const lbl = LANG==='en' ? ['Found','results'] : LANG==='ar' ? ['','نتيجة'] : ['נמצאו','תוצאות'];
+  let cHtml = `${esc(lbl[0])} <b class="res-count">${cTot}</b> ${esc(lbl[1])}`.trim();
+  if(cShown < cTot)
+    cHtml += LANG==='en' ? ` <span class="res-shown">(showing first ${cShown})</span>`
+           : LANG==='ar' ? ` <span class="res-shown">(تُعرض أول ${cShown})</span>`
+           : ` <span class="res-shown">(מוצגות ${cShown} הראשונות)</span>`;
+  if(aram) cHtml += ' · '+esc(t('flag_aram'));
+  $('searchStatus').innerHTML = cHtml;
+  updateSearchZoomButtons(cTot>0);
   let curSub=null;
   const heWords=new Set();          // Hebrew words to look up in the online dictionary
   for(const r of data.rows){

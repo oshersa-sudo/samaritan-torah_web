@@ -999,9 +999,9 @@ def _do_search(args):
     if exact and root:
         root = False
 
-    rows = db.search_verses(query, exact=exact, root=root, aramaic=aramaic,
-                            root_letters=root_letters if root else None,
-                            ignore_finals=ignore_finals)
+    rows, total = db.search_verses(query, exact=exact, root=root, aramaic=aramaic,
+                                   root_letters=root_letters if root else None,
+                                   ignore_finals=ignore_finals)
 
     occ_map, searched_root = {}, ''
     if not aramaic and rows:
@@ -1053,6 +1053,16 @@ def _do_search(args):
             mword = _first_match_word(r['sam_aramaic'] if aramaic else r['text'],
                                       query, exact) or query
         item['matched_word'] = mword
+        # pronunciation: for non-root searches the index pron can belong to a
+        # different word (esp. multi-term '+' queries), so use the transcription of
+        # THIS matched word, gated by relatedness; drop unrelated index prons.
+        if not root and not aramaic:
+            tpron = db.verse_word_pron(r['id'], mword)
+            if tpron:
+                binyan = item['occ'][0][1] if item['occ'] else ''
+                item['occ'] = [[tpron, binyan, '']]
+            elif item['occ']:
+                item['occ'] = [o for o in item['occ'] if db.pron_related(mword, o[0])] or None
         pairs = vdict.get(r['id'], [])
         cands = [c for c in [_heb_fold(mword)] if c]
         aramaic_w = ''
@@ -1070,7 +1080,7 @@ def _do_search(args):
         out.append(item)
 
     return {
-        'rows': out, 'count': len(out),
+        'rows': out, 'count': total, 'shown': len(out),
         'aramaic': aramaic, 'root': root, 'exact': exact, 'query': query,
         'searched_root': searched_root,
         'root_requested_multi': (root_flag and not root),

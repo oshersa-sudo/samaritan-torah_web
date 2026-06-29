@@ -1183,6 +1183,7 @@ def search_verses(query, exact=False, root=False, aramaic=False, root_letters=No
         conn.create_function('FOLD', 1, _fold_finals)
     fld = 'FOLD(%s)' % field if ignore_finals else field   # column expr to match on
     sel_extra = ''
+    sel_params = []           # params bound by sel_extra (before the WHERE params)
     order_by = 'b.order_n, c.number, v.number'
     # '?' / '*' / '+' are search operators incompatible with exact / root / plain-
     # literal matching, so when present they take precedence — a '?' search must
@@ -1200,7 +1201,7 @@ def search_verses(query, exact=False, root=False, aramaic=False, root_letters=No
             conn.create_function('ROOTMATCH', 2,
                                  lambda cell, r: 1 if text_has_root(cell, r) else 0)
             where = f"ROOTMATCH({field}, ?)"
-            params = [rl]
+            where_params = [rl]
         else:
             # Hebrew root search: the root is taken from the root index and the
             # results are the lexicographer's exact occurrence list for it.
@@ -1214,39 +1215,59 @@ def search_verses(query, exact=False, root=False, aramaic=False, root_letters=No
             sel_extra = (", (SELECT MIN(ri.id) FROM root_index ri "
                          "WHERE ri.verse_id = v.id AND ri.root_norm = ?) AS _ord")
             order_by = '_ord'
-            params = [rn, rn]   # first binds the SELECT subquery, then the WHERE
+            sel_params = [rn]          # binds the SELECT subquery
+            where_params = [rn]        # binds the WHERE
     elif exact and not has_special:
         q = _fold_finals(query) if ignore_finals else query
         where = f"(' ' || {fld} || ' ') LIKE ?"
-        params = [f"% {q} %"]
+        where_params = [f"% {q} %"]
     elif not has_special:
         # plain substring — a literal Hebrew or Aramaic query (no ? / * / +).
         q = _fold_finals(query) if ignore_finals else query
         where = f"{fld} LIKE ?"
-        params = [f"%{q}%"]
+        where_params = [f"%{q}%"]
     else:
         # enhanced search: '?' = one letter, '*' = an unknown string (glob); '+'
         # joins terms that must ALL appear. Runs on the chosen field (Hebrew text
         # or the Aramaic translation), overriding the exact/root flags.
         terms = [t.strip() for t in query.split('+') if t.strip()]
-        conds, params = [], []
+        conds, where_params = [], []
         if any(('?' in t or '*' in t) for t in terms):
             conn.create_function(
                 'WILDWORD', 2,
                 lambda text, pat: 1 if (text and _wild_search_re(pat).search(text)) else 0)
+        if exact:
+            # with "חיפוש מדויק" ticked, each '+' term must appear as a COMPLETE word
+            # (bounded by non-Hebrew letters), in any order — not as a substring, so
+            # e.g. "בא" won't match inside "ויבא"/"באו".
+            # whole word = the term, optionally with leading inseparable particles
+            # (ו/ה/ב/כ/ל/מ/ש), bounded by non-Hebrew letters — so "ארץ" matches
+            # "הארץ"/"ובארץ" but NOT a deeper embedding like "ויבא"/"באו".
+            _ff = _fold_finals if ignore_finals else (lambda s: s)
+            conn.create_function('WHOLEWORD', 2, lambda text, term: 1 if (
+                text and term and re.search(r'(?<![א-ת])[והבכלמש]{0,2}' + re.escape(_ff(term)) + r'(?![א-ת])',
+                                            _ff(text))) else 0)
         for t in terms:
             pat = ''.join(c for c in t if ('א' <= c <= 'ת') or c in '?*')
             if ('?' in t or '*' in t) and pat:
                 conds.append(f"WILDWORD({field}, ?)")
-                params.append(pat)
+                where_params.append(pat)
+            elif exact:
+                conds.append(f"WHOLEWORD({field}, ?)")
+                where_params.append(t)
             else:
                 conds.append(f"{field} LIKE ?")
-                params.append(f"%{t}%")
+                where_params.append(f"%{t}%")
         if conds:
             where = ' AND '.join(conds)
         else:
             where = f"{field} LIKE ?"
-            params = [f"%{query}%"]
+            where_params = [f"%{query}%"]
+    # true total of matching verses (NOT capped by the display LIMIT), so the result
+    # count shown to the user is accurate even when more than 200 verses match.
+    total = conn.execute(
+        f"SELECT COUNT(*) FROM (SELECT v.id FROM verses v WHERE {where} GROUP BY v.id)",
+        where_params).fetchone()[0]
     rows = conn.execute(
         f"""
         SELECT v.id, v.number, v.text, v.sam_aramaic,
@@ -1270,10 +1291,10 @@ def search_verses(query, exact=False, root=False, aramaic=False, root_letters=No
         ORDER  BY {order_by}
         LIMIT  200
         """,
-        params,
+        sel_params + where_params,
     ).fetchall()
     conn.close()
-    return rows
+    return rows, total
 
 
 def get_root_prons(root_norm, verse_ids):
@@ -1421,6 +1442,26 @@ def _best_translit(word, tokens):
         if best is None or sc > best[0]:
             best = (sc, clean)
     return best[1] if (best and best[0][0] >= 0.5) else ''
+
+
+def verse_word_pron(verse_id, word):
+    """The Ben-Ḥayyim transcription of `word` as it occurs in this verse (the best
+    matching transcription token), or '' when none matches well enough — so a search
+    result never shows a pronunciation unrelated to the matched word."""
+    if not verse_id or not word:
+        return ''
+    conn = get_connection()
+    toks = _translit_tokens(conn, [verse_id]).get(verse_id, [])
+    conn.close()
+    return _best_translit(word, toks)
+
+
+def pron_related(word, pron):
+    """True if a Latin pronunciation is a plausible transcription of the Hebrew word
+    (shared consonant skeleton) — used to filter out unrelated prons in results."""
+    if not word or not pron:
+        return False
+    return _word_cons(word, _lat_cons(pron))[0] >= 0.5
 
 
 def _translit_tokens(conn, vids):
