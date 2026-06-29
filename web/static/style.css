@@ -265,6 +265,9 @@ body{
 .nav-arrow .nav-chevron{ width:30px; height:30px; }   /* real gray chevron when no label */
 .nav-arrow:hover{ background:rgba(0,0,0,.05); }
 .nav-arrow:disabled{ opacity:.35; cursor:default; }
+/* at a parasha/book crossing the arrow carries a label → show it as a clear button */
+.nav-arrow.nav-haslabel{ background:var(--navy); color:#fff; font-size:13px; padding:10px 6px; }
+.nav-arrow.nav-haslabel:hover{ background:var(--accent); }
 .round{ flex:0 0 auto; width:50px; padding:8px 0; border:0; border-radius:8px; background:transparent;
         color:#8a8f99; font-size:24px; font-weight:700; cursor:pointer; }   /* gray magnifiers/back */
 .round:hover{ background:rgba(0,0,0,.06); }

@@ -1589,8 +1589,9 @@ function navArrowSvg(isNext){
   const d = left ? 'M15 6l-7 6 7 6' : 'M9 6l7 6-7 6';
   return `<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
 }
-function setNavBtn(btn, isNext, label){     // label → text; otherwise the arrow icon
-  if(label) btn.textContent = label; else btn.innerHTML = navArrowSvg(isNext);
+function setNavBtn(btn, isNext, label){     // label → prominent text button; else faint arrow icon
+  if(label){ btn.textContent = label; btn.classList.add('nav-haslabel'); }
+  else { btn.innerHTML = navArrowSvg(isNext); btn.classList.remove('nav-haslabel'); }
 }
 function navLabel(name, isNext){     // name + arrow, side per language
   if(LANG==='en' || LANG==='ar') return isNext ? (name+' ›') : ('‹ '+name);
@@ -1618,11 +1619,17 @@ function updateNavDisabled(){
     else if(S.chIdx>=S.chList.length-1 && pidx<ids.length-1){ setNavBtn(nb,true,navLabel((S.portions[pidx+1]||{}).name||'', true)); nb.disabled=false; }
     else { setNavBtn(nb,true,''); nb.disabled = atBookEnd; }
   } else {
-    // chapter-list (portion) paging: every step is a parasha change → show its name
-    setNavBtn(pb,false, pidx>0 ? navLabel((S.portions[pidx-1]||{}).name||'', false) : '');
-    setNavBtn(nb,true,  pidx<ids.length-1 ? navLabel((S.portions[pidx+1]||{}).name||'', true) : '');
-    pb.disabled = pidx<=0;
-    nb.disabled = pidx>=ids.length-1;
+    // chapter-list (portion) paging: each step is a parasha; at the first/last parasha
+    // of a book the button crosses to the adjacent BOOK (its first/last parasha).
+    const books=S.books||[]; const bIdx=books.findIndex(b=>b.id===S.book);
+    const prevBook = bIdx>0 ? books[bIdx-1] : null;
+    const nextBook = (bIdx>=0 && bIdx<books.length-1) ? books[bIdx+1] : null;
+    if(pidx>0){ setNavBtn(pb,false,navLabel((S.portions[pidx-1]||{}).name||'', false)); pb.disabled=false; }
+    else if(prevBook){ setNavBtn(pb,false,gotoBookLabel(prevBook.name,false)); pb.disabled=false; }
+    else { setNavBtn(pb,false,''); pb.disabled=true; }
+    if(pidx<ids.length-1){ setNavBtn(nb,true,navLabel((S.portions[pidx+1]||{}).name||'', true)); nb.disabled=false; }
+    else if(nextBook){ setNavBtn(nb,true,gotoBookLabel(nextBook.name,true)); nb.disabled=false; }
+    else { setNavBtn(nb,true,''); nb.disabled=true; }
   }
 }
 $('prevBtn').onclick=()=> S.navMode==='chapter'? stepChapter(-1) : stepPortion(-1);
@@ -1738,8 +1745,26 @@ async function crossBook(delta){
 }
 async function stepPortion(delta){
   const ids=S.portions.map(p=>p.id); const pidx=ids.indexOf(S.curPid);
-  const ni=pidx+delta; if(ni<0||ni>=S.portions.length) return;
-  const p=S.portions[ni];
+  const ni=pidx+delta;
+  if(ni>=0 && ni<S.portions.length){
+    const p=S.portions[ni];
+    S.division==='samaritan' ? showSamChapters(p.id,p.name) : showChapters(p.id,p.name);
+  } else {
+    await crossBookPortion(delta);                 // first/last parasha → adjacent book
+  }
+}
+// like crossBook, but stays in the chapter-LIST view of the adjacent book's
+// first (forward) / last (backward) parasha
+async function crossBookPortion(delta){
+  await ensureBooks();
+  const bIdx=(S.books||[]).findIndex(b=>b.id===S.book);
+  const nb=bIdx+delta; if(bIdx<0||nb<0||nb>=S.books.length) return;
+  const book=S.books[nb];
+  const mode=S.division==='samaritan'?'samaritan':'standard';
+  S.book=book.id; S.bookName=book.name;
+  S.portions=await api(`portions?book_id=${book.id}&mode=${mode}`);
+  if(!S.portions.length) return;
+  const p = delta>0 ? S.portions[0] : S.portions[S.portions.length-1];
   S.division==='samaritan' ? showSamChapters(p.id,p.name) : showChapters(p.id,p.name);
 }
 
