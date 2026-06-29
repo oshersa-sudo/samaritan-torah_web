@@ -62,7 +62,7 @@ const I18N = {
       'כך נראה המילון: אפשר לחפש מילה, לדפדף באינדקס או בעמודי המילון, וללחוץ על מילה כדי לראות את כל מיקומיה.',
       'בכך תם הסיור. תוכלו לחזור אליו בכל עת מתפריט ההמבורגר, תחת העזרה. קריאה נעימה ומועילה!',
     ],
-    share_title:'שיתוף', email:'אימייל', close:'סגור',
+    share_title:'שיתוף', email:'אימייל', close:'סגור', to_torah:'↩ התורה',
     copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה', share_copy:'העתקה ללוח',
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
     cmp_title:'בחר נוסח להשוואה', cv_masoretic:'נוסח המסורה', cv_septuagint:'תרגום השבעים',
@@ -195,7 +195,7 @@ const I18N = {
       'This is the dictionary: you can search a word, browse the index or the pages, and tap a word to see all its locations.',
       'That’s the end of the tour. You can return to it any time from the menu, under Help. Enjoy your study!',
     ],
-    share_title:'Share', email:'Email', close:'Close',
+    share_title:'Share', email:'Email', close:'Close', to_torah:'↩ Torah',
     copied:'Text copied', copy_fail:'Copy failed', share_copy:'Copy to clipboard',
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
     cmp_title:'Choose a version to compare', cv_masoretic:'Masoretic Text', cv_septuagint:'Septuagint',
@@ -328,7 +328,7 @@ const I18N = {
       'هكذا يبدو المعجم: يمكنكم البحث عن كلمة، وتصفّح الفهرس أو صفحات المعجم، والضغط على كلمة لرؤية كلّ مواضعها.',
       'بهذا انتهت الجولة. يمكنكم العودة إليها في أيّ وقت من القائمة، تحت المساعدة. قراءةً ممتعة ونافعة!',
     ],
-    share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق',
+    share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق', to_torah:'↩ التوراة',
     copied:'تم نسخ النص', copy_fail:'فشل النسخ', share_copy:'نسخ إلى الحافظة',
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
     cmp_title:'اختر النصّ للمقارنة', cv_masoretic:'النصّ الماسوري', cv_septuagint:'الترجمة السبعينية',
@@ -685,6 +685,7 @@ function renderChapterGrid(rows, hint, onClick){
 // ── opening a chapter (verses) ───────────────────────────────────────────────
 async function openChapter(chId, chNum, pid, pname, fromSearch){
   if(!fromSearch) S.verseFilter=null;
+  S.appReturn=null;                 // a fresh chapter open ends any source-app return
   S.chMode='standard'; S.curPid=pid; S.portionName=pname;
   const rows = await api('chapters?portion_id='+pid);
   S.chList = rows.map(r=>({id:r.id, number:r.number}));
@@ -693,6 +694,7 @@ async function openChapter(chId, chNum, pid, pname, fromSearch){
 }
 async function openSamChapter(samId, samNum, pid, pname, fromSearch){
   if(!fromSearch) S.verseFilter=null;
+  S.appReturn=null;                 // a fresh chapter open ends any source-app return
   S.chMode='samaritan'; S.curPid=pid; S.portionName=pname;
   const rows = await api('sam_chapters?portion_id='+pid);
   S.chList = rows.map(r=>({id:r.id, number:r.number}));
@@ -1935,6 +1937,9 @@ $('samSrcBtn').onclick=()=>togglePanel('samaritan_src');
 $('variantsBtn').onclick=()=>togglePanel('variants');
 
 function goBack(){
+  // jumped here from a source app (Memar / Ṣadaqah) → one Back returns to that app,
+  // even though the jumped-to verse is shown filtered/highlighted.
+  if(S.appReturn && S.view==='verses'){ const a=S.appReturn; S.appReturn=null; S.verseFilter=null; reopenReader(a); return; }
   if(S.verseFilter!=null){ filterVerse(null); return; }
   if(S.searchReturn && S.view==='verses'){ S.searchReturn=false; showSearch(true); return; }
   // walk up: verses->chapter list->portions->books
@@ -2590,6 +2595,7 @@ function dictNav(items){
 }
 $('dictAppBtn').onclick=dictGo;
 $('dictAppClose').onclick=()=>$('dictModal').classList.add('hidden');
+$('dictToTorah').onclick=()=>$('dictModal').classList.add('hidden');   // ↩ return to the Torah app
 $('dictAppInput').addEventListener('keydown',e=>{ if(e.key==='Enter') dictGo(); });
 
 // ── generic full-book reader (Samaritan Library) ─────────────────────────────
@@ -2724,8 +2730,19 @@ $('rdBody').addEventListener('click', async e=>{
   const vid=parseInt(a.dataset.vid,10); if(!vid) return;
   let rec; try{ rec=await api('locate_verse?verse_id='+vid); }catch(_){ return; }
   if(!rec || !rec.portion_id) return;
-  $('bookModal').classList.add('hidden'); goToJewish(rec);
+  const ret={key:RD.key, chapter:RD.chapter, lang:RD.lang};   // remember this reader
+  $('bookModal').classList.add('hidden');
+  await goToJewish(rec);
+  S.searchReturn=false;            // back should return to the reader, not to search
+  S.appReturn=ret;
 });
+// re-open a source app (Memar / Ṣadaqah reader) at the chapter the reader was on
+function reopenReader(a){
+  if(!a || !BOOK_CFG[a.key]) return;
+  RD.key=a.key; RD.cfg=BOOK_CFG[a.key]; RD.lang=a.lang;
+  $('bookModal').classList.remove('hidden');
+  openRdChapter(a.chapter);
+}
 async function rdShowWords(id){
   rdSetBack('chapter'); $('rdLang').classList.add('hidden');
   $('rdTitle').textContent=t('tm_words_title');
@@ -2770,6 +2787,7 @@ async function rdSearch(){
 $('rdSearchBtn').onclick=rdSearch;
 $('rdInput').addEventListener('keydown',e=>{ if(e.key==='Enter') rdSearch(); });
 $('rdClose').onclick=()=>$('bookModal').classList.add('hidden');
+$('rdToTorah').onclick=()=>$('bookModal').classList.add('hidden');     // ↩ return to the Torah app
 
 // ── PWA install ("התקנת אפליקציה") ───────────────────────────────────────────
 // Capture the browser's install prompt so the menu button can trigger it; fall
