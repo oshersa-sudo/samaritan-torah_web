@@ -1583,6 +1583,15 @@ function navState(mode){
 function navArrow(isNext){
   return (LANG==='en' || LANG==='ar') ? (isNext ? '›' : '‹') : (isNext ? '‹' : '›');  // forward-pointing
 }
+// a real (gray) chevron icon for the bare prev/next arrows
+function navArrowSvg(isNext){
+  const left = navArrow(isNext) === '‹';
+  const d = left ? 'M15 6l-7 6 7 6' : 'M9 6l7 6-7 6';
+  return `<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+}
+function setNavBtn(btn, isNext, label){     // label → text; otherwise the arrow icon
+  if(label) btn.textContent = label; else btn.innerHTML = navArrowSvg(isNext);
+}
 function navLabel(name, isNext){     // name + arrow, side per language
   if(LANG==='en' || LANG==='ar') return isNext ? (name+' ›') : ('‹ '+name);
   return isNext ? ('‹ '+name) : (name+' ›');                  // Hebrew
@@ -1601,17 +1610,17 @@ function updateNavDisabled(){
     const prevBook = bIdx>0 ? books[bIdx-1] : null;
     const nextBook = (bIdx>=0 && bIdx<books.length-1) ? books[bIdx+1] : null;
     // PREV
-    if(atBookStart && prevBook){ pb.textContent = gotoBookLabel(prevBook.name,false); pb.disabled=false; }
-    else if(S.chIdx<=0 && pidx>0){ pb.textContent = navLabel((S.portions[pidx-1]||{}).name||'', false); pb.disabled=false; }
-    else { pb.textContent = navArrow(false); pb.disabled = atBookStart; }
+    if(atBookStart && prevBook){ setNavBtn(pb,false,gotoBookLabel(prevBook.name,false)); pb.disabled=false; }
+    else if(S.chIdx<=0 && pidx>0){ setNavBtn(pb,false,navLabel((S.portions[pidx-1]||{}).name||'', false)); pb.disabled=false; }
+    else { setNavBtn(pb,false,''); pb.disabled = atBookStart; }
     // NEXT
-    if(atBookEnd && nextBook){ nb.textContent = gotoBookLabel(nextBook.name,true); nb.disabled=false; }
-    else if(S.chIdx>=S.chList.length-1 && pidx<ids.length-1){ nb.textContent = navLabel((S.portions[pidx+1]||{}).name||'', true); nb.disabled=false; }
-    else { nb.textContent = navArrow(true); nb.disabled = atBookEnd; }
+    if(atBookEnd && nextBook){ setNavBtn(nb,true,gotoBookLabel(nextBook.name,true)); nb.disabled=false; }
+    else if(S.chIdx>=S.chList.length-1 && pidx<ids.length-1){ setNavBtn(nb,true,navLabel((S.portions[pidx+1]||{}).name||'', true)); nb.disabled=false; }
+    else { setNavBtn(nb,true,''); nb.disabled = atBookEnd; }
   } else {
     // chapter-list (portion) paging: every step is a parasha change → show its name
-    pb.textContent = pidx>0 ? navLabel((S.portions[pidx-1]||{}).name||'', false) : navArrow(false);
-    nb.textContent = pidx<ids.length-1 ? navLabel((S.portions[pidx+1]||{}).name||'', true) : navArrow(true);
+    setNavBtn(pb,false, pidx>0 ? navLabel((S.portions[pidx-1]||{}).name||'', false) : '');
+    setNavBtn(nb,true,  pidx<ids.length-1 ? navLabel((S.portions[pidx+1]||{}).name||'', true) : '');
     pb.disabled = pidx<=0;
     nb.disabled = pidx>=ids.length-1;
   }
