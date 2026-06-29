@@ -1574,35 +1574,44 @@ function navState(mode){
   // mode: 'portion' (chapter-list pages) or 'chapter' (verse pages)
   S.navMode = mode;
   $('navbar').classList.remove('hidden');
-  // navbar is LTR (matching the source app): next on the LEFT, previous on the RIGHT.
-  $('nextBtn').textContent = mode==='chapter' ? t('next_chapter') : t('next_portion');
-  $('prevBtn').textContent = mode==='chapter' ? t('prev_chapter') : t('prev_portion');
   updateNavDisabled();
 }
-// the prev/next labels when a step would carry the reader into an adjacent book:
-// "עבור ל<שם הספר>" (arrow side matches the regular chapter labels per language)
-function gotoBookLabel(name, isNext){
-  const txt = t('goto_book')+name;
-  if(LANG==='en' || LANG==='ar') return isNext ? (txt+' ›') : ('‹ '+txt);
-  return isNext ? ('‹ '+txt) : (txt+' ›');                  // Hebrew
+// the prev/next arrows are TRANSPARENT and show only an arrow glyph by default; a
+// label appears inside them only when the step crosses into another PARASHA or BOOK.
+function navArrow(isNext){
+  return (LANG==='en' || LANG==='ar') ? (isNext ? '›' : '‹') : (isNext ? '‹' : '›');  // forward-pointing
 }
+function navLabel(name, isNext){     // name + arrow, side per language
+  if(LANG==='en' || LANG==='ar') return isNext ? (name+' ›') : ('‹ '+name);
+  return isNext ? ('‹ '+name) : (name+' ›');                  // Hebrew
+}
+function gotoBookLabel(name, isNext){ return navLabel(t('goto_book')+name, isNext); }
 function updateNavDisabled(){
   const ids = S.portions.map(p=>p.id); const pidx = ids.indexOf(S.curPid);
+  const nb=$('nextBtn'), pb=$('prevBtn');
   if(S.navMode==='chapter'){
-    // chapter paging carries across parashot within a book; at a BOOK edge the
-    // button relabels to "go to <adjacent book>" and only the Torah's very ends stop.
+    // chapter paging carries across parashot within a book; the button shows the
+    // PARASHA name when the step enters a new parasha, the BOOK name at a book edge,
+    // and just a bare arrow while paging chapters inside the same parasha.
     const atBookStart = (S.chIdx<=0) && (pidx<=0);
     const atBookEnd   = (S.chIdx>=S.chList.length-1) && (pidx>=ids.length-1);
     const books = S.books||[]; const bIdx = books.findIndex(b=>b.id===S.book);
     const prevBook = bIdx>0 ? books[bIdx-1] : null;
     const nextBook = (bIdx>=0 && bIdx<books.length-1) ? books[bIdx+1] : null;
-    if(atBookStart && prevBook){ $('prevBtn').textContent = gotoBookLabel(prevBook.name,false); $('prevBtn').disabled=false; }
-    else { $('prevBtn').textContent = t('prev_chapter'); $('prevBtn').disabled = atBookStart; }
-    if(atBookEnd && nextBook){ $('nextBtn').textContent = gotoBookLabel(nextBook.name,true); $('nextBtn').disabled=false; }
-    else { $('nextBtn').textContent = t('next_chapter'); $('nextBtn').disabled = atBookEnd; }
+    // PREV
+    if(atBookStart && prevBook){ pb.textContent = gotoBookLabel(prevBook.name,false); pb.disabled=false; }
+    else if(S.chIdx<=0 && pidx>0){ pb.textContent = navLabel((S.portions[pidx-1]||{}).name||'', false); pb.disabled=false; }
+    else { pb.textContent = navArrow(false); pb.disabled = atBookStart; }
+    // NEXT
+    if(atBookEnd && nextBook){ nb.textContent = gotoBookLabel(nextBook.name,true); nb.disabled=false; }
+    else if(S.chIdx>=S.chList.length-1 && pidx<ids.length-1){ nb.textContent = navLabel((S.portions[pidx+1]||{}).name||'', true); nb.disabled=false; }
+    else { nb.textContent = navArrow(true); nb.disabled = atBookEnd; }
   } else {
-    $('prevBtn').disabled = pidx<=0;
-    $('nextBtn').disabled = pidx>=ids.length-1;
+    // chapter-list (portion) paging: every step is a parasha change → show its name
+    pb.textContent = pidx>0 ? navLabel((S.portions[pidx-1]||{}).name||'', false) : navArrow(false);
+    nb.textContent = pidx<ids.length-1 ? navLabel((S.portions[pidx+1]||{}).name||'', true) : navArrow(true);
+    pb.disabled = pidx<=0;
+    nb.disabled = pidx>=ids.length-1;
   }
 }
 $('prevBtn').onclick=()=> S.navMode==='chapter'? stepChapter(-1) : stepPortion(-1);
@@ -1741,9 +1750,13 @@ function updateZoomButtons(){
 // ── view chrome (show/hide nav + enable toolbar) ─────────────────────────────
 function setView(){
   const isVerse = S.view==='verses';
-  $('navbar').classList.toggle('hidden', !(isVerse || S.view==='chapters' || S.view==='sam_chapters'));
+  const browse = (S.view==='books'||S.view==='portions'||S.view==='spread');
+  // the navbar now hosts the back button, so it shows on every screen except search;
+  // on the plain browse screens only the (centered) back button is visible.
+  $('navbar').classList.remove('hidden');
+  ['nextBtn','prevBtn','minusBtn','plusBtn'].forEach(id=>$(id).classList.toggle('hidden', browse));
+  $('navbar').classList.toggle('nav-backonly', browse);
   $('spreadBtn').classList.toggle('hidden', !(S.view==='portions'));
-  if(S.view==='books'||S.view==='portions'||S.view==='spread') $('navbar').classList.add('hidden');
   $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
   syncToolbar(isVerse);
   updateToolbarFold(isVerse);
@@ -2025,7 +2038,7 @@ function showSearch(on){
   $('content').classList.toggle('hidden', on);
   $('crumbs').classList.toggle('hidden', on);
   $('toolbar').classList.toggle('hidden', on);
-  $('navbar').classList.add('hidden');
+  $('navbar').classList.toggle('hidden', on);   // navbar (with back) hidden only while searching
   $('spreadBtn').classList.add('hidden');
   if(on){ $('searchInput').focus(); updateSearchZoomButtons($('searchResults').children.length>0); }
 }

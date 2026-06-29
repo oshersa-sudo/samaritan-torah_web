@@ -257,15 +257,23 @@ body{
 .wide-btn{ flex:0 0 auto; margin:2px 6px; padding:13px; border:0; border-radius:6px;
            background:var(--navy); color:#fff; font-family:inherit; font-size:16px; cursor:pointer; }
 #navbar{ flex:0 0 auto; display:flex; gap:6px; padding:4px 6px; align-items:center; }
-.nav-arrow{ flex:1; padding:10px 4px; border:0; border-radius:6px; background:var(--navy); color:#fff;
-            font-family:inherit; font-size:13px; cursor:pointer; }
-.nav-arrow:disabled{ opacity:.4; cursor:default; }
+/* transparent arrows: just a glyph while paging chapters; a parasha/book label
+   appears inside only at a crossing (set in JS) */
+.nav-arrow{ flex:1; padding:10px 4px; border:0; border-radius:6px; background:transparent;
+            color:var(--navy); font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; }
+.nav-arrow:hover{ background:rgba(46,97,184,.08); }
+.nav-arrow:disabled{ opacity:.3; cursor:default; }
 .round{ flex:0 0 auto; width:50px; padding:8px 0; border:0; border-radius:8px; background:transparent;
         color:var(--accent); font-size:24px; font-weight:700; cursor:pointer; }
 .round:hover{ background:rgba(46,97,184,.10); }
 /* magnifier shown as unavailable (no text to zoom / no search results) */
 .round:disabled{ opacity:.3; cursor:default; pointer-events:none; }
 .round:disabled:hover{ background:transparent; }
+/* back button relocated into the navbar (between the two magnifiers), transparent */
+.nav-back{ color:var(--navy); }
+.nav-back .tbi{ width:25px; height:25px; }
+/* on the plain browse screens (books / portions / spread) only the back button shows */
+#navbar.nav-backonly{ justify-content:center; }
 
 /* toolbar */
 #toolbar{ flex:0 0 auto; background:var(--navy); padding:3px; display:flex; flex-direction:column; gap:2px; }
