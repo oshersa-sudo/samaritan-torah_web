@@ -1583,11 +1583,13 @@ function navState(mode){
 function navArrow(isNext){
   return (LANG==='en' || LANG==='ar') ? (isNext ? '›' : '‹') : (isNext ? '‹' : '›');  // forward-pointing
 }
-// a real (gray) chevron icon for the bare prev/next arrows
+// a real arrow icon (shaft + head) for the bare prev/next arrows
 function navArrowSvg(isNext){
   const left = navArrow(isNext) === '‹';
-  const d = left ? 'M15 6l-7 6 7 6' : 'M9 6l7 6-7 6';
-  return `<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  const inner = left
+    ? '<line x1="20" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>'
+    : '<line x1="4" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>';
+  return `<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
 }
 function setNavBtn(btn, isNext, label){     // label → prominent text button; else faint arrow icon
   if(label){ btn.textContent = label; btn.classList.add('nav-haslabel'); }
