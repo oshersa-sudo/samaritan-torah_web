@@ -62,8 +62,10 @@ body.div-collapsed .div-handle{ height:26px; }
 .div-handle .tb-uparrow, .div-handle .tb-downarrow{ display:none; position:absolute; left:50%; bottom:-2px; font-size:28px;
   line-height:1; color:#ffd86b; font-weight:900; text-shadow:0 0 12px rgba(255,216,107,1),0 0 4px rgba(255,216,107,1);
   pointer-events:none; }
-.div-handle.show-arrow .tb-uparrow{ display:block; animation:tbArrowBlink .46s ease-in-out infinite alternate; }
-.div-handle.show-down .tb-downarrow{ display:block; animation:tbArrowBlinkDown .46s ease-in-out infinite alternate; }
+/* TOP bar reverses the bottom bar's convention: DOWN arrow while folding inward,
+   UP arrow while opening (per request — the top bar opens downward). */
+.div-handle.show-arrow .tb-downarrow{ display:block; animation:tbArrowBlinkDown .46s ease-in-out infinite alternate; }
+.div-handle.show-down .tb-uparrow{ display:block; animation:tbArrowBlink .46s ease-in-out infinite alternate; }
 
 /* breadcrumb */
 #crumbs{ flex:0 0 auto; min-height:40px; display:flex; align-items:center; justify-content:flex-start;
