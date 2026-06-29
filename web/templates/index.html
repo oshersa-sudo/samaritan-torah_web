@@ -71,10 +71,15 @@
       <button id="btnStandard" class="divbtn" data-i18n="div_jewish">חלוקה יהודית</button>
       <button id="btnSamaritan" class="divbtn active" data-i18n="div_sam">חלוקה שומרונית</button>
     </div>
+    <button id="divHandle" class="div-handle" type="button" aria-label="פתח/קפל את סרגל החלוקה">
+      <span class="tb-grip"></span>
+      <span class="tb-uparrow" aria-hidden="true">⬆</span>
+      <span class="tb-downarrow" aria-hidden="true">⬇</span>
+    </button>
   </header>
 
   <!-- breadcrumb (with the bookmark sign pinned to its left corner) -->
-  <nav id="crumbs"><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button><button id="playBtn" class="bm-nav play-nav hidden" data-i18n-title="play_chapter" title="הקראת הפרק" aria-label="הקראת הפרק"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button></nav>
+  <nav id="crumbs"><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button><button id="playBtn" class="bm-nav play-nav hidden" disabled data-i18n-title="play_chapter" title="הקראת הפרק (בקרוב)" aria-label="הקראת הפרק"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button></nav>
 
   <!-- main scrolling content -->
   <main id="content"></main>

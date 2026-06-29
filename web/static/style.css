@@ -51,6 +51,19 @@ body.div-collapsed .toggle-row{ max-height:0 !important; min-height:0 !important
 .divbtn{ flex:1; padding:8px; border:0; border-radius:6px; background:#4d4d80; color:#fff;
          font-family:inherit; font-size:14px; cursor:pointer; }
 .divbtn.active{ background:var(--active); }
+/* drag handle / fold control at the bottom of the division-toggle bar — mirrors #tbHandle */
+.div-handle{ display:flex; align-items:center; justify-content:center; gap:10px; position:relative;
+  width:100%; height:14px; padding:0 0 2px; border:0; background:transparent; cursor:pointer; touch-action:none; }
+body.div-collapsed .div-handle{ height:26px; }
+.div-handle .tb-grip{ position:relative; width:60px; height:12px; border-radius:6px;
+  background:linear-gradient(#ffffff55,#ffffff2e); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 1px 2px rgba(0,0,0,.3);
+  transition:background .2s; }
+.div-handle:hover .tb-grip{ background:linear-gradient(#ffffff77,#ffffff44); }
+.div-handle .tb-uparrow, .div-handle .tb-downarrow{ display:none; position:absolute; left:50%; bottom:-2px; font-size:28px;
+  line-height:1; color:#ffd86b; font-weight:900; text-shadow:0 0 12px rgba(255,216,107,1),0 0 4px rgba(255,216,107,1);
+  pointer-events:none; }
+.div-handle.show-arrow .tb-uparrow{ display:block; animation:tbArrowBlink .46s ease-in-out infinite alternate; }
+.div-handle.show-down .tb-downarrow{ display:block; animation:tbArrowBlinkDown .46s ease-in-out infinite alternate; }
 
 /* breadcrumb */
 #crumbs{ flex:0 0 auto; min-height:40px; display:flex; align-items:center; justify-content:flex-start;
@@ -264,9 +277,9 @@ body.div-collapsed .toggle-row{ max-height:0 !important; min-height:0 !important
 /* transparent arrows: just a glyph while paging chapters; a parasha/book label
    appears inside only at a crossing (set in JS) */
 .nav-arrow{ flex:1; padding:6px 4px; border:0; border-radius:6px; background:transparent;
-            color:#17a9c4; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer;
+            color:rgba(23,169,196,.45); font-family:inherit; font-size:15px; font-weight:700; cursor:pointer;
             display:inline-flex; align-items:center; justify-content:center; }
-.nav-arrow .nav-chevron{ width:30px; height:30px; }   /* real gray chevron when no label */
+.nav-arrow .nav-chevron{ width:30px; height:30px; }   /* outline arrow, translucent (no fill) */
 .nav-arrow:hover{ background:rgba(0,0,0,.05); }
 .nav-arrow:disabled{ opacity:.35; cursor:default; }
 /* at a parasha/book crossing the arrow carries a label → show it as a clear button */
@@ -278,8 +291,8 @@ body.div-collapsed .toggle-row{ max-height:0 !important; min-height:0 !important
 /* magnifier shown as unavailable (no text to zoom / no search results) */
 .round:disabled{ opacity:.3; cursor:default; pointer-events:none; }
 .round:disabled:hover{ background:transparent; }
-/* back button relocated into the navbar (between the two magnifiers), transparent gray */
-.nav-back{ color:#17a9c4; }
+/* back button relocated into the navbar (between the two magnifiers); its original (navy) color */
+.nav-back{ color:var(--navy); }
 .nav-back .tbi{ width:25px; height:25px; }
 /* on the plain browse screens (books / portions / spread) only the back button shows */
 #navbar.nav-backonly{ justify-content:center; }
@@ -807,6 +820,7 @@ footer a{ color:var(--accent); text-decoration:none; }
 .play-nav{ left:42px; color:var(--accent); padding:0 4px; }
 .play-nav svg{ width:23px; height:23px; vertical-align:middle; }
 .play-nav.playing{ color:#c0392b; }
+.play-nav:disabled{ opacity:.35; cursor:default; }   /* dimmed / not yet active */
 /* read-aloud mini player above the navbar */
 #audioBar{ flex:0 0 auto; display:flex; align-items:center; gap:8px; padding:5px 10px;
            background:var(--cream); border-top:1px solid rgba(26,56,115,.22); }

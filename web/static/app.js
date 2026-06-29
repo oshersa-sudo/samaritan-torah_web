@@ -1871,12 +1871,11 @@ function setView(){
 // the two display-mode rows fold away after a few seconds, leaving a drag handle;
 // the next/prev and zoom controls (in #navbar) stay put.
 let tbFolded=false, tbUserOpened=false, tbFoldTimer=null, tbInVerse=false;
+let divFolded=false, divUserOpened=false;
 function setToolbarFolded(folded, withArrow){
   const wasFolded=tbFolded;
   tbFolded=folded;
   const tb=$('toolbar'); tb.classList.toggle('folded', folded);
-  // fold the top division-toggle bar (יהודית/שומרונית) away too, for more text space
-  document.body.classList.toggle('div-collapsed', folded);
   tb.classList.remove('show-arrow'); tb.classList.remove('show-down');
   if(folded && withArrow){
     void tb.offsetWidth; tb.classList.add('show-arrow');             // up-arrow ~3s after folding
@@ -1885,6 +1884,20 @@ function setToolbarFolded(folded, withArrow){
     void tb.offsetWidth; tb.classList.add('show-down');              // reverse: down-arrow ~2s after opening
     setTimeout(()=>tb.classList.remove('show-down'), 2000);
   }
+  if(folded && !divFolded) setDivFolded(true, withArrow);           // FOLD links both bars (not open)
+}
+// the top division-toggle bar (יהודית/שומרונית) folds like the bottom toolbar, with
+// its own handle. Folding links both bars; opening one does NOT open the other.
+function setDivFolded(folded, withArrow){
+  const was=divFolded; divFolded=folded;
+  document.body.classList.toggle('div-collapsed', folded);
+  const h=$('divHandle');
+  if(h){
+    h.classList.remove('show-arrow'); h.classList.remove('show-down');
+    if(folded && withArrow){ void h.offsetWidth; h.classList.add('show-arrow'); setTimeout(()=>h.classList.remove('show-arrow'),3000); }
+    else if(!folded && withArrow && was){ void h.offsetWidth; h.classList.add('show-down'); setTimeout(()=>h.classList.remove('show-down'),2000); }
+  }
+  if(folded && !tbFolded) setToolbarFolded(true, withArrow);        // fold together
 }
 function armAutoFold(){   // fold (with the arrow animation) after 3s
   clearTimeout(tbFoldTimer);
@@ -1892,12 +1905,12 @@ function armAutoFold(){   // fold (with the arrow animation) after 3s
 }
 function updateToolbarFold(isVerse){
   clearTimeout(tbFoldTimer);
-  if(!isVerse){ tbInVerse=false; setToolbarFolded(false,false); return; }  // not a text screen
+  if(!isVerse){ tbInVerse=false; setToolbarFolded(false,false); setDivFolded(false,false); return; }  // not a text screen
   const fresh = !tbInVerse;   // arriving at a text/comparison screen from elsewhere
   tbInVerse=true;
   // every fresh entry: show the bar open, then auto-fold (with animation) after 3s —
   // not just the first time, so re-entering these screens always re-runs the fold.
-  if(fresh){ tbUserOpened=false; setToolbarFolded(false,false); armAutoFold(); return; }
+  if(fresh){ tbUserOpened=false; divUserOpened=false; setDivFolded(false,false); setToolbarFolded(false,false); armAutoFold(); return; }
   // moving chapter-to-chapter within the text view: keep the user's current choice
   if(tbUserOpened){ setToolbarFolded(false,false); return; }
   if(tbFolded){ setToolbarFolded(true,false); return; }
@@ -1913,6 +1926,22 @@ function updateToolbarFold(isVerse){
     else if(dy > 12){ tbUserOpened=false; setToolbarFolded(true,true); }    // drag down → fold
     else if(tbFolded){ tbUserOpened=true; setToolbarFolded(false,true); }   // tap → open (down-arrow)
     else { tbUserOpened=false; setToolbarFolded(true,true); }               // tap → fold
+  };
+  h.addEventListener('pointerup', release);
+  h.addEventListener('pointercancel', ()=>{ downY=null; });
+})();
+// the top division-bar handle: same gestures, but the bar opens DOWNWARD (drag down
+// or tap-when-folded opens; drag up or tap-when-open folds). Opens only itself.
+(function(){
+  const h=document.getElementById('divHandle'); if(!h) return;
+  let downY=null;
+  h.addEventListener('pointerdown', e=>{ downY=e.clientY; });
+  const release=(e)=>{
+    const dy = downY==null ? 0 : (e.clientY-downY); downY=null;
+    if(dy > 12){ divUserOpened=true; setDivFolded(false,true); }        // drag down → open
+    else if(dy < -12){ divUserOpened=false; setDivFolded(true,true); }  // drag up → fold
+    else if(divFolded){ divUserOpened=true; setDivFolded(false,true); } // tap → open
+    else { divUserOpened=false; setDivFolded(true,true); }              // tap → fold
   };
   h.addEventListener('pointerup', release);
   h.addEventListener('pointercancel', ()=>{ downY=null; });
