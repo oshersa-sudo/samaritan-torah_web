@@ -55,12 +55,39 @@ def _load_dotenv():
 
 
 _load_dotenv()
-import secrets, hmac
+import secrets, hmac, hashlib, time
 ADMIN_USER = os.environ.get('ADMIN_USER', 'oshersa')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
-_ADMIN_TOKENS = set()
+_TOKEN_TTL = 12 * 3600                 # admin session token lifetime (seconds)
+_LOGIN_FAILS = {}                      # ip -> [failure timestamps] (best-effort throttle)
 _EDITABLE = {'verses': {'text', 'masoretic_text', 'interpretation', 'sam_aramaic',
                         'sam_hebrew', 'simple_hebrew', 'english', 'arabic_trans'}}
+
+
+def _make_token():
+    """Stateless signed token (works across gunicorn workers; carries its own expiry).
+    Signature is keyed by the secret password, so it can't be forged without it."""
+    ts = str(int(time.time()))
+    sig = hmac.new(ADMIN_PASSWORD.encode(), ts.encode(), hashlib.sha256).hexdigest()
+    return ts + '.' + sig
+
+
+def _valid_token(tok):
+    if not ADMIN_PASSWORD or not tok or '.' not in str(tok):
+        return False
+    ts, _, sig = str(tok).partition('.')
+    if not ts.isdigit() or time.time() - int(ts) > _TOKEN_TTL:
+        return False
+    good = hmac.new(ADMIN_PASSWORD.encode(), ts.encode(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(sig, good)
+
+
+def _throttled(ip):
+    """True if this IP has too many recent failed logins (speed-bump against guessing)."""
+    now = time.time()
+    fails = [t for t in _LOGIN_FAILS.get(ip, []) if now - t < 600]   # 10-min window
+    _LOGIN_FAILS[ip] = fails
+    return len(fails) >= 8
 
 
 @app.route('/api/admin/status')
@@ -72,19 +99,52 @@ def admin_status():
 def admin_login():
     if not ADMIN_PASSWORD:
         return jsonify({'ok': False, 'disabled': True})
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+    if _throttled(ip):
+        return jsonify({'ok': False, 'error': 'too many attempts'}), 429
     d = request.get_json(silent=True) or {}
     u, p = str(d.get('user', '')), str(d.get('password', ''))
     if hmac.compare_digest(u, ADMIN_USER) and hmac.compare_digest(p, ADMIN_PASSWORD):
-        tok = secrets.token_urlsafe(24)
-        _ADMIN_TOKENS.add(tok)
-        return jsonify({'ok': True, 'token': tok})
+        return jsonify({'ok': True, 'token': _make_token()})
+    _LOGIN_FAILS.setdefault(ip, []).append(time.time())
     return jsonify({'ok': False})
+
+
+@app.route('/api/admin/download_db')
+def admin_download_db():
+    """Download the live DB (with online edits) so it can be committed back to git.
+    Token passed as a query param since this is a direct download link."""
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    from flask import send_file
+    return send_file(db.DB_PATH, as_attachment=True, download_name='torah.db')
+
+
+@app.route('/api/admin/reseed_db', methods=['POST'])
+def admin_reseed_db():
+    """Overwrite the live (persistent-disk) DB with the one bundled in the repo —
+    used to apply a DB update pushed via git to the live site. DESTROYS unsynced
+    online edits, so download_db first. No-op when not running off a separate disk."""
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    if d.get('confirm') != 'REPLACE':
+        return jsonify({'ok': False, 'error': "send confirm:'REPLACE'"}), 400
+    bundled = getattr(db, '_BUNDLED_DB', None)
+    if not bundled or db.DB_PATH == bundled or not os.path.exists(bundled):
+        return jsonify({'ok': False, 'error': 'no separate disk / bundled DB'}), 400
+    try:
+        _backup_db()
+        shutil.copy2(bundled, db.DB_PATH)
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    return jsonify({'ok': True})
 
 
 @app.route('/api/admin/edit', methods=['POST'])
 def admin_edit():
     d = request.get_json(silent=True) or {}
-    if d.get('token') not in _ADMIN_TOKENS:
+    if not _valid_token(d.get('token')):
         return jsonify({'ok': False, 'error': 'unauthorized'}), 401
     table, col = d.get('table'), d.get('column')
     if table not in _EDITABLE or col not in _EDITABLE[table]:
@@ -161,7 +221,7 @@ def _fix_root_index(conn, book_id):
 @app.route('/api/admin/merge_next', methods=['POST'])
 def admin_merge_next():
     d = request.get_json(silent=True) or {}
-    if d.get('token') not in _ADMIN_TOKENS:
+    if not _valid_token(d.get('token')):
         return jsonify({'ok': False, 'error': 'unauthorized'}), 401
     try:
         chapter_id = int(d.get('chapter_id'))
@@ -201,7 +261,7 @@ def admin_merge_next():
 @app.route('/api/admin/split', methods=['POST'])
 def admin_split():
     d = request.get_json(silent=True) or {}
-    if d.get('token') not in _ADMIN_TOKENS:
+    if not _valid_token(d.get('token')):
         return jsonify({'ok': False, 'error': 'unauthorized'}), 401
     try:
         chapter_id = int(d.get('chapter_id')); after_vid = int(d.get('after_verse_id'))
@@ -245,7 +305,7 @@ def admin_split():
 @app.route('/api/admin/merge_next_sam', methods=['POST'])
 def admin_merge_next_sam():
     d = request.get_json(silent=True) or {}
-    if d.get('token') not in _ADMIN_TOKENS:
+    if not _valid_token(d.get('token')):
         return jsonify({'ok': False, 'error': 'unauthorized'}), 401
     try:
         sam_id = int(d.get('chapter_id'))
@@ -277,7 +337,7 @@ def admin_merge_next_sam():
 @app.route('/api/admin/split_sam', methods=['POST'])
 def admin_split_sam():
     d = request.get_json(silent=True) or {}
-    if d.get('token') not in _ADMIN_TOKENS:
+    if not _valid_token(d.get('token')):
         return jsonify({'ok': False, 'error': 'unauthorized'}), 401
     try:
         sam_id = int(d.get('chapter_id')); after_vid = int(d.get('after_verse_id'))
@@ -321,7 +381,7 @@ def admin_split_sam():
 @app.route('/api/admin/split_verse', methods=['POST'])
 def admin_split_verse():
     d = request.get_json(silent=True) or {}
-    if d.get('token') not in _ADMIN_TOKENS:
+    if not _valid_token(d.get('token')):
         return jsonify({'ok': False, 'error': 'unauthorized'}), 401
     try:
         verse_id = int(d.get('verse_id'))
@@ -369,7 +429,7 @@ def admin_split_verse():
 @app.route('/api/admin/renumber_verse', methods=['POST'])
 def admin_renumber_verse():
     d = request.get_json(silent=True) or {}
-    if d.get('token') not in _ADMIN_TOKENS:
+    if not _valid_token(d.get('token')):
         return jsonify({'ok': False, 'error': 'unauthorized'}), 401
     try:
         verse_id = int(d.get('verse_id'))

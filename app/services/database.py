@@ -2,9 +2,32 @@ import sqlite3
 import os
 import re
 import functools
+import shutil
 import unicodedata
 
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'torah.db')
+# The DB bundled in the repo (pulled via git LFS at build). On a deployment with a
+# persistent disk, set DB_PATH to a path on that disk so online admin edits survive
+# restarts; the disk is seeded once from the bundled copy (see _seed_db).
+_BUNDLED_DB = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'torah.db')
+DB_PATH = os.environ.get('DB_PATH') or _BUNDLED_DB
+
+
+def _seed_db():
+    """When DB_PATH points at a persistent disk and is still empty (first boot or a
+    fresh disk), copy the bundled DB onto it. Later boots use the disk copy, so admin
+    edits persist across restarts/redeploys."""
+    if DB_PATH == _BUNDLED_DB:
+        return
+    try:
+        if not os.path.exists(DB_PATH) or os.path.getsize(DB_PATH) == 0:
+            os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+            if os.path.exists(_BUNDLED_DB):
+                shutil.copy2(_BUNDLED_DB, DB_PATH)
+    except Exception:
+        pass
+
+
+_seed_db()
 
 
 def get_connection():

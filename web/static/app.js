@@ -136,6 +136,8 @@ const I18N = {
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
+    admin_dl_db:'⬇ הורד את ה-DB (לסנכרון חזרה)', admin_reseed:'טען DB מהמאגר',
+    admin_reseed_q:'פעולה זו תדרוס את ה-DB החי בעותק מהמאגר (git). עריכות שלא הורדו יאבדו. להמשיך?',
     edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
     merge_next:'אחד עם הבא', split_chapter:'פצל פרק', split_verse:'פצל פסוק',
     split_pick:'בחר את הפסוק שאחריו יחל הפרק החדש (לחץ על מספר פסוק)', split_cancel:'ביטול פיצול',
@@ -267,6 +269,8 @@ const I18N = {
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
+    admin_dl_db:'⬇ Download the DB (to sync back)', admin_reseed:'Load DB from repo',
+    admin_reseed_q:'This overwrites the live DB with the repo (git) copy. Un-downloaded edits will be lost. Continue?',
     edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
     merge_next:'Merge with next', split_chapter:'Split chapter', split_verse:'Split verse',
     split_pick:'Choose the verse after which the new chapter starts (tap a verse number)', split_cancel:'Cancel split',
@@ -398,6 +402,8 @@ const I18N = {
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
+    admin_dl_db:'⬇ تنزيل قاعدة البيانات (للمزامنة)', admin_reseed:'تحميل DB من المستودع',
+    admin_reseed_q:'سيؤدي هذا إلى استبدال قاعدة البيانات الحيّة بنسخة المستودع (git). ستُفقد التعديلات غير المنزَّلة. متابعة؟',
     edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
     merge_next:'دمج مع التالي', split_chapter:'تقسيم الأصحاح', split_verse:'تقسيم الآية',
     split_pick:'اختر الآية التي يبدأ بعدها الأصحاح الجديد (اضغط رقم آية)', split_cancel:'إلغاء التقسيم',
@@ -3180,10 +3186,24 @@ $('admLogin').onclick=async ()=>{
   if(r && r.ok){
     ADMIN.token=r.token; $('adminModal').classList.add('hidden');
     $('adminMenuItem').textContent='✓ '+t('m_admin');
-    showInfo(t('m_admin'), `<div class="note">${esc(t('admin_on'))}</div>`);
+    showInfo(t('m_admin'), `<div class="note">${esc(t('admin_on'))}</div>`+adminDbControls());
     paintVerses();
   } else { $('admErr').textContent=t('adm_bad'); }
 };
+// admin DB sync controls (download the live DB to commit back; re-seed from repo)
+function adminDbControls(){
+  if(!ADMIN.token) return '';
+  return `<div class="note" style="margin-top:10px;display:flex;flex-direction:column;gap:6px">`
+    + `<a class="admin-btn" style="text-decoration:none;text-align:center" `
+    + `href="/api/admin/download_db?token=${encodeURIComponent(ADMIN.token)}">${esc(t('admin_dl_db'))}</a>`
+    + `<button class="admin-btn cancel" onclick="adminReseed()">${esc(t('admin_reseed'))}</button></div>`;
+}
+async function adminReseed(){
+  if(!ADMIN.token) return;
+  if(!await askConfirm(t('admin_reseed'), t('admin_reseed_q'), t('confirm_yes'), t('c_cancel'))) return;
+  let r; try{ r=await apiPost('admin/reseed_db', {token:ADMIN.token, confirm:'REPLACE'}); }catch(e){ r={ok:false}; }
+  showInfo(t('admin_reseed'), `<div class="note">${r&&r.ok ? '✓' : esc((r&&r.error)||'error')}</div>`);
+}
 $('admPass').addEventListener('keydown',e=>{ if(e.key==='Enter') $('admLogin').click(); });
 // add a floating edit pencil (admin only) to a text row → opens the edit window
 function addPencil(rowEl, verseId, column, getText){
