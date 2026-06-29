@@ -1809,6 +1809,8 @@ function setToolbarFolded(folded, withArrow){
   const wasFolded=tbFolded;
   tbFolded=folded;
   const tb=$('toolbar'); tb.classList.toggle('folded', folded);
+  // fold the top division-toggle bar (יהודית/שומרונית) away too, for more text space
+  document.body.classList.toggle('div-collapsed', folded);
   tb.classList.remove('show-arrow'); tb.classList.remove('show-down');
   if(folded && withArrow){
     void tb.offsetWidth; tb.classList.add('show-arrow');             // up-arrow ~3s after folding

@@ -43,7 +43,11 @@ body{
             text-align:center; border:1px solid #bbb; border-radius:6px; padding:6px; margin-bottom:4px; }
 .scroll-ico{ width:36px; height:36px; object-fit:contain; }
 .ver{ font-size:11px; color:#bcd0ff; white-space:nowrap; }
-.toggle-row{ display:flex; gap:4px; padding:4px 8px 8px; }
+.toggle-row{ display:flex; gap:4px; padding:4px 8px 8px;
+             overflow:hidden; transition:max-height .25s ease, opacity .2s ease, padding .25s ease; max-height:60px; }
+/* when the bottom toolbar folds, collapse the division-toggle bar upward too (more text) */
+body.div-collapsed .toggle-row{ max-height:0 !important; min-height:0 !important; opacity:0 !important;
+                                padding-top:0 !important; padding-bottom:0 !important; }
 .divbtn{ flex:1; padding:8px; border:0; border-radius:6px; background:#4d4d80; color:#fff;
          font-family:inherit; font-size:14px; cursor:pointer; }
 .divbtn.active{ background:var(--active); }
