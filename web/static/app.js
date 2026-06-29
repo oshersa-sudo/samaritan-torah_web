@@ -152,7 +152,7 @@ const I18N = {
     renum_only_this:'רק פסוק זה', renum_ok:'מספר הפסוק עודכן.',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
-    bm_add:'הוסף סימניה לפרק זה', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
+    bm_add:'הוסף סימניה לפרק זה', play_chapter:'הקראת הפרק', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
     bm_note_ph:'הוסף הערה…', bm_max:'הגעת למקסימום של 20 סימניות.', bm_dup:'כבר קיימת סימניה לפרק זה.',
     bm_added:'סימניה נוספה.', bm_empty:'אין סימניות.', bm_del_q:'למחוק את הסימניות שנבחרו?',
   },
@@ -285,7 +285,7 @@ const I18N = {
     renum_only_this:'Only this verse', renum_ok:'Verse number updated.',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
-    bm_add:'Bookmark this chapter', bm_my:'My bookmarks', bm_delete:'Delete selected',
+    bm_add:'Bookmark this chapter', play_chapter:'Read the chapter aloud', bm_my:'My bookmarks', bm_delete:'Delete selected',
     bm_note_ph:'Add a note…', bm_max:'You have reached the maximum of 20 bookmarks.', bm_dup:'This chapter is already bookmarked.',
     bm_added:'Bookmark added.', bm_empty:'No bookmarks.', bm_del_q:'Delete the selected bookmarks?',
   },
@@ -418,7 +418,7 @@ const I18N = {
     renum_only_this:'هذه الآية فقط', renum_ok:'تم تحديث رقم الآية.',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
-    bm_add:'إضافة إشارة لهذا الأصحاح', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
+    bm_add:'إضافة إشارة لهذا الأصحاح', play_chapter:'قراءة الأصحاح صوتيًا', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
     bm_note_ph:'أضف ملاحظة…', bm_max:'وصلت إلى الحدّ الأقصى 20 إشارة.', bm_dup:'هذا الأصحاح مُؤشَّر بالفعل.',
     bm_added:'تمت إضافة الإشارة.', bm_empty:'لا توجد إشارات.', bm_del_q:'حذف الإشارات المحدّدة؟',
   },
@@ -703,6 +703,7 @@ async function openSamChapter(samId, samNum, pid, pname, fromSearch){
 }
 
 async function renderVerses(chId, chNum, pid, pname){
+  if(typeof ttsStop==='function') ttsStop();   // a new chapter ends any read-aloud
   S.view='verses'; S.curChId=chId; S.curChNum=chNum; setView();
   await ensureBooks();   // populate S.books so the nav buttons can relabel at book edges
   const isSam = S.chMode==='samaritan';
@@ -824,7 +825,7 @@ function addPlainRows(c, verses){
   const fs = fsize();
   for(const v of verses){
     if(!(v.text||'').trim() && !S.english) continue;
-    const row = el('div','vrow');
+    const row = el('div','vrow'); row.dataset.vid = v.id;   // for read-aloud highlighting
     const numActive = S.verseFilter===v.id ? ' active':'';
     const num = el('button','num'+numActive, String(v.number));
     num.onclick=()=>{
@@ -1785,6 +1786,69 @@ function updateZoomButtons(){
   $('plusBtn').disabled  = !isVerse || S.fontOffset>=FONT_MAX;
 }
 
+// ── read-aloud: speak the chapter from the Ben-Ḥayyim transcription (verse_translit) ─
+const TTS = { items:[], idx:0, on:false, paused:false };
+// the transcription is Latin with diacritics; fold it to plain ASCII so a generic
+// voice pronounces it reasonably (å→a, ē→e, š→sh, ṣ→s, drop ʾ/ʿ …).
+function ttsNorm(s){
+  if(!s) return '';
+  s = s.replace(/[ʾʿʼ'`ːˀ]/g,'')
+       .replace(/š/g,'sh').replace(/Š/g,'Sh').replace(/ṣ/g,'s').replace(/ṭ/g,'t')
+       .replace(/ġ/g,'gh').replace(/ḏ/g,'d').replace(/ḥ/g,'h').replace(/ṯ/g,'th')
+       .replace(/[əǝ]/g,'e').replace(/[ɑɒ]/g,'a').replace(/ɛ/g,'e').replace(/ɔ/g,'o');
+  return s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
+}
+async function ttsStart(){
+  if(S.view!=='verses' || !Array.isArray(S.verses) || !S.verses.length) return;
+  if(!('speechSynthesis' in window)){ showInfo(t('play_chapter'), '<div class="note">קול אינו נתמך בדפדפן זה.</div>'); return; }
+  let tr; try{ tr=await api('translit?verse_ids='+S.verses.map(v=>v.id).join(',')); }catch(e){ tr={}; }
+  TTS.items = S.verses.filter(v=>tr[v.id] && tr[v.id].trim()).map(v=>({vid:v.id, num:v.number, text:tr[v.id]}));
+  if(!TTS.items.length){ showInfo(t('play_chapter'), '<div class="note">אין תעתיק הגייה לפרק זה.</div>'); return; }
+  TTS.idx=0; TTS.on=true; TTS.paused=false;
+  $('audioBar').classList.remove('hidden');
+  $('playBtn').classList.add('playing');
+  $('auSeek').max = TTS.items.length-1; $('auSeek').value = 0;
+  ttsSpeak();
+}
+function ttsSpeak(){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const it = TTS.items[TTS.idx]; if(!it){ ttsStop(); return; }
+  const u = new SpeechSynthesisUtterance(ttsNorm(it.text));
+  u.rate = 0.85;
+  u.onend = ()=>{ if(!TTS.on || TTS.paused) return;
+    if(TTS.idx < TTS.items.length-1){ TTS.idx++; ttsBar(); ttsSpeak(); } else ttsStop(); };
+  try{ speechSynthesis.speak(u); }catch(e){}
+  ttsHighlight(it.vid); ttsBar();
+}
+function ttsBar(){ $('auSeek').value = TTS.idx; $('auPos').textContent = (TTS.idx+1)+'/'+TTS.items.length; }
+function ttsHighlight(vid){
+  document.querySelectorAll('.tts-reading').forEach(e=>e.classList.remove('tts-reading'));
+  const row = document.querySelector('.vrow[data-vid="'+vid+'"]');
+  if(row){ row.classList.add('tts-reading'); row.scrollIntoView({block:'center', behavior:'smooth'}); }
+}
+function ttsPauseResume(){
+  if(TTS.paused){ try{ speechSynthesis.resume(); }catch(e){} TTS.paused=false; setAuIcon(false); }
+  else { try{ speechSynthesis.pause(); }catch(e){} TTS.paused=true; setAuIcon(true); }
+}
+function setAuIcon(showPlay){   // showPlay=true → ▶ (resume); else ❚❚ (pause)
+  $('auPlayPause').innerHTML = showPlay
+    ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+}
+function ttsStop(){
+  TTS.on=false; TTS.paused=false; try{ speechSynthesis.cancel(); }catch(e){}
+  $('audioBar').classList.add('hidden'); $('playBtn').classList.remove('playing'); setAuIcon(false);
+  document.querySelectorAll('.tts-reading').forEach(e=>e.classList.remove('tts-reading'));
+}
+function ttsSeek(i){
+  TTS.idx = Math.max(0, Math.min(TTS.items.length-1, i|0));
+  if(TTS.on){ TTS.paused=false; setAuIcon(false); ttsSpeak(); } else ttsBar();
+}
+$('playBtn').onclick     = ()=>{ TTS.on ? ttsStop() : ttsStart(); };
+$('auPlayPause').onclick = ttsPauseResume;
+$('auStop').onclick      = ttsStop;
+$('auSeek').oninput      = e=>ttsSeek(+e.target.value);
+
 // ── view chrome (show/hide nav + enable toolbar) ─────────────────────────────
 function setView(){
   const isVerse = S.view==='verses';
@@ -1796,6 +1860,8 @@ function setView(){
   $('navbar').classList.toggle('nav-backonly', browse);
   $('spreadBtn').classList.toggle('hidden', !(S.view==='portions'));
   $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
+  $('playBtn').classList.toggle('hidden', !isVerse);    // read-aloud
+  if(!isVerse && typeof ttsStop==='function') ttsStop();
   syncToolbar(isVerse);
   updateToolbarFold(isVerse);
   updateZoomButtons();

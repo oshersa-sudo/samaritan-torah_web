@@ -803,6 +803,19 @@ footer a{ color:var(--accent); text-decoration:none; }
 .bm-nav:hover::after{ content:attr(title); position:absolute; top:34px; left:0; white-space:nowrap;
          background:var(--navy); color:#fff; font-size:13px; padding:5px 9px; border-radius:6px;
          box-shadow:0 1px 5px rgba(0,0,0,.3); z-index:50; }
+/* read-aloud play button, just to the right of the bookmark */
+.play-nav{ left:42px; color:var(--accent); padding:0 4px; }
+.play-nav svg{ width:23px; height:23px; vertical-align:middle; }
+.play-nav.playing{ color:#c0392b; }
+/* read-aloud mini player above the navbar */
+#audioBar{ flex:0 0 auto; display:flex; align-items:center; gap:8px; padding:5px 10px;
+           background:var(--cream); border-top:1px solid rgba(26,56,115,.22); }
+#audioBar.hidden{ display:none; }
+.au-btn{ flex:0 0 auto; border:0; background:transparent; color:var(--navy); cursor:pointer; padding:3px; line-height:0; }
+.au-btn svg{ width:24px; height:24px; }
+.au-seek{ flex:1 1 auto; accent-color:var(--accent); height:22px; }
+.au-pos{ flex:0 0 auto; font-size:13px; color:var(--navy); min-width:46px; text-align:center; }
+.tts-reading{ background:rgba(23,169,196,.16); border-radius:6px; }
 /* bookmarks list */
 #bmList{ max-height:55vh; overflow-y:auto; }
 .bm-row{ display:flex; align-items:flex-start; gap:8px; padding:8px 4px;
