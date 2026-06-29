@@ -1463,6 +1463,8 @@ function openOccurrence(type, o){
   $('occModal').classList.remove('hidden');
 }
 $('occClose').onclick=()=>$('occModal').classList.add('hidden');
+// also close when tapping the dark backdrop (outside the box)
+$('occModal').addEventListener('click', e=>{ if(e.target===$('occModal')) $('occModal').classList.add('hidden'); });
 
 // ── dictionary (legacy full-table — still used under translation panels) ──────
 async function buildDict(c, verses){ await renderDict(c, verses); }

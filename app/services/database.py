@@ -1967,34 +1967,69 @@ def dict_he_browse(start=0, limit=60, prefix=''):
             'items': [{'word': r['word'] or '', 'roots': r['nr']} for r in rows]}
 
 
+_HE_PREFIX = 'והלבכמ'           # particles that attach to a Hebrew word (ש excluded — usually a root letter)
+_HE_SUFFIX = ['תי', 'נו', 'תם', 'תן', 'הם', 'הן', 'ים', 'ות', 'יו', 'יה', 'ני', 'נה',
+              'כם', 'כן', 'ת', 'ה', 'י', 'ו', 'ך', 'ם', 'נ']
+
+
+def _he_stems(base):
+    """Inflection stems of a Hebrew word: the word with up to two leading particles
+    stripped, and with a verbal/possessive suffix stripped — so a conjugated/affixed
+    form (ישבתי, אכלתי, וילך) can still reach its base entry (ישב, אכל, ילך)."""
+    cands = {base}
+    b = base
+    for _ in range(2):                              # strip leading particles (ו/ה/ל/ב/כ/מ/ש)
+        if len(b) > 2 and b[0] in _HE_PREFIX:
+            b = b[1:]; cands.add(b)
+        else:
+            break
+    for c in list(cands):                           # strip a trailing inflection suffix
+        for s in _HE_SUFFIX:
+            if c.endswith(s) and len(c) - len(s) >= 2:
+                cands.add(c[:-len(s)])
+    return {x for x in cands if len(x) >= 2 and x != base}
+
+
 def dict_he_search(word, limit=60):
-    """Search a Hebrew word among the RESULTS: every Hebrew head-word that matches
-    (exact, then contains) with the Aramaic root(s) it renders, so the user lands on
-    the Aramaic interpretation. Unlike the Aramaic side, this returns a result list."""
+    """Search a Hebrew word among the RESULTS, with a fallback cascade so inflected /
+    affixed forms still find their Aramaic interpretation:
+      1) exact head-word, then words that CONTAIN the query;
+      2) if still thin, the word's INFLECTION stems (strip particles/suffixes → base,
+         usually the פעל form), matched exactly or by containment.
+    Returns the Hebrew head-words with the Aramaic root(s) each renders."""
     base = _norm_fin(word)
     if not base or len(base) < 2:
         return {'word': word, 'results': []}
     conn = get_connection()
     seen, results = set(), []
-    # exact head-word first, then words that contain the query
-    for clause, arg in [("he_norm=?", base), ("he_norm LIKE ? AND he_norm<>?", ('%' + base + '%', base))]:
-        if len(results) >= limit:
-            break
-        params = arg if isinstance(arg, tuple) else (arg,)
+
+    def _collect(clause, params):
         rows = conn.execute(
             "SELECT he_word, root FROM dict_he_index WHERE " + clause +
-            " ORDER BY he_norm LIMIT ?", params + (limit * 4,)).fetchall()
+            " ORDER BY LENGTH(he_norm), he_norm LIMIT ?", tuple(params) + (limit * 4,)).fetchall()
         byword = {}
         for r in rows:
             byword.setdefault(r['he_word'], [])
             if r['root'] and r['root'] not in byword[r['he_word']]:
                 byword[r['he_word']].append(r['root'])
         for hw, roots in byword.items():
-            if hw in seen:
+            if hw in seen or len(results) >= limit:
                 continue
             seen.add(hw); results.append({'word': hw, 'roots': roots[:8]})
+
+    # 1) exact, then contains
+    _collect("he_norm=?", [base])
+    if len(results) < limit:
+        _collect("he_norm LIKE ? AND he_norm<>?", ['%' + base + '%', base])
+    # 2) inflection-stem fallback (only if the direct search was thin)
+    if len(results) < 3:
+        for stem in sorted(_he_stems(base), key=len, reverse=True):
             if len(results) >= limit:
                 break
+            if len(stem) >= 3:                      # broad prefix-match only for longer stems
+                _collect("(he_norm=? OR he_norm LIKE ?)", [stem, stem + '%'])
+            else:
+                _collect("he_norm=?", [stem])
     conn.close()
     return {'word': word, 'results': results}
 
