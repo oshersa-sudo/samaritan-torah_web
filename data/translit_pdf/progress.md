@@ -39,6 +39,38 @@ verse is not in the PDF, leave it untouched. Inline OCR (MAX session, no paid AP
 ## NEXT
 - Validate Gen 30 sample output vs PDF, then run `--all` for the 430 missing verses, then apply.
 
+## 🔄 SYSTEMATIC VERIFICATION vs PDF — IN PROGRESS (2026-07-04)
+User directive: "עבור שיטתית מול ה-PDF ותקן" — verify the WHOLE transcription against the
+scanned PDF and overwrite where it differs (transcription must come ONLY from המליץ/ PDFs).
+
+**Pipeline:** `scripts/translit_pdf/verify_align.py --book N [--apply]`
+- Aligns the PDF verse stream to DB verses by SEQUENCE + printed verse-number (two-pointer),
+  per book — does NOT trust the model's per-page chapter label (that caused the earlier
+  Lev-25 mislabel corruption). Overwrites verse_translit where PDF text ≠ DB text.
+- Composite Samaritan-expansion verses (X-N) are FLAGGED, not auto-changed (different numbering).
+- Reuses persistent ocr_cache.json; OCRs only uncached pages. Writes diffs to
+  data/translit_pdf/verify_<book>.json; `--apply` writes via apply_translit.py.
+- Book page ranges (RANGES in the script): Gen M174-118, Exod M121-79, Lev M82-44,
+  Num M46-0, Deut D36-0.
+
+**Cache coverage (2026-07-04):** main PDF 143/175 pages cached; **Deut 0/37 cached**.
+Uncached main pages: 7,8,95,96,105,120-127,136,137,140,146-148,157-160,166-174.
+→ ~69 new pages to OCR (~$5-7) for the full pass; alignment itself is free.
+
+**STATE:** Genesis (book 1) verify running (no --apply yet) — validate diff quality first,
+then apply + do books 2-5. Resume = re-run `verify_align.py --book N` (cache persists).
+Backups: data/translit_backup_*.json (verse_translit+fix), data/word_gloss_backup_*.json.
+
+## ⚠️ PRE-EXISTING transcription DIVERGES from the PDF (found 2026-07-04)
+The ~5,483 verses that ALREADY had verse_translit before this work (the original source
+bundle, NOT the PDF) do not reliably match the scanned Ben-Ḥayyim PDF. Example the user
+caught: Gen 5:21-24 read חנוך = "ammon" (should be "īnok"), חמש = "ḥåməš" (should be
+"'amməš"), ויתהלך = "wyithallak" (should be "wyētållåk"). Fixed those 4 from the PDF
+(data/translit_pdf/enoch_fix.json, applied). BUT this implies the whole pre-existing
+transcription needs verification against the PDF — that is the FULL re-OCR (212 pages) we
+scoped down earlier. My missing-fill only added the 430 empty verses; it did NOT touch or
+validate the pre-existing ones. Decision pending with user.
+
 ## ⚠️ CORRUPTION TO FIX (found 2026-06-30)
 The chapter-HINTED fills (scripts/translit_pdf/fill_hinted.py, forced chapter on a ±4 page
 range) put WRONG content into some verses — neighbouring-chapter verses got relabelled as

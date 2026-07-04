@@ -952,6 +952,61 @@ def search_tz(q, limit=80):
     return out
 
 
+# ── Responsa of Jacob ben Aaron the Priest ("שו"ת") as a standalone library book ──
+def get_shyt_toc():
+    """Table of contents for the responsa: each question (שאלה) is a browsable unit."""
+    conn = get_connection()
+    rows = conn.execute("""SELECT s.id, s.qnum, s.title, COUNT(l.id) n
+        FROM shyt_sections s LEFT JOIN shyt_verse_links l ON l.section_id=s.id
+        GROUP BY s.id ORDER BY s.ord""").fetchall()
+    conn.close()
+    return [{'id': r['id'], 'qnum': r['qnum'], 'title': r['title'] or '', 'count': r['n']} for r in rows]
+
+
+def get_shyt_chapter(qid):
+    """One responsum, with its biblical anchors, inline verse refs made clickable,
+    and the primary linked verse (for the citation jump into the Torah app)."""
+    try:
+        qid = int(qid)
+    except (TypeError, ValueError):
+        return {'id': None, 'sections': []}
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    s = conn.execute("SELECT id, qnum, title, text, anchors FROM shyt_sections WHERE id=?", (qid,)).fetchone()
+    if not s:
+        conn.close()
+        return {'id': qid, 'sections': []}
+    vrow = conn.execute("SELECT MIN(verse_id) v FROM shyt_verse_links WHERE section_id=?", (qid,)).fetchone()
+    conn.close()
+    html = _tm_mark_refs(s['text'] or '', vmap)
+    if (s['anchors'] or '').strip():
+        html += '<div class="shyt-anchors">' + _tm_mark_refs(s['anchors'], vmap) + '</div>'
+    return {'id': qid, 'qnum': s['qnum'], 'title': s['title'] or '',
+            'sections': [{'id': s['id'], 'ref': s['title'] or '', 'title': '',
+                          'hebrew': s['text'] or '', 'hebrew_html': html,
+                          'verse_id': vrow['v'] if vrow else None}]}
+
+
+def search_shyt(q, limit=80):
+    """Search the responsa (question titles + answer text)."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    rows = conn.execute("SELECT id, qnum, title, text FROM shyt_sections "
+                        "WHERE text LIKE ? OR title LIKE ? ORDER BY ord LIMIT ?",
+                        (like, like, limit)).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        txt = r['text'] or ''
+        i = txt.find(q)
+        snip = ('…' + txt[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0 else txt[:90]
+        out.append({'id': r['id'], 'qnum': r['qnum'], 'title': r['title'] or '', 'snippet': snip})
+    return out
+
+
 def get_eyalk_commentary(verse_ids):
     """Samaritan-tradition commentary ("מן המסורת השומרונית") relevant to any of
     the given verses, in reading order. Each item is a dict {parsha, text}.

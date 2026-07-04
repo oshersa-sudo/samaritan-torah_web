@@ -91,6 +91,7 @@ const I18N = {
     tm_no_results:'לא נמצאו תוצאות', tm_sections_n:'קטעים', tm_open_verse:'פתח את הפסוק באפליקציה',
     m_tz_book:'פירוש צדקה אל-חכים (בראשית)', tz_title:'פירוש צדקה אל-חכים — בראשית',
     tz_toc_hint:'בחר פרק לעיון:', tz_chapter_label:'פרק', tz_arabic_pending:'התרגום לערבית בהכנה — מוצג הנוסח העברי.',
+    m_shyt_book:'שו"ת — יעקב בן אהרן הכהן', shyt_title:'שו"ת — יעקב בן אהרן הכהן', shyt_toc_hint:'בחר שאלה לעיון:',
     rd_he:'עברית', rd_ar:'ערבית', rd_aram:'ארמית', rd_show:'הצג:',
     dict_app_title:'מילון ארמי-עברי ועברי-ארמי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
     dict_tab_search:'חיפוש', dict_tab_index:'אינדקס מילים', dict_tab_pages:'דפדוף עמודים',
@@ -224,6 +225,7 @@ const I18N = {
     tm_no_results:'No results found', tm_sections_n:'sections', tm_open_verse:'Open the verse in the app',
     m_tz_book:'Ṣadaqah al-Ḥakīm (Genesis)', tz_title:'Ṣadaqah al-Ḥakīm — Genesis',
     tz_toc_hint:'Choose a chapter:', tz_chapter_label:'Chapter', tz_arabic_pending:'The Arabic is being prepared — showing the Hebrew.',
+    m_shyt_book:'Responsa of Jacob ben Aaron', shyt_title:'Responsa — Jacob ben Aaron the Priest', shyt_toc_hint:'Choose a question:',
     rd_he:'Hebrew', rd_ar:'Arabic', rd_aram:'Aramaic', rd_show:'Show:',
     dict_app_title:'Samaritan Aramaic–Hebrew & Hebrew–Aramaic Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
     dict_tab_search:'Search', dict_tab_index:'Word index', dict_tab_pages:'Browse pages',
@@ -357,6 +359,7 @@ const I18N = {
     tm_no_results:'لا توجد نتائج', tm_sections_n:'مقاطع', tm_open_verse:'افتح الآية في التطبيق',
     m_tz_book:'تفسير صدقة الحكيم (التكوين)', tz_title:'تفسير صدقة الحكيم — التكوين',
     tz_toc_hint:'اختر أصحاحاً:', tz_chapter_label:'أصحاح', tz_arabic_pending:'الترجمة العربية قيد الإعداد — يُعرض النصّ العبري.',
+    m_shyt_book:'أجوبة يعقوب بن هارون الكاهن', shyt_title:'أجوبة يعقوب بن هارون الكاهن', shyt_toc_hint:'اختر سؤالاً:',
     rd_he:'العبرية', rd_ar:'العربية', rd_aram:'الآرامية', rd_show:'اعرض:',
     dict_app_title:'معجم آرامي-عبري وعبري-آرامي سامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
     dict_tab_search:'بحث', dict_tab_index:'فهرس الكلمات', dict_tab_pages:'تصفّح الصفحات',
@@ -2405,6 +2408,7 @@ function menuAction(a){
   else if(a==='dict_app')  openDictApp();
   else if(a==='tm_book')   openTmBook();
   else if(a==='tz_book')   openTzBook();
+  else if(a==='shyt_book') openShytBook();
   else if(a==='install')   doInstall();
   else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
@@ -2772,6 +2776,21 @@ const BOOK_CFG = {
     langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'},
            {key:'arabic', labelKey:'rd_ar', dir:'rtl'}],
   },
+  shyt: {                              // responsa of Jacob ben Aaron — flat book of questions
+    titleKey:'shyt_title', tocHintKey:'shyt_toc_hint',
+    toc:()=>api('shyt_toc'),
+    chapter:(id)=>api('shyt_chapter?q='+encodeURIComponent(id)),
+    search:(q)=>api('shyt_search?q='+encodeURIComponent(q)),
+    words:null,
+    tocItem:(c)=>({id:c.id, letter:String(c.qnum), title:c.title, count:0}),   // each item is one question
+    chapterTitle:(ch)=>esc(ch.title||('שאלה '+ch.qnum)),
+    unitLabel:(s)=>esc(s.ref||''),
+    unitVid:(s)=>s.verse_id,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>esc(r.title||('שאלה '+r.qnum)),
+    searchTo:(r)=>({chap:r.id, dom:'rdsec-'+r.id}),
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+  },
 };
 let RD = { key:null, cfg:null, chapter:null, lang:null, fs:parseFloat(localStorage.getItem('as_rd_fs')||'1')||1 };
 function rdApplyFs(){ $('rdBody').style.setProperty('--rd-fs', RD.fs); }
@@ -2788,6 +2807,7 @@ function openReader(key){
 }
 function openTmBook(){ openReader('tm'); }
 function openTzBook(){ openReader('tz'); }
+function openShytBook(){ openReader('shyt'); }
 function rdSetBack(mode){           // '' hidden · 'toc' · 'chapter'
   const b=$('rdBack');
   if(!mode){ b.classList.add('hidden'); return; }
@@ -2806,7 +2826,7 @@ async function rdShowToc(){
     const card=el('button','tm-toc-item',
       '<span class="tm-toc-letter">'+esc(b.letter)+'</span>'
       +'<span class="tm-toc-title">'+esc(b.title)+'</span>'
-      +'<span class="tm-toc-count">'+b.count+' '+esc(t('tm_sections_n'))+'</span>');
+      +(b.count?('<span class="tm-toc-count">'+b.count+' '+esc(t('tm_sections_n'))+'</span>'):''));
     card.onclick=()=>openRdChapter(b.id);
     list.appendChild(card);
   });

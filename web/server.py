@@ -797,6 +797,21 @@ def api_shyt():
     return jsonify(db.get_shyt_commentary(_ids_arg()))
 
 
+@app.route('/api/shyt_toc')
+def api_shyt_toc():
+    return jsonify(db.get_shyt_toc())
+
+
+@app.route('/api/shyt_chapter')
+def api_shyt_chapter():
+    return jsonify(db.get_shyt_chapter(request.args.get('q', '')))
+
+
+@app.route('/api/shyt_search')
+def api_shyt_search():
+    return jsonify(db.search_shyt(request.args.get('q', '')))
+
+
 @app.route('/api/apparatus')
 def api_apparatus():
     return jsonify(db.get_apparatus(_ids_arg()))
