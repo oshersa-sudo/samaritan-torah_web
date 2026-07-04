@@ -68,8 +68,10 @@ body.div-collapsed .div-handle{ height:26px; }
 .div-handle.show-down .tb-uparrow{ display:block; animation:tbArrowBlink .46s ease-in-out infinite alternate; }
 
 /* breadcrumb */
+/* padding-left reserves room for the three pinned buttons (bookmark 6px · PLAY 42px · הגייה 78px);
+   flex-wrap lets a long breadcrumb path drop to a second line instead of hiding under them */
 #crumbs{ flex:0 0 auto; min-height:40px; display:flex; align-items:center; justify-content:flex-start;
-         gap:5px; padding:6px 10px 6px 44px; flex-wrap:wrap; font-size:15.5px; position:relative; }
+         gap:5px; padding:6px 10px 6px 108px; flex-wrap:wrap; font-size:15.5px; position:relative; }
 #crumbs .crumb{ color:var(--accent); cursor:pointer; background:none; border:0; font-family:inherit; font-size:15.5px; padding:0; }
 
 /* clear-filter bar — shown above the verses when a single verse is filtered */
@@ -128,7 +130,7 @@ body.div-collapsed .div-handle{ height:26px; }
 .vpron .vpron-lat{ direction:ltr; unicode-bidi:isolate; font-family:'Translit',serif; color:#5a6b7a; font-size:15px; }
 .vpron .vpron-arrow{ color:#17a9c4; margin:0 7px; }
 .vpron .vpron-heb{ font-size:20px; color:var(--navy); }
-.pron-nav{ font-size:19px; font-weight:700; line-height:1; }
+.bm-nav.pron-nav{ left:78px; padding:0 5px; font-size:19px; font-weight:700; line-height:1; color:#17a9c4; }
 .pron-nav.on{ background:rgba(23,169,196,.9); color:#fff; border-radius:6px; }
 .vrow .num{ flex:0 0 auto; min-width:34px; height:30px; border:0; border-radius:6px;
             background:#c2cbef; color:var(--navy); font-family:inherit; font-size:14px; cursor:pointer; margin-top:4px; }
