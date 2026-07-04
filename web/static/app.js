@@ -1796,7 +1796,7 @@ function updateZoomButtons(){
 // ── read-aloud: speak the chapter from the Ben-Ḥayyim transcription (verse_translit) ─
 const TTS = { items:[], idx:0, on:false, paused:false };
 // the transcription is Latin with diacritics; fold it to plain ASCII so a generic
-// voice pronounces it reasonably (å→a, ē→e, š→sh, ṣ→s, drop ʾ/ʿ …).
+// voice pronounces it reasonably (å→a, ē→e, š→sh, ṣ→s, drop ʾ/ʿ …). Fallback only.
 function ttsNorm(s){
   if(!s) return '';
   s = s.replace(/[ʾʿʼ'`ːˀ]/g,'')
@@ -1805,6 +1805,46 @@ function ttsNorm(s){
        .replace(/[əǝ]/g,'e').replace(/[ɑɒ]/g,'a').replace(/ɛ/g,'e').replace(/ɔ/g,'o');
   return s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
 }
+// Convert the Ben-Ḥayyim transcription to POINTED HEBREW so a Hebrew (he-IL) voice
+// speaks it with Semitic phonetics, per Ben-Ḥayyim's key (memory: translit-pronunciation-key):
+//   q(ק)→glottal א (not k) · ʾ/ʿ→א · ḥ dropped (lost) · ṣ→ס, ṭ→ט · š→שׁ · å→qamats, a→patach,
+//   e→segol, ə→sheva, i→hiriq, o→holam, u→qubuts · length ':'/'^' folded away · gemination kept.
+const _TTS_C = {b:'ב',B:'ב',v:'ב',f:'פ',p:'פ',m:'מ',w:'ו',t:'ת','ṭ':'ט',d:'ד','ḏ':'ד',
+  s:'ס','ṣ':'ס',z:'ז','š':'שׁ','Š':'שׁ','ś':'שׂ','ṯ':'ת',l:'ל',r:'ר',n:'נ',y:'י',j:'י',
+  g:'ג','ġ':'ג',k:'כ',q:'א',"'":'א','ʾ':'א','ʿ':'א','ḥ':'',h:'ה'};
+const _TTS_V = {a:'ַ','å':'ָ','ā':'ָ','ɑ':'ָ','ɒ':'ָ',e:'ֶ','ē':'ֵ','ɛ':'ֶ','ə':'ְ','ǝ':'ְ',
+  i:'ִ','ī':'ִ',o:'ֹ','ō':'ֹ','ɔ':'ֹ',u:'ֻ','ū':'ֻ'};
+function ttsHeb(s){
+  if(!s) return '';
+  return s.split(/(\s+)/).map(w=>{
+    if(!w.trim()) return ' ';
+    w = w.replace(/[:^ˆ̄̂]/g,'');     // drop length/stress marks (folded)
+    let out='', cons=null;
+    for(const ch of w){
+      if(ch in _TTS_V){
+        if(cons!==null){ out+=cons+_TTS_V[ch]; cons=null; }
+        else out+='א'+_TTS_V[ch];               // vowel onset
+      } else if(ch in _TTS_C){
+        if(_TTS_C[ch]==='') continue;            // ḥ — lost, dropped
+        if(cons!==null) out+=cons;               // previous consonant closes the syllable
+        cons=_TTS_C[ch];
+      } else if(!/[.,;:!?'"()\[\]־–—*]/.test(ch)){
+        if(cons!==null){ out+=cons; cons=null; }
+        out+=ch;
+      }
+    }
+    if(cons!==null) out+=cons;                   // final consonant
+    return out;
+  }).join('');
+}
+let _TTS_HEVOICE = null;
+function ttsHebVoice(){
+  try{ const vs=speechSynthesis.getVoices()||[];
+    _TTS_HEVOICE = vs.find(v=>/^(he|iw)\b/i.test(v.lang||'')) || _TTS_HEVOICE;
+  }catch(e){}
+  return _TTS_HEVOICE;
+}
+try{ speechSynthesis.onvoiceschanged = ttsHebVoice; ttsHebVoice(); }catch(e){}
 async function ttsStart(){
   if(S.view!=='verses' || !Array.isArray(S.verses) || !S.verses.length) return;
   if(!('speechSynthesis' in window)){ showInfo(t('play_chapter'), '<div class="note">קול אינו נתמך בדפדפן זה.</div>'); return; }
@@ -1820,8 +1860,10 @@ async function ttsStart(){
 function ttsSpeak(){
   try{ speechSynthesis.cancel(); }catch(e){}
   const it = TTS.items[TTS.idx]; if(!it){ ttsStop(); return; }
-  const u = new SpeechSynthesisUtterance(ttsNorm(it.text));
-  u.rate = 0.85;
+  const voice = ttsHebVoice();
+  const u = new SpeechSynthesisUtterance(voice ? ttsHeb(it.text) : ttsNorm(it.text));
+  if(voice){ u.voice = voice; u.lang = voice.lang; } else u.lang = 'he-IL';
+  u.rate = 0.8;
   u.onend = ()=>{ if(!TTS.on || TTS.paused) return;
     if(TTS.idx < TTS.items.length-1){ TTS.idx++; ttsBar(); ttsSpeak(); } else ttsStop(); };
   try{ speechSynthesis.speak(u); }catch(e){}
