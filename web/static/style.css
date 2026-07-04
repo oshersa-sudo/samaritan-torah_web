@@ -122,6 +122,14 @@ body.div-collapsed .div-handle{ height:26px; }
 /* verse rows — LTR row so the number button sits on the RIGHT (as in the source
    app); the Hebrew verse text inside stays RTL and right-aligned. */
 .vrow{ display:flex; gap:6px; align-items:flex-start; padding:4px 2px; direction:ltr; }
+/* live pronunciation preview line (under a verse): transcription → pointed Hebrew the TTS speaks */
+.vpron{ direction:rtl; text-align:right; margin:0 40px 8px 2px; padding:5px 9px;
+        background:rgba(23,169,196,.09); border-right:3px solid rgba(23,169,196,.5); border-radius:6px; }
+.vpron .vpron-lat{ direction:ltr; unicode-bidi:isolate; font-family:'Translit',serif; color:#5a6b7a; font-size:15px; }
+.vpron .vpron-arrow{ color:#17a9c4; margin:0 7px; }
+.vpron .vpron-heb{ font-size:20px; color:var(--navy); }
+.pron-nav{ font-size:19px; font-weight:700; line-height:1; }
+.pron-nav.on{ background:rgba(23,169,196,.9); color:#fff; border-radius:6px; }
 .vrow .num{ flex:0 0 auto; min-width:34px; height:30px; border:0; border-radius:6px;
             background:#c2cbef; color:var(--navy); font-family:inherit; font-size:14px; cursor:pointer; margin-top:4px; }
 .vrow .num.active{ background:var(--accent); color:#fff; }

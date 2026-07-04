@@ -153,7 +153,7 @@ const I18N = {
     renum_only_this:'רק פסוק זה', renum_ok:'מספר הפסוק עודכן.',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
-    bm_add:'הוסף סימניה לפרק זה', play_chapter:'הקראת הפרק', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
+    bm_add:'הוסף סימניה לפרק זה', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
     bm_note_ph:'הוסף הערה…', bm_max:'הגעת למקסימום של 20 סימניות.', bm_dup:'כבר קיימת סימניה לפרק זה.',
     bm_added:'סימניה נוספה.', bm_empty:'אין סימניות.', bm_del_q:'למחוק את הסימניות שנבחרו?',
   },
@@ -287,7 +287,7 @@ const I18N = {
     renum_only_this:'Only this verse', renum_ok:'Verse number updated.',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
-    bm_add:'Bookmark this chapter', play_chapter:'Read the chapter aloud', bm_my:'My bookmarks', bm_delete:'Delete selected',
+    bm_add:'Bookmark this chapter', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
     bm_note_ph:'Add a note…', bm_max:'You have reached the maximum of 20 bookmarks.', bm_dup:'This chapter is already bookmarked.',
     bm_added:'Bookmark added.', bm_empty:'No bookmarks.', bm_del_q:'Delete the selected bookmarks?',
   },
@@ -421,7 +421,7 @@ const I18N = {
     renum_only_this:'هذه الآية فقط', renum_ok:'تم تحديث رقم الآية.',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
-    bm_add:'إضافة إشارة لهذا الأصحاح', play_chapter:'قراءة الأصحاح صوتيًا', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
+    bm_add:'إضافة إشارة لهذا الأصحاح', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
     bm_note_ph:'أضف ملاحظة…', bm_max:'وصلت إلى الحدّ الأقصى 20 إشارة.', bm_dup:'هذا الأصحاح مُؤشَّر بالفعل.',
     bm_added:'تمت إضافة الإشارة.', bm_empty:'لا توجد إشارات.', bm_del_q:'حذف الإشارات المحدّدة؟',
   },
@@ -724,6 +724,7 @@ async function renderVerses(chId, chNum, pid, pname){
   ]);
   navState('chapter');
   document.querySelectorAll('.verse-bless').forEach(e=>e.remove());   // clear on navigation
+  if(SHOW_PRON) await ensurePron();          // pronunciation preview data for this chapter
   paintVerses();
   // Samaritan division only: landing on "וילך איש מבית לוי" (Moses' birth, Exod 2:1)
   // floats a slow-dissolving blessing over the text, replayed on each landing.
@@ -844,6 +845,17 @@ function addPlainRows(c, verses){
     else { row.appendChild(t); row.appendChild(num); }
     addPencil(row, v.id, S.english?'english':'text', ()=> S.english?(v.english||''):(v.text||''));
     c.appendChild(row);
+    // live pronunciation preview: transcription → the pointed Hebrew the TTS will speak
+    if(SHOW_PRON && !S.english){
+      const pt = (PRON[v.id]||'').trim();
+      if(pt){
+        const pr = el('div','vpron');
+        pr.innerHTML = '<span class="vpron-lat">'+esc(pt)+'</span>'
+                     + '<span class="vpron-arrow">→</span>'
+                     + '<span class="vpron-heb">'+esc(ttsHeb(pt))+'</span>';
+        c.appendChild(pr);
+      }
+    }
   }
 }
 
@@ -1818,14 +1830,27 @@ const _TTS_V = {a:'ַ','å':'ַ','ā':'ַ','ɑ':'ַ','ɒ':'ַ',e:'ֶ','ē':'ֵ',
   i:'ִ','ī':'ִ',o:'ֹ','ō':'ֹ','ɔ':'ֹ',u:'ֻ','ū':'ֻ'};
 function ttsHeb(s){
   if(!s) return '';
+  const isV = c => c in _TTS_V;
   return s.split(/(\s+)/).map(w=>{
     if(!w.trim()) return ' ';
     w = w.replace(/[:^ˆ̄̂]/g,'');     // drop length/stress marks (folded)
+    const chars=[...w];
     let out='', cons=null;
-    for(const ch of w){
-      if(ch in _TTS_V){
+    for(let k=0;k<chars.length;k++){
+      const ch=chars[k];
+      if(ch==='w'){                              // /w/ has no Hebrew consonant → render as a u-glide ("או")
+        if(cons!==null){ out+=cons; cons=null; }
+        out+='וּ'; continue;
+      }
+      if(ch==="'"||ch==='ʾ'||ch==='ʿ'){          // glottal from א/ה/ע
+        if(cons!==null){ out+=cons; }
+        // between two vowels → a light ה (avoids the vowels collapsing); else silent א
+        cons = (k>0 && isV(chars[k-1]) && k+1<chars.length && isV(chars[k+1])) ? 'ה' : 'א';
+        continue;
+      }
+      if(isV(ch)){
         if(cons!==null){ out+=cons+_TTS_V[ch]; cons=null; }
-        else out+='א'+_TTS_V[ch];               // vowel onset
+        else out+='א'+_TTS_V[ch];                // vowel onset
       } else if(ch in _TTS_C){
         if(_TTS_C[ch]==='') continue;            // ḥ — lost, dropped
         if(cons!==null) out+=cons;               // previous consonant closes the syllable
@@ -1900,6 +1925,25 @@ $('auPlayPause').onclick = ttsPauseResume;
 $('auStop').onclick      = ttsStop;
 $('auSeek').oninput      = e=>ttsSeek(+e.target.value);
 
+// ── live pronunciation preview: show, under each verse, the transcription and the
+//    pointed-Hebrew the read-aloud engine will actually speak (for tuning the rules) ──
+let PRON = {};             // verse_id -> transcription text
+let SHOW_PRON = localStorage.getItem('as_pron')==='1';
+async function ensurePron(){
+  const need = (S.verses||[]).map(v=>v.id).filter(id=>!(id in PRON));
+  if(!need.length) return;
+  try{ const tr=await api('translit?verse_ids='+need.join(',')); for(const id of need) PRON[id]=tr[id]||''; }
+  catch(e){ for(const id of need) PRON[id]=PRON[id]||''; }
+}
+async function togglePron(){
+  SHOW_PRON=!SHOW_PRON; localStorage.setItem('as_pron', SHOW_PRON?'1':'0');
+  $('pronBtn').classList.toggle('on', SHOW_PRON);
+  if(SHOW_PRON) await ensurePron();
+  paintVerses();
+}
+$('pronBtn').onclick = togglePron;
+$('pronBtn').classList.toggle('on', SHOW_PRON);
+
 // ── view chrome (show/hide nav + enable toolbar) ─────────────────────────────
 function setView(){
   const isVerse = S.view==='verses';
@@ -1912,6 +1956,7 @@ function setView(){
   $('spreadBtn').classList.toggle('hidden', !(S.view==='portions'));
   $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
   $('playBtn').classList.toggle('hidden', !isVerse);    // read-aloud
+  $('pronBtn').classList.toggle('hidden', !isVerse);    // pronunciation preview toggle
   if(!isVerse && typeof ttsStop==='function') ttsStop();
   syncToolbar(isVerse);
   updateToolbarFold(isVerse);
