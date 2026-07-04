@@ -62,30 +62,64 @@ def main():
         LEFT JOIN verse_translit t ON t.verse_id=v.id
         WHERE b.order_n=? ORDER BY c.number, v.id''', (bk,)).fetchall()
 
-    # two-pointer align by verse-number; resync on mismatch by scanning a small window
-    changes, flagged, matched = [], [], 0
-    j = 0
+    # CONTENT-SIMILARITY align: for each DB verse, find the nearby PDF verse whose text is
+    # most similar to the current transcription (same verse ≈ 0.6-0.95; a wrong verse < 0.4).
+    # Re-anchor the running pointer on every good match so versification shifts don't cascade.
+    # Only overwrite when confident it's the same verse (sim >= THRESH) — never on a weak match.
+    import difflib
+    THRESH = 0.60          # char-similarity of a confident same-verse match
+    SKEL_MIN = 0.5         # consonant-skeleton word overlap — rejects formulaic wrong-person
+                           # matches (only formula words shared) while allowing vowel-only fixes
+    _VOWELS = set("aeiouAEIOUåāēīūōəǝ:ɑɛɔ")
+    # fold notational variants (apostrophe glyphs, vowel diacritics, length mark) so that
+    # matching sees THROUGH the very differences we intend to correct; the change itself
+    # still uses the raw PDF text.
+    _FOLD = str.maketrans({'å': 'a', 'ā': 'a', 'ē': 'e', 'ī': 'i', 'ū': 'u', 'ō': 'o',
+                           'ə': 'e', 'ǝ': 'e', 'ʾ': '', 'ʿ': '', 'ʼ': '', '`': '',
+                           '‘': '', '’': '', "'": '', ':': '', '´': '', '̄': ''})
+    def fold(s):
+        return norm_txt(s).translate(_FOLD)
+    def skel(s):           # consonant-skeleton word set (drop vowels/length marks)
+        return set(''.join(c for c in w if c not in _VOWELS) for w in s.split()) - {''}
+    def jac(a, b):
+        return len(a & b) / len(a | b) if (a or b) else 0.0
+    def sim(a, b):
+        return difflib.SequenceMatcher(None, a, b).ratio()
+    pdf_norm = [norm_txt(txt) for _, txt in pdf_stream]
+    pdf_fold = [fold(txt) for _, txt in pdf_stream]
+    pdf_skel = [skel(s) for s in pdf_norm]
     def vnum(s):
-        m = re.match(r'\d+', str(s));
-        return m.group(0) if m else str(s)
-    pdf_nums = [vnum(v) for v, _ in pdf_stream]
+        m = re.match(r'\d+', str(s)); return m.group(0) if m else str(s)
+    pdf_vn = [vnum(v) for v, _ in pdf_stream]
+    # index PDF verses by printed number — the pdf_stream order is unreliable (landscape
+    # spreads scramble it), so we match GLOBALLY by (verse-number + best folded content)
+    # instead of by sequence: robust to stream order and to formulaic genealogies.
+    from collections import defaultdict
+    by_num = defaultdict(list)
+    for k, vn in enumerate(pdf_vn):
+        by_num[vn].append(k)
+    changes, flagged, matched = [], [], 0
     for r in dbrows:
-        want = vnum(r['vn'])
-        composite = '-' in str(r['vn'])
-        # find next pdf verse matching this number within a forward window
-        hit = None
-        for k in range(j, min(j + 6, len(pdf_stream))):
-            if pdf_nums[k] == want:
-                hit = k; break
-        if hit is None or composite:
-            flagged.append({'id': r['id'], 'ch': r['ch'], 'vn': r['vn'], 'reason': 'composite' if composite else 'no-match'})
+        cur = norm_txt(r['cur'])
+        if '-' in str(r['vn']) or not cur:
+            flagged.append({'id': r['id'], 'ch': r['ch'], 'vn': r['vn'],
+                            'reason': 'composite' if '-' in str(r['vn']) else 'no-current'})
             continue
-        matched += 1
-        j = hit + 1
-        pdf_text = pdf_stream[hit][1]
-        if pdf_text and norm_txt(pdf_text) != norm_txt(r['cur']):
-            changes.append({'book': bk, 'chap': r['ch'], 'verse': str(r['vn']),
-                            'id': r['id'], 'old': r['cur'], 'text': pdf_text})
+        cur_fold = fold(cur); cur_skel = skel(cur)
+        want = vnum(r['vn'])
+        best_k, best_r = None, -1.0
+        for k in by_num.get(want, []):
+            s = sim(cur_fold, pdf_fold[k])
+            if s > best_r:
+                best_r, best_k = s, k
+        if best_k is not None and best_r >= 0.80 and jac(cur_skel, pdf_skel[best_k]) >= SKEL_MIN:
+            matched += 1
+            if pdf_norm[best_k] and pdf_norm[best_k] != cur:
+                changes.append({'book': bk, 'chap': r['ch'], 'verse': str(r['vn']), 'id': r['id'],
+                                'sim': round(best_r, 2), 'old': r['cur'], 'text': pdf_stream[best_k][1]})
+        else:
+            flagged.append({'id': r['id'], 'ch': r['ch'], 'vn': r['vn'],
+                            'reason': 'low-sim', 'bestsim': round(best_r, 2)})                  # keep position by advancing one
 
     os.makedirs(fm.OUTDIR, exist_ok=True)
     out = os.path.join(fm.OUTDIR, f'verify_{bk}.json')

@@ -39,7 +39,19 @@ verse is not in the PDF, leave it untouched. Inline OCR (MAX session, no paid AP
 ## NEXT
 - Validate Gen 30 sample output vs PDF, then run `--all` for the 430 missing verses, then apply.
 
-## 🔄 SYSTEMATIC VERIFICATION vs PDF — IN PROGRESS (2026-07-04)
+## ✅ SYSTEMATIC VERIFICATION — WORKING ALGORITHM (2026-07-04)
+`verify_align.py` now uses GLOBAL matching (NOT sequential — the pdf_stream is scrambled by
+landscape spreads): for each DB verse, search ALL pdf verses with the same printed number,
+pick the best FOLDED-content match (fold() normalises apostrophes ʾʿ' and vowel diacritics so
+matching sees through the notation being corrected), gated by foldsim>=0.80 + consonant-skeleton
+Jaccard>=0.5. This is robust to stream scrambling AND to formulaic genealogies (verse-number
+narrows to one-per-chapter; folded content picks the right chapter). Validated: 0 wrong-verse
+across all books (even the riskiest sim=0.80 changes are correct same-verse fixes).
+APPLIED: **Gen 583, Exod 504, Lev 335, Num 592** (each backed up first; fix-rows cleared).
+Deut running (OCR of its 37 pages). Flagged verses (below threshold / composite / empty) are
+left untouched — safe, not corrupted.
+
+## 🔄 (earlier attempts — superseded) SYSTEMATIC VERIFICATION vs PDF
 User directive: "עבור שיטתית מול ה-PDF ותקן" — verify the WHOLE transcription against the
 scanned PDF and overwrite where it differs (transcription must come ONLY from המליץ/ PDFs).
 
