@@ -1296,7 +1296,11 @@ function buildDictSelect(c, verses){
     const toks=(v.text||'').split(/(\s+)/);
     let wi=0;
     td.innerHTML = toks.map(tok=>{
-      if(tok && !/^\s+$/.test(tok)) return '<span class="dw" data-k="'+v.id+':'+(wi++)+'">'+esc(tok)+'</span>';
+      if(tok && !/^\s+$/.test(tok)){
+        const i=wi++;                                   // keep index aligned with backend (all non-space tokens)
+        if(!/[א-ת]/.test(tok)) return esc(tok); // punctuation-only (e.g. ׃--): not a word, not clickable
+        return '<span class="dw" data-k="'+v.id+':'+i+'">'+esc(tok)+'</span>';
+      }
       return esc(tok);
     }).join('');
     td.querySelectorAll('.dw').forEach(sp=>{ spanMap[sp.dataset.k]=sp; });

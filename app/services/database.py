@@ -465,7 +465,17 @@ def get_word_table(verse_ids):
         arh = ar_he.get(ar, '')
         tal_he = (ctx['gloss'] if ctx and ctx.get('gloss') else '')   # closest gloss, no root/label
         tal_root = ctx['root'] if ctx else ''
-        en_word, en_he = word_en.get(r['id'], ('', ''))              # word-level English (aligned) + its Hebrew
+        en_word, en_he = word_en.get(r['id'], ('', ''))              # phrase-level English span + the word's back-translation
+        # Data quirk: for most rows en_he actually holds the WORD-LEVEL ENGLISH gloss
+        # (e.g. מים→"waters", שמתחת→"under") rather than a Hebrew back-translation, while
+        # en_word is the whole sentence span repeated on every word. So:
+        #   • the per-word English column uses en_he when it is English (properly aligned),
+        #     falling back to the phrase span otherwise;
+        #   • en_he is only treated as a Hebrew back-translation (and allowed into the
+        #     Hebrew column) when it is genuinely Hebrew — never let English pollute it.
+        en_he_is_latin = bool(re.search('[A-Za-z]', en_he or ''))
+        english = (en_he or '').strip() if en_he_is_latin else (en_word or '').strip()
+        en_he = '' if en_he_is_latin else en_he
         # the combined Hebrew-translation field: LEAD with the curated, context-accurate
         # Hebrew (always reliable), then the Arabic and English back-translations. The
         # Tal dictionary gloss is included only when it is the verse-specific SENSE
@@ -477,7 +487,7 @@ def get_word_table(verse_ids):
         he_combined = _dedup_he(_atoms(heb) + tal_part + _atoms(arh) + _atoms(en_he))
         out.setdefault(r['verse_id'], []).append({
             'word': word, 'meaning': heb or word, 'aramaic': r['aramaic'] or '',
-            'arabic': ar, 'english': en_word,
+            'arabic': ar, 'english': english,
             'he': heb, 'tal_he': tal_he, 'tal_root': tal_root, 'tal_ctx': bool(ctx and ctx.get('ctx')),
             'ar_he': arh, 'en_he': en_he, 'he_combined': ', '.join(he_combined),
         })
