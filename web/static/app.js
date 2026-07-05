@@ -85,6 +85,7 @@ const I18N = {
     dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
     more_results:'תוצאות נוספות', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
+    lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
     tm_toc_hint:'בחר מימר לעיון:', tm_back_toc:'‹ תוכן העניינים', tm_back_chapter:'‹ חזרה לפרק',
     tm_words_btn:'מילון מילים', tm_words_title:'מילון מילים — מתוך מילון א. טל', tm_col_root:'שורש',
@@ -220,6 +221,7 @@ const I18N = {
     dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
     more_results:'More results', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
     m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
+    lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
     tm_toc_hint:'Choose a Memar to read:', tm_back_toc:'‹ Contents', tm_back_chapter:'‹ Back to the chapter',
     tm_words_btn:'Word glossary', tm_words_title:'Word glossary — from A. Tal’s dictionary', tm_col_root:'Root',
@@ -355,6 +357,7 @@ const I18N = {
     dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
     more_results:'نتائج إضافية', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
+    lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
     tm_toc_hint:'اختر ميمراً للمطالعة:', tm_back_toc:'‹ المحتويات', tm_back_chapter:'‹ العودة إلى الفصل',
     tm_words_btn:'معجم الكلمات', tm_words_title:'معجم الكلمات — من معجم أ. طال', tm_col_root:'الجذر',
@@ -1699,6 +1702,15 @@ function makeFlipGhost(){
   const ghost=el('div','flip-ghost');
   Object.assign(ghost.style,{left:rect.left+'px', top:rect.top+'px',
     width:rect.width+'px', height:rect.height+'px'});
+  // parchment layer, sized/positioned to the app box and clipped by the ghost's overflow,
+  // so it matches the background image behind the leaf exactly (no flat-cream wipe)
+  const app=$('app'), ar=app.getBoundingClientRect(), cs=getComputedStyle(app);
+  const bg=el('div','flip-ghost-bg');
+  Object.assign(bg.style,{ left:(ar.left-rect.left)+'px', top:(ar.top-rect.top)+'px',
+    width:ar.width+'px', height:ar.height+'px', backgroundImage:cs.backgroundImage,
+    backgroundSize:cs.backgroundSize, backgroundPosition:cs.backgroundPosition,
+    backgroundColor:cs.backgroundColor });
+  ghost.appendChild(bg);
   const inner=el('div','flip-ghost-inner'); inner.style.top=(-c.scrollTop)+'px';
   for(const ch of c.children) inner.appendChild(ch.cloneNode(true));
   ghost.appendChild(inner);
@@ -2531,10 +2543,35 @@ $('menuOverlay').onclick=closeMenu;
 document.querySelectorAll('.menu-item').forEach(b=>b.onclick=()=>{
   const a=b.dataset.act;
   if(a==='library'){     // expand/collapse the "הספרייה השומרונית" sub-section in place
-    $('librarySub').classList.toggle('hidden'); $('libraryHead').classList.toggle('open'); return;
+    const sub=$('librarySub'), wasHidden=sub.classList.contains('hidden');
+    sub.classList.toggle('hidden'); $('libraryHead').classList.toggle('open');
+    if(wasHidden){ const s=$('librarySearch');            // opened → reset + focus the search
+      if(s){ s.value=''; filterLibrary(''); setTimeout(()=>{ try{ s.focus(); }catch(_){} }, 80); } }
+    return;
   }
   closeMenu(); menuAction(a);
 });
+// filter the library book list by name (search-a-book bar at the top of the group)
+function filterLibrary(q){
+  q=(q||'').trim().toLowerCase();
+  const list=$('libraryList'); if(!list) return;
+  let shown=0;
+  list.querySelectorAll('.menu-sub-item').forEach(btn=>{
+    const label=((btn.querySelector('.mi-label')||{}).textContent||'').toLowerCase();
+    const match = !q || label.includes(q);
+    btn.classList.toggle('hidden', !match);
+    if(match) shown++;
+  });
+  const nr=$('libraryNoResult'); if(nr) nr.classList.toggle('hidden', shown>0);
+}
+{ const s=$('librarySearch');
+  if(s){
+    s.addEventListener('input', e=>filterLibrary(e.target.value));
+    s.addEventListener('click', e=>e.stopPropagation());
+    s.addEventListener('keydown', e=>{ if(e.key==='Enter'){
+      const first=$('libraryList').querySelector('.menu-sub-item:not(.hidden)'); if(first) first.click(); } });
+  }
+}
 
 function menuAction(a){
   if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
