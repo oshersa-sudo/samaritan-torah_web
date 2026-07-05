@@ -737,15 +737,47 @@ def api_translit():
 import urllib.request as _urlreq
 from xml.sax.saxutils import escape as _xesc
 from app.services.ipa import ipa_words as _ipa_words
+from app.services.heb import translit_to_heb as _translit_to_heb
 _TTS_CACHE = os.path.join(_ROOT, 'data', 'tts_cache')
 _AZ_KEY = os.environ.get('AZURE_SPEECH_KEY', '')
 _AZ_REGION = os.environ.get('AZURE_SPEECH_REGION', '')
-_AZ_VOICE = os.environ.get('AZURE_SPEECH_VOICE', 'he-IL-AvriNeural')
+_AZ_VOICE = os.environ.get('AZURE_SPEECH_VOICE', 'he-IL-HilaNeural')
+# 'ipa' = IPA phoneme tags — he-IL honours them (verified: invalid phones → HTTP 400), giving
+# authentic Samaritan phonetics: /w/ (no /v/), hard /b/,/k/, pharyngeal /ħ/, and mil'el stress.
+# 'heb' = pointed Hebrew fallback (natural but forces /v/ and modern mil'ra stress).
+_AZ_MODE = os.environ.get('AZURE_SPEECH_MODE', 'ipa')
 
 
 @app.route('/api/tts_status')
 def api_tts_status():
-    return jsonify({'enabled': bool(_AZ_KEY and _AZ_REGION), 'voice': _AZ_VOICE})
+    return jsonify({'enabled': bool(_AZ_KEY and _AZ_REGION), 'voice': _AZ_VOICE, 'mode': _AZ_MODE})
+
+
+@app.route('/api/tts_probe')
+def api_tts_probe():
+    """Debug: synthesize an arbitrary IPA string on any voice, to calibrate phones/glides."""
+    if not (_AZ_KEY and _AZ_REGION):
+        return ('TTS not configured', 503)
+    ph = request.args.get('ph', '')
+    voice = request.args.get('voice', _AZ_VOICE)
+    if not ph:
+        return ('missing ph', 400)
+    lang = '-'.join(voice.split('-')[:2]) if voice.count('-') >= 2 else 'he-IL'
+    inner = '<phoneme alphabet="ipa" ph="%s">x</phoneme>' % _xesc(ph, {'"': '&quot;'})
+    ssml = ('<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="%s">'
+            '<voice name="%s">%s</voice></speak>' % (lang, voice, inner))
+    req = _urlreq.Request(
+        'https://%s.tts.speech.microsoft.com/cognitiveservices/v1' % _AZ_REGION,
+        data=ssml.encode('utf-8'), method='POST',
+        headers={'Ocp-Apim-Subscription-Key': _AZ_KEY, 'Content-Type': 'application/ssml+xml',
+                 'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3', 'User-Agent': 'avnei-shoham'})
+    try:
+        with _urlreq.urlopen(req, timeout=30) as resp:
+            audio = resp.read()
+    except Exception as e:
+        return ('tts error: %s' % e, 502)
+    from flask import Response
+    return Response(audio, mimetype='audio/mpeg')
 
 
 @app.route('/api/tts')
@@ -756,15 +788,30 @@ def api_tts():
         vid = int(request.args.get('verse_id', ''))
     except (TypeError, ValueError):
         return ('bad verse_id', 400)
+    mode = request.args.get('mode', _AZ_MODE)
+    voice = request.args.get('voice', _AZ_VOICE)
     text = db.get_translit([vid]).get(vid)
-    pairs = _ipa_words(text) if text else []
-    if not pairs:
+    if not text or not text.strip():
         return ('no transcription', 404)
-    body = ' '.join('<phoneme alphabet="ipa" ph="%s">%s</phoneme>'
-                    % (_xesc(ip, {'"': '&quot;'}), _xesc(w)) for w, ip in pairs)
-    ssml = ('<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="he-IL">'
-            '<voice name="%s"><prosody rate="-8%%">%s</prosody></voice></speak>' % (_AZ_VOICE, body))
-    key = hashlib.sha1(('%s|%s' % (_AZ_VOICE, ' '.join(ip for _, ip in pairs))).encode('utf-8')).hexdigest()
+    if mode == 'ipa':
+        pairs = _ipa_words(text)
+        if not pairs:
+            return ('no transcription', 404)
+        inner = ' '.join('<phoneme alphabet="ipa" ph="%s">%s</phoneme>'
+                         % (_xesc(ip, {'"': '&quot;'}), _xesc(w)) for w, ip in pairs)
+        sig = ' '.join(ip for _, ip in pairs)
+    else:                                            # 'heb' — natural neural reading of pointed Hebrew
+        heb = _translit_to_heb(text)
+        if not heb.strip():
+            return ('no transcription', 404)
+        inner = _xesc(heb)
+        sig = heb
+    # xml:lang follows the voice's locale (an Arabic voice renders a true [w], [ħ], [q] — closer
+    # to Samaritan than modern Hebrew, whose voice realises /w/ as [v]).
+    lang = '-'.join(voice.split('-')[:2]) if voice.count('-') >= 2 else 'he-IL'
+    ssml = ('<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="%s">'
+            '<voice name="%s"><prosody rate="-8%%">%s</prosody></voice></speak>' % (lang, voice, inner))
+    key = hashlib.sha1(('%s|%s|%s' % (voice, mode, sig)).encode('utf-8')).hexdigest()
     path = os.path.join(_TTS_CACHE, key + '.mp3')
     if not os.path.exists(path):
         req = _urlreq.Request(

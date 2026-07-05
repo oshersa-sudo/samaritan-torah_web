@@ -30,3 +30,6 @@ data/vongall/
 
 # generated read-aloud audio cache
 data/tts_cache/
+
+# rendered HaMeliṣ page images (regenerable)
+data/meliz/pages/

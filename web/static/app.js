@@ -126,7 +126,7 @@ const I18N = {
     notif_rec_title:'קבלת התראות',
     notif_rec_body:'אפשר התראות כדי לקבל עדכונים על חידושים, תוספות וגרסאות חדשות של האפליקציה.',
     notif_rec_btn:'אפשר התראות',
-    col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'מילון טל', col_arabic:'ערבית',
+    col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'מילון טל', col_arabic:'ערבית', col_meliz:'המליץ',
     col_wordtrans:'תרגום המילה', col_src:'מילת המקור', col_arab:'תרגום ערבי', col_eng:'תרגום אנגלי', col_hetrans:'תרגום עברי',
     ws_tap_hint:'👆 לחץ על השורה לקבלת פירוש מורחב — כל תרגום ופירוש מהמקור שלו', ws_translation:'תרגום עברי', ws_from_targum:'מהתרגום הארמי (פירוש הפסוק)', ws_web:'פירושים מן הרשת', ws_jewish:'פרשנות יהודית', ws_samaritan:'ממקורות שומרון',
     ws_tal:'תרגום מהארמית', ws_tal_ctx:'מהארמית — לפי ההקשר בפסוק', ws_tal_gen:'מהארמית — תרגום כללי',
@@ -260,7 +260,7 @@ const I18N = {
     notif_rec_title:'Enable notifications',
     notif_rec_body:'Allow notifications to get updates about new features, additions and new versions of the app.',
     notif_rec_btn:'Enable notifications',
-    col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Tal dictionary', col_arabic:'Arabic',
+    col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Tal dictionary', col_arabic:'Arabic', col_meliz:'HaMeliṣ',
     col_wordtrans:'Word translation', col_src:'Source word', col_arab:'Arabic', col_eng:'English', col_hetrans:'Hebrew translation',
     ws_tap_hint:'👆 Tap the row for an expanded interpretation — every translation from its source', ws_translation:'Hebrew translation', ws_from_targum:'from the Aramaic Targum (verse reading)', ws_web:'web dictionaries', ws_jewish:'Jewish commentary', ws_samaritan:'from Samaritan sources',
     ws_tal:'from the Aramaic', ws_tal_ctx:'from the Aramaic — by the verse context', ws_tal_gen:'from the Aramaic — general gloss',
@@ -394,7 +394,7 @@ const I18N = {
     notif_rec_title:'تفعيل الإشعارات',
     notif_rec_body:'اسمح بالإشعارات لتصلك تحديثات حول الميزات الجديدة والإضافات والإصدارات الجديدة للتطبيق.',
     notif_rec_btn:'تفعيل الإشعارات',
-    col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'معجم طال', col_arabic:'العربية',
+    col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'معجم طال', col_arabic:'العربية', col_meliz:'المليص',
     col_wordtrans:'ترجمة الكلمة', col_src:'الكلمة الأصلية', col_arab:'ترجمة عربية', col_eng:'ترجمة إنجليزية', col_hetrans:'ترجمة عبرية',
     ws_tap_hint:'👆 اضغط الصفّ لتفسير موسّع — كلّ ترجمة من مصدرها', ws_translation:'ترجمة عبرية', ws_from_targum:'من الترجمة الآرامية (قراءة الآية)', ws_web:'معاجم الشبكة', ws_jewish:'تفسير يهودي', ws_samaritan:'من مصادر سامرية',
     ws_tal:'من الآرامية', ws_tal_ctx:'من الآرامية — حسب سياق الآية', ws_tal_gen:'من الآرامية — ترجمة عامة',
@@ -1466,7 +1466,15 @@ async function showWordSources(sel){
     }).catch(()=>{ blk.innerHTML=''; blk.appendChild(el('div','ws-from ws-pending','—')); }); }
   // 5) the Meliṣ — a further source, not yet added
   body.appendChild(el('div','ws-h', t('ws_melitz')));
-  { const blk=el('div','ws-block'); blk.appendChild(el('div','ws-from ws-pending', t('ws_melitz_pending'))); body.appendChild(blk); }
+  { const blk=el('div','ws-block');
+    if(entry.meliz_ar || entry.meliz_he){
+      if(entry.meliz_ar) blk.appendChild(el('div','ws-val','<span dir="rtl">'+esc(entry.meliz_ar)+'</span>'));
+      if(entry.meliz_he) blk.appendChild(el('div','ws-val', esc(entry.meliz_he)));
+      blk.appendChild(el('div','ws-from', t('ws_melitz')));
+    } else {
+      blk.appendChild(el('div','ws-from ws-pending', t('ws_melitz_pending')));
+    }
+    body.appendChild(blk); }
 }
 // tap an occurrence reference → the verse (Torah) or passage (Tibåt Mårqe) itself,
 // with the matched word(s) highlighted (reuses dictHlSpan from the word index)
@@ -1511,7 +1519,7 @@ async function renderDict(c, verses){
   const scroll=el('div','dict-scroll');
   const tbl=el('table','wtbl');
   const hr=el('tr');
-  for(const h of [t('col_word'),t('col_aram'),t('col_heb'),t('col_tal'),t('col_arabic')]) hr.appendChild(el('th',null,esc(h)));
+  for(const h of [t('col_word'),t('col_aram'),t('col_heb'),t('col_tal'),t('col_arabic'),t('col_meliz')]) hr.appendChild(el('th',null,esc(h)));
   tbl.appendChild(hr);
   for(const w of rows){
     const tr=el('tr');
@@ -1523,6 +1531,7 @@ async function renderDict(c, verses){
     tr.appendChild(el('td','wt-mean',esc(w.meaning||'—')));
     tr.appendChild(el('td','wt-tal',esc(w.tal||'—')));
     tr.appendChild(el('td','wt-ar',esc(w.arabic||'—')));
+    tr.appendChild(el('td','wt-meliz',esc(w.meliz_he||'—')));    // HaMeliṣ Hebrew gloss
     if(w.aramaic){ tr.classList.add('tappable'); tr.onclick=()=>showTalFull(w.aramaic); }
     tbl.appendChild(tr);
   }

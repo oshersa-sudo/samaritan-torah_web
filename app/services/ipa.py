@@ -6,8 +6,11 @@ import re
 _C = {'b': 'b', 'B': 'b', 'v': 'v', 'f': 'f', 'p': 'p', 'm': 'm', 'w': 'w', 't': 't', 'ṭ': 't',
       'd': 'd', 'ḏ': 'ð', 's': 's', 'ṣ': 's', 'z': 'z', 'š': 'ʃ', 'Š': 'ʃ', 'ś': 'ʃ', 'ṯ': 'θ',
       'l': 'l', 'r': 'r', 'n': 'n', 'y': 'j', 'j': 'j', 'g': 'ɡ', 'ġ': 'ɣ', 'k': 'k', 'q': 'ʔ',
-      "'": 'ʔ', 'ʾ': 'ʔ', 'ʿ': 'ʔ', 'ḥ': '', 'h': 'h'}
-_V = {'a': 'a', 'å': 'ɒ', 'ā': 'aː', 'ɑ': 'ɒ', 'ɒ': 'ɒ', 'e': 'e', 'ē': 'eː', 'ɛ': 'ɛ', 'ə': 'ə',
+      "'": 'ʔ', 'ʾ': 'ʔ', 'ʿ': 'ʔ', 'ḥ': 'ħ', 'h': 'h'}   # ḥ→pharyngeal /ħ/ (pronounced as a light guttural, not dropped)
+# å is a BRIGHT /a/ (patach), not the dark rounded ɒ — the ɒ made the whole line sound
+# "closed-mouth"/muffled. Schwa ə stays a true reduced /ə/ so an unstressed "-məm" is one
+# tight syllable (a full /e/ split it into a doubled "mem").
+_V = {'a': 'a', 'å': 'a', 'ā': 'aː', 'ɑ': 'a', 'ɒ': 'a', 'e': 'e', 'ē': 'eː', 'ɛ': 'ɛ', 'ə': 'ə',
       'ǝ': 'ə', 'i': 'i', 'ī': 'iː', 'o': 'o', 'ō': 'oː', 'ɔ': 'ɔ', 'u': 'u', 'ū': 'uː'}
 
 
@@ -19,7 +22,8 @@ def word_ipa(w):
     segs = []                                   # (ipa, is_vowel)
     for k, ch in enumerate(chars):
         if ch == 'w':
-            segs.append(('w', False))
+            if not (segs and segs[-1][0] == 'w'):   # collapse geminated /ww/ → /w/ (the doubled
+                segs.append(('w', False))           # glide is realised as a spurious "vu")
         elif ch in ("'", 'ʾ', 'ʿ'):
             prevV = k > 0 and chars[k - 1] in _V
             nextV = k + 1 < len(chars) and chars[k + 1] in _V

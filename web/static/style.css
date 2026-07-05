@@ -250,6 +250,7 @@ body.div-collapsed .div-handle{ height:26px; }
 .wtbl .wt-mean{ color:var(--dark); }
 .wtbl .wt-tal{ color:#4d4d80; font-size:13.5px; }
 .wtbl .wt-ar{ font-family:'Arabic',serif; font-size:17px; color:var(--dark); direction:rtl; }
+.wtbl .wt-meliz{ color:#6b4d2e; font-size:14px; font-weight:600; }
 .online-block{ margin-top:8px; border-top:1px solid rgba(26,56,115,.18); padding-top:6px; }
 .online-block .online-item{ color:var(--dark); font-size:14.5px; padding:3px 2px; }
 .online-block .src{ color:var(--accent); font-weight:700; font-size:12px; }

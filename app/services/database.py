@@ -429,6 +429,32 @@ def _dedup_he(items):
     return out
 
 
+_MELIZ_CACHE = None
+
+
+def _load_meliz(conn):
+    """HaMeliṣ glosses grouped by verse_id: {vid: [{lemma, hebrew, arabic, note}]}.
+    Resolves the book/chap/verse reference to a verse_id. Cached per process."""
+    global _MELIZ_CACHE
+    if _MELIZ_CACHE is not None:
+        return _MELIZ_CACHE
+    out = {}
+    try:
+        rows = conn.execute('''SELECT v.id AS vid, m.lemma, m.hebrew, m.arabic, m.note
+            FROM meliz_gloss m
+            JOIN books b    ON b.order_n = m.book
+            JOIN chapters c ON c.book_id = b.id AND c.number = m.chap
+            JOIN verses v   ON v.chapter_id = c.id AND v.number = m.verse''').fetchall()
+        for r in rows:
+            out.setdefault(r['vid'], []).append({
+                'lemma': r['lemma'] or '', 'hebrew': r['hebrew'] or '',
+                'arabic': r['arabic'] or '', 'note': r['note'] or ''})
+    except Exception:
+        out = {}
+    _MELIZ_CACHE = out
+    return out
+
+
 def get_word_table(verse_ids):
     """Per-word table rows for the "מילון מילים" panel. For each Targum word of
     the given verse(s): {word (Hebrew), meaning (Hebrew), aramaic, tal (concise
@@ -455,6 +481,7 @@ def get_word_table(verse_ids):
             "SELECT vd_id, en, en_he FROM word_english")}
     except Exception:
         word_en = {}
+    meliz_by_v = _load_meliz(conn)
     out = {}
     for r in rows:
         heb = (r['hebrew'] or '').strip()           # the curated, context-accurate Hebrew
@@ -462,7 +489,19 @@ def get_word_table(verse_ids):
         # the dictionary gloss CLOSEST to this verse's usage (sense-tagged when available)
         ctx = tal_context_gloss(r['aramaic'], r['verse_id'], conn)
         ar = (r['arabic'] if has_ar else '') or ''
-        arh = ar_he.get(ar, '')
+        arh = ar_he.get(ar, '')                      # Arabic→Hebrew from the ORIGINAL Arabic
+        # HaMeliṣ: match this verse's entries to this word by folded Hebrew form. Its Arabic
+        # gloss is APPENDED to the Arabic field (never overwriting; comma-separated, deduped);
+        # its Hebrew gloss feeds the new המליץ column and the expansion panel.
+        meliz_he = meliz_ar = ''
+        for m in meliz_by_v.get(r['verse_id'], []):
+            if _ds_match(word, m['lemma']):
+                meliz_he, meliz_ar = m['hebrew'], m['arabic']
+                break
+        if meliz_ar:
+            parts = [p.strip() for p in ar.split(',') if p.strip()]
+            if meliz_ar not in parts:
+                ar = (ar + ', ' + meliz_ar) if ar else meliz_ar
         tal_he = (ctx['gloss'] if ctx and ctx.get('gloss') else '')   # closest gloss, no root/label
         tal_root = ctx['root'] if ctx else ''
         en_word, en_he = word_en.get(r['id'], ('', ''))              # phrase-level English span + the word's back-translation
@@ -490,6 +529,7 @@ def get_word_table(verse_ids):
             'arabic': ar, 'english': english,
             'he': heb, 'tal_he': tal_he, 'tal_root': tal_root, 'tal_ctx': bool(ctx and ctx.get('ctx')),
             'ar_he': arh, 'en_he': en_he, 'he_combined': ', '.join(he_combined),
+            'meliz_he': meliz_he, 'meliz_ar': meliz_ar,
         })
     conn.close()
     return out
