@@ -724,12 +724,15 @@ footer a{ color:var(--accent); text-decoration:none; }
              border-radius:8px; padding:7px 12px; font-family:inherit; font-size:14px; font-weight:700;
              cursor:pointer; white-space:nowrap; }
 .rd-totorah:hover{ background:var(--accent); border-color:var(--accent); }
-.rd-top{ display:flex; align-items:center; gap:8px; }
+/* header controls (return-to-Torah · back · title · zoom · language) wrap instead of
+   piling on top of each other on narrow screens; the title truncates rather than push */
+.rd-top{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; row-gap:6px; }
 .tm-back{ flex:0 0 auto; border:1px solid var(--navy); background:var(--navy); color:#fff;
   border-radius:8px; padding:7px 13px; font:inherit; font-size:14px; font-weight:700;
   cursor:pointer; white-space:nowrap; }
 .tm-back:hover{ background:var(--accent); border-color:var(--accent); }
-.rd-top .modal-title{ flex:1 1 auto; text-align:center; font-size:17px; }
+.rd-top .modal-title{ flex:1 1 120px; min-width:0; text-align:center; font-size:17px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .rd-lang{ flex:0 0 auto; border:0; border-radius:8px; background:var(--navy); color:#fff;
   padding:7px 12px; font:inherit; font-size:13.5px; cursor:pointer; white-space:nowrap; }
 .rd-lang:hover{ background:var(--accent); }
