@@ -1872,9 +1872,20 @@ function ttsHebVoice(){
   return _TTS_HEVOICE;
 }
 try{ speechSynthesis.onvoiceschanged = ttsHebVoice; ttsHebVoice(); }catch(e){}
+// Server-side Azure Neural TTS (IPA-driven, correct mil'el stress) is preferred when
+// configured; otherwise we fall back to the browser voice. TTS_SERVER: null=unprobed.
+let TTS_SERVER = null;
+let ttsAudio = null;
+async function ttsProbeServer(){
+  if(TTS_SERVER !== null) return TTS_SERVER;
+  try{ const s = await api('tts_status'); TTS_SERVER = !!(s && s.enabled); }
+  catch(e){ TTS_SERVER = false; }
+  return TTS_SERVER;
+}
 async function ttsStart(){
   if(S.view!=='verses' || !Array.isArray(S.verses) || !S.verses.length) return;
-  if(!('speechSynthesis' in window)){ showInfo(t('play_chapter'), '<div class="note">קול אינו נתמך בדפדפן זה.</div>'); return; }
+  await ttsProbeServer();
+  if(!TTS_SERVER && !('speechSynthesis' in window)){ showInfo(t('play_chapter'), '<div class="note">קול אינו נתמך בדפדפן זה.</div>'); return; }
   let tr; try{ tr=await api('translit?verse_ids='+S.verses.map(v=>v.id).join(',')); }catch(e){ tr={}; }
   TTS.items = S.verses.filter(v=>tr[v.id] && tr[v.id].trim()).map(v=>({vid:v.id, num:v.number, text:tr[v.id]}));
   if(!TTS.items.length){ showInfo(t('play_chapter'), '<div class="note">אין תעתיק הגייה לפרק זה.</div>'); return; }
@@ -1884,17 +1895,32 @@ async function ttsStart(){
   $('auSeek').max = TTS.items.length-1; $('auSeek').value = 0;
   ttsSpeak();
 }
+function ttsStopAudio(){ if(ttsAudio){ try{ ttsAudio.pause(); }catch(e){} ttsAudio.onended=null; ttsAudio.onerror=null; ttsAudio=null; } }
+function ttsAdvance(){ if(!TTS.on || TTS.paused) return;
+  if(TTS.idx < TTS.items.length-1){ TTS.idx++; ttsBar(); ttsSpeak(); } else ttsStop(); }
 function ttsSpeak(){
-  try{ speechSynthesis.cancel(); }catch(e){}
   const it = TTS.items[TTS.idx]; if(!it){ ttsStop(); return; }
+  ttsHighlight(it.vid); ttsBar();
+  if(TTS_SERVER){
+    try{ speechSynthesis.cancel(); }catch(e){}
+    ttsStopAudio();
+    const a = new Audio('/api/tts?verse_id='+it.vid);
+    ttsAudio = a;
+    a.onended = ()=>{ if(a===ttsAudio) ttsAdvance(); };
+    a.onerror = ()=>{ if(a!==ttsAudio) return; ttsAudio=null; ttsSpeakBrowser(it); };  // fall back per-verse
+    a.play().catch(()=>{ if(a!==ttsAudio) return; ttsAudio=null; ttsSpeakBrowser(it); });
+    return;
+  }
+  ttsSpeakBrowser(it);
+}
+function ttsSpeakBrowser(it){
+  try{ speechSynthesis.cancel(); }catch(e){}
   const voice = ttsHebVoice();
   const u = new SpeechSynthesisUtterance(voice ? ttsHeb(it.text) : ttsNorm(it.text));
   if(voice){ u.voice = voice; u.lang = voice.lang; } else u.lang = 'he-IL';
   u.rate = 0.8;
-  u.onend = ()=>{ if(!TTS.on || TTS.paused) return;
-    if(TTS.idx < TTS.items.length-1){ TTS.idx++; ttsBar(); ttsSpeak(); } else ttsStop(); };
+  u.onend = ttsAdvance;
   try{ speechSynthesis.speak(u); }catch(e){}
-  ttsHighlight(it.vid); ttsBar();
 }
 function ttsBar(){ $('auSeek').value = TTS.idx; $('auPos').textContent = (TTS.idx+1)+'/'+TTS.items.length; }
 function ttsHighlight(vid){
@@ -1903,8 +1929,13 @@ function ttsHighlight(vid){
   if(row){ row.classList.add('tts-reading'); row.scrollIntoView({block:'center', behavior:'smooth'}); }
 }
 function ttsPauseResume(){
-  if(TTS.paused){ try{ speechSynthesis.resume(); }catch(e){} TTS.paused=false; setAuIcon(false); }
-  else { try{ speechSynthesis.pause(); }catch(e){} TTS.paused=true; setAuIcon(true); }
+  if(TTS.paused){
+    TTS.paused=false; setAuIcon(false);
+    if(ttsAudio){ ttsAudio.play().catch(()=>{}); } else { try{ speechSynthesis.resume(); }catch(e){} }
+  } else {
+    TTS.paused=true; setAuIcon(true);
+    if(ttsAudio){ try{ ttsAudio.pause(); }catch(e){} } else { try{ speechSynthesis.pause(); }catch(e){} }
+  }
 }
 function setAuIcon(showPlay){   // showPlay=true → ▶ (resume); else ❚❚ (pause)
   $('auPlayPause').innerHTML = showPlay
@@ -1912,7 +1943,7 @@ function setAuIcon(showPlay){   // showPlay=true → ▶ (resume); else ❚❚ (
     : '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
 }
 function ttsStop(){
-  TTS.on=false; TTS.paused=false; try{ speechSynthesis.cancel(); }catch(e){}
+  TTS.on=false; TTS.paused=false; try{ speechSynthesis.cancel(); }catch(e){} ttsStopAudio();
   $('audioBar').classList.add('hidden'); $('playBtn').classList.remove('playing'); setAuIcon(false);
   document.querySelectorAll('.tts-reading').forEach(e=>e.classList.remove('tts-reading'));
 }
@@ -1924,6 +1955,8 @@ $('playBtn').onclick     = ()=>{ TTS.on ? ttsStop() : ttsStart(); };
 $('auPlayPause').onclick = ttsPauseResume;
 $('auStop').onclick      = ttsStop;
 $('auSeek').oninput      = e=>ttsSeek(+e.target.value);
+// enable the read-aloud button once server-side (Azure) TTS is confirmed available
+(async ()=>{ try{ if(await ttsProbeServer()){ const b=$('playBtn'); if(b){ b.disabled=false; b.title=t('play_chapter')||'הקראת הפרק'; } } }catch(e){} })();
 
 // ── live pronunciation preview: show, under each verse, the transcription and the
 //    pointed-Hebrew the read-aloud engine will actually speak (for tuning the rules) ──

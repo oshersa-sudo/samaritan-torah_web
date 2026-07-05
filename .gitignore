@@ -27,3 +27,6 @@ data/dict_ocr/
 data/Genesis_Pic/
 *.apk
 data/vongall/
+
+# generated read-aloud audio cache
+data/tts_cache/

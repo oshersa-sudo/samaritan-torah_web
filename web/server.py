@@ -731,6 +731,60 @@ def api_translit():
     return jsonify(db.get_translit(_ids_arg()))
 
 
+# ── server-side read-aloud: Azure Neural TTS driven by IPA phonemes, so the correct
+#    (penultimate) stress and Ben-Ḥayyim phonetics are honoured. Audio is cached per
+#    verse. Returns 503 until AZURE_SPEECH_KEY/REGION are set in the environment. ──
+import urllib.request as _urlreq
+from xml.sax.saxutils import escape as _xesc
+from app.services.ipa import ipa_words as _ipa_words
+_TTS_CACHE = os.path.join(_ROOT, 'data', 'tts_cache')
+_AZ_KEY = os.environ.get('AZURE_SPEECH_KEY', '')
+_AZ_REGION = os.environ.get('AZURE_SPEECH_REGION', '')
+_AZ_VOICE = os.environ.get('AZURE_SPEECH_VOICE', 'he-IL-AvriNeural')
+
+
+@app.route('/api/tts_status')
+def api_tts_status():
+    return jsonify({'enabled': bool(_AZ_KEY and _AZ_REGION), 'voice': _AZ_VOICE})
+
+
+@app.route('/api/tts')
+def api_tts():
+    if not (_AZ_KEY and _AZ_REGION):
+        return ('TTS not configured', 503)
+    try:
+        vid = int(request.args.get('verse_id', ''))
+    except (TypeError, ValueError):
+        return ('bad verse_id', 400)
+    text = db.get_translit([vid]).get(vid)
+    pairs = _ipa_words(text) if text else []
+    if not pairs:
+        return ('no transcription', 404)
+    body = ' '.join('<phoneme alphabet="ipa" ph="%s">%s</phoneme>'
+                    % (_xesc(ip, {'"': '&quot;'}), _xesc(w)) for w, ip in pairs)
+    ssml = ('<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="he-IL">'
+            '<voice name="%s"><prosody rate="-8%%">%s</prosody></voice></speak>' % (_AZ_VOICE, body))
+    key = hashlib.sha1(('%s|%s' % (_AZ_VOICE, ' '.join(ip for _, ip in pairs))).encode('utf-8')).hexdigest()
+    path = os.path.join(_TTS_CACHE, key + '.mp3')
+    if not os.path.exists(path):
+        req = _urlreq.Request(
+            'https://%s.tts.speech.microsoft.com/cognitiveservices/v1' % _AZ_REGION,
+            data=ssml.encode('utf-8'), method='POST',
+            headers={'Ocp-Apim-Subscription-Key': _AZ_KEY,
+                     'Content-Type': 'application/ssml+xml',
+                     'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3',
+                     'User-Agent': 'avnei-shoham'})
+        try:
+            with _urlreq.urlopen(req, timeout=30) as resp:
+                audio = resp.read()
+        except Exception as e:
+            return ('tts error: %s' % e, 502)
+        os.makedirs(_TTS_CACHE, exist_ok=True)
+        with open(path, 'wb') as f:
+            f.write(audio)
+    return send_file(path, mimetype='audio/mpeg', conditional=True)
+
+
 # ── Tibåt Mårqe full-book reader (Samaritan Library) ──
 @app.route('/api/tm_toc')
 def api_tm_toc():
