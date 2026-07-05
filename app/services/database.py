@@ -1047,6 +1047,59 @@ def search_shyt(q, limit=80):
     return out
 
 
+# ── Sīr al-Qulūb ("סוד הלבבות") as a standalone library book ──
+def get_sir_toc():
+    """Table of contents for Sīr al-Qulūb: each section is a browsable unit."""
+    conn = get_connection()
+    rows = conn.execute("""SELECT s.id, s.ord, s.title, COUNT(l.id) n
+        FROM sir_sections s LEFT JOIN sir_verse_links l ON l.section_id=s.id
+        GROUP BY s.id ORDER BY s.ord""").fetchall()
+    conn.close()
+    return [{'id': r['id'], 'ord': r['ord'], 'title': r['title'] or '', 'count': r['n']} for r in rows]
+
+
+def get_sir_chapter(sid):
+    """One section of Sīr al-Qulūb, with inline verse refs made clickable and the
+    primary linked verse (for the citation jump into the Torah app)."""
+    try:
+        sid = int(sid)
+    except (TypeError, ValueError):
+        return {'id': None, 'sections': []}
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    s = conn.execute("SELECT id, ord, title, text FROM sir_sections WHERE id=?", (sid,)).fetchone()
+    if not s:
+        conn.close()
+        return {'id': sid, 'sections': []}
+    vrow = conn.execute("SELECT MIN(verse_id) v FROM sir_verse_links WHERE section_id=?", (sid,)).fetchone()
+    conn.close()
+    html = _tm_mark_refs(s['text'] or '', vmap)
+    return {'id': sid, 'ord': s['ord'], 'title': s['title'] or '',
+            'sections': [{'id': s['id'], 'ref': s['title'] or '', 'title': '',
+                          'hebrew': s['text'] or '', 'hebrew_html': html,
+                          'verse_id': vrow['v'] if vrow else None}]}
+
+
+def search_sir(q, limit=80):
+    """Search Sīr al-Qulūb (section titles + text)."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    rows = conn.execute("SELECT id, ord, title, text FROM sir_sections "
+                        "WHERE text LIKE ? OR title LIKE ? ORDER BY ord LIMIT ?",
+                        (like, like, limit)).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        txt = r['text'] or ''
+        i = txt.find(q)
+        snip = ('…' + txt[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0 else txt[:90]
+        out.append({'id': r['id'], 'ord': r['ord'], 'title': r['title'] or '', 'snippet': snip})
+    return out
+
+
 def get_eyalk_commentary(verse_ids):
     """Samaritan-tradition commentary ("מן המסורת השומרונית") relevant to any of
     the given verses, in reading order. Each item is a dict {parsha, text}.

@@ -893,6 +893,21 @@ def api_sir():
     return jsonify(db.get_sir_commentary(_ids_arg()))
 
 
+@app.route('/api/sir_toc')
+def api_sir_toc():
+    return jsonify(db.get_sir_toc())
+
+
+@app.route('/api/sir_chapter')
+def api_sir_chapter():
+    return jsonify(db.get_sir_chapter(request.args.get('sec', '')))
+
+
+@app.route('/api/sir_search')
+def api_sir_search():
+    return jsonify(db.search_sir(request.args.get('q', '')))
+
+
 @app.route('/api/shyt')
 def api_shyt():
     return jsonify(db.get_shyt_commentary(_ids_arg()))
