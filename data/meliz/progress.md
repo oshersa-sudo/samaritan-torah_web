@@ -37,8 +37,18 @@ Below the table: numbered editor footnotes keyed to the line numbers (optional �
   and the expansion panel's "מן המליץ" section now shows meliz Arabic+Hebrew (was "טרם נוסף").
 - CSS `.wt-meliz`; i18n col_meliz he/en/ar.
 
-## Done so far
-- part 1 p001 (printed 399, letter ז): 12 rows → 11 attached. file: entries_meliz1_p001.jsonl
+## DONE — full extraction complete (meliz_gloss = 10,666 rows)
+Extracted all 861 pages via **Opus vision** (`scripts/meliz/vision_extract.py --part all --apply`),
+cost **$36.24** ($0.042/page). Raw per-page JSON cached in `data/meliz/vision_cache/` (resume-safe).
+- 10,666 rows; **99% resolve to a verse**; 3,205 distinct verses covered.
+- by book(order_n): Gen 4755, Exod 2107, Lev 1014, Num 1344, Deut 1446.
+- ~66% of rows fold-match a word in their verse (rest show nothing — safe).
+- The early manual files (entries_meliz1_p00*.jsonl) were superseded by the vision run
+  (same src prefix `meliz1 p00N`, overwritten).
+
+## If re-running / extending
+- Cache hit = $0, so re-running `--part all --apply` just re-applies from cache.
+- To re-extract a page: delete its `data/meliz/vision_cache/p<part>_<NNNN>.json` and rerun.
 
 ## Next
 - Continue page by page. Suggest finishing part 1 (ז) then part 2/3/4.
