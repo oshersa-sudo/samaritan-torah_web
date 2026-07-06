@@ -65,7 +65,8 @@ const I18N = {
     share_title:'שיתוף', email:'אימייל', close:'סגור', to_torah:'↩ התורה',
     copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה', share_copy:'העתקה ללוח',
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
-    cmp_title:'בחר נוסח להשוואה', cv_masoretic:'נוסח המסורה', cv_septuagint:'תרגום השבעים', cv_onkelos:'תרגום אונקלוס',
+    cmp_title:'בחר נוסח להשוואה', cv_masoretic:'נוסח המסורה', cv_septuagint:'תרגום השבעים', cv_onkelos:'תרגום אונקלוס', cv_qumran:'מגילות קומראן',
+    ci_qumran:'מגילות מדבר יהודה (קומראן) הן כתבי-היד המקראיים העתיקים ביותר שנמצאו (מאה 3 לפנה״ס–מאה 1 לסה״נ); חלקן משקפות נוסח קרוב לשומרוני ("קדם-שומרוני"). כאן כל פסוק משוחזר מן המגילה שנשתמרה בה בצורה הטובה ביותר — מבוסס על תמלול מ׳ אבג ומיזם ETCBC (רישיון CC-BY-NC). קטעים משוחזרים נכללים, ופסוקים שלא נשתמרו מסומנים בקו מקוקו.',
     cmp_source:'נוסח שומרון', cmp_aram:'תרגום ארמי (שומרוני)',
     ci_onkelos:'תרגום אונקלוס הוא התרגום הארמי המקובל של התורה, המיוחס לאונקלוס הגר (המאה ה־2 לסה״נ). זהו תרגום מילולי-פרשני שנתקדש במסורת היהודית ונדפס לצד רוב חומשי המקרא. כאן הוא מוצג מול התרגום הארמי השומרוני, עם סימון ההבדלים ביניהם.',
     cmp_sam:'נוסח שומרון', cmp_info:'מידע על הנוסח',
@@ -203,7 +204,8 @@ const I18N = {
     share_title:'Share', email:'Email', close:'Close', to_torah:'↩ Torah',
     copied:'Text copied', copy_fail:'Copy failed', share_copy:'Copy to clipboard',
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
-    cmp_title:'Choose a version to compare', cv_masoretic:'Masoretic Text', cv_septuagint:'Septuagint', cv_onkelos:'Targum Onkelos',
+    cmp_title:'Choose a version to compare', cv_masoretic:'Masoretic Text', cv_septuagint:'Septuagint', cv_onkelos:'Targum Onkelos', cv_qumran:'Qumran Scrolls',
+    ci_qumran:'The Dead Sea (Qumran) Scrolls are the oldest surviving biblical manuscripts (3rd c. BCE–1st c. CE); some reflect a text close to the Samaritan ("pre-Samaritan"). Here each verse is reconstructed from its best-preserved scroll — based on M. Abegg\'s transcriptions via the ETCBC project (CC-BY-NC). Reconstructed portions are included; unattested verses are marked with a dashed line.',
     cmp_source:'Samaritan', cmp_aram:'Aramaic (Samaritan)',
     ci_onkelos:'Targum Onkelos is the authoritative Aramaic translation of the Torah, ascribed to Onkelos the proselyte (2nd c. CE). A largely literal rendering, it became canonical in Jewish tradition and is printed alongside most Ḥumashim. Here it is shown against the Samaritan Aramaic translation, with the differences marked.',
     cmp_sam:'Samaritan', cmp_info:'About this version',
@@ -341,7 +343,8 @@ const I18N = {
     share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق', to_torah:'↩ التوراة',
     copied:'تم نسخ النص', copy_fail:'فشل النسخ', share_copy:'نسخ إلى الحافظة',
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
-    cmp_title:'اختر النصّ للمقارنة', cv_masoretic:'النصّ الماسوري', cv_septuagint:'الترجمة السبعينية', cv_onkelos:'ترجوم أونكيلوس',
+    cmp_title:'اختر النصّ للمقارنة', cv_masoretic:'النصّ الماسوري', cv_septuagint:'الترجمة السبعينية', cv_onkelos:'ترجوم أونكيلوس', cv_qumran:'مخطوطات قمران',
+    ci_qumran:'مخطوطات البحر الميت (قمران) هي أقدم المخطوطات الكتابية الباقية (القرن 3 ق.م–القرن 1 م)؛ بعضها يعكس نصًّا قريبًا من السامري. هنا يُعاد بناء كل آية من أفضل مخطوطة حُفظت فيها — استنادًا إلى نسخ م. أبيغ عبر مشروع ETCBC (رخصة CC-BY-NC). تُضمَّن الأجزاء المعاد بناؤها، والآيات غير المحفوظة تُعلَّم بخطّ متقطّع.',
     cmp_source:'النصّ السامري', cmp_aram:'الآرامية (السامرية)',
     ci_onkelos:'ترجوم أونكيلوس هي الترجمة الآرامية المعتمدة للتوراة، المنسوبة إلى أونكيلوس الدخيل (القرن الثاني م). ترجمة حرفية غالبًا، صارت مقدّسة في التقليد اليهودي وتُطبع بجانب معظم أسفار التوراة. تُعرض هنا مقابل الترجمة الآرامية السامرية مع تمييز الفروق.',
     cmp_sam:'النصّ السامري', cmp_info:'حول هذا النصّ',
@@ -944,7 +947,14 @@ async function buildCompare(c, verses){
   // the "other" side: Masoretic text, or — for the Septuagint — the Masoretic text
   // with the LXX variant readings substituted in (lxx_text); verses with no recorded
   // LXX variant fall back to the Masoretic text.
-  const otherText = v => (ver==='septuagint') ? (v.lxx_text || v.masoretic_text) : v.masoretic_text;
+  // Qumran (Dead Sea Scrolls) has no fallback — verses not attested in the scrolls stay
+  // empty and get a dashed line; otherwise Masoretic (or MT+LXX variants for the LXX).
+  const otherText = v => (ver==='septuagint') ? (v.lxx_text || v.masoretic_text)
+                       : (ver==='qumran') ? (v.qumran_text || '')
+                       : v.masoretic_text;
+  const _CVK = {masoretic:['cv_masoretic','ci_masoretic'], septuagint:['cv_septuagint','ci_septuagint'],
+                qumran:['cv_qumran','ci_qumran']};
+  const _ck = _CVK[ver] || _CVK.masoretic;
   const ph = el('div','note','טוען השוואה…'); c.appendChild(ph);
   const data = await apiPost('compare', {verses: verses.map(v=>{
     const mas = String(v.masnum!=null ? v.masnum : v.number);
@@ -958,14 +968,13 @@ async function buildCompare(c, verses){
   const grid=el('div','cmp-grid');
   // left header carries the version name + a small info icon; tapping it opens a
   // concise in-app floating popup about the version (Masoretic / Septuagint)
-  const verName = t(ver==='septuagint'?'cv_septuagint':'cv_masoretic');
+  const verName = t(_ck[0]);
   const lh=el('div','cmp-cell cmp-head');
   lh.appendChild(document.createTextNode(verName+' '));
   const info=el('span','cmp-info'); info.textContent='ⓘ';
   info.title=t('cmp_info'); info.setAttribute('role','button'); info.tabIndex=0;
   info.setAttribute('aria-label',t('cmp_info'));
-  const showVer=()=>showInfo(verName,
-    `<div class="ver-info">${esc(t(ver==='septuagint'?'ci_septuagint':'ci_masoretic'))}</div>`);
+  const showVer=()=>showInfo(verName, `<div class="ver-info">${esc(t(_ck[1]))}</div>`);
   info.onclick=showVer;
   info.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); showVer(); } };
   lh.appendChild(info);
@@ -974,7 +983,9 @@ async function buildCompare(c, verses){
   for(const d of data){
     const m=render(d.mas).trim(), s=render(d.sam).trim();
     if(!m && !s) continue;
-    const mc=el('div','cmp-cell', m || '<span class="cmp-missing">- - -</span>');
+    // Qumran verses not preserved in any scroll show a dashed line instead of "- - -"
+    const miss = (ver==='qumran') ? '<span class="cmp-dashline"></span>' : '<span class="cmp-missing">- - -</span>';
+    const mc=el('div','cmp-cell', m || miss);
     const sc=el('div','cmp-cell', s || '<span class="cmp-missing">- - -</span>');
     mc.style.fontSize=fs+'px'; sc.style.fontSize=fs+'px';
     grid.appendChild(mc); grid.appendChild(sc);
