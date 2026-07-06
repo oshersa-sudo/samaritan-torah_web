@@ -1360,6 +1360,7 @@ async function buildSamSrc(c, verses){
 // format), tap another to swap it, close the row to keep picking, and tap the
 // button again to turn the whole mode (underlines + row) off.
 let DICT_SELECT_MAP = {};
+let DICT_SELECT_PROMISE = null;   // in-flight /dict_select load for the current verse set
 function buildDictSelect(c, verses){
   c.appendChild(el('div','dict-pick-hint', t('dict_pick_word')));
   const fs=fsize();
@@ -1393,7 +1394,8 @@ function buildDictSelect(c, verses){
     const p=k.indexOf(':'); const vid=k.slice(0,p), idx=k.slice(p+1);
     sp.onclick=()=>pickDictWord(vid, idx, sp);
   });
-  api('dict_select?verse_ids='+verses.map(v=>v.id).join(',')).then(map=>{
+  DICT_SELECT_MAP = {};                              // clear stale data from the previous chapter
+  DICT_SELECT_PROMISE = api('dict_select?verse_ids='+verses.map(v=>v.id).join(',')).then(map=>{
     DICT_SELECT_MAP=map||{};
     for(const vid in DICT_SELECT_MAP)
       for(const idx in DICT_SELECT_MAP[vid]){
@@ -1403,16 +1405,29 @@ function buildDictSelect(c, verses){
       const sp=spanMap[S.dictWord.k];
       if(sp){ sp.classList.add('sel'); renderOneWord(S.dictWord, false); }
     }
-  }).catch(()=>{});
+    return DICT_SELECT_MAP;
+  }).catch(()=>{ DICT_SELECT_MAP={}; return DICT_SELECT_MAP; });
 }
-function pickDictWord(vid, idx, sp){
+async function pickDictWord(vid, idx, sp){
   const word=(sp.textContent||'').trim();
-  // a word without a curated entry still opens — showing what other sources have
-  const entry=(DICT_SELECT_MAP[vid]||{})[idx] ||
-              {word:word, aramaic:'', arabic:'', english:'', he:'', he_combined:'', tal_he:''};
+  const k=vid+':'+idx;
   document.querySelectorAll('.dw.sel').forEach(x=>x.classList.remove('sel'));
   sp.classList.add('sel');
-  S.dictWord={k:vid+':'+idx, entry, vid, word};
+  let entry=(DICT_SELECT_MAP[vid]||{})[idx];
+  // BUGFIX: words are clickable immediately, but /dict_select loads asynchronously. If a
+  // word is tapped before it resolves, wait for the in-flight load (showing a spinner)
+  // instead of opening an empty row that only fills after a close+reopen.
+  if(!entry && DICT_SELECT_PROMISE){
+    const panel=$('dictOnePanel');
+    if(panel){ panel.classList.remove('hidden'); panel.innerHTML='';
+      panel.appendChild(el('div','note',t('searching'))); scrollToEl('#dictOnePanel'); }
+    await DICT_SELECT_PROMISE;
+    if(!sp.classList.contains('sel')) return;        // user moved on / closed while loading
+    entry=(DICT_SELECT_MAP[vid]||{})[idx];
+  }
+  // a word without a curated entry still opens — showing what other sources have
+  entry = entry || {word:word, aramaic:'', arabic:'', english:'', he:'', he_combined:'', tal_he:''};
+  S.dictWord={k, entry, vid, word};
   renderOneWord(S.dictWord, true);
 }
 // the single-word row: מילה · תרגום ארמי · ערבית · תרגום המילה (the accurate,
