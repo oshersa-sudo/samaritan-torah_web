@@ -33,3 +33,6 @@ data/tts_cache/
 
 # rendered HaMeliṣ page images (regenerable)
 data/meliz/pages/
+
+# re-downloadable Sefaria Onkelos cache
+data/onkelos/cache/

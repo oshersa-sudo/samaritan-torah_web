@@ -65,7 +65,9 @@ const I18N = {
     share_title:'שיתוף', email:'אימייל', close:'סגור', to_torah:'↩ התורה',
     copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה', share_copy:'העתקה ללוח',
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
-    cmp_title:'בחר נוסח להשוואה', cv_masoretic:'נוסח המסורה', cv_septuagint:'תרגום השבעים',
+    cmp_title:'בחר נוסח להשוואה', cv_masoretic:'נוסח המסורה', cv_septuagint:'תרגום השבעים', cv_onkelos:'תרגום אונקלוס',
+    cmp_source:'נוסח שומרון', cmp_aram:'תרגום ארמי (שומרוני)',
+    ci_onkelos:'תרגום אונקלוס הוא התרגום הארמי המקובל של התורה, המיוחס לאונקלוס הגר (המאה ה־2 לסה״נ). זהו תרגום מילולי-פרשני שנתקדש במסורת היהודית ונדפס לצד רוב חומשי המקרא. כאן הוא מוצג מול התרגום הארמי השומרוני, עם סימון ההבדלים ביניהם.',
     cmp_sam:'נוסח שומרון', cmp_info:'מידע על הנוסח',
     ci_masoretic:'נוסח המסורה הוא הנוסח היהודי המקובל של המקרא, שנמסר, נוקד וטוים בידי בעלי המסורה בטבריה (סוף האלף הראשון לסה״נ). הוא הבסיס לרוב מהדורות התנ״ך הנדפסות.',
     ci_septuagint:'תרגום השבעים (LXX) הוא התרגום היווני הקדום של התורה, שנעשה באלכסנדריה במאה ה־3 לפנה״ס. הוא משקף לעיתים נוסח עברי קדום השונה מן המסורה, ובמקומות רבים קרוב דווקא לנוסח השומרוני.',
@@ -201,7 +203,9 @@ const I18N = {
     share_title:'Share', email:'Email', close:'Close', to_torah:'↩ Torah',
     copied:'Text copied', copy_fail:'Copy failed', share_copy:'Copy to clipboard',
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
-    cmp_title:'Choose a version to compare', cv_masoretic:'Masoretic Text', cv_septuagint:'Septuagint',
+    cmp_title:'Choose a version to compare', cv_masoretic:'Masoretic Text', cv_septuagint:'Septuagint', cv_onkelos:'Targum Onkelos',
+    cmp_source:'Samaritan', cmp_aram:'Aramaic (Samaritan)',
+    ci_onkelos:'Targum Onkelos is the authoritative Aramaic translation of the Torah, ascribed to Onkelos the proselyte (2nd c. CE). A largely literal rendering, it became canonical in Jewish tradition and is printed alongside most Ḥumashim. Here it is shown against the Samaritan Aramaic translation, with the differences marked.',
     cmp_sam:'Samaritan', cmp_info:'About this version',
     ci_masoretic:'The Masoretic Text is the authoritative Jewish text of the Hebrew Bible, transmitted and vocalised by the Masoretes of Tiberias (late 1st millennium CE). It underlies most printed editions of the Bible.',
     ci_septuagint:'The Septuagint (LXX) is the ancient Greek translation of the Torah, made in Alexandria in the 3rd century BCE. It sometimes reflects an early Hebrew text differing from the Masoretic — and in many places agrees with the Samaritan.',
@@ -337,7 +341,9 @@ const I18N = {
     share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق', to_torah:'↩ التوراة',
     copied:'تم نسخ النص', copy_fail:'فشل النسخ', share_copy:'نسخ إلى الحافظة',
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
-    cmp_title:'اختر النصّ للمقارنة', cv_masoretic:'النصّ الماسوري', cv_septuagint:'الترجمة السبعينية',
+    cmp_title:'اختر النصّ للمقارنة', cv_masoretic:'النصّ الماسوري', cv_septuagint:'الترجمة السبعينية', cv_onkelos:'ترجوم أونكيلوس',
+    cmp_source:'النصّ السامري', cmp_aram:'الآرامية (السامرية)',
+    ci_onkelos:'ترجوم أونكيلوس هي الترجمة الآرامية المعتمدة للتوراة، المنسوبة إلى أونكيلوس الدخيل (القرن الثاني م). ترجمة حرفية غالبًا، صارت مقدّسة في التقليد اليهودي وتُطبع بجانب معظم أسفار التوراة. تُعرض هنا مقابل الترجمة الآرامية السامرية مع تمييز الفروق.',
     cmp_sam:'النصّ السامري', cmp_info:'حول هذا النصّ',
     ci_masoretic:'النصّ الماسوري هو النصّ اليهودي المعتمد للكتاب المقدّس العبري، نقله وشكّله علماء المسورة في طبريّة (أواخر الألفية الأولى م). وهو أساس معظم الطبعات المطبوعة.',
     ci_septuagint:'الترجمة السبعينية (LXX) هي الترجمة اليونانية القديمة للتوراة، أُنجزت في الإسكندرية في القرن الثالث ق.م. تعكس أحيانًا نصًّا عبريًّا قديمًا يختلف عن الماسوري، ويقارب في مواضع كثيرة النصّ السامري.',
@@ -892,6 +898,49 @@ function origPanel(verses){
 
 async function buildCompare(c, verses){
   const ver = S.cmpVersion || 'masoretic';
+  const fs=fsize();
+  const render = toks => toks.map(t=> t[1]?`<span class="diff">${esc(t[0])}</span>`:esc(t[0])).join(' ');
+  const renderNoNum = toks => render(toks.slice(1));   // drop the leading number token
+  // verse-number label with the chapter prefixed before verse 1 (e.g. "20:1")
+  const numLabel = v => { const n=String(v.number);
+    return (n==='1') ? ((v.jchapter!=null?v.jchapter:S.curChNum)+':1') : n; };
+
+  // ── Targum Onkelos: THREE columns — Samaritan source · Samaritan Aramaic · Onkelos —
+  //    with the diff marked between the two ARAMAIC columns; a dashed line where a
+  //    Samaritan-Aramaic verse has no Onkelos counterpart. ──────────────────────────
+  if(ver==='onkelos'){
+    const ph=el('div','note','טוען השוואה…'); c.appendChild(ph);
+    const data = await apiPost('compare', {verses: verses.map(v=>({
+      sam_num:v.number, mas_num:v.number,
+      text:v.sam_aramaic||'', masoretic_text:v.onkelos_text||'' }))});
+    ph.remove();
+    const grid=el('div','cmp-grid cmp-grid3');
+    grid.appendChild(el('div','cmp-cell cmp-head', t('cmp_source')));
+    grid.appendChild(el('div','cmp-cell cmp-head', t('cmp_aram')));
+    const oh=el('div','cmp-cell cmp-head'); oh.appendChild(document.createTextNode(t('cv_onkelos')+' '));
+    const info=el('span','cmp-info'); info.textContent='ⓘ'; info.title=t('cmp_info');
+    info.setAttribute('role','button'); info.tabIndex=0; info.setAttribute('aria-label',t('cmp_info'));
+    const showOnk=()=>showInfo(t('cv_onkelos'), `<div class="ver-info">${esc(t('ci_onkelos'))}</div>`);
+    info.onclick=showOnk; info.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); showOnk(); } };
+    oh.appendChild(info); grid.appendChild(oh);
+    verses.forEach((v,i)=>{
+      const d=data[i]; if(!d) return;
+      const src=esc(v.text||'').trim();
+      const aram=renderNoNum(d.sam).trim();
+      const hasOnk=(v.onkelos_text||'').trim().length>0;
+      const onk=renderNoNum(d.mas).trim();
+      if(!src && !aram && !hasOnk) return;
+      const sc=el('div','cmp-cell','<b class="cmp-vn">'+esc(numLabel(v))+'</b> '+(src||'<span class="cmp-missing">- - -</span>'));
+      const ac=el('div','cmp-cell', aram||'<span class="cmp-missing">- - -</span>');
+      // no Onkelos for this verse → a dashed line (Samaritan-only verse)
+      const oc=el('div','cmp-cell', hasOnk ? onk : '<span class="cmp-dashline" aria-label="אין באונקלוס"></span>');
+      [sc,ac,oc].forEach(x=>x.style.fontSize=fs+'px');
+      grid.appendChild(sc); grid.appendChild(ac); grid.appendChild(oc);
+    });
+    c.appendChild(grid);
+    return;
+  }
+
   // the "other" side: Masoretic text, or — for the Septuagint — the Masoretic text
   // with the LXX variant readings substituted in (lxx_text); verses with no recorded
   // LXX variant fall back to the Masoretic text.
@@ -899,14 +948,10 @@ async function buildCompare(c, verses){
   const ph = el('div','note','טוען השוואה…'); c.appendChild(ph);
   const data = await apiPost('compare', {verses: verses.map(v=>{
     const mas = String(v.masnum!=null ? v.masnum : v.number);
-    // on the source side, prefix the chapter before verse 1 (e.g. "20:1") so the
-    // reader sees which chapter the verse belongs to
     const masLabel = (mas==='1') ? ((v.jchapter!=null?v.jchapter:S.curChNum)+':1') : mas;
     return {sam_num:v.number, mas_num:masLabel, text:v.text, masoretic_text:otherText(v)};
   })});
   ph.remove();
-  const fs=fsize();
-  const render = toks => toks.map(t=> t[1]?`<span class="diff">${esc(t[0])}</span>`:esc(t[0])).join(' ');
   // Verse-opposite-verse: a 2-column CSS grid where every verse is one grid row
   // (source-version cell | Samaritan cell). Grid rows stay aligned even when a verse
   // wraps. Where a verse has no counterpart on a side, that cell shows "---".
