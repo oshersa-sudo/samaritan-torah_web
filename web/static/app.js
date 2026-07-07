@@ -1801,24 +1801,54 @@ function runFlipGhost(ghost, delta){
   // leaf with a skew that oscillates sign several times (the "wave"), bow it out of plane
   // with an alternating rotateX, and add a touch of rotateZ wobble; amplitude is randomised
   // a little so each turn looks a bit different.
-  // Clean, safe page-turn: the leaf pivots around the spine with a gentle lift, and a single
-  // soft shadow deepens toward the free edge then releases. (A photorealistic curl needs a
-  // canvas/WebGL renderer — pending a working visual feedback loop.)
-  const dur = 600, P = 'perspective(1300px)';
+  // The leaf flexes as it turns: its free edge PEELS up first (revealing a sliver of the next
+  // page already sitting underneath), then it flutters over with an oscillating skew ("wave"),
+  // an out-of-plane bow (rotateX) and a touch of rotateZ wobble.
+  const w  = 2.2 + Math.random()*1.6;
+  const bx = 2.0 + Math.random()*1.2;
+  const dur = 680;
+  const P = 'perspective(1400px)';
+  const fr = (offset, ry, skew, rx, rz, sc) =>
+    ({ offset, transform:`${P} rotateY(${s*ry}deg) rotateX(${rx}deg) rotateZ(${s*rz}deg) skewY(${skew}deg) scale(${sc})` });
   const a=ghost.animate([
-    { offset:0,  transform:`${P} translateZ(0) rotateY(0deg)` },
-    { offset:.5, transform:`${P} translateZ(46px) rotateY(${s*90}deg)` },
-    { offset:1,  transform:`${P} translateZ(0) rotateY(${s*158}deg)` },
-  ], {duration:dur, easing:'cubic-bezier(.42,.04,.28,1)'});
+    fr(0,     0,   0,          0,      0,    1),
+    fr(.12,  16,  s*w*0.6,     bx*0.6, 0.2,  1.006),   // free edge peels up → next page peeks beneath
+    fr(.30,  38,  s*w,        -bx*0.5, 0.5,  1.014),
+    fr(.48,  62, -s*w,         bx,     0.2,  1.016),
+    fr(.66,  84,  s*w*0.7,    -bx*0.6,-0.2,  1.009),
+    fr(.85, 106, -s*w*0.35,    bx*0.3, 0,    1.003),
+    fr(1,   122,  0,           0,      0,    1),
+  ], {duration:dur, easing:'cubic-bezier(.36,.02,.24,1)'});
   $('content').animate([{opacity:.5, transform:'scale(.99)'},{opacity:1, transform:'none'}],
-                       {duration:400, easing:'ease-out'});
+                       {duration:420, easing:'ease-out'});
+  // several soft shadow LINES run along the page (dark troughs, multiply) with light crests
+  // (soft-light) between them, and travel sideways — the corrugated look of a flexing page.
+  const ang = exitLeft ? 90 : 270;
+  const from = exitLeft ? '100%' : '0%';
+  const to   = exitLeft ? '0%'   : '100%';
   const shade=ghost.querySelector('.flip-ghost-shade');
   if(shade){
-    shade.style.mixBlendMode='multiply';
-    shade.style.background = `linear-gradient(${exitLeft?90:270}deg,`
-      + ' rgba(0,0,0,0) 52%, rgba(0,0,0,.14) 74%, rgba(0,0,0,.34) 90%, rgba(0,0,0,.5) 100%)';
-    shade.animate([{opacity:0},{opacity:.75,offset:.5},{opacity:.1}],
-                  {duration:dur, easing:'ease-in-out'});
+    shade.style.background = `linear-gradient(${ang}deg,`
+      + ' rgba(0,0,0,.34) 0%, rgba(0,0,0,0) 15%, rgba(0,0,0,.26) 34%, rgba(0,0,0,0) 50%,'
+      + ' rgba(0,0,0,.24) 66%, rgba(0,0,0,0) 82%, rgba(0,0,0,.4) 100%)';
+    shade.style.backgroundSize = '210% 100%';
+    shade.animate([
+      {opacity:.15, backgroundPositionX:from},
+      {opacity:.85, offset:.5},
+      {opacity:.2,  backgroundPositionX:to},
+    ], {duration:dur, easing:'ease-in-out'});
+  }
+  const gloss=ghost.querySelector('.flip-ghost-gloss');
+  if(gloss){
+    gloss.style.background = `linear-gradient(${ang}deg,`
+      + ' rgba(255,255,255,0) 6%, rgba(255,255,255,.55) 24%, rgba(255,255,255,0) 42%,'
+      + ' rgba(255,255,255,.5) 58%, rgba(255,255,255,0) 74%, rgba(255,255,255,.4) 92%)';
+    gloss.style.backgroundSize = '210% 100%';
+    gloss.animate([
+      {opacity:0, backgroundPositionX:from},
+      {opacity:.95, offset:.5},
+      {opacity:0, backgroundPositionX:to},
+    ], {duration:dur, easing:'ease-in-out'});
   }
   // remove the ghost when the turn ends — plus a hard fallback in case the page
   // is backgrounded (a frozen animation timeline would otherwise never fire onfinish)
