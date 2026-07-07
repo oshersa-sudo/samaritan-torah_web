@@ -92,6 +92,8 @@ body.div-collapsed .div-handle{ height:26px; }
 .flip-ghost-bg{ position:absolute; background-repeat:no-repeat; }
 .flip-ghost-inner{ position:absolute; left:0; right:0; padding:6px 8px; }
 .flip-ghost-shade{ position:absolute; inset:0; background:#000; opacity:0; pointer-events:none; }
+/* specular highlight band that sweeps across the curved leaf (sells the ripple/curl) */
+.flip-ghost-gloss{ position:absolute; inset:0; opacity:0; pointer-events:none; mix-blend-mode:soft-light; }
 /* a special slow-dissolving blessing floated over a particular verse (Samaritan division) */
 .verse-bless{ position:fixed; z-index:55; pointer-events:none; display:flex;
   align-items:center; justify-content:center; text-align:center; padding:0 5vw;

@@ -1786,6 +1786,7 @@ function makeFlipGhost(){
   for(const ch of c.children) inner.appendChild(ch.cloneNode(true));
   ghost.appendChild(inner);
   ghost.appendChild(el('div','flip-ghost-shade'));
+  ghost.appendChild(el('div','flip-ghost-gloss'));
   document.body.appendChild(ghost);
   return ghost;
 }
@@ -1796,30 +1797,49 @@ function runFlipGhost(ghost, delta){
   const exitLeft = (delta<0) !== !!S.english;
   const s = exitLeft ? -1 : 1;                   // sign of the rotation
   ghost.style.transformOrigin = (exitLeft?'left':'right')+' center';
-  // a real page doesn't pivot rigidly — it flexes and ripples as it lifts. We bow the
-  // leaf with an oscillating skew (the "wave") whose strength is randomised a touch so
-  // each turn looks a little different, and bend it slightly out of plane with rotateX.
-  const w = 1.6 + Math.random()*1.8;             // wave amplitude (deg)
-  const P = 'perspective(1500px)';
-  const fr = (offset, ry, skew, rx, sc) =>
-    ({ offset, transform:`${P} rotateY(${s*ry}deg) skewY(${skew}deg) rotateX(${rx}deg) scale(${sc})` });
+  // a real page doesn't pivot rigidly — it FLEXES and ripples as it lifts. We flutter the
+  // leaf with a skew that oscillates sign several times (the "wave"), bow it out of plane
+  // with an alternating rotateX, and add a touch of rotateZ wobble; amplitude is randomised
+  // a little so each turn looks a bit different.
+  const w  = 2.2 + Math.random()*1.8;            // wave (skew) amplitude, deg
+  const bx = 2.0 + Math.random()*1.4;            // out-of-plane bow amplitude, deg
+  const dur = 660;
+  const P = 'perspective(1400px)';
+  const fr = (offset, ry, skew, rx, rz, sc) =>
+    ({ offset, transform:`${P} rotateY(${s*ry}deg) rotateX(${rx}deg) rotateZ(${s*rz}deg) skewY(${skew}deg) scale(${sc})` });
   const a=ghost.animate([
-    fr(0,    0,   0,        0,    1),
-    fr(.22,  22,  s*w,      1.4,  1.012),
-    fr(.46,  56, -s*w*1.1, -1.0,  1.008),
-    fr(.72,  90,  s*w*0.6,  0.6,  1.003),
-    fr(1,    120, 0,        0,    1),
-  ], {duration:560, easing:'cubic-bezier(.42,.04,.28,1)'});
-  $('content').animate([{opacity:.5, transform:'scale(.99)'},{opacity:1, transform:'none'}],
-                       {duration:380, easing:'ease-out'});
+    fr(0,     0,   0,          0,      0,    1),
+    fr(.13,  13,  s*w*0.65,    bx*0.7, 0.25, 1.007),
+    fr(.30,  34,  s*w,        -bx*0.5, 0.5,  1.014),   // bow up, ripple one way
+    fr(.48,  58, -s*w,         bx,     0.2,  1.016),   // flutter: skew reverses, strongest bow
+    fr(.66,  80,  s*w*0.7,    -bx*0.6,-0.2,  1.009),   // flutter back
+    fr(.85, 104, -s*w*0.35,    bx*0.3, 0,    1.003),
+    fr(1,   120,  0,           0,      0,    1),
+  ], {duration:dur, easing:'cubic-bezier(.36,.02,.24,1)'});
+  $('content').animate([{opacity:.45, transform:'scale(.99)'},{opacity:1, transform:'none'}],
+                       {duration:420, easing:'ease-out'});
   // the curl shadow pools toward the page's free edge, deepening as it stands up then
   // releasing as the leaf falls away — gives the turn its sense of light and volume.
   const shade=ghost.querySelector('.flip-ghost-shade');
   if(shade){
     shade.style.background = `linear-gradient(${exitLeft?90:270}deg,`
-      + ' rgba(0,0,0,0) 28%, rgba(0,0,0,.08) 58%, rgba(0,0,0,.30) 88%, rgba(0,0,0,.42) 100%)';
-    shade.animate([{opacity:0},{opacity:.55,offset:.5},{opacity:.12}],
-                  {duration:560, easing:'ease-in-out'});
+      + ' rgba(0,0,0,0) 24%, rgba(0,0,0,.10) 54%, rgba(0,0,0,.32) 86%, rgba(0,0,0,.46) 100%)';
+    shade.animate([{opacity:0},{opacity:.6,offset:.5},{opacity:.12}],
+                  {duration:dur, easing:'ease-in-out'});
+  }
+  // a bright specular band sweeps from the spine toward the free edge as the leaf curves —
+  // this "light catching the paper" is what reads as a real, slightly wavy page-turn.
+  const gloss=ghost.querySelector('.flip-ghost-gloss');
+  if(gloss){
+    gloss.style.background = `linear-gradient(${exitLeft?90:270}deg,`
+      + ' rgba(255,255,255,0) 30%, rgba(255,255,255,.5) 50%, rgba(255,255,255,.85) 60%,'
+      + ' rgba(255,255,255,.5) 70%, rgba(255,255,255,0) 92%)';
+    gloss.style.backgroundSize = '260% 100%';
+    gloss.animate([
+      {opacity:0, backgroundPositionX: exitLeft?'100%':'0%'},
+      {opacity:.9, offset:.5},
+      {opacity:0, backgroundPositionX: exitLeft?'0%':'100%'},
+    ], {duration:dur, easing:'ease-in-out'});
   }
   // remove the ghost when the turn ends — plus a hard fallback in case the page
   // is backgrounded (a frozen animation timeline would otherwise never fire onfinish)
