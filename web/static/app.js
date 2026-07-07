@@ -1801,58 +1801,56 @@ function runFlipGhost(ghost, delta){
   // leaf with a skew that oscillates sign several times (the "wave"), bow it out of plane
   // with an alternating rotateX, and add a touch of rotateZ wobble; amplitude is randomised
   // a little so each turn looks a bit different.
-  const w  = 2.2 + Math.random()*1.8;            // wave (skew) amplitude, deg
-  const bx = 2.0 + Math.random()*1.4;            // out-of-plane bow amplitude, deg
-  const dur = 660;
-  const P = 'perspective(1400px)';
-  const fr = (offset, ry, skew, rx, rz, sc) =>
-    ({ offset, transform:`${P} rotateY(${s*ry}deg) rotateX(${rx}deg) rotateZ(${s*rz}deg) skewY(${skew}deg) scale(${sc})` });
+  const w  = 1.6 + Math.random()*1.2;            // gentle flex (skew), deg
+  const dur = 720;
+  const P = 'perspective(1250px)';
+  // the leaf is PEELED UP by its free edge: it lifts off the surface (translateZ toward the
+  // viewer), bows out of plane (rotateX), and is carried over to the far side by a fuller
+  // rotateY (past upright) — not a flat card spinning in place.
+  const fr = (offset, ry, skew, rx, tz, sc) =>
+    ({ offset, transform:`${P} translateZ(${tz}px) rotateY(${s*ry}deg) rotateX(${rx}deg) skewY(${skew}deg) scale(${sc})` });
   const a=ghost.animate([
-    fr(0,     0,   0,          0,      0,    1),
-    fr(.13,  13,  s*w*0.65,    bx*0.7, 0.25, 1.007),
-    fr(.30,  34,  s*w,        -bx*0.5, 0.5,  1.014),   // bow up, ripple one way
-    fr(.48,  58, -s*w,         bx,     0.2,  1.016),   // flutter: skew reverses, strongest bow
-    fr(.66,  80,  s*w*0.7,    -bx*0.6,-0.2,  1.009),   // flutter back
-    fr(.85, 104, -s*w*0.35,    bx*0.3, 0,    1.003),
-    fr(1,   120,  0,           0,      0,    1),
-  ], {duration:dur, easing:'cubic-bezier(.36,.02,.24,1)'});
-  $('content').animate([{opacity:.45, transform:'scale(.99)'},{opacity:1, transform:'none'}],
-                       {duration:420, easing:'ease-out'});
-  // The illusion of a CURVED, rippling page comes from self-shadowing ACROSS its width:
-  // alternating dark troughs (where the paper dives away from the light) and bright crests
-  // (where it bulges up). Two blended overlays carry these bands and TRAVEL sideways during
-  // the turn, so the undulations move like a real page flexing — not a flat rotating card.
+    fr(0,     0,   0,         0,     0,   1),
+    fr(.22,  34,  s*w,        2.2,   62,  1.018),
+    fr(.5,   84, -s*w*0.9,    3.2,  104,  1.035),   // high off the page, bowed, halfway over
+    fr(.78, 126,  s*w*0.6,    1.4,   60,  1.014),
+    fr(1,   162,  0,          0,     0,   1),        // laid over onto the other side
+  ], {duration:dur, easing:'cubic-bezier(.38,.03,.24,1)'});
+  $('content').animate([{opacity:.4, transform:'scale(.985)'},{opacity:1, transform:'none'}],
+                       {duration:440, easing:'ease-out'});
+  // a single soft CURL shadow gathers toward the free (leading) edge and deepens as the leaf
+  // lifts — the "sunken" fold — with a bright crest just inboard of it; both travel across so
+  // the fold reads as the paper bending, then releasing.
   const ang = exitLeft ? 90 : 270;
   const from = exitLeft ? '100%' : '0%';
   const to   = exitLeft ? '0%'   : '100%';
-  const shade=ghost.querySelector('.flip-ghost-shade');   // dark troughs (multiply)
+  const shade=ghost.querySelector('.flip-ghost-shade');   // deep fold shadow toward the free edge
   if(shade){
     shade.style.background = `linear-gradient(${ang}deg,`
-      + ' rgba(0,0,0,.34) 0%, rgba(0,0,0,0) 15%, rgba(0,0,0,.26) 34%, rgba(0,0,0,0) 50%,'
-      + ' rgba(0,0,0,.24) 66%, rgba(0,0,0,0) 82%, rgba(0,0,0,.4) 100%)';
-    shade.style.backgroundSize = '210% 100%';
+      + ' rgba(0,0,0,0) 44%, rgba(0,0,0,.12) 64%, rgba(0,0,0,.34) 83%, rgba(0,0,0,.54) 100%)';
+    shade.style.backgroundSize = '230% 100%';
     shade.animate([
-      {opacity:.15, backgroundPositionX:from},
-      {opacity:.85, offset:.5},
-      {opacity:.2,  backgroundPositionX:to},
+      {opacity:.12, backgroundPositionX:from},
+      {opacity:.92, offset:.5},
+      {opacity:.18, backgroundPositionX:to},
     ], {duration:dur, easing:'ease-in-out'});
   }
-  const gloss=ghost.querySelector('.flip-ghost-gloss');   // bright crests between the troughs
+  const gloss=ghost.querySelector('.flip-ghost-gloss');   // bright crest of the curl
   if(gloss){
     gloss.style.background = `linear-gradient(${ang}deg,`
-      + ' rgba(255,255,255,0) 6%, rgba(255,255,255,.55) 24%, rgba(255,255,255,0) 42%,'
-      + ' rgba(255,255,255,.5) 58%, rgba(255,255,255,0) 74%, rgba(255,255,255,.4) 92%)';
-    gloss.style.backgroundSize = '210% 100%';
+      + ' rgba(255,255,255,0) 40%, rgba(255,255,255,.55) 58%, rgba(255,255,255,.9) 66%,'
+      + ' rgba(255,255,255,.4) 74%, rgba(255,255,255,0) 88%)';
+    gloss.style.backgroundSize = '230% 100%';
     gloss.animate([
       {opacity:0, backgroundPositionX:from},
-      {opacity:.95, offset:.5},
+      {opacity:.85, offset:.5},
       {opacity:0, backgroundPositionX:to},
     ], {duration:dur, easing:'ease-in-out'});
   }
   // remove the ghost when the turn ends — plus a hard fallback in case the page
   // is backgrounded (a frozen animation timeline would otherwise never fire onfinish)
   let gone=false; const done=()=>{ if(gone) return; gone=true; ghost.remove(); };
-  a.onfinish=done; a.oncancel=done; setTimeout(done, 800);
+  a.onfinish=done; a.oncancel=done; setTimeout(done, 1000);
 }
 async function crossPortion(delta){
   const ids=S.portions.map(p=>p.id); const pidx=ids.indexOf(S.curPid);
