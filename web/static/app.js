@@ -1801,51 +1801,24 @@ function runFlipGhost(ghost, delta){
   // leaf with a skew that oscillates sign several times (the "wave"), bow it out of plane
   // with an alternating rotateX, and add a touch of rotateZ wobble; amplitude is randomised
   // a little so each turn looks a bit different.
-  const w  = 1.6 + Math.random()*1.2;            // gentle flex (skew), deg
-  const dur = 720;
-  const P = 'perspective(1250px)';
-  // the leaf is PEELED UP by its free edge: it lifts off the surface (translateZ toward the
-  // viewer), bows out of plane (rotateX), and is carried over to the far side by a fuller
-  // rotateY (past upright) — not a flat card spinning in place.
-  const fr = (offset, ry, skew, rx, tz, sc) =>
-    ({ offset, transform:`${P} translateZ(${tz}px) rotateY(${s*ry}deg) rotateX(${rx}deg) skewY(${skew}deg) scale(${sc})` });
+  // Clean, safe page-turn: the leaf pivots around the spine with a gentle lift, and a single
+  // soft shadow deepens toward the free edge then releases. (A photorealistic curl needs a
+  // canvas/WebGL renderer — pending a working visual feedback loop.)
+  const dur = 600, P = 'perspective(1300px)';
   const a=ghost.animate([
-    fr(0,     0,   0,         0,     0,   1),
-    fr(.22,  34,  s*w,        2.2,   62,  1.018),
-    fr(.5,   84, -s*w*0.9,    3.2,  104,  1.035),   // high off the page, bowed, halfway over
-    fr(.78, 126,  s*w*0.6,    1.4,   60,  1.014),
-    fr(1,   162,  0,          0,     0,   1),        // laid over onto the other side
-  ], {duration:dur, easing:'cubic-bezier(.38,.03,.24,1)'});
-  $('content').animate([{opacity:.4, transform:'scale(.985)'},{opacity:1, transform:'none'}],
-                       {duration:440, easing:'ease-out'});
-  // a single soft CURL shadow gathers toward the free (leading) edge and deepens as the leaf
-  // lifts — the "sunken" fold — with a bright crest just inboard of it; both travel across so
-  // the fold reads as the paper bending, then releasing.
-  const ang = exitLeft ? 90 : 270;
-  const from = exitLeft ? '100%' : '0%';
-  const to   = exitLeft ? '0%'   : '100%';
-  const shade=ghost.querySelector('.flip-ghost-shade');   // deep fold shadow toward the free edge
+    { offset:0,  transform:`${P} translateZ(0) rotateY(0deg)` },
+    { offset:.5, transform:`${P} translateZ(46px) rotateY(${s*90}deg)` },
+    { offset:1,  transform:`${P} translateZ(0) rotateY(${s*158}deg)` },
+  ], {duration:dur, easing:'cubic-bezier(.42,.04,.28,1)'});
+  $('content').animate([{opacity:.5, transform:'scale(.99)'},{opacity:1, transform:'none'}],
+                       {duration:400, easing:'ease-out'});
+  const shade=ghost.querySelector('.flip-ghost-shade');
   if(shade){
-    shade.style.background = `linear-gradient(${ang}deg,`
-      + ' rgba(0,0,0,0) 44%, rgba(0,0,0,.12) 64%, rgba(0,0,0,.34) 83%, rgba(0,0,0,.54) 100%)';
-    shade.style.backgroundSize = '230% 100%';
-    shade.animate([
-      {opacity:.12, backgroundPositionX:from},
-      {opacity:.92, offset:.5},
-      {opacity:.18, backgroundPositionX:to},
-    ], {duration:dur, easing:'ease-in-out'});
-  }
-  const gloss=ghost.querySelector('.flip-ghost-gloss');   // bright crest of the curl
-  if(gloss){
-    gloss.style.background = `linear-gradient(${ang}deg,`
-      + ' rgba(255,255,255,0) 40%, rgba(255,255,255,.55) 58%, rgba(255,255,255,.9) 66%,'
-      + ' rgba(255,255,255,.4) 74%, rgba(255,255,255,0) 88%)';
-    gloss.style.backgroundSize = '230% 100%';
-    gloss.animate([
-      {opacity:0, backgroundPositionX:from},
-      {opacity:.85, offset:.5},
-      {opacity:0, backgroundPositionX:to},
-    ], {duration:dur, easing:'ease-in-out'});
+    shade.style.mixBlendMode='multiply';
+    shade.style.background = `linear-gradient(${exitLeft?90:270}deg,`
+      + ' rgba(0,0,0,0) 52%, rgba(0,0,0,.14) 74%, rgba(0,0,0,.34) 90%, rgba(0,0,0,.5) 100%)';
+    shade.animate([{opacity:0},{opacity:.75,offset:.5},{opacity:.1}],
+                  {duration:dur, easing:'ease-in-out'});
   }
   // remove the ghost when the turn ends — plus a hard fallback in case the page
   // is backgrounded (a frozen animation timeline would otherwise never fire onfinish)
