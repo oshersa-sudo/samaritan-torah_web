@@ -1818,27 +1818,35 @@ function runFlipGhost(ghost, delta){
   ], {duration:dur, easing:'cubic-bezier(.36,.02,.24,1)'});
   $('content').animate([{opacity:.45, transform:'scale(.99)'},{opacity:1, transform:'none'}],
                        {duration:420, easing:'ease-out'});
-  // the curl shadow pools toward the page's free edge, deepening as it stands up then
-  // releasing as the leaf falls away — gives the turn its sense of light and volume.
-  const shade=ghost.querySelector('.flip-ghost-shade');
+  // The illusion of a CURVED, rippling page comes from self-shadowing ACROSS its width:
+  // alternating dark troughs (where the paper dives away from the light) and bright crests
+  // (where it bulges up). Two blended overlays carry these bands and TRAVEL sideways during
+  // the turn, so the undulations move like a real page flexing — not a flat rotating card.
+  const ang = exitLeft ? 90 : 270;
+  const from = exitLeft ? '100%' : '0%';
+  const to   = exitLeft ? '0%'   : '100%';
+  const shade=ghost.querySelector('.flip-ghost-shade');   // dark troughs (multiply)
   if(shade){
-    shade.style.background = `linear-gradient(${exitLeft?90:270}deg,`
-      + ' rgba(0,0,0,0) 24%, rgba(0,0,0,.10) 54%, rgba(0,0,0,.32) 86%, rgba(0,0,0,.46) 100%)';
-    shade.animate([{opacity:0},{opacity:.6,offset:.5},{opacity:.12}],
-                  {duration:dur, easing:'ease-in-out'});
+    shade.style.background = `linear-gradient(${ang}deg,`
+      + ' rgba(0,0,0,.34) 0%, rgba(0,0,0,0) 15%, rgba(0,0,0,.26) 34%, rgba(0,0,0,0) 50%,'
+      + ' rgba(0,0,0,.24) 66%, rgba(0,0,0,0) 82%, rgba(0,0,0,.4) 100%)';
+    shade.style.backgroundSize = '210% 100%';
+    shade.animate([
+      {opacity:.15, backgroundPositionX:from},
+      {opacity:.85, offset:.5},
+      {opacity:.2,  backgroundPositionX:to},
+    ], {duration:dur, easing:'ease-in-out'});
   }
-  // a bright specular band sweeps from the spine toward the free edge as the leaf curves —
-  // this "light catching the paper" is what reads as a real, slightly wavy page-turn.
-  const gloss=ghost.querySelector('.flip-ghost-gloss');
+  const gloss=ghost.querySelector('.flip-ghost-gloss');   // bright crests between the troughs
   if(gloss){
-    gloss.style.background = `linear-gradient(${exitLeft?90:270}deg,`
-      + ' rgba(255,255,255,0) 30%, rgba(255,255,255,.5) 50%, rgba(255,255,255,.85) 60%,'
-      + ' rgba(255,255,255,.5) 70%, rgba(255,255,255,0) 92%)';
-    gloss.style.backgroundSize = '260% 100%';
+    gloss.style.background = `linear-gradient(${ang}deg,`
+      + ' rgba(255,255,255,0) 6%, rgba(255,255,255,.55) 24%, rgba(255,255,255,0) 42%,'
+      + ' rgba(255,255,255,.5) 58%, rgba(255,255,255,0) 74%, rgba(255,255,255,.4) 92%)';
+    gloss.style.backgroundSize = '210% 100%';
     gloss.animate([
-      {opacity:0, backgroundPositionX: exitLeft?'100%':'0%'},
-      {opacity:.9, offset:.5},
-      {opacity:0, backgroundPositionX: exitLeft?'0%':'100%'},
+      {opacity:0, backgroundPositionX:from},
+      {opacity:.95, offset:.5},
+      {opacity:0, backgroundPositionX:to},
     ], {duration:dur, easing:'ease-in-out'});
   }
   // remove the ghost when the turn ends — plus a hard fallback in case the page
