@@ -36,3 +36,6 @@ data/meliz/pages/
 
 # re-downloadable Sefaria Onkelos cache
 data/onkelos/cache/
+
+# re-downloadable Sefaria Hebrew cache (for content re-alignment)
+data/onkelos/heb_cache/
