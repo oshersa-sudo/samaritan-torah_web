@@ -39,3 +39,7 @@ data/onkelos/cache/
 
 # re-downloadable Sefaria Hebrew cache (for content re-alignment)
 data/onkelos/heb_cache/
+
+# local visit-analytics DB (admin dashboard) — resets on redeploy without a
+# persistent disk; never meant to be committed
+data/analytics.db

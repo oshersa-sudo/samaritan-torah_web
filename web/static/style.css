@@ -851,6 +851,15 @@ footer a{ color:var(--accent); text-decoration:none; }
 .admin-btn.cancel{ background:#777; }
 .admin-hint{ flex:1 1 100%; color:var(--navy); font-weight:700; font-size:14px; }
 
+/* admin analytics dashboard — one card per visitor session */
+.an-list{ display:flex; flex-direction:column; gap:8px; }
+.an-row{ border:1px solid var(--line); border-radius:8px; padding:8px 10px; background:#fafafa; }
+.an-top{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+.an-top b{ color:var(--navy); font-size:15px; }
+.an-ip{ color:var(--muted); font-size:12.5px; direction:ltr; }
+.an-meta{ color:#555; font-size:12.5px; margin-top:2px; }
+.an-pages{ color:#333; font-size:13px; margin-top:4px; line-height:1.5; }
+
 /* floating bookmark button + tooltip */
 /* end-of-portion marker (Samaritan division): three centered medium asterisks */
 .portion-end{ text-align:center; font-size:20px; letter-spacing:10px; color:var(--navy);

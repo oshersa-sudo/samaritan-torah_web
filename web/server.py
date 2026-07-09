@@ -17,11 +17,18 @@ import difflib
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
+# also make this directory importable for local sibling modules (analytics.py) —
+# needed under gunicorn, which imports us as the package module "web.server"
+# rather than running this file as a script (which would add it automatically)
+_WEB_DIR = os.path.dirname(os.path.abspath(__file__))
+if _WEB_DIR not in sys.path:
+    sys.path.insert(0, _WEB_DIR)
 
 from flask import Flask, jsonify, request, render_template, send_from_directory, send_file
 
 from app.services import database as db
 from app.services.interpreter import get_chapter_interpretations
+import analytics
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -92,7 +99,8 @@ def _throttled(ip):
 
 @app.route('/api/admin/status')
 def admin_status():
-    return jsonify({'enabled': bool(ADMIN_PASSWORD)})
+    return jsonify({'enabled': bool(ADMIN_PASSWORD),
+                     'webauthn': bool(ADMIN_PASSWORD) and analytics.wa_has_credential()})
 
 
 @app.route('/api/admin/login', methods=['POST'])
@@ -108,6 +116,151 @@ def admin_login():
         return jsonify({'ok': True, 'token': _make_token()})
     _LOGIN_FAILS.setdefault(ip, []).append(time.time())
     return jsonify({'ok': False})
+
+
+# ── WebAuthn (phone fingerprint / Face ID) as a second factor for the admin
+# login: register once with the password, then sign in with just the platform
+# authenticator. The challenge is carried in a signed, stateless "state" string
+# (same HMAC trick as the session token) rather than server-side session memory,
+# so it survives being routed to a different gunicorn worker between the two
+# steps of the ceremony.
+import json as _json
+import webauthn
+from webauthn.helpers import bytes_to_base64url, base64url_to_bytes
+from webauthn.helpers.structs import (
+    PublicKeyCredentialDescriptor, AuthenticatorSelectionCriteria,
+    AuthenticatorAttachment, ResidentKeyRequirement, UserVerificationRequirement,
+)
+
+
+def _wa_rp_id():
+    return request.host.split(':')[0]
+
+
+def _wa_origin():
+    return request.host_url.rstrip('/')
+
+
+def _wa_state(challenge):
+    b64 = bytes_to_base64url(challenge)
+    exp = str(int(time.time()) + 300)
+    sig = hmac.new(ADMIN_PASSWORD.encode(), (b64 + '.' + exp).encode(), hashlib.sha256).hexdigest()
+    return b64 + '.' + exp + '.' + sig
+
+
+def _wa_challenge(state):
+    try:
+        b64, exp, sig = str(state).split('.')
+    except Exception:
+        return None
+    if not exp.isdigit() or time.time() > int(exp):
+        return None
+    good = hmac.new(ADMIN_PASSWORD.encode(), (b64 + '.' + exp).encode(), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(sig, good):
+        return None
+    return base64url_to_bytes(b64)
+
+
+def _wa_exclude_or_allow():
+    return [PublicKeyCredentialDescriptor(id=base64url_to_bytes(cid)) for cid in analytics.wa_credential_ids()]
+
+
+@app.route('/api/admin/webauthn/register_options', methods=['POST'])
+def wa_register_options():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    challenge = secrets.token_bytes(32)
+    opts = webauthn.generate_registration_options(
+        rp_id=_wa_rp_id(), rp_name='התורה השומרונית הישראלית',
+        user_name=ADMIN_USER, user_display_name=ADMIN_USER, user_id=ADMIN_USER.encode(),
+        challenge=challenge,
+        authenticator_selection=AuthenticatorSelectionCriteria(
+            authenticator_attachment=AuthenticatorAttachment.PLATFORM,
+            resident_key=ResidentKeyRequirement.PREFERRED,
+            user_verification=UserVerificationRequirement.REQUIRED),
+        exclude_credentials=_wa_exclude_or_allow(),
+    )
+    return jsonify({'ok': True, 'options': _json.loads(webauthn.options_to_json(opts)), 'state': _wa_state(challenge)})
+
+
+@app.route('/api/admin/webauthn/register_verify', methods=['POST'])
+def wa_register_verify():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    challenge = _wa_challenge(d.get('state'))
+    if not challenge:
+        return jsonify({'ok': False, 'error': 'expired, try again'}), 400
+    try:
+        verified = webauthn.verify_registration_response(
+            credential=d.get('credential'), expected_challenge=challenge,
+            expected_rp_id=_wa_rp_id(), expected_origin=_wa_origin())
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 400
+    analytics.wa_add_credential(bytes_to_base64url(verified.credential_id),
+                                 verified.credential_public_key, verified.sign_count)
+    return jsonify({'ok': True})
+
+
+@app.route('/api/admin/webauthn/login_options')
+def wa_login_options():
+    if not ADMIN_PASSWORD or not analytics.wa_has_credential():
+        return jsonify({'ok': False, 'error': 'not available'}), 400
+    challenge = secrets.token_bytes(32)
+    opts = webauthn.generate_authentication_options(
+        rp_id=_wa_rp_id(), challenge=challenge, allow_credentials=_wa_exclude_or_allow(),
+        user_verification=UserVerificationRequirement.REQUIRED)
+    return jsonify({'ok': True, 'options': _json.loads(webauthn.options_to_json(opts)), 'state': _wa_state(challenge)})
+
+
+@app.route('/api/admin/webauthn/login_verify', methods=['POST'])
+def wa_login_verify():
+    if not ADMIN_PASSWORD:
+        return jsonify({'ok': False}), 400
+    d = request.get_json(silent=True) or {}
+    challenge = _wa_challenge(d.get('state'))
+    if not challenge:
+        return jsonify({'ok': False, 'error': 'expired, try again'}), 400
+    cred = d.get('credential') or {}
+    cred_id = cred.get('id')
+    stored = analytics.wa_get_credential(cred_id) if cred_id else None
+    if not stored:
+        return jsonify({'ok': False, 'error': 'unknown credential'}), 400
+    try:
+        verified = webauthn.verify_authentication_response(
+            credential=cred, expected_challenge=challenge,
+            expected_rp_id=_wa_rp_id(), expected_origin=_wa_origin(),
+            credential_public_key=stored['public_key'], credential_current_sign_count=stored['sign_count'])
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 400
+    analytics.wa_update_sign_count(cred_id, verified.new_sign_count)
+    return jsonify({'ok': True, 'token': _make_token()})
+
+
+@app.route('/api/track', methods=['POST'])
+def track_visit():
+    """Public visit beacon (called by every visitor's browser, not just admins) —
+    feeds the admin analytics dashboard. IP/User-Agent are read from the request
+    itself (never trusted from the client body)."""
+    d = request.get_json(silent=True) or {}
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+    ua = request.headers.get('User-Agent', '')
+    sid = str(d.get('sid', ''))[:64]
+    path = str(d.get('path', '') or '')[:200]
+    title = str(d.get('title', '') or '')[:200]
+    try:
+        analytics.track(sid, ip, ua, path, title)
+    except Exception:
+        pass
+    return jsonify({'ok': True})
+
+
+@app.route('/api/admin/analytics')
+def admin_analytics():
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    return jsonify({'ok': True, 'sessions': analytics.recent_sessions(300)})
 
 
 @app.route('/api/admin/download_db')

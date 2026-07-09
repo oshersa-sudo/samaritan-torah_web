@@ -14,3 +14,21 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.4"
+      # admin panel (hamburger menu → כניסת מנהל) + visit analytics. ADMIN_PASSWORD
+      # is a secret: set its value once in the Render dashboard (Environment tab) —
+      # it is never stored in this file or in git. Leaving it unset keeps the admin
+      # panel disabled, same as a local checkout with no .env.
+      - key: ADMIN_USER
+        value: oshersa
+      - key: ADMIN_PASSWORD
+        sync: false
+      # persistent disk so online admin edits + the visit-analytics log survive
+      # across deploys instead of resetting with the ephemeral container disk
+      - key: DB_PATH
+        value: /var/data/torah.db
+      - key: ANALYTICS_DB_PATH
+        value: /var/data/analytics.db
+    disk:
+      name: torah-data
+      mountPath: /var/data
+      sizeGB: 1

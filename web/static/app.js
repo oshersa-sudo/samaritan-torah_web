@@ -21,6 +21,39 @@ const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g
 const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls)e.className=cls;
                                  if(html!=null)e.innerHTML=html; return e; };
 
+// ── visit analytics (session id + page/section pings; feeds the admin dashboard) ──
+// A per-tab session id (sessionStorage — cleared when the tab closes, which is the
+// right lifetime for "time spent this visit"). Never any personal data client-side;
+// IP/device are read server-side from the request itself.
+const _SID = (()=>{
+  try{
+    let s = sessionStorage.getItem('as_sid');
+    if(!s){
+      s = (crypto.randomUUID ? crypto.randomUUID() : (Date.now()+'-'+Math.random().toString(36).slice(2)))
+            .replace(/[^A-Za-z0-9]/g,'').slice(0,32) || 'sid'+Date.now();
+      sessionStorage.setItem('as_sid', s);
+    }
+    return s;
+  }catch(e){ return 'nosession'+Date.now(); }
+})();
+let _lastNavLabel = null;
+function _sendTrack(label){
+  try{
+    const body = JSON.stringify({ sid:_SID, path:label, title:label });
+    if(navigator.sendBeacon) navigator.sendBeacon('/api/track', new Blob([body], {type:'application/json'}));
+    else fetch('/api/track', {method:'POST', headers:{'Content-Type':'application/json'}, body, keepalive:true}).catch(()=>{});
+  }catch(e){}
+}
+function trackNav(label){          // call on real navigation; de-duplicates repeats
+  if(!label || label===_lastNavLabel) return;
+  _lastNavLabel = label;
+  _sendTrack(label);
+}
+setInterval(()=>{ if(_lastNavLabel) _sendTrack(_lastNavLabel); }, 30000);  // heartbeat → extends duration
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState==='hidden' && _lastNavLabel) _sendTrack(_lastNavLabel);
+});
+
 // ── i18n: interface translation (he / en / ar) ───────────────────────────────
 const I18N = {
   he: {
@@ -142,6 +175,11 @@ const I18N = {
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
+    adm_analytics:'📊 נתוני כניסה ופעילות', adm_analytics_empty:'אין עדיין נתוני ביקורים.',
+    adm_analytics_hint:'שם המכשיר מבוסס על מזהה הדפדפן — דפדפנים אינם חושפים את שם הטלפון/המחשב עצמו מטעמי פרטיות.',
+    adm_first:'כניסה ראשונה', adm_last:'פעילות אחרונה', adm_duration:'משך ביקור', adm_min:'ד׳', adm_sec:'שנ׳',
+    wa_setup:'🔒 הפעל כניסה בטביעת אצבע', wa_login:'כניסה בטביעת אצבע', wa_ok:'הכניסה בטביעת אצבע הופעלה בהצלחה.',
+    wa_err:'לא ניתן להפעיל כניסה בטביעת אצבע במכשיר זה.', wa_login_err:'האימות נכשל. נסה שוב או השתמש בסיסמה.',
     admin_dl_db:'⬇ הורד את ה-DB (לסנכרון חזרה)', admin_reseed:'טען DB מהמאגר',
     admin_reseed_q:'פעולה זו תדרוס את ה-DB החי בעותק מהמאגר (git). עריכות שלא הורדו יאבדו. להמשיך?',
     edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
@@ -281,6 +319,11 @@ const I18N = {
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
+    adm_analytics:'📊 Visitor login & activity', adm_analytics_empty:'No visit data yet.',
+    adm_analytics_hint:'The "device" name is guessed from the browser\'s user-agent — browsers don\'t expose the actual phone/computer name, for privacy reasons.',
+    adm_first:'First seen', adm_last:'Last active', adm_duration:'Time on site', adm_min:'m', adm_sec:'s',
+    wa_setup:'🔒 Enable fingerprint sign-in', wa_login:'Sign in with fingerprint', wa_ok:'Fingerprint sign-in enabled successfully.',
+    wa_err:'Fingerprint sign-in isn\'t available on this device.', wa_login_err:'Authentication failed. Try again or use the password.',
     admin_dl_db:'⬇ Download the DB (to sync back)', admin_reseed:'Load DB from repo',
     admin_reseed_q:'This overwrites the live DB with the repo (git) copy. Un-downloaded edits will be lost. Continue?',
     edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
@@ -420,6 +463,11 @@ const I18N = {
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
+    adm_analytics:'📊 بيانات دخول ونشاط الزوار', adm_analytics_empty:'لا توجد بيانات زيارات بعد.',
+    adm_analytics_hint:'اسم الجهاز مُستنتج من بيانات المتصفح — المتصفحات لا تكشف اسم الهاتف/الحاسوب الفعلي لأسباب خصوصية.',
+    adm_first:'أول دخول', adm_last:'آخر نشاط', adm_duration:'مدة الزيارة', adm_min:'د', adm_sec:'ث',
+    wa_setup:'🔒 تفعيل الدخول ببصمة الإصبع', wa_login:'الدخول ببصمة الإصبع', wa_ok:'تم تفعيل الدخول ببصمة الإصبع بنجاح.',
+    wa_err:'الدخول ببصمة الإصبع غير متاح على هذا الجهاز.', wa_login_err:'فشل التحقق. حاول مجددًا أو استخدم كلمة المرور.',
     admin_dl_db:'⬇ تنزيل قاعدة البيانات (للمزامنة)', admin_reseed:'تحميل DB من المستودع',
     admin_reseed_q:'سيؤدي هذا إلى استبدال قاعدة البيانات الحيّة بنسخة المستودع (git). ستُفقد التعديلات غير المنزَّلة. متابعة؟',
     edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
@@ -2102,7 +2150,16 @@ $('pronBtn').onclick = togglePron;
 $('pronBtn').classList.toggle('on', SHOW_PRON);
 
 // ── view chrome (show/hide nav + enable toolbar) ─────────────────────────────
+function navLabel(){
+  if(S.view==='books') return 'רשימת ספרים';
+  if(S.view==='portions') return 'פרשות · '+(S.bookName||'');
+  if(S.view==='spread') return 'פריסת פרקים · '+(S.bookName||'');
+  if(S.view==='chapters'||S.view==='sam_chapters') return (S.bookName||'')+' › '+(S.portionName||'');
+  if(S.view==='verses') return (S.bookName||'')+' › פרק '+(S.curChNum||'')+(S.chMode==='samaritan'?' (שומרוני)':'');
+  return S.view||'';
+}
 function setView(){
+  trackNav(navLabel());
   const isVerse = S.view==='verses';
   const browse = (S.view==='books'||S.view==='portions'||S.view==='spread');
   // the navbar now hosts the back button, so it shows on every screen except search;
@@ -2512,6 +2569,7 @@ function wildMatch(word,pat){
 
 async function doSearch(){
   const q=$('searchInput').value.trim(); if(!q) return;
+  trackNav('חיפוש');
   const exact=$('cbExact').checked, rootFlag=$('cbRoot').checked, aram=$('cbAram').checked;
   const ignoreFinals=$('cbIgnoreFinals').checked, showMeanings=$('cbShowMeanings').checked;
   const rootLetters=$('rootBox').value.trim();
@@ -2696,6 +2754,7 @@ function menuAction(a){
 let DICT_MODE='search';
 function openDictApp(){
   $('dictModal').classList.remove('hidden');
+  trackNav('מילון מילים');
   dictApplyFs();
   DICT_DIR='aram';
   document.querySelectorAll('.dict-dir-btn').forEach(b=>b.classList.toggle('active', b.dataset.dir==='aram'));
@@ -3091,6 +3150,7 @@ function openReader(key){
   $('bookModal').classList.remove('hidden');
   rdApplyFs();
   rdShowToc();
+  trackNav('ספריה · '+t(RD.cfg.titleKey));
 }
 function openTmBook(){ openReader('tm'); }
 function openTzBook(){ openReader('tz'); }
@@ -3655,12 +3715,19 @@ document.querySelectorAll('#langModal .lang-opt, #langModal .close').forEach(b=>
 });
 
 // ── admin editing (login + floating-pencil edit; gated entirely server-side) ──
-const ADMIN = { token:null };
+const ADMIN = { token:null, webauthn:false };
 // reveal "כניסת מנהל" only where admin is enabled (the local server has a password)
-api('admin/status').then(s=>{ if(s && s.enabled){ $('adminSep').classList.remove('hidden'); $('adminMenuItem').classList.remove('hidden'); } }).catch(()=>{});
+api('admin/status').then(s=>{ if(s && s.enabled){
+  $('adminSep').classList.remove('hidden'); $('adminMenuItem').classList.remove('hidden'); ADMIN.webauthn=!!s.webauthn;
+} }).catch(()=>{});
+function waSupported(){
+  return !!(window.PublicKeyCredential && PublicKeyCredential.parseCreationOptionsFromJSON
+            && PublicKeyCredential.parseRequestOptionsFromJSON);
+}
 function openAdminLogin(){
   if(ADMIN.token){ ADMIN.token=null; $('adminMenuItem').textContent=t('m_admin'); paintVerses(); return; } // logout
   $('admErr').textContent=''; $('admUser').value=''; $('admPass').value='';
+  $('admWebauthnBtn').classList.toggle('hidden', !(ADMIN.webauthn && waSupported()));
   $('adminModal').classList.remove('hidden'); $('admUser').focus();
 }
 $('admCancel').onclick=()=>$('adminModal').classList.add('hidden');
@@ -3668,20 +3735,73 @@ $('admLogin').onclick=async ()=>{
   const user=$('admUser').value.trim(), password=$('admPass').value;
   $('admErr').textContent='';
   let r; try{ r=await apiPost('admin/login', {user, password}); }catch(e){ r={ok:false}; }
-  if(r && r.ok){
-    ADMIN.token=r.token; $('adminModal').classList.add('hidden');
-    $('adminMenuItem').textContent='✓ '+t('m_admin');
-    showInfo(t('m_admin'), `<div class="note">${esc(t('admin_on'))}</div>`+adminDbControls());
-    paintVerses();
-  } else { $('admErr').textContent=t('adm_bad'); }
+  if(r && r.ok){ adminLoggedIn(r.token); }
+  else { $('admErr').textContent=t('adm_bad'); }
+};
+function adminLoggedIn(token){
+  ADMIN.token=token; $('adminModal').classList.add('hidden');
+  $('adminMenuItem').textContent='✓ '+t('m_admin');
+  let extra = '';
+  if(!ADMIN.webauthn && waSupported())
+    extra = `<button class="admin-btn" onclick="waRegister()">${esc(t('wa_setup'))}</button>`;
+  showInfo(t('m_admin'), `<div class="note">${esc(t('admin_on'))}</div>`
+    +`<div class="note" style="margin-top:10px;display:flex;flex-direction:column;gap:6px">${extra}</div>`+adminDbControls());
+  paintVerses();
+}
+// register this device's fingerprint/Face ID so future admin logins can skip the password
+async function waRegister(){
+  if(!ADMIN.token) return;
+  try{
+    const r = await apiPost('admin/webauthn/register_options', {token:ADMIN.token});
+    if(!r || !r.ok) throw new Error('no options');
+    const options = PublicKeyCredential.parseCreationOptionsFromJSON(r.options);
+    const cred = await navigator.credentials.create({publicKey: options});
+    const v = await apiPost('admin/webauthn/register_verify', {token:ADMIN.token, state:r.state, credential:cred.toJSON()});
+    if(v && v.ok){ ADMIN.webauthn=true; showInfo(t('m_admin'), `<div class="note">✓ ${esc(t('wa_ok'))}</div>`+adminDbControls()); }
+    else showInfo(t('m_admin'), `<div class="note">${esc((v&&v.error)||t('wa_err'))}</div>`+adminDbControls());
+  }catch(e){ showInfo(t('m_admin'), `<div class="note">${esc(t('wa_err'))}</div>`+adminDbControls()); }
+}
+$('admWebauthnBtn').onclick=async ()=>{
+  $('admErr').textContent='';
+  try{
+    const r = await fetch('/api/admin/webauthn/login_options').then(x=>x.json());
+    if(!r || !r.ok) throw new Error('not available');
+    const options = PublicKeyCredential.parseRequestOptionsFromJSON(r.options);
+    const cred = await navigator.credentials.get({publicKey: options});
+    const v = await apiPost('admin/webauthn/login_verify', {state:r.state, credential:cred.toJSON()});
+    if(v && v.ok) adminLoggedIn(v.token);
+    else $('admErr').textContent=t('wa_login_err');
+  }catch(e){ $('admErr').textContent=t('wa_login_err'); }
 };
 // admin DB sync controls (download the live DB to commit back; re-seed from repo)
 function adminDbControls(){
   if(!ADMIN.token) return '';
   return `<div class="note" style="margin-top:10px;display:flex;flex-direction:column;gap:6px">`
+    + `<button class="admin-btn" onclick="openAnalytics()">${esc(t('adm_analytics'))}</button>`
     + `<a class="admin-btn" style="text-decoration:none;text-align:center" `
     + `href="/api/admin/download_db?token=${encodeURIComponent(ADMIN.token)}">${esc(t('admin_dl_db'))}</a>`
     + `<button class="admin-btn cancel" onclick="adminReseed()">${esc(t('admin_reseed'))}</button></div>`;
+}
+// admin analytics dashboard — who visited (device/IP), how long, which pages
+async function openAnalytics(){
+  if(!ADMIN.token) return;
+  let r; try{ r = await fetch('/api/admin/analytics?token='+encodeURIComponent(ADMIN.token)).then(x=>x.json()); }
+  catch(e){ r={ok:false}; }
+  if(!r || !r.ok){ showInfo(t('adm_analytics'), `<div class="note">${esc(t('edit_err'))}</div>`); return; }
+  const rows = r.sessions||[];
+  if(!rows.length){ showInfo(t('adm_analytics'), `<div class="note">${esc(t('adm_analytics_empty'))}</div>`); return; }
+  const locale = LANG==='he'?'he-IL':(LANG==='ar'?'ar':'en-US');
+  const fmt = ts => ts ? new Date(ts*1000).toLocaleString(locale) : '';
+  const dur = sec => { sec=sec||0; const m=Math.floor(sec/60), s=sec%60;
+    return m>0 ? `${m}${t('adm_min')} ${s}${t('adm_sec')}` : `${s}${t('adm_sec')}`; };
+  const html = `<div class="note" style="margin-bottom:8px">${esc(t('adm_analytics_hint'))}</div>`
+    + '<div class="an-list">' + rows.map(s => `
+      <div class="an-row">
+        <div class="an-top"><b>${esc(s.device||'?')}</b><span class="an-ip">${esc(s.ip||'')}</span></div>
+        <div class="an-meta">${esc(t('adm_first'))}: ${esc(fmt(s.first_seen))} · ${esc(t('adm_last'))}: ${esc(fmt(s.last_seen))} · ${esc(t('adm_duration'))}: ${dur(s.duration)}</div>
+        <div class="an-pages">${(s.pages||[]).map(p=>esc(p.label)+(p.count>1?` ×${p.count}`:'')).join(' · ')}</div>
+      </div>`).join('') + '</div>';
+  showInfo(t('adm_analytics'), html);
 }
 async function adminReseed(){
   if(!ADMIN.token) return;
