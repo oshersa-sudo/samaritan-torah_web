@@ -183,6 +183,7 @@ const I18N = {
     admin_dl_db:'⬇ הורד את ה-DB (לסנכרון חזרה)', admin_reseed:'טען DB מהמאגר',
     admin_reseed_q:'פעולה זו תדרוס את ה-DB החי בעותק מהמאגר (git). עריכות שלא הורדו יאבדו. להמשיך?',
     edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
+    edit_which_ver:'לאיזה נוסח לבצע את השינוי?',
     merge_next:'אחד עם הבא', split_chapter:'פצל פרק', split_verse:'פצל פסוק',
     split_pick:'בחר את הפסוק שאחריו יחל הפרק החדש (לחץ על מספר פסוק)', split_cancel:'ביטול פיצול',
     vsplit_pick:'בחר פסוק לפיצול (לחץ על מספר פסוק)',
@@ -327,6 +328,7 @@ const I18N = {
     admin_dl_db:'⬇ Download the DB (to sync back)', admin_reseed:'Load DB from repo',
     admin_reseed_q:'This overwrites the live DB with the repo (git) copy. Un-downloaded edits will be lost. Continue?',
     edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
+    edit_which_ver:'Which version do you want to edit?',
     merge_next:'Merge with next', split_chapter:'Split chapter', split_verse:'Split verse',
     split_pick:'Choose the verse after which the new chapter starts (tap a verse number)', split_cancel:'Cancel split',
     vsplit_pick:'Choose a verse to split (tap a verse number)',
@@ -471,6 +473,7 @@ const I18N = {
     admin_dl_db:'⬇ تنزيل قاعدة البيانات (للمزامنة)', admin_reseed:'تحميل DB من المستودع',
     admin_reseed_q:'سيؤدي هذا إلى استبدال قاعدة البيانات الحيّة بنسخة المستودع (git). ستُفقد التعديلات غير المنزَّلة. متابعة؟',
     edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
+    edit_which_ver:'ما هو النصّ الذي تريد تعديله؟',
     merge_next:'دمج مع التالي', split_chapter:'تقسيم الأصحاح', split_verse:'تقسيم الآية',
     split_pick:'اختر الآية التي يبدأ بعدها الأصحاح الجديد (اضغط رقم آية)', split_cancel:'إلغاء التقسيم',
     vsplit_pick:'اختر آية للتقسيم (اضغط رقم آية)',
@@ -986,6 +989,11 @@ async function buildCompare(c, verses){
       // no Onkelos for this verse → a dashed line (Samaritan-only verse)
       const oc=el('div','cmp-cell', hasOnk ? onk : '<span class="cmp-dashline" aria-label="אין באונקלוס"></span>');
       [sc,ac,oc].forEach(x=>x.style.fontSize=fs+'px');
+      addCmpPencil(sc, v.id, [
+        {column:'text', label:t('cmp_source'), getText:()=>v.text||''},
+        {column:'sam_aramaic', label:t('cmp_aram'), getText:()=>v.sam_aramaic||''},
+        {column:'onkelos_text', label:t('cv_onkelos'), getText:()=>v.onkelos_text||''},
+      ]);
       grid.appendChild(sc); grid.appendChild(ac); grid.appendChild(oc);
     });
     c.appendChild(grid);
@@ -1003,6 +1011,7 @@ async function buildCompare(c, verses){
   const _CVK = {masoretic:['cv_masoretic','ci_masoretic'], septuagint:['cv_septuagint','ci_septuagint'],
                 qumran:['cv_qumran','ci_qumran']};
   const _ck = _CVK[ver] || _CVK.masoretic;
+  const otherCol = {masoretic:'masoretic_text', septuagint:'lxx_text', qumran:'qumran_text'}[ver] || 'masoretic_text';
   const ph = el('div','note','טוען השוואה…'); c.appendChild(ph);
   const data = await apiPost('compare', {verses: verses.map(v=>{
     const mas = String(v.masnum!=null ? v.masnum : v.number);
@@ -1028,16 +1037,21 @@ async function buildCompare(c, verses){
   lh.appendChild(info);
   grid.appendChild(lh);
   grid.appendChild(el('div','cmp-cell cmp-head', t('cmp_sam')));
-  for(const d of data){
+  verses.forEach((v,i)=>{
+    const d=data[i]; if(!d) return;
     const m=render(d.mas).trim(), s=render(d.sam).trim();
-    if(!m && !s) continue;
+    if(!m && !s) return;
     // Qumran verses not preserved in any scroll show a dashed line instead of "- - -"
     const miss = (ver==='qumran') ? '<span class="cmp-dashline"></span>' : '<span class="cmp-missing">- - -</span>';
     const mc=el('div','cmp-cell', m || miss);
     const sc=el('div','cmp-cell', s || '<span class="cmp-missing">- - -</span>');
     mc.style.fontSize=fs+'px'; sc.style.fontSize=fs+'px';
+    addCmpPencil(mc, v.id, [
+      {column:otherCol, label:t(_ck[0]), getText:()=>v[otherCol]||''},
+      {column:'text', label:t('cmp_sam'), getText:()=>v.text||''},
+    ]);
     grid.appendChild(mc); grid.appendChild(sc);
-  }
+  });
   c.appendChild(grid);
 }
 async function buildInterpret(c, verses){
@@ -3817,6 +3831,25 @@ function addPencil(rowEl, verseId, column, getText){
   const p=el('button','edit-pencil','✎'); p.title=t('edit_title');
   p.onclick=(ev)=>{ ev.stopPropagation(); openEdit(verseId, column, getText()); };
   rowEl.prepend(p);   // leftmost (the row is LTR) → floats to the left of the text
+}
+// comparison-view pencil (admin only): a verse row here holds MULTIPLE text columns
+// (e.g. source + Onkelos) — clicking always asks which one to edit before opening
+// the normal edit window, since there's no single "the" text for that row.
+function addCmpPencil(cellEl, verseId, fields){
+  if(!ADMIN.token || !fields.length) return;
+  const p=el('button','edit-pencil','✎'); p.title=t('edit_title');
+  p.onclick=(ev)=>{ ev.stopPropagation(); chooseCmpField(verseId, fields); };
+  cellEl.prepend(p);
+}
+function chooseCmpField(verseId, fields){
+  const html = '<div class="note" style="display:flex;flex-direction:column;gap:6px">'
+    + fields.map((f,i)=>`<button class="admin-btn" data-i="${i}">${esc(f.label)}</button>`).join('')
+    + '</div>';
+  showInfo(t('edit_which_ver'), html);
+  $('infoBody').querySelectorAll('button[data-i]').forEach(btn=>{
+    const f = fields[+btn.dataset.i];
+    btn.onclick=()=>{ $('infoModal').classList.add('hidden'); openEdit(verseId, f.column, f.getText()); };
+  });
 }
 let _editCtx=null;
 function openEdit(verseId, column, text){
