@@ -575,6 +575,96 @@ def admin_split_verse():
     return jsonify({'ok': True, 'new_number': new_number})
 
 
+# ── comparison-text "reflow" ops (split / merge across ADJACENT rows) ──────────
+# The Masoretic/LXX/Onkelos/Qumran/Aramaic columns have no independent verse
+# numbering of their own — each is just a string field living on the same
+# Samaritan verse row. So unlike admin_split_verse (which creates a genuine new
+# Samaritan maqaf verse), "splitting"/"merging" these can only move a chunk of
+# text between THIS row and the adjacent one — no new row, no renumbering.
+# next_verse_id is supplied by the client from its already-correctly-ordered
+# S.verses array, rather than re-derived here from the mixed-format `number`
+# column (which is not safe to ORDER BY numerically as-is).
+_CMP_REFLOW_COLS = {'masoretic_text', 'lxx_text', 'onkelos_text', 'qumran_text', 'sam_aramaic'}
+
+
+def _cmp_reflow_rows(conn, column, verse_id, next_id):
+    v = conn.execute('SELECT chapter_id, %s AS val FROM verses WHERE id=?' % column, (verse_id,)).fetchone()
+    nv = conn.execute('SELECT chapter_id, %s AS val FROM verses WHERE id=?' % column, (next_id,)).fetchone()
+    if not v or not nv:
+        return None, None, 'verse not found'
+    if v['chapter_id'] != nv['chapter_id']:
+        return None, None, 'הפסוקים אינם באותו פרק'
+    return v, nv, None
+
+
+@app.route('/api/admin/cmp_split_next', methods=['POST'])
+def admin_cmp_split_next():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    column = d.get('column')
+    if column not in _CMP_REFLOW_COLS:
+        return jsonify({'ok': False, 'error': 'field not splittable'}), 400
+    try:
+        verse_id = int(d.get('verse_id'))
+        next_id = int(d.get('next_verse_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    text1, text2 = d.get('text1'), d.get('text2')
+    if not isinstance(text1, str) or not isinstance(text2, str) or not text1.strip() or not text2.strip():
+        return jsonify({'ok': False, 'error': 'שני החלקים חייבים להכיל טקסט'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        v, nv, err = _cmp_reflow_rows(conn, column, verse_id, next_id)
+        if err:
+            return jsonify({'ok': False, 'error': err}), 400
+        existing_next = (nv['val'] or '').strip()
+        merged_next = (text2.strip() + (' ' + existing_next if existing_next else '')).strip()
+        conn.execute('UPDATE verses SET %s=? WHERE id=?' % column, (text1.strip(), verse_id))
+        conn.execute('UPDATE verses SET %s=? WHERE id=?' % column, (merged_next, next_id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True})
+
+
+@app.route('/api/admin/cmp_merge_next', methods=['POST'])
+def admin_cmp_merge_next():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    column = d.get('column')
+    if column not in _CMP_REFLOW_COLS:
+        return jsonify({'ok': False, 'error': 'field not mergeable'}), 400
+    try:
+        verse_id = int(d.get('verse_id'))
+        next_id = int(d.get('next_verse_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        v, nv, err = _cmp_reflow_rows(conn, column, verse_id, next_id)
+        if err:
+            return jsonify({'ok': False, 'error': err}), 400
+        cur = (v['val'] or '').strip()
+        nxt = (nv['val'] or '').strip()
+        merged = (cur + (' ' + nxt if nxt else '')).strip()
+        conn.execute('UPDATE verses SET %s=? WHERE id=?' % column, (merged, verse_id))
+        conn.execute('UPDATE verses SET %s=? WHERE id=?' % column, ('', next_id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True})
+
+
 # Change a verse's SAMARITAN-division number (verses.sam_number) — the Jewish
 # `number` is never touched. With cascade=True, every following verse in the same
 # Jewish chapter (real integer base >= the target's) has its effective Samaritan

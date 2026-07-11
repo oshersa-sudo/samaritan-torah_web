@@ -191,6 +191,12 @@ const I18N = {
     vsplit_hint:'החלק הראשון יישאר במספר הפסוק הנוכחי; החלק השני יהפוך לפסוק חדש עם מקף ומספר רץ (נראה בחלוקה השומרונית בלבד).',
     vsplit_p1:'חלק ראשון — נשאר פסוק', vsplit_p2:'חלק שני — פסוק חדש',
     vsplit_err:'יש למלא את שני החלקים.', vsplit_ok:'הפסוק פוצל. הפסוק החדש:',
+    cmp_act_split:'פצל (העבר חלק לפסוק הבא)', cmp_act_merge:'אחד עם הפסוק הבא',
+    cmp_split_title:'פיצול טקסט ההשוואה', cmp_split_hint:'החלק הראשון יישאר בפסוק זה; החלק השני יעבור אל תחילת הטקסט בפסוק הבא — בנוסח שנבחר בלבד, השומרוני אינו משתנה.',
+    cmp_split_p1:'חלק ראשון — נשאר כאן', cmp_split_p2:'חלק שני — עובר לפסוק הבא',
+    cmp_split_ok:'הטקסט פוצל בין הפסוקים.',
+    cmp_merge_q:'לאחד את הטקסט (בנוסח שנבחר) עם הפסוק הבא? תוכן הפסוק הבא באותו נוסח יתרוקן.',
+    cmp_merge_ok:'הטקסטים אוחדו.',
     renum:'שנה מספר', renum_pick:'בחר פסוק לשינוי מספר (לחץ על מספר פסוק)',
     renum_title:'שינוי מספר פסוק', renum_cur:'מספר נוכחי:', renum_empty:'יש להזין מספר.',
     renum_cascade_q:'לשנות את כל הפסוקים הבאים בהתאם?', renum_cascade_yes:'כן, שנה את כל הבאים',
@@ -336,6 +342,12 @@ const I18N = {
     vsplit_hint:'The first part keeps the current verse number; the second becomes a new verse with a hyphen and running number (shown in the Samaritan division only).',
     vsplit_p1:'First part — stays verse', vsplit_p2:'Second part — new verse',
     vsplit_err:'Both parts are required.', vsplit_ok:'Verse split. New verse:',
+    cmp_act_split:'Split (move part to next verse)', cmp_act_merge:'Merge with next verse',
+    cmp_split_title:'Split comparison text', cmp_split_hint:'The first part stays on this verse; the second moves to the start of the next verse’s text — only for the chosen version, the Samaritan text is unaffected.',
+    cmp_split_p1:'First part — stays here', cmp_split_p2:'Second part — moves to next verse',
+    cmp_split_ok:'Text split between the verses.',
+    cmp_merge_q:'Merge this text (in the chosen version) with the next verse? The next verse’s text in that version will be cleared.',
+    cmp_merge_ok:'Texts merged.',
     renum:'Change number', renum_pick:'Choose a verse to renumber (tap a verse number)',
     renum_title:'Change verse number', renum_cur:'Current number:', renum_empty:'Enter a number.',
     renum_cascade_q:'Renumber all following verses accordingly?', renum_cascade_yes:'Yes, all following',
@@ -481,6 +493,12 @@ const I18N = {
     vsplit_hint:'يبقى الجزء الأول برقم الآية الحالي؛ ويصبح الجزء الثاني آية جديدة بشَرطة ورقم متسلسل (تظهر في التقسيم السامري فقط).',
     vsplit_p1:'الجزء الأول — يبقى آية', vsplit_p2:'الجزء الثاني — آية جديدة',
     vsplit_err:'كلا الجزأين مطلوبان.', vsplit_ok:'تم تقسيم الآية. الآية الجديدة:',
+    cmp_act_split:'تقسيم (نقل جزء إلى الآية التالية)', cmp_act_merge:'دمج مع الآية التالية',
+    cmp_split_title:'تقسيم نصّ المقارنة', cmp_split_hint:'يبقى الجزء الأول في هذه الآية؛ وينتقل الجزء الثاني إلى بداية نصّ الآية التالية — للنسخة المختارة فقط، دون أن يتأثر النصّ السامري.',
+    cmp_split_p1:'الجزء الأول — يبقى هنا', cmp_split_p2:'الجزء الثاني — ينتقل للآية التالية',
+    cmp_split_ok:'تمّ تقسيم النصّ بين الآيتين.',
+    cmp_merge_q:'دمج هذا النصّ (في النسخة المختارة) مع الآية التالية؟ سيُفرَّغ نصّ الآية التالية في تلك النسخة.',
+    cmp_merge_ok:'تمّ دمج النصوص.',
     renum:'تغيير الرقم', renum_pick:'اختر آية لتغيير رقمها (اضغط رقم آية)',
     renum_title:'تغيير رقم الآية', renum_cur:'الرقم الحالي:', renum_empty:'أدخل رقمًا.',
     renum_cascade_q:'إعادة ترقيم كل الآيات التالية تبعًا لذلك؟', renum_cascade_yes:'نعم، كل التالية',
@@ -3848,8 +3866,62 @@ function chooseCmpField(verseId, fields){
   showInfo(t('edit_which_ver'), html);
   $('infoBody').querySelectorAll('button[data-i]').forEach(btn=>{
     const f = fields[+btn.dataset.i];
-    btn.onclick=()=>{ $('infoModal').classList.add('hidden'); openEdit(verseId, f.column, f.getText()); };
+    btn.onclick=()=>{ $('infoModal').classList.add('hidden'); chooseCmpAction(verseId, f); };
   });
+}
+// step 2: what to do with the chosen version's text on this row. Split/merge only
+// make sense for the comparison-only columns (not 'text' — the Samaritan verse
+// already has its own real split/merge/renumber tools elsewhere), and only when
+// a next verse exists in S.verses to move text to/from (client-side order, which
+// is already the correct reading order — safer than re-deriving it server-side).
+function chooseCmpAction(verseId, field){
+  const idx=(S.verses||[]).findIndex(x=>x.id===verseId);
+  const nextV = idx>=0 ? (S.verses[idx+1]||null) : null;
+  const structural = field.column!=='text';
+  let html = '<div class="note" style="display:flex;flex-direction:column;gap:6px">'
+    + `<button class="admin-btn" id="cmpActEdit">${esc(t('edit_title'))}</button>`;
+  if(structural && nextV) html += `<button class="admin-btn" id="cmpActSplit">${esc(t('cmp_act_split'))}</button>`
+                                 + `<button class="admin-btn" id="cmpActMerge">${esc(t('cmp_act_merge'))}</button>`;
+  html += '</div>';
+  showInfo(field.label, html);
+  $('infoBody').querySelector('#cmpActEdit').onclick=()=>{ $('infoModal').classList.add('hidden'); openEdit(verseId, field.column, field.getText()); };
+  const sb=$('infoBody').querySelector('#cmpActSplit');
+  if(sb) sb.onclick=()=>{ $('infoModal').classList.add('hidden'); openCmpSplit(verseId, nextV.id, field); };
+  const mb=$('infoBody').querySelector('#cmpActMerge');
+  if(mb) mb.onclick=()=>{ $('infoModal').classList.add('hidden'); cmpMergeNext(verseId, nextV.id, field); };
+}
+// split the chosen version's text: part 1 stays on this verse, part 2 moves to
+// the START of the next verse's text in that same version (prepended, so any
+// text already there is preserved) — no new verse/row is created.
+function openCmpSplit(verseId, nextId, field){
+  const m=el('div','modal');
+  m.innerHTML=`<div class="modal-box">
+     <div class="modal-title">${esc(t('cmp_split_title'))} — ${esc(field.label)}</div>
+     <div class="note" style="margin-bottom:4px">${esc(t('cmp_split_hint'))}</div>
+     <label class="vsplit-lab">${esc(t('cmp_split_p1'))}</label>
+     <textarea id="csP1" class="vsplit-area" dir="rtl"></textarea>
+     <label class="vsplit-lab">${esc(t('cmp_split_p2'))}</label>
+     <textarea id="csP2" class="vsplit-area" dir="rtl"></textarea>
+     <div class="note" id="csErr" style="color:#b00;min-height:1em"></div>
+     <button class="share-opt" style="background:#3a6b34" id="csGo">${esc(t('vsplit_btn'))}</button>
+     <button class="share-opt close" id="csCancel">${esc(t('c_cancel'))}</button>
+   </div>`;
+  document.body.appendChild(m);
+  m.querySelector('#csP1').value=field.getText();
+  m.querySelector('#csCancel').onclick=()=>m.remove();
+  m.querySelector('#csGo').onclick=async ()=>{
+    const text1=m.querySelector('#csP1').value.trim(), text2=m.querySelector('#csP2').value.trim();
+    if(!text1 || !text2){ m.querySelector('#csErr').textContent=t('vsplit_err'); return; }
+    let r; try{ r=await apiPost('admin/cmp_split_next', {token:ADMIN.token, verse_id:verseId, next_verse_id:nextId, column:field.column, text1, text2}); }catch(e){ r={ok:false}; }
+    if(r && r.ok){ m.remove(); await reloadChapters(); showInfo(t('m_admin'), `<div class="note">${esc(t('cmp_split_ok'))}</div>`); }
+    else { m.querySelector('#csErr').textContent=(r&&r.error)||t('edit_err'); }
+  };
+}
+async function cmpMergeNext(verseId, nextId, field){
+  if(!await askConfirm(t('cmp_act_merge'), t('cmp_merge_q'), t('confirm_yes'), t('c_cancel'))) return;
+  let r; try{ r=await apiPost('admin/cmp_merge_next', {token:ADMIN.token, verse_id:verseId, next_verse_id:nextId, column:field.column}); }catch(e){ r={ok:false}; }
+  if(r&&r.ok){ await reloadChapters(); showInfo(t('m_admin'), `<div class="note">${esc(t('cmp_merge_ok'))}</div>`); }
+  else showInfo(t('m_admin'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
 }
 let _editCtx=null;
 function openEdit(verseId, column, text){
