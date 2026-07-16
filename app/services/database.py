@@ -1138,6 +1138,10 @@ def get_piyutim_chapter(pid):
         qs = ','.join('?' * len(words))
         for wr in conn.execute('SELECT word, gloss FROM piyutim_dict WHERE word IN (%s)' % qs, tuple(words)):
             gloss[wr['word']] = wr['gloss']
+        # tal_word_gloss (the Torah word-dictionary's 14,515-word table) as a free
+        # fallback for the many words piyutim's own small ~300-word glossary misses
+        for w, g in _piy_gloss_fallback(conn, [w for w in words if w not in gloss]).items():
+            gloss[w] = g
     conn.close()
     out = dict(r)
     out['dict'] = gloss
@@ -1183,7 +1187,20 @@ def _piy_phon_key(s, n):
 _PIY_ROW_COLS = 'word, freq, freq_clean, rhyme_key, rhyme_human, rhyme_conf, rhyme_method, definition, occurrences'
 
 
-def _piy_rowdicts(rows):
+def _piy_gloss_fallback(conn, words):
+    """tal_word_gloss (14,515 Aramaic/Hebrew words, already built for the Torah's
+    own word-dictionary) as a free fallback wherever piyutim's own small
+    definition/dictionary is empty -- liturgical vocabulary overlaps heavily with
+    Targum/Torah vocabulary, so this covers far more words than piyutim_dict alone."""
+    words = [w for w in set(words) if w]
+    if not words:
+        return {}
+    qs = ','.join('?' * len(words))
+    rows = conn.execute('SELECT word, gloss FROM tal_word_gloss WHERE word IN (%s)' % qs, tuple(words))
+    return {r['word']: r['gloss'] for r in rows if (r['gloss'] or '').strip()}
+
+
+def _piy_rowdicts(conn, rows):
     out = []
     for r in rows:
         d = dict(r)
@@ -1192,17 +1209,34 @@ def _piy_rowdicts(rows):
         except (TypeError, ValueError):
             d['occurrences'] = []
         out.append(d)
+    missing = [d['word'] for d in out if not (d.get('definition') or '').strip()]
+    fallback = _piy_gloss_fallback(conn, missing)
+    for d in out:
+        if not (d.get('definition') or '').strip() and d['word'] in fallback:
+            d['definition'] = fallback[d['word']]
     out.sort(key=lambda x: (-(x['freq_clean'] or 0), -(x['freq'] or 0)))
     return out
 
 
 def _piy_word_rows(conn, where, params):
     rows = conn.execute('SELECT %s FROM piyutim_words WHERE %s' % (_PIY_ROW_COLS, where), params).fetchall()
-    return _piy_rowdicts(rows)
+    return _piy_rowdicts(conn, rows)
+
+
+_PIY_HEB = re.compile(r'[א-ת]')
+
+
+def _piy_syllable_estimate(word):
+    """Very rough syllable-count GUESS for unvocalized Hebrew/Aramaic text (there's
+    no niqqud here to count real vowels) -- treated as roughly one syllable per two
+    consonants. Meant only to group words of similar length/rhythm for the "same
+    syllable count" filter, not as a linguistically exact syllabification."""
+    n = len(_PIY_HEB.findall(word or ''))
+    return max(1, round(n / 2.2))
 
 
 def piyutim_rhyme_sounds():
-    """Distinct rhyme-group keys (for the "sound" mode dropdown)."""
+    """Distinct rhyme-group keys (for the "sound" mode's optional group picker)."""
     conn = get_connection()
     rows = conn.execute("""SELECT DISTINCT rhyme_key FROM piyutim_words
         WHERE rhyme_key IS NOT NULL ORDER BY rhyme_key""").fetchall()
@@ -1210,28 +1244,42 @@ def piyutim_rhyme_sounds():
     return [r['rhyme_key'] for r in rows]
 
 
-def piyutim_rhyme_search(mode, q, clean_only=False):
-    """Mirrors the standalone rhyme-finder's three modes:
-    - 'sound': every word tagged with the given rhyme_key (q is the key itself).
-    - 'word': if q is itself in the corpus and has a book-derived rhyme_key, every
-      OTHER word sharing that key; else a phonetic-suffix fallback (last 3 letters,
-      folded so ה/ח/ע and finals collapse, matching Samaritan pronunciation).
-    - 'suffix': every word whose finals-folded form ends with the (finals-folded) q.
+def piyutim_rhyme_search(mode, q, clean_only=False, start_letter='', group=''):
+    """Three ending-match modes (per the user's spec) plus an optional starting-
+    letter filter combinable with any of them:
+    - 'exact': other words whose RAW (unfolded) ending is exactly the same letters
+      as q's ending -- a literal spelling match.
+    - 'syll': other words with the same rough syllable-count estimate as q (see
+      _piy_syllable_estimate -- an approximation, unvocalized text has no real
+      syllable marking).
+    - 'sound': phonetic ending match -- if q is itself in the corpus with a
+      book-derived rhyme group, every other word in that group; else a folded
+      phonetic-suffix fallback (ה/ח/ע and finals collapsed). If `group` is given
+      instead of typing a word, jumps straight to that explicit rhyme_key group.
     """
     q = (q or '').strip()
+    start_letter = (start_letter or '').strip()
+    group = (group or '').strip()
     conn = get_connection()
     try:
-        if mode == 'sound':
-            out = _piy_word_rows(conn, 'rhyme_key=?', (q,))
-        elif mode == 'suffix':
+        if group:
+            out = _piy_word_rows(conn, 'rhyme_key=?', (group,))
+        elif mode == 'exact':
             if not q:
                 return []
-            # arbitrary-length suffix match against a computed fold isn't indexable,
+            # arbitrary-length suffix match against raw text isn't indexable,
             # so scan once in Python rather than risk a huge IN(...) parameter list
-            k = _piy_fold_finals(q)
+            k = q[-min(3, len(q)):]
             all_rows = conn.execute('SELECT %s FROM piyutim_words' % _PIY_ROW_COLS).fetchall()
-            out = _piy_rowdicts([r for r in all_rows if _piy_fold_finals(r['word']).endswith(k)])
-        else:  # 'word'
+            out = _piy_rowdicts(conn, [r for r in all_rows if r['word'] != q and r['word'].endswith(k)])
+        elif mode == 'syll':
+            if not q:
+                return []
+            target = _piy_syllable_estimate(q)
+            all_rows = conn.execute('SELECT %s FROM piyutim_words' % _PIY_ROW_COLS).fetchall()
+            out = _piy_rowdicts(conn, [r for r in all_rows
+                                        if r['word'] != q and _piy_syllable_estimate(r['word']) == target])
+        else:  # 'sound'
             if not q:
                 return []
             me = conn.execute('SELECT rhyme_key FROM piyutim_words WHERE word=?', (q,)).fetchone()
@@ -1242,6 +1290,8 @@ def piyutim_rhyme_search(mode, q, clean_only=False):
                 out = [w for w in _piy_word_rows(conn, 'phon3=?', (k,)) if w['word'] != q]
     finally:
         conn.close()
+    if start_letter:
+        out = [w for w in out if w['word'].startswith(start_letter)]
     if clean_only:
         out = [w for w in out if (w['freq_clean'] or 0) > 0]
     return out[:400]

@@ -834,6 +834,9 @@ footer a{ color:var(--accent); text-decoration:none; }
 .rhy-controls input[type=text], .rhy-controls select{ padding:8px 11px; border:1px solid #cfd6e6;
   border-radius:8px; font:inherit; font-size:15px; }
 .rhy-clean{ font-size:13px; color:var(--muted); display:flex; align-items:center; gap:4px; }
+.rhy-or{ color:var(--muted); font-size:13px; }
+.rhy-startletter{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); }
+.rhy-startletter input{ width:44px; text-align:center; }
 .rhy-summary{ color:var(--muted); font-size:13.5px; margin:8px 2px; }
 .rhy-results{ flex:1 1 auto; min-height:0; overflow-y:auto; }
 .rhy-table{ width:100%; border-collapse:collapse; }

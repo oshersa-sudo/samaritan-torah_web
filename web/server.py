@@ -1185,10 +1185,12 @@ def api_piyutim_rhyme_sounds():
 
 @app.route('/api/piyutim_rhyme')
 def api_piyutim_rhyme():
-    mode = request.args.get('mode', 'word')
+    mode = request.args.get('mode', 'sound')
     q = request.args.get('q', '')
     clean_only = request.args.get('clean_only') == '1'
-    return jsonify(db.piyutim_rhyme_search(mode, q, clean_only))
+    start_letter = request.args.get('start_letter', '')
+    group = request.args.get('group', '')
+    return jsonify(db.piyutim_rhyme_search(mode, q, clean_only, start_letter, group))
 
 
 @app.route('/api/shyt')

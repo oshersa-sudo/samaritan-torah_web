@@ -313,6 +313,7 @@
     <div class="rd-top">
       <button id="piyToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
       <button id="piyToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
+      <button id="piyToRhyme" class="rd-tolib hidden" data-i18n="piy_to_rhyme" title="חזרה לחיפוש החרוזים">🎵 לחיפוש</button>
       <button id="piyBack" class="tm-back hidden" data-i18n="piy_back_tree">חזרה לתוכן</button>
       <div class="modal-title" id="piyTitle" data-i18n="piy_title">עיון בפיוטים השומרוניים</div>
       <button id="piyDictToggle" class="rd-lang" data-i18n="piy_dict_toggle">מילון המילים</button>
@@ -342,12 +343,17 @@
     </div>
     <div class="rhy-controls">
       <div class="rhy-modes">
-        <button class="rhy-mode on" id="rhyModeWord" data-i18n="rhy_mode_word">מילה שלמה</button>
-        <button class="rhy-mode" id="rhyModeSuffix" data-i18n="rhy_mode_suffix">סופית מילה</button>
+        <button class="rhy-mode on" id="rhyModeExact" data-i18n="rhy_mode_exact">מדויק</button>
+        <button class="rhy-mode" id="rhyModeSyll" data-i18n="rhy_mode_syll">מס' הברות זהה</button>
         <button class="rhy-mode" id="rhyModeSound" data-i18n="rhy_mode_sound">צליל</button>
       </div>
       <input id="rhyQ" type="text" dir="rtl" data-i18n-ph="rhy_q_ph" placeholder="הקלד מילה, למשל: שבתה">
-      <select id="rhySoundSel" class="hidden"></select>
+      <span class="rhy-or" id="rhyOrLabel" data-i18n="rhy_or">או</span>
+      <select id="rhySoundSel"></select>
+      <div class="rhy-startletter">
+        <label for="rhyStartLetter" data-i18n="rhy_start_letter">אות פתיחה (רשות):</label>
+        <input id="rhyStartLetter" type="text" dir="rtl" maxlength="1" data-i18n-ph="rhy_start_letter_ph" placeholder="למשל: מ">
+      </div>
       <label class="rhy-clean"><input type="checkbox" id="rhyCleanOnly"> <span data-i18n="rhy_clean_only">רק מטקסט מוגה</span></label>
       <button class="dict-app-go" id="rhyGo" data-i18n="rhy_search_btn">חפש חרוזים</button>
     </div>
