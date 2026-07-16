@@ -95,7 +95,7 @@ const I18N = {
       'כך נראה המילון: אפשר לחפש מילה, לדפדף באינדקס או בעמודי המילון, וללחוץ על מילה כדי לראות את כל מיקומיה.',
       'בכך תם הסיור. תוכלו לחזור אליו בכל עת מתפריט ההמבורגר, תחת העזרה. קריאה נעימה ומועילה!',
     ],
-    share_title:'שיתוף', email:'אימייל', close:'סגור', to_torah:'↩ התורה',
+    share_title:'שיתוף', email:'אימייל', close:'סגור', to_torah:'↩ התורה', to_library:'📚 לספרייה',
     copied:'הטקסט הועתק', copy_fail:'ההעתקה נכשלה', share_copy:'העתקה ללוח',
     to_aramaic:'התרגום הארמי', to_arabic:'התרגום לערבית', to_english:'התרגום לאנגלית',
     cmp_title:'בחר נוסח להשוואה', cv_masoretic:'נוסח המסורה', cv_septuagint:'תרגום השבעים', cv_onkelos:'תרגום אונקלוס', cv_qumran:'מגילות קומראן',
@@ -261,7 +261,7 @@ const I18N = {
       'This is the dictionary: you can search a word, browse the index or the pages, and tap a word to see all its locations.',
       'That’s the end of the tour. You can return to it any time from the menu, under Help. Enjoy your study!',
     ],
-    share_title:'Share', email:'Email', close:'Close', to_torah:'↩ Torah',
+    share_title:'Share', email:'Email', close:'Close', to_torah:'↩ Torah', to_library:'📚 Library',
     copied:'Text copied', copy_fail:'Copy failed', share_copy:'Copy to clipboard',
     to_aramaic:'Aramaic translation', to_arabic:'Arabic translation', to_english:'English translation',
     cmp_title:'Choose a version to compare', cv_masoretic:'Masoretic Text', cv_septuagint:'Septuagint', cv_onkelos:'Targum Onkelos', cv_qumran:'Qumran Scrolls',
@@ -427,7 +427,7 @@ const I18N = {
       'هكذا يبدو المعجم: يمكنكم البحث عن كلمة، وتصفّح الفهرس أو صفحات المعجم، والضغط على كلمة لرؤية كلّ مواضعها.',
       'بهذا انتهت الجولة. يمكنكم العودة إليها في أيّ وقت من القائمة، تحت المساعدة. قراءةً ممتعة ونافعة!',
     ],
-    share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق', to_torah:'↩ التوراة',
+    share_title:'مشاركة', email:'بريد إلكتروني', close:'إغلاق', to_torah:'↩ التوراة', to_library:'📚 المكتبة',
     copied:'تم نسخ النص', copy_fail:'فشل النسخ', share_copy:'نسخ إلى الحافظة',
     to_aramaic:'الترجمة الآرامية', to_arabic:'الترجمة العربية', to_english:'الترجمة الإنجليزية',
     cmp_title:'اختر النصّ للمقارنة', cv_masoretic:'النصّ الماسوري', cv_septuagint:'الترجمة السبعينية', cv_onkelos:'ترجوم أونكيلوس', cv_qumran:'مخطوطات قمران',
@@ -2776,41 +2776,70 @@ function closeMenu(){ $('menuDrawer').classList.add('hidden'); $('menuOverlay').
 $('menuBtn').onclick=openMenu;
 $('menuOverlay').onclick=closeMenu;
 document.querySelectorAll('.menu-item').forEach(b=>b.onclick=()=>{
-  const a=b.dataset.act;
-  if(a==='library'){     // expand/collapse the "הספרייה השומרונית" sub-section in place
-    const sub=$('librarySub'), wasHidden=sub.classList.contains('hidden');
-    sub.classList.toggle('hidden'); $('libraryHead').classList.toggle('open');
-    if(wasHidden){ const s=$('librarySearch');            // opened → reset + focus the search
-      if(s){ s.value=''; filterLibrary(''); setTimeout(()=>{ try{ s.focus(); }catch(_){} }, 80); } }
-    return;
-  }
-  closeMenu(); menuAction(a);
+  closeMenu(); menuAction(b.dataset.act);
 });
-// filter the library book list by name (search-a-book bar at the top of the group)
-function filterLibrary(q){
-  q=(q||'').trim().toLowerCase();
-  const list=$('libraryList'); if(!list) return;
+
+// ── הספרייה השומרונית: full-page gallery (image + title per book, searchable) ──
+// A generic uniform book-cover graphic (per the approved design) — one shared
+// template, no per-book artwork, tinted the same for every card.
+let _libSvgId = 0;
+function bookCoverSVG(){
+  const id = 'bookclip' + (_libSvgId++);
+  return `<svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="lib-cover">
+    <defs><clipPath id="${id}"><rect x="14" y="8" width="96" height="144" rx="7"/></clipPath></defs>
+    <rect x="8" y="146" width="100" height="12" rx="4" fill="#d7e2e6"/>
+    <g clip-path="url(#${id})">
+      <rect x="14" y="8" width="96" height="144" fill="#c1585c"/>
+      <rect x="14" y="8" width="20" height="144" fill="#7c2e33"/>
+      <path d="M16 40 Q26 47 36 40" stroke="#dfa53c" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M16 120 Q26 127 36 120" stroke="#dfa53c" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <rect x="48" y="46" width="52" height="30" fill="#8a3439"/>
+    </g>
+    <rect x="14" y="8" width="96" height="144" rx="7" fill="none" stroke="#e2908f" stroke-width="2"/>
+  </svg>`;
+}
+const LIB_ITEMS = [
+  {act:'dict_app',     titleKey:'m_dict_aram',    open:()=>openDictApp()},
+  {act:'tm_book',      titleKey:'m_tm_book',      open:()=>openTmBook()},
+  {act:'tz_book',      titleKey:'m_tz_book',      open:()=>openTzBook()},
+  {act:'shyt_book',    titleKey:'m_shyt_book',    open:()=>openShytBook()},
+  {act:'sir_book',     titleKey:'m_sir_book',     open:()=>openSirBook()},
+  {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
+  {act:'rhyme_book',   titleKey:'m_rhyme_book',   open:()=>openRhymeBook()},
+];
+function openLibrary(){
+  $('libraryModal').classList.remove('hidden');
+  $('libGallerySearch').value='';
+  libBuildGrid();
+  trackNav(t('m_library'));
+}
+function libBuildGrid(){
+  const q=($('libGallerySearch').value||'').trim().toLowerCase();
+  const grid=$('libGrid'); grid.innerHTML='';
   let shown=0;
-  list.querySelectorAll('.menu-sub-item').forEach(btn=>{
-    const label=((btn.querySelector('.mi-label')||{}).textContent||'').toLowerCase();
-    const match = !q || label.includes(q);
-    btn.classList.toggle('hidden', !match);
-    if(match) shown++;
-  });
-  const nr=$('libraryNoResult'); if(nr) nr.classList.toggle('hidden', shown>0);
-}
-{ const s=$('librarySearch');
-  if(s){
-    s.addEventListener('input', e=>filterLibrary(e.target.value));
-    s.addEventListener('click', e=>e.stopPropagation());
-    s.addEventListener('keydown', e=>{ if(e.key==='Enter'){
-      const first=$('libraryList').querySelector('.menu-sub-item:not(.hidden)'); if(first) first.click(); } });
+  for(const item of LIB_ITEMS){
+    const label=t(item.titleKey);
+    if(q && !label.toLowerCase().includes(q)) continue;
+    shown++;
+    const card=el('button','lib-card', bookCoverSVG()+`<span class="lib-card-title">${esc(label)}</span>`);
+    card.onclick=()=>{ $('libraryModal').classList.add('hidden'); item.open(); };
+    grid.appendChild(card);
   }
+  $('libGalleryNoResult').classList.toggle('hidden', shown>0);
 }
+$('libGallerySearch').addEventListener('input', libBuildGrid);
+$('libGallerySearch').addEventListener('keydown', e=>{ if(e.key==='Enter'){
+  const first=$('libGrid').querySelector('.lib-card'); if(first) first.click(); } });
+$('libToTorah').onclick=()=>$('libraryModal').classList.add('hidden');
+$('rdToLib').onclick=()=>{ $('bookModal').classList.add('hidden'); openLibrary(); };
+$('piyToLib').onclick=()=>{ $('piyModal').classList.add('hidden'); openLibrary(); };
+$('rhyToLib').onclick=()=>{ $('rhymeModal').classList.add('hidden'); openLibrary(); };
+$('dictToLib').onclick=()=>{ $('dictModal').classList.add('hidden'); openLibrary(); };
 
 function menuAction(a){
   if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
   else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
+  else if(a==='library')   openLibrary();
   else if(a==='dict_app')  openDictApp();
   else if(a==='tm_book')   openTmBook();
   else if(a==='tz_book')   openTzBook();
@@ -4546,9 +4575,8 @@ const TOUR_STEPS = [
   { pre:async()=>{ if($('advPanel').classList.contains('hidden')) $('advBtn').click(); await tourWait(250); }, el:()=>$('advPanel') },
   { pre:async()=>{ $('advPanel') && $('advPanel').classList.add('hidden'); showSearch(false); showBooks(); openMenu(); await tourWait(300); },
     el:()=>document.querySelector('.menu-item[data-act="lang"]') },
-  { pre:async()=>{ openMenu(); $('librarySub').classList.remove('hidden'); $('libraryHead').classList.add('open'); await tourWait(250); },
-    el:()=>$('librarySub') },
-  { pre:async()=>{ closeMenu(); openDictApp(); await tourWait(350); }, el:()=>document.querySelector('.dict-tabs') },
+  { pre:async()=>{ closeMenu(); openLibrary(); await tourWait(250); }, el:()=>$('libGrid') },
+  { pre:async()=>{ $('libraryModal').classList.add('hidden'); openDictApp(); await tourWait(350); }, el:()=>document.querySelector('.dict-tabs') },
   { pre:async()=>{ $('dictModal').classList.add('hidden'); }, el:()=>null },
 ];
 function tourNarration(){ return (I18N[LANG]||I18N.he).tour || []; }

@@ -229,20 +229,7 @@
   <div class="menu-head" data-i18n="menu">תפריט</div>
   <button class="menu-item" data-act="calendar"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="mi-label" data-i18n="m_calendar">חשבן קשטה — לוח השנה השומרוני</span></button>
   <button class="menu-item" data-act="genealogy"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="mi-label" data-i18n="m_genealogy">אילן היוחסין השומרוני המלא</span></button>
-  <button class="menu-item menu-sub-head" data-act="library" id="libraryHead"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_library">הספרייה השומרונית</span></button>
-  <div class="menu-sub-items hidden" id="librarySub">
-    <div class="lib-search-row"><input id="librarySearch" type="text" class="lib-search" data-i18n-ph="lib_search_ph" placeholder="חיפוש ספר בספרייה…" aria-label="חיפוש ספר בספרייה"></div>
-    <div id="libraryList">
-    <button class="menu-item menu-sub-item" data-act="dict_app"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="mi-label" data-i18n="m_dict_aram">המילון הארמי-עברי השומרוני</span></button>
-    <button class="menu-item menu-sub-item" data-act="tm_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_tm_book">תיבת מרקה (מימר מרקה)</span></button>
-    <button class="menu-item menu-sub-item" data-act="tz_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_tz_book">פירוש צדקה אל-חכים (בראשית)</span></button>
-    <button class="menu-item menu-sub-item" data-act="shyt_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_shyt_book">שו"ת — יעקב בן אהרן הכהן</span></button>
-    <button class="menu-item menu-sub-item" data-act="sir_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_sir_book">סוד הלבבות (סיר אל-קלוב)</span></button>
-    <button class="menu-item menu-sub-item" data-act="piyutim_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_piyutim_book">עיון בפיוטים השומרוניים</span></button>
-    <button class="menu-item menu-sub-item" data-act="rhyme_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span class="mi-label" data-i18n="m_rhyme_book">מציאת חרוזים</span></button>
-    <div class="lib-noresult hidden" id="libraryNoResult" data-i18n="lib_no_result">לא נמצא ספר תואם</div>
-    </div>
-  </div>
+  <button class="menu-item" data-act="library" id="libraryHead"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_library">הספרייה השומרונית</span></button>
   <button class="menu-item bm-item hidden" id="bmMenuItem" data-act="bookmarks"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span class="mi-label" data-i18n="bm_my">הסימניות שלי</span></button>
   <button class="menu-item" data-act="install"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="mi-label" data-i18n="m_install">התקנת אפליקציה</span></button>
   <button class="menu-item" data-act="lang"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="mi-label" data-i18n="m_lang">שנה שפה</span></button>
@@ -261,6 +248,7 @@
   <div class="modal-box big dict-app">
     <div class="dict-app-head">
       <button id="dictToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="dictToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
       <div class="modal-title" id="dictAppTitle" data-i18n="dict_app_title">המילון הארמי-עברי השומרוני — א. טל</div>
       <div class="rd-zoom"><button id="dZoomOut" class="rd-zbtn" aria-label="הקטן טקסט">A−</button><button id="dZoomIn" class="rd-zbtn" aria-label="הגדל טקסט">A+</button></div>
     </div>
@@ -284,11 +272,27 @@
   </div>
 </div>
 
+<!-- הספרייה השומרונית: full-page gallery of the library's books/tools -->
+<div id="libraryModal" class="modal book-full hidden">
+  <div class="modal-box book-reader lib-gallery">
+    <div class="rd-top">
+      <button id="libToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <div class="modal-title" data-i18n="m_library">הספרייה השומרונית</div>
+    </div>
+    <div class="tm-search-row">
+      <input id="libGallerySearch" type="text" dir="rtl" data-i18n-ph="lib_search_ph" placeholder="חיפוש ספר בספרייה…">
+    </div>
+    <div id="libGrid" class="lib-grid"></div>
+    <div class="lib-noresult hidden" id="libGalleryNoResult" data-i18n="lib_no_result">לא נמצא ספר תואם</div>
+  </div>
+</div>
+
 <!-- generic full-book reader (Samaritan Library): Tibåt Mårqe, Ṣadaqah al-Ḥakīm … -->
 <div id="bookModal" class="modal book-full hidden">
   <div class="modal-box book-reader">
     <div class="rd-top">
       <button id="rdToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="rdToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
       <button id="rdBack" class="tm-back hidden"></button>
       <div class="modal-title" id="rdTitle"></div>
       <div class="rd-zoom"><button id="rdZoomOut" class="rd-zbtn" aria-label="הקטן טקסט">A−</button><button id="rdZoomIn" class="rd-zbtn" aria-label="הגדל טקסט">A+</button></div>
@@ -308,6 +312,7 @@
   <div class="modal-box book-reader piy-reader">
     <div class="rd-top">
       <button id="piyToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="piyToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
       <button id="piyBack" class="tm-back hidden" data-i18n="piy_back_tree">חזרה לתוכן</button>
       <div class="modal-title" id="piyTitle" data-i18n="piy_title">עיון בפיוטים השומרוניים</div>
       <button id="piyDictToggle" class="rd-lang" data-i18n="piy_dict_toggle">מילון המילים</button>
@@ -332,6 +337,7 @@
   <div class="modal-box book-reader rhyme-reader">
     <div class="rd-top">
       <button id="rhyToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="rhyToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
       <div class="modal-title" id="rhyTitleEl" data-i18n="rhyme_title">מציאת חרוזים</div>
     </div>
     <div class="rhy-controls">
