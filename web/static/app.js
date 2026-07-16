@@ -3412,7 +3412,7 @@ function piyBuildTree(){
       for(const p of items.slice().sort((a,b)=>(a.author+a.incipit3).localeCompare(b.author+b.incipit3))){
         const div=el('div','piy-item'); div.dataset.id=p.id;
         if(PIY.cur && PIY.cur.id===p.id) div.classList.add('sel');
-        div.innerHTML=`<span class="piy-item-title">${esc((p.incipit3||p.title||'')+'…')}</span><span class="piy-item-auth">${esc(p.author||'')}</span>`;
+        div.innerHTML=`<span class="piy-item-title">${esc(p.title||p.incipit3||'')}</span><span class="piy-item-auth">${esc(p.author||'')}</span>`;
         div.onclick=()=>piyShow(p.id);
         gd.appendChild(div);
       }
