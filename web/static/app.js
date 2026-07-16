@@ -130,6 +130,21 @@ const I18N = {
     tz_toc_hint:'בחר פרק לעיון:', tz_chapter_label:'פרק', tz_arabic_pending:'התרגום לערבית בהכנה — מוצג הנוסח העברי.',
     m_shyt_book:'שו"ת — יעקב בן אהרן הכהן', shyt_title:'שו"ת — יעקב בן אהרן הכהן', shyt_toc_hint:'בחר שאלה לעיון:',
     m_sir_book:'סוד הלבבות (סיר אל-קלוב)', sir_title:'סוד הלבבות — סיר אל-קלוב', sir_toc_hint:'בחר פרק לעיון:',
+    m_piyutim_book:'עיון בפיוטים השומרוניים', piy_title:'עיון בפיוטים השומרוניים',
+    piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
+    piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
+    piy_translation_he:'תרגום עברי', piy_no_dict_line:'אין ערכי מילון לשורה זו עדיין',
+    piy_no_dict_entry:'אין ערך מילון עדיין',
+    piy_q_verified:'✔ מאומת', piy_q_cleaned:'✎ נוקה ידנית', piy_q_raw:'⚠ OCR גולמי',
+    m_rhyme_book:'מציאת חרוזים', rhyme_title:'מציאת חרוזים',
+    rhy_mode_word:'מילה שלמה', rhy_mode_suffix:'סופית מילה', rhy_mode_sound:'צליל',
+    rhy_q_ph:'הקלד מילה, למשל: שבתה', rhy_q_ph_suffix:'הקלד סופית, למשל: תה או ים',
+    rhy_clean_only:'רק מטקסט מוגה', rhy_search_btn:'חפש חרוזים',
+    rhy_empty:'חפש מילה, סופית או צליל — ותקבל את כל המילים המתחרזות מן הקורפוס.',
+    rhy_no_results:'לא נמצאו מילים מתאימות', rhy_found_n:'נמצאו {n} מילים',
+    rhy_approx:'שיוך משוער {p}%', rhy_clean_n:'במוגה', rhy_no_def:'אין ערך עדיין',
+    rhy_occ_n:'חיבורים', rhy_no_data:'אין נתונים',
+    rhy_col_word:'מילה', rhy_col_freq:'שכיחות', rhy_col_group:'קבוצת חרוז', rhy_col_def:'תרגום (מילון)', rhy_col_occ:'היכן מופיעה',
     rd_he:'עברית', rd_ar:'ערבית', rd_aram:'ארמית', rd_show:'הצג:',
     dict_app_title:'מילון ארמי-עברי ועברי-ארמי השומרוני — א. טל', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים מאת א. טל: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
     dict_tab_search:'חיפוש', dict_tab_index:'אינדקס מילים', dict_tab_pages:'דפדוף עמודים',
@@ -281,6 +296,21 @@ const I18N = {
     tz_toc_hint:'Choose a chapter:', tz_chapter_label:'Chapter', tz_arabic_pending:'The Arabic is being prepared — showing the Hebrew.',
     m_shyt_book:'Responsa of Jacob ben Aaron', shyt_title:'Responsa — Jacob ben Aaron the Priest', shyt_toc_hint:'Choose a question:',
     m_sir_book:'Sīr al-Qulūb (Secret of Hearts)', sir_title:'Sīr al-Qulūb — The Secret of Hearts', sir_toc_hint:'Choose a section:',
+    m_piyutim_book:'Samaritan Piyyutim', piy_title:'Samaritan Piyyutim',
+    piy_back_tree:'Back to contents', piy_dict_toggle:'Word dictionary', piy_search_ph:'Search composition, author, or word…',
+    piy_empty:'Choose a composition from the contents ←', piy_pick_first:'Choose a composition',
+    piy_translation_he:'Hebrew translation', piy_no_dict_line:'No dictionary entries for this line yet',
+    piy_no_dict_entry:'No dictionary entry yet',
+    piy_q_verified:'✔ Verified', piy_q_cleaned:'✎ Manually cleaned', piy_q_raw:'⚠ Raw OCR',
+    m_rhyme_book:'Rhyme Finder', rhyme_title:'Rhyme Finder',
+    rhy_mode_word:'Whole word', rhy_mode_suffix:'Word suffix', rhy_mode_sound:'Sound',
+    rhy_q_ph:'Type a word, e.g. שבתה', rhy_q_ph_suffix:'Type a suffix, e.g. תה or ים',
+    rhy_clean_only:'Verified text only', rhy_search_btn:'Find rhymes',
+    rhy_empty:'Search a word, suffix, or sound — get every rhyming word in the corpus.',
+    rhy_no_results:'No matching words found', rhy_found_n:'{n} words found',
+    rhy_approx:'~{p}% match', rhy_clean_n:'verified', rhy_no_def:'No entry yet',
+    rhy_occ_n:'compositions', rhy_no_data:'No data',
+    rhy_col_word:'Word', rhy_col_freq:'Frequency', rhy_col_group:'Rhyme group', rhy_col_def:'Gloss', rhy_col_occ:'Where it appears',
     rd_he:'Hebrew', rd_ar:'Arabic', rd_aram:'Aramaic', rd_show:'Show:',
     dict_app_title:'Samaritan Aramaic–Hebrew & Hebrew–Aramaic Dictionary — A. Tal', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic by A. Tal: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
     dict_tab_search:'Search', dict_tab_index:'Word index', dict_tab_pages:'Browse pages',
@@ -432,6 +462,21 @@ const I18N = {
     tz_toc_hint:'اختر أصحاحاً:', tz_chapter_label:'أصحاح', tz_arabic_pending:'الترجمة العربية قيد الإعداد — يُعرض النصّ العبري.',
     m_shyt_book:'أجوبة يعقوب بن هارون الكاهن', shyt_title:'أجوبة يعقوب بن هارون الكاهن', shyt_toc_hint:'اختر سؤالاً:',
     m_sir_book:'سِرّ القلوب', sir_title:'سِرّ القلوب', sir_toc_hint:'اختر فصلاً:',
+    m_piyutim_book:'الأناشيد السامرية', piy_title:'تصفّح الأناشيد السامرية',
+    piy_back_tree:'العودة للفهرس', piy_dict_toggle:'قاموس الكلمات', piy_search_ph:'بحث عن تأليف أو مؤلف أو كلمة…',
+    piy_empty:'اختر تأليفًا من الفهرس ←', piy_pick_first:'اختر تأليفًا',
+    piy_translation_he:'الترجمة العبرية', piy_no_dict_line:'لا توجد مداخل قاموس لهذا السطر بعد',
+    piy_no_dict_entry:'لا يوجد مدخل قاموس بعد',
+    piy_q_verified:'✔ موثّق', piy_q_cleaned:'✎ منقّح يدويًا', piy_q_raw:'⚠ OCR خام',
+    m_rhyme_book:'إيجاد القوافي', rhyme_title:'إيجاد القوافي',
+    rhy_mode_word:'كلمة كاملة', rhy_mode_suffix:'لاحقة الكلمة', rhy_mode_sound:'الصوت',
+    rhy_q_ph:'اكتب كلمة، مثل: שבתה', rhy_q_ph_suffix:'اكتب لاحقة، مثل: תה أو ים',
+    rhy_clean_only:'من نص موثّق فقط', rhy_search_btn:'ابحث عن القوافي',
+    rhy_empty:'ابحث عن كلمة أو لاحقة أو صوت — واحصل على كل الكلمات المتقافية في المتن.',
+    rhy_no_results:'لم يُعثر على كلمات مطابقة', rhy_found_n:'تم العثور على {n} كلمة',
+    rhy_approx:'تطابق تقريبي {p}%', rhy_clean_n:'موثّق', rhy_no_def:'لا يوجد مدخل بعد',
+    rhy_occ_n:'تأليفات', rhy_no_data:'لا توجد بيانات',
+    rhy_col_word:'الكلمة', rhy_col_freq:'التكرار', rhy_col_group:'مجموعة القافية', rhy_col_def:'الترجمة', rhy_col_occ:'أين تظهر',
     rd_he:'العبرية', rd_ar:'العربية', rd_aram:'الآرامية', rd_show:'اعرض:',
     dict_app_title:'معجم آرامي-عبري وعبري-آرامي سامري — أ. طال', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية لأ. طال: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
     dict_tab_search:'بحث', dict_tab_index:'فهرس الكلمات', dict_tab_pages:'تصفّح الصفحات',
@@ -2771,6 +2816,8 @@ function menuAction(a){
   else if(a==='tz_book')   openTzBook();
   else if(a==='shyt_book') openShytBook();
   else if(a==='sir_book')  openSirBook();
+  else if(a==='piyutim_book') openPiyutimBook();
+  else if(a==='rhyme_book')   openRhymeBook();
   else if(a==='install')   doInstall();
   else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
@@ -3325,6 +3372,215 @@ $('rdSearchBtn').onclick=rdSearch;
 $('rdInput').addEventListener('keydown',e=>{ if(e.key==='Enter') rdSearch(); });
 $('rdClose').onclick=()=>$('bookModal').classList.add('hidden');
 $('rdToTorah').onclick=()=>$('bookModal').classList.add('hidden');     // ↩ return to the Torah app
+
+// ── עיון בפיוטים השומרוניים — festival/genre tree + reader + inline word
+// dictionary. Ported from the standalone app_unit/piyutim_unit.html prototype
+// onto the app's own DB-backed API instead of an embedded multi-MB JS blob.
+const PIY = { toc:null, dict:null, cur:null, dictOn:false, _searchRows:null };
+const PIY_FEST_ORDER = ['שבת','פסח','חג המצות','שבועות','ראש החודש','יום הכיפורים','סוכות','שמיני עצרת','שמחה','שונות'];
+async function piyEnsureData(){
+  if(!PIY.toc)  PIY.toc  = await api('piyutim_toc');
+  if(!PIY.dict) PIY.dict = await api('piyutim_dict');
+  return PIY;
+}
+function openPiyutimBook(){
+  $('piyModal').classList.remove('hidden');
+  $('piyBody').classList.remove('piy-detail-open');
+  piyEnsureData().then(()=>piyBuildTree());
+  trackNav(t('piy_title'));
+}
+function piyNorm(s){ return (s||'').replace(/[^א-ת]/g,''); }
+function piyBuildTree(){
+  const q=($('piySearch').value||'').trim();
+  const tree=$('piyTree'); tree.innerHTML='';
+  const rows = q ? (PIY._searchRows||[]) : (PIY.toc||[]);
+  const byFest={};
+  for(const p of rows){
+    (byFest[p.festival] ||= {})[p.genre] ||= [];
+    byFest[p.festival][p.genre].push(p);
+  }
+  const order = PIY_FEST_ORDER.filter(f=>byFest[f]).concat(Object.keys(byFest).filter(f=>!PIY_FEST_ORDER.includes(f)));
+  for(const fest of order){
+    const genres=byFest[fest]; if(!genres) continue;
+    const total=Object.values(genres).reduce((a,b)=>a+b.length,0);
+    const fd=el('details','piy-fest'); fd.open=!!q;
+    fd.innerHTML=`<summary>${esc(fest)} <span class="piy-count">(${total})</span></summary>`;
+    for(const genre of Object.keys(genres).sort()){
+      const items=genres[genre];
+      const gd=el('details','piy-genre'); gd.open=!!q;
+      gd.innerHTML=`<summary>${esc(genre)} <span class="piy-count">(${items.length})</span></summary>`;
+      for(const p of items.slice().sort((a,b)=>(a.author+a.incipit3).localeCompare(b.author+b.incipit3))){
+        const div=el('div','piy-item'); div.dataset.id=p.id;
+        if(PIY.cur && PIY.cur.id===p.id) div.classList.add('sel');
+        div.innerHTML=`<span class="piy-item-title">${esc((p.incipit3||p.title||'')+'…')}</span><span class="piy-item-auth">${esc(p.author||'')}</span>`;
+        div.onclick=()=>piyShow(p.id);
+        gd.appendChild(div);
+      }
+      fd.appendChild(gd);
+    }
+    tree.appendChild(fd);
+  }
+  if(!tree.children.length) tree.appendChild(el('div','note', t('lib_no_result')));
+}
+let _piySearchTimer=null;
+$('piySearch').addEventListener('input', ()=>{
+  clearTimeout(_piySearchTimer);
+  _piySearchTimer=setTimeout(async ()=>{
+    const q=($('piySearch').value||'').trim();
+    if(!q){ PIY._searchRows=null; piyBuildTree(); return; }
+    try{ PIY._searchRows=await api('piyutim_search?q='+encodeURIComponent(q)); }
+    catch(e){ PIY._searchRows=[]; }
+    piyBuildTree();
+  }, 250);
+});
+function piyWordSpan(w){
+  const clean=piyNorm(w), has=clean && PIY.dict[clean];
+  return `<span class="piy-w ${has?'piy-hasdef':''}" data-w="${esc(clean)}">${esc(w)}</span>`;
+}
+async function piyShow(id){
+  let p; try{ p=await api('piyutim_chapter?id='+id); }catch(e){ p=null; }
+  if(!p || p.error) return;
+  PIY.cur=p;
+  document.querySelectorAll('#piyTree .piy-item.sel').forEach(e=>e.classList.remove('sel'));
+  document.querySelectorAll(`#piyTree .piy-item[data-id="${id}"]`).forEach(e=>e.classList.add('sel'));
+  const lines=(p.text||'').split('\n').map(l=>
+    l.split(/(\s+)/).map(tk=>/[א-ת]/.test(tk)?piyWordSpan(tk):esc(tk)).join('')).join('\n');
+  const qBadge = p.quality==='verified' ? t('piy_q_verified') : p.quality==='ocr_cleaned' ? t('piy_q_cleaned') : t('piy_q_raw');
+  $('piyTextPane').innerHTML=`
+    <h2 class="piy-title">${esc(p.title||'')}</h2>
+    <div class="piy-meta">
+      <span class="piy-tag">✍ ${esc(p.author||'')}</span>
+      <span class="piy-tag">🕎 ${esc(p.festival||'')}</span>
+      <span class="piy-tag">◈ ${esc(p.genre||'')}</span>
+      <span class="piy-tag">📖 ${esc(p.source||'')}${p.source_ref?(' · '+esc(p.source_ref)):''}</span>
+      <span class="piy-tag">${esc(qBadge)}</span>
+    </div>
+    <div class="piy-text">${lines}</div>
+    ${p.notes?`<div class="piy-notes">${esc(p.notes)}</div>`:''}`;
+  piyRenderDict();
+  $('piyBody').classList.add('piy-detail-open');   // mobile: swap tree → detail
+  $('piyBack').classList.remove('hidden');
+}
+function piyRenderDict(){
+  const body=$('piyDictPane'), p=PIY.cur;
+  if(!p){ body.innerHTML=`<div class="note">${esc(t('piy_pick_first'))}</div>`; return; }
+  let html='';
+  if(p.translation_he) html+=`<h4>${esc(t('piy_translation_he'))}</h4><div class="piy-text" style="font-size:1.02em">${esc(p.translation_he)}</div><hr>`;
+  for(const line of (p.text||'').split('\n')){
+    const ws=line.match(/[א-ת]+/g)||[];
+    if(!ws.length) continue;
+    let defs='';
+    for(const w of ws){
+      const d=PIY.dict[piyNorm(w)] || (p.dict && p.dict[piyNorm(w)]);
+      if(d) defs+=`<span class="piy-dw"><b>${esc(w)}</b> — <span>${esc(d)}</span></span>`;
+    }
+    html+=`<div class="piy-dline"><div class="piy-dsrc">${esc(line)}</div>${defs||`<span class="piy-dw piy-dw-none">${esc(t('piy_no_dict_line'))}</span>`}</div>`;
+  }
+  body.innerHTML = html || `<div class="note">${esc(t('piy_pick_first'))}</div>`;
+}
+$('piyDictToggle').onclick=()=>{
+  PIY.dictOn=!PIY.dictOn;
+  $('piyDictPane').classList.toggle('hidden', !PIY.dictOn);
+  $('piyDictToggle').classList.toggle('active', PIY.dictOn);
+  if(PIY.dictOn) piyRenderDict();
+};
+$('piyBack').onclick=()=>$('piyBody').classList.remove('piy-detail-open');
+$('piyClose').onclick=()=>$('piyModal').classList.add('hidden');
+$('piyToTorah').onclick=()=>$('piyModal').classList.add('hidden');
+// word-tap popup (mirrors the standalone prototype's #wordPop)
+document.addEventListener('click', e=>{
+  const pop=$('piyWordPop'); if(!pop) return;
+  if(e.target.classList && e.target.classList.contains('piy-w')){
+    const w=e.target.dataset.w, d=PIY.dict && PIY.dict[w];
+    pop.innerHTML=`<b>${esc(w)}</b><br>${d?esc(d):('<i>'+esc(t('piy_no_dict_entry'))+'</i>')}`;
+    pop.classList.remove('hidden');
+    pop.style.top=Math.min(e.clientY+12, innerHeight-90)+'px';
+    pop.style.left=Math.max(10, e.clientX-150)+'px';
+  } else if(!pop.classList.contains('hidden')) pop.classList.add('hidden');
+});
+
+// ── מציאת חרוזים — word/suffix/sound rhyme search over the piyyutim word bank.
+// Ported from app_unit/rhyme_unit.html onto the API instead of an embedded blob.
+const RHY = { mode:'word', sounds:null };
+function openRhymeBook(){
+  $('rhymeModal').classList.remove('hidden');
+  if(!RHY.sounds){
+    api('piyutim_rhyme_sounds').then(list=>{
+      RHY.sounds=list;
+      $('rhySoundSel').innerHTML=list.map(k=>`<option>${esc(k)}</option>`).join('');
+    });
+  }
+  trackNav(t('rhyme_title'));
+}
+function rhySetMode(m){
+  RHY.mode=m;
+  const ids={word:'rhyModeWord', suffix:'rhyModeSuffix', sound:'rhyModeSound'};
+  Object.values(ids).forEach(id=>$(id).classList.remove('on'));
+  $(ids[m]).classList.add('on');
+  $('rhyQ').classList.toggle('hidden', m==='sound');
+  $('rhySoundSel').classList.toggle('hidden', m!=='sound');
+  $('rhyQ').placeholder = m==='suffix' ? t('rhy_q_ph_suffix') : t('rhy_q_ph');
+}
+$('rhyModeWord').onclick=()=>rhySetMode('word');
+$('rhyModeSuffix').onclick=()=>rhySetMode('suffix');
+$('rhyModeSound').onclick=()=>rhySetMode('sound');
+async function rhySearch(){
+  const cleanOnly=$('rhyCleanOnly').checked;
+  const q = RHY.mode==='sound' ? $('rhySoundSel').value : ($('rhyQ').value||'').trim();
+  if(!q) return;
+  $('rhySummary').textContent=t('searching');
+  let list; try{ list=await api('piyutim_rhyme?mode='+RHY.mode+'&q='+encodeURIComponent(q)+(cleanOnly?'&clean_only=1':'')); }
+  catch(e){ list=[]; }
+  await piyEnsureData();   // needed to resolve occurrence ids → piece titles
+  rhyRender(list);
+}
+function rhyRender(list){
+  const res=$('rhyResults');
+  if(!list.length){ $('rhySummary').textContent=''; res.innerHTML=`<div class="note">${esc(t('rhy_no_results'))}</div>`; return; }
+  $('rhySummary').textContent=t('rhy_found_n').replace('{n}', list.length);
+  let html=`<table class="rhy-table"><tr><th>${esc(t('rhy_col_word'))}</th><th>${esc(t('rhy_col_freq'))}</th>`
+    +`<th>${esc(t('rhy_col_group'))}</th><th>${esc(t('rhy_col_def'))}</th><th>${esc(t('rhy_col_occ'))}</th></tr>`;
+  list.forEach((w,i)=>{
+    const grp = w.rhyme_human
+      ? `<span class="rhy-grp">${esc(w.rhyme_human)}</span>`
+        + (w.rhyme_method!=='book_exact' ? `<div class="rhy-conf">${esc(t('rhy_approx').replace('{p}', Math.round((w.rhyme_conf||0)*100)))}</div>` : '')
+      : '<span class="rhy-conf">—</span>';
+    const def = w.definition || (PIY.dict && PIY.dict[w.word]);
+    html+=`<tr>
+      <td class="rhy-word">${esc(w.word)}</td>
+      <td>${w.freq||0}${w.freq_clean?` <span class="rhy-conf">(${w.freq_clean} ${esc(t('rhy_clean_n'))})</span>`:''}</td>
+      <td>${grp}</td>
+      <td class="rhy-def ${def?'':'rhy-def-none'}">${def?esc(def):esc(t('rhy_no_def'))}</td>
+      <td>${(w.occurrences&&w.occurrences.length) ? `<button class="rhy-occbtn" data-i="${i}">${w.occurrences.length} ${esc(t('rhy_occ_n'))} ▾</button><div class="rhy-occlist hidden"></div>` : '<span class="rhy-conf">—</span>'}</td>
+    </tr>`;
+  });
+  res.innerHTML=html+'</table>';
+  res.querySelectorAll('.rhy-occbtn').forEach(btn=>{ btn.onclick=()=>rhyToggleOcc(btn, list[+btn.dataset.i]); });
+}
+function rhyToggleOcc(btn, w){
+  const div=btn.nextElementSibling;
+  if(!div.classList.contains('hidden')){ div.classList.add('hidden'); return; }
+  const tocById={}; (PIY.toc||[]).forEach(p=>tocById[p.id]=p);
+  let html='';
+  for(const pid of (w.occurrences||[])){
+    const p=tocById[pid]; if(!p) continue;
+    html+=`<button class="rhy-occlink" data-id="${pid}">📜 ${esc(p.incipit3||p.title||'')} — ${esc(p.author||'')} (${esc(p.festival||'')} · ${esc(p.genre||'')})</button>`;
+  }
+  div.innerHTML = html || esc(t('rhy_no_data'));
+  div.classList.remove('hidden');
+  div.querySelectorAll('.rhy-occlink').forEach(a=>{
+    a.onclick=()=>{
+      $('rhymeModal').classList.add('hidden');
+      $('piyModal').classList.remove('hidden');
+      $('piySearch').value=''; $('piyBody').classList.remove('piy-detail-open');
+      piyEnsureData().then(()=>{ piyBuildTree(); piyShow(+a.dataset.id); });
+    };
+  });
+}
+$('rhyGo').onclick=rhySearch;
+$('rhyQ').addEventListener('keydown', e=>{ if(e.key==='Enter') rhySearch(); });
+$('rhyClose').onclick=()=>$('rhymeModal').classList.add('hidden');
+$('rhyToTorah').onclick=()=>$('rhymeModal').classList.add('hidden');
 
 // ── PWA install ("התקנת אפליקציה") ───────────────────────────────────────────
 // Capture the browser's install prompt so the menu button can trigger it; fall

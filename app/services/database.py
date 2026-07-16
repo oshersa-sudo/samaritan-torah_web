@@ -2,6 +2,7 @@ import sqlite3
 import os
 import re
 import functools
+import json
 import shutil
 import unicodedata
 
@@ -1098,6 +1099,152 @@ def search_sir(q, limit=80):
         snip = ('…' + txt[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0 else txt[:90]
         out.append({'id': r['id'], 'ord': r['ord'], 'title': r['title'] or '', 'snippet': snip})
     return out
+
+
+# ── Samaritan piyyutim ("עיון בפיוטים השומרוניים") + rhyme finder ──────────────
+# Two standalone library units built from the user's own pipeline export
+# (app_unit/piyutim_data.js + rhyme_data.js, imported via scripts/piyutim/
+# import_piyutim.py). The reader groups by festival > genre (not a flat/lettered
+# TOC like the other library books), so the frontend gets light metadata for
+# every piece and builds the tree client-side; the rhyme finder is a search
+# tool, not a linear reader.
+def get_piyutim_toc():
+    """Light metadata for every piyyut (no full text) — the client groups this
+    into a festival > genre tree, exactly like the standalone prototype did."""
+    conn = get_connection()
+    rows = conn.execute("""SELECT id, title, incipit3, author, festival, genre, quality
+        FROM piyutim ORDER BY festival, genre, author""").fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_piyutim_chapter(pid):
+    """One piyyut in full, with per-word glosses inline (word -> gloss) restricted
+    to words that actually appear in this piece, so the payload stays small."""
+    try:
+        pid = int(pid)
+    except (TypeError, ValueError):
+        return None
+    conn = get_connection()
+    r = conn.execute("""SELECT id, title, incipit3, author, festival, genre, type, source,
+        source_ref, quality, text, translation_he, translation_en, notes
+        FROM piyutim WHERE id=?""", (pid,)).fetchone()
+    if not r:
+        conn.close()
+        return None
+    words = set(re.findall(r'[א-ת]+', r['text'] or ''))
+    gloss = {}
+    if words:
+        qs = ','.join('?' * len(words))
+        for wr in conn.execute('SELECT word, gloss FROM piyutim_dict WHERE word IN (%s)' % qs, tuple(words)):
+            gloss[wr['word']] = wr['gloss']
+    conn.close()
+    out = dict(r)
+    out['dict'] = gloss
+    return out
+
+
+def search_piyutim(q, limit=200):
+    """Search piyyutim by title/author/text; returns light rows (like get_piyutim_toc)
+    for the matching pieces so the client can re-filter its tree to just these ids."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    rows = conn.execute("""SELECT id, title, incipit3, author, festival, genre, quality
+        FROM piyutim WHERE title LIKE ? OR author LIKE ? OR text LIKE ?
+        ORDER BY festival, genre, author LIMIT ?""", (like, like, like, limit)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_piyutim_dict():
+    """The whole shared glossary (~300 entries) — small enough to fetch once and
+    cache client-side, used for the inline word-tap popup while reading."""
+    conn = get_connection()
+    rows = conn.execute('SELECT word, gloss FROM piyutim_dict').fetchall()
+    conn.close()
+    return {r['word']: r['gloss'] for r in rows}
+
+
+_PIY_FINALS = str.maketrans('ךםןףץ', 'כמנפצ')
+_PIY_PHON = str.maketrans('החע', 'אאא')
+
+
+def _piy_fold_finals(s):
+    return (s or '').translate(_PIY_FINALS)
+
+
+def _piy_phon_key(s, n):
+    return _piy_fold_finals(s).translate(_PIY_PHON)[-n:] if s else ''
+
+
+_PIY_ROW_COLS = 'word, freq, freq_clean, rhyme_key, rhyme_human, rhyme_conf, rhyme_method, definition, occurrences'
+
+
+def _piy_rowdicts(rows):
+    out = []
+    for r in rows:
+        d = dict(r)
+        try:
+            d['occurrences'] = json.loads(d['occurrences'] or '[]')
+        except (TypeError, ValueError):
+            d['occurrences'] = []
+        out.append(d)
+    out.sort(key=lambda x: (-(x['freq_clean'] or 0), -(x['freq'] or 0)))
+    return out
+
+
+def _piy_word_rows(conn, where, params):
+    rows = conn.execute('SELECT %s FROM piyutim_words WHERE %s' % (_PIY_ROW_COLS, where), params).fetchall()
+    return _piy_rowdicts(rows)
+
+
+def piyutim_rhyme_sounds():
+    """Distinct rhyme-group keys (for the "sound" mode dropdown)."""
+    conn = get_connection()
+    rows = conn.execute("""SELECT DISTINCT rhyme_key FROM piyutim_words
+        WHERE rhyme_key IS NOT NULL ORDER BY rhyme_key""").fetchall()
+    conn.close()
+    return [r['rhyme_key'] for r in rows]
+
+
+def piyutim_rhyme_search(mode, q, clean_only=False):
+    """Mirrors the standalone rhyme-finder's three modes:
+    - 'sound': every word tagged with the given rhyme_key (q is the key itself).
+    - 'word': if q is itself in the corpus and has a book-derived rhyme_key, every
+      OTHER word sharing that key; else a phonetic-suffix fallback (last 3 letters,
+      folded so ה/ח/ע and finals collapse, matching Samaritan pronunciation).
+    - 'suffix': every word whose finals-folded form ends with the (finals-folded) q.
+    """
+    q = (q or '').strip()
+    conn = get_connection()
+    try:
+        if mode == 'sound':
+            out = _piy_word_rows(conn, 'rhyme_key=?', (q,))
+        elif mode == 'suffix':
+            if not q:
+                return []
+            # arbitrary-length suffix match against a computed fold isn't indexable,
+            # so scan once in Python rather than risk a huge IN(...) parameter list
+            k = _piy_fold_finals(q)
+            all_rows = conn.execute('SELECT %s FROM piyutim_words' % _PIY_ROW_COLS).fetchall()
+            out = _piy_rowdicts([r for r in all_rows if _piy_fold_finals(r['word']).endswith(k)])
+        else:  # 'word'
+            if not q:
+                return []
+            me = conn.execute('SELECT rhyme_key FROM piyutim_words WHERE word=?', (q,)).fetchone()
+            if me and me['rhyme_key']:
+                out = [w for w in _piy_word_rows(conn, 'rhyme_key=?', (me['rhyme_key'],)) if w['word'] != q]
+            else:
+                k = _piy_phon_key(q, min(3, len(q)))
+                out = [w for w in _piy_word_rows(conn, 'phon3=?', (k,)) if w['word'] != q]
+    finally:
+        conn.close()
+    if clean_only:
+        out = [w for w in out if (w['freq_clean'] or 0) > 0]
+    return out[:400]
 
 
 def get_eyalk_commentary(verse_ids):

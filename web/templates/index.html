@@ -238,6 +238,8 @@
     <button class="menu-item menu-sub-item" data-act="tz_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_tz_book">פירוש צדקה אל-חכים (בראשית)</span></button>
     <button class="menu-item menu-sub-item" data-act="shyt_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_shyt_book">שו"ת — יעקב בן אהרן הכהן</span></button>
     <button class="menu-item menu-sub-item" data-act="sir_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_sir_book">סוד הלבבות (סיר אל-קלוב)</span></button>
+    <button class="menu-item menu-sub-item" data-act="piyutim_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_piyutim_book">עיון בפיוטים השומרוניים</span></button>
+    <button class="menu-item menu-sub-item" data-act="rhyme_book"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span class="mi-label" data-i18n="m_rhyme_book">מציאת חרוזים</span></button>
     <div class="lib-noresult hidden" id="libraryNoResult" data-i18n="lib_no_result">לא נמצא ספר תואם</div>
     </div>
   </div>
@@ -298,6 +300,54 @@
     </div>
     <div id="rdBody" class="tm-body"></div>
     <button class="popup-close" id="rdClose" data-i18n="close">סגור</button>
+  </div>
+</div>
+
+<!-- עיון בפיוטים השומרוניים: festival/genre tree + reader + inline word dictionary -->
+<div id="piyModal" class="modal book-full hidden">
+  <div class="modal-box book-reader piy-reader">
+    <div class="rd-top">
+      <button id="piyToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="piyBack" class="tm-back hidden" data-i18n="piy_back_tree">חזרה לתוכן</button>
+      <div class="modal-title" id="piyTitle" data-i18n="piy_title">עיון בפיוטים השומרוניים</div>
+      <button id="piyDictToggle" class="rd-lang" data-i18n="piy_dict_toggle">מילון המילים</button>
+    </div>
+    <div class="tm-search-row">
+      <input id="piySearch" type="text" dir="rtl" data-i18n-ph="piy_search_ph" placeholder="חיפוש חיבור, מחבר או מילה…">
+    </div>
+    <div id="piyBody" class="piy-body">
+      <div id="piyTree" class="piy-tree"></div>
+      <div id="piyMain" class="piy-main">
+        <div id="piyDictPane" class="piy-dictpane hidden"></div>
+        <div id="piyTextPane" class="piy-textpane"><div class="tm-hint" id="piyEmptyHint" data-i18n="piy_empty">בחר חיבור מתוכן העניינים ←</div></div>
+      </div>
+    </div>
+    <button class="popup-close" id="piyClose" data-i18n="close">סגור</button>
+  </div>
+</div>
+<div id="piyWordPop" class="piy-wordpop hidden"></div>
+
+<!-- מציאת חרוזים: חיפוש מילה/סופית/צליל מתוך מחסן המילים של הפיוטים -->
+<div id="rhymeModal" class="modal book-full hidden">
+  <div class="modal-box book-reader rhyme-reader">
+    <div class="rd-top">
+      <button id="rhyToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <div class="modal-title" id="rhyTitleEl" data-i18n="rhyme_title">מציאת חרוזים</div>
+    </div>
+    <div class="rhy-controls">
+      <div class="rhy-modes">
+        <button class="rhy-mode on" id="rhyModeWord" data-i18n="rhy_mode_word">מילה שלמה</button>
+        <button class="rhy-mode" id="rhyModeSuffix" data-i18n="rhy_mode_suffix">סופית מילה</button>
+        <button class="rhy-mode" id="rhyModeSound" data-i18n="rhy_mode_sound">צליל</button>
+      </div>
+      <input id="rhyQ" type="text" dir="rtl" data-i18n-ph="rhy_q_ph" placeholder="הקלד מילה, למשל: שבתה">
+      <select id="rhySoundSel" class="hidden"></select>
+      <label class="rhy-clean"><input type="checkbox" id="rhyCleanOnly"> <span data-i18n="rhy_clean_only">רק מטקסט מוגה</span></label>
+      <button class="dict-app-go" id="rhyGo" data-i18n="rhy_search_btn">חפש חרוזים</button>
+    </div>
+    <div id="rhySummary" class="rhy-summary"></div>
+    <div id="rhyResults" class="rhy-results"><div class="tm-hint" data-i18n="rhy_empty">חפש מילה, סופית או צליל — ותקבל את כל המילים המתחרזות מן הקורפוס.</div></div>
+    <button class="popup-close" id="rhyClose" data-i18n="close">סגור</button>
   </div>
 </div>
 

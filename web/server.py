@@ -1154,6 +1154,43 @@ def api_sir_search():
     return jsonify(db.search_sir(request.args.get('q', '')))
 
 
+# ── Samaritan piyyutim reader + rhyme finder ────────────────────────────────
+@app.route('/api/piyutim_toc')
+def api_piyutim_toc():
+    return jsonify(db.get_piyutim_toc())
+
+
+@app.route('/api/piyutim_chapter')
+def api_piyutim_chapter():
+    r = db.get_piyutim_chapter(request.args.get('id', ''))
+    if not r:
+        return jsonify({'error': 'not found'}), 404
+    return jsonify(r)
+
+
+@app.route('/api/piyutim_search')
+def api_piyutim_search():
+    return jsonify(db.search_piyutim(request.args.get('q', '')))
+
+
+@app.route('/api/piyutim_dict')
+def api_piyutim_dict():
+    return jsonify(db.get_piyutim_dict())
+
+
+@app.route('/api/piyutim_rhyme_sounds')
+def api_piyutim_rhyme_sounds():
+    return jsonify(db.piyutim_rhyme_sounds())
+
+
+@app.route('/api/piyutim_rhyme')
+def api_piyutim_rhyme():
+    mode = request.args.get('mode', 'word')
+    q = request.args.get('q', '')
+    clean_only = request.args.get('clean_only') == '1'
+    return jsonify(db.piyutim_rhyme_search(mode, q, clean_only))
+
+
 @app.route('/api/shyt')
 def api_shyt():
     return jsonify(db.get_shyt_commentary(_ids_arg()))

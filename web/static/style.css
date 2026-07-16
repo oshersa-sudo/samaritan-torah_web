@@ -791,6 +791,77 @@ footer a{ color:var(--accent); text-decoration:none; }
 /* per-chapter glossary reuses .wtbl */
 .tm-wtbl{ width:100%; }
 
+/* ── עיון בפיוטים השומרוניים: festival/genre tree + reader + dictionary pane ── */
+.piy-body{ flex:1 1 auto; min-height:0; display:flex; gap:10px; overflow:hidden; }
+.piy-tree{ flex:0 0 260px; overflow-y:auto; border-left:1px solid rgba(26,56,115,.18); padding-left:8px; }
+.piy-fest > summary{ color:var(--navy); font-weight:700; font-size:15.5px; cursor:pointer; padding:5px 4px; }
+.piy-genre{ margin-right:12px; }
+.piy-genre > summary{ font-weight:600; font-size:14px; color:var(--dark); cursor:pointer; padding:3px 4px; }
+.piy-count{ color:var(--muted); font-weight:400; font-size:12.5px; }
+.piy-item{ margin-right:20px; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:13.5px;
+  display:flex; justify-content:space-between; gap:6px; }
+.piy-item:hover, .piy-item.sel{ background:#fff3cd; }
+.piy-item-title{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.piy-item-auth{ color:var(--muted); font-size:12px; white-space:nowrap; flex:0 0 auto; }
+.piy-main{ flex:1 1 auto; min-width:0; display:flex; gap:10px; overflow:hidden; }
+.piy-textpane{ flex:1 1 auto; min-width:0; overflow-y:auto; padding:2px 6px; }
+.piy-dictpane{ flex:1 1 260px; min-width:0; overflow-y:auto; padding:2px 6px; border-right:1px solid rgba(26,56,115,.18); }
+#piyDictToggle.active{ background:var(--accent); }
+.piy-title{ font-size:1.3em; font-weight:700; color:var(--navy); margin:0 0 4px; }
+.piy-meta{ color:var(--muted); font-size:13px; margin-bottom:14px; }
+.piy-tag{ background:#fff3cd; border:1px solid rgba(26,56,115,.18); border-radius:10px;
+  padding:1px 9px; margin-left:5px; display:inline-block; margin-bottom:4px; }
+.piy-text{ font-size:calc(18px*var(--rd-fs,1)); line-height:2.05; white-space:pre-wrap; }
+.piy-w{ cursor:pointer; border-radius:4px; }
+.piy-w:hover{ background:#fff3cd; }
+.piy-w.piy-hasdef{ border-bottom:2px dotted var(--accent); }
+.piy-notes{ margin-top:18px; padding:11px 13px; background:#fbfaf5; border:1px solid rgba(26,56,115,.18);
+  border-radius:8px; font-size:13.5px; color:var(--muted); }
+.piy-dictpane h4{ color:var(--navy); margin:2px 0 8px; }
+.piy-dline{ margin-bottom:13px; padding-bottom:9px; border-bottom:1px dashed rgba(26,56,115,.18); }
+.piy-dsrc{ font-size:15px; margin-bottom:3px; }
+.piy-dw{ display:inline-block; margin:2px 0 2px 10px; font-size:13px; }
+.piy-dw b{ color:var(--navy); }
+.piy-dw span{ color:#4a6b30; }
+.piy-dw-none{ color:var(--muted); }
+.piy-wordpop{ position:fixed; background:#fff; border:1px solid var(--accent); border-radius:8px;
+  padding:9px 13px; box-shadow:0 4px 14px rgba(0,0,0,.2); z-index:80; max-width:280px; font-size:14px; }
+.piy-wordpop b{ color:var(--navy); }
+@media (max-width:800px){
+  .piy-tree{ display:none; }
+  .piy-body.piy-detail-open .piy-tree{ display:none; }
+  .piy-body:not(.piy-detail-open) .piy-tree{ display:block; flex:1 1 auto; border-left:0; }
+  .piy-body:not(.piy-detail-open) .piy-main{ display:none; }
+  .piy-main{ flex-direction:column; }
+  .piy-dictpane{ border-right:0; border-top:1px solid rgba(26,56,115,.18); flex:0 0 40%; }
+}
+
+/* ── מציאת חרוזים: word/suffix/sound rhyme search over the piyyutim word bank ── */
+.rhy-controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.rhy-modes{ display:flex; gap:3px; background:#f1eede; border-radius:8px; padding:3px; }
+.rhy-mode{ border:0; background:transparent; padding:7px 13px; border-radius:6px; cursor:pointer;
+  font:inherit; font-size:13.5px; color:var(--dark); }
+.rhy-mode.on{ background:var(--navy); color:#fff; }
+.rhy-controls input[type=text], .rhy-controls select{ padding:8px 11px; border:1px solid #cfd6e6;
+  border-radius:8px; font:inherit; font-size:15px; }
+.rhy-clean{ font-size:13px; color:var(--muted); display:flex; align-items:center; gap:4px; }
+.rhy-summary{ color:var(--muted); font-size:13.5px; margin:8px 2px; }
+.rhy-results{ flex:1 1 auto; min-height:0; overflow-y:auto; }
+.rhy-table{ width:100%; border-collapse:collapse; }
+.rhy-table th{ background:#f1eede; text-align:right; padding:8px 10px; font-size:13px; color:var(--navy);
+  position:sticky; top:0; }
+.rhy-table td{ padding:7px 10px; border-top:1px solid rgba(26,56,115,.14); vertical-align:top; font-size:14.5px; }
+.rhy-word{ font-size:1.1em; font-weight:700; color:var(--navy); }
+.rhy-grp{ background:#fff3cd; border-radius:9px; padding:1px 8px; font-size:12.5px; }
+.rhy-conf{ font-size:11.5px; color:var(--muted); }
+.rhy-def.rhy-def-none{ color:var(--muted); font-style:italic; }
+.rhy-occbtn{ background:none; border:1px solid var(--accent); color:var(--accent); border-radius:6px;
+  padding:3px 10px; cursor:pointer; font-size:12.5px; }
+.rhy-occlist{ margin-top:6px; font-size:13px; display:flex; flex-direction:column; gap:2px; }
+.rhy-occlink{ display:block; text-align:right; background:none; border:0; color:var(--accent);
+  cursor:pointer; padding:2px 0; font:inherit; font-size:13px; }
+.rhy-occlink:hover{ text-decoration:underline; }
+
 /* ── guided interactive tour ("סרטון הסבר") ── */
 .tour{ position:fixed; inset:0; z-index:200; pointer-events:none; }
 .tour.hidden{ display:none; }
