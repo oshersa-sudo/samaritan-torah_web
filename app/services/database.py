@@ -1184,7 +1184,7 @@ def _piy_phon_key(s, n):
     return _piy_fold_finals(s).translate(_PIY_PHON)[-n:] if s else ''
 
 
-_PIY_ROW_COLS = 'word, freq, freq_clean, rhyme_key, rhyme_human, rhyme_conf, rhyme_method, definition, occurrences'
+_PIY_ROW_COLS = 'word, freq, freq_clean, rhyme_key, rhyme_human, rhyme_conf, rhyme_method, definition, occurrences, tal_root'
 
 
 def _piy_gloss_fallback(conn, words):
@@ -1192,12 +1192,16 @@ def _piy_gloss_fallback(conn, words):
     own word-dictionary) as a free fallback wherever piyutim's own small
     definition/dictionary is empty -- liturgical vocabulary overlaps heavily with
     Targum/Torah vocabulary, so this covers far more words than piyutim_dict alone."""
+    # piyutim_words.definition is pre-enriched (scripts/piyutim/enrich_tal_roots.py
+    # resolves each word's root via the app's own Tal-dictionary pipeline --
+    # tal_full_lookup -- and fills empty definitions from the root's gloss), so
+    # this is a simple direct read, not a live join against a separate table.
     words = [w for w in set(words) if w]
     if not words:
         return {}
     qs = ','.join('?' * len(words))
-    rows = conn.execute('SELECT word, gloss FROM tal_word_gloss WHERE word IN (%s)' % qs, tuple(words))
-    return {r['word']: r['gloss'] for r in rows if (r['gloss'] or '').strip()}
+    rows = conn.execute('SELECT word, definition FROM piyutim_words WHERE word IN (%s)' % qs, tuple(words))
+    return {r['word']: r['definition'] for r in rows if (r['definition'] or '').strip()}
 
 
 def _piy_rowdicts(conn, rows):
@@ -1209,11 +1213,6 @@ def _piy_rowdicts(conn, rows):
         except (TypeError, ValueError):
             d['occurrences'] = []
         out.append(d)
-    missing = [d['word'] for d in out if not (d.get('definition') or '').strip()]
-    fallback = _piy_gloss_fallback(conn, missing)
-    for d in out:
-        if not (d.get('definition') or '').strip() and d['word'] in fallback:
-            d['definition'] = fallback[d['word']]
     out.sort(key=lambda x: (-(x['freq_clean'] or 0), -(x['freq'] or 0)))
     return out
 

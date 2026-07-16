@@ -143,7 +143,7 @@ const I18N = {
     rhy_clean_only:'רק מטקסט מוגה', rhy_search_btn:'חפש חרוזים',
     rhy_empty:'חפש מילה, סופית או צליל — ותקבל את כל המילים המתחרזות מן הקורפוס.',
     rhy_no_results:'לא נמצאו מילים מתאימות', rhy_found_n:'נמצאו {n} מילים',
-    rhy_approx:'שיוך משוער {p}%', rhy_clean_n:'במוגה', rhy_no_def:'אין ערך עדיין',
+    rhy_approx:'שיוך משוער {p}%', rhy_clean_n:'במוגה', rhy_no_def:'אין ערך עדיין', rhy_root_lbl:'שורש:',
     rhy_occ_n:'חיבורים', rhy_no_data:'אין נתונים',
     rhy_col_word:'מילה', rhy_col_freq:'שכיחות', rhy_col_group:'קבוצת חרוז', rhy_col_def:'תרגום (מילון)', rhy_col_occ:'היכן מופיעה',
     rd_he:'עברית', rd_ar:'ערבית', rd_aram:'ארמית', rd_show:'הצג:',
@@ -310,7 +310,7 @@ const I18N = {
     rhy_clean_only:'Verified text only', rhy_search_btn:'Find rhymes',
     rhy_empty:'Search a word, suffix, or sound — get every rhyming word in the corpus.',
     rhy_no_results:'No matching words found', rhy_found_n:'{n} words found',
-    rhy_approx:'~{p}% match', rhy_clean_n:'verified', rhy_no_def:'No entry yet',
+    rhy_approx:'~{p}% match', rhy_clean_n:'verified', rhy_no_def:'No entry yet', rhy_root_lbl:'root:',
     rhy_occ_n:'compositions', rhy_no_data:'No data',
     rhy_col_word:'Word', rhy_col_freq:'Frequency', rhy_col_group:'Rhyme group', rhy_col_def:'Gloss', rhy_col_occ:'Where it appears',
     rd_he:'Hebrew', rd_ar:'Arabic', rd_aram:'Aramaic', rd_show:'Show:',
@@ -477,7 +477,7 @@ const I18N = {
     rhy_clean_only:'من نص موثّق فقط', rhy_search_btn:'ابحث عن القوافي',
     rhy_empty:'ابحث عن كلمة أو لاحقة أو صوت — واحصل على كل الكلمات المتقافية في المتن.',
     rhy_no_results:'لم يُعثر على كلمات مطابقة', rhy_found_n:'تم العثور على {n} كلمة',
-    rhy_approx:'تطابق تقريبي {p}%', rhy_clean_n:'موثّق', rhy_no_def:'لا يوجد مدخل بعد',
+    rhy_approx:'تطابق تقريبي {p}%', rhy_clean_n:'موثّق', rhy_no_def:'لا يوجد مدخل بعد', rhy_root_lbl:'جذر:',
     rhy_occ_n:'تأليفات', rhy_no_data:'لا توجد بيانات',
     rhy_col_word:'الكلمة', rhy_col_freq:'التكرار', rhy_col_group:'مجموعة القافية', rhy_col_def:'الترجمة', rhy_col_occ:'أين تظهر',
     rd_he:'العبرية', rd_ar:'العربية', rd_aram:'الآرامية', rd_show:'اعرض:',
@@ -3596,11 +3596,14 @@ function rhyRender(list){
         + (w.rhyme_method!=='book_exact' ? `<div class="rhy-conf">${esc(t('rhy_approx').replace('{p}', Math.round((w.rhyme_conf||0)*100)))}</div>` : '')
       : '<span class="rhy-conf">—</span>';
     const def = w.definition || (PIY.dict && PIY.dict[w.word]);
+    const defHtml = def
+      ? esc(def)+(w.tal_root?` <span class="rhy-conf">(${esc(t('rhy_root_lbl'))} ${esc(w.tal_root)})</span>`:'')
+      : esc(t('rhy_no_def'));
     html+=`<tr>
       <td class="rhy-word">${esc(w.word)}</td>
       <td>${w.freq||0}${w.freq_clean?` <span class="rhy-conf">(${w.freq_clean} ${esc(t('rhy_clean_n'))})</span>`:''}</td>
       <td>${grp}</td>
-      <td class="rhy-def ${def?'':'rhy-def-none'}">${def?esc(def):esc(t('rhy_no_def'))}</td>
+      <td class="rhy-def ${def?'':'rhy-def-none'}">${defHtml}</td>
       <td>${(w.occurrences&&w.occurrences.length) ? `<button class="rhy-occbtn" data-i="${i}">${w.occurrences.length} ${esc(t('rhy_occ_n'))} ▾</button><div class="rhy-occlist hidden"></div>` : '<span class="rhy-conf">—</span>'}</td>
     </tr>`;
   });
