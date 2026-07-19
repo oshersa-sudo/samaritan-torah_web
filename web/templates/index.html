@@ -363,6 +363,29 @@
   </div>
 </div>
 
+<!-- חבר לי חיבור: מחולל טיוטות פיוט (מנהל בלבד, שלב ראשון) -->
+<div id="composerModal" class="modal book-full hidden">
+  <div class="modal-box book-reader lib-gallery">
+    <div class="rd-top">
+      <button id="cmpToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="cmpToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
+      <div class="modal-title" data-i18n="cmp_title_h">✍️ חבר לי חיבור</div>
+    </div>
+    <div class="cmp-controls">
+      <label class="cmp-field"><span data-i18n="cmp_genre">סוג</span><select id="cmpGenre"></select></label>
+      <label class="cmp-field"><span data-i18n="cmp_theme">נושא / חג</span><select id="cmpTheme"></select></label>
+      <label class="cmp-field"><span data-i18n="cmp_rhyme">קבוצת חרוז</span><select id="cmpRhyme"></select></label>
+      <label class="cmp-field"><span data-i18n="cmp_nlines">שורות</span><input type="number" id="cmpNlines" value="8" min="4" max="22"></label>
+      <label class="cmp-acro"><input type="checkbox" id="cmpAcro"> <span data-i18n="cmp_acro">אקרוסטיכון א״ב</span></label>
+      <button class="dict-app-go" id="cmpGo" data-i18n="cmp_go">חבר לי!</button>
+    </div>
+    <div class="cmp-note" data-i18n="cmp_note">המחולל מרכיב טיוטת עבודה: כל צלע לקוחה כלשונה מהקורפוס המאומת ומסודרת לפי כללי הסוגה והחרוז שנבחרו — אך החיבור בין הצלעות מכני. זהו חומר גלם לפייטן, לא פיוט גמור: ערכו, החליפו צלעות (🎲), והתאימו.</div>
+    <div id="cmpPoem" class="cmp-poem"></div>
+    <button class="dict-app-go cmp-copy hidden" id="cmpCopy" data-i18n="cmp_copy">📋 העתק את הטיוטה</button>
+    <button class="popup-close" id="cmpClose" data-i18n="close">סגור</button>
+  </div>
+</div>
+
 <!-- onboarding: welcome / install recommendation / notification recommendation -->
 <div id="onboardModal" class="modal hidden">
   <div class="modal-box ob-box">

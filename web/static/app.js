@@ -137,6 +137,11 @@ const I18N = {
     piy_no_dict_entry:'אין ערך מילון עדיין',
     piy_q_verified:'✔ מאומת', piy_q_cleaned:'✎ נוקה ידנית', piy_q_raw:'⚠ OCR גולמי',
     m_rhyme_book:'מציאת חרוזים', rhyme_title:'מציאת חרוזים',
+    m_composer:'✍️ חבר לי חיבור', cmp_title_h:'✍️ חבר לי חיבור', cmp_genre:'סוג', cmp_theme:'נושא / חג',
+    cmp_rhyme:'קבוצת חרוז', cmp_nlines:'שורות', cmp_acro:'אקרוסטיכון א״ב', cmp_go:'חבר לי!',
+    cmp_rhyme_random:'אקראית (עשירה)', cmp_cola_n:'צלעות',
+    cmp_note:'המחולל מרכיב טיוטת עבודה: כל צלע לקוחה כלשונה מהקורפוס המאומת ומסודרת לפי כללי הסוגה והחרוז שנבחרו — אך החיבור בין הצלעות מכני. זהו חומר גלם לפייטן, לא פיוט גמור: ערכו, החליפו צלעות (🎲), והתאימו.',
+    cmp_copy:'📋 העתק את הטיוטה', cmp_copied:'הטיוטה הועתקה — הדבק/י לליטוש אמנותי.',
     rhy_mode_exact:'מדויק', rhy_mode_syll:'מס\' הברות זהה', rhy_mode_sound:'צליל',
     rhy_q_ph:'הקלד מילה, למשל: שבתה', rhy_or:'או', rhy_start_letter:'אות פתיחה (רשות):', rhy_start_letter_ph:'למשל: מ',
     piy_to_rhyme:'🎵 לחיפוש',
@@ -304,6 +309,11 @@ const I18N = {
     piy_no_dict_entry:'No dictionary entry yet',
     piy_q_verified:'✔ Verified', piy_q_cleaned:'✎ Manually cleaned', piy_q_raw:'⚠ Raw OCR',
     m_rhyme_book:'Rhyme Finder', rhyme_title:'Rhyme Finder',
+    m_composer:'✍️ Compose a piyyut', cmp_title_h:'✍️ Compose a piyyut', cmp_genre:'Genre', cmp_theme:'Theme / Festival',
+    cmp_rhyme:'Rhyme group', cmp_nlines:'Lines', cmp_acro:'A-to-Tav acrostic', cmp_go:'Compose!',
+    cmp_rhyme_random:'Random (rich)', cmp_cola_n:'half-lines',
+    cmp_note:'The generator assembles a WORKING DRAFT: every half-line is taken verbatim from the verified corpus and arranged per the chosen genre and rhyme — but the join between half-lines is mechanical. This is raw material for a paytan, not a finished piyyut: edit, swap half-lines (🎲), and adapt.',
+    cmp_copy:'📋 Copy the draft', cmp_copied:'Draft copied — paste it for artistic polishing.',
     rhy_mode_exact:'Exact', rhy_mode_syll:'Same syllable count', rhy_mode_sound:'Sound',
     rhy_q_ph:'Type a word, e.g. שבתה', rhy_or:'or', rhy_start_letter:'Starting letter (optional):', rhy_start_letter_ph:'e.g. מ',
     piy_to_rhyme:'🎵 To search',
@@ -471,6 +481,11 @@ const I18N = {
     piy_no_dict_entry:'لا يوجد مدخل قاموس بعد',
     piy_q_verified:'✔ موثّق', piy_q_cleaned:'✎ منقّح يدويًا', piy_q_raw:'⚠ OCR خام',
     m_rhyme_book:'إيجاد القوافي', rhyme_title:'إيجاد القوافي',
+    m_composer:'✍️ ألّف لي قصيدة', cmp_title_h:'✍️ ألّف لي قصيدة', cmp_genre:'النوع', cmp_theme:'الموضوع / العيد',
+    cmp_rhyme:'مجموعة القافية', cmp_nlines:'الأسطر', cmp_acro:'أكروستيك أبجدي', cmp_go:'ألّف لي!',
+    cmp_rhyme_random:'عشوائي (غني)', cmp_cola_n:'أشطر',
+    cmp_note:'يُركّب المولّد مسودة عمل: كل شطر مأخوذ حرفيًا من المتن الموثّق ومرتّب حسب قواعد النوع والقافية المختارين — لكن الربط بين الأشطر آلي. هذه مادة خام للشاعر، وليست قصيدة مكتملة: حرّرها، بدّل الأشطر (🎲)، وكيّفها.',
+    cmp_copy:'📋 انسخ المسودة', cmp_copied:'تم نسخ المسودة — الصقها لتلميع فني.',
     rhy_mode_exact:'دقيق', rhy_mode_syll:'نفس عدد المقاطع', rhy_mode_sound:'الصوت',
     rhy_q_ph:'اكتب كلمة، مثل: שבתה', rhy_or:'أو', rhy_start_letter:'حرف البداية (اختياري):', rhy_start_letter_ph:'مثل: מ',
     piy_to_rhyme:'🎵 إلى البحث',
@@ -2809,6 +2824,7 @@ const LIB_ITEMS = [
   {act:'sir_book',     titleKey:'m_sir_book',     open:()=>openSirBook()},
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
   {act:'rhyme_book',   titleKey:'m_rhyme_book',   open:()=>openRhymeBook()},
+  {act:'composer',     titleKey:'m_composer',     open:()=>openComposer(), adminOnly:true},
 ];
 function openLibrary(){
   $('libraryModal').classList.remove('hidden');
@@ -2821,6 +2837,7 @@ function libBuildGrid(){
   const grid=$('libGrid'); grid.innerHTML='';
   let shown=0;
   for(const item of LIB_ITEMS){
+    if(item.adminOnly && !ADMIN.token) continue;   // "מחולל טיוטות פיוט" — שלב ראשון: מנהל בלבד
     const label=t(item.titleKey);
     if(q && !label.toLowerCase().includes(q)) continue;
     shown++;
@@ -3638,6 +3655,105 @@ $('rhyQ').addEventListener('keydown', e=>{ if(e.key==='Enter') rhySearch(); });
 $('rhyClose').onclick=()=>$('rhymeModal').classList.add('hidden');
 $('rhyToTorah').onclick=()=>$('rhymeModal').classList.add('hidden');
 $('piyToRhyme').onclick=()=>{ $('piyModal').classList.add('hidden'); $('rhymeModal').classList.remove('hidden'); };
+
+// ── "חבר לי חיבור" — piyyut draft composer (admin-only, first phase) ─────────
+// Ported from the standalone piyyut_composer.html prototype: assembles a DRAFT
+// from real corpus half-lines ("צלעות", cola) grouped by rhyme, per simple
+// genre templates (opener/refrain/closer) — a starting point for a human
+// paytan to edit, not a finished composition.
+const CMP = { data:null, current:[] };
+const CMP_AB = 'אבגדהוזחטיכלמנסעפצקרשת';
+function loadScript(src){
+  return new Promise((resolve, reject)=>{
+    const s=document.createElement('script'); s.src=src; s.onload=resolve; s.onerror=reject;
+    document.head.appendChild(s);
+  });
+}
+async function openComposer(){
+  if(!ADMIN.token) return;
+  $('composerModal').classList.remove('hidden');
+  if(!CMP.data){
+    if(!window.COMPOSER_DATA) await loadScript('/static/composer_data.js');
+    CMP.data=window.COMPOSER_DATA;
+    const gSel=$('cmpGenre'), tSel=$('cmpTheme'), rSel=$('cmpRhyme');
+    gSel.innerHTML=Object.keys(CMP.data.genres).map(g=>`<option>${esc(g)}</option>`).join('');
+    tSel.innerHTML=Object.keys(CMP.data.themes).map(x=>`<option>${esc(x)}</option>`).join('');
+    rSel.innerHTML=`<option value="">${esc(t('cmp_rhyme_random'))}</option>`
+      +Object.entries(CMP.data.cola_by_rhyme).map(([k,v])=>
+        `<option value="${esc(k)}">${esc(v.header)} (${esc(k)}) — ${v.cola.length} ${esc(t('cmp_cola_n'))}</option>`).join('');
+  }
+  trackNav(t('m_composer'));
+}
+function cmpPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function cmpPool(theme){
+  const kws=CMP.data.themes[theme]||[];
+  let all=[];
+  for(const g of Object.values(CMP.data.cola_by_rhyme)) all=all.concat(g.cola);
+  const themed = kws.length ? all.filter(c=>kws.some(k=>c.includes(k))) : [];
+  return {all, themed};
+}
+function cmpGenerate(){
+  const genre=$('cmpGenre').value, theme=$('cmpTheme').value;
+  let rk=$('cmpRhyme').value;
+  if(!rk){
+    const rich=Object.entries(CMP.data.cola_by_rhyme).sort((a,b)=>b[1].cola.length-a[1].cola.length).slice(0,5);
+    rk=cmpPick(rich)[0];
+  }
+  const G=CMP.data.genres[genre], R=CMP.data.cola_by_rhyme[rk];
+  const n=Math.min(+$('cmpNlines').value, R.cola.length);
+  const acro=$('cmpAcro').checked;
+  const {all, themed}=cmpPool(theme);
+  const usedEnd=new Set(); CMP.current=[];
+  if(G.openers) CMP.current.push({t:'frame', a:G.openers[0]});
+  for(let i=0;i<n;i++){
+    const cands=R.cola.filter(c=>!usedEnd.has(c.split(' ').pop()));
+    if(!cands.length) break;
+    const b=cmpPick(cands); usedEnd.add(b.split(' ').pop());
+    let aPool=themed.length ? themed : all;
+    if(acro){
+      const L=CMP_AB[i % CMP_AB.length];
+      const hit=aPool.filter(c=>c[0]===L);
+      if(!hit.length){ const anyHit=all.filter(c=>c[0]===L); if(anyHit.length) aPool=anyHit; }
+      else aPool=hit;
+    }
+    let a=cmpPick(aPool);
+    if(a===b) a=cmpPick(all);
+    CMP.current.push({t:'line', a, b, ref:G.refrain});
+    if(G.openers && genre==='כימי' && i===Math.floor(n/2)-1) CMP.current.push({t:'frame', a:G.openers[1]});
+  }
+  CMP.current.push({t:'frame', a:cmpPick(G.closers)});
+  cmpRender();
+}
+function cmpRender(){
+  const box=$('cmpPoem');
+  box.innerHTML=CMP.current.map((l,i)=>{
+    if(l.t==='frame') return `<div class="cmp-line"><span class="cmp-frame">${esc(l.a)} :</span></div>`;
+    return `<div class="cmp-line"><span>${esc(l.a)} • <b>${esc(l.b)}</b>${l.ref?(' — <span class="cmp-refrain">'+esc(l.ref)+'</span>'):''} :</span>
+      <button class="cmp-reroll" data-i="${i}">🎲</button></div>`;
+  }).join('');
+  box.querySelectorAll('.cmp-reroll').forEach(btn=>{ btn.onclick=()=>cmpReroll(+btn.dataset.i); });
+  $('cmpCopy').classList.toggle('hidden', !CMP.current.length);
+}
+function cmpReroll(i){
+  const rk=$('cmpRhyme').value || Object.keys(CMP.data.cola_by_rhyme)[0];
+  const R=CMP.data.cola_by_rhyme[$('cmpRhyme').value] || CMP.data.cola_by_rhyme[rk];
+  const {all, themed}=cmpPool($('cmpTheme').value);
+  CMP.current[i].a=cmpPick(themed.length ? themed : all);
+  const used=new Set(CMP.current.filter(l=>l.b).map(l=>l.b.split(' ').pop()));
+  const cands=R.cola.filter(c=>!used.has(c.split(' ').pop()));
+  if(cands.length) CMP.current[i].b=cmpPick(cands);
+  cmpRender();
+}
+function cmpCopyPoem(){
+  const txt=CMP.current.map(l=> l.t==='frame' ? l.a+' :' : `${l.a} • ${l.b}${l.ref?(' — '+l.ref):''} :`).join('\n');
+  navigator.clipboard.writeText(txt).catch(()=>{});
+  showInfo(t('m_composer'), `<div class="note">${esc(t('cmp_copied'))}</div>`);
+}
+$('cmpGo').onclick=cmpGenerate;
+$('cmpCopy').onclick=cmpCopyPoem;
+$('cmpClose').onclick=()=>$('composerModal').classList.add('hidden');
+$('cmpToTorah').onclick=()=>$('composerModal').classList.add('hidden');
+$('cmpToLib').onclick=()=>{ $('composerModal').classList.add('hidden'); openLibrary(); };
 
 // ── PWA install ("התקנת אפליקציה") ───────────────────────────────────────────
 // Capture the browser's install prompt so the menu button can trigger it; fall
