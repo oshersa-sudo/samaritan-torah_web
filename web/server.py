@@ -325,10 +325,65 @@ import shutil
 from datetime import datetime as _dt
 
 
+_BACKUP_KEEP = 3  # rotate: an unbounded number of ~90MB copies fills the 1GB disk
+
+
+def _backup_glob(src):
+    import glob
+    return sorted(glob.glob('%s.bak_admin_*' % src))
+
+
 def _backup_db():
     src = getattr(db, 'DB_PATH', None)
     if src and os.path.exists(src):
         shutil.copy2(src, '%s.bak_admin_%s' % (src, _dt.now().strftime('%Y%m%d_%H%M%S')))
+        stale = _backup_glob(src)[:-_BACKUP_KEEP]
+        for f in stale:
+            try:
+                os.remove(f)
+            except OSError:
+                pass
+
+
+@app.route('/api/admin/disk_usage')
+def admin_disk_usage():
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    src = getattr(db, 'DB_PATH', None)
+    backups = _backup_glob(src) if src else []
+    disk_dir = os.path.dirname(src) if src else '.'
+    total, used, free = shutil.disk_usage(disk_dir)
+    return jsonify({'ok': True,
+                     'db_bytes': os.path.getsize(src) if src and os.path.exists(src) else 0,
+                     'backups': [{'name': os.path.basename(f), 'bytes': os.path.getsize(f)} for f in backups],
+                     'backups_bytes': sum(os.path.getsize(f) for f in backups),
+                     'disk_total': total, 'disk_used': used, 'disk_free': free})
+
+
+@app.route('/api/admin/clean_backups', methods=['POST'])
+def admin_clean_backups():
+    """Delete old .bak_admin_* copies to reclaim disk space. Keeps the most recent
+    _BACKUP_KEEP by default; pass keep:0 to wipe all of them (git history is the
+    real backup — these are just a same-disk safety net for the last few edits)."""
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    src = getattr(db, 'DB_PATH', None)
+    if not src:
+        return jsonify({'ok': False, 'error': 'no db path'}), 400
+    try:
+        keep = max(0, int(d.get('keep', _BACKUP_KEEP)))
+    except (TypeError, ValueError):
+        keep = _BACKUP_KEEP
+    stale = _backup_glob(src)[:-keep] if keep else _backup_glob(src)
+    freed = 0
+    for f in stale:
+        try:
+            freed += os.path.getsize(f)
+            os.remove(f)
+        except OSError:
+            pass
+    return jsonify({'ok': True, 'deleted': len(stale), 'freed_bytes': freed})
 
 
 def _portion_spans(conn, book_id):

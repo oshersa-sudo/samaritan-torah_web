@@ -203,6 +203,10 @@ const I18N = {
     wa_err:'לא ניתן להפעיל כניסה בטביעת אצבע במכשיר זה.', wa_login_err:'האימות נכשל. נסה שוב או השתמש בסיסמה.',
     admin_dl_db:'⬇ הורד את ה-DB (לסנכרון חזרה)', admin_reseed:'טען DB מהמאגר',
     admin_reseed_q:'פעולה זו תדרוס את ה-DB החי בעותק מהמאגר (git). עריכות שלא הורדו יאבדו. להמשיך?',
+    adm_disk:'💾 מקום בדיסק', adm_disk_db:'קובץ ה-DB החי', adm_disk_backups:'גיבויים ישנים',
+    adm_disk_free:'פנוי בדיסק', adm_disk_total:'סה״כ דיסק', adm_disk_clean:'נקה גיבויים ישנים ושחרר מקום',
+    adm_disk_clean_q:'הגיבויים הישנים יימחקו מהדיסק (היסטוריית ה-git נשארת שלמה כגיבוי אמיתי). להמשיך?',
+    adm_disk_cleaned:'גיבויים נמחקו ומקום שוחרר.',
     edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
     edit_which_ver:'לאיזה נוסח לבצע את השינוי?',
     merge_next:'אחד עם הבא', split_chapter:'פצל פרק', split_verse:'פצל פסוק',
@@ -375,6 +379,10 @@ const I18N = {
     wa_err:'Fingerprint sign-in isn\'t available on this device.', wa_login_err:'Authentication failed. Try again or use the password.',
     admin_dl_db:'⬇ Download the DB (to sync back)', admin_reseed:'Load DB from repo',
     admin_reseed_q:'This overwrites the live DB with the repo (git) copy. Un-downloaded edits will be lost. Continue?',
+    adm_disk:'💾 Disk space', adm_disk_db:'Live DB file', adm_disk_backups:'Old backups',
+    adm_disk_free:'Free on disk', adm_disk_total:'Total disk', adm_disk_clean:'Clean old backups and free space',
+    adm_disk_clean_q:'Old backups on disk will be deleted (git history remains the real backup). Continue?',
+    adm_disk_cleaned:'Backups deleted and space freed.',
     edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
     edit_which_ver:'Which version do you want to edit?',
     merge_next:'Merge with next', split_chapter:'Split chapter', split_verse:'Split verse',
@@ -547,6 +555,10 @@ const I18N = {
     wa_err:'الدخول ببصمة الإصبع غير متاح على هذا الجهاز.', wa_login_err:'فشل التحقق. حاول مجددًا أو استخدم كلمة المرور.',
     admin_dl_db:'⬇ تنزيل قاعدة البيانات (للمزامنة)', admin_reseed:'تحميل DB من المستودع',
     admin_reseed_q:'سيؤدي هذا إلى استبدال قاعدة البيانات الحيّة بنسخة المستودع (git). ستُفقد التعديلات غير المنزَّلة. متابعة؟',
+    adm_disk:'💾 مساحة القرص', adm_disk_db:'ملف DB الحيّ', adm_disk_backups:'نسخ احتياطية قديمة',
+    adm_disk_free:'المساحة الحرّة', adm_disk_total:'إجمالي القرص', adm_disk_clean:'حذف النسخ الاحتياطية القديمة وتحرير المساحة',
+    adm_disk_clean_q:'سيتم حذف النسخ الاحتياطية القديمة من القرص (سجلّ git يبقى النسخة الاحتياطية الحقيقية). متابعة؟',
+    adm_disk_cleaned:'تم حذف النسخ الاحتياطية وتحرير المساحة.',
     edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
     edit_which_ver:'ما هو النصّ الذي تريد تعديله؟',
     merge_next:'دمج مع التالي', split_chapter:'تقسيم الأصحاح', split_verse:'تقسيم الآية',
@@ -4239,9 +4251,38 @@ function adminDbControls(){
   if(!ADMIN.token) return '';
   return `<div class="note" style="margin-top:10px;display:flex;flex-direction:column;gap:6px">`
     + `<button class="admin-btn" onclick="openAnalytics()">${esc(t('adm_analytics'))}</button>`
+    + `<button class="admin-btn" onclick="openDiskUsage()">${esc(t('adm_disk'))}</button>`
     + `<a class="admin-btn" style="text-decoration:none;text-align:center" `
     + `href="/api/admin/download_db?token=${encodeURIComponent(ADMIN.token)}">${esc(t('admin_dl_db'))}</a>`
     + `<button class="admin-btn cancel" onclick="adminReseed()">${esc(t('admin_reseed'))}</button></div>`;
+}
+// admin disk-usage panel — surfaces the live persistent disk's free space and
+// lets the admin reclaim it by deleting old same-disk backup copies (the git
+// history is the real backup, so these are safe to prune)
+function fmtBytes(n){
+  if(n>=1e9) return (n/1e9).toFixed(2)+' GB';
+  if(n>=1e6) return (n/1e6).toFixed(1)+' MB';
+  if(n>=1e3) return (n/1e3).toFixed(0)+' KB';
+  return n+' B';
+}
+async function openDiskUsage(){
+  if(!ADMIN.token) return;
+  let r; try{ r = await fetch('/api/admin/disk_usage?token='+encodeURIComponent(ADMIN.token)).then(x=>x.json()); }
+  catch(e){ r={ok:false}; }
+  if(!r || !r.ok){ showInfo(t('adm_disk'), `<div class="note">${esc(t('edit_err'))}</div>`); return; }
+  const html = `<div class="note" style="display:flex;flex-direction:column;gap:4px">`
+    + `<div>${esc(t('adm_disk_db'))}: <b>${fmtBytes(r.db_bytes)}</b></div>`
+    + `<div>${esc(t('adm_disk_backups'))}: <b>${r.backups.length}</b> (${fmtBytes(r.backups_bytes)})</div>`
+    + `<div>${esc(t('adm_disk_free'))}: <b>${fmtBytes(r.disk_free)}</b> / ${esc(t('adm_disk_total'))}: ${fmtBytes(r.disk_total)}</div>`
+    + `</div>`
+    + `<button class="admin-btn cancel" style="margin-top:10px" onclick="adminCleanBackups()">${esc(t('adm_disk_clean'))}</button>`;
+  showInfo(t('adm_disk'), html);
+}
+async function adminCleanBackups(){
+  if(!ADMIN.token) return;
+  if(!await askConfirm(t('adm_disk'), t('adm_disk_clean_q'), t('confirm_yes'), t('c_cancel'))) return;
+  let r; try{ r=await apiPost('admin/clean_backups', {token:ADMIN.token, keep:0}); }catch(e){ r={ok:false}; }
+  showInfo(t('adm_disk'), `<div class="note">${r&&r.ok ? esc(t('adm_disk_cleaned'))+' ('+fmtBytes(r.freed_bytes)+')' : esc((r&&r.error)||'error')}</div>`);
 }
 // admin analytics dashboard — who visited (device/IP), how long, which pages
 async function openAnalytics(){
