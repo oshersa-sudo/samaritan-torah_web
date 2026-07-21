@@ -70,7 +70,9 @@ _LOGIN_FAILS = {}                      # ip -> [failure timestamps] (best-effort
 _EDITABLE = {'verses': {'text', 'masoretic_text', 'interpretation', 'sam_aramaic',
                         'sam_hebrew', 'simple_hebrew', 'english', 'arabic_trans',
                         # per-version comparison texts, editable from the compare-view pencils
-                        'lxx_text', 'onkelos_text', 'qumran_text'}}
+                        'lxx_text', 'onkelos_text', 'qumran_text'},
+             # per-line edits inside a saved private composition (חיבורים פרטיים)
+             'private_composition_lines': {'text'}}
 
 
 def _make_token():
@@ -318,6 +320,88 @@ def admin_edit():
     finally:
         conn.close()
     return jsonify({'ok': True})
+
+
+# ── "חיבורים פרטיים": AI-assisted draft (admin only, own ANTHROPIC_API_KEY) ────
+# read (list/get) requires only a valid token since the content is private;
+# generate/save/delete/duplicate are POST-only admin actions like the rest of
+# the admin_* endpoints above.
+@app.route('/api/private_comp/list')
+def private_comp_list():
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    return jsonify({'ok': True, 'items': db.list_private_compositions()})
+
+
+@app.route('/api/private_comp/get')
+def private_comp_get():
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        cid = int(request.args.get('id'))
+    except (TypeError, ValueError):
+        return jsonify({'ok': False, 'error': 'bad id'}), 400
+    comp = db.get_private_composition(cid)
+    if not comp:
+        return jsonify({'ok': False, 'error': 'not found'}), 404
+    return jsonify({'ok': True, 'comp': comp})
+
+
+@app.route('/api/admin/private_comp/generate', methods=['POST'])
+def private_comp_generate():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    prompt = (d.get('prompt') or '').strip()
+    if not prompt:
+        return jsonify({'ok': False, 'error': 'empty prompt'}), 400
+    import claude_composer
+    try:
+        text = claude_composer.generate_composition_draft(prompt)
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    return jsonify({'ok': True, 'text': text})
+
+
+@app.route('/api/admin/private_comp/save', methods=['POST'])
+def private_comp_save():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    title = (d.get('title') or '').strip() or 'חיבור ללא כותרת'
+    prompt = d.get('prompt') or ''
+    text = d.get('text') or ''
+    lines = text.split('\n')
+    cid = db.create_private_composition(title, prompt, lines)
+    return jsonify({'ok': True, 'id': cid})
+
+
+@app.route('/api/admin/private_comp/delete', methods=['POST'])
+def private_comp_delete():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        cid = int(d.get('id'))
+    except (TypeError, ValueError):
+        return jsonify({'ok': False, 'error': 'bad id'}), 400
+    db.delete_private_composition(cid)
+    return jsonify({'ok': True})
+
+
+@app.route('/api/admin/private_comp/duplicate', methods=['POST'])
+def private_comp_duplicate():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        cid = int(d.get('id'))
+    except (TypeError, ValueError):
+        return jsonify({'ok': False, 'error': 'bad id'}), 400
+    new_id = db.duplicate_private_composition(cid)
+    if new_id is None:
+        return jsonify({'ok': False, 'error': 'not found'}), 404
+    return jsonify({'ok': True, 'id': new_id})
 
 
 # ── admin chapter restructuring (merge / split) — local only, gated + backed up ─

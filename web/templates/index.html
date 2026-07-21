@@ -387,6 +387,49 @@
   </div>
 </div>
 
+<!-- חיבורים פרטיים: מחולל AI חופשי (עם חיפוש ברשת) + ניהול חיבורים שמורים (מנהל בלבד) -->
+<div id="privateCompModal" class="modal book-full hidden">
+  <div class="modal-box book-reader lib-gallery">
+    <div class="rd-top">
+      <button id="pcToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="pcToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
+      <div class="modal-title" data-i18n="pc_title_h">🔒 חיבורים פרטיים — אושר ששוני</div>
+    </div>
+
+    <div id="pcListPanel">
+      <button class="dict-app-go" id="pcNewBtn" data-i18n="pc_new">✍️ חיבור חדש בעזרת AI</button>
+      <div id="pcList" class="pc-list"></div>
+    </div>
+
+    <div id="pcGenPanel" class="hidden">
+      <button class="admin-btn" id="pcGenBack" data-i18n="pc_back_list">↩ לרשימה</button>
+      <label class="cmp-field cmp-field-wide">
+        <span data-i18n="pc_prompt">הוראות חופשיות לחיבור</span>
+        <textarea id="pcPrompt" rows="4" placeholder="לדוגמה: חבר לי פיוט קצר לשבת, בסגנון ישתבח, שמזכיר את הר גריזים"></textarea>
+      </label>
+      <button class="dict-app-go" id="pcGoBtn" data-i18n="pc_go">חבר לי!</button>
+      <div id="pcGenStatus" class="cmp-note hidden"></div>
+      <div id="pcDraftWrap" class="hidden">
+        <div id="pcDraft" class="cmp-poem pc-draft"></div>
+        <label class="cmp-field"><span data-i18n="pc_save_title">כותרת לשמירה</span><input type="text" id="pcSaveTitle"></label>
+        <button class="dict-app-go" id="pcSaveBtn" data-i18n="pc_save">💾 שמור כחיבור פרטי</button>
+      </div>
+    </div>
+
+    <div id="pcDetailPanel" class="hidden">
+      <button class="admin-btn" id="pcDetailBack" data-i18n="pc_back_list">↩ לרשימה</button>
+      <div id="pcDetailTitle" class="modal-title"></div>
+      <div id="pcDetailLines" class="pc-lines"></div>
+      <div class="pc-detail-actions">
+        <button class="admin-btn" id="pcDupBtn" data-i18n="pc_duplicate">⧉ שכפל</button>
+        <button class="admin-btn cancel" id="pcDelBtn" data-i18n="pc_delete">🗑 מחק</button>
+      </div>
+    </div>
+
+    <button class="popup-close" id="pcClose" data-i18n="close">סגור</button>
+  </div>
+</div>
+
 <!-- onboarding: welcome / install recommendation / notification recommendation -->
 <div id="onboardModal" class="modal hidden">
   <div class="modal-box ob-box">

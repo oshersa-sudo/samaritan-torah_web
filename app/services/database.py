@@ -2603,3 +2603,111 @@ def root_from_index(word):
     else:
         conn.close()
     return _root_by_skeleton(word)
+
+
+# ── private compositions: admin-only AI-assisted piyyut drafts, saved per-line so
+# the existing verse-pencil edit endpoint can edit them line by line ────────────
+_PRIVATE_TABLES_READY = False
+
+
+def _ensure_private_tables(conn):
+    global _PRIVATE_TABLES_READY
+    if _PRIVATE_TABLES_READY:
+        return
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS private_compositions (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            title      TEXT NOT NULL,
+            prompt     TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        );
+        CREATE TABLE IF NOT EXISTS private_composition_lines (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            composition_id INTEGER NOT NULL REFERENCES private_compositions(id),
+            line_no        INTEGER NOT NULL,
+            text           TEXT NOT NULL
+        );
+    """)
+    conn.commit()
+    _PRIVATE_TABLES_READY = True
+
+
+def list_private_compositions():
+    conn = get_connection()
+    try:
+        _ensure_private_tables(conn)
+        rows = conn.execute(
+            'SELECT id, title, created_at FROM private_compositions ORDER BY created_at DESC').fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def get_private_composition(cid):
+    conn = get_connection()
+    try:
+        _ensure_private_tables(conn)
+        comp = conn.execute(
+            'SELECT id, title, prompt, created_at FROM private_compositions WHERE id=?', (cid,)).fetchone()
+        if not comp:
+            return None
+        lines = conn.execute(
+            'SELECT id, line_no, text FROM private_composition_lines WHERE composition_id=? ORDER BY line_no',
+            (cid,)).fetchall()
+        d = dict(comp)
+        d['lines'] = [dict(l) for l in lines]
+        return d
+    finally:
+        conn.close()
+
+
+def create_private_composition(title, prompt, lines):
+    conn = get_connection()
+    try:
+        _ensure_private_tables(conn)
+        cur = conn.execute('INSERT INTO private_compositions (title, prompt) VALUES (?, ?)', (title, prompt))
+        cid = cur.lastrowid
+        for i, ln in enumerate(lines):
+            conn.execute(
+                'INSERT INTO private_composition_lines (composition_id, line_no, text) VALUES (?, ?, ?)',
+                (cid, i, ln))
+        conn.commit()
+        return cid
+    finally:
+        conn.close()
+
+
+def delete_private_composition(cid):
+    conn = get_connection()
+    try:
+        _ensure_private_tables(conn)
+        conn.execute('DELETE FROM private_composition_lines WHERE composition_id=?', (cid,))
+        conn.execute('DELETE FROM private_compositions WHERE id=?', (cid,))
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def duplicate_private_composition(cid):
+    conn = get_connection()
+    try:
+        _ensure_private_tables(conn)
+        comp = conn.execute('SELECT title, prompt FROM private_compositions WHERE id=?', (cid,)).fetchone()
+        if not comp:
+            return None
+        lines = conn.execute(
+            'SELECT line_no, text FROM private_composition_lines WHERE composition_id=? ORDER BY line_no',
+            (cid,)).fetchall()
+        cur = conn.execute(
+            'INSERT INTO private_compositions (title, prompt) VALUES (?, ?)',
+            (comp['title'] + ' (עותק)', comp['prompt']))
+        new_id = cur.lastrowid
+        for l in lines:
+            conn.execute(
+                'INSERT INTO private_composition_lines (composition_id, line_no, text) VALUES (?, ?, ?)',
+                (new_id, l['line_no'], l['text']))
+        conn.commit()
+        return new_id
+    finally:
+        conn.close()

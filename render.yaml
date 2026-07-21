@@ -22,6 +22,11 @@ services:
         value: oshersa
       - key: ADMIN_PASSWORD
         sync: false
+      # "חיבורים פרטיים" AI composer (admin panel → הספרייה השומרונית): calls the
+      # Claude API directly with this key, billed separately from Claude Code.
+      # Leaving it unset just disables that one admin-only feature.
+      - key: ANTHROPIC_API_KEY
+        sync: false
       # persistent disk so online admin edits + the visit-analytics log survive
       # across deploys instead of resetting with the ephemeral container disk
       - key: DB_PATH

@@ -143,6 +143,11 @@ const I18N = {
     cmp_rhyme_random:'אקראית (עשירה)', cmp_cola_n:'צלעות',
     cmp_note:'המחולל מרכיב טיוטת עבודה: כל צלע לקוחה כלשונה מהקורפוס המאומת ומסודרת לפי כללי הסוגה והחרוז שנבחרו — אך החיבור בין הצלעות מכני. זהו חומר גלם לפייטן, לא פיוט גמור: ערכו, החליפו צלעות (🎲), והתאימו.',
     cmp_copy:'📋 העתק את הטיוטה', cmp_copied:'הטיוטה הועתקה — הדבק/י לליטוש אמנותי.',
+    m_privatecomp:'🔒 חיבורים פרטיים', pc_title_h:'🔒 חיבורים פרטיים — אושר ששוני',
+    pc_new:'✍️ חיבור חדש בעזרת AI', pc_back_list:'↩ לרשימה', pc_empty:'עדיין אין חיבורים שמורים.',
+    pc_prompt:'הוראות חופשיות לחיבור', pc_go:'חבר לי!', pc_generating:'מחבר... (כולל חיפוש ברשת, עשוי לקחת רגע)',
+    pc_save_title:'כותרת לשמירה', pc_save:'💾 שמור כחיבור פרטי', pc_untitled:'חיבור ללא כותרת',
+    pc_duplicate:'⧉ שכפל', pc_delete:'🗑 מחק', pc_delete_q:'החיבור יימחק לצמיתות מהאתר החי. להמשיך?',
     rhy_mode_exact:'מדויק', rhy_mode_syll:'מס\' הברות זהה', rhy_mode_sound:'צליל',
     rhy_q_ph:'הקלד מילה, למשל: שבתה', rhy_or:'או', rhy_start_letter:'אות פתיחה (רשות):', rhy_start_letter_ph:'למשל: מ',
     piy_to_rhyme:'🎵 לחיפוש',
@@ -320,6 +325,11 @@ const I18N = {
     cmp_rhyme_random:'Random (rich)', cmp_cola_n:'half-lines',
     cmp_note:'The generator assembles a WORKING DRAFT: every half-line is taken verbatim from the verified corpus and arranged per the chosen genre and rhyme — but the join between half-lines is mechanical. This is raw material for a paytan, not a finished piyyut: edit, swap half-lines (🎲), and adapt.',
     cmp_copy:'📋 Copy the draft', cmp_copied:'Draft copied — paste it for artistic polishing.',
+    m_privatecomp:'🔒 Private compositions', pc_title_h:'🔒 Private Compositions — Osher Sassoni',
+    pc_new:'✍️ New AI-assisted composition', pc_back_list:'↩ Back to list', pc_empty:'No saved compositions yet.',
+    pc_prompt:'Free-text instructions', pc_go:'Compose!', pc_generating:'Composing... (may search the web, can take a moment)',
+    pc_save_title:'Title to save as', pc_save:'💾 Save as private composition', pc_untitled:'Untitled composition',
+    pc_duplicate:'⧉ Duplicate', pc_delete:'🗑 Delete', pc_delete_q:'This composition will be permanently deleted from the live site. Continue?',
     rhy_mode_exact:'Exact', rhy_mode_syll:'Same syllable count', rhy_mode_sound:'Sound',
     rhy_q_ph:'Type a word, e.g. שבתה', rhy_or:'or', rhy_start_letter:'Starting letter (optional):', rhy_start_letter_ph:'e.g. מ',
     piy_to_rhyme:'🎵 To search',
@@ -497,6 +507,11 @@ const I18N = {
     cmp_rhyme_random:'عشوائي (غني)', cmp_cola_n:'أشطر',
     cmp_note:'يُركّب المولّد مسودة عمل: كل شطر مأخوذ حرفيًا من المتن الموثّق ومرتّب حسب قواعد النوع والقافية المختارين — لكن الربط بين الأشطر آلي. هذه مادة خام للشاعر، وليست قصيدة مكتملة: حرّرها، بدّل الأشطر (🎲)، وكيّفها.',
     cmp_copy:'📋 انسخ المسودة', cmp_copied:'تم نسخ المسودة — الصقها لتلميع فني.',
+    m_privatecomp:'🔒 مؤلفات خاصة', pc_title_h:'🔒 مؤلفات خاصة — أوشر ششوني',
+    pc_new:'✍️ تأليف جديد بمساعدة AI', pc_back_list:'↩ إلى القائمة', pc_empty:'لا توجد مؤلفات محفوظة بعد.',
+    pc_prompt:'تعليمات حرة للتأليف', pc_go:'ألّف لي!', pc_generating:'جارٍ التأليف... (قد يشمل بحثًا في الويب، قد يستغرق لحظة)',
+    pc_save_title:'عنوان للحفظ', pc_save:'💾 احفظ كتأليف خاص', pc_untitled:'تأليف بلا عنوان',
+    pc_duplicate:'⧉ استنساخ', pc_delete:'🗑 حذف', pc_delete_q:'سيُحذف هذا التأليف نهائيًا من الموقع الحي. متابعة؟',
     rhy_mode_exact:'دقيق', rhy_mode_syll:'نفس عدد المقاطع', rhy_mode_sound:'الصوت',
     rhy_q_ph:'اكتب كلمة، مثل: שבתה', rhy_or:'أو', rhy_start_letter:'حرف البداية (اختياري):', rhy_start_letter_ph:'مثل: מ',
     piy_to_rhyme:'🎵 إلى البحث',
@@ -2840,6 +2855,7 @@ const LIB_ITEMS = [
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
   {act:'rhyme_book',   titleKey:'m_rhyme_book',   open:()=>openRhymeBook()},
   {act:'composer',     titleKey:'m_composer',     open:()=>openComposer(), adminOnly:true},
+  {act:'privatecomp',  titleKey:'m_privatecomp',  open:()=>openPrivateComp(), adminOnly:true},
 ];
 function openLibrary(){
   $('libraryModal').classList.remove('hidden');
@@ -3784,6 +3800,95 @@ $('cmpClose').onclick=()=>$('composerModal').classList.add('hidden');
 $('cmpToTorah').onclick=()=>$('composerModal').classList.add('hidden');
 $('cmpToLib').onclick=()=>{ $('composerModal').classList.add('hidden'); openLibrary(); };
 
+// ── "חיבורים פרטיים": free-text AI composer + saved private compositions ─────
+// (admin-only). Unlike the corpus-based מחולל above, this calls a real Claude
+// API request server-side (own ANTHROPIC_API_KEY, billed separately) with web
+// search enabled. Drafts are ephemeral until the admin explicitly saves one;
+// saved compositions are stored line-by-line so the existing verse-pencil edit
+// flow (openEdit/addPencil) can edit them, table 'private_composition_lines'.
+const PC = { items:[], current:null, draftText:'', draftPrompt:'' };
+function pcShowPanel(which){
+  $('pcListPanel').classList.toggle('hidden', which!=='list');
+  $('pcGenPanel').classList.toggle('hidden', which!=='gen');
+  $('pcDetailPanel').classList.toggle('hidden', which!=='detail');
+}
+async function openPrivateComp(){
+  if(!ADMIN.token) return;
+  $('privateCompModal').classList.remove('hidden');
+  await pcLoadList();
+  pcShowPanel('list');
+  trackNav(t('m_privatecomp'));
+}
+async function pcLoadList(){
+  let r; try{ r = await fetch('/api/private_comp/list?token='+encodeURIComponent(ADMIN.token)).then(x=>x.json()); }
+  catch(e){ r={ok:false}; }
+  PC.items = (r && r.ok) ? r.items : [];
+  const box = $('pcList');
+  if(!PC.items.length){ box.innerHTML = `<div class="cmp-note">${esc(t('pc_empty'))}</div>`; return; }
+  box.innerHTML = PC.items.map(it=>`<button class="pc-item" data-id="${it.id}">
+      <span class="pc-item-title">${esc(it.title)}</span><span class="pc-item-date">${esc((it.created_at||'').slice(0,10))}</span>
+    </button>`).join('');
+  box.querySelectorAll('.pc-item').forEach(b=>{ b.onclick=()=>pcOpenDetail(+b.dataset.id); });
+}
+$('pcNewBtn').onclick=()=>{
+  $('pcPrompt').value=''; $('pcGenStatus').classList.add('hidden');
+  $('pcDraftWrap').classList.add('hidden'); $('pcSaveTitle').value='';
+  pcShowPanel('gen');
+};
+$('pcGenBack').onclick=()=>pcShowPanel('list');
+$('pcGoBtn').onclick=async ()=>{
+  const prompt = $('pcPrompt').value.trim();
+  if(!prompt) return;
+  $('pcGoBtn').disabled = true;
+  $('pcGenStatus').classList.remove('hidden'); $('pcGenStatus').textContent=t('pc_generating');
+  $('pcDraftWrap').classList.add('hidden');
+  let r; try{ r = await apiPost('admin/private_comp/generate', {token:ADMIN.token, prompt}); }catch(e){ r={ok:false}; }
+  $('pcGoBtn').disabled = false;
+  if(!r || !r.ok){ $('pcGenStatus').textContent = (r&&r.error) || t('edit_err'); return; }
+  $('pcGenStatus').classList.add('hidden');
+  PC.draftText = r.text; PC.draftPrompt = prompt;
+  $('pcDraft').textContent = r.text;
+  $('pcSaveTitle').value = prompt.slice(0, 40);
+  $('pcDraftWrap').classList.remove('hidden');
+};
+$('pcSaveBtn').onclick=async ()=>{
+  const title = $('pcSaveTitle').value.trim() || t('pc_untitled');
+  let r; try{ r = await apiPost('admin/private_comp/save',
+    {token:ADMIN.token, title, prompt:PC.draftPrompt||'', text:PC.draftText||''}); }catch(e){ r={ok:false}; }
+  if(r && r.ok){ await pcLoadList(); pcOpenDetail(r.id); }
+  else showInfo(t('m_privatecomp'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
+};
+async function pcOpenDetail(id){
+  let r; try{ r = await fetch('/api/private_comp/get?id='+id+'&token='+encodeURIComponent(ADMIN.token)).then(x=>x.json()); }
+  catch(e){ r={ok:false}; }
+  if(!r || !r.ok) return;
+  PC.current = r.comp;
+  $('pcDetailTitle').textContent = r.comp.title;
+  const box = $('pcDetailLines');
+  box.innerHTML = (r.comp.lines||[]).map(l=>`<div class="pc-line" data-lid="${l.id}"><span class="pc-line-text">${esc(l.text)}</span></div>`).join('');
+  box.querySelectorAll('.pc-line').forEach(rowEl=>{
+    const lid = +rowEl.dataset.lid;
+    const line = r.comp.lines.find(l=>l.id===lid);
+    addPencil(rowEl, lid, 'text', ()=>line.text, 'private_composition_lines', ()=>pcOpenDetail(id));
+  });
+  pcShowPanel('detail');
+}
+$('pcDetailBack').onclick=()=>pcShowPanel('list');
+$('pcDupBtn').onclick=async ()=>{
+  if(!PC.current) return;
+  let r; try{ r = await apiPost('admin/private_comp/duplicate', {token:ADMIN.token, id:PC.current.id}); }catch(e){ r={ok:false}; }
+  if(r && r.ok){ await pcLoadList(); pcOpenDetail(r.id); }
+};
+$('pcDelBtn').onclick=async ()=>{
+  if(!PC.current) return;
+  if(!await askConfirm(t('pc_delete'), t('pc_delete_q'), t('confirm_yes'), t('c_cancel'))) return;
+  let r; try{ r = await apiPost('admin/private_comp/delete', {token:ADMIN.token, id:PC.current.id}); }catch(e){ r={ok:false}; }
+  if(r && r.ok){ await pcLoadList(); pcShowPanel('list'); }
+};
+$('pcClose').onclick=()=>$('privateCompModal').classList.add('hidden');
+$('pcToTorah').onclick=()=>$('privateCompModal').classList.add('hidden');
+$('pcToLib').onclick=()=>{ $('privateCompModal').classList.add('hidden'); openLibrary(); };
+
 // ── PWA install ("התקנת אפליקציה") ───────────────────────────────────────────
 // Capture the browser's install prompt so the menu button can trigger it; fall
 // back to platform instructions where the prompt isn't available (iOS Safari).
@@ -4330,11 +4435,11 @@ async function adminReseed(){
 }
 $('admPass').addEventListener('keydown',e=>{ if(e.key==='Enter') $('admLogin').click(); });
 // add a floating edit pencil (admin only) to a text row → opens the edit window
-function addPencil(rowEl, verseId, column, getText){
+function addPencil(rowEl, verseId, column, getText, table, onSaved){
   if(!ADMIN.token) return;
   rowEl.classList.add('editable-row');
   const p=el('button','edit-pencil','✎'); p.title=t('edit_title');
-  p.onclick=(ev)=>{ ev.stopPropagation(); openEdit(verseId, column, getText()); };
+  p.onclick=(ev)=>{ ev.stopPropagation(); openEdit(verseId, column, getText(), table, onSaved); };
   rowEl.prepend(p);   // leftmost (the row is LTR) → floats to the left of the text
 }
 // comparison-view pencil (admin only): a verse row here holds MULTIPLE text columns
@@ -4411,8 +4516,10 @@ async function cmpMergeNext(verseId, nextId, field){
   else showInfo(t('m_admin'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
 }
 let _editCtx=null;
-function openEdit(verseId, column, text){
-  _editCtx={verseId, column};
+// table/onSaved let non-verse rows (e.g. private-composition lines) reuse this same
+// edit window; omitting them keeps the original verses-only behavior unchanged.
+function openEdit(verseId, column, text, table, onSaved){
+  _editCtx={verseId, column, table:table||'verses', onSaved};
   $('editTitle').textContent=t('edit_title'); $('editErr').textContent=''; $('editArea').value=text||'';
   $('editModal').classList.remove('hidden'); $('editArea').focus();
 }
@@ -4420,11 +4527,16 @@ $('editCancel').onclick=()=>$('editModal').classList.add('hidden');
 $('editSave').onclick=async ()=>{
   if(!_editCtx || !ADMIN.token) return;
   const value=$('editArea').value; $('editErr').textContent='';
-  let r; try{ r=await apiPost('admin/edit', {token:ADMIN.token, table:'verses', column:_editCtx.column, id:_editCtx.verseId, value}); }catch(e){ r={ok:false}; }
+  let r; try{ r=await apiPost('admin/edit', {token:ADMIN.token, table:_editCtx.table, column:_editCtx.column, id:_editCtx.verseId, value}); }catch(e){ r={ok:false}; }
   if(r && r.ok){
-    const v=(S.verses||[]).find(x=>x.id===_editCtx.verseId); if(v) v[_editCtx.column]=value;
-    _apiCache.clear();                 // drop cached responses holding the old text
-    $('editModal').classList.add('hidden'); paintVerses();
+    if(_editCtx.table==='verses'){
+      const v=(S.verses||[]).find(x=>x.id===_editCtx.verseId); if(v) v[_editCtx.column]=value;
+      _apiCache.clear();                 // drop cached responses holding the old text
+      $('editModal').classList.add('hidden'); paintVerses();
+    } else {
+      $('editModal').classList.add('hidden');
+      if(_editCtx.onSaved) _editCtx.onSaved();
+    }
   } else { $('editErr').textContent=t('edit_err'); }
 };
 // admin chapter restructuring (merge with next / split here) — standard division
