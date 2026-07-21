@@ -865,16 +865,21 @@ footer a{ color:var(--accent); text-decoration:none; }
 /* ── "חבר לי חיבור": piyyut draft composer (admin-only, first phase) ── */
 .cmp-controls{ display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; font-size:13px; color:var(--muted); }
 .cmp-field{ display:flex; flex-direction:column; gap:4px; }
-.cmp-controls select, .cmp-controls input[type=number]{ display:block; padding:7px 10px;
+.cmp-controls select, .cmp-controls input[type=number], .cmp-controls input[type=text]{ display:block; padding:7px 10px;
   border:1px solid #cfd6e6; border-radius:8px; font:inherit; font-size:14.5px; color:var(--dark); }
 .cmp-controls input[type=number]{ width:64px; }
-.cmp-acro{ display:flex; align-items:center; gap:5px; }
+.cmp-controls input[type=text]{ width:140px; }
+.cmp-field-wide{ min-width:160px; }
 .cmp-note{ color:var(--muted); font-size:13px; line-height:1.6; background:#fff3cd;
   border:1px solid rgba(26,56,115,.14); border-radius:8px; padding:9px 12px; margin:10px 0; }
 .cmp-poem{ flex:1 1 auto; min-height:0; overflow-y:auto; }
+.cmp-stanza-h{ color:var(--navy); font-weight:700; font-size:14px; opacity:.75;
+  margin:14px 0 6px; padding-bottom:3px; border-bottom:1px dashed rgba(26,56,115,.25); }
+.cmp-stanza-h:first-child{ margin-top:0; }
 .cmp-line{ background:#fbfaf5; border:1px solid rgba(26,56,115,.16); border-radius:8px;
   padding:9px 13px; margin-bottom:7px; font-size:17px; line-height:1.7;
   display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.cmp-line u{ text-decoration-color:var(--accent); text-decoration-thickness:2px; }
 .cmp-frame{ color:var(--accent); font-weight:700; }
 .cmp-refrain{ color:#4a6b30; font-weight:600; }
 .cmp-reroll{ flex:0 0 auto; border:0; background:#fff3cd; border-radius:6px; cursor:pointer;

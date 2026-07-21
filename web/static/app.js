@@ -138,7 +138,8 @@ const I18N = {
     piy_q_verified:'✔ מאומת', piy_q_cleaned:'✎ נוקה ידנית', piy_q_raw:'⚠ OCR גולמי',
     m_rhyme_book:'מציאת חרוזים', rhyme_title:'מציאת חרוזים',
     m_composer:'✍️ חבר לי חיבור', cmp_title_h:'✍️ חבר לי חיבור', cmp_genre:'סוג', cmp_theme:'נושא / חג',
-    cmp_rhyme:'קבוצת חרוז', cmp_nlines:'שורות', cmp_acro:'אקרוסטיכון א״ב', cmp_go:'חבר לי!',
+    cmp_rhyme:'קבוצת חרוז', cmp_stanzas:'מס\' בתים', cmp_lines_per_stanza:'שורות בכל בית',
+    cmp_acro_text:'אקרוסטיכון בבית (רשות)', cmp_stanza:'בית', cmp_go:'חבר לי!',
     cmp_rhyme_random:'אקראית (עשירה)', cmp_cola_n:'צלעות',
     cmp_note:'המחולל מרכיב טיוטת עבודה: כל צלע לקוחה כלשונה מהקורפוס המאומת ומסודרת לפי כללי הסוגה והחרוז שנבחרו — אך החיבור בין הצלעות מכני. זהו חומר גלם לפייטן, לא פיוט גמור: ערכו, החליפו צלעות (🎲), והתאימו.',
     cmp_copy:'📋 העתק את הטיוטה', cmp_copied:'הטיוטה הועתקה — הדבק/י לליטוש אמנותי.',
@@ -314,7 +315,8 @@ const I18N = {
     piy_q_verified:'✔ Verified', piy_q_cleaned:'✎ Manually cleaned', piy_q_raw:'⚠ Raw OCR',
     m_rhyme_book:'Rhyme Finder', rhyme_title:'Rhyme Finder',
     m_composer:'✍️ Compose a piyyut', cmp_title_h:'✍️ Compose a piyyut', cmp_genre:'Genre', cmp_theme:'Theme / Festival',
-    cmp_rhyme:'Rhyme group', cmp_nlines:'Lines', cmp_acro:'A-to-Tav acrostic', cmp_go:'Compose!',
+    cmp_rhyme:'Rhyme group', cmp_stanzas:'Stanzas', cmp_lines_per_stanza:'Lines per stanza',
+    cmp_acro_text:'Acrostic per stanza (optional)', cmp_stanza:'Stanza', cmp_go:'Compose!',
     cmp_rhyme_random:'Random (rich)', cmp_cola_n:'half-lines',
     cmp_note:'The generator assembles a WORKING DRAFT: every half-line is taken verbatim from the verified corpus and arranged per the chosen genre and rhyme — but the join between half-lines is mechanical. This is raw material for a paytan, not a finished piyyut: edit, swap half-lines (🎲), and adapt.',
     cmp_copy:'📋 Copy the draft', cmp_copied:'Draft copied — paste it for artistic polishing.',
@@ -490,7 +492,8 @@ const I18N = {
     piy_q_verified:'✔ موثّق', piy_q_cleaned:'✎ منقّح يدويًا', piy_q_raw:'⚠ OCR خام',
     m_rhyme_book:'إيجاد القوافي', rhyme_title:'إيجاد القوافي',
     m_composer:'✍️ ألّف لي قصيدة', cmp_title_h:'✍️ ألّف لي قصيدة', cmp_genre:'النوع', cmp_theme:'الموضوع / العيد',
-    cmp_rhyme:'مجموعة القافية', cmp_nlines:'الأسطر', cmp_acro:'أكروستيك أبجدي', cmp_go:'ألّف لي!',
+    cmp_rhyme:'مجموعة القافية', cmp_stanzas:'عدد المقاطع', cmp_lines_per_stanza:'الأسطر في كل مقطع',
+    cmp_acro_text:'أكروستيك في المقطع (اختياري)', cmp_stanza:'مقطع', cmp_go:'ألّف لي!',
     cmp_rhyme_random:'عشوائي (غني)', cmp_cola_n:'أشطر',
     cmp_note:'يُركّب المولّد مسودة عمل: كل شطر مأخوذ حرفيًا من المتن الموثّق ومرتّب حسب قواعد النوع والقافية المختارين — لكن الربط بين الأشطر آلي. هذه مادة خام للشاعر، وليست قصيدة مكتملة: حرّرها، بدّل الأشطر (🎲)، وكيّفها.',
     cmp_copy:'📋 انسخ المسودة', cmp_copied:'تم نسخ المسودة — الصقها لتلميع فني.',
@@ -3704,6 +3707,13 @@ function cmpPool(theme){
   const themed = kws.length ? all.filter(c=>kws.some(k=>c.includes(k))) : [];
   return {all, themed};
 }
+function cmpAcroPool(aPool, all, letter){
+  if(!letter) return aPool;
+  const hit=aPool.filter(c=>c[0]===letter);
+  if(hit.length) return hit;
+  const anyHit=all.filter(c=>c[0]===letter);
+  return anyHit.length ? anyHit : aPool;
+}
 function cmpGenerate(){
   const genre=$('cmpGenre').value, theme=$('cmpTheme').value;
   let rk=$('cmpRhyme').value;
@@ -3712,26 +3722,25 @@ function cmpGenerate(){
     rk=cmpPick(rich)[0];
   }
   const G=CMP.data.genres[genre], R=CMP.data.cola_by_rhyme[rk];
-  const n=Math.min(+$('cmpNlines').value, R.cola.length);
-  const acro=$('cmpAcro').checked;
+  const stanzas=Math.max(1, Math.min(+$('cmpStanzas').value||1, 12));
+  const perStanza=Math.max(1, Math.min(+$('cmpLinesPerStanza').value||1, R.cola.length));
+  const acroText=($('cmpAcroText').value||'').replace(/[^א-ת]/g,'');
   const {all, themed}=cmpPool(theme);
-  const usedEnd=new Set(); CMP.current=[];
+  CMP.current=[];
   if(G.openers) CMP.current.push({t:'frame', a:G.openers[0]});
-  for(let i=0;i<n;i++){
-    const cands=R.cola.filter(c=>!usedEnd.has(c.split(' ').pop()));
-    if(!cands.length) break;
-    const b=cmpPick(cands); usedEnd.add(b.split(' ').pop());
-    let aPool=themed.length ? themed : all;
-    if(acro){
-      const L=CMP_AB[i % CMP_AB.length];
-      const hit=aPool.filter(c=>c[0]===L);
-      if(!hit.length){ const anyHit=all.filter(c=>c[0]===L); if(anyHit.length) aPool=anyHit; }
-      else aPool=hit;
+  for(let s=0;s<stanzas;s++){
+    CMP.current.push({t:'stanza', label:CMP_AB[s % CMP_AB.length]});
+    const usedEnd=new Set();
+    for(let i=0;i<perStanza;i++){
+      const cands=R.cola.filter(c=>!usedEnd.has(c.split(' ').pop()));
+      if(!cands.length) break;
+      const b=cmpPick(cands); usedEnd.add(b.split(' ').pop());
+      const letter=acroText ? acroText[i % acroText.length] : null;
+      const aPool=cmpAcroPool(themed.length ? themed : all, all, letter);
+      let a=cmpPick(aPool);
+      if(a===b) a=cmpPick(all);
+      CMP.current.push({t:'line', a, b, ref:G.refrain, letter});
     }
-    let a=cmpPick(aPool);
-    if(a===b) a=cmpPick(all);
-    CMP.current.push({t:'line', a, b, ref:G.refrain});
-    if(G.openers && genre==='כימי' && i===Math.floor(n/2)-1) CMP.current.push({t:'frame', a:G.openers[1]});
   }
   CMP.current.push({t:'frame', a:cmpPick(G.closers)});
   cmpRender();
@@ -3740,24 +3749,32 @@ function cmpRender(){
   const box=$('cmpPoem');
   box.innerHTML=CMP.current.map((l,i)=>{
     if(l.t==='frame') return `<div class="cmp-line"><span class="cmp-frame">${esc(l.a)} :</span></div>`;
-    return `<div class="cmp-line"><span>${esc(l.a)} • <b>${esc(l.b)}</b>${l.ref?(' — <span class="cmp-refrain">'+esc(l.ref)+'</span>'):''} :</span>
+    if(l.t==='stanza') return `<div class="cmp-stanza-h">${esc(t('cmp_stanza'))} ${esc(l.label)}׳</div>`;
+    const bodyA = l.letter ? esc(l.a).replace(/^(.)/, '<u>$1</u>') : esc(l.a);
+    return `<div class="cmp-line"><span>${bodyA} • <b>${esc(l.b)}</b>${l.ref?(' — <span class="cmp-refrain">'+esc(l.ref)+'</span>'):''} :</span>
       <button class="cmp-reroll" data-i="${i}">🎲</button></div>`;
   }).join('');
   box.querySelectorAll('.cmp-reroll').forEach(btn=>{ btn.onclick=()=>cmpReroll(+btn.dataset.i); });
   $('cmpCopy').classList.toggle('hidden', !CMP.current.length);
 }
 function cmpReroll(i){
+  const l=CMP.current[i];
+  if(!l || l.t!=='line') return;
   const rk=$('cmpRhyme').value || Object.keys(CMP.data.cola_by_rhyme)[0];
   const R=CMP.data.cola_by_rhyme[$('cmpRhyme').value] || CMP.data.cola_by_rhyme[rk];
   const {all, themed}=cmpPool($('cmpTheme').value);
-  CMP.current[i].a=cmpPick(themed.length ? themed : all);
-  const used=new Set(CMP.current.filter(l=>l.b).map(l=>l.b.split(' ').pop()));
+  l.a=cmpPick(cmpAcroPool(themed.length ? themed : all, all, l.letter));
+  const used=new Set(CMP.current.filter(x=>x.t==='line' && x.b).map(x=>x.b.split(' ').pop()));
   const cands=R.cola.filter(c=>!used.has(c.split(' ').pop()));
-  if(cands.length) CMP.current[i].b=cmpPick(cands);
+  if(cands.length) l.b=cmpPick(cands);
   cmpRender();
 }
 function cmpCopyPoem(){
-  const txt=CMP.current.map(l=> l.t==='frame' ? l.a+' :' : `${l.a} • ${l.b}${l.ref?(' — '+l.ref):''} :`).join('\n');
+  const txt=CMP.current.map(l=>{
+    if(l.t==='frame') return l.a+' :';
+    if(l.t==='stanza') return '\n'+t('cmp_stanza')+' '+l.label+'׳';
+    return `${l.a} • ${l.b}${l.ref?(' — '+l.ref):''} :`;
+  }).join('\n').trim();
   navigator.clipboard.writeText(txt).catch(()=>{});
   showInfo(t('m_composer'), `<div class="note">${esc(t('cmp_copied'))}</div>`);
 }
