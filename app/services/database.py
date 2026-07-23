@@ -31,9 +31,30 @@ def _seed_db():
 _seed_db()
 
 
+_MAS_CHAPTER_COL_READY = False
+
+
+def _ensure_mas_chapter_column(conn):
+    """verses.mas_chapter: admin override for the Masoretic-comparison CHAPTER number
+    shown next to a Samaritan chapter's first verse (e.g. "20:1") when it derives from
+    the joined chapters.number and needs correcting independently of the Samaritan
+    chapter split/merge tools, which only ever touch sam_chapters. NULL = derive from
+    chapters.number as before. Lazily added so a live disk never needs a DB reseed."""
+    global _MAS_CHAPTER_COL_READY
+    if _MAS_CHAPTER_COL_READY:
+        return
+    try:
+        conn.execute('ALTER TABLE verses ADD COLUMN mas_chapter TEXT')
+        conn.commit()
+    except sqlite3.OperationalError:
+        pass  # column already exists
+    _MAS_CHAPTER_COL_READY = True
+
+
 def get_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
+    _ensure_mas_chapter_column(conn)
     return conn
 
 

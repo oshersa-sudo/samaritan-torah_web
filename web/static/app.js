@@ -103,6 +103,7 @@ const I18N = {
     cmp_source:'נוסח שומרון', cmp_aram:'תרגום ארמי (שומרוני)',
     ci_onkelos:'תרגום אונקלוס הוא התרגום הארמי המקובל של התורה, המיוחס לאונקלוס הגר (המאה ה־2 לסה״נ). זהו תרגום מילולי-פרשני שנתקדש במסורת היהודית ונדפס לצד רוב חומשי המקרא. כאן הוא מוצג מול התרגום הארמי השומרוני, עם סימון ההבדלים ביניהם.',
     cmp_sam:'נוסח שומרון', cmp_info:'מידע על הנוסח',
+    cmp_chapter_field:'מספר פרק (בנוסח ההשוואה)',
     ci_masoretic:'נוסח המסורה הוא הנוסח היהודי המקובל של המקרא, שנמסר, נוקד וטוים בידי בעלי המסורה בטבריה (סוף האלף הראשון לסה״נ). הוא הבסיס לרוב מהדורות התנ״ך הנדפסות.',
     ci_septuagint:'תרגום השבעים (LXX) הוא התרגום היווני הקדום של התורה, שנעשה באלכסנדריה במאה ה־3 לפנה״ס. הוא משקף לעיתים נוסח עברי קדום השונה מן המסורה, ובמקומות רבים קרוב דווקא לנוסח השומרוני.',
     c_name:'שם מלא', c_email:'כתובת מייל', c_msg:'הודעה (עד 100 מילים)', c_send:'שלח', c_cancel:'ביטול',
@@ -285,6 +286,7 @@ const I18N = {
     cmp_source:'Samaritan', cmp_aram:'Aramaic (Samaritan)',
     ci_onkelos:'Targum Onkelos is the authoritative Aramaic translation of the Torah, ascribed to Onkelos the proselyte (2nd c. CE). A largely literal rendering, it became canonical in Jewish tradition and is printed alongside most Ḥumashim. Here it is shown against the Samaritan Aramaic translation, with the differences marked.',
     cmp_sam:'Samaritan', cmp_info:'About this version',
+    cmp_chapter_field:'Chapter number (in the compared version)',
     ci_masoretic:'The Masoretic Text is the authoritative Jewish text of the Hebrew Bible, transmitted and vocalised by the Masoretes of Tiberias (late 1st millennium CE). It underlies most printed editions of the Bible.',
     ci_septuagint:'The Septuagint (LXX) is the ancient Greek translation of the Torah, made in Alexandria in the 3rd century BCE. It sometimes reflects an early Hebrew text differing from the Masoretic — and in many places agrees with the Samaritan.',
     c_name:'Full name', c_email:'Email address', c_msg:'Message (up to 100 words)', c_send:'Send', c_cancel:'Cancel',
@@ -467,6 +469,7 @@ const I18N = {
     cmp_source:'النصّ السامري', cmp_aram:'الآرامية (السامرية)',
     ci_onkelos:'ترجوم أونكيلوس هي الترجمة الآرامية المعتمدة للتوراة، المنسوبة إلى أونكيلوس الدخيل (القرن الثاني م). ترجمة حرفية غالبًا، صارت مقدّسة في التقليد اليهودي وتُطبع بجانب معظم أسفار التوراة. تُعرض هنا مقابل الترجمة الآرامية السامرية مع تمييز الفروق.',
     cmp_sam:'النصّ السامري', cmp_info:'حول هذا النصّ',
+    cmp_chapter_field:'رقم الفصل (في النسخة المقارنة)',
     ci_masoretic:'النصّ الماسوري هو النصّ اليهودي المعتمد للكتاب المقدّس العبري، نقله وشكّله علماء المسورة في طبريّة (أواخر الألفية الأولى م). وهو أساس معظم الطبعات المطبوعة.',
     ci_septuagint:'الترجمة السبعينية (LXX) هي الترجمة اليونانية القديمة للتوراة، أُنجزت في الإسكندرية في القرن الثالث ق.م. تعكس أحيانًا نصًّا عبريًّا قديمًا يختلف عن الماسوري، ويقارب في مواضع كثيرة النصّ السامري.',
     c_name:'الاسم الكامل', c_email:'البريد الإلكتروني', c_msg:'رسالة (حتى 100 كلمة)', c_send:'إرسال', c_cancel:'إلغاء',
@@ -1104,6 +1107,8 @@ async function buildCompare(c, verses){
         {column:'text', label:t('cmp_source'), getText:()=>v.text||''},
         {column:'sam_aramaic', label:t('cmp_aram'), getText:()=>v.sam_aramaic||''},
         {column:'onkelos_text', label:t('cv_onkelos'), getText:()=>v.onkelos_text||''},
+        // only verse 1 of a chapter shows a "20:1"-style label built from jchapter
+        ...(String(v.number)==='1' ? [{column:'mas_chapter', label:t('cmp_chapter_field'), getText:()=>String(v.jchapter!=null?v.jchapter:'')}] : []),
       ]);
       grid.appendChild(sc); grid.appendChild(ac); grid.appendChild(oc);
     });
@@ -1160,6 +1165,7 @@ async function buildCompare(c, verses){
     addCmpPencil(mc, v.id, [
       {column:otherCol, label:t(_ck[0]), getText:()=>v[otherCol]||''},
       {column:'text', label:t('cmp_sam'), getText:()=>v.text||''},
+      ...(String(v.number)==='1' ? [{column:'mas_chapter', label:t('cmp_chapter_field'), getText:()=>String(v.jchapter!=null?v.jchapter:'')}] : []),
     ]);
     grid.appendChild(mc); grid.appendChild(sc);
   });
@@ -4469,7 +4475,7 @@ function chooseCmpField(verseId, fields){
 function chooseCmpAction(verseId, field){
   const idx=(S.verses||[]).findIndex(x=>x.id===verseId);
   const nextV = idx>=0 ? (S.verses[idx+1]||null) : null;
-  const structural = field.column!=='text';
+  const structural = field.column!=='text' && field.column!=='mas_chapter';
   let html = '<div class="note" style="display:flex;flex-direction:column;gap:6px">'
     + `<button class="admin-btn" id="cmpActEdit">${esc(t('edit_title'))}</button>`;
   if(structural && nextV) html += `<button class="admin-btn" id="cmpActSplit">${esc(t('cmp_act_split'))}</button>`
@@ -4530,7 +4536,12 @@ $('editSave').onclick=async ()=>{
   let r; try{ r=await apiPost('admin/edit', {token:ADMIN.token, table:_editCtx.table, column:_editCtx.column, id:_editCtx.verseId, value}); }catch(e){ r={ok:false}; }
   if(r && r.ok){
     if(_editCtx.table==='verses'){
-      const v=(S.verses||[]).find(x=>x.id===_editCtx.verseId); if(v) v[_editCtx.column]=value;
+      const v=(S.verses||[]).find(x=>x.id===_editCtx.verseId);
+      if(v){
+        v[_editCtx.column]=value;
+        // mas_chapter overrides the derived jchapter used by the comparison-view label
+        if(_editCtx.column==='mas_chapter') v.jchapter = value || null;
+      }
       _apiCache.clear();                 // drop cached responses holding the old text
       $('editModal').classList.add('hidden'); paintVerses();
     } else {

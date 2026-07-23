@@ -70,7 +70,9 @@ _LOGIN_FAILS = {}                      # ip -> [failure timestamps] (best-effort
 _EDITABLE = {'verses': {'text', 'masoretic_text', 'interpretation', 'sam_aramaic',
                         'sam_hebrew', 'simple_hebrew', 'english', 'arabic_trans',
                         # per-version comparison texts, editable from the compare-view pencils
-                        'lxx_text', 'onkelos_text', 'qumran_text'},
+                        'lxx_text', 'onkelos_text', 'qumran_text',
+                        # override for the Masoretic-comparison chapter number (e.g. "20:1")
+                        'mas_chapter'},
              # per-line edits inside a saved private composition (חיבורים פרטיים)
              'private_composition_lines': {'text'}}
 
@@ -1052,7 +1054,8 @@ def api_verses():
     out = []
     for r in rows:
         dd = _verse_dict(r)
-        dd['jchapter'] = r['jchapter'] if 'jchapter' in r.keys() else None
+        mc = r['mas_chapter'] if 'mas_chapter' in r.keys() else None
+        dd['jchapter'] = mc if mc else (r['jchapter'] if 'jchapter' in r.keys() else None)
         mn = r['mas_number'] if 'mas_number' in r.keys() else None
         dd['masnum'] = mn if mn else dd['number']     # Masoretic-comparison number
         out.append(dd)
@@ -1067,7 +1070,8 @@ def api_sam_verses():
     out = []
     for r in rows:
         dd = _verse_dict(r)
-        dd['jchapter'] = r['jchapter'] if 'jchapter' in r.keys() else None
+        mc = r['mas_chapter'] if 'mas_chapter' in r.keys() else None
+        dd['jchapter'] = mc if mc else (r['jchapter'] if 'jchapter' in r.keys() else None)
         mn = r['mas_number'] if 'mas_number' in r.keys() else None
         dd['masnum'] = mn if mn else dd['number']     # Masoretic-comparison number (real)
         sn = r['sam_number'] if 'sam_number' in r.keys() else None
