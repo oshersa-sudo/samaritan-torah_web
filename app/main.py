@@ -26,6 +26,7 @@ from kivy.graphics import Color, Rectangle
 from kivy.metrics import sp, dp
 from app.screens.browse import BrowseScreen
 from app.screens.search import SearchScreen
+from app.screens.exam import ExamScreen
 from app.services.database import init_db
 from app.services.rtl import rtl
 from app.services import share as share_svc
@@ -146,6 +147,8 @@ class TorahApp(App):
         self.sm.add_widget(self.browse_screen)
         self.search_screen = SearchScreen(name='search')
         self.sm.add_widget(self.search_screen)
+        self.exam_screen = ExamScreen(name='exam')
+        self.sm.add_widget(self.exam_screen)
         root.add_widget(self.sm)
 
         # ── bottom nav (3 rows) ──
@@ -216,6 +219,12 @@ class TorahApp(App):
             color=C_WHITE,
             disabled=True,
         )
+        self.exam_nav_btn = HoverButton(
+            text=rtl('מאמן אנגלית'),
+            font_name='Hebrew', font_size=sp(13),
+            background_color=(0.42, 0.36, 0.91, 1), background_normal='',
+            color=C_WHITE,
+        )
         browse_btn.bind(on_press=self._go_browse)
         search_btn.bind(on_press=self._go_search)
         self.font_btn.bind(on_press=self._toggle_font)
@@ -226,6 +235,7 @@ class TorahApp(App):
         self.commentary_btn.bind(on_press=self._toggle_commentary)
         self.samaritan_src_btn.bind(on_press=self._toggle_samaritan_source)
         self.update_btn.bind(on_press=self._on_update_btn_press)
+        self.exam_nav_btn.bind(on_press=lambda *_: self._go_exam())
 
         # browse-screen buttons relocated into the shared toolbar
         bs = self.browse_screen
@@ -247,13 +257,14 @@ class TorahApp(App):
         row_mid.add_widget(bs.dict_btn)
         row_mid.add_widget(self.font_btn)
         row_mid.add_widget(bs.interp_btn)
-        # bottom row (right→left): התרגום הארמי, התרגום לאנגלית, ממקור שומרון, השוואה לנ.מסורה, פרשנות יהודית
+        # bottom row (right→left): מאמן אנגלית, התרגום הארמי, התרגום לאנגלית, ממקור שומרון, השוואה לנ.מסורה, פרשנות יהודית
         row_bot.add_widget(self.commentary_btn)
         row_bot.add_widget(self.compare_btn)
         row_bot.add_widget(self.samaritan_src_btn)
         row_bot.add_widget(self.eng_btn)
         row_bot.add_widget(self.arabic_btn)
         row_bot.add_widget(self.aram_btn)
+        row_bot.add_widget(self.exam_nav_btn)
 
         nav.add_widget(row_mid)
         nav.add_widget(row_bot)
@@ -522,6 +533,9 @@ class TorahApp(App):
     def _go_search(self, *_):
         self.sm.current = 'search'
 
+    def _go_exam(self, *_):
+        self.sm.current = 'exam'
+
     # ── share ────────────────────────────────────────────────────────────────
 
     def _open_share(self, *_):
@@ -562,12 +576,14 @@ class TorahApp(App):
                   size_hint=(0.75, None), height=dp(170)).open()
 
     def _on_screen_change(self, sm, current):
-        """On the search screen show only the centered +/- bar; elsewhere show
-        the full 2-row toolbar."""
+        """On the search screen show only the centered +/- bar; on the exam
+        screen hide all nav; elsewhere show the full 2-row toolbar."""
         on_search = (current == 'search')
-        self._nav_bar.height   = 0 if on_search else self._nav_full_h
-        self._nav_bar.opacity  = 0 if on_search else 1
-        self._nav_bar.disabled = on_search
+        on_exam   = (current == 'exam')
+        show_nav  = not on_search and not on_exam
+        self._nav_bar.height   = self._nav_full_h if show_nav else 0
+        self._nav_bar.opacity  = 1 if show_nav else 0
+        self._nav_bar.disabled = not show_nav
         self.search_size_bar.height   = self._search_bar_h if on_search else 0
         self.search_size_bar.opacity  = 1 if on_search else 0
         self.search_size_bar.disabled = not on_search
