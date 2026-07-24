@@ -2,6 +2,7 @@ name: Build Android APK
 
 on:
   push:
+    branches: [main, master]
     tags:
       - 'v*'
       - 'V*'
@@ -77,7 +78,17 @@ jobs:
       - name: Build APK
         run: buildozer android debug
 
+      # ── Always upload APK as downloadable artifact ──────────────────────────
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: samaritan-torah-apk
+          path: bin/*.apk
+          retention-days: 30
+
+      # ── On tagged releases, also attach to the GitHub Release ───────────────
       - name: Upload APK to Release
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: bin/*.apk
