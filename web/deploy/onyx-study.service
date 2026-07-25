@@ -1,0 +1,40 @@
+# systemd unit for the onyx-study.com learning app (trainer + backend, gunicorn).
+#   sudo cp web/deploy/onyx-study.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now onyx-study
+#   sudo systemctl status onyx-study
+#
+[Unit]
+Description=onyx-study.com learning app (trainer + backend, Flask/gunicorn)
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+
+# repo checkout on the server (must contain web/ and assets/data/vocab_en.json)
+WorkingDirectory=/var/www/onyx-study
+
+# ── Configuration ──────────────────────────────────────────────────────────
+Environment=APP_VERSION=1.0
+# sqlite database for accounts, results and parent links (persisted on disk)
+Environment=LEARN_DB=/var/www/onyx-study/data/learn.db
+# 0 = production: verification codes are NEVER returned by the API, only sent
+# out by e-mail (configure SMTP below). Set to 1 only while testing.
+Environment=LEARN_DEV=0
+# ── e-mail for the confirmation codes (fill in your SMTP provider) ──
+# Environment=SMTP_HOST=smtp.your-provider.com
+# Environment=SMTP_PORT=587
+# Environment=SMTP_USER=no-reply@onyx-study.com
+# Environment=SMTP_PASS=your-smtp-password
+# Environment=SMTP_FROM=no-reply@onyx-study.com
+
+# gunicorn from the project's virtualenv; binds to localhost (nginx proxies to it)
+ExecStart=/var/www/onyx-study/venv/bin/gunicorn web.onyx_app:app \
+          --bind 127.0.0.1:8000 --workers 3 --timeout 60
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

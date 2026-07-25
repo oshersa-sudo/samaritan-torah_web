@@ -28,13 +28,15 @@ Environment:
 """
 import os, re, json, sqlite3, smtplib, hashlib, secrets, time
 from email.mime.text import MIMEText
-from flask import Flask, request, jsonify, Response
+from flask import Flask, Blueprint, request, jsonify, Response
 
 DB_PATH = os.environ.get("LEARN_DB", os.path.join(os.path.dirname(__file__), "learn.db"))
 DEV     = os.environ.get("LEARN_DEV", "1") == "1"
 PORT    = int(os.environ.get("LEARN_PORT", "8000"))
 
-app = Flask(__name__)
+# Routes live on a Blueprint so this service can either run standalone
+# (python3 web/learn_backend.py) or be mounted inside the unified onyx_app.
+bp = Blueprint("learn", __name__)
 
 # ─── Database ──────────────────────────────────────────────────────────────
 def db():
@@ -113,7 +115,7 @@ def jerr(msg, code=400):
     return jsonify({"ok": False, "error": msg}), code
 
 # ─── Student registration & verification ───────────────────────────────────
-@app.route("/api/register", methods=["POST"])
+@bp.route("/api/register", methods=["POST"])
 def register():
     d = request.get_json(silent=True) or {}
     phone = norm_phone(d.get("phone"))
@@ -143,7 +145,7 @@ def register():
         out["dev_code"] = code
     return jsonify(out)
 
-@app.route("/api/verify", methods=["POST"])
+@bp.route("/api/verify", methods=["POST"])
 def verify():
     d = request.get_json(silent=True) or {}
     phone = norm_phone(d.get("phone"))
@@ -161,7 +163,7 @@ def verify():
         pc = c.execute("SELECT parent_code FROM students WHERE phone=?", (phone,)).fetchone()["parent_code"]
     return jsonify({"ok": True, "parent_code": pc})
 
-@app.route("/api/resend", methods=["POST"])
+@bp.route("/api/resend", methods=["POST"])
 def resend():
     d = request.get_json(silent=True) or {}
     phone = norm_phone(d.get("phone"))
@@ -178,7 +180,7 @@ def resend():
     return jsonify(out)
 
 # ─── Results sync ──────────────────────────────────────────────────────────
-@app.route("/api/results", methods=["POST"])
+@bp.route("/api/results", methods=["POST"])
 def post_result():
     d = request.get_json(silent=True) or {}
     phone = norm_phone(d.get("phone"))
@@ -205,7 +207,7 @@ def _stats(rows):
         b = out[s]; b["avg"] = round(b["_sum"] / b["count"]); del b["_sum"]
     return out
 
-@app.route("/api/progress")
+@bp.route("/api/progress")
 def progress():
     phone = norm_phone(request.args.get("phone"))
     with db() as c:
@@ -214,7 +216,7 @@ def progress():
     return jsonify({"ok": True, "results": rows, "stats": _stats(rows)})
 
 # ─── Parent linking & portal ───────────────────────────────────────────────
-@app.route("/api/parent/link", methods=["POST"])
+@bp.route("/api/parent/link", methods=["POST"])
 def parent_link():
     d = request.get_json(silent=True) or {}
     pphone = norm_phone(d.get("parent_phone"))
@@ -231,7 +233,7 @@ def parent_link():
                      VALUES(?,?,?,?)""", (pphone, pname, sphone, int(time.time())))
     return jsonify({"ok": True, "student_name": st["name"]})
 
-@app.route("/api/parent/students")
+@bp.route("/api/parent/students")
 def parent_students():
     pphone = norm_phone(request.args.get("parent_phone"))
     with db() as c:
@@ -246,11 +248,11 @@ def parent_students():
                         "stats": _stats(rows), "last": last, "recent": rows[:10]})
     return jsonify({"ok": True, "students": out})
 
-@app.route("/parent")
+@bp.route("/parent")
 def parent_portal():
     return Response(PARENT_HTML, mimetype="text/html")
 
-@app.route("/health")
+@bp.route("/health")
 def health():
     return jsonify({"ok": True, "dev": DEV})
 
@@ -332,6 +334,10 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    loadStudents();
  }
 </script></body></html>"""
+
+# ─── Standalone app (mounts the blueprint) ─────────────────────────────────
+app = Flask(__name__)
+app.register_blueprint(bp)
 
 if __name__ == "__main__":
     init_db()
