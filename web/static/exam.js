@@ -6,94 +6,14 @@
 // Age→level: ≤7→1 · ≤9→2 · ≤11→3 · ≤14→4 · else→5
 // lvl 2–3 (ages 8–11) are enriched with professions, tools, vehicles,
 // kitchen utensils, fruit & veg, furniture and school-subject words.
-const VOCAB = [
-  // ── lvl 1 · יסוד (גיל 5–7): חיות, אוכל, בית, טבע ──
-  {w:"apple",e:"🍎",lvl:1,h:"תפוח"},{w:"banana",e:"🍌",lvl:1,h:"בננה"},
-  {w:"dog",e:"🐶",lvl:1,h:"כלב"},{w:"cat",e:"🐱",lvl:1,h:"חתול"},
-  {w:"sun",e:"☀️",lvl:1,h:"שמש"},{w:"moon",e:"🌙",lvl:1,h:"ירח"},
-  {w:"star",e:"⭐",lvl:1,h:"כוכב"},{w:"book",e:"📕",lvl:1,h:"ספר"},
-  {w:"ball",e:"⚽",lvl:1,h:"כדור"},{w:"house",e:"🏠",lvl:1,h:"בית"},
-  {w:"fish",e:"🐟",lvl:1,h:"דג"},{w:"car",e:"🚗",lvl:1,h:"מכונית"},
-  {w:"tree",e:"🌳",lvl:1,h:"עץ"},{w:"milk",e:"🥛",lvl:1,h:"חלב"},
-  {w:"shoe",e:"👟",lvl:1,h:"נעל"},{w:"hat",e:"🧢",lvl:1,h:"כובע"},
-  {w:"bird",e:"🐦",lvl:1,h:"ציפור"},{w:"flower",e:"🌸",lvl:1,h:"פרח"},
-  {w:"hand",e:"✋",lvl:1,h:"יד"},{w:"egg",e:"🥚",lvl:1,h:"ביצה"},
-  {w:"bread",e:"🍞",lvl:1,h:"לחם"},{w:"cake",e:"🍰",lvl:1,h:"עוגה"},
-  {w:"bed",e:"🛏️",lvl:1,h:"מיטה"},{w:"door",e:"🚪",lvl:1,h:"דלת"},
-  {w:"key",e:"🔑",lvl:1,h:"מפתח"},{w:"sock",e:"🧦",lvl:1,h:"גרב"},
-
-  // ── lvl 2 · בית ספר, בית, אוכל, חיות (גיל 8–9) ──
-  {w:"teacher",e:"🧑‍🏫",lvl:2,h:"מורה"},{w:"school",e:"🏫",lvl:2,h:"בית ספר"},
-  {w:"pencil",e:"✏️",lvl:2,h:"עיפרון"},{w:"notebook",e:"📓",lvl:2,h:"מחברת"},
-  {w:"backpack",e:"🎒",lvl:2,h:"תיק"},{w:"ruler",e:"📏",lvl:2,h:"סרגל"},
-  {w:"window",e:"🪟",lvl:2,h:"חלון"},{w:"clock",e:"🕐",lvl:2,h:"שעון"},
-  {w:"bus",e:"🚌",lvl:2,h:"אוטובוס"},{w:"train",e:"🚆",lvl:2,h:"רכבת"},
-  {w:"bicycle",e:"🚲",lvl:2,h:"אופניים"},{w:"umbrella",e:"☂️",lvl:2,h:"מטרייה"},
-  {w:"kitchen",e:"🍳",lvl:2,h:"מטבח"},{w:"garden",e:"🌻",lvl:2,h:"גינה"},
-  {w:"guitar",e:"🎸",lvl:2,h:"גיטרה"},{w:"camera",e:"📷",lvl:2,h:"מצלמה"},
-  {w:"orange",e:"🍊",lvl:2,h:"תפוז"},{w:"grapes",e:"🍇",lvl:2,h:"ענבים"},
-  {w:"carrot",e:"🥕",lvl:2,h:"גזר"},{w:"tomato",e:"🍅",lvl:2,h:"עגבנייה"},
-  {w:"chicken",e:"🐔",lvl:2,h:"תרנגולת"},{w:"cow",e:"🐄",lvl:2,h:"פרה"},
-  {w:"horse",e:"🐴",lvl:2,h:"סוס"},{w:"rabbit",e:"🐰",lvl:2,h:"ארנב"},
-  {w:"elephant",e:"🐘",lvl:2,h:"פיל"},{w:"rain",e:"🌧️",lvl:2,h:"גשם"},
-  {w:"snow",e:"❄️",lvl:2,h:"שלג"},{w:"cloud",e:"☁️",lvl:2,h:"ענן"},
-  {w:"mountain",e:"⛰️",lvl:2,h:"הר"},{w:"rainbow",e:"🌈",lvl:2,h:"קשת"},
-
-  // ── lvl 3 · מקצועות, כלים, כלי רכב, כלי מטבח, פירות/ירקות, רהיטים, מקצועות לימוד (גיל 10–11) ──
-  // מקצועות
-  {w:"doctor",e:"🧑‍⚕️",lvl:3,h:"רופא"},{w:"nurse",e:"👩‍⚕️",lvl:3,h:"אחות"},
-  {w:"farmer",e:"🧑‍🌾",lvl:3,h:"חקלאי"},{w:"pilot",e:"🧑‍✈️",lvl:3,h:"טייס"},
-  {w:"engineer",e:"👷",lvl:3,h:"מהנדס"},{w:"chef",e:"🧑‍🍳",lvl:3,h:"שף"},
-  {w:"police officer",e:"👮",lvl:3,h:"שוטר"},{w:"firefighter",e:"🧑‍🚒",lvl:3,h:"כבאי"},
-  {w:"scientist",e:"🔬",lvl:3,h:"מדען"},{w:"dentist",e:"🦷",lvl:3,h:"רופא שיניים"},
-  {w:"judge",e:"⚖️",lvl:3,h:"שופט"},{w:"baker",e:"🥖",lvl:3,h:"אופה"},
-  {w:"carpenter",e:"🪚",lvl:3,h:"נגר"},{w:"painter",e:"🎨",lvl:3,h:"צַבָּע"},
-  // כלים
-  {w:"hammer",e:"🔨",lvl:3,h:"פטיש"},{w:"screwdriver",e:"🪛",lvl:3,h:"מברג"},
-  {w:"wrench",e:"🔧",lvl:3,h:"מפתח ברגים"},{w:"drill",e:"🛠️",lvl:3,h:"מקדחה"},
-  {w:"ladder",e:"🪜",lvl:3,h:"סולם"},{w:"scissors",e:"✂️",lvl:3,h:"מספריים"},
-  {w:"nail",e:"🔩",lvl:3,h:"מסמר"},{w:"brush",e:"🖌️",lvl:3,h:"מברשת"},
-  // כלי רכב
-  {w:"truck",e:"🚚",lvl:3,h:"משאית"},{w:"airplane",e:"✈️",lvl:3,h:"מטוס"},
-  {w:"helicopter",e:"🚁",lvl:3,h:"מסוק"},{w:"ship",e:"🚢",lvl:3,h:"אונייה"},
-  {w:"tractor",e:"🚜",lvl:3,h:"טרקטור"},{w:"motorcycle",e:"🏍️",lvl:3,h:"אופנוע"},
-  {w:"ambulance",e:"🚑",lvl:3,h:"אמבולנס"},{w:"rocket",e:"🚀",lvl:3,h:"טיל חלל"},
-  // כלי מטבח
-  {w:"pot",e:"🍲",lvl:3,h:"סיר"},{w:"knife",e:"🔪",lvl:3,h:"סכין"},
-  {w:"kettle",e:"🫖",lvl:3,h:"קומקום"},{w:"spoon",e:"🥄",lvl:3,h:"כף"},
-  {w:"fork",e:"🍴",lvl:3,h:"מזלג"},{w:"plate",e:"🍽️",lvl:3,h:"צלחת"},
-  // פירות וירקות
-  {w:"strawberry",e:"🍓",lvl:3,h:"תות"},{w:"watermelon",e:"🍉",lvl:3,h:"אבטיח"},
-  {w:"lemon",e:"🍋",lvl:3,h:"לימון"},{w:"pineapple",e:"🍍",lvl:3,h:"אננס"},
-  {w:"potato",e:"🥔",lvl:3,h:"תפוח אדמה"},{w:"onion",e:"🧅",lvl:3,h:"בצל"},
-  {w:"corn",e:"🌽",lvl:3,h:"תירס"},{w:"cucumber",e:"🥒",lvl:3,h:"מלפפון"},
-  {w:"pepper",e:"🫑",lvl:3,h:"פלפל"},{w:"eggplant",e:"🍆",lvl:3,h:"חציל"},
-  {w:"broccoli",e:"🥦",lvl:3,h:"ברוקולי"},{w:"mushroom",e:"🍄",lvl:3,h:"פטרייה"},
-  // רהיטים
-  {w:"sofa",e:"🛋️",lvl:3,h:"ספה"},{w:"mirror",e:"🪞",lvl:3,h:"מראה"},
-  {w:"lamp",e:"💡",lvl:3,h:"מנורה"},{w:"drawer",e:"🗄️",lvl:3,h:"מגירה"},
-  // מקצועות לימוד
-  {w:"mathematics",e:"➗",lvl:3,h:"מתמטיקה"},{w:"science",e:"🧪",lvl:3,h:"מדעים"},
-  {w:"history",e:"📜",lvl:3,h:"היסטוריה"},{w:"geography",e:"🗺️",lvl:3,h:"גאוגרפיה"},
-  {w:"music",e:"🎵",lvl:3,h:"מוזיקה"},{w:"homework",e:"📚",lvl:3,h:"שיעורי בית"},
-
-  // ── lvl 4 · חטיבה: מדע, חברה, מופשט ──
-  {w:"microscope",e:"🔬",lvl:4,h:"מיקרוסקופ"},{w:"volcano",e:"🌋",lvl:4,h:"הר געש"},
-  {w:"compass",e:"🧭",lvl:4,h:"מצפן"},{w:"harvest",e:"🌾",lvl:4,h:"קציר"},
-  {w:"anchor",e:"⚓",lvl:4,h:"עוגן"},{w:"telescope",e:"🔭",lvl:4,h:"טלסקופ"},
-  {w:"laboratory",e:"⚗️",lvl:4,h:"מעבדה"},{w:"puzzle",e:"🧩",lvl:4,h:"פאזל"},
-  {w:"lighthouse",e:"🗼",lvl:4,h:"מגדלור"},{w:"vaccine",e:"💉",lvl:4,h:"חיסון"},
-  {w:"satellite",e:"🛰️",lvl:4,h:"לוויין"},{w:"sculpture",e:"🗿",lvl:4,h:"פסל"},
-  {w:"orchestra",e:"🎻",lvl:4,h:"תזמורת"},{w:"skeleton",e:"💀",lvl:4,h:"שלד"},
-  {w:"magnet",e:"🧲",lvl:4,h:"מגנט"},{w:"battery",e:"🔋",lvl:4,h:"סוללה"},
-
-  // ── lvl 5 · תיכון: מושגים מתקדמים ──
-  {w:"manuscript",e:"📜",lvl:5,h:"כתב יד"},{w:"infrastructure",e:"🏗️",lvl:5,h:"תשתית"},
-  {w:"diplomacy",e:"🕊️",lvl:5,h:"דיפלומטיה"},{w:"commerce",e:"🏦",lvl:5,h:"מסחר"},
-  {w:"specimen",e:"🦠",lvl:5,h:"דגימה"},{w:"expedition",e:"🧗",lvl:5,h:"משלחת"},
-  {w:"observatory",e:"🔭",lvl:5,h:"מצפה כוכבים"},{w:"currency",e:"💱",lvl:5,h:"מטבע"},
-  {w:"parliament",e:"🏛️",lvl:5,h:"פרלמנט"},{w:"reservoir",e:"🌊",lvl:5,h:"מאגר מים"},
-];
+const VOCAB = (typeof window!=="undefined" && Array.isArray(window.VOCAB_EN) && window.VOCAB_EN.length)
+  ? window.VOCAB_EN
+  : [ /* fallback only — full 2950-word set is loaded from vocab_en.js */
+      {w:"apple",e:"🍎",lvl:1,h:"תפוח"},{w:"dog",e:"🐶",lvl:1,h:"כלב"},{w:"sun",e:"☀️",lvl:1,h:"שמש"},
+      {w:"teacher",e:"🧑‍🏫",lvl:2,h:"מורה"},{w:"bicycle",e:"🚲",lvl:2,h:"אופניים"},
+      {w:"doctor",e:"🧑‍⚕️",lvl:3,h:"רופא"},{w:"hammer",e:"🔨",lvl:3,h:"פטיש"},
+      {w:"microscope",e:"🔬",lvl:4,h:"מיקרוסקופ"},{w:"manuscript",e:"📜",lvl:5,h:"כתב יד"},
+    ];
 
 const CLOZE = [
   {
