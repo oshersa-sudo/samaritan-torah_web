@@ -498,7 +498,7 @@ function showToast(kind,text){
 // ─── Part 1: Vocab ────────────────────────────────────────
 function initVocab(){
   const saved=S.prog.vocab,lvl=levelForAge(S.age);
-  V.pool=nearLevel(VOCAB,lvl,6);
+  V.pool=nearLevel(VOCAB.filter(x=>x.e),lvl,6);  // picture prompt needs an emoji
   if(saved&&saved.round&&saved.round.length){V.round=saved.round;V.i=saved.i??0;}
   else{
     const fresh=V.pool.filter(x=>!S.seen.includes(x.w));
@@ -834,7 +834,7 @@ function initBalloons(){
   const saved=S.prog.balloons,lvl=levelForAge(S.age);
   if(saved&&saved.pairs){B.pairs=saved.pairs;B.topOrder=saved.topOrder;B.botOrder=saved.botOrder;B.solved=new Set(saved.solved||[]);}
   else{
-    const pool=nearLevel(VOCAB,lvl,QUOTA.balloons).filter(x=>x.e);
+    const pool=nearLevel(VOCAB.filter(x=>x.e),lvl,QUOTA.balloons);
     B.pairs=shuffle(pool).slice(0,QUOTA.balloons).map(x=>({w:x.w,e:x.e,h:x.h}));
     B.topOrder=shuffle(B.pairs.map((_,k)=>k));
     B.botOrder=shuffle(B.pairs.map((_,k)=>k));
