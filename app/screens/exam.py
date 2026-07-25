@@ -252,12 +252,13 @@ PICTURES = [
 ]
 
 # ── Constants ──────────────────────────────────────────────────────────────────
-QUOTA      = {"vocab":10,"cloze":25,"reading":6,"pics":10}
-TOTAL      = 51
-TIME_SECS  = {"vocab":300,"cloze":600,"reading":600,"pics":600}
-ORDER      = ["p1","p2","p3","p4"]
+QUOTA      = {"vocab":10,"cloze":25,"reading":6,"pics":10,"match":6,"balloons":5}
+TOTAL      = sum(QUOTA.values())  # 62
+TIME_SECS  = {"vocab":300,"cloze":600,"reading":600,"pics":600,"match":210,"balloons":180}
+ORDER      = ["p1","p2","p3","p4","p5","p6"]
 LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"}
-PART_NAME  = {"p1":"אוצר מילים","p2":"השלמת מילים","p3":"הבנת הנקרא","p4":"תיאור תמונה"}
+PART_NAME  = {"p1":"אוצר מילים","p2":"השלמת מילים","p3":"הבנת הנקרא","p4":"תיאור תמונה",
+              "p5":"התאמת מילים","p6":"בלונים"}
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
 def _shuffle(a):
@@ -392,6 +393,17 @@ class ExamScreen(Screen):
         # ── Toast ──
         self._toast_ev    = None
         self._toast_lbl   = None
+        # ── Sound effects ──
+        self._sfx = {}
+        try:
+            from kivy.core.audio import SoundLoader
+            _snd = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "sounds")
+            for _k, _f in (("good", "correct.wav"), ("bad", "wrong.wav")):
+                _p = os.path.join(_snd, _f)
+                if os.path.exists(_p):
+                    self._sfx[_k] = SoundLoader.load(_p)
+        except Exception:
+            self._sfx = {}
         # ── Root layout ──
         root = BoxLayout(orientation="vertical")
         with root.canvas.before:
@@ -479,7 +491,8 @@ class ExamScreen(Screen):
         renders = {"login":self._render_login,"resume":self._render_resume,
                    "menu":self._render_menu,"p1":self._render_vocab,
                    "p2":self._render_cloze,"p3":self._render_reading,
-                   "p4":self._render_describe,"paused":self._render_paused,
+                   "p4":self._render_describe,"p5":self._render_match,
+                   "p6":self._render_balloons,"paused":self._render_paused,
                    "done":self._render_done}
         renders.get(screen, self._render_login)()
         self._scroll.scroll_y = 1
@@ -573,6 +586,8 @@ class ExamScreen(Screen):
             ("p2", "השלמת מילים",  f"{QUOTA['cloze']} השלמות · 10 דק׳"),
             ("p3", "הבנת הנקרא",   f"{QUOTA['reading']} שאלות · 10 דק׳"),
             ("p4", "תיאור תמונה",  f"{QUOTA['pics']} תמונות · 10 דק׳"),
+            ("p5", "התאמת מילים",  f"{QUOTA['match']} התאמות · 3.5 דק׳"),
+            ("p6", "בלונים",       f"{QUOTA['balloons']} בלונים · 3 דק׳"),
         ]
         for pid, title, sub in plan_items:
             row = BoxLayout(size_hint_y=None, height=dp(52), spacing=dp(8))
@@ -684,6 +699,7 @@ class ExamScreen(Screen):
         item = self.V["item"]
         correct = word == item["w"]
         if correct: self._add_score(1)
+        self._play_sfx("good" if correct else "bad")
         for w, btn in self.V["opt_btns"]:
             btn.disabled = True
             if w == item["w"]:
@@ -950,7 +966,9 @@ class ExamScreen(Screen):
         if self.R.get("picked") is not None: return
         self.R["picked"] = idx
         q = [self.R["story"]["qpool"][k] for k in self.R["qIdx"]][self.R["qi"]]
-        if idx == q["c"]: self._add_score(1)
+        correct = (idx == q["c"])
+        if correct: self._add_score(1)
+        self._play_sfx("good" if correct else "bad")
         for i, btn in self.R["opt_btns"]:
             btn.disabled = True
             if i == q["c"]:
@@ -980,7 +998,7 @@ class ExamScreen(Screen):
         self.D["locked"] = False
         self._build_describe_ui()
         self._start_timer(saved.get("left") if saved else None,
-                          TIME_SECS["pics"], self._finish)
+                          TIME_SECS["pics"], lambda *_: self._go("p5"))
 
     def _build_describe_ui(self):
         self._body.clear_widgets()
@@ -1025,9 +1043,154 @@ class ExamScreen(Screen):
         if self.S["screen"] != "p4": return
         self.D["locked"] = False; self.D["i"] += 1
         if self.D["i"] >= len(self.D["idxs"]):
-            self._finish()
+            self._go("p5")
         else:
             self._build_describe_ui()
+
+    # ── Part 5: Word ↔ meaning matching ───────────────────────────────────────
+    def _render_match(self):
+        lvl = _level_for_age(self.S["age"])
+        pool = _near_level([v for v in VOCAB if v.get("h")], lvl, QUOTA["match"])
+        pairs = _shuffle(pool)[:QUOTA["match"]]
+        self.M = {"pairs": pairs,
+                  "left": _shuffle(list(range(len(pairs)))),
+                  "right": _shuffle(list(range(len(pairs)))),
+                  "solved": set(), "sel": None,
+                  "lbtn": {}, "rbtn": {}}
+        self._build_match_ui()
+        self._start_timer(None, TIME_SECS["match"], lambda *_: self._go("p6"))
+
+    def _build_match_ui(self):
+        self._body.clear_widgets(); b = self._body
+        b.add_widget(self._part_bar("חלק 5 · התאמת מילים", "געו במילה ואז בפירוש הנכון",
+                                    f"{len(self.M['solved'])}/{len(self.M['pairs'])}"))
+        n = len(self.M["pairs"])
+        board = FloatLayout(size_hint_y=None, height=dp(64)*n)
+        self.M["board"] = board
+        for i, pi in enumerate(self.M["left"]):
+            btn = Button(text=self.M["pairs"][pi]["w"], font_size=sp(15),
+                         background_normal="", background_color=EX_WHITE, color=EX_INK,
+                         size_hint=(0.44, None), height=dp(48),
+                         pos_hint={"x": 0.03, "center_y": 1-(i+0.5)/n})
+            btn.bind(on_press=lambda w, i=i: self._match_pick_left(i))
+            self.M["lbtn"][i] = btn; board.add_widget(btn)
+        for j, pj in enumerate(self.M["right"]):
+            btn = Button(text=rtl(self.M["pairs"][pj]["h"]), font_name="Hebrew", font_size=sp(15),
+                         background_normal="", background_color=EX_WHITE, color=EX_INK,
+                         size_hint=(0.44, None), height=dp(48),
+                         pos_hint={"right": 0.97, "center_y": 1-(j+0.5)/n})
+            btn.bind(on_press=lambda w, j=j: self._match_pick_right(j))
+            self.M["rbtn"][j] = btn; board.add_widget(btn)
+        b.add_widget(board)
+
+    def _match_pick_left(self, i):
+        if i in self.M["solved"]: return
+        self.M["sel"] = i
+        for k, btn in self.M["lbtn"].items():
+            if k in self.M["solved"]: continue
+            btn.background_color = EX_VIOLET if k == i else EX_WHITE
+            btn.color = EX_WHITE if k == i else EX_INK
+
+    def _match_pick_right(self, j):
+        i = self.M.get("sel")
+        if i is None or i in self.M["solved"]: return
+        if self.M["left"][i] == self.M["right"][j]:
+            self.M["solved"].add(i)
+            for btn in (self.M["lbtn"][i], self.M["rbtn"][j]):
+                btn.background_color = EX_LIME; btn.color = EX_WHITE; btn.disabled = True
+            self._draw_connector(self.M["board"], self.M["lbtn"][i], self.M["rbtn"][j], "columns")
+            self.M["sel"] = None
+            self._add_score(1); self._play_sfx("good")
+            self._part_counter_set(f"{len(self.M['solved'])}/{len(self.M['pairs'])}")
+            if len(self.M["solved"]) >= len(self.M["pairs"]):
+                Clock.schedule_once(lambda *_: self._go("p6") if self.S["screen"]=="p5" else None, 1.0)
+        else:
+            self._play_sfx("bad")
+            btn = self.M["rbtn"][j]; orig = btn.background_color
+            btn.background_color = EX_CORAL
+            Clock.schedule_once(lambda *_: setattr(btn, "background_color", EX_WHITE), 0.4)
+
+    # ── Part 6: Balloons ──────────────────────────────────────────────────────
+    def _render_balloons(self):
+        lvl = _level_for_age(self.S["age"])
+        pool = _near_level([v for v in VOCAB if v.get("e")], lvl, QUOTA["balloons"])
+        pairs = _shuffle(pool)[:QUOTA["balloons"]]
+        self.Bn = {"pairs": pairs,
+                   "top": _shuffle(list(range(len(pairs)))),
+                   "bot": _shuffle(list(range(len(pairs)))),
+                   "solved": set(), "sel": None, "tbtn": {}, "wbtn": {}}
+        self._build_balloons_ui()
+        self._start_timer(None, TIME_SECS["balloons"], self._finish)
+
+    def _build_balloons_ui(self):
+        self._body.clear_widgets(); b = self._body
+        b.add_widget(self._part_bar("חלק 6 · בלונים", "געו בבלון ואז במילה המתאימה",
+                                    f"{len(self.Bn['solved'])}/{len(self.Bn['pairs'])}"))
+        n = len(self.Bn["pairs"])
+        board = FloatLayout(size_hint_y=None, height=dp(300))
+        self.Bn["board"] = board
+        cols = ["#F2545B", "#6C5CE7", "#3FBF6F", "#FFB627", "#2AA9E0", "#E255A1"]
+        for i, pi in enumerate(self.Bn["top"]):
+            col = [int(cols[i%len(cols)][k:k+2],16)/255 for k in (1,3,5)] + [1]
+            bal = Button(text=self.Bn["pairs"][pi]["e"], font_size=sp(30),
+                         background_normal="", background_color=col,
+                         size_hint=(None,None), size=(dp(54),dp(66)),
+                         pos_hint={"center_x": (i+0.5)/n, "top": 0.98})
+            bal.bind(on_press=lambda w, i=i: self._balloon_pick(i))
+            self.Bn["tbtn"][i] = bal; board.add_widget(bal)
+        for j, pj in enumerate(self.Bn["bot"]):
+            wb = Button(text=self.Bn["pairs"][pj]["w"], font_size=sp(14),
+                        background_normal="", background_color=EX_WHITE, color=EX_INK,
+                        size_hint=(None,None), size=(dp(96),dp(40)),
+                        pos_hint={"center_x": (j+0.5)/n, "y": 0.02})
+            wb.bind(on_press=lambda w, j=j: self._balloon_pick_word(j))
+            self.Bn["wbtn"][j] = wb; board.add_widget(wb)
+        b.add_widget(board)
+
+    def _balloon_pick(self, i):
+        if i in self.Bn["solved"]: return
+        self.Bn["sel"] = i
+        for k, btn in self.Bn["tbtn"].items():
+            if k in self.Bn["solved"]: continue
+            btn.opacity = 1.0 if k == i else 0.6
+
+    def _balloon_pick_word(self, j):
+        i = self.Bn.get("sel")
+        if i is None or i in self.Bn["solved"]: return
+        if self.Bn["top"][i] == self.Bn["bot"][j]:
+            self.Bn["solved"].add(i)
+            self.Bn["tbtn"][i].disabled = True; self.Bn["tbtn"][i].opacity = 0.5
+            self.Bn["wbtn"][j].background_color = EX_LIME
+            self.Bn["wbtn"][j].color = EX_WHITE; self.Bn["wbtn"][j].disabled = True
+            self._draw_connector(self.Bn["board"], self.Bn["tbtn"][i], self.Bn["wbtn"][j], "vertical")
+            self.Bn["sel"] = None
+            self._add_score(1); self._play_sfx("good")
+            self._part_counter_set(f"{len(self.Bn['solved'])}/{len(self.Bn['pairs'])}")
+            if len(self.Bn["solved"]) >= len(self.Bn["pairs"]):
+                Clock.schedule_once(lambda *_: self._finish() if self.S["screen"]=="p6" else None, 1.0)
+        else:
+            self._play_sfx("bad")
+            wb = self.Bn["wbtn"][j]
+            wb.background_color = EX_CORAL
+            Clock.schedule_once(lambda *_: setattr(wb, "background_color", EX_WHITE), 0.4)
+
+    def _draw_connector(self, board, a, b, mode):
+        try:
+            if mode == "columns":
+                x1, y1 = a.right, a.center_y
+                x2, y2 = b.x, b.center_y
+            else:  # vertical: balloon bottom → word top
+                x1, y1 = a.center_x, a.y
+                x2, y2 = b.center_x, b.top
+            with board.canvas.after:
+                Color(*EX_LIME)
+                Line(points=[x1, y1, x2, y2], width=dp(2), cap="round")
+        except Exception:
+            pass
+
+    def _part_counter_set(self, text):
+        if self._counter_lbl:
+            self._counter_lbl.text = rtl(text)
 
     # ── Paused / Done ─────────────────────────────────────────────────────────
     def _render_paused(self):
@@ -1130,7 +1293,16 @@ class ExamScreen(Screen):
             self._score_lbl.text = f"{_grade(self.S['score'])}/100"
 
     # ── Toast ──────────────────────────────────────────────────────────────────
+    def _play_sfx(self, kind):
+        try:
+            snd = self._sfx.get(kind)
+            if snd:
+                snd.stop(); snd.play()
+        except Exception:
+            pass
+
     def _show_toast(self, kind, text):
+        self._play_sfx("good" if kind=="good" else "bad")
         if self._toast_ev: self._toast_ev.cancel()
         if self._toast_lbl and self._toast_lbl.parent:
             self._toast_lbl.parent.remove_widget(self._toast_lbl)
