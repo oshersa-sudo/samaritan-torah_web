@@ -475,3 +475,30 @@ body {
   .bln-body, .balloon:nth-child(odd) .bln-body { animation: none; }
   .mitem, .ritem { transition: none; }
 }
+
+/* ══════════ Subject picker ══════════ */
+.subjects { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:8px; }
+.subj-btn {
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  background:#fff; border:2px solid #DCE9EE; border-radius:18px;
+  padding:20px 8px; cursor:pointer; transition:transform .12s, border-color .12s;
+  box-shadow:0 8px 20px -14px rgba(11,36,48,.5);
+}
+.subj-btn:hover { border-color:#6C5CE7; transform:translateY(-2px); }
+.subj-btn b { font-family:'Fredoka',sans-serif; font-size:16px; color:#0B2430; }
+.subj-ic { font-size:44px; line-height:1; }
+@media (max-width:380px){ .subjects{ grid-template-columns:1fr; } .subj-btn{ flex-direction:row; justify-content:center; gap:14px; } .subj-ic{ font-size:34px; } }
+
+.menu-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+.menu-head .ghost.sm { width:auto; margin:0; padding:6px 10px; opacity:.7; }
+
+/* ══════════ Math ══════════ */
+.math-q {
+  font-family:'Secular One',sans-serif; font-size:40px; text-align:center;
+  color:#0B2430; background:linear-gradient(135deg,#EAF6FF,#F3EEFF);
+  border-radius:18px; padding:22px 10px; margin:4px 0 14px;
+  letter-spacing:1px;
+}
+.opt-center { justify-content:center; font-size:22px; font-family:'Secular One',sans-serif; }
+.opt-center .mark { position:absolute; inset-inline-end:14px; }
+.opt-center { position:relative; }

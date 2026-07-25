@@ -138,11 +138,23 @@ const PICTURES = [
 
 // ─── Constants ────────────────────────────────────────────
 const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
-const TOTAL  = Object.values(QUOTA).reduce((a,b)=>a+b,0); // 62
-const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180};
-const ORDER  = ["p1","p2","p3","p4","p5","p6"];
+const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
+                ma:360,hb:210,hr:600};
 const LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"};
-const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",p5:"התאמת מילים",p6:"בלונים"};
+const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
+                    p5:"התאמת מילים",p6:"בלונים",
+                    ma:"תרגילי חשבון",hb:"התאמת מילים",hr:"הבנת הנקרא"};
+// answers per part → used to normalise the score to /100
+const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5, ma:15, hb:8, hr:8};
+// subjects and their part order
+const SUBJECTS = {
+  english:{name:"אנגלית", icon:"🔤", order:["p1","p2","p3","p4","p5","p6"]},
+  hebrew: {name:"עברית",  icon:"📖", order:["hb","hr"]},
+  math:   {name:"חשבון",  icon:"🔢", order:["ma"]},
+};
+function curSubject(){ return SUBJECTS[S.subject] || SUBJECTS.english; }
+function curOrder(){ return curSubject().order; }
+function subjTotal(){ return curOrder().reduce((a,p)=>a+(PART_QUOTA[p]||0),0); }
 const K = {session:p=>`session:${p}`,results:p=>`results:${p}`,seen:p=>`seen:${p}`};
 
 // ─── Utilities ────────────────────────────────────────────
@@ -157,7 +169,7 @@ const nearLevel = (items,lvl,min=6) => {
   while(out.length<min&&span<5){out=items.filter(i=>Math.abs(i.lvl-lvl)<=span);span++;}
   return out.length?out:items;
 };
-const grade  = c => Math.round((c/TOTAL)*100);
+const grade  = c => Math.round((c/subjTotal())*100);
 const fmtDate= t => new Date(t).toLocaleDateString("he-IL",{day:"2-digit",month:"2-digit",year:"2-digit"});
 const speak  = text => {
   try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();
@@ -208,7 +220,11 @@ const sSet = (k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const sDel = k=>{try{localStorage.removeItem(k);}catch(e){}};
 
 // ─── Global State ─────────────────────────────────────────
-const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{}};
+const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english"};
+
+// Hebrew-subject content (loaded from hebrew_data.js if present)
+const HEB_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.HEB_VOCAB))   ? window.HEB_VOCAB   : [];
+const HEB_STORIES = (typeof window!=="undefined" && Array.isArray(window.HEB_STORIES)) ? window.HEB_STORIES : [];
 
 // ─── Timer ────────────────────────────────────────────────
 const TM = {
@@ -226,7 +242,7 @@ const TM = {
 function updateHG(){const w=document.getElementById("hg-wrap");if(w)w.innerHTML=hgHTML(TM.left,TM.total);}
 
 // ─── Part Runtime ─────────────────────────────────────────
-const V={},C={},R={},D={},M={},B={};
+const V={},C={},R={},D={},M={},B={},MA={};
 
 // ─── HTML Builders ────────────────────────────────────────
 function hgHTML(left,total){
@@ -254,7 +270,7 @@ function hgHTML(left,total){
 
 function topbarHTML(){
   if(S.screen==="login")return "";
-  const lvl=levelForAge(S.age),showPause=ORDER.includes(S.screen);
+  const lvl=levelForAge(S.age),showPause=curOrder().includes(S.screen);
   return `<header class="topbar">
   <div class="brand">English<span>·</span>Trainer</div>
   <div class="who">${esc(S.name)}${S.name?" · ":""}${LEVEL_NAME[lvl]}</div>
@@ -292,23 +308,35 @@ function resumeHTML(){
 </section>`;
 }
 
+const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3:"שאלות · 10 דק׳",p4:"תמונות · 10 דק׳",
+                   p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",ma:"תרגילים · 6 דק׳",
+                   hb:"התאמות · 3.5 דק׳",hr:"שאלות · 10 דק׳"};
+
+function subjectHTML(){
+  return `<section class="card hero">
+  <span class="eyebrow">בחירת מקצוע</span>
+  <h1>מה לומדים היום?</h1>
+  <p class="sub">בחר/י מקצוע. אפשר להחליף בכל רגע — כל מקצוע נשמר בנפרד.</p>
+  <div class="subjects">
+    ${Object.entries(SUBJECTS).map(([k,s])=>`<button class="subj-btn" data-subj="${k}"><span class="subj-ic">${s.icon}</span><b>${esc(s.name)}</b></button>`).join("")}
+  </div>
+</section>`;
+}
+
 function menuHTML(){
-  const hist=S.history.length
+  const subj=curSubject();
+  const rel=S.history.filter(r=>(r.subject||"english")===S.subject).slice(0,5);
+  const hist=rel.length
     ?`<span class="eyebrow">מבחנים קודמים</span>
-<ul class="hist">${S.history.slice(0,5).map(r=>`<li><span>${fmtDate(r.t)}</span><b>${r.g}/100</b></li>`).join("")}</ul>`:"";
+<ul class="hist">${rel.map(r=>`<li><span>${fmtDate(r.t)}</span><b>${r.g}/100</b></li>`).join("")}</ul>`:"";
+  const items=curOrder().map(p=>
+    `<li data-part="${p}"><b>${PART_NAME[p]}</b><span>${PART_QUOTA[p]} ${PART_DESC[p]||""}</span></li>`).join("");
   return `<section class="card">
-  <span class="eyebrow">התוכנית שלך היום</span>
-  <ul class="plan">
-    <li data-part="p1"><b>אוצר מילים</b><span>${QUOTA.vocab} מילים · 5 דק׳</span></li>
-    <li data-part="p2"><b>השלמת מילים</b><span>${QUOTA.cloze} השלמות · 10 דק׳</span></li>
-    <li data-part="p3"><b>הבנת הנקרא</b><span>${QUOTA.reading} שאלות · 10 דק׳</span></li>
-    <li data-part="p4"><b>תיאור תמונה</b><span>${QUOTA.pics} תמונות · 10 דק׳</span></li>
-    <li data-part="p5"><b>התאמת מילים</b><span>${QUOTA.match} התאמות · 3.5 דק׳</span></li>
-    <li data-part="p6"><b>בלונים</b><span>${QUOTA.balloons} בלונים · 3 דק׳</span></li>
-  </ul>
-  <p class="foot">${TOTAL} תשובות · הציון מוצג מתוך 100</p>
+  <div class="menu-head"><button class="ghost sm" id="btn-subj-back">↩ מקצוע</button><span class="eyebrow">${subj.icon} ${esc(subj.name)} · התוכנית שלך</span></div>
+  <ul class="plan">${items}</ul>
+  <p class="foot">${subjTotal()} תשובות · הציון מוצג מתוך 100</p>
   ${hist}
-  <button class="primary" id="btn-start">התחלה מחלק 1</button>
+  <button class="primary" id="btn-start">התחלה</button>
 </section>`;
 }
 
@@ -338,10 +366,12 @@ function clozeHTML(){
 }
 
 function readingHTML(){
+  const eyebrow=(S.screen==="hr")?"עברית · הבנת הנקרא":"חלק 3 · הבנת הנקרא";
+  const t=(S.screen==="hr")?TIME.hr:TIME.reading;
   return `<section class="card">
   <div class="part-bar">
-    <div><span class="eyebrow">חלק 3 · הבנת הנקרא</span><p class="lead" id="story-ttl"></p></div>
-    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.reading?.left??TIME.reading,TIME.reading)}</span></div>
+    <div><span class="eyebrow">${eyebrow}</span><p class="lead" id="story-ttl"></p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.reading?.left??t,t)}</span></div>
   </div>
   <div id="reading-body"></div>
 </section>`;
@@ -361,14 +391,30 @@ function describeHTML(){
 </section>`;
 }
 
-function matchHTML(){
+function mathHTML(){
   return `<section class="card">
   <div class="part-bar">
-    <div><span class="eyebrow">חלק 5 · התאמת מילים</span><p class="lead">מתחו קו בין המילה לפירוש</p></div>
-    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.match?.left??TIME.match,TIME.match)}</span></div>
+    <div><span class="eyebrow">חשבון · תרגילים</span><p class="lead">בחר/י את התשובה הנכונה</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.ma?.left??TIME.ma,TIME.ma)}</span></div>
   </div>
-  <p class="foot">גררו מהמילה באנגלית (משמאל) אל הפירוש הנכון בעברית (מימין)</p>
-  <div class="match" id="match-wrap" dir="ltr">
+  <div class="math-q" id="math-q"></div>
+  <div class="opts" id="q-opts"></div>
+</section>`;
+}
+
+function matchHTML(){
+  const heb=(S.screen==="hb");
+  const eyebrow=heb?"עברית · התאמת מילים":"חלק 5 · התאמת מילים";
+  const foot=heb?"גררו מהמילה (משמאל) אל הפירוש הנכון (מימין)"
+                :"גררו מהמילה באנגלית (משמאל) אל הפירוש הנכון בעברית (מימין)";
+  const t=heb?TIME.hb:TIME.match;
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">${eyebrow}</span><p class="lead">מתחו קו בין המילה לפירוש</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.match?.left??t,t)}</span></div>
+  </div>
+  <p class="foot">${foot}</p>
+  <div class="match" id="match-wrap" dir="${heb?"rtl":"ltr"}">
     <svg class="match-svg" id="match-svg"><line id="match-temp" class="match-temp" style="display:none"></line></svg>
     <div class="mcol mcol-l" id="mcol-left"></div>
     <div class="mcol mcol-r" id="mcol-right"></div>
@@ -406,18 +452,20 @@ function doneHTML(){
   return `<section class="card hero">
   <span class="eyebrow">סיימת</span>
   <h1>${grade(S.score)} <small class="of">/100</small></h1>
-  <p class="sub">${S.score} תשובות נכונות מתוך ${TOTAL}. כל הכבוד, ${esc(S.name)} — התוצאה נשמרה.</p>
+  <p class="sub">${S.score} תשובות נכונות מתוך ${subjTotal()}. כל הכבוד, ${esc(S.name)} — התוצאה נשמרה.</p>
   ${hist}
   <button class="primary" id="btn-again">סבב נוסף</button>
 </section>`;
 }
 
 // ─── Core Render ──────────────────────────────────────────
-const SCR_HTML={login:loginHTML,resume:resumeHTML,menu:menuHTML,p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,paused:pausedHTML,done:doneHTML};
+const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuHTML,
+  p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
+  ma:mathHTML,hb:matchHTML,hr:readingHTML,paused:pausedHTML,done:doneHTML};
 
 function gotoNext(cur){
-  const k=ORDER.indexOf(cur);
-  if(k>=0&&k<ORDER.length-1){S.screen=ORDER[k+1];render();}
+  const o=curOrder(),k=o.indexOf(cur);
+  if(k>=0&&k<o.length-1){S.screen=o[k+1];render();}
   else finish();
 }
 
@@ -452,11 +500,20 @@ function attachListeners(){
     document.getElementById("btn-resume").addEventListener("click",doResume);
     document.getElementById("btn-fresh").addEventListener("click",doFresh);
   }
+  if(S.screen==="subject"){
+    document.querySelectorAll(".subj-btn").forEach(b=>{
+      b.addEventListener("click",()=>{
+        S.subject=b.dataset.subj;S.score=0;S.prog={};S.screen="menu";render();
+      });
+    });
+  }
   if(S.screen==="menu"){
     document.querySelectorAll(".plan li").forEach(li=>{
       li.addEventListener("click",()=>{S.screen=li.dataset.part;render();});
     });
-    document.getElementById("btn-start").addEventListener("click",()=>{S.screen="p1";render();});
+    const sb=document.getElementById("btn-subj-back");
+    if(sb)sb.addEventListener("click",()=>{S.screen="subject";render();});
+    document.getElementById("btn-start").addEventListener("click",()=>{S.score=0;S.prog={};S.screen=curOrder()[0];render();});
   }
   if(S.screen==="paused")
     document.getElementById("btn-menu").addEventListener("click",()=>{S.screen="menu";render();});
@@ -471,12 +528,15 @@ function initPart(){
   else if(S.screen==="p4")initDescribe();
   else if(S.screen==="p5")initMatch();
   else if(S.screen==="p6")initBalloons();
+  else if(S.screen==="ma")initMath();
+  else if(S.screen==="hb")initHebMatch();
+  else if(S.screen==="hr")initReading();
 }
 
 // ─── Session Helpers ──────────────────────────────────────
 function saveSession(){
-  if(!S.phone||S.screen==="login"||S.screen==="resume")return;
-  sSet(K.session(S.phone),{name:S.name,age:S.age,score:S.score,screen:S.screen,prog:S.prog,t:Date.now()});
+  if(!S.phone||S.screen==="login"||S.screen==="resume"||S.screen==="subject")return;
+  sSet(K.session(S.phone),{name:S.name,age:S.age,score:S.score,screen:S.screen,subject:S.subject,prog:S.prog,t:Date.now()});
 }
 function commitProg(slice){S.prog={...S.prog,...slice};saveSession();}
 function addScore(n){
@@ -640,33 +700,38 @@ function handleCP(){
 // ─── Part 3: Reading ──────────────────────────────────────
 function initReading(){
   const saved=S.prog.reading,lvl=levelForAge(S.age);
-  if(saved&&saved.id)R.story=STORIES.find(x=>x.id===saved.id)||STORIES[0];
+  const set=(S.screen==="hr")?HEB_STORIES:STORIES;
+  const src0=set.length?set:STORIES;
+  const qquota=(S.screen==="hr")?PART_QUOTA.hr:QUOTA.reading;
+  if(saved&&saved.id)R.story=src0.find(x=>x.id===saved.id)||src0[0];
   else{
-    const pool=STORIES.filter(x=>Math.abs(x.lvl-lvl)<=2);
-    const src=pool.length?pool:STORIES;
+    const pool=src0.filter(x=>Math.abs(x.lvl-lvl)<=2);
+    const src=pool.length?pool:src0;
     R.story=src[Math.floor(Math.random()*src.length)];
   }
-  R.qIdx   =saved?.qIdx??shuffle(R.story.qpool.map((_,k)=>k)).slice(0,QUOTA.reading);
+  R.rtl=(S.screen==="hr");
+  R.qIdx   =saved?.qIdx??shuffle(R.story.qpool.map((_,k)=>k)).slice(0,qquota);
   R.qi     =saved?.qi??0;
   R.reading=saved?.qi?false:true;
   R.picked =null;
   document.getElementById("story-ttl").textContent=R.story.title;
   refreshRV();
-  TM.start(saved?.left??TIME.reading,TIME.reading,()=>{S.screen="p4";render();});
+  TM.start(saved?.left??TIME[S.screen==="hr"?"hr":"reading"],TIME[S.screen==="hr"?"hr":"reading"],()=>gotoNext(S.screen));
 }
 
 function refreshRV(){
   const ctr=document.getElementById("q-ctr"),body=document.getElementById("reading-body");if(!body)return;
+  const dir=R.rtl?"rtl":"ltr";
   if(R.reading){
     if(ctr)ctr.textContent="";
-    body.innerHTML=`<div class="story scroll" dir="ltr">${R.story.text.split("\n\n").map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+    body.innerHTML=`<div class="story scroll" dir="${dir}">${R.story.text.split("\n\n").map(p=>`<p>${esc(p)}</p>`).join("")}</div>
 <button class="primary" id="btn-done-r">סיימתי לקרוא — לשאלות</button>`;
     document.getElementById("btn-done-r").addEventListener("click",()=>{R.reading=false;refreshRV();});
   }else{
     const qs=R.qIdx.map(k=>R.story.qpool[k]),q=qs[R.qi];
     if(ctr)ctr.textContent=`${R.qi+1}/${qs.length}`;
-    body.innerHTML=`<p class="question" dir="ltr">${esc(q.q)}</p>
-<div class="opts" id="q-opts">${q.o.map((o,i)=>`<button class="opt" data-idx="${i}" dir="ltr"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("")}</div>
+    body.innerHTML=`<p class="question" dir="${dir}">${esc(q.q)}</p>
+<div class="opts" id="q-opts">${q.o.map((o,i)=>`<button class="opt" data-idx="${i}" dir="${dir}"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("")}</div>
 <button class="ghost" id="btn-back-r">חזרה לסיפור</button>`;
     document.getElementById("q-opts").onclick=e=>{
       const btn=e.target.closest(".opt");
@@ -690,11 +755,12 @@ function handleRA(idx){
     btn.disabled=true;
   });
   commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
+  const scr=S.screen;
   setTimeout(()=>{
-    if(S.screen!=="p3")return;
+    if(S.screen!==scr)return;
     R.picked=null;R.qi++;
     const qs2=R.qIdx.map(k=>R.story.qpool[k]);
-    if(R.qi>=qs2.length){TM.stop();S.screen="p4";render();}
+    if(R.qi>=qs2.length){TM.stop();gotoNext(scr);}
     else refreshRV();
   },1800);
 }
@@ -767,7 +833,24 @@ function initMatch(){
   }
   M.dragging=false;M.dragI=null;
   renderMatch();
-  TM.start(saved?.left??TIME.match,TIME.match,()=>gotoNext("p5"));
+  TM.start(saved?.left??TIME[S.screen==="hb"?"hb":"match"],TIME[S.screen==="hb"?"hb":"match"],()=>gotoNext(S.screen));
+}
+
+// Hebrew word ↔ Hebrew definition matching (reuses the match engine)
+function initHebMatch(){
+  const saved=S.prog.match,lvl=levelForAge(S.age),n=PART_QUOTA.hb;
+  if(saved&&saved.pairs){M.pairs=saved.pairs;M.leftOrder=saved.leftOrder;M.rightOrder=saved.rightOrder;M.solved=new Set(saved.solved||[]);}
+  else{
+    const src=HEB_VOCAB.length?HEB_VOCAB:[{w:"בית",d:"מקום מגורים",lvl:1},{w:"שמח",d:"מרוצה",lvl:1},{w:"גדול",d:"רב־ממדים",lvl:1},{w:"מהיר",d:"זריז",lvl:2},{w:"יפה",d:"נאה",lvl:2},{w:"חכם",d:"נבון",lvl:2},{w:"קר",d:"צונן",lvl:1},{w:"חזק",d:"איתן",lvl:2}];
+    const pool=nearLevel(src.filter(x=>x.d),lvl,n);
+    M.pairs=shuffle(pool).slice(0,n).map(x=>({w:x.w,h:x.d}));
+    M.leftOrder=shuffle(M.pairs.map((_,k)=>k));
+    M.rightOrder=shuffle(M.pairs.map((_,k)=>k));
+    M.solved=new Set();
+  }
+  M.dragging=false;M.dragI=null;
+  renderMatch();
+  TM.start(saved?.left??TIME.hb,TIME.hb,()=>gotoNext(S.screen));
 }
 
 function renderMatch(){
@@ -812,7 +895,7 @@ function attemptMatch(i,j){
     document.querySelector(`.ritem[data-j="${j}"]`)?.classList.add("solved");
     drawMatchLine(i,j);addScore(1);SFX.good();updateMatchCtr();
     commitProg({match:matchState()});
-    if(M.solved.size>=M.pairs.length)setTimeout(()=>{if(S.screen==="p5")gotoNext("p5");},1000);
+    if(M.solved.size>=M.pairs.length){const scr=S.screen;setTimeout(()=>{if(S.screen===scr)gotoNext(scr);},1000);}
   }else{
     SFX.bad();
     const svg=document.getElementById("match-svg");
@@ -932,6 +1015,89 @@ function bindDrag(wrap,svg,tempId,fromSel,toSel,ptFn,onConnect,isDragging,setDra
   wrap.onpointerup=end;wrap.onpointercancel=end;
 }
 
+// ─── Math subject ─────────────────────────────────────────
+function mathState(){return {qs:MA.qs,i:MA.i,left:TM.left};}
+function _mrand(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function _mkOpts(ans){
+  const dec=!Number.isInteger(ans);
+  const span=Math.max(2,Math.round(Math.abs(ans)*0.2))||2;
+  const set=new Set([ans]);let guard=0;
+  while(set.size<4&&guard++<50){
+    let d=dec? Math.round((ans+(_mrand(-span,span)||1)*0.1)*10)/10 : ans+(_mrand(-span,span)||1);
+    if(d!==ans && (dec||Number.isInteger(d))) set.add(d);
+  }
+  while(set.size<4){set.add(ans+set.size);}
+  return shuffle([...set]);
+}
+function _genMathQ(lvl){
+  let t,a;
+  if(lvl<=1){
+    if(Math.random()<0.5){const x=_mrand(1,10),y=_mrand(1,10);t=`${x} + ${y}`;a=x+y;}
+    else{const x=_mrand(2,20),y=_mrand(1,x);t=`${x} − ${y}`;a=x-y;}
+  }else if(lvl===2){
+    const r=Math.random();
+    if(r<0.4){const x=_mrand(10,60),y=_mrand(5,40);t=`${x} + ${y}`;a=x+y;}
+    else if(r<0.7){const x=_mrand(20,99),y=_mrand(1,x);t=`${x} − ${y}`;a=x-y;}
+    else{const x=_mrand(2,10),y=_mrand(2,10);t=`${x} × ${y}`;a=x*y;}
+  }else if(lvl===3){
+    const r=Math.random();
+    if(r<0.4){const x=_mrand(3,12),y=_mrand(3,12);t=`${x} × ${y}`;a=x*y;}
+    else if(r<0.7){const y=_mrand(2,12),q2=_mrand(2,12);t=`${y*q2} ÷ ${y}`;a=q2;}
+    else{const x=_mrand(100,999),y=_mrand(10,x);t=`${x} − ${y}`;a=x-y;}
+  }else if(lvl===4){
+    const r=Math.random();
+    if(r<0.35){const x=_mrand(2,9),y=_mrand(2,9),z=_mrand(2,9);t=`${x} + ${y} × ${z}`;a=x+y*z;}
+    else if(r<0.7){const p=_mrand(1,9)*10,n=_mrand(1,9)*10;t=`${p}% × ${n}`;a=Math.round(p*n/100);}
+    else{const x=_mrand(1,9)/10,y=_mrand(1,9)/10;t=`${x} + ${y}`;a=Math.round((x+y)*10)/10;}
+  }else{
+    const r=Math.random();
+    if(r<0.35){const b=_mrand(2,12);t=`${b}²`;a=b*b;}
+    else if(r<0.6){const b=[4,9,16,25,36,49,64,81,100,121,144][_mrand(0,10)];t=`√${b}`;a=Math.round(Math.sqrt(b));}
+    else{const x=_mrand(2,9),c=_mrand(1,9),res=x*_mrand(2,9)+c,sol=(res-c)/x;
+      if(!Number.isInteger(sol))return _genMathQ(lvl);t=`${x}x + ${c} = ${res}`;a=sol;}
+  }
+  return {t,a};
+}
+function initMath(){
+  const saved=S.prog.ma,lvl=levelForAge(S.age);
+  if(saved&&saved.qs){MA.qs=saved.qs;MA.i=saved.i||0;}
+  else{MA.qs=Array.from({length:PART_QUOTA.ma},()=>_genMathQ(lvl));MA.i=0;}
+  MA.picked=false;
+  renderMathQ();
+  TM.start(saved?.left??TIME.ma,TIME.ma,()=>gotoNext("ma"));
+}
+function renderMathQ(){
+  const q=MA.qs[MA.i];
+  MA.opts=_mkOpts(q.a);
+  document.getElementById("q-ctr").textContent=`${MA.i+1}/${MA.qs.length}`;
+  document.getElementById("math-q").innerHTML=`<span dir="ltr">${esc(q.t)} =</span>`;
+  document.getElementById("q-opts").innerHTML=MA.opts.map(o=>
+    `<button class="opt opt-center" data-val="${o}"><span dir="ltr">${o}</span><span class="mark" style="display:none"></span></button>`).join("");
+  MA.picked=false;
+  document.getElementById("q-opts").onclick=e=>{
+    const b=e.target.closest(".opt");if(!b||b.disabled||MA.picked)return;
+    handleMA(parseFloat(b.dataset.val));
+  };
+}
+function handleMA(val){
+  if(MA.picked)return;MA.picked=true;
+  const q=MA.qs[MA.i],correct=Math.abs(val-q.a)<1e-9;
+  if(correct){addScore(1);SFX.good();}else SFX.bad();
+  document.querySelectorAll("#q-opts .opt").forEach(b=>{
+    const bv=parseFloat(b.dataset.val),mk=b.querySelector(".mark");
+    if(Math.abs(bv-q.a)<1e-9){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
+    else if(bv===val&&!correct){b.classList.add("opt-bad");mk.textContent="✗";mk.className="mark bad";mk.style.display="";}
+    else b.classList.add("opt-dim");
+    b.disabled=true;
+  });
+  commitProg({ma:mathState()});
+  setTimeout(()=>{
+    if(S.screen!=="ma")return;
+    MA.picked=false;MA.i++;
+    if(MA.i>=MA.qs.length)gotoNext("ma");else renderMathQ();
+  },1200);
+}
+
 // ─── Actions ──────────────────────────────────────────────
 function doEnter(){
   if(!S.name.trim()||S.phone.length<9||S.busy)return;
@@ -941,18 +1107,19 @@ function doEnter(){
   const ses=sGet(K.session(S.phone)),hist=sGet(K.results(S.phone)),seen=sGet(K.seen(S.phone));
   S.history=hist||[];S.seen=seen||[];S.busy=false;
   if(ses&&ses.screen&&ses.screen!=="done"){S.found=ses;S.screen="resume";}
-  else{S.prog={};S.score=0;S.screen="menu";}
+  else{S.prog={};S.score=0;S.screen="subject";}
   render();
 }
 
 function doResume(){
   const f=S.found;
   S.name=f.name||S.name;S.age=f.age||S.age;S.score=f.score||0;
+  S.subject=f.subject||"english";
   S.prog=f.prog||{};S.screen=f.screen;S.found=null;render();
 }
 
 function doFresh(){
-  sDel(K.session(S.phone));S.prog={};S.score=0;S.found=null;S.screen="menu";render();
+  sDel(K.session(S.phone));S.prog={};S.score=0;S.found=null;S.screen="subject";render();
 }
 
 function doPause(){
@@ -960,14 +1127,16 @@ function doPause(){
   else if(S.screen==="p2"&&C.item)commitProg({cloze:{id:C.item.id,bank:C.bank,filled:C.filled,used:C.used,left:TM.left}});
   else if(S.screen==="p3"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
   else if(S.screen==="p4"&&D.idxs)commitProg({pics:{idxs:D.idxs,i:D.i,left:TM.left}});
-  else if(S.screen==="p5"&&M.pairs)commitProg({match:matchState()});
+  else if((S.screen==="p5"||S.screen==="hb")&&M.pairs)commitProg({match:matchState()});
   else if(S.screen==="p6"&&B.pairs)commitProg({balloons:balloonState()});
+  else if(S.screen==="ma"&&MA.qs)commitProg({ma:mathState()});
+  else if(S.screen==="hr"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
   S.screen="paused";render();
 }
 
 function finish(){
   TM.stop();
-  const rec={t:Date.now(),name:S.name,lvl:levelForAge(S.age),correct:S.score,total:TOTAL,g:grade(S.score)};
+  const rec={t:Date.now(),name:S.name,subject:S.subject,lvl:levelForAge(S.age),correct:S.score,total:subjTotal(),g:grade(S.score)};
   S.history=[rec,...S.history].slice(0,30);
   sSet(K.results(S.phone),S.history);sDel(K.session(S.phone));
   S.prog={};S.screen="done";render();
