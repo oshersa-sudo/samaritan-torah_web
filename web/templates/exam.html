@@ -12,7 +12,8 @@
 </head>
 <body>
 <div id="exam-root"></div>
-<script>const _FLASK_VERSION = "{{ version }}";</script>
+<script>const _FLASK_VERSION = "{{ version }}";
+window.LEARN_BACKEND = "{{ learn_backend }}";  // set LEARN_BACKEND env to your Contabo URL to enable cloud sync + parent tracking
 <script src="{{ url_for('static', filename='vocab_en.js') }}"></script>
 <script src="{{ url_for('static', filename='hebrew_data.js') }}"></script>
 <script src="{{ url_for('static', filename='exam.js') }}"></script>

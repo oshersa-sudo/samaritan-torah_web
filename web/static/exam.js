@@ -220,11 +220,33 @@ const sSet = (k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const sDel = k=>{try{localStorage.removeItem(k);}catch(e){}};
 
 // ─── Global State ─────────────────────────────────────────
-const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english"};
+const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:""};
 
 // Hebrew-subject content (loaded from hebrew_data.js if present)
 const HEB_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.HEB_VOCAB))   ? window.HEB_VOCAB   : [];
 const HEB_STORIES = (typeof window!=="undefined" && Array.isArray(window.HEB_STORIES)) ? window.HEB_STORIES : [];
+
+// ─── Optional cloud sync (Contabo backend) ───────────────
+// Enabled only when window.LEARN_BACKEND is set to the server URL. Purely
+// best-effort — localStorage stays the source of truth and the app works
+// fully offline when this is empty.
+const BACKEND=(typeof window!=="undefined"&&window.LEARN_BACKEND)?String(window.LEARN_BACKEND).replace(/\/+$/,""):"";
+function beacon(path,body){
+  if(!BACKEND)return Promise.resolve(null);
+  return fetch(BACKEND+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+    .then(r=>r.json()).catch(()=>null);
+}
+function syncRegister(){
+  if(!BACKEND)return;
+  beacon("/api/register",{name:S.name,phone:S.phone,age:S.age}).then(j=>{
+    if(j&&j.parent_code){S.parentCode=j.parent_code;sSet("pcode:"+S.phone,j.parent_code);
+      const el=document.getElementById("parent-code");if(el)el.textContent=j.parent_code;}
+  });
+}
+function syncResult(rec){
+  if(!BACKEND)return;
+  beacon("/api/results",{phone:S.phone,subject:rec.subject,grade:rec.g,correct:rec.correct,total:rec.total,ts:rec.t});
+}
 
 // ─── Timer ────────────────────────────────────────────────
 const TM = {
@@ -335,6 +357,7 @@ function menuHTML(){
   <div class="menu-head"><button class="ghost sm" id="btn-subj-back">↩ מקצוע</button><span class="eyebrow">${subj.icon} ${esc(subj.name)} · התוכנית שלך</span></div>
   <ul class="plan">${items}</ul>
   <p class="foot">${subjTotal()} תשובות · הציון מוצג מתוך 100</p>
+  ${BACKEND?`<p class="foot">קוד להורים: <b id="parent-code">${esc(S.parentCode||"…")}</b> — למעקב מרחוק דרך עמוד ההורים</p>`:""}
   ${hist}
   <button class="primary" id="btn-start">התחלה</button>
 </section>`;
@@ -1106,6 +1129,8 @@ function doEnter(){
   document.getElementById("btn-enter").textContent="רגע…";
   const ses=sGet(K.session(S.phone)),hist=sGet(K.results(S.phone)),seen=sGet(K.seen(S.phone));
   S.history=hist||[];S.seen=seen||[];S.busy=false;
+  S.parentCode=sGet("pcode:"+S.phone)||"";
+  syncRegister();
   if(ses&&ses.screen&&ses.screen!=="done"){S.found=ses;S.screen="resume";}
   else{S.prog={};S.score=0;S.screen="subject";}
   render();
@@ -1139,6 +1164,7 @@ function finish(){
   const rec={t:Date.now(),name:S.name,subject:S.subject,lvl:levelForAge(S.age),correct:S.score,total:subjTotal(),g:grade(S.score)};
   S.history=[rec,...S.history].slice(0,30);
   sSet(K.results(S.phone),S.history);sDel(K.session(S.phone));
+  syncResult(rec);
   S.prog={};S.screen="done";render();
 }
 
