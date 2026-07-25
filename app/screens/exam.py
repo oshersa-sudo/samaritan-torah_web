@@ -41,7 +41,10 @@ EX_GOOD_BG= (0.929, 0.984, 0.945, 1)
 EX_BAD_BG = (0.992, 0.929, 0.933, 1)
 
 # ── Content ───────────────────────────────────────────────────────────────────
-VOCAB = [
+# Full vocabulary (2,950 words) is loaded from assets/data/vocab_en.json — the
+# same file the web version uses. _VOCAB_FALLBACK below is only used if that
+# file is missing (keeps the screen working in a bare checkout).
+_VOCAB_FALLBACK = [
     # ── lvl 1 · יסוד (גיל 5–7) ──
     {"w":"apple","e":"🍎","lvl":1,"h":"תפוח"},{"w":"banana","e":"🍌","lvl":1,"h":"בננה"},
     {"w":"dog","e":"🐶","lvl":1,"h":"כלב"},{"w":"cat","e":"🐱","lvl":1,"h":"חתול"},
@@ -118,6 +121,22 @@ VOCAB = [
     {"w":"observatory","e":"🔭","lvl":5,"h":"מצפה כוכבים"},{"w":"currency","e":"💱","lvl":5,"h":"מטבע"},
     {"w":"parliament","e":"🏛️","lvl":5,"h":"פרלמנט"},{"w":"reservoir","e":"🌊","lvl":5,"h":"מאגר מים"},
 ]
+
+def _load_vocab():
+    """Load the full 2,950-word dataset shipped in assets/data/vocab_en.json.
+    Falls back to the small inline list if the file cannot be read."""
+    try:
+        p = os.path.join(os.path.dirname(__file__), "..", "..",
+                         "assets", "data", "vocab_en.json")
+        with open(p, encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list) and len(data) > 100:
+            return [d for d in data if d.get("w") and d.get("h") and d.get("lvl")]
+    except Exception:
+        pass
+    return _VOCAB_FALLBACK
+
+VOCAB = _load_vocab()
 
 CLOZE = [
   {
@@ -606,7 +625,8 @@ class ExamScreen(Screen):
     def _render_vocab(self):
         saved = self.S["prog"].get("vocab")
         lvl   = _level_for_age(self.S["age"])
-        self.V["pool"] = _near_level(VOCAB, lvl, 6)
+        # picture prompt needs an emoji — restrict the pool to words that have one
+        self.V["pool"] = _near_level([x for x in VOCAB if x.get("e")], lvl, 6)
         if saved and saved.get("round"):
             self.V["round"] = saved["round"]
             self.V["i"]     = saved.get("i", 0)

@@ -4,9 +4,9 @@ package.name = samaritantorah
 package.domain = net.thesamaritans
 
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas,ttf,db
+source.include_exts = py,png,jpg,kv,atlas,ttf,db,json
 source.exclude_dirs = scripts,.git,__pycache__,.github
-source.include_patterns = data/torah.db,assets/fonts/SBL_Hbrw.ttf,assets/fonts/Sam_font.ttf,assets/fonts/Amiri-Regular.ttf,assets/fonts/CharisSIL-Regular.ttf,assets/icons/*.png,assets/images/*.png,assets/images/*.jpg
+source.include_patterns = data/torah.db,assets/data/vocab_en.json,assets/fonts/SBL_Hbrw.ttf,assets/fonts/Sam_font.ttf,assets/fonts/Amiri-Regular.ttf,assets/fonts/CharisSIL-Regular.ttf,assets/icons/*.png,assets/images/*.png,assets/images/*.jpg
 
 version = 1.0
 
