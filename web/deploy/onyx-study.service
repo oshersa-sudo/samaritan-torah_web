@@ -19,9 +19,11 @@ WorkingDirectory=/var/www/onyx-study
 Environment=APP_VERSION=1.0
 # sqlite database for accounts, results and parent links (persisted on disk)
 Environment=LEARN_DB=/var/www/onyx-study/data/learn.db
-# 0 = production: verification codes are NEVER returned by the API, only sent
-# out by e-mail (configure SMTP below). Set to 1 only while testing.
-Environment=LEARN_DEV=0
+# 1 = codes are returned by the API/printed to the journal so registration
+#     works immediately WITHOUT e-mail. Fine for launch/testing.
+# 0 = production: codes are ONLY sent by e-mail (configure SMTP below first,
+#     otherwise nobody can verify). Flip to 0 once SMTP is set.
+Environment=LEARN_DEV=1
 # ── e-mail for the confirmation codes (fill in your SMTP provider) ──
 # Environment=SMTP_HOST=smtp.your-provider.com
 # Environment=SMTP_PORT=587

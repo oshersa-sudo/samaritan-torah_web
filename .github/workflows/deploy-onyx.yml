@@ -1,0 +1,34 @@
+name: Deploy onyx-study.com
+
+# Auto-deploy the learning app to the Contabo server on every push that
+# touches it. Requires three repository secrets (Settings → Secrets → Actions):
+#   DEPLOY_HOST     the server IP           e.g. 194.163.130.39
+#   DEPLOY_USER     the SSH user            e.g. root
+#   DEPLOY_SSH_KEY  a private SSH key whose public half is in the server's
+#                   ~/.ssh/authorized_keys
+# Until those secrets exist the job is skipped, so it never fails a push.
+
+on:
+  push:
+    branches: [main, claude/language-test-51-questions-lafgyx]
+    paths:
+      - 'web/**'
+      - 'assets/data/**'
+      - '.github/workflows/deploy-onyx.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Deploy over SSH (idempotent bootstrap)
+        if: ${{ secrets.DEPLOY_HOST != '' }}
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            export BRANCH="${{ github.ref_name }}"
+            curl -fsSL "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/web/deploy/bootstrap_onyx.sh" | bash
