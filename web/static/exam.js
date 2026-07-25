@@ -2,25 +2,97 @@
 "use strict";
 
 // ─── Content ──────────────────────────────────────────────
+// Every entry: w=word · e=emoji · lvl=1..5 · h=Hebrew meaning
+// Age→level: ≤7→1 · ≤9→2 · ≤11→3 · ≤14→4 · else→5
+// lvl 2–3 (ages 8–11) are enriched with professions, tools, vehicles,
+// kitchen utensils, fruit & veg, furniture and school-subject words.
 const VOCAB = [
-  {w:"apple",e:"🍎",lvl:1},{w:"dog",e:"🐶",lvl:1},{w:"cat",e:"🐱",lvl:1},
-  {w:"sun",e:"☀️",lvl:1},{w:"book",e:"📕",lvl:1},{w:"ball",e:"⚽",lvl:1},
-  {w:"house",e:"🏠",lvl:1},{w:"fish",e:"🐟",lvl:1},{w:"car",e:"🚗",lvl:1},
-  {w:"tree",e:"🌳",lvl:1},{w:"milk",e:"🥛",lvl:1},{w:"shoe",e:"👟",lvl:1},
-  {w:"bicycle",e:"🚲",lvl:2},{w:"elephant",e:"🐘",lvl:2},{w:"umbrella",e:"☂️",lvl:2},
-  {w:"kitchen",e:"🍳",lvl:2},{w:"guitar",e:"🎸",lvl:2},{w:"mountain",e:"⛰️",lvl:2},
-  {w:"rainbow",e:"🌈",lvl:2},{w:"camera",e:"📷",lvl:2},{w:"bridge",e:"🌉",lvl:2},
-  {w:"hospital",e:"🏥",lvl:2},
-  {w:"microscope",e:"🔬",lvl:3},{w:"volcano",e:"🌋",lvl:3},{w:"compass",e:"🧭",lvl:3},
-  {w:"harvest",e:"🌾",lvl:3},{w:"anchor",e:"⚓",lvl:3},{w:"telescope",e:"🔭",lvl:3},
-  {w:"laboratory",e:"🧪",lvl:3},{w:"puzzle",e:"🧩",lvl:3},{w:"lighthouse",e:"🗼",lvl:3},
-  {w:"avalanche",e:"🏔️",lvl:3},
-  {w:"scale",e:"⚖️",lvl:4},{w:"ballot",e:"🗳️",lvl:4},{w:"vaccine",e:"💉",lvl:4},
-  {w:"circuit",e:"🔌",lvl:4},{w:"satellite",e:"🛰️",lvl:4},{w:"archive",e:"🗄️",lvl:4},
-  {w:"sculpture",e:"🗿",lvl:4},{w:"orchestra",e:"🎻",lvl:4},
-  {w:"gavel",e:"🔨",lvl:5},{w:"manuscript",e:"📜",lvl:5},{w:"surveillance",e:"📹",lvl:5},
-  {w:"infrastructure",e:"🏗️",lvl:5},{w:"diplomacy",e:"🕊️",lvl:5},{w:"commerce",e:"🏦",lvl:5},
-  {w:"specimen",e:"🦠",lvl:5},{w:"expedition",e:"🧗",lvl:5},
+  // ── lvl 1 · יסוד (גיל 5–7): חיות, אוכל, בית, טבע ──
+  {w:"apple",e:"🍎",lvl:1,h:"תפוח"},{w:"banana",e:"🍌",lvl:1,h:"בננה"},
+  {w:"dog",e:"🐶",lvl:1,h:"כלב"},{w:"cat",e:"🐱",lvl:1,h:"חתול"},
+  {w:"sun",e:"☀️",lvl:1,h:"שמש"},{w:"moon",e:"🌙",lvl:1,h:"ירח"},
+  {w:"star",e:"⭐",lvl:1,h:"כוכב"},{w:"book",e:"📕",lvl:1,h:"ספר"},
+  {w:"ball",e:"⚽",lvl:1,h:"כדור"},{w:"house",e:"🏠",lvl:1,h:"בית"},
+  {w:"fish",e:"🐟",lvl:1,h:"דג"},{w:"car",e:"🚗",lvl:1,h:"מכונית"},
+  {w:"tree",e:"🌳",lvl:1,h:"עץ"},{w:"milk",e:"🥛",lvl:1,h:"חלב"},
+  {w:"shoe",e:"👟",lvl:1,h:"נעל"},{w:"hat",e:"🧢",lvl:1,h:"כובע"},
+  {w:"bird",e:"🐦",lvl:1,h:"ציפור"},{w:"flower",e:"🌸",lvl:1,h:"פרח"},
+  {w:"hand",e:"✋",lvl:1,h:"יד"},{w:"egg",e:"🥚",lvl:1,h:"ביצה"},
+  {w:"bread",e:"🍞",lvl:1,h:"לחם"},{w:"cake",e:"🍰",lvl:1,h:"עוגה"},
+  {w:"bed",e:"🛏️",lvl:1,h:"מיטה"},{w:"door",e:"🚪",lvl:1,h:"דלת"},
+  {w:"key",e:"🔑",lvl:1,h:"מפתח"},{w:"sock",e:"🧦",lvl:1,h:"גרב"},
+
+  // ── lvl 2 · בית ספר, בית, אוכל, חיות (גיל 8–9) ──
+  {w:"teacher",e:"🧑‍🏫",lvl:2,h:"מורה"},{w:"school",e:"🏫",lvl:2,h:"בית ספר"},
+  {w:"pencil",e:"✏️",lvl:2,h:"עיפרון"},{w:"notebook",e:"📓",lvl:2,h:"מחברת"},
+  {w:"backpack",e:"🎒",lvl:2,h:"תיק"},{w:"ruler",e:"📏",lvl:2,h:"סרגל"},
+  {w:"window",e:"🪟",lvl:2,h:"חלון"},{w:"clock",e:"🕐",lvl:2,h:"שעון"},
+  {w:"bus",e:"🚌",lvl:2,h:"אוטובוס"},{w:"train",e:"🚆",lvl:2,h:"רכבת"},
+  {w:"bicycle",e:"🚲",lvl:2,h:"אופניים"},{w:"umbrella",e:"☂️",lvl:2,h:"מטרייה"},
+  {w:"kitchen",e:"🍳",lvl:2,h:"מטבח"},{w:"garden",e:"🌻",lvl:2,h:"גינה"},
+  {w:"guitar",e:"🎸",lvl:2,h:"גיטרה"},{w:"camera",e:"📷",lvl:2,h:"מצלמה"},
+  {w:"orange",e:"🍊",lvl:2,h:"תפוז"},{w:"grapes",e:"🍇",lvl:2,h:"ענבים"},
+  {w:"carrot",e:"🥕",lvl:2,h:"גזר"},{w:"tomato",e:"🍅",lvl:2,h:"עגבנייה"},
+  {w:"chicken",e:"🐔",lvl:2,h:"תרנגולת"},{w:"cow",e:"🐄",lvl:2,h:"פרה"},
+  {w:"horse",e:"🐴",lvl:2,h:"סוס"},{w:"rabbit",e:"🐰",lvl:2,h:"ארנב"},
+  {w:"elephant",e:"🐘",lvl:2,h:"פיל"},{w:"rain",e:"🌧️",lvl:2,h:"גשם"},
+  {w:"snow",e:"❄️",lvl:2,h:"שלג"},{w:"cloud",e:"☁️",lvl:2,h:"ענן"},
+  {w:"mountain",e:"⛰️",lvl:2,h:"הר"},{w:"rainbow",e:"🌈",lvl:2,h:"קשת"},
+
+  // ── lvl 3 · מקצועות, כלים, כלי רכב, כלי מטבח, פירות/ירקות, רהיטים, מקצועות לימוד (גיל 10–11) ──
+  // מקצועות
+  {w:"doctor",e:"🧑‍⚕️",lvl:3,h:"רופא"},{w:"nurse",e:"👩‍⚕️",lvl:3,h:"אחות"},
+  {w:"farmer",e:"🧑‍🌾",lvl:3,h:"חקלאי"},{w:"pilot",e:"🧑‍✈️",lvl:3,h:"טייס"},
+  {w:"engineer",e:"👷",lvl:3,h:"מהנדס"},{w:"chef",e:"🧑‍🍳",lvl:3,h:"שף"},
+  {w:"police officer",e:"👮",lvl:3,h:"שוטר"},{w:"firefighter",e:"🧑‍🚒",lvl:3,h:"כבאי"},
+  {w:"scientist",e:"🔬",lvl:3,h:"מדען"},{w:"dentist",e:"🦷",lvl:3,h:"רופא שיניים"},
+  {w:"judge",e:"⚖️",lvl:3,h:"שופט"},{w:"baker",e:"🥖",lvl:3,h:"אופה"},
+  {w:"carpenter",e:"🪚",lvl:3,h:"נגר"},{w:"painter",e:"🎨",lvl:3,h:"צַבָּע"},
+  // כלים
+  {w:"hammer",e:"🔨",lvl:3,h:"פטיש"},{w:"screwdriver",e:"🪛",lvl:3,h:"מברג"},
+  {w:"wrench",e:"🔧",lvl:3,h:"מפתח ברגים"},{w:"drill",e:"🛠️",lvl:3,h:"מקדחה"},
+  {w:"ladder",e:"🪜",lvl:3,h:"סולם"},{w:"scissors",e:"✂️",lvl:3,h:"מספריים"},
+  {w:"nail",e:"🔩",lvl:3,h:"מסמר"},{w:"brush",e:"🖌️",lvl:3,h:"מברשת"},
+  // כלי רכב
+  {w:"truck",e:"🚚",lvl:3,h:"משאית"},{w:"airplane",e:"✈️",lvl:3,h:"מטוס"},
+  {w:"helicopter",e:"🚁",lvl:3,h:"מסוק"},{w:"ship",e:"🚢",lvl:3,h:"אונייה"},
+  {w:"tractor",e:"🚜",lvl:3,h:"טרקטור"},{w:"motorcycle",e:"🏍️",lvl:3,h:"אופנוע"},
+  {w:"ambulance",e:"🚑",lvl:3,h:"אמבולנס"},{w:"rocket",e:"🚀",lvl:3,h:"טיל חלל"},
+  // כלי מטבח
+  {w:"pot",e:"🍲",lvl:3,h:"סיר"},{w:"knife",e:"🔪",lvl:3,h:"סכין"},
+  {w:"kettle",e:"🫖",lvl:3,h:"קומקום"},{w:"spoon",e:"🥄",lvl:3,h:"כף"},
+  {w:"fork",e:"🍴",lvl:3,h:"מזלג"},{w:"plate",e:"🍽️",lvl:3,h:"צלחת"},
+  // פירות וירקות
+  {w:"strawberry",e:"🍓",lvl:3,h:"תות"},{w:"watermelon",e:"🍉",lvl:3,h:"אבטיח"},
+  {w:"lemon",e:"🍋",lvl:3,h:"לימון"},{w:"pineapple",e:"🍍",lvl:3,h:"אננס"},
+  {w:"potato",e:"🥔",lvl:3,h:"תפוח אדמה"},{w:"onion",e:"🧅",lvl:3,h:"בצל"},
+  {w:"corn",e:"🌽",lvl:3,h:"תירס"},{w:"cucumber",e:"🥒",lvl:3,h:"מלפפון"},
+  {w:"pepper",e:"🫑",lvl:3,h:"פלפל"},{w:"eggplant",e:"🍆",lvl:3,h:"חציל"},
+  {w:"broccoli",e:"🥦",lvl:3,h:"ברוקולי"},{w:"mushroom",e:"🍄",lvl:3,h:"פטרייה"},
+  // רהיטים
+  {w:"sofa",e:"🛋️",lvl:3,h:"ספה"},{w:"mirror",e:"🪞",lvl:3,h:"מראה"},
+  {w:"lamp",e:"💡",lvl:3,h:"מנורה"},{w:"drawer",e:"🗄️",lvl:3,h:"מגירה"},
+  // מקצועות לימוד
+  {w:"mathematics",e:"➗",lvl:3,h:"מתמטיקה"},{w:"science",e:"🧪",lvl:3,h:"מדעים"},
+  {w:"history",e:"📜",lvl:3,h:"היסטוריה"},{w:"geography",e:"🗺️",lvl:3,h:"גאוגרפיה"},
+  {w:"music",e:"🎵",lvl:3,h:"מוזיקה"},{w:"homework",e:"📚",lvl:3,h:"שיעורי בית"},
+
+  // ── lvl 4 · חטיבה: מדע, חברה, מופשט ──
+  {w:"microscope",e:"🔬",lvl:4,h:"מיקרוסקופ"},{w:"volcano",e:"🌋",lvl:4,h:"הר געש"},
+  {w:"compass",e:"🧭",lvl:4,h:"מצפן"},{w:"harvest",e:"🌾",lvl:4,h:"קציר"},
+  {w:"anchor",e:"⚓",lvl:4,h:"עוגן"},{w:"telescope",e:"🔭",lvl:4,h:"טלסקופ"},
+  {w:"laboratory",e:"⚗️",lvl:4,h:"מעבדה"},{w:"puzzle",e:"🧩",lvl:4,h:"פאזל"},
+  {w:"lighthouse",e:"🗼",lvl:4,h:"מגדלור"},{w:"vaccine",e:"💉",lvl:4,h:"חיסון"},
+  {w:"satellite",e:"🛰️",lvl:4,h:"לוויין"},{w:"sculpture",e:"🗿",lvl:4,h:"פסל"},
+  {w:"orchestra",e:"🎻",lvl:4,h:"תזמורת"},{w:"skeleton",e:"💀",lvl:4,h:"שלד"},
+  {w:"magnet",e:"🧲",lvl:4,h:"מגנט"},{w:"battery",e:"🔋",lvl:4,h:"סוללה"},
+
+  // ── lvl 5 · תיכון: מושגים מתקדמים ──
+  {w:"manuscript",e:"📜",lvl:5,h:"כתב יד"},{w:"infrastructure",e:"🏗️",lvl:5,h:"תשתית"},
+  {w:"diplomacy",e:"🕊️",lvl:5,h:"דיפלומטיה"},{w:"commerce",e:"🏦",lvl:5,h:"מסחר"},
+  {w:"specimen",e:"🦠",lvl:5,h:"דגימה"},{w:"expedition",e:"🧗",lvl:5,h:"משלחת"},
+  {w:"observatory",e:"🔭",lvl:5,h:"מצפה כוכבים"},{w:"currency",e:"💱",lvl:5,h:"מטבע"},
+  {w:"parliament",e:"🏛️",lvl:5,h:"פרלמנט"},{w:"reservoir",e:"🌊",lvl:5,h:"מאגר מים"},
 ];
 
 const CLOZE = [
@@ -145,12 +217,12 @@ const PICTURES = [
 ];
 
 // ─── Constants ────────────────────────────────────────────
-const QUOTA = {vocab:10,cloze:25,reading:6,pics:10};
-const TOTAL  = 51;
-const TIME   = {vocab:300,cloze:600,reading:600,pics:600};
-const ORDER  = ["p1","p2","p3","p4"];
+const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
+const TOTAL  = Object.values(QUOTA).reduce((a,b)=>a+b,0); // 62
+const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180};
+const ORDER  = ["p1","p2","p3","p4","p5","p6"];
 const LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"};
-const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה"};
+const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",p5:"התאמת מילים",p6:"בלונים"};
 const K = {session:p=>`session:${p}`,results:p=>`results:${p}`,seen:p=>`seen:${p}`};
 
 // ─── Utilities ────────────────────────────────────────────
@@ -171,6 +243,43 @@ const speak  = text => {
   try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=0.85;window.speechSynthesis.speak(u);}catch(e){}
 };
+
+// ─── Sound effects (synthesized — no asset files) ─────────
+const SFX = {
+  _ctx:null,
+  _ac(){ try{ if(!this._ctx) this._ctx=new (window.AudioContext||window.webkitAudioContext)();
+    if(this._ctx.state==="suspended") this._ctx.resume(); return this._ctx; }catch(e){ return null; } },
+  _tone(ctx,freq,t0,dur,type="sine",gain=0.22){
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type;o.frequency.setValueAtTime(freq,t0);
+    g.gain.setValueAtTime(0,t0);
+    g.gain.linearRampToValueAtTime(gain,t0+0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g);g.connect(ctx.destination);o.start(t0);o.stop(t0+dur+0.02);
+  },
+  // חגיגי — ארפג'יו עולה + "נצנוץ" (תשואות ילדים)
+  good(){
+    const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
+    [523.25,659.25,783.99,1046.5].forEach((f,i)=>this._tone(ctx,f,t+i*0.09,0.28,"triangle",0.22));
+    this._tone(ctx,1567.98,t+0.36,0.30,"sine",0.14);
+    // רעש-לבן קצר כמחיאות כפיים
+    try{
+      const n=ctx.createBufferSource(),b=ctx.createBuffer(1,ctx.sampleRate*0.35,ctx.sampleRate);
+      const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+      const g=ctx.createGain();g.gain.setValueAtTime(0.10,t+0.30);g.gain.exponentialRampToValueAtTime(0.0001,t+0.72);
+      const hp=ctx.createBiquadFilter();hp.type="highpass";hp.frequency.value=1400;
+      n.buffer=b;n.connect(hp);hp.connect(g);g.connect(ctx.destination);n.start(t+0.30);
+    }catch(e){}
+  },
+  // שגיאה — שני צלילים יורדים נמוכים
+  bad(){
+    const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
+    this._tone(ctx,311.13,t,0.18,"sawtooth",0.18);
+    this._tone(ctx,207.65,t+0.16,0.30,"sawtooth",0.18);
+  },
+};
+// שחרור AudioContext במגע ראשון (מדיניות דפדפנים)
+window.addEventListener("pointerdown",()=>SFX._ac(),{once:true});
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
 // ─── Storage ──────────────────────────────────────────────
@@ -197,7 +306,7 @@ const TM = {
 function updateHG(){const w=document.getElementById("hg-wrap");if(w)w.innerHTML=hgHTML(TM.left,TM.total);}
 
 // ─── Part Runtime ─────────────────────────────────────────
-const V={},C={},R={},D={};
+const V={},C={},R={},D={},M={},B={};
 
 // ─── HTML Builders ────────────────────────────────────────
 function hgHTML(left,total){
@@ -230,6 +339,7 @@ function topbarHTML(){
   <div class="brand">English<span>·</span>Trainer</div>
   <div class="who">${esc(S.name)}${S.name?" · ":""}${LEVEL_NAME[lvl]}</div>
   ${showPause?'<button class="pausebtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
+  ${showPause?'<button class="pausebtn" id="btn-skip" title="דלג לשלב הבא">⏭</button>':""}
   <div class="score" id="score-el" aria-label="ניקוד">${grade(S.score)}<small>/100</small></div>
 </header>`;
 }
@@ -273,6 +383,8 @@ function menuHTML(){
     <li data-part="p2"><b>השלמת מילים</b><span>${QUOTA.cloze} השלמות · 10 דק׳</span></li>
     <li data-part="p3"><b>הבנת הנקרא</b><span>${QUOTA.reading} שאלות · 10 דק׳</span></li>
     <li data-part="p4"><b>תיאור תמונה</b><span>${QUOTA.pics} תמונות · 10 דק׳</span></li>
+    <li data-part="p5"><b>התאמת מילים</b><span>${QUOTA.match} התאמות · 3.5 דק׳</span></li>
+    <li data-part="p6"><b>בלונים</b><span>${QUOTA.balloons} בלונים · 3 דק׳</span></li>
   </ul>
   <p class="foot">${TOTAL} תשובות · הציון מוצג מתוך 100</p>
   ${hist}
@@ -329,6 +441,36 @@ function describeHTML(){
 </section>`;
 }
 
+function matchHTML(){
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">חלק 5 · התאמת מילים</span><p class="lead">מתחו קו בין המילה לפירוש</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.match?.left??TIME.match,TIME.match)}</span></div>
+  </div>
+  <p class="foot">גררו מהמילה באנגלית (משמאל) אל הפירוש הנכון בעברית (מימין)</p>
+  <div class="match" id="match-wrap" dir="ltr">
+    <svg class="match-svg" id="match-svg"><line id="match-temp" class="match-temp" style="display:none"></line></svg>
+    <div class="mcol mcol-l" id="mcol-left"></div>
+    <div class="mcol mcol-r" id="mcol-right"></div>
+  </div>
+</section>`;
+}
+
+function balloonsHTML(){
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">חלק 6 · בלונים</span><p class="lead">חברו כל בלון למילה הנכונה</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.balloons?.left??TIME.balloons,TIME.balloons)}</span></div>
+  </div>
+  <p class="foot">גררו מחוט הבלון אל המילה באנגלית שמתאימה לתמונה</p>
+  <div class="balloons" id="bln-wrap" dir="ltr">
+    <svg class="match-svg" id="bln-svg"><line id="bln-temp" class="match-temp" style="display:none"></line></svg>
+    <div class="bln-row" id="bln-top"></div>
+    <div class="bln-words" id="bln-bot"></div>
+  </div>
+</section>`;
+}
+
 function pausedHTML(){
   return `<section class="card hero">
   <span class="eyebrow">נשמר במכשיר</span>
@@ -351,7 +493,13 @@ function doneHTML(){
 }
 
 // ─── Core Render ──────────────────────────────────────────
-const SCR_HTML={login:loginHTML,resume:resumeHTML,menu:menuHTML,p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,paused:pausedHTML,done:doneHTML};
+const SCR_HTML={login:loginHTML,resume:resumeHTML,menu:menuHTML,p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,paused:pausedHTML,done:doneHTML};
+
+function gotoNext(cur){
+  const k=ORDER.indexOf(cur);
+  if(k>=0&&k<ORDER.length-1){S.screen=ORDER[k+1];render();}
+  else finish();
+}
 
 function render(){
   TM.stop();
@@ -365,6 +513,8 @@ function render(){
 function attachListeners(){
   const pb=document.getElementById("btn-pause");
   if(pb)pb.addEventListener("click",doPause);
+  const sk=document.getElementById("btn-skip");
+  if(sk)sk.addEventListener("click",()=>{TM.stop();gotoNext(S.screen);});
 
   if(S.screen==="login"){
     const ni=document.getElementById("inp-name"),pi=document.getElementById("inp-phone");
@@ -399,6 +549,8 @@ function initPart(){
   else if(S.screen==="p2")initCloze();
   else if(S.screen==="p3")initReading();
   else if(S.screen==="p4")initDescribe();
+  else if(S.screen==="p5")initMatch();
+  else if(S.screen==="p6")initBalloons();
 }
 
 // ─── Session Helpers ──────────────────────────────────────
@@ -461,7 +613,7 @@ function handleVA(word){
   if(V.picked)return;
   V.picked=word;
   const correct=word===V.item.w;
-  if(correct)addScore(1);
+  if(correct){addScore(1);SFX.good();}else SFX.bad();
   speak(V.item.w);
   document.querySelectorAll("#q-opts .opt").forEach(btn=>{
     const bw=btn.dataset.word,mark=btn.querySelector(".mark");
@@ -554,13 +706,13 @@ function handleCP(){
   if(!C.sel||!n||n<1||n>C.item.answers.length)return;
   if(C.item.answers[n-1]===C.sel&&!C.filled[n]){
     C.filled={...C.filled,[n]:C.sel};C.used=[...C.used,C.sel];
-    addScore(1);speak(C.sel);showToast("good","נכון מאוד!");
+    addScore(1);SFX.good();speak(C.sel);showToast("good","נכון מאוד!");
     commitProg({cloze:{id:C.item.id,bank:C.bank,filled:C.filled,used:C.used,left:TM.left}});
     C.sel=null;C.num="";refreshCS();refreshCB();refreshCP();
     if(Object.keys(C.filled).length>=C.item.answers.length)
       setTimeout(()=>{if(S.screen!=="p2")return;S.screen="p3";render();},1200);
   }else{
-    showToast("bad",`${S.name}, נסה/י שוב`);
+    SFX.bad();showToast("bad",`${S.name}, נסה/י שוב`);
     C.sel=null;C.num="";refreshCB();refreshCP();
   }
 }
@@ -609,7 +761,7 @@ function handleRA(idx){
   if(R.picked!==null)return;
   R.picked=idx;
   const qs=R.qIdx.map(k=>R.story.qpool[k]),q=qs[R.qi];
-  if(idx===q.c)addScore(1);
+  if(idx===q.c){addScore(1);SFX.good();}else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(btn=>{
     const bi=parseInt(btn.dataset.idx,10),mark=btn.querySelector(".mark");
     if(bi===q.c){btn.classList.add("opt-good");mark.textContent="✓";mark.className="mark good";mark.style.display="";}
@@ -633,7 +785,7 @@ function initDescribe(){
   D.idxs=saved?.idxs??shuffle(PICTURES.map((_,k)=>k)).slice(0,QUOTA.pics);
   D.i=saved?.i??0;D.locked=false;
   renderDI();
-  TM.start(saved?.left??TIME.pics,TIME.pics,finish);
+  TM.start(saved?.left??TIME.pics,TIME.pics,()=>gotoNext("p4"));
 }
 
 function renderDI(){
@@ -652,14 +804,212 @@ function handleDC(){
   const inp=document.getElementById("desc-inp"),val=inp.value.trim();if(!val)return;
   const item=PICTURES[D.idxs[D.i]],ok=item.ok.includes(val.toLowerCase());
   D.locked=true;inp.disabled=true;document.getElementById("btn-check").disabled=true;
-  if(ok){addScore(1);speak(item.ok[0]);showToast("good","נכון מאוד!");}
-  else showToast("bad",`${S.name}, התשובה: ${item.ok[0]}`);
+  if(ok){addScore(1);SFX.good();speak(item.ok[0]);showToast("good","נכון מאוד!");}
+  else{SFX.bad();showToast("bad",`${S.name}, התשובה: ${item.ok[0]}`);}
   commitProg({pics:{idxs:D.idxs,i:D.i,left:TM.left}});
   setTimeout(()=>{
     if(S.screen!=="p4")return;
     D.locked=false;D.i++;
-    if(D.i>=D.idxs.length)finish();else renderDI();
+    if(D.i>=D.idxs.length)gotoNext("p4");else renderDI();
   },1900);
+}
+
+// ─── Line-drawing helpers (Match + Balloons) ──────────────
+const _SVGNS="http://www.w3.org/2000/svg";
+function _ptOf(svg,el,edge){
+  const sr=svg.getBoundingClientRect(),r=el.getBoundingClientRect();
+  let x,y;
+  if(edge==="r"){x=r.right;y=r.top+r.height/2;}
+  else if(edge==="l"){x=r.left;y=r.top+r.height/2;}
+  else if(edge==="t"){x=r.left+r.width/2;y=r.top;}
+  else if(edge==="b"){x=r.left+r.width/2;y=r.bottom;}
+  else{x=r.left+r.width/2;y=r.top+r.height/2;}
+  return {x:x-sr.left,y:y-sr.top};
+}
+function _addLine(svg,x1,y1,x2,y2,cls){
+  const l=document.createElementNS(_SVGNS,"line");
+  l.setAttribute("x1",x1);l.setAttribute("y1",y1);l.setAttribute("x2",x2);l.setAttribute("y2",y2);
+  l.setAttribute("class",cls);svg.appendChild(l);return l;
+}
+
+// ─── Part 5: Word ↔ Meaning matching ──────────────────────
+function matchState(){return {pairs:M.pairs,leftOrder:M.leftOrder,rightOrder:M.rightOrder,solved:[...M.solved],left:TM.left};}
+
+function initMatch(){
+  const saved=S.prog.match,lvl=levelForAge(S.age);
+  if(saved&&saved.pairs){M.pairs=saved.pairs;M.leftOrder=saved.leftOrder;M.rightOrder=saved.rightOrder;M.solved=new Set(saved.solved||[]);}
+  else{
+    const pool=nearLevel(VOCAB,lvl,QUOTA.match).filter(x=>x.h);
+    M.pairs=shuffle(pool).slice(0,QUOTA.match).map(x=>({w:x.w,h:x.h}));
+    M.leftOrder=shuffle(M.pairs.map((_,k)=>k));
+    M.rightOrder=shuffle(M.pairs.map((_,k)=>k));
+    M.solved=new Set();
+  }
+  M.dragging=false;M.dragI=null;
+  renderMatch();
+  TM.start(saved?.left??TIME.match,TIME.match,()=>gotoNext("p5"));
+}
+
+function renderMatch(){
+  const L=document.getElementById("mcol-left"),Rr=document.getElementById("mcol-right");
+  if(!L||!Rr)return;
+  L.innerHTML=M.leftOrder.map((pi,i)=>
+    `<button class="mitem${M.solved.has(i)?" solved":""}" data-i="${i}" dir="ltr"><span>${esc(M.pairs[pi].w)}</span><i class="dot dot-r"></i></button>`).join("");
+  Rr.innerHTML=M.rightOrder.map((pi,j)=>{
+    const solvedJ=[...M.solved].some(i=>M.leftOrder[i]===M.rightOrder[j]);
+    return `<button class="ritem${solvedJ?" solved":""}" data-j="${j}"><i class="dot dot-l"></i><span>${esc(M.pairs[pi].h)}</span></button>`;
+  }).join("");
+  updateMatchCtr();
+  const wrap=document.getElementById("match-wrap"),svg=document.getElementById("match-svg");
+  [...svg.querySelectorAll(".match-line")].forEach(l=>l.remove());
+  requestAnimationFrame(()=>{
+    [...M.solved].forEach(i=>{
+      const j=M.rightOrder.findIndex(pi=>pi===M.leftOrder[i]);
+      if(j>=0)drawMatchLine(i,j);
+    });
+  });
+  bindDrag(wrap,svg,"match-temp",".mitem",".ritem",
+    (li)=>_ptOf(svg,li,"r"),
+    (from,to)=>attemptMatch(+from.dataset.i,+to.dataset.j),
+    ()=>M.dragging,(v)=>M.dragging=v);
+}
+
+function updateMatchCtr(){const c=document.getElementById("q-ctr");if(c)c.textContent=`${M.solved.size}/${M.pairs.length}`;}
+
+function drawMatchLine(i,j){
+  const svg=document.getElementById("match-svg");
+  const li=document.querySelector(`.mitem[data-i="${i}"]`),ri=document.querySelector(`.ritem[data-j="${j}"]`);
+  if(!li||!ri||!svg)return;
+  const a=_ptOf(svg,li,"r"),b=_ptOf(svg,ri,"l");
+  _addLine(svg,a.x,a.y,b.x,b.y,"match-line solved");
+}
+
+function attemptMatch(i,j){
+  if(M.solved.has(i))return;
+  if(M.leftOrder[i]===M.rightOrder[j]){
+    M.solved.add(i);
+    document.querySelector(`.mitem[data-i="${i}"]`)?.classList.add("solved");
+    document.querySelector(`.ritem[data-j="${j}"]`)?.classList.add("solved");
+    drawMatchLine(i,j);addScore(1);SFX.good();updateMatchCtr();
+    commitProg({match:matchState()});
+    if(M.solved.size>=M.pairs.length)setTimeout(()=>{if(S.screen==="p5")gotoNext("p5");},1000);
+  }else{
+    SFX.bad();
+    const svg=document.getElementById("match-svg");
+    const li=document.querySelector(`.mitem[data-i="${i}"]`),ri=document.querySelector(`.ritem[data-j="${j}"]`);
+    if(li&&ri){
+      const a=_ptOf(svg,li,"r"),b=_ptOf(svg,ri,"l");
+      const l=_addLine(svg,a.x,a.y,b.x,b.y,"match-line wrong");
+      li.classList.add("shake");ri.classList.add("shake");
+      setTimeout(()=>{l.remove();li.classList.remove("shake");ri.classList.remove("shake");},480);
+    }
+  }
+}
+
+// ─── Part 6: Balloons ↔ Words ─────────────────────────────
+const BLN_COLORS=["#F2545B","#6C5CE7","#3FBF6F","#FFB627","#2AA9E0","#E255A1"];
+function balloonState(){return {pairs:B.pairs,topOrder:B.topOrder,botOrder:B.botOrder,solved:[...B.solved],left:TM.left};}
+
+function initBalloons(){
+  const saved=S.prog.balloons,lvl=levelForAge(S.age);
+  if(saved&&saved.pairs){B.pairs=saved.pairs;B.topOrder=saved.topOrder;B.botOrder=saved.botOrder;B.solved=new Set(saved.solved||[]);}
+  else{
+    const pool=nearLevel(VOCAB,lvl,QUOTA.balloons).filter(x=>x.e);
+    B.pairs=shuffle(pool).slice(0,QUOTA.balloons).map(x=>({w:x.w,e:x.e,h:x.h}));
+    B.topOrder=shuffle(B.pairs.map((_,k)=>k));
+    B.botOrder=shuffle(B.pairs.map((_,k)=>k));
+    B.solved=new Set();
+  }
+  B.dragging=false;B.dragI=null;
+  renderBalloons();
+  TM.start(saved?.left??TIME.balloons,TIME.balloons,()=>gotoNext("p6"));
+}
+
+function renderBalloons(){
+  const top=document.getElementById("bln-top"),bot=document.getElementById("bln-bot");
+  if(!top||!bot)return;
+  top.innerHTML=B.topOrder.map((pi,i)=>
+    `<button class="balloon${B.solved.has(i)?" solved":""}" data-i="${i}" style="--bc:${BLN_COLORS[i%BLN_COLORS.length]}">
+      <span class="bln-body"><span class="bln-emoji">${B.pairs[pi].e}</span></span>
+      <span class="bln-string"></span><i class="dot dot-b"></i></button>`).join("");
+  bot.innerHTML=B.botOrder.map((pi,j)=>{
+    const solvedJ=[...B.solved].some(i=>B.topOrder[i]===B.botOrder[j]);
+    return `<button class="wchip${solvedJ?" solved":""}" data-j="${j}" dir="ltr"><i class="dot dot-t"></i><span>${esc(B.pairs[pi].w)}</span></button>`;
+  }).join("");
+  updateBlnCtr();
+  const wrap=document.getElementById("bln-wrap"),svg=document.getElementById("bln-svg");
+  [...svg.querySelectorAll(".match-line")].forEach(l=>l.remove());
+  requestAnimationFrame(()=>{
+    [...B.solved].forEach(i=>{
+      const j=B.botOrder.findIndex(pi=>pi===B.topOrder[i]);
+      if(j>=0)drawBlnLine(i,j);
+    });
+  });
+  bindDrag(wrap,svg,"bln-temp",".balloon",".wchip",
+    (b)=>_ptOf(svg,b.querySelector(".dot-b"),"c"),
+    (from,to)=>attemptBln(+from.dataset.i,+to.dataset.j),
+    ()=>B.dragging,(v)=>B.dragging=v);
+}
+
+function updateBlnCtr(){const c=document.getElementById("q-ctr");if(c)c.textContent=`${B.solved.size}/${B.pairs.length}`;}
+
+function drawBlnLine(i,j){
+  const svg=document.getElementById("bln-svg");
+  const dot=document.querySelector(`.balloon[data-i="${i}"] .dot-b`),wj=document.querySelector(`.wchip[data-j="${j}"]`);
+  if(!dot||!wj||!svg)return;
+  const a=_ptOf(svg,dot,"c"),b=_ptOf(svg,wj,"t");
+  _addLine(svg,a.x,a.y,b.x,b.y,"match-line solved");
+}
+
+function attemptBln(i,j){
+  if(B.solved.has(i))return;
+  if(B.topOrder[i]===B.botOrder[j]){
+    B.solved.add(i);
+    document.querySelector(`.balloon[data-i="${i}"]`)?.classList.add("solved");
+    document.querySelector(`.wchip[data-j="${j}"]`)?.classList.add("solved");
+    drawBlnLine(i,j);addScore(1);SFX.good();updateBlnCtr();speak(B.pairs[B.topOrder[i]].w);
+    commitProg({balloons:balloonState()});
+    if(B.solved.size>=B.pairs.length)setTimeout(()=>{if(S.screen==="p6")gotoNext("p6");},1000);
+  }else{
+    SFX.bad();
+    const svg=document.getElementById("bln-svg");
+    const dot=document.querySelector(`.balloon[data-i="${i}"] .dot-b`),wj=document.querySelector(`.wchip[data-j="${j}"]`);
+    const bl=document.querySelector(`.balloon[data-i="${i}"]`);
+    if(dot&&wj){
+      const a=_ptOf(svg,dot,"c"),b=_ptOf(svg,wj,"t");
+      const l=_addLine(svg,a.x,a.y,b.x,b.y,"match-line wrong");
+      bl?.classList.add("shake");wj.classList.add("shake");
+      setTimeout(()=>{l.remove();bl?.classList.remove("shake");wj.classList.remove("shake");},480);
+    }
+  }
+}
+
+// generic drag-to-connect: from a source item to a target item
+function bindDrag(wrap,svg,tempId,fromSel,toSel,ptFn,onConnect,isDragging,setDragging){
+  const temp=document.getElementById(tempId);
+  wrap.onpointerdown=e=>{
+    const from=e.target.closest(fromSel);
+    if(!from||from.classList.contains("solved"))return;
+    wrap._from=from;setDragging(true);
+    const a=ptFn(from);
+    temp.setAttribute("x1",a.x);temp.setAttribute("y1",a.y);
+    temp.setAttribute("x2",a.x);temp.setAttribute("y2",a.y);temp.style.display="";
+    try{wrap.setPointerCapture(e.pointerId);}catch(_){}
+    e.preventDefault();
+  };
+  wrap.onpointermove=e=>{
+    if(!isDragging())return;
+    const sr=svg.getBoundingClientRect();
+    temp.setAttribute("x2",e.clientX-sr.left);temp.setAttribute("y2",e.clientY-sr.top);
+  };
+  const end=e=>{
+    if(!isDragging())return;setDragging(false);temp.style.display="none";
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    const to=el&&el.closest?el.closest(toSel):null;
+    if(to&&!to.classList.contains("solved")&&wrap._from)onConnect(wrap._from,to);
+    wrap._from=null;
+  };
+  wrap.onpointerup=end;wrap.onpointercancel=end;
 }
 
 // ─── Actions ──────────────────────────────────────────────
@@ -690,6 +1040,8 @@ function doPause(){
   else if(S.screen==="p2"&&C.item)commitProg({cloze:{id:C.item.id,bank:C.bank,filled:C.filled,used:C.used,left:TM.left}});
   else if(S.screen==="p3"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
   else if(S.screen==="p4"&&D.idxs)commitProg({pics:{idxs:D.idxs,i:D.i,left:TM.left}});
+  else if(S.screen==="p5"&&M.pairs)commitProg({match:matchState()});
+  else if(S.screen==="p6"&&B.pairs)commitProg({balloons:balloonState()});
   S.screen="paused";render();
 }
 
