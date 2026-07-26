@@ -173,12 +173,15 @@ const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
 const SUBJECTS = {
   english:{name:"אנגלית", icon:"🌍", desc:"מילים, שמיעה ודיבור",
            grad:"linear-gradient(150deg,#7dd3fc,#0284c7)", shadow:"#0369a1",
+           mascot:"🐸", mascotName:"פְרוֹגִי הַצְּפַרְדֵּעַ",
            order:["p1","p2","p3","p4","p5","p6"]},
   hebrew: {name:"עברית",  icon:"📖", desc:"אוצר מילים, קריאה והבנה",
            grad:"linear-gradient(150deg,#a78bfa,#7c3aed)", shadow:"#6d28d9",
+           mascot:"🦉", mascotName:"אוּפִּי הַיַּנְשׁוּף",
            order:["hv","hb","wg","hr"]},
   math:   {name:"חשבון",  icon:"🧮", desc:"חיבור, כפל ובעיות מילוליות",
            grad:"linear-gradient(150deg,#fda4af,#e11d48)", shadow:"#be123c",
+           mascot:"👨‍🏫", mascotName:"פְּרוֹפֶסוֹר חֶשְׁבּוֹן",
            order:["ma1","ma2","ma3","ma4"]},
 };
 // friendly per-subject progress for the picker cards — the most recent grade
@@ -510,14 +513,21 @@ function hgHTML(left,total){
 
 function topbarHTML(){
   if(S.screen==="login")return "";
-  const lvl=levelForAge(S.age),showPause=curOrder().includes(S.screen),subj=curSubject();
+  const lvl=levelForAge(S.age),playing=curOrder().includes(S.screen);
+  const gm=gamLoad();
   return `<header class="topbar">
-  <div class="brand"><span class="hdr-av">${S.avatar}</span> ${subj.icon} ${esc(subj.name)}</div>
-  <div class="who">${esc(S.name)}${S.name?" · ":""}${LEVEL_NAME[lvl]}</div>
-  ${showPause?'<button class="pausebtn" id="btn-home" title="לתפריט הראשי">⌂</button>':""}
-  ${showPause?'<button class="pausebtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
-  ${showPause?'<button class="pausebtn" id="btn-skip" title="דלג לשלב הבא">⏭</button>':""}
-  <div class="score" id="score-el" aria-label="ניקוד">${grade(S.score)}<small>/100</small></div>
+  <div class="tb-id">
+    <span class="tb-av">${S.avatar}</span>
+    <div class="tb-who"><b>${esc(S.name||"אורח/ת")}</b><span>${LEVEL_NAME[lvl]}</span></div>
+  </div>
+  <div class="tb-right">
+    <span class="chip chip-coin">🪙 ${gm.coins||0}</span>
+    <span class="chip chip-streak">🔥 ${gm.streak||0}</span>
+    ${playing?`<div class="score" id="score-el" aria-label="ניקוד">${grade(S.score)}<small>/100</small></div>`:""}
+    ${playing?'<button class="iconbtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
+    ${playing?'<button class="iconbtn" id="btn-skip" title="דלג לשלב הבא">⏭</button>':""}
+    ${playing?'<button class="iconbtn" id="btn-home" title="לתפריט הראשי">⌂</button>':""}
+  </div>
 </header>`;
 }
 
@@ -588,51 +598,87 @@ const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3
                    ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳"};
 
 function subjectHTML(){
-  return `<section class="card hero">
-  <span class="eyebrow">בחירת מקצוע</span>
-  <h1>מה לומדים היום?</h1>
-  <p class="sub">בחר/י מקצוע. אפשר להחליף בכל רגע — כל מקצוע נשמר בנפרד.</p>
-  <div class="subj-cards">
-    ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,S.subject===k)).join("")}
+  const gm=gamLoad();
+  const wk=Math.max(0,Math.min(5,gm.streak||0)), wkPct=(wk/5)*100;
+  return `<div class="home kl-rise">
+  <div class="home-greet">
+    <div class="home-buddy">${S.avatar}</div>
+    <div class="home-hello"><h1>שלום, ${esc(S.name||"")}!</h1><p>מה לומדים היום?</p></div>
   </div>
-</section>`;
+
+  <div class="subj-cards" id="hub-subjects">
+    ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,false)).join("")}
+  </div>
+
+  <div class="weekly-card">
+    <span class="weekly-buddy">${curSubject().mascot||"🦉"}</span>
+    <div class="weekly-label">היעד השבועי</div>
+    <div class="weekly-big">${wk} מתוך 5 ימים</div>
+    <div class="weekly-bar"><i style="width:${wkPct}%"></i></div>
+  </div>
+
+  <div class="parade" aria-hidden="true"><div class="parade-track">${PARADE.concat(PARADE).map(a=>`<span>${a}</span>`).join("")}</div></div>
+  <button class="ghost sm" id="btn-logout-hub">החלפת משתמש/ת</button>
+</div>`;
 }
 
 function menuHTML(){
-  const subj=curSubject();
+  const subj=curSubject(), order=curOrder();
+  const p=subjProgress(S.subject);
+  // per-skill status from any saved mid-session (else all "ready")
+  const ses=S.found||sGet(K.session(S.phone));
+  const cur=(ses&&ses.subject===S.subject&&order.includes(ses.screen))?order.indexOf(ses.screen):-1;
+  const skills=order.map((part,i)=>{
+    let pill,cls;
+    if(cur<0){pill="מוכן";cls="ready";}
+    else if(i<cur){pill="✓ הושלם";cls="done";}
+    else if(i===cur){pill="בהליך";cls="prog";}
+    else{pill="מוכן";cls="ready";}
+    return `<button class="skill-row" data-part="${part}">
+      <span class="skill-num" style="background:${subj.grad}">${i+1}</span>
+      <span class="skill-body"><b>${PART_NAME[part]}</b><span>${PART_QUOTA[part]} ${PART_DESC[part]||""}</span></span>
+      <span class="skill-pill skill-${cls}">${pill}</span>
+    </button>`;
+  }).join("");
+  const nextName=cur>=0&&cur<order.length?PART_NAME[order[cur]]:PART_NAME[order[0]];
   const rel=S.history.filter(r=>(r.subject||"english")===S.subject).slice(0,5);
   const hist=rel.length
     ?`<span class="eyebrow">מבחנים קודמים</span>
 <ul class="hist">${rel.map(r=>`<li><span>${fmtDate(r.t)}</span><b>${r.g}/100</b></li>`).join("")}</ul>`:"";
-  const items=curOrder().map(p=>
-    `<li data-part="${p}"><b>${PART_NAME[p]}</b><span>${PART_QUOTA[p]} ${PART_DESC[p]||""}</span></li>`).join("");
   const gm=gamLoad();
-  const earned=(gm.badges||[]).map(id=>BADGES.find(b=>b.id===id)).filter(Boolean);
-  const statbar=`<div class="statbar">
-    <span class="stat"><b>${gm.streak||0}</b> 🔥</span>
-    <span class="stat"><b>${gamLevel(gm.xp)}</b> ⭐ רמה</span>
-    <span class="stat"><b>${gm.coins||0}</b> 🪙</span>
-  </div>${earned.length?`<div class="badge-row mini">${earned.map(b=>`<span class="badge-chip" title="${esc(b.name)}">${b.ic}</span>`).join("")}</div>`:""}`;
   const wk=Math.max(0,Math.min(5,gm.streak||0)), wkPct=(wk/5)*100;
-  const weekly=`<div class="weekly-card">
-    <span class="weekly-buddy">${subj.icon}</span>
+  return `<div class="skills-page kl-rise">
+  <button class="link-back" id="btn-subj-back">↩ כל המקצועות</button>
+
+  <div class="subj-header">
+    <div class="subj-badge" style="background:${subj.grad};box-shadow:0 8px 0 ${subj.shadow}">${subj.icon}</div>
+    <div class="subj-h-txt"><h2>${esc(subj.name)}</h2><p>${esc(subj.desc||"")}</p></div>
+    <div class="mascot-bubble"><b>${esc(subj.mascotName||"")}</b> מחכה לך <span class="mb-paw">🐾</span><span class="mascot-emoji">${subj.mascot||"🦉"}</span></div>
+  </div>
+
+  <div class="progress-card" style="background:${subj.grad};box-shadow:0 8px 0 ${subj.shadow}">
+    <div class="pc-head"><div class="pc-label">ההתקדמות שלך במקצוע</div><div class="pc-pct">${p.pct}%</div></div>
+    <div class="pc-bar"><i style="width:${p.pct}%"></i></div>
+    <div class="pc-note">${order.length} מיומנויות · הבאה בתור: ${esc(nextName)}</div>
+  </div>
+
+  <div class="skills-list">${skills}</div>
+
+  <div class="weekly-card">
+    <span class="weekly-buddy">${subj.mascot||subj.icon}</span>
     <div class="weekly-label">היעד השבועי</div>
     <div class="weekly-big">${wk} מתוך 5 ימים</div>
     <div class="weekly-bar"><i style="width:${wkPct}%"></i></div>
-  </div>`;
-  return `<section class="card">
-  <div class="menu-head"><button class="ghost sm" id="btn-subj-back">↩ מקצוע</button><span class="eyebrow"><span class="menu-av">${S.avatar}</span> ${subj.icon} ${esc(subj.name)} · התוכנית של ${esc(S.name)}</span></div>
-  ${statbar}
-  ${weekly}
-  <ul class="plan">${items}</ul>
-  <p class="foot">${subjTotal()} תשובות · הציון מוצג מתוך 100</p>
-  ${BACKEND?`<p class="foot">קוד להורים: <b id="parent-code">${esc(S.parentCode||"…")}</b> — למעקב מרחוק דרך עמוד ההורים</p>`:""}
+  </div>
+
   ${missLoad().length?`<button class="ghost" id="btn-review">🔁 תרגול הטעויות שלי (${missLoad().length})</button>`:""}
   ${BACKEND?`<button class="ghost" id="btn-lead">🏆 לוח מובילים</button>`:""}
   ${hist}
-  <button class="primary" id="btn-start">התחלה</button>
+  ${BACKEND?`<p class="foot">קוד להורים: <b id="parent-code">${esc(S.parentCode||"…")}</b> — למעקב מרחוק בעמוד ההורים</p>`:""}
+
+  <button class="primary" id="btn-start">בואו נתחיל · ${esc(nextName)}</button>
   <button class="ghost sm" id="btn-logout">החלפת משתמש/ת</button>
-</section>`;
+</div>`;
 }
 
 function vocabHTML(){
@@ -1036,10 +1082,12 @@ function attachListeners(){
         S.subject=b.dataset.subj;S.score=0;S.prog={};S.screen="menu";render();
       });
     });
+    const lo=document.getElementById("btn-logout-hub");
+    if(lo)lo.addEventListener("click",doLogout);
   }
   if(S.screen==="menu"){
-    document.querySelectorAll(".plan li").forEach(li=>{
-      li.addEventListener("click",()=>{S.screen=li.dataset.part;render();});
+    document.querySelectorAll(".skill-row").forEach(li=>{
+      li.addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=levelForAge(S.age);S.screen=li.dataset.part;render();});
     });
     const sb=document.getElementById("btn-subj-back");
     if(sb)sb.addEventListener("click",()=>{S.screen="subject";render();});
@@ -1836,9 +1884,18 @@ function finish(){
 window.addEventListener("DOMContentLoaded",()=>{
   const me=sGet("me");
   if(me&&me.phone&&me.name){
+    // auto-login the remembered student — but land on the HOME hub, not
+    // straight into a subject's plan or an exam. Restore their data first.
     S.name=me.name;S.phone=me.phone;S.subject=me.subject||"english";
     S.avatar=me.avatar||S.avatar;S.age=me.age||S.age;
-    doEnter();            // auto-login the saved student
+    S.history=sGet(K.results(S.phone))||[];
+    S.seen=sGet(K.seen(S.phone))||[];
+    S.parentCode=sGet("pcode:"+S.phone)||"";
+    syncRegister();
+    const ses=sGet(K.session(S.phone));
+    if(ses&&ses.screen&&ses.screen!=="done"){S.found=ses;S.screen="resume";}
+    else S.screen="subject";   // the main home hub
+    render();
   }else render();
 });
 function doLogout(){

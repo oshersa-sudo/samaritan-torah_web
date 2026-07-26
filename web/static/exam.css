@@ -27,41 +27,44 @@ body {
   padding: 14px;
 }
 
-/* ── Top bar ── */
+/* ── Top bar (Design chip style) ── */
 .topbar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
-.brand { font-family: 'Fredoka', sans-serif; font-size: 15px; color: #0B2430; }
-.brand span { color: #FFB627; margin: 0 2px; }
-.who { font-size: 12px; opacity: .65; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.pausebtn {
-  background: #fff;
-  border: none;
-  border-radius: 11px;
-  width: 34px;
-  height: 34px;
-  font-size: 15px;
-  cursor: pointer;
-  color: #0B2430;
-  flex-shrink: 0;
-}
+.tb-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.tb-av { width: 48px; height: 48px; flex: none; display: grid; place-items: center; font-size: 26px;
+  background: #fff; border: 3px solid #ede4ff; border-radius: 16px; box-shadow: 0 6px 0 rgba(139,92,246,.16); }
+.tb-who { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.tb-who b { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 16px; line-height: 1.1; color: var(--ink); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tb-who span { font-size: 12px; color: #7b6ba3; }
+.tb-right { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.chip { display: inline-flex; align-items: center; gap: 5px; background: #fff; border-radius: 999px;
+  padding: 7px 12px; font-weight: 700; font-size: 14px; color: var(--ink); }
+.chip-coin { border: 2px solid #fff3c4; box-shadow: 0 3px 0 rgba(251,191,36,.25); }
+.chip-streak { border: 2px solid #ffe0cf; box-shadow: 0 3px 0 rgba(251,113,133,.22); }
+.iconbtn { width: 40px; height: 40px; border-radius: 13px; border: 2px solid #ede4ff; background: #fff;
+  font-size: 17px; cursor: pointer; display: grid; place-items: center; color: var(--ink); flex: none; }
+.iconbtn:hover { background: #f6f2ff; }
 .score {
-  background: #0B2430;
+  background: linear-gradient(180deg,#a78bfa,#7c3aed);
   color: #fff;
-  border-radius: 14px;
-  padding: 6px 12px;
-  font-family: 'Secular One', sans-serif;
-  font-size: 19px;
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
   line-height: 1;
   display: flex;
   align-items: baseline;
-  gap: 3px;
+  gap: 2px;
   flex-shrink: 0;
 }
-.score small { font-family: Rubik, sans-serif; font-size: 10px; opacity: .7; }
+.score small { font-family: Rubik, sans-serif; font-size: 10px; opacity: .8; }
 
 /* ── Card ── */
 .card {
@@ -559,6 +562,40 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 
 .menu-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
 .menu-head .ghost.sm { width:auto; margin:0; padding:6px 10px; opacity:.7; }
+
+/* ══════════ Skills / plan screen (Design v2) ══════════ */
+.skills-page { display:flex; flex-direction:column; gap:16px; }
+.link-back { align-self:flex-start; border:none; background:none; color:#7b6ba3; font-size:14px; font-weight:600; cursor:pointer; padding:2px 0; font-family:Rubik,sans-serif; }
+.subj-header { position:relative; display:flex; align-items:center; gap:14px; flex-direction:row-reverse; justify-content:flex-end; }
+.subj-badge { width:66px; height:66px; flex:none; border-radius:24px; display:grid; place-items:center; font-size:34px; }
+.subj-h-txt h2 { margin:0; font-family:'Fredoka',sans-serif; font-size:32px; font-weight:700; line-height:1; color:var(--ink); }
+.subj-h-txt p { margin:4px 0 0; font-size:14px; color:var(--ink-soft); }
+.mascot-bubble { position:relative; margin-inline-start:auto; background:#fff; border:2px solid #ede4ff; border-radius:18px; padding:10px 14px; font-size:13px; font-weight:600; color:var(--ink); box-shadow:0 5px 0 rgba(139,92,246,.1); max-width:190px; }
+.mascot-bubble b { color:var(--violet); }
+.mascot-emoji { position:absolute; bottom:-14px; inset-inline-start:-10px; font-size:32px; filter:drop-shadow(0 5px 6px rgba(80,50,140,.25)); animation:kl-bob 3s ease-in-out infinite; }
+@media (max-width:520px){ .mascot-bubble{ display:none; } }
+
+.progress-card { color:#fff; border-radius:26px; padding:18px 20px; }
+.pc-head { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.pc-label { font-size:12.5px; font-weight:700; opacity:.8; }
+.pc-pct { font-family:'Fredoka',sans-serif; font-size:30px; font-weight:700; }
+.pc-bar { height:12px; border-radius:99px; background:rgba(255,255,255,.28); overflow:hidden; margin:12px 0 8px; }
+.pc-bar i { display:block; height:100%; border-radius:99px; background:#fff; transition:width .5s ease; }
+.pc-note { font-size:12.5px; color:rgba(255,255,255,.92); font-weight:600; }
+
+.skills-list { display:flex; flex-direction:column; gap:12px; }
+.skill-row { display:flex; align-items:center; gap:14px; flex-direction:row-reverse; text-align:right;
+  background:#fff; border:none; border-radius:22px; padding:14px 16px; cursor:pointer; width:100%;
+  box-shadow:0 6px 0 rgba(139,92,246,.1); transition:transform .14s; }
+.skill-row:hover { transform:translateY(-3px); }
+.skill-num { width:44px; height:44px; flex:none; border-radius:16px; display:grid; place-items:center; font-family:'Fredoka',sans-serif; font-weight:700; font-size:20px; color:#fff; }
+.skill-body { flex:1; min-width:0; }
+.skill-body b { display:block; font-family:'Fredoka',sans-serif; font-weight:700; font-size:19px; color:var(--ink); }
+.skill-body span { display:block; font-size:13px; color:var(--ink-soft); margin-top:2px; }
+.skill-pill { flex:none; font-size:12px; font-weight:700; border-radius:999px; padding:7px 12px; }
+.skill-done { background:#e9fbf3; color:#047857; }
+.skill-prog { background:#fff8e1; color:#a16207; }
+.skill-ready { background:#f4f1fb; color:#7c3aed; }
 
 /* ══════════ Math ══════════ */
 .math-q {
