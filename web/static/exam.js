@@ -171,10 +171,38 @@ const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
                     ma1:10,ma2:10,ma3:6,ma4:8};
 // subjects and their part order — every subject: 4 parts, 4 hourglasses
 const SUBJECTS = {
-  english:{name:"אנגלית", icon:"🔤", order:["p1","p2","p3","p4","p5","p6"]},
-  hebrew: {name:"עברית",  icon:"📖", order:["hv","hb","wg","hr"]},
-  math:   {name:"חשבון",  icon:"🔢", order:["ma1","ma2","ma3","ma4"]},
+  english:{name:"אנגלית", icon:"🌍", desc:"מילים, שמיעה ודיבור",
+           grad:"linear-gradient(150deg,#7dd3fc,#0284c7)", shadow:"#0369a1",
+           order:["p1","p2","p3","p4","p5","p6"]},
+  hebrew: {name:"עברית",  icon:"📖", desc:"אוצר מילים, קריאה והבנה",
+           grad:"linear-gradient(150deg,#a78bfa,#7c3aed)", shadow:"#6d28d9",
+           order:["hv","hb","wg","hr"]},
+  math:   {name:"חשבון",  icon:"🧮", desc:"חיבור, כפל ובעיות מילוליות",
+           grad:"linear-gradient(150deg,#fda4af,#e11d48)", shadow:"#be123c",
+           order:["ma1","ma2","ma3","ma4"]},
 };
+// friendly per-subject progress for the picker cards — the most recent grade
+// for that subject (0 if the child hasn't played it yet).
+function subjProgress(k){
+  const hist=(S.history||[]).filter(r=>(r.subject||"english")===k);
+  const pct=hist.length?Math.max(0,Math.min(100,hist[0].g|0)):0;
+  return {pct, label:hist.length?`${pct}% בסבב האחרון`:"בואו נתחיל!"};
+}
+// render the design's rich gradient subject card
+function subjectCard(k,s,selected){
+  const p=subjProgress(k);
+  return `<button type="button" class="subj-card${selected?" subj-on":""}" data-subj="${k}"
+    style="background:${s.grad};box-shadow:0 9px 0 ${s.shadow},0 16px 28px rgba(60,40,120,.18)">
+    <span class="subj-blob"></span>
+    <span class="subj-ic">${s.icon}</span>
+    <span class="subj-body">
+      <b class="subj-title">${esc(s.name)}</b>
+      <span class="subj-desc">${esc(s.desc||"")}</span>
+      <span class="subj-prog"><i style="width:${p.pct}%"></i></span>
+      <span class="subj-plabel">${esc(p.label)}</span>
+    </span>
+  </button>`;
+}
 function curSubject(){ return SUBJECTS[S.subject] || SUBJECTS.english; }
 function curOrder(){ return curSubject().order; }
 function subjTotal(){ return curOrder().reduce((a,p)=>a+(PART_QUOTA[p]||0),0); }
@@ -499,8 +527,8 @@ function loginHTML(){
   <h1>ארבעה חלקים.<br>ארבעה שעוני חול.</h1>
   <p class="sub">מילים, השלמות, סיפור, חשבון ועוד — לפי הגיל והרמה בבית הספר. נשמר במכשיר וניתן להמשיך בכל רגע.</p>
   <label class="fld">מה לומדים היום?</label>
-  <div class="subjects login-subjects" id="login-subjects">
-    ${Object.entries(SUBJECTS).map(([k,s])=>`<button type="button" class="subj-btn${S.subject===k?" subj-on":""}" data-subj="${k}"><span class="subj-ic">${s.icon}</span><b>${esc(s.name)}</b></button>`).join("")}
+  <div class="subj-cards login-subjects" id="login-subjects">
+    ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,S.subject===k)).join("")}
   </div>
   <label class="fld">הדמות שלי</label>
   <div class="avatars" id="login-avatars">
@@ -539,8 +567,8 @@ function subjectHTML(){
   <span class="eyebrow">בחירת מקצוע</span>
   <h1>מה לומדים היום?</h1>
   <p class="sub">בחר/י מקצוע. אפשר להחליף בכל רגע — כל מקצוע נשמר בנפרד.</p>
-  <div class="subjects">
-    ${Object.entries(SUBJECTS).map(([k,s])=>`<button class="subj-btn" data-subj="${k}"><span class="subj-ic">${s.icon}</span><b>${esc(s.name)}</b></button>`).join("")}
+  <div class="subj-cards">
+    ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,S.subject===k)).join("")}
   </div>
 </section>`;
 }
@@ -946,9 +974,9 @@ function attachListeners(){
     });
     const ls=document.getElementById("login-subjects");
     if(ls)ls.addEventListener("click",e=>{
-      const b=e.target.closest(".subj-btn");if(!b)return;
+      const b=e.target.closest(".subj-card");if(!b)return;
       S.subject=b.dataset.subj;
-      ls.querySelectorAll(".subj-btn").forEach(x=>x.classList.toggle("subj-on",x===b));
+      ls.querySelectorAll(".subj-card").forEach(x=>x.classList.toggle("subj-on",x===b));
     });
     const la=document.getElementById("login-avatars");
     if(la)la.addEventListener("click",e=>{
@@ -963,7 +991,7 @@ function attachListeners(){
     document.getElementById("btn-fresh").addEventListener("click",doFresh);
   }
   if(S.screen==="subject"){
-    document.querySelectorAll(".subj-btn").forEach(b=>{
+    document.querySelectorAll(".subj-card").forEach(b=>{
       b.addEventListener("click",()=>{
         S.subject=b.dataset.subj;S.score=0;S.prog={};S.screen="menu";render();
       });
