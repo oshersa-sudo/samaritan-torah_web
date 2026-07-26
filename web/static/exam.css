@@ -571,3 +571,10 @@ body {
 .confetti i { position: absolute; top: -14px; width: 9px; height: 14px; border-radius: 2px; opacity: .9; animation-name: fall; animation-timing-function: linear; animation-iteration-count: 1; }
 @keyframes fall { to { transform: translateY(120vh) rotate(720deg); opacity: 0; } }
 @media (prefers-reduced-motion: reduce){ .confetti i { display: none; } .stars .star.on,.badge,.levelup { animation: none; } }
+
+/* ── Avatar picker + display (Phase 2) ── */
+.avatars { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.av-btn { width: 46px; height: 46px; font-size: 24px; line-height: 1; background: #fff; border: 2px solid #DCE9EE; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform .1s, border-color .1s; }
+.av-btn:hover { border-color: #6C5CE7; }
+.av-on { border-color: #6C5CE7 !important; background: #EFEDFD; transform: scale(1.08); box-shadow: 0 6px 14px -8px #6C5CE7; }
+.hdr-av { font-size: 18px; } .menu-av { font-size: 18px; }

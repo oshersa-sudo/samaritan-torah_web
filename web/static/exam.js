@@ -243,7 +243,8 @@ const sSet = (k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const sDel = k=>{try{localStorage.removeItem(k);}catch(e){}};
 
 // ─── Global State ─────────────────────────────────────────
-const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null};
+const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null,avatar:"🦊"};
+const AVATARS=["🦊","🐼","🦁","🐧","🐨","🦄","🐯","🐸","🐵","🐶","🐱","🐰","🐷","🐥","🐢","🦉"];
 
 // ─── Gamification (streak · XP · level · coins · badges) ──────────────────────
 const BADGES=[
@@ -359,7 +360,7 @@ function topbarHTML(){
   if(S.screen==="login")return "";
   const lvl=levelForAge(S.age),showPause=curOrder().includes(S.screen),subj=curSubject();
   return `<header class="topbar">
-  <div class="brand">${subj.icon} ${esc(subj.name)}</div>
+  <div class="brand"><span class="hdr-av">${S.avatar}</span> ${subj.icon} ${esc(subj.name)}</div>
   <div class="who">${esc(S.name)}${S.name?" · ":""}${LEVEL_NAME[lvl]}</div>
   ${showPause?'<button class="pausebtn" id="btn-home" title="לתפריט הראשי">⌂</button>':""}
   ${showPause?'<button class="pausebtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
@@ -376,6 +377,10 @@ function loginHTML(){
   <label class="fld">מה לומדים היום?</label>
   <div class="subjects login-subjects" id="login-subjects">
     ${Object.entries(SUBJECTS).map(([k,s])=>`<button type="button" class="subj-btn${S.subject===k?" subj-on":""}" data-subj="${k}"><span class="subj-ic">${s.icon}</span><b>${esc(s.name)}</b></button>`).join("")}
+  </div>
+  <label class="fld">הדמות שלי</label>
+  <div class="avatars" id="login-avatars">
+    ${AVATARS.map(a=>`<button type="button" class="av-btn${S.avatar===a?" av-on":""}" data-av="${a}">${a}</button>`).join("")}
   </div>
   <label class="fld">שם<input id="inp-name" placeholder="איך קוראים לך?" value="${esc(S.name)}"></label>
   <label class="fld">מספר טלפון<input id="inp-phone" type="tel" inputmode="numeric" dir="ltr" placeholder="0500000000" value="${esc(S.phone)}"></label>
@@ -432,7 +437,7 @@ function menuHTML(){
     <span class="stat"><b>${gm.coins||0}</b> 🪙</span>
   </div>${earned.length?`<div class="badge-row mini">${earned.map(b=>`<span class="badge-chip" title="${esc(b.name)}">${b.ic}</span>`).join("")}</div>`:""}`;
   return `<section class="card">
-  <div class="menu-head"><button class="ghost sm" id="btn-subj-back">↩ מקצוע</button><span class="eyebrow">${subj.icon} ${esc(subj.name)} · התוכנית שלך</span></div>
+  <div class="menu-head"><button class="ghost sm" id="btn-subj-back">↩ מקצוע</button><span class="eyebrow"><span class="menu-av">${S.avatar}</span> ${subj.icon} ${esc(subj.name)} · התוכנית של ${esc(S.name)}</span></div>
   ${statbar}
   <ul class="plan">${items}</ul>
   <p class="foot">${subjTotal()} תשובות · הציון מוצג מתוך 100</p>
@@ -697,6 +702,12 @@ function attachListeners(){
       const b=e.target.closest(".subj-btn");if(!b)return;
       S.subject=b.dataset.subj;
       ls.querySelectorAll(".subj-btn").forEach(x=>x.classList.toggle("subj-on",x===b));
+    });
+    const la=document.getElementById("login-avatars");
+    if(la)la.addEventListener("click",e=>{
+      const b=e.target.closest(".av-btn");if(!b)return;
+      S.avatar=b.dataset.av;
+      la.querySelectorAll(".av-btn").forEach(x=>x.classList.toggle("av-on",x===b));
     });
     eb.addEventListener("click",doEnter);
   }
@@ -1360,6 +1371,8 @@ function doEnter(){
   const ses=sGet(K.session(S.phone)),hist=sGet(K.results(S.phone)),seen=sGet(K.seen(S.phone));
   S.history=hist||[];S.seen=seen||[];S.busy=false;
   S.parentCode=sGet("pcode:"+S.phone)||"";
+  S.avatar=sGet("avatar:"+S.phone)||S.avatar;
+  sSet("avatar:"+S.phone,S.avatar);
   syncRegister();
   if(ses&&ses.screen&&ses.screen!=="done"){S.found=ses;S.screen="resume";}
   else{S.prog={};S.score=0;S.screen="menu";}   // subject already chosen on the login screen
