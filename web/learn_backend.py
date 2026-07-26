@@ -74,7 +74,13 @@ def init_db():
             created INTEGER,
             PRIMARY KEY(parent_phone, student_phone)
         );
+        CREATE TABLE IF NOT EXISTS parent_tokens(
+            token TEXT PRIMARY KEY,
+            parent_phone TEXT NOT NULL,
+            created INTEGER
+        );
         CREATE INDEX IF NOT EXISTS idx_results_phone ON results(phone);
+        CREATE INDEX IF NOT EXISTS idx_ptok_phone ON parent_tokens(parent_phone);
         """)
 
 # ─── Helpers ───────────────────────────────────────────────────────────────
@@ -114,6 +120,31 @@ def send_code(dest_email, phone, code):
 
 def jerr(msg, code=400):
     return jsonify({"ok": False, "error": msg}), code
+
+# ─── Parent access tokens ──────────────────────────────────────────────────
+# A parent proves ownership once (by knowing a student's parent_code at link
+# time) and receives a bearer token. Reads of student PII (progress, the
+# parent dashboard) then require that token — no more anonymous access by
+# phone number.
+def new_parent_token(pphone):
+    tok = secrets.token_urlsafe(24)
+    with db() as c:
+        c.execute("INSERT INTO parent_tokens(token,parent_phone,created) VALUES(?,?,?)",
+                  (tok, pphone, int(time.time())))
+    return tok
+
+def parent_from_token(tok):
+    if not tok:
+        return None
+    with db() as c:
+        row = c.execute("SELECT parent_phone FROM parent_tokens WHERE token=?", (tok,)).fetchone()
+    return row["parent_phone"] if row else None
+
+def read_token():
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Bearer "):
+        return auth[7:].strip()
+    return (request.args.get("token") or "").strip()
 
 # ─── Student registration & verification ───────────────────────────────────
 @bp.route("/api/register", methods=["POST"])
@@ -210,8 +241,17 @@ def _stats(rows):
 
 @bp.route("/api/progress")
 def progress():
+    # a parent may read a student's progress only with a valid token AND only
+    # for a student linked to that parent — never anonymous access by phone.
+    pphone = parent_from_token(read_token())
+    if not pphone:
+        return jerr("unauthorized", 401)
     phone = norm_phone(request.args.get("phone"))
     with db() as c:
+        linked = c.execute("SELECT 1 FROM links WHERE parent_phone=? AND student_phone=?",
+                           (pphone, phone)).fetchone()
+        if not linked:
+            return jerr("forbidden — not your student", 403)
         rows = c.execute("SELECT subject,grade,correct,total,ts FROM results WHERE phone=? ORDER BY ts DESC LIMIT 100", (phone,)).fetchall()
     rows = [dict(r) for r in rows]
     return jsonify({"ok": True, "results": rows, "stats": _stats(rows)})
@@ -232,11 +272,16 @@ def parent_link():
             return jerr("wrong parent code", 401)
         c.execute("""INSERT OR REPLACE INTO links(parent_phone,parent_name,student_phone,created)
                      VALUES(?,?,?,?)""", (pphone, pname, sphone, int(time.time())))
-    return jsonify({"ok": True, "student_name": st["name"]})
+    # proven ownership of a parent_code → hand out an access token for reads
+    token = new_parent_token(pphone)
+    return jsonify({"ok": True, "student_name": st["name"], "token": token})
 
 @bp.route("/api/parent/students")
 def parent_students():
-    pphone = norm_phone(request.args.get("parent_phone"))
+    # authorised by the bearer token issued at link time — not by a raw phone
+    pphone = parent_from_token(read_token())
+    if not pphone:
+        return jerr("unauthorized — link a student first", 401)
     with db() as c:
         links = c.execute("SELECT student_phone FROM links WHERE parent_phone=?", (pphone,)).fetchall()
         out = []
@@ -324,11 +369,15 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  const SUBJ={english:"אנגלית",hebrew:"עברית",math:"חשבון"};
  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
  function fmt(ts){ if(!ts) return "—"; const d=new Date(ts); return d.toLocaleDateString("he-IL"); }
+ function ptoken(p){ return localStorage.getItem("ptok:"+p)||""; }
  async function loadStudents(){
    document.getElementById("err").textContent="";
    const p=document.getElementById("pphone").value.replace(/\\D/g,"");
    if(p.length<9){document.getElementById("err").textContent="מספר טלפון לא תקין";return;}
-   const r=await fetch("/api/parent/students?parent_phone="+p); const j=await r.json();
+   const tok=ptoken(p);
+   if(!tok){document.getElementById("err").textContent="כדי לצפות בהתקדמות, קשרו קודם תלמיד/ה עם קוד ההורה (בטופס למטה).";return;}
+   const r=await fetch("/api/parent/students",{headers:{"Authorization":"Bearer "+tok}}); const j=await r.json();
+   if(!j.ok){document.getElementById("err").textContent=(r.status===401)?"פג תוקף החיבור — קשרו תלמיד/ה מחדש עם הקוד.":"שגיאה בטעינה.";return;}
    const box=document.getElementById("students"); box.innerHTML="";
    if(!j.students||!j.students.length){box.innerHTML='<div class="card muted">לא נמצאו תלמידים מקושרים. קשרו תלמיד למעלה.</div>';return;}
    for(const s of j.students){
@@ -351,6 +400,7 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    const r=await fetch("/api/parent/link",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
    const j=await r.json();
    if(!j.ok){document.getElementById("lerr").textContent=j.error==="wrong parent code"?"קוד הורה שגוי":j.error==="student not found"?"תלמיד לא נמצא":"שגיאה: "+j.error;return;}
+   if(j.token) localStorage.setItem("ptok:"+body.parent_phone, j.token);
    document.getElementById("pphone").value=body.parent_phone;
    loadStudents();
  }
