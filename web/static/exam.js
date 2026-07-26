@@ -670,6 +670,27 @@ const HEB_STORIES = (typeof window!=="undefined" && Array.isArray(window.HEB_STO
 const SCI_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.SCI_VOCAB))   ? window.SCI_VOCAB   : [];
 const SCI_QUIZ    = (typeof window!=="undefined" && Array.isArray(window.SCI_QUIZ))    ? window.SCI_QUIZ    : [];
 const SCI_STORIES = (typeof window!=="undefined" && Array.isArray(window.SCI_STORIES)) ? window.SCI_STORIES : [];
+// Israeli Ministry of Education curriculum map (from curriculum.js)
+const CURRICULUM = (typeof window!=="undefined" && window.CURRICULUM) ? window.CURRICULUM : null;
+// the curriculum grade (1–6) that matches the student's current level
+function curGrade(){ return Math.max(1,Math.min(6, S.subject==="english" ? Math.max(3,curLevel()+2) : (curLevel()<=3?curLevel()*2:curLevel()+2))); }
+// build the "aligned to the curriculum" card for the current subject
+function curriculumCardHTML(){
+  if(!CURRICULUM||!CURRICULUM[S.subject])return "";
+  const c=CURRICULUM[S.subject], g=curGrade();
+  const gradeName={1:"א׳",2:"ב׳",3:"ג׳",4:"ד׳",5:"ה׳",6:"ו׳"};
+  // show the current grade plus its neighbours so families see the sequence
+  const near=[g-1,g,g+1].filter(x=>c.grades[x]);
+  const rows=near.map(x=>`<div class="cur-grade${x===g?" cur-now":""}">
+    <b>כיתה ${gradeName[x]||x}</b>
+    <ul>${c.grades[x].map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`).join("");
+  return `<div class="mini-card cur-card">
+    <div class="mini-label">📚 מותאם לתכנית הלימודים · ${esc(c.name)}</div>
+    <div class="cur-strands">${c.strands.map(s=>`<span class="cur-chip">${esc(s)}</span>`).join("")}</div>
+    <div class="cur-grades">${rows}</div>
+    <p class="par-note">התכנים באפליקציה מותאמים ל${esc(CURRICULUM.source)}. הנושאים מעל הם עמודי התווך של המקצוע בכיתות הרלוונטיות.</p>
+  </div>`;
+}
 // Niqqud (vocalized) content for young readers (grades 1–3). Shown only when
 // the current level is 1–2 so early readers get the vowel points.
 const HEB_NQ = (typeof window!=="undefined" && window.HEB_NQ) ? window.HEB_NQ : {words:{},stories:{}};
@@ -904,6 +925,18 @@ function subjectHTML(){
 </div>`;
 }
 
+// ─── Curriculum view (what's taught, aligned to משרד החינוך) ─────────────────
+function curriculumHTML(){
+  const subj=curSubject();
+  return `<div class="parents-page kl-rise">
+  <button class="link-back" id="btn-cur-back">↩ חזרה לתפריט</button>
+  <h2 class="par-title">תכנית הלימודים · ${esc(subj.name)}</h2>
+  <p class="par-sub">התכנים באפליקציה מותאמים לתכנית של משרד החינוך</p>
+  ${curriculumCardHTML()}
+  <p class="par-note" style="text-align:center">מקור: ${esc((CURRICULUM&&CURRICULUM.source)||"משרד החינוך")}</p>
+</div>`;
+}
+
 // ─── Parents & Teachers area (in-app: local progress + working settings) ─────
 function parentsHTML(){
   const name=esc(S.name||"התלמיד/ה");
@@ -940,6 +973,7 @@ function parentsHTML(){
   <p class="par-sub">מעקב אחרי ${name} · הפעילות במכשיר</p>
 
   <div class="mini-card"><div class="mini-label">התקדמות לפי מקצוע</div>${subjRows}</div>
+  ${curriculumCardHTML()}
   <div class="mini-card"><div class="mini-label">פעילות בשבוע האחרון (סבבים ביום)</div><div class="par-chart">${bars}</div></div>
   <div class="mini-card"><div class="mini-label">קולות הדמויות — לחצו להאזנה</div>
     <div class="voice-row" id="voice-row">${voicePills}</div>
@@ -1081,6 +1115,8 @@ function menuHTML(){
   </div>
 
   <div class="skills-list">${skills}</div>
+
+  ${CURRICULUM?`<button class="cur-banner" id="btn-curriculum">📚 מותאם לתכנית הלימודים של משרד החינוך · לצפייה בנושאים ›</button>`:""}
 
   <div class="weekly-card">
     <span class="weekly-buddy">${subj.mascot||subj.icon}</span>
@@ -1519,7 +1555,7 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   hv:mcHTML,hb:matchHTML,hw:mcHTML,wg:wgHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma5:mathHTML,ma3:mathHTML,ma4:mathHTML,
   sv:mcHTML,sw:mcHTML,sq:sqHTML,sr:readingHTML,
-  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML,gplay:gplayHTML};
+  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML,gplay:gplayHTML,curriculum:curriculumHTML};
 
 function gotoNext(cur){
   // adaptive difficulty — nudge the level for the NEXT part by this part's accuracy
@@ -1578,6 +1614,10 @@ function attachListeners(){
     speakSample(c.dataset.voice);c.classList.remove("team-pop");void c.offsetWidth;c.classList.add("team-pop");});
   if(S.screen==="lead")loadLeaderboard();
 
+  if(S.screen==="curriculum"){
+    const cbk=document.getElementById("btn-cur-back");
+    if(cbk)cbk.addEventListener("click",()=>{S.screen=S.returnTo||"menu";render();});
+  }
   if(S.screen==="parents"){
     document.getElementById("btn-par-back").addEventListener("click",()=>{S.screen=S.returnTo||"subject";render();});
     document.querySelectorAll(".tgl[data-set]").forEach(t=>{
@@ -1670,6 +1710,8 @@ function attachListeners(){
     });
     const sb=document.getElementById("btn-subj-back");
     if(sb)sb.addEventListener("click",()=>{S.screen="subject";render();});
+    const cb=document.getElementById("btn-curriculum");
+    if(cb)cb.addEventListener("click",()=>{S.returnTo="menu";S.screen="curriculum";render();});
     const ml=document.getElementById("menu-levels");
     if(ml)ml.addEventListener("click",e=>{const b=e.target.closest(".pill");if(!b)return;
       S.lvlOverride=+b.dataset.lvl;S.adaptLvl=S.lvlOverride;
@@ -2374,6 +2416,26 @@ function _genWordProblem(lvl){
     ()=>{const price=R(2,12),n=R(2,9);return {t:`מחיר מחברת אחת הוא ${price} שקלים. כמה יעלו ${n} מחברות?`,a:price*n};},
     ()=>{const start=R(5,big),ate=R(1,Math.min(start,9));return {t:`בקופסה היו ${start} עוגיות, ודנה אכלה ${ate}. כמה עוגיות נשארו?`,a:start-ate};},
   ];
+  // ── Curriculum strands: גאומטריה ומדידות + חקר נתונים (משרד החינוך) ──
+  // From grade ג׳ (level 2) up: perimeter/area, measurement units, average & data.
+  if(lvl>=2){
+    tmpls.push(
+      ()=>{const w=R(2,12),h=R(2,12);return {t:`למלבן אורך ${w} ס״מ ורוחב ${h} ס״מ. מה היקף המלבן?`,a:2*(w+h)};},
+      ()=>{const s=R(2,15);return {t:`לריבוע צלע באורך ${s} ס״מ. מה היקף הריבוע?`,a:4*s};},
+      ()=>{const m=R(1,9);return {t:`כמה סנטימטרים יש ב-${m} מטרים?`,a:m*100};},
+      ()=>{const h=R(1,8);return {t:`כמה דקות יש ב-${h} שעות?`,a:h*60};},
+      ()=>{const a=R(2,20),b=R(2,20),c=R(2,20);const s=a+b+c;return {t:`בשלושה ימים נמכרו ${a}, ${b} ו-${c} כרטיסים. כמה כרטיסים נמכרו בסך הכול?`,a:s};},
+    );
+  }
+  if(lvl>=3){
+    tmpls.push(
+      ()=>{const w=R(2,14),h=R(2,14);return {t:`למלבן אורך ${w} ס״מ ורוחב ${h} ס״מ. מה שטח המלבן?`,a:w*h};},
+      ()=>{const s=R(2,12);return {t:`לריבוע צלע באורך ${s} ס״מ. מה שטח הריבוע?`,a:s*s};},
+      ()=>{const n=R(3,4),base=R(4,20);const nums=Array.from({length:n},(_,i)=>base+i*R(1,4));const sum=nums.reduce((x,y)=>x+y,0);const avg=Math.round(sum/n);const adj=nums.slice();adj[0]+= (avg*n-sum);return {t:`הציונים היו ${adj.join(", ")}. מה הממוצע?`,a:Math.round(adj.reduce((x,y)=>x+y,0)/n)};},
+      ()=>{const km=R(1,9);return {t:`כמה מטרים יש ב-${km} קילומטרים?`,a:km*1000};},
+      ()=>{const kg=R(1,9);return {t:`כמה גרמים יש ב-${kg} קילוגרמים?`,a:kg*1000};},
+    );
+  }
   const q=tmpls[R(0,tmpls.length-1)]();
   q.rtl=true; q.eq=false; return q;
 }

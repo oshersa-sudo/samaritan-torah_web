@@ -1,0 +1,66 @@
+/* Israeli Ministry of Education (משרד החינוך) curriculum map — the official
+   strands and per-grade topics for each subject, researched from the Ministry's
+   pedagogical portal (pop.education.gov.il) and curriculum documents.
+   Used to show families that the app's content is aligned to תכנית הלימודים,
+   and to label each activity with the strand it practises.
+
+   Grade→level mapping used across the app:
+     level 1 = כיתות א׳–ב׳   level 2 = כיתות ג׳–ד׳   level 3 = כיתות ה׳–ו׳
+     level 4 = חטיבת ביניים   level 5 = תיכון
+*/
+window.CURRICULUM = {
+  source: "תכנית הלימודים של משרד החינוך (המרחב הפדגוגי)",
+  sourceUrl: "https://pop.education.gov.il",
+
+  math: {
+    name: "מתמטיקה",
+    strands: ["מספרים ופעולות", "גאומטריה ומדידות", "חקר נתונים"],
+    grades: {
+      1: ["המספרים עד 100", "חיבור וחיסור עד 20 ובהמשך עד 100", "זיהוי צורות בסיסיות", "מדידת אורך והשוואה"],
+      2: ["המספרים עד 1000", "חיבור וחיסור בעמודות", "ראשית לוח הכפל", "חצי ורבע", "מצולעים ומרובעים"],
+      3: ["כפל וחילוק עד 100", "המספרים עד 10,000", "שברים פשוטים", "היקף מצולעים", "לוחות ותרשימים"],
+      4: ["כפל וחילוק ארוך", "חיבור וחיסור שברים (מכנה שווה)", "מספרים גדולים", "שטח וזוויות", "ממוצע וקריאת נתונים"],
+      5: ["שברים (מכנים שונים)", "שברים עשרוניים", "ראשית אחוזים", "נפח ותיבות", "התפלגות וממוצע"],
+      6: ["פעולות בשברים ובעשרוניים", "יחס ופרופורציה", "אחוזים", "שטח והיקף מורכבים", "הסתברות וסטטיסטיקה"],
+    },
+  },
+
+  hebrew: {
+    name: "עברית · חינוך לשוני",
+    strands: ["רכישת הקריאה", "שטף קריאה", "הבנת הנקרא", "אוצר מילים", "הבעה בעל־פה ובכתב", "ידע לשוני"],
+    grades: {
+      1: ["פענוח ואותיות", "קריאה מנוקדת", "מילים ומשפטים קצרים", "הבנת סיפור נשמע"],
+      2: ["שטף קריאה", "הבנת טקסט קצר", "הרחבת אוצר מילים", "כתיבת משפטים"],
+      3: ["הבנת הנקרא — טקסט מידע וסיפור", "מילים נרדפות והפכים", "רצף אירועים", "כתיבת פסקה"],
+      4: ["הבנה מסקנתית", "סוגי טקסט", "אוצר מילים מורחב", "לשון פיגורטיבית ראשונית"],
+      5: ["הבנה מסקנתית והערכתית", "טקסטים מורכבים", "משמעות מילים בהקשר", "כתיבה טיעונית ראשונית"],
+      6: ["ביקורתיות כלפי טקסט", "לשון ומשלב", "פתגמים וביטויים", "כתיבה מכוונת קהל"],
+    },
+  },
+
+  english: {
+    name: "אנגלית",
+    // CEFR-aligned; Foundation (Basic User I) is the elementary target by grade ו
+    strands: ["Oral proficiency", "Vocabulary (Band I)", "Reading comprehension", "Writing", "Social interaction"],
+    grades: {
+      3: ["The alphabet and sounds", "Greetings and classroom language", "Numbers and colours", "High-frequency words"],
+      4: ["Family, home and school words", "Simple questions and answers", "Reading short sentences", "Band I core vocabulary"],
+      5: ["Foundation vocabulary (productive)", "Animals, food, body, clothes", "Reading a short paragraph", "Writing simple sentences"],
+      6: ["Foundation Level mastery (Basic User I)", "Daily-life verbs and time", "Reading a short story", "Writing a short text"],
+    },
+  },
+
+  science: {
+    name: "מדע וטכנולוגיה",
+    strands: ["מדעי החיים", "גוף האדם ובריאות", "מדעי החומר", "אנרגיה", "כדור הארץ והיקום",
+              "אקולוגיה, סביבה ואקלים", "מערכות טכנולוגיות"],
+    grades: {
+      1: ["בעלי חיים וצמחים בסביבה", "החושים והגוף שלי", "מזג האוויר", "חומרים מהיום־יום"],
+      2: ["צורכי היצורים החיים", "מחזור המים", "מצבי צבירה", "בית גידול ושמירה על הסביבה"],
+      3: ["סיווג בעלי חיים וצמחים", "שרשרת מזון", "אור, חום ואנרגיה", "מערכת השמש"],
+      4: ["מערכות בגוף האדם", "תכונות חומרים ושינויים", "כוחות ותנועה", "מבנה כדור הארץ"],
+      5: ["פוטוסינתזה ומחזורי חומר", "המרות אנרגיה וחשמל", "מערכות אקולוגיות", "שינוי אקלים וקיימות"],
+      6: ["רבייה ותורשה (ראשוני)", "אנרגיה מתחדשת", "מערכות טכנולוגיות", "אדם, סביבה והתחממות גלובלית"],
+    },
+  },
+};
