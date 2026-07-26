@@ -50,9 +50,13 @@ app.register_blueprint(lb.bp)
 def exam():
     # Same-origin by default: the page talks to /api/* on this very host.
     origin = os.environ.get("LEARN_BACKEND") or request.url_root.rstrip("/")
+    # absolute base for social (OpenGraph) tags — WhatsApp/Twitter need
+    # absolute image URLs. Override with SITE_URL if the domain ever changes.
+    site_url = os.environ.get("SITE_URL", "https://learn.onyx-study.com")
     return render_template("exam.html",
                            version=os.environ.get("APP_VERSION", "1.0"),
                            learn_backend=origin,
+                           site_url=site_url,
                            pic_key=os.environ.get("PIXABAY_KEY", ""))
 
 
