@@ -718,9 +718,17 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .game-lv { flex:none; font-size:12px; font-weight:700; color:#fff; border-radius:999px; padding:5px 11px; white-space:nowrap; }
 
 /* install CTA + credits footer + install sheet */
+.top-ctas { display:flex; flex-direction:column; gap:10px; }
 .install-cta { width:100%; border:2px dashed #b8a6ff; background:#f6f2ff; color:var(--violet); border-radius:var(--pill);
   padding:13px; font-family:'Fredoka',sans-serif; font-weight:700; font-size:16px; cursor:pointer; transition:background .15s; }
 .install-cta:hover { background:#efe9ff; }
+.parent-help-cta { width:100%; border:2px solid #ffe0cf; background:#fff8f2; color:#b45309; border-radius:var(--pill);
+  padding:12px; font-family:'Fredoka',sans-serif; font-weight:700; font-size:15px; cursor:pointer; transition:background .15s; }
+.parent-help-cta:hover { background:#fff1e6; }
+/* login registration error + shake */
+.form-err { background:#fff0f0; color:#b00020; border:2px solid #ffd0d4; border-radius:14px; padding:10px 14px; font-size:14px; font-weight:600; margin-bottom:10px; }
+.home-form.shake { animation:badshake .45s; }
+@media (prefers-reduced-motion: reduce){ .home-form.shake { animation:none; } }
 .app-credits { text-align:center; font-size:11.5px; color:var(--ink-soft); opacity:.75; margin:22px 0 8px; }
 .app-credits b { color:var(--violet); }
 .sheet-overlay { position:fixed; inset:0; background:rgba(36,27,71,.45); display:flex; align-items:flex-end; justify-content:center; z-index:60; animation:fadein .2s both; }

@@ -617,7 +617,10 @@ function loginHTML(){
     </div>
   </div>
 
-  <button class="install-cta" id="btn-install">📲 התקנת האפליקציה למכשיר</button>
+  <div class="top-ctas">
+    <button class="install-cta" id="btn-install">📲 התקנת האפליקציה למכשיר</button>
+    <button class="parent-help-cta" id="btn-parent-help">👪 להורים · איך עוקבים אחרי ההתקדמות?</button>
+  </div>
 
   <div class="subj-cards login-subjects" id="login-subjects">
     ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,S.subject===k)).join("")}
@@ -640,7 +643,9 @@ function loginHTML(){
     </div>
   </div>
 
-  <div class="mini-card home-form">
+  <div class="mini-card home-form" id="home-form">
+    <div class="mini-label">הרשמה — כדי להתחיל</div>
+    <div class="form-err" id="form-err" style="display:none"></div>
     <label class="fld2">שם<input id="inp-name" placeholder="איך קוראים לך?" value="${esc(S.name)}"></label>
     <label class="fld2">מספר טלפון<input id="inp-phone" type="tel" inputmode="numeric" dir="ltr" placeholder="0500000000" value="${esc(S.phone)}"></label>
   </div>
@@ -1356,6 +1361,10 @@ function attachListeners(){
       const b=e.target.closest(".subj-card");if(!b)return;
       S.subject=b.dataset.subj;
       ls.querySelectorAll(".subj-card").forEach(x=>x.classList.toggle("subj-on",x===b));
+      // clicking a subject is an attempt to START — if not registered yet,
+      // explain and jump to the registration fields; otherwise go.
+      if(S.name.trim()&&S.phone.length>=9){doEnter();return;}
+      loginNeedRegister();
     });
     const la=document.getElementById("login-avatars");
     if(la)la.addEventListener("click",e=>{
@@ -1364,9 +1373,11 @@ function attachListeners(){
       la.querySelectorAll(".av-btn").forEach(x=>x.classList.toggle("av-on",x===b));
       const gb=document.querySelector(".home-buddy");if(gb)gb.textContent=S.avatar;
     });
-    eb.addEventListener("click",doEnter);
+    eb.addEventListener("click",()=>{if(S.name.trim()&&S.phone.length>=9)doEnter();else loginNeedRegister();});
     const ib=document.getElementById("btn-install");
     if(ib)ib.addEventListener("click",doInstall);
+    const ph=document.getElementById("btn-parent-help");
+    if(ph)ph.addEventListener("click",showParentHelp);
   }
   if(S.screen==="resume"){
     document.getElementById("btn-resume").addEventListener("click",doResume);
@@ -2250,6 +2261,37 @@ function doLogout(){
 
 // Install the app on the device (PWA). Uses the native prompt when the
 // browser offers it; otherwise shows platform "Add to Home Screen" steps.
+// login: not registered yet → show an inline error and jump to the fields
+function loginNeedRegister(){
+  const err=document.getElementById("form-err");
+  if(err){err.textContent="כדי להתחיל צריך להירשם — מלאו שם ומספר טלפון 👇";err.style.display="";}
+  const form=document.getElementById("home-form");
+  if(form){form.classList.remove("shake");void form.offsetWidth;form.classList.add("shake");
+    form.scrollIntoView({behavior:"smooth",block:"center"});}
+  const which=!S.name.trim()?"inp-name":"inp-phone";
+  const inp=document.getElementById(which);if(inp)setTimeout(()=>{try{inp.focus();}catch(e){}},350);
+}
+// parents: how to track a child's progress
+function showParentHelp(){
+  let s=document.getElementById("phelp");if(s)s.remove();
+  s=document.createElement("div");s.id="phelp";s.className="sheet-overlay";
+  s.innerHTML=`<div class="sheet install-sheet">
+    <div class="sheet-head"><span>👪 מעקב הורים אחרי ההתקדמות</span><button class="ghost sm" id="ph-close">סגירה</button></div>
+    <p class="par-note">כך תוכלו לעקוב מרחוק אחרי הילד/ה, מכל מכשיר:</p>
+    <ol class="install-steps">
+      <li>רשמו את הילד/ה עם <b>שם ומספר טלפון</b> והתחילו ללמוד.</li>
+      <li>אחרי ההרשמה מופיע <b>קוד הורים</b> בתפריט המקצוע (למשל <b>3F9A2C</b>).</li>
+      <li>מהמכשיר <b>שלכם</b> היכנסו לכתובת <b>onyx-study.com/parent</b>.</li>
+      <li>הזינו את הטלפון שלכם, את הטלפון של הילד/ה ואת <b>קוד ההורים</b>, ולחצו "קשר".</li>
+      <li>מעכשיו תראו את ההתקדמות, הדיוק והזמן לכל מקצוע 📊</li>
+    </ol>
+    <p class="par-note">בתוך האפליקציה, כפתור <b>👪</b> בכותרת מציג גם התקדמות מקומית והגדרות קול.</p>
+  </div>`;
+  document.body.appendChild(s);
+  const close=()=>s.remove();
+  s.addEventListener("click",e=>{if(e.target===s)close();});
+  document.getElementById("ph-close").addEventListener("click",close);
+}
 function doInstall(){
   const dp=window.__installPrompt;
   if(dp&&dp.prompt){
