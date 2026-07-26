@@ -216,6 +216,7 @@ const SFX = {
   },
   // תשואות! — פנפרה עולה + מחיאות כפיים (רעש-לבן פועם) + "יש!" נצנוץ
   good(){
+    try{mascotReact("happy");burst();}catch(e){}
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
     // fanfare — cheerful rising major arpeggio, twice
     [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>this._tone(ctx,f,t+i*0.075,0.26,"triangle",0.20));
@@ -235,6 +236,7 @@ const SFX = {
   },
   // אכזבה — "wah-wah" יורד (glissando) עם רטט קל
   bad(){
+    try{mascotReact("sad");}catch(e){}
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
     try{
       const o=ctx.createOscillator(),g=ctx.createGain();
@@ -252,6 +254,36 @@ const SFX = {
 };
 // שחרור AudioContext במגע ראשון (מדיניות דפדפנים)
 window.addEventListener("pointerdown",()=>SFX._ac(),{once:true});
+
+// ─── Mascot + micro-celebrations (visual life) ───────────────────────────────
+function ensureMascot(){
+  if(!document.getElementById("mascot")){
+    const m=document.createElement("div");m.id="mascot";m.className="mascot";m.style.display="none";
+    document.body.appendChild(m);
+  }
+  if(!document.getElementById("burst")){
+    const b=document.createElement("div");b.id="burst";b.className="burst";document.body.appendChild(b);
+  }
+}
+function showMascot(on){const m=document.getElementById("mascot");if(m){m.style.display=on?"flex":"none";m.textContent=S.avatar;}}
+function mascotReact(mood){
+  const m=document.getElementById("mascot");if(!m||m.style.display==="none")return;
+  m.textContent=S.avatar;
+  m.classList.remove("m-happy","m-sad");void m.offsetWidth;
+  m.classList.add(mood==="happy"?"m-happy":"m-sad");
+}
+function burst(){
+  const layer=document.getElementById("burst");if(!layer)return;
+  const emo=["⭐","✨","🌟","💫","🎉","🌈"];
+  for(let i=0;i<9;i++){
+    const s=document.createElement("i");s.textContent=emo[i%emo.length];
+    s.style.left=(46+Math.random()*8)+"%";s.style.top=(42+Math.random()*8)+"%";
+    s.style.setProperty("--dx",(Math.random()*180-90)+"px");
+    s.style.setProperty("--dy",(-70-Math.random()*110)+"px");
+    s.style.animationDelay=(Math.random()*0.08)+"s";
+    layer.appendChild(s);setTimeout(()=>s.remove(),950);
+  }
+}
 const speakHe = text => { try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="he-IL";u.rate=0.9;window.speechSynthesis.speak(u);}catch(e){} };
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
@@ -744,6 +776,8 @@ function render(){
   root.innerHTML=topbarHTML()+(SCR_HTML[S.screen]||loginHTML)();
   attachListeners();
   initPart();
+  ensureMascot();
+  showMascot(curOrder().includes(S.screen)||S.screen==="rv");   // mascot on question screens
   saveSession();
 }
 
