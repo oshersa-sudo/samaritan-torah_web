@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 # =============================================================================
+# ⚠️ DEDICATED-SERVER ONLY. Do NOT run this on the shared onyx-study VPS that
+#    already hosts onyx/tasks/media/foodorder — it configures nginx as the
+#    default site and could disturb them. For that server follow
+#    web/DEPLOY_ONYX_SERVER.md (additive: new folder, pm2 name, port, subdomain).
+# =============================================================================
 # bootstrap_onyx.sh — one-shot, idempotent setup for onyx-study.com on a VPS.
 # Installs deps, fetches the code, configures systemd + nginx, and (if DNS is
 # ready) enables HTTPS. Safe to re-run: it just updates and restarts.

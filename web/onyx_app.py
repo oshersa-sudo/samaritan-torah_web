@@ -27,12 +27,15 @@ Environment:
     LEARN_BACKEND override the sync origin passed to the page (default: same
                   origin as the incoming request, which is what you want)
 """
-import os
+import os, sys
 from flask import Flask, render_template, request
 
-import learn_backend as lb
-
+# make `import learn_backend` work no matter how gunicorn loads this module
 BASE = os.path.dirname(os.path.abspath(__file__))
+if BASE not in sys.path:
+    sys.path.insert(0, BASE)
+
+import learn_backend as lb
 app = Flask(__name__,
             template_folder=os.path.join(BASE, "templates"),
             static_folder=os.path.join(BASE, "static"))
