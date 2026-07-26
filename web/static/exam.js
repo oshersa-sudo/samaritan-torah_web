@@ -206,6 +206,20 @@ function subjectCard(k,s,selected){
     </span>
   </button>`;
 }
+// "הצוות שלנו" — meet-the-mascots cards; tap to hear each character speak
+function teamHTML(){
+  return `<div class="team-sec">
+    <div class="team-title">הצוות שלנו — לחצו כדי להכיר</div>
+    <div class="team-grid" id="team-grid">
+      ${TEAM_ORDER.map(k=>{const p=VOICE_PROFILES[k];
+        return `<button type="button" class="team-card" data-voice="${k}" style="background:${p.grad};box-shadow:0 8px 0 ${p.shadow}">
+          <span class="team-emoji">${p.emoji}</span>
+          <b class="team-name">${esc(p.name)}</b>
+          <span class="team-role">${esc(p.role)} <span class="team-listen">🔊 להאזנה</span></span>
+        </button>`;}).join("")}
+    </div>
+  </div>`;
+}
 function curSubject(){ return SUBJECTS[S.subject] || SUBJECTS.english; }
 function curOrder(){ return curSubject().order; }
 function subjTotal(){ return curOrder().reduce((a,p)=>a+(PART_QUOTA[p]||0),0); }
@@ -324,7 +338,33 @@ function burst(){
     layer.appendChild(s);setTimeout(()=>s.remove(),950);
   }
 }
-const speakHe = text => { try{if(!setGet("tts",true))return;if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="he-IL";u.rate=0.9;window.speechSynthesis.speak(u);}catch(e){} };
+const speakHe = text => { try{if(!setGet("tts",true))return;if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="he-IL";u.rate=0.9;
+  if(setGet("charVoices",false)){const pr=VOICE_PROFILES[S.subject];if(pr&&pr.lang==="he-IL"){u.pitch=pr.pitch;u.rate=pr.rate;}}
+  window.speechSynthesis.speak(u);}catch(e){} };
+
+// ─── Character voices — synthesized voice profiles per mascot (device-safe) ───
+// Works everywhere via SpeechSynthesis pitch/rate; no OS voice install needed.
+const VOICE_PROFILES={
+  dana:   {name:"הַמּוֹרָה דָּנָה",   role:"מקבלת אותך ומנחה",   emoji:"👩‍🏫", tone:"נשי", lang:"he-IL", pitch:1.25, rate:0.98,
+           grad:"linear-gradient(150deg,#fde68a,#f59e0b)", shadow:"#b45309",
+           hello:"שלום! אני המורה דנה, ואני כאן ללוות אותך. בוא נתחיל 😊"},
+  math:   {name:"פְּרוֹפֶסוֹר חֶשְׁבּוֹן", role:"מלווה אותך בחשבון", emoji:"👨‍🏫", tone:"גברי", lang:"he-IL", pitch:0.8, rate:0.92,
+           grad:"linear-gradient(150deg,#fda4af,#e11d48)", shadow:"#be123c",
+           hello:"שלום, אני פרופסור חשבון. מספרים זה כיף — בוא נראה!"},
+  english:{name:"פְרוֹגִי הַצְּפַרְדֵּעַ", role:"מלווה אותך באנגלית", emoji:"🐸", tone:"גבוה ומצחיק", lang:"en-US", pitch:1.6, rate:1.05,
+           grad:"linear-gradient(150deg,#7dd3fc,#0284c7)", shadow:"#0369a1",
+           hello:"Hi! I'm Froggy. Let's learn English together, ribbit!"},
+  hebrew: {name:"אוּפִּי הַיַּנְשׁוּף",  role:"מלווה אותך בעברית", emoji:"🦉", tone:"עמוק ואיטי", lang:"he-IL", pitch:0.7, rate:0.85,
+           grad:"linear-gradient(150deg,#a78bfa,#7c3aed)", shadow:"#6d28d9",
+           hello:"שָׁלוֹם, אֲנִי אוּפִּי הַיַּנְשׁוּף. בּוֹא נִלְמַד עִבְרִית יַחַד."},
+};
+const TEAM_ORDER=["dana","math","hebrew","english"];
+function speakSample(key){
+  const p=VOICE_PROFILES[key];if(!p)return;
+  try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(p.hello);u.lang=p.lang;u.pitch=p.pitch;u.rate=p.rate;
+    window.speechSynthesis.speak(u);}catch(e){}
+}
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
 // ─── Storage ──────────────────────────────────────────────
@@ -536,6 +576,7 @@ function topbarHTML(){
     ${playing?'<button class="iconbtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
     ${playing?'<button class="iconbtn" id="btn-skip" title="דלג לשלב הבא">⏭</button>':""}
     ${playing?'<button class="iconbtn" id="btn-home" title="לתפריט הראשי">⌂</button>':""}
+    ${(!playing&&S.screen!=="catalog")?'<button class="iconbtn" id="btn-catalog" title="ספריית הפעילויות">🎲</button>':""}
     ${(!playing&&S.screen!=="parents")?'<button class="iconbtn" id="btn-parents" title="אזור הורים ומורים">👪</button>':""}
   </div>
 </header>`;
@@ -562,6 +603,8 @@ function loginHTML(){
   <div class="subj-cards login-subjects" id="login-subjects">
     ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,S.subject===k)).join("")}
   </div>
+
+  ${teamHTML()}
 
   <div class="home-grid">
     <div class="mini-card">
@@ -620,6 +663,8 @@ function subjectHTML(){
     ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,false)).join("")}
   </div>
 
+  ${teamHTML()}
+
   <div class="weekly-card">
     <span class="weekly-buddy">${curSubject().mascot||"🦉"}</span>
     <div class="weekly-label">היעד השבועי</div>
@@ -657,8 +702,11 @@ function parentsHTML(){
   const rows=[
     {k:"tts",label:"הקראה קולית (TTS)",def:true},
     {k:"sfx",label:"אפקטים קוליים",def:true},
+    {k:"charVoices",label:"קול לכל דמות (מסונתז)",def:false},
   ].map(t=>{const on=setGet(t.k,t.def);
     return `<div class="par-row"><span>${t.label}</span><button class="tgl${on?" on":""}" data-set="${t.k}" role="switch" aria-checked="${on}"><i></i></button></div>`;}).join("");
+  const voicePills=TEAM_ORDER.map(k=>{const p=VOICE_PROFILES[k];
+    return `<button class="voice-pill" data-voice="${k}" style="background:${p.grad}">${p.emoji} ${esc(p.name.replace(/[֑-ׇ]/g,""))} · ${esc(p.tone)}</button>`;}).join("");
   return `<div class="parents-page kl-rise">
   <button class="link-back" id="btn-par-back">↩ חזרה למסך הילד</button>
   <h2 class="par-title">אזור הורים ומורים</h2>
@@ -666,8 +714,30 @@ function parentsHTML(){
 
   <div class="mini-card"><div class="mini-label">התקדמות לפי מקצוע</div>${subjRows}</div>
   <div class="mini-card"><div class="mini-label">פעילות בשבוע האחרון (סבבים ביום)</div><div class="par-chart">${bars}</div></div>
+  <div class="mini-card"><div class="mini-label">קולות הדמויות — לחצו להאזנה</div>
+    <div class="voice-row" id="voice-row">${voicePills}</div>
+    <p class="par-note">כשמפעילים "קול לכל דמות" בהגדרות, ההקראה בעברית משתמשת בקול של הדמות המלווה את המקצוע. הקולות מסונתזים ועובדים בכל מכשיר.</p>
+  </div>
   <div class="mini-card"><div class="mini-label">הגדרות</div>${rows}</div>
   ${BACKEND?`<div class="mini-card"><div class="mini-label">מעקב מרחוק</div><p class="par-note">קוד ההורים: <b>${esc(S.parentCode||"…")}</b><br>מהמכשיר שלכם היכנסו לכתובת <b>onyx-study.com/parent</b> כדי לעקוב מרחוק אחרי ההתקדמות.</p></div>`:""}
+</div>`;
+}
+
+// ─── Activity library (catalog) — jump straight into any single activity ─────
+function catalogHTML(){
+  const groups=Object.entries(SUBJECTS).map(([k,s])=>{
+    const acts=s.order.map(part=>`<button class="cat-card" data-subj="${k}" data-part="${part}" style="box-shadow:inset 5px 0 0 ${s.shadow}">
+      <span class="cat-ic">${s.icon}</span>
+      <span class="cat-body"><b>${PART_NAME[part]}</b><span>${PART_QUOTA[part]} ${PART_DESC[part]||""}</span></span>
+      <span class="cat-go">התחל ←</span>
+    </button>`).join("");
+    return `<div class="cat-group"><div class="cat-ghead"><span>${s.icon}</span> ${esc(s.name)}</div><div class="cat-list">${acts}</div></div>`;
+  }).join("");
+  return `<div class="catalog-page kl-rise">
+  <button class="link-back" id="btn-cat-back">↩ חזרה</button>
+  <h2 class="par-title">ספריית הפעילויות</h2>
+  <p class="par-sub">בחרו פעילות בודדת מכל מקצוע — קפיצה ישירה לתרגול 🎲</p>
+  ${groups}
 </div>`;
 }
 
@@ -1060,7 +1130,7 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
   hv:mcHTML,hb:matchHTML,hw:mcHTML,wg:wgHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma3:mathHTML,ma4:mathHTML,
-  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML};
+  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML};
 
 function gotoNext(cur){
   // adaptive difficulty — nudge the level for the NEXT part by this part's accuracy
@@ -1092,15 +1162,30 @@ function attachListeners(){
   if(hb)hb.addEventListener("click",doHome);
   const pn=document.getElementById("btn-parents");
   if(pn)pn.addEventListener("click",()=>{S.returnTo=S.screen;S.screen="parents";render();});
+  const cn=document.getElementById("btn-catalog");
+  if(cn)cn.addEventListener("click",()=>{S.returnTo=S.screen;S.screen="catalog";render();});
+  const tg=document.getElementById("team-grid");
+  if(tg)tg.addEventListener("click",e=>{const c=e.target.closest(".team-card");if(!c)return;
+    speakSample(c.dataset.voice);c.classList.remove("team-pop");void c.offsetWidth;c.classList.add("team-pop");});
   if(S.screen==="lead")loadLeaderboard();
 
   if(S.screen==="parents"){
     document.getElementById("btn-par-back").addEventListener("click",()=>{S.screen=S.returnTo||"subject";render();});
     document.querySelectorAll(".tgl[data-set]").forEach(t=>{
       t.addEventListener("click",()=>{
-        const k=t.dataset.set,now=!setGet(k,true);
+        const k=t.dataset.set,def=(k==="charVoices"?false:true),now=!setGet(k,def);
         setPut(k,now);
         t.classList.toggle("on",now);t.setAttribute("aria-checked",now);
+      });
+    });
+    const vr=document.getElementById("voice-row");
+    if(vr)vr.addEventListener("click",e=>{const b=e.target.closest(".voice-pill");if(b)speakSample(b.dataset.voice);});
+  }
+  if(S.screen==="catalog"){
+    document.getElementById("btn-cat-back").addEventListener("click",()=>{S.screen=S.returnTo||"subject";render();});
+    document.querySelectorAll(".cat-card").forEach(c=>{
+      c.addEventListener("click",()=>{
+        S.subject=c.dataset.subj;S.score=0;S.prog={};S.adaptLvl=levelForAge(S.age);S.screen=c.dataset.part;render();
       });
     });
   }
