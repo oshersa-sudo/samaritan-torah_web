@@ -304,11 +304,31 @@ function _say(text,lang,rate,pitch){
 }
 const speak = text => _say(text,"en-US",0.85);
 
-// ─── Sound effects (synthesized — no asset files) ─────────
+// ─── Sound effects ────────────────────────────────────────
+// Real recorded clips (Kenney, CC0 — see static/sounds/LICENSE.txt) with a
+// synthesized fallback for older browsers or if a file is missing. WAV format
+// plays everywhere, including iOS Safari.
+const SND_BASE = "/static/sounds/";
+const SND_FILES = {
+  correct:"sfx-correct", wrong:"sfx-wrong", tap:"sfx-tap", celebrate:"celebrate",
+  jingle_english:"jingle-english", jingle_hebrew:"jingle-hebrew",
+  jingle_math:"jingle-math", jingle_science:"jingle-science",
+};
 const SFX = {
   _ctx:null,
   _ac(){ try{ if(!this._ctx) this._ctx=new (window.AudioContext||window.webkitAudioContext)();
     if(this._ctx.state==="suspended") this._ctx.resume(); return this._ctx; }catch(e){ return null; } },
+  // play a bundled recorded clip; returns true if playback was started
+  _clip(key,vol){
+    if(!setGet("sfx",true))return false;
+    const f=SND_FILES[key]; if(!f||typeof Audio==="undefined")return false;
+    try{
+      const a=new Audio(SND_BASE+f+".wav");
+      a.volume=(vol==null?0.6:vol);
+      const p=a.play(); if(p&&p.catch)p.catch(()=>{});
+      return true;
+    }catch(e){ return false; }
+  },
   _tone(ctx,freq,t0,dur,type="sine",gain=0.22){
     const o=ctx.createOscillator(),g=ctx.createGain();
     o.type=type;o.frequency.setValueAtTime(freq,t0);
@@ -321,6 +341,7 @@ const SFX = {
   good(){
     try{mascotReact("happy");burst();}catch(e){}
     if(!setGet("sfx",true))return;
+    if(this._clip("correct",0.62))return;            // real recorded "correct" chime
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
     // fanfare — cheerful rising major arpeggio, twice
     [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>this._tone(ctx,f,t+i*0.075,0.26,"triangle",0.20));
@@ -342,6 +363,7 @@ const SFX = {
   bad(){
     try{mascotReact("sad");}catch(e){}
     if(!setGet("sfx",true))return;
+    if(this._clip("wrong",0.55))return;              // real recorded "soft error"
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
     try{
       const o=ctx.createOscillator(),g=ctx.createGain();
@@ -406,6 +428,12 @@ const SFX = {
   // ─── Per-subject jingle (plays when a subject is chosen) ────────────────────
   jingle(subject){
     if(!setGet("sfx",true))return;
+    // real recorded pizzicato jingle per subject, then the mascot's animal call
+    if(this._clip("jingle_"+subject,0.5)){
+      const anim=MASCOT_ANIMAL[subject];
+      if(anim)setTimeout(()=>{try{this.animal(anim);}catch(e){}},760);
+      return;
+    }
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime,X=this;
     const M={
       english:[[523,0],[659,0.12],[784,0.24],[1047,0.36]],           // bright major climb
@@ -2548,6 +2576,7 @@ function finish(){
   syncResult(rec);
   S.lastGain=gamAward(g,S.score);
   S.prog={};S.screen="done";render();
+  SFX._clip("celebrate",0.5);   // real recorded celebration jingle
 }
 
 // ─── Boot ─────────────────────────────────────────────────

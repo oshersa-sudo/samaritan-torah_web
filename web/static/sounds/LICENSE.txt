@@ -1,0 +1,22 @@
+Sound effects and musical jingles in this folder
+=================================================
+
+All audio files here are from Kenney (https://kenney.nl) asset packs
+"Interface Sounds" and "Music Jingles", released under the
+Creative Commons CC0 1.0 Universal (Public Domain Dedication):
+https://creativecommons.org/publicdomain/zero/1.0/
+
+CC0 means no rights reserved — free for any use, commercial or not,
+no attribution required. This credit is included as good practice.
+
+File map (our name  <-  Kenney source):
+  sfx-correct.wav    <-  Interface Sounds / confirmation_001
+  sfx-wrong.wav      <-  Interface Sounds / error_001 (soft)
+  sfx-tap.wav        <-  Interface Sounds / select_001
+  jingle-english.wav <-  Music Jingles / Pizzicato PIZZI01
+  jingle-hebrew.wav  <-  Music Jingles / Pizzicato PIZZI00
+  jingle-math.wav    <-  Music Jingles / Pizzicato PIZZI05
+  jingle-science.wav <-  Music Jingles / Pizzicato PIZZI10
+  celebrate.wav      <-  Music Jingles / Steel STEEL00
+
+Format: WAV (PCM) — plays on every browser incl. iOS Safari.
