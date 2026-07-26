@@ -610,6 +610,32 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .skill-prog { background:#fff8e1; color:#a16207; }
 .skill-ready { background:#f4f1fb; color:#7c3aed; }
 
+/* ══════════ Parents & Teachers area ══════════ */
+.parents-page { display:flex; flex-direction:column; gap:14px; }
+.par-title { margin:2px 0 0; font-family:'Fredoka',sans-serif; font-weight:700; font-size:30px; color:var(--ink); }
+.par-sub { margin:2px 0 4px; font-size:14px; color:var(--ink-soft); }
+.par-subj { padding:10px 0; border-bottom:1px solid #f2edff; }
+.par-subj:last-child { border-bottom:none; }
+.par-subj-top { display:flex; align-items:center; gap:8px; }
+.par-ic { font-size:24px; }
+.par-subj-top b { font-family:'Fredoka',sans-serif; font-weight:700; font-size:18px; color:var(--ink); }
+.par-pct { margin-inline-start:auto; font-family:'Fredoka',sans-serif; font-weight:700; color:var(--violet); }
+.par-bar { height:10px; border-radius:99px; background:#f0eaff; overflow:hidden; margin:8px 0 6px; }
+.par-bar i { display:block; height:100%; border-radius:99px; transition:width .5s ease; }
+.par-meta { font-size:12.5px; color:var(--ink-soft); }
+.par-chart { display:flex; align-items:flex-end; justify-content:space-between; gap:8px; height:110px; padding-top:8px; }
+.par-cbar { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:6px; }
+.par-cbar i { display:block; width:70%; max-width:26px; border-radius:8px 8px 0 0; background:linear-gradient(180deg,#c9bcff,#8b5cf6); transition:height .5s ease; }
+.par-cbar span { font-size:12px; color:var(--ink-soft); font-weight:700; }
+.par-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid #f2edff; font-size:15px; font-weight:600; color:#4a3d76; }
+.par-row:last-child { border-bottom:none; }
+.tgl { width:52px; height:30px; flex:none; border:none; border-radius:99px; background:#e6def8; cursor:pointer; position:relative; transition:background .2s; padding:0; }
+.tgl.on { background:var(--violet-lt); }
+.tgl i { position:absolute; top:3px; inset-inline-start:3px; width:24px; height:24px; border-radius:50%; background:#fff; box-shadow:0 2px 4px rgba(0,0,0,.2); transition:transform .2s; }
+.tgl.on i { transform:translateX(-22px); }
+.par-note { font-size:13.5px; line-height:1.7; color:var(--ink-soft); margin:0; }
+.par-note b { color:var(--violet); }
+
 /* ══════════ Math ══════════ */
 .math-q {
   font-family:'Secular One',sans-serif; font-size:40px; text-align:center;

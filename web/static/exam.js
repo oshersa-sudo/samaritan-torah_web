@@ -227,8 +227,15 @@ const nearLevel = (items,lvl,min=6) => {
 };
 const grade  = c => Math.round((c/subjTotal())*100);
 const fmtDate= t => new Date(t).toLocaleDateString("he-IL",{day:"2-digit",month:"2-digit",year:"2-digit"});
+
+// ─── Settings (parents area toggles — actually control the app) ──────────────
+function setLoad(){ return sGet("settings")||{}; }
+function setGet(k,def){ const v=setLoad()[k]; return v===undefined?def:v; }
+function setPut(k,v){ const o=setLoad(); o[k]=v; sSet("settings",o); }
+
 const speak  = text => {
-  try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();
+  try{if(!setGet("tts",true))return;
+    if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=0.85;window.speechSynthesis.speak(u);}catch(e){}
 };
 
@@ -248,6 +255,7 @@ const SFX = {
   // תשואות! — פנפרה עולה + מחיאות כפיים (רעש-לבן פועם) + "יש!" נצנוץ
   good(){
     try{mascotReact("happy");burst();}catch(e){}
+    if(!setGet("sfx",true))return;
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
     // fanfare — cheerful rising major arpeggio, twice
     [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>this._tone(ctx,f,t+i*0.075,0.26,"triangle",0.20));
@@ -268,6 +276,7 @@ const SFX = {
   // אכזבה — "wah-wah" יורד (glissando) עם רטט קל
   bad(){
     try{mascotReact("sad");}catch(e){}
+    if(!setGet("sfx",true))return;
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
     try{
       const o=ctx.createOscillator(),g=ctx.createGain();
@@ -315,7 +324,7 @@ function burst(){
     layer.appendChild(s);setTimeout(()=>s.remove(),950);
   }
 }
-const speakHe = text => { try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="he-IL";u.rate=0.9;window.speechSynthesis.speak(u);}catch(e){} };
+const speakHe = text => { try{if(!setGet("tts",true))return;if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="he-IL";u.rate=0.9;window.speechSynthesis.speak(u);}catch(e){} };
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
 // ─── Storage ──────────────────────────────────────────────
@@ -527,6 +536,7 @@ function topbarHTML(){
     ${playing?'<button class="iconbtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
     ${playing?'<button class="iconbtn" id="btn-skip" title="דלג לשלב הבא">⏭</button>':""}
     ${playing?'<button class="iconbtn" id="btn-home" title="לתפריט הראשי">⌂</button>':""}
+    ${(!playing&&S.screen!=="parents")?'<button class="iconbtn" id="btn-parents" title="אזור הורים ומורים">👪</button>':""}
   </div>
 </header>`;
 }
@@ -619,6 +629,45 @@ function subjectHTML(){
 
   <div class="parade" aria-hidden="true"><div class="parade-track">${PARADE.concat(PARADE).map(a=>`<span>${a}</span>`).join("")}</div></div>
   <button class="ghost sm" id="btn-logout-hub">החלפת משתמש/ת</button>
+</div>`;
+}
+
+// ─── Parents & Teachers area (in-app: local progress + working settings) ─────
+function parentsHTML(){
+  const name=esc(S.name||"התלמיד/ה");
+  const subjRows=Object.entries(SUBJECTS).map(([k,s])=>{
+    const rel=(S.history||[]).filter(r=>(r.subject||"english")===k);
+    const last=rel.length?(rel[0].g|0):0;
+    const avg=rel.length?Math.round(rel.reduce((a,r)=>a+(r.g|0),0)/rel.length):0;
+    return `<div class="par-subj">
+      <div class="par-subj-top"><span class="par-ic">${s.icon}</span><b>${esc(s.name)}</b><span class="par-pct">${last}%</span></div>
+      <div class="par-bar"><i style="width:${last}%;background:${s.grad}"></i></div>
+      <div class="par-meta">${rel.length} סבבים · ${avg}% דיוק ממוצע</div>
+    </div>`;
+  }).join("");
+  // weekly activity — real rounds per day over the last 7 days
+  const now=Date.now(), DAY=86400000, dn=["א","ב","ג","ד","ה","ו","ש"];
+  const counts=new Array(7).fill(0);
+  (S.history||[]).forEach(r=>{const d=Math.floor((now-r.t)/DAY);if(d>=0&&d<7)counts[6-d]++;});
+  const max=Math.max(1,...counts);
+  const bars=counts.map((c,i)=>{
+    const dow=new Date(now-(6-i)*DAY).getDay();
+    return `<div class="par-cbar"><i style="height:${Math.max(6,Math.round(c/max*100))}%"></i><span>${dn[dow]}</span></div>`;
+  }).join("");
+  const rows=[
+    {k:"tts",label:"הקראה קולית (TTS)",def:true},
+    {k:"sfx",label:"אפקטים קוליים",def:true},
+  ].map(t=>{const on=setGet(t.k,t.def);
+    return `<div class="par-row"><span>${t.label}</span><button class="tgl${on?" on":""}" data-set="${t.k}" role="switch" aria-checked="${on}"><i></i></button></div>`;}).join("");
+  return `<div class="parents-page kl-rise">
+  <button class="link-back" id="btn-par-back">↩ חזרה למסך הילד</button>
+  <h2 class="par-title">אזור הורים ומורים</h2>
+  <p class="par-sub">מעקב אחרי ${name} · הפעילות במכשיר</p>
+
+  <div class="mini-card"><div class="mini-label">התקדמות לפי מקצוע</div>${subjRows}</div>
+  <div class="mini-card"><div class="mini-label">פעילות בשבוע האחרון (סבבים ביום)</div><div class="par-chart">${bars}</div></div>
+  <div class="mini-card"><div class="mini-label">הגדרות</div>${rows}</div>
+  ${BACKEND?`<div class="mini-card"><div class="mini-label">מעקב מרחוק</div><p class="par-note">קוד ההורים: <b>${esc(S.parentCode||"…")}</b><br>מהמכשיר שלכם היכנסו לכתובת <b>onyx-study.com/parent</b> כדי לעקוב מרחוק אחרי ההתקדמות.</p></div>`:""}
 </div>`;
 }
 
@@ -1011,7 +1060,7 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
   hv:mcHTML,hb:matchHTML,hw:mcHTML,wg:wgHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma3:mathHTML,ma4:mathHTML,
-  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML};
+  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML};
 
 function gotoNext(cur){
   // adaptive difficulty — nudge the level for the NEXT part by this part's accuracy
@@ -1041,7 +1090,20 @@ function attachListeners(){
   if(sk)sk.addEventListener("click",()=>{TM.stop();gotoNext(S.screen);});
   const hb=document.getElementById("btn-home");
   if(hb)hb.addEventListener("click",doHome);
+  const pn=document.getElementById("btn-parents");
+  if(pn)pn.addEventListener("click",()=>{S.returnTo=S.screen;S.screen="parents";render();});
   if(S.screen==="lead")loadLeaderboard();
+
+  if(S.screen==="parents"){
+    document.getElementById("btn-par-back").addEventListener("click",()=>{S.screen=S.returnTo||"subject";render();});
+    document.querySelectorAll(".tgl[data-set]").forEach(t=>{
+      t.addEventListener("click",()=>{
+        const k=t.dataset.set,now=!setGet(k,true);
+        setPut(k,now);
+        t.classList.toggle("on",now);t.setAttribute("aria-checked",now);
+      });
+    });
+  }
 
   if(S.screen==="login"){
     const ni=document.getElementById("inp-name"),pi=document.getElementById("inp-phone");
