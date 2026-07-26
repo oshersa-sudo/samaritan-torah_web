@@ -590,7 +590,8 @@ function topbarHTML(){
     ${playing?'<button class="iconbtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
     ${playing?'<button class="iconbtn" id="btn-skip" title="דלג לשלב הבא">⏭</button>':""}
     ${playing?'<button class="iconbtn" id="btn-home" title="לתפריט הראשי">⌂</button>':""}
-    ${(!playing&&S.screen!=="catalog")?'<button class="iconbtn" id="btn-catalog" title="ספריית הפעילויות">🎲</button>':""}
+    <button class="iconbtn" id="btn-install-top" title="התקנת האפליקציה">⬇️</button>
+    ${(!playing&&S.screen!=="catalog")?'<button class="iconbtn" id="btn-catalog" title="ספריית המשחקים">🎲</button>':""}
     ${(!playing&&S.screen!=="parents")?'<button class="iconbtn" id="btn-parents" title="אזור הורים ומורים">👪</button>':""}
   </div>
 </header>`;
@@ -1264,6 +1265,8 @@ function attachListeners(){
   if(pn)pn.addEventListener("click",()=>{S.returnTo=S.screen;S.screen="parents";render();});
   const cn=document.getElementById("btn-catalog");
   if(cn)cn.addEventListener("click",()=>{S.returnTo=S.screen;S.screen="catalog";render();});
+  const it=document.getElementById("btn-install-top");
+  if(it)it.addEventListener("click",doInstall);
   const tg=document.getElementById("team-grid");
   if(tg)tg.addEventListener("click",e=>{const c=e.target.closest(".team-card");if(!c)return;
     speakSample(c.dataset.voice);c.classList.remove("team-pop");void c.offsetWidth;c.classList.add("team-pop");});
