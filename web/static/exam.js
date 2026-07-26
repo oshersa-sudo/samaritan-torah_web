@@ -252,6 +252,7 @@ const SFX = {
 };
 // שחרור AudioContext במגע ראשון (מדיניות דפדפנים)
 window.addEventListener("pointerdown",()=>SFX._ac(),{once:true});
+const speakHe = text => { try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="he-IL";u.rate=0.9;window.speechSynthesis.speak(u);}catch(e){} };
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
 // ─── Storage ──────────────────────────────────────────────
@@ -501,6 +502,7 @@ function menuHTML(){
   <p class="foot">${subjTotal()} תשובות · הציון מוצג מתוך 100</p>
   ${BACKEND?`<p class="foot">קוד להורים: <b id="parent-code">${esc(S.parentCode||"…")}</b> — למעקב מרחוק דרך עמוד ההורים</p>`:""}
   ${missLoad().length?`<button class="ghost" id="btn-review">🔁 תרגול הטעויות שלי (${missLoad().length})</button>`:""}
+  ${BACKEND?`<button class="ghost" id="btn-lead">🏆 לוח מובילים</button>`:""}
   ${hist}
   <button class="primary" id="btn-start">התחלה</button>
   <button class="ghost sm" id="btn-logout">החלפת משתמש/ת</button>
@@ -574,6 +576,7 @@ function mcHTML(){
     <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog[S.screen]?.left??t,t)}</span></div>
   </div>
   <div class="mc-prompt" id="mc-prompt"></div>
+  <button class="ghost sm" id="mc-speak">🔊 שמע/י</button>
   <div class="opts" id="q-opts"></div>
 </section>`;
 }
@@ -602,6 +605,7 @@ function renderHebMCQ(){
   const q=HM.qs[HM.i];
   document.getElementById("q-ctr").textContent=`${HM.i+1}/${HM.qs.length}`;
   document.getElementById("mc-prompt").innerHTML=`<span dir="rtl">${esc(q.p)}</span>`;
+  const sp=document.getElementById("mc-speak");if(sp)sp.onclick=()=>speakHe(q.p);
   document.getElementById("q-opts").innerHTML=q.o.map(o=>
     `<button class="opt" data-val="${esc(o)}" dir="rtl"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("");
   HM.picked=false;
@@ -722,7 +726,7 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
   hv:mcHTML,hb:matchHTML,hw:mcHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma3:mathHTML,ma4:mathHTML,
-  rv:rvHTML,paused:pausedHTML,done:doneHTML};
+  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML};
 
 function gotoNext(cur){
   // adaptive difficulty — nudge the level for the NEXT part by this part's accuracy
@@ -750,6 +754,7 @@ function attachListeners(){
   if(sk)sk.addEventListener("click",()=>{TM.stop();gotoNext(S.screen);});
   const hb=document.getElementById("btn-home");
   if(hb)hb.addEventListener("click",doHome);
+  if(S.screen==="lead")loadLeaderboard();
 
   if(S.screen==="login"){
     const ni=document.getElementById("inp-name"),pi=document.getElementById("inp-phone");
@@ -797,6 +802,8 @@ function attachListeners(){
     if(rvb)rvb.addEventListener("click",()=>{S.screen="rv";render();});
     const lo=document.getElementById("btn-logout");
     if(lo)lo.addEventListener("click",doLogout);
+    const ld=document.getElementById("btn-lead");
+    if(ld)ld.addEventListener("click",()=>{S.screen="lead";render();});
   }
   if(S.screen==="paused")
     document.getElementById("btn-menu").addEventListener("click",()=>{S.screen="menu";render();});
@@ -1488,6 +1495,29 @@ function handleReview(val){
     b.disabled=true;
   });
   setTimeout(()=>{if(S.screen!=="rv")return;RV.picked=false;RV.i++;renderReviewQ();},1100);
+}
+
+// ─── Leaderboard (uses the learning backend) ─────────────────────────────────
+function leadHTML(){
+  return `<section class="card">
+  <div class="menu-head"><button class="ghost sm" id="btn-lead-back">↩ תפריט</button><span class="eyebrow">🏆 לוח מובילים · ${esc(curSubject().name)}</span></div>
+  <div id="lead-body"><p class="foot">טוען…</p></div>
+</section>`;
+}
+function loadLeaderboard(){
+  const back=document.getElementById("btn-lead-back");if(back)back.onclick=()=>{S.screen="menu";render();};
+  const el=document.getElementById("lead-body");if(!el)return;
+  if(!BACKEND){el.innerHTML='<p class="foot">לוח המובילים זמין כשהאפליקציה מחוברת לשרת.</p>';return;}
+  fetch(BACKEND+"/api/leaderboard?subject="+encodeURIComponent(S.subject))
+    .then(r=>r.json()).then(j=>{
+      const box=document.getElementById("lead-body");if(!box)return;
+      const top=(j&&j.top)||[];
+      if(!top.length){box.innerHTML='<p class="foot">אין עדיין תוצאות — תהיה/י הראשון/ה! 🎯</p>';return;}
+      const me=(S.name||"").split(" ")[0];
+      const medal=i=>i===0?"🥇":i===1?"🥈":i===2?"🥉":`${i+1}`;
+      box.innerHTML=`<ol class="lead-list">${top.map((r,i)=>
+        `<li class="lead-row${r.name===me?" me":""}"><span class="lead-rank">${medal(i)}</span><span class="lead-name">${esc(r.name)}</span><b class="lead-grade">${r.grade}/100</b></li>`).join("")}</ol>`;
+    }).catch(()=>{const box=document.getElementById("lead-body");if(box)box.innerHTML='<p class="foot">לא ניתן לטעון כרגע.</p>';});
 }
 
 // ─── Actions ──────────────────────────────────────────────

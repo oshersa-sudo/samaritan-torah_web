@@ -582,3 +582,11 @@ body {
 /* ── realistic picture (Pixabay) with emoji fallback ── */
 .pic-emoji { display:inline-block; }
 .pic-img { width: 170px; height: 170px; object-fit: cover; border-radius: 24px; box-shadow: 0 10px 24px -12px rgba(11,36,48,.5); }
+
+/* ── leaderboard ── */
+.lead-list { list-style: none; padding: 0; margin: 10px 0; display: grid; gap: 6px; }
+.lead-row { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 12px; padding: 10px 12px; box-shadow: 0 4px 12px -10px rgba(11,36,48,.5); }
+.lead-row.me { border: 2px solid #6C5CE7; background: #EFEDFD; }
+.lead-rank { width: 30px; text-align: center; font-size: 18px; }
+.lead-name { flex: 1; font-family: 'Fredoka', sans-serif; }
+.lead-grade { font-family: 'Secular One', sans-serif; color: #6C5CE7; }

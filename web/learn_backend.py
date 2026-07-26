@@ -252,6 +252,25 @@ def parent_students():
 def parent_portal():
     return Response(PARENT_HTML, mimetype="text/html")
 
+@bp.route("/api/leaderboard")
+def leaderboard():
+    subject = (request.args.get("subject") or "").strip()[:20]
+    with db() as c:
+        if subject:
+            rows = c.execute(
+                "SELECT s.name AS name, MAX(r.grade) AS g, COUNT(r.id) AS n "
+                "FROM results r JOIN students s ON s.phone=r.phone "
+                "WHERE r.subject=? GROUP BY r.phone ORDER BY g DESC, n DESC LIMIT 20",
+                (subject,)).fetchall()
+        else:
+            rows = c.execute(
+                "SELECT s.name AS name, MAX(r.grade) AS g, COUNT(r.id) AS n "
+                "FROM results r JOIN students s ON s.phone=r.phone "
+                "GROUP BY r.phone ORDER BY g DESC, n DESC LIMIT 20").fetchall()
+    # first name only (privacy for minors)
+    top = [{"name": (r["name"] or "").split(" ")[0], "grade": r["g"], "tests": r["n"]} for r in rows]
+    return jsonify({"ok": True, "top": top})
+
 @bp.route("/health")
 def health():
     return jsonify({"ok": True, "dev": DEV})
