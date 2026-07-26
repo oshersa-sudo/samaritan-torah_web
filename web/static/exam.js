@@ -353,7 +353,7 @@ function burst(){
   }
 }
 const speakHe = text => { try{if(!setGet("tts",true))return;if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="he-IL";u.rate=0.9;
-  if(setGet("charVoices",false)){const pr=VOICE_PROFILES[S.subject];if(pr&&pr.lang==="he-IL"){u.pitch=pr.pitch;u.rate=pr.rate;}}
+  if(setGet("charVoices",true)){const pr=VOICE_PROFILES[S.subject];if(pr&&pr.lang==="he-IL"){u.pitch=pr.pitch;u.rate=pr.rate;}}
   window.speechSynthesis.speak(u);}catch(e){} };
 
 // ─── Character voices — synthesized voice profiles per mascot (device-safe) ───
@@ -485,8 +485,10 @@ function gamAward(grade,correct){
   if(!g.streak)g.streak=1;
   g.bestStreak=Math.max(g.bestStreak||0,g.streak);
   const beforeLvl=gamLevel(g.xp);
+  // coins are awarded live per correct answer (see awardCoin); here we only
+  // add XP and report how many coins the round earned for the summary screen.
   const xpGain=correct*10+(grade>=90?50:grade>=70?20:0), coinGain=correct;
-  g.xp=(g.xp||0)+xpGain; g.coins=(g.coins||0)+coinGain; g.tests=(g.tests||0)+1;
+  g.xp=(g.xp||0)+xpGain; g.tests=(g.tests||0)+1;
   if(grade>=100)g.perfects=(g.perfects||0)+1;
   const had=new Set(g.badges||[]);
   const fresh=BADGES.filter(b=>!had.has(b.id)&&b.test(g));
@@ -584,7 +586,7 @@ function topbarHTML(){
     <div class="tb-who"><b>${esc(S.name||"אורח/ת")}</b><span>${LEVEL_NAME[lvl]}</span></div>
   </div>
   <div class="tb-right">
-    <span class="chip chip-coin">🪙 ${gm.coins||0}</span>
+    <span class="chip chip-coin">🪙 <b id="coin-count">${gm.coins||0}</b></span>
     <span class="chip chip-streak">🔥 ${gm.streak||0}</span>
     ${playing?`<div class="score" id="score-el" aria-label="ניקוד">${grade(S.score)}<small>/100</small></div>`:""}
     ${playing?'<button class="iconbtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
@@ -724,7 +726,7 @@ function parentsHTML(){
   const rows=[
     {k:"tts",label:"הקראה קולית (TTS)",def:true},
     {k:"sfx",label:"אפקטים קוליים",def:true},
-    {k:"charVoices",label:"קול לכל דמות (מסונתז)",def:false},
+    {k:"charVoices",label:"קול לכל דמות (מסונתז)",def:true},
   ].map(t=>{const on=setGet(t.k,t.def);
     return `<div class="par-row"><span>${t.label}</span><button class="tgl${on?" on":""}" data-set="${t.k}" role="switch" aria-checked="${on}"><i></i></button></div>`;}).join("");
   const voicePills=TEAM_ORDER.map(k=>{const p=VOICE_PROFILES[k];
@@ -820,7 +822,7 @@ function gplayHTML(){
 function handleGAnswer(oi,btn){
   if(GP.picked)return;GP.picked=true;
   const q=GP._q,correct=oi===q.a;
-  if(correct){GP.correct++;SFX.good();const g=gamLoad();g.coins=(g.coins||0)+1;g.xp=(g.xp||0)+3;gamSave(g);}
+  if(correct){GP.correct++;SFX.good();awardCoin(1);const g=gamLoad();g.xp=(g.xp||0)+3;gamSave(g);}
   else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const boi=+b.dataset.oi,mk=b.querySelector(".mark");
@@ -881,13 +883,20 @@ function menuHTML(){
     <div class="weekly-bar"><i style="width:${wkPct}%"></i></div>
   </div>
 
+  <div class="mini-card">
+    <div class="mini-label">רמת קושי</div>
+    <div class="pill-row" id="menu-levels">
+      ${[1,2,3,4,5].map(L=>`<button type="button" class="pill${curLevel()===L?" pill-on":""}" data-lvl="${L}">${esc(LEVEL_NAME[L])}</button>`).join("")}
+    </div>
+  </div>
+
   ${missLoad().length?`<button class="ghost" id="btn-review">🔁 תרגול הטעויות שלי (${missLoad().length})</button>`:""}
   ${BACKEND?`<button class="ghost" id="btn-lead">🏆 לוח מובילים</button>`:""}
   ${hist}
   ${BACKEND?`<p class="foot">קוד להורים: <b id="parent-code">${esc(S.parentCode||"…")}</b> — למעקב מרחוק בעמוד ההורים</p>`:""}
 
   <button class="primary" id="btn-start">בואו נתחיל · ${esc(nextName)}</button>
-  <button class="ghost sm" id="btn-logout">החלפת משתמש/ת</button>
+  <button class="ghost sm" id="btn-logout">החלפת משתמש/ת / הרשמה מחדש</button>
 </div>`;
 }
 
@@ -1180,11 +1189,25 @@ function balloonsHTML(){
 }
 
 function pausedHTML(){
-  return `<section class="card hero">
-  <span class="eyebrow">נשמר במכשיר</span>
-  <h1>המבחן ממתין לך</h1>
-  <p class="sub">אפשר לסגור את הדף. בכניסה הבאה עם אותו מספר טלפון תחזור/י בדיוק לנקודה הזו.</p>
-  <button class="primary" id="btn-menu">לתפריט</button>
+  const lvl=curLevel();
+  const partName=PART_NAME[S.pausedFrom]||"התרגיל";
+  return `<section class="card hero pause-card kl-rise">
+  <span class="eyebrow">הפסקה קטנה ⏸</span>
+  <h1>מה עושים?</h1>
+  <p class="sub">${esc(S.name||"")}, עצרנו ב<b>${esc(partName)}</b>. אפשר להמשיך, לקבל עוד זמן, לשנות רמה, או לעבור מסך.</p>
+  <div class="pause-row">
+    <button class="primary" id="pz-resume">▶ ממשיכים</button>
+    <button class="pz-time" id="pz-time">⏱ עוד 2 דקות</button>
+  </div>
+  <div class="mini-card pz-lvl">
+    <div class="mini-label">רמת קושי (תחול מהחלק הבא)</div>
+    <div class="pill-row" id="pz-levels">
+      ${[1,2,3,4,5].map(L=>`<button type="button" class="pill${lvl===L?" pill-on":""}" data-lvl="${L}">${esc(LEVEL_NAME[L])}</button>`).join("")}
+    </div>
+  </div>
+  <button class="ghost" id="pz-plan">📋 לתפריט המקצוע</button>
+  <button class="ghost" id="pz-hub">🏠 לתפריט המקצועות</button>
+  <button class="ghost sm" id="pz-logout">🔁 החלפת משתמש/ת / הרשמה מחדש</button>
 </section>`;
 }
 
@@ -1283,7 +1306,7 @@ function attachListeners(){
     document.getElementById("btn-par-back").addEventListener("click",()=>{S.screen=S.returnTo||"subject";render();});
     document.querySelectorAll(".tgl[data-set]").forEach(t=>{
       t.addEventListener("click",()=>{
-        const k=t.dataset.set,def=(k==="charVoices"?false:true),now=!setGet(k,def);
+        const k=t.dataset.set,now=!setGet(k,true);
         setPut(k,now);
         t.classList.toggle("on",now);t.setAttribute("aria-checked",now);
       });
@@ -1325,7 +1348,7 @@ function attachListeners(){
     const bands=document.getElementById("login-bands");
     if(bands)bands.addEventListener("click",e=>{
       const b=e.target.closest(".band-pill");if(!b)return;
-      S.age=+b.dataset.age;
+      S.age=+b.dataset.age;S.lvlOverride=null;
       bands.querySelectorAll(".band-pill").forEach(x=>x.classList.toggle("pill-on",x===b));
     });
     const ls=document.getElementById("login-subjects");
@@ -1360,11 +1383,15 @@ function attachListeners(){
   }
   if(S.screen==="menu"){
     document.querySelectorAll(".skill-row").forEach(li=>{
-      li.addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=levelForAge(S.age);S.screen=li.dataset.part;render();});
+      li.addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=S.lvlOverride||levelForAge(S.age);S.screen=li.dataset.part;render();});
     });
     const sb=document.getElementById("btn-subj-back");
     if(sb)sb.addEventListener("click",()=>{S.screen="subject";render();});
-    document.getElementById("btn-start").addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=levelForAge(S.age);S.screen=curOrder()[0];render();});
+    const ml=document.getElementById("menu-levels");
+    if(ml)ml.addEventListener("click",e=>{const b=e.target.closest(".pill");if(!b)return;
+      S.lvlOverride=+b.dataset.lvl;S.adaptLvl=S.lvlOverride;
+      ml.querySelectorAll(".pill").forEach(x=>x.classList.toggle("pill-on",x===b));});
+    document.getElementById("btn-start").addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=S.lvlOverride||levelForAge(S.age);S.screen=curOrder()[0];render();});
     const rvb=document.getElementById("btn-review");
     if(rvb)rvb.addEventListener("click",()=>{S.screen="rv";render();});
     const lo=document.getElementById("btn-logout");
@@ -1372,8 +1399,19 @@ function attachListeners(){
     const ld=document.getElementById("btn-lead");
     if(ld)ld.addEventListener("click",()=>{S.screen="lead";render();});
   }
-  if(S.screen==="paused")
-    document.getElementById("btn-menu").addEventListener("click",()=>{S.screen="menu";render();});
+  if(S.screen==="paused"){
+    const back=S.pausedFrom||curOrder()[0];
+    document.getElementById("pz-resume").addEventListener("click",()=>{S.screen=back;render();});
+    document.getElementById("pz-time").addEventListener("click",()=>{pauseAddTime(120);showToast("good","נוספו 2 דקות ⏱");S.screen=back;render();});
+    const pl=document.getElementById("pz-levels");
+    if(pl)pl.addEventListener("click",e=>{const b=e.target.closest(".pill");if(!b)return;
+      const L=+b.dataset.lvl;S.lvlOverride=L;S.adaptLvl=L;
+      pl.querySelectorAll(".pill").forEach(x=>x.classList.toggle("pill-on",x===b));
+      showToast("good","הרמה תשתנה מהחלק הבא");});
+    document.getElementById("pz-plan").addEventListener("click",()=>{S.screen="menu";render();});
+    document.getElementById("pz-hub").addEventListener("click",()=>{S.screen="subject";render();});
+    document.getElementById("pz-logout").addEventListener("click",doLogout);
+  }
   if(S.screen==="done"){
     document.getElementById("btn-again").addEventListener("click",()=>{S.score=0;S.prog={};S.lastGain=null;S.screen="menu";render();});
     const other=document.getElementById("btn-other");
@@ -1419,6 +1457,20 @@ function addScore(n){
   S.score+=n;
   const el=document.getElementById("score-el");
   if(el)el.innerHTML=`${grade(S.score)}<small>/100</small>`;
+  if(n>0)awardCoin(n);   // one coin per correct answer, shown live in the top bar
+}
+// Add coins and reflect the new total immediately in the top-bar chip, with a
+// little pop + floating "+n" so the child SEES the coins being collected.
+function awardCoin(n){
+  const g=gamLoad();g.coins=(g.coins||0)+n;gamSave(g);
+  const el=document.getElementById("coin-count");
+  if(el){
+    el.textContent=g.coins;
+    const chip=el.closest(".chip");
+    if(chip){chip.classList.remove("coin-pop");void chip.offsetWidth;chip.classList.add("coin-pop");
+      const fly=document.createElement("span");fly.className="coin-fly";fly.textContent="+"+n+" 🪙";
+      chip.appendChild(fly);setTimeout(()=>fly.remove(),900);}
+  }
 }
 
 // ─── Toast ────────────────────────────────────────────────
@@ -2065,7 +2117,7 @@ function renderReviewQ(){
 function handleReview(val){
   if(RV.picked)return;RV.picked=true;
   const q=RV.qs[RV.i],correct=val===q.w;
-  if(correct){SFX.good();clearMiss(q.w);RV.fixed++;const g=gamLoad();g.coins=(g.coins||0)+1;g.xp=(g.xp||0)+5;gamSave(g);}
+  if(correct){SFX.good();clearMiss(q.w);RV.fixed++;awardCoin(1);const g=gamLoad();g.xp=(g.xp||0)+5;gamSave(g);}
   else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const bv=b.dataset.val,mk=b.querySelector(".mark");
@@ -2139,10 +2191,21 @@ function saveCurrentProg(){
   else if(S.screen==="p6"&&B.pairs)commitProg({balloons:balloonState()});
   else if(S.screen[0]==="m"&&S.screen[1]==="a"&&MA.qs)commitProg({[S.screen]:mathState()});
   else if((S.screen==="hv"||S.screen==="hw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
+  else if(S.screen==="wg"&&WG.qs)commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
   else if(S.screen==="hr"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
+}
+// which S.prog key holds a given part's saved state (for the "+time" feature)
+function progKeyFor(scr){
+  return ({p1:"vocab",p2:"cloze",p3:"reading",p4:"pics",p5:"match",hb:"match",
+           p6:"balloons",hr:"reading",wg:"wg"})[scr] || scr;
+}
+function pauseAddTime(sec){
+  const k=progKeyFor(S.pausedFrom);
+  if(S.prog[k]) S.prog[k].left=(S.prog[k].left||0)+sec;
 }
 function doPause(){
   TM.stop();saveCurrentProg();
+  S.pausedFrom=S.screen;
   S.screen="paused";render();
 }
 function doHome(){
@@ -2194,21 +2257,37 @@ function doInstall(){
     dp.userChoice&&dp.userChoice.finally?dp.userChoice.finally(()=>{window.__installPrompt=null;}):0;
     return;
   }
-  if(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches){
+  if(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone){
     showToast("good","האפליקציה כבר מותקנת 🎉");return;
   }
-  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  showInstallSheet(ios);
+  showInstallSheet();
 }
-function showInstallSheet(ios){
+function showInstallSheet(){
+  const ua=navigator.userAgent||"";
+  const isIOS=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  const iosOtherBrowser=isIOS&&/crios|fxios|edgios|opios/i.test(ua);   // iOS Chrome/FF etc. can't install PWAs
+  let title,steps;
+  if(isIOS&&iosOtherBrowser){
+    title="התקנה — צריך את Safari 🧭";
+    steps=`<li>העתיקו את הכתובת ופתחו אותה ב-<b>Safari</b> (רק ב-Safari אפשר להתקין באייפון)</li>
+           <li>הקישו על כפתור <b>השיתוף</b> <span class="ins-ic">⬆︎</span> בתחתית המסך</li>
+           <li>בחרו <b>הוספה למסך הבית</b> ➕ ואשרו</li>`;
+  }else if(isIOS){
+    title="התקנה באייפון 🍎";
+    steps=`<li>הקישו על כפתור <b>השיתוף</b> <span class="ins-ic">⬆︎</span> בתחתית המסך</li>
+           <li>גללו ובחרו <b>הוספה למסך הבית</b> <span class="ins-ic">➕</span></li>
+           <li>הקישו <b>הוספה</b> — והאייקון יופיע במסך הבית 🎉</li>`;
+  }else{
+    title="התקנה באנדרואיד 🤖";
+    steps=`<li>הקישו על תפריט הדפדפן <span class="ins-ic">⋮</span> (למעלה)</li>
+           <li>בחרו <b>התקנת האפליקציה</b> או <b>הוספה למסך הבית</b></li>
+           <li>אשרו — והאייקון יופיע במסך הבית 🎉</li>`;
+  }
   let s=document.getElementById("install-sheet");if(s)s.remove();
   s=document.createElement("div");s.id="install-sheet";s.className="sheet-overlay";
-  const steps=ios
-    ? `<li>הקישו על כפתור <b>השיתוף</b> ⬆️ בתחתית הדפדפן</li><li>בחרו <b>הוספה למסך הבית</b> ➕</li><li>אשרו — והאייקון יופיע במכשיר 🎉</li>`
-    : `<li>פתחו את תפריט הדפדפן <b>⋮</b> (למעלה)</li><li>בחרו <b>התקנת אפליקציה</b> / <b>הוספה למסך הבית</b></li><li>אשרו — והאייקון יופיע במכשיר 🎉</li>`;
   s.innerHTML=`<div class="sheet install-sheet">
-    <div class="sheet-head"><span>📲 התקנת האפליקציה</span><button class="ghost sm" id="inst-close">סגירה</button></div>
-    <p class="par-note">מתקינים פעם אחת — ואז נכנסים ישירות מהמסך הראשי, גם בלי דפדפן.</p>
+    <div class="sheet-head"><span>📲 ${title}</span><button class="ghost sm" id="inst-close">סגירה</button></div>
+    <div class="ins-hero"><img src="/static/img/onyx_learn_icon-192.png" alt="" width="64" height="64" style="border-radius:16px"><p class="par-note">מתקינים פעם אחת — ואז נכנסים בלחיצה אחת מהמסך הראשי, בלי דפדפן ובלי כתובת.</p></div>
     <ol class="install-steps">${steps}</ol>
   </div>`;
   document.body.appendChild(s);

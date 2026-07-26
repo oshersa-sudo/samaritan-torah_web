@@ -47,8 +47,13 @@ body {
    (defined later with equal specificity) can't flatten them into gray tiles. */
 .tb-right .chip { display: inline-flex; align-items: center; gap: 5px; background: #fff; border-radius: 999px;
   padding: 7px 12px; font-weight: 700; font-size: 14px; color: var(--ink); border: 2px solid #f0eaff; }
-.tb-right .chip-coin { border-color: #fff3c4; box-shadow: 0 3px 0 rgba(251,191,36,.25); }
+.tb-right .chip-coin { border-color: #fff3c4; box-shadow: 0 3px 0 rgba(251,191,36,.25); position: relative; }
 .tb-right .chip-streak { border-color: #ffe0cf; box-shadow: 0 3px 0 rgba(251,113,133,.22); }
+.tb-right .chip-coin.coin-pop { animation: coinpop .45s cubic-bezier(.34,1.6,.5,1); }
+@keyframes coinpop { 0%,100%{ transform: scale(1) } 40%{ transform: scale(1.28) } }
+.coin-fly { position: absolute; inset-inline-end: 6px; top: -6px; font-size: 13px; font-weight: 700; color: #b45309; white-space: nowrap; pointer-events: none; animation: coinfly .9s ease-out forwards; }
+@keyframes coinfly { from{ opacity: 0; transform: translateY(6px) } 25%{ opacity: 1 } to{ opacity: 0; transform: translateY(-22px) } }
+@media (prefers-reduced-motion: reduce){ .tb-right .chip-coin.coin-pop, .coin-fly { animation: none; } .coin-fly { display: none; } }
 .iconbtn { width: 40px; height: 40px; border-radius: 13px; border: 2px solid #ede4ff; background: #fff;
   font-size: 17px; cursor: pointer; display: grid; place-items: center; color: var(--ink); flex: none; }
 .iconbtn:hover { background: #f6f2ff; }
@@ -672,6 +677,16 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .par-note { font-size:13.5px; line-height:1.7; color:var(--ink-soft); margin:0; }
 .par-note b { color:var(--violet); }
 
+/* ══════════ Pause menu ══════════ */
+.pause-card { text-align: center; }
+.pause-card .sub { text-align: center; }
+.pause-row { display: flex; gap: 12px; margin: 6px 0 16px; }
+.pause-row .primary { margin-top: 0; }
+.pz-time { flex: none; border: 2px solid #ffe0cf; background: #fff8f2; color: #b45309; border-radius: var(--pill); padding: 15px 20px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 16px; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 0 rgba(251,191,36,.22); transition: transform .1s; }
+.pz-time:hover { transform: translateY(-2px); }
+.pz-lvl { text-align: right; margin-bottom: 12px; }
+.pz-lvl .pill-row { justify-content: center; }
+
 /* ══════════ Activity library (catalog) ══════════ */
 .catalog-page { display:flex; flex-direction:column; gap:14px; }
 .cat-group { display:flex; flex-direction:column; gap:10px; }
@@ -715,6 +730,9 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .install-steps { margin:10px 14px 0; padding:0; display:flex; flex-direction:column; gap:10px; font-size:15px; color:var(--ink); line-height:1.5; }
 .install-steps li { background:#f6f2ff; border-radius:14px; padding:11px 14px; }
 .install-steps b { color:var(--violet); }
+.ins-hero { display:flex; align-items:center; gap:12px; margin:6px 0 4px; }
+.ins-hero img { flex:none; box-shadow:0 6px 16px -8px rgba(60,40,120,.5); }
+.ins-ic { display:inline-flex; min-width:24px; height:24px; align-items:center; justify-content:center; background:#ede4ff; border-radius:7px; padding:0 5px; font-weight:700; vertical-align:middle; }
 
 /* ══════════ Math ══════════ */
 .math-q {
