@@ -243,7 +243,49 @@ const sSet = (k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const sDel = k=>{try{localStorage.removeItem(k);}catch(e){}};
 
 // ─── Global State ─────────────────────────────────────────
-const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:""};
+const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null};
+
+// ─── Gamification (streak · XP · level · coins · badges) ──────────────────────
+const BADGES=[
+  {id:"first",   ic:"🎉", name:"מבחן ראשון", test:g=>g.tests>=1},
+  {id:"three",   ic:"⭐", name:"3 מבחנים",    test:g=>g.tests>=3},
+  {id:"ten",     ic:"🌟", name:"10 מבחנים",   test:g=>g.tests>=10},
+  {id:"streak3", ic:"🔥", name:"רצף 3 ימים",  test:g=>g.bestStreak>=3},
+  {id:"streak7", ic:"🔥", name:"רצף שבוע",    test:g=>g.bestStreak>=7},
+  {id:"streak30",ic:"🏆", name:"רצף חודש",    test:g=>g.bestStreak>=30},
+  {id:"perfect", ic:"💯", name:"ציון מושלם",  test:g=>g.perfects>=1},
+  {id:"coins500",ic:"💰", name:"500 מטבעות",  test:g=>g.coins>=500},
+];
+function _dstr(ms){const d=new Date(ms);return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;}
+function gamLoad(){return sGet("gam:"+S.phone)||{xp:0,coins:0,streak:0,bestStreak:0,lastDay:"",tests:0,perfects:0,badges:[]};}
+function gamSave(g){if(S.phone)sSet("gam:"+S.phone,g);}
+function gamLevel(xp){return 1+Math.floor((xp||0)/500);}
+function gamAward(grade,correct){
+  const g=gamLoad(),today=_dstr(Date.now());
+  if(g.lastDay!==today){g.streak=(g.lastDay===_dstr(Date.now()-864e5))?(g.streak||0)+1:1;g.lastDay=today;}
+  if(!g.streak)g.streak=1;
+  g.bestStreak=Math.max(g.bestStreak||0,g.streak);
+  const beforeLvl=gamLevel(g.xp);
+  const xpGain=correct*10+(grade>=90?50:grade>=70?20:0), coinGain=correct;
+  g.xp=(g.xp||0)+xpGain; g.coins=(g.coins||0)+coinGain; g.tests=(g.tests||0)+1;
+  if(grade>=100)g.perfects=(g.perfects||0)+1;
+  const had=new Set(g.badges||[]);
+  const fresh=BADGES.filter(b=>!had.has(b.id)&&b.test(g));
+  g.badges=[...(g.badges||[]),...fresh.map(b=>b.id)];
+  gamSave(g);
+  return {xpGain,coinGain,streak:g.streak,newBadges:fresh,
+          leveledTo:gamLevel(g.xp)>beforeLvl?gamLevel(g.xp):0,
+          stars:grade>=90?3:grade>=70?2:1,coins:g.coins,xp:g.xp};
+}
+function launchConfetti(){
+  const el=document.getElementById("confetti");if(!el)return;
+  const cols=["#6C5CE7","#FFB627","#3FBF6F","#F2545B","#2AA9E0","#E255A1"];let h="";
+  for(let i=0;i<70;i++){
+    const l=Math.random()*100,d=1.1+Math.random()*1.6,dl=Math.random()*0.5,c=cols[i%cols.length],r=Math.random()*360;
+    h+=`<i style="left:${l}%;background:${c};animation-duration:${d}s;animation-delay:${dl}s;transform:rotate(${r}deg)"></i>`;
+  }
+  el.innerHTML=h;
+}
 
 // Hebrew-subject content (loaded from hebrew_data.js if present)
 const HEB_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.HEB_VOCAB))   ? window.HEB_VOCAB   : [];
@@ -382,8 +424,16 @@ function menuHTML(){
 <ul class="hist">${rel.map(r=>`<li><span>${fmtDate(r.t)}</span><b>${r.g}/100</b></li>`).join("")}</ul>`:"";
   const items=curOrder().map(p=>
     `<li data-part="${p}"><b>${PART_NAME[p]}</b><span>${PART_QUOTA[p]} ${PART_DESC[p]||""}</span></li>`).join("");
+  const gm=gamLoad();
+  const earned=(gm.badges||[]).map(id=>BADGES.find(b=>b.id===id)).filter(Boolean);
+  const statbar=`<div class="statbar">
+    <span class="stat"><b>${gm.streak||0}</b> 🔥</span>
+    <span class="stat"><b>${gamLevel(gm.xp)}</b> ⭐ רמה</span>
+    <span class="stat"><b>${gm.coins||0}</b> 🪙</span>
+  </div>${earned.length?`<div class="badge-row mini">${earned.map(b=>`<span class="badge-chip" title="${esc(b.name)}">${b.ic}</span>`).join("")}</div>`:""}`;
   return `<section class="card">
   <div class="menu-head"><button class="ghost sm" id="btn-subj-back">↩ מקצוע</button><span class="eyebrow">${subj.icon} ${esc(subj.name)} · התוכנית שלך</span></div>
+  ${statbar}
   <ul class="plan">${items}</ul>
   <p class="foot">${subjTotal()} תשובות · הציון מוצג מתוך 100</p>
   ${BACKEND?`<p class="foot">קוד להורים: <b id="parent-code">${esc(S.parentCode||"…")}</b> — למעקב מרחוק דרך עמוד ההורים</p>`:""}
@@ -578,13 +628,26 @@ function pausedHTML(){
 }
 
 function doneHTML(){
+  const g=grade(S.score), lg=S.lastGain||{stars:1,xpGain:0,coinGain:0,streak:0,newBadges:[],leveledTo:0};
+  const stars=[1,2,3].map(i=>`<span class="star${i<=lg.stars?" on":""}">★</span>`).join("");
+  const msg=g>=90?"מדהים! 🌟":g>=70?"כל הכבוד! 👏":"יופי, ממשיכים! 💪";
+  const lvl=lg.leveledTo?`<div class="levelup">⬆️ עלית לרמה ${lg.leveledTo}!</div>`:"";
+  const badges=(lg.newBadges&&lg.newBadges.length)
+    ?`<div class="new-badges"><span class="eyebrow">תגים חדשים!</span><div class="badge-row">${lg.newBadges.map(b=>`<div class="badge"><span class="badge-ic">${b.ic}</span><small>${esc(b.name)}</small></div>`).join("")}</div></div>`:"";
   const hist=S.history.length>1
     ?`<ul class="hist">${S.history.slice(0,5).map(r=>`<li><span>${fmtDate(r.t)}</span><b>${r.g}/100</b></li>`).join("")}</ul>`:"";
-  return `<section class="card hero">
+  return `<section class="card hero done-card">
+  <div class="confetti" id="confetti"></div>
+  <div class="stars">${stars}</div>
   <span class="eyebrow">סיימת</span>
-  <h1>${grade(S.score)} <small class="of">/100</small></h1>
-  <p class="sub">${S.score} תשובות נכונות מתוך ${subjTotal()}. כל הכבוד, ${esc(S.name)} — התוצאה נשמרה.</p>
-  ${hist}
+  <h1>${g} <small class="of">/100</small></h1>
+  <p class="sub">${msg} ${S.score} תשובות נכונות מתוך ${subjTotal()}.</p>
+  <div class="gain-row">
+    <div class="gain"><b>+${lg.xpGain}</b><small>XP</small></div>
+    <div class="gain"><b>+${lg.coinGain}</b><small>🪙 מטבעות</small></div>
+    <div class="gain"><b>${lg.streak} 🔥</b><small>רצף ימים</small></div>
+  </div>
+  ${lvl}${badges}${hist}
   <button class="primary" id="btn-again">סבב נוסף</button>
 </section>`;
 }
@@ -658,8 +721,11 @@ function attachListeners(){
   }
   if(S.screen==="paused")
     document.getElementById("btn-menu").addEventListener("click",()=>{S.screen="menu";render();});
-  if(S.screen==="done")
-    document.getElementById("btn-again").addEventListener("click",()=>{S.score=0;S.prog={};S.screen="menu";render();});
+  if(S.screen==="done"){
+    document.getElementById("btn-again").addEventListener("click",()=>{S.score=0;S.prog={};S.lastGain=null;S.screen="menu";render();});
+    launchConfetti();
+    if((S.lastGain?.stars||0)>=2)SFX.good();
+  }
 }
 
 function initPart(){
@@ -1333,10 +1399,12 @@ function doHome(){
 
 function finish(){
   TM.stop();
-  const rec={t:Date.now(),name:S.name,subject:S.subject,lvl:levelForAge(S.age),correct:S.score,total:subjTotal(),g:grade(S.score)};
+  const g=grade(S.score);
+  const rec={t:Date.now(),name:S.name,subject:S.subject,lvl:levelForAge(S.age),correct:S.score,total:subjTotal(),g};
   S.history=[rec,...S.history].slice(0,30);
   sSet(K.results(S.phone),S.history);sDel(K.session(S.phone));
   syncResult(rec);
+  S.lastGain=gamAward(g,S.score);
   S.prog={};S.screen="done";render();
 }
 

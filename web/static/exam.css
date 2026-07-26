@@ -538,3 +538,36 @@ body {
 .sheet-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .hinttext { font-family: 'Fredoka', sans-serif; font-size: 17px; line-height: 1.6; background: #F2FAFC; border-radius: 14px; padding: 14px; margin: 0 0 8px; }
 @keyframes up { from { transform: translateY(26px); opacity: 0; } }
+
+/* ═══════════ Gamification (Phase 1) ═══════════ */
+.done-card { position: relative; overflow: hidden; text-align: center; }
+.done-card .eyebrow, .done-card h1, .done-card .sub { text-align: center; }
+.stars { font-size: 40px; letter-spacing: 6px; margin: 4px 0 2px; }
+.stars .star { color: #DCE9EE; }
+.stars .star.on { color: #FFB627; text-shadow: 0 2px 6px rgba(255,182,39,.5); animation: pop .35s ease-out both; }
+.stars .star.on:nth-child(2){ animation-delay:.12s } .stars .star.on:nth-child(3){ animation-delay:.24s }
+
+.gain-row { display: flex; gap: 8px; justify-content: center; margin: 12px 0; }
+.gain { background: #fff; border-radius: 14px; padding: 10px 14px; min-width: 80px; box-shadow: 0 6px 16px -12px rgba(11,36,48,.5); }
+.gain b { display: block; font-family: 'Secular One', sans-serif; font-size: 20px; color: #6C5CE7; }
+.gain small { font-size: 11px; opacity: .7; }
+
+.levelup { background: linear-gradient(90deg,#6C5CE7,#8E7BFF); color: #fff; border-radius: 12px; padding: 10px; font-family: 'Secular One', sans-serif; margin: 8px 0; animation: pop .4s ease-out both; }
+.new-badges { margin: 12px 0; }
+.badge-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 6px; }
+.badge { background: #FFF6E9; border: 2px solid #FFE3B0; border-radius: 14px; padding: 10px 12px; min-width: 78px; animation: pop .4s ease-out both; }
+.badge-ic { font-size: 26px; display: block; }
+.badge small { font-size: 11px; color: #0B2430; }
+.badge-row.mini { justify-content: flex-start; gap: 6px; margin: 8px 0 0; }
+.badge-chip { font-size: 20px; }
+
+/* stats bar on the menu */
+.statbar { display: flex; gap: 8px; margin: 4px 0 10px; }
+.statbar .stat { flex: 1; background: #fff; border-radius: 12px; padding: 8px; text-align: center; font-size: 13px; box-shadow: 0 4px 12px -10px rgba(11,36,48,.5); }
+.statbar .stat b { font-family: 'Secular One', sans-serif; font-size: 18px; color: #6C5CE7; }
+
+/* confetti */
+.confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.confetti i { position: absolute; top: -14px; width: 9px; height: 14px; border-radius: 2px; opacity: .9; animation-name: fall; animation-timing-function: linear; animation-iteration-count: 1; }
+@keyframes fall { to { transform: translateY(120vh) rotate(720deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce){ .confetti i { display: none; } .stars .star.on,.badge,.levelup { animation: none; } }
