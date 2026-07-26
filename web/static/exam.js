@@ -32,6 +32,16 @@ const CLOZE = [
       "laughed","sandwiches","apple","bird","strong","sky","jacket","home","tired","next",
       "goodbye","walk","door","day","month"],
     decoys:["mountain","teacher","purple","airplane","silent","kitchen"],
+    hints:["a green public place where children play","the bright star that gives us light and heat",
+      "the colour of a clear sky","a round toy you throw or kick","a clear drink with no colour and no taste",
+      "a boy in your family with the same parents","a tall plant with a trunk and branches",
+      "pages with a story, joined together","the sheets of paper inside a book","someone you like and spend time with",
+      "made a happy sound because something was funny","food made of two slices of bread with something inside",
+      "a round red or green fruit","a small animal with feathers that can fly","having a lot of power or force",
+      "the space above you where the clouds are","a short coat you wear when it is cold","the place where you live",
+      "needing to rest or sleep","the one that comes after this one","what you say when you leave",
+      "a short trip you make on your feet","the part of a house you open to go inside","the time from morning until night",
+      "a period of about thirty days"],
   },
   {
     id:"c2",lvl:3,title:"The Old Lighthouse",
@@ -49,6 +59,15 @@ const CLOZE = [
       "diary","name","unusual","storm","window","roof","flame","fishermen","exhausted","matches",
       "hero","sailors","enough","museum","room"],
     decoys:["desert","sandals","chocolate","guitar","quietly","birthday"],
+    hints:["a high steep rock face above the sea","periods of twelve months each",
+      "a large boat that crosses the sea","steps that take you to a higher floor","a sealed metal container for liquid",
+      "a lamp you carry, with the light inside glass","rising sharply and hard to climb","having a very low temperature",
+      "a curved part of the coast where the sea comes in","a safe place where ships stop",
+      "a book where you write what happens each day","the word people use to call someone","not normal or not common",
+      "very bad weather with strong wind and rain","an opening in a wall with glass in it","the covering on top of a building",
+      "the bright hot part of a fire","men who catch fish for a living","extremely tired","small sticks used to start a fire",
+      "someone admired for great courage","people who work on ships","as much as is needed",
+      "a building where old or important things are shown","a space inside a building, with walls"],
   },
 ];
 
@@ -139,18 +158,22 @@ const PICTURES = [
 // ─── Constants ────────────────────────────────────────────
 const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
 const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
-                ma:360,hb:210,hr:600};
+                hv:240,hb:210,hw:240,hr:600,
+                ma1:240,ma2:300,ma3:360,ma4:240};
 const LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"};
 const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
                     p5:"התאמת מילים",p6:"בלונים",
-                    ma:"תרגילי חשבון",hb:"התאמת מילים",hr:"הבנת הנקרא"};
+                    hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",hr:"הבנת הנקרא",
+                    ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma3:"בעיות מילוליות",ma4:"המספר החסר"};
 // answers per part → used to normalise the score to /100
-const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5, ma:15, hb:8, hr:8};
-// subjects and their part order
+const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
+                    hv:10,hb:8,hw:10,hr:6,
+                    ma1:10,ma2:10,ma3:6,ma4:8};
+// subjects and their part order — every subject: 4 parts, 4 hourglasses
 const SUBJECTS = {
   english:{name:"אנגלית", icon:"🔤", order:["p1","p2","p3","p4","p5","p6"]},
-  hebrew: {name:"עברית",  icon:"📖", order:["hb","hr"]},
-  math:   {name:"חשבון",  icon:"🔢", order:["ma"]},
+  hebrew: {name:"עברית",  icon:"📖", order:["hv","hb","hw","hr"]},
+  math:   {name:"חשבון",  icon:"🔢", order:["ma1","ma2","ma3","ma4"]},
 };
 function curSubject(){ return SUBJECTS[S.subject] || SUBJECTS.english; }
 function curOrder(){ return curSubject().order; }
@@ -292,10 +315,11 @@ function hgHTML(left,total){
 
 function topbarHTML(){
   if(S.screen==="login")return "";
-  const lvl=levelForAge(S.age),showPause=curOrder().includes(S.screen);
+  const lvl=levelForAge(S.age),showPause=curOrder().includes(S.screen),subj=curSubject();
   return `<header class="topbar">
-  <div class="brand">English<span>·</span>Trainer</div>
+  <div class="brand">${subj.icon} ${esc(subj.name)}</div>
   <div class="who">${esc(S.name)}${S.name?" · ":""}${LEVEL_NAME[lvl]}</div>
+  ${showPause?'<button class="pausebtn" id="btn-home" title="לתפריט הראשי">⌂</button>':""}
   ${showPause?'<button class="pausebtn" id="btn-pause" title="השהה ושמור">⏸</button>':""}
   ${showPause?'<button class="pausebtn" id="btn-skip" title="דלג לשלב הבא">⏭</button>':""}
   <div class="score" id="score-el" aria-label="ניקוד">${grade(S.score)}<small>/100</small></div>
@@ -304,9 +328,13 @@ function topbarHTML(){
 
 function loginHTML(){
   return `<section class="card hero">
-  <span class="eyebrow">אימון אנגלית יומי</span>
+  <span class="eyebrow">אימון למידה יומי</span>
   <h1>ארבעה חלקים.<br>ארבעה שעוני חול.</h1>
-  <p class="sub">מילים, השלמות, סיפור ותיאור תמונה — לפי הגיל והרמה בבית הספר. המבחן נשמר במכשיר וניתן להמשיך אותו בכל רגע.</p>
+  <p class="sub">מילים, השלמות, סיפור, חשבון ועוד — לפי הגיל והרמה בבית הספר. נשמר במכשיר וניתן להמשיך בכל רגע.</p>
+  <label class="fld">מה לומדים היום?</label>
+  <div class="subjects login-subjects" id="login-subjects">
+    ${Object.entries(SUBJECTS).map(([k,s])=>`<button type="button" class="subj-btn${S.subject===k?" subj-on":""}" data-subj="${k}"><span class="subj-ic">${s.icon}</span><b>${esc(s.name)}</b></button>`).join("")}
+  </div>
   <label class="fld">שם<input id="inp-name" placeholder="איך קוראים לך?" value="${esc(S.name)}"></label>
   <label class="fld">מספר טלפון<input id="inp-phone" type="tel" inputmode="numeric" dir="ltr" placeholder="0500000000" value="${esc(S.phone)}"></label>
   <label class="fld">גיל
@@ -331,8 +359,9 @@ function resumeHTML(){
 }
 
 const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3:"שאלות · 10 דק׳",p4:"תמונות · 10 דק׳",
-                   p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",ma:"תרגילים · 6 דק׳",
-                   hb:"התאמות · 3.5 דק׳",hr:"שאלות · 10 דק׳"};
+                   p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",
+                   hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",hr:"שאלות · 10 דק׳",
+                   ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳"};
 
 function subjectHTML(){
   return `<section class="card hero">
@@ -383,8 +412,10 @@ function clozeHTML(){
     <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.cloze?.left??TIME.cloze,TIME.cloze)}</span></div>
   </div>
   <p class="story cloze" dir="ltr" id="cloze-story"></p>
+  <p class="foot">לחצו על קו ריק כדי לבחור מילה · על ? לרמז באנגלית · או בחרו מילה מהמאגר</p>
   <div class="bank" id="cloze-bank"></div>
   <div id="cloze-placer"></div>
+  <div id="cloze-sheet"></div>
 </section>`;
 }
 
@@ -414,11 +445,88 @@ function describeHTML(){
 </section>`;
 }
 
-function mathHTML(){
+// ─── Hebrew multiple-choice vocab (hv: definition→word · hw: word→definition) ─
+const HM = {};
+const HEB_MC_CFG = {
+  hv:{eyebrow:"עברית · אוצר מילים", lead:"איזו מילה מתאימה להגדרה?", prompt:"d", answer:"w"},
+  hw:{eyebrow:"עברית · פירוש מילים", lead:"מה הפירוש של המילה?",      prompt:"w", answer:"d"},
+};
+function mcHTML(){
+  const c=HEB_MC_CFG[S.screen]||HEB_MC_CFG.hv, t=TIME[S.screen]??240;
   return `<section class="card">
   <div class="part-bar">
-    <div><span class="eyebrow">חשבון · תרגילים</span><p class="lead">בחר/י את התשובה הנכונה</p></div>
-    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.ma?.left??TIME.ma,TIME.ma)}</span></div>
+    <div><span class="eyebrow">${c.eyebrow}</span><p class="lead">${c.lead}</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog[S.screen]?.left??t,t)}</span></div>
+  </div>
+  <div class="mc-prompt" id="mc-prompt"></div>
+  <div class="opts" id="q-opts"></div>
+</section>`;
+}
+function initHebMC(){
+  const scr=S.screen,cfg=HEB_MC_CFG[scr]||HEB_MC_CFG.hv;
+  const lvl=levelForAge(S.age),n=PART_QUOTA[scr]||10,t=TIME[scr]??240;
+  const saved=S.prog[scr];
+  const src=(HEB_VOCAB.length?HEB_VOCAB:[]).filter(x=>x.w&&x.d);
+  if(saved&&saved.qs){HM.qs=saved.qs;HM.i=saved.i||0;}
+  else{
+    const pool=nearLevel(src,lvl,Math.max(n+4,8));
+    HM.qs=shuffle(pool).slice(0,n).map(it=>{
+      const answer=it[cfg.answer], opts=[answer];
+      for(const o of shuffle(pool.filter(x=>x[cfg.answer]!==answer)).map(x=>x[cfg.answer])){
+        if(opts.length>=4)break; if(!opts.includes(o))opts.push(o);
+      }
+      return {p:it[cfg.prompt],a:answer,o:shuffle(opts)};
+    });
+    HM.i=0;
+  }
+  HM.picked=false;
+  renderHebMCQ();
+  TM.start(saved?.left??t,t,()=>gotoNext(scr));
+}
+function renderHebMCQ(){
+  const q=HM.qs[HM.i];
+  document.getElementById("q-ctr").textContent=`${HM.i+1}/${HM.qs.length}`;
+  document.getElementById("mc-prompt").innerHTML=`<span dir="rtl">${esc(q.p)}</span>`;
+  document.getElementById("q-opts").innerHTML=q.o.map(o=>
+    `<button class="opt" data-val="${esc(o)}" dir="rtl"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("");
+  HM.picked=false;
+  document.getElementById("q-opts").onclick=e=>{
+    const b=e.target.closest(".opt");if(!b||b.disabled||HM.picked)return;
+    handleHebMC(b.dataset.val);
+  };
+}
+function handleHebMC(val){
+  if(HM.picked)return;HM.picked=true;
+  const q=HM.qs[HM.i],correct=val===q.a;
+  if(correct){addScore(1);SFX.good();}else SFX.bad();
+  document.querySelectorAll("#q-opts .opt").forEach(b=>{
+    const bv=b.dataset.val,mk=b.querySelector(".mark");
+    if(bv===q.a){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
+    else if(bv===val&&!correct){b.classList.add("opt-bad");mk.textContent="✗";mk.className="mark bad";mk.style.display="";}
+    else b.classList.add("opt-dim");
+    b.disabled=true;
+  });
+  const scr=S.screen;
+  commitProg({[scr]:{qs:HM.qs,i:HM.i,left:TM.left}});
+  setTimeout(()=>{
+    if(S.screen!==scr)return;
+    HM.picked=false;HM.i++;
+    if(HM.i>=HM.qs.length)gotoNext(scr);else renderHebMCQ();
+  },1200);
+}
+
+const MATH_CFG = {
+  ma1:{eyebrow:"חשבון · חיבור וחיסור",  lead:"בחר/י את התשובה הנכונה", type:"addsub"},
+  ma2:{eyebrow:"חשבון · כפל וחילוק",    lead:"בחר/י את התשובה הנכונה", type:"muldiv"},
+  ma3:{eyebrow:"חשבון · בעיות מילוליות", lead:"קרא/י ובחר/י תשובה",      type:"word"},
+  ma4:{eyebrow:"חשבון · המספר החסר",     lead:"איזה מספר משלים?",        type:"missing"},
+};
+function mathHTML(){
+  const c=MATH_CFG[S.screen]||MATH_CFG.ma1, t=TIME[S.screen]??300;
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">${c.eyebrow}</span><p class="lead">${c.lead}</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog[S.screen]?.left??t,t)}</span></div>
   </div>
   <div class="math-q" id="math-q"></div>
   <div class="opts" id="q-opts"></div>
@@ -484,7 +592,9 @@ function doneHTML(){
 // ─── Core Render ──────────────────────────────────────────
 const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuHTML,
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
-  ma:mathHTML,hb:matchHTML,hr:readingHTML,paused:pausedHTML,done:doneHTML};
+  hv:mcHTML,hb:matchHTML,hw:mcHTML,hr:readingHTML,
+  ma1:mathHTML,ma2:mathHTML,ma3:mathHTML,ma4:mathHTML,
+  paused:pausedHTML,done:doneHTML};
 
 function gotoNext(cur){
   const o=curOrder(),k=o.indexOf(cur);
@@ -506,6 +616,8 @@ function attachListeners(){
   if(pb)pb.addEventListener("click",doPause);
   const sk=document.getElementById("btn-skip");
   if(sk)sk.addEventListener("click",()=>{TM.stop();gotoNext(S.screen);});
+  const hb=document.getElementById("btn-home");
+  if(hb)hb.addEventListener("click",doHome);
 
   if(S.screen==="login"){
     const ni=document.getElementById("inp-name"),pi=document.getElementById("inp-phone");
@@ -516,6 +628,12 @@ function attachListeners(){
     ai.addEventListener("input",e=>{
       S.age=+e.target.value;
       document.getElementById("age-lbl").textContent=`${S.age} · ${LEVEL_NAME[levelForAge(S.age)]}`;
+    });
+    const ls=document.getElementById("login-subjects");
+    if(ls)ls.addEventListener("click",e=>{
+      const b=e.target.closest(".subj-btn");if(!b)return;
+      S.subject=b.dataset.subj;
+      ls.querySelectorAll(".subj-btn").forEach(x=>x.classList.toggle("subj-on",x===b));
     });
     eb.addEventListener("click",doEnter);
   }
@@ -551,9 +669,10 @@ function initPart(){
   else if(S.screen==="p4")initDescribe();
   else if(S.screen==="p5")initMatch();
   else if(S.screen==="p6")initBalloons();
-  else if(S.screen==="ma")initMath();
+  else if(S.screen==="hv"||S.screen==="hw")initHebMC();
   else if(S.screen==="hb")initHebMatch();
   else if(S.screen==="hr")initReading();
+  else if(S.screen[0]==="m"&&S.screen[1]==="a")initMath();
 }
 
 // ─── Session Helpers ──────────────────────────────────────
@@ -653,10 +772,11 @@ function initCloze(){
   C.bank  =saved?.bank??shuffle([...C.item.answers,...C.item.decoys]);
   C.filled=saved?.filled??{};
   C.used  =saved?.used??[];
-  C.sel=null;C.num="";
+  C.sel=null;C.num="";C.sheetN=null;
   document.getElementById("cloze-ttl").textContent=C.item.title;
   refreshCS();refreshCB();
   document.getElementById("cloze-placer").innerHTML="";
+  const sh=document.getElementById("cloze-sheet");if(sh)sh.innerHTML="";
   TM.start(saved?.left??TIME.cloze,TIME.cloze,()=>{S.screen="p3";render();});
 }
 
@@ -666,14 +786,59 @@ function clozeStory(){
     const n=Number(m[1]);
     return C.filled[n]
       ?`<b class="blank done">${esc(C.filled[n])}</b>`
-      :`<span class="blank"><sup>${n}</sup>______</span>`;
+      :`<span class="blank"><button class="blankbtn${C.sheetN===n?" blankbtn-on":""}" data-n="${n}"><sup>${n}</sup>______</button><button class="qbtn" data-hint="${n}" title="רמז">?</button></span>`;
   }).join("");
 }
 
 function refreshCS(){
-  const el=document.getElementById("cloze-story");if(el)el.innerHTML=clozeStory();
+  const el=document.getElementById("cloze-story");
+  if(el){
+    el.innerHTML=clozeStory();
+    el.onclick=e=>{
+      const bb=e.target.closest(".blankbtn"); if(bb){clozeSheet(+bb.dataset.n);return;}
+      const qb=e.target.closest(".qbtn");     if(qb){clozeHint(+qb.dataset.hint);return;}
+    };
+  }
   const ctr=document.getElementById("q-ctr");if(ctr)ctr.textContent=`${Object.keys(C.filled).length}/${C.item.answers.length}`;
 }
+function clozePlace(n,w){
+  if(!n||n<1||n>C.item.answers.length||C.filled[n])return false;
+  if(C.item.answers[n-1]===w){
+    C.filled={...C.filled,[n]:w};C.used=[...C.used,w];
+    addScore(1);SFX.good();speak(w);showToast("good","נכון מאוד!");
+    commitProg({cloze:{id:C.item.id,bank:C.bank,filled:C.filled,used:C.used,left:TM.left}});
+    C.sel=null;C.num="";closeSheet();refreshCS();refreshCB();refreshCP();
+    if(Object.keys(C.filled).length>=C.item.answers.length)
+      setTimeout(()=>{if(S.screen!=="p2")return;gotoNext("p2");},1200);
+    return true;
+  }
+  SFX.bad();showToast("bad",`${S.name}, נסה/י שוב`);
+  return false;
+}
+function clozeSheet(n){
+  C.sheetN=n;
+  const remaining=C.bank.filter(w=>!C.used.includes(w));
+  const el=document.getElementById("cloze-sheet");if(!el)return;
+  el.innerHTML=`<div class="sheet" role="dialog">
+    <div class="sheet-head"><b>איזו מילה שייכת לקו ${n}?</b><button class="ghost sm" id="sheet-close">סגור</button></div>
+    <div class="sheet-grid" id="sheet-grid">${remaining.map(w=>`<button class="chip" dir="ltr" data-w="${esc(w)}">${esc(w)}</button>`).join("")}</div>
+  </div>`;
+  document.getElementById("sheet-close").onclick=closeSheet;
+  document.getElementById("sheet-grid").onclick=e=>{const b=e.target.closest(".chip");if(b)clozePlace(n,b.dataset.w);};
+  refreshCS();
+}
+function clozeHint(n){
+  const h=C.item.hints&&C.item.hints[n-1];
+  const el=document.getElementById("cloze-sheet");if(!el)return;
+  el.innerHTML=`<div class="sheet" role="dialog">
+    <div class="sheet-head"><b>Hint · קו ${n}</b><button class="ghost sm" id="sheet-close">סגור</button></div>
+    <p class="hinttext" dir="ltr">${esc(h||"no hint available")}</p>
+    <button class="ghost sm" id="hint-read">🔊 read it</button>
+  </div>`;
+  document.getElementById("sheet-close").onclick=closeSheet;
+  const rb=document.getElementById("hint-read");if(rb)rb.onclick=()=>h&&speak(h);
+}
+function closeSheet(){C.sheetN=null;const el=document.getElementById("cloze-sheet");if(el)el.innerHTML="";}
 
 function refreshCB(){
   const el=document.getElementById("cloze-bank");if(!el)return;
@@ -705,19 +870,9 @@ function refreshCP(){
 }
 
 function handleCP(){
-  const n=parseInt(C.num,10);
-  if(!C.sel||!n||n<1||n>C.item.answers.length)return;
-  if(C.item.answers[n-1]===C.sel&&!C.filled[n]){
-    C.filled={...C.filled,[n]:C.sel};C.used=[...C.used,C.sel];
-    addScore(1);SFX.good();speak(C.sel);showToast("good","נכון מאוד!");
-    commitProg({cloze:{id:C.item.id,bank:C.bank,filled:C.filled,used:C.used,left:TM.left}});
-    C.sel=null;C.num="";refreshCS();refreshCB();refreshCP();
-    if(Object.keys(C.filled).length>=C.item.answers.length)
-      setTimeout(()=>{if(S.screen!=="p2")return;S.screen="p3";render();},1200);
-  }else{
-    SFX.bad();showToast("bad",`${S.name}, נסה/י שוב`);
-    C.sel=null;C.num="";refreshCB();refreshCP();
-  }
+  const n=parseInt(C.num,10),w=C.sel;
+  if(!w||!n)return;
+  if(!clozePlace(n,w)){C.sel=null;C.num="";refreshCB();refreshCP();}
 }
 
 // ─── Part 3: Reading ──────────────────────────────────────
@@ -1052,48 +1207,56 @@ function _mkOpts(ans){
   while(set.size<4){set.add(ans+set.size);}
   return shuffle([...set]);
 }
-function _genMathQ(lvl){
-  let t,a;
-  if(lvl<=1){
-    if(Math.random()<0.5){const x=_mrand(1,10),y=_mrand(1,10);t=`${x} + ${y}`;a=x+y;}
-    else{const x=_mrand(2,20),y=_mrand(1,x);t=`${x} − ${y}`;a=x-y;}
-  }else if(lvl===2){
-    const r=Math.random();
-    if(r<0.4){const x=_mrand(10,60),y=_mrand(5,40);t=`${x} + ${y}`;a=x+y;}
-    else if(r<0.7){const x=_mrand(20,99),y=_mrand(1,x);t=`${x} − ${y}`;a=x-y;}
-    else{const x=_mrand(2,10),y=_mrand(2,10);t=`${x} × ${y}`;a=x*y;}
-  }else if(lvl===3){
-    const r=Math.random();
-    if(r<0.4){const x=_mrand(3,12),y=_mrand(3,12);t=`${x} × ${y}`;a=x*y;}
-    else if(r<0.7){const y=_mrand(2,12),q2=_mrand(2,12);t=`${y*q2} ÷ ${y}`;a=q2;}
-    else{const x=_mrand(100,999),y=_mrand(10,x);t=`${x} − ${y}`;a=x-y;}
-  }else if(lvl===4){
-    const r=Math.random();
-    if(r<0.35){const x=_mrand(2,9),y=_mrand(2,9),z=_mrand(2,9);t=`${x} + ${y} × ${z}`;a=x+y*z;}
-    else if(r<0.7){const p=_mrand(1,9)*10,n=_mrand(1,9)*10;t=`${p}% × ${n}`;a=Math.round(p*n/100);}
-    else{const x=_mrand(1,9)/10,y=_mrand(1,9)/10;t=`${x} + ${y}`;a=Math.round((x+y)*10)/10;}
-  }else{
-    const r=Math.random();
-    if(r<0.35){const b=_mrand(2,12);t=`${b}²`;a=b*b;}
-    else if(r<0.6){const b=[4,9,16,25,36,49,64,81,100,121,144][_mrand(0,10)];t=`√${b}`;a=Math.round(Math.sqrt(b));}
-    else{const x=_mrand(2,9),c=_mrand(1,9),res=x*_mrand(2,9)+c,sol=(res-c)/x;
-      if(!Number.isInteger(sol))return _genMathQ(lvl);t=`${x}x + ${c} = ${res}`;a=sol;}
+function _genMathQ(lvl,type){
+  type=type||"addsub";
+  const R=_mrand;
+  if(type==="addsub"){
+    const mx = lvl<=1?10 : lvl===2?60 : lvl===3?200 : lvl===4?1000 : 10000;
+    if(Math.random()<0.5){const x=R(1,mx),y=R(1,mx);return {t:`${x} + ${y}`,a:x+y,eq:true};}
+    const x=R(2,mx),y=R(1,x);return {t:`${x} − ${y}`,a:x-y,eq:true};
   }
-  return {t,a};
+  if(type==="muldiv"){
+    const top = lvl<=2?10 : lvl===3?12 : lvl===4?20 : 30;
+    if(Math.random()<0.5){const x=R(2,top),y=R(2,top);return {t:`${x} × ${y}`,a:x*y,eq:true};}
+    const y=R(2,top),q=R(2,top);return {t:`${y*q} ÷ ${y}`,a:q,eq:true};
+  }
+  if(type==="missing"){
+    const mx = lvl<=1?10 : lvl===2?50 : lvl===3?100 : lvl===4?500 : 2000;
+    if(Math.random()<0.5){const x=R(1,mx),y=R(1,mx);return {t:`${x} + ? = ${x+y}`,a:y,eq:false};}
+    const y=R(1,mx),x=R(y+1,mx+y);return {t:`${x} − ? = ${x-y}`,a:y,eq:false};
+  }
+  return _genWordProblem(lvl);            // type === "word"
+}
+
+function _genWordProblem(lvl){
+  const R=_mrand, big = lvl<=1?10 : lvl===2?30 : lvl===3?100 : lvl===4?500 : 2000;
+  const tmpls=[
+    ()=>{const a=R(3,big),b=R(1,a);return {t:`בכיתה יש ${a} תלמידים. ${b} מהם יצאו להפסקה. כמה תלמידים נשארו בכיתה?`,a:a-b};},
+    ()=>{const a=R(3,big),b=R(1,big);return {t:`לרוני יש ${a} שקלים, והוא קיבל עוד ${b} שקלים. כמה שקלים יש לו עכשיו?`,a:a+b};},
+    ()=>{const per=R(2,9),g=R(2,9);return {t:`בכל שולחן יושבים ${per} ילדים, ויש ${g} שולחנות. כמה ילדים בסך הכול?`,a:per*g};},
+    ()=>{const per=R(2,9),g=R(2,9);return {t:`${per*g} עפרונות חולקו שווה בשווה ל-${g} ילדים. כמה עפרונות קיבל כל ילד?`,a:per};},
+    ()=>{const price=R(2,12),n=R(2,9);return {t:`מחיר מחברת אחת הוא ${price} שקלים. כמה יעלו ${n} מחברות?`,a:price*n};},
+    ()=>{const start=R(5,big),ate=R(1,Math.min(start,9));return {t:`בקופסה היו ${start} עוגיות, ודנה אכלה ${ate}. כמה עוגיות נשארו?`,a:start-ate};},
+  ];
+  const q=tmpls[R(0,tmpls.length-1)]();
+  q.rtl=true; q.eq=false; return q;
 }
 function initMath(){
-  const saved=S.prog.ma,lvl=levelForAge(S.age);
+  const scr=S.screen,cfg=MATH_CFG[scr]||MATH_CFG.ma1;
+  const saved=S.prog[scr],lvl=levelForAge(S.age),n=PART_QUOTA[scr]||10,t=TIME[scr]??300;
   if(saved&&saved.qs){MA.qs=saved.qs;MA.i=saved.i||0;}
-  else{MA.qs=Array.from({length:PART_QUOTA.ma},()=>_genMathQ(lvl));MA.i=0;}
+  else{MA.qs=Array.from({length:n},()=>_genMathQ(lvl,cfg.type));MA.i=0;}
   MA.picked=false;
   renderMathQ();
-  TM.start(saved?.left??TIME.ma,TIME.ma,()=>gotoNext("ma"));
+  TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
 function renderMathQ(){
   const q=MA.qs[MA.i];
   MA.opts=_mkOpts(q.a);
   document.getElementById("q-ctr").textContent=`${MA.i+1}/${MA.qs.length}`;
-  document.getElementById("math-q").innerHTML=`<span dir="ltr">${esc(q.t)} =</span>`;
+  document.getElementById("math-q").innerHTML = q.rtl
+    ? `<span dir="rtl" class="math-word">${esc(q.t)}</span>`
+    : `<span dir="ltr">${esc(q.t)}${q.eq?" =":""}</span>`;
   document.getElementById("q-opts").innerHTML=MA.opts.map(o=>
     `<button class="opt opt-center" data-val="${o}"><span dir="ltr">${o}</span><span class="mark" style="display:none"></span></button>`).join("");
   MA.picked=false;
@@ -1113,11 +1276,12 @@ function handleMA(val){
     else b.classList.add("opt-dim");
     b.disabled=true;
   });
-  commitProg({ma:mathState()});
+  const scr=S.screen;
+  commitProg({[scr]:mathState()});
   setTimeout(()=>{
-    if(S.screen!=="ma")return;
+    if(S.screen!==scr)return;
     MA.picked=false;MA.i++;
-    if(MA.i>=MA.qs.length)gotoNext("ma");else renderMathQ();
+    if(MA.i>=MA.qs.length)gotoNext(scr);else renderMathQ();
   },1200);
 }
 
@@ -1132,7 +1296,7 @@ function doEnter(){
   S.parentCode=sGet("pcode:"+S.phone)||"";
   syncRegister();
   if(ses&&ses.screen&&ses.screen!=="done"){S.found=ses;S.screen="resume";}
-  else{S.prog={};S.score=0;S.screen="subject";}
+  else{S.prog={};S.score=0;S.screen="menu";}   // subject already chosen on the login screen
   render();
 }
 
@@ -1147,16 +1311,24 @@ function doFresh(){
   sDel(K.session(S.phone));S.prog={};S.score=0;S.found=null;S.screen="subject";render();
 }
 
-function doPause(){
+function saveCurrentProg(){
   if(S.screen==="p1"&&V.item)commitProg({vocab:{round:V.round,i:V.i,left:TM.left}});
   else if(S.screen==="p2"&&C.item)commitProg({cloze:{id:C.item.id,bank:C.bank,filled:C.filled,used:C.used,left:TM.left}});
   else if(S.screen==="p3"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
   else if(S.screen==="p4"&&D.idxs)commitProg({pics:{idxs:D.idxs,i:D.i,left:TM.left}});
   else if((S.screen==="p5"||S.screen==="hb")&&M.pairs)commitProg({match:matchState()});
   else if(S.screen==="p6"&&B.pairs)commitProg({balloons:balloonState()});
-  else if(S.screen==="ma"&&MA.qs)commitProg({ma:mathState()});
+  else if(S.screen[0]==="m"&&S.screen[1]==="a"&&MA.qs)commitProg({[S.screen]:mathState()});
+  else if((S.screen==="hv"||S.screen==="hw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
   else if(S.screen==="hr"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
+}
+function doPause(){
+  TM.stop();saveCurrentProg();
   S.screen="paused";render();
+}
+function doHome(){
+  TM.stop();saveCurrentProg();
+  S.screen="menu";render();
 }
 
 function finish(){
