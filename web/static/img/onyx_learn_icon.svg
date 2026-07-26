@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Onyx לימודי — המורה">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b2f63"/>
+      <stop offset="1" stop-color="#241b47"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.32" cy="0.28" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- background tile -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="150" cy="140" r="150" fill="url(#glow)"/>
+
+  <!-- shoulders / blouse -->
+  <path d="M120 470 c0 -78 61 -132 136 -132 s136 54 136 132 z" fill="#ffd23f"/>
+  <path d="M256 342 l-30 46 30 30 30 -30 z" fill="#fff" opacity="0.9"/>
+
+  <!-- neck -->
+  <rect x="236" y="300" width="40" height="52" rx="18" fill="#e9a06b"/>
+
+  <!-- hair back -->
+  <path d="M150 250 c0 -86 47 -150 106 -150 s106 64 106 150 c0 40 -16 70 -40 88 l0 -70 c0 -60 -30 -96 -66 -96 s-66 36 -66 96 l0 70 c-24 -18 -40 -48 -40 -88 z" fill="#7a4a2b"/>
+
+  <!-- face -->
+  <ellipse cx="256" cy="228" rx="86" ry="92" fill="#f3b98a"/>
+  <!-- cheeks -->
+  <circle cx="204" cy="252" r="16" fill="#ef9d9d" opacity="0.6"/>
+  <circle cx="308" cy="252" r="16" fill="#ef9d9d" opacity="0.6"/>
+
+  <!-- fringe -->
+  <path d="M170 196 c14 -46 48 -74 86 -74 s72 28 86 74 c-26 -22 -54 -30 -86 -30 s-60 8 -86 30 z" fill="#7a4a2b"/>
+
+  <!-- glasses -->
+  <g fill="none" stroke="#e11d48" stroke-width="9">
+    <rect x="188" y="214" width="56" height="46" rx="14"/>
+    <rect x="268" y="214" width="56" height="46" rx="14"/>
+    <path d="M244 236 h24"/>
+    <path d="M188 232 l-22 -10"/>
+    <path d="M324 232 l22 -10"/>
+  </g>
+  <!-- eyes -->
+  <circle cx="216" cy="237" r="9" fill="#241b47"/>
+  <circle cx="296" cy="237" r="9" fill="#241b47"/>
+
+  <!-- smile -->
+  <path d="M226 282 q30 30 60 0" fill="none" stroke="#a5432f" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- graduation cap -->
+  <g>
+    <path d="M256 96 L392 150 L256 204 L120 150 Z" fill="url(#cap)"/>
+    <path d="M212 172 v44 c0 20 88 20 88 0 v-44 l-44 18 z" fill="#2c2350"/>
+    <circle cx="392" cy="150" r="9" fill="#ffd23f"/>
+    <path d="M392 150 v56" stroke="#ffd23f" stroke-width="6" fill="none"/>
+    <path d="M392 206 l-12 26 12 10 12 -10 z" fill="#ffd23f"/>
+  </g>
+</svg>

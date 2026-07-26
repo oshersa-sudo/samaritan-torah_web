@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-מאמן אבני שהם — שרת למידה (Learning backend)
+Onyx לימודי — שרת למידה (Learning backend)
 =================================================
 Standalone Flask service for the multi-subject trainer. Runs independently
 of the Torah web app so it can be deployed on its own (e.g. a Contabo VPS).
@@ -31,7 +31,7 @@ from email.mime.text import MIMEText
 from flask import Flask, Blueprint, request, jsonify, Response
 
 DB_PATH = os.environ.get("LEARN_DB", os.path.join(os.path.dirname(__file__), "learn.db"))
-DEV     = os.environ.get("LEARN_DEV", "1") == "1"
+DEV     = os.environ.get("LEARN_DEV", "0") == "1"   # fail-closed: codes go out by e-mail, not the API
 PORT    = int(os.environ.get("LEARN_PORT", "8000"))
 
 # Routes live on a Blueprint so this service can either run standalone
@@ -95,8 +95,8 @@ def send_code(dest_email, phone, code):
     host = os.environ.get("SMTP_HOST")
     if host and dest_email:
         try:
-            msg = MIMEText(f"קוד האימות שלך למאמן אבני שהם: {code}", "plain", "utf-8")
-            msg["Subject"] = "קוד אימות — מאמן אבני שהם"
+            msg = MIMEText(f"קוד האימות שלך ל-Onyx לימודי: {code}", "plain", "utf-8")
+            msg["Subject"] = "קוד אימות — Onyx לימודי"
             msg["From"] = os.environ.get("SMTP_FROM", os.environ.get("SMTP_USER", "noreply@localhost"))
             msg["To"] = dest_email
             s = smtplib.SMTP(host, int(os.environ.get("SMTP_PORT", "587")), timeout=15)
@@ -108,7 +108,8 @@ def send_code(dest_email, phone, code):
             return True
         except Exception as e:
             print("[learn] SMTP send failed:", e)
-    print(f"[learn] verification code for {phone}: {code}")
+    if DEV:
+        print(f"[learn] verification code for {phone}: {code}")
     return False
 
 def jerr(msg, code=400):
@@ -278,7 +279,7 @@ def health():
 # ─── Parent portal page (self-contained) ───────────────────────────────────
 PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>מעקב הורים — מאמן אבני שהם</title>
+<title>מעקב הורים — Onyx לימודי</title>
 <style>
  body{font-family:system-ui,'Segoe UI',Arial,sans-serif;background:linear-gradient(160deg,#EAF7FB,#D6EAF2);margin:0;color:#12313F}
  .wrap{max-width:680px;margin:0 auto;padding:18px}
@@ -321,6 +322,7 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
 </div>
 <script>
  const SUBJ={english:"אנגלית",hebrew:"עברית",math:"חשבון"};
+ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
  function fmt(ts){ if(!ts) return "—"; const d=new Date(ts); return d.toLocaleDateString("he-IL"); }
  async function loadStudents(){
    document.getElementById("err").textContent="";
@@ -330,10 +332,10 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    const box=document.getElementById("students"); box.innerHTML="";
    if(!j.students||!j.students.length){box.innerHTML='<div class="card muted">לא נמצאו תלמידים מקושרים. קשרו תלמיד למעלה.</div>';return;}
    for(const s of j.students){
-     const subs=Object.entries(s.stats||{}).map(([k,v])=>`<span class="subj">${SUBJ[k]||k}: <b>${v.avg}</b> ממוצע · שיא ${v.best} · ${v.count} מבחנים</span>`).join("");
-     const rows=(s.recent||[]).map(x=>`<tr><td>${SUBJ[x.subject]||x.subject}</td><td>${x.grade}/100</td><td>${x.correct}/${x.total}</td><td>${fmt(x.ts)}</td></tr>`).join("");
+     const subs=Object.entries(s.stats||{}).map(([k,v])=>`<span class="subj">${esc(SUBJ[k]||k)}: <b>${esc(v.avg)}</b> ממוצע · שיא ${esc(v.best)} · ${esc(v.count)} מבחנים</span>`).join("");
+     const rows=(s.recent||[]).map(x=>`<tr><td>${esc(SUBJ[x.subject]||x.subject)}</td><td>${esc(x.grade)}/100</td><td>${esc(x.correct)}/${esc(x.total)}</td><td>${esc(fmt(x.ts))}</td></tr>`).join("");
      box.insertAdjacentHTML("beforeend",
-       `<div class="card"><div class="stud"><h3>${s.name} <span class="muted">· גיל ${s.age||"?"} · פעילות אחרונה ${fmt(s.last)}</span></h3>
+       `<div class="card"><div class="stud"><h3>${esc(s.name)} <span class="muted">· גיל ${esc(s.age||"?")} · פעילות אחרונה ${esc(fmt(s.last))}</span></h3>
         ${subs||'<span class="muted">אין עדיין תוצאות</span>'}
         ${rows?`<table><tr><th>מקצוע</th><th>ציון</th><th>נכונות</th><th>תאריך</th></tr>${rows}</table>`:""}
         </div></div>`);

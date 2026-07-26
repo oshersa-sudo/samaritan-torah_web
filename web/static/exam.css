@@ -43,10 +43,12 @@ body {
 .tb-who b { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 16px; line-height: 1.1; color: var(--ink); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .tb-who span { font-size: 12px; color: #7b6ba3; }
 .tb-right { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-.chip { display: inline-flex; align-items: center; gap: 5px; background: #fff; border-radius: 999px;
-  padding: 7px 12px; font-weight: 700; font-size: 14px; color: var(--ink); }
-.chip-coin { border: 2px solid #fff3c4; box-shadow: 0 3px 0 rgba(251,191,36,.25); }
-.chip-streak { border: 2px solid #ffe0cf; box-shadow: 0 3px 0 rgba(251,113,133,.22); }
+/* Top-bar chips — scoped under .tb-right so the word-bank `.chip` rule
+   (defined later with equal specificity) can't flatten them into gray tiles. */
+.tb-right .chip { display: inline-flex; align-items: center; gap: 5px; background: #fff; border-radius: 999px;
+  padding: 7px 12px; font-weight: 700; font-size: 14px; color: var(--ink); border: 2px solid #f0eaff; }
+.tb-right .chip-coin { border-color: #fff3c4; box-shadow: 0 3px 0 rgba(251,191,36,.25); }
+.tb-right .chip-streak { border-color: #ffe0cf; box-shadow: 0 3px 0 rgba(251,113,133,.22); }
 .iconbtn { width: 40px; height: 40px; border-radius: 13px; border: 2px solid #ede4ff; background: #fff;
   font-size: 17px; cursor: pointer; display: grid; place-items: center; color: var(--ink); flex: none; }
 .iconbtn:hover { background: #f6f2ff; }
@@ -167,18 +169,18 @@ body {
   justify-content: space-between;
   align-items: center;
   background: #fff;
-  border: 2px solid #DCE9EE;
-  border-radius: 15px;
-  padding: 13px 15px;
+  border: 2px solid var(--violet-soft);
+  border-radius: 16px;
+  padding: 14px 16px;
   font-family: 'Fredoka', sans-serif;
   font-size: 17px;
-  color: #0B2430;
+  color: var(--ink);
   cursor: pointer;
   text-align: start;
-  transition: border-color .15s, transform .15s;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
   width: 100%;
 }
-.opt:hover:not([disabled]) { border-color: #6C5CE7; transform: translateY(-1px); }
+.opt:hover:not([disabled]) { border-color: var(--violet-lt); transform: translateY(-2px); box-shadow: 0 6px 0 rgba(139,92,246,.1); }
 .opt-good { border-color: #3FBF6F !important; background: #EDFBF1; }
 .opt-bad  { border-color: #F2545B !important; background: #FDEDEE; }
 .opt-dim  { opacity: .45; }
@@ -329,7 +331,7 @@ body {
 .toast {
   position: fixed;
   inset-inline: 0;
-  bottom: 22px;
+  bottom: calc(22px + env(safe-area-inset-bottom));
   margin: auto;
   width: max-content;
   max-width: 88vw;
@@ -708,7 +710,7 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .app-credits b { color:var(--violet); }
 .sheet-overlay { position:fixed; inset:0; background:rgba(36,27,71,.45); display:flex; align-items:flex-end; justify-content:center; z-index:60; animation:fadein .2s both; }
 @keyframes fadein { from{opacity:0} to{opacity:1} }
-.install-sheet { background:#fff; border-radius:24px 24px 0 0; padding:22px; width:100%; max-width:520px; box-shadow:0 -10px 40px -18px rgba(60,40,120,.5); animation:sheetup .28s cubic-bezier(.3,1.1,.5,1) both; }
+.install-sheet { background:#fff; border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); width:100%; max-width:520px; box-shadow:0 -10px 40px -18px rgba(60,40,120,.5); animation:sheetup .28s cubic-bezier(.3,1.1,.5,1) both; }
 @keyframes sheetup { from{transform:translateY(100%)} to{transform:translateY(0)} }
 .install-steps { margin:10px 14px 0; padding:0; display:flex; flex-direction:column; gap:10px; font-size:15px; color:var(--ink); line-height:1.5; }
 .install-steps li { background:#f6f2ff; border-radius:14px; padding:11px 14px; }
@@ -778,12 +780,12 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .blankbtn { background: none; border: none; color: #6C5CE7; font-weight: 600; font-family: inherit; font-size: inherit; cursor: pointer; padding: 0 2px; white-space: nowrap; }
 .blankbtn sup { font-size: 10px; opacity: .7; }
 .blankbtn-on { background: #EFEDFD; border-radius: 6px; }
-.qbtn { width: 17px; height: 17px; line-height: 1; border-radius: 50%; border: none; background: #FFB627; color: #0B2430; font-size: 11px; font-weight: 700; cursor: pointer; padding: 0; margin-inline-start: 2px; vertical-align: middle; }
+.qbtn { min-width: 30px; height: 30px; line-height: 1; border-radius: 50%; border: none; background: #FFB627; color: #0B2430; font-size: 15px; font-weight: 700; cursor: pointer; padding: 0 4px; margin-inline-start: 4px; vertical-align: middle; display: inline-flex; align-items: center; justify-content: center; }
 
 /* ── bottom sheet (word bank / hint) ── */
 .sheet {
   position: fixed; inset-inline: 0; bottom: 0; background: #fff;
-  border-radius: 22px 22px 0 0; padding: 16px 16px 24px;
+  border-radius: 22px 22px 0 0; padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
   box-shadow: 0 -14px 34px -18px rgba(11,36,48,.7);
   max-height: 62vh; overflow: auto; z-index: 40; animation: up .2s ease-out;
 }
@@ -926,4 +928,10 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
   .mascot, .pic-emoji { animation: none; }
   .card, .mc-prompt, .math-q, .pic, .opts .opt, .plan li { animation: none; }
   .burst i { display: none; }
+  /* newer (Design v2) motion — honour reduce everywhere */
+  .kl-rise, .game-mascot, .gm-face, .gm-face.m-happy, .gm-face.m-sad,
+  .sheet, .install-sheet, .sheet-overlay, .wg-bad, .team-pop,
+  .done-mascot, .weekly-buddy, .home-buddy, .mascot-emoji,
+  .parade-track, body::before, body::after, .done-card .confetti i { animation: none; }
+  .parade-track { transform: none; }
 }

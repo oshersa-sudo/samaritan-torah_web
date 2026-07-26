@@ -653,10 +653,15 @@ function loginHTML(){
 
 function resumeHTML(){
   const f=S.found;
+  // grade against the SAVED session's subject, not the currently-selected one,
+  // so the percentage isn't normalised to the wrong denominator.
+  const fOrder=(SUBJECTS[f.subject]||curSubject()).order;
+  const fTotal=fOrder.reduce((a,p)=>a+(PART_QUOTA[p]||0),0)||1;
+  const fGrade=Math.round(((f.score||0)/fTotal)*100);
   return `<section class="card hero">
   <span class="eyebrow">נמצא מבחן פתוח</span>
   <h1>להמשיך?</h1>
-  <p class="sub">נעצר ב<b>${esc(PART_NAME[f.screen]||"אמצע")}</b> בתאריך ${fmtDate(f.t)}, עם ${grade(f.score||0)} מתוך 100.</p>
+  <p class="sub">נעצר ב<b>${esc(PART_NAME[f.screen]||"אמצע")}</b> בתאריך ${fmtDate(f.t)}, עם ${fGrade} מתוך 100.</p>
   <button class="primary" id="btn-resume">המשך מהמקום שנעצרתי</button>
   <button class="ghost" id="btn-fresh">התחל מבחן חדש</button>
 </section>`;
@@ -1142,8 +1147,8 @@ function mathHTML(){
 function matchHTML(){
   const heb=(S.screen==="hb");
   const eyebrow=heb?"עברית · התאמת מילים":"חלק 5 · התאמת מילים";
-  const foot=heb?"גררו מהמילה (משמאל) אל הפירוש הנכון (מימין)"
-                :"גררו מהמילה באנגלית (משמאל) אל הפירוש הנכון בעברית (מימין)";
+  const foot=heb?"מתחו קו בין כל מילה לפירוש הנכון שלה"
+                :"מתחו קו בין כל מילה באנגלית לפירוש הנכון בעברית";
   const t=heb?TIME.hb:TIME.match;
   return `<section class="card">
   <div class="part-bar">
@@ -1228,7 +1233,9 @@ function gotoNext(cur){
   else finish();
 }
 
-const OPTION_SCREENS=new Set(["p1","p3","p4","hv","hw","hr","ma1","ma2","ma3","ma4"]);
+// screens whose answers are 4 tappable options → show the "keys 1–4" tip and
+// wire number-key answering. (p4 = free-text describe, so it is excluded.)
+const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hr","ma1","ma2","ma3","ma4"]);
 const ENCOURAGE=["אני איתך! נסה לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
 function gameMascotFrame(){
   const m=curSubject().mascot||"🦉";
@@ -1398,7 +1405,13 @@ function initPart(){
 
 // ─── Session Helpers ──────────────────────────────────────
 function saveSession(){
-  if(!S.phone||S.screen==="login"||S.screen==="resume"||S.screen==="subject")return;
+  // Only persist a session while the child is ON a real part screen. Saving
+  // transient screens (menu/paused/catalog/parents/rv/lead/gplay/done) would
+  // overwrite the saved part with a non-part screen — so pausing or going
+  // home mid-part would lose the resume point (and the app would keep offering
+  // to "resume" a menu). doPause/doHome save the part progress first, then
+  // switch screens; this guard keeps that saved part intact.
+  if(!S.phone||!curOrder().includes(S.screen))return;
   sSet(K.session(S.phone),{name:S.name,age:S.age,score:S.score,screen:S.screen,subject:S.subject,prog:S.prog,t:Date.now()});
 }
 function commitProg(slice){S.prog={...S.prog,...slice};saveSession();}

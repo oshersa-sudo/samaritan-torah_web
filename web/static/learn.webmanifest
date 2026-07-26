@@ -1,6 +1,6 @@
 {
-  "name": "אימון למידה יומי — OnyxApps",
-  "short_name": "אימון למידה",
+  "name": "Onyx - לימודי",
+  "short_name": "Onyx לימודי",
   "description": "אימון יומי באנגלית, עברית וחשבון לילדים — מילים, קריאה, חשבון ומשחקים.",
   "lang": "he",
   "dir": "rtl",
@@ -11,8 +11,7 @@
   "background_color": "#f1ecff",
   "theme_color": "#7c3aed",
   "icons": [
-    { "src": "/static/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/static/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/static/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/static/img/onyx_learn_icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/static/img/onyx_learn_icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
   ]
 }
