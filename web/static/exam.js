@@ -212,25 +212,40 @@ const SFX = {
     g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
     o.connect(g);g.connect(ctx.destination);o.start(t0);o.stop(t0+dur+0.02);
   },
-  // חגיגי — ארפג'יו עולה + "נצנוץ" (תשואות ילדים)
+  // תשואות! — פנפרה עולה + מחיאות כפיים (רעש-לבן פועם) + "יש!" נצנוץ
   good(){
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
-    [523.25,659.25,783.99,1046.5].forEach((f,i)=>this._tone(ctx,f,t+i*0.09,0.28,"triangle",0.22));
-    this._tone(ctx,1567.98,t+0.36,0.30,"sine",0.14);
-    // רעש-לבן קצר כמחיאות כפיים
+    // fanfare — cheerful rising major arpeggio, twice
+    [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>this._tone(ctx,f,t+i*0.075,0.26,"triangle",0.20));
+    this._tone(ctx,2093,t+0.40,0.32,"sine",0.12);        // sparkle
+    // applause — several soft noise bursts (clap-like), stereo-ish via timing
     try{
-      const n=ctx.createBufferSource(),b=ctx.createBuffer(1,ctx.sampleRate*0.35,ctx.sampleRate);
-      const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
-      const g=ctx.createGain();g.gain.setValueAtTime(0.10,t+0.30);g.gain.exponentialRampToValueAtTime(0.0001,t+0.72);
-      const hp=ctx.createBiquadFilter();hp.type="highpass";hp.frequency.value=1400;
-      n.buffer=b;n.connect(hp);hp.connect(g);g.connect(ctx.destination);n.start(t+0.30);
+      const claps=7;
+      for(let k=0;k<claps;k++){
+        const st=t+0.10+k*0.055+Math.random()*0.02;
+        const n=ctx.createBufferSource(),b=ctx.createBuffer(1,ctx.sampleRate*0.08,ctx.sampleRate);
+        const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
+        const g=ctx.createGain();g.gain.setValueAtTime(0.11,st);g.gain.exponentialRampToValueAtTime(0.0001,st+0.09);
+        const bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=1800+Math.random()*900;bp.Q.value=0.8;
+        n.buffer=b;n.connect(bp);bp.connect(g);g.connect(ctx.destination);n.start(st);
+      }
     }catch(e){}
   },
-  // שגיאה — שני צלילים יורדים נמוכים
+  // אכזבה — "wah-wah" יורד (glissando) עם רטט קל
   bad(){
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
-    this._tone(ctx,311.13,t,0.18,"sawtooth",0.18);
-    this._tone(ctx,207.65,t+0.16,0.30,"sawtooth",0.18);
+    try{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type="sawtooth";
+      o.frequency.setValueAtTime(392,t);                 // G4
+      o.frequency.exponentialRampToValueAtTime(196,t+0.22); // slide down to G3
+      o.frequency.exponentialRampToValueAtTime(146.83,t+0.5); // to D3
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(0.2,t+0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+0.6);
+      const lp=ctx.createBiquadFilter();lp.type="lowpass";lp.frequency.value=1200;
+      o.connect(lp);lp.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+0.62);
+    }catch(e){ this._tone(ctx,311,t,0.2,"sawtooth",0.18); this._tone(ctx,208,t+0.18,0.3,"sawtooth",0.18); }
   },
 };
 // שחרור AudioContext במגע ראשון (מדיניות דפדפנים)
@@ -245,6 +260,18 @@ const sDel = k=>{try{localStorage.removeItem(k);}catch(e){}};
 // ─── Global State ─────────────────────────────────────────
 const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null,avatar:"🦊"};
 const AVATARS=["🦊","🐼","🦁","🐧","🐨","🦄","🐯","🐸","🐵","🐶","🐱","🐰","🐷","🐥","🐢","🦉"];
+
+// ─── Mistakes store (spaced-repetition review) ───────────────────────────────
+function missKey(){return `miss:${S.phone}:${S.subject}`;}
+function missLoad(){return sGet(missKey())||[];}
+function missSave(a){if(S.phone)sSet(missKey(),a);}
+function recordMiss(item){
+  if(!S.phone||!item||!item.w)return;
+  const a=missLoad();
+  if(!a.some(x=>x.w===item.w)){a.unshift(item);missSave(a.slice(0,50));}
+}
+function clearMiss(w){missSave(missLoad().filter(x=>x.w!==w));}
+const RV={};
 
 // ─── Gamification (streak · XP · level · coins · badges) ──────────────────────
 const BADGES=[
@@ -442,8 +469,10 @@ function menuHTML(){
   <ul class="plan">${items}</ul>
   <p class="foot">${subjTotal()} תשובות · הציון מוצג מתוך 100</p>
   ${BACKEND?`<p class="foot">קוד להורים: <b id="parent-code">${esc(S.parentCode||"…")}</b> — למעקב מרחוק דרך עמוד ההורים</p>`:""}
+  ${missLoad().length?`<button class="ghost" id="btn-review">🔁 תרגול הטעויות שלי (${missLoad().length})</button>`:""}
   ${hist}
   <button class="primary" id="btn-start">התחלה</button>
+  <button class="ghost sm" id="btn-logout">החלפת משתמש/ת</button>
 </section>`;
 }
 
@@ -530,7 +559,7 @@ function initHebMC(){
       for(const o of shuffle(pool.filter(x=>x[cfg.answer]!==answer)).map(x=>x[cfg.answer])){
         if(opts.length>=4)break; if(!opts.includes(o))opts.push(o);
       }
-      return {p:it[cfg.prompt],a:answer,o:shuffle(opts)};
+      return {p:it[cfg.prompt],a:answer,o:shuffle(opts),w:it.w,d:it.d};
     });
     HM.i=0;
   }
@@ -553,7 +582,7 @@ function renderHebMCQ(){
 function handleHebMC(val){
   if(HM.picked)return;HM.picked=true;
   const q=HM.qs[HM.i],correct=val===q.a;
-  if(correct){addScore(1);SFX.good();}else SFX.bad();
+  if(correct){addScore(1);SFX.good();}else{SFX.bad();recordMiss({w:q.w,d:q.d,kind:"he"});}
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const bv=b.dataset.val,mk=b.querySelector(".mark");
     if(bv===q.a){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
@@ -662,7 +691,7 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
   hv:mcHTML,hb:matchHTML,hw:mcHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma3:mathHTML,ma4:mathHTML,
-  paused:pausedHTML,done:doneHTML};
+  rv:rvHTML,paused:pausedHTML,done:doneHTML};
 
 function gotoNext(cur){
   const o=curOrder(),k=o.indexOf(cur);
@@ -729,6 +758,10 @@ function attachListeners(){
     const sb=document.getElementById("btn-subj-back");
     if(sb)sb.addEventListener("click",()=>{S.screen="subject";render();});
     document.getElementById("btn-start").addEventListener("click",()=>{S.score=0;S.prog={};S.screen=curOrder()[0];render();});
+    const rvb=document.getElementById("btn-review");
+    if(rvb)rvb.addEventListener("click",()=>{S.screen="rv";render();});
+    const lo=document.getElementById("btn-logout");
+    if(lo)lo.addEventListener("click",doLogout);
   }
   if(S.screen==="paused")
     document.getElementById("btn-menu").addEventListener("click",()=>{S.screen="menu";render();});
@@ -750,6 +783,7 @@ function initPart(){
   else if(S.screen==="hb")initHebMatch();
   else if(S.screen==="hr")initReading();
   else if(S.screen[0]==="m"&&S.screen[1]==="a")initMath();
+  else if(S.screen==="rv")initReview();
 }
 
 // ─── Session Helpers ──────────────────────────────────────
@@ -821,7 +855,7 @@ function handleVA(word){
     else btn.classList.add("opt-dim");
     btn.disabled=true;
   });
-  if(!correct)document.getElementById("q-hint").innerHTML=`${esc(S.name)}, התשובה הנכונה היא <b dir="ltr">${esc(V.item.w)}</b>`;
+  if(!correct){recordMiss({w:V.item.w,e:V.item.e,kind:"en"});document.getElementById("q-hint").innerHTML=`${esc(S.name)}, התשובה הנכונה היא <b dir="ltr">${esc(V.item.w)}</b>`;}
   const sb=document.getElementById("btn-speak");sb.disabled=false;sb.onclick=()=>speak(V.item.w);
   commitProg({vocab:{round:V.round,i:V.i,left:TM.left}});
   setTimeout(()=>{
@@ -1362,17 +1396,77 @@ function handleMA(val){
   },1200);
 }
 
+// ─── Review my mistakes (bonus practice, not part of the graded flow) ────────
+function rvHTML(){
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">תרגול הטעויות שלי</span><p class="lead">חזרה על מה שפספסת</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span></div>
+  </div>
+  <div class="mc-prompt" id="rv-prompt"></div>
+  <div class="opts" id="q-opts"></div>
+  <button class="ghost" id="btn-rv-exit">↩ חזרה לתפריט</button>
+</section>`;
+}
+function initReview(){
+  const items=missLoad();
+  if(!items.length){S.screen="menu";render();return;}
+  const pool=[...new Set(items.map(x=>x.w))];
+  const extra=(S.subject==="hebrew"?HEB_VOCAB.map(x=>x.w):VOCAB.map(x=>x.w));
+  RV.items=items.slice(0,12);
+  RV.qs=RV.items.map(it=>{
+    const answer=it.w;
+    const cands=shuffle([...new Set([...pool,...extra])].filter(w=>w!==answer));
+    return {w:answer, prompt: it.kind==="he"?(it.d||it.w):(it.e||it.w), en: it.kind!=="he", o:shuffle([answer,...cands.slice(0,3)])};
+  });
+  RV.i=0;RV.picked=false;RV.fixed=0;
+  document.getElementById("btn-rv-exit").onclick=()=>{S.screen="menu";render();};
+  renderReviewQ();
+}
+function renderReviewQ(){
+  if(RV.i>=RV.qs.length){
+    showToast("good",RV.fixed?`תיקנת ${RV.fixed} מילים! 🎉`:"כל הכבוד!");
+    setTimeout(()=>{if(S.screen==="rv"){S.screen="menu";render();}},1400);return;
+  }
+  const q=RV.qs[RV.i];
+  document.getElementById("q-ctr").textContent=`${RV.i+1}/${RV.qs.length}`;
+  const isEmoji=q.en&&/\p{Extended_Pictographic}/u.test(q.prompt);
+  document.getElementById("rv-prompt").innerHTML=isEmoji
+    ?`<span style="font-size:64px">${q.prompt}</span>`
+    :`<span dir="${q.en?"ltr":"rtl"}">${esc(q.prompt)}</span>`;
+  document.getElementById("q-opts").innerHTML=q.o.map(o=>
+    `<button class="opt" data-val="${esc(o)}" dir="ltr"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("");
+  RV.picked=false;
+  document.getElementById("q-opts").onclick=e=>{const b=e.target.closest(".opt");if(!b||b.disabled||RV.picked)return;handleReview(b.dataset.val);};
+}
+function handleReview(val){
+  if(RV.picked)return;RV.picked=true;
+  const q=RV.qs[RV.i],correct=val===q.w;
+  if(correct){SFX.good();clearMiss(q.w);RV.fixed++;const g=gamLoad();g.coins=(g.coins||0)+1;g.xp=(g.xp||0)+5;gamSave(g);}
+  else SFX.bad();
+  document.querySelectorAll("#q-opts .opt").forEach(b=>{
+    const bv=b.dataset.val,mk=b.querySelector(".mark");
+    if(bv===q.w){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
+    else if(bv===val&&!correct){b.classList.add("opt-bad");mk.textContent="✗";mk.className="mark bad";mk.style.display="";}
+    else b.classList.add("opt-dim");
+    b.disabled=true;
+  });
+  setTimeout(()=>{if(S.screen!=="rv")return;RV.picked=false;RV.i++;renderReviewQ();},1100);
+}
+
 // ─── Actions ──────────────────────────────────────────────
 function doEnter(){
   if(!S.name.trim()||S.phone.length<9||S.busy)return;
   S.busy=true;
-  document.getElementById("btn-enter").disabled=true;
-  document.getElementById("btn-enter").textContent="רגע…";
+  const be=document.getElementById("btn-enter");
+  if(be){be.disabled=true;be.textContent="רגע…";}
   const ses=sGet(K.session(S.phone)),hist=sGet(K.results(S.phone)),seen=sGet(K.seen(S.phone));
   S.history=hist||[];S.seen=seen||[];S.busy=false;
   S.parentCode=sGet("pcode:"+S.phone)||"";
   S.avatar=sGet("avatar:"+S.phone)||S.avatar;
   sSet("avatar:"+S.phone,S.avatar);
+  // remember this student on THIS device so they skip login next time
+  sSet("me",{name:S.name,phone:S.phone,subject:S.subject,avatar:S.avatar,age:S.age});
   syncRegister();
   if(ses&&ses.screen&&ses.screen!=="done"){S.found=ses;S.screen="resume";}
   else{S.prog={};S.score=0;S.screen="menu";}   // subject already chosen on the login screen
@@ -1422,4 +1516,16 @@ function finish(){
 }
 
 // ─── Boot ─────────────────────────────────────────────────
-window.addEventListener("DOMContentLoaded",()=>render());
+window.addEventListener("DOMContentLoaded",()=>{
+  const me=sGet("me");
+  if(me&&me.phone&&me.name){
+    S.name=me.name;S.phone=me.phone;S.subject=me.subject||"english";
+    S.avatar=me.avatar||S.avatar;S.age=me.age||S.age;
+    doEnter();            // auto-login the saved student
+  }else render();
+});
+function doLogout(){
+  sDel("me");
+  S.name="";S.phone="";S.history=[];S.seen=[];S.prog={};S.score=0;S.found=null;S.lastGain=null;
+  S.screen="login";render();
+}
