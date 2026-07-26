@@ -318,13 +318,27 @@ function ensureMascot(){
   if(!document.getElementById("burst")){
     const b=document.createElement("div");b.id="burst";b.className="burst";document.body.appendChild(b);
   }
+  if(!window._kbBound){
+    window._kbBound=true;
+    document.addEventListener("keydown",e=>{
+      if(!OPTION_SCREENS.has(S.screen))return;
+      const n=({"1":1,"2":2,"3":3,"4":4})[e.key];if(!n)return;
+      const opts=[...document.querySelectorAll("#q-opts .opt")].filter(b=>!b.disabled);
+      if(opts[n-1]){e.preventDefault();opts[n-1].click();}
+    });
+  }
 }
 function showMascot(on){const m=document.getElementById("mascot");if(m){m.style.display=on?"flex":"none";m.textContent=S.avatar;}}
 function mascotReact(mood){
-  const m=document.getElementById("mascot");if(!m||m.style.display==="none")return;
-  m.textContent=S.avatar;
+  // prefer the in-card gameplay mascot; fall back to the floating corner one
+  const gf=document.getElementById("gm-face");
+  const m=(gf&&gf.offsetParent!==null)?gf:document.getElementById("mascot");
+  if(!m||m.style.display==="none")return;
+  if(m.id==="mascot")m.textContent=S.avatar;
   m.classList.remove("m-happy","m-sad");void m.offsetWidth;
   m.classList.add(mood==="happy"?"m-happy":"m-sad");
+  const bub=document.getElementById("gm-bubble");
+  if(bub)bub.textContent=(mood==="happy")?"יש! כל הכבוד 🎉":"כמעט! זה בסדר, ממשיכים 💪";
 }
 function burst(){
   const layer=document.getElementById("burst");if(!layer)return;
@@ -1142,14 +1156,28 @@ function gotoNext(cur){
   else finish();
 }
 
+const OPTION_SCREENS=new Set(["p1","p3","p4","hv","hw","hr","ma1","ma2","ma3","ma4"]);
+const ENCOURAGE=["אני איתך! נסה לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
+function gameMascotFrame(){
+  const m=curSubject().mascot||"🦉";
+  const line=ENCOURAGE[Math.floor(Math.random()*ENCOURAGE.length)];
+  return `<div class="game-mascot"><div class="gm-bubble" id="gm-bubble">${line}</div><div class="gm-face" id="gm-face">${m}</div></div>`;
+}
 function render(){
   TM.stop();
   const root=document.getElementById("exam-root");
-  root.innerHTML=topbarHTML()+(SCR_HTML[S.screen]||loginHTML)();
+  const isGame=curOrder().includes(S.screen);
+  let body=topbarHTML();
+  if(isGame) body+=gameMascotFrame();
+  body+=(SCR_HTML[S.screen]||loginHTML)();
+  if(isGame&&OPTION_SCREENS.has(S.screen)) body+=`<p class="game-tip">טיפ: אפשר לענות גם עם המקשים <b>1–4</b> ⌨️</p>`;
+  root.innerHTML=body;
+  // tint the part eyebrow pill with the current subject's gradient
+  root.style.setProperty("--subj-grad", isGame?curSubject().grad:"linear-gradient(180deg,#a78bfa,#7c3aed)");
   attachListeners();
   initPart();
   ensureMascot();
-  showMascot(curOrder().includes(S.screen)||S.screen==="rv");   // mascot on question screens
+  showMascot(S.screen==="rv");   // corner mascot only on review; gameplay uses the in-card one
   saveSession();
 }
 

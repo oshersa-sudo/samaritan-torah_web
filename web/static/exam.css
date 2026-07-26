@@ -114,10 +114,10 @@ body {
   padding: 5px 11px;
   white-space: nowrap;
 }
-/* Design v2: the part eyebrow becomes a violet pill on gameplay cards */
+/* Design v2: the part eyebrow becomes a pill in the subject's colour */
 .part-bar .eyebrow {
   display: inline-block;
-  background: linear-gradient(180deg,#a78bfa,#7c3aed);
+  background: var(--subj-grad, linear-gradient(180deg,#a78bfa,#7c3aed));
   color: #fff;
   border-radius: 999px;
   padding: 6px 13px;
@@ -126,6 +126,22 @@ body {
   font-size: 12px;
   margin-bottom: 8px;
 }
+
+/* in-card gameplay mascot + speech bubble (Design v2 exam screen) */
+.game-mascot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin: 2px 4px 12px; }
+.gm-bubble { position: relative; background: #fff; border: 2px solid #ede4ff; border-radius: 18px; padding: 10px 15px; font-size: 14px; font-weight: 600; color: var(--ink); box-shadow: 0 5px 0 rgba(139,92,246,.1); max-width: 320px; }
+.gm-bubble::after { content: ""; position: absolute; inset-inline-end: -8px; top: 50%; transform: translateY(-50%); border: 7px solid transparent; border-inline-start-color: #ede4ff; }
+.gm-face { width: 66px; height: 66px; flex: none; display: grid; place-items: center; font-size: 42px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #fff6e5, #ffe27a); box-shadow: 0 8px 18px -10px rgba(80,50,140,.5); }
+.gm-face.m-happy { animation: mjump .5s ease; }
+.gm-face.m-sad { animation: msad .5s ease; }
+@media (max-width: 460px){ .gm-face { width: 54px; height: 54px; font-size: 34px; } .gm-bubble { font-size: 13px; } }
+
+.game-tip { text-align: center; font-size: 12.5px; color: var(--ink-soft); margin: 12px 0 2px; }
+.game-tip b { color: var(--violet); }
+
+/* Design v2: options flow in a responsive grid — a row on wide screens */
+.opts { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 620px){ .opts { grid-template-columns: 1fr 1fr; } }
 
 /* ── Hourglass ── */
 .hg { display: flex; flex-direction: column; align-items: center; gap: 1px; }
