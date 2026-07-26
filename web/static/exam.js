@@ -68,7 +68,11 @@ const CLOZE = [
       "the bright hot part of a fire","men who catch fish for a living","extremely tired","small sticks used to start a fire",
       "someone admired for great courage","people who work on ships","as much as is needed",
       "a building where old or important things are shown","a space inside a building, with walls"],
-  },
+  },,
+  {"id":"c3","lvl":1,"title":"My Cat Lily","text":"I have a little {1}. Her name is Lily. She is very {2}. Every {3} she wakes me up. She likes to {4} in the sun. Her fur is soft and {5}. She has two big {6} and a long {7}. She likes to {8} with a ball. When she is happy she likes to {9}. At night she likes to {10}. I give her {11} in a bowl. She drinks {12} too. I love my {13} very much. She is my best {14}. Every day we {15} in the yard. She always makes me {16}.","answers":["cat","cute","morning","sit","warm","eyes","tail","play","purr","sleep","food","water","pet","friend","run","happy"],"decoys":["dog","cold","night","jump","small","sad"],"hints":["A small furry pet that says meow","Pretty and sweet to look at","The start of the day, when the sun comes up","To rest on your bottom, not standing","Not cold, it gives a nice gentle heat","You use these two things to see","The long part at the back of an animal","To have fun with toys","The soft rumbling sound a happy cat makes","To close your eyes and rest at night","What you eat when you are hungry","A clear drink you need every day","An animal you keep at home and love","Someone you like and spend time with","To move fast on your legs","The feeling that gives you a big smile"]},
+  {"id":"c4","lvl":2,"title":"A Day at the Park","text":"On Sunday my family went to the {1}. The sun was bright and the sky was {2}. We rode our {3} down the path. My brother wanted to {4} on the tall swings. I climbed up a big {5} to see far away. We ate lunch on a green {6} spread on the grass. Mom made tasty {7} for everyone. We drank cold {8} from a bottle. A little {9} landed near my foot and sang. We watched a {10} swimming in the pond. In the afternoon we flew a {11} in the wind. It went very {12} into the air. Then dark {13} came and it began to {14}. We ran back to the {15}. It was a wonderful {16}.","answers":["park","blue","bikes","swing","tree","blanket","sandwiches","water","bird","duck","kite","high","clouds","rain","car","day"],"decoys":["green","boat","walk","hot","flowers","field"],"hints":["A green place with trees where children play","The color of a clear, sunny sky","Two-wheeled things you ride and pedal","To move back and forth on a hanging seat","A tall plant with a trunk, branches, and leaves","A soft cloth you spread on the grass to sit on","Bread with something tasty inside","A clear drink with no color or taste","A small animal with feathers that can fly","A water bird that says quack","A toy that flies on a string in the wind","Very far up, not low","White or grey shapes that float in the sky","Water falling down from the sky","The thing with four wheels your family drives","The time from morning until night"]},
+  {"id":"c5","lvl":3,"title":"A Journey Through Space","text":"Last week our class learned about {1}. Our teacher showed us pictures of the {2} and the eight {3} that move around it. The Earth is the third planet and it is our {4}. It spins around once every {5}. At night the {6} shines by reflecting the sunlight. Brave people called {7} travel far above us inside a {8}. They wear special {9} that help them breathe. In space there is almost no {10}, so everything floats freely. Stars are giant balls of burning {11} that sit very far {12} from us. Scientists study the sky through a powerful {13}. One day humans may build a {14} on the planet Mars. I dream of becoming a space {15} when I grow up. Learning about the universe is truly {16}.","answers":["space","sun","planets","home","day","moon","astronauts","rocket","suits","gravity","gas","away","telescope","base","explorer","amazing"],"decoys":["comet","orbit","cold","robot","ground","dark"],"hints":["The huge empty place beyond our sky where stars float","The bright star at the center of our solar system","Large round worlds that orbit a star","The place where you live","A period of twenty-four hours","The round rock that circles Earth and glows at night","People trained to travel beyond Earth","A tall machine that blasts off into space","Protective clothing worn in dangerous places","The force that pulls things down to the ground","A substance like air that is not solid or liquid","Far in distance, not near","A tube-shaped tool that makes far things look closer","A main station or camp people build to live and work","A person who travels to discover new places","So wonderful it fills you with wonder"]},
+  {"id":"c6","lvl":4,"title":"The Guardian of the Forest","text":"The ancient {1} stretched for miles beneath a canopy of tall trees. A determined young {2} named Maya set out on an important {3} to save the wilderness. She carried a leather {4} filled with maps and tools. Along the muddy {5}, she discovered rare {6} that bloomed only in the shade. Suddenly a curious {7} scampered across her way and vanished into the thick {8}. Maya knew that many creatures were in terrible {9} because of pollution. She carefully gathered {10} and wrote everything down in her {11}. As the sun began to {12}, the sky glowed with brilliant {13} of orange and pink. Exhausted but proud, she found a quiet clearing to make {14}. That night she felt a deep sense of {15} for the beautiful world she was working hard to {16}.","answers":["forest","explorer","mission","backpack","path","flowers","squirrel","bushes","danger","samples","journal","set","colors","camp","gratitude","protect"],"decoys":["mountain","river","guide","compass","quest","wildlife"],"hints":["A large area thickly covered with trees","A person who travels to discover unknown places","An important task or journey with a clear goal","A bag you wear on your shoulders to carry things","A narrow track you follow through the woods","Colorful blossoms that grow on plants","A small bushy-tailed animal that climbs trees for nuts","Thick low plants growing close to the ground","A situation where something may be harmed or lost","Small pieces collected to study or prove something","A private notebook where you record daily thoughts","What the sun does in the evening as it goes down","Bright hues you see, like red, blue, and green","A temporary shelter with a tent for sleeping outdoors","A thankful feeling for something good","To keep safe from harm"]}
 ];
 
 const STORIES = [
@@ -139,7 +143,10 @@ The lesson is not that mapmakers were careless. Most were careful. The lesson is
       {q:"\"It stops being evidence and starts being background\" means the claim",o:["is forgotten","is no longer questioned","becomes secret","is proven true"],c:1},
       {q:"What finally removed the island?",o:["A captain's complaint","A four-day modern survey","A new insurance rule","Carter's confession"],c:1},
     ],
-  },
+  },,
+  {"id":"e3","lvl":2,"title":"The Lost Cat","text":"Maya had a small white cat named Snow. Every morning, Snow slept on Maya's bed. One day, Snow was not there. Maya looked under the bed and behind the door. She could not find Snow.\n\nMaya went outside to look. She looked in the garden and near the big tree. She called, \"Snow! Snow!\" But the cat did not come. Maya felt sad.\n\nThen she heard a soft sound. It came from a green box. Maya opened the box slowly. Snow was inside with three tiny kittens! The kittens were black and gray. Snow was now a mother.\n\nMaya smiled and ran to tell her mom. \"Snow has babies!\" she said. Her mom was happy too. Now Maya had four cats to love.","qpool":[{"q":"What color was Maya's cat?","o":["Black","Gray","White","Brown"],"c":2},{"q":"What was the cat's name?","o":["Snow","Maya","Kitty","Star"],"c":0},{"q":"Where did Snow usually sleep?","o":["In the garden","On Maya's bed","In a box","Near the tree"],"c":1},{"q":"How did Maya feel when she could not find Snow?","o":["Happy","Angry","Sad","Tired"],"c":2},{"q":"Where did Maya finally find Snow?","o":["Under the bed","In a green box","Behind the door","In the tree"],"c":1},{"q":"How many kittens did Snow have?","o":["Two","Three","Four","Five"],"c":1},{"q":"What colors were the kittens?","o":["White and pink","Black and gray","Brown and white","Red and blue"],"c":1},{"q":"Who did Maya tell about the babies?","o":["Her friend","Her teacher","Her mom","Her brother"],"c":2}]},
+  {"id":"e4","lvl":3,"title":"The New Bike","text":"Tom wanted a bike more than anything. All his friends had bikes, but Tom did not. His family did not have much money for a new one. Tom felt a little sad, but he did not give up.\n\nOne day, Tom's dad had an idea. \"Let's fix an old bike together,\" he said. In the garage, there was an old red bike. It had a flat tire and no seat. It looked broken and dirty.\n\nEvery weekend, Tom and his dad worked on the bike. They cleaned the metal, fixed the tire, and put on a new seat. Tom learned how to use tools. It was hard work, but it was also fun to work with his dad.\n\nAfter one month, the bike was ready. It was clean and shiny. Tom got on and rode down the street. The wind was in his hair, and he felt free. His friends came to see the bike.\n\n\"Wow, it looks great!\" said his best friend, Ben. Tom smiled. This bike was special because he had made it with his dad. It was the best bike of all.","qpool":[{"q":"What did Tom want more than anything?","o":["A dog","A bike","A game","A new house"],"c":1},{"q":"Why did Tom not have a bike at first?","o":["He did not like bikes","His family did not have much money","He was too young","He lost his old bike"],"c":1},{"q":"Whose idea was it to fix an old bike?","o":["Tom's","Ben's","Tom's dad's","Tom's mom's"],"c":2},{"q":"What color was the old bike?","o":["Blue","Green","Red","Black"],"c":2},{"q":"What was wrong with the old bike?","o":["It had a flat tire and no seat","It had no wheels","It was too small","It had no handlebars"],"c":0},{"q":"How often did Tom and his dad work on the bike?","o":["Every day","Every weekend","Once a year","Every night"],"c":1},{"q":"How long did it take to finish the bike?","o":["One week","One day","One month","One year"],"c":2},{"q":"Why was the bike special to Tom?","o":["It was very fast","He made it with his dad","It was new and expensive","It was a gift from Ben"],"c":1}]},
+  {"id":"e5","lvl":4,"title":"The Garden Surprise","text":"Emma lived in a small house with a big backyard. The backyard was empty and full of brown grass. Emma wished it could be beautiful, but she did not know how to change it. One spring day, her grandmother came to visit and brought a small brown bag.\n\n\"What is in the bag?\" Emma asked. Her grandmother smiled and opened it. Inside were many tiny seeds. \"These are flower seeds,\" she said. \"If we plant them and take care of them, they will grow into a beautiful garden.\"\n\nEmma was excited. Together, they dug small holes in the ground and put the seeds inside. Then they covered the seeds with soft soil and gave them water. \"Now we must be patient,\" said Grandmother. \"Plants need sun, water, and time to grow.\"\n\nEvery day after school, Emma watered the seeds. At first, nothing happened, and Emma felt worried. But after two weeks, tiny green leaves came out of the ground. Emma was so happy that she jumped up and down.\n\nThe weeks passed, and the plants grew taller and stronger. Then, one bright morning, Emma looked outside and gasped. The backyard was full of red, yellow, and purple flowers. Bees and butterflies flew from flower to flower.\n\nEmma called her grandmother on the phone. \"The garden is beautiful!\" she said. \"Thank you for teaching me.\" Her grandmother was proud. Emma learned that with hard work and patience, she could make something wonderful.","qpool":[{"q":"What did Emma's backyard look like at the start?","o":["Full of flowers","Empty with brown grass","Covered in snow","Full of trees"],"c":1},{"q":"Who came to visit Emma?","o":["Her friend","Her teacher","Her grandmother","Her aunt"],"c":2},{"q":"What was inside the small brown bag?","o":["Toys","Flower seeds","Food","Books"],"c":1},{"q":"What did they do after putting the seeds in the holes?","o":["Left them alone","Covered them with soil and gave water","Put them in the sun only","Took them back inside"],"c":1},{"q":"According to Grandmother, what do plants need to grow?","o":["Only water","Sun, water, and time","Only sunlight","Music and love"],"c":1},{"q":"How long did it take for the green leaves to appear?","o":["One day","Two weeks","Two months","One year"],"c":1},{"q":"What colors were the flowers in the end?","o":["Only red","Black and white","Red, yellow, and purple","Blue and green"],"c":2},{"q":"What lesson did Emma learn?","o":["Flowers are easy to grow","Grandmothers know everything","Hard work and patience make something wonderful","Bees are dangerous"],"c":2}]}
 ];
 
 const PICTURES = [
@@ -159,16 +166,19 @@ const PICTURES = [
 const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
 const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
                 hv:240,hb:210,hw:240,wg:210,hr:600,
-                ma1:240,ma2:300,ma3:360,ma4:240};
+                ma1:240,ma2:300,ma5:360,ma3:360,ma4:240,
+                sv:240,sw:240,sq:300,sr:600};
 const LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"};
 const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
                     p5:"התאמת מילים",p6:"בלונים",
                     hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",wg:"מילה או קשקוש",hr:"הבנת הנקרא",
-                    ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma3:"בעיות מילוליות",ma4:"המספר החסר"};
+                    ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma5:"שברים",ma3:"בעיות מילוליות",ma4:"המספר החסר",
+                    sv:"אוצר מילים במדע",sw:"פירוש מושגים",sq:"חידון טבע ומדע",sr:"הבנת הנקרא"};
 // answers per part → used to normalise the score to /100
 const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
                     hv:10,hb:8,hw:10,wg:10,hr:6,
-                    ma1:10,ma2:10,ma3:6,ma4:8};
+                    ma1:10,ma2:10,ma5:10,ma3:6,ma4:8,
+                    sv:10,sw:10,sq:10,sr:6};
 // subjects and their part order — every subject: 4 parts, 4 hourglasses
 const SUBJECTS = {
   english:{name:"אנגלית", icon:"🌍", desc:"מילים, שמיעה ודיבור",
@@ -179,10 +189,14 @@ const SUBJECTS = {
            grad:"linear-gradient(150deg,#a78bfa,#7c3aed)", shadow:"#6d28d9",
            mascot:"🦉", mascotName:"אוּפִּי הַיַּנְשׁוּף",
            order:["hv","hb","wg","hr"]},
-  math:   {name:"חשבון",  icon:"🧮", desc:"חיבור, כפל ובעיות מילוליות",
+  math:   {name:"חשבון",  icon:"🧮", desc:"חיבור, כפל, שברים ובעיות",
            grad:"linear-gradient(150deg,#fda4af,#e11d48)", shadow:"#be123c",
            mascot:"👨‍🏫", mascotName:"פְּרוֹפֶסוֹר חֶשְׁבּוֹן",
-           order:["ma1","ma2","ma3","ma4"]},
+           order:["ma1","ma2","ma5","ma3","ma4"]},
+  science:{name:"טבע ומדעים", icon:"🔬", desc:"עולם החי, הצומח והחלל",
+           grad:"linear-gradient(150deg,#6ee7b7,#059669)", shadow:"#047857",
+           mascot:"🦎", mascotName:"נִיבִּי הַחוֹקֶרֶת",
+           order:["sv","sw","sq","sr"]},
 };
 // friendly per-subject progress for the picker cards — the most recent grade
 // for that subject (0 if the child hasn't played it yet).
@@ -410,8 +424,11 @@ const VOICE_PROFILES={
   hebrew: {name:"אוּפִּי הַיַּנְשׁוּף",  role:"מלווה אותך בעברית", emoji:"🦉", tone:"עמוק ואיטי", lang:"he-IL", pitch:0.7, rate:0.85,
            grad:"linear-gradient(150deg,#a78bfa,#7c3aed)", shadow:"#6d28d9",
            hello:"שָׁלוֹם, אֲנִי אוּפִּי הַיַּנְשׁוּף. בּוֹא נִלְמַד עִבְרִית יַחַד."},
+  science:{name:"נִיבִּי הַחוֹקֶרֶת",   role:"מלווה אותך בטבע ומדע", emoji:"🦎", tone:"סקרני ונמרץ", lang:"he-IL", pitch:1.1, rate:0.95,
+           grad:"linear-gradient(150deg,#6ee7b7,#059669)", shadow:"#047857",
+           hello:"שָׁלוֹם, אֲנִי נִיבִּי הַחוֹקֶרֶת. בּוֹאוּ נְגַלֶּה אֶת סוֹדוֹת הַטֶּבַע!"},
 };
-const TEAM_ORDER=["dana","math","hebrew","english"];
+const TEAM_ORDER=["dana","math","hebrew","english","science"];
 function speakSample(key){
   const p=VOICE_PROFILES[key];if(!p)return;
   try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();
@@ -550,12 +567,22 @@ function launchConfetti(){
 // Hebrew-subject content (loaded from hebrew_data.js if present)
 const HEB_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.HEB_VOCAB))   ? window.HEB_VOCAB   : [];
 const HEB_STORIES = (typeof window!=="undefined" && Array.isArray(window.HEB_STORIES)) ? window.HEB_STORIES : [];
+// Nature & Science (טבע ומדעים) content — loaded from science_data.js if present.
+const SCI_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.SCI_VOCAB))   ? window.SCI_VOCAB   : [];
+const SCI_QUIZ    = (typeof window!=="undefined" && Array.isArray(window.SCI_QUIZ))    ? window.SCI_QUIZ    : [];
+const SCI_STORIES = (typeof window!=="undefined" && Array.isArray(window.SCI_STORIES)) ? window.SCI_STORIES : [];
 // Niqqud (vocalized) content for young readers (grades 1–3). Shown only when
 // the current level is 1–2 so early readers get the vowel points.
 const HEB_NQ = (typeof window!=="undefined" && window.HEB_NQ) ? window.HEB_NQ : {words:{},stories:{}};
-function youngHeb(){ return S.subject==="hebrew" && curLevel()<=2; }
-function nqW(w){ return (youngHeb() && HEB_NQ.words[w] && HEB_NQ.words[w].wn) || w; }   // display word
-function nqD(w,d){ return (youngHeb() && HEB_NQ.words[w] && HEB_NQ.words[w].dn) || d; }  // display definition
+// Science vocab carries its own inline niqqud (wn/dn); fold it into one lookup.
+const SCI_NQ_WORDS = (()=>{const m={};for(const x of SCI_VOCAB) if(x.w&&x.wn) m[x.w]={wn:x.wn,dn:x.dn||x.d};return m;})();
+// which vocab pool the current subject draws from
+function subjVocab(){ return S.subject==="science" ? SCI_VOCAB : HEB_VOCAB; }
+// young reader (grades 1–3) in a niqqud-bearing subject → show vowel points
+function youngHeb(){ return (S.subject==="hebrew"||S.subject==="science") && curLevel()<=2; }
+function nqLookup(w){ return HEB_NQ.words[w] || SCI_NQ_WORDS[w] || null; }
+function nqW(w){ const e=youngHeb()&&nqLookup(w); return (e&&e.wn) || w; }   // display word
+function nqD(w,d){ const e=youngHeb()&&nqLookup(w); return (e&&e.dn) || d; }  // display definition
 function nqStory(id){ return youngHeb() ? HEB_NQ.stories[id] : null; }
 
 // ─── Optional cloud sync (Contabo backend) ───────────────
@@ -578,6 +605,31 @@ function syncRegister(){
 function syncResult(rec){
   if(!BACKEND)return;
   beacon("/api/results",{phone:S.phone,subject:rec.subject,grade:rec.g,correct:rec.correct,total:rec.total,ts:rec.t});
+}
+// Pull this student's saved results from the server (any device) and merge them
+// into the local history, so a child sees their full progress after logging in
+// on a new phone. Guarded server-side by phone+name. Best-effort.
+function syncFetchResults(){
+  if(!BACKEND||!S.phone||!S.name)return Promise.resolve(false);
+  const q="?phone="+encodeURIComponent(S.phone)+"&name="+encodeURIComponent(S.name);
+  return fetch(BACKEND+"/api/student/results"+q).then(r=>r.json()).then(j=>{
+    if(!j||!j.ok||!Array.isArray(j.results))return false;
+    const local=S.history||[];
+    const seenTs=new Set(local.map(r=>r.t));
+    let merged=[...local];
+    for(const row of j.results){
+      const t=Number(row.ts)||0; if(!t||seenTs.has(t))continue;
+      seenTs.add(t);
+      merged.push({t,name:j.name||S.name,subject:row.subject||"english",
+        lvl:0,correct:row.correct|0,total:row.total|0,g:row.grade|0});
+    }
+    if(merged.length===local.length)return false;
+    merged.sort((a,b)=>b.t-a.t); merged=merged.slice(0,30);
+    S.history=merged; sSet(K.results(S.phone),merged);
+    // if the student is looking at a screen that shows history, refresh it
+    if(S.screen==="subject"||S.screen==="parents"||S.screen==="done")render();
+    return true;
+  }).catch(()=>false);
 }
 
 // ─── Timer ────────────────────────────────────────────────
@@ -723,7 +775,8 @@ function resumeHTML(){
 const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3:"שאלות · 10 דק׳",p4:"תמונות · 10 דק׳",
                    p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",
                    hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",wg:"משחק · 3.5 דק׳",hr:"שאלות · 10 דק׳",
-                   ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳"};
+                   ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma5:"שברים · 6 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳",
+                   sv:"מילים · 4 דק׳",sw:"מושגים · 4 דק׳",sq:"חידון · 5 דק׳",sr:"שאלות · 10 דק׳"};
 
 function subjectHTML(){
   const gm=gamLoad();
@@ -1012,6 +1065,8 @@ const HM = {};
 const HEB_MC_CFG = {
   hv:{eyebrow:"עברית · אוצר מילים", lead:"איזו מילה מתאימה להגדרה?", prompt:"d", answer:"w"},
   hw:{eyebrow:"עברית · פירוש מילים", lead:"מה הפירוש של המילה?",      prompt:"w", answer:"d"},
+  sv:{eyebrow:"טבע ומדעים · אוצר מילים", lead:"איזה מושג מתאים להגדרה?", prompt:"d", answer:"w"},
+  sw:{eyebrow:"טבע ומדעים · פירוש מושגים", lead:"מה פירוש המושג?",       prompt:"w", answer:"d"},
 };
 function mcHTML(){
   const c=HEB_MC_CFG[S.screen]||HEB_MC_CFG.hv, t=TIME[S.screen]??240;
@@ -1029,7 +1084,7 @@ function initHebMC(){
   const scr=S.screen,cfg=HEB_MC_CFG[scr]||HEB_MC_CFG.hv;
   const lvl=curLevel(),n=PART_QUOTA[scr]||10,t=TIME[scr]??240;
   const saved=S.prog[scr];
-  const src=(HEB_VOCAB.length?HEB_VOCAB:[]).filter(x=>x.w&&x.d);
+  const src=(subjVocab().length?subjVocab():[]).filter(x=>x.w&&x.d);
   if(saved&&saved.qs){HM.qs=saved.qs;HM.i=saved.i||0;}
   else{
     const pool=nearLevel(src,lvl,Math.max(n+4,8));
@@ -1047,7 +1102,7 @@ function initHebMC(){
   TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
 function renderHebMCQ(){
-  const q=HM.qs[HM.i], hv=(S.screen==="hv");
+  const q=HM.qs[HM.i], hv=(S.screen==="hv"||S.screen==="sv");
   // young readers (grades 1–3): show niqqud. hv prompt=definition, options=words
   const promptDisp = hv ? nqD(q.w,q.p) : q.p;
   const optDisp = o => hv ? nqW(o) : o;
@@ -1079,6 +1134,66 @@ function handleHebMC(val){
     if(S.screen!==scr)return;
     HM.picked=false;HM.i++;
     if(HM.i>=HM.qs.length)gotoNext(scr);else renderHebMCQ();
+  },1200);
+}
+
+// ─── Nature & Science quiz (sq) — general-knowledge trivia ──────────────────
+const SQ={};
+function sqHTML(){
+  const t=TIME.sq;
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">טבע ומדעים · חידון</span><p class="lead">מה התשובה הנכונה?</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.sq?.left??t,t)}</span></div>
+  </div>
+  <div class="mc-prompt" id="sq-prompt" dir="rtl"></div>
+  <button class="ghost sm" id="sq-hint">💡 רמז / הקראה</button>
+  <div class="opts" id="q-opts"></div>
+</section>`;
+}
+function initSciQuiz(){
+  const lvl=curLevel(),n=PART_QUOTA.sq,t=TIME.sq,saved=S.prog.sq;
+  const src=SCI_QUIZ.filter(x=>x.q&&Array.isArray(x.o));
+  if(saved&&saved.qs){SQ.qs=saved.qs;SQ.i=saved.i||0;}
+  else{
+    const pool=nearLevel(src,lvl,Math.max(n+4,8));
+    SQ.qs=pickFresh(pool,"sciq",n,x=>x.q);
+    SQ.i=0;
+  }
+  SQ.picked=false;
+  renderSciQ();
+  TM.start(saved?.left??t,t,()=>gotoNext("sq"));
+}
+function renderSciQ(){
+  const q=SQ.qs[SQ.i];
+  document.getElementById("q-ctr").textContent=`${SQ.i+1}/${SQ.qs.length}`;
+  document.getElementById("sq-prompt").innerHTML=`<span dir="rtl">${esc(q.q)}</span>`;
+  const hb=document.getElementById("sq-hint");
+  if(hb)hb.onclick=()=>{ if(q.hint)showToast("info",q.hint); speakHe(q.q); };
+  document.getElementById("q-opts").innerHTML=q.o.map((o,i)=>
+    `<button class="opt" data-idx="${i}" dir="rtl"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("");
+  SQ.picked=false;
+  document.getElementById("q-opts").onclick=e=>{
+    const b=e.target.closest(".opt");if(!b||b.disabled||SQ.picked)return;
+    handleSciQ(parseInt(b.dataset.idx,10));
+  };
+}
+function handleSciQ(idx){
+  if(SQ.picked)return;SQ.picked=true;
+  const q=SQ.qs[SQ.i],correct=idx===q.c;
+  if(correct){addScore(1);SFX.good();}else SFX.bad();
+  document.querySelectorAll("#q-opts .opt").forEach(b=>{
+    const bi=parseInt(b.dataset.idx,10),mk=b.querySelector(".mark");
+    if(bi===q.c){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
+    else if(bi===idx&&!correct){b.classList.add("opt-bad");mk.textContent="✗";mk.className="mark bad";mk.style.display="";}
+    else b.classList.add("opt-dim");
+    b.disabled=true;
+  });
+  commitProg({sq:{qs:SQ.qs,i:SQ.i,left:TM.left}});
+  setTimeout(()=>{
+    if(S.screen!=="sq")return;
+    SQ.picked=false;SQ.i++;
+    if(SQ.i>=SQ.qs.length)gotoNext("sq");else renderSciQ();
   },1200);
 }
 
@@ -1197,6 +1312,7 @@ function handleWordGame(ans,btn){
 const MATH_CFG = {
   ma1:{eyebrow:"חשבון · חיבור וחיסור",  lead:"בחר/י את התשובה הנכונה", type:"addsub"},
   ma2:{eyebrow:"חשבון · כפל וחילוק",    lead:"בחר/י את התשובה הנכונה", type:"muldiv"},
+  ma5:{eyebrow:"חשבון · שברים",          lead:"בחר/י את התשובה הנכונה", type:"frac"},
   ma3:{eyebrow:"חשבון · בעיות מילוליות", lead:"קרא/י ובחר/י תשובה",      type:"word"},
   ma4:{eyebrow:"חשבון · המספר החסר",     lead:"איזה מספר משלים?",        type:"missing"},
 };
@@ -1302,7 +1418,8 @@ function doneHTML(){
 const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuHTML,
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
   hv:mcHTML,hb:matchHTML,hw:mcHTML,wg:wgHTML,hr:readingHTML,
-  ma1:mathHTML,ma2:mathHTML,ma3:mathHTML,ma4:mathHTML,
+  ma1:mathHTML,ma2:mathHTML,ma5:mathHTML,ma3:mathHTML,ma4:mathHTML,
+  sv:mcHTML,sw:mcHTML,sq:sqHTML,sr:readingHTML,
   rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML,gplay:gplayHTML};
 
 function gotoNext(cur){
@@ -1317,7 +1434,7 @@ function gotoNext(cur){
 
 // screens whose answers are 4 tappable options → show the "keys 1–4" tip and
 // wire number-key answering. (p4 = free-text describe, so it is excluded.)
-const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hr","ma1","ma2","ma3","ma4"]);
+const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hr","ma1","ma2","ma5","ma3","ma4","sv","sw","sq","sr"]);
 const ENCOURAGE=["אני איתך! נסה לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
 function gameMascotFrame(){
   const m=curSubject().mascot||"🦉";
@@ -1498,10 +1615,11 @@ function initPart(){
   else if(S.screen==="p4")initDescribe();
   else if(S.screen==="p5")initMatch();
   else if(S.screen==="p6")initBalloons();
-  else if(S.screen==="hv"||S.screen==="hw")initHebMC();
+  else if(S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw")initHebMC();
   else if(S.screen==="hb")initHebMatch();
   else if(S.screen==="wg")initWordGame();
-  else if(S.screen==="hr")initReading();
+  else if(S.screen==="hr"||S.screen==="sr")initReading();
+  else if(S.screen==="sq")initSciQuiz();
   else if(S.screen[0]==="m"&&S.screen[1]==="a")initMath();
   else if(S.screen==="rv")initReview();
 }
@@ -1543,7 +1661,7 @@ function showToast(kind,text){
   let t=document.getElementById("app-toast");if(t)t.remove();
   t=document.createElement("div");t.id="app-toast";
   t.className=`toast toast-${kind}`;
-  t.innerHTML=`<span class="toast-mark">${kind==="good"?"✓":"✗"}</span><span>${esc(text)}</span>`;
+  t.innerHTML=`<span class="toast-mark">${kind==="good"?"✓":kind==="info"?"💡":"✗"}</span><span>${esc(text)}</span>`;
   document.body.appendChild(t);
   setTimeout(()=>{if(t.parentNode)t.remove();},1600);
 }
@@ -1729,24 +1847,26 @@ function handleCP(){
 // ─── Part 3: Reading ──────────────────────────────────────
 function initReading(){
   const saved=S.prog.reading,lvl=curLevel();
-  const set=(S.screen==="hr")?HEB_STORIES:STORIES;
+  const heRead=(S.screen==="hr"||S.screen==="sr");   // right-to-left Hebrew reading
+  const set=(S.screen==="hr")?HEB_STORIES:(S.screen==="sr")?SCI_STORIES:STORIES;
   const src0=set.length?set:STORIES;
-  const qquota=(S.screen==="hr")?PART_QUOTA.hr:QUOTA.reading;
+  const qquota=heRead?PART_QUOTA[S.screen]:QUOTA.reading;
   if(saved&&saved.id)R.story=src0.find(x=>x.id===saved.id)||src0[0];
   else{
     const pool=src0.filter(x=>Math.abs(x.lvl-lvl)<=2);
     const src=pool.length?pool:src0;
     R.story=pickFreshOne(src,"story:"+S.screen);
   }
-  R.rtl=(S.screen==="hr");
-  R.nq=(S.screen==="hr")?nqStory(R.story.id):null;   // vocalized story for young readers
+  R.rtl=heRead;
+  R.nq=heRead?nqStory(R.story.id):null;   // vocalized story for young readers
   R.qIdx   =saved?.qIdx??shuffle(R.story.qpool.map((_,k)=>k)).slice(0,qquota);
   R.qi     =saved?.qi??0;
   R.reading=saved?.qi?false:true;
   R.picked =null;
   document.getElementById("story-ttl").textContent=R.story.title;
   refreshRV();
-  TM.start(saved?.left??TIME[S.screen==="hr"?"hr":"reading"],TIME[S.screen==="hr"?"hr":"reading"],()=>gotoNext(S.screen));
+  const rt=TIME[heRead?S.screen:"reading"];
+  TM.start(saved?.left??rt,rt,()=>gotoNext(S.screen));
 }
 
 function refreshRV(){
@@ -2087,7 +2207,42 @@ function _genMathQ(lvl,type){
     if(Math.random()<0.5){const x=R(1,mx),y=R(1,mx);return {t:`${x} + ? = ${x+y}`,a:y,eq:false};}
     const y=R(1,mx),x=R(y+1,mx+y);return {t:`${x} − ? = ${x-y}`,a:y,eq:false};
   }
+  if(type==="frac") return _genFracQ(lvl);
   return _genWordProblem(lvl);            // type === "word"
+}
+// ── Fractions (שברים): grows from "a fraction of a whole" up to +−×÷ of fractions
+const _gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=a%b;a=b;b=t;}return a||1;};
+function _fr(n,d){const g=_gcd(n,d);n=n/g;d=d/g;return d===1?String(n):`${n}/${d}`;}
+function _fracOpts(n,d){
+  const ans=_fr(n,d),set=new Set([ans]);
+  const cands=[[n+d,d],[n,d+1],[n+1,d],[Math.max(1,n-1),d],[n,Math.max(2,d-1)],[n+1,d+1],[d,Math.max(1,n)]];
+  for(const [a,b] of cands){ if(set.size>=4)break; const f=_fr(a,b); if(f!==ans&&!set.has(f))set.add(f); }
+  let k=2; while(set.size<4){ set.add(_fr(n+k,d)); k++; if(k>20)break; }
+  return shuffle([...set]).slice(0,4);
+}
+function _genFracQ(lvl){
+  const R=_mrand;
+  if(lvl<=2){                                   // "רבע מ-12" → whole-number answer
+    const opts=lvl<=1?[[2,"חצי"],[4,"רבע"]]:[[2,"חצי"],[3,"שליש"],[4,"רבע"]];
+    const [d,name]=opts[R(0,opts.length-1)],q=R(2,9),whole=d*q;
+    return {t:`כמה זה ${name} מ-${whole}?`,a:q,rtl:true,eq:false};
+  }
+  let rn,rd,t;
+  if(lvl===3){                                  // same-denominator add / subtract, or simplify
+    const d=R(3,9);
+    if(Math.random()<0.4){const g=R(2,4),n=R(1,d-1);rn=n;rd=d;t=`${n*g}/${d*g}`;return {t:`כמה זה ${t} בצורה מצומצמת?`,rtl:false,frac:true,ans:_fr(rn,rd),opts:_fracOpts(rn,rd)};}
+    const a=R(1,d-1),b=R(1,d-1);
+    if(Math.random()<0.5){rn=a+b;rd=d;t=`${a}/${d} + ${b}/${d}`;}
+    else{const hi=Math.max(a,b),lo=Math.min(a,b);rn=hi-lo;rd=d;t=`${hi}/${d} − ${lo}/${d}`;}
+  }else if(lvl===4){                            // different denominators: add or multiply
+    const d1=R(2,5),n1=R(1,d1-1),d2=R(2,5),n2=R(1,d2-1);
+    if(Math.random()<0.5){rn=n1*n2;rd=d1*d2;t=`${n1}/${d1} × ${n2}/${d2}`;}
+    else{rn=n1*d2+n2*d1;rd=d1*d2;t=`${n1}/${d1} + ${n2}/${d2}`;}
+  }else{                                        // lvl 5 — fraction division & mixed
+    const d1=R(2,6),n1=R(1,d1),d2=R(2,6),n2=R(1,d2);
+    rn=n1*d2;rd=d1*n2;t=`${n1}/${d1} ÷ ${n2}/${d2}`;
+  }
+  return {t,rtl:false,frac:true,ans:_fr(rn,rd),opts:_fracOpts(rn,rd)};
 }
 
 function _genWordProblem(lvl){
@@ -2114,26 +2269,28 @@ function initMath(){
 }
 function renderMathQ(){
   const q=MA.qs[MA.i];
-  MA.opts=_mkOpts(q.a);
+  MA.opts=q.frac?q.opts:_mkOpts(q.a);
   document.getElementById("q-ctr").textContent=`${MA.i+1}/${MA.qs.length}`;
   document.getElementById("math-q").innerHTML = q.rtl
     ? `<span dir="rtl" class="math-word">${esc(q.t)}</span>`
-    : `<span dir="ltr">${esc(q.t)}${q.eq?" =":""}</span>`;
+    : `<span dir="ltr">${esc(q.t)}${q.eq?" =":q.frac?" =":""}</span>`;
   document.getElementById("q-opts").innerHTML=MA.opts.map(o=>
-    `<button class="opt opt-center" data-val="${o}"><span dir="ltr">${o}</span><span class="mark" style="display:none"></span></button>`).join("");
+    `<button class="opt opt-center" data-val="${esc(String(o))}"><span dir="ltr">${esc(String(o))}</span><span class="mark" style="display:none"></span></button>`).join("");
   MA.picked=false;
   document.getElementById("q-opts").onclick=e=>{
     const b=e.target.closest(".opt");if(!b||b.disabled||MA.picked)return;
-    handleMA(parseFloat(b.dataset.val));
+    handleMA(b.dataset.val);
   };
 }
 function handleMA(val){
   if(MA.picked)return;MA.picked=true;
-  const q=MA.qs[MA.i],correct=Math.abs(val-q.a)<1e-9;
+  const q=MA.qs[MA.i];
+  const isAns=b=>q.frac?(b===q.ans):(Math.abs(parseFloat(b)-q.a)<1e-9);
+  const correct=isAns(val);
   if(correct){addScore(1);SFX.good();}else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
-    const bv=parseFloat(b.dataset.val),mk=b.querySelector(".mark");
-    if(Math.abs(bv-q.a)<1e-9){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
+    const bv=b.dataset.val,mk=b.querySelector(".mark");
+    if(isAns(bv)){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
     else if(bv===val&&!correct){b.classList.add("opt-bad");mk.textContent="✗";mk.className="mark bad";mk.style.display="";}
     else b.classList.add("opt-dim");
     b.disabled=true;
@@ -2163,7 +2320,7 @@ function initReview(){
   const items=missLoad();
   if(!items.length){S.screen="menu";render();return;}
   const pool=[...new Set(items.map(x=>x.w))];
-  const extra=(S.subject==="hebrew"?HEB_VOCAB.map(x=>x.w):VOCAB.map(x=>x.w));
+  const extra=((S.subject==="hebrew"||S.subject==="science")?subjVocab().map(x=>x.w):VOCAB.map(x=>x.w));
   RV.items=items.slice(0,12);
   RV.qs=RV.items.map(it=>{
     const answer=it.w;
@@ -2242,6 +2399,7 @@ function doEnter(){
   // remember this student on THIS device so they skip login next time
   sSet("me",{name:S.name,phone:S.phone,subject:S.subject,avatar:S.avatar,age:S.age});
   syncRegister();
+  syncFetchResults();   // pull any results saved from other devices
   if(ses&&ses.screen&&ses.screen!=="done"){S.found=ses;S.screen="resume";}
   else{S.prog={};S.score=0;S.screen="menu";}   // subject already chosen on the login screen
   render();
@@ -2266,14 +2424,15 @@ function saveCurrentProg(){
   else if((S.screen==="p5"||S.screen==="hb")&&M.pairs)commitProg({match:matchState()});
   else if(S.screen==="p6"&&B.pairs)commitProg({balloons:balloonState()});
   else if(S.screen[0]==="m"&&S.screen[1]==="a"&&MA.qs)commitProg({[S.screen]:mathState()});
-  else if((S.screen==="hv"||S.screen==="hw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
+  else if((S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
   else if(S.screen==="wg"&&WG.qs)commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
-  else if(S.screen==="hr"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
+  else if(S.screen==="sq"&&SQ.qs)commitProg({sq:{qs:SQ.qs,i:SQ.i,left:TM.left}});
+  else if((S.screen==="hr"||S.screen==="sr")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
 }
 // which S.prog key holds a given part's saved state (for the "+time" feature)
 function progKeyFor(scr){
   return ({p1:"vocab",p2:"cloze",p3:"reading",p4:"pics",p5:"match",hb:"match",
-           p6:"balloons",hr:"reading",wg:"wg"})[scr] || scr;
+           p6:"balloons",hr:"reading",sr:"reading",wg:"wg"})[scr] || scr;
 }
 function pauseAddTime(sec){
   const k=progKeyFor(S.pausedFrom);
@@ -2312,6 +2471,7 @@ window.addEventListener("DOMContentLoaded",()=>{
     S.seen=sGet(K.seen(S.phone))||[];
     S.parentCode=sGet("pcode:"+S.phone)||"";
     syncRegister();
+    syncFetchResults();   // pull any results saved from other devices
     const ses=sGet(K.session(S.phone));
     if(ses&&ses.screen&&ses.screen!=="done"){S.found=ses;S.screen="resume";}
     else S.screen="subject";   // the main home hub

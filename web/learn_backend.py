@@ -212,6 +212,27 @@ def resend():
     return jsonify(out)
 
 # ─── Results sync ──────────────────────────────────────────────────────────
+@bp.route("/api/student/results")
+def student_results():
+    # A student fetches their OWN results on any device. Guarded by knowing
+    # BOTH the phone and the exact registered name (a light shared secret) —
+    # so results follow the child across devices without exposing them to a
+    # bare phone-number lookup.
+    phone = norm_phone(request.args.get("phone"))
+    name  = (request.args.get("name") or "").strip()
+    if not PHONE_RE.match(phone) or not name:
+        return jerr("phone and name required", 400)
+    with db() as c:
+        st = c.execute("SELECT name FROM students WHERE phone=?", (phone,)).fetchone()
+        if not st:
+            return jerr("not found", 404)
+        if (st["name"] or "").strip() != name:
+            return jerr("name does not match", 403)
+        rows = [dict(r) for r in c.execute(
+            "SELECT subject,grade,correct,total,ts FROM results WHERE phone=? ORDER BY ts DESC LIMIT 60",
+            (phone,)).fetchall()]
+    return jsonify({"ok": True, "name": st["name"], "results": rows})
+
 @bp.route("/api/results", methods=["POST"])
 def post_result():
     d = request.get_json(silent=True) or {}
