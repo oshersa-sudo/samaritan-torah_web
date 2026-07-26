@@ -239,6 +239,24 @@ const nearLevel = (items,lvl,min=6) => {
   while(out.length<min&&span<5){out=items.filter(i=>Math.abs(i.lvl-lvl)<=span);span++;}
   return out.length?out:items;
 };
+// ─── Freshness: don't hand the same student the same items twice in a row ────
+// Per-student, per-kind memory of what was already served; selection prefers
+// unseen items and only recycles once the pool is exhausted.
+const _idOf = x => (x&&x.id!=null)?x.id : (x&&x.w!=null)?x.w : (x&&x.title!=null)?x.title : String(x);
+function seenGet(kind){ return (S.phone&&sGet(`seen:${S.phone}:${kind}`))||[]; }
+function seenSet(kind,arr,cap){ if(S.phone)sSet(`seen:${S.phone}:${kind}`,arr.slice(-Math.max(cap||0,1))); }
+// pick up to n items from pool, preferring ones not recently seen; records them
+function pickFresh(pool,kind,n,idFn){
+  idFn=idFn||_idOf;
+  const seen=new Set(seenGet(kind));
+  let fresh=pool.filter(x=>!seen.has(idFn(x)));
+  if(fresh.length<n){ fresh=pool.slice(); seen.clear(); }   // pool exhausted → new cycle
+  const chosen=shuffle(fresh).slice(0,Math.min(n,pool.length));
+  chosen.forEach(x=>seen.add(idFn(x)));
+  seenSet(kind,[...seen],pool.length);
+  return chosen;
+}
+const pickFreshOne=(pool,kind,idFn)=>pickFresh(pool,kind,1,idFn)[0];
 const grade  = c => Math.round((c/subjTotal())*100);
 const fmtDate= t => new Date(t).toLocaleDateString("he-IL",{day:"2-digit",month:"2-digit",year:"2-digit"});
 
@@ -810,11 +828,14 @@ const GP={};
 function launchGame(gi){
   const a=(GL.CATALOG||[])[gi];if(!a)return;
   const sj=GL_SUBJ[a.subj]||GL_SUBJ.he;
-  let qs=(GL.getQuestions?GL.getQuestions({activity:a.t,subject:a.subj}):(GL.BANK[a.subj]||[]));
-  qs=(qs||[]).slice(0,8);
-  if(!qs.length){showToast("bad","למשחק הזה עוד אין שאלות");return;}
+  let raw=(GL.getQuestions?GL.getQuestions({activity:a.t,subject:a.subj}):(GL.BANK[a.subj]||[]));
   const young=levelForAge(S.age)<=1;
-  const fromBank=!(GL.ACTQ&&GL.ACTQ[a.t]&&GL.ACTQ[a.t].length);   // vocalized only maps to BANK order
+  const fromBank=!(GL.ACTQ&&GL.ACTQ[a.t]&&GL.ACTQ[a.t].length);   // vocalized maps by BANK index
+  // tag each question with its original bank index (for niqqud), then pick a
+  // FRESH set so the same student isn't handed the same questions each time.
+  const tagged=(raw||[]).map((q,i)=>({...q,_bi:fromBank?i:null}));
+  if(!tagged.length){showToast("bad","למשחק הזה עוד אין שאלות");return;}
+  const qs=pickFresh(tagged,"gplay:"+a.t,Math.min(8,tagged.length),q=>q.prompt);
   GP.gi=gi;GP.a=a;GP.sj=sj;GP.subj=a.subj;GP.young=young&&fromBank;GP.qs=qs;GP.i=0;GP.correct=0;GP.picked=false;
   S.returnTo="catalog";S.screen="gplay";render();
 }
@@ -834,7 +855,7 @@ function gplayHTML(){
     </section>`;
   }
   let q=GP.qs[GP.i];
-  if(GP.young&&GL.vocalized){const v=GL.vocalized(GP.subj,GP.i,q);q={...q,prompt:v.prompt,hint:v.hint,opts:v.opts};}
+  if(GP.young&&GL.vocalized){const v=GL.vocalized(GP.subj,(q._bi!=null?q._bi:GP.i),q);q={...q,prompt:v.prompt,hint:v.hint,opts:v.opts};}
   GP._q=q;
   const order=GL.shuffleOptions?GL.shuffleOptions(q,GP.i,GP.subj):q.opts.map((_,i)=>i);
   GP._order=order;
@@ -1012,7 +1033,7 @@ function initHebMC(){
   if(saved&&saved.qs){HM.qs=saved.qs;HM.i=saved.i||0;}
   else{
     const pool=nearLevel(src,lvl,Math.max(n+4,8));
-    HM.qs=shuffle(pool).slice(0,n).map(it=>{
+    HM.qs=pickFresh(pool,"hebmc:"+scr,n,x=>x.w).map(it=>{
       const answer=it[cfg.answer], opts=[answer];
       for(const o of shuffle(pool.filter(x=>x[cfg.answer]!==answer)).map(x=>x[cfg.answer])){
         if(opts.length>=4)break; if(!opts.includes(o))opts.push(o);
@@ -1124,7 +1145,7 @@ function initWordGame(){
   if(saved&&saved.qs){WG.qs=saved.qs;WG.i=saved.i||0;}
   else{
     const pool=nearLevel(src,lvl,Math.max(n+4,10));
-    const picks=shuffle(pool).slice(0,n);
+    const picks=pickFresh(pool,"wg",n,x=>x.w);
     WG.qs=picks.map((it,idx)=>{
       const real=(idx%2===0);                       // exactly half real, then shuffled
       return real
@@ -1597,7 +1618,7 @@ function initCloze(){
   else{
     const pool=CLOZE.filter(x=>Math.abs(x.lvl-lvl)<=2);
     const src=pool.length?pool:CLOZE;
-    C.item=src[Math.floor(Math.random()*src.length)];
+    C.item=pickFreshOne(src,"cloze");
   }
   C.bank  =saved?.bank??shuffle([...C.item.answers,...C.item.decoys]);
   C.filled=saved?.filled??{};
@@ -1715,7 +1736,7 @@ function initReading(){
   else{
     const pool=src0.filter(x=>Math.abs(x.lvl-lvl)<=2);
     const src=pool.length?pool:src0;
-    R.story=src[Math.floor(Math.random()*src.length)];
+    R.story=pickFreshOne(src,"story:"+S.screen);
   }
   R.rtl=(S.screen==="hr");
   R.nq=(S.screen==="hr")?nqStory(R.story.id):null;   // vocalized story for young readers
@@ -1842,7 +1863,7 @@ function initMatch(){
   if(saved&&saved.pairs){M.pairs=saved.pairs;M.leftOrder=saved.leftOrder;M.rightOrder=saved.rightOrder;M.solved=new Set(saved.solved||[]);}
   else{
     const pool=nearLevel(VOCAB,lvl,QUOTA.match).filter(x=>x.h);
-    M.pairs=shuffle(pool).slice(0,QUOTA.match).map(x=>({w:x.w,h:x.h}));
+    M.pairs=pickFresh(pool,"match:en",QUOTA.match,x=>x.w).map(x=>({w:x.w,h:x.h}));
     M.leftOrder=shuffle(M.pairs.map((_,k)=>k));
     M.rightOrder=shuffle(M.pairs.map((_,k)=>k));
     M.solved=new Set();
@@ -1859,7 +1880,7 @@ function initHebMatch(){
   else{
     const src=HEB_VOCAB.length?HEB_VOCAB:[{w:"בית",d:"מקום מגורים",lvl:1},{w:"שמח",d:"מרוצה",lvl:1},{w:"גדול",d:"רב־ממדים",lvl:1},{w:"מהיר",d:"זריז",lvl:2},{w:"יפה",d:"נאה",lvl:2},{w:"חכם",d:"נבון",lvl:2},{w:"קר",d:"צונן",lvl:1},{w:"חזק",d:"איתן",lvl:2}];
     const pool=nearLevel(src.filter(x=>x.d),lvl,n);
-    M.pairs=shuffle(pool).slice(0,n).map(x=>({w:x.w,h:x.d}));
+    M.pairs=pickFresh(pool,"match:he",n,x=>x.w).map(x=>({w:x.w,h:x.d}));
     M.leftOrder=shuffle(M.pairs.map((_,k)=>k));
     M.rightOrder=shuffle(M.pairs.map((_,k)=>k));
     M.solved=new Set();
@@ -1937,7 +1958,7 @@ function initBalloons(){
   if(saved&&saved.pairs){B.pairs=saved.pairs;B.topOrder=saved.topOrder;B.botOrder=saved.botOrder;B.solved=new Set(saved.solved||[]);}
   else{
     const pool=nearLevel(VOCAB.filter(x=>x.e),lvl,QUOTA.balloons);
-    B.pairs=shuffle(pool).slice(0,QUOTA.balloons).map(x=>({w:x.w,e:x.e,h:x.h}));
+    B.pairs=pickFresh(pool,"balloons",QUOTA.balloons,x=>x.w).map(x=>({w:x.w,e:x.e,h:x.h}));
     B.topOrder=shuffle(B.pairs.map((_,k)=>k));
     B.botOrder=shuffle(B.pairs.map((_,k)=>k));
     B.solved=new Set();
