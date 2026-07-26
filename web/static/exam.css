@@ -576,6 +576,12 @@ body {
 /* ═══════════ Gamification (Phase 1) ═══════════ */
 .done-card { position: relative; overflow: hidden; text-align: center; }
 .done-card .eyebrow, .done-card h1, .done-card .sub { text-align: center; }
+/* short celebration clip — empty until (and unless) a clip loads */
+.done-clip { display: flex; justify-content: center; }
+.done-clip:empty { display: none; }
+.done-clip .clip-vid { width: 190px; height: 130px; object-fit: cover; border-radius: 18px; margin: 2px auto 8px; box-shadow: 0 10px 24px -12px rgba(11,36,48,.5); animation: popin .4s both; }
+/* generic inline clip (living picture) */
+.clip-vid { max-width: 100%; }
 .stars { font-size: 40px; letter-spacing: 6px; margin: 4px 0 2px; }
 .stars .star { color: #DCE9EE; }
 .stars .star.on { color: #FFB627; text-shadow: 0 2px 6px rgba(255,182,39,.5); animation: pop .35s ease-out both; }

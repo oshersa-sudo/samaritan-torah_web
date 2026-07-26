@@ -324,6 +324,39 @@ function showPic(id,item){
     img.src=url;   // if it errors, the emoji simply stays
   });
 }
+// Short kid-safe video clips (same Pixabay key). Used sparingly — muted,
+// looping, autoplaying — so they add life without stealing attention or
+// eating bandwidth during timed drills.
+const _vidCache={};
+function _vidFetch(query){
+  if(!PIC_API)return Promise.resolve(null);
+  if(query in _vidCache)return Promise.resolve(_vidCache[query]);
+  const q=encodeURIComponent(query);
+  return fetch(`https://pixabay.com/api/videos/?key=${PIC_API}&q=${q}&safesearch=true&per_page=8`)
+    .then(r=>r.json()).then(j=>{
+      const hits=(j&&j.hits)||[];
+      const pick=hits.length?hits[Math.floor(Math.random()*hits.length)]:null;
+      const v=pick&&pick.videos&&(pick.videos.tiny||pick.videos.small||pick.videos.medium);
+      _vidCache[query]=(v&&v.url)||null;return _vidCache[query];
+    }).catch(()=>null);
+}
+// Drop a tiny looping clip into a container, fading in over whatever was there.
+function showClip(id,query){
+  if(!PIC_API)return;
+  _vidFetch(query).then(url=>{
+    if(!url)return;
+    const c=document.getElementById(id);if(!c)return;
+    const v=document.createElement("video");
+    v.className="clip-vid";v.src=url;
+    v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;
+    v.setAttribute("muted","");v.setAttribute("playsinline","");
+    v.onerror=()=>{ if(v.parentNode)v.parentNode.removeChild(v); };   // broken clip → vanish
+    c.innerHTML="";c.appendChild(v);
+    const p=v.play&&v.play();if(p&&p.catch)p.catch(()=>{});
+  });
+}
+// A rotating set of cheerful, unmistakably kid-safe celebration searches.
+const CELEBRATE_Q=["confetti","fireworks","balloons","celebration","party","happy kids"];
 
 // ─── Mistakes store (spaced-repetition review) ───────────────────────────────
 function missKey(){return `miss:${S.phone}:${S.subject}`;}
@@ -849,6 +882,7 @@ function doneHTML(){
     ?`<ul class="hist">${S.history.slice(0,5).map(r=>`<li><span>${fmtDate(r.t)}</span><b>${r.g}/100</b></li>`).join("")}</ul>`:"";
   return `<section class="card hero done-card">
   <div class="confetti" id="confetti"></div>
+  <div class="done-clip" id="done-clip"></div>
   <div class="stars">${stars}</div>
   <span class="eyebrow">סיימת</span>
   <h1>${g} <small class="of">/100</small></h1>
@@ -954,7 +988,11 @@ function attachListeners(){
   if(S.screen==="done"){
     document.getElementById("btn-again").addEventListener("click",()=>{S.score=0;S.prog={};S.lastGain=null;S.screen="menu";render();});
     launchConfetti();
-    if((S.lastGain?.stars||0)>=2)SFX.good();
+    if((S.lastGain?.stars||0)>=2){
+      SFX.good();
+      // reward a good round with a short, kid-safe celebration clip
+      showClip("done-clip",CELEBRATE_Q[Math.floor(Math.random()*CELEBRATE_Q.length)]);
+    }
   }
 }
 
