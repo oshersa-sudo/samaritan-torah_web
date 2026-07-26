@@ -321,7 +321,7 @@ function ensureMascot(){
   if(!window._kbBound){
     window._kbBound=true;
     document.addEventListener("keydown",e=>{
-      if(!OPTION_SCREENS.has(S.screen))return;
+      if(!OPTION_SCREENS.has(S.screen)&&S.screen!=="gplay")return;
       const n=({"1":1,"2":2,"3":3,"4":4})[e.key];if(!n)return;
       const opts=[...document.querySelectorAll("#q-opts .opt")].filter(b=>!b.disabled);
       if(opts[n-1]){e.preventDefault();opts[n-1].click();}
@@ -614,6 +614,8 @@ function loginHTML(){
     </div>
   </div>
 
+  <button class="install-cta" id="btn-install">📲 התקנת האפליקציה למכשיר</button>
+
   <div class="subj-cards login-subjects" id="login-subjects">
     ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,S.subject===k)).join("")}
   </div>
@@ -737,22 +739,91 @@ function parentsHTML(){
 </div>`;
 }
 
-// ─── Activity library (catalog) — jump straight into any single activity ─────
+// ─── Games library (from games_library.js) — 28 activities, all playable ─────
+const GL = (typeof window!=="undefined" && window.GL) ? window.GL : {CATALOG:[],LEVELS:["הכול"],ACTQ:{},BANK:{},NIK:{},SUBJECT_META:{}};
+const GL_SUBJ={he:{app:"hebrew",name:"עברית",grad:"linear-gradient(150deg,#a78bfa,#7c3aed)",shadow:"#6d28d9"},
+               en:{app:"english",name:"אנגלית",grad:"linear-gradient(150deg,#7dd3fc,#0284c7)",shadow:"#0369a1"},
+               ma:{app:"math",name:"חשבון",grad:"linear-gradient(150deg,#fda4af,#e11d48)",shadow:"#be123c"}};
 function catalogHTML(){
-  const groups=Object.entries(SUBJECTS).map(([k,s])=>{
-    const acts=s.order.map(part=>`<button class="cat-card" data-subj="${k}" data-part="${part}" style="box-shadow:inset 5px 0 0 ${s.shadow}">
-      <span class="cat-ic">${s.icon}</span>
-      <span class="cat-body"><b>${PART_NAME[part]}</b><span>${PART_QUOTA[part]} ${PART_DESC[part]||""}</span></span>
-      <span class="cat-go">התחל ←</span>
-    </button>`).join("");
-    return `<div class="cat-group"><div class="cat-ghead"><span>${s.icon}</span> ${esc(s.name)}</div><div class="cat-list">${acts}</div></div>`;
-  }).join("");
+  const levels=GL.LEVELS||["הכול"];
+  const cur=S.glevel||"הכול";
+  const chips=levels.map(l=>`<button class="pill lv-pill${cur===l?" pill-on":""}" data-lv="${esc(l)}">${esc(l)}</button>`).join("");
+  const items=(GL.CATALOG||[]).filter(a=>cur==="הכול"||a.lv===cur);
+  const cards=items.map((a,idx)=>{const sj=GL_SUBJ[a.subj]||GL_SUBJ.he;
+    return `<button class="game-card" data-gi="${(GL.CATALOG||[]).indexOf(a)}" style="box-shadow:inset 6px 0 0 ${sj.shadow}">
+      <span class="game-ic">${a.ic||"🎮"}</span>
+      <span class="game-body"><b>${esc(a.t)}</b><span>${esc(a.s||"")}</span></span>
+      <span class="game-lv" style="background:${sj.grad}">${esc(a.lv)}</span>
+    </button>`;}).join("");
   return `<div class="catalog-page kl-rise">
   <button class="link-back" id="btn-cat-back">↩ חזרה</button>
-  <h2 class="par-title">ספריית הפעילויות</h2>
-  <p class="par-sub">בחרו פעילות בודדת מכל מקצוע — קפיצה ישירה לתרגול 🎲</p>
-  ${groups}
+  <h2 class="par-title">ספריית המשחקים 🎲</h2>
+  <p class="par-sub">${(GL.CATALOG||[]).length} פעילויות · בחרו רמה ומשחק — וקדימה לשחק!</p>
+  <div class="pill-row lv-row" id="lv-row">${chips}</div>
+  <div class="game-grid">${cards||'<p class="par-note">אין פעילויות ברמה זו.</p>'}</div>
 </div>`;
+}
+
+// ─── Generic games player (multiple-choice, from the games library) ──────────
+const GP={};
+function launchGame(gi){
+  const a=(GL.CATALOG||[])[gi];if(!a)return;
+  const sj=GL_SUBJ[a.subj]||GL_SUBJ.he;
+  let qs=(GL.getQuestions?GL.getQuestions({activity:a.t,subject:a.subj}):(GL.BANK[a.subj]||[]));
+  qs=(qs||[]).slice(0,8);
+  if(!qs.length){showToast("bad","למשחק הזה עוד אין שאלות");return;}
+  const young=levelForAge(S.age)<=1;
+  const fromBank=!(GL.ACTQ&&GL.ACTQ[a.t]&&GL.ACTQ[a.t].length);   // vocalized only maps to BANK order
+  GP.gi=gi;GP.a=a;GP.sj=sj;GP.subj=a.subj;GP.young=young&&fromBank;GP.qs=qs;GP.i=0;GP.correct=0;GP.picked=false;
+  S.returnTo="catalog";S.screen="gplay";render();
+}
+function gplayHTML(){
+  const a=GP.a||{},sj=GP.sj||GL_SUBJ.he;
+  if(GP.i>=GP.qs.length){
+    const n=GP.qs.length,c=GP.correct,pct=Math.round(c/n*100);
+    const msg=pct>=80?"מדהים! 🌟":pct>=50?"כל הכבוד! 👏":"יופי, ממשיכים! 💪";
+    return `<section class="card hero done-card">
+      <div class="confetti" id="confetti"></div>
+      <div class="done-mascot">${a.ic||"🎲"}</div>
+      <h1 class="done-title">${msg}</h1>
+      <p class="sub">${esc(a.t)} — ${c} מתוך ${n} נכונות</p>
+      <div class="done-stats"><div class="dstat"><span class="dstat-ic">🎯</span><b>${pct}%</b><small>דיוק</small></div></div>
+      <button class="primary" id="btn-g-again">עוד סבב</button>
+      <button class="ghost" id="btn-g-lib">חזרה לספריית המשחקים</button>
+    </section>`;
+  }
+  let q=GP.qs[GP.i];
+  if(GP.young&&GL.vocalized){const v=GL.vocalized(GP.subj,GP.i,q);q={...q,prompt:v.prompt,hint:v.hint,opts:v.opts};}
+  GP._q=q;
+  const order=GL.shuffleOptions?GL.shuffleOptions(q,GP.i,GP.subj):q.opts.map((_,i)=>i);
+  GP._order=order;
+  const opts=order.map(oi=>`<button class="opt" data-oi="${oi}" dir="${q.en?"ltr":"rtl"}"><span>${esc(q.opts[oi])}</span><span class="mark" style="display:none"></span></button>`).join("");
+  const pic=q.pic?`<div class="pic">${q.pic}</div>`:"";
+  return `${gameMascotFrame()}<section class="card">
+    <div class="part-bar">
+      <div><span class="eyebrow">${esc(a.t)}${q.kicker?` · ${esc(q.kicker)}`:""}</span><p class="lead">${esc(q.prompt)}</p></div>
+      <div class="bar-side"><span class="counter" id="q-ctr">${GP.i+1}/${GP.qs.length}</span></div>
+    </div>
+    ${q.hint?`<p class="foot">${esc(q.hint)}</p>`:""}
+    ${pic}
+    <div class="opts" id="q-opts">${opts}</div>
+    <button class="ghost sm" id="btn-g-speak">🔊 הקראה</button>
+  </section>
+  <p class="game-tip">טיפ: אפשר לענות גם עם המקשים <b>1–4</b> ⌨️</p>`;
+}
+function handleGAnswer(oi,btn){
+  if(GP.picked)return;GP.picked=true;
+  const q=GP._q,correct=oi===q.a;
+  if(correct){GP.correct++;SFX.good();const g=gamLoad();g.coins=(g.coins||0)+1;g.xp=(g.xp||0)+3;gamSave(g);}
+  else SFX.bad();
+  document.querySelectorAll("#q-opts .opt").forEach(b=>{
+    const boi=+b.dataset.oi,mk=b.querySelector(".mark");
+    if(boi===q.a){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
+    else if(boi===oi&&!correct){b.classList.add("opt-bad");mk.textContent="✗";mk.className="mark bad";mk.style.display="";}
+    else b.classList.add("opt-dim");
+    b.disabled=true;
+  });
+  setTimeout(()=>{if(S.screen!=="gplay")return;GP.picked=false;GP.i++;render();},1150);
 }
 
 function menuHTML(){
@@ -1144,7 +1215,7 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
   hv:mcHTML,hb:matchHTML,hw:mcHTML,wg:wgHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma3:mathHTML,ma4:mathHTML,
-  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML};
+  rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML,gplay:gplayHTML};
 
 function gotoNext(cur){
   // adaptive difficulty — nudge the level for the NEXT part by this part's accuracy
@@ -1171,6 +1242,7 @@ function render(){
   if(isGame) body+=gameMascotFrame();
   body+=(SCR_HTML[S.screen]||loginHTML)();
   if(isGame&&OPTION_SCREENS.has(S.screen)) body+=`<p class="game-tip">טיפ: אפשר לענות גם עם המקשים <b>1–4</b> ⌨️</p>`;
+  body+=`<footer class="app-credits">© כל הזכויות שמורות ל־<b>OnyxApps</b> · אושר ששוני</footer>`;
   root.innerHTML=body;
   // tint the part eyebrow pill with the current subject's gradient
   root.style.setProperty("--subj-grad", isGame?curSubject().grad:"linear-gradient(180deg,#a78bfa,#7c3aed)");
@@ -1211,11 +1283,23 @@ function attachListeners(){
   }
   if(S.screen==="catalog"){
     document.getElementById("btn-cat-back").addEventListener("click",()=>{S.screen=S.returnTo||"subject";render();});
-    document.querySelectorAll(".cat-card").forEach(c=>{
-      c.addEventListener("click",()=>{
-        S.subject=c.dataset.subj;S.score=0;S.prog={};S.adaptLvl=levelForAge(S.age);S.screen=c.dataset.part;render();
-      });
+    const lvr=document.getElementById("lv-row");
+    if(lvr)lvr.addEventListener("click",e=>{const b=e.target.closest(".lv-pill");if(!b)return;S.glevel=b.dataset.lv;render();});
+    document.querySelectorAll(".game-card").forEach(c=>{
+      c.addEventListener("click",()=>launchGame(+c.dataset.gi));
     });
+  }
+  if(S.screen==="gplay"){
+    if(GP.i>=GP.qs.length){launchConfetti();if(GP.correct/GP.qs.length>=0.5)SFX.good();}
+    const q=GP._q||{};
+    const qo=document.getElementById("q-opts");
+    if(qo)qo.addEventListener("click",e=>{const b=e.target.closest(".opt");if(b&&!b.disabled)handleGAnswer(+b.dataset.oi,b);});
+    const sp=document.getElementById("btn-g-speak");
+    if(sp)sp.addEventListener("click",()=>{q.en?speak(q.prompt):speakHe(q.prompt);});
+    const ag=document.getElementById("btn-g-again");
+    if(ag)ag.addEventListener("click",()=>launchGame(GP.gi));
+    const lib=document.getElementById("btn-g-lib");
+    if(lib)lib.addEventListener("click",()=>{S.screen="catalog";render();});
   }
 
   if(S.screen==="login"){
@@ -1248,6 +1332,8 @@ function attachListeners(){
       const gb=document.querySelector(".home-buddy");if(gb)gb.textContent=S.avatar;
     });
     eb.addEventListener("click",doEnter);
+    const ib=document.getElementById("btn-install");
+    if(ib)ib.addEventListener("click",doInstall);
   }
   if(S.screen==="resume"){
     document.getElementById("btn-resume").addEventListener("click",doResume);
@@ -2081,4 +2167,36 @@ function doLogout(){
   sDel("me");
   S.name="";S.phone="";S.history=[];S.seen=[];S.prog={};S.score=0;S.found=null;S.lastGain=null;
   S.screen="login";render();
+}
+
+// Install the app on the device (PWA). Uses the native prompt when the
+// browser offers it; otherwise shows platform "Add to Home Screen" steps.
+function doInstall(){
+  const dp=window.__installPrompt;
+  if(dp&&dp.prompt){
+    dp.prompt();
+    dp.userChoice&&dp.userChoice.finally?dp.userChoice.finally(()=>{window.__installPrompt=null;}):0;
+    return;
+  }
+  if(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches){
+    showToast("good","האפליקציה כבר מותקנת 🎉");return;
+  }
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  showInstallSheet(ios);
+}
+function showInstallSheet(ios){
+  let s=document.getElementById("install-sheet");if(s)s.remove();
+  s=document.createElement("div");s.id="install-sheet";s.className="sheet-overlay";
+  const steps=ios
+    ? `<li>הקישו על כפתור <b>השיתוף</b> ⬆️ בתחתית הדפדפן</li><li>בחרו <b>הוספה למסך הבית</b> ➕</li><li>אשרו — והאייקון יופיע במכשיר 🎉</li>`
+    : `<li>פתחו את תפריט הדפדפן <b>⋮</b> (למעלה)</li><li>בחרו <b>התקנת אפליקציה</b> / <b>הוספה למסך הבית</b></li><li>אשרו — והאייקון יופיע במכשיר 🎉</li>`;
+  s.innerHTML=`<div class="sheet install-sheet">
+    <div class="sheet-head"><span>📲 התקנת האפליקציה</span><button class="ghost sm" id="inst-close">סגירה</button></div>
+    <p class="par-note">מתקינים פעם אחת — ואז נכנסים ישירות מהמסך הראשי, גם בלי דפדפן.</p>
+    <ol class="install-steps">${steps}</ol>
+  </div>`;
+  document.body.appendChild(s);
+  const close=()=>s.remove();
+  s.addEventListener("click",e=>{if(e.target===s)close();});
+  document.getElementById("inst-close").addEventListener("click",close);
 }

@@ -28,7 +28,7 @@ Environment:
                   origin as the incoming request, which is what you want)
 """
 import os, sys
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 
 # make `import learn_backend` work no matter how gunicorn loads this module
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -54,6 +54,16 @@ def exam():
                            version=os.environ.get("APP_VERSION", "1.0"),
                            learn_backend=origin,
                            pic_key=os.environ.get("PIXABAY_KEY", ""))
+
+
+@app.route("/sw.js")
+def service_worker():
+    # served from the root so its scope covers "/" and "/exam"
+    resp = send_from_directory(app.static_folder, "learn_sw.js",
+                               mimetype="application/javascript")
+    resp.headers["Service-Worker-Allowed"] = "/"
+    resp.headers["Cache-Control"] = "no-cache"
+    return resp
 
 
 if __name__ == "__main__":

@@ -685,6 +685,35 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .cat-body span { display:block; font-size:12.5px; color:var(--ink-soft); margin-top:1px; }
 .cat-go { flex:none; font-size:13px; font-weight:700; color:var(--violet); background:#f4f1fb; border-radius:999px; padding:6px 12px; white-space:nowrap; }
 
+/* ══════════ Games library (from games_library.js) ══════════ */
+.lv-row { justify-content:center; margin:2px 0 6px; }
+.lv-pill { font-size:13px; }
+.game-grid { display:grid; grid-template-columns:1fr; gap:11px; }
+@media (min-width:620px){ .game-grid { grid-template-columns:1fr 1fr; } }
+.game-card { display:flex; align-items:center; gap:13px; flex-direction:row-reverse; text-align:right; width:100%;
+  background:#fff; border:none; border-radius:18px; padding:14px 16px; cursor:pointer;
+  box-shadow:0 5px 0 rgba(139,92,246,.1); transition:transform .14s; }
+.game-card:hover { transform:translateY(-3px); }
+.game-ic { font-size:30px; flex:none; }
+.game-body { flex:1; min-width:0; }
+.game-body b { display:block; font-family:'Fredoka',sans-serif; font-weight:700; font-size:17px; color:var(--ink); }
+.game-body span { display:block; font-size:12.5px; color:var(--ink-soft); margin-top:1px; }
+.game-lv { flex:none; font-size:12px; font-weight:700; color:#fff; border-radius:999px; padding:5px 11px; white-space:nowrap; }
+
+/* install CTA + credits footer + install sheet */
+.install-cta { width:100%; border:2px dashed #b8a6ff; background:#f6f2ff; color:var(--violet); border-radius:var(--pill);
+  padding:13px; font-family:'Fredoka',sans-serif; font-weight:700; font-size:16px; cursor:pointer; transition:background .15s; }
+.install-cta:hover { background:#efe9ff; }
+.app-credits { text-align:center; font-size:11.5px; color:var(--ink-soft); opacity:.75; margin:22px 0 8px; }
+.app-credits b { color:var(--violet); }
+.sheet-overlay { position:fixed; inset:0; background:rgba(36,27,71,.45); display:flex; align-items:flex-end; justify-content:center; z-index:60; animation:fadein .2s both; }
+@keyframes fadein { from{opacity:0} to{opacity:1} }
+.install-sheet { background:#fff; border-radius:24px 24px 0 0; padding:22px; width:100%; max-width:520px; box-shadow:0 -10px 40px -18px rgba(60,40,120,.5); animation:sheetup .28s cubic-bezier(.3,1.1,.5,1) both; }
+@keyframes sheetup { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.install-steps { margin:10px 14px 0; padding:0; display:flex; flex-direction:column; gap:10px; font-size:15px; color:var(--ink); line-height:1.5; }
+.install-steps li { background:#f6f2ff; border-radius:14px; padding:11px 14px; }
+.install-steps b { color:var(--violet); }
+
 /* ══════════ Math ══════════ */
 .math-q {
   font-family:'Secular One',sans-serif; font-size:40px; text-align:center;

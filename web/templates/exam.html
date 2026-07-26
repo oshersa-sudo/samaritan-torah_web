@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>מאמן אנגלית — אבני שהם</title>
 <link rel="icon" href="{{ url_for('static', filename='img/app_icon.png') }}">
+<link rel="manifest" href="{{ url_for('static', filename='learn.webmanifest') }}">
+<meta name="theme-color" content="#7c3aed">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="אימון למידה">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,8 +22,20 @@
 window.LEARN_BACKEND = "{{ learn_backend }}";  // set LEARN_BACKEND env to your Contabo URL to enable cloud sync + parent tracking
 window.PIC_KEY = "{{ pic_key }}";              // set PIXABAY_KEY env → kid-safe realistic photos (else emoji)
 </script>
+<script>
+// PWA: capture the install prompt so the app can offer "install" at entry
+window.__installPrompt = null;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); window.__installPrompt = e;
+  document.body.classList.add("can-install");
+  window.dispatchEvent(new Event("installable")); });
+window.addEventListener("appinstalled", () => { window.__installPrompt = null; document.body.classList.remove("can-install"); });
+// register the service worker (served at root scope so it controls /exam)
+if ("serviceWorker" in navigator) window.addEventListener("load", () =>
+  navigator.serviceWorker.register("/sw.js").catch(() => {}));
+</script>
 <script src="{{ url_for('static', filename='vocab_en.js') }}"></script>
 <script src="{{ url_for('static', filename='hebrew_data.js') }}"></script>
+<script src="{{ url_for('static', filename='games_library.js') }}"></script>
 <script src="{{ url_for('static', filename='exam.js') }}"></script>
 </body>
 </html>
