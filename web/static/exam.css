@@ -578,3 +578,7 @@ body {
 .av-btn:hover { border-color: #6C5CE7; }
 .av-on { border-color: #6C5CE7 !important; background: #EFEDFD; transform: scale(1.08); box-shadow: 0 6px 14px -8px #6C5CE7; }
 .hdr-av { font-size: 18px; } .menu-av { font-size: 18px; }
+
+/* ── realistic picture (Pixabay) with emoji fallback ── */
+.pic-emoji { display:inline-block; }
+.pic-img { width: 170px; height: 170px; object-fit: cover; border-radius: 24px; box-shadow: 0 10px 24px -12px rgba(11,36,48,.5); }

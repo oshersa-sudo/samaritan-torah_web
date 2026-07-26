@@ -14,6 +14,7 @@
 <div id="exam-root"></div>
 <script>const _FLASK_VERSION = "{{ version }}";
 window.LEARN_BACKEND = "{{ learn_backend }}";  // set LEARN_BACKEND env to your Contabo URL to enable cloud sync + parent tracking
+window.PIC_KEY = "{{ pic_key }}";              // set PIXABAY_KEY env → kid-safe realistic photos (else emoji)
 </script>
 <script src="{{ url_for('static', filename='vocab_en.js') }}"></script>
 <script src="{{ url_for('static', filename='hebrew_data.js') }}"></script>

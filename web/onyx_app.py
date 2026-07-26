@@ -52,7 +52,8 @@ def exam():
     origin = os.environ.get("LEARN_BACKEND") or request.url_root.rstrip("/")
     return render_template("exam.html",
                            version=os.environ.get("APP_VERSION", "1.0"),
-                           learn_backend=origin)
+                           learn_backend=origin,
+                           pic_key=os.environ.get("PIXABAY_KEY", ""))
 
 
 if __name__ == "__main__":

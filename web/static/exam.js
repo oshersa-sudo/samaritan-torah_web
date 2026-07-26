@@ -187,6 +187,8 @@ const shuffle = a => {
   return r;
 };
 const levelForAge = age => age<=7?1:age<=9?2:age<=11?3:age<=14?4:5;
+// adaptive difficulty: starts at the age level, nudges ±1 by part accuracy
+function curLevel(){ return Math.max(1,Math.min(5, S.adaptLvl||levelForAge(S.age))); }
 const nearLevel = (items,lvl,min=6) => {
   let out=items.filter(i=>i.lvl===lvl),span=1;
   while(out.length<min&&span<5){out=items.filter(i=>Math.abs(i.lvl-lvl)<=span);span++;}
@@ -260,6 +262,35 @@ const sDel = k=>{try{localStorage.removeItem(k);}catch(e){}};
 // ─── Global State ─────────────────────────────────────────
 const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null,avatar:"🦊"};
 const AVATARS=["🦊","🐼","🦁","🐧","🐨","🦄","🐯","🐸","🐵","🐶","🐱","🐰","🐷","🐥","🐢","🦉"];
+
+// ─── Realistic pictures (kid-safe, optional) ─────────────────────────────────
+// If a Pixabay key is provided (window.PIC_KEY), concrete words show a real,
+// safe-search photo; otherwise (and on any failure) the emoji is shown. This
+// gives a natural mix: photos where available, emoji everywhere else.
+const PIC_API=(typeof window!=="undefined"&&window.PIC_KEY)?String(window.PIC_KEY):"";
+const _picCache={};
+function _picFetch(word){
+  if(!PIC_API)return Promise.resolve(null);
+  if(word in _picCache)return Promise.resolve(_picCache[word]);
+  const q=encodeURIComponent(word.replace(/^(a|an|the) /,""));
+  return fetch(`https://pixabay.com/api/?key=${PIC_API}&q=${q}&image_type=photo&safesearch=true&per_page=3`)
+    .then(r=>r.json()).then(j=>{
+      const hit=j&&j.hits&&j.hits[0]&&(j.hits[0].webformatURL||j.hits[0].previewURL);
+      _picCache[word]=hit||null;return _picCache[word];
+    }).catch(()=>null);
+}
+function showPic(id,item){
+  const c=document.getElementById(id);if(!c)return;
+  c.innerHTML=`<span class="pic-emoji">${item.e||"❓"}</span>`;   // emoji first (instant)
+  if(!PIC_API||!item.w)return;
+  _picFetch(item.w).then(url=>{
+    if(!url)return;
+    const cur=document.getElementById(id);if(!cur)return;
+    const img=new Image();img.className="pic-img";img.alt="";
+    img.onload=()=>{const c2=document.getElementById(id);if(c2){c2.innerHTML="";c2.appendChild(img);}};
+    img.src=url;   // if it errors, the emoji simply stays
+  });
+}
 
 // ─── Mistakes store (spaced-repetition review) ───────────────────────────────
 function missKey(){return `miss:${S.phone}:${S.subject}`;}
@@ -548,7 +579,7 @@ function mcHTML(){
 }
 function initHebMC(){
   const scr=S.screen,cfg=HEB_MC_CFG[scr]||HEB_MC_CFG.hv;
-  const lvl=levelForAge(S.age),n=PART_QUOTA[scr]||10,t=TIME[scr]??240;
+  const lvl=curLevel(),n=PART_QUOTA[scr]||10,t=TIME[scr]??240;
   const saved=S.prog[scr];
   const src=(HEB_VOCAB.length?HEB_VOCAB:[]).filter(x=>x.w&&x.d);
   if(saved&&saved.qs){HM.qs=saved.qs;HM.i=saved.i||0;}
@@ -694,6 +725,10 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   rv:rvHTML,paused:pausedHTML,done:doneHTML};
 
 function gotoNext(cur){
+  // adaptive difficulty — nudge the level for the NEXT part by this part's accuracy
+  const q=PART_QUOTA[cur]||1, acc=(S.score-(S.partStart||0))/q;
+  if(acc>=0.85) S.adaptLvl=Math.min(5,curLevel()+1);
+  else if(acc<=0.4) S.adaptLvl=Math.max(1,curLevel()-1);
   const o=curOrder(),k=o.indexOf(cur);
   if(k>=0&&k<o.length-1){S.screen=o[k+1];render();}
   else finish();
@@ -757,7 +792,7 @@ function attachListeners(){
     });
     const sb=document.getElementById("btn-subj-back");
     if(sb)sb.addEventListener("click",()=>{S.screen="subject";render();});
-    document.getElementById("btn-start").addEventListener("click",()=>{S.score=0;S.prog={};S.screen=curOrder()[0];render();});
+    document.getElementById("btn-start").addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=levelForAge(S.age);S.screen=curOrder()[0];render();});
     const rvb=document.getElementById("btn-review");
     if(rvb)rvb.addEventListener("click",()=>{S.screen="rv";render();});
     const lo=document.getElementById("btn-logout");
@@ -773,6 +808,7 @@ function attachListeners(){
 }
 
 function initPart(){
+  if(curOrder().includes(S.screen))S.partStart=S.score;   // for adaptive accuracy
   if(S.screen==="p1")initVocab();
   else if(S.screen==="p2")initCloze();
   else if(S.screen==="p3")initReading();
@@ -810,7 +846,7 @@ function showToast(kind,text){
 
 // ─── Part 1: Vocab ────────────────────────────────────────
 function initVocab(){
-  const saved=S.prog.vocab,lvl=levelForAge(S.age);
+  const saved=S.prog.vocab,lvl=curLevel();
   V.pool=nearLevel(VOCAB.filter(x=>x.e),lvl,6);  // picture prompt needs an emoji
   if(saved&&saved.round&&saved.round.length){V.round=saved.round;V.i=saved.i??0;}
   else{
@@ -829,7 +865,7 @@ function renderVQ(){
   if(!V.item)return;
   V.opts=shuffle([V.item,...shuffle(V.pool.filter(x=>x.w!==V.item.w)).slice(0,4)]);
   document.getElementById("q-ctr").textContent=`${V.i+1}/${V.round.length}`;
-  document.getElementById("q-pic").textContent=V.item.e;
+  showPic("q-pic",V.item);
   document.getElementById("q-opts").innerHTML=V.opts.map(o=>
     `<button class="opt" data-word="${esc(o.w)}" dir="ltr"><span>${esc(o.w)}</span><span class="mark" style="display:none"></span></button>`
   ).join("");
@@ -868,12 +904,12 @@ function handleVA(word){
 function onVocabDone(){
   TM.stop();
   const ns=[...new Set([...S.seen,...V.round])];S.seen=ns;sSet(K.seen(S.phone),ns);
-  S.screen="p2";render();
+  gotoNext("p1");   // → p2, and lets adaptive difficulty react to part 1
 }
 
 // ─── Part 2: Cloze ────────────────────────────────────────
 function initCloze(){
-  const saved=S.prog.cloze,lvl=levelForAge(S.age);
+  const saved=S.prog.cloze,lvl=curLevel();
   if(saved&&saved.id)C.item=CLOZE.find(x=>x.id===saved.id)||CLOZE[0];
   else{
     const pool=CLOZE.filter(x=>Math.abs(x.lvl-lvl)<=2);
@@ -988,7 +1024,7 @@ function handleCP(){
 
 // ─── Part 3: Reading ──────────────────────────────────────
 function initReading(){
-  const saved=S.prog.reading,lvl=levelForAge(S.age);
+  const saved=S.prog.reading,lvl=curLevel();
   const set=(S.screen==="hr")?HEB_STORIES:STORIES;
   const src0=set.length?set:STORIES;
   const qquota=(S.screen==="hr")?PART_QUOTA.hr:QUOTA.reading;
@@ -1066,7 +1102,7 @@ function initDescribe(){
 function renderDI(){
   const item=PICTURES[D.idxs[D.i]];
   document.getElementById("q-ctr").textContent=`${D.i+1}/${D.idxs.length}`;
-  document.getElementById("q-pic").textContent=item.e;
+  showPic("q-pic",item);
   const inp=document.getElementById("desc-inp"),cb=document.getElementById("btn-check");
   inp.value="";inp.disabled=false;cb.disabled=false;
   inp.onkeydown=e=>{if(e.key==="Enter")handleDC();};
@@ -1111,7 +1147,7 @@ function _addLine(svg,x1,y1,x2,y2,cls){
 function matchState(){return {pairs:M.pairs,leftOrder:M.leftOrder,rightOrder:M.rightOrder,solved:[...M.solved],left:TM.left};}
 
 function initMatch(){
-  const saved=S.prog.match,lvl=levelForAge(S.age);
+  const saved=S.prog.match,lvl=curLevel();
   if(saved&&saved.pairs){M.pairs=saved.pairs;M.leftOrder=saved.leftOrder;M.rightOrder=saved.rightOrder;M.solved=new Set(saved.solved||[]);}
   else{
     const pool=nearLevel(VOCAB,lvl,QUOTA.match).filter(x=>x.h);
@@ -1127,7 +1163,7 @@ function initMatch(){
 
 // Hebrew word ↔ Hebrew definition matching (reuses the match engine)
 function initHebMatch(){
-  const saved=S.prog.match,lvl=levelForAge(S.age),n=PART_QUOTA.hb;
+  const saved=S.prog.match,lvl=curLevel(),n=PART_QUOTA.hb;
   if(saved&&saved.pairs){M.pairs=saved.pairs;M.leftOrder=saved.leftOrder;M.rightOrder=saved.rightOrder;M.solved=new Set(saved.solved||[]);}
   else{
     const src=HEB_VOCAB.length?HEB_VOCAB:[{w:"בית",d:"מקום מגורים",lvl:1},{w:"שמח",d:"מרוצה",lvl:1},{w:"גדול",d:"רב־ממדים",lvl:1},{w:"מהיר",d:"זריז",lvl:2},{w:"יפה",d:"נאה",lvl:2},{w:"חכם",d:"נבון",lvl:2},{w:"קר",d:"צונן",lvl:1},{w:"חזק",d:"איתן",lvl:2}];
@@ -1203,7 +1239,7 @@ const BLN_COLORS=["#F2545B","#6C5CE7","#3FBF6F","#FFB627","#2AA9E0","#E255A1"];
 function balloonState(){return {pairs:B.pairs,topOrder:B.topOrder,botOrder:B.botOrder,solved:[...B.solved],left:TM.left};}
 
 function initBalloons(){
-  const saved=S.prog.balloons,lvl=levelForAge(S.age);
+  const saved=S.prog.balloons,lvl=curLevel();
   if(saved&&saved.pairs){B.pairs=saved.pairs;B.topOrder=saved.topOrder;B.botOrder=saved.botOrder;B.solved=new Set(saved.solved||[]);}
   else{
     const pool=nearLevel(VOCAB.filter(x=>x.e),lvl,QUOTA.balloons);
@@ -1354,7 +1390,7 @@ function _genWordProblem(lvl){
 }
 function initMath(){
   const scr=S.screen,cfg=MATH_CFG[scr]||MATH_CFG.ma1;
-  const saved=S.prog[scr],lvl=levelForAge(S.age),n=PART_QUOTA[scr]||10,t=TIME[scr]??300;
+  const saved=S.prog[scr],lvl=curLevel(),n=PART_QUOTA[scr]||10,t=TIME[scr]??300;
   if(saved&&saved.qs){MA.qs=saved.qs;MA.i=saved.i||0;}
   else{MA.qs=Array.from({length:n},()=>_genMathQ(lvl,cfg.type));MA.i=0;}
   MA.picked=false;

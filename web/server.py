@@ -1781,7 +1781,8 @@ def api_word_sources():
 @app.route('/exam')
 def exam_page():
     return render_template('exam.html', version=APP_VERSION,
-                           learn_backend=os.environ.get('LEARN_BACKEND', ''))
+                           learn_backend=os.environ.get('LEARN_BACKEND', ''),
+                           pic_key=os.environ.get('PIXABAY_KEY', ''))
 
 
 if __name__ == '__main__':
