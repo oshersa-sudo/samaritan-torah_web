@@ -107,11 +107,24 @@ body {
 .bar-side { display: flex; align-items: center; gap: 8px; }
 .counter {
   font-size: 12px;
-  background: #fff;
-  border-radius: 9px;
-  padding: 3px 8px;
-  opacity: .75;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: #f4f1fb;
+  border-radius: 999px;
+  padding: 5px 11px;
   white-space: nowrap;
+}
+/* Design v2: the part eyebrow becomes a violet pill on gameplay cards */
+.part-bar .eyebrow {
+  display: inline-block;
+  background: linear-gradient(180deg,#a78bfa,#7c3aed);
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 13px;
+  letter-spacing: .04em;
+  text-transform: none;
+  font-size: 12px;
+  margin-bottom: 8px;
 }
 
 /* ── Hourglass ── */
@@ -694,6 +707,16 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .gain { background: #fff; border-radius: 14px; padding: 10px 14px; min-width: 80px; box-shadow: 0 6px 16px -12px rgba(11,36,48,.5); }
 .gain b { display: block; font-family: 'Secular One', sans-serif; font-size: 20px; color: #6C5CE7; }
 .gain small { font-size: 11px; opacity: .7; }
+
+/* Design v2 done screen */
+.done-mascot { font-size: 72px; line-height: 1; margin: 4px 0 2px; animation: kl-bob 1.4s ease-in-out infinite; filter: drop-shadow(0 10px 12px rgba(80,50,140,.25)); }
+.done-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 40px; color: var(--ink); margin: 8px 0 4px; }
+.done-stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 20px 0 8px; }
+.dstat { background: #fff; border: 2px solid #f0eaff; border-radius: 22px; padding: 14px 22px; min-width: 100px; box-shadow: 0 6px 0 rgba(139,92,246,.1); }
+.dstat-ic { font-size: 28px; display: block; }
+.dstat b { display: block; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 24px; color: var(--ink); margin-top: 2px; }
+.dstat small { font-size: 12px; color: #8b7cb8; }
+@media (prefers-reduced-motion: reduce){ .done-mascot { animation: none; } }
 
 .levelup { background: linear-gradient(90deg,#6C5CE7,#8E7BFF); color: #fff; border-radius: 12px; padding: 10px; font-family: 'Secular One', sans-serif; margin: 8px 0; animation: pop .4s ease-out both; }
 .new-badges { margin: 12px 0; }

@@ -987,20 +987,22 @@ function doneHTML(){
     ?`<div class="new-badges"><span class="eyebrow">תגים חדשים!</span><div class="badge-row">${lg.newBadges.map(b=>`<div class="badge"><span class="badge-ic">${b.ic}</span><small>${esc(b.name)}</small></div>`).join("")}</div></div>`:"";
   const hist=S.history.length>1
     ?`<ul class="hist">${S.history.slice(0,5).map(r=>`<li><span>${fmtDate(r.t)}</span><b>${r.g}/100</b></li>`).join("")}</ul>`:"";
+  const mascot=curSubject().mascot||"🦉";
   return `<section class="card hero done-card">
   <div class="confetti" id="confetti"></div>
   <div class="done-clip" id="done-clip"></div>
+  <div class="done-mascot">${mascot}</div>
   <div class="stars">${stars}</div>
-  <span class="eyebrow">סיימת</span>
-  <h1>${g} <small class="of">/100</small></h1>
+  <h1 class="done-title">כל הכבוד!</h1>
   <p class="sub">${msg} ${S.score} תשובות נכונות מתוך ${subjTotal()}.</p>
-  <div class="gain-row">
-    <div class="gain"><b>+${lg.xpGain}</b><small>XP</small></div>
-    <div class="gain"><b>+${lg.coinGain}</b><small>🪙 מטבעות</small></div>
-    <div class="gain"><b>${lg.streak} 🔥</b><small>רצף ימים</small></div>
+  <div class="done-stats">
+    <div class="dstat"><span class="dstat-ic">🪙</span><b>+${lg.coinGain}</b><small>מטבעות</small></div>
+    <div class="dstat"><span class="dstat-ic">🎯</span><b>${g}%</b><small>דיוק</small></div>
+    <div class="dstat"><span class="dstat-ic">🔥</span><b>${lg.streak}</b><small>רצף ימים</small></div>
   </div>
   ${lvl}${badges}${hist}
-  <button class="primary" id="btn-again">סבב נוסף</button>
+  <button class="primary" id="btn-again">עוד סבב</button>
+  <button class="ghost" id="btn-other">פעילות אחרת</button>
 </section>`;
 }
 
@@ -1103,6 +1105,8 @@ function attachListeners(){
     document.getElementById("btn-menu").addEventListener("click",()=>{S.screen="menu";render();});
   if(S.screen==="done"){
     document.getElementById("btn-again").addEventListener("click",()=>{S.score=0;S.prog={};S.lastGain=null;S.screen="menu";render();});
+    const other=document.getElementById("btn-other");
+    if(other)other.addEventListener("click",()=>{S.score=0;S.prog={};S.lastGain=null;S.screen="subject";render();});
     launchConfetti();
     if((S.lastGain?.stars||0)>=2){
       SFX.good();
