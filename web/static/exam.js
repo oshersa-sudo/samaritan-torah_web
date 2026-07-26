@@ -521,29 +521,54 @@ function topbarHTML(){
 </header>`;
 }
 
+// age/level bands shown as design pills; each maps to a representative age
+const AGE_BANDS=[
+  {lvl:1,label:"א׳–ב׳",age:7},{lvl:2,label:"ג׳–ד׳",age:9},
+  {lvl:3,label:"ה׳–ו׳",age:11},{lvl:4,label:"חטיבה",age:14},{lvl:5,label:"תיכון",age:17}];
+const PARADE=["🐶","🐰","🦊","🐼","🐸","🦉","🐨","🐧","🐢","🦁"];
+
 function loginHTML(){
-  return `<section class="card hero">
-  <span class="eyebrow">אימון למידה יומי</span>
-  <h1>ארבעה חלקים.<br>ארבעה שעוני חול.</h1>
-  <p class="sub">מילים, השלמות, סיפור, חשבון ועוד — לפי הגיל והרמה בבית הספר. נשמר במכשיר וניתן להמשיך בכל רגע.</p>
-  <label class="fld">מה לומדים היום?</label>
+  const lvl=levelForAge(S.age);
+  const greet=S.name.trim()?`שלום, ${esc(S.name.trim())}!`:"ברוכים הבאים!";
+  return `<div class="home kl-rise">
+  <div class="home-greet">
+    <div class="home-buddy">${S.avatar}</div>
+    <div class="home-hello">
+      <h1 id="greet-h1">${greet}</h1>
+      <p>מה לומדים היום?</p>
+    </div>
+  </div>
+
   <div class="subj-cards login-subjects" id="login-subjects">
     ${Object.entries(SUBJECTS).map(([k,s])=>subjectCard(k,s,S.subject===k)).join("")}
   </div>
-  <label class="fld">הדמות שלי</label>
-  <div class="avatars" id="login-avatars">
-    ${AVATARS.map(a=>`<button type="button" class="av-btn${S.avatar===a?" av-on":""}" data-av="${a}">${a}</button>`).join("")}
+
+  <div class="home-grid">
+    <div class="mini-card">
+      <div class="mini-label">גיל ורמת קושי</div>
+      <div class="pill-row" id="login-bands">
+        ${AGE_BANDS.map(b=>`<button type="button" class="pill band-pill${lvl===b.lvl?" pill-on":""}" data-age="${b.age}">${b.label}</button>`).join("")}
+      </div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-label">הדמות שלי</div>
+      <div class="pill-row avatars" id="login-avatars">
+        ${AVATARS.map(a=>`<button type="button" class="av-btn${S.avatar===a?" av-on":""}" data-av="${a}">${a}</button>`).join("")}
+      </div>
+    </div>
   </div>
-  <label class="fld">שם<input id="inp-name" placeholder="איך קוראים לך?" value="${esc(S.name)}"></label>
-  <label class="fld">מספר טלפון<input id="inp-phone" type="tel" inputmode="numeric" dir="ltr" placeholder="0500000000" value="${esc(S.phone)}"></label>
-  <label class="fld">גיל
-    <input id="inp-age" type="range" min="5" max="18" value="${S.age}">
-    <b id="age-lbl">${S.age} · ${LEVEL_NAME[levelForAge(S.age)]}</b>
-  </label>
+
+  <div class="mini-card home-form">
+    <label class="fld2">שם<input id="inp-name" placeholder="איך קוראים לך?" value="${esc(S.name)}"></label>
+    <label class="fld2">מספר טלפון<input id="inp-phone" type="tel" inputmode="numeric" dir="ltr" placeholder="0500000000" value="${esc(S.phone)}"></label>
+  </div>
+
+  <div class="parade" aria-hidden="true"><div class="parade-track">${PARADE.concat(PARADE).map(a=>`<span>${a}</span>`).join("")}</div></div>
+
   <button id="btn-enter" class="primary" ${(!S.name.trim()||S.phone.length<9||S.busy)?"disabled":""}>
     ${S.busy?"רגע…":"יאללה, מתחילים"}
   </button>
-</section>`;
+</div>`;
 }
 
 function resumeHTML(){
@@ -588,9 +613,17 @@ function menuHTML(){
     <span class="stat"><b>${gamLevel(gm.xp)}</b> ⭐ רמה</span>
     <span class="stat"><b>${gm.coins||0}</b> 🪙</span>
   </div>${earned.length?`<div class="badge-row mini">${earned.map(b=>`<span class="badge-chip" title="${esc(b.name)}">${b.ic}</span>`).join("")}</div>`:""}`;
+  const wk=Math.max(0,Math.min(5,gm.streak||0)), wkPct=(wk/5)*100;
+  const weekly=`<div class="weekly-card">
+    <span class="weekly-buddy">${subj.icon}</span>
+    <div class="weekly-label">היעד השבועי</div>
+    <div class="weekly-big">${wk} מתוך 5 ימים</div>
+    <div class="weekly-bar"><i style="width:${wkPct}%"></i></div>
+  </div>`;
   return `<section class="card">
   <div class="menu-head"><button class="ghost sm" id="btn-subj-back">↩ מקצוע</button><span class="eyebrow"><span class="menu-av">${S.avatar}</span> ${subj.icon} ${esc(subj.name)} · התוכנית של ${esc(S.name)}</span></div>
   ${statbar}
+  ${weekly}
   <ul class="plan">${items}</ul>
   <p class="foot">${subjTotal()} תשובות · הציון מוצג מתוך 100</p>
   ${BACKEND?`<p class="foot">קוד להורים: <b id="parent-code">${esc(S.parentCode||"…")}</b> — למעקב מרחוק דרך עמוד ההורים</p>`:""}
@@ -964,13 +997,19 @@ function attachListeners(){
 
   if(S.screen==="login"){
     const ni=document.getElementById("inp-name"),pi=document.getElementById("inp-phone");
-    const ai=document.getElementById("inp-age"),eb=document.getElementById("btn-enter");
+    const eb=document.getElementById("btn-enter");
     const checkEb=()=>{eb.disabled=!S.name.trim()||S.phone.length<9||S.busy;};
-    ni.addEventListener("input",e=>{S.name=e.target.value;checkEb();});
+    ni.addEventListener("input",e=>{
+      S.name=e.target.value;checkEb();
+      const g=document.getElementById("greet-h1");
+      if(g)g.textContent=S.name.trim()?`שלום, ${S.name.trim()}!`:"ברוכים הבאים!";
+    });
     pi.addEventListener("input",e=>{S.phone=e.target.value.replace(/\D/g,"");e.target.value=S.phone;checkEb();});
-    ai.addEventListener("input",e=>{
-      S.age=+e.target.value;
-      document.getElementById("age-lbl").textContent=`${S.age} · ${LEVEL_NAME[levelForAge(S.age)]}`;
+    const bands=document.getElementById("login-bands");
+    if(bands)bands.addEventListener("click",e=>{
+      const b=e.target.closest(".band-pill");if(!b)return;
+      S.age=+b.dataset.age;
+      bands.querySelectorAll(".band-pill").forEach(x=>x.classList.toggle("pill-on",x===b));
     });
     const ls=document.getElementById("login-subjects");
     if(ls)ls.addEventListener("click",e=>{
@@ -983,6 +1022,7 @@ function attachListeners(){
       const b=e.target.closest(".av-btn");if(!b)return;
       S.avatar=b.dataset.av;
       la.querySelectorAll(".av-btn").forEach(x=>x.classList.toggle("av-on",x===b));
+      const gb=document.querySelector(".home-buddy");if(gb)gb.textContent=S.avatar;
     });
     eb.addEventListener("click",doEnter);
   }
