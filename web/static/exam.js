@@ -247,11 +247,30 @@ function setLoad(){ return sGet("settings")||{}; }
 function setGet(k,def){ const v=setLoad()[k]; return v===undefined?def:v; }
 function setPut(k,v){ const o=setLoad(); o[k]=v; sSet("settings",o); }
 
-const speak  = text => {
-  try{if(!setGet("tts",true))return;
-    if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=0.85;window.speechSynthesis.speak(u);}catch(e){}
-};
+// ─── Text-to-speech using the device's own installed voice engines ──────────
+let _voices=[];
+function _loadVoices(){ try{ _voices=window.speechSynthesis.getVoices()||[]; }catch(e){ _voices=[]; } }
+if("speechSynthesis"in window){ _loadVoices(); try{ window.speechSynthesis.onvoiceschanged=_loadVoices; }catch(e){} }
+// pick the best installed voice for a language (e.g. Carmit on iOS, Google
+// עברית on Android for "he"). Prefer local (on-device) voices.
+function pickVoice(lang){
+  if(!_voices.length)_loadVoices();
+  const pre=lang.slice(0,2).toLowerCase();
+  const cand=_voices.filter(v=>(v.lang||"").toLowerCase().replace("_","-").startsWith(pre));
+  if(!cand.length)return null;
+  return cand.find(v=>v.localService&&(v.lang||"").toLowerCase().startsWith(lang.toLowerCase()))
+      || cand.find(v=>(v.lang||"").toLowerCase().startsWith(lang.toLowerCase()))
+      || cand.find(v=>v.localService) || cand[0];
+}
+function _say(text,lang,rate,pitch){
+  try{ if(!setGet("tts",true))return;
+    if(!("speechSynthesis"in window))return; window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text); u.lang=lang; u.rate=rate; if(pitch!=null)u.pitch=pitch;
+    const v=pickVoice(lang); if(v)u.voice=v;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+const speak = text => _say(text,"en-US",0.85);
 
 // ─── Sound effects (synthesized — no asset files) ─────────
 const SFX = {
@@ -352,9 +371,11 @@ function burst(){
     layer.appendChild(s);setTimeout(()=>s.remove(),950);
   }
 }
-const speakHe = text => { try{if(!setGet("tts",true))return;if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="he-IL";u.rate=0.9;
-  if(setGet("charVoices",true)){const pr=VOICE_PROFILES[S.subject];if(pr&&pr.lang==="he-IL"){u.pitch=pr.pitch;u.rate=pr.rate;}}
-  window.speechSynthesis.speak(u);}catch(e){} };
+const speakHe = text => {
+  let rate=0.9,pitch=null;
+  if(setGet("charVoices",true)){const pr=VOICE_PROFILES[S.subject];if(pr&&pr.lang==="he-IL"){pitch=pr.pitch;rate=pr.rate;}}
+  _say(text,"he-IL",rate,pitch);
+};
 
 // ─── Character voices — synthesized voice profiles per mascot (device-safe) ───
 // Works everywhere via SpeechSynthesis pitch/rate; no OS voice install needed.
@@ -511,6 +532,13 @@ function launchConfetti(){
 // Hebrew-subject content (loaded from hebrew_data.js if present)
 const HEB_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.HEB_VOCAB))   ? window.HEB_VOCAB   : [];
 const HEB_STORIES = (typeof window!=="undefined" && Array.isArray(window.HEB_STORIES)) ? window.HEB_STORIES : [];
+// Niqqud (vocalized) content for young readers (grades 1–3). Shown only when
+// the current level is 1–2 so early readers get the vowel points.
+const HEB_NQ = (typeof window!=="undefined" && window.HEB_NQ) ? window.HEB_NQ : {words:{},stories:{}};
+function youngHeb(){ return S.subject==="hebrew" && curLevel()<=2; }
+function nqW(w){ return (youngHeb() && HEB_NQ.words[w] && HEB_NQ.words[w].wn) || w; }   // display word
+function nqD(w,d){ return (youngHeb() && HEB_NQ.words[w] && HEB_NQ.words[w].dn) || d; }  // display definition
+function nqStory(id){ return youngHeb() ? HEB_NQ.stories[id] : null; }
 
 // ─── Optional cloud sync (Contabo backend) ───────────────
 // Enabled only when window.LEARN_BACKEND is set to the server URL. Purely
@@ -998,12 +1026,15 @@ function initHebMC(){
   TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
 function renderHebMCQ(){
-  const q=HM.qs[HM.i];
+  const q=HM.qs[HM.i], hv=(S.screen==="hv");
+  // young readers (grades 1–3): show niqqud. hv prompt=definition, options=words
+  const promptDisp = hv ? nqD(q.w,q.p) : q.p;
+  const optDisp = o => hv ? nqW(o) : o;
   document.getElementById("q-ctr").textContent=`${HM.i+1}/${HM.qs.length}`;
-  document.getElementById("mc-prompt").innerHTML=`<span dir="rtl">${esc(q.p)}</span>`;
-  const sp=document.getElementById("mc-speak");if(sp)sp.onclick=()=>speakHe(q.p);
+  document.getElementById("mc-prompt").innerHTML=`<span dir="rtl">${esc(promptDisp)}</span>`;
+  const sp=document.getElementById("mc-speak");if(sp)sp.onclick=()=>speakHe(promptDisp);
   document.getElementById("q-opts").innerHTML=q.o.map(o=>
-    `<button class="opt" data-val="${esc(o)}" dir="rtl"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("");
+    `<button class="opt" data-val="${esc(o)}" dir="rtl"><span>${esc(optDisp(o))}</span><span class="mark" style="display:none"></span></button>`).join("");
   HM.picked=false;
   document.getElementById("q-opts").onclick=e=>{
     const b=e.target.closest(".opt");if(!b||b.disabled||HM.picked)return;
@@ -1111,10 +1142,12 @@ function renderWordGame(){
   const q=WG.qs[WG.i];
   document.getElementById("q-ctr").textContent=`${WG.i+1}/${WG.qs.length}`;
   const wd=document.getElementById("wg-word");
-  wd.textContent=q.show; wd.className="wg-word wg-in";
+  // real words get niqqud for young readers; scrambles stay bare
+  const disp=q.isWord?nqW(q.w):q.show;
+  wd.textContent=disp; wd.className="wg-word wg-in";
   document.getElementById("wg-fb").innerHTML="";
   const sp=document.getElementById("wg-speak");
-  if(sp)sp.onclick=()=>speakHe(q.isWord?q.w:q.show);
+  if(sp)sp.onclick=()=>speakHe(q.isWord?nqW(q.w):q.show);
   WG.picked=false;
   document.querySelectorAll(".wg-btn").forEach(b=>{
     b.disabled=false;b.className="wg-btn "+(b.dataset.ans==="1"?"wg-yes":"wg-no");
@@ -1129,9 +1162,9 @@ function handleWordGame(ans,btn){
   document.querySelectorAll(".wg-btn").forEach(b=>b.disabled=true);
   const fb=document.getElementById("wg-fb");
   if(q.isWord)
-    fb.innerHTML=`<span class="wg-fb-in ${correct?"ok":"no"}">${correct?"✓ נכון!":"✗ טעות —"} <b dir="rtl">${esc(q.w)}</b> = ${esc(q.d)}</span>`;
+    fb.innerHTML=`<span class="wg-fb-in ${correct?"ok":"no"}">${correct?"✓ נכון!":"✗ טעות —"} <b dir="rtl">${esc(nqW(q.w))}</b> = ${esc(nqD(q.w,q.d))}</span>`;
   else
-    fb.innerHTML=`<span class="wg-fb-in ${correct?"ok":"no"}">${correct?"✓ נכון, זה קשקוש!":"✗ טעות — זה קשקוש."} המילה האמיתית: <b dir="rtl">${esc(q.w)}</b></span>`;
+    fb.innerHTML=`<span class="wg-fb-in ${correct?"ok":"no"}">${correct?"✓ נכון, זה קשקוש!":"✗ טעות — זה קשקוש."} המילה האמיתית: <b dir="rtl">${esc(nqW(q.w))}</b></span>`;
   commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
   setTimeout(()=>{
     if(S.screen!=="wg")return;
@@ -1685,6 +1718,7 @@ function initReading(){
     R.story=src[Math.floor(Math.random()*src.length)];
   }
   R.rtl=(S.screen==="hr");
+  R.nq=(S.screen==="hr")?nqStory(R.story.id):null;   // vocalized story for young readers
   R.qIdx   =saved?.qIdx??shuffle(R.story.qpool.map((_,k)=>k)).slice(0,qquota);
   R.qi     =saved?.qi??0;
   R.reading=saved?.qi?false:true;
@@ -1697,14 +1731,21 @@ function initReading(){
 function refreshRV(){
   const ctr=document.getElementById("q-ctr"),body=document.getElementById("reading-body");if(!body)return;
   const dir=R.rtl?"rtl":"ltr";
+  const storyText=(R.nq&&R.nq.ntext)||R.story.text;
+  // niqqud question/options for young Hebrew readers (fall back to plain)
+  const qDisp=k=>{const nq=R.nq&&R.nq.nqpool&&R.nq.nqpool[k];const base=R.story.qpool[k];
+    return {q:(nq&&nq.q)||base.q, o:(nq&&nq.o)||base.o, c:base.c};};
   if(R.reading){
     if(ctr)ctr.textContent="";
-    body.innerHTML=`<div class="story scroll" dir="${dir}">${R.story.text.split("\n\n").map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+    body.innerHTML=`<div class="story scroll" dir="${dir}">${storyText.split("\n\n").map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+${R.rtl?`<button class="ghost sm" id="btn-read-r">🔊 הקראה</button>`:""}
 <button class="primary" id="btn-done-r">סיימתי לקרוא — לשאלות</button>`;
+    const rr=document.getElementById("btn-read-r");
+    if(rr)rr.addEventListener("click",()=>speakHe(storyText.replace(/\n+/g," ")));
     document.getElementById("btn-done-r").addEventListener("click",()=>{R.reading=false;refreshRV();});
   }else{
-    const qs=R.qIdx.map(k=>R.story.qpool[k]),q=qs[R.qi];
-    if(ctr)ctr.textContent=`${R.qi+1}/${qs.length}`;
+    const q=qDisp(R.qIdx[R.qi]);
+    if(ctr)ctr.textContent=`${R.qi+1}/${R.qIdx.length}`;
     body.innerHTML=`<p class="question" dir="${dir}">${esc(q.q)}</p>
 <div class="opts" id="q-opts">${q.o.map((o,i)=>`<button class="opt" data-idx="${i}" dir="${dir}"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("")}</div>
 <button class="ghost" id="btn-back-r">חזרה לסיפור</button>`;
@@ -1831,11 +1872,14 @@ function initHebMatch(){
 function renderMatch(){
   const L=document.getElementById("mcol-left"),Rr=document.getElementById("mcol-right");
   if(!L||!Rr)return;
+  const heb=(S.screen==="hb");
+  const wDisp=p=>heb?nqW(p.w):p.w;                 // Hebrew words get niqqud (young)
+  const hDisp=p=>heb?nqD(p.w,p.h):p.h;
   L.innerHTML=M.leftOrder.map((pi,i)=>
-    `<button class="mitem${M.solved.has(i)?" solved":""}" data-i="${i}" dir="ltr"><span>${esc(M.pairs[pi].w)}</span><i class="dot dot-r"></i></button>`).join("");
+    `<button class="mitem${M.solved.has(i)?" solved":""}" data-i="${i}" dir="${heb?"rtl":"ltr"}"><span>${esc(wDisp(M.pairs[pi]))}</span><i class="dot dot-r"></i></button>`).join("");
   Rr.innerHTML=M.rightOrder.map((pi,j)=>{
     const solvedJ=[...M.solved].some(i=>M.leftOrder[i]===M.rightOrder[j]);
-    return `<button class="ritem${solvedJ?" solved":""}" data-j="${j}"><i class="dot dot-l"></i><span>${esc(M.pairs[pi].h)}</span></button>`;
+    return `<button class="ritem${solvedJ?" solved":""}" data-j="${j}"><i class="dot dot-l"></i><span>${esc(hDisp(M.pairs[pi]))}</span></button>`;
   }).join("");
   updateMatchCtr();
   const wrap=document.getElementById("match-wrap"),svg=document.getElementById("match-svg");
