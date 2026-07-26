@@ -356,7 +356,78 @@ const SFX = {
       o.connect(lp);lp.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+0.62);
     }catch(e){ this._tone(ctx,311,t,0.2,"sawtooth",0.18); this._tone(ctx,208,t+0.18,0.3,"sawtooth",0.18); }
   },
+  // gliding tone (for animal calls / bends)
+  _slide(ctx,f0,f1,t0,dur,type="sine",gain=0.2){
+    const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;
+    o.frequency.setValueAtTime(f0,t0);o.frequency.exponentialRampToValueAtTime(Math.max(1,f1),t0+dur);
+    g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(gain,t0+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g);g.connect(ctx.destination);o.start(t0);o.stop(t0+dur+0.02);return o;
+  },
+  // short filtered-noise burst (for barks / roars / claps)
+  _noise(ctx,t0,dur,gain=0.2,type="bandpass",freq=1500,q=1){
+    try{const n=ctx.createBufferSource(),b=ctx.createBuffer(1,Math.max(1,Math.floor(ctx.sampleRate*dur)),ctx.sampleRate);
+      const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+      const g=ctx.createGain();g.gain.setValueAtTime(gain,t0);g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+      const f=ctx.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q;
+      n.buffer=b;n.connect(f);f.connect(g);g.connect(ctx.destination);n.start(t0);}catch(e){}
+  },
+  // tone with a vibrato wobble (for baa / buzz)
+  _wobble(ctx,freq,rate,depth,t0,dur,type="sawtooth",gain=0.15){
+    try{const o=ctx.createOscillator(),g=ctx.createGain(),lfo=ctx.createOscillator(),lg=ctx.createGain();
+      o.type=type;o.frequency.value=freq;lfo.frequency.value=rate;lg.gain.value=depth;
+      lfo.connect(lg);lg.connect(o.frequency);
+      g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(gain,t0+0.03);g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+      o.connect(g);g.connect(ctx.destination);o.start(t0);o.stop(t0+dur+0.02);lfo.start(t0);lfo.stop(t0+dur+0.02);}catch(e){}
+  },
+  // ─── Animal calls (fully synthesized) ──────────────────────────────────────
+  animal(kind){
+    if(!setGet("sfx",true))return;
+    const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime,X=this;
+    const A={
+      dog(){ X._noise(ctx,t,0.12,0.22,"bandpass",760,1);X._slide(ctx,430,240,t,0.12,"sawtooth",0.16);
+             X._noise(ctx,t+0.24,0.12,0.20,"bandpass",760,1);X._slide(ctx,430,240,t+0.24,0.12,"sawtooth",0.14); },
+      cat(){ X._slide(ctx,680,900,t,0.16,"sawtooth",0.14);X._slide(ctx,900,520,t+0.16,0.3,"sawtooth",0.14); },
+      cow(){ X._slide(ctx,250,175,t,0.75,"sawtooth",0.2); },
+      bird(){ for(let k=0;k<5;k++)X._slide(ctx,2300+Math.random()*500,3100,t+k*0.08,0.05,"sine",0.10); },
+      lion(){ X._noise(ctx,t,0.6,0.18,"lowpass",320,0.6);X._slide(ctx,150,88,t,0.6,"sawtooth",0.22); },
+      elephant(){ X._slide(ctx,300,760,t,0.22,"sawtooth",0.18);X._slide(ctx,760,240,t+0.22,0.4,"sawtooth",0.18); },
+      frog(){ for(let k=0;k<3;k++)X._slide(ctx,230,150,t+k*0.17,0.12,"square",0.16); },
+      owl(){ X._slide(ctx,520,430,t,0.28,"sine",0.16);X._slide(ctx,520,430,t+0.42,0.32,"sine",0.15); },
+      gecko(){ for(let k=0;k<4;k++)X._tone(ctx,1650-k*90,t+k*0.09,0.05,"square",0.11); },
+      bee(){ X._wobble(ctx,175,32,45,t,0.7,"sawtooth",0.13); },
+      duck(){ for(let k=0;k<3;k++)X._slide(ctx,520,380,t+k*0.14,0.1,"square",0.14); },
+      sheep(){ X._wobble(ctx,380,14,26,t,0.6,"sawtooth",0.15); },
+      horse(){ for(let k=0;k<6;k++)X._slide(ctx,920-k*45,720-k*45,t+k*0.05,0.05,"sawtooth",0.12);X._slide(ctx,520,200,t+0.34,0.3,"sawtooth",0.14); },
+      fish(){ for(let k=0;k<3;k++)X._tone(ctx,600+k*130,t+k*0.06,0.05,"sine",0.08); },
+    };
+    (A[kind]||A.gecko)();
+  },
+  // ─── Per-subject jingle (plays when a subject is chosen) ────────────────────
+  jingle(subject){
+    if(!setGet("sfx",true))return;
+    const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime,X=this;
+    const M={
+      english:[[523,0],[659,0.12],[784,0.24],[1047,0.36]],           // bright major climb
+      hebrew: [[440,0],[554,0.14],[659,0.28],[554,0.44]],            // gentle wave
+      math:   [[392,0],[523,0.1],[659,0.2],[784,0.3],[1047,0.42]],   // orderly ascent
+      science:[[659,0],[988,0.1],[784,0.22],[1319,0.34],[1047,0.48]],// sparkly / curious
+    };
+    const notes=M[subject]||M.english;
+    notes.forEach(([f,dt])=>X._tone(ctx,f,t+dt,0.28,"triangle",0.18));
+    X._tone(ctx,notes[notes.length-1][0]*2,t+0.56,0.4,"sine",0.09);  // final shimmer
+    const anim=MASCOT_ANIMAL[subject];                               // mascot "greets" after the tune
+    if(anim)setTimeout(()=>{try{X.animal(anim);}catch(e){}},640);
+  },
 };
+// which animal call belongs to each subject's mascot (math's mascot is human)
+const MASCOT_ANIMAL={english:"frog",hebrew:"owl",science:"gecko"};
+// map a picture emoji to an animal call, so tapping/answering an animal roars/barks
+const ANIMAL_FOR_EMOJI={"🐶":"dog","🐕":"dog","🦮":"dog","🐩":"dog","🐱":"cat","🐈":"cat","🐮":"cow","🐄":"cow","🐂":"cow",
+  "🐦":"bird","🐤":"bird","🐥":"bird","🐣":"bird","🦜":"bird","🦁":"lion","🐘":"elephant","🐸":"frog","🦉":"owl","🦎":"gecko",
+  "🦖":"lion","🐊":"lion","🐝":"bee","🦆":"duck","🐑":"sheep","🐏":"sheep","🐐":"sheep","🐴":"horse","🐎":"horse","🦄":"horse",
+  "🐟":"fish","🐠":"fish","🐡":"fish","🐬":"fish","🐳":"cow","🐋":"cow"};
+function animalForEmoji(e){ return e?ANIMAL_FOR_EMOJI[[...String(e)][0]]:null; }
 // שחרור AudioContext במגע ראשון (מדיניות דפדפנים)
 window.addEventListener("pointerdown",()=>SFX._ac(),{once:true});
 
@@ -1475,6 +1546,7 @@ function attachListeners(){
   if(it)it.addEventListener("click",doInstall);
   const tg=document.getElementById("team-grid");
   if(tg)tg.addEventListener("click",e=>{const c=e.target.closest(".team-card");if(!c)return;
+    const anim=MASCOT_ANIMAL[c.dataset.voice];if(anim)SFX.animal(anim);
     speakSample(c.dataset.voice);c.classList.remove("team-pop");void c.offsetWidth;c.classList.add("team-pop");});
   if(S.screen==="lead")loadLeaderboard();
 
@@ -1531,6 +1603,7 @@ function attachListeners(){
     if(ls)ls.addEventListener("click",e=>{
       const b=e.target.closest(".subj-card");if(!b)return;
       S.subject=b.dataset.subj;
+      SFX.jingle(S.subject);
       ls.querySelectorAll(".subj-card").forEach(x=>x.classList.toggle("subj-on",x===b));
       // clicking a subject is an attempt to START — if not registered yet,
       // explain and jump to the registration fields; otherwise go.
@@ -1557,7 +1630,7 @@ function attachListeners(){
   if(S.screen==="subject"){
     document.querySelectorAll(".subj-card").forEach(b=>{
       b.addEventListener("click",()=>{
-        S.subject=b.dataset.subj;S.score=0;S.prog={};S.screen="menu";render();
+        S.subject=b.dataset.subj;SFX.jingle(S.subject);S.score=0;S.prog={};S.screen="menu";render();
       });
     });
     const lo=document.getElementById("btn-logout-hub");
@@ -1706,6 +1779,9 @@ function handleVA(word){
   const correct=word===V.item.w;
   if(correct){addScore(1);SFX.good();}else SFX.bad();
   speak(V.item.w);
+  // if the picture is an animal, let it call out too (barks, moos, chirps…)
+  const animal=animalForEmoji(V.item.e);
+  if(animal)setTimeout(()=>SFX.animal(animal),correct?540:60);
   document.querySelectorAll("#q-opts .opt").forEach(btn=>{
     const bw=btn.dataset.word,mark=btn.querySelector(".mark");
     if(bw===V.item.w){btn.classList.add("opt-good");mark.textContent="✓";mark.className="mark good";mark.style.display="";}
@@ -1713,8 +1789,23 @@ function handleVA(word){
     else btn.classList.add("opt-dim");
     btn.disabled=true;
   });
-  if(!correct){recordMiss({w:V.item.w,e:V.item.e,kind:"en"});document.getElementById("q-hint").innerHTML=`${esc(S.name)}, התשובה הנכונה היא <b dir="ltr">${esc(V.item.w)}</b>`;}
-  const sb=document.getElementById("btn-speak");sb.disabled=false;sb.onclick=()=>speak(V.item.w);
+  // Hebrew-translation feedback for English up to grade ו (level ≤3): on a
+  // correct pick show the word + its meaning; on a wrong pick show BOTH the
+  // meaning of what they chose and the meaning of the correct word.
+  const showTr=(S.subject==="english"&&curLevel()<=3);
+  const hint=document.getElementById("q-hint");
+  if(correct){
+    if(showTr&&hint) hint.innerHTML=`<span class="fb-right"><b dir="ltr">${esc(V.item.w)}</b> = <b>${esc(V.item.h||"")}</b> ✓</span>`;
+  }else{
+    recordMiss({w:V.item.w,e:V.item.e,kind:"en"});
+    const chosen=V.opts.find(o=>o.w===word)||VOCAB.find(o=>o.w===word);
+    if(hint){
+      const wrongTr=(showTr&&chosen)?`<span class="fb-wrong">בחרת <b dir="ltr">${esc(chosen.w)}</b> = ${esc(chosen.h||"?")}</span>`:"";
+      const rightTr=showTr?` = <b>${esc(V.item.h||"")}</b>`:"";
+      hint.innerHTML=`${wrongTr}<span class="fb-right">${esc(S.name)}, הנכונה: <b dir="ltr">${esc(V.item.w)}</b>${rightTr}</span>`;
+    }
+  }
+  const sb=document.getElementById("btn-speak");sb.disabled=false;sb.onclick=()=>{speak(V.item.w);if(animal)SFX.animal(animal);};
   commitProg({vocab:{round:V.round,i:V.i,left:TM.left}});
   setTimeout(()=>{
     if(S.screen!=="p1")return;
