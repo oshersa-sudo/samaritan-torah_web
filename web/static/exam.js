@@ -158,21 +158,21 @@ const PICTURES = [
 // ─── Constants ────────────────────────────────────────────
 const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
 const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
-                hv:240,hb:210,hw:240,hr:600,
+                hv:240,hb:210,hw:240,wg:210,hr:600,
                 ma1:240,ma2:300,ma3:360,ma4:240};
 const LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"};
 const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
                     p5:"התאמת מילים",p6:"בלונים",
-                    hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",hr:"הבנת הנקרא",
+                    hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",wg:"מילה או קשקוש",hr:"הבנת הנקרא",
                     ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma3:"בעיות מילוליות",ma4:"המספר החסר"};
 // answers per part → used to normalise the score to /100
 const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
-                    hv:10,hb:8,hw:10,hr:6,
+                    hv:10,hb:8,hw:10,wg:10,hr:6,
                     ma1:10,ma2:10,ma3:6,ma4:8};
 // subjects and their part order — every subject: 4 parts, 4 hourglasses
 const SUBJECTS = {
   english:{name:"אנגלית", icon:"🔤", order:["p1","p2","p3","p4","p5","p6"]},
-  hebrew: {name:"עברית",  icon:"📖", order:["hv","hb","hw","hr"]},
+  hebrew: {name:"עברית",  icon:"📖", order:["hv","hb","wg","hr"]},
   math:   {name:"חשבון",  icon:"🔢", order:["ma1","ma2","ma3","ma4"]},
 };
 function curSubject(){ return SUBJECTS[S.subject] || SUBJECTS.english; }
@@ -498,7 +498,7 @@ function resumeHTML(){
 
 const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3:"שאלות · 10 דק׳",p4:"תמונות · 10 דק׳",
                    p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",
-                   hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",hr:"שאלות · 10 דק׳",
+                   hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",wg:"משחק · 3.5 דק׳",hr:"שאלות · 10 דק׳",
                    ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳"};
 
 function subjectHTML(){
@@ -666,6 +666,116 @@ function handleHebMC(val){
   },1200);
 }
 
+// ─── Word or Scribble (wg) — real Hebrew word vs. scrambled gibberish ─
+// Inspired by "מילה או קשקוש": a fun, fast reading-fluency drill. The child
+// sees one Hebrew string and decides — is it a real word, or nonsense?
+const WG = {};
+// build a lookup of every real word we know, so a scramble that accidentally
+// spells a real word is rejected as gibberish.
+function wgRealSet(){
+  if(WG._real)return WG._real;
+  const s=new Set();
+  for(const x of HEB_VOCAB) if(x.w) s.add(x.w);
+  for(const st of (typeof HEB_STORIES!=="undefined"?HEB_STORIES:[]))
+    for(const tok of String(st.text||"").split(/[\s.,!?"'״׳()\n]+/)) if(tok.length>1) s.add(tok);
+  WG._real=s;return s;
+}
+// scramble a word into obvious nonsense: shuffle letters, guarantee it differs
+// from the original and isn't itself a real word.
+function wgScramble(word){
+  const letters=[...word];
+  const real=wgRealSet();
+  if(letters.length<3){                    // too short to shuffle convincingly →
+    const pool="אבגדהוזחטיכלמנסעפצקרשת";     // swap in a random extra letter
+    for(let tries=0;tries<12;tries++){
+      const cand=[...letters];
+      const pos=Math.floor(Math.random()*cand.length);
+      let c; do{c=pool[Math.floor(Math.random()*pool.length)];}while(c===cand[pos]);
+      cand[pos]=c;
+      const s=cand.join("");
+      if(s!==word && !real.has(s)) return s;
+    }
+    return letters.join("")+"ק";           // last resort: obvious nonsense
+  }
+  for(let tries=0;tries<12;tries++){
+    const s=shuffle(letters).join("");
+    if(s!==word && !real.has(s)) return s;
+  }
+  // fallback: force a difference by rotating
+  return letters.slice(1).concat(letters[0]).join("");
+}
+function wgHTML(){
+  const t=TIME.wg;
+  return `<section class="card wg-card">
+  <div class="part-bar">
+    <div><span class="eyebrow">עברית · מילה או קשקוש</span><p class="lead">האם זו מילה אמיתית או קשקוש?</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.wg?.left??t,t)}</span></div>
+  </div>
+  <div class="wg-stage">
+    <div class="wg-word" id="wg-word" dir="rtl"></div>
+    <button class="ghost sm wg-speak" id="wg-speak">🔊 שמע/י</button>
+  </div>
+  <div class="wg-choice">
+    <button class="wg-btn wg-yes" data-ans="1"><span class="wg-ic">✅</span><b>מילה</b></button>
+    <button class="wg-btn wg-no"  data-ans="0"><span class="wg-ic">🌀</span><b>קשקוש</b></button>
+  </div>
+  <div class="wg-fb" id="wg-fb"></div>
+</section>`;
+}
+function initWordGame(){
+  const scr="wg",lvl=curLevel(),n=PART_QUOTA.wg,t=TIME.wg;
+  const saved=S.prog.wg;
+  const src=HEB_VOCAB.filter(x=>x.w&&[...x.w].length>=2);
+  if(saved&&saved.qs){WG.qs=saved.qs;WG.i=saved.i||0;}
+  else{
+    const pool=nearLevel(src,lvl,Math.max(n+4,10));
+    const picks=shuffle(pool).slice(0,n);
+    WG.qs=picks.map((it,idx)=>{
+      const real=(idx%2===0);                       // exactly half real, then shuffled
+      return real
+        ? {show:it.w,isWord:1,w:it.w,d:it.d}
+        : {show:wgScramble(it.w),isWord:0,w:it.w,d:it.d};
+    });
+    WG.qs=shuffle(WG.qs);
+    WG.i=0;
+  }
+  WG.picked=false;
+  renderWordGame();
+  TM.start(saved?.left??t,t,()=>gotoNext(scr));
+}
+function renderWordGame(){
+  const q=WG.qs[WG.i];
+  document.getElementById("q-ctr").textContent=`${WG.i+1}/${WG.qs.length}`;
+  const wd=document.getElementById("wg-word");
+  wd.textContent=q.show; wd.className="wg-word wg-in";
+  document.getElementById("wg-fb").innerHTML="";
+  const sp=document.getElementById("wg-speak");
+  if(sp)sp.onclick=()=>speakHe(q.isWord?q.w:q.show);
+  WG.picked=false;
+  document.querySelectorAll(".wg-btn").forEach(b=>{
+    b.disabled=false;b.className="wg-btn "+(b.dataset.ans==="1"?"wg-yes":"wg-no");
+    b.onclick=()=>handleWordGame(+b.dataset.ans,b);
+  });
+}
+function handleWordGame(ans,btn){
+  if(WG.picked)return;WG.picked=true;
+  const q=WG.qs[WG.i],correct=(ans===q.isWord);
+  if(correct){addScore(1);SFX.good();btn.classList.add("wg-good");}
+  else{SFX.bad();btn.classList.add("wg-bad");recordMiss({w:q.w,d:q.d,kind:"he"});}
+  document.querySelectorAll(".wg-btn").forEach(b=>b.disabled=true);
+  const fb=document.getElementById("wg-fb");
+  if(q.isWord)
+    fb.innerHTML=`<span class="wg-fb-in ${correct?"ok":"no"}">${correct?"✓ נכון!":"✗ טעות —"} <b dir="rtl">${esc(q.w)}</b> = ${esc(q.d)}</span>`;
+  else
+    fb.innerHTML=`<span class="wg-fb-in ${correct?"ok":"no"}">${correct?"✓ נכון, זה קשקוש!":"✗ טעות — זה קשקוש."} המילה האמיתית: <b dir="rtl">${esc(q.w)}</b></span>`;
+  commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
+  setTimeout(()=>{
+    if(S.screen!=="wg")return;
+    WG.picked=false;WG.i++;
+    if(WG.i>=WG.qs.length)gotoNext("wg");else renderWordGame();
+  },1500);
+}
+
 const MATH_CFG = {
   ma1:{eyebrow:"חשבון · חיבור וחיסור",  lead:"בחר/י את התשובה הנכונה", type:"addsub"},
   ma2:{eyebrow:"חשבון · כפל וחילוק",    lead:"בחר/י את התשובה הנכונה", type:"muldiv"},
@@ -756,7 +866,7 @@ function doneHTML(){
 // ─── Core Render ──────────────────────────────────────────
 const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuHTML,
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
-  hv:mcHTML,hb:matchHTML,hw:mcHTML,hr:readingHTML,
+  hv:mcHTML,hb:matchHTML,hw:mcHTML,wg:wgHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma3:mathHTML,ma4:mathHTML,
   rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML};
 
@@ -858,6 +968,7 @@ function initPart(){
   else if(S.screen==="p6")initBalloons();
   else if(S.screen==="hv"||S.screen==="hw")initHebMC();
   else if(S.screen==="hb")initHebMatch();
+  else if(S.screen==="wg")initWordGame();
   else if(S.screen==="hr")initReading();
   else if(S.screen[0]==="m"&&S.screen[1]==="a")initMath();
   else if(S.screen==="rv")initReview();

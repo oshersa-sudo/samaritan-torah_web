@@ -514,6 +514,40 @@ body {
   border-radius: 16px; padding: 20px 16px; margin: 4px 0 14px;
   text-align: center; color: #0B2430; line-height: 1.5;
 }
+/* ── Word or Scribble (מילה או קשקוש) ── */
+.wg-stage { text-align:center; margin:6px 0 18px; }
+.wg-word {
+  font-family:'Secular One','Fredoka',sans-serif;
+  font-size:52px; font-weight:700; letter-spacing:2px;
+  color:#0B2430; line-height:1.2;
+  background:linear-gradient(135deg,#FFF6E5,#FFEAF2);
+  border-radius:22px; padding:30px 16px 26px; margin:0 auto;
+  box-shadow:0 10px 26px -16px rgba(108,92,231,.55);
+}
+.wg-speak { margin-top:12px; }
+.wg-choice { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.wg-btn {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:20px 8px; border-radius:20px; cursor:pointer;
+  font-family:'Fredoka',sans-serif; font-size:22px; font-weight:600; color:#0B2430;
+  border:3px solid transparent; transition:transform .12s, box-shadow .2s, background .2s;
+}
+.wg-btn .wg-ic { font-size:34px; line-height:1; }
+.wg-btn:disabled { cursor:default; }
+.wg-yes { background:linear-gradient(135deg,#E7FBEF,#D4F5E1); border-color:#8fe0ad; }
+.wg-no  { background:linear-gradient(135deg,#EEF3FF,#E3EBFF); border-color:#a9c0f0; }
+.wg-btn:not(:disabled):hover { transform:translateY(-3px); box-shadow:0 10px 20px -12px rgba(11,36,48,.4); }
+.wg-btn:not(:disabled):active { transform:translateY(0); }
+.wg-good { background:linear-gradient(135deg,#B9F6CA,#69F0AE) !important; border-color:#00C853 !important; }
+.wg-bad  { background:linear-gradient(135deg,#FFCDD2,#FF8A80) !important; border-color:#D50000 !important; animation:badshake .4s; }
+.wg-fb { min-height:30px; text-align:center; margin-top:16px; }
+.wg-fb-in { display:inline-block; font-family:'Fredoka',sans-serif; font-size:16px; padding:8px 16px; border-radius:14px; animation:popin .3s both; }
+.wg-fb-in.ok { background:#E7FBEF; color:#0a6b3a; }
+.wg-fb-in.no { background:#FFF0F0; color:#b00020; }
+.wg-in { animation:wgpop .4s cubic-bezier(.3,1.4,.5,1) both; }
+@keyframes wgpop { from{ opacity:0; transform:scale(.85) rotate(-2deg) } to{ opacity:1; transform:scale(1) rotate(0) } }
+@media (prefers-reduced-motion: reduce){ .wg-in,.wg-fb-in,.wg-bad { animation:none; } }
+
 /* ── Math word-problem text ── */
 .math-word {
   display: block; font-family: 'Fredoka', sans-serif; font-weight: 500;
