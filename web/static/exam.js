@@ -457,64 +457,92 @@ const ANIMAL_FOR_EMOJI={"🐶":"dog","🐕":"dog","🦮":"dog","🐩":"dog","�
   "🐟":"fish","🐠":"fish","🐡":"fish","🐬":"fish","🐳":"cow","🐋":"cow"};
 function animalForEmoji(e){ return e?ANIMAL_FOR_EMOJI[[...String(e)][0]]:null; }
 
-// ─── Background music bed (soft, looping, low volume) ───────────────────────
-// A calm synthesized chord loop that plays under the exercises. Kept very
-// quiet (its own low master gain) so the recorded correct/wrong sounds always
-// cut through clearly on top. Has its own on/off setting ("music", default on).
+// ─── Background music beds (soft, looping, low volume, varied) ──────────────
+// Calm synthesized chord loops that play under the app. Each subject has its
+// own distinct melody, and the home/menu has a brighter welcoming one, so the
+// music feels varied. Kept quiet (low master gain) so the recorded correct/
+// wrong sounds always cut through. Own on/off setting ("music", default on).
 const BGM = {
-  _gain:null, _timer:null, _on:false, _step:0,
-  // soothing 4-chord loop (C · Am · F · G) — warm and non-distracting
-  _prog:[[261.63,329.63,392.00],[220.00,261.63,329.63],[174.61,220.00,261.63],[196.00,246.94,293.66]],
-  _bar:2.4,
-  start(){
-    if(this._on || !setGet("music",true)) return;
-    const ctx=SFX._ac(); if(!ctx) return;
-    this._on=true; this._step=0;
-    this._gain=ctx.createGain();
-    this._gain.gain.setValueAtTime(0.0001,ctx.currentTime);
-    this._gain.gain.linearRampToValueAtTime(0.09, ctx.currentTime+1.4);  // fade in to a low bed
-    this._gain.connect(ctx.destination);
-    const tick=()=>{ if(this._on) this._playBar(ctx, this._prog[this._step++ % this._prog.length]); };
-    tick(); this._timer=setInterval(tick, this._bar*1000);
+  _gain:null, _timer:null, _on:false, _step:0, _track:null,
+  // chord palette (root-position triads, soft mid register)
+  _ch:{
+    C:[261.63,329.63,392.00], Am:[220.00,261.63,329.63], F:[174.61,220.00,261.63], G:[196.00,246.94,293.66],
+    Dm:[146.83,174.61,220.00], Em:[164.81,196.00,246.94], Bb:[233.08,293.66,349.23], D:[146.83,185.00,220.00],
   },
-  _playBar(ctx, chord){
+  // one distinct melody per context — different chords, tempo and arpeggio feel
+  _tracks:{
+    menu:   {prog:["F","C","G","Am"], bar:2.0, wave:"triangle", arp:"updown"}, // bright, welcoming
+    english:{prog:["C","Am","F","G"], bar:2.4, wave:"sine",     arp:"up"},     // easy pop feel
+    hebrew: {prog:["Dm","Bb","F","C"],bar:2.7, wave:"sine",     arp:"down"},   // warm, reflective
+    math:   {prog:["G","Em","C","D"], bar:2.1, wave:"triangle", arp:"up"},     // orderly, moving
+    science:{prog:["Am","F","C","G"], bar:2.4, wave:"sine",     arp:"updown"}, // curious
+  },
+  start(name){
+    name = this._tracks[name] ? name : "english";
+    if(!setGet("music",true)){ this.stop(); return; }
+    const ctx=SFX._ac(); if(!ctx) return;
+    if(this._on){
+      if(this._track===name) return;      // already playing this melody
+      this._fadeOut(ctx);                 // switching → crossfade the old bed out
+    }
+    this._on=true; this._track=name; this._step=0;
+    const g=ctx.createGain();
+    g.gain.setValueAtTime(0.0001,ctx.currentTime);
+    g.gain.linearRampToValueAtTime(0.09, ctx.currentTime+1.2);
+    g.connect(ctx.destination); this._gain=g;
+    const tr=this._tracks[name];
+    const tick=()=>{ if(this._on) this._playBar(ctx, this._ch[tr.prog[this._step++ % tr.prog.length]], tr); };
+    tick(); this._timer=setInterval(tick, tr.bar*1000);
+  },
+  _arpNotes(c,arp){
+    const oct=c[0]*2;
+    if(arp==="down")  return [oct,c[2],c[1],c[0]];
+    if(arp==="updown")return [c[0],c[1],c[2],c[1]];
+    return [c[0],c[1],c[2],oct];   // "up"
+  },
+  _playBar(ctx, chord, tr){
     if(!this._gain) return;
-    const t=ctx.currentTime, dur=this._bar;
-    // soft sine pad — slow swell in and out
-    chord.forEach(f=>{
+    const t=ctx.currentTime, dur=tr.bar;
+    chord.forEach(f=>{                                   // soft pad — slow swell
       const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type="sine"; o.frequency.value=f;
+      o.type=tr.wave; o.frequency.value=f;
       g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(0.45, t+0.7);
+      g.gain.linearRampToValueAtTime(0.42, t+0.7);
       g.gain.linearRampToValueAtTime(0.0001, t+dur);
       o.connect(g); g.connect(this._gain); o.start(t); o.stop(t+dur+0.1);
     });
-    // gentle arpeggio pluck one octave up — even softer, adds life
-    chord.concat([chord[0]*2]).forEach((f,i)=>{
+    this._arpNotes(chord,tr.arp).forEach((f,i)=>{        // gentle arpeggio on top
       const o=ctx.createOscillator(), g=ctx.createGain();
       o.type="triangle"; o.frequency.value=f*2;
       const st=t+i*(dur/4);
       g.gain.setValueAtTime(0.0001,st);
-      g.gain.linearRampToValueAtTime(0.18, st+0.03);
+      g.gain.linearRampToValueAtTime(0.16, st+0.03);
       g.gain.exponentialRampToValueAtTime(0.0001, st+0.55);
       o.connect(g); g.connect(this._gain); o.start(st); o.stop(st+0.6);
     });
   },
-  stop(){
-    if(!this._on) return;
-    this._on=false;
+  _fadeOut(ctx){
     if(this._timer){ clearInterval(this._timer); this._timer=null; }
-    const ctx=SFX._ctx, g=this._gain;
-    if(ctx && g){
-      try{ g.gain.cancelScheduledValues(ctx.currentTime);
-        g.gain.setValueAtTime(g.gain.value, ctx.currentTime);
-        g.gain.linearRampToValueAtTime(0.0001, ctx.currentTime+0.4); }catch(e){}
-      setTimeout(()=>{ try{g.disconnect();}catch(e){} }, 500);
-    }
+    const g=this._gain;
+    if(g){ try{ g.gain.cancelScheduledValues(ctx.currentTime);
+      g.gain.setValueAtTime(g.gain.value, ctx.currentTime);
+      g.gain.linearRampToValueAtTime(0.0001, ctx.currentTime+0.5); }catch(e){}
+      setTimeout(()=>{ try{g.disconnect();}catch(e){} }, 600); }
     this._gain=null;
   },
-  // called from render(): play only while on a gameplay screen and music is on
-  sync(playing){ if(playing && setGet("music",true)) this.start(); else this.stop(); },
+  stop(){
+    if(!this._on && !this._gain) return;
+    this._on=false; this._track=null;
+    const ctx=SFX._ctx; if(ctx) this._fadeOut(ctx);
+    else { if(this._timer){clearInterval(this._timer);this._timer=null;} this._gain=null; }
+  },
+  // pick the right melody for the current screen (called from render())
+  sync(screen){
+    if(!setGet("music",true)){ this.stop(); return; }
+    if(screen==="menu") return this.start("menu");
+    if(curOrder().includes(screen) || screen==="gplay") return this.start(S.subject);
+    this.stop();
+  },
 };
 
 // שחרור AudioContext במגע ראשון (מדיניות דפדפנים)
@@ -522,7 +550,7 @@ window.addEventListener("pointerdown",()=>SFX._ac(),{once:true});
 // don't leave music playing when the app is backgrounded; resume on return
 if(typeof document!=="undefined") document.addEventListener("visibilitychange",()=>{
   if(document.hidden) BGM.stop();
-  else if((curOrder().includes(S.screen)||S.screen==="gplay") && setGet("music",true)) BGM.start();
+  else if(setGet("music",true)) BGM.sync(S.screen);
 });
 
 // ─── Mascot + micro-celebrations (visual life) ───────────────────────────────
@@ -1659,7 +1687,7 @@ function render(){
   initPart();
   ensureMascot();
   showMascot(S.screen==="rv");   // corner mascot only on review; gameplay uses the in-card one
-  BGM.sync(isGame || S.screen==="gplay");   // soft background music during exercises only
+  BGM.sync(S.screen);   // varied soft background music (per subject + menu)
   saveSession();
 }
 
