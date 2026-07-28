@@ -461,9 +461,16 @@ function animalForEmoji(e){ return e?ANIMAL_FOR_EMOJI[[...String(e)][0]]:null; }
 // Calm synthesized chord loops that play under the app. Each subject has its
 // own distinct melody, and the home/menu has a brighter welcoming one, so the
 // music feels varied. Kept quiet (low master gain) so the recorded correct/
-// wrong sounds always cut through. Own on/off setting ("music", default on).
+// wrong sounds always cut through. Volume setting "musicVol": off/low/med.
+// master bed volume from the setting (migrates the old boolean "music")
+function musicGain(){
+  let v=setGet("musicVol",null);
+  if(v==null) v = (setGet("music",true)===false) ? "off" : "med";
+  return v==="off" ? 0 : v==="low" ? 0.055 : 0.11;
+}
 const BGM = {
-  _gain:null, _timer:null, _on:false, _step:0, _track:null,
+  _gain:null, _timer:null, _on:false, _step:0, _cycle:0, _track:null,
+  _arpVars:["up","updown","down"],
   // chord palette (root-position triads, soft mid register)
   _ch:{
     C:[261.63,329.63,392.00], Am:[220.00,261.63,329.63], F:[174.61,220.00,261.63], G:[196.00,246.94,293.66],
@@ -479,20 +486,37 @@ const BGM = {
   },
   start(name){
     name = this._tracks[name] ? name : "english";
-    if(!setGet("music",true)){ this.stop(); return; }
+    const lvl=musicGain();
+    if(lvl<=0){ this.stop(); return; }
     const ctx=SFX._ac(); if(!ctx) return;
     if(this._on){
-      if(this._track===name) return;      // already playing this melody
-      this._fadeOut(ctx);                 // switching → crossfade the old bed out
+      if(this._track===name){ this.setLevel(); return; }  // same melody → match volume
+      this._fadeOut(ctx);                                  // switching → crossfade out
     }
-    this._on=true; this._track=name; this._step=0;
+    this._on=true; this._track=name; this._step=0; this._cycle=0;
     const g=ctx.createGain();
     g.gain.setValueAtTime(0.0001,ctx.currentTime);
-    g.gain.linearRampToValueAtTime(0.09, ctx.currentTime+1.2);
+    g.gain.linearRampToValueAtTime(lvl, ctx.currentTime+1.2);
     g.connect(ctx.destination); this._gain=g;
     const tr=this._tracks[name];
-    const tick=()=>{ if(this._on) this._playBar(ctx, this._ch[tr.prog[this._step++ % tr.prog.length]], tr); };
+    const tick=()=>{
+      if(!this._on) return;
+      const idx=this._step % tr.prog.length;
+      if(idx===0 && this._step>0) this._cycle++;          // count full loops → vary
+      this._playBar(ctx, this._ch[tr.prog[idx]], tr);
+      this._step++;
+    };
     tick(); this._timer=setInterval(tick, tr.bar*1000);
+  },
+  // live-adjust bed volume (or stop) when the setting changes
+  setLevel(){
+    const ctx=SFX._ctx, lvl=musicGain();
+    if(lvl<=0){ this.stop(); return; }
+    if(ctx && this._gain){ try{
+      this._gain.gain.cancelScheduledValues(ctx.currentTime);
+      this._gain.gain.setValueAtTime(this._gain.gain.value, ctx.currentTime);
+      this._gain.gain.linearRampToValueAtTime(lvl, ctx.currentTime+0.3);
+    }catch(e){} }
   },
   _arpNotes(c,arp){
     const oct=c[0]*2;
@@ -503,6 +527,8 @@ const BGM = {
   _playBar(ctx, chord, tr){
     if(!this._gain) return;
     const t=ctx.currentTime, dur=tr.bar;
+    // rotate the arpeggio each full loop so the melody keeps evolving
+    const _b=this._arpVars.indexOf(tr.arp), arp=this._arpVars[((_b<0?0:_b)+this._cycle)%3];
     chord.forEach(f=>{                                   // soft pad — slow swell
       const o=ctx.createOscillator(), g=ctx.createGain();
       o.type=tr.wave; o.frequency.value=f;
@@ -511,7 +537,7 @@ const BGM = {
       g.gain.linearRampToValueAtTime(0.0001, t+dur);
       o.connect(g); g.connect(this._gain); o.start(t); o.stop(t+dur+0.1);
     });
-    this._arpNotes(chord,tr.arp).forEach((f,i)=>{        // gentle arpeggio on top
+    this._arpNotes(chord,arp).forEach((f,i)=>{           // gentle arpeggio on top
       const o=ctx.createOscillator(), g=ctx.createGain();
       o.type="triangle"; o.frequency.value=f*2;
       const st=t+i*(dur/4);
@@ -520,6 +546,14 @@ const BGM = {
       g.gain.exponentialRampToValueAtTime(0.0001, st+0.55);
       o.connect(g); g.connect(this._gain); o.start(st); o.stop(st+0.6);
     });
+    if(this._cycle % 2 === 1){                           // alternate loops: soft high sparkle
+      const o=ctx.createOscillator(), g=ctx.createGain(), st=t+dur*0.5;
+      o.type="triangle"; o.frequency.value=chord[2]*4;
+      g.gain.setValueAtTime(0.0001,st);
+      g.gain.linearRampToValueAtTime(0.08, st+0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, st+0.7);
+      o.connect(g); g.connect(this._gain); o.start(st); o.stop(st+0.75);
+    }
   },
   _fadeOut(ctx){
     if(this._timer){ clearInterval(this._timer); this._timer=null; }
@@ -538,7 +572,7 @@ const BGM = {
   },
   // pick the right melody for the current screen (called from render())
   sync(screen){
-    if(!setGet("music",true)){ this.stop(); return; }
+    if(musicGain()<=0){ this.stop(); return; }
     if(screen==="menu") return this.start("menu");
     if(curOrder().includes(screen) || screen==="gplay") return this.start(S.subject);
     this.stop();
@@ -550,7 +584,7 @@ window.addEventListener("pointerdown",()=>SFX._ac(),{once:true});
 // don't leave music playing when the app is backgrounded; resume on return
 if(typeof document!=="undefined") document.addEventListener("visibilitychange",()=>{
   if(document.hidden) BGM.stop();
-  else if(setGet("music",true)) BGM.sync(S.screen);
+  else if(musicGain()>0) BGM.sync(S.screen);
 });
 
 // ─── Mascot + micro-celebrations (visual life) ───────────────────────────────
@@ -1056,10 +1090,16 @@ function parentsHTML(){
   const rows=[
     {k:"tts",label:"הקראה קולית (TTS)",def:true},
     {k:"sfx",label:"אפקטים קוליים (נכון/שגוי)",def:true},
-    {k:"music",label:"מוזיקת רקע במהלך התרגול",def:true},
     {k:"charVoices",label:"קול לכל דמות (מסונתז)",def:true},
   ].map(t=>{const on=setGet(t.k,t.def);
     return `<div class="par-row"><span>${t.label}</span><button class="tgl${on?" on":""}" data-set="${t.k}" role="switch" aria-checked="${on}"><i></i></button></div>`;}).join("");
+  // background-music volume — a 3-way control (off / quiet / normal)
+  const mv=setGet("musicVol", setGet("music",true)===false?"off":"med");
+  const musicRow=`<div class="par-row"><span>מוזיקת רקע במהלך התרגול</span>
+    <div class="seg" id="music-vol" role="group">
+      ${[["off","כבוי"],["low","שקט"],["med","רגיל"]].map(([v,l])=>
+        `<button type="button" class="seg-btn${mv===v?" seg-on":""}" data-v="${v}">${l}</button>`).join("")}
+    </div></div>`;
   const voicePills=TEAM_ORDER.map(k=>{const p=VOICE_PROFILES[k];
     return `<button class="voice-pill" data-voice="${k}" style="background:${p.grad}">${p.emoji} ${esc(p.name.replace(/[֑-ׇ]/g,""))} · ${esc(p.tone)}</button>`;}).join("");
   return `<div class="parents-page kl-rise">
@@ -1074,7 +1114,7 @@ function parentsHTML(){
     <div class="voice-row" id="voice-row">${voicePills}</div>
     <p class="par-note">כשמפעילים "קול לכל דמות" בהגדרות, ההקראה בעברית משתמשת בקול של הדמות המלווה את המקצוע. הקולות מסונתזים ועובדים בכל מכשיר.</p>
   </div>
-  <div class="mini-card"><div class="mini-label">הגדרות</div>${rows}</div>
+  <div class="mini-card"><div class="mini-label">הגדרות</div>${rows}${musicRow}</div>
   ${BACKEND?`<div class="mini-card"><div class="mini-label">מעקב מרחוק</div><p class="par-note">קוד ההורים: <b>${esc(S.parentCode||"…")}</b><br>מהמכשיר שלכם היכנסו לכתובת <b>onyx-study.com/parent</b> כדי לעקוב מרחוק אחרי ההתקדמות.</p></div>`:""}
 </div>`;
 }
@@ -1726,6 +1766,13 @@ function attachListeners(){
     });
     const vr=document.getElementById("voice-row");
     if(vr)vr.addEventListener("click",e=>{const b=e.target.closest(".voice-pill");if(b)speakSample(b.dataset.voice);});
+    const mvol=document.getElementById("music-vol");
+    if(mvol)mvol.addEventListener("click",e=>{
+      const b=e.target.closest(".seg-btn");if(!b)return;
+      setPut("musicVol",b.dataset.v);
+      mvol.querySelectorAll(".seg-btn").forEach(x=>x.classList.toggle("seg-on",x===b));
+      if(b.dataset.v==="off")BGM.stop(); else BGM.setLevel();  // applies next time on a music screen
+    });
   }
   if(S.screen==="catalog"){
     document.getElementById("btn-cat-back").addEventListener("click",()=>{S.screen=S.returnTo||"subject";render();});

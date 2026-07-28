@@ -193,6 +193,16 @@ body {
 .mark.good { color: #3FBF6F; }
 .mark.bad  { color: #F2545B; }
 .hint { font-size: 13px; margin: 12px 0 0; }
+/* 3-way segmented control (e.g. music volume: off / quiet / normal) */
+.seg { display:inline-flex; background:rgba(124,58,237,.10); border-radius:999px; padding:3px; gap:2px; }
+.seg-btn { border:none; background:transparent; font-family:inherit; font-size:13px; font-weight:700; color:#6d28d9;
+  padding:6px 14px; border-radius:999px; cursor:pointer; transition:background .15s,color .15s; }
+.seg-btn.seg-on { background:#7c3aed; color:#fff; box-shadow:0 2px 6px rgba(124,58,237,.35); }
+@media (prefers-color-scheme: dark){
+  .seg { background:rgba(157,123,246,.18); }
+  .seg-btn { color:#c4b3fb; } .seg-btn.seg-on { background:#7c3aed; color:#fff; }
+}
+
 /* Curriculum alignment (משרד החינוך) */
 .cur-banner { display:block; width:100%; margin:14px 0 0; padding:12px 14px; border:none; border-radius:16px;
   background:linear-gradient(150deg,#e0f2fe,#dbeafe); color:#075985; font-family:inherit; font-weight:700;
