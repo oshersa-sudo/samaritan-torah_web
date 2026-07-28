@@ -456,8 +456,74 @@ const ANIMAL_FOR_EMOJI={"🐶":"dog","🐕":"dog","🦮":"dog","🐩":"dog","�
   "🦖":"lion","🐊":"lion","🐝":"bee","🦆":"duck","🐑":"sheep","🐏":"sheep","🐐":"sheep","🐴":"horse","🐎":"horse","🦄":"horse",
   "🐟":"fish","🐠":"fish","🐡":"fish","🐬":"fish","🐳":"cow","🐋":"cow"};
 function animalForEmoji(e){ return e?ANIMAL_FOR_EMOJI[[...String(e)][0]]:null; }
+
+// ─── Background music bed (soft, looping, low volume) ───────────────────────
+// A calm synthesized chord loop that plays under the exercises. Kept very
+// quiet (its own low master gain) so the recorded correct/wrong sounds always
+// cut through clearly on top. Has its own on/off setting ("music", default on).
+const BGM = {
+  _gain:null, _timer:null, _on:false, _step:0,
+  // soothing 4-chord loop (C · Am · F · G) — warm and non-distracting
+  _prog:[[261.63,329.63,392.00],[220.00,261.63,329.63],[174.61,220.00,261.63],[196.00,246.94,293.66]],
+  _bar:2.4,
+  start(){
+    if(this._on || !setGet("music",true)) return;
+    const ctx=SFX._ac(); if(!ctx) return;
+    this._on=true; this._step=0;
+    this._gain=ctx.createGain();
+    this._gain.gain.setValueAtTime(0.0001,ctx.currentTime);
+    this._gain.gain.linearRampToValueAtTime(0.09, ctx.currentTime+1.4);  // fade in to a low bed
+    this._gain.connect(ctx.destination);
+    const tick=()=>{ if(this._on) this._playBar(ctx, this._prog[this._step++ % this._prog.length]); };
+    tick(); this._timer=setInterval(tick, this._bar*1000);
+  },
+  _playBar(ctx, chord){
+    if(!this._gain) return;
+    const t=ctx.currentTime, dur=this._bar;
+    // soft sine pad — slow swell in and out
+    chord.forEach(f=>{
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type="sine"; o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(0.45, t+0.7);
+      g.gain.linearRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(this._gain); o.start(t); o.stop(t+dur+0.1);
+    });
+    // gentle arpeggio pluck one octave up — even softer, adds life
+    chord.concat([chord[0]*2]).forEach((f,i)=>{
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type="triangle"; o.frequency.value=f*2;
+      const st=t+i*(dur/4);
+      g.gain.setValueAtTime(0.0001,st);
+      g.gain.linearRampToValueAtTime(0.18, st+0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, st+0.55);
+      o.connect(g); g.connect(this._gain); o.start(st); o.stop(st+0.6);
+    });
+  },
+  stop(){
+    if(!this._on) return;
+    this._on=false;
+    if(this._timer){ clearInterval(this._timer); this._timer=null; }
+    const ctx=SFX._ctx, g=this._gain;
+    if(ctx && g){
+      try{ g.gain.cancelScheduledValues(ctx.currentTime);
+        g.gain.setValueAtTime(g.gain.value, ctx.currentTime);
+        g.gain.linearRampToValueAtTime(0.0001, ctx.currentTime+0.4); }catch(e){}
+      setTimeout(()=>{ try{g.disconnect();}catch(e){} }, 500);
+    }
+    this._gain=null;
+  },
+  // called from render(): play only while on a gameplay screen and music is on
+  sync(playing){ if(playing && setGet("music",true)) this.start(); else this.stop(); },
+};
+
 // שחרור AudioContext במגע ראשון (מדיניות דפדפנים)
 window.addEventListener("pointerdown",()=>SFX._ac(),{once:true});
+// don't leave music playing when the app is backgrounded; resume on return
+if(typeof document!=="undefined") document.addEventListener("visibilitychange",()=>{
+  if(document.hidden) BGM.stop();
+  else if((curOrder().includes(S.screen)||S.screen==="gplay") && setGet("music",true)) BGM.start();
+});
 
 // ─── Mascot + micro-celebrations (visual life) ───────────────────────────────
 function ensureMascot(){
@@ -961,7 +1027,8 @@ function parentsHTML(){
   }).join("");
   const rows=[
     {k:"tts",label:"הקראה קולית (TTS)",def:true},
-    {k:"sfx",label:"אפקטים קוליים",def:true},
+    {k:"sfx",label:"אפקטים קוליים (נכון/שגוי)",def:true},
+    {k:"music",label:"מוזיקת רקע במהלך התרגול",def:true},
     {k:"charVoices",label:"קול לכל דמות (מסונתז)",def:true},
   ].map(t=>{const on=setGet(t.k,t.def);
     return `<div class="par-row"><span>${t.label}</span><button class="tgl${on?" on":""}" data-set="${t.k}" role="switch" aria-checked="${on}"><i></i></button></div>`;}).join("");
@@ -1592,6 +1659,7 @@ function render(){
   initPart();
   ensureMascot();
   showMascot(S.screen==="rv");   // corner mascot only on review; gameplay uses the in-card one
+  BGM.sync(isGame || S.screen==="gplay");   // soft background music during exercises only
   saveSession();
 }
 
@@ -1625,6 +1693,7 @@ function attachListeners(){
         const k=t.dataset.set,now=!setGet(k,true);
         setPut(k,now);
         t.classList.toggle("on",now);t.setAttribute("aria-checked",now);
+        if(k==="music"&&!now)BGM.stop();   // silence the bed at once when turned off
       });
     });
     const vr=document.getElementById("voice-row");
