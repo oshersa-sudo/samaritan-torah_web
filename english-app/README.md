@@ -60,6 +60,13 @@ salt,סוֹלְט,מלח,kitchen
 ```
 זו הדרך המומלצת להוספת אלפי מילים בבת אחת (למשל ייבוא מקובץ מילון).
 
+אפשר גם ליצור קובץ נוסף (כמו `data/words-extra.js`) שמצרף מילים כך:
+```js
+window.WORDS = (window.WORDS || []).concat([ /* ... מילים ... */ ]);
+```
+ולהוסיף אותו ל-`index.html` בשורת `<script>` אחרי `words.js`. כך המאגר בנוי כרגע:
+`words.js` (בסיס) + `words-extra.js` (הרחבה) = **780 מילים, 60 בכל תחום**.
+
 ### 3. תחומים (categories)
 מפתחות התחומים הזמינים: `kitchen, daily, business, conversation, time, tools, body, furniture, objects, vehicles, travel, study, family`.
 להוספת תחום חדש — מוסיפים אותו לרשימה `window.CATEGORIES` בראש `data/words.js`.
@@ -70,7 +77,8 @@ english-app/
 ├── index.html          # קובץ ההפעלה
 ├── css/style.css       # עיצוב
 ├── data/
-│   ├── words.js        # מאגר המילים (להרחבה)
+│   ├── words.js        # מאגר המילים הבסיסי (להרחבה)
+│   ├── words-extra.js  # מילים נוספות (מתמזג אוטומטית) – דוגמה לדפוס ההרחבה
 │   └── grammar.js      # שיעורי לשון וזמנים
 └── js/
     ├── storage.js      # שמירת התקדמות מקומית
