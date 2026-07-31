@@ -165,18 +165,18 @@ const PICTURES = [
 // ─── Constants ────────────────────────────────────────────
 const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
 const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
-                hv:240,hb:210,hw:240,wg:210,hr:600,
+                hv:240,hb:210,hw:240,hs:240,wg:210,hr:600,
                 ma1:240,ma2:300,ma5:360,ma3:360,ma4:240,
                 sv:240,sw:240,sq:300,sr:600};
 const LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"};
 const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
                     p5:"התאמת מילים",p6:"בלונים",
-                    hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",wg:"מילה או קשקוש",hr:"הבנת הנקרא",
+                    hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",hs:"נרדפות והפכים",wg:"מילה או קשקוש",hr:"הבנת הנקרא",
                     ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma5:"שברים",ma3:"בעיות מילוליות",ma4:"המספר החסר",
                     sv:"אוצר מילים במדע",sw:"פירוש מושגים",sq:"חידון טבע ומדע",sr:"הבנת הנקרא"};
 // answers per part → used to normalise the score to /100
 const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
-                    hv:10,hb:8,hw:10,wg:10,hr:6,
+                    hv:10,hb:8,hw:10,hs:10,wg:10,hr:6,
                     ma1:10,ma2:10,ma5:10,ma3:6,ma4:8,
                     sv:10,sw:10,sq:10,sr:6};
 // subjects and their part order — every subject: 4 parts, 4 hourglasses
@@ -188,7 +188,7 @@ const SUBJECTS = {
   hebrew: {name:"עברית",  icon:"📖", desc:"אוצר מילים, קריאה והבנה",
            grad:"linear-gradient(150deg,#a78bfa,#7c3aed)", shadow:"#6d28d9",
            mascot:"🦉", mascotName:"אוּפִּי הַיַּנְשׁוּף",
-           order:["hv","hb","wg","hr"]},
+           order:["hv","hb","hs","wg","hr"]},
   math:   {name:"חשבון",  icon:"🧮", desc:"חיבור, כפל, שברים ובעיות",
            grad:"linear-gradient(150deg,#fda4af,#e11d48)", shadow:"#be123c",
            mascot:"👨‍🏫", mascotName:"פְּרוֹפֶסוֹר חֶשְׁבּוֹן",
@@ -815,6 +815,8 @@ const HEB_STORIES = (typeof window!=="undefined" && Array.isArray(window.HEB_STO
 const SCI_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.SCI_VOCAB))   ? window.SCI_VOCAB   : [];
 const SCI_QUIZ    = (typeof window!=="undefined" && Array.isArray(window.SCI_QUIZ))    ? window.SCI_QUIZ    : [];
 const SCI_STORIES = (typeof window!=="undefined" && Array.isArray(window.SCI_STORIES)) ? window.SCI_STORIES : [];
+// Hebrew synonyms & antonyms (נרדפות והפכים) — a staple Israeli exercise type
+const HEB_LEX = (typeof window!=="undefined" && Array.isArray(window.HEB_LEX)) ? window.HEB_LEX : [];
 // Israeli Ministry of Education curriculum map (from curriculum.js)
 const CURRICULUM = (typeof window!=="undefined" && window.CURRICULUM) ? window.CURRICULUM : null;
 // the curriculum grade (1–6) that matches the student's current level
@@ -1039,7 +1041,7 @@ function resumeHTML(){
 
 const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3:"שאלות · 10 דק׳",p4:"תמונות · 10 דק׳",
                    p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",
-                   hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",wg:"משחק · 3.5 דק׳",hr:"שאלות · 10 דק׳",
+                   hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",hs:"מילים · 4 דק׳",wg:"משחק · 3.5 דק׳",hr:"שאלות · 10 דק׳",
                    ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma5:"שברים · 6 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳",
                    sv:"מילים · 4 דק׳",sw:"מושגים · 4 דק׳",sq:"חידון · 5 דק׳",sr:"שאלות · 10 דק׳"};
 
@@ -1484,6 +1486,75 @@ function handleSciQ(idx){
   },1200);
 }
 
+// ─── Hebrew synonyms & antonyms (hs · נרדפות והפכים) ─────────────────────────
+// The most common Hebrew exercise on Israeli sites: pick the word closest in
+// meaning (נרדף) or opposite (הפך). Shows niqqud for young readers (grades א–ד).
+const HL={};
+function hlHTML(){
+  const t=TIME.hs;
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">עברית · נרדפות והפכים</span><p class="lead" id="hl-lead">בחר/י את המילה המתאימה</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.hs?.left??t,t)}</span></div>
+  </div>
+  <div class="mc-prompt" id="hl-prompt" dir="rtl"></div>
+  <button class="ghost sm" id="hl-speak">🔊 שמע/י</button>
+  <div class="opts" id="q-opts"></div>
+</section>`;
+}
+function initHebLex(){
+  const lvl=curLevel(),n=PART_QUOTA.hs,t=TIME.hs,saved=S.prog.hs;
+  const src=HEB_LEX.filter(x=>x.w&&x.a&&Array.isArray(x.decoys)&&x.decoys.length>=3);
+  if(!src.length){ gotoNext("hs"); return; }   // no data → skip gracefully
+  if(saved&&saved.qs){HL.qs=saved.qs;HL.i=saved.i||0;}
+  else{
+    const pool=nearLevel(src,lvl,Math.max(n+4,8));
+    HL.qs=pickFresh(pool,"heblex",n,x=>x.w).map(it=>{
+      const disp={};
+      if(it.wn)disp[it.w]=it.wn; if(it.an)disp[it.a]=it.an;
+      if(Array.isArray(it.decoysN))it.decoys.forEach((d,k)=>{if(it.decoysN[k])disp[d]=it.decoysN[k];});
+      return {type:it.type,w:it.w,a:it.a,o:shuffle([it.a,...it.decoys.slice(0,3)]),disp};
+    });
+    HL.i=0;
+  }
+  HL.picked=false;
+  renderHebLexQ();
+  TM.start(saved?.left??t,t,()=>gotoNext("hs"));
+}
+function renderHebLexQ(){
+  const q=HL.qs[HL.i], young=youngHeb();
+  const dw = young?(q.disp[q.w]||q.w):q.w;
+  const le=document.getElementById("hl-lead");
+  if(le)le.textContent = q.type==="ant" ? "איזו מילה הפוכה במשמעות?" : "איזו מילה קרובה במשמעות?";
+  document.getElementById("q-ctr").textContent=`${HL.i+1}/${HL.qs.length}`;
+  document.getElementById("hl-prompt").innerHTML=`<span dir="rtl">${q.type==="ant"?"הֵפֶךְ של ":"נרדף ל־"}<b>${esc(dw)}</b></span>`;
+  const sp=document.getElementById("hl-speak"); if(sp)sp.onclick=()=>speakHe(dw);
+  document.getElementById("q-opts").innerHTML=q.o.map(o=>{
+    const disp=young?(q.disp[o]||o):o;
+    return `<button class="opt" data-val="${esc(o)}" dir="rtl"><span>${esc(disp)}</span><span class="mark" style="display:none"></span></button>`;
+  }).join("");
+  HL.picked=false;
+  document.getElementById("q-opts").onclick=e=>{const b=e.target.closest(".opt");if(!b||b.disabled||HL.picked)return;handleHebLex(b.dataset.val);};
+}
+function handleHebLex(val){
+  if(HL.picked)return;HL.picked=true;
+  const q=HL.qs[HL.i],correct=val===q.a;
+  if(correct){addScore(1);SFX.good();}else{SFX.bad();recordMiss({w:q.w,d:q.a,kind:"he"});}
+  document.querySelectorAll("#q-opts .opt").forEach(b=>{
+    const bv=b.dataset.val,mk=b.querySelector(".mark");
+    if(bv===q.a){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
+    else if(bv===val&&!correct){b.classList.add("opt-bad");mk.textContent="✗";mk.className="mark bad";mk.style.display="";}
+    else b.classList.add("opt-dim");
+    b.disabled=true;
+  });
+  commitProg({hs:{qs:HL.qs,i:HL.i,left:TM.left}});
+  setTimeout(()=>{
+    if(S.screen!=="hs")return;
+    HL.picked=false;HL.i++;
+    if(HL.i>=HL.qs.length)gotoNext("hs");else renderHebLexQ();
+  },1100);
+}
+
 // ─── Word or Scribble (wg) — real Hebrew word vs. scrambled gibberish ─
 // Inspired by "מילה או קשקוש": a fun, fast reading-fluency drill. The child
 // sees one Hebrew string and decides — is it a real word, or nonsense?
@@ -1704,7 +1775,7 @@ function doneHTML(){
 // ─── Core Render ──────────────────────────────────────────
 const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuHTML,
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
-  hv:mcHTML,hb:matchHTML,hw:mcHTML,wg:wgHTML,hr:readingHTML,
+  hv:mcHTML,hb:matchHTML,hw:mcHTML,hs:hlHTML,wg:wgHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma5:mathHTML,ma3:mathHTML,ma4:mathHTML,
   sv:mcHTML,sw:mcHTML,sq:sqHTML,sr:readingHTML,
   rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML,gplay:gplayHTML,curriculum:curriculumHTML};
@@ -1721,7 +1792,7 @@ function gotoNext(cur){
 
 // screens whose answers are 4 tappable options → show the "keys 1–4" tip and
 // wire number-key answering. (p4 = free-text describe, so it is excluded.)
-const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hr","ma1","ma2","ma5","ma3","ma4","sv","sw","sq","sr"]);
+const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma3","ma4","sv","sw","sq","sr"]);
 const ENCOURAGE=["אני איתך! נסה לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
 function gameMascotFrame(){
   const m=curSubject().mascot||"🦉";
@@ -1925,6 +1996,7 @@ function initPart(){
   else if(S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw")initHebMC();
   else if(S.screen==="hb")initHebMatch();
   else if(S.screen==="wg")initWordGame();
+  else if(S.screen==="hs")initHebLex();
   else if(S.screen==="hr"||S.screen==="sr")initReading();
   else if(S.screen==="sq")initSciQuiz();
   else if(S.screen[0]==="m"&&S.screen[1]==="a")initMath();
@@ -2776,6 +2848,7 @@ function saveCurrentProg(){
   else if(S.screen[0]==="m"&&S.screen[1]==="a"&&MA.qs)commitProg({[S.screen]:mathState()});
   else if((S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
   else if(S.screen==="wg"&&WG.qs)commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
+  else if(S.screen==="hs"&&HL.qs)commitProg({hs:{qs:HL.qs,i:HL.i,left:TM.left}});
   else if(S.screen==="sq"&&SQ.qs)commitProg({sq:{qs:SQ.qs,i:SQ.i,left:TM.left}});
   else if((S.screen==="hr"||S.screen==="sr")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
 }
