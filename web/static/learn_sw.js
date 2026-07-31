@@ -1,7 +1,7 @@
 /* Service worker for the learning trainer (OnyxApps).
    NETWORK-FIRST so the newest code loads when online, falling back to the
    cache offline. /api/* always hits the network (live sync). */
-const CACHE = 'learn-app-v18';
+const CACHE = 'learn-app-v19';
 const SHELL = [
   '/exam',
   '/static/exam.css', '/static/exam.js',
@@ -35,4 +35,22 @@ self.addEventListener('fetch', e => {
       return resp;
     }).catch(() => caches.match(e.request).then(hit => hit || caches.match('/exam')))
   );
+});
+
+// ── Practice reminders on the child's own device (works with screen locked) ──
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data.json(); } catch (_) { d = { title: 'Onyx לימודי', body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'Onyx לימודי 🎯', {
+    body: d.body || 'זמן לתרגל!', dir: 'rtl', lang: 'he', tag: 'onyx-practice',
+    renotify: true, data: { url: d.url || '/exam' }
+  }));
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || '/exam';
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cl => {
+    for (let i = 0; i < cl.length; i++) { if (cl[i].url.indexOf('/exam') >= 0 && 'focus' in cl[i]) return cl[i].focus(); }
+    if (self.clients.openWindow) return self.clients.openWindow(url);
+  }));
 });

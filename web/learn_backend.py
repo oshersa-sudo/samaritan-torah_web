@@ -56,7 +56,8 @@ def init_db():
             code_ts INTEGER,
             parent_code TEXT,
             email TEXT,
-            created INTEGER
+            created INTEGER,
+            notify_child INTEGER DEFAULT 1
         );
         CREATE TABLE IF NOT EXISTS results(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -94,10 +95,13 @@ def init_db():
             k TEXT PRIMARY KEY,
             v TEXT
         );
-        -- browser/phone push subscriptions belonging to a parent
+        -- browser/phone push subscriptions. role='parent' → parent_phone set;
+        -- role='child' → student_phone set (the student's own device).
         CREATE TABLE IF NOT EXISTS push_subs(
             endpoint TEXT PRIMARY KEY,
-            parent_phone TEXT NOT NULL,
+            parent_phone TEXT,
+            student_phone TEXT,
+            role TEXT DEFAULT 'parent',
             sub TEXT NOT NULL,
             created INTEGER
         );
@@ -107,9 +111,14 @@ def init_db():
         """)
         # ── idempotent migrations for databases created before these columns ──
         for tbl, col, ddl in (
-            ("results", "dur",          "ALTER TABLE results ADD COLUMN dur INTEGER DEFAULT 0"),
-            ("results", "detail",       "ALTER TABLE results ADD COLUMN detail TEXT"),
-            ("links",   "parent_email", "ALTER TABLE links ADD COLUMN parent_email TEXT"),
+            ("results",  "dur",          "ALTER TABLE results ADD COLUMN dur INTEGER DEFAULT 0"),
+            ("results",  "detail",       "ALTER TABLE results ADD COLUMN detail TEXT"),
+            ("links",    "parent_email", "ALTER TABLE links ADD COLUMN parent_email TEXT"),
+            # child-device push: reminders can also go to the student's own phone.
+            # notify_child (on students) is controlled ONLY from the parent portal.
+            ("students", "notify_child", "ALTER TABLE students ADD COLUMN notify_child INTEGER DEFAULT 1"),
+            ("push_subs","role",         "ALTER TABLE push_subs ADD COLUMN role TEXT DEFAULT 'parent'"),
+            ("push_subs","student_phone","ALTER TABLE push_subs ADD COLUMN student_phone TEXT"),
         ):
             cols = {r["name"] for r in c.execute(f"PRAGMA table_info({tbl})").fetchall()}
             if col not in cols:
@@ -492,7 +501,7 @@ def parent_students():
         out = []
         for l in links:
             sp = l["student_phone"]
-            st = c.execute("SELECT name,age FROM students WHERE phone=?", (sp,)).fetchone()
+            st = c.execute("SELECT name,age,notify_child FROM students WHERE phone=?", (sp,)).fetchone()
             rows = [dict(r) for r in c.execute(
                 "SELECT id,subject,grade,correct,total,ts,dur FROM results WHERE phone=? ORDER BY ts DESC LIMIT 50",
                 (sp,)).fetchall()]
@@ -506,9 +515,13 @@ def parent_students():
             # grade trend: oldest→newest, for the line chart (subject + score)
             trend = [{"ts": r["ts"], "g": r["grade"], "subject": r["subject"]}
                      for r in reversed(rows)]
+            # is the child's device even registered for pushes?
+            child_subs = c.execute("SELECT COUNT(*) n FROM push_subs WHERE role='child' AND student_phone=?", (sp,)).fetchone()["n"]
             out.append({"phone": sp, "name": st["name"] if st else sp, "age": st["age"] if st else None,
                         "stats": _stats(rows), "last": last, "recent": rows[:10],
-                        "time": tm, "inactive_days": inactive, "trend": trend})
+                        "time": tm, "inactive_days": inactive, "trend": trend,
+                        "notify_child": (st["notify_child"] if st and st["notify_child"] is not None else 1),
+                        "child_device": bool(child_subs)})
     return jsonify({"ok": True, "students": out})
 
 @bp.route("/api/parent/result")
@@ -624,6 +637,56 @@ def push_unsubscribe():
             c.execute("DELETE FROM push_subs WHERE parent_phone=?", (pphone,))
     return jsonify({"ok": True})
 
+@bp.route("/api/student/push/subscribe", methods=["POST"])
+def student_push_subscribe():
+    # The trainer (child device) registers itself for reminder pushes. Guarded
+    # by the student's phone + exact registered name (the same light secret used
+    # for cross-device result sync). There is deliberately NO child-side way to
+    # turn this off — only the parent controls delivery (see notify_child).
+    d = request.get_json(silent=True) or {}
+    phone = norm_phone(d.get("phone"))
+    name  = (d.get("name") or "").strip()
+    sub   = d.get("subscription") or {}
+    endpoint = (sub or {}).get("endpoint")
+    if not PHONE_RE.match(phone) or not name:
+        return jerr("phone and name required")
+    if not endpoint:
+        return jerr("missing endpoint")
+    with db() as c:
+        st = c.execute("SELECT name FROM students WHERE phone=?", (phone,)).fetchone()
+        if not st:                              return jerr("not found", 404)
+        if (st["name"] or "").strip() != name:  return jerr("name does not match", 403)
+        c.execute("""INSERT INTO push_subs(endpoint,student_phone,role,sub,created) VALUES(?,?,'child',?,?)
+                     ON CONFLICT(endpoint) DO UPDATE SET student_phone=excluded.student_phone,
+                        role='child', sub=excluded.sub""",
+                  (endpoint, phone, json.dumps(sub), int(time.time())))
+    return jsonify({"ok": True})
+
+@bp.route("/api/parent/child-notify", methods=["POST"])
+def parent_child_notify():
+    # Parent-only switch: whether reminder pushes reach the CHILD's device.
+    pphone = parent_from_token(read_token())
+    if not pphone:
+        return jerr("unauthorized", 401)
+    d = request.get_json(silent=True) or {}
+    sphone = norm_phone(d.get("student_phone"))
+    enabled = 1 if d.get("enabled") else 0
+    with db() as c:
+        if not c.execute("SELECT 1 FROM links WHERE parent_phone=? AND student_phone=?",
+                         (pphone, sphone)).fetchone():
+            return jerr("forbidden — not your student", 403)
+        c.execute("UPDATE students SET notify_child=? WHERE phone=?", (enabled, sphone))
+    return jsonify({"ok": True, "enabled": bool(enabled)})
+
+def notify_child_device(c, sphone, title, body, url="/exam"):
+    """Push a reminder to the student's OWN device(s), only if the parent left
+    child notifications enabled. Returns True if at least one push went out."""
+    row = c.execute("SELECT notify_child FROM students WHERE phone=?", (sphone,)).fetchone()
+    if row and row["notify_child"] == 0:
+        return False
+    subs = c.execute("SELECT sub FROM push_subs WHERE role='child' AND student_phone=?", (sphone,)).fetchall()
+    return any(send_push(s["sub"], title, body, url) for s in subs)
+
 @bp.route("/api/parent/push/test", methods=["POST"])
 def push_test():
     # lets a parent confirm notifications reach their phone
@@ -671,7 +734,10 @@ def cron_inactivity():
                           f"למעקב מלא: היכנסו לעמוד ההורים.")
             ch = notify_parent(c, l["parent_phone"], title, body, "/parent",
                                l["parent_email"], email_body)
-            notified.append({"student": sname, "channel": ch})
+            # also nudge the child's own device (parent-controlled switch)
+            kid = notify_child_device(c, sp, "בוא/י נתרגל! 🎯",
+                                      f"{sname}, לא תרגלת היום — כמה דקות והתקדמת! 🚀", "/exam")
+            notified.append({"student": sname, "channel": ch, "child_push": bool(kid)})
     return jsonify({"ok": True, "days": days, "checked": checked, "notified": notified})
 
 @bp.route("/health")
@@ -717,6 +783,8 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
  .legend .lg{display:inline-flex;align-items:center;font-size:11px;opacity:.8}
  .legend .lg i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-inline-start:4px}
+ .cnote{display:flex;align-items:center;gap:8px;background:#F4F2FF;border:1px solid #E0DAFB;border-radius:12px;padding:9px 11px;margin:8px 0;font-size:13px}
+ .cnote input{width:auto;transform:scale(1.25);accent-color:#6C5CE7}
  .ovl{position:fixed;inset:0;background:rgba(11,36,48,.55);display:none;align-items:center;justify-content:center;padding:14px;z-index:9}
  .ovl.on{display:flex}
  .sheet{background:#fff;border-radius:18px;max-width:560px;width:100%;max-height:86vh;overflow:auto;padding:16px}
@@ -831,6 +899,8 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
      box.insertAdjacentHTML("beforeend",
        `<div class="card"><div class="stud"><h3>${esc(s.name)} <span class="muted">· גיל ${esc(s.age||"?")} · פעילות אחרונה ${esc(fmt(s.last))}</span></h3>
         ${banner}
+        <label class="cnote"><input type="checkbox" class="cn-toggle" data-phone="${esc(s.phone)}" ${s.notify_child?"checked":""}>
+          <span>שליחת תזכורות תרגול למכשיר של ${esc(s.name)} 🔔${s.child_device?"":' <span class="muted">— המכשיר עדיין לא רשום. פִּתחו פעם אחת את האפליקציה במכשיר הילד/ה.</span>'}</span></label>
         ${subs||'<span class="muted">אין עדיין תוצאות</span>'}
         ${trendChart(s.trend)}
         ${timeChart(s.time)}
@@ -838,6 +908,14 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
         </div></div>`);
    }
    box.querySelectorAll("tr.click").forEach(tr=>tr.addEventListener("click",()=>openTest(tr.dataset.id)));
+   box.querySelectorAll(".cn-toggle").forEach(cb=>cb.addEventListener("change",()=>toggleChildNotify(cb)));
+ }
+ async function toggleChildNotify(cb){
+   const p=document.getElementById("pphone").value.replace(/\\D/g,""), tok=ptoken(p);
+   try{
+     const r=await fetch("/api/parent/child-notify",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify({student_phone:cb.dataset.phone,enabled:cb.checked})});
+     const j=await r.json(); if(!j.ok){cb.checked=!cb.checked;}
+   }catch(e){ cb.checked=!cb.checked; }
  }
  // ── drill into one test: exact questions + what the child answered ──
  const SUBJHE={vocab:"אוצר מילים",cloze:"השלמת מילים",reading:"הבנת הנקרא",pics:"תיאור תמונה",match:"התאמה",balloons:"בלונים",spell:"איות",quiz:"חידון",lex:"נרדף/הפך",word:"מילה או לא",math:"חשבון"};
