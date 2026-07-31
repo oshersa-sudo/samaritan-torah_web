@@ -25,11 +25,16 @@ Environment=LEARN_DB=/var/www/onyx-study/data/learn.db
 #     otherwise nobody can verify). Flip to 0 once SMTP is set.
 Environment=LEARN_DEV=1
 # ── e-mail for the confirmation codes (fill in your SMTP provider) ──
+# The same SMTP settings also power the daily "your child hasn't practised"
+# reminder e-mails to parents (see onyx-inactivity.timer).
 # Environment=SMTP_HOST=smtp.your-provider.com
 # Environment=SMTP_PORT=587
 # Environment=SMTP_USER=no-reply@onyx-study.com
 # Environment=SMTP_PASS=your-smtp-password
 # Environment=SMTP_FROM=no-reply@onyx-study.com
+# ── shared secret guarding the daily inactivity-reminder endpoint ──
+# Set to a long random string; the same value goes in onyx-inactivity.service.
+# Environment=CRON_KEY=change-me-to-a-long-random-string
 
 # gunicorn from the project's virtualenv; binds to localhost (nginx proxies to it)
 ExecStart=/var/www/onyx-study/venv/bin/gunicorn web.onyx_app:app \

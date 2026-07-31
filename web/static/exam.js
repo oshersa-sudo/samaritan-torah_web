@@ -720,7 +720,7 @@ const sSet = (k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const sDel = k=>{try{localStorage.removeItem(k);}catch(e){}};
 
 // ─── Global State ─────────────────────────────────────────
-const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null,avatar:"🦊"};
+const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null,avatar:"🦊",answerLog:[]};
 const AVATARS=["🦊","🐼","🦁","🐧","🐨","🦄","🐯","🐸","🐵","🐶","🐱","🐰","🐷","🐥","🐢","🦉"];
 
 // ─── Realistic pictures (kid-safe, optional) ─────────────────────────────────
@@ -910,7 +910,8 @@ function syncRegister(){
 }
 function syncResult(rec){
   if(!BACKEND)return;
-  beacon("/api/results",{phone:S.phone,subject:rec.subject,grade:rec.g,correct:rec.correct,total:rec.total,ts:rec.t});
+  beacon("/api/results",{phone:S.phone,subject:rec.subject,grade:rec.g,correct:rec.correct,total:rec.total,ts:rec.t,
+    dur:rec.dur||0,detail:Array.isArray(rec.detail)?rec.detail:[]});
 }
 // Pull this student's saved results from the server (any device) and merge them
 // into the local history, so a child sees their full progress after logging in
@@ -937,6 +938,40 @@ function syncFetchResults(){
     return true;
   }).catch(()=>false);
 }
+
+// ─── Daily time-on-task tracker ──────────────────────────
+// Counts one second per wall-clock second the child spends on an ACTIVE study
+// screen (menus / pauses / the done screen don't count). Totals are kept per
+// calendar day in localStorage and pushed to the backend so a parent can see
+// how long the child practised each day. `sess` is this test's running
+// duration, read at finish() as the test's `dur`.
+const TT_IDLE=new Set(["login","subject","menu","paused","done","parents"]);
+function ttDay(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+const TT={
+  sess:0, _n:0, _wasActive:false,
+  key(){return "time:"+(S.phone||"anon");},
+  load(){try{return JSON.parse(localStorage.getItem(this.key()))||{};}catch(e){return {};}},
+  save(m){try{
+    // keep at most the last ~45 days so this never grows without bound
+    const keys=Object.keys(m).sort();
+    while(keys.length>45){delete m[keys.shift()];}
+    localStorage.setItem(this.key(),JSON.stringify(m));
+  }catch(e){}},
+  tick(){
+    const active=S.phone&&!TT_IDLE.has(S.screen)&&document.visibilityState!=="hidden";
+    if(active&&!this._wasActive)this.sess=this.sess;   // continue current test
+    this._wasActive=active;
+    if(!active)return;
+    const m=this.load(),d=ttDay();m[d]=(m[d]||0)+1;this.save(m);
+    this.sess++;
+    if(++this._n>=25){this._n=0;this.sync();}          // push roughly every 25s
+  },
+  sync(){
+    if(!BACKEND||!S.phone)return;
+    beacon("/api/time",{phone:S.phone,days:this.load()});
+  },
+  start(){setInterval(()=>{try{this.tick();}catch(e){}},1000);}
+};
 
 // ─── Timer ────────────────────────────────────────────────
 const TM = {
@@ -1460,6 +1495,7 @@ function renderHebMCQ(){
 function handleHebMC(val){
   if(HM.picked)return;HM.picked=true;
   const q=HM.qs[HM.i],correct=val===q.a;
+  logAns("vocab",q.p,val,q.a,correct);
   if(correct){addScore(1);SFX.good();}else{SFX.bad();recordMiss({w:q.w,d:q.d,kind:"he"});}
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const bv=b.dataset.val,mk=b.querySelector(".mark");
@@ -1534,6 +1570,7 @@ function renderSciQ(){
 function handleSciQ(idx){
   if(SQ.picked)return;SQ.picked=true;
   const scr=SQ.scr||S.screen, q=SQ.qs[SQ.i],correct=idx===q.c;
+  logAns("quiz",q.q,(q.o||[])[idx],(q.o||[])[q.c],correct);
   if(correct){addScore(1);SFX.good();}else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const bi=parseInt(b.dataset.idx,10),mk=b.querySelector(".mark");
@@ -1603,6 +1640,7 @@ function renderHebLexQ(){
 function handleHebLex(val){
   if(HL.picked)return;HL.picked=true;
   const q=HL.qs[HL.i],correct=val===q.a;
+  logAns("lex",(q.type==="ant"?"הפך של ":"נרדף ל־")+q.w,val,q.a,correct);
   if(correct){addScore(1);SFX.good();}else{SFX.bad();recordMiss({w:q.w,d:q.a,kind:"he"});}
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const bv=b.dataset.val,mk=b.querySelector(".mark");
@@ -1715,6 +1753,7 @@ function renderWordGame(){
 function handleWordGame(ans,btn){
   if(WG.picked)return;WG.picked=true;
   const q=WG.qs[WG.i],correct=(ans===q.isWord);
+  logAns("word",(q.isWord?q.w:q.show)||q.w,ans?"מילה אמיתית":"לא מילה",q.isWord?"מילה אמיתית":"לא מילה",correct);
   if(correct){addScore(1);SFX.good();btn.classList.add("wg-good");}
   else{SFX.bad();btn.classList.add("wg-bad");recordMiss({w:q.w,d:q.d,kind:"he"});}
   document.querySelectorAll(".wg-btn").forEach(b=>b.disabled=true);
@@ -2010,7 +2049,7 @@ function attachListeners(){
   }
   if(S.screen==="menu"){
     document.querySelectorAll(".skill-row").forEach(li=>{
-      li.addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=S.lvlOverride||levelForAge(S.age);S.screen=li.dataset.part;render();});
+      li.addEventListener("click",()=>{startFreshTest();S.adaptLvl=S.lvlOverride||levelForAge(S.age);S.screen=li.dataset.part;render();});
     });
     const sb=document.getElementById("btn-subj-back");
     if(sb)sb.addEventListener("click",()=>{S.screen="subject";render();});
@@ -2022,7 +2061,7 @@ function attachListeners(){
       if(S.phone)sSet("lvl:"+S.phone,S.lvlOverride);   // remember this student's level
       ml.querySelectorAll(".pill").forEach(x=>x.classList.toggle("pill-on",x===b));
       showToast("good","הרמה עודכנה ונשמרה");});
-    document.getElementById("btn-start").addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=S.lvlOverride||levelForAge(S.age);S.screen=curOrder()[0];render();});
+    document.getElementById("btn-start").addEventListener("click",()=>{startFreshTest();S.adaptLvl=S.lvlOverride||levelForAge(S.age);S.screen=curOrder()[0];render();});
     const rvb=document.getElementById("btn-review");
     if(rvb)rvb.addEventListener("click",()=>{S.screen="rv";render();});
     const lo=document.getElementById("btn-logout");
@@ -2087,6 +2126,23 @@ function saveSession(){
   sSet(K.session(S.phone),{name:S.name,age:S.age,score:S.score,screen:S.screen,subject:S.subject,prog:S.prog,t:Date.now()});
 }
 function commitProg(slice){S.prog={...S.prog,...slice};saveSession();}
+// Record one answered question so a parent can later review exactly what was
+// asked and what the child answered. Fully defensive: never throws into
+// gameplay, and self-caps so a long test can't bloat the synced payload.
+function logAns(part,prompt,chosen,answer,ok){
+  try{
+    if(!Array.isArray(S.answerLog))S.answerLog=[];
+    if(S.answerLog.length>=80)return;
+    const clip=(v,n)=>String(v==null?"":v).slice(0,n);
+    S.answerLog.push({t:part,p:clip(prompt,160),a:clip(chosen,80),k:clip(answer,80),ok:ok?1:0});
+  }catch(e){}
+}
+// Begin a brand-new test: clear score/progress and the per-question log, and
+// reset the active-time stopwatch so this test's duration starts at zero.
+function startFreshTest(){
+  S.score=0;S.prog={};S.answerLog=[];
+  try{TT.sess=0;}catch(e){}
+}
 function addScore(n){
   S.score+=n;
   const el=document.getElementById("score-el");
@@ -2155,6 +2211,7 @@ function handleVA(word){
   if(V.picked)return;
   V.picked=word;
   const correct=word===V.item.w;
+  logAns("vocab",V.item.h||V.item.w,word,V.item.w,correct);
   if(correct){addScore(1);SFX.good();}else SFX.bad();
   speak(V.item.w);
   // if the picture is an animal, let it call out too (barks, moos, chirps…)
@@ -2243,6 +2300,7 @@ function clozePlace(n,w){
   if(!n||n<1||n>C.item.answers.length||C.filled[n])return false;
   if(C.item.answers[n-1]===w){
     C.filled={...C.filled,[n]:w};C.used=[...C.used,w];
+    logAns("cloze","השלמת מילה מס' "+n,w,w,true);
     addScore(1);SFX.good();speak(w);showToast("good","נכון מאוד!");
     commitProg({cloze:{id:C.item.id,bank:C.bank,filled:C.filled,used:C.used,left:TM.left}});
     C.sel=null;C.num="";closeSheet();refreshCS();refreshCB();refreshCP();
@@ -2375,6 +2433,7 @@ function handleRA(idx){
   if(R.picked!==null)return;
   R.picked=idx;
   const qs=R.qIdx.map(k=>R.story.qpool[k]),q=qs[R.qi];
+  logAns("reading",q.q,(q.o||[])[idx],(q.o||[])[q.c],idx===q.c);
   if(idx===q.c){addScore(1);SFX.good();}else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(btn=>{
     const bi=parseInt(btn.dataset.idx,10),mark=btn.querySelector(".mark");
@@ -2418,6 +2477,7 @@ function handleDC(){
   if(D.locked)return;
   const inp=document.getElementById("desc-inp"),val=inp.value.trim();if(!val)return;
   const item=PICTURES[D.idxs[D.i]],ok=item.ok.includes(val.toLowerCase());
+  logAns("pics",item.he||("תיאור: "+item.ok[0]),val,item.ok[0],ok);
   D.locked=true;inp.disabled=true;document.getElementById("btn-check").disabled=true;
   if(ok){addScore(1);SFX.good();speak(item.ok[0]);showToast("good","נכון מאוד!");}
   else{SFX.bad();showToast("bad",`${S.name}, התשובה: ${item.ok[0]}`);}
@@ -2837,6 +2897,7 @@ function handleMA(val){
   const q=MA.qs[MA.i];
   const isAns=b=>q.opts?(b===q.ans):(Math.abs(parseFloat(b)-q.a)<1e-9);
   const correct=isAns(val);
+  logAns("math",q.t,val,q.opts?q.ans:q.a,correct);
   if(correct){addScore(1);SFX.good();}else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const bv=b.dataset.val,mk=b.querySelector(".mark");
@@ -3004,10 +3065,14 @@ function doHome(){
 function finish(){
   TM.stop();
   const g=grade(S.score);
+  const dur=Math.max(0,Math.round(TT.sess||0));
+  const detail=Array.isArray(S.answerLog)?S.answerLog.slice(0,80):[];
+  // keep dur/detail only on the synced copy — local history stays lean
   const rec={t:Date.now(),name:S.name,subject:S.subject,lvl:levelForAge(S.age),correct:S.score,total:subjTotal(),g};
   S.history=[rec,...S.history].slice(0,30);
   sSet(K.results(S.phone),S.history);sDel(K.session(S.phone));
-  syncResult(rec);
+  syncResult({...rec,dur,detail});
+  TT.sync();   // flush the day's minutes now that a test just ended
   S.lastGain=gamAward(g,S.score);
   S.prog={};S.screen="done";render();
   SFX._clip("celebrate",0.5);   // real recorded celebration jingle
@@ -3033,6 +3098,11 @@ window.addEventListener("DOMContentLoaded",()=>{
     else S.screen="subject";   // the main home hub
     render();
   }else render();
+  TT.start();   // begin counting daily time-on-task
+  // flush the day's minutes when the app is backgrounded or closed
+  const flush=()=>{try{if(document.visibilityState==="hidden")TT.sync();}catch(e){}};
+  document.addEventListener("visibilitychange",flush);
+  window.addEventListener("pagehide",()=>{try{TT.sync();}catch(e){}});
 });
 function doLogout(){
   sDel("me");

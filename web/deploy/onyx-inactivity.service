@@ -1,0 +1,20 @@
+# One-shot: e-mail parents whose child hasn't practised recently.
+# Paired with onyx-inactivity.timer (fires once a day). Install both:
+#   sudo cp web/deploy/onyx-inactivity.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now onyx-inactivity.timer
+#
+# Requires:
+#   * CRON_KEY below to match the CRON_KEY set in onyx-study.service
+#   * SMTP_* configured in onyx-study.service (otherwise nothing is e-mailed)
+#   * a parent e-mail on file (parents add it when linking a student)
+[Unit]
+Description=onyx-study daily inactivity reminder
+After=network.target onyx-study.service
+
+[Service]
+Type=oneshot
+# days=2 → remind about any student idle for 2+ days (or who never started).
+# Keep CRON_KEY identical to the one in onyx-study.service.
+Environment=CRON_KEY=change-me-to-a-long-random-string
+ExecStart=/usr/bin/curl -fsS --retry 3 "http://127.0.0.1:8000/api/cron/inactivity?key=${CRON_KEY}&days=2"

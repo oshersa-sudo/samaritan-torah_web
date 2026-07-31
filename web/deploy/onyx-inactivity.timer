@@ -1,0 +1,13 @@
+# Fires the daily parent inactivity reminder (see onyx-inactivity.service).
+#   sudo systemctl enable --now onyx-inactivity.timer
+#   systemctl list-timers onyx-inactivity.timer
+[Unit]
+Description=Run onyx-study inactivity reminder once a day
+
+[Timer]
+# every day at 17:00 local time (after school) — adjust to taste
+OnCalendar=*-*-* 17:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
