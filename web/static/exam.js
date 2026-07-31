@@ -1544,7 +1544,7 @@ function initSciQuiz(){
   if(saved&&saved.qs){SQ.qs=saved.qs;SQ.i=saved.i||0;}
   else{
     const pool=nearLevel(src,lvl,Math.max(n+4,8));
-    SQ.qs=pickFresh(pool,c.key,n,x=>x.q);
+    SQ.qs=pickFresh(pool,c.key,n,x=>x.q).map(shuffleOpts);
     SQ.i=0;
   }
   SQ.picked=false; SQ.scr=scr;
@@ -2143,6 +2143,20 @@ function startFreshTest(){
   S.score=0;S.prog={};S.answerLog=[];
   try{TT.sess=0;}catch(e){}
 }
+// Randomise the option order of an index-based multiple-choice question so the
+// correct answer isn't always in the same slot. Returns a NEW question with
+// `o` permuted, `c` remapped, and any parallel vocalised options (`nq.o`) kept
+// in step. Defensive: returns the question untouched if its shape is unexpected.
+function shuffleOpts(q){
+  try{
+    if(!q||!Array.isArray(q.o)||q.o.length<2||typeof q.c!=="number")return q;
+    const order=shuffle(q.o.map((_,i)=>i));
+    const out={...q,o:order.map(i=>q.o[i]),c:order.indexOf(q.c)};
+    if(q.nq&&Array.isArray(q.nq.o)&&q.nq.o.length===q.o.length)
+      out.nq={...q.nq,o:order.map(i=>q.nq.o[i])};
+    return out;
+  }catch(e){return q;}
+}
 function addScore(n){
   S.score+=n;
   const el=document.getElementById("score-el");
@@ -2372,6 +2386,16 @@ function handleCP(){
 }
 
 // ─── Part 3: Reading ──────────────────────────────────────
+// A reading question in its DISPLAYED option order (shuffled per R.ord), with
+// the correct index remapped and niqqud options kept in step. Used by both the
+// renderer and the answer handler so they always agree on slot ↔ answer.
+function qDispFor(k){
+  const nq=R.nq&&R.nq.nqpool&&R.nq.nqpool[k];
+  const base=R.story.qpool[k];
+  const o0=(nq&&nq.o)||base.o;
+  const ord=(R.ord&&R.ord[k])||o0.map((_,i)=>i);
+  return {q:(nq&&nq.q)||base.q, o:ord.map(i=>o0[i]), c:ord.indexOf(base.c)};
+}
 function initReading(){
   const saved=S.prog.reading,lvl=curLevel();
   const heRead=(S.screen==="hr"||S.screen==="sr"||S.screen==="tr");   // right-to-left Hebrew reading
@@ -2390,6 +2414,9 @@ function initReading(){
   R.rtl=heRead;
   R.nq=heRead?nqStory(R.story.id):null;   // vocalized story for young readers
   R.qIdx   =saved?.qIdx??shuffle(R.story.qpool.map((_,k)=>k)).slice(0,qquota);
+  // per-question option permutation so the correct answer isn't always slot A;
+  // keyed by qpool index and persisted so a resumed test keeps the same order
+  R.ord    =saved?.ord??(()=>{const m={};R.qIdx.forEach(k=>{const q=R.story.qpool[k];m[k]=shuffle((q.o||[]).map((_,i)=>i));});return m;})();
   R.qi     =saved?.qi??0;
   R.reading=saved?.qi?false:true;
   R.picked =null;
@@ -2404,8 +2431,7 @@ function refreshRV(){
   const dir=R.rtl?"rtl":"ltr";
   const storyText=(R.nq&&R.nq.ntext)||R.story.text;
   // niqqud question/options for young Hebrew readers (fall back to plain)
-  const qDisp=k=>{const nq=R.nq&&R.nq.nqpool&&R.nq.nqpool[k];const base=R.story.qpool[k];
-    return {q:(nq&&nq.q)||base.q, o:(nq&&nq.o)||base.o, c:base.c};};
+  const qDisp=qDispFor;
   if(R.reading){
     if(ctr)ctr.textContent="";
     body.innerHTML=`<div class="story scroll" dir="${dir}">${storyText.split("\n\n").map(p=>`<p>${esc(p)}</p>`).join("")}</div>
@@ -2432,7 +2458,9 @@ ${R.rtl?`<button class="ghost sm" id="btn-read-r">🔊 הקראה</button>`:""}
 function handleRA(idx){
   if(R.picked!==null)return;
   R.picked=idx;
-  const qs=R.qIdx.map(k=>R.story.qpool[k]),q=qs[R.qi];
+  // read the question in its DISPLAYED (shuffled) option order so idx, the
+  // correct index, and the logged answer all line up with what the child saw
+  const q=qDispFor(R.qIdx[R.qi]);
   logAns("reading",q.q,(q.o||[])[idx],(q.o||[])[q.c],idx===q.c);
   if(idx===q.c){addScore(1);SFX.good();}else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(btn=>{
@@ -2442,7 +2470,7 @@ function handleRA(idx){
     else btn.classList.add("opt-dim");
     btn.disabled=true;
   });
-  commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
+  commitProg({reading:{id:R.story.id,qIdx:R.qIdx,ord:R.ord,qi:R.qi,left:TM.left}});
   const scr=S.screen;
   setTimeout(()=>{
     if(S.screen!==scr)return;
@@ -3032,7 +3060,7 @@ function doFresh(){
 function saveCurrentProg(){
   if(S.screen==="p1"&&V.item)commitProg({vocab:{round:V.round,i:V.i,left:TM.left}});
   else if(S.screen==="p2"&&C.item)commitProg({cloze:{id:C.item.id,bank:C.bank,filled:C.filled,used:C.used,left:TM.left}});
-  else if(S.screen==="p3"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
+  else if(S.screen==="p3"&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,ord:R.ord,qi:R.qi,left:TM.left}});
   else if(S.screen==="p4"&&D.idxs)commitProg({pics:{idxs:D.idxs,i:D.i,left:TM.left}});
   else if((S.screen==="p5"||S.screen==="hb")&&M.pairs)commitProg({match:matchState()});
   else if(S.screen==="p6"&&B.pairs)commitProg({balloons:balloonState()});
@@ -3041,7 +3069,7 @@ function saveCurrentProg(){
   else if(S.screen==="wg"&&WG.qs)commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
   else if(S.screen==="hs"&&HL.qs)commitProg({hs:{qs:HL.qs,i:HL.i,left:TM.left}});
   else if((S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln")&&SQ.qs)commitProg({[S.screen]:{qs:SQ.qs,i:SQ.i,left:TM.left}});
-  else if((S.screen==="hr"||S.screen==="sr"||S.screen==="tr")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
+  else if((S.screen==="hr"||S.screen==="sr"||S.screen==="tr")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,ord:R.ord,qi:R.qi,left:TM.left}});
 }
 // which S.prog key holds a given part's saved state (for the "+time" feature)
 function progKeyFor(scr){
