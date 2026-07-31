@@ -18,6 +18,7 @@ const Storage = (() => {
     testHistory: [],              // [{setIndex, date, correct, total}]
     setOverride: null,            // אינדקס אוצר ידני (בעת ערבול)
     customWords: [],              // מילים שהמשתמש הוסיף דרך ייבוא
+    customCats: [],               // תחומים שהמשתמש הוסיף דרך ייבוא
     lastActive: todayISO()
   });
 
@@ -91,8 +92,15 @@ const Storage = (() => {
       state.customWords = state.customWords.concat(words);
       save();
     },
+    addCustomCats(cats) {
+      (cats || []).forEach(c => {
+        if (!state.customCats.some(x => x.key === c.key)) state.customCats.push(c);
+      });
+      save();
+    },
     clearCustomWords() {
       state.customWords = [];
+      state.customCats = [];
       save();
     }
   };

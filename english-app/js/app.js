@@ -11,8 +11,17 @@
     return (window.WORDS || []).concat(custom);
   }
 
+  // מיזוג תחומים מותאמים אישית (מייבוא) אל רשימת התחומים הגלובלית
+  function mergedCategories() {
+    const base = window.CATEGORIES || [];
+    const custom = (Storage.get().customCats || [])
+      .filter(c => !base.some(b => b.key === c.key));
+    return base.concat(custom);
+  }
+
   function computeContext() {
     const state = Storage.get();
+    window.CATEGORIES = mergedCategories();   // כדי ש-buildSets יזהה תחומים מיובאים
     const words = allWords();
     const sets = Scheduler.buildSets(words);
     const cycle = Scheduler.getCycle(state, sets.length);
@@ -534,8 +543,9 @@
     const imp = el("div", "card");
     imp.appendChild(el("h3", null, "הוספת מילים"));
     imp.appendChild(el("p", "muted",
-      "אפשר להדביק CSV (שורה למילה: english,תעתיק,תרגום,תחום) או JSON. " +
-      "התחומים הזמינים: " + (window.CATEGORIES || []).map(c => c.key).join(", ") + "."));
+      "אפשר להדביק/להעלות באחד מהפורמטים: CSV (שורה למילה: english,תעתיק,תרגום,תחום), " +
+      "JSON פנימי, או קובץ Wiktionary/kaikki (JSONL) — שממנו נחלצים אוטומטית התרגום העברי " +
+      "והתעתיק (מ-IPA). לקבצים גדולים השתמשו בסקריפט tools/wiktionary-import.js."));
 
     const ta = el("textarea", "import-area");
     ta.placeholder =
@@ -565,8 +575,23 @@
         toast("לא נמצאו מילים תקינות. בדקו את הפורמט.");
         return;
       }
-      Storage.addCustomWords(parsed.words);
-      toast(`נוספו ${parsed.words.length} מילים למאגר! 🎉`);
+      // סינון כפילויות מול המאגר הקיים ובתוך הייבוא עצמו
+      const have = new Set(allWords().map(w => w.en.toLowerCase()));
+      const fresh = [];
+      parsed.words.forEach(w => {
+        const k = w.en.toLowerCase();
+        if (have.has(k)) return;
+        have.add(k);
+        fresh.push(w);
+      });
+      if (!fresh.length) {
+        toast("כל המילים כבר קיימות במאגר.");
+        return;
+      }
+      Storage.addCustomCats(parsed.cats);
+      Storage.addCustomWords(fresh);
+      const skipped = parsed.words.length - fresh.length;
+      toast(`נוספו ${fresh.length} מילים${skipped ? ` (${skipped} כבר קיימות)` : ""}! 🎉`);
       renderImport();
     };
     imp.appendChild(addBtn);
@@ -593,47 +618,82 @@
       esc('{ en: "sugar", pron: "שׁוּגֶר", he: "סוכר", cat: "kitchen" }')));
     guide.appendChild(el("p", "muted",
       "המנוע יחלק אוטומטית כל תוספת לאוצרות של 25 לפי תחום, ויכניס אותם למחזור. " +
-      "כך המערכת גדלה עד 50,000 מילים ומעבר."));
+      "כך המערכת גדלה עד עשרות אלפי מילים ומעבר."));
+    guide.appendChild(el("h3", null, "ייבוא מילון Wiktionary שלם (עשרות אלפי מילים)"));
+    guide.appendChild(el("p", null,
+      "מורידים פעם אחת קובץ אנגלית מ-<code>kaikki.org/dictionary/English</code> " +
+      "(רישיון CC-BY-SA), ומריצים:"));
+    guide.appendChild(el("pre", "code",
+      esc("node tools/wiktionary-import.js kaikki-English.jsonl --limit 30000")));
+    guide.appendChild(el("p", "muted",
+      "נוצר הקובץ data/words-wiktionary.js — מוסיפים אותו ל-index.html והמאגר גדל למילון מלא. " +
+      "התרגום נלקח מהערך, והתעתיק העברי מומר אוטומטית מ-IPA."));
     app.appendChild(guide);
+  }
+
+  // מיפוי חלק-דיבר לתחום, עבור ייבוא בפורמט Wiktionary/kaikki
+  const WIK_POS = {
+    noun: { key: "wik_noun", he: "מילון: שמות עצם" },
+    verb: { key: "wik_verb", he: "מילון: פעלים" },
+    adj:  { key: "wik_adj",  he: "מילון: שמות תואר" },
+    adv:  { key: "wik_adv",  he: "מילון: תארי פועל" },
+    name: { key: "wik_name", he: "מילון: שמות" }
+  };
+  const WIK_OTHER = { key: "wik_other", he: "מילון: שונות" };
+
+  // המרת ערך kaikki (Wiktionary) לפורמט הפנימי; מחזיר null אם אין תרגום עברי
+  function convertKaikki(o, catAcc) {
+    const he = [];
+    if (Array.isArray(o.translations)) o.translations.forEach(t => {
+      if (t && t.word && ((t.code || t.lang_code) === "he" || t.lang === "Hebrew"))
+        he.push(String(t.word).trim());
+    });
+    if (!he.length) return null;
+    let ipa = "";
+    if (Array.isArray(o.sounds)) for (const s of o.sounds) { if (s && s.ipa) { ipa = s.ipa; break; } }
+    const cat = WIK_POS[o.pos] || WIK_OTHER;
+    catAcc[cat.key] = cat;
+    const pron = (ipa && window.ipaToHebrew) ? window.ipaToHebrew(ipa) : "";
+    return { en: String(o.word).trim(), pron: pron || "(אין תעתיק)",
+             he: he.slice(0, 2).join(" / "), cat: cat.key };
+  }
+
+  function normalizeObj(o, catAcc) {
+    if (!o) return null;
+    if (o.en && o.he) return {          // הפורמט הפנימי
+      en: String(o.en).trim(), pron: String(o.pron || "").trim(),
+      he: String(o.he).trim(), cat: String(o.cat || "objects").trim()
+    };
+    if (o.word) return convertKaikki(o, catAcc);   // פורמט Wiktionary/kaikki
+    return null;
   }
 
   function parseImport(text) {
     text = (text || "").trim();
-    const words = [];
-    if (!text) return { words };
-    // ניסיון JSON
+    const words = [], catAcc = {};
+    if (!text) return { words, cats: [] };
+    // JSON שלם (מערך או אובייקט)
     if (text[0] === "[" || text[0] === "{") {
       try {
         let data = JSON.parse(text);
         if (!Array.isArray(data)) data = [data];
-        data.forEach(o => {
-          if (o && o.en && o.he) {
-            words.push({
-              en: String(o.en).trim(),
-              pron: String(o.pron || "").trim(),
-              he: String(o.he).trim(),
-              cat: String(o.cat || "objects").trim()
-            });
-          }
-        });
-        return { words };
-      } catch (e) { /* ניפול ל-CSV */ }
+        data.forEach(o => { const w = normalizeObj(o, catAcc); if (w) words.push(w); });
+        return { words, cats: Object.values(catAcc) };
+      } catch (e) { /* ננסה JSONL / CSV שורה-שורה */ }
     }
-    // CSV / שורות
+    // שורה-שורה: JSONL של kaikki, אחרת CSV
     text.split(/\r?\n/).forEach(line => {
       line = line.trim();
       if (!line) return;
-      const parts = line.split(",").map(p => p.trim());
-      if (parts.length >= 3 && parts[0]) {
-        words.push({
-          en: parts[0],
-          pron: parts[1] || "",
-          he: parts[2],
-          cat: parts[3] || "objects"
-        });
+      if (line[0] === "{") {
+        try { const w = normalizeObj(JSON.parse(line), catAcc); if (w) words.push(w); return; }
+        catch (e) { /* לא JSON – ננסה CSV */ }
       }
+      const parts = line.split(",").map(p => p.trim());
+      if (parts.length >= 3 && parts[0])
+        words.push({ en: parts[0], pron: parts[1] || "", he: parts[2], cat: parts[3] || "objects" });
     });
-    return { words };
+    return { words, cats: Object.values(catAcc) };
   }
 
   // ==================================================================

@@ -67,6 +67,31 @@ window.WORDS = (window.WORDS || []).concat([ /* ... מילים ... */ ]);
 ולהוסיף אותו ל-`index.html` בשורת `<script>` אחרי `words.js`. כך המאגר בנוי כרגע:
 `words.js` + `words-extra.js` + `words-extra2.js` = **1,140 מילים ב-22 תחומים**.
 
+### 4. ייבוא מילון Wiktionary שלם מהרשת (עשרות אלפי מילים)
+לטעינת מאגר גדול עם דאטה אמיתי (תרגום + הגייה), משתמשים ב-**Wiktionary** דרך
+[kaikki.org](https://kaikki.org/dictionary/English/) — חילוץ מכונה ברישיון CC-BY-SA
+שכל ערך בו כולל גם **IPA** וגם **תרגום עברי**.
+
+1. מורידים פעם אחת את קובץ ה-JSONL של אנגלית מ-kaikki.org (או תת-קבוצה מסוננת).
+2. מריצים את סקריפט ההמרה:
+   ```
+   node tools/wiktionary-import.js kaikki-English.jsonl --limit 30000
+   ```
+3. נוצר `data/words-wiktionary.js`. מוסיפים אותו ל-`index.html`:
+   ```html
+   <script src="data/words-wiktionary.js"></script>
+   ```
+
+הסקריפט מחלץ מכל ערך את המילה, את התרגום העברי (מ-`translations`), וממיר את ה-IPA
+לתעתיק הגייה עברי (`js/ipa2heb.js`). מילים ללא תרגום עברי וכפילויות מדולגות אוטומטית,
+והמילים מקובצות לתחומים לפי חלק הדיבר (שמות עצם / פעלים / תארים...).
+
+> אפשר גם להדביק/להעלות ישירות במסך **➕ הרחבה** קובץ Wiktionary (JSONL) קטן —
+> האפליקציה ממירה אותו באותו אופן, בתוך הדפדפן.
+>
+> **הערה על ההגייה:** התעתיק העברי המיובא מקורב (הומר מ-IPA); כפתור ההגייה 🔊
+> תמיד נותן את ההגייה המדויקת דרך מנוע הדיבור של הדפדפן.
+
 ### 3. תחומים (categories)
 מפתחות התחומים הזמינים: `kitchen, daily, business, conversation, time, tools, body, furniture, objects, vehicles, travel, study, family, food, animals, nature, emotions, professions, clothing, health, verbs, adjectives`.
 להוספת תחום חדש — מוסיפים אותו לרשימה `window.CATEGORIES` (ראו דוגמה ב-`data/words-extra2.js` שמוסיף תחומים חדשים דרך `concat`).
@@ -81,12 +106,15 @@ english-app/
 │   ├── words-extra.js  # הרחבה 1 – עוד מילים ל-13 התחומים
 │   ├── words-extra2.js # הרחבה 2 – 9 תחומים חדשים (אוכל, בעלי חיים, טבע ועוד)
 │   └── grammar.js      # שיעורי לשון וזמנים
-└── js/
-    ├── storage.js      # שמירת התקדמות מקומית
-    ├── scheduler.js    # לוגיקת המחזורים והדקדוק החודשי
-    ├── speech.js       # מנוע ההגייה (Web Speech API)
-    ├── council.js      # מועצת קלוד – ניתוח והמלצות
-    └── app.js          # ניווט וכל המסכים
+├── js/
+│   ├── storage.js      # שמירת התקדמות מקומית
+│   ├── scheduler.js    # לוגיקת המחזורים והדקדוק החודשי
+│   ├── speech.js       # מנוע ההגייה (Web Speech API)
+│   ├── ipa2heb.js      # ממיר IPA → תעתיק הגייה עברי
+│   ├── council.js      # מועצת קלוד – ניתוח והמלצות
+│   └── app.js          # ניווט וכל המסכים
+└── tools/
+    └── wiktionary-import.js  # המרת קובץ Wiktionary/kaikki למאגר
 ```
 
 ## פרטיות
