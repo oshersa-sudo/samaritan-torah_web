@@ -759,9 +759,35 @@
     });
   }
 
+  // כפתור התקנה (PWA) – מופיע כשהדפדפן מאפשר התקנה
+  let deferredPrompt = null;
+  function setupInstall() {
+    const btn = el("button", "nav-btn install-btn", "⬇️ התקן אפליקציה");
+    btn.style.display = "none";
+    btn.onclick = async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      btn.style.display = "none";
+    };
+    const nav = document.getElementById("nav");
+    if (nav) nav.appendChild(btn);
+    window.addEventListener("beforeinstallprompt", e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      btn.style.display = "";
+    });
+    window.addEventListener("appinstalled", () => {
+      btn.style.display = "none";
+      toast("האפליקציה הותקנה! 🎉");
+    });
+  }
+
   // אתחול
   window.addEventListener("DOMContentLoaded", () => {
     buildNav();
+    setupInstall();
     go("home");
   });
 })();

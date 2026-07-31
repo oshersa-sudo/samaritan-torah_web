@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>לימוד אנגלית – אוצר מילים ומבטא</title>
   <link rel="stylesheet" href="css/style.css">
+  <!-- PWA – התקנה כאפליקציה ועבודה אופליין -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0f1226">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="לימוד אנגלית">
 </head>
 <body>
   <header class="topbar">
@@ -33,5 +40,13 @@
   <script src="js/ipa2heb.js"></script>
   <script src="js/council.js"></script>
   <script src="js/app.js"></script>
+  <!-- רישום ה-Service Worker (פעיל רק בהגשה מ-http/https או localhost, לא מ-file://) -->
+  <script>
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js").catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>

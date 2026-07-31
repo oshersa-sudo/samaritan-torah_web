@@ -52,6 +52,10 @@ body {
   background: linear-gradient(120deg, var(--accent), var(--accent2));
   color: #fff; border-color: transparent;
 }
+.nav-btn.install-btn {
+  background: var(--good); color: #06281a; border-color: transparent; font-weight: 600;
+}
+.nav-btn.install-btn:hover { color: #06281a; opacity: .92; }
 
 /* ===== מבנה ===== */
 .container { max-width: 860px; margin: 0 auto; padding: 18px 16px 60px; }
