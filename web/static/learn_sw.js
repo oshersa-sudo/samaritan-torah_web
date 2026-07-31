@@ -1,7 +1,7 @@
 /* Service worker for the learning trainer (OnyxApps).
    NETWORK-FIRST so the newest code loads when online, falling back to the
    cache offline. /api/* always hits the network (live sync). */
-const CACHE = 'learn-app-v14';
+const CACHE = 'learn-app-v15';
 const SHELL = [
   '/exam',
   '/static/exam.css', '/static/exam.js',
