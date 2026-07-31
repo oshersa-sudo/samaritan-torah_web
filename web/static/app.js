@@ -1162,10 +1162,15 @@ async function buildCompare(c, verses){
     const mc=el('div','cmp-cell', m || miss);
     const sc=el('div','cmp-cell', s || '<span class="cmp-missing">- - -</span>');
     mc.style.fontSize=fs+'px'; sc.style.fontSize=fs+'px';
+    // the "X:1" chapter-number label is built from the MASORETIC-side verse number
+    // (masnum), which can be verse 1 of its Masoretic chapter even when this row
+    // isn't verse 1 of the Samaritan chapter (chapter boundaries don't always align)
+    // — gate the edit option on that same condition, not on the Samaritan v.number.
+    const mas=String(v.masnum!=null ? v.masnum : v.number);
     addCmpPencil(mc, v.id, [
       {column:otherCol, label:t(_ck[0]), getText:()=>v[otherCol]||''},
       {column:'text', label:t('cmp_sam'), getText:()=>v.text||''},
-      ...(String(v.number)==='1' ? [{column:'mas_chapter', label:t('cmp_chapter_field'), getText:()=>String(v.jchapter!=null?v.jchapter:'')}] : []),
+      ...(mas==='1' ? [{column:'mas_chapter', label:t('cmp_chapter_field'), getText:()=>String(v.jchapter!=null?v.jchapter:'')}] : []),
     ]);
     grid.appendChild(mc); grid.appendChild(sc);
   });
