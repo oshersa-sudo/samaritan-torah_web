@@ -167,18 +167,24 @@ const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
 const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
                 hv:240,hb:210,hw:240,hs:240,wg:210,hr:600,
                 ma1:240,ma2:300,ma5:360,ma6:360,ma3:360,ma4:240,
-                sv:240,sw:240,sq:300,sr:600};
+                sv:240,sw:240,sq:300,sr:600,
+                tv:240,tw:240,tq:300,tr:600,
+                lp:240,lf:240,ln:240};
 const LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"};
 const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
                     p5:"התאמת מילים",p6:"בלונים",
                     hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",hs:"נרדפות והפכים",wg:"מילה או קשקוש",hr:"הבנת הנקרא",
                     ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma5:"שברים",ma6:"הנדסה וגיאומטריה",ma3:"בעיות מילוליות",ma4:"המספר החסר",
-                    sv:"אוצר מילים במדע",sw:"פירוש מושגים",sq:"חידון טבע ומדע",sr:"הבנת הנקרא"};
+                    sv:"אוצר מילים במדע",sw:"פירוש מושגים",sq:"חידון טבע ומדע",sr:"הבנת הנקרא",
+                    tv:"אוצר מושגים",tw:"פירוש מושגים",tq:"חידון תנ״ך",tr:"הבנת הנקרא",
+                    lp:"חלקי הדיבר",lf:"צורות ופעלים",ln:"ניקוד ופיסוק"};
 // answers per part → used to normalise the score to /100
 const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
                     hv:10,hb:8,hw:10,hs:10,wg:10,hr:6,
                     ma1:10,ma2:10,ma5:10,ma6:8,ma3:6,ma4:8,
-                    sv:10,sw:10,sq:10,sr:6};
+                    sv:10,sw:10,sq:10,sr:6,
+                    tv:10,tw:10,tq:10,tr:6,
+                    lp:8,lf:8,ln:8};
 // subjects and their part order — every subject: 4 parts, 4 hourglasses
 const SUBJECTS = {
   english:{name:"אנגלית", icon:"🌍", desc:"מילים, שמיעה ודיבור",
@@ -197,6 +203,14 @@ const SUBJECTS = {
            grad:"linear-gradient(150deg,#6ee7b7,#059669)", shadow:"#047857",
            mascot:"🦎", mascotName:"נִיבִּי הַחוֹקֶרֶת",
            order:["sv","sw","sq","sr"]},
+  torah:  {name:"תורה", icon:"📜", desc:"סיפורי המקרא, מושגים וחידון",
+           grad:"linear-gradient(150deg,#fcd34d,#b45309)", shadow:"#92400e",
+           mascot:"🕊️", mascotName:"יוֹנָה הַחֲכָמָה",
+           order:["tv","tw","tq","tr"]},
+  lashon: {name:"לשון", icon:"✍️", desc:"דקדוק, חלקי הדיבר וזמנים",
+           grad:"linear-gradient(150deg,#67e8f9,#0891b2)", shadow:"#0e7490",
+           mascot:"🦜", mascotName:"טוּקִי הַמְדַבֵּר",
+           order:["lp","lf","ln"]},
 };
 // friendly per-subject progress for the picker cards — the most recent grade
 // for that subject (0 if the child hasn't played it yet).
@@ -466,7 +480,7 @@ const SFX = {
   },
 };
 // which animal call belongs to each subject's mascot (math's mascot is human)
-const MASCOT_ANIMAL={english:"frog",hebrew:"owl",science:"gecko"};
+const MASCOT_ANIMAL={english:"frog",hebrew:"owl",science:"gecko",lashon:"bird"};
 // map a picture emoji to an animal call, so tapping/answering an animal roars/barks
 const ANIMAL_FOR_EMOJI={"🐶":"dog","🐕":"dog","🦮":"dog","🐩":"dog","🐱":"cat","🐈":"cat","🐮":"cow","🐄":"cow","🐂":"cow",
   "🐦":"bird","🐤":"bird","🐥":"bird","🐣":"bird","🦜":"bird","🦁":"lion","🐘":"elephant","🐸":"frog","🦉":"owl","🦎":"gecko",
@@ -500,6 +514,8 @@ const BGM = {
     hebrew: {prog:["Dm","Bb","F","C"],bar:2.7, wave:"sine",     arp:"down"},   // warm, reflective
     math:   {prog:["G","Em","C","D"], bar:2.1, wave:"triangle", arp:"up"},     // orderly, moving
     science:{prog:["Am","F","C","G"], bar:2.4, wave:"sine",     arp:"updown"}, // curious
+    torah:  {prog:["C","G","Am","F"], bar:2.8, wave:"sine",     arp:"down"},   // calm, reverent
+    lashon: {prog:["F","G","Em","Am"],bar:2.2, wave:"triangle", arp:"updown"}, // lively, chatty
   },
   start(name){
     name = this._tracks[name] ? name : "english";
@@ -671,8 +687,14 @@ const VOICE_PROFILES={
   science:{name:"נִיבִּי הַחוֹקֶרֶת",   role:"מלווה אותך בטבע ומדע", emoji:"🦎", tone:"סקרני ונמרץ", lang:"he-IL", pitch:1.1, rate:0.95,
            grad:"linear-gradient(150deg,#6ee7b7,#059669)", shadow:"#047857",
            hello:"שָׁלוֹם, אֲנִי נִיבִּי הַחוֹקֶרֶת. בּוֹאוּ נְגַלֶּה אֶת סוֹדוֹת הַטֶּבַע!"},
+  torah:  {name:"יוֹנָה הַחֲכָמָה",     role:"מלווה אותך בתורה", emoji:"🕊️", tone:"רך ונעים", lang:"he-IL", pitch:1.15, rate:0.9,
+           grad:"linear-gradient(150deg,#fcd34d,#b45309)", shadow:"#92400e",
+           hello:"שָׁלוֹם, אֲנִי יוֹנָה הַחֲכָמָה. בּוֹאוּ נִלְמַד סִפּוּרֵי תּוֹרָה יַחַד."},
+  lashon: {name:"טוּקִי הַמְדַבֵּר",     role:"מלווה אותך בלשון", emoji:"🦜", tone:"פטפטן וזריז", lang:"he-IL", pitch:1.35, rate:1.0,
+           grad:"linear-gradient(150deg,#67e8f9,#0891b2)", shadow:"#0e7490",
+           hello:"שָׁלוֹם, אֲנִי טוּקִי הַמְדַבֵּר. בּוֹאוּ נְשַׂחֵק עִם הַמִּלִּים!"},
 };
-const TEAM_ORDER=["dana","math","hebrew","english","science"];
+const TEAM_ORDER=["dana","math","hebrew","english","science","torah","lashon"];
 function speakSample(key){
   const p=VOICE_PROFILES[key];if(!p)return;
   try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();
@@ -817,6 +839,11 @@ const SCI_QUIZ    = (typeof window!=="undefined" && Array.isArray(window.SCI_QUI
 const SCI_STORIES = (typeof window!=="undefined" && Array.isArray(window.SCI_STORIES)) ? window.SCI_STORIES : [];
 // Hebrew synonyms & antonyms (נרדפות והפכים) — a staple Israeli exercise type
 const HEB_LEX = (typeof window!=="undefined" && Array.isArray(window.HEB_LEX)) ? window.HEB_LEX : [];
+// Torah / Tanakh (תורה) and Hebrew grammar (לשון) — grounded, from data files
+const TORAH_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.TORAH_VOCAB))   ? window.TORAH_VOCAB   : [];
+const TORAH_QUIZ    = (typeof window!=="undefined" && Array.isArray(window.TORAH_QUIZ))    ? window.TORAH_QUIZ    : [];
+const TORAH_STORIES = (typeof window!=="undefined" && Array.isArray(window.TORAH_STORIES)) ? window.TORAH_STORIES : [];
+const LASHON_QUIZ   = (typeof window!=="undefined" && Array.isArray(window.LASHON_QUIZ))   ? window.LASHON_QUIZ   : [];
 // Israeli Ministry of Education curriculum map (from curriculum.js)
 const CURRICULUM = (typeof window!=="undefined" && window.CURRICULUM) ? window.CURRICULUM : null;
 // the curriculum grade (1–6) that matches the student's current level
@@ -843,11 +870,12 @@ function curriculumCardHTML(){
 const HEB_NQ = (typeof window!=="undefined" && window.HEB_NQ) ? window.HEB_NQ : {words:{},stories:{}};
 // Science vocab carries its own inline niqqud (wn/dn); fold it into one lookup.
 const SCI_NQ_WORDS = (()=>{const m={};for(const x of SCI_VOCAB) if(x.w&&x.wn) m[x.w]={wn:x.wn,dn:x.dn||x.d};return m;})();
+const TORAH_NQ_WORDS = (()=>{const m={};for(const x of TORAH_VOCAB) if(x.w&&x.wn) m[x.w]={wn:x.wn,dn:x.dn||x.d};return m;})();
 // which vocab pool the current subject draws from
-function subjVocab(){ return S.subject==="science" ? SCI_VOCAB : HEB_VOCAB; }
-// young reader (grades 1–3) in a niqqud-bearing subject → show vowel points
-function youngHeb(){ return (S.subject==="hebrew"||S.subject==="science") && curLevel()<=2; }
-function nqLookup(w){ return HEB_NQ.words[w] || SCI_NQ_WORDS[w] || null; }
+function subjVocab(){ return S.subject==="science" ? SCI_VOCAB : S.subject==="torah" ? TORAH_VOCAB : HEB_VOCAB; }
+// young reader (grades א–ד) in a niqqud-bearing subject → show vowel points
+function youngHeb(){ return (S.subject==="hebrew"||S.subject==="science"||S.subject==="torah") && curLevel()<=2; }
+function nqLookup(w){ return HEB_NQ.words[w] || SCI_NQ_WORDS[w] || TORAH_NQ_WORDS[w] || null; }
 function nqW(w){ const e=youngHeb()&&nqLookup(w); return (e&&e.wn) || w; }   // display word
 function nqD(w,d){ const e=youngHeb()&&nqLookup(w); return (e&&e.dn) || d; }  // display definition
 function nqStory(id){ return youngHeb() ? HEB_NQ.stories[id] : null; }
@@ -1043,7 +1071,9 @@ const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3
                    p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",
                    hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",hs:"מילים · 4 דק׳",wg:"משחק · 3.5 דק׳",hr:"שאלות · 10 דק׳",
                    ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma5:"שברים · 6 דק׳",ma6:"צורות · 6 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳",
-                   sv:"מילים · 4 דק׳",sw:"מושגים · 4 דק׳",sq:"חידון · 5 דק׳",sr:"שאלות · 10 דק׳"};
+                   sv:"מילים · 4 דק׳",sw:"מושגים · 4 דק׳",sq:"חידון · 5 דק׳",sr:"שאלות · 10 דק׳",
+                   tv:"מושגים · 4 דק׳",tw:"פירושים · 4 דק׳",tq:"חידון · 5 דק׳",tr:"שאלות · 10 דק׳",
+                   lp:"שאלות · 4 דק׳",lf:"שאלות · 4 דק׳",ln:"שאלות · 4 דק׳"};
 
 function subjectHTML(){
   const gm=gamLoad();
@@ -1364,6 +1394,8 @@ const HEB_MC_CFG = {
   hw:{eyebrow:"עברית · פירוש מילים", lead:"מה הפירוש של המילה?",      prompt:"w", answer:"d"},
   sv:{eyebrow:"טבע ומדעים · אוצר מילים", lead:"איזה מושג מתאים להגדרה?", prompt:"d", answer:"w"},
   sw:{eyebrow:"טבע ומדעים · פירוש מושגים", lead:"מה פירוש המושג?",       prompt:"w", answer:"d"},
+  tv:{eyebrow:"תורה · אוצר מושגים",       lead:"איזה מושג מתאים להגדרה?", prompt:"d", answer:"w"},
+  tw:{eyebrow:"תורה · פירוש מושגים",      lead:"מה פירוש המושג?",         prompt:"w", answer:"d"},
 };
 function mcHTML(){
   const c=HEB_MC_CFG[S.screen]||HEB_MC_CFG.hv, t=TIME[S.screen]??240;
@@ -1399,7 +1431,7 @@ function initHebMC(){
   TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
 function renderHebMCQ(){
-  const q=HM.qs[HM.i], hv=(S.screen==="hv"||S.screen==="sv");
+  const q=HM.qs[HM.i], hv=(S.screen==="hv"||S.screen==="sv"||S.screen==="tv");
   // young readers (grades 1–3): show niqqud. hv prompt=definition, options=words
   const promptDisp = hv ? nqD(q.w,q.p) : q.p;
   const optDisp = o => hv ? nqW(o) : o;
@@ -1434,14 +1466,24 @@ function handleHebMC(val){
   },1200);
 }
 
-// ─── Nature & Science quiz (sq) — general-knowledge trivia ──────────────────
+// ─── Generic multiple-choice quiz engine (science · תורה · לשון) ────────────
+// Driven by QUIZ_CFG per screen. Items may carry an "nq" (vocalized) form,
+// shown to young readers (grades א–ד).
 const SQ={};
+const QUIZ_CFG={
+  sq:{eyebrow:"טבע ומדעים · חידון",           lead:"מה התשובה הנכונה?", key:"sciq", pool:()=>SCI_QUIZ},
+  tq:{eyebrow:"תורה · חידון תנ״ך",             lead:"מה התשובה הנכונה?", key:"toraq",pool:()=>TORAH_QUIZ},
+  lp:{eyebrow:"לשון · חלקי הדיבר ומבנה המשפט", lead:"בחר/י את התשובה",    key:"lp",   pool:()=>LASHON_QUIZ.filter(x=>x.topic==="parts"||x.topic==="sentence")},
+  lf:{eyebrow:"לשון · צורות הפועל והשם",       lead:"בחר/י את התשובה",    key:"lf",   pool:()=>LASHON_QUIZ.filter(x=>x.topic==="tense"||x.topic==="gender_num"||x.topic==="root")},
+  ln:{eyebrow:"לשון · ניקוד ופיסוק",           lead:"בחר/י את התשובה",    key:"ln",   pool:()=>LASHON_QUIZ.filter(x=>x.topic==="punct"||x.topic==="spelling")},
+};
+function quizCfg(){ return QUIZ_CFG[S.screen]||QUIZ_CFG.sq; }
 function sqHTML(){
-  const t=TIME.sq;
+  const c=quizCfg(), t=TIME[S.screen]??300;
   return `<section class="card">
   <div class="part-bar">
-    <div><span class="eyebrow">טבע ומדעים · חידון</span><p class="lead">מה התשובה הנכונה?</p></div>
-    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.sq?.left??t,t)}</span></div>
+    <div><span class="eyebrow">${esc(c.eyebrow)}</span><p class="lead">${esc(c.lead)}</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog[S.screen]?.left??t,t)}</span></div>
   </div>
   <div class="mc-prompt" id="sq-prompt" dir="rtl"></div>
   <button class="ghost sm" id="sq-hint">💡 רמז / הקראה</button>
@@ -1449,25 +1491,28 @@ function sqHTML(){
 </section>`;
 }
 function initSciQuiz(){
-  const lvl=curLevel(),n=PART_QUOTA.sq,t=TIME.sq,saved=S.prog.sq;
-  const src=SCI_QUIZ.filter(x=>x.q&&Array.isArray(x.o));
+  const scr=S.screen,c=quizCfg(),lvl=curLevel(),n=PART_QUOTA[scr]||10,t=TIME[scr]??300,saved=S.prog[scr];
+  const src=c.pool().filter(x=>x.q&&Array.isArray(x.o));
+  if(!src.length){ gotoNext(scr); return; }   // no data → skip gracefully
   if(saved&&saved.qs){SQ.qs=saved.qs;SQ.i=saved.i||0;}
   else{
     const pool=nearLevel(src,lvl,Math.max(n+4,8));
-    SQ.qs=pickFresh(pool,"sciq",n,x=>x.q);
+    SQ.qs=pickFresh(pool,c.key,n,x=>x.q);
     SQ.i=0;
   }
-  SQ.picked=false;
+  SQ.picked=false; SQ.scr=scr;
   renderSciQ();
-  TM.start(saved?.left??t,t,()=>gotoNext("sq"));
+  TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
 function renderSciQ(){
-  const q=SQ.qs[SQ.i];
+  const q=SQ.qs[SQ.i], young=curLevel()<=2;       // young readers see vocalized text if present
+  const qtext=(young&&q.nq&&q.nq.q)||q.q;
+  const opts =(young&&q.nq&&Array.isArray(q.nq.o))?q.nq.o:q.o;
   document.getElementById("q-ctr").textContent=`${SQ.i+1}/${SQ.qs.length}`;
-  document.getElementById("sq-prompt").innerHTML=`<span dir="rtl">${esc(q.q)}</span>`;
+  document.getElementById("sq-prompt").innerHTML=`<span dir="rtl">${esc(qtext)}</span>`;
   const hb=document.getElementById("sq-hint");
-  if(hb)hb.onclick=()=>{ if(q.hint)showToast("info",q.hint); speakHe(q.q); };
-  document.getElementById("q-opts").innerHTML=q.o.map((o,i)=>
+  if(hb)hb.onclick=()=>{ if(q.hint)showToast("info",q.hint); speakHe(qtext); };
+  document.getElementById("q-opts").innerHTML=opts.map((o,i)=>
     `<button class="opt" data-idx="${i}" dir="rtl"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("");
   SQ.picked=false;
   document.getElementById("q-opts").onclick=e=>{
@@ -1477,7 +1522,7 @@ function renderSciQ(){
 }
 function handleSciQ(idx){
   if(SQ.picked)return;SQ.picked=true;
-  const q=SQ.qs[SQ.i],correct=idx===q.c;
+  const scr=SQ.scr||S.screen, q=SQ.qs[SQ.i],correct=idx===q.c;
   if(correct){addScore(1);SFX.good();}else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const bi=parseInt(b.dataset.idx,10),mk=b.querySelector(".mark");
@@ -1486,11 +1531,11 @@ function handleSciQ(idx){
     else b.classList.add("opt-dim");
     b.disabled=true;
   });
-  commitProg({sq:{qs:SQ.qs,i:SQ.i,left:TM.left}});
+  commitProg({[scr]:{qs:SQ.qs,i:SQ.i,left:TM.left}});
   setTimeout(()=>{
-    if(S.screen!=="sq")return;
+    if(S.screen!==scr)return;
     SQ.picked=false;SQ.i++;
-    if(SQ.i>=SQ.qs.length)gotoNext("sq");else renderSciQ();
+    if(SQ.i>=SQ.qs.length)gotoNext(scr);else renderSciQ();
   },1200);
 }
 
@@ -1787,6 +1832,8 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   hv:mcHTML,hb:matchHTML,hw:mcHTML,hs:hlHTML,wg:wgHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma5:mathHTML,ma6:mathHTML,ma3:mathHTML,ma4:mathHTML,
   sv:mcHTML,sw:mcHTML,sq:sqHTML,sr:readingHTML,
+  tv:mcHTML,tw:mcHTML,tq:sqHTML,tr:readingHTML,
+  lp:sqHTML,lf:sqHTML,ln:sqHTML,
   rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML,gplay:gplayHTML,curriculum:curriculumHTML};
 
 function gotoNext(cur){
@@ -1801,7 +1848,7 @@ function gotoNext(cur){
 
 // screens whose answers are 4 tappable options → show the "keys 1–4" tip and
 // wire number-key answering. (p4 = free-text describe, so it is excluded.)
-const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma6","ma3","ma4","sv","sw","sq","sr"]);
+const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma6","ma3","ma4","sv","sw","sq","sr","tv","tw","tq","tr","lp","lf","ln"]);
 const ENCOURAGE=["אני איתך! נסה לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
 function gameMascotFrame(){
   const m=curSubject().mascot||"🦉";
@@ -2007,12 +2054,12 @@ function initPart(){
   else if(S.screen==="p4")initDescribe();
   else if(S.screen==="p5")initMatch();
   else if(S.screen==="p6")initBalloons();
-  else if(S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw")initHebMC();
+  else if(S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw"||S.screen==="tv"||S.screen==="tw")initHebMC();
   else if(S.screen==="hb")initHebMatch();
   else if(S.screen==="wg")initWordGame();
   else if(S.screen==="hs")initHebLex();
-  else if(S.screen==="hr"||S.screen==="sr")initReading();
-  else if(S.screen==="sq")initSciQuiz();
+  else if(S.screen==="hr"||S.screen==="sr"||S.screen==="tr")initReading();
+  else if(S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln")initSciQuiz();
   else if(S.screen[0]==="m"&&S.screen[1]==="a")initMath();
   else if(S.screen==="rv")initReview();
 }
@@ -2258,8 +2305,8 @@ function handleCP(){
 // ─── Part 3: Reading ──────────────────────────────────────
 function initReading(){
   const saved=S.prog.reading,lvl=curLevel();
-  const heRead=(S.screen==="hr"||S.screen==="sr");   // right-to-left Hebrew reading
-  const set=(S.screen==="hr")?HEB_STORIES:(S.screen==="sr")?SCI_STORIES:STORIES;
+  const heRead=(S.screen==="hr"||S.screen==="sr"||S.screen==="tr");   // right-to-left Hebrew reading
+  const set=(S.screen==="hr")?HEB_STORIES:(S.screen==="sr")?SCI_STORIES:(S.screen==="tr")?TORAH_STORIES:STORIES;
   const src0=set.length?set:STORIES;
   const qquota=heRead?PART_QUOTA[S.screen]:QUOTA.reading;
   if(saved&&saved.id)R.story=src0.find(x=>x.id===saved.id)||src0[0];
@@ -2918,16 +2965,16 @@ function saveCurrentProg(){
   else if((S.screen==="p5"||S.screen==="hb")&&M.pairs)commitProg({match:matchState()});
   else if(S.screen==="p6"&&B.pairs)commitProg({balloons:balloonState()});
   else if(S.screen[0]==="m"&&S.screen[1]==="a"&&MA.qs)commitProg({[S.screen]:mathState()});
-  else if((S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
+  else if((S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw"||S.screen==="tv"||S.screen==="tw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
   else if(S.screen==="wg"&&WG.qs)commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
   else if(S.screen==="hs"&&HL.qs)commitProg({hs:{qs:HL.qs,i:HL.i,left:TM.left}});
-  else if(S.screen==="sq"&&SQ.qs)commitProg({sq:{qs:SQ.qs,i:SQ.i,left:TM.left}});
-  else if((S.screen==="hr"||S.screen==="sr")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
+  else if((S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln")&&SQ.qs)commitProg({[S.screen]:{qs:SQ.qs,i:SQ.i,left:TM.left}});
+  else if((S.screen==="hr"||S.screen==="sr"||S.screen==="tr")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,qi:R.qi,left:TM.left}});
 }
 // which S.prog key holds a given part's saved state (for the "+time" feature)
 function progKeyFor(scr){
   return ({p1:"vocab",p2:"cloze",p3:"reading",p4:"pics",p5:"match",hb:"match",
-           p6:"balloons",hr:"reading",sr:"reading",wg:"wg"})[scr] || scr;
+           p6:"balloons",hr:"reading",sr:"reading",tr:"reading",wg:"wg"})[scr] || scr;
 }
 function pauseAddTime(sec){
   const k=progKeyFor(S.pausedFrom);
