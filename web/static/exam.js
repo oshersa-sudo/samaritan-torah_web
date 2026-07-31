@@ -166,18 +166,18 @@ const PICTURES = [
 const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
 const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
                 hv:240,hb:210,hw:240,hs:240,wg:210,hr:600,
-                ma1:240,ma2:300,ma5:360,ma3:360,ma4:240,
+                ma1:240,ma2:300,ma5:360,ma6:360,ma3:360,ma4:240,
                 sv:240,sw:240,sq:300,sr:600};
 const LEVEL_NAME = {1:"כיתות א׳–ב׳",2:"כיתות ג׳–ד׳",3:"כיתות ה׳–ו׳",4:"חטיבה",5:"תיכון"};
 const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
                     p5:"התאמת מילים",p6:"בלונים",
                     hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",hs:"נרדפות והפכים",wg:"מילה או קשקוש",hr:"הבנת הנקרא",
-                    ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma5:"שברים",ma3:"בעיות מילוליות",ma4:"המספר החסר",
+                    ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma5:"שברים",ma6:"הנדסה וגיאומטריה",ma3:"בעיות מילוליות",ma4:"המספר החסר",
                     sv:"אוצר מילים במדע",sw:"פירוש מושגים",sq:"חידון טבע ומדע",sr:"הבנת הנקרא"};
 // answers per part → used to normalise the score to /100
 const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
                     hv:10,hb:8,hw:10,hs:10,wg:10,hr:6,
-                    ma1:10,ma2:10,ma5:10,ma3:6,ma4:8,
+                    ma1:10,ma2:10,ma5:10,ma6:8,ma3:6,ma4:8,
                     sv:10,sw:10,sq:10,sr:6};
 // subjects and their part order — every subject: 4 parts, 4 hourglasses
 const SUBJECTS = {
@@ -192,7 +192,7 @@ const SUBJECTS = {
   math:   {name:"חשבון",  icon:"🧮", desc:"חיבור, כפל, שברים ובעיות",
            grad:"linear-gradient(150deg,#fda4af,#e11d48)", shadow:"#be123c",
            mascot:"👨‍🏫", mascotName:"פְּרוֹפֶסוֹר חֶשְׁבּוֹן",
-           order:["ma1","ma2","ma5","ma3","ma4"]},
+           order:["ma1","ma2","ma5","ma6","ma3","ma4"]},
   science:{name:"טבע ומדעים", icon:"🔬", desc:"עולם החי, הצומח והחלל",
            grad:"linear-gradient(150deg,#6ee7b7,#059669)", shadow:"#047857",
            mascot:"🦎", mascotName:"נִיבִּי הַחוֹקֶרֶת",
@@ -1042,7 +1042,7 @@ function resumeHTML(){
 const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3:"שאלות · 10 דק׳",p4:"תמונות · 10 דק׳",
                    p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",
                    hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",hs:"מילים · 4 דק׳",wg:"משחק · 3.5 דק׳",hr:"שאלות · 10 דק׳",
-                   ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma5:"שברים · 6 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳",
+                   ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma5:"שברים · 6 דק׳",ma6:"צורות · 6 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳",
                    sv:"מילים · 4 דק׳",sw:"מושגים · 4 דק׳",sq:"חידון · 5 דק׳",sr:"שאלות · 10 דק׳"};
 
 function subjectHTML(){
@@ -1679,6 +1679,7 @@ const MATH_CFG = {
   ma1:{eyebrow:"חשבון · חיבור וחיסור",  lead:"בחר/י את התשובה הנכונה", type:"addsub"},
   ma2:{eyebrow:"חשבון · כפל וחילוק",    lead:"בחר/י את התשובה הנכונה", type:"muldiv"},
   ma5:{eyebrow:"חשבון · שברים",          lead:"בחר/י את התשובה הנכונה", type:"frac"},
+  ma6:{eyebrow:"חשבון · הנדסה וגיאומטריה", lead:"בחר/י את התשובה הנכונה", type:"geom"},
   ma3:{eyebrow:"חשבון · בעיות מילוליות", lead:"קרא/י ובחר/י תשובה",      type:"word"},
   ma4:{eyebrow:"חשבון · המספר החסר",     lead:"איזה מספר משלים?",        type:"missing"},
 };
@@ -1784,7 +1785,7 @@ function doneHTML(){
 const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuHTML,
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
   hv:mcHTML,hb:matchHTML,hw:mcHTML,hs:hlHTML,wg:wgHTML,hr:readingHTML,
-  ma1:mathHTML,ma2:mathHTML,ma5:mathHTML,ma3:mathHTML,ma4:mathHTML,
+  ma1:mathHTML,ma2:mathHTML,ma5:mathHTML,ma6:mathHTML,ma3:mathHTML,ma4:mathHTML,
   sv:mcHTML,sw:mcHTML,sq:sqHTML,sr:readingHTML,
   rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML,gplay:gplayHTML,curriculum:curriculumHTML};
 
@@ -1800,7 +1801,7 @@ function gotoNext(cur){
 
 // screens whose answers are 4 tappable options → show the "keys 1–4" tip and
 // wire number-key answering. (p4 = free-text describe, so it is excluded.)
-const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma3","ma4","sv","sw","sq","sr"]);
+const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma6","ma3","ma4","sv","sw","sq","sr"]);
 const ENCOURAGE=["אני איתך! נסה לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
 function gameMascotFrame(){
   const m=curSubject().mascot||"🦉";
@@ -2621,7 +2622,65 @@ function _genMathQ(lvl,type){
     const y=R(1,mx),x=R(y+1,mx+y);return {t:`${x} − ? = ${x-y}`,a:y,eq:false};
   }
   if(type==="frac") return _genFracQ(lvl);
+  if(type==="geom") return _genGeomQ(lvl);
   return _genWordProblem(lvl);            // type === "word"
+}
+// ── Geometry & engineering (הנדסה וגיאומטריה) ──
+// Grounded in the Israeli curriculum (גאומטריה ומדידות): shapes & properties,
+// the four angle types, perimeter, area (rectangle/triangle/parallelogram/
+// trapezoid), 3-D solids (faces/edges/vertices), volume, symmetry, Pythagoras.
+function _genGeomQ(lvl){
+  const R=_mrand, pick=a=>a[R(0,a.length-1)];
+  const T=[];
+  if(lvl<=1){
+    T.push(
+      ()=>{const s=pick([["מְשֻׁלָּשׁ","משולש",3],["מְרֻבָּע","מרובע",4],["מְחֻמָּשׁ","מחומש",5],["מְשֻׁשֶּׁה","משושה",6]]);
+        return {t:`כמה צלעות יש ל${s[1]}?`,a:s[2],rtl:true};},
+      ()=>{const s=pick([["ריבוע",4],["משולש",3],["מלבן",4],["מחומש",5]]);
+        return {t:`כמה פינות (קדקודים) יש ל${s[0]}?`,a:s[1],rtl:true};},
+      ()=>({t:"לאיזו צורה יש 3 צלעות?",opts:shuffle(["משולש","ריבוע","עיגול","מלבן"]),ans:"משולש",rtl:true}),
+      ()=>({t:"לאיזו צורה אין פינות כלל?",opts:shuffle(["עיגול","ריבוע","משולש","מלבן"]),ans:"עיגול",rtl:true}),
+      ()=>({t:"כמה זוויות ישרות יש בריבוע?",a:4,rtl:true}),
+    );
+  } else if(lvl===2){
+    T.push(
+      ()=>{const w=R(2,12),h=R(2,12);return {t:`למלבן אורך ${w} ורוחב ${h} ס״מ. מה ההיקף?`,a:2*(w+h),rtl:true};},
+      ()=>{const s=R(3,15);return {t:`לריבוע צלע ${s} ס״מ. מה ההיקף?`,a:4*s,rtl:true};},
+      ()=>{const a=R(2,9),b=R(2,9),c=R(2,9);return {t:`למשולש צלעות ${a}, ${b} ו-${c} ס״מ. מה ההיקף?`,a:a+b+c,rtl:true};},
+      ()=>{const z=pick([[90,"זווית ישרה"],[45,"זווית חדה"],[30,"זווית חדה"],[120,"זווית קהה"],[150,"זווית קהה"],[180,"זווית שטוחה"]]);
+        return {t:`זווית של ${z[0]} מעלות היא…`,opts:shuffle(["זווית ישרה","זווית חדה","זווית קהה","זווית שטוחה"]),ans:z[1],rtl:true};},
+      ()=>{const s=pick([["ריבוע","4"],["מלבן","2"],["משולש שווה־צלעות","3"]]);
+        return {t:`כמה צירי סימטריה יש ל${s[0]}?`,opts:shuffle(["1","2","3","4"]),ans:s[1],rtl:true};},
+      ()=>({t:"כמה פאות יש לקובייה?",a:6,rtl:true}),
+      ()=>({t:"כמה מקצועות (צלעות) יש לקובייה?",a:12,rtl:true}),
+      ()=>({t:"כמה קדקודים יש לקובייה?",a:8,rtl:true}),
+    );
+  } else if(lvl===3){
+    T.push(
+      ()=>{const w=R(3,14),h=R(2,12);return {t:`למלבן אורך ${w} ורוחב ${h} ס״מ. מה השטח?`,a:w*h,rtl:true};},
+      ()=>{const s=R(3,12);return {t:`לריבוע צלע ${s} ס״מ. מה השטח?`,a:s*s,rtl:true};},
+      ()=>{const b=R(3,12),h=R(1,6)*2;return {t:`למשולש בסיס ${b} ס״מ וגובה ${h} ס״מ. מה השטח? (בסיס×גובה÷2)`,a:b*h/2,rtl:true};},
+      ()=>{const l=R(2,8),w=R(2,8),h=R(2,8);return {t:`לתיבה מידות ${l}×${w}×${h} ס״מ. מה הנפח?`,a:l*w*h,rtl:true};},
+      ()=>{const s=R(2,7);return {t:`לקובייה צלע ${s} ס״מ. מה הנפח? (צלע בשלישית)`,a:s*s*s,rtl:true};},
+    );
+  } else if(lvl===4){
+    T.push(
+      ()=>{const a=R(30,80),b=R(30,90);return {t:`במשולש שתי זוויות הן ${a}° ו-${b}°. מה הזווית השלישית? (סכום=180°)`,a:180-a-b,rtl:true};},
+      ()=>{const base=R(3,14),h=R(2,10);return {t:`למקבילית בסיס ${base} וגובה ${h} ס״מ. מה השטח? (בסיס×גובה)`,a:base*h,rtl:true};},
+      ()=>{const a=R(3,10),b=R(3,10),h=R(1,5)*2;return {t:`לטרפז בסיסים ${a} ו-${b} וגובה ${h} ס״מ. מה השטח? ((סכום הבסיסים)×גובה÷2)`,a:(a+b)*h/2,rtl:true};},
+      ()=>{const tr=pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15]]);return {t:`במשולש ישר־זווית הניצבים ${tr[0]} ו-${tr[1]} ס״מ. מה אורך היתר? (משפט פיתגורס)`,a:tr[2],rtl:true};},
+      ()=>{const l=R(3,12),w=R(2,10),h=R(2,10);return {t:`לתיבה מידות ${l}×${w}×${h} ס״מ. מה הנפח?`,a:l*w*h,rtl:true};},
+    );
+  } else {
+    T.push(
+      ()=>{const r=R(2,12);return {t:`למעגל רדיוס ${r} ס״מ. מה ההיקף? (2·π·r, π≈3)`,a:6*r,rtl:true};},
+      ()=>{const r=R(2,10);return {t:`למעגל רדיוס ${r} ס״מ. מה השטח? (π·r², π≈3)`,a:3*r*r,rtl:true};},
+      ()=>{const tr=pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17],[7,24,25],[20,21,29]]);return {t:`במשולש ישר־זווית הניצבים ${tr[0]} ו-${tr[1]}. מה היתר? (פיתגורס)`,a:tr[2],rtl:true};},
+      ()=>{const a=R(40,80),b=R(40,80);return {t:`במשולש שתי זוויות ${a}° ו-${b}°. מה השלישית?`,a:180-a-b,rtl:true};},
+      ()=>{const r=R(2,8),h=R(2,10);return {t:`לגליל רדיוס ${r} וגובה ${h} ס״מ. מה הנפח? (π·r²·h, π≈3)`,a:3*r*r*h,rtl:true};},
+    );
+  }
+  return pick(T)();
 }
 // ── Fractions (שברים): grows from "a fraction of a whole" up to +−×÷ of fractions
 const _gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=a%b;a=b;b=t;}return a||1;};
@@ -2702,7 +2761,7 @@ function initMath(){
 }
 function renderMathQ(){
   const q=MA.qs[MA.i];
-  MA.opts=q.frac?q.opts:_mkOpts(q.a);
+  MA.opts=q.opts?q.opts:_mkOpts(q.a);   // explicit options (fractions, geometry) or numeric
   document.getElementById("q-ctr").textContent=`${MA.i+1}/${MA.qs.length}`;
   document.getElementById("math-q").innerHTML = q.rtl
     ? `<span dir="rtl" class="math-word">${esc(q.t)}</span>`
@@ -2718,7 +2777,7 @@ function renderMathQ(){
 function handleMA(val){
   if(MA.picked)return;MA.picked=true;
   const q=MA.qs[MA.i];
-  const isAns=b=>q.frac?(b===q.ans):(Math.abs(parseFloat(b)-q.a)<1e-9);
+  const isAns=b=>q.opts?(b===q.ans):(Math.abs(parseFloat(b)-q.a)<1e-9);
   const correct=isAns(val);
   if(correct){addScore(1);SFX.good();}else SFX.bad();
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
