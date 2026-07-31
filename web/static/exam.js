@@ -1134,7 +1134,15 @@ function parentsHTML(){
     <p class="par-note">כשמפעילים "קול לכל דמות" בהגדרות, ההקראה בעברית משתמשת בקול של הדמות המלווה את המקצוע. הקולות מסונתזים ועובדים בכל מכשיר.</p>
   </div>
   <div class="mini-card"><div class="mini-label">הגדרות</div>${rows}${musicRow}</div>
-  ${BACKEND?`<div class="mini-card"><div class="mini-label">מעקב מרחוק</div><p class="par-note">קוד ההורים: <b>${esc(S.parentCode||"…")}</b><br>מהמכשיר שלכם היכנסו לכתובת <b>onyx-study.com/parent</b> כדי לעקוב מרחוק אחרי ההתקדמות.</p></div>`:""}
+  ${BACKEND?`<div class="mini-card"><div class="mini-label">📲 שליחת מעקב להורה</div>
+    <p class="par-note">שִׁלחו לטלפון של ההורה קישור + קוד — וההורה יוכל לעקוב אחרי ${name} מכל מכשיר.</p>
+    <div class="psend">
+      <input id="par-send-phone" inputmode="tel" autocomplete="tel" placeholder="טלפון ההורה · לדוגמה 0501234567">
+      <button class="primary sm" id="btn-send-parent">שליחת קישור להורה</button>
+    </div>
+    <div class="err" id="par-send-err"></div>
+    <p class="par-note">קוד ההורה: <b>${esc(S.parentCode||"…")}</b> · הקישור נפתח בעמוד המעקב</p>
+  </div>`:""}
 </div>`;
 }
 
@@ -1844,6 +1852,11 @@ function attachListeners(){
   }
   if(S.screen==="parents"){
     document.getElementById("btn-par-back").addEventListener("click",()=>{S.screen=S.returnTo||"subject";render();});
+    if(BACKEND&&!S.parentCode)syncRegister();   // make sure a parent code exists to send
+    const bsp=document.getElementById("btn-send-parent");
+    if(bsp)bsp.addEventListener("click",sendParentLink);
+    const spi=document.getElementById("par-send-phone");
+    if(spi)spi.addEventListener("keydown",e=>{if(e.key==="Enter")sendParentLink();});
     document.querySelectorAll(".tgl[data-set]").forEach(t=>{
       t.addEventListener("click",()=>{
         const k=t.dataset.set,now=!setGet(k,true);
@@ -2921,6 +2934,28 @@ function loginNeedRegister(){
     form.scrollIntoView({behavior:"smooth",block:"center"});}
   const which=!S.name.trim()?"inp-name":"inp-phone";
   const inp=document.getElementById(which);if(inp)setTimeout(()=>{try{inp.focus();}catch(e){}},350);
+}
+// build the parent tracking link (student phone + parent code prefilled)
+function parentTrackLink(){
+  const base=(BACKEND||location.origin).replace(/\/+$/,"");
+  return base+"/parent?s="+encodeURIComponent(S.phone)+"&c="+encodeURIComponent(S.parentCode||"");
+}
+// send the parent a link + code via the phone's own SMS composer (no gateway).
+// The parent's number must differ from the child's local number.
+function sendParentLink(){
+  const inp=document.getElementById("par-send-phone"), errEl=document.getElementById("par-send-err");
+  if(errEl)errEl.textContent="";
+  const raw=((inp&&inp.value)||"").replace(/\D/g,"");
+  if(raw.length<9){ if(errEl)errEl.textContent="מספר טלפון לא תקין"; return; }
+  if(raw===S.phone){ if(errEl)errEl.textContent="מספר ההורה חייב להיות שונה ממספר הילד/ה"; return; }
+  if(!S.parentCode){ if(errEl)errEl.textContent="רק רגע — נרשם לשרת, נסו שוב בעוד רגע"; syncRegister(); return; }
+  const link=parentTrackLink();
+  const msg=`מעקב אחר ${S.name||"הילד/ה"} באפליקציית Onyx לימודי 📚\nקישור: ${link}\nקוד הורה: ${S.parentCode}`;
+  const sms="sms:"+raw+"?body="+encodeURIComponent(msg);
+  try{ window.location.href=sms; }catch(e){}
+  // fallback path: copy the message so it can be pasted anywhere
+  try{ if(navigator.clipboard) navigator.clipboard.writeText(msg).catch(()=>{}); }catch(e){}
+  showToast("good","נפתחה הודעת SMS להורה (וגם הועתקה)");
 }
 // parents: how to track a child's progress
 function showParentHelp(){

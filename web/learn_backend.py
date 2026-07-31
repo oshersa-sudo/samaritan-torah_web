@@ -425,6 +425,19 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    document.getElementById("pphone").value=body.parent_phone;
    loadStudents();
  }
+ // Arriving from a "send to parent" link (?s=<student phone>&c=<parent code>):
+ // prefill the student phone + code so the parent only enters their own number.
+ (function(){ try{
+   const q=new URLSearchParams(location.search);
+   const s=(q.get("s")||"").replace(/\\D/g,""), c=(q.get("c")||"").trim();
+   if(s) document.getElementById("sphone").value=s;
+   if(c) document.getElementById("pcode").value=c;
+   if(s&&c){
+     const sub=document.querySelector(".sub");
+     if(sub) sub.innerHTML="קיבלתם הזמנה למעקב! ✅ הזינו את <b>מספר הטלפון שלכם</b> ולחצו <b>קשר תלמיד</b> כדי לראות את ההתקדמות.";
+     const pin=document.getElementById("pphone"); if(pin) pin.focus();
+   }
+ }catch(e){} })();
 </script></body></html>"""
 
 # ─── Standalone app (mounts the blueprint) ─────────────────────────────────

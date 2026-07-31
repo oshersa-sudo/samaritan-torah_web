@@ -193,6 +193,14 @@ body {
 .mark.good { color: #3FBF6F; }
 .mark.bad  { color: #F2545B; }
 .hint { font-size: 13px; margin: 12px 0 0; }
+/* Send-tracking-to-parent form (in parents area) */
+.psend { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.psend input { flex:1 1 160px; min-width:0; padding:11px 12px; border:2px solid var(--line,#e6e0f3); border-radius:12px; font-size:15px; font-family:inherit; direction:ltr; text-align:right; }
+.psend .primary.sm { flex:0 0 auto; white-space:nowrap; }
+.par-row + .err, .psend + .err, .err:empty { }
+.err { color:#c0392b; font-size:13px; margin-top:6px; min-height:0; }
+@media (prefers-color-scheme: dark){ .psend input { background:#1e1830; color:#efeafb; border-color:#322a48; } .err{ color:#fca5a5; } }
+
 /* 3-way segmented control (e.g. music volume: off / quiet / normal) */
 .seg { display:inline-flex; background:rgba(124,58,237,.10); border-radius:999px; padding:3px; gap:2px; }
 .seg-btn { border:none; background:transparent; font-family:inherit; font-size:13px; font-weight:700; color:#6d28d9;
