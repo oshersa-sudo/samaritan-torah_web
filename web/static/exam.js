@@ -295,11 +295,28 @@ function pickVoice(lang){
       || cand.find(v=>v.localService) || cand[0];
 }
 function _say(text,lang,rate,pitch){
-  try{ if(!setGet("tts",true))return;
-    if(!("speechSynthesis"in window))return; window.speechSynthesis.cancel();
+  if(!setGet("tts",true))return;
+  const ss=("speechSynthesis"in window)?window.speechSynthesis:null; if(!ss)return;
+  const doSpeak=()=>{ try{
+    ss.cancel();                                   // clear anything stuck
     const u=new SpeechSynthesisUtterance(text); u.lang=lang; u.rate=rate; if(pitch!=null)u.pitch=pitch;
     const v=pickVoice(lang); if(v)u.voice=v;
-    window.speechSynthesis.speak(u);
+    try{ ss.resume(); }catch(e){}                  // some Android builds pause the queue
+    ss.speak(u);
+  }catch(e){} };
+  // On many phones getVoices() is empty until voices load asynchronously — if so,
+  // reload and retry once on the next tick so the utterance isn't dropped.
+  if(!_voices.length){ _loadVoices(); if(!_voices.length){ setTimeout(()=>{ _loadVoices(); doSpeak(); }, 200); return; } }
+  doSpeak();
+}
+// Prime speech synthesis inside the first user gesture — iOS/Safari refuse to
+// speak until this happens (this is why background music worked but TTS didn't).
+let _ttsPrimed=false;
+function primeTTS(){
+  if(_ttsPrimed) return; _ttsPrimed=true;
+  try{ const ss=window.speechSynthesis; if(!ss)return;
+    _loadVoices();
+    const u=new SpeechSynthesisUtterance(" "); u.volume=0.01; ss.speak(u); ss.cancel();
   }catch(e){}
 }
 const speak = text => _say(text,"en-US",0.85);
@@ -579,8 +596,8 @@ const BGM = {
   },
 };
 
-// שחרור AudioContext במגע ראשון (מדיניות דפדפנים)
-window.addEventListener("pointerdown",()=>SFX._ac(),{once:true});
+// שחרור AudioContext + מנוע הדיבור במגע ראשון (מדיניות דפדפנים)
+window.addEventListener("pointerdown",()=>{ SFX._ac(); primeTTS(); },{once:true});
 // don't leave music playing when the app is backgrounded; resume on return
 if(typeof document!=="undefined") document.addEventListener("visibilitychange",()=>{
   if(document.hidden) BGM.stop();
@@ -1859,7 +1876,9 @@ function attachListeners(){
     const ml=document.getElementById("menu-levels");
     if(ml)ml.addEventListener("click",e=>{const b=e.target.closest(".pill");if(!b)return;
       S.lvlOverride=+b.dataset.lvl;S.adaptLvl=S.lvlOverride;
-      ml.querySelectorAll(".pill").forEach(x=>x.classList.toggle("pill-on",x===b));});
+      if(S.phone)sSet("lvl:"+S.phone,S.lvlOverride);   // remember this student's level
+      ml.querySelectorAll(".pill").forEach(x=>x.classList.toggle("pill-on",x===b));
+      showToast("good","הרמה עודכנה ונשמרה");});
     document.getElementById("btn-start").addEventListener("click",()=>{S.score=0;S.prog={};S.adaptLvl=S.lvlOverride||levelForAge(S.age);S.screen=curOrder()[0];render();});
     const rvb=document.getElementById("btn-review");
     if(rvb)rvb.addEventListener("click",()=>{S.screen="rv";render();});
@@ -1875,6 +1894,7 @@ function attachListeners(){
     const pl=document.getElementById("pz-levels");
     if(pl)pl.addEventListener("click",e=>{const b=e.target.closest(".pill");if(!b)return;
       const L=+b.dataset.lvl;S.lvlOverride=L;S.adaptLvl=L;
+      if(S.phone)sSet("lvl:"+S.phone,L);   // remember this student's level
       pl.querySelectorAll(".pill").forEach(x=>x.classList.toggle("pill-on",x===b));
       showToast("good","הרמה תשתנה מהחלק הבא");});
     document.getElementById("pz-plan").addEventListener("click",()=>{S.screen="menu";render();});
@@ -2159,7 +2179,10 @@ function initReading(){
   if(saved&&saved.id)R.story=src0.find(x=>x.id===saved.id)||src0[0];
   else{
     const pool=src0.filter(x=>Math.abs(x.lvl-lvl)<=2);
-    const src=pool.length?pool:src0;
+    let src=pool.length?pool:src0;
+    // young readers (grades א–ד): only serve passages that carry niqqud, so the
+    // reading-comprehension text is always vocalized for them.
+    if(heRead && lvl<=2){ const voc=src.filter(x=>HEB_NQ.stories[x.id]); if(voc.length) src=voc; }
     R.story=pickFreshOne(src,"story:"+S.screen);
   }
   R.rtl=heRead;
@@ -2721,6 +2744,8 @@ function doEnter(){
   S.parentCode=sGet("pcode:"+S.phone)||"";
   S.avatar=sGet("avatar:"+S.phone)||S.avatar;
   sSet("avatar:"+S.phone,S.avatar);
+  const savedLvl=sGet("lvl:"+S.phone);   // a level the student picked earlier sticks
+  if(savedLvl){S.lvlOverride=savedLvl;S.adaptLvl=savedLvl;}
   // remember this student on THIS device so they skip login next time
   sSet("me",{name:S.name,phone:S.phone,subject:S.subject,avatar:S.avatar,age:S.age});
   syncRegister();
@@ -2796,6 +2821,8 @@ window.addEventListener("DOMContentLoaded",()=>{
     S.history=sGet(K.results(S.phone))||[];
     S.seen=sGet(K.seen(S.phone))||[];
     S.parentCode=sGet("pcode:"+S.phone)||"";
+    const savedLvl=sGet("lvl:"+S.phone);   // restore a previously chosen level
+    if(savedLvl){S.lvlOverride=savedLvl;S.adaptLvl=savedLvl;}
     syncRegister();
     syncFetchResults();   // pull any results saved from other devices
     const ses=sGet(K.session(S.phone));
