@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 """
 Regenerate verses.interpretation ("פירוש הפסוק") as a rich, continuous,
-source-woven Hebrew commentary for Genesis ch. 1-6 (the span where צדקה אל-חכים
-and the other Samaritan sources are richest).
+source-woven Hebrew commentary for the whole Torah (all five books).
 
 For each verse a bundle of every available source is assembled — Samaritan text,
 vocalised Masorah, plain Hebrew, the Samaritan Aramaic Targum (+ Tal-dictionary
 glosses of its hard words, word→root→meaning), English, Arabic (only where the
-column is reliably aligned, ≤ Gen 2:17), and the linked Samaritan commentaries
-(צדקה אל-חכים, תיבת מרקה / מימר מרקה, מן המסורת השומרונית), plus midrashic
-background — and Opus 4.8 writes one flowing commentary that weaves them with
-inline attribution.
+column is reliably aligned — Genesis 1:1 through 2:17 only), and the linked
+Samaritan commentaries (צדקה אל-חכים, תיבת מרקה / מימר מרקה, מן המסורת
+השומרונית — never the piyutim/rhyme-dictionary tables, which aren't exegetical
+commentary), plus midrashic background — and Opus 4.8 writes one flowing
+commentary that weaves them with inline attribution. Verses with none of these
+linked sources still get a plain-sense commentary from the text itself.
+
+The 159 Genesis 1-6 verses generated in an earlier pilot run are preserved
+as-is (already marked done in data/_versecomm_progress.json).
 
 Usage:  py -3 scripts/build_verse_commentary.py --sample 3      # preview, no write
-        py -3 scripts/build_verse_commentary.py --apply          # all 159, writes
+        py -3 scripts/build_verse_commentary.py --apply          # remaining ~5755, writes
 """
 import sqlite3, sys, io, os, re, json, shutil
 
@@ -41,8 +45,10 @@ def bare(w):
     return NIK.sub('', (w or '')).strip()
 
 
-def arabic_reliable(ch, vn):
-    return (ch, vn) <= (2, 17)        # arabic_trans is misaligned past Gen 2:17
+def arabic_reliable(book, ch, vn):
+    # arabic_trans is misaligned past Gen 2:17 and unverified for the other four
+    # books — omit rather than risk citing scrambled/unverified Arabic as a source.
+    return book == 'בראשית' and (ch, vn) <= (2, 17)
 
 
 def tal_glosses(db, aramaic):
@@ -68,16 +74,18 @@ def tal_glosses(db, aramaic):
 
 
 def gather(db, conn, vid):
-    r = conn.execute("""SELECT v.*, c.number ch FROM verses v
-                        JOIN chapters c ON c.id=v.chapter_id WHERE v.id=?""", (vid,)).fetchone()
+    r = conn.execute("""SELECT v.*, c.number ch, bk.name book FROM verses v
+                        JOIN chapters c ON c.id=v.chapter_id
+                        JOIN books bk ON bk.id=c.book_id WHERE v.id=?""", (vid,)).fetchone()
     ch = r['ch']; vn = int(r['number']) if str(r['number']).isdigit() else 0
-    b = {'ref': 'בראשית %d:%d' % (ch, vn), 'ch': ch, 'vn': vn}
+    book = r['book']
+    b = {'ref': '%s %d:%d' % (book, ch, vn), 'book': book, 'ch': ch, 'vn': vn}
     b['text'] = (r['text'] or '').strip()
     b['masoretic'] = (r['masoretic_text'] or '').strip()
     b['simple'] = (r['simple_hebrew'] or '').strip()
     b['aramaic'] = (r['sam_aramaic'] or '').strip()
     b['english'] = (r['english'] or r['site_english'] or '').strip()
-    b['arabic'] = (r['arabic_trans'] or '').strip() if arabic_reliable(ch, vn) else ''
+    b['arabic'] = (r['arabic_trans'] or '').strip() if arabic_reliable(book, ch, vn) else ''
     b['midrash'] = (r['cassuto'] or '').strip()
     b['tal'] = tal_glosses(db, b['aramaic'])
     b['tzdaka'] = [s['text'] for s in db.get_tzdaka_commentary([vid])]
@@ -87,7 +95,7 @@ def gather(db, conn, vid):
 
 
 def prompt(b):
-    L = ['כתוב פירוש רציף ובהיר לפסוק הבא מספר בראשית. שזור את המקורות שלהלן '
+    L = ['כתוב פירוש רציף ובהיר לפסוק הבא מספר %s. שזור את המקורות שלהלן ' % b['book'] +
          'לכלל הסבר אחד זורם, ויַחֵס כל רעיון למקורו בקצרה. הסבר את פשט הפסוק, '
          'באר מילים קשות (במיוחד בעזרת הארמית והמילון), והבא רעיון או מדרש קשור '
          'אם יש. אורך: 120–230 מילים. החזר אך ורק את הפירוש, בעברית.', '',
@@ -127,11 +135,14 @@ def generate(cl, b):
 
 
 def gen_verses(conn):
+    """All verses of the Torah (whole five books), in canonical reading order.
+    The 159 already-generated Genesis 1-6 verses are preserved, not redone —
+    they're already marked done in data/_versecomm_progress.json and the
+    apply-loop skips anything already in that file."""
     return [r['id'] for r in conn.execute(
         """SELECT v.id FROM verses v JOIN chapters c ON c.id=v.chapter_id
            JOIN books b ON b.id=c.book_id
-           WHERE b.name='בראשית' AND c.number<=6
-           ORDER BY c.number, CAST(v.number AS INTEGER)""")]
+           ORDER BY b.order_n, c.number, CAST(v.number AS INTEGER)""")]
 
 
 def main():
@@ -149,11 +160,19 @@ def main():
     cl = anthropic.Anthropic(api_key=key)
     conn = sqlite3.connect(DB, timeout=60); conn.row_factory = sqlite3.Row
     vids = gen_verses(conn)
+    done = json.load(open(PROG, encoding='utf-8')) if os.path.exists(PROG) else {}
+    remaining = [v for v in vids if str(v) not in done]
 
     if sample:
+        # spread the sample evenly across the REMAINING verses (not just the first
+        # N, which would all be early Genesis) so the cost estimate reflects the
+        # sparser commentary-linkage typical of the later books too.
+        n = len(remaining)
+        idxs = sorted(set(int(i * (n - 1) / max(1, sample - 1)) for i in range(sample))) if n else []
         out = io.open('data/_versecomm_sample.txt', 'w', encoding='utf-8')
         tin = tout = 0
-        for vid in vids[:sample]:
+        for idx in idxs:
+            vid = remaining[idx]
             b = gather(db, conn, vid)
             txt, u = generate(cl, b)
             tin += u.input_tokens; tout += u.output_tokens
@@ -162,10 +181,11 @@ def main():
                       % (len(b['tzdaka']), len([1 for t in b['tm'] if t.strip()]),
                          len(b['eyalk']), 'כן' if b['arabic'] else 'לא', len(b['tal'])))
             out.write('--- פירוש חדש ---\n%s\n' % txt)
-        out.write('\n[tokens in=%d out=%d  ~$%.3f  | est. 159 verses ~$%.2f]\n'
-                  % (tin, tout, tin / 1e6 * 5 + tout / 1e6 * 25,
-                     (tin / 1e6 * 5 + tout / 1e6 * 25) / sample * 159))
-        out.close(); print('sample -> data/_versecomm_sample.txt'); conn.close(); return
+        est = (tin / 1e6 * 5 + tout / 1e6 * 25) / max(1, len(idxs)) * n
+        out.write('\n[tokens in=%d out=%d  ~$%.3f  | est. %d remaining verses ~$%.2f]\n'
+                  % (tin, tout, tin / 1e6 * 5 + tout / 1e6 * 25, n, est))
+        out.close(); print('sample -> data/_versecomm_sample.txt (est. total ~$%.2f)' % est)
+        conn.close(); return
 
     if not apply:
         print('specify --sample N or --apply'); conn.close(); return
@@ -173,11 +193,8 @@ def main():
     bak = DB + '.bak_versecomm'
     if not os.path.exists(bak):
         shutil.copy2(DB, bak); print('backed up ->', bak)
-    done = json.load(open(PROG, encoding='utf-8')) if os.path.exists(PROG) else {}
     tin = tout = n = 0
-    for vid in vids:
-        if str(vid) in done:
-            continue
+    for vid in remaining:
         b = gather(db, conn, vid)
         try:
             txt, u = generate(cl, b)
@@ -188,7 +205,7 @@ def main():
         done[str(vid)] = 1
         json.dump(done, open(PROG, 'w', encoding='utf-8'))
         if n % 20 == 0:
-            print('  %d/%d  ~$%.2f' % (n, len(vids), tin / 1e6 * 5 + tout / 1e6 * 25), flush=True)
+            print('  %d/%d  ~$%.2f' % (n, len(remaining), tin / 1e6 * 5 + tout / 1e6 * 25), flush=True)
     print('DONE. wrote %d verses.  tokens in=%d out=%d  cost ~$%.2f'
           % (n, tin, tout, tin / 1e6 * 5 + tout / 1e6 * 25), flush=True)
     conn.close()
