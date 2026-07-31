@@ -4,10 +4,15 @@
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable --now onyx-inactivity.timer
 #
-# Requires:
+# Delivery: prefers a PHONE PUSH notification (reaches the parent even with the
+# screen locked) and falls back to e-mail only if the parent has no push
+# subscription. Requires:
 #   * CRON_KEY below to match the CRON_KEY set in onyx-study.service
-#   * SMTP_* configured in onyx-study.service (otherwise nothing is e-mailed)
-#   * a parent e-mail on file (parents add it when linking a student)
+#   * for push: pywebpush installed (in requirements-prod.txt) — the VAPID
+#     keypair is auto-generated and persisted; parents tap "הפעל התראות" in the
+#     portal once to subscribe their phone.
+#   * for the e-mail fallback: SMTP_* in onyx-study.service + a parent e-mail
+#     on file (optional field parents can add when linking a student).
 [Unit]
 Description=onyx-study daily inactivity reminder
 After=network.target onyx-study.service

@@ -89,6 +89,18 @@ def init_db():
             seconds INTEGER DEFAULT 0,
             PRIMARY KEY(phone, day)
         );
+        -- small key/value store (holds the server's VAPID keypair for web push)
+        CREATE TABLE IF NOT EXISTS meta(
+            k TEXT PRIMARY KEY,
+            v TEXT
+        );
+        -- browser/phone push subscriptions belonging to a parent
+        CREATE TABLE IF NOT EXISTS push_subs(
+            endpoint TEXT PRIMARY KEY,
+            parent_phone TEXT NOT NULL,
+            sub TEXT NOT NULL,
+            created INTEGER
+        );
         CREATE INDEX IF NOT EXISTS idx_results_phone ON results(phone);
         CREATE INDEX IF NOT EXISTS idx_ptok_phone ON parent_tokens(parent_phone);
         CREATE INDEX IF NOT EXISTS idx_time_phone ON study_time(phone);
@@ -103,6 +115,10 @@ def init_db():
             if col not in cols:
                 try: c.execute(ddl)
                 except Exception as e: print(f"[learn] migration {tbl}.{col} skipped:", e)
+    # generate/persist the web-push VAPID keypair now, while nothing else holds
+    # a DB connection (avoids doing the one-time write during a live request)
+    try: vapid_keys()
+    except Exception: pass
 
 # ─── Helpers ───────────────────────────────────────────────────────────────
 PHONE_RE = re.compile(r"^\d{9,15}$")
@@ -164,6 +180,100 @@ def send_email(dest_email, subject, body):
 
 def jerr(msg, code=400):
     return jsonify({"ok": False, "error": msg}), code
+
+# ─── Web Push (phone notifications, work with the screen locked) ────────────
+# We keep a single VAPID keypair for the server: from env if provided, else
+# generated once and persisted in the `meta` table so it stays stable across
+# restarts (subscriptions are bound to the key). Generating + the subscribe
+# flow need only `cryptography`; actually *sending* a push needs `pywebpush`
+# (optional — if it's not installed we simply fall back to e-mail).
+VAPID_SUB = os.environ.get("VAPID_SUB", "mailto:no-reply@onyx-study.com")
+
+def _meta_get(c, k):
+    r = c.execute("SELECT v FROM meta WHERE k=?", (k,)).fetchone()
+    return r["v"] if r else None
+
+def _meta_set(c, k, v):
+    c.execute("INSERT INTO meta(k,v) VALUES(?,?) ON CONFLICT(k) DO UPDATE SET v=excluded.v", (k, v))
+
+_VAPID_CACHE = None   # (priv, pub) once resolved — avoids re-hitting the DB/crypto per call
+
+def vapid_keys():
+    """Return (private_pem, public_b64url). Env wins; otherwise persist a
+    generated pair in the DB. Returns (None, None) if crypto is unavailable."""
+    global _VAPID_CACHE
+    if _VAPID_CACHE is not None:
+        return _VAPID_CACHE
+    priv = os.environ.get("VAPID_PRIVATE")
+    pub  = os.environ.get("VAPID_PUBLIC")
+    if priv and pub:
+        _VAPID_CACHE = (priv, pub)
+        return _VAPID_CACHE
+    with db() as c:
+        priv = _meta_get(c, "vapid_private")
+        pub  = _meta_get(c, "vapid_public")
+        if priv and pub:
+            _VAPID_CACHE = (priv, pub)
+            return _VAPID_CACHE
+        try:
+            from cryptography.hazmat.primitives.asymmetric import ec
+            from cryptography.hazmat.primitives import serialization
+            import base64
+            k = ec.generate_private_key(ec.SECP256R1())
+            priv = k.private_bytes(serialization.Encoding.PEM,
+                                   serialization.PrivateFormat.PKCS8,
+                                   serialization.NoEncryption()).decode()
+            raw = k.public_key().public_bytes(serialization.Encoding.X962,
+                                              serialization.PublicFormat.UncompressedPoint)
+            pub = base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+            _meta_set(c, "vapid_private", priv); _meta_set(c, "vapid_public", pub)
+            _VAPID_CACHE = (priv, pub)
+            return _VAPID_CACHE
+        except BaseException as e:   # crypto backend can fail hard (rust panic) — never 500
+            print("[learn] VAPID key generation failed (no push):", e)
+            _VAPID_CACHE = (None, None)
+            return _VAPID_CACHE
+
+def send_push(sub_json, title, body, url="/parent"):
+    """Deliver one web-push notification. Returns True on success. Silently
+    returns False (and prunes dead subscriptions upstream) when pywebpush is
+    missing or the endpoint is gone."""
+    priv, _ = vapid_keys()
+    if not priv:
+        return False
+    try:
+        from pywebpush import webpush, WebPushException
+    except Exception:
+        if DEV: print("[learn] pywebpush not installed — cannot send push")
+        return False
+    try:
+        webpush(subscription_info=json.loads(sub_json) if isinstance(sub_json, str) else sub_json,
+                data=json.dumps({"title": title, "body": body, "url": url}, ensure_ascii=False),
+                vapid_private_key=priv,
+                vapid_claims={"sub": VAPID_SUB})
+        return True
+    except BaseException as e:   # includes rust-panic from a broken crypto backend
+        # 404/410 → the subscription is dead; caller removes it
+        code = getattr(getattr(e, "response", None), "status_code", None)
+        if code in (404, 410):
+            try:
+                with db() as c:
+                    ep = (json.loads(sub_json) if isinstance(sub_json, str) else sub_json).get("endpoint")
+                    if ep: c.execute("DELETE FROM push_subs WHERE endpoint=?", (ep,))
+            except Exception: pass
+        elif DEV:
+            print("[learn] push send failed:", e)
+        return False
+
+def notify_parent(c, pphone, title, body, url="/parent", email=None, email_body=None):
+    """Prefer a phone push; fall back to e-mail if the parent has no live
+    push subscription. Returns the channel used ('push'/'email'/'none')."""
+    subs = c.execute("SELECT sub FROM push_subs WHERE parent_phone=?", (pphone,)).fetchall()
+    if any(send_push(s["sub"], title, body, url) for s in subs):
+        return "push"
+    if email and send_email(email, title, email_body or body):
+        return "email"
+    return "none"
 
 # ─── Parent access tokens ──────────────────────────────────────────────────
 # A parent proves ownership once (by knowing a student's parent_code at link
@@ -393,9 +503,12 @@ def parent_students():
             inactive = None
             if last:
                 inactive = max(0, int((time.time()*1000 - last) // 86400000))
+            # grade trend: oldest→newest, for the line chart (subject + score)
+            trend = [{"ts": r["ts"], "g": r["grade"], "subject": r["subject"]}
+                     for r in reversed(rows)]
             out.append({"phone": sp, "name": st["name"] if st else sp, "age": st["age"] if st else None,
                         "stats": _stats(rows), "last": last, "recent": rows[:10],
-                        "time": tm, "inactive_days": inactive})
+                        "time": tm, "inactive_days": inactive, "trend": trend})
     return jsonify({"ok": True, "students": out})
 
 @bp.route("/api/parent/result")
@@ -425,6 +538,36 @@ def parent_result():
 def parent_portal():
     return Response(PARENT_HTML, mimetype="text/html")
 
+# Service worker for the parent portal — receives phone push notifications and
+# opens the portal when tapped (works with the screen locked).
+PARENT_SW = """
+self.addEventListener('install', e => self.skipWaiting());
+self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+self.addEventListener('push', function(e){
+  var d = {};
+  try { d = e.data.json(); } catch(_) { d = { title:'Onyx לימודי', body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'Onyx לימודי', {
+    body: d.body || '', dir: 'rtl', lang: 'he', tag: 'onyx-reminder',
+    renotify: true, data: { url: d.url || '/parent' }
+  }));
+});
+self.addEventListener('notificationclick', function(e){
+  e.notification.close();
+  var url = (e.notification.data && e.notification.data.url) || '/parent';
+  e.waitUntil(self.clients.matchAll({ type:'window', includeUncontrolled:true }).then(function(cl){
+    for (var i=0;i<cl.length;i++){ if (cl[i].url.indexOf('/parent')>=0 && 'focus' in cl[i]) return cl[i].focus(); }
+    if (self.clients.openWindow) return self.clients.openWindow(url);
+  }));
+});
+"""
+
+@bp.route("/parent-sw.js")
+def parent_sw():
+    resp = Response(PARENT_SW, mimetype="application/javascript")
+    resp.headers["Service-Worker-Allowed"] = "/"
+    resp.headers["Cache-Control"] = "no-cache"
+    return resp
+
 @bp.route("/api/leaderboard")
 def leaderboard():
     subject = (request.args.get("subject") or "").strip()[:20]
@@ -444,6 +587,54 @@ def leaderboard():
     top = [{"name": (r["name"] or "").split(" ")[0], "grade": r["g"], "tests": r["n"]} for r in rows]
     return jsonify({"ok": True, "top": top})
 
+@bp.route("/api/push/vapid")
+def push_vapid():
+    _, pub = vapid_keys()
+    if not pub:
+        return jerr("push unavailable", 503)
+    return jsonify({"ok": True, "publicKey": pub})
+
+@bp.route("/api/parent/push/subscribe", methods=["POST"])
+def push_subscribe():
+    pphone = parent_from_token(read_token())
+    if not pphone:
+        return jerr("unauthorized", 401)
+    d = request.get_json(silent=True) or {}
+    sub = d.get("subscription") or d
+    endpoint = (sub or {}).get("endpoint")
+    if not endpoint:
+        return jerr("missing endpoint")
+    with db() as c:
+        c.execute("""INSERT INTO push_subs(endpoint,parent_phone,sub,created) VALUES(?,?,?,?)
+                     ON CONFLICT(endpoint) DO UPDATE SET parent_phone=excluded.parent_phone, sub=excluded.sub""",
+                  (endpoint, pphone, json.dumps(sub), int(time.time())))
+    return jsonify({"ok": True})
+
+@bp.route("/api/parent/push/unsubscribe", methods=["POST"])
+def push_unsubscribe():
+    pphone = parent_from_token(read_token())
+    if not pphone:
+        return jerr("unauthorized", 401)
+    d = request.get_json(silent=True) or {}
+    endpoint = d.get("endpoint")
+    with db() as c:
+        if endpoint:
+            c.execute("DELETE FROM push_subs WHERE endpoint=? AND parent_phone=?", (endpoint, pphone))
+        else:
+            c.execute("DELETE FROM push_subs WHERE parent_phone=?", (pphone,))
+    return jsonify({"ok": True})
+
+@bp.route("/api/parent/push/test", methods=["POST"])
+def push_test():
+    # lets a parent confirm notifications reach their phone
+    pphone = parent_from_token(read_token())
+    if not pphone:
+        return jerr("unauthorized", 401)
+    with db() as c:
+        ch = notify_parent(c, pphone, "Onyx לימודי 🔔",
+                           "מעולה! התראות למכשיר הזה פעילות.", "/parent")
+    return jsonify({"ok": ch != "none", "channel": ch})
+
 @bp.route("/api/cron/inactivity", methods=["GET", "POST"])
 def cron_inactivity():
     # Meant to be hit once a day by a scheduler (systemd timer / cron / curl).
@@ -458,8 +649,9 @@ def cron_inactivity():
     now = int(time.time())
     notified, checked = [], 0
     with db() as c:
+        # every linked parent — a phone push reaches them even without an e-mail
         links = c.execute(
-            "SELECT parent_phone,parent_name,parent_email,student_phone FROM links WHERE parent_email IS NOT NULL AND parent_email!=''"
+            "SELECT parent_phone,parent_name,parent_email,student_phone FROM links"
         ).fetchall()
         for l in links:
             checked += 1
@@ -471,12 +663,15 @@ def cron_inactivity():
                 continue   # practised recently — nothing to nag about
             since = "עדיין לא התחיל/ה לתרגל" if not last else \
                     f"כבר {int((now*1000 - last)//86400000)} ימים לא תרגל/ה"
-            body = (f"שלום {l['parent_name'] or ''},\n\n"
-                    f"תזכורת מ-Onyx לימודי: {sname} {since}.\n"
-                    f"אפשר לעודד תרגול קצר היום 🙂\n\n"
-                    f"למעקב מלא: היכנסו לעמוד ההורים.")
-            sent = send_email(l["parent_email"], f"תזכורת תרגול — {sname}", body)
-            notified.append({"student": sname, "parent_email": l["parent_email"], "sent": bool(sent)})
+            title = f"תזכורת תרגול — {sname}"
+            body  = f"{sname} {since}. אפשר לעודד תרגול קצר היום 🙂"
+            email_body = (f"שלום {l['parent_name'] or ''},\n\n"
+                          f"תזכורת מ-Onyx לימודי: {sname} {since}.\n"
+                          f"אפשר לעודד תרגול קצר היום 🙂\n\n"
+                          f"למעקב מלא: היכנסו לעמוד ההורים.")
+            ch = notify_parent(c, l["parent_phone"], title, body, "/parent",
+                               l["parent_email"], email_body)
+            notified.append({"student": sname, "channel": ch})
     return jsonify({"ok": True, "days": days, "checked": checked, "notified": notified})
 
 @bp.route("/health")
@@ -519,6 +714,9 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  .bar b{font-size:9px;opacity:.7;margin-bottom:2px;font-weight:600}
  .bar span{font-size:9px;opacity:.55;margin-top:3px;writing-mode:horizontal-tb}
  .tmtot{font-size:12px;opacity:.75;margin-top:6px}
+ .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+ .legend .lg{display:inline-flex;align-items:center;font-size:11px;opacity:.8}
+ .legend .lg i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-inline-start:4px}
  .ovl{position:fixed;inset:0;background:rgba(11,36,48,.55);display:none;align-items:center;justify-content:center;padding:14px;z-index:9}
  .ovl.on{display:flex}
  .sheet{background:#fff;border-radius:18px;max-width:560px;width:100%;max-height:86vh;overflow:auto;padding:16px}
@@ -555,6 +753,14 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    <div id="lerr" class="err"></div>
  </div>
 
+ <div class="card" id="pushcard" style="display:none">
+   <b>🔔 התראות לנייד</b>
+   <p class="muted" style="margin:6px 0 0">קבלו התראה ישירות למכשיר — גם כשהמסך נעול — בימים שהילד/ה לא מתרגל/ת. בלי צורך במייל.</p>
+   <button onclick="enablePush()" id="pushbtn">הפעל התראות במכשיר הזה</button>
+   <div id="pushmsg" class="muted" style="margin-top:8px"></div>
+   <p class="muted" style="margin:8px 0 0;font-size:11px">באייפון: הוסיפו קודם את העמוד למסך הבית (שיתוף → הוספה למסך הבית) ואז הפעילו.</p>
+ </div>
+
  <div id="students"></div>
 </div>
 <div class="ovl" id="ovl"><div class="sheet" id="sheet"></div></div>
@@ -580,6 +786,29 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    return `<div class="tmwrap"><div class="lbl">⏱️ זמן תרגול יומי (14 ימים אחרונים, בדקות)</div><div class="bars">${bars}</div>
      <div class="tmtot">סה"כ בשבועיים: <b>${fmtDur(totSec)}</b></div></div>`;
  }
+ const SUBJ_COLOR={english:"#6C5CE7",hebrew:"#00A8A8",math:"#E17055",science:"#0984E3",torah:"#B8860B",lashon:"#D63384"};
+ // grade trend over time: one coloured line per subject (needs 2+ tests)
+ function trendChart(trend){
+   if(!Array.isArray(trend)||trend.length<2) return "";
+   const bySub={}; trend.forEach(t=>{(bySub[t.subject]=bySub[t.subject]||[]).push(t.g);});
+   const subs=Object.entries(bySub).filter(([k,v])=>v.length>=2);
+   if(!subs.length) return "";
+   const W=300,H=120,PL=26,PR=8,PT=8,PB=14;
+   const maxN=Math.max(...subs.map(([k,v])=>v.length));
+   const x=i=>PL+(maxN<=1?0:i/(maxN-1))*(W-PL-PR);
+   const y=g=>PT+(1-Math.max(0,Math.min(100,g))/100)*(H-PT-PB);
+   let grid=""; [0,50,100].forEach(v=>{grid+=`<line x1="${PL}" y1="${y(v).toFixed(1)}" x2="${W-PR}" y2="${y(v).toFixed(1)}" stroke="#EEF4F6"/><text x="${PL-4}" y="${(y(v)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="#9FB6BF">${v}</text>`;});
+   const lines=subs.map(([k,v])=>{
+     const col=SUBJ_COLOR[k]||"#888";
+     const pts=v.map((g,i)=>`${x(i).toFixed(1)},${y(g).toFixed(1)}`).join(" ");
+     const dots=v.map((g,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(g).toFixed(1)}" r="2.4" fill="${col}"/>`).join("");
+     return `<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>${dots}`;
+   }).join("");
+   const legend=subs.map(([k])=>`<span class="lg"><i style="background:${SUBJ_COLOR[k]||"#888"}"></i>${esc(SUBJ[k]||k)}</span>`).join("");
+   return `<div class="tmwrap"><div class="lbl">📈 מגמת ציונים לאורך זמן</div>
+     <svg viewBox="0 0 ${W} ${H}" width="100%" style="max-height:150px" preserveAspectRatio="xMidYMid meet">${grid}${lines}</svg>
+     <div class="legend">${legend}</div></div>`;
+ }
  async function loadStudents(){
    document.getElementById("err").textContent="";
    const p=document.getElementById("pphone").value.replace(/\\D/g,"");
@@ -589,6 +818,7 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    const r=await fetch("/api/parent/students",{headers:{"Authorization":"Bearer "+tok}}); const j=await r.json();
    if(!j.ok){document.getElementById("err").textContent=(r.status===401)?"פג תוקף החיבור — קשרו תלמיד/ה מחדש עם הקוד.":"שגיאה בטעינה.";return;}
    const box=document.getElementById("students"); box.innerHTML="";
+   const pc=document.getElementById("pushcard"); if(pc)pc.style.display="";   // parent is linked → offer phone alerts
    if(!j.students||!j.students.length){box.innerHTML='<div class="card muted">לא נמצאו תלמידים מקושרים. קשרו תלמיד למעלה.</div>';return;}
    for(const s of j.students){
      const subs=Object.entries(s.stats||{}).map(([k,v])=>`<span class="subj">${esc(SUBJ[k]||k)}: <b>${esc(v.avg)}</b> ממוצע · שיא ${esc(v.best)} · ${esc(v.count)} מבחנים</span>`).join("");
@@ -602,6 +832,7 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
        `<div class="card"><div class="stud"><h3>${esc(s.name)} <span class="muted">· גיל ${esc(s.age||"?")} · פעילות אחרונה ${esc(fmt(s.last))}</span></h3>
         ${banner}
         ${subs||'<span class="muted">אין עדיין תוצאות</span>'}
+        ${trendChart(s.trend)}
         ${timeChart(s.time)}
         ${rows?`<div class="muted" style="margin-top:6px">לחצו על מבחן כדי לראות את השאלות והתשובות של התלמיד/ה 🔍</div><table><tr><th>מקצוע</th><th>ציון</th><th>נכונות</th><th>זמן</th><th>מתי</th></tr>${rows}</table>`:""}
         </div></div>`);
@@ -633,6 +864,33 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  }
  function closeTest(){ document.getElementById("ovl").classList.remove("on"); }
  document.getElementById("ovl").addEventListener("click",e=>{ if(e.target.id==="ovl") closeTest(); });
+ // ── phone push notifications (work with the screen locked) ──
+ function b64ToU8(s){ const pad="=".repeat((4-s.length%4)%4); const b=(s+pad).replace(/-/g,"+").replace(/_/g,"/"); const raw=atob(b); const u=new Uint8Array(raw.length); for(let i=0;i<raw.length;i++)u[i]=raw.charCodeAt(i); return u; }
+ async function enablePush(){
+   const p=document.getElementById("pphone").value.replace(/\\D/g,""), tok=ptoken(p), msg=document.getElementById("pushmsg");
+   if(!tok){msg.textContent="קשרו קודם תלמיד/ה עם קוד ההורה.";return;}
+   if(!("serviceWorker" in navigator)||!("PushManager" in window)){msg.textContent="הדפדפן במכשיר זה לא תומך בהתראות.";return;}
+   msg.textContent="מפעיל…";
+   try{
+     const perm=await Notification.requestPermission();
+     if(perm!=="granted"){msg.textContent="ההתראות נחסמו. אפשר לאשר בהגדרות הדפדפן/האתר.";return;}
+     const reg=await navigator.serviceWorker.register("/parent-sw.js"); await navigator.serviceWorker.ready;
+     const vr=await (await fetch("/api/push/vapid")).json();
+     if(!vr.ok||!vr.publicKey){msg.textContent="שירות ההתראות אינו זמין כרגע בשרת.";return;}
+     let sub=await reg.pushManager.getSubscription();
+     if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToU8(vr.publicKey)});
+     const r=await fetch("/api/parent/push/subscribe",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify({subscription:sub})});
+     const j=await r.json();
+     if(j.ok){document.getElementById("pushbtn").textContent="ההתראות פעילות ✓";
+       msg.innerHTML='✅ ההתראות פעילות במכשיר הזה. <a href="#" onclick="testPush(event)">שליחת התראת בדיקה</a>';}
+     else msg.textContent="לא ניתן להפעיל התראות כרגע.";
+   }catch(e){msg.textContent="שגיאה בהפעלת ההתראות: "+(e&&e.message||e);}
+ }
+ async function testPush(ev){ if(ev)ev.preventDefault();
+   const p=document.getElementById("pphone").value.replace(/\\D/g,""), tok=ptoken(p);
+   const r=await fetch("/api/parent/push/test",{method:"POST",headers:{"Authorization":"Bearer "+tok}}); const j=await r.json();
+   document.getElementById("pushmsg").textContent=j.ok?("נשלחה התראת בדיקה למכשיר 📨"):"לא נמצא מנוי התראות פעיל — הפעילו שוב.";
+ }
  async function linkStudent(){
    document.getElementById("lerr").textContent="";
    const body={parent_phone:document.getElementById("pphone").value.replace(/\\D/g,"")||document.getElementById("sphone").value,

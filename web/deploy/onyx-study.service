@@ -35,6 +35,12 @@ Environment=LEARN_DEV=1
 # ── shared secret guarding the daily inactivity-reminder endpoint ──
 # Set to a long random string; the same value goes in onyx-inactivity.service.
 # Environment=CRON_KEY=change-me-to-a-long-random-string
+# ── phone push notifications (parent portal) ──
+# The VAPID keypair is generated and persisted automatically on first run, so
+# nothing is required here. Optionally set the contact used in push claims:
+# Environment=VAPID_SUB=mailto:no-reply@onyx-study.com
+# (To pin your own keys instead of the auto-generated ones, set VAPID_PUBLIC
+#  and VAPID_PRIVATE — a PEM PKCS8 private key — but this is not necessary.)
 
 # gunicorn from the project's virtualenv; binds to localhost (nginx proxies to it)
 ExecStart=/var/www/onyx-study/venv/bin/gunicorn web.onyx_app:app \
