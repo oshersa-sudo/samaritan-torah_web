@@ -65,11 +65,11 @@ salt,סוֹלְט,מלח,kitchen
 window.WORDS = (window.WORDS || []).concat([ /* ... מילים ... */ ]);
 ```
 ולהוסיף אותו ל-`index.html` בשורת `<script>` אחרי `words.js`. כך המאגר בנוי כרגע:
-`words.js` (בסיס) + `words-extra.js` (הרחבה) = **780 מילים, 60 בכל תחום**.
+`words.js` + `words-extra.js` + `words-extra2.js` = **1,140 מילים ב-22 תחומים**.
 
 ### 3. תחומים (categories)
-מפתחות התחומים הזמינים: `kitchen, daily, business, conversation, time, tools, body, furniture, objects, vehicles, travel, study, family`.
-להוספת תחום חדש — מוסיפים אותו לרשימה `window.CATEGORIES` בראש `data/words.js`.
+מפתחות התחומים הזמינים: `kitchen, daily, business, conversation, time, tools, body, furniture, objects, vehicles, travel, study, family, food, animals, nature, emotions, professions, clothing, health, verbs, adjectives`.
+להוספת תחום חדש — מוסיפים אותו לרשימה `window.CATEGORIES` (ראו דוגמה ב-`data/words-extra2.js` שמוסיף תחומים חדשים דרך `concat`).
 
 ## מבנה הפרויקט
 ```
@@ -77,8 +77,9 @@ english-app/
 ├── index.html          # קובץ ההפעלה
 ├── css/style.css       # עיצוב
 ├── data/
-│   ├── words.js        # מאגר המילים הבסיסי (להרחבה)
-│   ├── words-extra.js  # מילים נוספות (מתמזג אוטומטית) – דוגמה לדפוס ההרחבה
+│   ├── words.js        # מאגר המילים הבסיסי (13 תחומים)
+│   ├── words-extra.js  # הרחבה 1 – עוד מילים ל-13 התחומים
+│   ├── words-extra2.js # הרחבה 2 – 9 תחומים חדשים (אוכל, בעלי חיים, טבע ועוד)
 │   └── grammar.js      # שיעורי לשון וזמנים
 └── js/
     ├── storage.js      # שמירת התקדמות מקומית
