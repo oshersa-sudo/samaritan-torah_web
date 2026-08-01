@@ -848,7 +848,11 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
 </style></head><body><div class="wrap">
  <h1>מעקב הורים</h1>
  <p class="sub">עקבו אחר ההתקדמות של הילד/ה מרחוק. אחרי הקישור הראשון המכשיר יזכור את התלמידים — בכניסה הבאה הכול ייטען אוטומטית.</p>
- <button id="installbtn" class="sec" style="display:none;margin-top:0" onclick="installApp()">📲 התקנת האפליקציה למסך הבית</button>
+ <div class="card" id="installcard" style="display:none">
+   <b>📲 התקנת האפליקציה למסך הבית</b>
+   <p class="muted" id="install-hint" style="margin:6px 0 0"></p>
+   <button id="installbtn" style="display:none;margin-top:10px" onclick="installApp()">התקן עכשיו</button>
+ </div>
 
  <div class="card">
    <label>מספר הטלפון שלכם (הורה)</label>
@@ -1034,13 +1038,29 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  // Register the service worker so the portal is installable and works offline.
  if("serviceWorker" in navigator) navigator.serviceWorker.register("/parent-sw.js").catch(()=>{});
 
- // "Install app" button (Android/desktop). iOS installs via Share → Add to Home Screen.
+ // Install helper — always discoverable, tailored per platform, and hidden once
+ // the portal is already installed as an app.
  let _installEvt=null;
+ (function(){ try{
+   const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone===true;
+   if(standalone) return;                       // already running as an installed app
+   const ua=navigator.userAgent||"";
+   const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+   const card=document.getElementById("installcard"), hint=document.getElementById("install-hint");
+   if(!card||!hint) return;
+   if(isIOS){
+     hint.innerHTML='ב-Safari: לחצו על <b>שיתוף</b> (⬆️ בתחתית המסך), גללו ובחרו <b>"הוספה למסך הבית"</b>.';
+   }else{
+     hint.innerHTML='לחצו <b>התקן עכשיו</b> אם הכפתור מופיע, או דרך תפריט הדפדפן ⋮ בחרו <b>"התקנת אפליקציה"</b> / <b>"הוספה למסך הבית"</b>.';
+   }
+   card.style.display="";
+ }catch(e){} })();
  window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); _installEvt=e;
-   const b=document.getElementById("installbtn"); if(b)b.style.display=""; });
- window.addEventListener("appinstalled",()=>{ const b=document.getElementById("installbtn"); if(b)b.style.display="none"; });
+   const c=document.getElementById("installcard"), b=document.getElementById("installbtn");
+   if(c)c.style.display=""; if(b)b.style.display=""; });
+ window.addEventListener("appinstalled",()=>{ const c=document.getElementById("installcard"); if(c)c.style.display="none"; });
  async function installApp(){ if(!_installEvt)return; _installEvt.prompt(); try{await _installEvt.userChoice;}catch(e){} _installEvt=null;
-   const b=document.getElementById("installbtn"); if(b)b.style.display="none"; }
+   const c=document.getElementById("installcard"); if(c)c.style.display="none"; }
 
  // On entry: an invite link (?s=&c=) prefills the link form; otherwise, if we
  // already know this parent (saved phone + token), load their students
