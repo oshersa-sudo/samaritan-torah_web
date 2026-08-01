@@ -554,8 +554,25 @@ def parent_portal():
 # Service worker for the parent portal — receives phone push notifications and
 # opens the portal when tapped (works with the screen locked).
 PARENT_SW = """
-self.addEventListener('install', e => self.skipWaiting());
-self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+const PCACHE = 'onyx-parent-v1';
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(PCACHE)
+    .then(c => c.addAll(['/parent', '/static/img/onyx_learn_icon-192.png', '/static/img/onyx_learn_icon-512.png']))
+    .then(() => self.skipWaiting()).catch(() => self.skipWaiting()));
+});
+self.addEventListener('activate', e => e.waitUntil(
+  caches.keys().then(ks => Promise.all(ks.filter(k => k !== PCACHE).map(k => caches.delete(k))))
+    .then(() => self.clients.claim())));
+self.addEventListener('fetch', e => {
+  const u = new URL(e.request.url);
+  if (e.request.method !== 'GET' || u.pathname.startsWith('/api/')) return;   // live data always hits network
+  if (u.pathname === '/parent' || u.pathname.startsWith('/static/img/')) {
+    e.respondWith(
+      fetch(e.request).then(resp => { const c = resp.clone(); caches.open(PCACHE).then(x => x.put(e.request, c)); return resp; })
+        .catch(() => caches.match(e.request).then(hit => hit || caches.match('/parent')))
+    );
+  }
+});
 self.addEventListener('push', function(e){
   var d = {};
   try { d = e.data.json(); } catch(_) { d = { title:'Onyx לימודי', body: e.data ? e.data.text() : '' }; }
@@ -580,6 +597,26 @@ def parent_sw():
     resp.headers["Service-Worker-Allowed"] = "/"
     resp.headers["Cache-Control"] = "no-cache"
     return resp
+
+@bp.route("/parent.webmanifest")
+def parent_manifest():
+    # Lets the parent portal be installed to the home screen as its own app.
+    return jsonify({
+        "name": "מעקב הורים — Onyx לימודי",
+        "short_name": "מעקב הורים",
+        "description": "מעקב אחר התקדמות התלמידים מרחוק",
+        "start_url": "/parent",
+        "scope": "/parent",
+        "display": "standalone",
+        "orientation": "portrait",
+        "lang": "he", "dir": "rtl",
+        "background_color": "#EAF7FB",
+        "theme_color": "#6C5CE7",
+        "icons": [
+            {"src": "/static/img/onyx_learn_icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+            {"src": "/static/img/onyx_learn_icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
+        ],
+    })
 
 @bp.route("/api/leaderboard")
 def leaderboard():
@@ -748,6 +785,14 @@ def health():
 PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>מעקב הורים — Onyx לימודי</title>
+<meta name="theme-color" content="#6C5CE7">
+<link rel="manifest" href="/parent.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="מעקב הורים">
+<link rel="apple-touch-icon" href="/static/img/onyx_learn_icon-192.png">
+<link rel="icon" href="/static/img/onyx_learn_icon-192.png">
 <style>
  body{font-family:system-ui,'Segoe UI',Arial,sans-serif;background:linear-gradient(160deg,#EAF7FB,#D6EAF2);margin:0;color:#12313F}
  .wrap{max-width:680px;margin:0 auto;padding:18px}
@@ -802,7 +847,8 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  .xbtn{float:left;background:#0B2430;border:0;color:#fff;border-radius:10px;padding:6px 12px;cursor:pointer;margin:0}
 </style></head><body><div class="wrap">
  <h1>מעקב הורים</h1>
- <p class="sub">עקבו אחר ההתקדמות של הילד/ה מרחוק. הזינו את מספר הטלפון שלכם כדי לראות את התלמידים המקושרים, או קשרו תלמיד חדש עם קוד ההורה שקיבל.</p>
+ <p class="sub">עקבו אחר ההתקדמות של הילד/ה מרחוק. אחרי הקישור הראשון המכשיר יזכור את התלמידים — בכניסה הבאה הכול ייטען אוטומטית.</p>
+ <button id="installbtn" class="sec" style="display:none;margin-top:0" onclick="installApp()">📲 התקנת האפליקציה למסך הבית</button>
 
  <div class="card">
    <label>מספר הטלפון שלכם (הורה)</label>
@@ -885,6 +931,7 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    if(!tok){document.getElementById("err").textContent="כדי לצפות בהתקדמות, קשרו קודם תלמיד/ה עם קוד ההורה (בטופס למטה).";return;}
    const r=await fetch("/api/parent/students",{headers:{"Authorization":"Bearer "+tok}}); const j=await r.json();
    if(!j.ok){document.getElementById("err").textContent=(r.status===401)?"פג תוקף החיבור — קשרו תלמיד/ה מחדש עם הקוד.":"שגיאה בטעינה.";return;}
+   try{localStorage.setItem("pphone",p);}catch(e){}   // remember this parent for next time
    const box=document.getElementById("students"); box.innerHTML="";
    const pc=document.getElementById("pushcard"); if(pc)pc.style.display="";   // parent is linked → offer phone alerts
    if(!j.students||!j.students.length){box.innerHTML='<div class="card muted">לא נמצאו תלמידים מקושרים. קשרו תלמיד למעלה.</div>';return;}
@@ -984,8 +1031,20 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    document.getElementById("pphone").value=body.parent_phone;
    loadStudents();
  }
- // Arriving from a "send to parent" link (?s=<student phone>&c=<parent code>):
- // prefill the student phone + code so the parent only enters their own number.
+ // Register the service worker so the portal is installable and works offline.
+ if("serviceWorker" in navigator) navigator.serviceWorker.register("/parent-sw.js").catch(()=>{});
+
+ // "Install app" button (Android/desktop). iOS installs via Share → Add to Home Screen.
+ let _installEvt=null;
+ window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); _installEvt=e;
+   const b=document.getElementById("installbtn"); if(b)b.style.display=""; });
+ window.addEventListener("appinstalled",()=>{ const b=document.getElementById("installbtn"); if(b)b.style.display="none"; });
+ async function installApp(){ if(!_installEvt)return; _installEvt.prompt(); try{await _installEvt.userChoice;}catch(e){} _installEvt=null;
+   const b=document.getElementById("installbtn"); if(b)b.style.display="none"; }
+
+ // On entry: an invite link (?s=&c=) prefills the link form; otherwise, if we
+ // already know this parent (saved phone + token), load their students
+ // automatically so nothing has to be re-entered.
  (function(){ try{
    const q=new URLSearchParams(location.search);
    const s=(q.get("s")||"").replace(/\\D/g,""), c=(q.get("c")||"").trim();
@@ -995,6 +1054,12 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
      const sub=document.querySelector(".sub");
      if(sub) sub.innerHTML="קיבלתם הזמנה למעקב! ✅ הזינו את <b>מספר הטלפון שלכם</b> ולחצו <b>קשר תלמיד</b> כדי לראות את ההתקדמות.";
      const pin=document.getElementById("pphone"); if(pin) pin.focus();
+     return;
+   }
+   const saved=localStorage.getItem("pphone")||"";
+   if(saved && ptoken(saved)){
+     document.getElementById("pphone").value=saved;
+     loadStudents();   // remembered device → show the tracked students right away
    }
  }catch(e){} })();
 </script></body></html>"""
