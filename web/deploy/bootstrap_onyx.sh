@@ -48,13 +48,27 @@ mkdir -p "$APPDIR/data"
 echo "==> [3/6] python venv…"
 [ -d venv ] || python3 -m venv venv
 ./venv/bin/pip install -q --upgrade pip
-./venv/bin/pip install -q flask gunicorn
+# flask + gunicorn to serve; pywebpush powers the parent/child push reminders
+./venv/bin/pip install -q flask gunicorn pywebpush
 
 echo "==> [4/6] systemd service…"
 cp web/deploy/onyx-study.service /etc/systemd/system/onyx-study.service
+# daily "hasn't practised" reminder (push to phone, e-mail fallback). A random
+# CRON_KEY is generated once and shared between the app and the timer so the
+# guarded endpoint can only be hit locally.
+CRON_KEY_FILE="$APPDIR/data/cron_key"
+[ -s "$CRON_KEY_FILE" ] || (umask 077; head -c 24 /dev/urandom | base64 | tr -d '/+=' > "$CRON_KEY_FILE")
+CRON_KEY="$(cat "$CRON_KEY_FILE")"
+mkdir -p /etc/systemd/system/onyx-study.service.d
+printf '[Service]\nEnvironment=CRON_KEY=%s\n' "$CRON_KEY" > /etc/systemd/system/onyx-study.service.d/cron.conf
+if [ -f web/deploy/onyx-inactivity.service ]; then
+  sed "s/change-me-to-a-long-random-string/$CRON_KEY/" web/deploy/onyx-inactivity.service > /etc/systemd/system/onyx-inactivity.service
+  cp web/deploy/onyx-inactivity.timer /etc/systemd/system/onyx-inactivity.timer
+fi
 systemctl daemon-reload
 systemctl enable -q onyx-study >/dev/null 2>&1 || true
 systemctl restart onyx-study
+systemctl enable -q --now onyx-inactivity.timer >/dev/null 2>&1 || true
 chown -R www-data:www-data "$APPDIR/data"
 
 echo "==> [5/6] nginx…"

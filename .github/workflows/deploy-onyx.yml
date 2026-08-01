@@ -20,9 +20,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
+    # Promote the secret to an env var: the `secrets` context is NOT allowed in
+    # an `if:` expression (using it there fails the whole workflow at startup),
+    # but `env` is — so we gate the deploy step on this instead.
+    env:
+      HAS_DEPLOY_HOST: ${{ secrets.DEPLOY_HOST != '' }}
     steps:
       - name: Deploy over SSH (idempotent bootstrap)
-        if: ${{ secrets.DEPLOY_HOST != '' }}
+        if: ${{ env.HAS_DEPLOY_HOST == 'true' }}
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
