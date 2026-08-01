@@ -551,6 +551,70 @@ def parent_result():
 def parent_portal():
     return Response(PARENT_HTML, mimetype="text/html")
 
+PRIVACY_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מדיניות פרטיות — Onyx לימודי</title>
+<style>
+ body{font-family:system-ui,'Segoe UI',Arial,sans-serif;background:#f6f4ff;color:#26203a;margin:0;line-height:1.7}
+ .wrap{max-width:760px;margin:0 auto;padding:26px 20px 60px}
+ h1{font-size:26px;margin:6px 0 2px}
+ h2{font-size:19px;margin:26px 0 6px;color:#5a3fd0}
+ .upd{opacity:.65;font-size:13px;margin-bottom:8px}
+ p,li{font-size:15px}
+ ul{padding-inline-start:22px}
+ a{color:#6C5CE7}
+ .box{background:#fff;border:1px solid #e6e0fb;border-radius:14px;padding:14px 18px;margin-top:14px}
+</style></head><body><div class="wrap">
+ <h1>מדיניות פרטיות — Onyx לימודי</h1>
+ <div class="upd">מעודכן: אוגוסט 2026</div>
+ <p>אפליקציית <b>Onyx לימודי</b> ("האפליקציה", "אנחנו") היא כלי תרגול לימודי לילדים
+ עם מעקב הורים. אנו מכבדים את פרטיותכם ואוספים אך ורק את המידע הדרוש להפעלת השירות.</p>
+
+ <h2>איזה מידע אנו אוספים</h2>
+ <ul>
+   <li><b>פרטי תלמיד/ה:</b> שם, גיל ומספר טלפון (משמש כמזהה חשבון).</li>
+   <li><b>נתוני למידה:</b> תוצאות מבחנים (מקצוע, ציון, מספר תשובות נכונות), זמן
+       תרגול יומי, והשאלות והתשובות שהוזנו — לצורך מעקב ושיפור.</li>
+   <li><b>פרטי הורה:</b> מספר טלפון, ואימייל (אופציונלי) לצורך תזכורות.</li>
+   <li><b>התראות:</b> אם אישרתם התראות, נשמר מזהה מנוי הדחיפה של הדפדפן/המכשיר.</li>
+   <li><b>אימות:</b> קוד חד-פעמי הנשלח באימייל לאימות ההרשמה.</li>
+ </ul>
+ <p>איננו אוספים מיקום, אנשי קשר, תמונות או מזהי פרסום, ואיננו כוללים פרסומות.</p>
+
+ <h2>למה אנו משתמשים במידע</h2>
+ <ul>
+   <li>לשמור ולהציג את התקדמות הלמידה של התלמיד/ה בין מכשירים.</li>
+   <li>לאפשר להורה לעקוב אחר ההתקדמות (עם קוד ההורה שקיבל התלמיד/ה).</li>
+   <li>לשלוח תזכורות תרגול (דחיפה למכשיר או אימייל) — לפי בחירת ההורה.</li>
+ </ul>
+
+ <h2>שיתוף עם צדדים שלישיים</h2>
+ <p>איננו מוכרים ואיננו משתפים מידע אישי עם צדדים שלישיים לצורכי שיווק. המידע נשמר
+ בשרת שלנו ומשמש אך ורק להפעלת השירות. שליחת אימייל/דחיפה מתבצעת דרך ספקי תשתית
+ לצורך המסירה בלבד.</p>
+
+ <h2>פרטיות ילדים</h2>
+ <p>האפליקציה מיועדת לשימוש בליווי הורה/מורה. ההרשמה והקישור להורה נעשים בידיעת
+ ההורה, וההורה יכול לבקש בכל עת לצפות בנתוני הילד/ה, לעדכן או למחוק אותם.</p>
+
+ <h2>אבטחה ושמירת מידע</h2>
+ <p>הגישה נעשית דרך חיבור מוצפן (HTTPS). גישת הורה מוגנת באמצעות אסימון (token)
+ המונפק רק לאחר הזנת קוד ההורה. אנו שומרים את המידע כל עוד החשבון פעיל.</p>
+
+ <h2>הזכויות שלכם</h2>
+ <p>ניתן לבקש גישה, תיקון או מחיקה של המידע. לפנייה: <a href="mailto:support@onyx-study.com">support@onyx-study.com</a>.
+ בקשת מחיקה תסיר את החשבון ונתוני הלמידה המשויכים אליו.</p>
+
+ <h2>שינויים במדיניות</h2>
+ <p>נעדכן דף זה במקרה של שינוי. המשך השימוש לאחר עדכון מהווה הסכמה למדיניות המעודכנת.</p>
+
+ <div class="box">שאלות? צרו קשר: <a href="mailto:support@onyx-study.com">support@onyx-study.com</a></div>
+</div></body></html>"""
+
+@bp.route("/privacy")
+def privacy():
+    return Response(PRIVACY_HTML, mimetype="text/html")
+
 # Service worker for the parent portal — receives phone push notifications and
 # opens the portal when tapped (works with the screen locked).
 PARENT_SW = """

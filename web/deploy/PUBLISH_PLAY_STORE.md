@@ -69,6 +69,9 @@ bubblewrap build
    - אייקון: `onyx_learn_icon-512.png`; Feature graphic 1024×500 (צריך להכין).
 4. מדיניות: מכיוון שהאפליקציה לילדים ואוספת טלפון/שם — צריך **מדיניות פרטיות**
    (URL) ולמלא את שאלון *Data safety* + *Families/Target audience*.
+   - **Privacy policy URL:** `https://learn.onyx-study.com/privacy` (דף מוכן;
+     ודא שכתובת יצירת הקשר בו — support@onyx-study.com — תקינה או עדכן אותה).
+   - **Feature graphic (1024×500):** `static/img/feature-graphic.png` — מוכן.
 5. שלח לביקורת. אישור ראשון בדרך כלל תוך מספר ימים.
 
 ## עדכונים עתידיים
