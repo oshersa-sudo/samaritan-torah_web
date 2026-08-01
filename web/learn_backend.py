@@ -830,6 +830,8 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  .legend .lg i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-inline-start:4px}
  .cnote{display:flex;align-items:center;gap:8px;background:#F4F2FF;border:1px solid #E0DAFB;border-radius:12px;padding:9px 11px;margin:8px 0;font-size:13px}
  .cnote input{width:auto;transform:scale(1.25);accent-color:#6C5CE7}
+ #installcard{border:2px solid #C9BEF6;background:#F7F5FF}
+ #installcard.hot{border-color:#6C5CE7;box-shadow:0 8px 24px -14px rgba(108,92,231,.7)}
  .ovl{position:fixed;inset:0;background:rgba(11,36,48,.55);display:none;align-items:center;justify-content:center;padding:14px;z-index:9}
  .ovl.on{display:flex}
  .sheet{background:#fff;border-radius:18px;max-width:560px;width:100%;max-height:86vh;overflow:auto;padding:16px}
@@ -1072,7 +1074,15 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    if(c) document.getElementById("pcode").value=c;
    if(s&&c){
      const sub=document.querySelector(".sub");
-     if(sub) sub.innerHTML="קיבלתם הזמנה למעקב! ✅ הזינו את <b>מספר הטלפון שלכם</b> ולחצו <b>קשר תלמיד</b> כדי לראות את ההתקדמות.";
+     if(sub) sub.innerHTML="קיבלתם הזמנה למעקב! ✅ מומלץ קודם <b>להתקין את האפליקציה</b> (למטה), ואז להזין את מספר הטלפון וללחוץ <b>קשר תלמיד</b>.";
+     // put the install call-to-action right at the top and make it stand out
+     const card=document.getElementById("installcard"), ih=document.getElementById("install-hint");
+     if(card){
+       card.style.display=""; card.classList.add("hot");
+       const wrap=document.querySelector(".wrap"), subEl=document.querySelector(".sub");
+       if(wrap&&subEl&&subEl.nextSibling!==card) wrap.insertBefore(card, subEl.nextSibling);
+     }
+     if(ih) ih.innerHTML="💡 התקינו למסך הבית — כניסה למעקב בלחיצה אחת, בלי דפדפן ובלי הזנת פרטים בכל פעם.<br>"+ih.innerHTML;
      const pin=document.getElementById("pphone"); if(pin) pin.focus();
      return;
    }
