@@ -1,0 +1,31 @@
+{
+  "packageId": "com.onyxstudy.learn",
+  "host": "learn.onyx-study.com",
+  "name": "Onyx לימודי — תרגול ומעקב",
+  "launcherName": "Onyx לימודי",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#7c3aed",
+  "themeColorDark": "#7c3aed",
+  "navigationColor": "#7c3aed",
+  "navigationColorDark": "#7c3aed",
+  "backgroundColor": "#f1ecff",
+  "enableNotifications": true,
+  "startUrl": "/exam",
+  "iconUrl": "https://learn.onyx-study.com/static/img/onyx_learn_icon-512.png",
+  "maskableIconUrl": "https://learn.onyx-study.com/static/img/onyx_learn_icon-maskable-512.png",
+  "webManifestUrl": "https://learn.onyx-study.com/static/learn.webmanifest",
+  "fallbackType": "customtabs",
+  "shortcuts": [
+    { "name": "התחלת תרגול", "shortName": "תרגול", "url": "/exam",
+      "chosenIconUrl": "https://learn.onyx-study.com/static/img/onyx_learn_icon-192.png" },
+    { "name": "מעקב הורים", "shortName": "מעקב", "url": "/parent",
+      "chosenIconUrl": "https://learn.onyx-study.com/static/img/onyx_learn_icon-192.png" }
+  ],
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "minSdkVersion": 21,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "features": {}
+}

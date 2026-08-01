@@ -28,7 +28,7 @@ Environment:
                   origin as the incoming request, which is what you want)
 """
 import os, sys
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, jsonify
 
 # make `import learn_backend` work no matter how gunicorn loads this module
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -68,6 +68,24 @@ def service_worker():
     resp.headers["Service-Worker-Allowed"] = "/"
     resp.headers["Cache-Control"] = "no-cache"
     return resp
+
+
+@app.route("/.well-known/assetlinks.json")
+def assetlinks():
+    # Digital Asset Links — lets the Google Play (TWA) wrapper verify it owns
+    # this domain, so the installed app runs full-screen with no browser bar.
+    # Set these once the signed app exists:
+    #   TWA_PACKAGE      the Android applicationId  (e.g. com.onyxstudy.learn)
+    #   TWA_FINGERPRINT  the signing cert SHA-256 fingerprints, comma-separated
+    #                    (colon-hex form, from Play Console → App signing, or
+    #                     `keytool -list -v -keystore <ks>`)
+    pkg = os.environ.get("TWA_PACKAGE", "com.onyxstudy.learn")
+    fps = [f.strip() for f in os.environ.get("TWA_FINGERPRINT", "").split(",") if f.strip()]
+    return jsonify([{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {"namespace": "android_app", "package_name": pkg,
+                   "sha256_cert_fingerprints": fps},
+    }])
 
 
 if __name__ == "__main__":
