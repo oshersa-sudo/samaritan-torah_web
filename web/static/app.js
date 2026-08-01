@@ -846,9 +846,9 @@ async function showSamChapters(pid, pname){
            {t:pname, fn:()=>showSamChapters(pid,pname)}];
   navState('portion');
   const rows = await api('sam_chapters?portion_id='+pid);
-  renderChapterGrid(rows, 'בחר פרק שומרוני', (r)=>openSamChapter(r.id, r.number, pid, pname, false));
+  renderChapterGrid(rows, 'בחר פרק שומרוני', (r)=>openSamChapter(r.id, r.number, pid, pname, false), true);
 }
-function renderChapterGrid(rows, hint, onClick){
+function renderChapterGrid(rows, hint, onClick, isSam){
   const c=$('content'); c.innerHTML='';
   c.appendChild(el('div','hint',hint));
   // Samaritan chapters carry their opening two words (incipit) under the number, to
@@ -859,6 +859,8 @@ function renderChapterGrid(rows, hint, onClick){
     const b=el('button','cell'+(r.opening?' has-incipit':''));
     b.appendChild(el('span','cell-num',String(r.number)));
     if(r.opening) b.appendChild(el('span','cell-incipit',esc(r.opening)));
+    if(isSam && typeof readingFor==='function' && readingFor(r.number, S.book))
+      b.appendChild(el('span','cell-audio','♪'));    // this chapter has a reading recording
     b.onclick=()=>onClick(r);
     grid.appendChild(b);
   }
@@ -887,6 +889,7 @@ async function openSamChapter(samId, samNum, pid, pname, fromSearch){
 
 async function renderVerses(chId, chNum, pid, pname){
   if(typeof ttsStop==='function') ttsStop();   // a new chapter ends any read-aloud
+  if(typeof readingStop==='function') readingStop();   // …and any reading recording
   S.view='verses'; S.curChId=chId; S.curChNum=chNum; setView();
   await ensureBooks();   // populate S.books so the nav buttons can relabel at book edges
   const isSam = S.chMode==='samaritan';
@@ -968,6 +971,7 @@ function paintVerses(){
     }
     c.appendChild(bar);
   }
+  if(typeof readingBar==='function') readingBar(c);   // chanted-reading recording, if one exists
   const all = S.verses;
   const verses = S.verseFilter!=null ? all.filter(v=>v.id===S.verseFilter) : all;
   // when a single verse is filtered (e.g. arrived from a search result), show a
@@ -2192,6 +2196,7 @@ async function ttsProbeServer(){
 }
 async function ttsStart(){
   if(S.view!=='verses' || !Array.isArray(S.verses) || !S.verses.length) return;
+  if(typeof readingStop==='function') readingStop();   // TTS and the reading recording are exclusive
   await ttsProbeServer();
   if(!TTS_SERVER && !('speechSynthesis' in window)){ showInfo(t('play_chapter'), '<div class="note">קול אינו נתמך בדפדפן זה.</div>'); return; }
   let tr; try{ tr=await api('translit?verse_ids='+S.verses.map(v=>v.id).join(',')); }catch(e){ tr={}; }
@@ -4954,6 +4959,82 @@ $('tourPrev').onclick=()=>{ TOUR.auto=true; tourGo(TOUR.i-1); };
 $('tourEnd').onclick=endTour;
 $('tourMute').onclick=()=>{ TOUR.muted=!TOUR.muted; tourSetMuteIcon();
   if(TOUR.muted){ try{ speechSynthesis.cancel(); }catch(e){} } };
+
+// ── chanted-reading recordings (הקלטות קריאה לפי פרקים שומרוניים) ─────────────
+// Manifest lives at /static/audio/readings/readings.json; each entry carries the
+// book_id + sam chapter number it belongs to (ids drift across DB copies, numbers don't).
+let READINGS = null;                       // null = not loaded (or absent)
+const RDAU = { audio:null, recN:null, playing:false, ui:null };
+fetch('/static/audio/readings/readings.json')
+  .then(r=>r.ok ? r.json() : null)
+  .then(j=>{ READINGS=j;
+    if(!j) return;
+    // repaint whatever is on screen so ▶ / ♪ appear without a manual refresh
+    if(S.view==='verses') paintVerses();
+    else if(S.view==='sam_chapters' && S.curPid!=null) showSamChapters(S.curPid, S.portionName);
+  })
+  .catch(()=>{});
+function readingFor(samNum, bookId){
+  // Keyed by book + Samaritan chapter NUMBER (ids drift across DB copies after
+  // admin merges/splits; numbers are the stable coordinate).
+  if(!READINGS || !Array.isArray(READINGS.chapters)) return null;
+  if(bookId!=null && READINGS.book_id!==bookId) return null;
+  return READINGS.chapters.find(c=>c.sam_ch_number===samNum) || null;
+}
+const rdFmt = s => { s=Math.max(0,s|0); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
+function readingBar(c){
+  RDAU.ui = null;
+  if(S.chMode!=='samaritan') return;
+  const rec = readingFor(S.curChNum, S.book); if(!rec) return;
+  const bar = el('div','reading-bar');
+  const btn = el('button','reading-btn');
+  const isCur = RDAU.audio && RDAU.recN===rec.n;
+  btn.innerHTML = (isCur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
+  btn.title = 'הקלטת הקריאה';
+  btn.onclick = ()=>readingToggle(rec);
+  bar.appendChild(btn);
+  const info = el('div','reading-info');
+  info.appendChild(el('div','reading-title','הקלטת הקריאה &middot; '+esc(rec.name)));
+  const seek = el('input','reading-seek'); seek.type='range'; seek.min=0; seek.step=0.1;
+  seek.max = rec.duration; seek.value = isCur ? RDAU.audio.currentTime : 0;
+  seek.oninput = ()=>{ if(RDAU.audio && RDAU.recN===rec.n){ RDAU.audio.currentTime=parseFloat(seek.value); }
+                       else { readingToggle(rec, parseFloat(seek.value)); } };
+  info.appendChild(seek);
+  bar.appendChild(info);
+  const time = el('span','reading-time', rdFmt(isCur?RDAU.audio.currentTime:0)+' / '+rdFmt(rec.duration));
+  bar.appendChild(time);
+  RDAU.ui = { btn, seek, time, rec };
+  c.appendChild(bar);
+}
+function readingSync(){
+  if(!RDAU.ui) return;
+  const cur = RDAU.audio && RDAU.recN===RDAU.ui.rec.n;
+  RDAU.ui.btn.innerHTML = (cur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
+  if(cur){ RDAU.ui.seek.value = RDAU.audio.currentTime;
+           RDAU.ui.time.textContent = rdFmt(RDAU.audio.currentTime)+' / '+rdFmt(RDAU.audio.duration||RDAU.ui.rec.duration); }
+}
+function readingToggle(rec, seekTo){
+  if(RDAU.audio && RDAU.recN===rec.n && seekTo===undefined){
+    if(RDAU.playing) RDAU.audio.pause(); else RDAU.audio.play().catch(()=>{});
+    return;
+  }
+  readingStop();
+  if(typeof ttsStop==='function') ttsStop();     // recording and TTS are exclusive
+  const a = new Audio(rec.file);
+  RDAU.audio=a; RDAU.recN=rec.n;
+  if(seekTo) a.currentTime=seekTo;
+  a.onplay  = ()=>{ RDAU.playing=true;  readingSync(); };
+  a.onpause = ()=>{ RDAU.playing=false; readingSync(); };
+  a.onended = ()=>readingStop();
+  a.ontimeupdate = readingSync;
+  a.onerror = ()=>readingStop();
+  a.play().catch(()=>{});
+}
+function readingStop(){
+  if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){} RDAU.audio.onplay=RDAU.audio.onpause=RDAU.audio.onended=RDAU.audio.ontimeupdate=RDAU.audio.onerror=null; }
+  RDAU.audio=null; RDAU.recN=null; RDAU.playing=false;
+  readingSync();
+}
 
 // ── start ────────────────────────────────────────────────────────────────────
 showBooks();

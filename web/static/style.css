@@ -1182,3 +1182,19 @@ footer a{ color:var(--accent); text-decoration:none; }
 /* small biblical-anchor footnote at the foot of a source card (שו"ת / eyalk) */
 .srcpanel .card .canchors{ margin-top:8px; padding-top:6px; border-top:1px dashed rgba(26,56,115,.3);
   font-size:12.5px; line-height:1.6; color:var(--muted); }
+
+/* ── chanted-reading recordings bar (הקלטות קריאה) ─────────────────────── */
+.reading-bar{ display:flex; align-items:center; gap:10px; direction:rtl;
+  background:linear-gradient(180deg,#fdfbf5,#f4efe2); border:1px solid #d9cfb6;
+  border-radius:12px; padding:8px 12px; margin:6px 0 12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07); }
+.reading-btn{ flex:0 0 auto; width:42px; height:42px; border-radius:50%;
+  border:none; background:var(--accent); color:#fff; font-size:16px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.reading-btn:hover{ background:var(--active); }
+.reading-info{ flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
+.reading-title{ font-size:13px; font-weight:600; color:var(--navy);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.reading-seek{ width:100%; direction:ltr; accent-color:var(--accent); margin:0; }
+.reading-time{ flex:0 0 auto; font-size:12px; color:var(--muted); direction:ltr; }
+.cell-audio{ display:block; font-size:12px; color:var(--accent); line-height:1; margin-top:2px; }
