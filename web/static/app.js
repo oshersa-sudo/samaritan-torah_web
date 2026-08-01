@@ -2204,7 +2204,7 @@ async function ttsStart(){
   if(!TTS.items.length){ showInfo(t('play_chapter'), '<div class="note">אין תעתיק הגייה לפרק זה.</div>'); return; }
   TTS.idx=0; TTS.on=true; TTS.paused=false;
   $('audioBar').classList.remove('hidden');
-  $('playBtn').classList.add('playing');
+  { const pb=$('playBtn'); if(pb) pb.classList.add('playing'); }   // header button removed; kept null-safe
   $('auSeek').max = TTS.items.length-1; $('auSeek').value = 0;
   ttsSpeak();
 }
@@ -2257,14 +2257,16 @@ function setAuIcon(showPlay){   // showPlay=true → ▶ (resume); else ❚❚ (
 }
 function ttsStop(){
   TTS.on=false; TTS.paused=false; try{ speechSynthesis.cancel(); }catch(e){} ttsStopAudio();
-  $('audioBar').classList.add('hidden'); $('playBtn').classList.remove('playing'); setAuIcon(false);
+  $('audioBar').classList.add('hidden');
+  { const pb=$('playBtn'); if(pb) pb.classList.remove('playing'); }
+  setAuIcon(false);
   document.querySelectorAll('.tts-reading').forEach(e=>e.classList.remove('tts-reading'));
 }
 function ttsSeek(i){
   TTS.idx = Math.max(0, Math.min(TTS.items.length-1, i|0));
   if(TTS.on){ TTS.paused=false; setAuIcon(false); ttsSpeak(); } else ttsBar();
 }
-$('playBtn').onclick     = ()=>{ TTS.on ? ttsStop() : ttsStart(); };
+{ const pb=$('playBtn'); if(pb) pb.onclick = ()=>{ TTS.on ? ttsStop() : ttsStart(); }; }   // header TTS button removed from the UI
 $('auPlayPause').onclick = ttsPauseResume;
 $('auStop').onclick      = ttsStop;
 $('auSeek').oninput      = e=>ttsSeek(+e.target.value);
@@ -2310,7 +2312,7 @@ function setView(){
   $('navbar').classList.toggle('nav-backonly', browse);
   $('spreadBtn').classList.toggle('hidden', !(S.view==='portions'));
   $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
-  $('playBtn').classList.toggle('hidden', !isVerse);    // read-aloud
+  { const pb=$('playBtn'); if(pb) pb.classList.toggle('hidden', !isVerse); }   // (removed from UI)
   $('pronBtn').classList.toggle('hidden', !isVerse);    // pronunciation preview toggle
   if(!isVerse && typeof ttsStop==='function') ttsStop();
   syncToolbar(isVerse);
@@ -4964,7 +4966,9 @@ $('tourMute').onclick=()=>{ TOUR.muted=!TOUR.muted; tourSetMuteIcon();
 // Manifest lives at /static/audio/readings/readings.json; each entry carries the
 // book_id + sam chapter number it belongs to (ids drift across DB copies, numbers don't).
 let READINGS = null;                       // null = not loaded (or absent)
-const RDAU = { audio:null, recN:null, playing:false, ui:null };
+const RD_SPEEDS = [1, 1.25, 1.5, 2, 0.75];     // tap ×N to cycle; saved per device
+const RDAU = { audio:null, key:null, playing:false, ui:null,
+               speed: (parseFloat(localStorage.getItem('rd_speed')) || 1) };
 fetch('/static/audio/readings/readings.json')
   .then(r=>r.ok ? r.json() : null)
   .then(j=>{ READINGS=j;
@@ -4976,10 +4980,18 @@ fetch('/static/audio/readings/readings.json')
   .catch(()=>{});
 function readingFor(samNum, bookId){
   // Keyed by book + Samaritan chapter NUMBER (ids drift across DB copies after
-  // admin merges/splits; numbers are the stable coordinate).
-  if(!READINGS || !Array.isArray(READINGS.chapters)) return null;
-  if(bookId!=null && READINGS.book_id!==bookId) return null;
-  return READINGS.chapters.find(c=>c.sam_ch_number===samNum) || null;
+  // admin merges/splits; numbers are the stable coordinate). Supports the
+  // multi-book manifest (v3: {books:[...]}) and the single-book one (v2).
+  if(!READINGS) return null;
+  let list = null;
+  if(Array.isArray(READINGS.books)){
+    const b = READINGS.books.find(x=>x.book_id===bookId);
+    list = b && b.chapters;
+  } else if(READINGS.book_id===bookId){
+    list = READINGS.chapters;
+  }
+  if(!Array.isArray(list)) return null;
+  return list.find(c=>c.sam_ch_number===samNum) || null;
 }
 const rdFmt = s => { s=Math.max(0,s|0); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
 function readingBar(c){
@@ -4988,7 +5000,7 @@ function readingBar(c){
   const rec = readingFor(S.curChNum, S.book); if(!rec) return;
   const bar = el('div','reading-bar');
   const btn = el('button','reading-btn');
-  const isCur = RDAU.audio && RDAU.recN===rec.n;
+  const isCur = RDAU.audio && RDAU.key===rec.file;
   btn.innerHTML = (isCur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
   btn.title = 'הקלטת הקריאה';
   btn.onclick = ()=>readingToggle(rec);
@@ -4997,31 +5009,41 @@ function readingBar(c){
   info.appendChild(el('div','reading-title','הקלטת הקריאה &middot; '+esc(rec.name)));
   const seek = el('input','reading-seek'); seek.type='range'; seek.min=0; seek.step=0.1;
   seek.max = rec.duration; seek.value = isCur ? RDAU.audio.currentTime : 0;
-  seek.oninput = ()=>{ if(RDAU.audio && RDAU.recN===rec.n){ RDAU.audio.currentTime=parseFloat(seek.value); }
+  seek.oninput = ()=>{ if(RDAU.audio && RDAU.key===rec.file){ RDAU.audio.currentTime=parseFloat(seek.value); }
                        else { readingToggle(rec, parseFloat(seek.value)); } };
   info.appendChild(seek);
   bar.appendChild(info);
   const time = el('span','reading-time', rdFmt(isCur?RDAU.audio.currentTime:0)+' / '+rdFmt(rec.duration));
   bar.appendChild(time);
+  const spd = el('button','reading-speed','×'+RDAU.speed);
+  spd.title = 'מהירות ההשמעה';
+  spd.onclick = ()=>{
+    RDAU.speed = RD_SPEEDS[(RD_SPEEDS.indexOf(RDAU.speed)+1) % RD_SPEEDS.length] || 1;
+    localStorage.setItem('rd_speed', RDAU.speed);
+    if(RDAU.audio) RDAU.audio.playbackRate = RDAU.speed;
+    spd.textContent = '×'+RDAU.speed;
+  };
+  bar.appendChild(spd);
   RDAU.ui = { btn, seek, time, rec };
   c.appendChild(bar);
 }
 function readingSync(){
   if(!RDAU.ui) return;
-  const cur = RDAU.audio && RDAU.recN===RDAU.ui.rec.n;
+  const cur = RDAU.audio && RDAU.key===RDAU.ui.rec.file;
   RDAU.ui.btn.innerHTML = (cur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
   if(cur){ RDAU.ui.seek.value = RDAU.audio.currentTime;
            RDAU.ui.time.textContent = rdFmt(RDAU.audio.currentTime)+' / '+rdFmt(RDAU.audio.duration||RDAU.ui.rec.duration); }
 }
 function readingToggle(rec, seekTo){
-  if(RDAU.audio && RDAU.recN===rec.n && seekTo===undefined){
+  if(RDAU.audio && RDAU.key===rec.file && seekTo===undefined){
     if(RDAU.playing) RDAU.audio.pause(); else RDAU.audio.play().catch(()=>{});
     return;
   }
   readingStop();
   if(typeof ttsStop==='function') ttsStop();     // recording and TTS are exclusive
   const a = new Audio(rec.file);
-  RDAU.audio=a; RDAU.recN=rec.n;
+  a.playbackRate = RDAU.speed;
+  RDAU.audio=a; RDAU.key=rec.file;
   if(seekTo) a.currentTime=seekTo;
   a.onplay  = ()=>{ RDAU.playing=true;  readingSync(); };
   a.onpause = ()=>{ RDAU.playing=false; readingSync(); };
@@ -5032,7 +5054,7 @@ function readingToggle(rec, seekTo){
 }
 function readingStop(){
   if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){} RDAU.audio.onplay=RDAU.audio.onpause=RDAU.audio.onended=RDAU.audio.ontimeupdate=RDAU.audio.onerror=null; }
-  RDAU.audio=null; RDAU.recN=null; RDAU.playing=false;
+  RDAU.audio=null; RDAU.key=null; RDAU.playing=false;
   readingSync();
 }
 
