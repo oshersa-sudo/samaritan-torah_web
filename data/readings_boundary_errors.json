@@ -1,0 +1,7481 @@
+[
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -439.7,
+  "ch_before": 146,
+  "ch_after": 147,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -439.3,
+  "ch_before": 148,
+  "ch_after": 149,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -417.1,
+  "ch_before": 147,
+  "ch_after": 148,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 210.7,
+  "ch_before": 18,
+  "ch_after": 19,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -189.3,
+  "ch_before": 189,
+  "ch_after": 190,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 189.2,
+  "ch_before": 19,
+  "ch_after": 20,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -188.3,
+  "ch_before": 186,
+  "ch_after": 187,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -187.2,
+  "ch_before": 27,
+  "ch_after": 28,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": -180.9,
+  "ch_before": 194,
+  "ch_after": 195,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 179.1,
+  "ch_before": 83,
+  "ch_after": 84,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -178.6,
+  "ch_before": 184,
+  "ch_after": 185,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -174.5,
+  "ch_before": 139,
+  "ch_after": 140,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -173.9,
+  "ch_before": 191,
+  "ch_after": 192,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 168.3,
+  "ch_before": 20,
+  "ch_after": 21,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -166.8,
+  "ch_before": 144,
+  "ch_after": 145,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": -163.7,
+  "ch_before": 200,
+  "ch_after": 201,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": -158.6,
+  "ch_before": 96,
+  "ch_after": 97,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 157.1,
+  "ch_before": 40,
+  "ch_after": 41,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -155.3,
+  "ch_before": 185,
+  "ch_after": 186,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -155.2,
+  "ch_before": 183,
+  "ch_after": 184,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -154.5,
+  "ch_before": 141,
+  "ch_after": 142,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -154.1,
+  "ch_before": 192,
+  "ch_after": 193,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 153.0,
+  "ch_before": 86,
+  "ch_after": 87,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -152.8,
+  "ch_before": 138,
+  "ch_after": 139,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -151.4,
+  "ch_before": 143,
+  "ch_after": 144,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 150.0,
+  "ch_before": 164,
+  "ch_after": 165,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 149.6,
+  "ch_before": 114,
+  "ch_after": 115,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 149.1,
+  "ch_before": 84,
+  "ch_after": 85,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -147.5,
+  "ch_before": 26,
+  "ch_after": 27,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 146.7,
+  "ch_before": 28,
+  "ch_after": 29,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -144.7,
+  "ch_before": 179,
+  "ch_after": 180,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -143.6,
+  "ch_before": 142,
+  "ch_after": 143,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -142.1,
+  "ch_before": 149,
+  "ch_after": 150,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 139.9,
+  "ch_before": 165,
+  "ch_after": 166,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": -139.2,
+  "ch_before": 192,
+  "ch_after": 193,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 138.0,
+  "ch_before": 85,
+  "ch_after": 86,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -137.5,
+  "ch_before": 150,
+  "ch_after": 151,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": -136.4,
+  "ch_before": 193,
+  "ch_after": 194,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 134.0,
+  "ch_before": 21,
+  "ch_after": 22,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -132.5,
+  "ch_before": 88,
+  "ch_after": 89,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": -130.5,
+  "ch_before": 85,
+  "ch_after": 86,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 130.1,
+  "ch_before": 17,
+  "ch_after": 18,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -130.0,
+  "ch_before": 47,
+  "ch_after": 48,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -129.9,
+  "ch_before": 140,
+  "ch_after": 141,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": -129.6,
+  "ch_before": 83,
+  "ch_after": 84,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": -126.7,
+  "ch_before": 95,
+  "ch_after": 96,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -126.7,
+  "ch_before": 86,
+  "ch_after": 87,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 125.8,
+  "ch_before": 27,
+  "ch_after": 28,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -124.8,
+  "ch_before": 187,
+  "ch_after": 188,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -124.4,
+  "ch_before": 137,
+  "ch_after": 138,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -124.3,
+  "ch_before": 28,
+  "ch_after": 29,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 123.8,
+  "ch_before": 163,
+  "ch_after": 164,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -123.7,
+  "ch_before": 194,
+  "ch_after": 195,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": -123.6,
+  "ch_before": 79,
+  "ch_after": 80,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": -123.3,
+  "ch_before": 89,
+  "ch_after": 90,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 122.1,
+  "ch_before": 30,
+  "ch_after": 31,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 121.1,
+  "ch_before": 22,
+  "ch_after": 23,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -120.8,
+  "ch_before": 93,
+  "ch_after": 94,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -120.5,
+  "ch_before": 85,
+  "ch_after": 86,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 120.1,
+  "ch_before": 55,
+  "ch_after": 56,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -119.6,
+  "ch_before": 46,
+  "ch_after": 47,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 119.3,
+  "ch_before": 180,
+  "ch_after": 181,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -118.7,
+  "ch_before": 2,
+  "ch_after": 3,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -118.4,
+  "ch_before": 24,
+  "ch_after": 25,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": -117.5,
+  "ch_before": 86,
+  "ch_after": 87,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 117.4,
+  "ch_before": 29,
+  "ch_after": 30,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": -116.3,
+  "ch_before": 191,
+  "ch_after": 192,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -115.9,
+  "ch_before": 145,
+  "ch_after": 146,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": -115.8,
+  "ch_before": 72,
+  "ch_after": 73,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -114.8,
+  "ch_before": 193,
+  "ch_after": 194,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -113.8,
+  "ch_before": 1,
+  "ch_after": 2,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 113.3,
+  "ch_before": 26,
+  "ch_after": 27,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 112.7,
+  "ch_before": 32,
+  "ch_after": 33,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 112.5,
+  "ch_before": 87,
+  "ch_after": 88,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -112.4,
+  "ch_before": 190,
+  "ch_after": 191,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -111.3,
+  "ch_before": 136,
+  "ch_after": 137,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 111.0,
+  "ch_before": 109,
+  "ch_after": 110,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 110.8,
+  "ch_before": 45,
+  "ch_after": 46,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": -108.8,
+  "ch_before": 88,
+  "ch_after": 89,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -106.1,
+  "ch_before": 19,
+  "ch_after": 20,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -105.9,
+  "ch_before": 188,
+  "ch_after": 189,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": -105.4,
+  "ch_before": 94,
+  "ch_after": 95,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -102.7,
+  "ch_before": 10,
+  "ch_after": 11,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 102.5,
+  "ch_before": 89,
+  "ch_after": 90,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 101.2,
+  "ch_before": 62,
+  "ch_after": 63,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": -101.2,
+  "ch_before": 83,
+  "ch_after": 84,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": -100.7,
+  "ch_before": 35,
+  "ch_after": 36,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": -100.6,
+  "ch_before": 29,
+  "ch_after": 30,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 100.2,
+  "ch_before": 45,
+  "ch_after": 46,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -99.9,
+  "ch_before": 94,
+  "ch_after": 95,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -99.7,
+  "ch_before": 96,
+  "ch_after": 97,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -99.4,
+  "ch_before": 182,
+  "ch_after": 183,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": 98.7,
+  "ch_before": 76,
+  "ch_after": 77,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -98.3,
+  "ch_before": 18,
+  "ch_after": 19,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 98.1,
+  "ch_before": 155,
+  "ch_after": 156,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -97.9,
+  "ch_before": 181,
+  "ch_after": 182,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -97.9,
+  "ch_before": 92,
+  "ch_after": 93,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 97.8,
+  "ch_before": 100,
+  "ch_after": 101,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 97.5,
+  "ch_before": 181,
+  "ch_after": 182,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 97.5,
+  "ch_before": 115,
+  "ch_after": 116,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 95.6,
+  "ch_before": 25,
+  "ch_after": 26,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -95.4,
+  "ch_before": 17,
+  "ch_after": 18,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": 95.2,
+  "ch_before": 169,
+  "ch_after": 170,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 93.9,
+  "ch_before": 41,
+  "ch_after": 42,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": -93.3,
+  "ch_before": 199,
+  "ch_after": 200,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -92.9,
+  "ch_before": 134,
+  "ch_after": 135,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -92.7,
+  "ch_before": 51,
+  "ch_after": 52,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": 92.6,
+  "ch_before": 122,
+  "ch_after": 123,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 92.5,
+  "ch_before": 31,
+  "ch_after": 32,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 92.0,
+  "ch_before": 182,
+  "ch_after": 183,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": 91.9,
+  "ch_before": 80,
+  "ch_after": 81,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -91.8,
+  "ch_before": 180,
+  "ch_after": 181,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": -91.5,
+  "ch_before": 84,
+  "ch_after": 85,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 91.2,
+  "ch_before": 63,
+  "ch_after": 64,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": -91.0,
+  "ch_before": 82,
+  "ch_after": 83,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 90.9,
+  "ch_before": 179,
+  "ch_after": 180,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 90.9,
+  "ch_before": 65,
+  "ch_after": 66,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 89.6,
+  "ch_before": 68,
+  "ch_after": 69,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 89.1,
+  "ch_before": 178,
+  "ch_after": 179,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -88.9,
+  "ch_before": 133,
+  "ch_after": 134,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 88.8,
+  "ch_before": 166,
+  "ch_after": 167,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 87.9,
+  "ch_before": 125,
+  "ch_after": 126,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": -87.5,
+  "ch_before": 3,
+  "ch_after": 4,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 87.3,
+  "ch_before": 111,
+  "ch_after": 112,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -87.2,
+  "ch_before": 90,
+  "ch_after": 91,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": 86.8,
+  "ch_before": 99,
+  "ch_after": 100,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 86.4,
+  "ch_before": 36,
+  "ch_after": 37,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": -86.1,
+  "ch_before": 189,
+  "ch_after": 190,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": 86.0,
+  "ch_before": 73,
+  "ch_after": 74,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 85.8,
+  "ch_before": 69,
+  "ch_after": 70,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -85.5,
+  "ch_before": 225,
+  "ch_after": 226,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -84.6,
+  "ch_before": 42,
+  "ch_after": 43,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 84.0,
+  "ch_before": 184,
+  "ch_after": 185,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -83.2,
+  "ch_before": 151,
+  "ch_after": 152,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 83.1,
+  "ch_before": 116,
+  "ch_after": 117,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 83.1,
+  "ch_before": 46,
+  "ch_after": 47,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 82.9,
+  "ch_before": 168,
+  "ch_after": 169,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 82.8,
+  "ch_before": 32,
+  "ch_after": 33,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -82.6,
+  "ch_before": 23,
+  "ch_after": 24,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -82.6,
+  "ch_before": 25,
+  "ch_after": 26,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 82.3,
+  "ch_before": 156,
+  "ch_after": 157,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -81.4,
+  "ch_before": 64,
+  "ch_after": 65,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 80.8,
+  "ch_before": 108,
+  "ch_after": 109,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -80.2,
+  "ch_before": 62,
+  "ch_after": 63,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 79.8,
+  "ch_before": 107,
+  "ch_after": 108,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 79.6,
+  "ch_before": 160,
+  "ch_after": 161,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": -79.5,
+  "ch_before": 32,
+  "ch_after": 33,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -79.1,
+  "ch_before": 87,
+  "ch_after": 88,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": 79.1,
+  "ch_before": 65,
+  "ch_after": 66,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -79.0,
+  "ch_before": 222,
+  "ch_after": 223,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -78.8,
+  "ch_before": 89,
+  "ch_after": 90,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 78.7,
+  "ch_before": 47,
+  "ch_after": 48,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 77.9,
+  "ch_before": 70,
+  "ch_after": 71,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": -77.8,
+  "ch_before": 93,
+  "ch_after": 94,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -77.8,
+  "ch_before": 226,
+  "ch_after": 227,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -77.6,
+  "ch_before": 224,
+  "ch_after": 225,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה שמות",
+  "order": "18",
+  "err": 77.0,
+  "ch_before": 210,
+  "ch_after": 211,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 77.0,
+  "ch_before": 11,
+  "ch_after": 12,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 77.0,
+  "ch_before": 139,
+  "ch_after": 140,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -76.9,
+  "ch_before": 91,
+  "ch_after": 92,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 76.9,
+  "ch_before": 116,
+  "ch_after": 117,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 76.1,
+  "ch_before": 124,
+  "ch_after": 125,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": -75.8,
+  "ch_before": 87,
+  "ch_after": 88,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -75.7,
+  "ch_before": 50,
+  "ch_after": 51,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 75.4,
+  "ch_before": 109,
+  "ch_after": 110,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": -75.3,
+  "ch_before": 105,
+  "ch_after": 106,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ואלה שמות",
+  "order": "18",
+  "err": 75.1,
+  "ch_before": 211,
+  "ch_after": 212,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 75.0,
+  "ch_before": 112,
+  "ch_after": 113,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": 74.7,
+  "ch_before": 77,
+  "ch_after": 78,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": 74.4,
+  "ch_before": 186,
+  "ch_after": 187,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": -74.1,
+  "ch_before": 71,
+  "ch_after": 72,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -74.0,
+  "ch_before": 94,
+  "ch_after": 95,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 73.7,
+  "ch_before": 117,
+  "ch_after": 118,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": -73.6,
+  "ch_before": 80,
+  "ch_after": 81,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 73.5,
+  "ch_before": 67,
+  "ch_after": 68,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -73.4,
+  "ch_before": 195,
+  "ch_after": 196,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 73.3,
+  "ch_before": 24,
+  "ch_after": 25,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -72.9,
+  "ch_before": 16,
+  "ch_after": 17,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": -72.9,
+  "ch_before": 103,
+  "ch_after": 104,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -72.7,
+  "ch_before": 230,
+  "ch_after": 231,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": 72.7,
+  "ch_before": 168,
+  "ch_after": 169,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": 72.3,
+  "ch_before": 144,
+  "ch_after": 145,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -72.2,
+  "ch_before": 45,
+  "ch_after": 46,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 72.0,
+  "ch_before": 154,
+  "ch_after": 155,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -71.8,
+  "ch_before": 223,
+  "ch_after": 224,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -71.2,
+  "ch_before": 132,
+  "ch_after": 133,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -71.0,
+  "ch_before": 52,
+  "ch_after": 53,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 70.8,
+  "ch_before": 112,
+  "ch_after": 113,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -70.6,
+  "ch_before": 3,
+  "ch_after": 4,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": 70.3,
+  "ch_before": 58,
+  "ch_after": 59,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": 69.5,
+  "ch_before": 25,
+  "ch_after": 26,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 69.5,
+  "ch_before": 64,
+  "ch_after": 65,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": -69.5,
+  "ch_before": 63,
+  "ch_after": 64,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 69.2,
+  "ch_before": 118,
+  "ch_after": 119,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 69.1,
+  "ch_before": 172,
+  "ch_after": 173,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -69.0,
+  "ch_before": 63,
+  "ch_after": 64,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -68.5,
+  "ch_before": 95,
+  "ch_after": 96,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 68.4,
+  "ch_before": 106,
+  "ch_after": 107,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 68.3,
+  "ch_before": 158,
+  "ch_after": 159,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 68.2,
+  "ch_before": 23,
+  "ch_after": 24,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": -68.1,
+  "ch_before": 30,
+  "ch_after": 31,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": 68.0,
+  "ch_before": 30,
+  "ch_after": 31,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -67.9,
+  "ch_before": 221,
+  "ch_after": 222,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": -67.8,
+  "ch_before": 97,
+  "ch_after": 98,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -67.3,
+  "ch_before": 4,
+  "ch_after": 5,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 67.2,
+  "ch_before": 101,
+  "ch_after": 102,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": -67.0,
+  "ch_before": 104,
+  "ch_after": 105,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": 66.7,
+  "ch_before": 69,
+  "ch_after": 70,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 66.5,
+  "ch_before": 102,
+  "ch_after": 103,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": -66.5,
+  "ch_before": 127,
+  "ch_after": 128,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 66.3,
+  "ch_before": 16,
+  "ch_after": 17,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 65.9,
+  "ch_before": 66,
+  "ch_after": 67,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": 65.6,
+  "ch_before": 185,
+  "ch_after": 186,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -64.2,
+  "ch_before": 84,
+  "ch_after": 85,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": 64.1,
+  "ch_before": 145,
+  "ch_after": 146,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 64.0,
+  "ch_before": 88,
+  "ch_after": 89,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 63.8,
+  "ch_before": 167,
+  "ch_after": 168,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה שמות",
+  "order": "18",
+  "err": 63.2,
+  "ch_before": 212,
+  "ch_after": 213,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 63.0,
+  "ch_before": 64,
+  "ch_after": 65,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -62.8,
+  "ch_before": 81,
+  "ch_after": 82,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -62.5,
+  "ch_before": 82,
+  "ch_after": 83,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 62.4,
+  "ch_before": 25,
+  "ch_after": 26,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -62.2,
+  "ch_before": 15,
+  "ch_after": 16,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": 62.1,
+  "ch_before": 78,
+  "ch_after": 79,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 61.7,
+  "ch_before": 48,
+  "ch_after": 49,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 61.6,
+  "ch_before": 159,
+  "ch_after": 160,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 61.6,
+  "ch_before": 140,
+  "ch_after": 141,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -61.5,
+  "ch_before": 196,
+  "ch_after": 197,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -60.7,
+  "ch_before": 22,
+  "ch_after": 23,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 60.6,
+  "ch_before": 162,
+  "ch_after": 163,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": -60.1,
+  "ch_before": 121,
+  "ch_after": 122,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 60.0,
+  "ch_before": 56,
+  "ch_after": 57,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 59.4,
+  "ch_before": 169,
+  "ch_after": 170,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 59.3,
+  "ch_before": 146,
+  "ch_after": 147,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -59.3,
+  "ch_before": 11,
+  "ch_after": 12,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי אתם",
+  "order": "4",
+  "err": 59.0,
+  "ch_before": 63,
+  "ch_after": 64,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 58.9,
+  "ch_before": 115,
+  "ch_after": 116,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 58.7,
+  "ch_before": 170,
+  "ch_after": 171,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -58.6,
+  "ch_before": 20,
+  "ch_after": 21,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 58.6,
+  "ch_before": 43,
+  "ch_after": 44,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 58.4,
+  "ch_before": 117,
+  "ch_after": 118,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": -57.7,
+  "ch_before": 4,
+  "ch_after": 5,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 57.5,
+  "ch_before": 177,
+  "ch_after": 178,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 57.5,
+  "ch_before": 176,
+  "ch_after": 177,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 57.4,
+  "ch_before": 90,
+  "ch_after": 91,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -57.2,
+  "ch_before": 61,
+  "ch_after": 62,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": 57.2,
+  "ch_before": 108,
+  "ch_after": 109,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 57.0,
+  "ch_before": 48,
+  "ch_after": 49,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 56.9,
+  "ch_before": 125,
+  "ch_after": 126,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -56.8,
+  "ch_before": 220,
+  "ch_after": 221,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": -56.7,
+  "ch_before": 129,
+  "ch_after": 130,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 56.6,
+  "ch_before": 108,
+  "ch_after": 109,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -56.4,
+  "ch_before": 54,
+  "ch_after": 55,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 55.9,
+  "ch_before": 23,
+  "ch_after": 24,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": -55.9,
+  "ch_before": 3,
+  "ch_after": 4,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": -55.6,
+  "ch_before": 81,
+  "ch_after": 82,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 55.4,
+  "ch_before": 103,
+  "ch_after": 104,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -55.3,
+  "ch_before": 130,
+  "ch_after": 131,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 55.1,
+  "ch_before": 50,
+  "ch_after": 51,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -55.0,
+  "ch_before": 53,
+  "ch_after": 54,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 54.8,
+  "ch_before": 113,
+  "ch_after": 114,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": -54.5,
+  "ch_before": 201,
+  "ch_after": 202,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 54.3,
+  "ch_before": 126,
+  "ch_after": 127,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": -54.1,
+  "ch_before": 190,
+  "ch_after": 191,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 54.0,
+  "ch_before": 157,
+  "ch_after": 158,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 53.9,
+  "ch_before": 14,
+  "ch_after": 15,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 53.9,
+  "ch_before": 6,
+  "ch_after": 7,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 53.8,
+  "ch_before": 104,
+  "ch_after": 105,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 53.7,
+  "ch_before": 141,
+  "ch_after": 142,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -53.7,
+  "ch_before": 55,
+  "ch_after": 56,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": 53.6,
+  "ch_before": 146,
+  "ch_after": 147,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -53.5,
+  "ch_before": 43,
+  "ch_after": 44,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": -53.5,
+  "ch_before": 78,
+  "ch_after": 79,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": -53.3,
+  "ch_before": 120,
+  "ch_after": 121,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": -53.2,
+  "ch_before": 36,
+  "ch_after": 37,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 53.2,
+  "ch_before": 41,
+  "ch_after": 42,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 52.9,
+  "ch_before": 183,
+  "ch_after": 184,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -52.8,
+  "ch_before": 93,
+  "ch_after": 94,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": 52.7,
+  "ch_before": 74,
+  "ch_after": 75,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": 52.4,
+  "ch_before": 24,
+  "ch_after": 25,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 52.2,
+  "ch_before": 44,
+  "ch_after": 45,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -52.1,
+  "ch_before": 49,
+  "ch_after": 50,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 51.6,
+  "ch_before": 127,
+  "ch_after": 128,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -51.5,
+  "ch_before": 14,
+  "ch_after": 15,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 51.1,
+  "ch_before": 130,
+  "ch_after": 131,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -50.7,
+  "ch_before": 233,
+  "ch_after": 234,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": -50.7,
+  "ch_before": 121,
+  "ch_after": 122,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 50.5,
+  "ch_before": 65,
+  "ch_after": 66,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": 50.5,
+  "ch_before": 107,
+  "ch_after": 108,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 50.1,
+  "ch_before": 58,
+  "ch_after": 59,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 49.9,
+  "ch_before": 110,
+  "ch_after": 111,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": 49.9,
+  "ch_before": 136,
+  "ch_after": 137,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 49.8,
+  "ch_before": 153,
+  "ch_after": 154,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 49.6,
+  "ch_before": 123,
+  "ch_after": 124,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -49.6,
+  "ch_before": 232,
+  "ch_after": 233,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -49.3,
+  "ch_before": 56,
+  "ch_after": 57,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 49.0,
+  "ch_before": 15,
+  "ch_after": 16,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 48.9,
+  "ch_before": 49,
+  "ch_after": 50,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 48.7,
+  "ch_before": 38,
+  "ch_after": 39,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -48.1,
+  "ch_before": 48,
+  "ch_after": 49,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 48.0,
+  "ch_before": 70,
+  "ch_after": 71,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": -48.0,
+  "ch_before": 33,
+  "ch_after": 34,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 48.0,
+  "ch_before": 185,
+  "ch_after": 186,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 47.9,
+  "ch_before": 119,
+  "ch_after": 120,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": 47.5,
+  "ch_before": 204,
+  "ch_after": 205,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 47.1,
+  "ch_before": 153,
+  "ch_after": 154,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 46.6,
+  "ch_before": 114,
+  "ch_after": 115,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -46.3,
+  "ch_before": 229,
+  "ch_after": 230,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 45.7,
+  "ch_before": 46,
+  "ch_after": 47,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -45.4,
+  "ch_before": 135,
+  "ch_after": 136,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 45.3,
+  "ch_before": 124,
+  "ch_after": 125,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": 44.7,
+  "ch_before": 79,
+  "ch_after": 80,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": -44.7,
+  "ch_before": 5,
+  "ch_after": 6,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": -44.4,
+  "ch_before": 120,
+  "ch_after": 121,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -44.3,
+  "ch_before": 83,
+  "ch_after": 84,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": -44.2,
+  "ch_before": 74,
+  "ch_after": 75,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -44.2,
+  "ch_before": 21,
+  "ch_after": 22,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 44.2,
+  "ch_before": 105,
+  "ch_after": 106,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -44.1,
+  "ch_before": 20,
+  "ch_after": 21,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": 43.8,
+  "ch_before": 67,
+  "ch_after": 68,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": 43.6,
+  "ch_before": 59,
+  "ch_after": 60,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": -43.6,
+  "ch_before": 92,
+  "ch_after": 93,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -42.9,
+  "ch_before": 219,
+  "ch_after": 220,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 42.6,
+  "ch_before": 120,
+  "ch_after": 121,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -42.6,
+  "ch_before": 131,
+  "ch_after": 132,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 42.6,
+  "ch_before": 129,
+  "ch_after": 130,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": 42.3,
+  "ch_before": 75,
+  "ch_after": 76,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 42.1,
+  "ch_before": 34,
+  "ch_after": 35,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 42.0,
+  "ch_before": 186,
+  "ch_after": 187,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": -41.7,
+  "ch_before": 119,
+  "ch_after": 120,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 41.2,
+  "ch_before": 69,
+  "ch_after": 70,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -40.8,
+  "ch_before": 231,
+  "ch_after": 232,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 40.6,
+  "ch_before": 33,
+  "ch_after": 34,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 40.6,
+  "ch_before": 171,
+  "ch_after": 172,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -40.3,
+  "ch_before": 7,
+  "ch_after": 8,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": -40.3,
+  "ch_before": 73,
+  "ch_after": 74,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": 40.2,
+  "ch_before": 170,
+  "ch_after": 171,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 40.0,
+  "ch_before": 47,
+  "ch_after": 48,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -39.4,
+  "ch_before": 44,
+  "ch_after": 45,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 39.3,
+  "ch_before": 39,
+  "ch_after": 40,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 39.3,
+  "ch_before": 131,
+  "ch_after": 132,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 39.2,
+  "ch_before": 159,
+  "ch_after": 160,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 38.8,
+  "ch_before": 142,
+  "ch_after": 143,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -38.8,
+  "ch_before": 142,
+  "ch_after": 143,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -38.6,
+  "ch_before": 152,
+  "ch_after": 153,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": 38.3,
+  "ch_before": 66,
+  "ch_after": 67,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 38.0,
+  "ch_before": 7,
+  "ch_after": 8,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 37.9,
+  "ch_before": 128,
+  "ch_after": 129,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -37.7,
+  "ch_before": 95,
+  "ch_after": 96,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -37.6,
+  "ch_before": 5,
+  "ch_after": 6,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -37.5,
+  "ch_before": 6,
+  "ch_after": 7,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 37.3,
+  "ch_before": 161,
+  "ch_after": 162,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 36.8,
+  "ch_before": 127,
+  "ch_after": 128,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -36.5,
+  "ch_before": 141,
+  "ch_after": 123,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": -36.4,
+  "ch_before": 19,
+  "ch_after": 20,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 36.4,
+  "ch_before": 121,
+  "ch_after": 122,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -36.1,
+  "ch_before": 8,
+  "ch_after": 9,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": -36.0,
+  "ch_before": 80,
+  "ch_after": 81,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 35.7,
+  "ch_before": 68,
+  "ch_after": 69,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 35.7,
+  "ch_before": 152,
+  "ch_after": 153,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 35.4,
+  "ch_before": 37,
+  "ch_after": 38,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 35.4,
+  "ch_before": 35,
+  "ch_after": 36,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": -35.1,
+  "ch_before": 35,
+  "ch_after": 36,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -34.7,
+  "ch_before": 9,
+  "ch_after": 10,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 34.6,
+  "ch_before": 33,
+  "ch_after": 34,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -34.5,
+  "ch_before": 146,
+  "ch_after": 147,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -34.4,
+  "ch_before": 178,
+  "ch_after": 179,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -34.2,
+  "ch_before": 136,
+  "ch_after": 137,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 33.9,
+  "ch_before": 173,
+  "ch_after": 174,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 33.8,
+  "ch_before": 73,
+  "ch_after": 74,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -33.7,
+  "ch_before": 10,
+  "ch_after": 11,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": -33.7,
+  "ch_before": 118,
+  "ch_after": 119,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 33.6,
+  "ch_before": 12,
+  "ch_after": 13,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -32.8,
+  "ch_before": 134,
+  "ch_after": 135,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 32.7,
+  "ch_before": 174,
+  "ch_after": 175,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": -32.6,
+  "ch_before": 34,
+  "ch_after": 35,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 32.5,
+  "ch_before": 187,
+  "ch_after": 188,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 32.4,
+  "ch_before": 107,
+  "ch_after": 108,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 32.4,
+  "ch_before": 162,
+  "ch_after": 163,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -32.3,
+  "ch_before": 11,
+  "ch_after": 12,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": 32.3,
+  "ch_before": 110,
+  "ch_after": 111,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ואני הנני",
+  "order": "4",
+  "err": 32.0,
+  "ch_before": 41,
+  "ch_after": 42,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -31.9,
+  "ch_before": 234,
+  "ch_after": 235,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 31.8,
+  "ch_before": 124,
+  "ch_after": 125,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 31.6,
+  "ch_before": 175,
+  "ch_after": 176,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -31.6,
+  "ch_before": 13,
+  "ch_after": 14,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 31.3,
+  "ch_before": 113,
+  "ch_after": 114,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 30.8,
+  "ch_before": 37,
+  "ch_after": 38,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -30.3,
+  "ch_before": 12,
+  "ch_after": 13,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 30.1,
+  "ch_before": 10,
+  "ch_after": 11,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": -30.1,
+  "ch_before": 127,
+  "ch_after": 128,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 29.9,
+  "ch_before": 122,
+  "ch_after": 123,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 29.9,
+  "ch_before": 42,
+  "ch_after": 43,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -29.5,
+  "ch_before": 197,
+  "ch_after": 198,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 29.2,
+  "ch_before": 129,
+  "ch_after": 130,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 29.2,
+  "ch_before": 67,
+  "ch_after": 68,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 28.6,
+  "ch_before": 125,
+  "ch_after": 126,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 28.5,
+  "ch_before": 133,
+  "ch_after": 134,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 28.2,
+  "ch_before": 155,
+  "ch_after": 156,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": -27.9,
+  "ch_before": 128,
+  "ch_after": 129,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 27.8,
+  "ch_before": 130,
+  "ch_after": 131,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": -27.8,
+  "ch_before": 34,
+  "ch_after": 35,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -27.6,
+  "ch_before": 177,
+  "ch_after": 178,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": -27.5,
+  "ch_before": 102,
+  "ch_after": 103,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -27.3,
+  "ch_before": 176,
+  "ch_after": 177,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": -27.2,
+  "ch_before": 4,
+  "ch_after": 5,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 27.1,
+  "ch_before": 106,
+  "ch_after": 107,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -27.0,
+  "ch_before": 123,
+  "ch_after": 142,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 26.8,
+  "ch_before": 22,
+  "ch_after": 23,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 26.7,
+  "ch_before": 132,
+  "ch_after": 133,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואני הנני",
+  "order": "4",
+  "err": 26.7,
+  "ch_before": 40,
+  "ch_after": 41,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": -26.3,
+  "ch_before": 117,
+  "ch_after": 118,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": -26.3,
+  "ch_before": 167,
+  "ch_after": 168,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 26.1,
+  "ch_before": 128,
+  "ch_after": 129,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 25.4,
+  "ch_before": 150,
+  "ch_after": 151,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 25.4,
+  "ch_before": 147,
+  "ch_after": 148,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 25.0,
+  "ch_before": 1,
+  "ch_after": 2,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": -25.0,
+  "ch_before": 31,
+  "ch_after": 32,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 24.6,
+  "ch_before": 72,
+  "ch_after": 73,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 24.2,
+  "ch_before": 123,
+  "ch_after": 124,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 23.9,
+  "ch_before": 157,
+  "ch_after": 158,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 23.5,
+  "ch_before": 12,
+  "ch_after": 13,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": 23.4,
+  "ch_before": 37,
+  "ch_after": 38,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -23.0,
+  "ch_before": 198,
+  "ch_after": 199,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -23.0,
+  "ch_before": 175,
+  "ch_after": 176,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 22.7,
+  "ch_before": 122,
+  "ch_after": 123,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -22.6,
+  "ch_before": 57,
+  "ch_after": 58,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": 22.2,
+  "ch_before": 36,
+  "ch_after": 37,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 21.6,
+  "ch_before": 160,
+  "ch_after": 161,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 21.4,
+  "ch_before": 66,
+  "ch_after": 67,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": -21.4,
+  "ch_before": 126,
+  "ch_after": 127,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 21.4,
+  "ch_before": 154,
+  "ch_after": 155,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -21.1,
+  "ch_before": 235,
+  "ch_after": 236,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": 21.1,
+  "ch_before": 109,
+  "ch_after": 110,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": 20.9,
+  "ch_before": 159,
+  "ch_after": 160,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 20.6,
+  "ch_before": 11,
+  "ch_after": 12,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -20.6,
+  "ch_before": 153,
+  "ch_after": 154,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -20.3,
+  "ch_before": 120,
+  "ch_after": 121,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 20.2,
+  "ch_before": 65,
+  "ch_after": 66,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": 20.2,
+  "ch_before": 81,
+  "ch_after": 82,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": -20.1,
+  "ch_before": 2,
+  "ch_after": 3,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואני הנני",
+  "order": "4",
+  "err": -20.0,
+  "ch_before": 38,
+  "ch_after": 39,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 19.7,
+  "ch_before": 163,
+  "ch_after": 164,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": -19.6,
+  "ch_before": 116,
+  "ch_after": 117,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -19.4,
+  "ch_before": 58,
+  "ch_after": 59,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 19.2,
+  "ch_before": 10,
+  "ch_after": 11,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 19.2,
+  "ch_before": 127,
+  "ch_after": 128,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": -19.0,
+  "ch_before": 30,
+  "ch_after": 31,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 18.9,
+  "ch_before": 128,
+  "ch_after": 129,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -18.6,
+  "ch_before": 59,
+  "ch_after": 60,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 18.4,
+  "ch_before": 162,
+  "ch_after": 163,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -17.9,
+  "ch_before": 158,
+  "ch_after": 159,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -17.9,
+  "ch_before": 154,
+  "ch_after": 155,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 17.7,
+  "ch_before": 8,
+  "ch_after": 9,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -17.7,
+  "ch_before": 119,
+  "ch_after": 120,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -17.5,
+  "ch_before": 174,
+  "ch_after": 175,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -17.5,
+  "ch_before": 139,
+  "ch_after": 140,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 17.4,
+  "ch_before": 5,
+  "ch_after": 6,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -17.2,
+  "ch_before": 137,
+  "ch_after": 138,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 17.2,
+  "ch_before": 159,
+  "ch_after": 160,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 17.1,
+  "ch_before": 160,
+  "ch_after": 161,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -17.0,
+  "ch_before": 118,
+  "ch_after": 119,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 16.7,
+  "ch_before": 125,
+  "ch_after": 126,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": -16.6,
+  "ch_before": 31,
+  "ch_after": 32,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": 16.4,
+  "ch_before": 38,
+  "ch_after": 39,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 16.4,
+  "ch_before": 64,
+  "ch_after": 65,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 16.3,
+  "ch_before": 161,
+  "ch_after": 162,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -16.2,
+  "ch_before": 117,
+  "ch_after": 118,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -16.2,
+  "ch_before": 173,
+  "ch_after": 174,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 16.1,
+  "ch_before": 126,
+  "ch_after": 127,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 16.1,
+  "ch_before": 126,
+  "ch_after": 127,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 16.1,
+  "ch_before": 149,
+  "ch_after": 150,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 15.9,
+  "ch_before": 148,
+  "ch_after": 149,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 15.8,
+  "ch_before": 81,
+  "ch_after": 82,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": 15.8,
+  "ch_before": 29,
+  "ch_after": 30,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 15.5,
+  "ch_before": 158,
+  "ch_after": 159,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 15.5,
+  "ch_before": 9,
+  "ch_after": 10,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואני הנני",
+  "order": "4",
+  "err": -15.5,
+  "ch_before": 36,
+  "ch_after": 37,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": 15.3,
+  "ch_before": 39,
+  "ch_after": 40,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -15.3,
+  "ch_before": 121,
+  "ch_after": 122,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -15.0,
+  "ch_before": 157,
+  "ch_after": 158,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -14.7,
+  "ch_before": 136,
+  "ch_after": 137,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 14.7,
+  "ch_before": 63,
+  "ch_after": 64,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 14.6,
+  "ch_before": 74,
+  "ch_after": 75,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -14.6,
+  "ch_before": 111,
+  "ch_after": 112,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 14.4,
+  "ch_before": 13,
+  "ch_after": 14,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -14.4,
+  "ch_before": 88,
+  "ch_after": 89,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -14.2,
+  "ch_before": 124,
+  "ch_after": 125,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -14.2,
+  "ch_before": 123,
+  "ch_after": 124,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -14.1,
+  "ch_before": 66,
+  "ch_after": 67,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 14.1,
+  "ch_before": 7,
+  "ch_after": 8,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": -14.0,
+  "ch_before": 119,
+  "ch_after": 120,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -13.9,
+  "ch_before": 129,
+  "ch_after": 130,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": 13.6,
+  "ch_before": 134,
+  "ch_after": 135,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -13.5,
+  "ch_before": 116,
+  "ch_after": 117,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -13.4,
+  "ch_before": 112,
+  "ch_after": 113,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -13.4,
+  "ch_before": 124,
+  "ch_after": 125,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 13.4,
+  "ch_before": 151,
+  "ch_after": 152,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -13.3,
+  "ch_before": 138,
+  "ch_after": 139,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -13.2,
+  "ch_before": 155,
+  "ch_after": 156,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": -13.1,
+  "ch_before": 115,
+  "ch_after": 116,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -13.0,
+  "ch_before": 115,
+  "ch_after": 116,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": -12.8,
+  "ch_before": 130,
+  "ch_after": 131,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -12.7,
+  "ch_before": 113,
+  "ch_after": 114,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 12.6,
+  "ch_before": 156,
+  "ch_after": 157,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -12.5,
+  "ch_before": 114,
+  "ch_after": 115,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -12.4,
+  "ch_before": 110,
+  "ch_after": 111,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "והיה כי יביאך",
+  "order": "9",
+  "err": -12.4,
+  "ch_before": 156,
+  "ch_after": 157,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": -12.3,
+  "ch_before": 140,
+  "ch_after": 141,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 12.3,
+  "ch_before": 82,
+  "ch_after": 83,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -12.0,
+  "ch_before": 44,
+  "ch_after": 45,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -12.0,
+  "ch_before": 116,
+  "ch_after": 117,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -12.0,
+  "ch_before": 100,
+  "ch_after": 101,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -12.0,
+  "ch_before": 87,
+  "ch_after": 88,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": -12.0,
+  "ch_before": 2,
+  "ch_after": 3,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -11.8,
+  "ch_before": 122,
+  "ch_after": 123,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 11.7,
+  "ch_before": 21,
+  "ch_after": 22,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -11.7,
+  "ch_before": 104,
+  "ch_after": 105,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -11.7,
+  "ch_before": 91,
+  "ch_after": 92,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -11.6,
+  "ch_before": 121,
+  "ch_after": 122,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 11.6,
+  "ch_before": 6,
+  "ch_after": 7,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 11.6,
+  "ch_before": 153,
+  "ch_after": 154,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -11.5,
+  "ch_before": 171,
+  "ch_after": 172,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -11.5,
+  "ch_before": 172,
+  "ch_after": 173,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": 11.5,
+  "ch_before": 68,
+  "ch_after": 69,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 11.2,
+  "ch_before": 154,
+  "ch_after": 155,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": -11.2,
+  "ch_before": 71,
+  "ch_after": 72,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 11.2,
+  "ch_before": 14,
+  "ch_after": 15,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": 11.2,
+  "ch_before": 33,
+  "ch_after": 34,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -11.1,
+  "ch_before": 109,
+  "ch_after": 110,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": -10.9,
+  "ch_before": 141,
+  "ch_after": 142,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -10.9,
+  "ch_before": 71,
+  "ch_after": 72,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -10.8,
+  "ch_before": 86,
+  "ch_after": 87,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 10.8,
+  "ch_before": 24,
+  "ch_after": 25,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 10.7,
+  "ch_before": 152,
+  "ch_after": 153,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -10.6,
+  "ch_before": 137,
+  "ch_after": 138,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -10.6,
+  "ch_before": 108,
+  "ch_after": 109,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -10.3,
+  "ch_before": 89,
+  "ch_after": 90,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל ליבו",
+  "order": "5",
+  "err": -10.2,
+  "ch_before": 43,
+  "ch_after": 44,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -10.2,
+  "ch_before": 140,
+  "ch_after": 141,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -10.1,
+  "ch_before": 138,
+  "ch_after": 139,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -10.1,
+  "ch_before": 69,
+  "ch_after": 70,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 10.0,
+  "ch_before": 164,
+  "ch_after": 165,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -9.8,
+  "ch_before": 101,
+  "ch_after": 102,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 9.8,
+  "ch_before": 54,
+  "ch_after": 55,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": 9.8,
+  "ch_before": 41,
+  "ch_after": 42,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 9.8,
+  "ch_before": 157,
+  "ch_after": 158,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": -9.7,
+  "ch_before": 105,
+  "ch_after": 106,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "ראו למדתי",
+  "order": "2",
+  "err": 9.6,
+  "ch_before": 38,
+  "ch_after": 39,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 9.5,
+  "ch_before": 61,
+  "ch_after": 62,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": 9.5,
+  "ch_before": 110,
+  "ch_after": 111,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": -9.5,
+  "ch_before": 163,
+  "ch_after": 164,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": 9.4,
+  "ch_before": 143,
+  "ch_after": 144,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 9.4,
+  "ch_before": 55,
+  "ch_after": 56,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 9.3,
+  "ch_before": 57,
+  "ch_after": 58,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 9.3,
+  "ch_before": 80,
+  "ch_after": 81,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -9.2,
+  "ch_before": 120,
+  "ch_after": 121,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -9.2,
+  "ch_before": 105,
+  "ch_after": 106,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 9.1,
+  "ch_before": 56,
+  "ch_after": 57,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": 9.1,
+  "ch_before": 74,
+  "ch_after": 75,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -9.1,
+  "ch_before": 90,
+  "ch_after": 91,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": 9.1,
+  "ch_before": 40,
+  "ch_after": 41,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -9.0,
+  "ch_before": 72,
+  "ch_after": 73,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -8.9,
+  "ch_before": 92,
+  "ch_after": 93,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -8.9,
+  "ch_before": 96,
+  "ch_after": 97,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -8.8,
+  "ch_before": 135,
+  "ch_after": 136,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": 8.8,
+  "ch_before": 34,
+  "ch_after": 35,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": 8.8,
+  "ch_before": 9,
+  "ch_after": 10,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": 8.7,
+  "ch_before": 84,
+  "ch_after": 85,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 8.7,
+  "ch_before": 131,
+  "ch_after": 132,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": -8.6,
+  "ch_before": 139,
+  "ch_after": 140,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -8.6,
+  "ch_before": 178,
+  "ch_after": 179,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 8.5,
+  "ch_before": 62,
+  "ch_after": 63,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -8.4,
+  "ch_before": 103,
+  "ch_after": 104,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": 8.4,
+  "ch_before": 111,
+  "ch_after": 112,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 8.3,
+  "ch_before": 15,
+  "ch_after": 16,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 8.3,
+  "ch_before": 156,
+  "ch_after": 157,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 8.2,
+  "ch_before": 155,
+  "ch_after": 156,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -8.0,
+  "ch_before": 45,
+  "ch_after": 46,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 8.0,
+  "ch_before": 122,
+  "ch_after": 124,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -7.9,
+  "ch_before": 123,
+  "ch_after": 124,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -7.9,
+  "ch_before": 115,
+  "ch_after": 116,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": 7.8,
+  "ch_before": 85,
+  "ch_after": 86,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": -7.7,
+  "ch_before": 138,
+  "ch_after": 139,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -7.7,
+  "ch_before": 70,
+  "ch_after": 71,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -7.7,
+  "ch_before": 179,
+  "ch_after": 180,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 7.6,
+  "ch_before": 18,
+  "ch_after": 19,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -7.5,
+  "ch_before": 23,
+  "ch_after": 24,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -7.4,
+  "ch_before": 55,
+  "ch_after": 56,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 7.4,
+  "ch_before": 58,
+  "ch_after": 59,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 7.3,
+  "ch_before": 166,
+  "ch_after": 167,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -7.2,
+  "ch_before": 13,
+  "ch_after": 14,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -7.2,
+  "ch_before": 27,
+  "ch_after": 28,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 7.2,
+  "ch_before": 62,
+  "ch_after": 63,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 7.1,
+  "ch_before": 60,
+  "ch_after": 61,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -7.1,
+  "ch_before": 102,
+  "ch_after": 103,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": 7.0,
+  "ch_before": 31,
+  "ch_after": 32,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -7.0,
+  "ch_before": 21,
+  "ch_after": 22,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -7.0,
+  "ch_before": 14,
+  "ch_after": 15,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "נשא את ראש",
+  "order": "2",
+  "err": 6.9,
+  "ch_before": 42,
+  "ch_after": 43,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 6.9,
+  "ch_before": 16,
+  "ch_after": 17,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -6.9,
+  "ch_before": 74,
+  "ch_after": 75,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": -6.8,
+  "ch_before": 70,
+  "ch_after": 71,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": -6.7,
+  "ch_before": 143,
+  "ch_after": 144,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -6.6,
+  "ch_before": 106,
+  "ch_after": 107,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 6.6,
+  "ch_before": 152,
+  "ch_after": 153,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": -6.5,
+  "ch_before": 29,
+  "ch_after": 30,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": -6.5,
+  "ch_before": 70,
+  "ch_after": 71,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": 6.5,
+  "ch_before": 202,
+  "ch_after": 203,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": -6.4,
+  "ch_before": 142,
+  "ch_after": 143,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -6.3,
+  "ch_before": 105,
+  "ch_after": 106,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": -6.3,
+  "ch_before": 22,
+  "ch_after": 23,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 6.2,
+  "ch_before": 49,
+  "ch_after": 50,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -6.2,
+  "ch_before": 60,
+  "ch_after": 61,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": 6.1,
+  "ch_before": 158,
+  "ch_after": 159,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -5.9,
+  "ch_before": 67,
+  "ch_after": 68,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": -5.9,
+  "ch_before": 188,
+  "ch_after": 189,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -5.8,
+  "ch_before": 54,
+  "ch_after": 55,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה שמות",
+  "order": "18",
+  "err": -5.8,
+  "ch_before": 213,
+  "ch_after": 214,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 5.7,
+  "ch_before": 44,
+  "ch_after": 45,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -5.7,
+  "ch_before": 56,
+  "ch_after": 57,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": 5.7,
+  "ch_before": 9,
+  "ch_after": 10,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 5.6,
+  "ch_before": 96,
+  "ch_after": 97,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 5.6,
+  "ch_before": 57,
+  "ch_after": 58,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 5.6,
+  "ch_before": 151,
+  "ch_after": 152,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 5.5,
+  "ch_before": 165,
+  "ch_after": 166,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": -5.5,
+  "ch_before": 133,
+  "ch_after": 134,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "לך לך",
+  "order": "6",
+  "err": 5.5,
+  "ch_before": 61,
+  "ch_after": 62,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 5.5,
+  "ch_before": 78,
+  "ch_after": 79,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 5.5,
+  "ch_before": 59,
+  "ch_after": 60,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויעש את הקרשים",
+  "order": "9a",
+  "err": -5.4,
+  "ch_before": 170,
+  "ch_after": 171,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": -5.4,
+  "ch_before": 106,
+  "ch_after": 107,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": 5.3,
+  "ch_before": 90,
+  "ch_after": 91,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -5.3,
+  "ch_before": 3,
+  "ch_after": 4,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 5.3,
+  "ch_before": 17,
+  "ch_after": 18,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": 5.2,
+  "ch_before": 197,
+  "ch_after": 198,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -5.2,
+  "ch_before": 95,
+  "ch_after": 96,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -5.2,
+  "ch_before": 48,
+  "ch_after": 49,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה שמות",
+  "order": "18",
+  "err": -5.1,
+  "ch_before": 214,
+  "ch_after": 215,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": 5.1,
+  "ch_before": 109,
+  "ch_after": 110,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -5.0,
+  "ch_before": 85,
+  "ch_after": 86,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": -5.0,
+  "ch_before": 171,
+  "ch_after": 172,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 5.0,
+  "ch_before": 95,
+  "ch_after": 96,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": -5.0,
+  "ch_before": 71,
+  "ch_after": 72,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -4.9,
+  "ch_before": 97,
+  "ch_after": 98,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": 4.9,
+  "ch_before": 86,
+  "ch_after": 87,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "והאדם ידע",
+  "order": "2",
+  "err": 4.9,
+  "ch_before": 18,
+  "ch_after": 19,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": -4.9,
+  "ch_before": 28,
+  "ch_after": 29,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -4.9,
+  "ch_before": 227,
+  "ch_after": 228,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": -4.9,
+  "ch_before": 72,
+  "ch_after": 73,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 4.8,
+  "ch_before": 43,
+  "ch_after": 44,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -4.8,
+  "ch_before": 46,
+  "ch_after": 47,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "פינחס",
+  "order": "7",
+  "err": -4.8,
+  "ch_before": 145,
+  "ch_after": 146,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -4.8,
+  "ch_before": 125,
+  "ch_after": 126,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": -4.8,
+  "ch_before": 132,
+  "ch_after": 133,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -4.8,
+  "ch_before": 107,
+  "ch_after": 108,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -4.8,
+  "ch_before": 176,
+  "ch_after": 177,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -4.7,
+  "ch_before": 15,
+  "ch_after": 16,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -4.7,
+  "ch_before": 53,
+  "ch_after": 54,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": 4.7,
+  "ch_before": 98,
+  "ch_after": 99,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": -4.6,
+  "ch_before": 172,
+  "ch_after": 173,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "היום הזה",
+  "order": "8",
+  "err": -4.6,
+  "ch_before": 118,
+  "ch_after": 119,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -4.6,
+  "ch_before": 104,
+  "ch_after": 105,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -4.6,
+  "ch_before": 41,
+  "ch_after": 42,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": 4.5,
+  "ch_before": 108,
+  "ch_after": 109,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 4.5,
+  "ch_before": 44,
+  "ch_after": 45,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": -4.5,
+  "ch_before": 114,
+  "ch_after": 115,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": -4.4,
+  "ch_before": 104,
+  "ch_after": 105,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -4.4,
+  "ch_before": 2,
+  "ch_after": 3,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": 4.4,
+  "ch_before": 107,
+  "ch_after": 108,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "והאדם ידע",
+  "order": "2",
+  "err": 4.3,
+  "ch_before": 19,
+  "ch_after": 20,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": -4.2,
+  "ch_before": 76,
+  "ch_after": 77,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": -4.2,
+  "ch_before": 57,
+  "ch_after": 58,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "במדבר סיני",
+  "order": "1",
+  "err": 4.2,
+  "ch_before": 26,
+  "ch_after": 27,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": -4.2,
+  "ch_before": 8,
+  "ch_after": 9,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": 4.1,
+  "ch_before": 111,
+  "ch_after": 112,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": 4.0,
+  "ch_before": 32,
+  "ch_after": 33,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 4.0,
+  "ch_before": 56,
+  "ch_after": 57,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -4.0,
+  "ch_before": 177,
+  "ch_after": 178,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 4.0,
+  "ch_before": 128,
+  "ch_after": 129,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 4.0,
+  "ch_before": 101,
+  "ch_after": 102,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -3.9,
+  "ch_before": 99,
+  "ch_after": 100,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "החדש הזה",
+  "order": "3a",
+  "err": -3.9,
+  "ch_before": 57,
+  "ch_after": 58,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -3.9,
+  "ch_before": 183,
+  "ch_after": 184,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -3.8,
+  "ch_before": 12,
+  "ch_after": 13,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אחרי מות",
+  "order": "5",
+  "err": -3.7,
+  "ch_before": 75,
+  "ch_after": 76,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -3.7,
+  "ch_before": 16,
+  "ch_after": 17,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 3.7,
+  "ch_before": 97,
+  "ch_after": 98,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": 3.6,
+  "ch_before": 92,
+  "ch_after": 93,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": -3.5,
+  "ch_before": 76,
+  "ch_after": 77,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -3.5,
+  "ch_before": 113,
+  "ch_after": 114,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -3.5,
+  "ch_before": 73,
+  "ch_after": 74,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה שמות",
+  "order": "18",
+  "err": -3.4,
+  "ch_before": 209,
+  "ch_after": 210,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -3.4,
+  "ch_before": 47,
+  "ch_after": 48,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 3.4,
+  "ch_before": 45,
+  "ch_after": 46,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": -3.4,
+  "ch_before": 73,
+  "ch_after": 74,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויקחו לי תרומה",
+  "order": "6a",
+  "err": 3.3,
+  "ch_before": 132,
+  "ch_after": 133,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": 3.3,
+  "ch_before": 131,
+  "ch_after": 132,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": -3.3,
+  "ch_before": 173,
+  "ch_after": 174,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": 3.3,
+  "ch_before": 87,
+  "ch_after": 88,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 3.3,
+  "ch_before": 54,
+  "ch_after": 55,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -3.2,
+  "ch_before": 68,
+  "ch_after": 69,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 3.2,
+  "ch_before": 60,
+  "ch_after": 61,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -3.1,
+  "ch_before": 40,
+  "ch_after": 41,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ובקצירכם",
+  "order": "6",
+  "err": 3.1,
+  "ch_before": 79,
+  "ch_after": 80,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -3.1,
+  "ch_before": 51,
+  "ch_after": 52,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 3.1,
+  "ch_before": 94,
+  "ch_after": 95,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": 3.1,
+  "ch_before": 97,
+  "ch_after": 98,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -3.1,
+  "ch_before": 94,
+  "ch_after": 95,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": -3.1,
+  "ch_before": 1,
+  "ch_after": 2,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -3.0,
+  "ch_before": 50,
+  "ch_after": 51,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 3.0,
+  "ch_before": 150,
+  "ch_after": 151,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": 3.0,
+  "ch_before": 148,
+  "ch_after": 149,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": 2.9,
+  "ch_before": 39,
+  "ch_after": 40,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -2.8,
+  "ch_before": 175,
+  "ch_after": 176,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": 2.8,
+  "ch_before": 203,
+  "ch_after": 204,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ואני הנני",
+  "order": "4",
+  "err": -2.8,
+  "ch_before": 35,
+  "ch_after": 36,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": -2.8,
+  "ch_before": 207,
+  "ch_after": 208,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": -2.7,
+  "ch_before": 144,
+  "ch_after": 145,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": -2.7,
+  "ch_before": 148,
+  "ch_after": 149,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -2.7,
+  "ch_before": 98,
+  "ch_after": 99,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה תולדות",
+  "order": "10",
+  "err": -2.7,
+  "ch_before": 114,
+  "ch_after": 115,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -2.7,
+  "ch_before": 75,
+  "ch_after": 76,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": 2.7,
+  "ch_before": 6,
+  "ch_after": 7,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 2.6,
+  "ch_before": 61,
+  "ch_after": 62,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": 2.6,
+  "ch_before": 50,
+  "ch_after": 51,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 2.6,
+  "ch_before": 42,
+  "ch_after": 43,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -2.6,
+  "ch_before": 182,
+  "ch_after": 183,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "אם בחקתי",
+  "order": "8",
+  "err": 2.6,
+  "ch_before": 111,
+  "ch_after": 112,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -2.5,
+  "ch_before": 4,
+  "ch_after": 5,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5a",
+  "err": -2.5,
+  "ch_before": 91,
+  "ch_after": 92,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואני הנני",
+  "order": "4",
+  "err": -2.5,
+  "ch_before": 39,
+  "ch_after": 40,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -2.5,
+  "ch_before": 17,
+  "ch_after": 18,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": 2.4,
+  "ch_before": 83,
+  "ch_after": 84,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -2.4,
+  "ch_before": 237,
+  "ch_after": 238,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": -2.3,
+  "ch_before": 149,
+  "ch_after": 150,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": -2.3,
+  "ch_before": 134,
+  "ch_after": 135,
+  "weak": true
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 2.3,
+  "ch_before": 167,
+  "ch_after": 168,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": -2.2,
+  "ch_before": 80,
+  "ch_after": 81,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה שמות",
+  "order": "18",
+  "err": -2.2,
+  "ch_before": 216,
+  "ch_after": 217,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": 2.2,
+  "ch_before": 7,
+  "ch_after": 8,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": 2.2,
+  "ch_before": 5,
+  "ch_after": 6,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": 2.2,
+  "ch_before": 8,
+  "ch_after": 9,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": 2.1,
+  "ch_before": 38,
+  "ch_after": 39,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 2.0,
+  "ch_before": 59,
+  "ch_after": 60,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": 1.9,
+  "ch_before": 166,
+  "ch_after": 167,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": -1.9,
+  "ch_before": 103,
+  "ch_after": 104,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": -1.9,
+  "ch_before": 27,
+  "ch_after": 28,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 1.8,
+  "ch_before": 58,
+  "ch_after": 59,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -1.8,
+  "ch_before": 103,
+  "ch_after": 104,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -1.8,
+  "ch_before": 50,
+  "ch_after": 51,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואני הנני",
+  "order": "4",
+  "err": -1.8,
+  "ch_before": 37,
+  "ch_after": 38,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": -1.7,
+  "ch_before": 119,
+  "ch_after": 120,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": -1.7,
+  "ch_before": 40,
+  "ch_after": 41,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": 1.7,
+  "ch_before": 37,
+  "ch_after": 38,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "בן פרת",
+  "order": "20",
+  "err": -1.7,
+  "ch_before": 236,
+  "ch_after": 237,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ואלה שמות",
+  "order": "1a",
+  "err": -1.7,
+  "ch_before": 13,
+  "ch_after": 14,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 1.6,
+  "ch_before": 48,
+  "ch_after": 49,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואלה שמות",
+  "order": "18",
+  "err": -1.6,
+  "ch_before": 215,
+  "ch_after": 216,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ויקרא אל משה",
+  "order": "1",
+  "err": -1.6,
+  "ch_before": 1,
+  "ch_after": 2,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": 1.6,
+  "ch_before": 99,
+  "ch_after": 100,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 1.6,
+  "ch_before": 59,
+  "ch_after": 60,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": -1.4,
+  "ch_before": 196,
+  "ch_after": 197,
+  "weak": true
+ },
+ {
+  "book": 1,
+  "portion": "אל שדי",
+  "order": "19",
+  "err": -1.4,
+  "ch_before": 218,
+  "ch_after": 219,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "וזה הדבר",
+  "order": "7a",
+  "err": 1.4,
+  "ch_before": 145,
+  "ch_after": 146,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 1.4,
+  "ch_before": 66,
+  "ch_after": 67,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 1.4,
+  "ch_before": 97,
+  "ch_after": 98,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 1.3,
+  "ch_before": 47,
+  "ch_after": 48,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -1.3,
+  "ch_before": 62,
+  "ch_after": 63,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": -1.3,
+  "ch_before": 206,
+  "ch_after": 207,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 1.3,
+  "ch_before": 55,
+  "ch_after": 56,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -1.3,
+  "ch_before": 180,
+  "ch_after": 181,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישא יעקב",
+  "order": "11",
+  "err": -1.3,
+  "ch_before": 135,
+  "ch_after": 136,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": -1.2,
+  "ch_before": 78,
+  "ch_after": 79,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 1.2,
+  "ch_before": 98,
+  "ch_after": 99,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ותצא דינה",
+  "order": "13",
+  "err": 1.2,
+  "ch_before": 161,
+  "ch_after": 162,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 1.2,
+  "ch_before": 65,
+  "ch_after": 66,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": -1.2,
+  "ch_before": 99,
+  "ch_after": 100,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יקח איש אשה",
+  "order": "7",
+  "err": -1.2,
+  "ch_before": 102,
+  "ch_after": 103,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "וישלח משה",
+  "order": "6",
+  "err": 1.1,
+  "ch_before": 143,
+  "ch_after": 144,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "אלה הדברים",
+  "order": "1",
+  "err": 1.1,
+  "ch_before": 19,
+  "ch_after": 20,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": -1.1,
+  "ch_before": 100,
+  "ch_after": 101,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 1.1,
+  "ch_before": 46,
+  "ch_after": 47,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": 1.1,
+  "ch_before": 75,
+  "ch_after": 76,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 1.0,
+  "ch_before": 53,
+  "ch_after": 54,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 1.0,
+  "ch_before": 49,
+  "ch_after": 50,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": -1.0,
+  "ch_before": 99,
+  "ch_after": 100,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -0.9,
+  "ch_before": 76,
+  "ch_after": 77,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": 0.8,
+  "ch_before": 89,
+  "ch_after": 90,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויתן אל משה",
+  "order": "8a",
+  "err": 0.8,
+  "ch_before": 168,
+  "ch_after": 169,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": 0.7,
+  "ch_before": 79,
+  "ch_after": 80,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": 0.7,
+  "ch_before": 184,
+  "ch_after": 185,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": -0.7,
+  "ch_before": 106,
+  "ch_after": 107,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וישב יעקב",
+  "order": "14",
+  "err": 0.7,
+  "ch_before": 165,
+  "ch_after": 166,
+  "weak": true
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": -0.7,
+  "ch_before": 51,
+  "ch_after": 52,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": -0.7,
+  "ch_before": 64,
+  "ch_after": 65,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "צוה את אהרן",
+  "order": "2",
+  "err": 0.7,
+  "ch_before": 35,
+  "ch_after": 36,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": -0.6,
+  "ch_before": 52,
+  "ch_after": 53,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": 0.6,
+  "ch_before": 72,
+  "ch_after": 73,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 0.6,
+  "ch_before": 100,
+  "ch_after": 101,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": -0.6,
+  "ch_before": 77,
+  "ch_after": 78,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": 0.6,
+  "ch_before": 81,
+  "ch_after": 82,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": 0.5,
+  "ch_before": 84,
+  "ch_after": 85,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 0.5,
+  "ch_before": 102,
+  "ch_after": 103,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ואברהם זקן",
+  "order": "9",
+  "err": 0.5,
+  "ch_before": 101,
+  "ch_after": 102,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "שלח לך",
+  "order": "4",
+  "err": 0.5,
+  "ch_before": 79,
+  "ch_after": 80,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "שופטים ושוטרים",
+  "order": "6",
+  "err": 0.5,
+  "ch_before": 98,
+  "ch_after": 99,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -0.4,
+  "ch_before": 52,
+  "ch_after": 53,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "בחדש השלישי",
+  "order": "5b",
+  "err": 0.4,
+  "ch_before": 112,
+  "ch_after": 113,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": 0.4,
+  "ch_before": 76,
+  "ch_after": 77,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהי אברם",
+  "order": "7",
+  "err": 0.3,
+  "ch_before": 88,
+  "ch_after": 89,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויבא יוסף",
+  "order": "17",
+  "err": 0.3,
+  "ch_before": 205,
+  "ch_after": 206,
+  "weak": true
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": -0.3,
+  "ch_before": 93,
+  "ch_after": 94,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "ואיש או אשה",
+  "order": "4",
+  "err": 0.3,
+  "ch_before": 60,
+  "ch_after": 61,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "כי יביאך",
+  "order": "3",
+  "err": 0.3,
+  "ch_before": 52,
+  "ch_after": 53,
+  "weak": false
+ },
+ {
+  "book": 5,
+  "portion": "בנים אתם",
+  "order": "5",
+  "err": 0.3,
+  "ch_before": 77,
+  "ch_after": 78,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "ויקח קרח",
+  "order": "5",
+  "err": 0.3,
+  "ch_before": 98,
+  "ch_after": 99,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "וליוסף נולדו",
+  "order": "16",
+  "err": 0.3,
+  "ch_before": 195,
+  "ch_after": 196,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "מועדי",
+  "order": "7",
+  "err": 0.2,
+  "ch_before": 92,
+  "ch_after": 93,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": 0.2,
+  "ch_before": 149,
+  "ch_after": 150,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 0.2,
+  "ch_before": 51,
+  "ch_after": 52,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": -0.2,
+  "ch_before": 147,
+  "ch_after": 148,
+  "weak": false
+ },
+ {
+  "book": 3,
+  "portion": "וישא אהרן",
+  "order": "3",
+  "err": 0.2,
+  "ch_before": 49,
+  "ch_after": 50,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -0.2,
+  "ch_before": 53,
+  "ch_after": 54,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויהוה פקד",
+  "order": "8",
+  "err": -0.1,
+  "ch_before": 91,
+  "ch_after": 92,
+  "weak": true
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": -0.1,
+  "ch_before": 77,
+  "ch_after": 78,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויוסף הורד מצרימה",
+  "order": "15",
+  "err": -0.1,
+  "ch_before": 181,
+  "ch_after": 182,
+  "weak": false
+ },
+ {
+  "book": 4,
+  "portion": "דבר אל אהרן",
+  "order": "3",
+  "err": 0.1,
+  "ch_before": 54,
+  "ch_after": 55,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "כי ידבר",
+  "order": "2a",
+  "err": -0.0,
+  "ch_before": 51,
+  "ch_after": 52,
+  "weak": false
+ },
+ {
+  "book": 2,
+  "portion": "ויסע משה",
+  "order": "4a",
+  "err": -0.0,
+  "ch_before": 69,
+  "ch_after": 70,
+  "weak": false
+ },
+ {
+  "book": 1,
+  "portion": "ויקם יעקב",
+  "order": "12",
+  "err": -0.0,
+  "ch_before": 150,
+  "ch_after": 151,
+  "weak": false
+ }
+]
