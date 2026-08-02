@@ -2295,7 +2295,10 @@ $('pronBtn').onclick = togglePron;
 $('pronBtn').classList.toggle('on', SHOW_PRON);
 
 // ── view chrome (show/hide nav + enable toolbar) ─────────────────────────────
-function navLabel(){
+// NOTE: must not be called navLabel — that name belongs to the prev/next button
+// label builder above, and a second declaration would silently overwrite it
+// (leaving the arrows labelled with the current screen instead of the parasha).
+function viewLabel(){
   if(S.view==='books') return 'רשימת ספרים';
   if(S.view==='portions') return 'פרשות · '+(S.bookName||'');
   if(S.view==='spread') return 'פריסת פרקים · '+(S.bookName||'');
@@ -2304,7 +2307,7 @@ function navLabel(){
   return S.view||'';
 }
 function setView(){
-  trackNav(navLabel());
+  trackNav(viewLabel());
   const isVerse = S.view==='verses';
   const browse = (S.view==='books'||S.view==='portions'||S.view==='spread');
   // the navbar now hosts the back button, so it shows on every screen except search;
