@@ -514,6 +514,73 @@ def _fix_root_index(conn, book_id):
         conn.execute('UPDATE root_index SET chapter=?, verse=? WHERE verse_id=?', (r['ch'], r['vn'], r['vid']))
 
 
+def _shift_reading_manifests(book_id, pivot, delta):
+    """Keep the reading manifests aligned after a Samaritan-chapter split/merge.
+    readings.json + witnesses.json key recordings by (book_id, sam chapter NUMBER);
+    a split (delta=+1) / merge (delta=-1) renumbers every chapter after `pivot`,
+    so entries past the pivot must shift too or every later chapter plays the
+    previous/next chapter's audio. On a merge the swallowed chapter's own entry
+    (number pivot+1) is dropped from readings.json; in witnesses.json its segments
+    are appended to the surviving chapter's entry when the reader matches."""
+    base = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'audio')
+
+    def _rewrite(path, fn):
+        if not os.path.exists(path):
+            return
+        try:
+            with open(path, encoding='utf-8') as f:
+                data = _json.load(f)
+            fn(data)
+            tmp = path + '.tmp'
+            with open(tmp, 'w', encoding='utf-8') as f:
+                _json.dump(data, f, ensure_ascii=False)
+            os.replace(tmp, path)
+        except Exception:
+            pass   # a manifest problem must never fail the structural edit itself
+
+    def _readings(data):
+        books = data.get('books') if isinstance(data, dict) else None
+        if not isinstance(books, list):
+            return
+        for b in books:
+            if b.get('book_id') != book_id or not isinstance(b.get('chapters'), list):
+                continue
+            if delta < 0:   # merge: chapter pivot+1 no longer exists
+                b['chapters'] = [c for c in b['chapters'] if c.get('sam_ch_number') != pivot + 1]
+            for c in b['chapters']:
+                n = c.get('sam_ch_number')
+                if isinstance(n, int) and n > pivot:
+                    c['sam_ch_number'] = n + delta
+
+    def _witnesses(data):
+        items = data.get('items') if isinstance(data, dict) else None
+        if not isinstance(items, list):
+            return
+        if delta < 0:
+            keep = []
+            absorbed = [it for it in items
+                        if it.get('book_id') == book_id and it.get('sam_ch_number') == pivot + 1]
+            for it in items:
+                if it.get('book_id') == book_id and it.get('sam_ch_number') == pivot + 1:
+                    continue
+                if (it.get('book_id') == book_id and it.get('sam_ch_number') == pivot
+                        and it.get('segs')):
+                    ext = next((a for a in absorbed
+                                if a.get('reader') == it.get('reader') and a.get('segs')), None)
+                    if ext:
+                        it['segs'] = list(it['segs']) + list(ext['segs'])
+                        it['duration'] = (it.get('duration') or 0) + (ext.get('duration') or 0)
+                keep.append(it)
+            items[:] = keep
+        for it in items:
+            n = it.get('sam_ch_number')
+            if it.get('book_id') == book_id and isinstance(n, int) and n > pivot:
+                it['sam_ch_number'] = n + delta
+
+    _rewrite(os.path.join(base, 'readings', 'readings.json'), _readings)
+    _rewrite(os.path.join(base, 'witnesses.json'), _witnesses)
+
+
 @app.route('/api/admin/merge_next', methods=['POST'])
 def admin_merge_next():
     d = request.get_json(silent=True) or {}
@@ -622,6 +689,7 @@ def admin_merge_next_sam():
         conn.execute('UPDATE sam_chapters SET number=number-1 WHERE book_id=? AND number>?',
                      (cur['book_id'], cur['number'] + 1))
         conn.commit()
+        _shift_reading_manifests(cur['book_id'], cur['number'], -1)
     except Exception as e:
         conn.rollback()
         return jsonify({'ok': False, 'error': str(e)}), 500
@@ -642,7 +710,7 @@ def admin_split_sam():
     _backup_db()
     conn = db.get_connection()
     try:
-        cur = conn.execute('SELECT id,book_id,number FROM sam_chapters WHERE id=?', (sam_id,)).fetchone()
+        cur = conn.execute('SELECT id,book_id,number,portion_id FROM sam_chapters WHERE id=?', (sam_id,)).fetchone()
         if not cur:
             return jsonify({'ok': False, 'error': 'chapter not found'}), 404
         ids = [r['id'] for r in conn.execute(
@@ -657,10 +725,13 @@ def admin_split_sam():
         conn.execute('UPDATE sam_chapters SET number=number+1 WHERE book_id=? AND number>?',
                      (cur['book_id'], cur['number']))
         c2 = conn.cursor()
-        c2.execute('INSERT INTO sam_chapters (book_id, number) VALUES (?,?)', (cur['book_id'], cur['number'] + 1))
+        # the new chapter inherits a manual portion pin, if the split one had any
+        c2.execute('INSERT INTO sam_chapters (book_id, number, portion_id) VALUES (?,?,?)',
+                   (cur['book_id'], cur['number'] + 1, cur['portion_id']))
         new_id = c2.lastrowid
         conn.executemany('UPDATE verses SET sam_ch_id=? WHERE id=?', [(new_id, vid) for vid in moved])
         conn.commit()
+        _shift_reading_manifests(cur['book_id'], cur['number'], +1)
     except Exception as e:
         conn.rollback()
         return jsonify({'ok': False, 'error': str(e)}), 500
@@ -1027,10 +1098,12 @@ def api_sam_chapters():
     """Samaritan chapters whose first verse falls in the portion; or all of a book."""
     pid = request.args.get('portion_id')
     bid = request.args.get('book_id')
-    if pid:
+    if pid and pid.isdigit():   # the SPA can send a literal 'null' before its state settles
         rows = db.get_sam_chapters_in_portion(int(pid))
-    else:
+    elif bid and bid.isdigit():
         rows = db.get_sam_chapters(int(bid))
+    else:
+        return jsonify([])
     return jsonify([{'id': r['id'], 'number': r['number'],
                      'opening': _opening_words(r['first_text'] if 'first_text' in r.keys() else '')}
                     for r in rows])
