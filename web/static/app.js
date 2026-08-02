@@ -859,8 +859,10 @@ function renderChapterGrid(rows, hint, onClick, isSam){
     const b=el('button','cell'+(r.opening?' has-incipit':''));
     b.appendChild(el('span','cell-num',String(r.number)));
     if(r.opening) b.appendChild(el('span','cell-incipit',esc(r.opening)));
-    if(isSam && typeof readingFor==='function' && readingFor(r.number, S.book))
-      b.appendChild(el('span','cell-audio','♪'));    // this chapter has a reading recording
+    const hasAudio = isSam
+      ? (typeof readingFor==='function' && readingFor(r.number, S.book))
+      : (typeof masorotFor==='function' && masorotFor(S.book, r.number).length);
+    if(hasAudio) b.appendChild(el('span','cell-audio','♪'));   // chapter has a reading witness
     b.onclick=()=>onClick(r);
     grid.appendChild(b);
   }
@@ -4994,27 +4996,105 @@ function readingFor(samNum, bookId){
   return list.find(c=>c.sam_ch_number===samNum) || null;
 }
 const rdFmt = s => { s=Math.max(0,s|0); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
+
+// ── masorot archive: historical reading witnesses (עדי קריאה), one file per
+// STANDARD chapter. Loaded alongside the chanter's per-Samaritan-chapter set.
+let MASOROT = null;
+const CHANTER = 'מאיר בן יפנה ששוני';   // the reading witness of the original set
+fetch('/static/audio/masorot/masorot.json')
+  .then(r=>r.ok ? r.json() : null)
+  .then(j=>{ MASOROT=j; if(j && S.view==='verses') paintVerses(); })
+  .catch(()=>{});
+function masorotFor(bookId, stdChapter){
+  if(!MASOROT || !Array.isArray(MASOROT.items)) return [];
+  return MASOROT.items.filter(it=>it.book_id===bookId && it.chapter===stdChapter);
+}
+const _vnum = v => { const m=String(v==null?'':v).match(/\d+/); return m?+m[0]:null; };
+// witness label: which verses of which standard chapter this file actually covers
+function _witnessLabel(it, partial){
+  return partial ? ('פרק '+it.chapter+', פסוקים '+it.v1+'–'+it.v2) : ('פרק '+it.chapter);
+}
+// every reading-witness option for the chapter currently on screen.
+// Samaritan mode: the chanter's exact sam-chapter cut, plus archive files whose
+// (standard chapter, verse span) OVERLAPS the sam chapter's true span — computed
+// from the first/last verse's standard coordinates, so multi-part chapter files
+// attach only to the sam chapters they actually contain.
+function readingOptions(){
+  const opts = [];
+  if(S.chMode==='samaritan'){
+    const rec = readingFor(S.curChNum, S.book);
+    if(rec) opts.push({reader:CHANTER, file:rec.file, duration:rec.duration, name:rec.name});
+    if(S.verses && S.verses.length){
+      const f=S.verses[0], l=S.verses[S.verses.length-1];
+      const c1=parseInt(f.jchapter,10), c2=parseInt(l.jchapter,10);
+      const v1=_vnum(f.masnum!=null?f.masnum:f.number), v2=_vnum(l.masnum!=null?l.masnum:l.number);
+      if(c1) for(let ch=c1; ch<=(c2||c1); ch++){
+        for(const it of masorotFor(S.book, ch)){
+          const lo = (ch===c1) ? v1 : 1, hi = (ch===c2) ? v2 : 999;
+          if(lo!=null && hi!=null && it.v2 >= lo && it.v1 <= hi){
+            const partial = !(it.v1<=1 && it.v2>=900) && (it.v1>1 || it.v2<900);
+            opts.push({reader:it.reader, file:it.file, duration:it.duration,
+                       name:_witnessLabel(it, it.v1>1 || (S.verses && it.v2<hi)),
+                       vlabel:(it.v1>1||it.v2<999)?(it.v1+'–'+it.v2):''});
+          }
+        }
+      }
+    }
+  } else {
+    for(const it of masorotFor(S.book, S.curChNum))
+      opts.push({reader:it.reader, file:it.file, duration:it.duration,
+                 name:_witnessLabel(it, false),
+                 vlabel:(it.v1>1||it.v2<999)?(it.v1+'–'+it.v2):''});
+  }
+  return opts;
+}
 function readingBar(c){
   RDAU.ui = null;
-  if(S.chMode!=='samaritan') return;
-  const rec = readingFor(S.curChNum, S.book); if(!rec) return;
+  const opts = readingOptions(); if(!opts.length) return;
+  // keep the previously chosen witness when available for this chapter
+  const saved = localStorage.getItem('rd_reader');
+  let rec = opts.find(o=>o.reader===saved) || opts[0];
   const bar = el('div','reading-bar');
   const btn = el('button','reading-btn');
   const isCur = RDAU.audio && RDAU.key===rec.file;
   btn.innerHTML = (isCur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
-  btn.title = 'הקלטת הקריאה';
-  btn.onclick = ()=>readingToggle(rec);
+  btn.title = 'האזנה לעד קריאה';
+  btn.onclick = ()=>readingToggle(RDAU.ui.rec);
   bar.appendChild(btn);
   const info = el('div','reading-info');
-  info.appendChild(el('div','reading-title','הקלטת הקריאה &middot; '+esc(rec.name)));
+  const title = el('div','reading-title');
+  const renderTitle = r => { title.innerHTML = 'האזנה לעד קריאה &middot; ' + esc(r.reader); };
+  renderTitle(rec);
+  info.appendChild(title);
   const seek = el('input','reading-seek'); seek.type='range'; seek.min=0; seek.step=0.1;
-  seek.max = rec.duration; seek.value = isCur ? RDAU.audio.currentTime : 0;
-  seek.oninput = ()=>{ if(RDAU.audio && RDAU.key===rec.file){ RDAU.audio.currentTime=parseFloat(seek.value); }
-                       else { readingToggle(rec, parseFloat(seek.value)); } };
+  seek.max = rec.duration || 0; seek.value = isCur ? RDAU.audio.currentTime : 0;
+  seek.oninput = ()=>{ const r=RDAU.ui.rec;
+                       if(RDAU.audio && RDAU.key===r.file){ RDAU.audio.currentTime=parseFloat(seek.value); }
+                       else { readingToggle(r, parseFloat(seek.value)); } };
   info.appendChild(seek);
   bar.appendChild(info);
-  const time = el('span','reading-time', rdFmt(isCur?RDAU.audio.currentTime:0)+' / '+rdFmt(rec.duration));
+  const time = el('span','reading-time', rdFmt(isCur?RDAU.audio.currentTime:0)+' / '+rdFmt(rec.duration||0));
   bar.appendChild(time);
+  // witness picker — only when this chapter has more than one reading witness
+  if(opts.length > 1){
+    const sel = el('select','reading-witness');
+    opts.forEach((o,i)=>{ const op=document.createElement('option');
+      op.value=i;
+      // distinguish multiple parts by the same witness via their verse span
+      op.textContent = o.reader + (o.vlabel ? (' (פס׳ '+o.vlabel+')') : '');
+      if(o===rec) op.selected=true; sel.appendChild(op); });
+    sel.onchange = ()=>{
+      const wasPlaying = RDAU.playing;
+      const o = opts[+sel.value];
+      localStorage.setItem('rd_reader', o.reader);
+      RDAU.ui.rec = o; renderTitle(o);
+      seek.max = o.duration || 0; seek.value = 0;
+      time.textContent = rdFmt(0)+' / '+rdFmt(o.duration||0);
+      readingStop();
+      if(wasPlaying) readingToggle(o);      // switching mid-play continues with the new witness
+    };
+    bar.appendChild(sel);
+  }
   const spd = el('button','reading-speed','×'+RDAU.speed);
   spd.title = 'מהירות ההשמעה';
   spd.onclick = ()=>{

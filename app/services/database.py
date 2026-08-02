@@ -1358,18 +1358,18 @@ def get_eyalk_commentary(verse_ids):
                  'anchors': '— ' + (r['author'] or '')} for r in arows]
     except Exception:
         pass
-    # "הפירוש השלם" by Benyamim Tsedaka — per-parasha topical commentary
-    # (currently ויקרא; further books to follow), also under this source.
+    # per-parasha tradition sections synthesized from the community's halakha-and-
+    # practice commentary volumes (source noted in VER_UPDATES); presented as part
+    # of the tradition source itself, same look as the eyalk sections above.
     try:
         brows = conn.execute(
             f"""SELECT DISTINCT s.parsha, s.title, s.ord, s.text FROM binyamim_sections s
                 JOIN binyamim_verse_links l ON l.section_id = s.id
                 WHERE l.verse_id IN ({placeholders}) ORDER BY s.ord""",
             verse_ids).fetchall()
-        out += [{'parsha': ('הפירוש השלם — ' + (r['parsha'] or '')).rstrip(' —')
+        out += [{'parsha': (r['parsha'] or '')
                            + ((' · ' + r['title']) if r['title'] else ''),
-                 'text': r['text'] or '',
-                 'anchors': '— בנימים צדקה, "הפירוש השלם"'} for r in brows]
+                 'text': r['text'] or ''} for r in brows]
     except Exception:
         pass
     conn.close()

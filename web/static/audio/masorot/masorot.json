@@ -1,0 +1,1785 @@
+{
+ "version": 1,
+ "readers": {
+  "פנחס אברהם כהן": {
+   "origin": "חולון",
+   "year": "1974"
+  },
+  "אברהם צדקה": {
+   "origin": "שכם",
+   "year": "1962"
+  },
+  "אלעזר צדקה כהן": {
+   "origin": "שכם",
+   "year": "1975"
+  },
+  "ישראל צדקה": {
+   "origin": "חולון",
+   "year": "1980"
+  },
+  "רצון צדקה": {
+   "origin": "חולון",
+   "year": "1980"
+  },
+  "עובדיה צדקה": {
+   "origin": "שכם",
+   "year": "1956"
+  },
+  "אברהם בן יששכר המרחיב": {
+   "origin": "חולון",
+   "year": "1980"
+  }
+ },
+ "items": [
+  {
+   "u": 12346,
+   "book_id": 1,
+   "chapter": 1,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 31,
+   "file": "/static/audio/masorot/m12346.mp3",
+   "duration": 294.0
+  },
+  {
+   "u": 12347,
+   "book_id": 1,
+   "chapter": 2,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 25,
+   "file": "/static/audio/masorot/m12347.mp3",
+   "duration": 243.08
+  },
+  {
+   "u": 12348,
+   "book_id": 1,
+   "chapter": 3,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 24,
+   "file": "/static/audio/masorot/m12348.mp3",
+   "duration": 243.57
+  },
+  {
+   "u": 12349,
+   "book_id": 1,
+   "chapter": 4,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 26,
+   "file": "/static/audio/masorot/m12349.mp3",
+   "duration": 231.85
+  },
+  {
+   "u": 12350,
+   "book_id": 1,
+   "chapter": 5,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 32,
+   "file": "/static/audio/masorot/m12350.mp3",
+   "duration": 272.95
+  },
+  {
+   "u": 12351,
+   "book_id": 1,
+   "chapter": 6,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12351.mp3",
+   "duration": 216.08
+  },
+  {
+   "u": 12352,
+   "book_id": 1,
+   "chapter": 7,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 24,
+   "file": "/static/audio/masorot/m12352.mp3",
+   "duration": 233.01
+  },
+  {
+   "u": 12353,
+   "book_id": 1,
+   "chapter": 8,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12353.mp3",
+   "duration": 196.58
+  },
+  {
+   "u": 12354,
+   "book_id": 1,
+   "chapter": 9,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12354.mp3",
+   "duration": 228.5
+  },
+  {
+   "u": 12355,
+   "book_id": 1,
+   "chapter": 10,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 32,
+   "file": "/static/audio/masorot/m12355.mp3",
+   "duration": 188.21
+  },
+  {
+   "u": 12356,
+   "book_id": 1,
+   "chapter": 11,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 32,
+   "file": "/static/audio/masorot/m12356.mp3",
+   "duration": 300.25
+  },
+  {
+   "u": 12357,
+   "book_id": 1,
+   "chapter": 12,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 20,
+   "file": "/static/audio/masorot/m12357.mp3",
+   "duration": 169.66
+  },
+  {
+   "u": 12358,
+   "book_id": 1,
+   "chapter": 13,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 18,
+   "file": "/static/audio/masorot/m12358.mp3",
+   "duration": 134.15
+  },
+  {
+   "u": 12359,
+   "book_id": 1,
+   "chapter": 14,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 24,
+   "file": "/static/audio/masorot/m12359.mp3",
+   "duration": 210.85
+  },
+  {
+   "u": 12360,
+   "book_id": 1,
+   "chapter": 15,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 21,
+   "file": "/static/audio/masorot/m12360.mp3",
+   "duration": 175.82
+  },
+  {
+   "u": 12361,
+   "book_id": 1,
+   "chapter": 16,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 17,
+   "file": "/static/audio/masorot/m12361.mp3",
+   "duration": 141.93
+  },
+  {
+   "u": 12362,
+   "book_id": 1,
+   "chapter": 17,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 27,
+   "file": "/static/audio/masorot/m12362.mp3",
+   "duration": 182.23
+  },
+  {
+   "u": 12363,
+   "book_id": 1,
+   "chapter": 18,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 30,
+   "file": "/static/audio/masorot/m12363.mp3",
+   "duration": 236.69
+  },
+  {
+   "u": 12364,
+   "book_id": 1,
+   "chapter": 18,
+   "reader": "פנחס אברהם כהן",
+   "v1": 31,
+   "v2": 33,
+   "file": "/static/audio/masorot/m12364.mp3",
+   "duration": 56.84
+  },
+  {
+   "u": 12365,
+   "book_id": 1,
+   "chapter": 19,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 38,
+   "file": "/static/audio/masorot/m12365.mp3",
+   "duration": 402.78
+  },
+  {
+   "u": 12366,
+   "book_id": 1,
+   "chapter": 20,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 18,
+   "file": "/static/audio/masorot/m12366.mp3",
+   "duration": 159.52
+  },
+  {
+   "u": 12367,
+   "book_id": 1,
+   "chapter": 21,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 34,
+   "file": "/static/audio/masorot/m12367.mp3",
+   "duration": 266.05
+  },
+  {
+   "u": 12368,
+   "book_id": 1,
+   "chapter": 22,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 24,
+   "file": "/static/audio/masorot/m12368.mp3",
+   "duration": 209.79
+  },
+  {
+   "u": 12369,
+   "book_id": 1,
+   "chapter": 23,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 20,
+   "file": "/static/audio/masorot/m12369.mp3",
+   "duration": 159.87
+  },
+  {
+   "u": 12370,
+   "book_id": 1,
+   "chapter": 24,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 67,
+   "file": "/static/audio/masorot/m12370.mp3",
+   "duration": 553.38
+  },
+  {
+   "u": 12371,
+   "book_id": 1,
+   "chapter": 25,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 34,
+   "file": "/static/audio/masorot/m12371.mp3",
+   "duration": 241.31
+  },
+  {
+   "u": 12372,
+   "book_id": 1,
+   "chapter": 26,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12372.mp3",
+   "duration": 275.75
+  },
+  {
+   "u": 12373,
+   "book_id": 1,
+   "chapter": 27,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 46,
+   "file": "/static/audio/masorot/m12373.mp3",
+   "duration": 348.3
+  },
+  {
+   "u": 12374,
+   "book_id": 1,
+   "chapter": 28,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12374.mp3",
+   "duration": 184.34
+  },
+  {
+   "u": 12375,
+   "book_id": 1,
+   "chapter": 29,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12375.mp3",
+   "duration": 241.42
+  },
+  {
+   "u": 12376,
+   "book_id": 1,
+   "chapter": 30,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 43,
+   "file": "/static/audio/masorot/m12376.mp3",
+   "duration": 324.41
+  },
+  {
+   "u": 12377,
+   "book_id": 1,
+   "chapter": 31,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 5,
+   "file": "/static/audio/masorot/m12377.mp3",
+   "duration": 31.81
+  },
+  {
+   "u": 12378,
+   "book_id": 1,
+   "chapter": 31,
+   "reader": "פנחס אברהם כהן",
+   "v1": 3,
+   "v2": 54,
+   "file": "/static/audio/masorot/m12378.mp3",
+   "duration": 439.4
+  },
+  {
+   "u": 12379,
+   "book_id": 1,
+   "chapter": 32,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 33,
+   "file": "/static/audio/masorot/m12379.mp3",
+   "duration": 269.4
+  },
+  {
+   "u": 12380,
+   "book_id": 1,
+   "chapter": 33,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 20,
+   "file": "/static/audio/masorot/m12380.mp3",
+   "duration": 164.37
+  },
+  {
+   "u": 12381,
+   "book_id": 1,
+   "chapter": 34,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 31,
+   "file": "/static/audio/masorot/m12381.mp3",
+   "duration": 262.3
+  },
+  {
+   "u": 12382,
+   "book_id": 1,
+   "chapter": 35,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12382.mp3",
+   "duration": 221.44
+  },
+  {
+   "u": 12383,
+   "book_id": 1,
+   "chapter": 36,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 43,
+   "file": "/static/audio/masorot/m12383.mp3",
+   "duration": 278.28
+  },
+  {
+   "u": 12384,
+   "book_id": 1,
+   "chapter": 37,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 36,
+   "file": "/static/audio/masorot/m12384.mp3",
+   "duration": 303.35
+  },
+  {
+   "u": 12385,
+   "book_id": 1,
+   "chapter": 38,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 30,
+   "file": "/static/audio/masorot/m12385.mp3",
+   "duration": 229.96
+  },
+  {
+   "u": 12386,
+   "book_id": 1,
+   "chapter": 39,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12386.mp3",
+   "duration": 187.71
+  },
+  {
+   "u": 12387,
+   "book_id": 1,
+   "chapter": 40,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12387.mp3",
+   "duration": 183.73
+  },
+  {
+   "u": 12388,
+   "book_id": 1,
+   "chapter": 41,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 57,
+   "file": "/static/audio/masorot/m12388.mp3",
+   "duration": 414.67
+  },
+  {
+   "u": 12389,
+   "book_id": 1,
+   "chapter": 42,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 38,
+   "file": "/static/audio/masorot/m12389.mp3",
+   "duration": 308.83
+  },
+  {
+   "u": 12390,
+   "book_id": 1,
+   "chapter": 43,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 34,
+   "file": "/static/audio/masorot/m12390.mp3",
+   "duration": 298.83
+  },
+  {
+   "u": 12391,
+   "book_id": 1,
+   "chapter": 44,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 34,
+   "file": "/static/audio/masorot/m12391.mp3",
+   "duration": 251.23
+  },
+  {
+   "u": 12392,
+   "book_id": 1,
+   "chapter": 45,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 26,
+   "file": "/static/audio/masorot/m12392.mp3",
+   "duration": 205.82
+  },
+  {
+   "u": 3607,
+   "book_id": 1,
+   "chapter": 49,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 33,
+   "file": "/static/audio/masorot/m3607.mp3",
+   "duration": 340.78
+  },
+  {
+   "u": 3610,
+   "book_id": 1,
+   "chapter": 49,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 33,
+   "file": "/static/audio/masorot/m3610.mp3",
+   "duration": 353.55
+  },
+  {
+   "u": 3609,
+   "book_id": 1,
+   "chapter": 50,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 4,
+   "file": "/static/audio/masorot/m3609.mp3",
+   "duration": 34.05
+  },
+  {
+   "u": 3613,
+   "book_id": 1,
+   "chapter": 50,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 4,
+   "file": "/static/audio/masorot/m3613.mp3",
+   "duration": 32.81
+  },
+  {
+   "u": 12251,
+   "book_id": 2,
+   "chapter": 8,
+   "reader": "פנחס אברהם כהן",
+   "v1": 22,
+   "v2": 28,
+   "file": "/static/audio/masorot/m12251.mp3",
+   "duration": 89.7
+  },
+  {
+   "u": 12252,
+   "book_id": 2,
+   "chapter": 9,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12252.mp3",
+   "duration": 364.94
+  },
+  {
+   "u": 12253,
+   "book_id": 2,
+   "chapter": 10,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12253.mp3",
+   "duration": 307.87
+  },
+  {
+   "u": 12254,
+   "book_id": 2,
+   "chapter": 11,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 10,
+   "file": "/static/audio/masorot/m12254.mp3",
+   "duration": 140.67
+  },
+  {
+   "u": 12255,
+   "book_id": 2,
+   "chapter": 12,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 51,
+   "file": "/static/audio/masorot/m12255.mp3",
+   "duration": 470.25
+  },
+  {
+   "u": 12256,
+   "book_id": 2,
+   "chapter": 13,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12256.mp3",
+   "duration": 217.34
+  },
+  {
+   "u": 12257,
+   "book_id": 2,
+   "chapter": 14,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 31,
+   "file": "/static/audio/masorot/m12257.mp3",
+   "duration": 298.15
+  },
+  {
+   "u": 12258,
+   "book_id": 2,
+   "chapter": 15,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 27,
+   "file": "/static/audio/masorot/m12258.mp3",
+   "duration": 228.6
+  },
+  {
+   "u": 12259,
+   "book_id": 2,
+   "chapter": 16,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 36,
+   "file": "/static/audio/masorot/m12259.mp3",
+   "duration": 390.38
+  },
+  {
+   "u": 12260,
+   "book_id": 2,
+   "chapter": 17,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 16,
+   "file": "/static/audio/masorot/m12260.mp3",
+   "duration": 176.46
+  },
+  {
+   "u": 12261,
+   "book_id": 2,
+   "chapter": 18,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 27,
+   "file": "/static/audio/masorot/m12261.mp3",
+   "duration": 346.87
+  },
+  {
+   "u": 12262,
+   "book_id": 2,
+   "chapter": 19,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 25,
+   "file": "/static/audio/masorot/m12262.mp3",
+   "duration": 243.74
+  },
+  {
+   "u": 12263,
+   "book_id": 2,
+   "chapter": 20,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12263.mp3",
+   "duration": 472.42
+  },
+  {
+   "u": 12264,
+   "book_id": 2,
+   "chapter": 21,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 37,
+   "file": "/static/audio/masorot/m12264.mp3",
+   "duration": 302.72
+  },
+  {
+   "u": 12265,
+   "book_id": 2,
+   "chapter": 22,
+   "reader": "פנחס אברהם כהן",
+   "v1": 1,
+   "v2": 27,
+   "file": "/static/audio/masorot/m12265.mp3",
+   "duration": 226.99
+  },
+  {
+   "u": 12266,
+   "book_id": 2,
+   "chapter": 22,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 24,
+   "v2": 30,
+   "file": "/static/audio/masorot/m12266.mp3",
+   "duration": 84.36
+  },
+  {
+   "u": 12267,
+   "book_id": 2,
+   "chapter": 23,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 33,
+   "file": "/static/audio/masorot/m12267.mp3",
+   "duration": 364.64
+  },
+  {
+   "u": 12268,
+   "book_id": 2,
+   "chapter": 24,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 18,
+   "file": "/static/audio/masorot/m12268.mp3",
+   "duration": 200.99
+  },
+  {
+   "u": 12269,
+   "book_id": 2,
+   "chapter": 25,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 40,
+   "file": "/static/audio/masorot/m12269.mp3",
+   "duration": 308.87
+  },
+  {
+   "u": 12270,
+   "book_id": 2,
+   "chapter": 26,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 37,
+   "file": "/static/audio/masorot/m12270.mp3",
+   "duration": 479.6
+  },
+  {
+   "u": 12271,
+   "book_id": 2,
+   "chapter": 27,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 21,
+   "file": "/static/audio/masorot/m12271.mp3",
+   "duration": 226.58
+  },
+  {
+   "u": 12272,
+   "book_id": 2,
+   "chapter": 28,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 43,
+   "file": "/static/audio/masorot/m12272.mp3",
+   "duration": 462.26
+  },
+  {
+   "u": 12273,
+   "book_id": 2,
+   "chapter": 29,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 46,
+   "file": "/static/audio/masorot/m12273.mp3",
+   "duration": 487.44
+  },
+  {
+   "u": 12274,
+   "book_id": 2,
+   "chapter": 30,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 11,
+   "v2": 38,
+   "file": "/static/audio/masorot/m12274.mp3",
+   "duration": 320.85
+  },
+  {
+   "u": 12275,
+   "book_id": 2,
+   "chapter": 31,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 18,
+   "file": "/static/audio/masorot/m12275.mp3",
+   "duration": 195.46
+  },
+  {
+   "u": 12276,
+   "book_id": 2,
+   "chapter": 32,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12276.mp3",
+   "duration": 501.7
+  },
+  {
+   "u": 12277,
+   "book_id": 2,
+   "chapter": 33,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12277.mp3",
+   "duration": 288.49
+  },
+  {
+   "u": 12278,
+   "book_id": 2,
+   "chapter": 34,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 10,
+   "file": "/static/audio/masorot/m12278.mp3",
+   "duration": 164.12
+  },
+  {
+   "u": 12279,
+   "book_id": 2,
+   "chapter": 34,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 10,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12279.mp3",
+   "duration": 339.43
+  },
+  {
+   "u": 12280,
+   "book_id": 2,
+   "chapter": 35,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12280.mp3",
+   "duration": 364.67
+  },
+  {
+   "u": 12281,
+   "book_id": 2,
+   "chapter": 36,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 38,
+   "file": "/static/audio/masorot/m12281.mp3",
+   "duration": 508.38
+  },
+  {
+   "u": 12282,
+   "book_id": 2,
+   "chapter": 37,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12282.mp3",
+   "duration": 396.9
+  },
+  {
+   "u": 12283,
+   "book_id": 2,
+   "chapter": 38,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 31,
+   "file": "/static/audio/masorot/m12283.mp3",
+   "duration": 436.36
+  },
+  {
+   "u": 12284,
+   "book_id": 2,
+   "chapter": 39,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 43,
+   "file": "/static/audio/masorot/m12284.mp3",
+   "duration": 543.4
+  },
+  {
+   "u": 12285,
+   "book_id": 2,
+   "chapter": 40,
+   "reader": "אלעזר צדקה כהן",
+   "v1": 1,
+   "v2": 38,
+   "file": "/static/audio/masorot/m12285.mp3",
+   "duration": 447.47
+  },
+  {
+   "u": 12286,
+   "book_id": 3,
+   "chapter": 16,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 34,
+   "file": "/static/audio/masorot/m12286.mp3",
+   "duration": 419.23
+  },
+  {
+   "u": 12287,
+   "book_id": 3,
+   "chapter": 17,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 16,
+   "file": "/static/audio/masorot/m12287.mp3",
+   "duration": 227.45
+  },
+  {
+   "u": 12288,
+   "book_id": 3,
+   "chapter": 18,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 30,
+   "file": "/static/audio/masorot/m12288.mp3",
+   "duration": 245.62
+  },
+  {
+   "u": 12289,
+   "book_id": 3,
+   "chapter": 19,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 37,
+   "file": "/static/audio/masorot/m12289.mp3",
+   "duration": 354.82
+  },
+  {
+   "u": 12290,
+   "book_id": 3,
+   "chapter": 20,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 27,
+   "file": "/static/audio/masorot/m12290.mp3",
+   "duration": 312.15
+  },
+  {
+   "u": 12291,
+   "book_id": 3,
+   "chapter": 21,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 24,
+   "file": "/static/audio/masorot/m12291.mp3",
+   "duration": 194.55
+  },
+  {
+   "u": 12292,
+   "book_id": 3,
+   "chapter": 22,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 33,
+   "file": "/static/audio/masorot/m12292.mp3",
+   "duration": 296.73
+  },
+  {
+   "u": 12293,
+   "book_id": 3,
+   "chapter": 23,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 44,
+   "file": "/static/audio/masorot/m12293.mp3",
+   "duration": 436.98
+  },
+  {
+   "u": 12294,
+   "book_id": 3,
+   "chapter": 24,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12294.mp3",
+   "duration": 199.05
+  },
+  {
+   "u": 12398,
+   "book_id": 3,
+   "chapter": 25,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 26,
+   "file": "/static/audio/masorot/m12398.mp3",
+   "duration": 250.64
+  },
+  {
+   "u": 12399,
+   "book_id": 3,
+   "chapter": 25,
+   "reader": "רצון צדקה",
+   "v1": 27,
+   "v2": 55,
+   "file": "/static/audio/masorot/m12399.mp3",
+   "duration": 244.97
+  },
+  {
+   "u": 12296,
+   "book_id": 3,
+   "chapter": 26,
+   "reader": "רצון צדקה",
+   "v1": 1,
+   "v2": 46,
+   "file": "/static/audio/masorot/m12296.mp3",
+   "duration": 435.11
+  },
+  {
+   "u": 12297,
+   "book_id": 3,
+   "chapter": 27,
+   "reader": "רצון צדקה",
+   "v1": 1,
+   "v2": 34,
+   "file": "/static/audio/masorot/m12297.mp3",
+   "duration": 296.82
+  },
+  {
+   "u": 12298,
+   "book_id": 4,
+   "chapter": 1,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 54,
+   "file": "/static/audio/masorot/m12298.mp3",
+   "duration": 441.17
+  },
+  {
+   "u": 12300,
+   "book_id": 4,
+   "chapter": 2,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 34,
+   "file": "/static/audio/masorot/m12300.mp3",
+   "duration": 259.6
+  },
+  {
+   "u": 12301,
+   "book_id": 4,
+   "chapter": 3,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 51,
+   "file": "/static/audio/masorot/m12301.mp3",
+   "duration": 422.85
+  },
+  {
+   "u": 12302,
+   "book_id": 4,
+   "chapter": 4,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 49,
+   "file": "/static/audio/masorot/m12302.mp3",
+   "duration": 445.96
+  },
+  {
+   "u": 12303,
+   "book_id": 4,
+   "chapter": 5,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 31,
+   "file": "/static/audio/masorot/m12303.mp3",
+   "duration": 302.58
+  },
+  {
+   "u": 12304,
+   "book_id": 4,
+   "chapter": 6,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 27,
+   "file": "/static/audio/masorot/m12304.mp3",
+   "duration": 240.54
+  },
+  {
+   "u": 12305,
+   "book_id": 4,
+   "chapter": 7,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 89,
+   "file": "/static/audio/masorot/m12305.mp3",
+   "duration": 257.37
+  },
+  {
+   "u": 12306,
+   "book_id": 4,
+   "chapter": 8,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 26,
+   "file": "/static/audio/masorot/m12306.mp3",
+   "duration": 231.01
+  },
+  {
+   "u": 12307,
+   "book_id": 4,
+   "chapter": 9,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12307.mp3",
+   "duration": 231.91
+  },
+  {
+   "u": 12308,
+   "book_id": 4,
+   "chapter": 10,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 36,
+   "file": "/static/audio/masorot/m12308.mp3",
+   "duration": 305.03
+  },
+  {
+   "u": 12309,
+   "book_id": 4,
+   "chapter": 11,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12309.mp3",
+   "duration": 362.74
+  },
+  {
+   "u": 12310,
+   "book_id": 4,
+   "chapter": 12,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 16,
+   "file": "/static/audio/masorot/m12310.mp3",
+   "duration": 178.98
+  },
+  {
+   "u": 12311,
+   "book_id": 4,
+   "chapter": 13,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 33,
+   "file": "/static/audio/masorot/m12311.mp3",
+   "duration": 346.21
+  },
+  {
+   "u": 12312,
+   "book_id": 4,
+   "chapter": 14,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 45,
+   "file": "/static/audio/masorot/m12312.mp3",
+   "duration": 468.71
+  },
+  {
+   "u": 12313,
+   "book_id": 4,
+   "chapter": 15,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 16,
+   "file": "/static/audio/masorot/m12313.mp3",
+   "duration": 122.51
+  },
+  {
+   "u": 12633,
+   "book_id": 4,
+   "chapter": 15,
+   "reader": "ישראל צדקה",
+   "v1": 18,
+   "v2": 41,
+   "file": "/static/audio/masorot/m12633.mp3",
+   "duration": 229.53
+  },
+  {
+   "u": 12393,
+   "book_id": 4,
+   "chapter": 16,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12393.mp3",
+   "duration": 340.5
+  },
+  {
+   "u": 12394,
+   "book_id": 4,
+   "chapter": 17,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 28,
+   "file": "/static/audio/masorot/m12394.mp3",
+   "duration": 257.34
+  },
+  {
+   "u": 12395,
+   "book_id": 4,
+   "chapter": 18,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 32,
+   "file": "/static/audio/masorot/m12395.mp3",
+   "duration": 351.9
+  },
+  {
+   "u": 12396,
+   "book_id": 4,
+   "chapter": 19,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12396.mp3",
+   "duration": 229.84
+  },
+  {
+   "u": 12397,
+   "book_id": 4,
+   "chapter": 20,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 11,
+   "file": "/static/audio/masorot/m12397.mp3",
+   "duration": 106.08
+  },
+  {
+   "u": 12634,
+   "book_id": 4,
+   "chapter": 20,
+   "reader": "ישראל צדקה",
+   "v1": 12,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12634.mp3",
+   "duration": 274.13
+  },
+  {
+   "u": 12635,
+   "book_id": 4,
+   "chapter": 21,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 35,
+   "file": "/static/audio/masorot/m12635.mp3",
+   "duration": 425.65
+  },
+  {
+   "u": 12636,
+   "book_id": 4,
+   "chapter": 22,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 41,
+   "file": "/static/audio/masorot/m12636.mp3",
+   "duration": 417.04
+  },
+  {
+   "u": 12637,
+   "book_id": 4,
+   "chapter": 23,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 30,
+   "file": "/static/audio/masorot/m12637.mp3",
+   "duration": 266.43
+  },
+  {
+   "u": 12638,
+   "book_id": 4,
+   "chapter": 24,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 25,
+   "file": "/static/audio/masorot/m12638.mp3",
+   "duration": 207.75
+  },
+  {
+   "u": 12639,
+   "book_id": 4,
+   "chapter": 25,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 18,
+   "file": "/static/audio/masorot/m12639.mp3",
+   "duration": 147.56
+  },
+  {
+   "u": 12640,
+   "book_id": 4,
+   "chapter": 26,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 65,
+   "file": "/static/audio/masorot/m12640.mp3",
+   "duration": 552.74
+  },
+  {
+   "u": 122,
+   "book_id": 4,
+   "chapter": 26,
+   "reader": "עובדיה צדקה",
+   "v1": 2,
+   "v2": 65,
+   "file": "/static/audio/masorot/m122.mp3",
+   "duration": 523.94
+  },
+  {
+   "u": 12641,
+   "book_id": 4,
+   "chapter": 27,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12641.mp3",
+   "duration": 216.2
+  },
+  {
+   "u": 12642,
+   "book_id": 4,
+   "chapter": 28,
+   "reader": "ישראל צדקה",
+   "v1": 1,
+   "v2": 15,
+   "file": "/static/audio/masorot/m12642.mp3",
+   "duration": 125.15
+  },
+  {
+   "u": 124,
+   "book_id": 4,
+   "chapter": 28,
+   "reader": "עובדיה צדקה",
+   "v1": 15,
+   "v2": 31,
+   "file": "/static/audio/masorot/m124.mp3",
+   "duration": 114.06
+  },
+  {
+   "u": 125,
+   "book_id": 4,
+   "chapter": 29,
+   "reader": "עובדיה צדקה",
+   "v1": 1,
+   "v2": 16,
+   "file": "/static/audio/masorot/m125.mp3",
+   "duration": 130.77
+  },
+  {
+   "u": 126,
+   "book_id": 4,
+   "chapter": 31,
+   "reader": "עובדיה צדקה",
+   "v1": 32,
+   "v2": 54,
+   "file": "/static/audio/masorot/m126.mp3",
+   "duration": 175.64
+  },
+  {
+   "u": 127,
+   "book_id": 4,
+   "chapter": 32,
+   "reader": "עובדיה צדקה",
+   "v1": 1,
+   "v2": 42,
+   "file": "/static/audio/masorot/m127.mp3",
+   "duration": 217.73
+  },
+  {
+   "u": 128,
+   "book_id": 4,
+   "chapter": 33,
+   "reader": "עובדיה צדקה",
+   "v1": 1,
+   "v2": 56,
+   "file": "/static/audio/masorot/m128.mp3",
+   "duration": 293.96
+  },
+  {
+   "u": 129,
+   "book_id": 4,
+   "chapter": 34,
+   "reader": "עובדיה צדקה",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m129.mp3",
+   "duration": 205.73
+  },
+  {
+   "u": 130,
+   "book_id": 4,
+   "chapter": 35,
+   "reader": "עובדיה צדקה",
+   "v1": 1,
+   "v2": 34,
+   "file": "/static/audio/masorot/m130.mp3",
+   "duration": 297.31
+  },
+  {
+   "u": 12314,
+   "book_id": 5,
+   "chapter": 1,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 46,
+   "file": "/static/audio/masorot/m12314.mp3",
+   "duration": 726.88
+  },
+  {
+   "u": 12315,
+   "book_id": 5,
+   "chapter": 2,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 37,
+   "file": "/static/audio/masorot/m12315.mp3",
+   "duration": 580.29
+  },
+  {
+   "u": 12316,
+   "book_id": 5,
+   "chapter": 3,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12316.mp3",
+   "duration": 459.16
+  },
+  {
+   "u": 12317,
+   "book_id": 5,
+   "chapter": 4,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 49,
+   "file": "/static/audio/masorot/m12317.mp3",
+   "duration": 823.24
+  },
+  {
+   "u": 12318,
+   "book_id": 5,
+   "chapter": 5,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 30,
+   "file": "/static/audio/masorot/m12318.mp3",
+   "duration": 584.13
+  },
+  {
+   "u": 12319,
+   "book_id": 5,
+   "chapter": 6,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 25,
+   "file": "/static/audio/masorot/m12319.mp3",
+   "duration": 349.55
+  },
+  {
+   "u": 12320,
+   "book_id": 5,
+   "chapter": 7,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 26,
+   "file": "/static/audio/masorot/m12320.mp3",
+   "duration": 433.12
+  },
+  {
+   "u": 12321,
+   "book_id": 5,
+   "chapter": 8,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 7,
+   "file": "/static/audio/masorot/m12321.mp3",
+   "duration": 123.26
+  },
+  {
+   "u": 12322,
+   "book_id": 5,
+   "chapter": 8,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 8,
+   "v2": 20,
+   "file": "/static/audio/masorot/m12322.mp3",
+   "duration": 208.79
+  },
+  {
+   "u": 12323,
+   "book_id": 5,
+   "chapter": 9,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12323.mp3",
+   "duration": 510.8
+  },
+  {
+   "u": 12324,
+   "book_id": 5,
+   "chapter": 10,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12324.mp3",
+   "duration": 345.97
+  },
+  {
+   "u": 12325,
+   "book_id": 5,
+   "chapter": 11,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 32,
+   "file": "/static/audio/masorot/m12325.mp3",
+   "duration": 529.4
+  },
+  {
+   "u": 12326,
+   "book_id": 5,
+   "chapter": 12,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 31,
+   "file": "/static/audio/masorot/m12326.mp3",
+   "duration": 565.78
+  },
+  {
+   "u": 12327,
+   "book_id": 5,
+   "chapter": 13,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 19,
+   "file": "/static/audio/masorot/m12327.mp3",
+   "duration": 330.14
+  },
+  {
+   "u": 12328,
+   "book_id": 5,
+   "chapter": 14,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12328.mp3",
+   "duration": 364.94
+  },
+  {
+   "u": 12329,
+   "book_id": 5,
+   "chapter": 15,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12329.mp3",
+   "duration": 319.89
+  },
+  {
+   "u": 12330,
+   "book_id": 5,
+   "chapter": 16,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12330.mp3",
+   "duration": 319.41
+  },
+  {
+   "u": 12331,
+   "book_id": 5,
+   "chapter": 17,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 20,
+   "file": "/static/audio/masorot/m12331.mp3",
+   "duration": 329.48
+  },
+  {
+   "u": 12332,
+   "book_id": 5,
+   "chapter": 18,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12332.mp3",
+   "duration": 284.98
+  },
+  {
+   "u": 12333,
+   "book_id": 5,
+   "chapter": 19,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 21,
+   "file": "/static/audio/masorot/m12333.mp3",
+   "duration": 293.34
+  },
+  {
+   "u": 12334,
+   "book_id": 5,
+   "chapter": 20,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 20,
+   "file": "/static/audio/masorot/m12334.mp3",
+   "duration": 288.68
+  },
+  {
+   "u": 12335,
+   "book_id": 5,
+   "chapter": 21,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 23,
+   "file": "/static/audio/masorot/m12335.mp3",
+   "duration": 311.94
+  },
+  {
+   "u": 12336,
+   "book_id": 5,
+   "chapter": 22,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12336.mp3",
+   "duration": 380.67
+  },
+  {
+   "u": 12337,
+   "book_id": 5,
+   "chapter": 23,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 26,
+   "file": "/static/audio/masorot/m12337.mp3",
+   "duration": 282.31
+  },
+  {
+   "u": 12338,
+   "book_id": 5,
+   "chapter": 24,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 22,
+   "file": "/static/audio/masorot/m12338.mp3",
+   "duration": 288.12
+  },
+  {
+   "u": 12339,
+   "book_id": 5,
+   "chapter": 25,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 19,
+   "file": "/static/audio/masorot/m12339.mp3",
+   "duration": 244.1
+  },
+  {
+   "u": 12340,
+   "book_id": 5,
+   "chapter": 26,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 19,
+   "file": "/static/audio/masorot/m12340.mp3",
+   "duration": 310.32
+  },
+  {
+   "u": 12341,
+   "book_id": 5,
+   "chapter": 27,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 26,
+   "file": "/static/audio/masorot/m12341.mp3",
+   "duration": 278.99
+  },
+  {
+   "u": 12342,
+   "book_id": 5,
+   "chapter": 28,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 69,
+   "file": "/static/audio/masorot/m12342.mp3",
+   "duration": 1162.97
+  },
+  {
+   "u": 12343,
+   "book_id": 5,
+   "chapter": 29,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 16,
+   "file": "/static/audio/masorot/m12343.mp3",
+   "duration": 214.56
+  },
+  {
+   "u": 3594,
+   "book_id": 5,
+   "chapter": 29,
+   "reader": "אברהם צדקה",
+   "v1": 16,
+   "v2": 28,
+   "file": "/static/audio/masorot/m3594.mp3",
+   "duration": 198.48
+  },
+  {
+   "u": 3596,
+   "book_id": 5,
+   "chapter": 30,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 20,
+   "file": "/static/audio/masorot/m3596.mp3",
+   "duration": 282.51
+  },
+  {
+   "u": 3597,
+   "book_id": 5,
+   "chapter": 31,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 30,
+   "file": "/static/audio/masorot/m3597.mp3",
+   "duration": 473.16
+  },
+  {
+   "u": 3600,
+   "book_id": 5,
+   "chapter": 32,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 52,
+   "file": "/static/audio/masorot/m3600.mp3",
+   "duration": 527.44
+  },
+  {
+   "u": 3602,
+   "book_id": 5,
+   "chapter": 33,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 29,
+   "file": "/static/audio/masorot/m3602.mp3",
+   "duration": 298.25
+  },
+  {
+   "u": 12344,
+   "book_id": 5,
+   "chapter": 33,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 12,
+   "v2": 29,
+   "file": "/static/audio/masorot/m12344.mp3",
+   "duration": 212.16
+  },
+  {
+   "u": 3604,
+   "book_id": 5,
+   "chapter": 34,
+   "reader": "אברהם צדקה",
+   "v1": 1,
+   "v2": 12,
+   "file": "/static/audio/masorot/m3604.mp3",
+   "duration": 147.82
+  },
+  {
+   "u": 12345,
+   "book_id": 5,
+   "chapter": 34,
+   "reader": "אברהם בן יששכר המרחיב",
+   "v1": 1,
+   "v2": 12,
+   "file": "/static/audio/masorot/m12345.mp3",
+   "duration": 165.08
+  }
+ ]
+}
