@@ -5009,6 +5009,20 @@ function masorotFor(bookId, stdChapter){
   if(!MASOROT || !Array.isArray(MASOROT.items)) return [];
   return MASOROT.items.filter(it=>it.book_id===bookId && it.chapter===stdChapter);
 }
+// exact per-reader Samaritan-chapter witnesses: time ranges INSIDE the masorot
+// files (no separate audio), computed offline by the reading pipeline.
+let WITNESSES = null;
+fetch('/static/audio/witnesses.json')
+  .then(r=>r.ok ? r.json() : null)
+  .then(j=>{ WITNESSES=j; if(j && S.view==='verses') paintVerses(); })
+  .catch(()=>{});
+function witnessesFor(bookId, samNum){
+  if(!WITNESSES || !Array.isArray(WITNESSES.items)) return [];
+  return WITNESSES.items.filter(it=>it.book_id===bookId && it.sam_ch_number===samNum);
+}
+// an option's audio = list of segments; plain files are a single full-length segment
+const rdSegs = rec => rec.segs || [{file:rec.file, t0:0, t1:rec.duration||1e9}];
+const rdKey  = rec => rec.segs ? ('segs:'+rec.segs.map(s=>s.file+'@'+s.t0).join('|')) : rec.file;
 const _vnum = v => { const m=String(v==null?'':v).match(/\d+/); return m?+m[0]:null; };
 // witness label: which verses of which standard chapter this file actually covers
 function _witnessLabel(it, partial){
@@ -5024,12 +5038,18 @@ function readingOptions(){
   if(S.chMode==='samaritan'){
     const rec = readingFor(S.curChNum, S.book);
     if(rec) opts.push({reader:CHANTER, file:rec.file, duration:rec.duration, name:rec.name});
+    const exact = witnessesFor(S.book, S.curChNum);
+    for(const w of exact)
+      opts.push({reader:w.reader, segs:w.segs, duration:w.duration,
+                 name:'פרק שומרוני '+S.curChNum, vlabel:''});
+    const _covered = new Set(exact.map(w=>w.reader));
     if(S.verses && S.verses.length){
       const f=S.verses[0], l=S.verses[S.verses.length-1];
       const c1=parseInt(f.jchapter,10), c2=parseInt(l.jchapter,10);
       const v1=_vnum(f.masnum!=null?f.masnum:f.number), v2=_vnum(l.masnum!=null?l.masnum:l.number);
       if(c1) for(let ch=c1; ch<=(c2||c1); ch++){
         for(const it of masorotFor(S.book, ch)){
+          if(_covered.has(it.reader)) continue;    // exact sam-cut already offered
           const lo = (ch===c1) ? v1 : 1, hi = (ch===c2) ? v2 : 999;
           if(lo!=null && hi!=null && it.v2 >= lo && it.v1 <= hi){
             const partial = !(it.v1<=1 && it.v2>=900) && (it.v1>1 || it.v2<900);
@@ -5056,7 +5076,7 @@ function readingBar(c){
   let rec = opts.find(o=>o.reader===saved) || opts[0];
   const bar = el('div','reading-bar');
   const btn = el('button','reading-btn');
-  const isCur = RDAU.audio && RDAU.key===rec.file;
+  const isCur = RDAU.audio && RDAU.key===rdKey(rec);
   btn.innerHTML = (isCur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
   btn.title = 'האזנה לעד קריאה';
   btn.onclick = ()=>readingToggle(RDAU.ui.rec);
@@ -5067,13 +5087,12 @@ function readingBar(c){
   renderTitle(rec);
   info.appendChild(title);
   const seek = el('input','reading-seek'); seek.type='range'; seek.min=0; seek.step=0.1;
-  seek.max = rec.duration || 0; seek.value = isCur ? RDAU.audio.currentTime : 0;
+  seek.max = rec.duration || 0; seek.value = isCur ? rdVirtual() : 0;
   seek.oninput = ()=>{ const r=RDAU.ui.rec;
-                       if(RDAU.audio && RDAU.key===r.file){ RDAU.audio.currentTime=parseFloat(seek.value); }
-                       else { readingToggle(r, parseFloat(seek.value)); } };
+                       readingToggle(r, parseFloat(seek.value)); };
   info.appendChild(seek);
   bar.appendChild(info);
-  const time = el('span','reading-time', rdFmt(isCur?RDAU.audio.currentTime:0)+' / '+rdFmt(rec.duration||0));
+  const time = el('span','reading-time', rdFmt(isCur?rdVirtual():0)+' / '+rdFmt(rec.duration||0));
   bar.appendChild(time);
   // witness picker — only when this chapter has more than one reading witness
   if(opts.length > 1){
@@ -5107,34 +5126,56 @@ function readingBar(c){
   RDAU.ui = { btn, seek, time, rec };
   c.appendChild(bar);
 }
+function rdVirtual(){       // playback position on the option's own 0..duration axis
+  if(!RDAU.audio || !RDAU.rec) return 0;
+  const s = rdSegs(RDAU.rec)[RDAU.segIdx||0];
+  return (RDAU.segBase||0) + Math.max(0, RDAU.audio.currentTime - s.t0);
+}
 function readingSync(){
   if(!RDAU.ui) return;
-  const cur = RDAU.audio && RDAU.key===RDAU.ui.rec.file;
+  const cur = RDAU.audio && RDAU.key===rdKey(RDAU.ui.rec);
   RDAU.ui.btn.innerHTML = (cur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
-  if(cur){ RDAU.ui.seek.value = RDAU.audio.currentTime;
-           RDAU.ui.time.textContent = rdFmt(RDAU.audio.currentTime)+' / '+rdFmt(RDAU.audio.duration||RDAU.ui.rec.duration); }
+  if(cur){ const vt = rdVirtual();
+           RDAU.ui.seek.value = vt;
+           RDAU.ui.time.textContent = rdFmt(vt)+' / '+rdFmt(RDAU.ui.rec.duration||0); }
 }
-function readingToggle(rec, seekTo){
-  if(RDAU.audio && RDAU.key===rec.file && seekTo===undefined){
-    if(RDAU.playing) RDAU.audio.pause(); else RDAU.audio.play().catch(()=>{});
-    return;
-  }
-  readingStop();
-  if(typeof ttsStop==='function') ttsStop();     // recording and TTS are exclusive
-  const a = new Audio(rec.file);
+function rdPlayFrom(vt){
+  const segs = rdSegs(RDAU.rec);
+  let i = 0, acc = 0;
+  while(i < segs.length-1 && vt >= acc + (segs[i].t1 - segs[i].t0)){ acc += segs[i].t1 - segs[i].t0; i++; }
+  RDAU.segIdx = i; RDAU.segBase = acc;
+  const s = segs[i];
+  if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){}
+    RDAU.audio.onplay=RDAU.audio.onpause=RDAU.audio.onended=RDAU.audio.ontimeupdate=RDAU.audio.onerror=null; }
+  const a = new Audio(s.file);
   a.playbackRate = RDAU.speed;
-  RDAU.audio=a; RDAU.key=rec.file;
-  if(seekTo) a.currentTime=seekTo;
+  RDAU.audio = a;
+  const pos = s.t0 + (vt - acc);
+  if(pos > 0){ const st=()=>{ try{ a.currentTime=pos; }catch(e){} };
+               st(); a.addEventListener('loadedmetadata', st, {once:true}); }
+  const advance = ()=>{ const done = RDAU.segBase + (s.t1 - s.t0);
+                        if(RDAU.segIdx < segs.length-1) rdPlayFrom(done); else readingStop(); };
   a.onplay  = ()=>{ RDAU.playing=true;  readingSync(); };
   a.onpause = ()=>{ RDAU.playing=false; readingSync(); };
-  a.onended = ()=>readingStop();
-  a.ontimeupdate = readingSync;
+  a.onended = advance;
+  a.ontimeupdate = ()=>{ if(a.currentTime >= s.t1 - 0.04) advance(); else readingSync(); };
   a.onerror = ()=>readingStop();
   a.play().catch(()=>{});
 }
+function readingToggle(rec, seekTo){
+  const key = rdKey(rec);
+  if(RDAU.audio && RDAU.key===key && seekTo===undefined){
+    if(RDAU.playing) RDAU.audio.pause(); else RDAU.audio.play().catch(()=>{});
+    return;
+  }
+  if(!(RDAU.audio && RDAU.key===key)) readingStop();
+  if(typeof ttsStop==='function') ttsStop();     // recording and TTS are exclusive
+  RDAU.rec = rec; RDAU.key = key;
+  rdPlayFrom(seekTo || 0);
+}
 function readingStop(){
   if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){} RDAU.audio.onplay=RDAU.audio.onpause=RDAU.audio.onended=RDAU.audio.ontimeupdate=RDAU.audio.onerror=null; }
-  RDAU.audio=null; RDAU.key=null; RDAU.playing=false;
+  RDAU.audio=null; RDAU.key=null; RDAU.rec=null; RDAU.segIdx=0; RDAU.segBase=0; RDAU.playing=false;
   readingSync();
 }
 
