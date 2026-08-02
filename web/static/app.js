@@ -5075,25 +5075,25 @@ function readingBar(c){
   const saved = localStorage.getItem('rd_reader');
   let rec = opts.find(o=>o.reader===saved) || opts[0];
   const bar = el('div','reading-bar');
+  const row = el('div','reading-row');
   const btn = el('button','reading-btn');
   const isCur = RDAU.audio && RDAU.key===rdKey(rec);
   btn.innerHTML = (isCur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
   btn.title = 'האזנה לעד קריאה';
   btn.onclick = ()=>readingToggle(RDAU.ui.rec);
-  bar.appendChild(btn);
-  const info = el('div','reading-info');
   const title = el('div','reading-title');
   const renderTitle = r => { title.innerHTML = 'האזנה לעד קריאה &middot; ' + esc(r.reader); };
   renderTitle(rec);
-  info.appendChild(title);
+  bar.appendChild(title);
+  bar.appendChild(row);
+  row.appendChild(btn);
   const seek = el('input','reading-seek'); seek.type='range'; seek.min=0; seek.step=0.1;
   seek.max = rec.duration || 0; seek.value = isCur ? rdVirtual() : 0;
   seek.oninput = ()=>{ const r=RDAU.ui.rec;
                        readingToggle(r, parseFloat(seek.value)); };
-  info.appendChild(seek);
-  bar.appendChild(info);
+  row.appendChild(seek);
   const time = el('span','reading-time', rdFmt(isCur?rdVirtual():0)+' / '+rdFmt(rec.duration||0));
-  bar.appendChild(time);
+  row.appendChild(time);
   // witness picker — only when this chapter has more than one reading witness
   if(opts.length > 1){
     const sel = el('select','reading-witness');
@@ -5112,7 +5112,7 @@ function readingBar(c){
       readingStop();
       if(wasPlaying) readingToggle(o);      // switching mid-play continues with the new witness
     };
-    bar.appendChild(sel);
+    row.appendChild(sel);
   }
   const spd = el('button','reading-speed','×'+RDAU.speed);
   spd.title = 'מהירות ההשמעה';
@@ -5122,7 +5122,7 @@ function readingBar(c){
     if(RDAU.audio) RDAU.audio.playbackRate = RDAU.speed;
     spd.textContent = '×'+RDAU.speed;
   };
-  bar.appendChild(spd);
+  row.appendChild(spd);
   RDAU.ui = { btn, seek, time, rec };
   c.appendChild(bar);
 }
