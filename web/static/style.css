@@ -157,6 +157,10 @@ body.div-collapsed .div-handle{ height:26px; }
                      overflow-wrap:break-word; word-break:break-word; }
 .sam .vrow .vtext{ font-size:19px; text-align:justify; text-align-last:right;
                    overflow-wrap:break-word; word-break:break-word; }
+/* "כולל פירושים?" — justify commentary/translation prose the same way the main
+   Samaritan verse text is justified, so the two read consistently. */
+.samfull .cbody, .samfull .pbody{ text-align:justify; text-align-last:right;
+                   overflow-wrap:break-word; word-break:break-word; line-height:1.75; }
 
 .numstrip{ display:flex; flex-wrap:wrap; gap:5px; padding:5px 2px; justify-content:flex-end; direction:ltr; }
 .numstrip .num{ min-width:36px; height:34px; border:0; border-radius:6px; background:#c2cbef;

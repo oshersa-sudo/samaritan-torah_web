@@ -729,10 +729,19 @@ function samMarkupFree(text){
   if(last<text.length) html += esc(text.slice(last));
   return html;
 }
+// strip Hebrew niqqud/cantillation (the combining marks block, ֑-ׇ) —
+// commentary/translation prose sometimes carries pointing (e.g. quoted verses),
+// but the Samaritan-script rendering never shows it; base letters (א-ת, a
+// separate Unicode block) are untouched.
+function stripNiqqud(text){ return (text||'').replace(/[֑-ׇ]/g, ''); }
 // commentary/translation text, respecting the "כולל פירושים?" toggle — Samaritan
-// script (SamComment) when samFont+samFontFull are both on, plain escaped text otherwise.
+// script (SamComment) when samFont+samFontFull are both on, plain escaped text
+// otherwise. In Samaritan mode: strip niqqud, then run the SAME word-separator-dot
+// pass as the main verse text (addWordDots — no dot at a sentence end or right
+// before an existing period), THEN wrap letters/period in the alternate font.
 function commentaryText(text){
-  return (S.samFont && S.samFontFull) ? samMarkupFree(text||'') : esc(text||'');
+  if(!(S.samFont && S.samFontFull)) return esc(text||'');
+  return samMarkupFree(addWordDots(stripNiqqud(text||'')));
 }
 // After layout, hide every separator middot that ends a visual line (the next word
 // wrapped to the line below). Re-run on zoom/resize so dots reappear when reducing
@@ -995,6 +1004,7 @@ function playVerseBlessing(){
 function paintVerses(){
   const c=$('content'); c.innerHTML='';
   c.classList.toggle('sam', S.samFont && !S.english);   // enables Samaritan justify
+  c.classList.toggle('samfull', S.samFont && S.samFontFull);   // justify + styling for commentaryText() panels
   if(!S.verses.length){ c.appendChild(el('div','note','אין פסוקים')); return; }
   // admin-only chapter tools: merge with next / split here (current division)
   if(ADMIN.token){
