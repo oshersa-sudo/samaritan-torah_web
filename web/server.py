@@ -713,6 +713,15 @@ def admin_split_sam():
         cur = conn.execute('SELECT id,book_id,number,portion_id FROM sam_chapters WHERE id=?', (sam_id,)).fetchone()
         if not cur:
             return jsonify({'ok': False, 'error': 'chapter not found'}), 404
+        canon = conn.execute('SELECT canonical_count FROM canon_chapter_counts WHERE book_id=?',
+                             (cur['book_id'],)).fetchone()
+        if canon:
+            n_now = conn.execute('SELECT COUNT(*) FROM sam_chapters WHERE book_id=?',
+                                 (cur['book_id'],)).fetchone()[0]
+            if n_now + 1 > canon['canonical_count']:
+                return jsonify({'ok': False, 'error':
+                    'פיצול זה יעלה את מספר הפרקים השומרוניים על %d — הקאנון הקבוע לספר זה. '
+                    'הפעולה נחסמה.' % canon['canonical_count']}), 400
         ids = [r['id'] for r in conn.execute(
             """SELECT v.id FROM verses v JOIN chapters c ON c.id=v.chapter_id
                WHERE v.sam_ch_id=? ORDER BY c.number, CAST(v.number AS INTEGER), v.id""", (cur['id'],)).fetchall()]
