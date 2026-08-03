@@ -1107,26 +1107,33 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  // Install helper — always discoverable, tailored per platform, and hidden once
  // the portal is already installed as an app.
  let _installEvt=null;
+ function _isStandalone(){ return matchMedia("(display-mode: standalone)").matches || navigator.standalone===true; }
+ function _uaFlags(){ const ua=navigator.userAgent||"";
+   return { ios:/iphone|ipad|ipod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),
+     inApp:/\\bwv\\b|FBAN|FBAV|FB_IAB|Instagram|Line\\/|Twitter|WhatsApp/i.test(ua) }; }
  (function(){ try{
-   const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone===true;
-   if(standalone) return;                       // already running as an installed app
-   const ua=navigator.userAgent||"";
-   const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
-   const card=document.getElementById("installcard"), hint=document.getElementById("install-hint");
-   if(!card||!hint) return;
-   if(isIOS){
-     hint.innerHTML='ב-Safari: לחצו על <b>שיתוף</b> (⬆️ בתחתית המסך), גללו ובחרו <b>"הוספה למסך הבית"</b>.';
-   }else{
-     hint.innerHTML='לחצו <b>התקן עכשיו</b> אם הכפתור מופיע, או דרך תפריט הדפדפן ⋮ בחרו <b>"התקנת אפליקציה"</b> / <b>"הוספה למסך הבית"</b>.';
-   }
+   if(_isStandalone()) return;                  // already running as an installed app
+   const f=_uaFlags(), card=document.getElementById("installcard"),
+         hint=document.getElementById("install-hint"), btn=document.getElementById("installbtn");
+   if(!card||!hint||!btn) return;
+   btn.style.display="";                         // always offer a button that does something
+   if(f.inApp){ hint.innerHTML='הקישור נפתח בתוך אפליקציה שלא תומכת בהתקנה. פִּתחו אותו ב-<b>Chrome</b> (תפריט ⋮ → "פתח בדפדפן"), ואז התקינו.'; btn.textContent="איך פותחים ב-Chrome"; }
+   else if(f.ios){ hint.innerHTML='ב-Safari: כפתור <b>שיתוף</b> ⬆️ → <b>"הוספה למסך הבית"</b>.'; btn.textContent="הצג הוראות"; }
+   else { hint.innerHTML='לחצו <b>התקן עכשיו</b>, או תפריט הדפדפן ⋮ → <b>"התקנת אפליקציה"</b>.'; btn.textContent="התקן עכשיו"; }
    card.style.display="";
  }catch(e){} })();
  window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); _installEvt=e;
    const c=document.getElementById("installcard"), b=document.getElementById("installbtn");
-   if(c)c.style.display=""; if(b)b.style.display=""; });
+   if(b){b.style.display="";b.textContent="התקן עכשיו";} if(c)c.style.display=""; });
  window.addEventListener("appinstalled",()=>{ const c=document.getElementById("installcard"); if(c)c.style.display="none"; });
- async function installApp(){ if(!_installEvt)return; _installEvt.prompt(); try{await _installEvt.userChoice;}catch(e){} _installEvt=null;
-   const c=document.getElementById("installcard"); if(c)c.style.display="none"; }
+ async function installApp(){
+   if(_installEvt){ _installEvt.prompt(); try{await _installEvt.userChoice;}catch(e){} _installEvt=null;
+     const c=document.getElementById("installcard"); if(c)c.style.display="none"; return; }
+   const f=_uaFlags();   // no native prompt available → give clear manual steps
+   if(f.inApp) alert('הקישור נפתח בתוך אפליקציה (כמו וואטסאפ) שלא מאפשרת התקנה.\\n\\nלחצו על תפריט שלוש הנקודות (⋮) בפינה ובחרו "פתח ב-Chrome" או "פתח בדפדפן", ואז לחצו שוב על התקנה.');
+   else if(f.ios) alert('להתקנה באייפון (חובה Safari):\\n1. לחצו על כפתור השיתוף ⬆️ בתחתית המסך.\\n2. גללו ובחרו "הוספה למסך הבית".\\n3. אשרו.');
+   else alert('להתקנה:\\n1. פתחו את תפריט הדפדפן (שלוש נקודות ⋮).\\n2. בחרו "התקנת אפליקציה" או "הוספה למסך הבית".');
+ }
 
  // On entry: an invite link (?s=&c=) prefills the link form; otherwise, if we
  // already know this parent (saved phone + token), load their students
