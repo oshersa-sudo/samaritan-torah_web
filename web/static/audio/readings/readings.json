@@ -1637,28 +1637,6 @@
      "src": {
       "youtube_id": "3AZ1Ar8cqN8"
      },
-     "verse_count": 6,
-     "name": "בראשית - ואברהם זקן - 115",
-     "incipit": "ויזד יעקב נזיד: ויבא",
-     "sam_ch_id": 1208,
-     "n": 115,
-     "verses": "כה:כט-כה:לד",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "sam_ch_number": 117,
-     "file": "/static/audio/readings/b1-p10-c115.mp3",
-     "duration": 57.45,
-     "src_start": 103.85,
-     "src_end": 161.3,
-     "verses_num": "25:29-25:34"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
      "verse_count": 5,
      "name": "בראשית - ואלה תולדות - 116",
      "incipit": "ויהי רעב בארץ מלבד",
@@ -4516,226 +4494,6 @@
      "src_start": 1260.54
     },
     {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ואברהם זקן - 105",
-     "incipit": "ויקח העבד עשרה גמלים",
-     "sam_ch_id": 1196,
-     "src_start": 0,
-     "src_end": 66.39,
-     "verses": "כד:י-כד:יד",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c105.mp3",
-     "duration": 66.39,
-     "sam_ch_number": 105,
-     "n": 105,
-     "verses_num": "24:10-24:14"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 7,
-     "name": "בראשית - ואברהם זקן - 106",
-     "incipit": "ויהי הוא טרם כלה",
-     "sam_ch_id": 1197,
-     "src_start": 0,
-     "src_end": 60.57,
-     "verses": "כד:טו-כד:כא",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c106.mp3",
-     "duration": 60.57,
-     "sam_ch_number": 106,
-     "n": 106,
-     "verses_num": "24:15-24:21"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ואברהם זקן - 107",
-     "incipit": "ויהי כאשר כלו הגמלים",
-     "sam_ch_id": 1198,
-     "src_start": 0,
-     "src_end": 67.79,
-     "verses": "כד:כב-כד:כז",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c107.mp3",
-     "duration": 67.79,
-     "sam_ch_number": 107,
-     "n": 107,
-     "verses_num": "24:22-24:27"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ואברהם זקן - 108",
-     "incipit": "ותרץ הנערה ותגד לבית",
-     "sam_ch_id": 1199,
-     "src_start": 0,
-     "src_end": 76.59,
-     "verses": "כד:כח-כד:לג",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c108.mp3",
-     "duration": 76.59,
-     "sam_ch_number": 108,
-     "n": 108,
-     "verses_num": "24:28-24:33"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ואברהם זקן - 109",
-     "incipit": "ויאמר: עבד אברהם אנכי.",
-     "sam_ch_id": 1200,
-     "src_start": 0,
-     "src_end": 130.36,
-     "verses": "כד:לד-כד:מא",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c109.mp3",
-     "duration": 130.36,
-     "sam_ch_number": 109,
-     "n": 109,
-     "verses_num": "24:34-24:41"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 10,
-     "name": "בראשית - ואברהם זקן - 110",
-     "incipit": "ואבוא היום אל העין:",
-     "sam_ch_id": 1201,
-     "src_start": 0,
-     "src_end": 100.38,
-     "verses": "כד:מב-כד:נא",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c110.mp3",
-     "duration": 100.38,
-     "sam_ch_number": 110,
-     "n": 110,
-     "verses_num": "24:42-24:51"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 10,
-     "name": "בראשית - ואברהם זקן - 111",
-     "incipit": "ויהי כאשר שמע עבד",
-     "sam_ch_id": 1202,
-     "src_start": 0,
-     "src_end": 58.0,
-     "verses": "כד:נב-כד:סא",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c111.mp3",
-     "duration": 58.0,
-     "sam_ch_number": 111,
-     "n": 111,
-     "verses_num": "24:52-24:61"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ואברהם זקן - 112",
-     "incipit": "ויצחק בא במדבר באר",
-     "sam_ch_id": 1203,
-     "src_start": 0,
-     "src_end": 48.23,
-     "verses": "כד:סב-כד:סז",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c112.mp3",
-     "duration": 48.23,
-     "sam_ch_number": 112,
-     "n": 112,
-     "verses_num": "24:62-24:67"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ואברהם זקן - 113",
-     "incipit": "ויסף אברהם: ויקח אשה",
-     "sam_ch_id": 1204,
-     "src_start": 0,
-     "src_end": 59.69,
-     "verses": "כה:א-כה:ו",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c113.mp3",
-     "duration": 59.69,
-     "sam_ch_number": 113,
-     "n": 113,
-     "verses_num": "25:1-25:6"
-    },
-    {
-     "src": {
-      "youtube_id": "oICJ65HNimc"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ואברהם זקן - 114",
-     "incipit": "ואלה ימי שני חיי",
-     "sam_ch_id": 1205,
-     "src_start": 0,
-     "src_end": 57.86,
-     "verses": "כה:ז-כה:יא",
-     "portion": {
-      "order": 9,
-      "name": "ואברהם זקן",
-      "id": 9
-     },
-     "file": "/static/audio/readings/b1-p09-c114.mp3",
-     "duration": 57.86,
-     "sam_ch_number": 114,
-     "n": 114,
-     "verses_num": "25:7-25:11"
-    },
-    {
      "n": 92,
      "sam_ch_number": 92,
      "file": "/static/audio/readings/b1-p08-c092.mp3",
@@ -5002,17 +4760,17 @@
     {
      "n": 104,
      "sam_ch_number": 104,
-     "file": "/static/audio/readings/b1-p08-c104.mp3",
-     "duration": 103.94,
+     "file": "/static/audio/readings/b1-p09-c104.mp3",
+     "duration": 97.85,
      "src_start": 0,
-     "src_end": 103.94,
+     "src_end": 97.85,
      "portion": {
       "order": 9,
       "id": 9,
       "name": "ואברהם זקן"
      },
      "src": {
-      "youtube_id": "Ccn74OC70Qg"
+      "youtube_id": null
      },
      "sam_ch_id": 1195,
      "verses": "כד:א-כד:ט",
@@ -5020,6 +4778,248 @@
      "verse_count": 9,
      "incipit": "ואברהם זקן בא בימים:",
      "name": "בראשית - ואברהם זקן - 104"
+    },
+    {
+     "n": 105,
+     "sam_ch_number": 105,
+     "file": "/static/audio/readings/b1-p09-c105.mp3",
+     "duration": 63.65,
+     "src_start": 0,
+     "src_end": 63.65,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1196,
+     "verses": "כד:י-כד:יד",
+     "verses_num": "24:10-24:14",
+     "verse_count": 5,
+     "incipit": "ויקח העבד עשרה גמלים",
+     "name": "בראשית - ואברהם זקן - 105"
+    },
+    {
+     "n": 106,
+     "sam_ch_number": 106,
+     "file": "/static/audio/readings/b1-p09-c106.mp3",
+     "duration": 66.39,
+     "src_start": 0,
+     "src_end": 66.39,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1197,
+     "verses": "כד:טו-כד:כא",
+     "verses_num": "24:15-24:21",
+     "verse_count": 7,
+     "incipit": "ויהי הוא טרם כלה",
+     "name": "בראשית - ואברהם זקן - 106"
+    },
+    {
+     "n": 107,
+     "sam_ch_number": 107,
+     "file": "/static/audio/readings/b1-p09-c107.mp3",
+     "duration": 60.57,
+     "src_start": 0,
+     "src_end": 60.57,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1198,
+     "verses": "כד:כב-כד:כז",
+     "verses_num": "24:22-24:27",
+     "verse_count": 6,
+     "incipit": "ויהי כאשר כלו הגמלים",
+     "name": "בראשית - ואברהם זקן - 107"
+    },
+    {
+     "n": 108,
+     "sam_ch_number": 108,
+     "file": "/static/audio/readings/b1-p09-c108.mp3",
+     "duration": 68.34,
+     "src_start": 0,
+     "src_end": 68.34,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1199,
+     "verses": "כד:כח-כד:לג",
+     "verses_num": "24:28-24:33",
+     "verse_count": 6,
+     "incipit": "ותרץ הנערה ותגד לבית",
+     "name": "בראשית - ואברהם זקן - 108"
+    },
+    {
+     "n": 109,
+     "sam_ch_number": 109,
+     "file": "/static/audio/readings/b1-p09-c109.mp3",
+     "duration": 76.04,
+     "src_start": 0,
+     "src_end": 76.04,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1200,
+     "verses": "כד:לד-כד:מא",
+     "verses_num": "24:34-24:41",
+     "verse_count": 8,
+     "incipit": "ויאמר: עבד אברהם אנכי.",
+     "name": "בראשית - ואברהם זקן - 109"
+    },
+    {
+     "n": 110,
+     "sam_ch_number": 110,
+     "file": "/static/audio/readings/b1-p09-c110.mp3",
+     "duration": 129.93,
+     "src_start": 0,
+     "src_end": 129.93,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1201,
+     "verses": "כד:מב-כד:נא",
+     "verses_num": "24:42-24:51",
+     "verse_count": 10,
+     "incipit": "ואבוא היום אל העין:",
+     "name": "בראשית - ואברהם זקן - 110"
+    },
+    {
+     "n": 111,
+     "sam_ch_number": 111,
+     "file": "/static/audio/readings/b1-p09-c111.mp3",
+     "duration": 100.81,
+     "src_start": 0,
+     "src_end": 100.81,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1202,
+     "verses": "כד:נב-כד:סא",
+     "verses_num": "24:52-24:61",
+     "verse_count": 10,
+     "incipit": "ויהי כאשר שמע עבד",
+     "name": "בראשית - ואברהם זקן - 111"
+    },
+    {
+     "n": 112,
+     "sam_ch_number": 112,
+     "file": "/static/audio/readings/b1-p09-c112.mp3",
+     "duration": 58.0,
+     "src_start": 0,
+     "src_end": 58.0,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1203,
+     "verses": "כד:סב-כד:סז",
+     "verses_num": "24:62-24:67",
+     "verse_count": 6,
+     "incipit": "ויצחק בא במדבר באר",
+     "name": "בראשית - ואברהם זקן - 112"
+    },
+    {
+     "n": 113,
+     "sam_ch_number": 113,
+     "file": "/static/audio/readings/b1-p09-c113.mp3",
+     "duration": 48.59,
+     "src_start": 0,
+     "src_end": 48.59,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1204,
+     "verses": "כה:א-כה:ו",
+     "verses_num": "25:1-25:6",
+     "verse_count": 6,
+     "incipit": "ויסף אברהם: ויקח אשה",
+     "name": "בראשית - ואברהם זקן - 113"
+    },
+    {
+     "n": 114,
+     "sam_ch_number": 114,
+     "file": "/static/audio/readings/b1-p09-c114.mp3",
+     "duration": 48.93,
+     "src_start": 0,
+     "src_end": 48.93,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1205,
+     "verses": "כה:ז-כה:יא",
+     "verses_num": "25:7-25:11",
+     "verse_count": 5,
+     "incipit": "ואלה ימי שני חיי",
+     "name": "בראשית - ואברהם זקן - 114"
+    },
+    {
+     "n": 115,
+     "sam_ch_number": 115,
+     "file": "/static/audio/readings/b1-p09-c115.mp3",
+     "duration": 68.24,
+     "src_start": 0,
+     "src_end": 68.24,
+     "portion": {
+      "order": 9,
+      "id": 9,
+      "name": "ואברהם זקן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1206,
+     "verses": "כה:יב-כה:יח",
+     "verses_num": "25:12-25:18",
+     "verse_count": 7,
+     "incipit": "ואלה תולדת ישמעאל בן",
+     "name": "בראשית - ואברהם זקן - 115"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
