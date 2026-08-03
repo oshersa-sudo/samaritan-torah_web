@@ -219,7 +219,10 @@ def get_sam_chapters(book_id):
     rows = conn.execute(
         """SELECT sc.*, v.text AS first_text
            FROM sam_chapters sc
-           LEFT JOIN (SELECT sam_ch_id, MIN(id) AS first_v_id FROM verses GROUP BY sam_ch_id) fv
+           LEFT JOIN (SELECT sam_ch_id, id AS first_v_id FROM (
+                    SELECT v.id, v.sam_ch_id, ROW_NUMBER() OVER (
+                        PARTITION BY v.sam_ch_id ORDER BY c.number, CAST(v.number AS INTEGER)) AS rn
+                    FROM verses v JOIN chapters c ON c.id = v.chapter_id) WHERE rn = 1) fv
                   ON fv.sam_ch_id = sc.id
            LEFT JOIN verses v ON v.id = fv.first_v_id
            WHERE sc.book_id=? ORDER BY sc.number""", (book_id,)
@@ -234,7 +237,10 @@ def count_sam_chapters_in_portion(portion_id):
         """
         SELECT COUNT(DISTINCT sc.id)
         FROM   sam_chapters sc
-        JOIN   (SELECT sam_ch_id, MIN(id) AS first_v_id FROM verses GROUP BY sam_ch_id) fv
+        JOIN   (SELECT sam_ch_id, id AS first_v_id FROM (
+                    SELECT v.id, v.sam_ch_id, ROW_NUMBER() OVER (
+                        PARTITION BY v.sam_ch_id ORDER BY c.number, CAST(v.number AS INTEGER)) AS rn
+                    FROM verses v JOIN chapters c ON c.id = v.chapter_id) WHERE rn = 1) fv
                ON fv.sam_ch_id = sc.id
         JOIN   verses  v  ON v.id  = fv.first_v_id
         JOIN   chapters c ON c.id  = v.chapter_id
@@ -260,7 +266,10 @@ def get_sam_chapters_in_portion(portion_id):
         """
         SELECT DISTINCT sc.*, v.text AS first_text
         FROM   sam_chapters sc
-        JOIN   (SELECT sam_ch_id, MIN(id) AS first_v_id FROM verses GROUP BY sam_ch_id) fv
+        JOIN   (SELECT sam_ch_id, id AS first_v_id FROM (
+                    SELECT v.id, v.sam_ch_id, ROW_NUMBER() OVER (
+                        PARTITION BY v.sam_ch_id ORDER BY c.number, CAST(v.number AS INTEGER)) AS rn
+                    FROM verses v JOIN chapters c ON c.id = v.chapter_id) WHERE rn = 1) fv
                ON fv.sam_ch_id = sc.id
         JOIN   verses  v  ON v.id  = fv.first_v_id
         JOIN   chapters c ON c.id  = v.chapter_id
