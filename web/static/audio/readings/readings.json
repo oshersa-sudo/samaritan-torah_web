@@ -1635,248 +1635,6 @@
     },
     {
      "src": {
-      "youtube_id": "iovEM8nXZVc"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ויבא יוסף - 208",
-     "incipit": "מהרו ועלו אל אבי:",
-     "sam_ch_id": 1299,
-     "n": 208,
-     "verses": "מה:ט-מה:טז",
-     "portion": {
-      "id": 17,
-      "name": "ויבא יוסף",
-      "order": 17
-     },
-     "sam_ch_number": 214,
-     "file": "/static/audio/readings/b1-p17-c208.mp3",
-     "duration": 84.1,
-     "src_start": 581.72,
-     "src_end": 665.82,
-     "verses_num": "45:9-45:16"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ויבא יוסף - 209",
-     "incipit": "ויאמר פרעה אל יוסף",
-     "sam_ch_id": 1300,
-     "n": 209,
-     "verses": "מה:יז-מה:כד",
-     "portion": {
-      "id": 17,
-      "name": "ויבא יוסף",
-      "order": 17
-     },
-     "sam_ch_number": 215,
-     "file": "/static/audio/readings/b1-p17-c209.mp3",
-     "duration": 92.18,
-     "src_start": 665.82,
-     "src_end": 758.0,
-     "verses_num": "45:17-45:24"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ויבא יוסף - 210",
-     "incipit": "ויעלו ממצרים: ויבאו ארצה",
-     "sam_ch_id": 1301,
-     "n": 210,
-     "verses": "מה:כה-מו:א",
-     "portion": {
-      "id": 17,
-      "name": "ויבא יוסף",
-      "order": 17
-     },
-     "sam_ch_number": 216,
-     "file": "/static/audio/readings/b1-p17-c210.mp3",
-     "duration": 54.52,
-     "src_start": 758.0,
-     "src_end": 812.52,
-     "verses_num": "45:25-46:1"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ויבא יוסף - 211",
-     "incipit": "ויאמר אלהים לישראל במראות",
-     "sam_ch_id": 1302,
-     "n": 211,
-     "verses": "מו:ב-מו:ז",
-     "portion": {
-      "id": 17,
-      "name": "ויבא יוסף",
-      "order": 17
-     },
-     "sam_ch_number": 217,
-     "file": "/static/audio/readings/b1-p17-c211.mp3",
-     "duration": 72.88,
-     "src_start": 812.52,
-     "src_end": 885.4,
-     "verses_num": "46:2-46:7"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 11,
-     "name": "בראשית - ויבא יוסף - 212",
-     "incipit": "ואלה שמות בני ישראל",
-     "sam_ch_id": 1303,
-     "n": 212,
-     "verses": "מו:ח-מו:יח",
-     "portion": {
-      "order": 17,
-      "name": "ויבא יוסף",
-      "id": 17
-     },
-     "sam_ch_number": 218,
-     "file": "/static/audio/readings/b1-p18-c212.mp3",
-     "duration": 86.59,
-     "src_start": 0.0,
-     "src_end": 86.59,
-     "verses_num": "46:8-46:18"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 9,
-     "name": "בראשית - ויבא יוסף - 213",
-     "incipit": "בני רחל אשת יעקב",
-     "sam_ch_id": 1304,
-     "n": 213,
-     "verses": "מו:יט-מו:כז",
-     "portion": {
-      "order": 17,
-      "name": "ויבא יוסף",
-      "id": 17
-     },
-     "sam_ch_number": 219,
-     "file": "/static/audio/readings/b1-p18-c213.mp3",
-     "duration": 74.51,
-     "src_start": 86.59,
-     "src_end": 161.1,
-     "verses_num": "46:19-46:27"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 7,
-     "name": "בראשית - ואלה שמות - 214",
-     "incipit": "ואת יהודה שלח לפניו",
-     "sam_ch_id": 1305,
-     "n": 214,
-     "verses": "מו:כח-מו:לד",
-     "portion": {
-      "id": 18,
-      "name": "ואלה שמות",
-      "order": 18
-     },
-     "sam_ch_number": 220,
-     "file": "/static/audio/readings/b1-p18-c214.mp3",
-     "duration": 78.49,
-     "src_start": 161.1,
-     "src_end": 239.59,
-     "verses_num": "46:28-46:34"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ואלה שמות - 215",
-     "incipit": "ויבא יוסף ויגד לפרעה:",
-     "sam_ch_id": 1306,
-     "n": 215,
-     "verses": "מז:א-מז:ו",
-     "portion": {
-      "id": 18,
-      "name": "ואלה שמות",
-      "order": 18
-     },
-     "sam_ch_number": 221,
-     "file": "/static/audio/readings/b1-p18-c215.mp3",
-     "duration": 78.16,
-     "src_start": 239.59,
-     "src_end": 317.75,
-     "verses_num": "47:1-47:6"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 13,
-     "name": "בראשית - ואלה שמות - 216",
-     "incipit": "ויבא יוסף את יעקב",
-     "sam_ch_id": 1307,
-     "n": 216,
-     "verses": "מז:ז-מז:יט",
-     "portion": {
-      "id": 18,
-      "name": "ואלה שמות",
-      "order": 18
-     },
-     "sam_ch_number": 222,
-     "file": "/static/audio/readings/b1-p18-c216.mp3",
-     "duration": 170.34,
-     "src_start": 317.75,
-     "src_end": 488.09,
-     "verses_num": "47:7-47:19"
-    },
-    {
-     "src": {
-      "youtube_id": "NltRiJoXwBg"
-     },
-     "verse_count": 3,
-     "name": "בראשית - ואלה שמות - 217",
-     "incipit": "ויקן יוסף את כל",
-     "sam_ch_id": 1308,
-     "n": 217,
-     "verses": "מז:כ-מז:כב",
-     "portion": {
-      "id": 18,
-      "name": "ואלה שמות",
-      "order": 18
-     },
-     "sam_ch_number": 224,
-     "file": "/static/audio/readings/b1-p18-c217.mp3",
-     "duration": 38.13,
-     "src_start": 488.09,
-     "src_end": 526.22,
-     "verses_num": "47:20-47:22"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 4,
-     "name": "בראשית - ואלה שמות - 218",
-     "incipit": "ויאמר יוסף אל העם:",
-     "sam_ch_id": 1309,
-     "n": 218,
-     "verses": "מז:כג-מז:כו",
-     "portion": {
-      "id": 18,
-      "name": "ואלה שמות",
-      "order": 18
-     },
-     "sam_ch_number": 225,
-     "file": "/static/audio/readings/b1-p18-c218.mp3",
-     "duration": 54.65,
-     "src_start": 526.22,
-     "src_end": 580.87,
-     "verses_num": "47:23-47:26"
-    },
-    {
-     "src": {
       "youtube_id": "m0rwjElPrLY"
      },
      "verse_count": 5,
@@ -5064,6 +4822,248 @@
      "verse_count": 7,
      "incipit": "ויגשו אל האיש אשר",
      "name": "בראשית - וליוסף ילדו - 207"
+    },
+    {
+     "n": 208,
+     "sam_ch_number": 208,
+     "file": "/static/audio/readings/b1-p17-c208.mp3",
+     "duration": 110.76,
+     "src_start": 0,
+     "src_end": 110.76,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1293,
+     "verses": "מג:כו-מג:לד",
+     "verses_num": "43:26-43:34",
+     "verse_count": 9,
+     "incipit": "ויבא יוסף הביתה: ויביאו",
+     "name": "בראשית - ויבא יוסף - 208"
+    },
+    {
+     "n": 209,
+     "sam_ch_number": 209,
+     "file": "/static/audio/readings/b1-p17-c209.mp3",
+     "duration": 139.95,
+     "src_start": 0,
+     "src_end": 139.95,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1294,
+     "verses": "מד:א-מד:יג",
+     "verses_num": "44:1-44:13",
+     "verse_count": 13,
+     "incipit": "ויצו את אשר על",
+     "name": "בראשית - ויבא יוסף - 209"
+    },
+    {
+     "n": 210,
+     "sam_ch_number": 210,
+     "file": "/static/audio/readings/b1-p17-c210.mp3",
+     "duration": 60.11,
+     "src_start": 0,
+     "src_end": 60.11,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1295,
+     "verses": "מד:יד-מד:יז",
+     "verses_num": "44:14-44:17",
+     "verse_count": 4,
+     "incipit": "ויבא יהודה ואחיו ביתה",
+     "name": "בראשית - ויבא יוסף - 210"
+    },
+    {
+     "n": 211,
+     "sam_ch_number": 211,
+     "file": "/static/audio/readings/b1-p17-c211.mp3",
+     "duration": 95.58,
+     "src_start": 0,
+     "src_end": 95.58,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1296,
+     "verses": "מד:יח-מד:כו",
+     "verses_num": "44:18-44:26",
+     "verse_count": 9,
+     "incipit": "ויגש אליו יהודה ויאמר:",
+     "name": "בראשית - ויבא יוסף - 211"
+    },
+    {
+     "n": 212,
+     "sam_ch_number": 212,
+     "file": "/static/audio/readings/b1-p17-c212.mp3",
+     "duration": 76.67,
+     "src_start": 0,
+     "src_end": 76.67,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1297,
+     "verses": "מד:כז-מד:לד",
+     "verses_num": "44:27-44:34",
+     "verse_count": 8,
+     "incipit": "ויאמר עבדך אבי אלינו:",
+     "name": "בראשית - ויבא יוסף - 212"
+    },
+    {
+     "n": 213,
+     "sam_ch_number": 213,
+     "file": "/static/audio/readings/b1-p17-c213.mp3",
+     "duration": 98.57,
+     "src_start": 0,
+     "src_end": 98.57,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1298,
+     "verses": "מה:א-מה:ח",
+     "verses_num": "45:1-45:8",
+     "verse_count": 8,
+     "incipit": "ולא יכל יוסף להתאפק",
+     "name": "בראשית - ויבא יוסף - 213"
+    },
+    {
+     "n": 214,
+     "sam_ch_number": 214,
+     "file": "/static/audio/readings/b1-p17-c214.mp3",
+     "duration": 83.8,
+     "src_start": 0,
+     "src_end": 83.8,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1299,
+     "verses": "מה:ט-מה:טז",
+     "verses_num": "45:9-45:16",
+     "verse_count": 8,
+     "incipit": "מהרו ועלו אל אבי:",
+     "name": "בראשית - ויבא יוסף - 214"
+    },
+    {
+     "n": 215,
+     "sam_ch_number": 215,
+     "file": "/static/audio/readings/b1-p17-c215.mp3",
+     "duration": 92.52,
+     "src_start": 0,
+     "src_end": 92.52,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1300,
+     "verses": "מה:יז-מה:כד",
+     "verses_num": "45:17-45:24",
+     "verse_count": 8,
+     "incipit": "ויאמר פרעה אל יוסף:",
+     "name": "בראשית - ויבא יוסף - 215"
+    },
+    {
+     "n": 216,
+     "sam_ch_number": 216,
+     "file": "/static/audio/readings/b1-p17-c216.mp3",
+     "duration": 54.01,
+     "src_start": 0,
+     "src_end": 54.01,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1301,
+     "verses": "מה:כה-מו:א",
+     "verses_num": "45:25-46:1",
+     "verse_count": 5,
+     "incipit": "ויעלו ממצרים: ויבאו ארצה",
+     "name": "בראשית - ויבא יוסף - 216"
+    },
+    {
+     "n": 217,
+     "sam_ch_number": 217,
+     "file": "/static/audio/readings/b1-p17-c217.mp3",
+     "duration": 73.37,
+     "src_start": 0,
+     "src_end": 73.37,
+     "portion": {
+      "order": 17,
+      "id": 17,
+      "name": "ויבא יוסף"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1302,
+     "verses": "מו:ב-מו:ז",
+     "verses_num": "46:2-46:7",
+     "verse_count": 6,
+     "incipit": "ויאמר אלהים לישראל במראות",
+     "name": "בראשית - ויבא יוסף - 217"
+    },
+    {
+     "n": 218,
+     "sam_ch_number": 218,
+     "file": "/static/audio/readings/b1-p17-c218.mp3",
+     "duration": 38.13,
+     "src_start": 0,
+     "src_end": 38.13,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": "NltRiJoXwBg"
+     },
+     "sam_ch_id": 1303,
+     "verses": "מו:ח-מו:יח",
+     "verses_num": "46:8-46:18",
+     "verse_count": 11,
+     "incipit": "ואלה שמות בני ישראל",
+     "name": "בראשית - ואלה שמות - 218"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
