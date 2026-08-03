@@ -1335,9 +1335,10 @@ def api_sam_chapters():
         rows = db.get_sam_chapters(int(bid))
     else:
         return jsonify([])
-    return jsonify([{'id': r['id'], 'number': r['number'],
-                     'opening': _opening_words(r['first_text'] if 'first_text' in r.keys() else '')}
-                    for r in rows])
+    texts = [r['first_text'] if 'first_text' in r.keys() else '' for r in rows]
+    openings = _dedupe_openings(texts)
+    return jsonify([{'id': r['id'], 'number': r['number'], 'opening': o}
+                    for r, o in zip(rows, openings)])
 
 
 def _opening_words(text, n=2):
@@ -1347,6 +1348,35 @@ def _opening_words(text, n=2):
     words = [re.sub(r'[^֐-תࠀ-࠿]', '', w) for w in t.split()]
     words = [w for w in words if w]
     return ' '.join(words[:n])
+
+
+def _dedupe_openings(texts, start_n=2, max_n=8):
+    """Chapter-grid incipits, but a two-word opening like 'ויהי כאשר' or 'ויאמר
+    אלהים' recurs often enough in the Torah that many chapters in the SAME
+    portion end up with identical-looking tiles. Only the colliding entries get
+    progressively more words (3, 4, ...) until they're distinct from their
+    siblings in this result set — chapters that were already unique at 2 words
+    stay short. Genuinely identical formulaic openings (e.g. 5 chapters all
+    starting 'ויהי אחר הדברים האלה') stop growing at max_n rather than bloating
+    the tile forever."""
+    n = start_n
+    result = [None] * len(texts)
+    pending = list(range(len(texts)))
+    while pending and n <= max_n:
+        groups = {}
+        for i in pending:
+            groups.setdefault(_opening_words(texts[i], n), []).append(i)
+        next_pending = []
+        for key, idxs in groups.items():
+            if len(idxs) == 1:
+                result[idxs[0]] = key
+            else:
+                next_pending.extend(idxs)
+        pending = next_pending
+        n += 1
+    for i in pending:
+        result[i] = _opening_words(texts[i], max_n)
+    return result
 
 
 @app.route('/api/verses')
