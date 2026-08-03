@@ -696,9 +696,17 @@ function trimEdgeDots(vtext){
   seps.forEach(s=>{ s.style.display=''; });
   const toHide=[];
   for(const s of seps){
+    // Compare the surrounding .samchar words' own positions, NOT the dot's own
+    // box — the dot deliberately keeps a different (non-Samaritan) font since
+    // the Samaritan webfont has no middle-dot glyph, and that font's differing
+    // ascent/line-height metrics make the dot's OWN "top" an unreliable signal
+    // (it can sit a visible fraction off the true line even with no wrap).
+    // Comparing two same-font neighbours is immune to that.
     let n=s.nextElementSibling;
     while(n && !n.classList.contains('samchar')) n=n.nextElementSibling;
-    if(!n || n.getBoundingClientRect().top > s.getBoundingClientRect().top + 1) toHide.push(s);
+    let p=s.previousElementSibling;
+    while(p && !p.classList.contains('samchar')) p=p.previousElementSibling;
+    if(!n || !p || n.getBoundingClientRect().top > p.getBoundingClientRect().top + 1) toHide.push(s);
   }
   toHide.forEach(s=>{ s.style.display='none'; });
 }

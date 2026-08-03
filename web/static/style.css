@@ -158,14 +158,14 @@ body.div-collapsed .div-handle{ height:26px; }
 
 /* Samaritan glyphs */
 .samchar{ font-family:'Samaritan'; }
-/* the word-separator middot MUST share the Samaritan font's metrics: the generic
-   fallback font has a very different ascent/line-height at the same font-size,
-   which shifts the dot's own bounding-box "top" ~one line down from its true
-   visual line — trimEdgeDots() (in app.js) reads that shifted top to decide
-   whether a dot fell at a real line-wrap, so the mismatch made it wrongly hide
-   separators that were genuinely mid-line, leaving pairs of words with no
-   visible dot between them. */
-.wsep{ font-family:'Samaritan'; }
+/* NOTE: the word-separator middot (.wsep) deliberately does NOT get the
+   Samaritan font — that font's glyph coverage doesn't include a proper
+   middle-dot (U+00B7), so forcing it there renders the dot invisible
+   (an empty .notdef box). It keeps the default/inherited font, which does
+   have a visible dot; trimEdgeDots() in app.js compares neighbouring
+   .samchar elements' positions (not the dot's own box) to decide whether a
+   dot falls at a real line-wrap, so the cross-font metric mismatch never
+   confuses that decision. */
 .eng-credit{ text-align:center; color:var(--navy); font-size:13px; padding:6px; line-height:1.4; }
 
 /* panels (compare / interpret / aramaic / arabic / commentary / source) */
