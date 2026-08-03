@@ -889,6 +889,9 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  .bar b{font-size:9px;opacity:.7;margin-bottom:2px;font-weight:600}
  .bar span{font-size:9px;opacity:.55;margin-top:3px;writing-mode:horizontal-tb}
  .tmtot{font-size:12px;opacity:.75;margin-top:6px}
+ .refbar{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:5;background:linear-gradient(#EAF7FB,#EAF7FBcc);padding:6px 2px;margin-bottom:6px}
+ .refbar button{margin:0;padding:9px 16px}
+ .refbar button:disabled{opacity:.6}
  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
  .legend .lg{display:inline-flex;align-items:center;font-size:11px;opacity:.8}
  .legend .lg i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-inline-start:4px}
@@ -995,7 +998,9 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
  }
  async function loadStudents(){
    document.getElementById("err").textContent="";
-   const p=document.getElementById("pphone").value.replace(/\\D/g,"");
+   const _rb=document.getElementById("refbtn"); if(_rb){_rb.textContent="⏳ מרענן…";_rb.disabled=true;}
+   const p=document.getElementById("pphone").value.replace(/\\D/g,"")||(localStorage.getItem("pphone")||"");
+   if(p)document.getElementById("pphone").value=p;
    if(p.length<9){document.getElementById("err").textContent="מספר טלפון לא תקין";return;}
    const tok=ptoken(p);
    if(!tok){document.getElementById("err").textContent="כדי לצפות בהתקדמות, קשרו קודם תלמיד/ה עם קוד ההורה (בטופס למטה).";return;}
@@ -1005,6 +1010,8 @@ PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
    const box=document.getElementById("students"); box.innerHTML="";
    const pc=document.getElementById("pushcard"); if(pc)pc.style.display="";   // parent is linked → offer phone alerts
    if(!j.students||!j.students.length){box.innerHTML='<div class="card muted">לא נמצאו תלמידים מקושרים. קשרו תלמיד למעלה.</div>';return;}
+   const _now=new Date();
+   box.insertAdjacentHTML("beforeend",`<div class="refbar"><button id="refbtn" onclick="loadStudents()">🔄 רענן תוצאות</button><span class="muted">עודכן ${_now.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"})}</span></div>`);
    for(const s of j.students){
      const subs=Object.entries(s.stats||{}).map(([k,v])=>`<span class="subj">${esc(SUBJ[k]||k)}: <b>${esc(v.avg)}</b> ממוצע · שיא ${esc(v.best)} · ${esc(v.count)} מבחנים</span>`).join("");
      const rows=(s.recent||[]).map(x=>`<tr class="${x.id?"click":""}" ${x.id?`data-id="${esc(x.id)}"`:""}><td>${esc(SUBJ[x.subject]||x.subject)}</td><td>${esc(x.grade)}/100</td><td>${esc(x.correct)}/${esc(x.total)}</td><td>${esc(fmtDur(x.dur))}</td><td>${esc(fmtDT(x.ts))}</td></tr>`).join("");
