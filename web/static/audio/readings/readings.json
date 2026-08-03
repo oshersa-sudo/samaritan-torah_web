@@ -1635,248 +1635,6 @@
     },
     {
      "src": {
-      "youtube_id": "Vp8UMc2cP5w"
-     },
-     "verse_count": 11,
-     "name": "בראשית - ויקם יעקב - 148",
-     "incipit": "ויקחם ויעברם את הנחל:",
-     "sam_ch_id": 1242,
-     "n": 148,
-     "verses": "לב:כד-לב:כג",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 155,
-     "file": "/static/audio/readings/b1-p12-c148.mp3",
-     "duration": 68.98,
-     "src_start": 453.26,
-     "src_end": 522.24,
-     "verses_num": "32:24-32:23"
-    },
-    {
-     "src": {
-      "youtube_id": "Vp8UMc2cP5w"
-     },
-     "verse_count": 11,
-     "name": "בראשית - ויקם יעקב - 149",
-     "incipit": "וישא יעקב עיניו: וירא",
-     "sam_ch_id": 1243,
-     "n": 149,
-     "verses": "לג:א-לג:יא",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 156,
-     "file": "/static/audio/readings/b1-p12-c149.mp3",
-     "duration": 58.75,
-     "src_start": 522.24,
-     "src_end": 580.99,
-     "verses_num": "33:1-33:11"
-    },
-    {
-     "src": {
-      "youtube_id": "Vp8UMc2cP5w"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ויקם יעקב - 150",
-     "incipit": "ויאמר נסעה ונלכה: ואלכה",
-     "sam_ch_id": 1244,
-     "n": 150,
-     "verses": "לג:יב-לג:יז",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 157,
-     "file": "/static/audio/readings/b1-p12-c150.mp3",
-     "duration": 105.27,
-     "src_start": 580.99,
-     "src_end": 686.26,
-     "verses_num": "33:12-33:17"
-    },
-    {
-     "src": {
-      "youtube_id": "Vp8UMc2cP5w"
-     },
-     "verse_count": 3,
-     "name": "בראשית - ויקם יעקב - 151",
-     "incipit": "ויקם בלילה ההוא: ויקח",
-     "sam_ch_id": 1245,
-     "n": 151,
-     "verses": "לג:יח-לג:כ",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 158,
-     "file": "/static/audio/readings/b1-p12-c151.mp3",
-     "duration": 111.96,
-     "src_start": 686.26,
-     "src_end": 798.22,
-     "verses_num": "33:18-33:20"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 7,
-     "name": "בראשית - ויקם יעקב - 152",
-     "incipit": "ותצא דינה בת לאה",
-     "sam_ch_id": 1246,
-     "n": 152,
-     "verses": "לד:א-לד:ז",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 159,
-     "file": "/static/audio/readings/b1-p12-c152.mp3",
-     "duration": 118.37,
-     "src_start": 798.22,
-     "src_end": 916.59,
-     "verses_num": "34:1-34:7"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ויקם יעקב - 153",
-     "incipit": "וידבר חמור אתם לאמר",
-     "sam_ch_id": 1247,
-     "n": 153,
-     "verses": "לד:ח-לד:יב",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 160,
-     "file": "/static/audio/readings/b1-p12-c153.mp3",
-     "duration": 63.77,
-     "src_start": 916.59,
-     "src_end": 980.36,
-     "verses_num": "34:8-34:12"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 7,
-     "name": "בראשית - ויקם יעקב - 154",
-     "incipit": "ויענו בני יעקב את",
-     "sam_ch_id": 1248,
-     "n": 154,
-     "verses": "לד:יג-לד:יט",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 161,
-     "file": "/static/audio/readings/b1-p12-c154.mp3",
-     "duration": 28.8,
-     "src_start": 980.36,
-     "src_end": 1009.16,
-     "verses_num": "34:13-34:19"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ויקם יעקב - 155",
-     "incipit": "ויבא חמור ושכם בנו",
-     "sam_ch_id": 1249,
-     "n": 155,
-     "verses": "לד:כ-לד:כד",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 162,
-     "file": "/static/audio/readings/b1-p13-c155.mp3",
-     "duration": 65.74,
-     "src_start": 0,
-     "src_end": 65.74,
-     "verses_num": "34:20-34:24"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 7,
-     "name": "בראשית - ויקם יעקב - 156",
-     "incipit": "ויהי ביום השלישי בהיותם",
-     "sam_ch_id": 1250,
-     "n": 156,
-     "verses": "לד:כה-לד:לא",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 163,
-     "file": "/static/audio/readings/b1-p13-c156.mp3",
-     "duration": 52.56,
-     "src_start": 65.74,
-     "src_end": 118.3,
-     "verses_num": "34:25-34:31"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ויקם יעקב - 157",
-     "incipit": "ויאמר אלהים אל יעקב",
-     "sam_ch_id": 1251,
-     "n": 157,
-     "verses": "לה:א-לה:ה",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 164,
-     "file": "/static/audio/readings/b1-p13-c157.mp3",
-     "duration": 68.08,
-     "src_start": 118.3,
-     "src_end": 186.38,
-     "verses_num": "35:1-35:5"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 3,
-     "name": "בראשית - ויקם יעקב - 158",
-     "incipit": "ויבא יעקב לוזה אשר",
-     "sam_ch_id": 1252,
-     "n": 158,
-     "verses": "לה:ו-לה:ח",
-     "portion": {
-      "order": 12,
-      "name": "ויקם יעקב",
-      "id": 12
-     },
-     "sam_ch_number": 165,
-     "file": "/static/audio/readings/b1-p13-c158.mp3",
-     "duration": 66.07,
-     "src_start": 186.38,
-     "src_end": 252.45,
-     "verses_num": "35:6-35:8"
-    },
-    {
-     "src": {
       "youtube_id": "dY50GyHrdXk"
      },
      "verse_count": 12,
@@ -4914,17 +4672,17 @@
     {
      "n": 144,
      "sam_ch_number": 144,
-     "file": "/static/audio/readings/b1-p11-c144.mp3",
-     "duration": 58.96,
+     "file": "/static/audio/readings/b1-p12-c144.mp3",
+     "duration": 58.92,
      "src_start": 0,
-     "src_end": 58.96,
+     "src_end": 58.92,
      "portion": {
       "order": 12,
       "id": 12,
       "name": "ויקם יעקב"
      },
      "src": {
-      "youtube_id": "Vp8UMc2cP5w"
+      "youtube_id": null
      },
      "sam_ch_id": 1232,
      "verses": "לא:יז-לא:כג",
@@ -4936,17 +4694,17 @@
     {
      "n": 145,
      "sam_ch_number": 145,
-     "file": "/static/audio/readings/b1-p11-c145.mp3",
-     "duration": 75.31,
+     "file": "/static/audio/readings/b1-p12-c145.mp3",
+     "duration": 75.32,
      "src_start": 0,
-     "src_end": 75.31,
+     "src_end": 75.32,
      "portion": {
       "order": 12,
       "id": 12,
       "name": "ויקם יעקב"
      },
      "src": {
-      "youtube_id": "Vp8UMc2cP5w"
+      "youtube_id": null
      },
      "sam_ch_id": 1233,
      "verses": "לא:כד-לא:ל",
@@ -4958,17 +4716,17 @@
     {
      "n": 146,
      "sam_ch_number": 146,
-     "file": "/static/audio/readings/b1-p11-c146.mp3",
-     "duration": 64.0,
+     "file": "/static/audio/readings/b1-p12-c146.mp3",
+     "duration": 64.01,
      "src_start": 0,
-     "src_end": 64.0,
+     "src_end": 64.01,
      "portion": {
       "order": 12,
       "id": 12,
       "name": "ויקם יעקב"
      },
      "src": {
-      "youtube_id": "Vp8UMc2cP5w"
+      "youtube_id": null
      },
      "sam_ch_id": 1234,
      "verses": "לא:לא-לא:לה",
@@ -4980,17 +4738,17 @@
     {
      "n": 147,
      "sam_ch_number": 147,
-     "file": "/static/audio/readings/b1-p11-c147.mp3",
-     "duration": 27.61,
+     "file": "/static/audio/readings/b1-p12-c147.mp3",
+     "duration": 27.6,
      "src_start": 0,
-     "src_end": 27.61,
+     "src_end": 27.6,
      "portion": {
       "order": 12,
       "id": 12,
       "name": "ויקם יעקב"
      },
      "src": {
-      "youtube_id": "Vp8UMc2cP5w"
+      "youtube_id": null
      },
      "sam_ch_id": 1235,
      "verses": "לא:לו-לא:לז",
@@ -4998,6 +4756,248 @@
      "verse_count": 2,
      "incipit": "ויחר ליעקב וירב בלבן.",
      "name": "בראשית - ויקם יעקב - 147"
+    },
+    {
+     "n": 148,
+     "sam_ch_number": 148,
+     "file": "/static/audio/readings/b1-p12-c148.mp3",
+     "duration": 32.62,
+     "src_start": 0,
+     "src_end": 32.62,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1236,
+     "verses": "לא:לח-לא:מ",
+     "verses_num": "31:38-31:40",
+     "verse_count": 3,
+     "incipit": "זה עשרים שנה אנכי",
+     "name": "בראשית - ויקם יעקב - 148"
+    },
+    {
+     "n": 149,
+     "sam_ch_number": 149,
+     "file": "/static/audio/readings/b1-p12-c149.mp3",
+     "duration": 33.49,
+     "src_start": 0,
+     "src_end": 33.49,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1237,
+     "verses": "לא:מא-לא:מב",
+     "verses_num": "31:41-31:42",
+     "verse_count": 2,
+     "incipit": "זה לי עשרים שנה",
+     "name": "בראשית - ויקם יעקב - 149"
+    },
+    {
+     "n": 150,
+     "sam_ch_number": 150,
+     "file": "/static/audio/readings/b1-p12-c150.mp3",
+     "duration": 82.79,
+     "src_start": 0,
+     "src_end": 82.79,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1238,
+     "verses": "לא:מג-לא:נ",
+     "verses_num": "31:43-31:50",
+     "verse_count": 8,
+     "incipit": "ויען לבן ויאמר אל",
+     "name": "בראשית - ויקם יעקב - 150"
+    },
+    {
+     "n": 151,
+     "sam_ch_number": 151,
+     "file": "/static/audio/readings/b1-p12-c151.mp3",
+     "duration": 78.47,
+     "src_start": 0,
+     "src_end": 78.47,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1239,
+     "verses": "לא:נא-לב:ג",
+     "verses_num": "31:51-32:3",
+     "verse_count": 7,
+     "incipit": "ויאמר לבן ליעקב: הנה",
+     "name": "בראשית - ויקם יעקב - 151"
+    },
+    {
+     "n": 152,
+     "sam_ch_number": 152,
+     "file": "/static/audio/readings/b1-p12-c152.mp3",
+     "duration": 68.98,
+     "src_start": 0,
+     "src_end": 68.98,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1240,
+     "verses": "לב:ד-לב:ט",
+     "verses_num": "32:4-32:9",
+     "verse_count": 6,
+     "incipit": "וישלח יעקב מלאכים לפניו:",
+     "name": "בראשית - ויקם יעקב - 152"
+    },
+    {
+     "n": 153,
+     "sam_ch_number": 153,
+     "file": "/static/audio/readings/b1-p12-c153.mp3",
+     "duration": 59.27,
+     "src_start": 0,
+     "src_end": 59.27,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1241,
+     "verses": "לב:י-לב:יד",
+     "verses_num": "32:10-32:14",
+     "verse_count": 5,
+     "incipit": "ויאמר יעקב: אלהי אבי",
+     "name": "בראשית - ויקם יעקב - 153"
+    },
+    {
+     "n": 154,
+     "sam_ch_number": 154,
+     "file": "/static/audio/readings/b1-p12-c154.mp3",
+     "duration": 104.75,
+     "src_start": 0,
+     "src_end": 104.75,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2251,
+     "verses": "לב:טו-לב:כב",
+     "verses_num": "32:15-32:22",
+     "verse_count": 8,
+     "incipit": "ויקח מן הבא בידו",
+     "name": "בראשית - ויקם יעקב - 154"
+    },
+    {
+     "n": 155,
+     "sam_ch_number": 155,
+     "file": "/static/audio/readings/b1-p12-c155.mp3",
+     "duration": 111.96,
+     "src_start": 0,
+     "src_end": 111.96,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1242,
+     "verses": "לב:כג-לב:לג",
+     "verses_num": "32:23-32:33",
+     "verse_count": 11,
+     "incipit": "ויקם בלילה ההוא: ויקח",
+     "name": "בראשית - ויקם יעקב - 155"
+    },
+    {
+     "n": 156,
+     "sam_ch_number": 156,
+     "file": "/static/audio/readings/b1-p12-c156.mp3",
+     "duration": 118.37,
+     "src_start": 0,
+     "src_end": 118.37,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1243,
+     "verses": "לג:א-לג:יא",
+     "verses_num": "33:1-33:11",
+     "verse_count": 11,
+     "incipit": "וישא יעקב עיניו: וירא",
+     "name": "בראשית - ויקם יעקב - 156"
+    },
+    {
+     "n": 157,
+     "sam_ch_number": 157,
+     "file": "/static/audio/readings/b1-p12-c157.mp3",
+     "duration": 63.78,
+     "src_start": 0,
+     "src_end": 63.78,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1244,
+     "verses": "לג:יב-לג:יז",
+     "verses_num": "33:12-33:17",
+     "verse_count": 6,
+     "incipit": "ויאמר: נסעה ונלכה: ואלכה",
+     "name": "בראשית - ויקם יעקב - 157"
+    },
+    {
+     "n": 158,
+     "sam_ch_number": 158,
+     "file": "/static/audio/readings/b1-p12-c158.mp3",
+     "duration": 28.77,
+     "src_start": 0,
+     "src_end": 28.77,
+     "portion": {
+      "order": 12,
+      "id": 12,
+      "name": "ויקם יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1245,
+     "verses": "לג:יח-לג:כ",
+     "verses_num": "33:18-33:20",
+     "verse_count": 3,
+     "incipit": "ויבא יעקב שלום עיר",
+     "name": "בראשית - ויקם יעקב - 158"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
