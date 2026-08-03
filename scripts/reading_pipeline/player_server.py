@@ -18,8 +18,21 @@ two live actions instead of the old "export JSON -> tell Claude" workflow:
       git add -A the readings/witnesses paths, commit, push private
       web-deploy:main. Returns the git output so the player can show it.
 
+  POST /api/redownload_split
+      Body: {source, book_id, portion_order}. source is a URL (yt-dlp
+      download) or a local file path. Re-runs the ORIGINAL auto-split
+      algorithm (audio_analysis.py: silence+cadence candidates, DP boundary
+      selection anchored to text-length priors from the local DB) against
+      the fresh audio, for whatever chapters the LIVE portion structure
+      currently assigns to portion_order. Cuts N staging MP3s (temp names,
+      not yet the portion's real filenames) into the readings dir and
+      returns {files:[{n,file,duration}], total, weak_boundaries}. Does NOT
+      touch readings.json - the player loads the result as a fresh group so
+      the user reviews/tunes it with the normal piece editor before Apply.
+
 Run: python player_server.py   (serves on http://localhost:8934)
-Needs Python 3 (uses pathlib / f-strings) + ffmpeg on PATH.
+Needs Python 3 (uses pathlib / f-strings) + ffmpeg on PATH; redownload_split
+also needs numpy (audio_analysis.py) and, for URL sources, yt-dlp.
 """
 import json
 import os
@@ -27,11 +40,16 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import sys
 import tempfile
+import uuid
 import urllib.request
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import audio_analysis
 
 TORAH = Path(r"C:\Users\osher\Documents\torah")
 WEB = TORAH / "web"
@@ -196,8 +214,12 @@ def apply_meir(entry):
             results.append((p["n"], out_path, round(dur, 2)))
 
         # place files: back up anything about to be overwritten that isn't
-        # itself one of our new outputs (avoids the same-name clobber bug)
-        prefix = Path(files[0]["file"]).name.split("-c")[0]  # e.g. b1-p11
+        # itself one of our new outputs (avoids the same-name clobber bug).
+        # Prefer an EXPLICIT prefix from the caller (always correct); only
+        # fall back to inferring from files[0]'s name for older callers -
+        # that inference breaks for staging files from /api/redownload_split,
+        # whose names don't follow the b{book}-p{portion}-c{n} convention.
+        prefix = entry.get("prefix") or Path(files[0]["file"]).name.split("-c")[0]  # e.g. b1-p11
         placed = {}
         for n, tmp_path, dur in results:
             dest_name = "{}-c{:03d}.mp3".format(prefix, n)
@@ -280,6 +302,97 @@ def apply_meir(entry):
         "new_chapters": sorted(new_ns),
         "removed_chapters": sorted(old_ns - new_ns),
         "warnings": warnings,
+    }
+
+
+# ───────────────────────── redownload + auto-split ─────────────────────────
+def redownload_split(payload):
+    """Re-fetch a source recording (YouTube URL or local file path) and
+    re-run the ORIGINAL auto-split algorithm against it, for whichever
+    chapters the LIVE portion structure currently assigns to portion_order.
+    Writes N staging MP3s (temp names) into READINGS and returns their
+    durations/chapter-number assignment WITHOUT touching readings.json -
+    the player loads this as a fresh, reviewable group."""
+    source = payload["source"].strip()
+    book_id = payload["book_id"]
+    portion_order = payload["portion_order"]
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+
+        if re.match(r"^https?://", source, re.I):
+            run([sys.executable, "-m", "yt_dlp", "--js-runtimes", "node", "-x", "--audio-format", "mp3",
+                 "-o", str(tmp / "src.%(ext)s"), source])
+            found = list(tmp.glob("src.*"))
+            if not found:
+                raise RuntimeError("yt-dlp produced no output file for: {}".format(source))
+            audio_path = found[0]
+        else:
+            audio_path = Path(source)
+            if not audio_path.exists():
+                raise RuntimeError("local file not found: {}".format(source))
+
+        wav_path = tmp / "analysis.wav"
+        run(["ffmpeg", "-y", "-v", "error", "-i", str(audio_path), "-ac", "1", "-ar", "16000", str(wav_path)])
+        dur, cands, med = audio_analysis.analyze(str(wav_path))
+        cands = [c for c in cands if 2 < c["start"] < dur - 2]
+
+        div = cloud_divisions(book_id)
+        chapter_nums = [n for n, info in div["chapters"].items() if info["portion_id"] == portion_order]
+        if not chapter_nums:
+            raise RuntimeError("live API lists no chapters for portion {} - check portion_order".format(portion_order))
+
+        con = sqlite3.connect(str(DB))
+        cur = con.cursor()
+        metas = []
+        for num in chapter_nums:
+            row = cur.execute("select id from sam_chapters where book_id=? and number=?", (book_id, num)).fetchone()
+            if not row:
+                continue
+            rows = cur.execute(
+                """select c.number*1000+cast(v.number as integer), length(v.text)
+                   from verses v join chapters c on v.chapter_id=c.id where v.sam_ch_id=?""",
+                (row[0],)).fetchall()
+            if not rows:
+                continue
+            metas.append({"number": num, "first": min(r[0] for r in rows), "chars": sum(r[1] or 0 for r in rows)})
+        metas.sort(key=lambda m: m["first"])
+        N = len(metas)
+        if N < 2:
+            raise RuntimeError("resolved fewer than 2 chapters ({}) for this portion from the local DB - aborting".format(N))
+
+        total_chars = sum(m["chars"] for m in metas)
+        cum = 0.0
+        expected = []
+        for m in metas[:-1]:
+            cum += m["chars"]
+            expected.append(dur * cum / total_chars)
+
+        chosen = audio_analysis.choose_boundaries_dp(cands, expected, dur)
+        bounds = [0.0] + [round((c["start"] + c["end"]) / 2, 2) for c in chosen] + [round(dur, 2)]
+        weak = sum(1 for c in chosen if not c.get("cad"))
+
+        stamp = uuid.uuid4().hex[:8]
+        out_files = []
+        for i, m in enumerate(metas):
+            a, b = bounds[i], bounds[i + 1]
+            out_name = "_redl{}_c{:03d}.mp3".format(stamp, m["number"])
+            out_path = READINGS / out_name
+            cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(audio_path), "-ss", str(a)]
+            if i < len(metas) - 1:
+                cmd += ["-to", str(b)]
+            cmd += ["-c:a", "libmp3lame", "-q:a", "4", str(out_path)]
+            run(cmd)
+            piece_dur = round(ffprobe_dur(out_path), 2)
+            out_files.append({"n": m["number"], "file": "/static/audio/readings/" + out_name, "duration": piece_dur})
+
+    return {
+        "files": out_files,
+        "total": round(dur, 2),
+        "n_chapters": N,
+        "weak_boundaries": weak,
+        "portion_name": next((info["portion_name"] for info in div["chapters"].values()
+                               if info["portion_id"] == portion_order), ""),
     }
 
 
@@ -426,7 +539,11 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Accept-Ranges", "bytes")
         self.end_headers()
-        self.wfile.write(data)
+        if self.command != "HEAD":
+            self.wfile.write(data)
+
+    def do_HEAD(self):
+        self.do_GET()
 
     def do_POST(self):
         length = int(self.headers.get("Content-Length", 0))
@@ -456,6 +573,14 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 msg = payload.get("message") or "Player: sync boundary edits to cloud"
                 result = push_to_cloud(msg)
+                self._send_json({"ok": True, "result": result})
+            except Exception as e:
+                self._send_json({"ok": False, "error": str(e)}, 500)
+            return
+
+        if self.path == "/api/redownload_split":
+            try:
+                result = redownload_split(payload)
                 self._send_json({"ok": True, "result": result})
             except Exception as e:
                 self._send_json({"ok": False, "error": str(e)}, 500)

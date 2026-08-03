@@ -238,6 +238,14 @@ function meirKey(po) { return 'm|b' + book + '|p' + po; }
 function witKey(file) { return 'w|' + reader + '|b' + book + '|' + file; }
 
 function buildMeirGroup(po) {
+  var st = edits[meirKey(po)];
+  if (st && st.redownloaded) {
+    /* a not-yet-applied redownload takes priority over the committed manifest */
+    var tl2 = st.origFiles.map(function (f) { return { src: rel(f.file), start: 0, end: f.duration }; });
+    return { kind: 'meir', key: meirKey(po), po: po, title: (st.title || 'פרשה') + ' (הורדה מחדש)',
+             tl: tl2, total: st.bounds[st.bounds.length - 1],
+             bounds: st.bounds.slice(), chs: st.chs.slice(), origFiles: st.origFiles, redownloaded: true };
+  }
   var cs = chapters().filter(function (c) { return c.po === po; });
   var tl = [], bounds = [0], chs = [], cum = 0, files = [];
   cs.forEach(function (c) {
@@ -247,7 +255,6 @@ function buildMeirGroup(po) {
   });
   var g = { kind: 'meir', key: meirKey(po), po: po, title: 'פרשת ' + (cs[0] ? cs[0].pn : ''),
             tl: tl, total: cum, bounds: bounds, chs: chs, origFiles: files };
-  var st = edits[g.key];
   if (st) { g.bounds = st.bounds.slice(); g.chs = st.chs.slice(); }
   return g;
 }
@@ -277,7 +284,10 @@ function buildWitGroup(file) {
 
 function markEdited() {
   if (!G) return;
-  if (G.kind === 'meir') edits[G.key] = { bounds: G.bounds, chs: G.chs };
+  if (G.kind === 'meir') {
+    edits[G.key] = { bounds: G.bounds, chs: G.chs };
+    if (G.redownloaded) { edits[G.key].redownloaded = true; edits[G.key].origFiles = G.origFiles; edits[G.key].title = G.title.replace(/ \(הורדה מחדש\)$/, ''); }
+  }
   else edits[G.key] = { pieces: G.pieces };
   saveEdits();
 }
@@ -484,6 +494,42 @@ function syncDivisionsFromCloud() {
 }
 $('cloudDivBtn').onclick = syncDivisionsFromCloud;
 
+/* ================= redownload + auto-split (player -> cloud algorithm, staged for review) ================= */
+function padPo(po) { return (po < 10 ? '0' : '') + po; }
+function loadRedownloadedGroup(res, po) {
+  var tl = [], bounds = [0], chs = [], cum = 0, origFiles = [];
+  res.files.forEach(function (f) {
+    tl.push({ src: rel(f.file), start: 0, end: f.duration });
+    origFiles.push({ file: f.file, duration: f.duration });
+    cum = r2(cum + f.duration); bounds.push(cum); chs.push(f.n);
+  });
+  G = { kind: 'meir', key: meirKey(po), po: po, title: (res.portion_name || 'פרשה') + ' (הורדה מחדש)',
+        tl: tl, total: cum, bounds: bounds, chs: chs, origFiles: origFiles, redownloaded: true };
+  playPos = 0; stopAll();
+  markEdited();
+  renderGrid(); renderEditor();
+}
+function redownloadAndSplit() {
+  if (!G || G.kind !== 'meir') { setStatus('הורדה מחדש זמינה רק לקבוצת מאיר (פרשה שלמה), לא לעד קריאה.'); return; }
+  var source = prompt('כתובת YouTube או נתיב לקובץ מקומי:\\nיוריד/יקרא את ההקלטה המלאה ויחלק אותה מחדש לפי האלגוריתם המקורי (הפסקות + ירידת מנגינה + עוגן אורך-טקסט) עבור כל פרקי הפרשה הנוכחית.');
+  if (!source) return;
+  if (!confirm('לחלק מחדש את "' + G.title + '" מהמקור: ' + source + ' ?\\nזה עשוי לקחת דקה-שתיים. שום דבר לא ייכתב למניפסט עד שתלחץ "☁️ החל שינויים".')) return;
+  var po = G.po;
+  setStatus('מוריד ומנתח… זה יכול לקחת דקה-שתיים (הורדה + זיהוי הפסקות/מנגינה).');
+  fetch(SERVER + '/api/redownload_split', { method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ source: source, book_id: book, portion_order: po }) })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res.ok) throw new Error(res.error || 'redownload failed');
+      var r = res.result;
+      loadRedownloadedGroup(r, po);
+      setStatus('✓ חולק מחדש: ' + r.n_chapters + ' פרקים' +
+                (r.weak_boundaries ? ' · ' + r.weak_boundaries + ' גבולות ללא ירידת מנגינה ברורה (כדאי להאזין ולכוון)' : '') +
+                '\\nבדוק/כוון למטה, ואז "☁️ החל שינויים" כדי לכתוב את הקבצים בפועל.');
+    })
+    .catch(function (e) { setStatus('שגיאה בהורדה/חלוקה: ' + e.message); });
+}
+
 /* ================= cloud sync: push this group (player -> cloud, live) ================= */
 function syncGroupToCloud() {
   if (!G) return;
@@ -491,7 +537,7 @@ function syncGroupToCloud() {
   if (G.kind === 'meir') {
     var pieces = [];
     for (var i = 0; i < G.chs.length; i++) pieces.push({ n: G.chs[i], v0: G.bounds[i], v1: G.bounds[i + 1] });
-    payload = { kind: 'meir', book_id: book, portion_order: G.po, files: G.origFiles, pieces: pieces };
+    payload = { kind: 'meir', book_id: book, portion_order: G.po, prefix: 'b' + book + '-p' + padPo(G.po), files: G.origFiles, pieces: pieces };
   } else {
     payload = { kind: 'wit', reader: reader, book_id: book, file: G.file, pieces: G.pieces };
   }
@@ -609,9 +655,11 @@ function renderEditor() {
        '</div>';
   h += '<div class="curPiece" id="curPieceBounds"></div>';
   h += '<div class="bar" style="margin-bottom:12px">' +
+       (G.kind === 'meir' ? '<button class="org" onclick="redownloadAndSplit()">📥 הורדה מחדש וחלוקה אוטומטית</button>' : '') +
        '<button class="blu" onclick="syncGroupToCloud()">☁️ החל שינויים (חיתוך + מניפסט מקומי)</button>' +
        '<button class="grn" id="pushBtn" onclick="pushToCloud()">🚀 דחוף הכל לענן (git push)</button>' +
        '</div>';
+  if (G.redownloaded) h += '<div class="gap">⚠ קבוצה זו הגיעה מהורדה מחדש וטרם הוחלה — הקבצים זמניים, לא חלק מהמניפסט עדיין.</div>';
 
   if (G.kind === 'meir') {
     var ps = meirPieces(G);
