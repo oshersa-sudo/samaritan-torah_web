@@ -1637,204 +1637,6 @@
      "src": {
       "youtube_id": "m0rwjElPrLY"
      },
-     "verse_count": 5,
-     "name": "בראשית - ואלה שמות - 219",
-     "incipit": "וישב ישראל בארץ מצרים",
-     "sam_ch_id": 1310,
-     "n": 219,
-     "verses": "מז:כז-מז:לא",
-     "portion": {
-      "id": 18,
-      "name": "ואלה שמות",
-      "order": 18
-     },
-     "sam_ch_number": 226,
-     "file": "/static/audio/readings/b1-p18-c219.mp3",
-     "duration": 61.2,
-     "src_start": 580.87,
-     "src_end": 642.07,
-     "verses_num": "47:27-47:31"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 2,
-     "name": "בראשית - ואלה שמות - 220",
-     "incipit": "ויהי אחר הדברים האלה",
-     "sam_ch_id": 1311,
-     "n": 220,
-     "verses": "מח:א-מח:ב",
-     "portion": {
-      "id": 18,
-      "name": "ואלה שמות",
-      "order": 18
-     },
-     "sam_ch_number": 227,
-     "file": "/static/audio/readings/b1-p18-c220.mp3",
-     "duration": 26.73,
-     "src_start": 642.07,
-     "src_end": 668.8,
-     "verses_num": "48:1-48:2"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 4,
-     "name": "בראשית - ואלה שמות - 221",
-     "incipit": "וירא יוסף כי ישית",
-     "sam_ch_id": 1315,
-     "n": 221,
-     "verses": "מח:יז-מח:כ",
-     "portion": {
-      "order": 18,
-      "name": "ואלה שמות",
-      "id": 18
-     },
-     "sam_ch_number": 231,
-     "file": "/static/audio/readings/b1-p19-c221.mp3",
-     "duration": 52.22,
-     "src_start": 129.16,
-     "src_end": 181.38,
-     "verses_num": "48:17-48:20"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 2,
-     "name": "בראשית - ואלה שמות - 222",
-     "incipit": "ויאמר ישראל אל יוסף",
-     "sam_ch_id": 1316,
-     "n": 222,
-     "verses": "מח:כא-מח:כב",
-     "portion": {
-      "order": 18,
-      "name": "ואלה שמות",
-      "id": 18
-     },
-     "sam_ch_number": 232,
-     "file": "/static/audio/readings/b1-p19-c222.mp3",
-     "duration": 13.68,
-     "src_start": 181.38,
-     "src_end": 195.06,
-     "verses_num": "48:21-48:22"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 4,
-     "name": "בראשית - ואלה שמות - 223",
-     "incipit": "ויקרא יעקב אל בניו:",
-     "sam_ch_id": 1317,
-     "n": 223,
-     "verses": "מט:א-מט:ד",
-     "portion": {
-      "order": 18,
-      "name": "ואלה שמות",
-      "id": 18
-     },
-     "sam_ch_number": 233,
-     "file": "/static/audio/readings/b1-p19-c223.mp3",
-     "duration": 45.11,
-     "src_start": 195.06,
-     "src_end": 240.17,
-     "verses_num": "49:1-49:4"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 3,
-     "name": "בראשית - ואלה שמות - 224",
-     "incipit": "שמעון ולוי אחים כלו",
-     "sam_ch_id": 1318,
-     "n": 224,
-     "verses": "מט:ה-מט:ז",
-     "portion": {
-      "order": 18,
-      "name": "ואלה שמות",
-      "id": 18
-     },
-     "sam_ch_number": 234,
-     "file": "/static/audio/readings/b1-p19-c224.mp3",
-     "duration": 22.16,
-     "src_start": 240.17,
-     "src_end": 262.33,
-     "verses_num": "49:5-49:7"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ואלה שמות - 225",
-     "incipit": "יהודה: אתה יודוך אחיך",
-     "sam_ch_id": 1319,
-     "n": 225,
-     "verses": "מט:ח-מט:יב",
-     "portion": {
-      "order": 18,
-      "name": "ואלה שמות",
-      "id": 18
-     },
-     "sam_ch_number": 235,
-     "file": "/static/audio/readings/b1-p19-c225.mp3",
-     "duration": 41.07,
-     "src_start": 262.33,
-     "src_end": 303.4,
-     "verses_num": "49:8-49:12"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 3,
-     "name": "בראשית - ואלה שמות - 226",
-     "incipit": "זבולן לחוף ימים ישכן",
-     "sam_ch_id": 1320,
-     "n": 226,
-     "verses": "מט:יג-מט:יד",
-     "portion": {
-      "order": 18,
-      "name": "ואלה שמות",
-      "id": 18
-     },
-     "sam_ch_number": 236,
-     "file": "/static/audio/readings/b1-p19-c226.mp3",
-     "duration": 33.43,
-     "src_start": 303.4,
-     "src_end": 336.83,
-     "verses_num": "49:13-49:14"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 3,
-     "name": "בראשית - ואלה שמות - 227",
-     "incipit": "דן ידין עמו כאחד",
-     "sam_ch_id": 1321,
-     "n": 227,
-     "verses": "מט:טז-מט:יח",
-     "portion": {
-      "order": 18,
-      "name": "ואלה שמות",
-      "id": 18
-     },
-     "sam_ch_number": 237,
-     "file": "/static/audio/readings/b1-p19-c227.mp3",
-     "duration": 91.79,
-     "src_start": 336.83,
-     "src_end": 428.62,
-     "verses_num": "49:16-49:18"
-    },
-    {
-     "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
      "verse_count": 3,
      "name": "בראשית - אל שדי - 228",
      "incipit": "גד גדוד יגידנו: והוא",
@@ -5046,17 +4848,17 @@
     {
      "n": 218,
      "sam_ch_number": 218,
-     "file": "/static/audio/readings/b1-p17-c218.mp3",
-     "duration": 38.13,
+     "file": "/static/audio/readings/b1-p18-c218.mp3",
+     "duration": 86.56,
      "src_start": 0,
-     "src_end": 38.13,
+     "src_end": 86.56,
      "portion": {
       "order": 18,
       "id": 18,
       "name": "ואלה שמות"
      },
      "src": {
-      "youtube_id": "NltRiJoXwBg"
+      "youtube_id": null
      },
      "sam_ch_id": 1303,
      "verses": "מו:ח-מו:יח",
@@ -5064,6 +4866,204 @@
      "verse_count": 11,
      "incipit": "ואלה שמות בני ישראל",
      "name": "בראשית - ואלה שמות - 218"
+    },
+    {
+     "n": 219,
+     "sam_ch_number": 219,
+     "file": "/static/audio/readings/b1-p18-c219.mp3",
+     "duration": 74.51,
+     "src_start": 0,
+     "src_end": 74.51,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1304,
+     "verses": "מו:יט-מו:כז",
+     "verses_num": "46:19-46:27",
+     "verse_count": 9,
+     "incipit": "בני רחל אשת יעקב:",
+     "name": "בראשית - ואלה שמות - 219"
+    },
+    {
+     "n": 220,
+     "sam_ch_number": 220,
+     "file": "/static/audio/readings/b1-p18-c220.mp3",
+     "duration": 78.48,
+     "src_start": 0,
+     "src_end": 78.48,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1305,
+     "verses": "מו:כח-מו:לד",
+     "verses_num": "46:28-46:34",
+     "verse_count": 7,
+     "incipit": "ואת יהודה שלח לפניו",
+     "name": "בראשית - ואלה שמות - 220"
+    },
+    {
+     "n": 221,
+     "sam_ch_number": 221,
+     "file": "/static/audio/readings/b1-p18-c221.mp3",
+     "duration": 78.16,
+     "src_start": 0,
+     "src_end": 78.16,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1306,
+     "verses": "מז:א-מז:ו",
+     "verses_num": "47:1-47:6",
+     "verse_count": 6,
+     "incipit": "ויבא יוסף ויגד לפרעה:",
+     "name": "בראשית - ואלה שמות - 221"
+    },
+    {
+     "n": 222,
+     "sam_ch_number": 222,
+     "file": "/static/audio/readings/b1-p18-c222.mp3",
+     "duration": 65.63,
+     "src_start": 0,
+     "src_end": 65.63,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1307,
+     "verses": "מז:ז-מז:יג",
+     "verses_num": "47:7-47:13",
+     "verse_count": 7,
+     "incipit": "ויבא יוסף את יעקב",
+     "name": "בראשית - ואלה שמות - 222"
+    },
+    {
+     "n": 223,
+     "sam_ch_number": 223,
+     "file": "/static/audio/readings/b1-p18-c223.mp3",
+     "duration": 104.71,
+     "src_start": 0,
+     "src_end": 104.71,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2258,
+     "verses": "מז:יד-מז:יט",
+     "verses_num": "47:14-47:19",
+     "verse_count": 6,
+     "incipit": "ותלא ארץ מצרים וארץ",
+     "name": "בראשית - ואלה שמות - 223"
+    },
+    {
+     "n": 224,
+     "sam_ch_number": 224,
+     "file": "/static/audio/readings/b1-p18-c224.mp3",
+     "duration": 38.14,
+     "src_start": 0,
+     "src_end": 38.14,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1308,
+     "verses": "מז:כ-מז:כב",
+     "verses_num": "47:20-47:22",
+     "verse_count": 3,
+     "incipit": "ויקן יוסף את כל",
+     "name": "בראשית - ואלה שמות - 224"
+    },
+    {
+     "n": 225,
+     "sam_ch_number": 225,
+     "file": "/static/audio/readings/b1-p18-c225.mp3",
+     "duration": 54.64,
+     "src_start": 0,
+     "src_end": 54.64,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1309,
+     "verses": "מז:כג-מז:כו",
+     "verses_num": "47:23-47:26",
+     "verse_count": 4,
+     "incipit": "ויאמר יוסף אל העם:",
+     "name": "בראשית - ואלה שמות - 225"
+    },
+    {
+     "n": 226,
+     "sam_ch_number": 226,
+     "file": "/static/audio/readings/b1-p18-c226.mp3",
+     "duration": 61.2,
+     "src_start": 0,
+     "src_end": 61.2,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1310,
+     "verses": "מז:כז-מז:לא",
+     "verses_num": "47:27-47:31",
+     "verse_count": 5,
+     "incipit": "וישב ישראל בארץ מצרים:",
+     "name": "בראשית - ואלה שמות - 226"
+    },
+    {
+     "n": 227,
+     "sam_ch_number": 227,
+     "file": "/static/audio/readings/b1-p18-c227.mp3",
+     "duration": 26.72,
+     "src_start": 0,
+     "src_end": 26.72,
+     "portion": {
+      "order": 18,
+      "id": 18,
+      "name": "ואלה שמות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1311,
+     "verses": "מח:א-מח:ב",
+     "verses_num": "48:1-48:2",
+     "verse_count": 2,
+     "incipit": "ויהי אחר הדברים האלה:",
+     "name": "בראשית - ואלה שמות - 227"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
