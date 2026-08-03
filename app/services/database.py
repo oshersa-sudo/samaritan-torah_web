@@ -37,16 +37,28 @@ def _apply_startup_migrations():
     touches anything except the exact rows named below, so it's safe to run
     against a live DB that has its own unsynced admin edits. Each statement's
     WHERE clause targets the specific old value, so re-running this after the
-    fix has already landed is a harmless no-op."""
+    fix has already landed is a harmless no-op.
+
+    Portion names are cross-checked against data/portions of the week.xlsx
+    (the Samaritan-tradition parasha list — see the portion-names-source-of-truth
+    memory note). 'וליוסף נולדו' was a MISTAKE from an earlier pass that misread
+    that file's Hebrew column — the correct name (confirmed at the codepoint
+    level: י-ל-ד-ו, not נ-ו-ל-ד-ו) is 'וליוסף ילדו', which is what this reverts
+    a live DB back to if the mistaken value ever reached it."""
     try:
         conn = sqlite3.connect(DB_PATH)
-        conn.execute("UPDATE portions SET name='וליוסף נולדו' "
-                     "WHERE book_id=1 AND mode='samaritan' AND name='וליוסף ילדו'")
-        try:
-            conn.execute("UPDATE canon_portion_counts SET portion_name='וליוסף נולדו' "
-                         "WHERE book_id=1 AND portion_name='וליוסף ילדו'")
-        except sqlite3.OperationalError:
-            pass   # canon_portion_counts doesn't exist yet on this DB copy — fine, skip
+        RENAMES = [
+            ('וליוסף נולדו', 'וליוסף ילדו'),   # revert an earlier misreading of the xlsx
+            ('ואלה תולדות', 'ואלה תולדת'),      # xlsx has no final ו — 'toldat', not 'toldot'
+        ]
+        for old, new in RENAMES:
+            conn.execute("UPDATE portions SET name=? WHERE book_id=1 AND mode='samaritan' AND name=?",
+                         (new, old))
+            try:
+                conn.execute("UPDATE canon_portion_counts SET portion_name=? "
+                             "WHERE book_id=1 AND portion_name=?", (new, old))
+            except sqlite3.OperationalError:
+                pass   # canon_portion_counts doesn't exist yet on this DB copy — fine, skip
         conn.commit()
         conn.close()
     except Exception:
