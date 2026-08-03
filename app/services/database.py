@@ -31,6 +31,31 @@ def _seed_db():
 _seed_db()
 
 
+def _apply_startup_migrations():
+    """Small, idempotent, surgical corrections applied to whatever DB is already on
+    disk (bundled OR the live persistent-disk copy) — NOT a reseed: this never
+    touches anything except the exact rows named below, so it's safe to run
+    against a live DB that has its own unsynced admin edits. Each statement's
+    WHERE clause targets the specific old value, so re-running this after the
+    fix has already landed is a harmless no-op."""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute("UPDATE portions SET name='וליוסף נולדו' "
+                     "WHERE book_id=1 AND mode='samaritan' AND name='וליוסף ילדו'")
+        try:
+            conn.execute("UPDATE canon_portion_counts SET portion_name='וליוסף נולדו' "
+                         "WHERE book_id=1 AND portion_name='וליוסף ילדו'")
+        except sqlite3.OperationalError:
+            pass   # canon_portion_counts doesn't exist yet on this DB copy — fine, skip
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass   # a migration problem must never prevent the server from starting
+
+
+_apply_startup_migrations()
+
+
 _MAS_CHAPTER_COL_READY = False
 
 
