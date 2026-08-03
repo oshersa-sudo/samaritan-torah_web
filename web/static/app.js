@@ -210,6 +210,13 @@ const I18N = {
     wa_err:'לא ניתן להפעיל כניסה בטביעת אצבע במכשיר זה.', wa_login_err:'האימות נכשל. נסה שוב או השתמש בסיסמה.',
     admin_dl_db:'⬇ הורד את ה-DB (לסנכרון חזרה)', admin_reseed:'טען DB מהמאגר',
     admin_reseed_q:'פעולה זו תדרוס את ה-DB החי בעותק מהמאגר (git). עריכות שלא הורדו יאבדו. להמשיך?',
+    reseed_report_title:'דוח השוואה לפני טעינה', reseed_approve:'אשר וטען',
+    reseed_no_diff:'לא נמצאו הבדלים בין ה-DB החי לגרסה מהמאגר. בטוח להמשיך.',
+    reseed_first_seed:'אין עדיין DB חי בדיסק — זו טעינה ראשונית (אין מה להשוות).',
+    reseed_books:'פרקים שומרוניים לפי ספר', reseed_added:'נוספו', reseed_removed:'הוסרו', reseed_renumbered:'שונו במספור',
+    reseed_verses:'פסוקים', reseed_changed:'שונו', reseed_ch_moved:'שויכו לפרק אחר',
+    reseed_loss:'⚠ תוכן שעלול להימחק (קיים בשרת החי, חסר בגרסה הנטענת)',
+    reseed_audio:'⚠ קישורי הקלטות שאינם תואמים את המבנה החדש',
     adm_disk:'💾 מקום בדיסק', adm_disk_db:'קובץ ה-DB החי', adm_disk_backups:'גיבויים ישנים',
     adm_disk_free:'פנוי בדיסק', adm_disk_total:'סה״כ דיסק', adm_disk_clean:'נקה גיבויים ישנים ושחרר מקום',
     adm_disk_clean_q:'הגיבויים הישנים יימחקו מהדיסק (היסטוריית ה-git נשארת שלמה כגיבוי אמיתי). להמשיך?',
@@ -393,6 +400,13 @@ const I18N = {
     wa_err:'Fingerprint sign-in isn\'t available on this device.', wa_login_err:'Authentication failed. Try again or use the password.',
     admin_dl_db:'⬇ Download the DB (to sync back)', admin_reseed:'Load DB from repo',
     admin_reseed_q:'This overwrites the live DB with the repo (git) copy. Un-downloaded edits will be lost. Continue?',
+    reseed_report_title:'Diff report before loading', reseed_approve:'Approve and load',
+    reseed_no_diff:'No differences found between the live DB and the repo copy. Safe to proceed.',
+    reseed_first_seed:'There is no live DB on disk yet — this is the initial seed (nothing to compare).',
+    reseed_books:'Samaritan chapters by book', reseed_added:'added', reseed_removed:'removed', reseed_renumbered:'renumbered',
+    reseed_verses:'Verses', reseed_changed:'changed', reseed_ch_moved:'moved to another chapter',
+    reseed_loss:'⚠ Content that may be lost (exists on the live server, missing in the incoming version)',
+    reseed_audio:'⚠ Recording links that no longer match the new structure',
     adm_disk:'💾 Disk space', adm_disk_db:'Live DB file', adm_disk_backups:'Old backups',
     adm_disk_free:'Free on disk', adm_disk_total:'Total disk', adm_disk_clean:'Clean old backups and free space',
     adm_disk_clean_q:'Old backups on disk will be deleted (git history remains the real backup). Continue?',
@@ -576,6 +590,13 @@ const I18N = {
     wa_err:'الدخول ببصمة الإصبع غير متاح على هذا الجهاز.', wa_login_err:'فشل التحقق. حاول مجددًا أو استخدم كلمة المرور.',
     admin_dl_db:'⬇ تنزيل قاعدة البيانات (للمزامنة)', admin_reseed:'تحميل DB من المستودع',
     admin_reseed_q:'سيؤدي هذا إلى استبدال قاعدة البيانات الحيّة بنسخة المستودع (git). ستُفقد التعديلات غير المنزَّلة. متابعة؟',
+    reseed_report_title:'تقرير مقارنة قبل التحميل', reseed_approve:'الموافقة والتحميل',
+    reseed_no_diff:'لم يتم العثور على فروقات بين قاعدة البيانات الحيّة ونسخة المستودع. يمكن المتابعة بأمان.',
+    reseed_first_seed:'لا توجد قاعدة بيانات حيّة على القرص بعد — هذا تحميل أولي (لا يوجد ما تتم مقارنته).',
+    reseed_books:'الفصول السامرية حسب السفر', reseed_added:'أضيفت', reseed_removed:'حُذفت', reseed_renumbered:'غُيّر ترقيمها',
+    reseed_verses:'الآيات', reseed_changed:'تغيّرت', reseed_ch_moved:'انتقلت إلى فصل آخر',
+    reseed_loss:'⚠ محتوى قد يُفقد (موجود على الخادم الحيّ، غير موجود في النسخة الجديدة)',
+    reseed_audio:'⚠ روابط تسجيلات لا تطابق البنية الجديدة',
     adm_disk:'💾 مساحة القرص', adm_disk_db:'ملف DB الحيّ', adm_disk_backups:'نسخ احتياطية قديمة',
     adm_disk_free:'المساحة الحرّة', adm_disk_total:'إجمالي القرص', adm_disk_clean:'حذف النسخ الاحتياطية القديمة وتحرير المساحة',
     adm_disk_clean_q:'سيتم حذف النسخ الاحتياطية القديمة من القرص (سجلّ git يبقى النسخة الاحتياطية الحقيقية). متابعة؟',
@@ -4336,6 +4357,21 @@ function askConfirm(title, msg, yes, no){
     nb.onclick=()=>{ m.remove(); res(false); };
   });
 }
+// like askConfirm, but the body is trusted, pre-escaped HTML (a rich report)
+// rather than a plain message — used for the reseed diff-report gate below.
+function askConfirmHtml(title, bodyHtml, yes, no, danger){
+  return new Promise(res=>{
+    const m = el('div','modal');
+    m.innerHTML = `<div class="modal-box big"><div class="modal-title">${esc(title)}</div>`
+      + `<div class="note" style="text-align:start;margin-bottom:6px;max-height:60vh;overflow-y:auto">${bodyHtml}</div>`
+      + `<button class="share-opt" style="background:${danger?'#a02a2a':'#3a6b34'}">${esc(yes)}</button>`
+      + `<button class="share-opt close">${esc(no)}</button></div>`;
+    document.body.appendChild(m);
+    const [yb,nb] = m.querySelectorAll('button');
+    yb.onclick=()=>{ m.remove(); res(true); };
+    nb.onclick=()=>{ m.remove(); res(false); };
+  });
+}
 // language picker → switch immediately, then ask whether to persist on this device
 document.querySelectorAll('#langModal .lang-opt, #langModal .close').forEach(b=>{
   b.onclick = async ()=>{
@@ -4467,11 +4503,64 @@ async function openAnalytics(){
       </div>`).join('') + '</div>';
   showInfo(t('adm_analytics'), html);
 }
+// build the HTML body of the reseed diff-report — every section is skipped
+// when empty, so a clean report just reads "no differences found"
+function _reseedReportHtml(rep){
+  let h = '';
+  if(rep.first_seed){
+    return `<div class="note">${esc(t('reseed_first_seed'))}</div>`;
+  }
+  const hasBooks = (rep.books||[]).length;
+  const v = rep.verses||{};
+  const hasVerses = v.added||v.removed||v.text_changed||v.sam_ch_changed;
+  const hasLoss = (rep.content_loss||[]).length;
+  const hasAudio = (rep.audio_issues||[]).length;
+  if(!hasBooks && !hasVerses && !hasLoss && !hasAudio){
+    return `<div class="note">${esc(t('reseed_no_diff'))}</div>`;
+  }
+  if(hasBooks){
+    h += `<div class="rs-h">${esc(t('reseed_books'))}</div>`;
+    for(const b of rep.books){
+      h += `<div class="rs-row"><b>${esc(b.name)}</b>: ${b.sam_count_live} → ${b.sam_count_bundled}`
+         + ` (${esc(t('reseed_added'))} ${b.added}, ${esc(t('reseed_removed'))} ${b.removed}, ${esc(t('reseed_renumbered'))} ${b.renumbered})</div>`;
+    }
+  }
+  if(hasVerses){
+    h += `<div class="rs-h">${esc(t('reseed_verses'))}</div>`;
+    h += `<div class="rs-row">${esc(t('reseed_added'))} ${v.added} · ${esc(t('reseed_removed'))} ${v.removed}`
+       + ` · ${esc(t('reseed_changed'))} ${v.text_changed} · ${esc(t('reseed_ch_moved'))} ${v.sam_ch_changed}</div>`;
+    for(const s of (v.text_sample||[])){
+      h += `<div class="rs-diff"><b>${esc(s.ref)}</b>`
+         + `<div class="rs-old">${esc(s.live)}</div><div class="rs-new">${esc(s.bundled)}</div></div>`;
+    }
+  }
+  if(hasLoss){
+    h += `<div class="rs-h rs-warn">${esc(t('reseed_loss'))}</div>`;
+    for(const c of rep.content_loss){
+      h += `<div class="rs-row rs-warn-row"><b>${esc(c.ref)}</b>: ${esc(c.tables.join(', '))}</div>`;
+    }
+  }
+  if(hasAudio){
+    h += `<div class="rs-h rs-warn">${esc(t('reseed_audio'))}</div>`;
+    for(const a of rep.audio_issues){
+      h += `<div class="rs-row rs-warn-row">${esc(a.file)} — ${esc(a.detail)}</div>`;
+    }
+  }
+  return h;
+}
 async function adminReseed(){
   if(!ADMIN.token) return;
-  if(!await askConfirm(t('admin_reseed'), t('admin_reseed_q'), t('confirm_yes'), t('c_cancel'))) return;
-  let r; try{ r=await apiPost('admin/reseed_db', {token:ADMIN.token, confirm:'REPLACE'}); }catch(e){ r={ok:false}; }
-  showInfo(t('admin_reseed'), `<div class="note">${r&&r.ok ? '✓' : esc((r&&r.error)||'error')}</div>`);
+  let r; try{ r = await fetch('/api/admin/reseed_diff?token='+encodeURIComponent(ADMIN.token)).then(x=>x.json()); }
+  catch(e){ r={ok:false}; }
+  if(!r || !r.ok){ showInfo(t('admin_reseed'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`); return; }
+  const rep = r.report;
+  if(rep.noop){ showInfo(t('admin_reseed'), `<div class="note">${esc(rep.reason||'')}</div>`); return; }
+  const body = _reseedReportHtml(rep);
+  const proceed = await askConfirmHtml(t('reseed_report_title'), body, t('reseed_approve'), t('c_cancel'), true);
+  if(!proceed) return;
+  let rr; try{ rr=await apiPost('admin/reseed_db', {token:ADMIN.token, confirm:'REPLACE', state_hash:rep.state_hash}); }
+  catch(e){ rr={ok:false}; }
+  showInfo(t('admin_reseed'), `<div class="note">${rr&&rr.ok ? '✓' : esc((rr&&rr.error)||'error')}</div>`);
 }
 $('admPass').addEventListener('keydown',e=>{ if(e.key==='Enter') $('admLogin').click(); });
 // add a floating edit pencil (admin only) to a text row → opens the edit window

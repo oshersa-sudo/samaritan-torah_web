@@ -11,6 +11,7 @@ Run:  py -3 web/server.py     →  http://127.0.0.1:5000
 import os
 import sys
 import re
+import sqlite3
 import difflib
 
 # make the project root importable so we reuse the app's own service layer
@@ -279,11 +280,179 @@ def admin_download_db():
     return send_file(db.DB_PATH, as_attachment=True, download_name='torah.db')
 
 
+_RESEED_CONTENT_TABLES = [
+    ('verse_dictionary', 'verse_id'), ('word_gloss', 'verse_id'), ('word_jewish', 'verse_id'),
+    ('word_samaritan', 'verse_id'), ('word_align', 'verse_id'), ('verse_translit', 'verse_id'),
+    ('vongall_apparatus', 'verse_id'), ('binyamim_verse_links', 'verse_id'),
+    ('eyalk_verse_links', 'verse_id'), ('shyt_verse_links', 'verse_id'), ('sir_verse_links', 'verse_id'),
+    ('tm_verse_links', 'verse_id'), ('tradart_verse_links', 'verse_id'), ('tzdaka_verse_links', 'verse_id'),
+]
+
+
+def _reseed_state_hash(bundled, live):
+    """Cheap fingerprint of both DB files' current on-disk state (mtime+size) —
+    used to bind a diff report to the exact state it was computed from, so an
+    approval can't silently apply to a live DB that changed after the report
+    was shown."""
+    parts = []
+    for p in (bundled, live):
+        try:
+            st = os.stat(p)
+            parts.append('%d:%d' % (int(st.st_mtime), st.st_size))
+        except OSError:
+            parts.append('missing')
+    return hashlib.sha256('|'.join(parts).encode()).hexdigest()[:24]
+
+
+def _reseed_diff_report():
+    """Compare the BUNDLED (git) DB about to be copied over the LIVE (persistent-
+    disk) DB — sam_chapters/verses added-removed-changed per book, verse text
+    changes, and two specific risk checks the project owner asked to always see
+    before a reseed: (1) commentary/dictionary content that exists on the LIVE
+    verse but would vanish because the bundled verse lacks it, and (2) reading/
+    witness audio-manifest entries (shipped with the bundled code) that would
+    point at a Samaritan chapter id/number the bundled DB doesn't actually have —
+    both are exactly the kind of silent disconnection a blind file copy can cause."""
+    bundled = getattr(db, '_BUNDLED_DB', None)
+    live = db.DB_PATH
+    if not bundled or not os.path.exists(bundled):
+        return {'noop': True, 'reason': 'no bundled DB found'}
+    if live == bundled:
+        return {'noop': True, 'reason': 'not running off a separate disk — local no-op'}
+    if not os.path.exists(live):
+        return {'noop': False, 'first_seed': True}
+
+    bconn = sqlite3.connect(bundled); bconn.row_factory = sqlite3.Row
+    lconn = sqlite3.connect(live); lconn.row_factory = sqlite3.Row
+
+    books = [dict(r) for r in lconn.execute('SELECT id, name FROM books ORDER BY id')]
+    book_reports = []
+    for bk in books:
+        bid = bk['id']
+        b_sc = {r['id']: r['number'] for r in bconn.execute('SELECT id, number FROM sam_chapters WHERE book_id=?', (bid,))}
+        l_sc = {r['id']: r['number'] for r in lconn.execute('SELECT id, number FROM sam_chapters WHERE book_id=?', (bid,))}
+        added = sorted(set(b_sc) - set(l_sc))
+        removed = sorted(set(l_sc) - set(b_sc))
+        renumbered = [{'id': i, 'live': l_sc[i], 'bundled': b_sc[i]}
+                      for i in sorted(set(b_sc) & set(l_sc)) if b_sc[i] != l_sc[i]]
+        if added or removed or renumbered or len(b_sc) != len(l_sc):
+            book_reports.append({
+                'book_id': bid, 'name': bk['name'],
+                'sam_count_live': len(l_sc), 'sam_count_bundled': len(b_sc),
+                'added': len(added), 'removed': len(removed), 'renumbered': len(renumbered),
+                'renumbered_sample': renumbered[:10],
+            })
+
+    b_v = {r['id']: (r['sam_ch_id'], r['text']) for r in bconn.execute('SELECT id, sam_ch_id, text FROM verses')}
+    l_v = {r['id']: (r['sam_ch_id'], r['text']) for r in lconn.execute('SELECT id, sam_ch_id, text FROM verses')}
+    v_added = sorted(set(b_v) - set(l_v))
+    v_removed = sorted(set(l_v) - set(b_v))
+    common = set(b_v) & set(l_v)
+    text_changed = [vid for vid in common if b_v[vid][1] != l_v[vid][1]]
+    sam_ch_changed = [vid for vid in common if b_v[vid][0] != l_v[vid][0]]
+
+    def _loc(conn, vid):
+        r = conn.execute("""SELECT bk.name book, c.number cn, v.number vn FROM verses v
+            JOIN chapters c ON c.id=v.chapter_id JOIN books bk ON bk.id=c.book_id WHERE v.id=?""", (vid,)).fetchone()
+        return '%s %s:%s' % (r['book'], r['cn'], r['vn']) if r else str(vid)
+
+    text_sample = [{'verse_id': vid, 'ref': _loc(lconn, vid),
+                     'live': (l_v[vid][1] or '')[:80], 'bundled': (b_v[vid][1] or '')[:80]}
+                    for vid in text_changed[:25]]
+
+    # ── content-loss risk: LIVE verse has rows in a content table that the
+    #    BUNDLED verse (same id) lacks — would be silently dropped by the copy.
+    content_loss = []
+    for vid in (v_removed + text_changed):
+        lost_in = []
+        for table, col in _RESEED_CONTENT_TABLES:
+            try:
+                l_n = lconn.execute('SELECT COUNT(*) FROM %s WHERE %s=?' % (table, col), (vid,)).fetchone()[0]
+                if not l_n:
+                    continue
+                b_n = bconn.execute('SELECT COUNT(*) FROM %s WHERE %s=?' % (table, col), (vid,)).fetchone()[0]
+                if b_n < l_n:
+                    lost_in.append(table)
+            except sqlite3.OperationalError:
+                continue
+        if lost_in:
+            content_loss.append({'verse_id': vid, 'ref': _loc(lconn, vid), 'tables': lost_in})
+        if len(content_loss) >= 30:
+            break
+
+    # ── audio manifest self-consistency vs the BUNDLED DB (what will actually
+    #    be live right after the copy). readingFor() in app.js matches recordings
+    #    by (book_id, sam_ch NUMBER) — not by sam_ch_id, which is just informational
+    #    and can legitimately be stale across DB copies — so the real question is
+    #    whether that (book, number) pair still names an actual chapter after the
+    #    reseed; a manifest entry pointing at a number the bundled DB no longer has
+    #    would silently misplay or vanish.
+    audio_issues = []
+    base = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'audio')
+    b_sam_all = {r['id']: (r['book_id'], r['number']) for r in bconn.execute('SELECT id, book_id, number FROM sam_chapters')}
+    b_sam_by_num = set(b_sam_all.values())
+    try:
+        rd = _json.load(open(os.path.join(base, 'readings', 'readings.json'), encoding='utf-8'))
+        for bk in rd.get('books', []):
+            bid = bk.get('book_id')
+            for ch in bk.get('chapters', []):
+                if (bid, ch.get('sam_ch_number')) not in b_sam_by_num:
+                    audio_issues.append({'file': 'readings.json', 'issue': 'orphaned sam_ch_number',
+                                          'detail': 'book %s, chapter %s (%s)'
+                                                    % (bid, ch.get('sam_ch_number'), ch.get('name', ''))})
+                if len(audio_issues) >= 20:
+                    break
+    except Exception:
+        pass
+    try:
+        wj = _json.load(open(os.path.join(base, 'witnesses.json'), encoding='utf-8'))
+        for it in wj.get('items', []):
+            key = (it.get('book_id'), it.get('sam_ch_number'))
+            if key not in b_sam_by_num:
+                audio_issues.append({'file': 'witnesses.json', 'issue': 'orphaned sam_ch_number',
+                                      'detail': 'book %s, chapter %s (%s)'
+                                                % (it.get('book_id'), it.get('sam_ch_number'), it.get('reader', ''))})
+            if len(audio_issues) >= 30:
+                break
+    except Exception:
+        pass
+
+    bconn.close(); lconn.close()
+    return {
+        'noop': False,
+        'books': book_reports,
+        'verses': {
+            'added': len(v_added), 'removed': len(v_removed),
+            'text_changed': len(text_changed), 'sam_ch_changed': len(sam_ch_changed),
+            'text_sample': text_sample,
+        },
+        'content_loss': content_loss,
+        'audio_issues': audio_issues,
+        'state_hash': _reseed_state_hash(bundled, live),
+    }
+
+
+@app.route('/api/admin/reseed_diff')
+def admin_reseed_diff():
+    """The report the project owner requires be reviewed BEFORE any 'טען DB
+    מהמאגר' reseed is allowed to run — see _reseed_diff_report()."""
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        return jsonify({'ok': True, 'report': _reseed_diff_report()})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+
 @app.route('/api/admin/reseed_db', methods=['POST'])
 def admin_reseed_db():
     """Overwrite the live (persistent-disk) DB with the one bundled in the repo —
     used to apply a DB update pushed via git to the live site. DESTROYS unsynced
-    online edits, so download_db first. No-op when not running off a separate disk."""
+    online edits, so download_db first. No-op when not running off a separate disk.
+    Requires the diff report's state_hash (from /api/admin/reseed_diff) to still
+    match the CURRENT file state — if the live/bundled files changed since the
+    report was fetched, the approval no longer corresponds to reality and this
+    is rejected; the admin must re-fetch the report and approve again."""
     d = request.get_json(silent=True) or {}
     if not _valid_token(d.get('token')):
         return jsonify({'ok': False, 'error': 'unauthorized'}), 401
@@ -292,6 +461,11 @@ def admin_reseed_db():
     bundled = getattr(db, '_BUNDLED_DB', None)
     if not bundled or db.DB_PATH == bundled or not os.path.exists(bundled):
         return jsonify({'ok': False, 'error': 'no separate disk / bundled DB'}), 400
+    if os.path.exists(db.DB_PATH):
+        current_hash = _reseed_state_hash(bundled, db.DB_PATH)
+        if d.get('state_hash') != current_hash:
+            return jsonify({'ok': False, 'error':
+                'המצב השתנה מאז שהופק דוח ההשוואה — יש להפיק דוח מחדש ולאשר שוב.'}), 409
     try:
         _backup_db()
         shutil.copy2(bundled, db.DB_PATH)

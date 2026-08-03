@@ -540,6 +540,15 @@ footer a{ color:var(--accent); text-decoration:none; }
         justify-content:center; z-index:50; }
 .modal-box{ background:#fff; border-radius:12px; padding:16px; width:80%; max-width:340px; display:flex; flex-direction:column; gap:10px; }
 .modal-box.big{ max-width:560px; width:92%; max-height:85vh; }
+/* reseed diff-report body */
+.rs-h{ font-weight:700; color:var(--navy); margin:10px 0 4px; font-size:14.5px; }
+.rs-h.rs-warn{ color:#a02a2a; }
+.rs-row{ font-size:13.5px; color:var(--dark); padding:2px 0; }
+.rs-row.rs-warn-row{ color:#a02a2a; }
+.rs-diff{ font-size:13px; margin:6px 0; padding:6px 8px; background:rgba(26,56,115,.05); border-radius:6px; }
+.rs-diff b{ color:var(--navy); }
+.rs-old{ color:#a02a2a; text-decoration:line-through; opacity:.8; }
+.rs-new{ color:#3a6b34; }
 /* the occurrence popup body must scroll inside the capped box, so a long verse/Memar
    passage doesn't push the close button off-screen (was: no scroll, couldn't close) */
 #occBody{ overflow-y:auto; flex:1 1 auto; min-height:0; -webkit-overflow-scrolling:touch; }
