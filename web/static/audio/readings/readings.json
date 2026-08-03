@@ -1635,248 +1635,6 @@
     },
     {
      "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ויוסף הורד מצרימה - 182",
-     "incipit": "ויהי מקץ שנתים ימים:",
-     "sam_ch_id": 1276,
-     "n": 182,
-     "verses": "מא:א-מא:ח",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 189,
-     "file": "/static/audio/readings/b1-p15-c182.mp3",
-     "duration": 90.8,
-     "src_start": 526.09,
-     "src_end": 616.89,
-     "verses_num": "41:1-41:8"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ויוסף הורד מצרימה - 183",
-     "incipit": "וידבר שר המשקים אל",
-     "sam_ch_id": 1277,
-     "n": 183,
-     "verses": "מא:ט-מא:טז",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 190,
-     "file": "/static/audio/readings/b1-p15-c183.mp3",
-     "duration": 82.21,
-     "src_start": 616.89,
-     "src_end": 699.1,
-     "verses_num": "41:9-41:16"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ויוסף הורד מצרימה - 184",
-     "incipit": "וידבר פרעה את יוסף",
-     "sam_ch_id": 1278,
-     "n": 184,
-     "verses": "מא:יז-מא:כד",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 191,
-     "file": "/static/audio/readings/b1-p15-c184.mp3",
-     "duration": 86.84,
-     "src_start": 699.1,
-     "src_end": 785.94,
-     "verses_num": "41:17-41:24"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ויוסף הורד מצרימה - 185",
-     "incipit": "ויאמר יוסף אל פרעה",
-     "sam_ch_id": 1279,
-     "n": 185,
-     "verses": "מא:כה-מא:לב",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 192,
-     "file": "/static/audio/readings/b1-p15-c185.mp3",
-     "duration": 152.25,
-     "src_start": 785.94,
-     "src_end": 938.19,
-     "verses_num": "41:25-41:32"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ויוסף הורד מצרימה - 186",
-     "incipit": "ועתה יראה לו פרעה",
-     "sam_ch_id": 1280,
-     "n": 186,
-     "verses": "מא:לג-מא:לח",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 193,
-     "file": "/static/audio/readings/b1-p15-c186.mp3",
-     "duration": 68.77,
-     "src_start": 938.19,
-     "src_end": 1006.96,
-     "verses_num": "41:33-41:38"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 11,
-     "name": "בראשית - ויוסף הורד מצרימה - 187",
-     "incipit": "ויאמר פרעה אל יוסף",
-     "sam_ch_id": 1281,
-     "n": 187,
-     "verses": "מא:לט-מא:מט",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 194,
-     "file": "/static/audio/readings/b1-p15-c187.mp3",
-     "duration": 52.45,
-     "src_start": 1006.96,
-     "src_end": 1059.41,
-     "verses_num": "41:39-41:49"
-    },
-    {
-     "src": {
-      "youtube_id": "q7SXYiRcVJI"
-     },
-     "verse_count": 7,
-     "name": "בראשית - ויוסף הורד מצרימה - 191",
-     "incipit": "ויאמר אליהם יוסף ביום",
-     "sam_ch_id": 1285,
-     "n": 191,
-     "verses": "מב:יח-מב:כד",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 200,
-     "file": "/static/audio/readings/b1-p16-c191.mp3",
-     "duration": 84.35,
-     "src_start": 0.0,
-     "src_end": 84.35,
-     "verses_num": "42:18-42:24"
-    },
-    {
-     "src": {
-      "youtube_id": "q7SXYiRcVJI"
-     },
-     "verse_count": 4,
-     "name": "בראשית - ויוסף הורד מצרימה - 192",
-     "incipit": "ויצו יוסף וימלאו את",
-     "sam_ch_id": 1286,
-     "n": 192,
-     "verses": "מב:כה-מב:כח",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 201,
-     "file": "/static/audio/readings/b1-p16-c192.mp3",
-     "duration": 130.53,
-     "src_start": 84.35,
-     "src_end": 214.88,
-     "verses_num": "42:25-42:28"
-    },
-    {
-     "src": {
-      "youtube_id": "q7SXYiRcVJI"
-     },
-     "verse_count": 7,
-     "name": "בראשית - ויוסף הורד מצרימה - 193",
-     "incipit": "ויבאו אל יעקב אביהם",
-     "sam_ch_id": 1287,
-     "n": 193,
-     "verses": "מב:כט-מב:לה",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 202,
-     "file": "/static/audio/readings/b1-p16-c193.mp3",
-     "duration": 48.89,
-     "src_start": 214.88,
-     "src_end": 263.77,
-     "verses_num": "42:29-42:35"
-    },
-    {
-     "src": {
-      "youtube_id": "q7SXYiRcVJI"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ויוסף הורד מצרימה - 194",
-     "incipit": "ויאמר אליהם יעקב אביהם",
-     "sam_ch_id": 1288,
-     "n": 194,
-     "verses": "מב:לו-מג:ה",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 203,
-     "file": "/static/audio/readings/b1-p16-c194.mp3",
-     "duration": 85.11,
-     "src_start": 263.77,
-     "src_end": 348.88,
-     "verses_num": "42:36-43:5"
-    },
-    {
-     "src": {
-      "youtube_id": "q7SXYiRcVJI"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ויוסף הורד מצרימה - 195",
-     "incipit": "ויאמר ישראל למה הרעתם",
-     "sam_ch_id": 1289,
-     "n": 195,
-     "verses": "מג:ו-מג:י",
-     "portion": {
-      "order": 15,
-      "name": "ויוסף הורד מצרימה",
-      "id": 15
-     },
-     "sam_ch_number": 204,
-     "file": "/static/audio/readings/b1-p16-c195.mp3",
-     "duration": 50.33,
-     "src_start": 348.88,
-     "src_end": 399.21,
-     "verses_num": "43:6-43:10"
-    },
-    {
-     "src": {
       "youtube_id": "q7SXYiRcVJI"
      },
      "verse_count": 4,
@@ -4998,6 +4756,314 @@
      "verse_count": 7,
      "incipit": "ויהי כמשלשת חדשים: ויגד",
      "name": "בראשית - וישב יעקב - 181"
+    },
+    {
+     "n": 182,
+     "sam_ch_number": 182,
+     "file": "/static/audio/readings/b1-p15-c182.mp3",
+     "duration": 77.06,
+     "src_start": 0,
+     "src_end": 77.06,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1269,
+     "verses": "לט:א-לט:ו",
+     "verses_num": "39:1-39:6",
+     "verse_count": 6,
+     "incipit": "ויוסף הורד מצרימה: ויקנהו",
+     "name": "בראשית - ויוסף הורד מצרימה - 182"
+    },
+    {
+     "n": 183,
+     "sam_ch_number": 183,
+     "file": "/static/audio/readings/b1-p15-c183.mp3",
+     "duration": 40.58,
+     "src_start": 0,
+     "src_end": 40.58,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1270,
+     "verses": "לט:ז-לט:ט",
+     "verses_num": "39:7-39:9",
+     "verse_count": 3,
+     "incipit": "ויהי אחר הדברים האלה:",
+     "name": "בראשית - ויוסף הורד מצרימה - 183"
+    },
+    {
+     "n": 184,
+     "sam_ch_number": 184,
+     "file": "/static/audio/readings/b1-p15-c184.mp3",
+     "duration": 91.86,
+     "src_start": 0,
+     "src_end": 91.86,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1271,
+     "verses": "לט:י-לט:יח",
+     "verses_num": "39:10-39:18",
+     "verse_count": 9,
+     "incipit": "ויהי כדברה אל יוסף",
+     "name": "בראשית - ויוסף הורד מצרימה - 184"
+    },
+    {
+     "n": 185,
+     "sam_ch_number": 185,
+     "file": "/static/audio/readings/b1-p15-c185.mp3",
+     "duration": 58.88,
+     "src_start": 0,
+     "src_end": 58.88,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1272,
+     "verses": "לט:יט-לט:כג",
+     "verses_num": "39:19-39:23",
+     "verse_count": 5,
+     "incipit": "ויהי כשמע אדניו את",
+     "name": "בראשית - ויוסף הורד מצרימה - 185"
+    },
+    {
+     "n": 186,
+     "sam_ch_number": 186,
+     "file": "/static/audio/readings/b1-p15-c186.mp3",
+     "duration": 88.29,
+     "src_start": 0,
+     "src_end": 88.29,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1273,
+     "verses": "מ:א-מ:ח",
+     "verses_num": "40:1-40:8",
+     "verse_count": 8,
+     "incipit": "ויהי אחר הדברים האלה:",
+     "name": "בראשית - ויוסף הורד מצרימה - 186"
+    },
+    {
+     "n": 187,
+     "sam_ch_number": 187,
+     "file": "/static/audio/readings/b1-p15-c187.mp3",
+     "duration": 86.84,
+     "src_start": 0,
+     "src_end": 86.84,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1274,
+     "verses": "מ:ט-מ:טו",
+     "verses_num": "40:9-40:15",
+     "verse_count": 7,
+     "incipit": "ויספר שר המשקים את",
+     "name": "בראשית - ויוסף הורד מצרימה - 187"
+    },
+    {
+     "n": 188,
+     "sam_ch_number": 188,
+     "file": "/static/audio/readings/b1-p15-c188.mp3",
+     "duration": 82.54,
+     "src_start": 0,
+     "src_end": 82.54,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1275,
+     "verses": "מ:טז-מ:כג",
+     "verses_num": "40:16-40:23",
+     "verse_count": 8,
+     "incipit": "וירא שר האפים כי",
+     "name": "בראשית - ויוסף הורד מצרימה - 188"
+    },
+    {
+     "n": 189,
+     "sam_ch_number": 189,
+     "file": "/static/audio/readings/b1-p15-c189.mp3",
+     "duration": 90.8,
+     "src_start": 0,
+     "src_end": 90.8,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1276,
+     "verses": "מא:א-מא:ח",
+     "verses_num": "41:1-41:8",
+     "verse_count": 8,
+     "incipit": "ויהי מקץ שנתים ימים:",
+     "name": "בראשית - ויוסף הורד מצרימה - 189"
+    },
+    {
+     "n": 190,
+     "sam_ch_number": 190,
+     "file": "/static/audio/readings/b1-p15-c190.mp3",
+     "duration": 82.21,
+     "src_start": 0,
+     "src_end": 82.21,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1277,
+     "verses": "מא:ט-מא:טז",
+     "verses_num": "41:9-41:16",
+     "verse_count": 8,
+     "incipit": "וידבר שר המשקים אל",
+     "name": "בראשית - ויוסף הורד מצרימה - 190"
+    },
+    {
+     "n": 191,
+     "sam_ch_number": 191,
+     "file": "/static/audio/readings/b1-p15-c191.mp3",
+     "duration": 86.85,
+     "src_start": 0,
+     "src_end": 86.85,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1278,
+     "verses": "מא:יז-מא:כד",
+     "verses_num": "41:17-41:24",
+     "verse_count": 8,
+     "incipit": "וידבר פרעה את יוסף:",
+     "name": "בראשית - ויוסף הורד מצרימה - 191"
+    },
+    {
+     "n": 192,
+     "sam_ch_number": 192,
+     "file": "/static/audio/readings/b1-p15-c192.mp3",
+     "duration": 88.24,
+     "src_start": 0,
+     "src_end": 88.24,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1279,
+     "verses": "מא:כה-מא:לב",
+     "verses_num": "41:25-41:32",
+     "verse_count": 8,
+     "incipit": "ויאמר יוסף אל פרעה:",
+     "name": "בראשית - ויוסף הורד מצרימה - 192"
+    },
+    {
+     "n": 193,
+     "sam_ch_number": 193,
+     "file": "/static/audio/readings/b1-p15-c193.mp3",
+     "duration": 55.01,
+     "src_start": 0,
+     "src_end": 55.01,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1280,
+     "verses": "מא:לג-מא:לח",
+     "verses_num": "41:33-41:38",
+     "verse_count": 6,
+     "incipit": "ועתה יראה לו פרעה",
+     "name": "בראשית - ויוסף הורד מצרימה - 193"
+    },
+    {
+     "n": 194,
+     "sam_ch_number": 194,
+     "file": "/static/audio/readings/b1-p15-c194.mp3",
+     "duration": 77.76,
+     "src_start": 0,
+     "src_end": 77.76,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1281,
+     "verses": "מא:לט-מא:מה",
+     "verses_num": "41:39-41:45",
+     "verse_count": 7,
+     "incipit": "ויאמר פרעה אל יוסף:",
+     "name": "בראשית - ויוסף הורד מצרימה - 194"
+    },
+    {
+     "n": 195,
+     "sam_ch_number": 195,
+     "file": "/static/audio/readings/b1-p15-c195.mp3",
+     "duration": 52.43,
+     "src_start": 0,
+     "src_end": 52.43,
+     "portion": {
+      "order": 15,
+      "id": 15,
+      "name": "ויוסף הורד מצרימה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2256,
+     "verses": "מא:מו-מא:מט",
+     "verses_num": "41:46-41:49",
+     "verse_count": 4,
+     "incipit": "ויצא יוסף על ארץ",
+     "name": "בראשית - ויוסף הורד מצרימה - 195"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
