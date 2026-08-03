@@ -59,6 +59,15 @@ def _apply_startup_migrations():
                              "WHERE book_id=1 AND portion_name=?", (new, old))
             except sqlite3.OperationalError:
                 pass   # canon_portion_counts doesn't exist yet on this DB copy — fine, skip
+
+        # Genesis sam_chapters 140/141 swap, requested explicitly by the project
+        # owner (2026-08-03): id 1229 (30:37-31:2) <-> id 2255 (31:2-1, the
+        # interpolated verse) trade their `number` — same two rows, same verses,
+        # only the displayed chapter number exchanges. Guarded by the CURRENT
+        # number so this is a no-op once already applied.
+        conn.execute("UPDATE sam_chapters SET number=141 WHERE id=1229 AND book_id=1 AND number=140")
+        conn.execute("UPDATE sam_chapters SET number=140 WHERE id=2255 AND book_id=1 AND number=141")
+
         conn.commit()
         conn.close()
     except Exception:
