@@ -1,7 +1,7 @@
 /* Service worker: NETWORK-FIRST so the app always loads the latest code when
    online (an earlier cache-first version served stale assets after updates),
    falling back to the cache only when offline. /api/* always hits the network. */
-const CACHE = 'torah-web-v160';
+const CACHE = 'torah-web-v161';
 const SHELL = [
   '/', '/static/style.css', '/static/app.js', '/manifest.json',
   '/static/img/icon-192.png', '/static/img/icon-512.png',
@@ -10,7 +10,8 @@ const SHELL = [
   '/static/img/background.jpg', '/static/img/splash_elder.jpg',
   '/static/img/quill_hand.png',
   '/fonts/SBL_Hbrw.ttf', '/fonts/Sam_font.ttf',
-  '/fonts/Amiri-Regular.ttf', '/fonts/CharisSIL-Regular.ttf'
+  '/fonts/Amiri-Regular.ttf', '/fonts/CharisSIL-Regular.ttf',
+  '/fonts/ben-nor23.ttf'
 ];
 
 self.addEventListener('install', e => {

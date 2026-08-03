@@ -63,6 +63,7 @@ const I18N = {
     share:'שתף', export_excel:'ייצוא לאקסל', no_results_xls:'אין תוצאות לייצוא',
     back:'‹ חזור', back_t:'חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
     font_sam:'כתב שומרוני', font_heb:'כתב עברי', interp:'פירוש הפסוק', commentary:'פרשנות יהודית',
+    sam_full_q:'כולל פירושים? ', sf_yes:'כן', sf_no:'לא',
     compare:'השוואת נוסחים', variants:'חילופי נוסח', samsrc:'ממקור שומרון', translate:'תרגומי התורה',
     t_aramaic:'תרגום: ארמי', t_arabic:'תרגום: ערבי', t_english:'תרגום: אנגלית',
     search_ph:'חפש מילה', adv_search:'⚙ חיפוש מתקדם', search_help_btn:'❔ עזרה לחיפוש',
@@ -253,6 +254,7 @@ const I18N = {
     share:'Share', export_excel:'Export to Excel', no_results_xls:'No results to export',
     back:'‹ Back', back_t:'Back', browse:'Browse', search:'Search', dict:'Word dictionary',
     font_sam:'Samaritan script', font_heb:'Hebrew script', interp:'Verse commentary', commentary:'Jewish commentary',
+    sam_full_q:'Include commentaries? ', sf_yes:'Yes', sf_no:'No',
     compare:'Compare versions', variants:'Textual variants', samsrc:'Samaritan sources', translate:'Torah translations',
     t_aramaic:'Translation: Aramaic', t_arabic:'Translation: Arabic', t_english:'Translation: English',
     search_ph:'Search a word', adv_search:'⚙ Advanced search', search_help_btn:'❔ Search help',
@@ -443,6 +445,7 @@ const I18N = {
     share:'مشاركة', export_excel:'تصدير إلى إكسل', no_results_xls:'لا توجد نتائج للتصدير',
     back:'‹ رجوع', back_t:'رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
     font_sam:'الخط السامري', font_heb:'الخط العبري', interp:'تفسير الآية', commentary:'تفسير يهودي',
+    sam_full_q:'يشمل التفاسير؟ ', sf_yes:'نعم', sf_no:'لا',
     compare:'مقارنة النصوص', variants:'اختلافات النصّ', samsrc:'مصادر سامرية', translate:'ترجمات التوراة',
     t_aramaic:'ترجمة: آرامية', t_arabic:'ترجمة: عربية', t_english:'ترجمة: إنجليزية',
     search_ph:'ابحث عن كلمة', adv_search:'⚙ بحث متقدم', search_help_btn:'❔ مساعدة البحث',
@@ -656,7 +659,7 @@ const S = {
   division: 'samaritan',          // 'samaritan' | 'standard'
   view: 'books',                  // books|portions|chapters|sam_chapters|spread|verses|search
   panel: null,                    // null|compare|interpret|aramaic|arabic|commentary|samaritan_src
-  samFont: false, english: false, dict: false,
+  samFont: false, samFontFull: false, english: false, dict: false,
   onlineDict: false,
   fontOffset: 0,
   book: null, bookName: '',
@@ -707,6 +710,27 @@ function samMarkup(text){
   }
   if(last<text.length) html += esc(text.slice(last));
   return html;
+}
+// Free-text variant of samMarkup for commentary/translation prose (not word-dot
+// processed like verse text): wraps the 22 letters + common punctuation/brackets
+// in the alternate SamComment font (.samchar2); numbers, Latin text, whitespace
+// and anything else pass through untouched, in the default font.
+const SAM_FREE_RE = /([א-ת]+|[.,:;!?()\[\]{}״"'׳‘’“”\-־])/g;
+function samMarkupFree(text){
+  let html=''; let last=0, m;
+  SAM_FREE_RE.lastIndex = 0;
+  while((m=SAM_FREE_RE.exec(text))!==null){
+    if(m.index>last) html += esc(text.slice(last,m.index));
+    html += '<span class="samchar2">'+esc(m[0])+'</span>';
+    last = SAM_FREE_RE.lastIndex;
+  }
+  if(last<text.length) html += esc(text.slice(last));
+  return html;
+}
+// commentary/translation text, respecting the "כולל פירושים?" toggle — Samaritan
+// script (SamComment) when samFont+samFontFull are both on, plain escaped text otherwise.
+function commentaryText(text){
+  return (S.samFont && S.samFontFull) ? samMarkupFree(text||'') : esc(text||'');
 }
 // After layout, hide every separator middot that ends a visual line (the next word
 // wrapped to the line below). Re-run on zoom/resize so dots reappear when reducing
@@ -1014,7 +1038,10 @@ function paintVerses(){
     btn.onclick=()=>filterVerse(null);
     bar.appendChild(btn); c.appendChild(bar);
   }
-  const usePanel = S.panel && !S.samFont;
+  // "כולל פירושים?" (samFontFull) lets the reader keep the Samaritan-font mode ON
+  // while still viewing a source/translation/commentary panel underneath it —
+  // normally samFont suppresses all panels, falling back to plain verse text.
+  const usePanel = S.panel && (!S.samFont || S.samFontFull);
 
   if(usePanel && S.panel!=='compare'){
     addNumStrip(c, all);
@@ -1236,7 +1263,7 @@ async function buildInterpret(c, verses){
     const row = el('div','vrow');
     const num = el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
-    const t = el('div','vtext interp', esc(txt));
+    const t = el('div','vtext interp', commentaryText(txt));
     t.style.fontSize = fs+'px';
     row.appendChild(t); row.appendChild(num);
     addPencil(row, v.id, 'interpretation', ()=>(m[v.id]||''));
@@ -1351,7 +1378,7 @@ async function buildVariantsView(c, verses){
 }
 function buildAramaic(c, verses){
   const parts = verses.filter(v=>(v.sam_aramaic||'').trim())
-    .map(v=>`${v.number}  ${esc((v.sam_aramaic||'').trim())}`).join('\n');
+    .map(v=>`${v.number}  ${commentaryText((v.sam_aramaic||'').trim())}`).join('\n');
   const ap = panelEl('תרגום ארמי', parts || 'תרגום ארמי אינו זמין');
   c.appendChild(pairEl(ap, origPanel(verses)));
 }
@@ -1485,7 +1512,7 @@ async function buildSamSrc(c, verses){
     for(const it of items){
       const card=el('div','card');
       if(it.parsha) card.appendChild(el('div','chead',esc(it.parsha)));
-      const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
       if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
@@ -1503,7 +1530,7 @@ async function buildSamSrc(c, verses){
       const card=el('div','card');
       const lbl=[it.ref, it.title].filter(Boolean).join('  ·  ');
       if(lbl) card.appendChild(el('div','chead',esc(lbl)));
-      const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
       if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
@@ -1520,7 +1547,7 @@ async function buildSamSrc(c, verses){
     for(const it of items){
       const card=el('div','card');
       if(it.title) card.appendChild(el('div','chead',esc(it.title)));
-      const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
       if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
@@ -1537,7 +1564,7 @@ async function buildSamSrc(c, verses){
     for(const it of items){
       const card=el('div','card');
       if(it.title) card.appendChild(el('div','chead',esc(it.title)));
-      const body=el('div','cbody',esc(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
       if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
@@ -1559,7 +1586,7 @@ async function buildSamSrc(c, verses){
       const h=el('div','chead', esc(it.label)+'  ⟵ הקש לתרגום');
       h.onclick=()=>{ S.tmSel=[it.book,it.section]; paintVerses(); };
       card.appendChild(h);
-      const body=el('div','cbody', esc(it.aramaic||it.hebrew||'טקסט המקור אינו זמין'));
+      const body=el('div','cbody', commentaryText(it.aramaic||it.hebrew||'טקסט המקור אינו זמין'));
       body.style.fontSize=fsize()+'px';
       body.onclick=()=>{ S.tmSel=[it.book,it.section]; paintVerses(); };
       card.appendChild(body); panel.appendChild(card);
@@ -1572,11 +1599,11 @@ async function buildSamSrc(c, verses){
     // show both panels only when the Aramaic original exists; otherwise the Hebrew
     // translation alone, full-width (some passages have no Aramaic in the source).
     if((cur.aramaic||'').trim()){
-      const he=panelEl('תרגום לעברית', esc(cur.hebrew||'התרגום העברי בהכנה'));
-      const ar=panelEl('מקור ארמי', esc(cur.aramaic));
+      const he=panelEl('תרגום לעברית', commentaryText(cur.hebrew||'התרגום העברי בהכנה'));
+      const ar=panelEl('מקור ארמי', commentaryText(cur.aramaic));
       panel.appendChild(pairEl(he,ar));
     } else {
-      panel.appendChild(panelEl('תרגום לעברית', esc(cur.hebrew||'—')));
+      panel.appendChild(panelEl('תרגום לעברית', commentaryText(cur.hebrew||'—')));
     }
   }
   c.appendChild(panel);
@@ -1990,7 +2017,10 @@ async function stepChapter(delta){
 // In the Hebrew text a forward step turns the page leftwards; in the English
 // translation the reading direction flips, so the page turns the opposite way.
 function plainTextMode(){
-  const usePanel = S.panel && !S.samFont;          // compare / commentary / aramaic …
+  // "כולל פירושים?" (samFontFull) lets the reader keep the Samaritan-font mode ON
+  // while still viewing a source/translation/commentary panel underneath it —
+  // normally samFont suppresses all panels, falling back to plain verse text.
+  const usePanel = S.panel && (!S.samFont || S.samFontFull);          // compare / commentary / aramaic …
   return !usePanel && !(S.dict && !S.english);     // no comparison/commentary/dict panel
 }
 function makeFlipGhost(){
@@ -2471,6 +2501,11 @@ function syncToolbar(isVerse){
   else    _ab.innerHTML = '<span class="sam-let">ࠀ</span>.<span class="sam-let">ࠁ</span>';
   $('fontBtn').title = sam ? t('font_heb') : t('font_sam');
   $('fontBtn').setAttribute('aria-label', sam ? t('font_heb') : t('font_sam'));
+  // "כולל פירושים?" — only visible while the Samaritan font itself is on
+  { const fb=$('samFullBtn');
+    fb.classList.toggle('hidden', !(isVerse && sam));
+    fb.classList.toggle('on', S.samFontFull);
+    fb.textContent = t('sam_full_q') + (S.samFontFull ? t('sf_yes') : t('sf_no')); }
   setBtn('dictBtn',       isVerse, S.dict);
   // "פירוש הפסוק" is TEMPORARILY disabled: keep it tappable in verse view (to show a
   // notice) but styled as unavailable — never highlighted/active.
@@ -2498,13 +2533,29 @@ $('searchBtn').onclick=()=>showSearch(true);
 $('backBtn').onclick=()=>{ spinBack($('backBtn')); goBack(); };
 
 // every content/display mode is mutually exclusive — turning one on clears the rest
-function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=false; S.dictWord=null; DICT_SELECT_MAP={}; }
+function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=false; S.samFontFull=false; S.dictWord=null; DICT_SELECT_MAP={}; }
+// like clearModes(), but when the reader has "כולל פירושים?" on AND is switching
+// to/from one of the three surfaces it actually covers (ממקור שומרון / Aramaic
+// translation / verse interpretation), the Samaritan-font state survives the
+// switch instead of being reset — matching "switching to yes keeps the
+// Samaritan text also when Samaritan sources or verse commentary appear".
+function clearModesPreserveFont(targetPanel){
+  const preserve = S.samFont && S.samFontFull &&
+    ['samaritan_src','aramaic','interpret'].includes(targetPanel);
+  const sf=S.samFont, sff=S.samFontFull;
+  clearModes();
+  if(preserve){ S.samFont=sf; S.samFontFull=sff; }
+}
 $('fontBtn').onclick=()=>{ const was=S.samFont; clearModes(); S.samFont=!was; syncToolbar(true); paintVerses(); };
+// "כולל פירושים?" — only meaningful while samFont is on; syncToolbar() shows/hides
+// and labels this button on every relevant state change, so this handler only
+// needs to flip the flag itself.
+$('samFullBtn').onclick=()=>{ S.samFontFull=!S.samFontFull; syncToolbar(true); paintVerses(); };
 // "תרגומי התורה" — opens a small picker (ארמי / ערבי / אנגלי), marking the active one
 $('translateBtn').onclick=()=>{
   // if a translation is already showing, this button turns it OFF → back to the text
   if(S.english || S.panel==='aramaic' || S.panel==='arabic'){
-    clearModes(); syncToolbar(true); paintVerses(); return;
+    clearModesPreserveFont(S.panel); syncToolbar(true); paintVerses(); return;
   }
   // otherwise open the picker (marking the active choice, if any)
   document.querySelectorAll('#transModal .trans-opt').forEach(b=>{
@@ -2535,7 +2586,7 @@ function scrollToEl(selector){
 $('dictBtn').onclick=()=>{ const was=S.dict; clearModes(); S.dict=!was; syncToolbar(true); paintVerses(); };
 function togglePanel(name){
   const was = (S.panel===name);
-  clearModes();
+  clearModesPreserveFont(name);
   if(!was){
     S.panel = name;
     if(S.panel==='commentary') S.commentarySel=null;

@@ -3,6 +3,10 @@
 @font-face { font-family:'Samaritan'; src:url('/fonts/Sam_font.ttf') format('truetype'); }
 @font-face { font-family:'Arabic';    src:url('/fonts/Amiri-Regular.ttf') format('truetype'); }
 @font-face { font-family:'Translit';  src:url('/fonts/CharisSIL-Regular.ttf') format('truetype'); }
+/* alternate Samaritan face, used only for commentary/translation prose (ממקור
+   שומרון sources, the Aramaic translation, and פירוש הפסוק) when the reader
+   opts into "כולל פירושים?" — never for the main verse text, which keeps 'Samaritan'. */
+@font-face { font-family:'SamComment'; src:url('/fonts/ben-nor23.ttf') format('truetype'); }
 
 :root{
   --navy:#1a3873; --accent:#2e61b8; --active:#3880e6; --cream:#f7f7f2;
@@ -170,6 +174,10 @@ body.div-collapsed .div-handle{ height:26px; }
    .samchar elements' positions (not the dot's own box) to decide whether a
    dot falls at a real line-wrap, so the cross-font metric mismatch never
    confuses that decision. */
+/* the alternate commentary font (SamComment) — only ever applied to letters/
+   punctuation/brackets inside commentary & translation prose (samMarkupFree),
+   never to the main verse text (which stays on .samchar / 'Samaritan'). */
+.samchar2{ font-family:'SamComment'; }
 .eng-credit{ text-align:center; color:var(--navy); font-size:13px; padding:6px; line-height:1.4; }
 
 /* panels (compare / interpret / aramaic / arabic / commentary / source) */
@@ -329,6 +337,14 @@ body.div-collapsed .div-handle{ height:26px; }
 /* at a parasha/book crossing the arrow carries a label → show it as a clear button */
 .nav-arrow.nav-haslabel{ background:var(--navy); color:#fff; font-size:13px; padding:10px 6px; }
 .nav-arrow.nav-haslabel:hover{ background:var(--accent); }
+/* "כולל פירושים?" — a compact toggle chip, not a stretching nav arrow (flex:0),
+   sitting at the row's far end (rightmost in the LTR #navbar). Only shown while
+   the Samaritan-font mode itself is on. */
+#samFullBtn{ flex:0 0 auto; padding:6px 9px; border:1px solid rgba(23,169,196,.4); border-radius:14px;
+             background:transparent; color:var(--navy); font-family:inherit; font-size:12.5px;
+             font-weight:600; cursor:pointer; white-space:nowrap; }
+#samFullBtn.on{ background:var(--active); border-color:var(--active); color:#fff; }
+#samFullBtn.hidden{ display:none; }
 .round{ flex:0 0 auto; width:50px; padding:8px 0; border:0; border-radius:8px; background:transparent;
         color:#17a9c4; font-size:24px; font-weight:700; cursor:pointer; }   /* gray magnifiers/back */
 .round:hover{ background:rgba(0,0,0,.06); }
@@ -1059,6 +1075,7 @@ footer a{ color:var(--accent); text-decoration:none; }
   .tb.green{ min-width:46px; }
   .nav-arrow{ font-size:13px; padding:12px 3px; }
   #navbar{ gap:5px; }
+  #samFullBtn{ font-size:11px; padding:5px 6px; }
   .round{ width:50px; font-size:24px; padding:10px 0; }
   .divbtn{ font-size:14px; padding:10px; }
   .title-row h1{ font-size:18px; }
