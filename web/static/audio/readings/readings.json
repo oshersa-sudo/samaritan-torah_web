@@ -1635,314 +1635,6 @@
     },
     {
      "src": {
-      "youtube_id": "Vzh8yOt0f6w"
-     },
-     "verse_count": 10,
-     "name": "בראשית - ותצא דינה - 168",
-     "incipit": "ויאמר ישראל אל יוסף",
-     "sam_ch_id": 1262,
-     "n": 168,
-     "verses": "לז:יג-לז:כב",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 175,
-     "file": "/static/audio/readings/b1-p14-c168.mp3",
-     "duration": 50.64,
-     "src_start": 0,
-     "src_end": 50.64,
-     "verses_num": "37:13-37:22"
-    },
-    {
-     "src": {
-      "youtube_id": "Vzh8yOt0f6w"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ותצא דינה - 169",
-     "incipit": "ויהי כאשר בא יוסף",
-     "sam_ch_id": 1263,
-     "n": 169,
-     "verses": "לז:כג-לז:כח",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 176,
-     "file": "/static/audio/readings/b1-p14-c169.mp3",
-     "duration": 45.62,
-     "src_start": 50.64,
-     "src_end": 96.26,
-     "verses_num": "37:23-37:28"
-    },
-    {
-     "src": {
-      "youtube_id": "Vzh8yOt0f6w"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ותצא דינה - 170",
-     "incipit": "וישב ראובן אל הבור",
-     "sam_ch_id": 1264,
-     "n": 170,
-     "verses": "לז:כט-לז:לו",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 177,
-     "file": "/static/audio/readings/b1-p14-c170.mp3",
-     "duration": 46.37,
-     "src_start": 96.26,
-     "src_end": 142.63,
-     "verses_num": "37:29-37:36"
-    },
-    {
-     "src": {
-      "youtube_id": "Vzh8yOt0f6w"
-     },
-     "verse_count": 10,
-     "name": "בראשית - ותצא דינה - 171",
-     "incipit": "ויהי בעת ההיא וירד",
-     "sam_ch_id": 1265,
-     "n": 171,
-     "verses": "לח:א-לח:י",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 178,
-     "file": "/static/audio/readings/b1-p14-c171.mp3",
-     "duration": 108.62,
-     "src_start": 142.63,
-     "src_end": 251.25,
-     "verses_num": "38:1-38:10"
-    },
-    {
-     "src": {
-      "youtube_id": "Vzh8yOt0f6w"
-     },
-     "verse_count": 9,
-     "name": "בראשית - וישב יעקב - 172",
-     "incipit": "ויאמר יהודה לתמר כלתו",
-     "sam_ch_id": 1266,
-     "n": 172,
-     "verses": "לח:יא-לח:יט",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 179,
-     "file": "/static/audio/readings/b1-p14-c172.mp3",
-     "duration": 70.57,
-     "src_start": 251.25,
-     "src_end": 321.82,
-     "verses_num": "38:11-38:19"
-    },
-    {
-     "src": {
-      "youtube_id": "Vzh8yOt0f6w"
-     },
-     "verse_count": 4,
-     "name": "בראשית - וישב יעקב - 173",
-     "incipit": "וישלח יהודה את גדי",
-     "sam_ch_id": 1267,
-     "n": 173,
-     "verses": "לח:כ-לח:כג",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 180,
-     "file": "/static/audio/readings/b1-p14-c173.mp3",
-     "duration": 84.59,
-     "src_start": 321.82,
-     "src_end": 406.41,
-     "verses_num": "38:20-38:23"
-    },
-    {
-     "src": {
-      "youtube_id": "Vzh8yOt0f6w"
-     },
-     "verse_count": 7,
-     "name": "בראשית - וישב יעקב - 174",
-     "incipit": "ויהי כמשלשת חדשים ויגד",
-     "sam_ch_id": 1268,
-     "n": 174,
-     "verses": "לח:כד-לח:ל",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 181,
-     "file": "/static/audio/readings/b1-p14-c174.mp3",
-     "duration": 75.87,
-     "src_start": 406.41,
-     "src_end": 482.28,
-     "verses_num": "38:24-38:30"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 6,
-     "name": "בראשית - וישב יעקב - 175",
-     "incipit": "ויוסף הורד מצרימה: ויקנהו",
-     "sam_ch_id": 1269,
-     "n": 175,
-     "verses": "לט:א-לט:ו",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 182,
-     "file": "/static/audio/readings/b1-p14-c175.mp3",
-     "duration": 113.06,
-     "src_start": 482.28,
-     "src_end": 595.34,
-     "verses_num": "39:1-39:6"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 3,
-     "name": "בראשית - וישב יעקב - 176",
-     "incipit": "ויהי אחר הדברים האלה",
-     "sam_ch_id": 1270,
-     "n": 176,
-     "verses": "לט:ז-לט:ט",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 183,
-     "file": "/static/audio/readings/b1-p14-c176.mp3",
-     "duration": 48.35,
-     "src_start": 595.34,
-     "src_end": 643.69,
-     "verses_num": "39:7-39:9"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 9,
-     "name": "בראשית - וישב יעקב - 177",
-     "incipit": "ויהי כדברה אל יוסף",
-     "sam_ch_id": 1271,
-     "n": 177,
-     "verses": "לט:י-לט:יח",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 184,
-     "file": "/static/audio/readings/b1-p14-c177.mp3",
-     "duration": 82.42,
-     "src_start": 643.69,
-     "src_end": 726.11,
-     "verses_num": "39:10-39:18"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 5,
-     "name": "בראשית - וישב יעקב - 178",
-     "incipit": "ויהי כשמע אדניו את",
-     "sam_ch_id": 1272,
-     "n": 178,
-     "verses": "לט:יט-לט:כג",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 185,
-     "file": "/static/audio/readings/b1-p15-c178.mp3",
-     "duration": 58.88,
-     "src_start": 209.54,
-     "src_end": 268.42,
-     "verses_num": "39:19-39:23"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 8,
-     "name": "בראשית - וישב יעקב - 179",
-     "incipit": "ויהי אחר הדברים האלה",
-     "sam_ch_id": 1273,
-     "n": 179,
-     "verses": "מ:א-מ:ח",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 186,
-     "file": "/static/audio/readings/b1-p15-c179.mp3",
-     "duration": 88.29,
-     "src_start": 268.42,
-     "src_end": 356.71,
-     "verses_num": "40:1-40:8"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 7,
-     "name": "בראשית - וישב יעקב - 180",
-     "incipit": "ויספר שר המשקים את",
-     "sam_ch_id": 1274,
-     "n": 180,
-     "verses": "מ:ט-מ:טו",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 187,
-     "file": "/static/audio/readings/b1-p15-c180.mp3",
-     "duration": 86.84,
-     "src_start": 356.71,
-     "src_end": 443.55,
-     "verses_num": "40:9-40:15"
-    },
-    {
-     "src": {
-      "youtube_id": "r-udLebudMg"
-     },
-     "verse_count": 8,
-     "name": "בראשית - וישב יעקב - 181",
-     "incipit": "וירא שר האפים כי",
-     "sam_ch_id": 1275,
-     "n": 181,
-     "verses": "מ:טז-מ:כג",
-     "portion": {
-      "order": 14,
-      "name": "וישב יעקב",
-      "id": 14
-     },
-     "sam_ch_number": 188,
-     "file": "/static/audio/readings/b1-p15-c181.mp3",
-     "duration": 82.54,
-     "src_start": 443.55,
-     "src_end": 526.09,
-     "verses_num": "40:16-40:23"
-    },
-    {
-     "src": {
       "youtube_id": "r-udLebudMg"
      },
      "verse_count": 8,
@@ -4902,7 +4594,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1246,
      "verses": "לד:א-לד:ז",
@@ -4924,7 +4616,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1247,
      "verses": "לד:ח-לד:יב",
@@ -4946,7 +4638,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1248,
      "verses": "לד:יג-לד:יט",
@@ -4968,7 +4660,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1249,
      "verses": "לד:כ-לד:כד",
@@ -4990,7 +4682,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1250,
      "verses": "לד:כה-לד:לא",
@@ -5012,7 +4704,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1251,
      "verses": "לה:א-לה:ה",
@@ -5034,7 +4726,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1252,
      "verses": "לה:ו-לה:ח",
@@ -5056,7 +4748,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1253,
      "verses": "לה:ט-לה:כ",
@@ -5078,7 +4770,7 @@
       "name": "ותצא דינה"
      },
      "src": {
-      "youtube_id": null
+      "youtube_id": "Vzh8yOt0f6w"
      },
      "sam_ch_id": 1254,
      "verses": "לה:כא-לה:כט",
@@ -5086,6 +4778,226 @@
      "verse_count": 9,
      "incipit": "ויסע ישראל: ויט אהלו",
      "name": "בראשית - ותצא דינה - 167"
+    },
+    {
+     "n": 172,
+     "sam_ch_number": 172,
+     "file": "/static/audio/readings/b1-p14-c172.mp3",
+     "duration": 50.6,
+     "src_start": 0,
+     "src_end": 50.6,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1259,
+     "verses": "לז:א-לז:ד",
+     "verses_num": "37:1-37:4",
+     "verse_count": 4,
+     "incipit": "וישב יעקב בארץ מגרי",
+     "name": "בראשית - וישב יעקב - 172"
+    },
+    {
+     "n": 173,
+     "sam_ch_number": 173,
+     "file": "/static/audio/readings/b1-p14-c173.mp3",
+     "duration": 45.62,
+     "src_start": 0,
+     "src_end": 45.62,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1260,
+     "verses": "לז:ה-לז:ח",
+     "verses_num": "37:5-37:8",
+     "verse_count": 4,
+     "incipit": "ויחלם יוסף חלום ויגד",
+     "name": "בראשית - וישב יעקב - 173"
+    },
+    {
+     "n": 174,
+     "sam_ch_number": 174,
+     "file": "/static/audio/readings/b1-p14-c174.mp3",
+     "duration": 45.89,
+     "src_start": 0,
+     "src_end": 45.89,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1261,
+     "verses": "לז:ט-לז:יב",
+     "verses_num": "37:9-37:12",
+     "verse_count": 4,
+     "incipit": "ויחלם עוד חלום אחר:",
+     "name": "בראשית - וישב יעקב - 174"
+    },
+    {
+     "n": 175,
+     "sam_ch_number": 175,
+     "file": "/static/audio/readings/b1-p14-c175.mp3",
+     "duration": 109.62,
+     "src_start": 0,
+     "src_end": 109.62,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1262,
+     "verses": "לז:יג-לז:כב",
+     "verses_num": "37:13-37:22",
+     "verse_count": 10,
+     "incipit": "ויאמר ישראל אל יוסף:",
+     "name": "בראשית - וישב יעקב - 175"
+    },
+    {
+     "n": 176,
+     "sam_ch_number": 176,
+     "file": "/static/audio/readings/b1-p14-c176.mp3",
+     "duration": 70.06,
+     "src_start": 0,
+     "src_end": 70.06,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1263,
+     "verses": "לז:כג-לז:כח",
+     "verses_num": "37:23-37:28",
+     "verse_count": 6,
+     "incipit": "ויהי כאשר בא יוסף",
+     "name": "בראשית - וישב יעקב - 176"
+    },
+    {
+     "n": 177,
+     "sam_ch_number": 177,
+     "file": "/static/audio/readings/b1-p14-c177.mp3",
+     "duration": 84.34,
+     "src_start": 0,
+     "src_end": 84.34,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1264,
+     "verses": "לז:כט-לז:לו",
+     "verses_num": "37:29-37:36",
+     "verse_count": 8,
+     "incipit": "וישב ראובן אל הבור:",
+     "name": "בראשית - וישב יעקב - 177"
+    },
+    {
+     "n": 178,
+     "sam_ch_number": 178,
+     "file": "/static/audio/readings/b1-p14-c178.mp3",
+     "duration": 76.11,
+     "src_start": 0,
+     "src_end": 76.11,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1265,
+     "verses": "לח:א-לח:י",
+     "verses_num": "38:1-38:10",
+     "verse_count": 10,
+     "incipit": "ויהי בעת ההיא וירד",
+     "name": "בראשית - וישב יעקב - 178"
+    },
+    {
+     "n": 179,
+     "sam_ch_number": 179,
+     "file": "/static/audio/readings/b1-p14-c179.mp3",
+     "duration": 113.07,
+     "src_start": 0,
+     "src_end": 113.07,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1266,
+     "verses": "לח:יא-לח:יט",
+     "verses_num": "38:11-38:19",
+     "verse_count": 9,
+     "incipit": "ויאמר יהודה לתמר כלתו:",
+     "name": "בראשית - וישב יעקב - 179"
+    },
+    {
+     "n": 180,
+     "sam_ch_number": 180,
+     "file": "/static/audio/readings/b1-p14-c180.mp3",
+     "duration": 48.35,
+     "src_start": 0,
+     "src_end": 48.35,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1267,
+     "verses": "לח:כ-לח:כג",
+     "verses_num": "38:20-38:23",
+     "verse_count": 4,
+     "incipit": "וישלח יהודה את גדי",
+     "name": "בראשית - וישב יעקב - 180"
+    },
+    {
+     "n": 181,
+     "sam_ch_number": 181,
+     "file": "/static/audio/readings/b1-p14-c181.mp3",
+     "duration": 82.39,
+     "src_start": 0,
+     "src_end": 82.39,
+     "portion": {
+      "order": 14,
+      "id": 14,
+      "name": "וישב יעקב"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1268,
+     "verses": "לח:כד-לח:ל",
+     "verses_num": "38:24-38:30",
+     "verse_count": 7,
+     "incipit": "ויהי כמשלשת חדשים: ויגד",
+     "name": "בראשית - וישב יעקב - 181"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
