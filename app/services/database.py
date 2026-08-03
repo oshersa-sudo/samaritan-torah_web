@@ -68,6 +68,22 @@ def _apply_startup_migrations():
         conn.execute("UPDATE sam_chapters SET number=141 WHERE id=1229 AND book_id=1 AND number=140")
         conn.execute("UPDATE sam_chapters SET number=140 WHERE id=2255 AND book_id=1 AND number=141")
 
+        # Portion boundary fix (2026-08-03): data/portions of the week.xlsx has
+        # 'ויבא יוסף' ending 43:26-46:7 and 'ואלה שמות' starting 46:8-48:2 — the DB
+        # had the split one verse-range too early (45:8/45:8, an overlapping/wrong
+        # boundary). Chapter 218 (46:8) literally opens with the words "ואלה שמות",
+        # confirming the corrected split point. Guarded by the exact OLD boundary
+        # values so this is a no-op once applied.
+        conn.execute("UPDATE portions SET end_ch=46, end_v=7 WHERE id=17 AND book_id=1 "
+                     "AND end_ch=45 AND end_v=8")
+        conn.execute("UPDATE portions SET start_ch=46, start_v=8 WHERE id=18 AND book_id=1 "
+                     "AND start_ch=45 AND start_v=8")
+        try:
+            conn.execute("UPDATE canon_portion_counts SET canonical_count=10 WHERE portion_id=17")
+            conn.execute("UPDATE canon_portion_counts SET canonical_count=10 WHERE portion_id=18")
+        except sqlite3.OperationalError:
+            pass
+
         conn.commit()
         conn.close()
     except Exception:
