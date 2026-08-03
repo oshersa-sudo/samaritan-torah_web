@@ -712,10 +712,12 @@ function samMarkup(text){
   return html;
 }
 // Free-text variant of samMarkup for commentary/translation prose (not word-dot
-// processed like verse text): wraps the 22 letters + common punctuation/brackets
-// in the alternate SamComment font (.samchar2); numbers, Latin text, whitespace
-// and anything else pass through untouched, in the default font.
-const SAM_FREE_RE = /([א-ת]+|[.,:;!?()\[\]{}״"'׳‘’“”\-־])/g;
+// processed like verse text): wraps the 22 letters + the period in the alternate
+// SamComment font (.samchar2), mirroring samMarkup()'s own convention for the main
+// verse text exactly. Everything else — numbers, Latin text, whitespace, and every
+// other punctuation/bracket/symbol ([ ] , " ~ ? : < > ; * - + ! @ # $ % ^ & ) ( …)
+// — stays in the default (Hebrew) font, unchanged.
+const SAM_FREE_RE = /([א-ת]+|\.)/g;
 function samMarkupFree(text){
   let html=''; let last=0, m;
   SAM_FREE_RE.lastIndex = 0;
