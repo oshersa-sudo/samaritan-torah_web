@@ -529,7 +529,26 @@ def run_in(cwd, cmd):
     return p.stdout
 
 
+def cleanup_orphan_staging():
+    """Delete any _redl* staging file left in READINGS that isn't referenced
+    by the current readings.json - leftovers from an abandoned/superseded
+    redownload attempt. Without this, `git add -A` in push_to_cloud() would
+    happily commit+push them as unused dead weight (bit us once already)."""
+    rd = json.loads(READINGS_JSON.read_text(encoding="utf-8"))
+    referenced = set()
+    for b in rd["books"]:
+        for c in b["chapters"]:
+            referenced.add(Path(c["file"]).name)
+    removed = []
+    for p in READINGS.glob("_redl*.mp3"):
+        if p.name not in referenced:
+            p.unlink()
+            removed.append(p.name)
+    return removed
+
+
 def push_to_cloud(message):
+    cleanup_orphan_staging()
     run_in(TORAH, ["git", "add", "-A", "--", "web/static/audio/readings/", "web/static/audio/witnesses.json"])
     status = run_in(TORAH, ["git", "status", "--short", "web/static/audio/readings/", "web/static/audio/witnesses.json"])
     if not status.strip():
@@ -654,5 +673,8 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    stale = cleanup_orphan_staging()
+    if stale:
+        print("player_server: cleaned up {} orphan staging file(s) from a previous session".format(len(stale)))
     print("player_server: http://localhost:{}/player-all.html".format(PORT))
     ThreadingHTTPServer(("localhost", PORT), Handler).serve_forever()

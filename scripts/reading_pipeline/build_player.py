@@ -158,6 +158,7 @@ button:disabled { opacity: .35; cursor: default; }
     <span class="dot" style="background:#e74c3c"></span>לא מסונכרן
     <button onclick="fetchSyncStatus()" style="padding:2px 7px;font-size:11px">🔄 בדוק</button></span>
   <span style="flex:1"></span>
+  <button class="org" id="addPortionBtn">➕ הוסף פרשה חדשה מקובץ/כתובת</button>
   <button class="blu" id="cloudDivBtn">🔄 סנכרן חלוקות מהענן</button>
   <button class="grn" id="exportBtn">📋 ייצוא תיקונים</button>
   <button class="red" id="clearBtn">🗑 נקה הכל</button>
@@ -566,6 +567,31 @@ function redownloadAndSplit() {
     })
     .catch(function (e) { setStatus('שגיאה בהורדה/חלוקה: ' + e.message); });
 }
+
+function addNewPortion() {
+  var po = prompt('מספר סדר הפרשה (portion order) ב' + BOOK_NAMES[book] + ' שברצונך ליצור/להשלים:\\nלמשל 3 - עבור הפרשה השלישית. משמש גם לפרשות שאין להן עדיין אף פרק בנגן.');
+  if (!po) return;
+  po = parseInt(po);
+  if (!po || po < 1) { setStatus('מספר פרשה לא תקין.'); return; }
+  var source = prompt('כתובת YouTube (וידאו בודד - לא פלייליסט כולו) או נתיב לקובץ מקומי, עבור פרשה ' + po + ':');
+  if (!source) return;
+  if (!confirm('ליצור/להשלים את פרשה ' + po + ' ב' + BOOK_NAMES[book] + ' מהמקור: ' + source + ' ?\\nרשימת פרקי הפרשה תישלף מהענן החי; ההקלטה תוריד ותתחלק לפי האלגוריתם המקורי. שום דבר לא ייכתב עד "☁️ החל שינויים".')) return;
+  stopAll(); G = null; renderEditor();
+  setStatus('מוריד ומנתח פרשה ' + po + '… זה יכול לקחת דקה-שתיים.');
+  fetch(SERVER + '/api/redownload_split', { method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ source: source, book_id: book, portion_order: po }) })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res.ok) throw new Error(res.error || 'redownload failed');
+      var r = res.result;
+      loadRedownloadedGroup(r, po);
+      setStatus('✓ פרשה ' + po + ' (' + (r.portion_name || '') + '): ' + r.n_chapters + ' פרקים' +
+                (r.weak_boundaries ? ' · ' + r.weak_boundaries + ' גבולות ללא ירידת מנגינה ברורה (כדאי להאזין ולכוון)' : '') +
+                '\\nבדוק/כוון למטה, ואז "☁️ החל שינויים".');
+    })
+    .catch(function (e) { setStatus('שגיאה בהורדה/חלוקה: ' + e.message); });
+}
+$('addPortionBtn').onclick = addNewPortion;
 
 /* ================= cloud sync: push this group (player -> cloud, live) ================= */
 function syncGroupToCloud() {
