@@ -5064,6 +5064,270 @@
      "verse_count": 3,
      "incipit": "גד גדוד יגידנו: והוא",
      "name": "בראשית - אל שדי - 238"
+    },
+    {
+     "n": 239,
+     "sam_ch_number": 239,
+     "file": "/static/audio/readings/b1-p20-c239.mp3",
+     "duration": 74.74,
+     "src_start": 0,
+     "src_end": 74.74,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1323,
+     "verses": "מט:כב-מט:כח",
+     "verses_num": "49:22-49:28",
+     "verse_count": 7,
+     "incipit": "בן פרת יוסף: בן",
+     "name": "בראשית - בן פרת - 239"
+    },
+    {
+     "n": 240,
+     "sam_ch_number": 240,
+     "file": "/static/audio/readings/b1-p20-c240.mp3",
+     "duration": 56.29,
+     "src_start": 0,
+     "src_end": 56.29,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2260,
+     "verses": "מט:כט-מט:לב",
+     "verses_num": "49:29-49:32",
+     "verse_count": 4,
+     "incipit": "וזאת אשר דבר להם",
+     "name": "בראשית - בן פרת - 240"
+    },
+    {
+     "n": 241,
+     "sam_ch_number": 241,
+     "file": "/static/audio/readings/b1-p20-c241.mp3",
+     "duration": 39.32,
+     "src_start": 0,
+     "src_end": 39.32,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1324,
+     "verses": "מט:לג-נ:ד",
+     "verses_num": "49:33-50:4",
+     "verse_count": 5,
+     "incipit": "ויכל יעקב לצות את",
+     "name": "בראשית - בן פרת - 241"
+    },
+    {
+     "n": 242,
+     "sam_ch_number": 242,
+     "file": "/static/audio/readings/b1-p20-c242.mp3",
+     "duration": 37.73,
+     "src_start": 0,
+     "src_end": 37.73,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2259,
+     "verses": "נ:ה-נ:ו",
+     "verses_num": "50:5-50:6",
+     "verse_count": 2,
+     "incipit": "וידבר יוסף אל בית",
+     "name": "בראשית - בן פרת - 242"
+    },
+    {
+     "n": 243,
+     "sam_ch_number": 243,
+     "file": "/static/audio/readings/b1-p20-c243.mp3",
+     "duration": 44.59,
+     "src_start": 0,
+     "src_end": 44.59,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1325,
+     "verses": "נ:ז-נ:י",
+     "verses_num": "50:7-50:10",
+     "verse_count": 4,
+     "incipit": "ויעל יוסף לקבר את",
+     "name": "בראשית - בן פרת - 243"
+    },
+    {
+     "n": 244,
+     "sam_ch_number": 244,
+     "file": "/static/audio/readings/b1-p20-c244.mp3",
+     "duration": 47.37,
+     "src_start": 0,
+     "src_end": 47.37,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1326,
+     "verses": "נ:יא-נ:יד",
+     "verses_num": "50:11-50:14",
+     "verse_count": 4,
+     "incipit": "וירא יושב ארץ הכנעני",
+     "name": "בראשית - בן פרת - 244"
+    },
+    {
+     "n": 245,
+     "sam_ch_number": 245,
+     "file": "/static/audio/readings/b1-p20-c245.mp3",
+     "duration": 48.33,
+     "src_start": 0,
+     "src_end": 48.33,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1327,
+     "verses": "נ:טו-נ:יח",
+     "verses_num": "50:15-50:18",
+     "verse_count": 4,
+     "incipit": "ויראו אחי יוסף כי",
+     "name": "בראשית - בן פרת - 245"
+    },
+    {
+     "n": 246,
+     "sam_ch_number": 246,
+     "file": "/static/audio/readings/b1-p20-c246.mp3",
+     "duration": 31.03,
+     "src_start": 0,
+     "src_end": 31.03,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1328,
+     "verses": "נ:יט-נ:כא",
+     "verses_num": "50:19-50:21",
+     "verse_count": 3,
+     "incipit": "ויאמר אליהם יוסף: אל",
+     "name": "בראשית - בן פרת - 246"
+    },
+    {
+     "n": 247,
+     "sam_ch_number": 247,
+     "file": "/static/audio/readings/b1-p20-c247.mp3",
+     "duration": 19.31,
+     "src_start": 0,
+     "src_end": 19.31,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1329,
+     "verses": "נ:כב-נ:כג",
+     "verses_num": "50:22-50:23",
+     "verse_count": 2,
+     "incipit": "וישב יוסף במצרים הוא",
+     "name": "בראשית - בן פרת - 247"
+    },
+    {
+     "n": 248,
+     "sam_ch_number": 248,
+     "file": "/static/audio/readings/b1-p20-c248.mp3",
+     "duration": 19.35,
+     "src_start": 0,
+     "src_end": 19.35,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1330,
+     "verses": "נ:כד-נ:כד",
+     "verses_num": "50:24-50:24",
+     "verse_count": 1,
+     "incipit": "ויאמר יוסף אל אחיו:",
+     "name": "בראשית - בן פרת - 248"
+    },
+    {
+     "n": 249,
+     "sam_ch_number": 249,
+     "file": "/static/audio/readings/b1-p20-c249.mp3",
+     "duration": 12.89,
+     "src_start": 0,
+     "src_end": 12.89,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1331,
+     "verses": "נ:כה-נ:כה",
+     "verses_num": "50:25-50:25",
+     "verse_count": 1,
+     "incipit": "וישביע יוסף את בני",
+     "name": "בראשית - בן פרת - 249"
+    },
+    {
+     "n": 250,
+     "sam_ch_number": 250,
+     "file": "/static/audio/readings/b1-p20-c250.mp3",
+     "duration": 12.66,
+     "src_start": 0,
+     "src_end": 12.66,
+     "portion": {
+      "order": 20,
+      "id": 20,
+      "name": "בן פרת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1332,
+     "verses": "נ:כו-נ:כו",
+     "verses_num": "50:26-50:26",
+     "verse_count": 1,
+     "incipit": "וימת יוסף בן מאה",
+     "name": "בראשית - בן פרת - 250"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
