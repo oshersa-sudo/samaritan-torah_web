@@ -1635,116 +1635,6 @@
     },
     {
      "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 12,
-     "name": "בראשית - ותצא דינה - 159",
-     "incipit": "ויראה אלהים אל יעקב",
-     "sam_ch_id": 1253,
-     "n": 159,
-     "verses": "לה:ט-לה:כ",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 166,
-     "file": "/static/audio/readings/b1-p13-c159.mp3",
-     "duration": 85.26,
-     "src_start": 252.45,
-     "src_end": 337.71,
-     "verses_num": "35:9-35:20"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 9,
-     "name": "בראשית - ותצא דינה - 160",
-     "incipit": "ויסע ישראל: ויט אהלו",
-     "sam_ch_id": 1254,
-     "n": 160,
-     "verses": "לה:כא-לה:כט",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 167,
-     "file": "/static/audio/readings/b1-p13-c160.mp3",
-     "duration": 76.8,
-     "src_start": 337.71,
-     "src_end": 414.51,
-     "verses_num": "35:21-35:29"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 8,
-     "name": "בראשית - ותצא דינה - 161",
-     "incipit": "ואלה תולדת עשו הוא",
-     "sam_ch_id": 1255,
-     "n": 161,
-     "verses": "לו:א-לו:ח",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 168,
-     "file": "/static/audio/readings/b1-p13-c161.mp3",
-     "duration": 27.63,
-     "src_start": 414.51,
-     "src_end": 442.14,
-     "verses_num": "36:1-36:8"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 11,
-     "name": "בראשית - ותצא דינה - 162",
-     "incipit": "ואלה תולדת עשו אבי",
-     "sam_ch_id": 1256,
-     "n": 162,
-     "verses": "לו:ט-לו:יט",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 169,
-     "file": "/static/audio/readings/b1-p13-c162.mp3",
-     "duration": 113.47,
-     "src_start": 442.14,
-     "src_end": 555.61,
-     "verses_num": "36:9-36:19"
-    },
-    {
-     "src": {
-      "youtube_id": "dY50GyHrdXk"
-     },
-     "verse_count": 11,
-     "name": "בראשית - ותצא דינה - 163",
-     "incipit": "ואלה בני שעיר החרי",
-     "sam_ch_id": 1257,
-     "n": 163,
-     "verses": "לו:כ-לו:ל",
-     "portion": {
-      "order": 13,
-      "name": "ותצא דינה",
-      "id": 13
-     },
-     "sam_ch_number": 170,
-     "file": "/static/audio/readings/b1-p13-c163.mp3",
-     "duration": 74.51,
-     "src_start": 555.61,
-     "src_end": 630.12,
-     "verses_num": "36:20-36:30"
-    },
-    {
-     "src": {
       "youtube_id": "Vzh8yOt0f6w"
      },
      "verse_count": 10,
@@ -4998,6 +4888,204 @@
      "verse_count": 3,
      "incipit": "ויבא יעקב שלום עיר",
      "name": "בראשית - ויקם יעקב - 158"
+    },
+    {
+     "n": 159,
+     "sam_ch_number": 159,
+     "file": "/static/audio/readings/b1-p13-c159.mp3",
+     "duration": 65.96,
+     "src_start": 0,
+     "src_end": 65.96,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1246,
+     "verses": "לד:א-לד:ז",
+     "verses_num": "34:1-34:7",
+     "verse_count": 7,
+     "incipit": "ותצא דינה בת לאה:",
+     "name": "בראשית - ותצא דינה - 159"
+    },
+    {
+     "n": 160,
+     "sam_ch_number": 160,
+     "file": "/static/audio/readings/b1-p13-c160.mp3",
+     "duration": 52.3,
+     "src_start": 0,
+     "src_end": 52.3,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1247,
+     "verses": "לד:ח-לד:יב",
+     "verses_num": "34:8-34:12",
+     "verse_count": 5,
+     "incipit": "וידבר חמור אתם לאמר:",
+     "name": "בראשית - ותצא דינה - 160"
+    },
+    {
+     "n": 161,
+     "sam_ch_number": 161,
+     "file": "/static/audio/readings/b1-p13-c161.mp3",
+     "duration": 68.09,
+     "src_start": 0,
+     "src_end": 68.09,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1248,
+     "verses": "לד:יג-לד:יט",
+     "verses_num": "34:13-34:19",
+     "verse_count": 7,
+     "incipit": "ויענו בני יעקב את",
+     "name": "בראשית - ותצא דינה - 161"
+    },
+    {
+     "n": 162,
+     "sam_ch_number": 162,
+     "file": "/static/audio/readings/b1-p13-c162.mp3",
+     "duration": 66.07,
+     "src_start": 0,
+     "src_end": 66.07,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1249,
+     "verses": "לד:כ-לד:כד",
+     "verses_num": "34:20-34:24",
+     "verse_count": 5,
+     "incipit": "ויבא חמור ושכם בנו",
+     "name": "בראשית - ותצא דינה - 162"
+    },
+    {
+     "n": 163,
+     "sam_ch_number": 163,
+     "file": "/static/audio/readings/b1-p13-c163.mp3",
+     "duration": 85.25,
+     "src_start": 0,
+     "src_end": 85.25,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1250,
+     "verses": "לד:כה-לד:לא",
+     "verses_num": "34:25-34:31",
+     "verse_count": 7,
+     "incipit": "ויהי ביום השלישי בהיותם",
+     "name": "בראשית - ותצא דינה - 163"
+    },
+    {
+     "n": 164,
+     "sam_ch_number": 164,
+     "file": "/static/audio/readings/b1-p13-c164.mp3",
+     "duration": 74.65,
+     "src_start": 0,
+     "src_end": 74.65,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1251,
+     "verses": "לה:א-לה:ה",
+     "verses_num": "35:1-35:5",
+     "verse_count": 5,
+     "incipit": "ויאמר אלהים אל יעקב:",
+     "name": "בראשית - ותצא דינה - 164"
+    },
+    {
+     "n": 165,
+     "sam_ch_number": 165,
+     "file": "/static/audio/readings/b1-p13-c165.mp3",
+     "duration": 29.78,
+     "src_start": 0,
+     "src_end": 29.78,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1252,
+     "verses": "לה:ו-לה:ח",
+     "verses_num": "35:6-35:8",
+     "verse_count": 3,
+     "incipit": "ויבא יעקב לוזה אשר",
+     "name": "בראשית - ותצא דינה - 165"
+    },
+    {
+     "n": 166,
+     "sam_ch_number": 166,
+     "file": "/static/audio/readings/b1-p13-c166.mp3",
+     "duration": 113.49,
+     "src_start": 0,
+     "src_end": 113.49,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1253,
+     "verses": "לה:ט-לה:כ",
+     "verses_num": "35:9-35:20",
+     "verse_count": 12,
+     "incipit": "ויראה אלהים אל יעקב",
+     "name": "בראשית - ותצא דינה - 166"
+    },
+    {
+     "n": 167,
+     "sam_ch_number": 167,
+     "file": "/static/audio/readings/b1-p13-c167.mp3",
+     "duration": 74.47,
+     "src_start": 0,
+     "src_end": 74.47,
+     "portion": {
+      "order": 13,
+      "id": 13,
+      "name": "ותצא דינה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1254,
+     "verses": "לה:כא-לה:כט",
+     "verses_num": "35:21-35:29",
+     "verse_count": 9,
+     "incipit": "ויסע ישראל: ויט אהלו",
+     "name": "בראשית - ותצא דינה - 167"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
