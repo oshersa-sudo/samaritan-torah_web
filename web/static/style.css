@@ -186,6 +186,11 @@ body.div-collapsed .div-handle{ height:26px; }
 .cmp-vn{ color:var(--accent); }
 /* a Samaritan-Aramaic verse with no Onkelos counterpart shows a dashed line */
 .cmp-dashline{ display:block; height:0; margin:11px 4px; border-top:2px dashed rgba(26,56,115,.5); }
+/* a filled bar standing in for a verse/chapter with no counterpart at all in the
+   compared text version — deliberately solid rather than blank, so a genuine
+   structural gap is never mistaken for an empty cell. */
+.cmp-blackbar{ display:block; height:1.15em; margin:2px 4px; border-radius:2px;
+               background:#1a1a1a; }
 /* Ben-Ḥayyim Latin phonetic transcription cell (תעתיק הגייה) */
 .tr-latin{ direction:ltr; text-align:left; font-family:'Translit', 'CharisSIL', serif; }
 /* small "info" icon next to the compared-version name; links to a web article */
@@ -982,6 +987,10 @@ footer a{ color:var(--accent); text-decoration:none; }
 /* end-of-portion marker (Samaritan division): three centered medium asterisks */
 .portion-end{ text-align:center; font-size:20px; letter-spacing:10px; color:var(--navy);
               padding:14px 0 8px; line-height:1; }
+.canon-note{ margin:16px auto 8px; max-width:560px; text-align:center; border-top:1px solid var(--border,#ccc);
+             padding-top:12px; }
+.canon-note-count{ font-weight:600; color:var(--navy); font-size:15px; margin-bottom:4px; }
+.canon-note-text{ font-size:12px; color:var(--muted,#777); line-height:1.5; }
 /* bookmark sign — pinned to the left corner of the breadcrumb row, no background */
 .bm-nav{ position:absolute; left:6px; top:50%; transform:translateY(-50%); border:0; background:transparent;
          padding:0 4px; font-size:24px; line-height:1; cursor:pointer; z-index:5; }

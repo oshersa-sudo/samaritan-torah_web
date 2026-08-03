@@ -905,6 +905,7 @@ async function renderVerses(chId, chNum, pid, pname){
   const isSam = S.chMode==='samaritan';
   S.verses = isSam ? await api('sam_verses?sam_ch_id='+chId)
                    : await api('verses?chapter_id='+chId+(pid?('&portion_id='+pid):''));
+  S.canonNote = isSam ? await api('canon_note?sam_ch_id='+chId) : null;
   let chLabel = isSam ? ('פרק שומרוני '+chNum) : ('פרק '+chNum);
   if(isSam && S.verses.length){          // append the 4 words that open the chapter
     const w=(S.verses[0].text||'').trim().split(/\s+/).filter(Boolean).slice(0,4).join(' ');
@@ -1015,6 +1016,14 @@ function paintVerses(){
     if(S.chMode==='samaritan' && !S.english && S.verseFilter==null
        && Array.isArray(S.chList) && S.chList.length && S.chIdx===S.chList.length-1)
       c.appendChild(el('div','portion-end','✶ ✶ ✶'));
+    // fixed canon marker: shown after the LAST Samaritan chapter of a book,
+    // documenting the permanent chapter count set by the project owner.
+    if(S.chMode==='samaritan' && !S.english && S.verseFilter==null && S.canonNote){
+      const cn=el('div','canon-note');
+      cn.appendChild(el('div','canon-note-count', 'סה"כ '+S.canonNote.count+' פרקים בחלוקה השומרונית'));
+      cn.appendChild(el('div','canon-note-text', S.canonNote.note));
+      c.appendChild(cn);
+    }
   }
   scheduleDotTrim();   // drop justification dots that fall at a line edge (Samaritan font)
 }
@@ -1112,10 +1121,10 @@ async function buildCompare(c, verses){
       const hasOnk=(v.onkelos_text||'').trim().length>0;
       const onk=renderNoNum(d.mas).trim();
       if(!src && !aram && !hasOnk) return;
-      const sc=el('div','cmp-cell','<b class="cmp-vn">'+esc(numLabel(v))+'</b> '+(src||'<span class="cmp-missing">- - -</span>'));
-      const ac=el('div','cmp-cell', aram||'<span class="cmp-missing">- - -</span>');
-      // no Onkelos for this verse → a dashed line (Samaritan-only verse)
-      const oc=el('div','cmp-cell', hasOnk ? onk : '<span class="cmp-dashline" aria-label="אין באונקלוס"></span>');
+      const sc=el('div','cmp-cell','<b class="cmp-vn">'+esc(numLabel(v))+'</b> '+(src||'<span class="cmp-blackbar" aria-label="אין מקבילה"></span>'));
+      const ac=el('div','cmp-cell', aram||'<span class="cmp-blackbar" aria-label="אין מקבילה"></span>');
+      // no Onkelos for this verse → a solid bar (Samaritan-only verse, no counterpart)
+      const oc=el('div','cmp-cell', hasOnk ? onk : '<span class="cmp-blackbar" aria-label="אין באונקלוס"></span>');
       [sc,ac,oc].forEach(x=>x.style.fontSize=fs+'px');
       addCmpPencil(sc, v.id, [
         {column:'text', label:t('cmp_source'), getText:()=>v.text||''},
@@ -1171,10 +1180,10 @@ async function buildCompare(c, verses){
     const d=data[i]; if(!d) return;
     const m=render(d.mas).trim(), s=render(d.sam).trim();
     if(!m && !s) return;
-    // Qumran verses not preserved in any scroll show a dashed line instead of "- - -"
-    const miss = (ver==='qumran') ? '<span class="cmp-dashline"></span>' : '<span class="cmp-missing">- - -</span>';
+    // no counterpart in the compared version → a solid bar (never a blank cell)
+    const miss = '<span class="cmp-blackbar" aria-label="אין מקבילה"></span>';
     const mc=el('div','cmp-cell', m || miss);
-    const sc=el('div','cmp-cell', s || '<span class="cmp-missing">- - -</span>');
+    const sc=el('div','cmp-cell', s || miss);
     mc.style.fontSize=fs+'px'; sc.style.fontSize=fs+'px';
     // the "X:1" chapter-number label is built from the MASORETIC-side verse number
     // (masnum), which can be verse 1 of its Masoretic chapter even when this row

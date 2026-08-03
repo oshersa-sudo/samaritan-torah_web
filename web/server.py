@@ -498,6 +498,57 @@ def _pos(conn, vid):
     return (r['ch'], r['vn']) if r else (None, None)
 
 
+def _portion_id_for_sam_chapter(conn, sam_id):
+    """Which Samaritan-mode portion a sam_chapter's first verse falls in (by the
+    same chapter:verse range logic as get_sam_chapters_in_portion), for the
+    per-portion canon guard."""
+    r = conn.execute("""
+        SELECT p.id FROM sam_chapters sc
+        JOIN (SELECT sam_ch_id, MIN(id) AS first_v_id FROM verses GROUP BY sam_ch_id) fv
+          ON fv.sam_ch_id = sc.id
+        JOIN verses v ON v.id = fv.first_v_id
+        JOIN chapters c ON c.id = v.chapter_id
+        JOIN portions p ON p.book_id = c.book_id AND p.mode = 'samaritan'
+        WHERE sc.id = ?
+          AND ( sc.portion_id = p.id
+             OR (sc.portion_id IS NULL
+                 AND (c.number > p.start_ch OR (c.number = p.start_ch AND CAST(v.number AS INTEGER) >= p.start_v))
+                 AND (c.number < p.end_ch   OR (c.number = p.end_ch   AND CAST(v.number AS INTEGER) <= p.end_v))) )
+        """, (sam_id,)).fetchone()
+    return r['id'] if r else None
+
+
+def _canon_guard(conn, book_id, sam_id, delta):
+    """Block a split (delta=+1) or merge (delta=-1) that would move the book's or
+    the affected portion's Samaritan chapter count away from its engraved canon.
+    Returns an error string, or None if the operation is allowed."""
+    canon = conn.execute('SELECT canonical_count FROM canon_chapter_counts WHERE book_id=?',
+                         (book_id,)).fetchone()
+    if canon:
+        n_now = conn.execute('SELECT COUNT(*) FROM sam_chapters WHERE book_id=?', (book_id,)).fetchone()[0]
+        if n_now + delta != canon['canonical_count']:
+            return ('פעולה זו תשנה את מספר הפרקים השומרוניים בספר מ-%d — הקאנון הקבוע לספר זה. '
+                    'הפעולה נחסמה.') % canon['canonical_count']
+    pid = _portion_id_for_sam_chapter(conn, sam_id)
+    if pid:
+        pc = conn.execute('SELECT canonical_count, portion_name FROM canon_portion_counts WHERE portion_id=?',
+                          (pid,)).fetchone()
+        if pc:
+            p_now = conn.execute('SELECT COUNT(DISTINCT sc.id) FROM sam_chapters sc '
+                                 'JOIN (SELECT sam_ch_id, MIN(id) fid FROM verses GROUP BY sam_ch_id) fv '
+                                 'ON fv.sam_ch_id=sc.id JOIN verses v ON v.id=fv.fid '
+                                 'JOIN chapters c ON c.id=v.chapter_id JOIN portions p ON p.id=? '
+                                 'WHERE c.book_id=p.book_id AND (sc.portion_id=p.id OR '
+                                 '(sc.portion_id IS NULL AND '
+                                 '(c.number>p.start_ch OR (c.number=p.start_ch AND CAST(v.number AS INTEGER)>=p.start_v)) AND '
+                                 '(c.number<p.end_ch OR (c.number=p.end_ch AND CAST(v.number AS INTEGER)<=p.end_v))))',
+                                 (pid,)).fetchone()[0]
+            if p_now + delta != pc['canonical_count']:
+                return ('פעולה זו תשנה את מספר הפרקים השומרוניים בפרשת "%s" מ-%d — '
+                        'הקאנון הקבוע לפרשה זו. הפעולה נחסמה.') % (pc['portion_name'], pc['canonical_count'])
+    return None
+
+
 def _fix_portions(conn, spans):
     for pid, (fv, lv, sentinel) in spans.items():
         sch, svn = _pos(conn, fv)
@@ -684,6 +735,9 @@ def admin_merge_next_sam():
                            (cur['book_id'], cur['number'] + 1)).fetchone()
         if not nxt:
             return jsonify({'ok': False, 'error': 'אין פרק הבא לאיחוד'}), 400
+        guard_err = _canon_guard(conn, cur['book_id'], cur['id'], -1)
+        if guard_err:
+            return jsonify({'ok': False, 'error': guard_err}), 400
         conn.execute('UPDATE verses SET sam_ch_id=? WHERE sam_ch_id=?', (cur['id'], nxt['id']))
         conn.execute('DELETE FROM sam_chapters WHERE id=?', (nxt['id'],))
         conn.execute('UPDATE sam_chapters SET number=number-1 WHERE book_id=? AND number>?',
@@ -713,15 +767,9 @@ def admin_split_sam():
         cur = conn.execute('SELECT id,book_id,number,portion_id FROM sam_chapters WHERE id=?', (sam_id,)).fetchone()
         if not cur:
             return jsonify({'ok': False, 'error': 'chapter not found'}), 404
-        canon = conn.execute('SELECT canonical_count FROM canon_chapter_counts WHERE book_id=?',
-                             (cur['book_id'],)).fetchone()
-        if canon:
-            n_now = conn.execute('SELECT COUNT(*) FROM sam_chapters WHERE book_id=?',
-                                 (cur['book_id'],)).fetchone()[0]
-            if n_now + 1 > canon['canonical_count']:
-                return jsonify({'ok': False, 'error':
-                    'פיצול זה יעלה את מספר הפרקים השומרוניים על %d — הקאנון הקבוע לספר זה. '
-                    'הפעולה נחסמה.' % canon['canonical_count']}), 400
+        guard_err = _canon_guard(conn, cur['book_id'], cur['id'], +1)
+        if guard_err:
+            return jsonify({'ok': False, 'error': guard_err}), 400
         ids = [r['id'] for r in conn.execute(
             """SELECT v.id FROM verses v JOIN chapters c ON c.id=v.chapter_id
                WHERE v.sam_ch_id=? ORDER BY c.number, CAST(v.number AS INTEGER), v.id""", (cur['id'],)).fetchall()]
@@ -1161,6 +1209,22 @@ def api_sam_verses():
             dd['number'] = sn
         out.append(dd)
     return jsonify(out)
+
+
+@app.route('/api/canon_note')
+def api_canon_note():
+    """Canon note for a book, if this sam_ch_id is that book's LAST Samaritan chapter —
+    powers the fixed 'N chapters, engraved' marker shown after the book's last verse."""
+    sid = int(request.args['sam_ch_id'])
+    conn = db.get_connection()
+    sc = conn.execute('SELECT book_id, number FROM sam_chapters WHERE id=?', (sid,)).fetchone()
+    if not sc:
+        return jsonify(None)
+    canon = conn.execute('SELECT canonical_count, note FROM canon_chapter_counts WHERE book_id=?',
+                          (sc['book_id'],)).fetchone()
+    if not canon or sc['number'] != canon['canonical_count']:
+        return jsonify(None)
+    return jsonify({'count': canon['canonical_count'], 'note': canon['note']})
 
 
 # ── content-mode API ───────────────────────────────────────────────────────
