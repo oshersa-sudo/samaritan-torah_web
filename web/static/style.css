@@ -21,6 +21,10 @@ body{
                        url('/static/img/background.jpg');
       background-size:cover; background-position:center top; background-repeat:no-repeat;
       box-shadow:0 0 26px rgba(0,0,0,.14); }
+/* on larger screens (desktop/tablet), let the whole app frame grow to actually
+   use the available space instead of staying pinned at phone width — capped
+   so Torah text never stretches into unreadably long lines. */
+@media (min-width:860px){ #app{ max-width:min(94vw, 1100px); } }
 
 /* The native Kivy app is laid out physically left→right (first-added widget on
    the left), so "חלוקה שומרונית" (added 2nd) sits on the RIGHT. We reproduce that
@@ -1198,6 +1202,14 @@ footer a{ color:var(--accent); text-decoration:none; }
   position:absolute; inset:0;
   background:url('/static/img/splash_elder.jpg') center/cover no-repeat;
   opacity:.4; filter:saturate(.4) sepia(.22) brightness(1.12) contrast(.85);
+}
+/* the source etching is portrait (≈5:6) with a wide cream mat around it — on any
+   landscape viewport (virtually all desktops/tablets) "cover" scales it to fill
+   the width and crops the top/bottom, cutting into the figure. "contain" shows
+   the whole etching instead; its mat colour matches #splash-image's own
+   background so the letterboxing reads as an intentional frame, not empty space. */
+@media (min-aspect-ratio:1/1){
+  #splash-image .pic{ background-size:contain; }
 }
 #splash-image::after{   /* soft vignette to settle it into the page */
   content:""; position:absolute; inset:0;
