@@ -1635,248 +1635,6 @@
     },
     {
      "src": {
-      "youtube_id": "m0rwjElPrLY"
-     },
-     "verse_count": 3,
-     "name": "בראשית - אל שדי - 228",
-     "incipit": "גד גדוד יגידנו: והוא",
-     "sam_ch_id": 1322,
-     "n": 228,
-     "verses": "מט:יט-מט:כא",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 238,
-     "file": "/static/audio/readings/b1-p19-c228.mp3",
-     "duration": 21.96,
-     "src_start": 428.62,
-     "src_end": 450.58,
-     "verses_num": "49:19-49:21"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 11,
-     "name": "בראשית - אל שדי - 229",
-     "incipit": "בן פרת יוסף בן",
-     "sam_ch_id": 1323,
-     "n": 229,
-     "verses": "מט:כב-מט:לב",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 239,
-     "file": "/static/audio/readings/b1-p20-c229.mp3",
-     "duration": 74.78,
-     "src_start": 0.0,
-     "src_end": 74.78,
-     "verses_num": "49:22-49:32"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 7,
-     "name": "בראשית - אל שדי - 230",
-     "incipit": "ויכל יעקב לצות את",
-     "sam_ch_id": 1324,
-     "n": 230,
-     "verses": "מט:לג-נ:ו",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 241,
-     "file": "/static/audio/readings/b1-p20-c230.mp3",
-     "duration": 86.63,
-     "src_start": 74.78,
-     "src_end": 161.41,
-     "verses_num": "49:33-50:6"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 4,
-     "name": "בראשית - אל שדי - 231",
-     "incipit": "ויעל יוסף לקבר את",
-     "sam_ch_id": 1325,
-     "n": 231,
-     "verses": "נ:ז-נ:י",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 243,
-     "file": "/static/audio/readings/b1-p20-c231.mp3",
-     "duration": 46.7,
-     "src_start": 161.41,
-     "src_end": 208.11,
-     "verses_num": "50:7-50:10"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 4,
-     "name": "בראשית - אל שדי - 232",
-     "incipit": "וירא יושב ארץ הכנעני",
-     "sam_ch_id": 1326,
-     "n": 232,
-     "verses": "נ:יא-נ:יד",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 244,
-     "file": "/static/audio/readings/b1-p20-c232.mp3",
-     "duration": 44.6,
-     "src_start": 208.11,
-     "src_end": 252.71,
-     "verses_num": "50:11-50:14"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 4,
-     "name": "בראשית - אל שדי - 233",
-     "incipit": "ויראו אחי יוסף כי",
-     "sam_ch_id": 1327,
-     "n": 233,
-     "verses": "נ:טו-נ:יח",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 245,
-     "file": "/static/audio/readings/b1-p20-c233.mp3",
-     "duration": 47.37,
-     "src_start": 252.71,
-     "src_end": 300.08,
-     "verses_num": "50:15-50:18"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 3,
-     "name": "בראשית - אל שדי - 234",
-     "incipit": "ויאמר אליהם יוסף אל",
-     "sam_ch_id": 1328,
-     "n": 234,
-     "verses": "נ:יט-נ:כא",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 246,
-     "file": "/static/audio/readings/b1-p20-c234.mp3",
-     "duration": 48.31,
-     "src_start": 300.08,
-     "src_end": 348.39,
-     "verses_num": "50:19-50:21"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 2,
-     "name": "בראשית - אל שדי - 235",
-     "incipit": "וישב יוסף במצרים הוא",
-     "sam_ch_id": 1329,
-     "n": 235,
-     "verses": "נ:כב-נ:כג",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 247,
-     "file": "/static/audio/readings/b1-p20-c235.mp3",
-     "duration": 31.05,
-     "src_start": 348.39,
-     "src_end": 379.44,
-     "verses_num": "50:22-50:23"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 1,
-     "name": "בראשית - אל שדי - 236",
-     "incipit": "ויאמר יוסף אל אחיו",
-     "sam_ch_id": 1330,
-     "n": 236,
-     "verses": "נ:כד-נ:כד",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 248,
-     "file": "/static/audio/readings/b1-p20-c236.mp3",
-     "duration": 38.65,
-     "src_start": 379.44,
-     "src_end": 418.09,
-     "verses_num": "50:24-50:24"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 1,
-     "name": "בראשית - אל שדי - 237",
-     "incipit": "וישביע יוסף את בני",
-     "sam_ch_id": 1331,
-     "n": 237,
-     "verses": "נ:כה-נ:כה",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 249,
-     "file": "/static/audio/readings/b1-p20-c237.mp3",
-     "duration": 12.9,
-     "src_start": 418.09,
-     "src_end": 430.99,
-     "verses_num": "50:25-50:25"
-    },
-    {
-     "src": {
-      "youtube_id": "Wv9QyMCVd5Y"
-     },
-     "verse_count": 1,
-     "name": "בראשית - אל שדי - 238",
-     "incipit": "וימת יוסף בן מאה",
-     "sam_ch_id": 1332,
-     "n": 238,
-     "verses": "נ:כו-נ:כו",
-     "portion": {
-      "order": 19,
-      "name": "אל שדי",
-      "id": 19
-     },
-     "sam_ch_number": 250,
-     "file": "/static/audio/readings/b1-p20-c238.mp3",
-     "duration": 12.67,
-     "src_start": 430.99,
-     "src_end": 443.66,
-     "verses_num": "50:26-50:26"
-    },
-    {
-     "src": {
       "youtube_id": "gdCS6_DbTpo"
      },
      "verse_count": 8,
@@ -5064,6 +4822,248 @@
      "verse_count": 2,
      "incipit": "ויהי אחר הדברים האלה:",
      "name": "בראשית - ואלה שמות - 227"
+    },
+    {
+     "n": 228,
+     "sam_ch_number": 228,
+     "file": "/static/audio/readings/b1-p19-c228.mp3",
+     "duration": 68.6,
+     "src_start": 0,
+     "src_end": 68.6,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1312,
+     "verses": "מח:ג-מח:ז",
+     "verses_num": "48:3-48:7",
+     "verse_count": 5,
+     "incipit": "ויאמר יעקב אל יוסף:",
+     "name": "בראשית - אל שדי - 228"
+    },
+    {
+     "n": 229,
+     "sam_ch_number": 229,
+     "file": "/static/audio/readings/b1-p19-c229.mp3",
+     "duration": 62.61,
+     "src_start": 0,
+     "src_end": 62.61,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1313,
+     "verses": "מח:ח-מח:יג",
+     "verses_num": "48:8-48:13",
+     "verse_count": 6,
+     "incipit": "וירא ישראל את בני",
+     "name": "בראשית - אל שדי - 229"
+    },
+    {
+     "n": 230,
+     "sam_ch_number": 230,
+     "file": "/static/audio/readings/b1-p19-c230.mp3",
+     "duration": 50.14,
+     "src_start": 0,
+     "src_end": 50.14,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1314,
+     "verses": "מח:יד-מח:טז",
+     "verses_num": "48:14-48:16",
+     "verse_count": 3,
+     "incipit": "וישלח ישראל את יד",
+     "name": "בראשית - אל שדי - 230"
+    },
+    {
+     "n": 231,
+     "sam_ch_number": 231,
+     "file": "/static/audio/readings/b1-p19-c231.mp3",
+     "duration": 58.78,
+     "src_start": 0,
+     "src_end": 58.78,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1315,
+     "verses": "מח:יז-מח:כ",
+     "verses_num": "48:17-48:20",
+     "verse_count": 4,
+     "incipit": "וירא יוסף כי ישית",
+     "name": "בראשית - אל שדי - 231"
+    },
+    {
+     "n": 232,
+     "sam_ch_number": 232,
+     "file": "/static/audio/readings/b1-p19-c232.mp3",
+     "duration": 22.16,
+     "src_start": 0,
+     "src_end": 22.16,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1316,
+     "verses": "מח:כא-מח:כב",
+     "verses_num": "48:21-48:22",
+     "verse_count": 2,
+     "incipit": "ויאמר ישראל אל יוסף:",
+     "name": "בראשית - אל שדי - 232"
+    },
+    {
+     "n": 233,
+     "sam_ch_number": 233,
+     "file": "/static/audio/readings/b1-p19-c233.mp3",
+     "duration": 41.07,
+     "src_start": 0,
+     "src_end": 41.07,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1317,
+     "verses": "מט:א-מט:ד",
+     "verses_num": "49:1-49:4",
+     "verse_count": 4,
+     "incipit": "ויקרא יעקב אל בניו:",
+     "name": "בראשית - אל שדי - 233"
+    },
+    {
+     "n": 234,
+     "sam_ch_number": 234,
+     "file": "/static/audio/readings/b1-p19-c234.mp3",
+     "duration": 32.0,
+     "src_start": 0,
+     "src_end": 32.0,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1318,
+     "verses": "מט:ה-מט:ז",
+     "verses_num": "49:5-49:7",
+     "verse_count": 3,
+     "incipit": "שמעון ולוי אחים: כלו",
+     "name": "בראשית - אל שדי - 234"
+    },
+    {
+     "n": 235,
+     "sam_ch_number": 235,
+     "file": "/static/audio/readings/b1-p19-c235.mp3",
+     "duration": 49.56,
+     "src_start": 0,
+     "src_end": 49.56,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1319,
+     "verses": "מט:ח-מט:יב",
+     "verses_num": "49:8-49:12",
+     "verse_count": 5,
+     "incipit": "יהודה: אתה יודוך אחיך:",
+     "name": "בראשית - אל שדי - 235"
+    },
+    {
+     "n": 236,
+     "sam_ch_number": 236,
+     "file": "/static/audio/readings/b1-p19-c236.mp3",
+     "duration": 24.45,
+     "src_start": 0,
+     "src_end": 24.45,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1320,
+     "verses": "מט:יג-מט:טו",
+     "verses_num": "49:13-49:15",
+     "verse_count": 3,
+     "incipit": "זבולן לחוף ימים ישכן:",
+     "name": "בראשית - אל שדי - 236"
+    },
+    {
+     "n": 237,
+     "sam_ch_number": 237,
+     "file": "/static/audio/readings/b1-p19-c237.mp3",
+     "duration": 22.08,
+     "src_start": 0,
+     "src_end": 22.08,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1321,
+     "verses": "מט:טז-מט:יח",
+     "verses_num": "49:16-49:18",
+     "verse_count": 3,
+     "incipit": "דן ידין עמו כאחד",
+     "name": "בראשית - אל שדי - 237"
+    },
+    {
+     "n": 238,
+     "sam_ch_number": 238,
+     "file": "/static/audio/readings/b1-p19-c238.mp3",
+     "duration": 19.08,
+     "src_start": 0,
+     "src_end": 19.08,
+     "portion": {
+      "order": 19,
+      "id": 19,
+      "name": "אל שדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1322,
+     "verses": "מט:יט-מט:כא",
+     "verses_num": "49:19-49:21",
+     "verse_count": 3,
+     "incipit": "גד גדוד יגידנו: והוא",
+     "name": "בראשית - אל שדי - 238"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
