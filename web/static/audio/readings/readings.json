@@ -1635,336 +1635,6 @@
     },
     {
      "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ואלה תולדת - 116",
-     "incipit": "ויהי רעב בארץ מלבד",
-     "sam_ch_id": 1209,
-     "n": 116,
-     "verses": "כו:א-כו:ד",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 118,
-     "file": "/static/audio/readings/b1-p10-c116.mp3",
-     "duration": 63.3,
-     "src_start": 161.3,
-     "src_end": 224.6,
-     "verses_num": "26:1-26:4"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ואלה תולדת - 117",
-     "incipit": "וישב יצחק בגרר",
-     "sam_ch_id": 1210,
-     "n": 117,
-     "verses": "כו:ו-כו:יא",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 119,
-     "file": "/static/audio/readings/b1-p10-c117.mp3",
-     "duration": 71.74,
-     "src_start": 224.6,
-     "src_end": 296.34,
-     "verses_num": "26:6-26:11"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 12,
-     "name": "בראשית - ואלה תולדת - 118",
-     "incipit": "ויזרע יצחק בארץ ההיא",
-     "sam_ch_id": 1211,
-     "n": 118,
-     "verses": "כו:יב-כו:כג",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 120,
-     "file": "/static/audio/readings/b1-p10-c118.mp3",
-     "duration": 119.06,
-     "src_start": 296.34,
-     "src_end": 415.4,
-     "verses_num": "26:12-26:23"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 12,
-     "name": "בראשית - ואלה תולדת - 119",
-     "incipit": "וירא אליו יהוה בלילה",
-     "sam_ch_id": 1212,
-     "n": 119,
-     "verses": "כו:כד-כו:לה",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 121,
-     "file": "/static/audio/readings/b1-p10-c119.mp3",
-     "duration": 134.81,
-     "src_start": 415.4,
-     "src_end": 550.21,
-     "verses_num": "26:24-26:35"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 10,
-     "name": "בראשית - ואלה תולדת - 120",
-     "incipit": "ויהי כי זקן יצחק",
-     "sam_ch_id": 1213,
-     "n": 120,
-     "verses": "כז:א-כז:י",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 122,
-     "file": "/static/audio/readings/b1-p10-c120.mp3",
-     "duration": 101.69,
-     "src_start": 550.21,
-     "src_end": 651.9,
-     "verses_num": "27:1-27:10"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 10,
-     "name": "בראשית - ואלה תולדת - 121",
-     "incipit": "ויאמר יעקב אל רבקה",
-     "sam_ch_id": 1214,
-     "n": 121,
-     "verses": "כז:יא-כז:כ",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 123,
-     "file": "/static/audio/readings/b1-p10-c121.mp3",
-     "duration": 101.41,
-     "src_start": 651.9,
-     "src_end": 753.31,
-     "verses_num": "27:11-27:20"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 9,
-     "name": "בראשית - ואלה תולדת - 122",
-     "incipit": "ויאמר יצחק אל יעקב",
-     "sam_ch_id": 1215,
-     "n": 122,
-     "verses": "כז:כא-כז:כט",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 124,
-     "file": "/static/audio/readings/b1-p10-c122.mp3",
-     "duration": 100.18,
-     "src_start": 753.31,
-     "src_end": 853.49,
-     "verses_num": "27:21-27:29"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 4,
-     "name": "בראשית - ואלה תולדת - 123",
-     "incipit": "ויהי כאשר כלה יצחק",
-     "sam_ch_id": 1216,
-     "n": 123,
-     "verses": "כז:ל-כז:לג",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 125,
-     "file": "/static/audio/readings/b1-p10-c123.mp3",
-     "duration": 60.71,
-     "src_start": 853.49,
-     "src_end": 914.2,
-     "verses_num": "27:30-27:33"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 13,
-     "name": "בראשית - ואלה תולדת - 124",
-     "incipit": "ויהי כשמע עשו את",
-     "sam_ch_id": 1217,
-     "n": 124,
-     "verses": "כז:לד-כז:מו",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 126,
-     "file": "/static/audio/readings/b1-p10-c124.mp3",
-     "duration": 175.78,
-     "src_start": 914.2,
-     "src_end": 1089.98,
-     "verses_num": "27:34-27:46"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 9,
-     "name": "בראשית - ואלה תולדת - 125",
-     "incipit": "ויקרא יצחק אל יעקב",
-     "sam_ch_id": 1218,
-     "n": 125,
-     "verses": "כח:א-כח:ט",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 128,
-     "file": "/static/audio/readings/b1-p10-c125.mp3",
-     "duration": 97.95,
-     "src_start": 1089.98,
-     "src_end": 1187.93,
-     "verses_num": "28:1-28:9"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ואלה תולדת - 126",
-     "incipit": "ויצא יעקב מבאר שבע",
-     "sam_ch_id": 1219,
-     "n": 126,
-     "verses": "כח:י-כח:טו",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 129,
-     "file": "/static/audio/readings/b1-p10-c126.mp3",
-     "duration": 89.87,
-     "src_start": 1187.93,
-     "src_end": 1277.8,
-     "verses_num": "28:10-28:15"
-    },
-    {
-     "src": {
-      "youtube_id": "3AZ1Ar8cqN8"
-     },
-     "verse_count": 7,
-     "name": "בראשית - ואלה תולדת - 127",
-     "incipit": "ויקץ יעקב משנתו: ויאמר",
-     "sam_ch_id": 1220,
-     "n": 127,
-     "verses": "כח:טז-כח:כב",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 130,
-     "file": "/static/audio/readings/b1-p10-c127.mp3",
-     "duration": 85.61,
-     "src_start": 1277.8,
-     "src_end": 1363.41,
-     "verses_num": "28:16-28:22"
-    },
-    {
-     "src": {
-      "youtube_id": "Fs0khj7BY5g"
-     },
-     "verse_count": 6,
-     "name": "בראשית - ואלה תולדת - 128",
-     "incipit": "ויהי כאשר ראה יעקב",
-     "sam_ch_id": 1222,
-     "n": 128,
-     "verses": "כט:י-כט:טו",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 132,
-     "file": "/static/audio/readings/b1-p11-c128.mp3",
-     "duration": 102.53,
-     "src_start": 0,
-     "src_end": 102.53,
-     "verses_num": "29:10-29:15"
-    },
-    {
-     "src": {
-      "youtube_id": "Fs0khj7BY5g"
-     },
-     "verse_count": 15,
-     "name": "בראשית - ואלה תולדת - 129",
-     "incipit": "וללבן שתי בנות שם",
-     "sam_ch_id": 1223,
-     "n": 129,
-     "verses": "כט:טז-כט:ל",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 133,
-     "file": "/static/audio/readings/b1-p11-c129.mp3",
-     "duration": 68.71,
-     "src_start": 102.53,
-     "src_end": 171.24,
-     "verses_num": "29:16-29:30"
-    },
-    {
-     "src": {
-      "youtube_id": "Fs0khj7BY5g"
-     },
-     "verse_count": 5,
-     "name": "בראשית - ואלה תולדת - 130",
-     "incipit": "וירא יהוה כי שנואה",
-     "sam_ch_id": 1224,
-     "n": 130,
-     "verses": "כט:לא-כט:לה",
-     "portion": {
-      "order": 10,
-      "name": "ואלה תולדת",
-      "id": 10
-     },
-     "sam_ch_number": 134,
-     "file": "/static/audio/readings/b1-p11-c130.mp3",
-     "duration": 125.91,
-     "src_start": 171.24,
-     "src_end": 297.15,
-     "verses_num": "29:31-29:35"
-    },
-    {
-     "src": {
       "youtube_id": "Fs0khj7BY5g"
      },
      "verse_count": 8,
@@ -5020,6 +4690,336 @@
      "verse_count": 7,
      "incipit": "ואלה תולדת ישמעאל בן",
      "name": "בראשית - ואברהם זקן - 115"
+    },
+    {
+     "n": 116,
+     "sam_ch_number": 116,
+     "file": "/static/audio/readings/b1-p10-c116.mp3",
+     "duration": 103.81,
+     "src_start": 0,
+     "src_end": 103.81,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1207,
+     "verses": "כה:יט-כה:כח",
+     "verses_num": "25:19-25:28",
+     "verse_count": 10,
+     "incipit": "ואלה תולדת יצחק בן",
+     "name": "בראשית - ואלה תולדת - 116"
+    },
+    {
+     "n": 117,
+     "sam_ch_number": 117,
+     "file": "/static/audio/readings/b1-p10-c117.mp3",
+     "duration": 57.45,
+     "src_start": 0,
+     "src_end": 57.45,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1208,
+     "verses": "כה:כט-כה:לד",
+     "verses_num": "25:29-25:34",
+     "verse_count": 6,
+     "incipit": "ויזד יעקב נזיד: ויבא",
+     "name": "בראשית - ואלה תולדת - 117"
+    },
+    {
+     "n": 118,
+     "sam_ch_number": 118,
+     "file": "/static/audio/readings/b1-p10-c118.mp3",
+     "duration": 63.31,
+     "src_start": 0,
+     "src_end": 63.31,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1209,
+     "verses": "כו:א-כו:ה",
+     "verses_num": "26:1-26:5",
+     "verse_count": 5,
+     "incipit": "ויהי רעב בארץ: מלבד",
+     "name": "בראשית - ואלה תולדת - 118"
+    },
+    {
+     "n": 119,
+     "sam_ch_number": 119,
+     "file": "/static/audio/readings/b1-p10-c119.mp3",
+     "duration": 71.73,
+     "src_start": 0,
+     "src_end": 71.73,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1210,
+     "verses": "כו:ו-כו:יא",
+     "verses_num": "26:6-26:11",
+     "verse_count": 6,
+     "incipit": "וישב יצחק בגרר.",
+     "name": "בראשית - ואלה תולדת - 119"
+    },
+    {
+     "n": 120,
+     "sam_ch_number": 120,
+     "file": "/static/audio/readings/b1-p10-c120.mp3",
+     "duration": 119.06,
+     "src_start": 0,
+     "src_end": 119.06,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1211,
+     "verses": "כו:יב-כו:כג",
+     "verses_num": "26:12-26:23",
+     "verse_count": 12,
+     "incipit": "ויזרע יצחק בארץ ההיא:",
+     "name": "בראשית - ואלה תולדת - 120"
+    },
+    {
+     "n": 121,
+     "sam_ch_number": 121,
+     "file": "/static/audio/readings/b1-p10-c121.mp3",
+     "duration": 134.82,
+     "src_start": 0,
+     "src_end": 134.82,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1212,
+     "verses": "כו:כד-כו:לה",
+     "verses_num": "26:24-26:35",
+     "verse_count": 12,
+     "incipit": "וירא אליו יהוה בלילה",
+     "name": "בראשית - ואלה תולדת - 121"
+    },
+    {
+     "n": 122,
+     "sam_ch_number": 122,
+     "file": "/static/audio/readings/b1-p10-c122.mp3",
+     "duration": 101.7,
+     "src_start": 0,
+     "src_end": 101.7,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1213,
+     "verses": "כז:א-כז:י",
+     "verses_num": "27:1-27:10",
+     "verse_count": 10,
+     "incipit": "ויהי כי זקן יצחק:",
+     "name": "בראשית - ואלה תולדת - 122"
+    },
+    {
+     "n": 123,
+     "sam_ch_number": 123,
+     "file": "/static/audio/readings/b1-p10-c123.mp3",
+     "duration": 101.4,
+     "src_start": 0,
+     "src_end": 101.4,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1214,
+     "verses": "כז:יא-כז:כ",
+     "verses_num": "27:11-27:20",
+     "verse_count": 10,
+     "incipit": "ויאמר יעקב אל רבקה",
+     "name": "בראשית - ואלה תולדת - 123"
+    },
+    {
+     "n": 124,
+     "sam_ch_number": 124,
+     "file": "/static/audio/readings/b1-p10-c124.mp3",
+     "duration": 100.18,
+     "src_start": 0,
+     "src_end": 100.18,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1215,
+     "verses": "כז:כא-כז:כט",
+     "verses_num": "27:21-27:29",
+     "verse_count": 9,
+     "incipit": "ויאמר יצחק אל יעקב:",
+     "name": "בראשית - ואלה תולדת - 124"
+    },
+    {
+     "n": 125,
+     "sam_ch_number": 125,
+     "file": "/static/audio/readings/b1-p10-c125.mp3",
+     "duration": 60.85,
+     "src_start": 0,
+     "src_end": 60.85,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1216,
+     "verses": "כז:ל-כז:לג",
+     "verses_num": "27:30-27:33",
+     "verse_count": 4,
+     "incipit": "ויהי כאשר כלה יצחק",
+     "name": "בראשית - ואלה תולדת - 125"
+    },
+    {
+     "n": 126,
+     "sam_ch_number": 126,
+     "file": "/static/audio/readings/b1-p10-c126.mp3",
+     "duration": 105.76,
+     "src_start": 0,
+     "src_end": 105.76,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1217,
+     "verses": "כז:לד-כז:מא",
+     "verses_num": "27:34-27:41",
+     "verse_count": 8,
+     "incipit": "ויהי כשמע עשו את",
+     "name": "בראשית - ואלה תולדת - 126"
+    },
+    {
+     "n": 127,
+     "sam_ch_number": 127,
+     "file": "/static/audio/readings/b1-p10-c127.mp3",
+     "duration": 69.87,
+     "src_start": 0,
+     "src_end": 69.87,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2254,
+     "verses": "כז:מב-כז:מו",
+     "verses_num": "27:42-27:46",
+     "verse_count": 5,
+     "incipit": "ויאמר עשו בלבו יקרבו",
+     "name": "בראשית - ואלה תולדת - 127"
+    },
+    {
+     "n": 128,
+     "sam_ch_number": 128,
+     "file": "/static/audio/readings/b1-p10-c128.mp3",
+     "duration": 97.96,
+     "src_start": 0,
+     "src_end": 97.96,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1218,
+     "verses": "כח:א-כח:ט",
+     "verses_num": "28:1-28:9",
+     "verse_count": 9,
+     "incipit": "ויקרא יצחק אל יעקב",
+     "name": "בראשית - ואלה תולדת - 128"
+    },
+    {
+     "n": 129,
+     "sam_ch_number": 129,
+     "file": "/static/audio/readings/b1-p10-c129.mp3",
+     "duration": 89.87,
+     "src_start": 0,
+     "src_end": 89.87,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1219,
+     "verses": "כח:י-כח:טו",
+     "verses_num": "28:10-28:15",
+     "verse_count": 6,
+     "incipit": "ויצא יעקב מבאר שבע",
+     "name": "בראשית - ואלה תולדת - 129"
+    },
+    {
+     "n": 130,
+     "sam_ch_number": 130,
+     "file": "/static/audio/readings/b1-p10-c130.mp3",
+     "duration": 85.58,
+     "src_start": 0,
+     "src_end": 85.58,
+     "portion": {
+      "order": 10,
+      "id": 10,
+      "name": "ואלה תולדת"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1220,
+     "verses": "כח:טז-כח:כב",
+     "verses_num": "28:16-28:22",
+     "verse_count": 7,
+     "incipit": "ויקץ יעקב משנתו: ויאמר:",
+     "name": "בראשית - ואלה תולדת - 130"
     }
    ],
    "playlist": "PLl-48IEqLtlvJnnKIAnuqiWowkyJMGVEd",
