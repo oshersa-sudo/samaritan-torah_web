@@ -36,7 +36,7 @@ def chapter_meta(sam_num):
         "incipit": u" ".join((t1[0] if t1 else u"").split()[:4]),
     }
 
-RANGE = range(102, 114)  # 102-113 inclusive
+RANGE = range(92, 102)  # 92-101 inclusive
 
 rd_path = os.path.join(TORAH, "web", "static", "audio", "readings", "readings.json")
 rd = json.load(io.open(rd_path, encoding="utf-8"))
