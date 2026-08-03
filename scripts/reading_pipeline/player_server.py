@@ -375,8 +375,8 @@ def redownload_split(payload):
         tmp = Path(tmp)
 
         if re.match(r"^https?://", source, re.I):
-            run([sys.executable, "-m", "yt_dlp", "--js-runtimes", "node", "-x", "--audio-format", "mp3",
-                 "-o", str(tmp / "src.%(ext)s"), source])
+            run([sys.executable, "-m", "yt_dlp", "--no-playlist", "--js-runtimes", "node",
+                 "-x", "--audio-format", "mp3", "-o", str(tmp / "src.%(ext)s"), source])
             found = list(tmp.glob("src.*"))
             if not found:
                 raise RuntimeError("yt-dlp produced no output file for: {}".format(source))
