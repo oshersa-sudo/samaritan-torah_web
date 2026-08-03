@@ -18,6 +18,13 @@ two live actions instead of the old "export JSON -> tell Claude" workflow:
       git add -A the readings/witnesses paths, commit, push private
       web-deploy:main. Returns the git output so the player can show it.
 
+  GET  /api/sync_status?book_id=1&reader=meir
+      {synced: {n: bool}} - for every chapter the given reader (meir or a
+      witness name) currently has locally, compares its recording segment
+      (duration+verses_num+filename, or exact segs for a witness) against
+      the LIVE deployed readings.json/witnesses.json for that SAME chapter
+      number. Drives the red/green light per chapter in the grid.
+
   POST /api/redownload_split
       Body: {source, book_id, portion_order}. source is a URL (yt-dlp
       download) or a local file path. Re-runs the ORIGINAL auto-split
@@ -85,6 +92,53 @@ def cloud_divisions(book_id):
                 "sam_ch_id": c["id"],
             }
     return {"portions": portions, "chapters": chapters}
+
+
+def _same_segment(a, b):
+    """Is the recording SEGMENT for a sam_ch_number identical between two
+    manifest entries? duration + verses_num + filename together are a good
+    proxy for 'same audio content, same chapter identity' without needing
+    to byte-compare the mp3s themselves."""
+    return (
+        round(float(a.get("duration", 0)), 2) == round(float(b.get("duration", 0)), 2)
+        and a.get("verses_num") == b.get("verses_num")
+        and Path(a.get("file", "")).name == Path(b.get("file", "")).name
+    )
+
+
+def sync_status(book_id, reader):
+    """{n: bool} - for every chapter this reader currently has locally, is
+    its recording segment identical to what's live on the deployed site
+    right now? Used for the per-chapter red/green sync light in the grid."""
+    if reader == "meir":
+        live_rd = cloud_get("/static/audio/readings/readings.json")
+        live_b = next((b for b in live_rd["books"] if b["book_id"] == book_id), None)
+        live_by_n = {c["n"]: c for c in (live_b["chapters"] if live_b else [])}
+
+        local_rd = json.loads(READINGS_JSON.read_text(encoding="utf-8"))
+        local_b = next((b for b in local_rd["books"] if b["book_id"] == book_id), None)
+        local_chapters = local_b["chapters"] if local_b else []
+
+        result = {}
+        for c in local_chapters:
+            lv = live_by_n.get(c["n"])
+            result[c["n"]] = bool(lv) and _same_segment(c, lv)
+        return {"synced": result}
+
+    live_wt = cloud_get("/static/audio/witnesses.json")
+    live_by_key = {}
+    for it in live_wt["items"]:
+        live_by_key.setdefault((it["reader"], it["book_id"]), {})[it["sam_ch_number"]] = it
+
+    local_wt = json.loads(WITNESSES_JSON.read_text(encoding="utf-8"))
+    live_for_reader = live_by_key.get((reader, book_id), {})
+    result = {}
+    for it in local_wt["items"]:
+        if it["reader"] != reader or it["book_id"] != book_id:
+            continue
+        lv = live_for_reader.get(it["sam_ch_number"])
+        result[it["sam_ch_number"]] = bool(lv) and it.get("segs") == lv.get("segs")
+    return {"synced": result}
 
 
 # ───────────────────────── DB verse-metadata helpers ─────────────────────────
@@ -505,6 +559,16 @@ class Handler(BaseHTTPRequestHandler):
             book_id = int(qs.get("book_id", ["1"])[0])
             try:
                 self._send_json(cloud_divisions(book_id))
+            except Exception as e:
+                self._send_json({"error": str(e)}, 500)
+            return
+
+        if parsed.path == "/api/sync_status":
+            qs = urllib.parse.parse_qs(parsed.query)
+            book_id = int(qs.get("book_id", ["1"])[0])
+            reader = qs.get("reader", ["meir"])[0]
+            try:
+                self._send_json(sync_status(book_id, reader))
             except Exception as e:
                 self._send_json({"error": str(e)}, 500)
             return

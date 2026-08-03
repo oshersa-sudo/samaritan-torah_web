@@ -99,6 +99,12 @@ button:disabled { opacity: .35; cursor: default; }
 .chb.sel small { color: #cfe3f5; }
 .chb.edited::after { content: ""; position: absolute; top: 3px; left: 4px; width: 8px; height: 8px;
                      border-radius: 50%; background: #e07b00; }
+.chb .syncdot { position: absolute; top: 3px; right: 4px; width: 8px; height: 8px; border-radius: 50%;
+                background: #ccc; box-shadow: 0 0 0 1px rgba(0,0,0,.15) inset; }
+.chb .syncdot.ok { background: #2ecc40; }
+.chb .syncdot.bad { background: #e74c3c; }
+#syncLegend { font-size: 11px; color: #666; display: flex; align-items: center; gap: 5px; }
+#syncLegend .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 
 .editor { background: #fff; border: 2px solid #06529b; border-radius: 10px; padding: 14px; margin-bottom: 40px; }
 .editor h2 { font-size: 16px; margin: 0 0 2px; }
@@ -148,6 +154,9 @@ button:disabled { opacity: .35; cursor: default; }
     </select>
   </label>
   <span id="stat"></span>
+  <span id="syncLegend"><span class="dot" style="background:#2ecc40"></span>מסונכרן
+    <span class="dot" style="background:#e74c3c"></span>לא מסונכרן
+    <button onclick="fetchSyncStatus()" style="padding:2px 7px;font-size:11px">🔄 בדוק</button></span>
   <span style="flex:1"></span>
   <button class="blu" id="cloudDivBtn">🔄 סנכרן חלוקות מהענן</button>
   <button class="grn" id="exportBtn">📋 ייצוא תיקונים</button>
@@ -418,7 +427,7 @@ function initSelectors() {
     var o = document.createElement('option');
     o.value = b; o.textContent = BOOK_NAMES[b]; $('bookSel').appendChild(o);
   }
-  $('bookSel').onchange = function () { book = parseInt(this.value); G = null; stopAll(); renderAll(); };
+  $('bookSel').onchange = function () { book = parseInt(this.value); G = null; stopAll(); renderAll(); fetchSyncStatus(); };
   var o0 = document.createElement('option');
   o0.value = 'meir'; o0.textContent = MEIR + ' — הקורא הראשי';
   $('readerSel').appendChild(o0);
@@ -427,7 +436,31 @@ function initSelectors() {
     o.value = r.name; o.textContent = r.name + (r.years ? ' (' + r.years + ')' : '');
     $('readerSel').appendChild(o);
   });
-  $('readerSel').onchange = function () { reader = this.value; G = null; stopAll(); renderAll(); };
+  $('readerSel').onchange = function () { reader = this.value; G = null; stopAll(); renderAll(); fetchSyncStatus(); };
+}
+
+/* ================= sync-status lights (local vs live, per chapter) ================= */
+var syncStatus = {};        /* n -> true(green)/false(red); absent = unknown (grey) */
+var syncFetchSeq = 0;
+function fetchSyncStatus() {
+  var seq = ++syncFetchSeq;
+  var el = $('syncLegend'); if (el) el.textContent = 'בודק סנכרון מול הענן…';
+  fetch(SERVER + '/api/sync_status?book_id=' + book + '&reader=' + encodeURIComponent(reader))
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (seq !== syncFetchSeq) return;   /* a newer request superseded this one */
+      if (res.error) throw new Error(res.error);
+      syncStatus = res.synced || {};
+      renderGrid();
+      var vals = Object.keys(syncStatus).map(function (k) { return syncStatus[k]; });
+      var ok = vals.filter(Boolean).length;
+      if (el) el.textContent = 'סנכרון: ' + ok + '/' + vals.length + ' פרקים תואמים לענן';
+    })
+    .catch(function (e) {
+      if (seq !== syncFetchSeq) return;
+      syncStatus = {}; renderGrid();
+      if (el) el.textContent = 'לא ניתן לבדוק סנכרון (' + e.message + ')';
+    });
 }
 function witChapterFile(n) {
   var wb = (D.wit[String(book)] || {})[reader];
@@ -454,7 +487,11 @@ function renderGrid() {
     var has = reader === 'meir' ? true : !!witChapterFile(c.n);
     var b = document.createElement('button');
     b.className = 'chb' + (has ? '' : ' off') + (curSet[c.n] ? ' sel' : '') + (has && groupHasEdits(c.n) ? ' edited' : '');
-    b.innerHTML = c.n + '<small>' + (c.verses || '') + '</small>';
+    var dotClass = has && syncStatus.hasOwnProperty(c.n) ? (syncStatus[c.n] ? ' ok' : ' bad') : '';
+    b.innerHTML = (has ? '<span class="syncdot' + dotClass + '" title="' +
+                    (dotClass === ' ok' ? 'מסונכרן עם הענן' : dotClass === ' bad' ? 'לא מסונכרן עם הענן' : 'סטטוס סנכרון לא ידוע') +
+                    '"></span>' : '') +
+                  c.n + '<small>' + (c.verses || '') + '</small>';
     b.disabled = !has;
     b.onclick = function () { openChapter(c.n); };
     g.appendChild(b);
@@ -564,7 +601,8 @@ function pushToCloud() {
     .then(function (res) {
       if (!res.ok) throw new Error(res.error || 'push failed');
       if (!res.result.pushed) { setStatus('אין שינויים לדחוף.'); return; }
-      setStatus('✓ נדחף לענן בהצלחה. הפריסה תעלה תוך כמה דקות.');
+      setStatus('✓ נדחף לענן בהצלחה. הפריסה (Render) לוקחת כמה דקות — הנורות יתעדכנו אוטומטית.');
+      setTimeout(fetchSyncStatus, 120000);   /* deploy usually lands within ~2 min */
     })
     .catch(function (e) { setStatus('שגיאה בדחיפה: ' + e.message); });
 }
@@ -748,6 +786,7 @@ function renderAll() { renderGrid(); renderEditor(); }
 initSelectors();
 renderAll();
 pingServer();
+fetchSyncStatus();
 setInterval(pingServer, 15000);
 </script>
 </body>
