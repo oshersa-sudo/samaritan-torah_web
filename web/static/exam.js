@@ -706,16 +706,16 @@ const speakHe = text => {
 const VOICE_PROFILES={
   dana:   {name:"הַמּוֹרָה דָּנָה",   role:"מקבלת אותך ומנחה",   emoji:"👩‍🏫", tone:"נשי", lang:"he-IL", pitch:1.25, rate:0.98,
            grad:"linear-gradient(150deg,#fde68a,#f59e0b)", shadow:"#b45309",
-           hello:"שלום! אני המורה דנה, ואני כאן ללוות אותך. בוא נתחיל 😊"},
+           hello:"שלום! אני המורה דנה, ואני כאן ללוות אותך. בואו נתחיל 😊"},
   math:   {name:"פְּרוֹפֶסוֹר חֶשְׁבּוֹן", role:"מלווה אותך בחשבון", emoji:"👨‍🏫", tone:"גברי", lang:"he-IL", pitch:0.8, rate:0.92,
            grad:"linear-gradient(150deg,#fda4af,#e11d48)", shadow:"#be123c",
-           hello:"שלום, אני פרופסור חשבון. מספרים זה כיף — בוא נראה!"},
+           hello:"שלום, אני פרופסור חשבון. מספרים זה כיף — בואו נראה!"},
   english:{name:"פְרוֹגִי הַצְּפַרְדֵּעַ", role:"מלווה אותך באנגלית", emoji:"🐸", tone:"גבוה ומצחיק", lang:"en-US", pitch:1.6, rate:1.05,
            grad:"linear-gradient(150deg,#7dd3fc,#0284c7)", shadow:"#0369a1",
            hello:"Hi! I'm Froggy. Let's learn English together, ribbit!"},
   hebrew: {name:"אוּפִּי הַיַּנְשׁוּף",  role:"מלווה אותך בעברית", emoji:"🦉", tone:"עמוק ואיטי", lang:"he-IL", pitch:0.7, rate:0.85,
            grad:"linear-gradient(150deg,#a78bfa,#7c3aed)", shadow:"#6d28d9",
-           hello:"שָׁלוֹם, אֲנִי אוּפִּי הַיַּנְשׁוּף. בּוֹא נִלְמַד עִבְרִית יַחַד."},
+           hello:"שָׁלוֹם, אֲנִי אוּפִּי הַיַּנְשׁוּף. בּוֹאוּ נִלְמַד עִבְרִית יַחַד."},
   science:{name:"נִיבִּי הַחוֹקֶרֶת",   role:"מלווה אותך בטבע ומדע", emoji:"🦎", tone:"סקרני ונמרץ", lang:"he-IL", pitch:1.1, rate:0.95,
            grad:"linear-gradient(150deg,#6ee7b7,#059669)", shadow:"#047857",
            hello:"שָׁלוֹם, אֲנִי נִיבִּי הַחוֹקֶרֶת. בּוֹאוּ נְגַלֶּה אֶת סוֹדוֹת הַטֶּבַע!"},
@@ -1953,7 +1953,7 @@ function gotoNext(cur){
 // screens whose answers are 4 tappable options → show the "keys 1–4" tip and
 // wire number-key answering. (p4 = free-text describe, so it is excluded.)
 const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma6","ma3","ma4","sv","sw","sq","sr","tv","tw","tq","tr","lp","lf","ln"]);
-const ENCOURAGE=["אני איתך! נסה לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
+const ENCOURAGE=["אני איתך! נסה/י לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
 function gameMascotFrame(){
   const m=curSubject().mascot||"🦉";
   const line=ENCOURAGE[Math.floor(Math.random()*ENCOURAGE.length)];
