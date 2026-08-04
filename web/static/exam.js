@@ -2593,17 +2593,42 @@ function _addLine(svg,x1,y1,x2,y2,cls){
 // ─── Part 5: Word ↔ Meaning matching ──────────────────────
 function matchState(){return {pairs:M.pairs,leftOrder:M.leftOrder,rightOrder:M.rightOrder,solved:[...M.solved],left:TM.left};}
 
+// The board must never contain two identical words OR two identical meanings:
+// duplicates (e.g. both "געגוע" and "ערגה" defined as "כיסופים") render two
+// identical right-hand cards, and the pair the child correctly picks is then
+// rejected — leaving items that look matchable but can't be solved.
+function dedupePairs(pairs){
+  const w=new Set(), h=new Set(), out=[];
+  for(const p of pairs||[]){
+    const kw=String(p.w||"").trim(), kh=String(p.h||"").trim();
+    if(!kw||!kh||w.has(kw)||h.has(kh))continue;
+    w.add(kw);h.add(kh);out.push(p);
+  }
+  return out;
+}
+const _mDef=p=>String((p&&p.h)||"").trim();
+// a right-hand card counts as solved when some solved left item carries the
+// same meaning (compare by VALUE, never by index)
+function rightSolvedJ(j){
+  const t=_mDef(M.pairs[M.rightOrder[j]]);
+  return [...M.solved].some(i=>_mDef(M.pairs[M.leftOrder[i]])===t);
+}
+function selectLeft(i){
+  M.sel=(M.sel===i)?null:i;
+  document.querySelectorAll(".mitem").forEach(b=>b.classList.toggle("sel",+b.dataset.i===M.sel));
+}
+
 function initMatch(){
   const saved=S.prog.match,lvl=curLevel();
   if(saved&&saved.pairs){M.pairs=saved.pairs;M.leftOrder=saved.leftOrder;M.rightOrder=saved.rightOrder;M.solved=new Set(saved.solved||[]);}
   else{
-    const pool=nearLevel(VOCAB,lvl,QUOTA.match).filter(x=>x.h);
-    M.pairs=pickFresh(pool,"match:en",QUOTA.match,x=>x.w).map(x=>({w:x.w,h:x.h}));
+    const pool=nearLevel(VOCAB,lvl,QUOTA.match+6).filter(x=>x.h);
+    M.pairs=dedupePairs(pickFresh(pool,"match:en",QUOTA.match+6,x=>x.w).map(x=>({w:x.w,h:x.h}))).slice(0,QUOTA.match);
     M.leftOrder=shuffle(M.pairs.map((_,k)=>k));
     M.rightOrder=shuffle(M.pairs.map((_,k)=>k));
     M.solved=new Set();
   }
-  M.dragging=false;M.dragI=null;
+  M.dragging=false;M.dragI=null;M.sel=null;
   setPartCount((M.pairs||[]).length);
   renderMatch();
   TM.start(saved?.left??TIME[S.screen==="hb"?"hb":"match"],TIME[S.screen==="hb"?"hb":"match"],()=>gotoNext(S.screen));
@@ -2615,13 +2640,13 @@ function initHebMatch(){
   if(saved&&saved.pairs){M.pairs=saved.pairs;M.leftOrder=saved.leftOrder;M.rightOrder=saved.rightOrder;M.solved=new Set(saved.solved||[]);}
   else{
     const src=HEB_VOCAB.length?HEB_VOCAB:[{w:"בית",d:"מקום מגורים",lvl:1},{w:"שמח",d:"מרוצה",lvl:1},{w:"גדול",d:"רב־ממדים",lvl:1},{w:"מהיר",d:"זריז",lvl:2},{w:"יפה",d:"נאה",lvl:2},{w:"חכם",d:"נבון",lvl:2},{w:"קר",d:"צונן",lvl:1},{w:"חזק",d:"איתן",lvl:2}];
-    const pool=nearLevel(src.filter(x=>x.d),lvl,n);
-    M.pairs=pickFresh(pool,"match:he",n,x=>x.w).map(x=>({w:x.w,h:x.d}));
+    const pool=nearLevel(src.filter(x=>x.d),lvl,n+6);
+    M.pairs=dedupePairs(pickFresh(pool,"match:he",n+6,x=>x.w).map(x=>({w:x.w,h:x.d}))).slice(0,n);
     M.leftOrder=shuffle(M.pairs.map((_,k)=>k));
     M.rightOrder=shuffle(M.pairs.map((_,k)=>k));
     M.solved=new Set();
   }
-  M.dragging=false;M.dragI=null;
+  M.dragging=false;M.dragI=null;M.sel=null;
   setPartCount((M.pairs||[]).length);
   renderMatch();
   TM.start(saved?.left??TIME.hb,TIME.hb,()=>gotoNext(S.screen));
@@ -2634,20 +2659,27 @@ function renderMatch(){
   const wDisp=p=>heb?nqW(p.w):p.w;                 // Hebrew words get niqqud (young)
   const hDisp=p=>heb?nqD(p.w,p.h):p.h;
   L.innerHTML=M.leftOrder.map((pi,i)=>
-    `<button class="mitem${M.solved.has(i)?" solved":""}" data-i="${i}" dir="${heb?"rtl":"ltr"}"><span>${esc(wDisp(M.pairs[pi]))}</span><i class="dot dot-r"></i></button>`).join("");
-  Rr.innerHTML=M.rightOrder.map((pi,j)=>{
-    const solvedJ=[...M.solved].some(i=>M.leftOrder[i]===M.rightOrder[j]);
-    return `<button class="ritem${solvedJ?" solved":""}" data-j="${j}"><i class="dot dot-l"></i><span>${esc(hDisp(M.pairs[pi]))}</span></button>`;
-  }).join("");
+    `<button class="mitem${M.solved.has(i)?" solved":""}${M.sel===i?" sel":""}" data-i="${i}" dir="${heb?"rtl":"ltr"}"><span>${esc(wDisp(M.pairs[pi]))}</span><i class="dot dot-r"></i></button>`).join("");
+  Rr.innerHTML=M.rightOrder.map((pi,j)=>
+    `<button class="ritem${rightSolvedJ(j)?" solved":""}" data-j="${j}"><i class="dot dot-l"></i><span>${esc(hDisp(M.pairs[pi]))}</span></button>`).join("");
   updateMatchCtr();
   const wrap=document.getElementById("match-wrap"),svg=document.getElementById("match-svg");
   [...svg.querySelectorAll(".match-line")].forEach(l=>l.remove());
   requestAnimationFrame(()=>{
+    const used=new Set();
     [...M.solved].forEach(i=>{
-      const j=M.rightOrder.findIndex(pi=>pi===M.leftOrder[i]);
-      if(j>=0)drawMatchLine(i,j);
+      const t=_mDef(M.pairs[M.leftOrder[i]]);
+      const j=M.rightOrder.findIndex((pi,jj)=>!used.has(jj)&&_mDef(M.pairs[pi])===t);
+      if(j>=0){used.add(j);drawMatchLine(i,j);}
     });
   });
+  // Tap-to-select: tap a word, then tap its meaning. Works alongside dragging
+  // and, unlike dragging, leaves vertical scrolling to the page.
+  const tapGuard=()=>{ if(wrap._moved){wrap._moved=false;return true;} return false; };
+  L.onclick=e=>{const b=e.target.closest(".mitem");if(!b||b.classList.contains("solved")||tapGuard())return;selectLeft(+b.dataset.i);};
+  Rr.onclick=e=>{const b=e.target.closest(".ritem");if(!b||b.classList.contains("solved")||tapGuard())return;
+    if(M.sel==null){showToast("info","קודם בחר/י מילה מימין ✋");return;}
+    attemptMatch(M.sel,+b.dataset.j);};
   bindDrag(wrap,svg,"match-temp",".mitem",".ritem",
     (li)=>_ptOf(svg,li,"r"),
     (from,to)=>attemptMatch(+from.dataset.i,+to.dataset.j),
@@ -2665,8 +2697,13 @@ function drawMatchLine(i,j){
 }
 
 function attemptMatch(i,j){
-  if(M.solved.has(i))return;
-  if(M.leftOrder[i]===M.rightOrder[j]){
+  if(M.solved.has(i)||rightSolvedJ(j))return;
+  // compare the MEANINGS, not the indices, so an answer that is visibly correct
+  // is always accepted
+  const ok=_mDef(M.pairs[M.leftOrder[i]])===_mDef(M.pairs[M.rightOrder[j]]);
+  M.sel=null;
+  document.querySelectorAll(".mitem.sel").forEach(b=>b.classList.remove("sel"));
+  if(ok){
     M.solved.add(i);
     document.querySelector(`.mitem[data-i="${i}"]`)?.classList.add("solved");
     document.querySelector(`.ritem[data-j="${j}"]`)?.classList.add("solved");
@@ -2771,15 +2808,17 @@ function bindDrag(wrap,svg,tempId,fromSel,toSel,ptFn,onConnect,isDragging,setDra
   wrap.onpointerdown=e=>{
     const from=e.target.closest(fromSel);
     if(!from||from.classList.contains("solved"))return;
-    wrap._from=from;setDragging(true);
+    wrap._from=from;wrap._moved=false;wrap._x0=e.clientX;wrap._y0=e.clientY;setDragging(true);
     const a=ptFn(from);
     temp.setAttribute("x1",a.x);temp.setAttribute("y1",a.y);
     temp.setAttribute("x2",a.x);temp.setAttribute("y2",a.y);temp.style.display="";
     try{wrap.setPointerCapture(e.pointerId);}catch(_){}
-    e.preventDefault();
+    // NOTE: no preventDefault here — it would also cancel the page's vertical
+    // scrolling. touch-action (CSS) already reserves horizontal drags for us.
   };
   wrap.onpointermove=e=>{
     if(!isDragging())return;
+    if(Math.abs(e.clientX-(wrap._x0||0))>6||Math.abs(e.clientY-(wrap._y0||0))>6)wrap._moved=true;
     const sr=svg.getBoundingClientRect();
     temp.setAttribute("x2",e.clientX-sr.left);temp.setAttribute("y2",e.clientY-sr.top);
   };

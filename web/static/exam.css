@@ -418,7 +418,9 @@ body {
   padding: 8px 4px;
   background: linear-gradient(135deg,#FFF6E9 0%,#EAF6FF 50%,#F3EEFF 100%);
   border-radius: 18px;
-  touch-action: none;
+  /* pan-y keeps vertical scrolling with the page (the board can be taller than
+     the screen) while still reserving horizontal drags for connecting pairs */
+  touch-action: pan-y;
 }
 .match-svg {
   position: absolute;
@@ -460,6 +462,8 @@ body {
 .ritem { justify-content: flex-end; font-family: Rubik, sans-serif; font-weight: 500; }
 .mitem span, .ritem span { flex: 1; }
 .mitem:hover, .ritem:hover { border-color: #6C5CE7; transform: translateY(-1px); }
+/* tap-to-select: the chosen word stays highlighted until its meaning is tapped */
+.mitem.sel { border-color: #6C5CE7; background: #F3EEFF; box-shadow: 0 0 0 3px rgba(108,92,231,.18); }
 .mitem.solved, .ritem.solved {
   border-color: #3FBF6F;
   background: #EDFBF1;
