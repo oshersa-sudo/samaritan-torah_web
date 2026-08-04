@@ -304,7 +304,15 @@ function pickFresh(pool,kind,n,idFn){
   return chosen;
 }
 const pickFreshOne=(pool,kind,idFn)=>pickFresh(pool,kind,1,idFn)[0];
-const grade  = c => Math.round((c/subjTotal())*100);
+// Grade denominator = the number of questions ACTUALLY served in this test
+// (summed per part as each part builds), so every test scales to 100 by its own
+// size — a single part, or a part whose pool is smaller than its quota, can
+// still reach 100. Falls back to the full-subject quota until a part registers.
+function askedTotal(){ try{ const s=Object.values(S.partCounts||{}).reduce((a,b)=>a+(b||0),0); return s||subjTotal(); }catch(e){ return subjTotal(); } }
+// record how many questions the current part serves (idempotent per screen, so
+// resume re-registers the same value instead of double-counting)
+function setPartCount(n){ try{ (S.partCounts=S.partCounts||{})[S.screen]=Math.max(0,n|0); }catch(e){} }
+const grade  = c => Math.round((c/Math.max(1,askedTotal()))*100);
 const fmtDate= t => new Date(t).toLocaleDateString("he-IL",{day:"2-digit",month:"2-digit",year:"2-digit"});
 
 // ─── Settings (parents area toggles — actually control the app) ──────────────
@@ -728,7 +736,7 @@ const sSet = (k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const sDel = k=>{try{localStorage.removeItem(k);}catch(e){}};
 
 // ─── Global State ─────────────────────────────────────────
-const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null,avatar:"🦊",answerLog:[]};
+const S = {screen:"login",name:"",phone:"",age:9,score:0,seen:[],history:[],found:null,busy:false,prog:{},subject:"english",parentCode:"",lastGain:null,avatar:"🦊",answerLog:[],partCounts:{}};
 const AVATARS=["🦊","🐼","🦁","🐧","🐨","🦄","🐯","🐸","🐵","🐶","🐱","🐰","🐷","🐥","🐢","🦉"];
 
 // ─── Realistic pictures (kid-safe, optional) ─────────────────────────────────
@@ -1511,6 +1519,7 @@ function initHebMC(){
     HM.i=0;
   }
   HM.picked=false;
+  setPartCount(HM.qs.length);
   renderHebMCQ();
   TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
@@ -1586,6 +1595,7 @@ function initSciQuiz(){
     SQ.i=0;
   }
   SQ.picked=false; SQ.scr=scr;
+  setPartCount(SQ.qs.length);
   renderSciQ();
   TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
@@ -1657,6 +1667,7 @@ function initHebLex(){
     HL.i=0;
   }
   HL.picked=false;
+  setPartCount(HL.qs.length);
   renderHebLexQ();
   TM.start(saved?.left??t,t,()=>gotoNext("hs"));
 }
@@ -1666,7 +1677,7 @@ function renderHebLexQ(){
   const le=document.getElementById("hl-lead");
   if(le)le.textContent = q.type==="ant" ? "איזו מילה הפוכה במשמעות?" : "איזו מילה קרובה במשמעות?";
   document.getElementById("q-ctr").textContent=`${HL.i+1}/${HL.qs.length}`;
-  document.getElementById("hl-prompt").innerHTML=`<span dir="rtl">${q.type==="ant"?"הֵפֶךְ של ":"נרדף ל־"}<b>${esc(dw)}</b></span>`;
+  document.getElementById("hl-prompt").innerHTML=`<span dir="rtl">${q.type==="ant"?"הַהֵפֶךְ מ־":"נִרְדֶּפֶת ל־"}<b>${esc(dw)}</b></span>`;
   const sp=document.getElementById("hl-speak"); if(sp)sp.onclick=()=>speakHe(dw);
   document.getElementById("q-opts").innerHTML=q.o.map(o=>{
     const disp=young?(q.disp[o]||o):o;
@@ -1678,7 +1689,7 @@ function renderHebLexQ(){
 function handleHebLex(val){
   if(HL.picked)return;HL.picked=true;
   const q=HL.qs[HL.i],correct=val===q.a;
-  logAns("lex",(q.type==="ant"?"הפך של ":"נרדף ל־")+q.w,val,q.a,correct);
+  logAns("lex",(q.type==="ant"?"ההיפך מ־":"נרדפת ל־")+q.w,val,q.a,correct);
   if(correct){addScore(1);SFX.good();}else{SFX.bad();recordMiss({w:q.w,d:q.a,kind:"he"});}
   document.querySelectorAll("#q-opts .opt").forEach(b=>{
     const bv=b.dataset.val,mk=b.querySelector(".mark");
@@ -1769,6 +1780,7 @@ function initWordGame(){
     WG.i=0;
   }
   WG.picked=false;
+  setPartCount(WG.qs.length);
   renderWordGame();
   TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
@@ -1902,7 +1914,7 @@ function doneHTML(){
   <div class="done-mascot">${mascot}</div>
   <div class="stars">${stars}</div>
   <h1 class="done-title">כל הכבוד!</h1>
-  <p class="sub">${msg} ${S.score} תשובות נכונות מתוך ${subjTotal()}.</p>
+  <p class="sub">${msg} ${S.score} תשובות נכונות מתוך ${askedTotal()}.</p>
   <div class="done-stats">
     <div class="dstat"><span class="dstat-ic">🪙</span><b>+${lg.coinGain}</b><small>מטבעות</small></div>
     <div class="dstat"><span class="dstat-ic">🎯</span><b>${g}%</b><small>דיוק</small></div>
@@ -2161,7 +2173,7 @@ function saveSession(){
   // to "resume" a menu). doPause/doHome save the part progress first, then
   // switch screens; this guard keeps that saved part intact.
   if(!S.phone||!curOrder().includes(S.screen))return;
-  sSet(K.session(S.phone),{name:S.name,age:S.age,score:S.score,screen:S.screen,subject:S.subject,prog:S.prog,t:Date.now()});
+  sSet(K.session(S.phone),{name:S.name,age:S.age,score:S.score,screen:S.screen,subject:S.subject,prog:S.prog,partCounts:S.partCounts,t:Date.now()});
 }
 function commitProg(slice){S.prog={...S.prog,...slice};saveSession();}
 // Record one answered question so a parent can later review exactly what was
@@ -2178,7 +2190,7 @@ function logAns(part,prompt,chosen,answer,ok){
 // Begin a brand-new test: clear score/progress and the per-question log, and
 // reset the active-time stopwatch so this test's duration starts at zero.
 function startFreshTest(){
-  S.score=0;S.prog={};S.answerLog=[];
+  S.score=0;S.prog={};S.answerLog=[];S.partCounts={};
   try{TT.sess=0;}catch(e){}
   try{childPushEnsure(true);}catch(e){}   // this tap is a good moment to enable reminders
 }
@@ -2237,6 +2249,7 @@ function initVocab(){
     V.round=shuffle(src).slice(0,QUOTA.vocab).map(x=>x.w);V.i=0;
   }
   V.picked=null;
+  setPartCount(V.round.length);
   renderVQ();
   TM.start(saved?.left??TIME.vocab,TIME.vocab,onVocabDone);
 }
@@ -2322,6 +2335,7 @@ function initCloze(){
   C.used  =saved?.used??[];
   C.sel=null;C.num="";C.sheetN=null;
   document.getElementById("cloze-ttl").textContent=C.item.title;
+  setPartCount((C.item.answers||[]).length);
   refreshCS();refreshCB();
   document.getElementById("cloze-placer").innerHTML="";
   const sh=document.getElementById("cloze-sheet");if(sh)sh.innerHTML="";
@@ -2460,6 +2474,7 @@ function initReading(){
   R.reading=saved?.qi?false:true;
   R.picked =null;
   document.getElementById("story-ttl").textContent=R.story.title;
+  setPartCount((R.qIdx||[]).length);
   refreshRV();
   const rt=TIME[heRead?S.screen:"reading"];
   TM.start(saved?.left??rt,rt,()=>gotoNext(S.screen));
@@ -2525,6 +2540,7 @@ function initDescribe(){
   const saved=S.prog.pics;
   D.idxs=saved?.idxs??shuffle(PICTURES.map((_,k)=>k)).slice(0,QUOTA.pics);
   D.i=saved?.i??0;D.locked=false;
+  setPartCount((D.idxs||[]).length);
   renderDI();
   TM.start(saved?.left??TIME.pics,TIME.pics,()=>gotoNext("p4"));
 }
@@ -2588,6 +2604,7 @@ function initMatch(){
     M.solved=new Set();
   }
   M.dragging=false;M.dragI=null;
+  setPartCount((M.pairs||[]).length);
   renderMatch();
   TM.start(saved?.left??TIME[S.screen==="hb"?"hb":"match"],TIME[S.screen==="hb"?"hb":"match"],()=>gotoNext(S.screen));
 }
@@ -2605,6 +2622,7 @@ function initHebMatch(){
     M.solved=new Set();
   }
   M.dragging=false;M.dragI=null;
+  setPartCount((M.pairs||[]).length);
   renderMatch();
   TM.start(saved?.left??TIME.hb,TIME.hb,()=>gotoNext(S.screen));
 }
@@ -2683,6 +2701,7 @@ function initBalloons(){
     B.solved=new Set();
   }
   B.dragging=false;B.dragI=null;
+  setPartCount((B.pairs||[]).length);
   renderBalloons();
   TM.start(saved?.left??TIME.balloons,TIME.balloons,()=>gotoNext("p6"));
 }
@@ -2941,6 +2960,7 @@ function initMath(){
   if(saved&&saved.qs){MA.qs=saved.qs;MA.i=saved.i||0;}
   else{MA.qs=Array.from({length:n},()=>_genMathQ(lvl,cfg.type));MA.i=0;}
   MA.picked=false;
+  setPartCount(MA.qs.length);
   renderMathQ();
   TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
@@ -3089,6 +3109,7 @@ function doResume(){
   const f=S.found;
   S.name=f.name||S.name;S.age=f.age||S.age;S.score=f.score||0;
   S.subject=f.subject||"english";
+  S.partCounts=f.partCounts||{};
   S.prog=f.prog||{};S.screen=f.screen;S.found=null;render();
 }
 
@@ -3135,7 +3156,7 @@ function finish(){
   const dur=Math.max(0,Math.round(TT.sess||0));
   const detail=Array.isArray(S.answerLog)?S.answerLog.slice(0,80):[];
   // keep dur/detail only on the synced copy — local history stays lean
-  const rec={t:Date.now(),name:S.name,subject:S.subject,lvl:levelForAge(S.age),correct:S.score,total:subjTotal(),g};
+  const rec={t:Date.now(),name:S.name,subject:S.subject,lvl:levelForAge(S.age),correct:S.score,total:askedTotal(),g};
   S.history=[rec,...S.history].slice(0,30);
   sSet(K.results(S.phone),S.history);sDel(K.session(S.phone));
   syncResult({...rec,dur,detail});
