@@ -286,6 +286,10 @@ const shuffle = a => {
 const levelForAge = age => Math.max(1,Math.min(MAX_LVL,(+age||6)-5));
 // adaptive difficulty: starts at the student's grade, nudges ±1 by part accuracy
 function curLevel(){ return Math.max(1,Math.min(MAX_LVL, S.adaptLvl||levelForAge(S.age))); }
+// Some generators were tuned against the old five-band scale. Map a school
+// grade back onto those five difficulty tiers so their calibration still holds:
+// tier1 = א׳–ב׳, tier2 = ג׳–ד׳, tier3 = ה׳–ו׳, tier4 = חטיבה, tier5 = תיכון.
+const gradeTier = g => g<=2?1 : g<=4?2 : g<=6?3 : g<=9?4 : 5;
 const nearLevel = (items,lvl,min=6) => {
   let out=items.filter(i=>i.lvl===lvl),span=1;
   while(out.length<min&&span<MAX_LVL){out=items.filter(i=>Math.abs(i.lvl-lvl)<=span);span++;}
@@ -879,7 +883,7 @@ const LASHON_QUIZ   = (typeof window!=="undefined" && Array.isArray(window.LASHO
 // Israeli Ministry of Education curriculum map (from curriculum.js)
 const CURRICULUM = (typeof window!=="undefined" && window.CURRICULUM) ? window.CURRICULUM : null;
 // the curriculum grade (1–6) that matches the student's current level
-function curGrade(){ return Math.max(1,Math.min(6, S.subject==="english" ? Math.max(3,curLevel()+2) : (curLevel()<=3?curLevel()*2:curLevel()+2))); }
+function curGrade(){ return Math.max(1,Math.min(6, S.subject==="english" ? Math.max(3,curLevel()) : curLevel())); }
 // build the "aligned to the curriculum" card for the current subject
 function curriculumCardHTML(){
   if(!CURRICULUM||!CURRICULUM[S.subject])return "";
@@ -906,7 +910,7 @@ const TORAH_NQ_WORDS = (()=>{const m={};for(const x of TORAH_VOCAB) if(x.w&&x.wn
 // which vocab pool the current subject draws from
 function subjVocab(){ return S.subject==="science" ? SCI_VOCAB : S.subject==="torah" ? TORAH_VOCAB : HEB_VOCAB; }
 // young reader (grades א–ד) in a niqqud-bearing subject → show vowel points
-function youngHeb(){ return (S.subject==="hebrew"||S.subject==="science"||S.subject==="torah") && curLevel()<=2; }
+function youngHeb(){ return (S.subject==="hebrew"||S.subject==="science"||S.subject==="torah") && curLevel()<=4; }
 function nqLookup(w){ return HEB_NQ.words[w] || SCI_NQ_WORDS[w] || TORAH_NQ_WORDS[w] || null; }
 function nqW(w){ const e=youngHeb()&&nqLookup(w); return (e&&e.wn) || w; }   // display word
 function nqD(w,d){ const e=youngHeb()&&nqLookup(w); return (e&&e.dn) || d; }  // display definition
@@ -1303,7 +1307,7 @@ function launchGame(gi){
   const a=(GL.CATALOG||[])[gi];if(!a)return;
   const sj=GL_SUBJ[a.subj]||GL_SUBJ.he;
   let raw=(GL.getQuestions?GL.getQuestions({activity:a.t,subject:a.subj}):(GL.BANK[a.subj]||[]));
-  const young=levelForAge(S.age)<=1;
+  const young=levelForAge(S.age)<=2;
   const fromBank=!(GL.ACTQ&&GL.ACTQ[a.t]&&GL.ACTQ[a.t].length);   // vocalized maps by BANK index
   // tag each question with its original bank index (for niqqud), then pick a
   // FRESH set so the same student isn't handed the same questions each time.
@@ -1604,7 +1608,7 @@ function initSciQuiz(){
   TM.start(saved?.left??t,t,()=>gotoNext(scr));
 }
 function renderSciQ(){
-  const q=SQ.qs[SQ.i], young=curLevel()<=2;       // young readers see vocalized text if present
+  const q=SQ.qs[SQ.i], young=curLevel()<=4;       // young readers (א׳–ד׳) see vocalized text if present
   const qtext=(young&&q.nq&&q.nq.q)||q.q;
   const opts =(young&&q.nq&&Array.isArray(q.nq.o))?q.nq.o:q.o;
   document.getElementById("q-ctr").textContent=`${SQ.i+1}/${SQ.qs.length}`;
@@ -2297,7 +2301,7 @@ function handleVA(word){
   // Hebrew-translation feedback for English up to grade ו (level ≤3): on a
   // correct pick show the word + its meaning; on a wrong pick show BOTH the
   // meaning of what they chose and the meaning of the correct word.
-  const showTr=(S.subject==="english"&&curLevel()<=3);
+  const showTr=(S.subject==="english"&&curLevel()<=6);
   const hint=document.getElementById("q-hint");
   if(correct){
     if(showTr&&hint) hint.innerHTML=`<span class="fb-right"><b dir="ltr">${esc(V.item.w)}</b> = <b>${esc(V.item.h||"")}</b> ✓</span>`;
@@ -2465,7 +2469,7 @@ function initReading(){
     let src=pool.length?pool:src0;
     // young readers (grades א–ד): only serve passages that carry niqqud, so the
     // reading-comprehension text is always vocalized for them.
-    if(heRead && lvl<=2){ const voc=src.filter(x=>HEB_NQ.stories[x.id]); if(voc.length) src=voc; }
+    if(heRead && lvl<=4){ const voc=src.filter(x=>HEB_NQ.stories[x.id]); if(voc.length) src=voc; }
     R.story=pickFreshOne(src,"story:"+S.screen);
   }
   R.rtl=heRead;
@@ -2851,6 +2855,7 @@ function _mkOpts(ans){
   return shuffle([...set]);
 }
 function _genMathQ(lvl,type){
+  lvl=gradeTier(lvl);            // generators below are tuned per difficulty tier
   type=type||"addsub";
   const R=_mrand;
   if(type==="addsub"){
@@ -2877,6 +2882,7 @@ function _genMathQ(lvl,type){
 // the four angle types, perimeter, area (rectangle/triangle/parallelogram/
 // trapezoid), 3-D solids (faces/edges/vertices), volume, symmetry, Pythagoras.
 function _genGeomQ(lvl){
+  lvl=gradeTier(lvl);
   const R=_mrand, pick=a=>a[R(0,a.length-1)];
   const T=[];
   if(lvl<=1){
@@ -2940,6 +2946,7 @@ function _fracOpts(n,d){
   return shuffle([...set]).slice(0,4);
 }
 function _genFracQ(lvl){
+  lvl=gradeTier(lvl);
   const R=_mrand;
   if(lvl<=2){                                   // "רבע מ-12" → whole-number answer
     const opts=lvl<=1?[[2,"חצי"],[4,"רבע"]]:[[2,"חצי"],[3,"שליש"],[4,"רבע"]];
