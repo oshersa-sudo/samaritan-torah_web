@@ -2854,22 +2854,33 @@ function _mkOpts(ans){
   while(set.size<4){set.add(ans+set.size);}
   return shuffle([...set]);
 }
+// Number ranges per school grade, following the MoE "תחום המספר" ladder
+// (100 in א׳ → 1,000 in ב׳ → 10,000 in ג׳ → מיליון in ד׳), kept one step below
+// the domain so the drill stays mental arithmetic. Beyond ו׳ the operands stop
+// growing — difficulty there comes from the other topics, not bigger numbers.
+const MATH_RANGE={
+  addsub : {1:20,2:100,3:1000,4:10000,5:100000,6:100000},
+  muldiv : {1:5, 2:10, 3:10,  4:20,   5:25,    6:30},
+  missing: {1:20,2:100,3:1000,4:1000, 5:10000, 6:100000},
+};
+const mathMax=(kind,g)=>MATH_RANGE[kind][Math.max(1,Math.min(6,g|0))] ?? MATH_RANGE[kind][6];
 function _genMathQ(lvl,type){
-  lvl=gradeTier(lvl);            // generators below are tuned per difficulty tier
+  // lvl is the school grade; sub-generators convert it themselves — converting
+  // here too would map it twice and make their upper branches unreachable.
   type=type||"addsub";
   const R=_mrand;
   if(type==="addsub"){
-    const mx = lvl<=1?10 : lvl===2?60 : lvl===3?200 : lvl===4?1000 : 10000;
+    const mx = mathMax("addsub",lvl);
     if(Math.random()<0.5){const x=R(1,mx),y=R(1,mx);return {t:`${x} + ${y}`,a:x+y,eq:true};}
     const x=R(2,mx),y=R(1,x);return {t:`${x} − ${y}`,a:x-y,eq:true};
   }
   if(type==="muldiv"){
-    const top = lvl<=2?10 : lvl===3?12 : lvl===4?20 : 30;
+    const top = mathMax("muldiv",lvl);
     if(Math.random()<0.5){const x=R(2,top),y=R(2,top);return {t:`${x} × ${y}`,a:x*y,eq:true};}
     const y=R(2,top),q=R(2,top);return {t:`${y*q} ÷ ${y}`,a:q,eq:true};
   }
   if(type==="missing"){
-    const mx = lvl<=1?10 : lvl===2?50 : lvl===3?100 : lvl===4?500 : 2000;
+    const mx = mathMax("missing",lvl);
     if(Math.random()<0.5){const x=R(1,mx),y=R(1,mx);return {t:`${x} + ? = ${x+y}`,a:y,eq:false};}
     const y=R(1,mx),x=R(y+1,mx+y);return {t:`${x} − ? = ${x-y}`,a:y,eq:false};
   }
