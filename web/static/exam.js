@@ -2887,7 +2887,8 @@ function _genMathQ(lvl,type){
   const R=_mrand;
   if(type==="addsub"){
     const mx = mathMax("addsub",lvl);
-    if(Math.random()<0.5){const x=R(1,mx),y=R(1,mx);return {t:`${x} + ${y}`,a:x+y,eq:true};}
+    // keep the SUM inside the grade's number domain, not just each operand
+    if(Math.random()<0.5){const x=R(1,mx-1),y=R(1,mx-x);return {t:`${x} + ${y}`,a:x+y,eq:true};}
     const x=R(2,mx),y=R(1,x);return {t:`${x} − ${y}`,a:x-y,eq:true};
   }
   if(type==="muldiv"){
@@ -2897,8 +2898,9 @@ function _genMathQ(lvl,type){
   }
   if(type==="missing"){
     const mx = mathMax("missing",lvl);
-    if(Math.random()<0.5){const x=R(1,mx),y=R(1,mx);return {t:`${x} + ? = ${x+y}`,a:y,eq:false};}
-    const y=R(1,mx),x=R(y+1,mx+y);return {t:`${x} − ? = ${x-y}`,a:y,eq:false};
+    // every number shown must stay inside the grade's domain — including the total
+    if(Math.random()<0.5){const x=R(1,mx-1),y=R(1,mx-x);return {t:`${x} + ? = ${x+y}`,a:y,eq:false};}
+    const x=R(2,mx),y=R(1,x-1);return {t:`${x} − ? = ${x-y}`,a:y,eq:false};
   }
   if(type==="frac") return _genFracQ(lvl);
   if(type==="geom") return _genGeomQ(lvl);
@@ -2926,7 +2928,9 @@ function _genGeomQ(lvl){
     T.push(
       ()=>{const w=R(2,12),h=R(2,12);return {t:`למלבן אורך ${w} ורוחב ${h} ס״מ. מה ההיקף?`,a:2*(w+h),rtl:true};},
       ()=>{const s=R(3,15);return {t:`לריבוע צלע ${s} ס״מ. מה ההיקף?`,a:4*s,rtl:true};},
-      ()=>{const a=R(2,9),b=R(2,9),c=R(2,9);return {t:`למשולש צלעות ${a}, ${b} ו-${c} ס״מ. מה ההיקף?`,a:a+b+c,rtl:true};},
+      ()=>{const a=R(3,9),b=R(3,9);                         // third side kept within
+           const lo=Math.abs(a-b)+1,hi=a+b-1,c=R(Math.max(2,lo),Math.max(Math.max(2,lo),Math.min(12,hi)));
+           return {t:`למשולש צלעות ${a}, ${b} ו-${c} ס״מ. מה ההיקף?`,a:a+b+c,rtl:true};},
       ()=>{const z=pick([[90,"זווית ישרה"],[45,"זווית חדה"],[30,"זווית חדה"],[120,"זווית קהה"],[150,"זווית קהה"],[180,"זווית שטוחה"]]);
         return {t:`זווית של ${z[0]} מעלות היא…`,opts:shuffle(["זווית ישרה","זווית חדה","זווית קהה","זווית שטוחה"]),ans:z[1],rtl:true};},
       ()=>{const s=pick([["ריבוע","4"],["מלבן","2"],["משולש שווה־צלעות","3"]]);
@@ -2999,14 +3003,15 @@ function _genFracQ(lvl){
 }
 
 function _genWordProblem(lvl){
-  const R=_mrand, big = lvl<=1?10 : lvl===2?30 : lvl===3?100 : lvl===4?500 : 2000;
+  // scaled by school grade, following the same number domain as the drills
+  const R=_mrand, big = mathMax("missing",lvl);
   const tmpls=[
-    ()=>{const a=R(3,big),b=R(1,a);return {t:`בכיתה יש ${a} תלמידים. ${b} מהם יצאו להפסקה. כמה תלמידים נשארו בכיתה?`,a:a-b};},
+    ()=>{const a=R(18,34),b=R(1,Math.min(a-1,12));return {t:`בכיתה יש ${a} תלמידים. ${b} מהם יצאו להפסקה. כמה תלמידים נשארו בכיתה?`,a:a-b};},
     ()=>{const a=R(3,big),b=R(1,big);return {t:`לרוני יש ${a} שקלים, והוא קיבל עוד ${b} שקלים. כמה שקלים יש לו עכשיו?`,a:a+b};},
     ()=>{const per=R(2,9),g=R(2,9);return {t:`בכל שולחן יושבים ${per} ילדים, ויש ${g} שולחנות. כמה ילדים בסך הכול?`,a:per*g};},
     ()=>{const per=R(2,9),g=R(2,9);return {t:`${per*g} עפרונות חולקו שווה בשווה ל-${g} ילדים. כמה עפרונות קיבל כל ילד?`,a:per};},
-    ()=>{const price=R(2,12),n=R(2,9);return {t:`מחיר מחברת אחת הוא ${price} שקלים. כמה יעלו ${n} מחברות?`,a:price*n};},
-    ()=>{const start=R(5,big),ate=R(1,Math.min(start,9));return {t:`בקופסה היו ${start} עוגיות, ודנה אכלה ${ate}. כמה עוגיות נשארו?`,a:start-ate};},
+    ()=>{const price=R(3,Math.max(4,Math.min(25,Math.round(big/8)))),n=R(2,9);return {t:`מחיר מחברת אחת הוא ${price} שקלים. כמה יעלו ${n} מחברות?`,a:price*n};},
+    ()=>{const start=R(8,Math.max(12,Math.min(60,big))),ate=R(2,Math.min(start-1,9));return {t:`בקופסה היו ${start} עוגיות, ודנה אכלה ${ate}. כמה עוגיות נשארו?`,a:start-ate};},
   ];
   // ── Curriculum strands: גאומטריה ומדידות + חקר נתונים (משרד החינוך) ──
   // From grade ג׳ (level 2) up: perimeter/area, measurement units, average & data.
