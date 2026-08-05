@@ -44,3 +44,7 @@ data/onkelos/heb_cache/
 # persistent disk; never meant to be committed
 data/analytics.db
 learn.db
+
+# scratch test harnesses dropped into the served static dir while debugging —
+# underscore-prefixed, never part of the app
+web/static/_*.html
