@@ -2193,12 +2193,12 @@ function initPart(){
   else if(S.screen==="p4")initDescribe();
   else if(S.screen==="p5")initMatch();
   else if(S.screen==="p6")initBalloons();
-  else if(S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw"||S.screen==="tv"||S.screen==="tw")initHebMC();
+  else if(S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw"||S.screen==="tv"||S.screen==="tw"||S.screen==="gv"||S.screen==="gw"||S.screen==="iv"||S.screen==="iw")initHebMC();
   else if(S.screen==="hb")initHebMatch();
   else if(S.screen==="wg")initWordGame();
   else if(S.screen==="hs")initHebLex();
   else if(S.screen==="hr"||S.screen==="sr"||S.screen==="tr"||S.screen==="gr"||S.screen==="ir")initReading();
-  else if(S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln")initSciQuiz();
+  else if(S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln"||S.screen==="gq"||S.screen==="iq")initSciQuiz();
   else if(S.screen[0]==="m"&&S.screen[1]==="a")initMath();
   else if(S.screen==="rv")initReview();
 }
@@ -3265,10 +3265,10 @@ function saveCurrentProg(){
   else if((S.screen==="p5"||S.screen==="hb")&&M.pairs)commitProg({match:matchState()});
   else if(S.screen==="p6"&&B.pairs)commitProg({balloons:balloonState()});
   else if(S.screen[0]==="m"&&S.screen[1]==="a"&&MA.qs)commitProg({[S.screen]:mathState()});
-  else if((S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw"||S.screen==="tv"||S.screen==="tw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
+  else if((S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw"||S.screen==="tv"||S.screen==="tw"||S.screen==="gv"||S.screen==="gw"||S.screen==="iv"||S.screen==="iw")&&HM.qs)commitProg({[S.screen]:{qs:HM.qs,i:HM.i,left:TM.left}});
   else if(S.screen==="wg"&&WG.qs)commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
   else if(S.screen==="hs"&&HL.qs)commitProg({hs:{qs:HL.qs,i:HL.i,left:TM.left}});
-  else if((S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln")&&SQ.qs)commitProg({[S.screen]:{qs:SQ.qs,i:SQ.i,left:TM.left}});
+  else if((S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln"||S.screen==="gq"||S.screen==="iq")&&SQ.qs)commitProg({[S.screen]:{qs:SQ.qs,i:SQ.i,left:TM.left}});
   else if((S.screen==="hr"||S.screen==="sr"||S.screen==="tr"||S.screen==="gr"||S.screen==="ir")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,ord:R.ord,qi:R.qi,left:TM.left}});
 }
 // which S.prog key holds a given part's saved state (for the "+time" feature)
