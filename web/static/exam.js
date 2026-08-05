@@ -3024,6 +3024,49 @@ function _genWordProblem(lvl){
       ()=>{const a=R(2,20),b=R(2,20),c=R(2,20);const s=a+b+c;return {t:`בשלושה ימים נמכרו ${a}, ${b} ו-${c} כרטיסים. כמה כרטיסים נמכרו בסך הכול?`,a:s};},
     );
   }
+  // ── added strands: מדידות, כסף, סדרות, זוגיות, השוואה, עיגול, זמן ──
+  if(lvl>=2){
+    tmpls.push(
+      // number sequences — read the step and continue it
+      ()=>{const st=R(2,5),a0=R(1,9),n=a0+st*4;return {t:`${a0}, ${a0+st}, ${a0+st*2}, ${a0+st*3}, ?`,a:n};},
+      // odd / even recognition (four candidates, one of the requested parity)
+      ()=>{const even=Math.random()<0.5;
+           const pick=()=>R(1,Math.min(90,Math.max(10,big)));
+           let ans=pick(); while((ans%2===0)!==even)ans=pick();
+           const o=new Set([ans]); while(o.size<4){const d=pick(); if((d%2===0)!==even)o.add(d);}
+           return {t:`איזה מספר ${even?"זוגי":"אי-זוגי"}?`,opts:shuffle([...o].map(String)),ans:String(ans),rtl:true};},
+      // comparing magnitudes
+      ()=>{const o=new Set(); while(o.size<4)o.add(R(2,Math.max(20,Math.min(999,big))));
+           const arr=[...o],mx=Math.max(...arr);
+           return {t:`איזה מספר הגדול ביותר?`,opts:shuffle(arr.map(String)),ans:String(mx),rtl:true};},
+      // calendar facts
+      ()=>{const w=R(2,9);return {t:`כמה ימים יש ב-${w} שבועות?`,a:w*7};},
+      ()=>{const y=R(2,6);return {t:`כמה חודשים יש ב-${y} שנים?`,a:y*12};},
+      // elapsed time on the clock
+      ()=>{const m=R(1,9)*5,st=R(1,10);return {t:`שיעור התחיל ב-${st}:00 ונמשך ${m} דקות. כמה דקות נשארו עד השעה ${st+1}:00?`,a:60-m};},
+    );
+  }
+  if(lvl>=3){
+    tmpls.push(
+      // money — change from a payment
+      ()=>{const cost=R(7,Math.max(12,Math.min(95,big)));
+           let paid=Math.ceil(cost/10)*10+R(0,1)*10; if(paid<=cost)paid+=10;   // always give change
+           return {t:`קנית ב-${cost} שקלים ושילמת ב-${paid} שקלים. כמה עודף תקבל?`,a:paid-cost};},
+      // volume
+      ()=>{const l=R(2,9);return {t:`כמה מיליליטרים יש ב-${l} ליטרים?`,a:l*1000};},
+      // weight, the other way round
+      ()=>{const g=R(2,9);return {t:`כמה גרמים יש ב-${g} חצאי קילוגרם?`,a:g*500};},
+    );
+  }
+  if(lvl>=4){
+    tmpls.push(
+      // rounding
+      ()=>{const n=R(21,Math.max(99,Math.min(999,big)));return {t:`עגל/י את ${n} לעשרת הקרובה`,a:Math.round(n/10)*10};},
+      ()=>{const n=R(120,Math.max(200,Math.min(9999,big)));return {t:`עגל/י את ${n} למאה הקרובה`,a:Math.round(n/100)*100};},
+      // fraction of a quantity, in words
+      ()=>{const d=R(2,5),q=R(2,12);return {t:`${d===2?"חצי":d===3?"שליש":d===4?"רבע":"חמישית"} מ-${d*q} שקלים הוא…`,a:q};},
+    );
+  }
   if(lvl>=3){
     tmpls.push(
       ()=>{const w=R(2,14),h=R(2,14);return {t:`למלבן אורך ${w} ס״מ ורוחב ${h} ס״מ. מה שטח המלבן?`,a:w*h};},
