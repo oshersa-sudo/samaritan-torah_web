@@ -188,7 +188,8 @@ const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
                 ma1:240,ma2:300,ma5:360,ma6:360,ma3:360,ma4:240,
                 sv:240,sw:240,sq:300,sr:600,
                 tv:240,tw:240,tq:300,tr:600,
-                lp:240,lf:240,ln:240};
+                lp:240,lf:240,ln:240,
+                gv:240,gw:240,gq:300,gr:600};
 // Levels are single school grades (א׳=1 … י״ב=12), so content can be matched to
 // one grade rather than a two-year band.
 const GRADE_LETTER = {1:"א׳",2:"ב׳",3:"ג׳",4:"ד׳",5:"ה׳",6:"ו׳",7:"ז׳",8:"ח׳",9:"ט׳",10:"י׳",11:"י״א",12:"י״ב"};
@@ -200,14 +201,16 @@ const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הב
                     ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma5:"שברים",ma6:"הנדסה וגיאומטריה",ma3:"בעיות מילוליות",ma4:"המספר החסר",
                     sv:"אוצר מילים במדע",sw:"פירוש מושגים",sq:"חידון טבע ומדע",sr:"הבנת הנקרא",
                     tv:"אוצר מושגים",tw:"פירוש מושגים",tq:"חידון תנ״ך",tr:"הבנת הנקרא",
-                    lp:"חלקי הדיבר",lf:"צורות ופעלים",ln:"ניקוד ופיסוק"};
+                    lp:"חלקי הדיבר",lf:"צורות ופעלים",ln:"ניקוד ופיסוק",
+                    gv:"מושגי גיאוגרפיה",gw:"פירוש מושגים",gq:"חידון מולדת וסביבה",gr:"הבנת הנקרא"};
 // answers per part → used to normalise the score to /100
 const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
                     hv:10,hb:8,hw:10,hs:10,wg:10,hr:6,
                     ma1:10,ma2:10,ma5:10,ma6:8,ma3:6,ma4:8,
                     sv:10,sw:10,sq:10,sr:6,
                     tv:10,tw:10,tq:10,tr:6,
-                    lp:8,lf:8,ln:8};
+                    lp:8,lf:8,ln:8,
+                    gv:10,gw:10,gq:10,gr:6};
 // subjects and their part order — every subject: 4 parts, 4 hourglasses
 const SUBJECTS = {
   english:{name:"אנגלית", icon:"🌍", desc:"מילים, שמיעה ודיבור",
@@ -230,6 +233,10 @@ const SUBJECTS = {
            grad:"linear-gradient(150deg,#fcd34d,#b45309)", shadow:"#92400e",
            mascot:"🕊️", mascotName:"יוֹנָה הַחֲכָמָה",
            order:["tv","tw","tq","tr"]},
+  geo:    {name:"מולדת וסביבה", icon:"🗺️", desc:"מפות, ארץ ישראל והסביבה",
+           grad:"linear-gradient(150deg,#86efac,#15803d)", shadow:"#166534",
+           mascot:"🦅", mascotName:"נָוִיט הַנֶּשֶׁר",
+           order:["gv","gw","gq","gr"]},
   lashon: {name:"לשון", icon:"✍️", desc:"דקדוק, חלקי הדיבר וזמנים",
            grad:"linear-gradient(150deg,#67e8f9,#0891b2)", shadow:"#0e7490",
            mascot:"🦜", mascotName:"טוּקִי הַמְדַבֵּר",
@@ -516,7 +523,7 @@ const SFX = {
   },
 };
 // which animal call belongs to each subject's mascot (math's mascot is human)
-const MASCOT_ANIMAL={english:"frog",hebrew:"owl",science:"gecko",lashon:"bird"};
+const MASCOT_ANIMAL={english:"frog",hebrew:"owl",science:"gecko",lashon:"bird",geo:"bird"};
 // map a picture emoji to an animal call, so tapping/answering an animal roars/barks
 const ANIMAL_FOR_EMOJI={"🐶":"dog","🐕":"dog","🦮":"dog","🐩":"dog","🐱":"cat","🐈":"cat","🐮":"cow","🐄":"cow","🐂":"cow",
   "🐦":"bird","🐤":"bird","🐥":"bird","🐣":"bird","🦜":"bird","🦁":"lion","🐘":"elephant","🐸":"frog","🦉":"owl","🦎":"gecko",
@@ -906,12 +913,16 @@ function curriculumCardHTML(){
 const HEB_NQ = (typeof window!=="undefined" && window.HEB_NQ) ? window.HEB_NQ : {words:{},stories:{}};
 // Science vocab carries its own inline niqqud (wn/dn); fold it into one lookup.
 const SCI_NQ_WORDS = (()=>{const m={};for(const x of SCI_VOCAB) if(x.w&&x.wn) m[x.w]={wn:x.wn,dn:x.dn||x.d};return m;})();
+const GEO_VOCAB   = (typeof window!=="undefined" && Array.isArray(window.GEO_VOCAB))   ? window.GEO_VOCAB   : [];
+const GEO_QUIZ    = (typeof window!=="undefined" && Array.isArray(window.GEO_QUIZ))    ? window.GEO_QUIZ    : [];
+const GEO_STORIES = (typeof window!=="undefined" && Array.isArray(window.GEO_STORIES)) ? window.GEO_STORIES : [];
+const GEO_NQ_WORDS = (()=>{const m={};for(const x of GEO_VOCAB) if(x.w&&x.wn) m[x.w]={wn:x.wn,dn:x.dn||x.d};return m;})();
 const TORAH_NQ_WORDS = (()=>{const m={};for(const x of TORAH_VOCAB) if(x.w&&x.wn) m[x.w]={wn:x.wn,dn:x.dn||x.d};return m;})();
 // which vocab pool the current subject draws from
-function subjVocab(){ return S.subject==="science" ? SCI_VOCAB : S.subject==="torah" ? TORAH_VOCAB : HEB_VOCAB; }
+function subjVocab(){ return S.subject==="science" ? SCI_VOCAB : S.subject==="torah" ? TORAH_VOCAB : S.subject==="geo" ? GEO_VOCAB : HEB_VOCAB; }
 // young reader (grades א–ד) in a niqqud-bearing subject → show vowel points
-function youngHeb(){ return (S.subject==="hebrew"||S.subject==="science"||S.subject==="torah") && curLevel()<=4; }
-function nqLookup(w){ return HEB_NQ.words[w] || SCI_NQ_WORDS[w] || TORAH_NQ_WORDS[w] || null; }
+function youngHeb(){ return (S.subject==="hebrew"||S.subject==="science"||S.subject==="torah"||S.subject==="geo") && curLevel()<=4; }
+function nqLookup(w){ return HEB_NQ.words[w] || SCI_NQ_WORDS[w] || TORAH_NQ_WORDS[w] || GEO_NQ_WORDS[w] || null; }
 function nqW(w){ const e=youngHeb()&&nqLookup(w); return (e&&e.wn) || w; }   // display word
 function nqD(w,d){ const e=youngHeb()&&nqLookup(w); return (e&&e.dn) || d; }  // display definition
 function nqStory(id){ return youngHeb() ? HEB_NQ.stories[id] : null; }
@@ -1172,6 +1183,7 @@ const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3
                    hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",hs:"מילים · 4 דק׳",wg:"משחק · 3.5 דק׳",hr:"שאלות · 10 דק׳",
                    ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma5:"שברים · 6 דק׳",ma6:"צורות · 6 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳",
                    sv:"מילים · 4 דק׳",sw:"מושגים · 4 דק׳",sq:"חידון · 5 דק׳",sr:"שאלות · 10 דק׳",
+                   gv:"מושגים · 4 דק׳",gw:"פירוש · 4 דק׳",gq:"חידון · 5 דק׳",gr:"שאלות · 10 דק׳",
                    tv:"מושגים · 4 דק׳",tw:"פירושים · 4 דק׳",tq:"חידון · 5 דק׳",tr:"שאלות · 10 דק׳",
                    lp:"שאלות · 4 דק׳",lf:"שאלות · 4 דק׳",ln:"שאלות · 4 דק׳"};
 
@@ -1496,6 +1508,8 @@ const HEB_MC_CFG = {
   sw:{eyebrow:"טבע ומדעים · פירוש מושגים", lead:"מה פירוש המושג?",       prompt:"w", answer:"d"},
   tv:{eyebrow:"תורה · אוצר מושגים",       lead:"איזה מושג מתאים להגדרה?", prompt:"d", answer:"w"},
   tw:{eyebrow:"תורה · פירוש מושגים",      lead:"מה פירוש המושג?",         prompt:"w", answer:"d"},
+  gv:{eyebrow:"מולדת וסביבה · מושגים",    lead:"איזה מושג מתאים להגדרה?", prompt:"d", answer:"w"},
+  gw:{eyebrow:"מולדת וסביבה · פירוש מושגים", lead:"מה פירוש המושג?",      prompt:"w", answer:"d"},
 };
 function mcHTML(){
   const c=HEB_MC_CFG[S.screen]||HEB_MC_CFG.hv, t=TIME[S.screen]??240;
@@ -1575,6 +1589,7 @@ const SQ={};
 const QUIZ_CFG={
   sq:{eyebrow:"טבע ומדעים · חידון",           lead:"מה התשובה הנכונה?", key:"sciq", pool:()=>SCI_QUIZ},
   tq:{eyebrow:"תורה · חידון תנ״ך",             lead:"מה התשובה הנכונה?", key:"toraq",pool:()=>TORAH_QUIZ},
+  gq:{eyebrow:"מולדת וסביבה · חידון",          lead:"מה התשובה הנכונה?", key:"geoq", pool:()=>GEO_QUIZ},
   lp:{eyebrow:"לשון · חלקי הדיבר ומבנה המשפט", lead:"בחר/י את התשובה",    key:"lp",   pool:()=>LASHON_QUIZ.filter(x=>x.topic==="parts"||x.topic==="sentence")},
   lf:{eyebrow:"לשון · צורות הפועל והשם",       lead:"בחר/י את התשובה",    key:"lf",   pool:()=>LASHON_QUIZ.filter(x=>x.topic==="tense"||x.topic==="gender_num"||x.topic==="root")},
   ln:{eyebrow:"לשון · ניקוד ופיסוק",           lead:"בחר/י את התשובה",    key:"ln",   pool:()=>LASHON_QUIZ.filter(x=>x.topic==="punct"||x.topic==="spelling")},
@@ -1942,6 +1957,7 @@ const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuH
   sv:mcHTML,sw:mcHTML,sq:sqHTML,sr:readingHTML,
   tv:mcHTML,tw:mcHTML,tq:sqHTML,tr:readingHTML,
   lp:sqHTML,lf:sqHTML,ln:sqHTML,
+  gv:mcHTML,gw:mcHTML,gq:sqHTML,gr:readingHTML,
   rv:rvHTML,lead:leadHTML,paused:pausedHTML,done:doneHTML,parents:parentsHTML,catalog:catalogHTML,gplay:gplayHTML,curriculum:curriculumHTML};
 
 function gotoNext(cur){
@@ -1956,7 +1972,7 @@ function gotoNext(cur){
 
 // screens whose answers are 4 tappable options → show the "keys 1–4" tip and
 // wire number-key answering. (p4 = free-text describe, so it is excluded.)
-const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma6","ma3","ma4","sv","sw","sq","sr","tv","tw","tq","tr","lp","lf","ln"]);
+const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma6","ma3","ma4","sv","sw","sq","sr","tv","tw","tq","tr","lp","lf","ln","gv","gw","gq","gr"]);
 const ENCOURAGE=["אני איתך! נסה/י לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
 function gameMascotFrame(){
   const m=curSubject().mascot||"🦉";
@@ -2166,7 +2182,7 @@ function initPart(){
   else if(S.screen==="hb")initHebMatch();
   else if(S.screen==="wg")initWordGame();
   else if(S.screen==="hs")initHebLex();
-  else if(S.screen==="hr"||S.screen==="sr"||S.screen==="tr")initReading();
+  else if(S.screen==="hr"||S.screen==="sr"||S.screen==="tr"||S.screen==="gr")initReading();
   else if(S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln")initSciQuiz();
   else if(S.screen[0]==="m"&&S.screen[1]==="a")initMath();
   else if(S.screen==="rv")initReview();
@@ -2459,8 +2475,8 @@ function qDispFor(k){
 }
 function initReading(){
   const saved=S.prog.reading,lvl=curLevel();
-  const heRead=(S.screen==="hr"||S.screen==="sr"||S.screen==="tr");   // right-to-left Hebrew reading
-  const set=(S.screen==="hr")?HEB_STORIES:(S.screen==="sr")?SCI_STORIES:(S.screen==="tr")?TORAH_STORIES:STORIES;
+  const heRead=(S.screen==="hr"||S.screen==="sr"||S.screen==="tr"||S.screen==="gr");   // right-to-left Hebrew reading
+  const set=(S.screen==="hr")?HEB_STORIES:(S.screen==="sr")?SCI_STORIES:(S.screen==="tr")?TORAH_STORIES:(S.screen==="gr")?GEO_STORIES:STORIES;
   const src0=set.length?set:STORIES;
   const qquota=heRead?PART_QUOTA[S.screen]:QUOTA.reading;
   if(saved&&saved.id)R.story=src0.find(x=>x.id===saved.id)||src0[0];
@@ -3190,7 +3206,7 @@ function saveCurrentProg(){
   else if(S.screen==="wg"&&WG.qs)commitProg({wg:{qs:WG.qs,i:WG.i,left:TM.left}});
   else if(S.screen==="hs"&&HL.qs)commitProg({hs:{qs:HL.qs,i:HL.i,left:TM.left}});
   else if((S.screen==="sq"||S.screen==="tq"||S.screen==="lp"||S.screen==="lf"||S.screen==="ln")&&SQ.qs)commitProg({[S.screen]:{qs:SQ.qs,i:SQ.i,left:TM.left}});
-  else if((S.screen==="hr"||S.screen==="sr"||S.screen==="tr")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,ord:R.ord,qi:R.qi,left:TM.left}});
+  else if((S.screen==="hr"||S.screen==="sr"||S.screen==="tr"||S.screen==="gr")&&R.story)commitProg({reading:{id:R.story.id,qIdx:R.qIdx,ord:R.ord,qi:R.qi,left:TM.left}});
 }
 // which S.prog key holds a given part's saved state (for the "+time" feature)
 function progKeyFor(scr){
