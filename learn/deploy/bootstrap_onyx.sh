@@ -10,7 +10,7 @@
 # ready) enables HTTPS. Safe to re-run: it just updates and restarts.
 #
 # Run on the server (as root):
-#   curl -fsSL https://raw.githubusercontent.com/oshersa-sudo/samaritan-torah_web/claude/language-test-51-questions-lafgyx/web/deploy/bootstrap_onyx.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/oshersa-sudo/samaritan-torah_web/claude/language-test-51-questions-lafgyx/learn/deploy/bootstrap_onyx.sh | bash
 #
 # Override defaults with env vars, e.g.:
 #   DOMAIN=onyx-study.com BRANCH=main EMAIL=you@example.com bash bootstrap_onyx.sh
@@ -52,7 +52,7 @@ echo "==> [3/6] python venv…"
 ./venv/bin/pip install -q flask gunicorn pywebpush
 
 echo "==> [4/6] systemd service…"
-cp web/deploy/onyx-study.service /etc/systemd/system/onyx-study.service
+cp learn/deploy/onyx-study.service /etc/systemd/system/onyx-study.service
 # daily "hasn't practised" reminder (push to phone, e-mail fallback). A random
 # CRON_KEY is generated once and shared between the app and the timer so the
 # guarded endpoint can only be hit locally.
@@ -61,9 +61,9 @@ CRON_KEY_FILE="$APPDIR/data/cron_key"
 CRON_KEY="$(cat "$CRON_KEY_FILE")"
 mkdir -p /etc/systemd/system/onyx-study.service.d
 printf '[Service]\nEnvironment=CRON_KEY=%s\n' "$CRON_KEY" > /etc/systemd/system/onyx-study.service.d/cron.conf
-if [ -f web/deploy/onyx-inactivity.service ]; then
-  sed "s/change-me-to-a-long-random-string/$CRON_KEY/" web/deploy/onyx-inactivity.service > /etc/systemd/system/onyx-inactivity.service
-  cp web/deploy/onyx-inactivity.timer /etc/systemd/system/onyx-inactivity.timer
+if [ -f learn/deploy/onyx-inactivity.service ]; then
+  sed "s/change-me-to-a-long-random-string/$CRON_KEY/" learn/deploy/onyx-inactivity.service > /etc/systemd/system/onyx-inactivity.service
+  cp learn/deploy/onyx-inactivity.timer /etc/systemd/system/onyx-inactivity.timer
 fi
 systemctl daemon-reload
 systemctl enable -q onyx-study >/dev/null 2>&1 || true
@@ -72,7 +72,7 @@ systemctl enable -q --now onyx-inactivity.timer >/dev/null 2>&1 || true
 chown -R www-data:www-data "$APPDIR/data"
 
 echo "==> [5/6] nginx…"
-cp web/deploy/onyx-study.conf /etc/nginx/sites-available/onyx-study
+cp learn/deploy/onyx-study.conf /etc/nginx/sites-available/onyx-study
 ln -sf /etc/nginx/sites-available/onyx-study /etc/nginx/sites-enabled/onyx-study
 rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx

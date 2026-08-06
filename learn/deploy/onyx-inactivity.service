@@ -1,6 +1,6 @@
 # One-shot: e-mail parents whose child hasn't practised recently.
 # Paired with onyx-inactivity.timer (fires once a day). Install both:
-#   sudo cp web/deploy/onyx-inactivity.{service,timer} /etc/systemd/system/
+#   sudo cp learn/deploy/onyx-inactivity.{service,timer} /etc/systemd/system/
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable --now onyx-inactivity.timer
 #

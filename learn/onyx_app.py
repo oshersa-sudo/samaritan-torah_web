@@ -14,8 +14,8 @@ plain same-origin requests — no CORS, no second domain needed.
 Run locally:
     python3 web/onyx_app.py            # → http://127.0.0.1:8000/exam
 
-Production (behind Nginx, see web/deploy/onyx-study.conf):
-    gunicorn -w 3 -b 127.0.0.1:8000 web.onyx_app:app
+Production (behind Nginx, see learn/deploy/onyx-study.conf):
+    gunicorn -w 3 -b 127.0.0.1:8000 learn.onyx_app:app
 
 Environment:
     APP_VERSION   version string shown in the UI (default 1.0)

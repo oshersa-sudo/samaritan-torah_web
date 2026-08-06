@@ -10,7 +10,7 @@
 - צילומי מסך לרשימת החנות: `static/img/shot-hub.png`, `shot-exercise.png`,
   `shot-parent.png` (900×1840).
 - Route אימות בעלות: `/.well-known/assetlinks.json` (ממתין לטביעת האצבע).
-- תבנית build: `web/deploy/twa-manifest.json`.
+- תבנית build: `learn/deploy/twa-manifest.json`.
 
 ## מה שנשאר לך (דורש חשבון + כלים)
 
@@ -28,7 +28,7 @@ bubblewrap init --manifest https://learn.onyx-study.com/static/learn.webmanifest
 # packageId: com.onyxstudy.learn   (כברירת מחדל; אפשר להשאיר)
 # ברוב השאלות אפשר ללחוץ Enter — הערכים נלקחים מהמניפסט.
 ```
-או השתמש בתבנית המוכנה: העתק את `web/deploy/twa-manifest.json` לתיקיית העבודה
+או השתמש בתבנית המוכנה: העתק את `learn/deploy/twa-manifest.json` לתיקיית העבודה
 ואז `bubblewrap update`.
 
 ### 2. בנייה + מפתח חתימה

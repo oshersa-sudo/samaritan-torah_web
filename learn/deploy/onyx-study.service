@@ -1,5 +1,5 @@
 # systemd unit for the onyx-study.com learning app (trainer + backend, gunicorn).
-#   sudo cp web/deploy/onyx-study.service /etc/systemd/system/
+#   sudo cp learn/deploy/onyx-study.service /etc/systemd/system/
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable --now onyx-study
 #   sudo systemctl status onyx-study
@@ -43,7 +43,7 @@ Environment=LEARN_DEV=1
 #  and VAPID_PRIVATE — a PEM PKCS8 private key — but this is not necessary.)
 
 # gunicorn from the project's virtualenv; binds to localhost (nginx proxies to it)
-ExecStart=/var/www/onyx-study/venv/bin/gunicorn web.onyx_app:app \
+ExecStart=/var/www/onyx-study/venv/bin/gunicorn learn.onyx_app:app \
           --bind 127.0.0.1:8000 --workers 3 --timeout 60
 
 Restart=always
