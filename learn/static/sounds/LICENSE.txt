@@ -20,3 +20,16 @@ File map (our name  <-  Kenney source):
   celebrate.wav      <-  Music Jingles / Steel STEEL00
 
 Format: WAV (PCM) — plays on every browser incl. iOS Safari.
+
+── Added sound effects (from Pixabay, supplied by the project owner) ──
+Pixabay content is free for commercial use with no attribution required; the
+original file names are kept here so each clip can be traced back to its source.
+
+  sfx-correct.mp3      ← freesound_community — "correct" (0.94 s)
+  sfx-wrong.mp3        ← universfield — "wrong answer beep" (1.07 s)
+  celebrate.mp3        ← Pixabay upload u_y6jn4lst7ib (1.34 s)
+  sfx-correct-alt.mp3  ← freesound_community — "good" (1.73 s)   [not wired]
+  sfx-wrong-alt.mp3    ← tuomas_data — "wrong answer 2" (1.91 s)  [not wired]
+
+The former Kenney CC0 WAVs are kept alongside as a fallback for devices that
+cannot decode MP3, and still provide the tap sound and the subject jingles.

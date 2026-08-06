@@ -395,6 +395,9 @@ const SND_FILES = {
   jingle_english:"jingle-english", jingle_hebrew:"jingle-hebrew",
   jingle_math:"jingle-math", jingle_science:"jingle-science",
 };
+// Clips that ship as MP3 (a fraction of the WAV size). Everything else stays
+// WAV; a missing MP3 falls back to the WAV of the same name.
+const SND_MP3 = new Set(["correct","wrong","celebrate"]);
 const SFX = {
   _ctx:null,
   _ac(){ try{ if(!this._ctx) this._ctx=new (window.AudioContext||window.webkitAudioContext)();
@@ -404,8 +407,14 @@ const SFX = {
     if(!setGet("sfx",true))return false;
     const f=SND_FILES[key]; if(!f||typeof Audio==="undefined")return false;
     try{
-      const a=new Audio(SND_BASE+f+".wav");
+      const mp3=SND_MP3.has(key);
+      const a=new Audio(SND_BASE+f+(mp3?".mp3":".wav"));
       a.volume=(vol==null?0.6:vol);
+      // if the MP3 cannot be decoded on this device, fall back to the WAV
+      if(mp3)a.addEventListener("error",()=>{ try{
+        const w=new Audio(SND_BASE+f+".wav"); w.volume=a.volume;
+        const q=w.play(); if(q&&q.catch)q.catch(()=>{});
+      }catch(e){} },{once:true});
       const p=a.play(); if(p&&p.catch)p.catch(()=>{});
       return true;
     }catch(e){ return false; }
@@ -444,7 +453,7 @@ const SFX = {
   bad(){
     try{mascotReact("sad");}catch(e){}
     if(!setGet("sfx",true))return;
-    if(this._clip("wrong",0.55))return;              // real recorded "soft error"
+    if(this._clip("wrong",0.42))return;              // real recorded "soft error"
     const ctx=this._ac();if(!ctx)return;const t=ctx.currentTime;
     try{
       const o=ctx.createOscillator(),g=ctx.createGain();
@@ -3303,7 +3312,7 @@ function finish(){
   TT.sync();   // flush the day's minutes now that a test just ended
   S.lastGain=gamAward(g,S.score);
   S.prog={};S.screen="done";render();
-  SFX._clip("celebrate",0.5);   // real recorded celebration jingle
+  SFX._clip("celebrate",0.45);   // real recorded celebration jingle
 }
 
 // ─── Boot ─────────────────────────────────────────────────

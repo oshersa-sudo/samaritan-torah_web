@@ -1,7 +1,7 @@
 /* Service worker for the learning trainer (OnyxApps).
    NETWORK-FIRST so the newest code loads when online, falling back to the
    cache offline. /api/* always hits the network (live sync). */
-const CACHE = 'learn-app-v35';
+const CACHE = 'learn-app-v36';
 const SHELL = [
   '/exam',
   '/static/exam.css', '/static/exam.js',
@@ -9,10 +9,10 @@ const SHELL = [
   '/static/heb_lex.js', '/static/torah_data.js', '/static/lashon_data.js',
   '/static/science_data.js', '/static/geo_data.js', '/static/hist_data.js', '/static/curriculum.js', '/static/games_library.js',
   '/static/learn.webmanifest',
-  '/static/sounds/sfx-correct.wav', '/static/sounds/sfx-wrong.wav', '/static/sounds/sfx-tap.wav',
+  '/static/sounds/sfx-correct.mp3', '/static/sounds/sfx-wrong.mp3', '/static/sounds/sfx-tap.wav',
   '/static/sounds/jingle-english.wav', '/static/sounds/jingle-hebrew.wav',
   '/static/sounds/jingle-math.wav', '/static/sounds/jingle-science.wav',
-  '/static/sounds/celebrate.wav',
+  '/static/sounds/celebrate.mp3',
   '/static/img/onyx_learn_icon.svg',
   '/static/img/onyx_learn_icon-192.png', '/static/img/onyx_learn_icon-512.png'
 ];
