@@ -2519,10 +2519,7 @@ function syncToolbar(isVerse){
     fb.classList.toggle('on', S.samFontFull);
     fb.textContent = t('sam_full_q') + (S.samFontFull ? t('sf_yes') : t('sf_no')); }
   setBtn('dictBtn',       isVerse, S.dict);
-  // "פירוש הפסוק" is TEMPORARILY disabled: keep it tappable in verse view (to show a
-  // notice) but styled as unavailable — never highlighted/active.
-  { const b=$('interpBtn'); b.disabled=!isVerse; b.classList.remove('on');
-    b.classList.toggle('unavail', isVerse); b.style.background = '#555'; }
+  setBtn('interpBtn',     isVerse, S.panel==='interpret');
   setBtn('compareBtn',    isVerse, S.panel==='compare');
   setBtn('commentaryBtn', isVerse, S.panel==='commentary');
   setBtn('variantsBtn',   isVerse, S.panel==='variants');
@@ -2607,7 +2604,7 @@ function togglePanel(name){
   syncToolbar(true); paintVerses();
   if(S.panel) scrollToEl('.pair, .srcpanel');
 }
-$('interpBtn').onclick=()=> showInfo(t('interp'), '<div class="note">'+t('interp_unavail')+'</div>');
+$('interpBtn').onclick=()=>togglePanel('interpret');
 // "השוואת נוסחים": if the comparison is open, close it; otherwise open the version
 // picker (Masoretic / Septuagint) and show the chosen comparison.
 $('compareBtn').onclick=()=>{
@@ -4183,7 +4180,7 @@ const HELP = {
       'במסכי הטקסט וההשוואות הסרגל <b>מתקפל מטה אוטומטית</b> לאחר כמה שניות (כפתורי הבא/קודם וההגדלה/הקטנה נשארים). חץ מהבהב וידית גרירה קטנה מסמנים שניתן <b>לגרור/להקיש על הידית</b> כדי לפתוח אותו שוב.',
       '<b>כתב שומרוני</b> (הכפתור א.ב) — מחליף בין הכתב העברי-השומרוני לכתב העברי הרגיל; הכפתור מציג א.ב בכתב שאליו עוברים. הטקסט השומרוני מיושר לשני הצדדים, ונקודות-ההפרדה הנופלות בקצה השורה מושמטות וחוזרות כשמקטינים את הטקסט.',
       '<b>תרגומי התורה</b> — כפתור אחד הפותח בחירה: תרגום ארמי · ערבי · אנגלי. לחיצה חוזרת חוזרת לטקסט.',
-      '<b>פירוש הפסוק</b> — פירוש רציף, מוצג במקום הטקסט, השוזר מקורות (כרגע לבראשית א׳–ו׳).',
+      '<b>פירוש הפסוק</b> — פירוש רציף, מוצג במקום הטקסט, השוזר מקורות פרשניים שומרוניים בלבד (תרגום ארמי שומרוני, תיבת מרקה, פירוש צדקה אל-חכים, סוד הלבבות, שו"ת יעקב בן אהרן הכהן ועוד) ואת מילון המילים — לעולם לא פרשנות יהודית. מכסה כרגע את בראשית, שמות, ויקרא ובמדבר; בפרקים שאין להם חומר פרשני מיוחד הפירוש מסתמך על התרגום והמילון בלבד.',
       '<b>השוואה לנ.מסורה</b> — נוסח שומרון מול המסורה (וגם מול תרגום השבעים), עם סימון ההבדלים באדום.',
       '<b>חילופי נוסח</b> — חילופי הנוסח (העיצוריים) ממהדורת פון גאל, לכל חמשת חומשי התורה. <b>המילים שיש להן חילופי נוסח מודגשות בפסוק</b> — לחיצה על מילה קופצת לחילופיה, ולחיצה על חילוף חוזרת אל המילה בשורת הטקסט. ליד חילופים שתועדו להם עדי-נוסח מוצגים תיאור כתב-היד ותארוכו (כרגע לבראשית א׳).',
       '<b>פרשנות יהודית</b> — רש"י, רמב"ן, קאסוטו, בעל הטורים ועוד, מאתר ספריא.',
