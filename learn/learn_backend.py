@@ -190,6 +190,32 @@ def send_email(dest_email, subject, body):
 def jerr(msg, code=400):
     return jsonify({"ok": False, "error": msg}), code
 
+# ─── Brute-force throttle ──────────────────────────────────────────────────
+# The parent code is a short string, so the endpoints that check one (or that
+# hand one out) have to be slow to guess against. A sliding window per
+# (bucket, key) held in memory — the service is a single process, so this is
+# enough; it only needs to make an online guessing attack impractical.
+_HITS = {}
+
+def rate_ok(bucket, key, limit, window=600):
+    """True if this (bucket,key) is still under `limit` hits per `window` s."""
+    now = time.time()
+    k = (bucket, key)
+    q = [t for t in _HITS.get(k, ()) if now - t < window]
+    if len(_HITS) > 5000:            # cheap upper bound on memory
+        for kk in [kk for kk, v in _HITS.items() if not v or now - v[-1] > window]:
+            _HITS.pop(kk, None)
+    if len(q) >= limit:
+        _HITS[k] = q
+        return False
+    q.append(now)
+    _HITS[k] = q
+    return True
+
+def client_ip():
+    fwd = request.headers.get("X-Forwarded-For", "")
+    return (fwd.split(",")[0].strip() if fwd else request.remote_addr) or "?"
+
 # ─── Web Push (phone notifications, work with the screen locked) ────────────
 # We keep a single VAPID keypair for the server: from env if provided, else
 # generated once and persisted in the `meta` table so it stays stable across
@@ -319,21 +345,31 @@ def register():
     email = (d.get("email") or "").strip()
     if not name:            return jerr("missing name")
     if not PHONE_RE.match(phone): return jerr("invalid phone")
+    if not rate_ok("register", client_ip(), 20) or not rate_ok("register", phone, 10):
+        return jerr("too many attempts, try again later", 429)
     code = gen_code()
     now = int(time.time())
     with db() as c:
-        row = c.execute("SELECT phone, verified, parent_code FROM students WHERE phone=?", (phone,)).fetchone()
-        if row and row["verified"]:
-            # already verified — just (re)issue nothing, report existing
-            return jsonify({"ok": True, "already": True, "parent_code": row["parent_code"]})
-        parent_code = (row["parent_code"] if row else None) or gen_parent_code()
+        row = c.execute("SELECT phone, name, age, verified, parent_code FROM students WHERE phone=?",
+                        (phone,)).fetchone()
         if row:
-            c.execute("UPDATE students SET name=?,age=?,email=?,code=?,code_ts=? WHERE phone=?",
-                      (name, age, email, code, now, phone))
-        else:
-            c.execute("""INSERT INTO students(phone,name,age,verified,code,code_ts,parent_code,email,created)
-                         VALUES(?,?,?,0,?,?,?,?,?)""",
-                      (phone, name, age, code, now, parent_code, email, now))
+            # An account already exists for this phone. The parent code is the
+            # only credential guarding the child's whole file, so a bare phone
+            # number must never be enough to obtain it — the caller also has to
+            # know the registered name (the same shared secret /api/student/
+            # results is guarded by). A mismatch is answered without the code,
+            # and the stored name is left alone so nobody can rewrite their way
+            # in by re-registering someone else's number under their own name.
+            if (row["name"] or "").strip() != name:
+                return jsonify({"ok": True, "exists": True})
+            if age or email:
+                c.execute("UPDATE students SET age=COALESCE(NULLIF(?,0),age),"
+                          " email=COALESCE(NULLIF(?,''),email) WHERE phone=?", (age, email, phone))
+            return jsonify({"ok": True, "already": True, "parent_code": row["parent_code"]})
+        parent_code = gen_parent_code()
+        c.execute("""INSERT INTO students(phone,name,age,verified,code,code_ts,parent_code,email,created)
+                     VALUES(?,?,?,0,?,?,?,?,?)""",
+                  (phone, name, age, code, now, parent_code, email, now))
     send_code(email, phone, code)
     out = {"ok": True, "parent_code": parent_code}
     if DEV:
@@ -479,10 +515,14 @@ def parent_link():
     sphone = norm_phone(d.get("student_phone"))
     pcode  = (d.get("parent_code") or "").strip().upper()
     if not PHONE_RE.match(pphone): return jerr("invalid parent phone")
+    # The parent code is short, so guessing has to be throttled: cap attempts
+    # both per calling address and per student account being targeted.
+    if not rate_ok("link", client_ip(), 15) or not rate_ok("link", sphone, 10):
+        return jerr("too many attempts, try again later", 429)
     with db() as c:
         st = c.execute("SELECT parent_code,name FROM students WHERE phone=?", (sphone,)).fetchone()
         if not st:                       return jerr("student not found", 404)
-        if (st["parent_code"] or "") != pcode or not pcode:
+        if not pcode or not secrets.compare_digest(str(st["parent_code"] or ""), pcode):
             return jerr("wrong parent code", 401)
         c.execute("""INSERT OR REPLACE INTO links(parent_phone,parent_name,parent_email,student_phone,created)
                      VALUES(?,?,?,?,?)""", (pphone, pname, pemail, sphone, int(time.time())))

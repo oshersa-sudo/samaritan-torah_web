@@ -941,10 +941,33 @@ const TORAH_NQ_WORDS = (()=>{const m={};for(const x of TORAH_VOCAB) if(x.w&&x.wn
 function subjVocab(){ return S.subject==="science" ? SCI_VOCAB : S.subject==="torah" ? TORAH_VOCAB : S.subject==="geo" ? GEO_VOCAB : S.subject==="history" ? HIST_VOCAB : HEB_VOCAB; }
 // young reader (grades א–ד) in a niqqud-bearing subject → show vowel points
 function youngHeb(){ return (S.subject==="hebrew"||S.subject==="science"||S.subject==="torah"||S.subject==="geo") && curLevel()<=4; }
-function nqLookup(w){ return HEB_NQ.words[w] || SCI_NQ_WORDS[w] || TORAH_NQ_WORDS[w] || GEO_NQ_WORDS[w] || null; }
-function nqW(w){ const e=youngHeb()&&nqLookup(w); return (e&&e.wn) || w; }   // display word
-function nqD(w,d){ const e=youngHeb()&&nqLookup(w); return (e&&e.dn) || d; }  // display definition
-function nqStory(id){ return youngHeb() ? HEB_NQ.stories[id] : null; }
+// Scoped to the active subject: the same word lives in several vocabularies
+// with different wordings, and a flat merged lookup served whichever table
+// happened to come first — so a Hebrew lesson could show the science
+// definition of שורש, and vice versa.
+function nqLookup(w){
+  const m = S.subject==="science" ? SCI_NQ_WORDS
+          : S.subject==="torah"   ? TORAH_NQ_WORDS
+          : S.subject==="geo"     ? GEO_NQ_WORDS
+          : HEB_NQ.words;
+  return m[w] || null;
+}
+// niqqud marks only — stripping them must give back the plain text
+const bareHeb = s => String(s||"").replace(/[֑-ׇ]/g,"").replace(/\s+/g," ").trim();
+function nqW(w){                                       // display word
+  const e=youngHeb()&&nqLookup(w);
+  return (e && bareHeb(e.wn)===bareHeb(w)) ? e.wn : w;
+}
+function nqD(w,d){                                     // display definition
+  // Vocalise the definition that is actually being asked about — never
+  // substitute a different one, or the child reads a wording the app isn't
+  // grading. Any drift in the data degrades to plain text, not to a lie.
+  const e=youngHeb()&&nqLookup(w);
+  return (e && e.dn && bareHeb(e.dn)===bareHeb(d)) ? e.dn : d;
+}
+// Vocalised stories exist only for the Hebrew reading screen. Looking them up
+// by bare id let another subject's story pick up a Hebrew one with the same id.
+function nqStory(id){ return (youngHeb() && S.screen==="hr") ? HEB_NQ.stories[id] : null; }
 
 // ─── Optional cloud sync (Contabo backend) ───────────────
 // Enabled only when window.LEARN_BACKEND is set to the server URL. Purely
@@ -961,6 +984,10 @@ function syncRegister(){
   beacon("/api/register",{name:S.name,phone:S.phone,age:S.age}).then(j=>{
     if(j&&j.parent_code){S.parentCode=j.parent_code;sSet("pcode:"+S.phone,j.parent_code);
       const el=document.getElementById("parent-code");if(el)el.textContent=j.parent_code;}
+    // The server withholds the parent code when the number is already
+    // registered under a different name — a bare phone number must not be
+    // enough to unlock somebody else's file. Tell the child what to do.
+    else if(j&&j.exists){S.regNameMismatch=true;}
   });
 }
 function syncResult(rec){
@@ -2509,7 +2536,7 @@ function initReading(){
     let src=pool.length?pool:src0;
     // young readers (grades א–ד): only serve passages that carry niqqud, so the
     // reading-comprehension text is always vocalized for them.
-    if(heRead && lvl<=4){ const voc=src.filter(x=>HEB_NQ.stories[x.id]); if(voc.length) src=voc; }
+    if(S.screen==="hr" && lvl<=4){ const voc=src.filter(x=>HEB_NQ.stories[x.id]); if(voc.length) src=voc; }
     R.story=pickFreshOne(src,"story:"+S.screen);
   }
   R.rtl=heRead;
@@ -3373,7 +3400,12 @@ function sendParentLink(){
   const raw=((inp&&inp.value)||"").replace(/\D/g,"");
   if(raw.length<9){ if(errEl)errEl.textContent="מספר טלפון לא תקין"; return; }
   if(raw===S.phone){ if(errEl)errEl.textContent="מספר ההורה חייב להיות שונה ממספר הילד/ה"; return; }
-  if(!S.parentCode){ if(errEl)errEl.textContent="רק רגע — נרשם לשרת, נסו שוב בעוד רגע"; syncRegister(); return; }
+  if(!S.parentCode){
+    if(errEl)errEl.textContent = S.regNameMismatch
+      ? "המספר הזה כבר רשום בשם אחר. יש להתחבר עם השם שנרשם במקור."
+      : "רק רגע — נרשם לשרת, נסו שוב בעוד רגע";
+    syncRegister(); return;
+  }
   const link=parentTrackLink();
   const msg=`מעקב אחר ${S.name||"הילד/ה"} באפליקציית Onyx לימודי 📚\nקישור: ${link}\nקוד הורה: ${S.parentCode}`;
   const sms="sms:"+raw+"?body="+encodeURIComponent(msg);
