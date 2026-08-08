@@ -245,7 +245,7 @@ const I18N = {
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
     bm_add:'הוסף סימניה לפרק זה', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
     print_ch:'הדפסת פרק', print_title:'הדפסת פרק', print_font:'גופן להדפסה', print_font_sam:'שומרוני', print_font_heb:'עברי',
-    print_interp:'כולל פירוש הפסוק', print_dict:'כולל מילון מילים', print_trans:'כולל תרגום',
+    print_interp:'כולל פירוש הפסוק', print_interp_sam:'הפירוש בכתב השומרוני (הגופן הנוסף)', print_dict:'כולל מילון מילים', print_trans:'כולל תרגום',
     print_preview:'תצוגה מקדימה', print_go:'הדפס / שמור PDF',
     bm_note_ph:'הוסף הערה…', bm_max:'הגעת למקסימום של 20 סימניות.', bm_dup:'כבר קיימת סימניה לפרק זה.',
     bm_added:'סימניה נוספה.', bm_empty:'אין סימניות.', bm_del_q:'למחוק את הסימניות שנבחרו?',
@@ -439,7 +439,7 @@ const I18N = {
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
     bm_add:'Bookmark this chapter', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
     print_ch:'Print chapter', print_title:'Print chapter', print_font:'Print font', print_font_sam:'Samaritan', print_font_heb:'Hebrew',
-    print_interp:'Include verse commentary', print_dict:'Include word dictionary', print_trans:'Include translation',
+    print_interp:'Include verse commentary', print_interp_sam:'Commentary in Samaritan script (alternate font)', print_dict:'Include word dictionary', print_trans:'Include translation',
     print_preview:'Preview', print_go:'Print / Save as PDF',
     bm_note_ph:'Add a note…', bm_max:'You have reached the maximum of 20 bookmarks.', bm_dup:'This chapter is already bookmarked.',
     bm_added:'Bookmark added.', bm_empty:'No bookmarks.', bm_del_q:'Delete the selected bookmarks?',
@@ -633,7 +633,7 @@ const I18N = {
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
     bm_add:'إضافة إشارة لهذا الأصحاح', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
     print_ch:'طباعة الأصحاح', print_title:'طباعة الأصحاح', print_font:'خط الطباعة', print_font_sam:'سامري', print_font_heb:'عبري',
-    print_interp:'تضمين تفسير الآية', print_dict:'تضمين قاموس الكلمات', print_trans:'تضمين الترجمة',
+    print_interp:'تضمين تفسير الآية', print_interp_sam:'التفسير بالخط السامري (الخط الإضافي)', print_dict:'تضمين قاموس الكلمات', print_trans:'تضمين الترجمة',
     print_preview:'معاينة', print_go:'طباعة / حفظ كملف PDF',
     bm_note_ph:'أضف ملاحظة…', bm_max:'وصلت إلى الحدّ الأقصى 20 إشارة.', bm_dup:'هذا الأصحاح مُؤشَّر بالفعل.',
     bm_added:'تمت إضافة الإشارة.', bm_empty:'لا توجد إشارات.', bm_del_q:'حذف الإشارات المحدّدة؟',
@@ -2643,11 +2643,12 @@ $('variantsBtn').onclick=()=>togglePanel('variants');
 // body-class toggle was used instead of listing every modal id).
 const PRINT_TR_FIELD  = {aramaic:'sam_aramaic', arabic:'arabic_trans', english:'english'};
 const PRINT_TR_LABEL  = {aramaic:'תרגום ארמי',  arabic:'תרגום ערבי',  english:'תרגום אנגלי'};
-const S_print = {font:'samaritan', interp:false, dict:false, trans:false, trChoice:null};
+const S_print = {font:'samaritan', interp:false, interpSam:false, dict:false, trans:false, trChoice:null};
 
 $('printBtn').onclick = () => {
   document.querySelectorAll('#printModal .pr-opt').forEach(b=>b.classList.toggle('sel', b.dataset.font===S_print.font));
   $('prInterp').checked = S_print.interp;
+  $('prInterpSam').checked = S_print.interpSam;
   $('prDict').checked = S_print.dict;
   $('prTrans').checked = S_print.trans;
   updatePrintTransLabel();
@@ -2658,8 +2659,9 @@ document.querySelectorAll('#printModal .pr-opt').forEach(b=>{
   b.onclick = () => { S_print.font = b.dataset.font;
     document.querySelectorAll('#printModal .pr-opt').forEach(x=>x.classList.toggle('sel', x===b)); };
 });
-$('prInterp').onchange = e => { S_print.interp = e.target.checked; };
-$('prDict').onchange   = e => { S_print.dict   = e.target.checked; };
+$('prInterp').onchange    = e => { S_print.interp    = e.target.checked; };
+$('prInterpSam').onchange = e => { S_print.interpSam = e.target.checked; };
+$('prDict').onchange      = e => { S_print.dict      = e.target.checked; };
 $('prTrans').onchange = e => {
   S_print.trans = e.target.checked;
   if(S_print.trans && !S_print.trChoice){
@@ -2695,7 +2697,13 @@ $('ppCloseBtn').onclick = () => {
   document.body.classList.remove('print-preview');
   $('printPreviewBar').classList.add('hidden');
 };
-$('ppPrintBtn').onclick = () => { window.print(); };
+$('ppPrintBtn').onclick = () => {
+  // printing straight from the on-screen preview still needs the SAME
+  // body.printing isolation prGo uses (@media print keys off it exclusively) —
+  // print-preview's own CSS is screen-only and does nothing for paper output.
+  document.body.classList.add('printing');
+  window.print();
+};
 $('prGo').onclick = async () => {
   $('printModal').classList.add('hidden');
   await buildPrintPage();
@@ -2768,6 +2776,11 @@ async function buildPrintPage(){
   if(S_print.interp){
     const box = el('div','pr-interp');
     box.appendChild(el('div','pr-box-title','פירוש הפסוק'));
+    // "הגופן השני" — the alternate SamComment (ben-nor23) font used on-screen for
+    // Samaritan-script commentary prose, independent of the main VERSE font choice.
+    const renderInterpText = txt => S_print.interpSam
+      ? samMarkupFree(addWordDots(stripNiqqud(txt)))
+      : esc(txt);
     try{
       const m = await api('interpretations?verse_ids='+verses.map(v=>v.id).join(','));
       let any = false;
@@ -2775,7 +2788,7 @@ async function buildPrintPage(){
         const txt = (m[v.id]||'').trim();
         if(!txt) return;
         any = true;
-        box.appendChild(vrow(v.number, esc(txt)));
+        box.appendChild(vrow(v.number, renderInterpText(txt)));
       });
       if(!any) box.appendChild(el('div','','אין פירוש זמין לפרק זה'));
     }catch(e){ box.appendChild(el('div','','שגיאה בטעינת פירוש הפסוק')); }
