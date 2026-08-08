@@ -5,8 +5,14 @@
 
 ## הרצה
 
+**קיצור-דרך**: הרץ (או צור קיצור-דרך אליו בשולחן העבודה) את
+`Verse Player/run_player.bat` — פותח את הדפדפן וגם מפעיל את השרת
+בבת אחת. סוגרים את חלון ה-cmd כדי לכבות את השרת.
+
+או ידנית:
+
 ```
-python scripts/reading_pipeline/player_server.py
+python "Verse Player/player_server.py"
 ```
 
 (דורש Python 3 — למשל `C:\Users\osher\AppData\Local\Programs\Python\Python313\python.exe`)

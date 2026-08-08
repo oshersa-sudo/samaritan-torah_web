@@ -49,9 +49,11 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
+import time
 import uuid
 import urllib.request
 import urllib.parse
+import urllib.error
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -71,22 +73,45 @@ BOOK_NAMES = {1: "בראשית", 2: "שמות", 3: "ויקרא", 4: "במדבר"
 
 
 # ───────────────────────── cloud helpers ─────────────────────────
-def cloud_get(path):
-    with urllib.request.urlopen(LIVE_BASE + path, timeout=20) as r:
-        return json.loads(r.read().decode("utf-8"))
+def cloud_get(path, retries=5, backoff=8):
+    """The live site is on Render's free tier and spins down when idle -
+    the first request after a while can 502/timeout for 30-60s while it
+    wakes back up. Retry through that instead of failing the whole
+    operation (redownload_split, apply, sync_status...) on a cold start."""
+    last_err = None
+    for attempt in range(retries):
+        try:
+            with urllib.request.urlopen(LIVE_BASE + path, timeout=20) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+            last_err = e
+            if attempt < retries - 1:
+                time.sleep(backoff)
+    raise RuntimeError(
+        "live site unreachable after {} tries over ~{}s (likely a Render "
+        "free-tier cold start - it can take a minute to wake up; try again "
+        "shortly): {}".format(retries, retries * backoff, last_err))
 
 
 def cloud_divisions(book_id):
     """Every current chapter -> its portion + verse text, straight from the
-    deployed site. This is what 'sync divisions from cloud' pulls."""
+    deployed site. This is what 'sync divisions from cloud' pulls.
+    portion_id is the site's global DB row id (NOT stable/comparable across
+    books - book 2 starts at 21, book 3 at 30, etc); portion_order is the
+    1-based position of the portion WITHIN this book, which is what the
+    player UI/readings.json actually mean by "portion order" - keep these
+    two distinct, conflating them only ever worked by coincidence for
+    Genesis (book 1), where id happens to equal order."""
     portions = cloud_get("/api/portions?book_id={}".format(book_id))
+    portions = sorted(portions, key=lambda p: p.get("start_ch", p["id"]))
     chapters = {}
-    for p in portions:
+    for order, p in enumerate(portions, start=1):
         pid = p["id"]
         chs = cloud_get("/api/sam_chapters?portion_id={}".format(pid))
         for c in chs:
             chapters[c["number"]] = {
                 "portion_id": pid,
+                "portion_order": order,
                 "portion_name": p["name"],
                 "opening": c.get("opening", ""),
                 "sam_ch_id": c["id"],
@@ -322,9 +347,8 @@ def apply_meir(entry):
             warnings.append("chapter {} not found in local DB - skipped metadata refresh".format(n))
             continue
         pinfo = div["chapters"].get(n)
-        portion = {"order": pinfo["portion_id"], "id": pinfo["portion_id"], "portion_name": pinfo["portion_name"]} if pinfo else (ref_entry["portion"] if ref_entry else {})
         if pinfo:
-            portion = {"order": pinfo["portion_id"], "id": pinfo["portion_id"], "name": pinfo["portion_name"]}
+            portion = {"order": pinfo["portion_order"], "id": pinfo["portion_id"], "name": pinfo["portion_name"]}
         else:
             portion = ref_entry["portion"] if ref_entry else {"order": entry["portion_order"], "id": entry["portion_order"], "name": ""}
             warnings.append("chapter {} not found in CLOUD portions - kept old portion label".format(n))
@@ -392,7 +416,7 @@ def redownload_split(payload):
         cands = [c for c in cands if 2 < c["start"] < dur - 2]
 
         div = cloud_divisions(book_id)
-        chapter_nums = [n for n, info in div["chapters"].items() if info["portion_id"] == portion_order]
+        chapter_nums = [n for n, info in div["chapters"].items() if info["portion_order"] == portion_order]
         if not chapter_nums:
             raise RuntimeError("live API lists no chapters for portion {} - check portion_order".format(portion_order))
 
@@ -446,7 +470,7 @@ def redownload_split(payload):
         "n_chapters": N,
         "weak_boundaries": weak,
         "portion_name": next((info["portion_name"] for info in div["chapters"].values()
-                               if info["portion_id"] == portion_order), ""),
+                               if info["portion_order"] == portion_order), ""),
     }
 
 
@@ -538,7 +562,10 @@ def cleanup_orphan_staging():
     referenced = set()
     for b in rd["books"]:
         for c in b["chapters"]:
-            referenced.add(Path(c["file"]).name)
+            if "file" in c:
+                referenced.add(Path(c["file"]).name)
+            for s in c.get("segs", []):
+                referenced.add(Path(s["file"]).name)
     removed = []
     for p in READINGS.glob("_redl*.mp3"):
         if p.name not in referenced:

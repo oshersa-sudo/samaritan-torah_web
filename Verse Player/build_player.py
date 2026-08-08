@@ -37,9 +37,14 @@ books = {}
 for b in rd["books"]:
     chs = []
     for c in sorted(b["chapters"], key=lambda c: c["n"]):
+        # a chapter mid-split across two source files (segs, no single "file")
+        # has no clean single-timeline representation here yet - fall back to
+        # its first segment so the build doesn't crash; not a real fix for
+        # multi-file Meir chapters, just defensive.
+        file_ = c.get("file") or (c.get("segs") or [{}])[0].get("file", "")
         chs.append({
             "n": c["n"],
-            "file": c["file"],
+            "file": file_,
             "duration": round(float(c.get("duration", 0)), 2),
             "verses": c.get("verses", ""),
             "verses_num": c.get("verses_num", ""),
@@ -129,6 +134,7 @@ button:disabled { opacity: .35; cursor: default; }
 .piece .num { width: 64px; padding: 5px; font-size: 15px; font-weight: bold; text-align: center;
               border: 1px solid #bbb; border-radius: 6px; }
 .piece .inc { font-size: 12px; color: #555; flex: 1; min-width: 140px; }
+.piece .prate { font-size: 12px; padding: 3px; border: 1px solid #bbb; border-radius: 6px; }
 .piece .tm { font-family: monospace; font-size: 12px; color: #06529b; }
 .edge { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 4px 4px 14px;
         border-top: 1px dashed #eee; }
@@ -149,8 +155,10 @@ button:disabled { opacity: .35; cursor: default; }
   <label>קורא <select id="readerSel"></select></label>
   <label>מהירות
     <select id="speedSel">
-      <option value="0.75">0.75×</option><option value="1" selected>1×</option>
-      <option value="1.25">1.25×</option><option value="1.5">1.5×</option>
+      <option value="0.5">0.5×</option><option value="0.75">0.75×</option>
+      <option value="1" selected>1×</option><option value="1.25">1.25×</option>
+      <option value="1.5">1.5×</option><option value="1.75">1.75×</option>
+      <option value="2">2×</option>
     </select>
   </label>
   <span id="stat"></span>
@@ -208,16 +216,17 @@ function saveEdits() { try { localStorage.setItem('torah-edits-v3', JSON.stringi
 function editedCount() { return Object.keys(edits).length; }
 
 /* ================= playback engine ================= */
-var Q = { items: [], idx: 0, cur: null };
-function playQueue(items) {
+var Q = { items: [], idx: 0, cur: null, rate: null };
+function playQueue(items, rate) {
   if (!items.length) return;
-  Q.items = items; Q.idx = 0; playing = true; nextInQueue();
+  Q.items = items; Q.idx = 0; Q.rate = (rate != null) ? rate : null; playing = true; nextInQueue();
 }
-function stopAll() { Q.items = []; Q.cur = null; playing = false; au.pause(); }
+function stopAll() { Q.items = []; Q.cur = null; Q.rate = null; playing = false; au.pause(); }
+function pauseAll() { if (playing) { au.pause(); playing = false; refreshTransport(); } }
 function nextInQueue() {
   if (Q.idx >= Q.items.length) { Q.cur = null; playing = false; au.pause(); refreshTransport(); return; }
   var it = Q.items[Q.idx++]; Q.cur = it;
-  au.playbackRate = parseFloat($('speedSel').value);
+  au.playbackRate = (Q.rate != null) ? Q.rate : parseFloat($('speedSel').value);
   var abs = new URL(it.src, location.href).href;
   if (au.src === abs) { au.currentTime = it.from || 0; au.play(); }
   else { au.src = it.src; au.onloadedmetadata = function () { au.currentTime = it.from || 0; au.play(); }; }
@@ -229,7 +238,10 @@ au.ontimeupdate = function () {
 };
 au.onended = function () { nextInQueue(); };
 au.onerror = function () { if (au.src) setStatus('שגיאת אודיו: ' + decodeURI(au.src.split('/').pop())); };
-$('speedSel').onchange = function () { au.playbackRate = parseFloat(this.value); };
+$('speedSel').onchange = function () {
+  var v = parseFloat(this.value);
+  if (Q.cur && Q.rate == null) au.playbackRate = v;
+};
 
 /* map virtual range [a,b] over timeline -> queue items carrying vFrom */
 function mapRange(tl, a, b) {
@@ -408,18 +420,51 @@ function setNum(i, v) {
 
 /* ================= play helpers ================= */
 function playFrom(v) { playQueue(mapRange(G.tl, v, null)); }
-function playRange(a, b) { playQueue(mapRange(G.tl, Math.max(0, a), b)); }
-function playPieceMeir(i) { playRange(G.bounds[i], G.bounds[i + 1]); setStatus('▶ פרק ' + G.chs[i]); }
-function playPieceWit(i) { var s = G.pieces[i]; playRange(s.t0, s.t1); setStatus('▶ פרק ' + s.n); }
+function playRange(a, b, rate) { playQueue(mapRange(G.tl, Math.max(0, a), b), rate); }
+function pieceRate(i) {
+  var sel = document.getElementById('prate-' + i);
+  if (!sel || sel.value === '') return null;
+  var v = parseFloat(sel.value);
+  return isNaN(v) ? null : v;
+}
+function playPieceMeir(i) { playRange(G.bounds[i], G.bounds[i + 1], pieceRate(i)); setStatus('▶ פרק ' + G.chs[i]); }
+function playPieceWit(i) { var s = G.pieces[i]; playRange(s.t0, s.t1, pieceRate(i)); setStatus('▶ פרק ' + s.n); }
 function togglePlay() {
   if (playing) { au.pause(); playing = false; }
   else if (Q.cur) { au.play(); playing = true; }
   else playFrom(playPos);
   refreshTransport();
 }
+/* which piece row (index) the playhead currently sits inside, or -1 */
+function currentPieceIndex() {
+  if (!G) return -1;
+  if (G.kind === 'meir') {
+    for (var i = 0; i < G.chs.length; i++) if (playPos >= G.bounds[i] - 0.001 && playPos < G.bounds[i + 1]) return i;
+  } else {
+    for (var j = 0; j < G.pieces.length; j++) if (playPos >= G.pieces[j].t0 - 0.001 && playPos < G.pieces[j].t1) return j;
+  }
+  return -1;
+}
+/* per-row play button: starts this piece, or pauses/resumes it if it's already the current one */
+function togglePiece(i, isMeir) {
+  var cur = currentPieceIndex();
+  if (cur === i && Q.cur) {
+    if (playing) { au.pause(); playing = false; refreshTransport(); }
+    else { au.play(); playing = true; refreshTransport(); }
+  } else if (isMeir) playPieceMeir(i);
+  else playPieceWit(i);
+}
 function jumpTo(v) {
   playPos = Math.max(0, Math.min(G.total, v));
   if (playing) playFrom(playPos); else refreshTransport();
+}
+/* per-row speed <select> changed while its piece is the one currently playing */
+function pieceRateChange(i) {
+  if (currentPieceIndex() === i) {
+    var v = pieceRate(i);
+    au.playbackRate = (v != null) ? v : parseFloat($('speedSel').value);
+    Q.rate = v;
+  }
 }
 
 /* ================= UI: selectors / grid ================= */
@@ -676,7 +721,11 @@ function refreshTransport() {
   } else {
     for (var j = 0; j < G.pieces.length; j++) if (playPos >= G.pieces[j].t0 - 0.001 && playPos < G.pieces[j].t1) { idx = j; curStart = G.pieces[j].t0; curEnd = G.pieces[j].t1; curN = G.pieces[j].n; }
   }
-  rows.forEach(function (r, k) { r.classList.toggle('playing', k === idx); });
+  rows.forEach(function (r, k) {
+    r.classList.toggle('playing', k === idx);
+    var btn = document.getElementById('pbtn-' + k);
+    if (btn) btn.textContent = (k === idx && playing) ? '⏸' : '▶';
+  });
   var marks = document.querySelectorAll('#seekMarks .mark');
   marks.forEach(function (m) {
     var v = parseFloat(m.getAttribute('data-v'));
@@ -760,7 +809,15 @@ function pieceRow(i, n, a, b, isMeir, canEditStart, canEditEnd) {
   var listenStart = isMeir ? ('playRange(' + a + '-3,' + a + '+3)') : ('playRange(G.pieces[' + i + '].t0,G.pieces[' + i + '].t0+3.2)');
   var listenEnd   = isMeir ? ('playRange(' + b + '-3,' + b + '+3)') : ('playRange(G.pieces[' + i + '].t1-3.2,G.pieces[' + i + '].t1)');
   var h = '<div class="piece"><div class="rowa">' +
-    '<button class="grn" onclick="' + (isMeir ? 'playPieceMeir(' : 'playPieceWit(') + i + ')">▶</button>' +
+    '<button class="grn" id="pbtn-' + i + '" onclick="togglePiece(' + i + ',' + isMeir + ')" title="נגן/השהה קטע זה">▶</button>' +
+    '<button onclick="stopAll();refreshTransport()" title="עצור">⏹</button>' +
+    '<select id="prate-' + i + '" class="prate" title="מהירות ניגון לקטע זה" onchange="pieceRateChange(' + i + ')">' +
+      '<option value="">מהירות ברירת מחדל</option>' +
+      '<option value="0.5">0.5×</option><option value="0.75">0.75×</option>' +
+      '<option value="1">1×</option><option value="1.25">1.25×</option>' +
+      '<option value="1.5">1.5×</option><option value="1.75">1.75×</option>' +
+      '<option value="2">2×</option>' +
+    '</select>' +
     '<input class="num" type="number" value="' + n + '" onchange="setNum(' + i + ',this.value)" title="מספר פרק שומרוני">' +
     '<span class="inc">' + incipitOf(n) + '</span>' +
     '<span class="tm">' + fmt(a) + ' → ' + fmt(b) + ' (' + fmt(b - a) + ')</span>' +
