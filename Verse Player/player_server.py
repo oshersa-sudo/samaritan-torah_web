@@ -73,27 +73,30 @@ BOOK_NAMES = {1: "בראשית", 2: "שמות", 3: "ויקרא", 4: "במדבר"
 
 
 # ───────────────────────── cloud helpers ─────────────────────────
-def cloud_get(path, retries=5, backoff=8):
+def cloud_get(path, retries=3, backoff=5, timeout=12):
     """The live site is on Render's free tier and spins down when idle -
-    the first request after a while can 502/timeout for 30-60s while it
-    wakes back up. Retry through that instead of failing the whole
-    operation (redownload_split, apply, sync_status...) on a cold start."""
+    the first request after a while can 502/time out while it wakes back
+    up, so retry through that rather than failing the whole operation.
+
+    Bounded on purpose: worst case here is ~46s, not minutes. Callers that
+    are a passive background nicety (sync lights) pass retries=1 so a site
+    that is genuinely down never leaves the UI hanging; user-initiated work
+    worth waiting for (redownload/apply) uses the default."""
     last_err = None
     for attempt in range(retries):
         try:
-            with urllib.request.urlopen(LIVE_BASE + path, timeout=20) as r:
+            with urllib.request.urlopen(LIVE_BASE + path, timeout=timeout) as r:
                 return json.loads(r.read().decode("utf-8"))
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError) as e:
             last_err = e
             if attempt < retries - 1:
                 time.sleep(backoff)
     raise RuntimeError(
-        "live site unreachable after {} tries over ~{}s (likely a Render "
-        "free-tier cold start - it can take a minute to wake up; try again "
-        "shortly): {}".format(retries, retries * backoff, last_err))
+        "האתר החי אינו זמין ({} ניסיונות). ייתכן שהוא בהמתנה להתעוררות "
+        "(Render free tier) - נסה שוב בעוד דקה. פרטים: {}".format(retries, last_err))
 
 
-def cloud_divisions(book_id):
+def cloud_divisions(book_id, retries=3):
     """Every current chapter -> its portion + verse text, straight from the
     deployed site. This is what 'sync divisions from cloud' pulls.
     portion_id is the site's global DB row id (NOT stable/comparable across
@@ -102,12 +105,12 @@ def cloud_divisions(book_id):
     player UI/readings.json actually mean by "portion order" - keep these
     two distinct, conflating them only ever worked by coincidence for
     Genesis (book 1), where id happens to equal order."""
-    portions = cloud_get("/api/portions?book_id={}".format(book_id))
+    portions = cloud_get("/api/portions?book_id={}".format(book_id), retries=retries)
     portions = sorted(portions, key=lambda p: p.get("start_ch", p["id"]))
     chapters = {}
     for order, p in enumerate(portions, start=1):
         pid = p["id"]
-        chs = cloud_get("/api/sam_chapters?portion_id={}".format(pid))
+        chs = cloud_get("/api/sam_chapters?portion_id={}".format(pid), retries=retries)
         for c in chs:
             chapters[c["number"]] = {
                 "portion_id": pid,
@@ -136,7 +139,7 @@ def sync_status(book_id, reader):
     its recording segment identical to what's live on the deployed site
     right now? Used for the per-chapter red/green sync light in the grid."""
     if reader == "meir":
-        live_rd = cloud_get("/static/audio/readings/readings.json")
+        live_rd = cloud_get("/static/audio/readings/readings.json", retries=1)
         live_b = next((b for b in live_rd["books"] if b["book_id"] == book_id), None)
         live_by_n = {c["n"]: c for c in (live_b["chapters"] if live_b else [])}
 
@@ -150,7 +153,7 @@ def sync_status(book_id, reader):
             result[c["n"]] = bool(lv) and _same_segment(c, lv)
         return {"synced": result}
 
-    live_wt = cloud_get("/static/audio/witnesses.json")
+    live_wt = cloud_get("/static/audio/witnesses.json", retries=1)
     live_by_key = {}
     for it in live_wt["items"]:
         live_by_key.setdefault((it["reader"], it["book_id"]), {})[it["sam_ch_number"]] = it
@@ -241,6 +244,22 @@ def apply_meir(entry):
     # a gap here would mean audio silently dropped from the manifest.
     if not pieces:
         raise RuntimeError("refusing: no pieces submitted")
+
+    # SAFETY: duplicate chapter numbers would collapse into one entry
+    # (placed[] is keyed by n, and both pieces map to the same output
+    # filename), silently DROPPING a piece of audio. The contiguity check
+    # below cannot catch this - the timeline still looks fully covered.
+    # This has bitten for real before (an un-renumbered split produced two
+    # pieces numbered 95, and one chapter's audio went missing).
+    seen_ns = {}
+    for p in pieces:
+        if p["n"] in seen_ns:
+            raise RuntimeError(
+                "refusing: chapter number {} appears on more than one piece. "
+                "This usually means a split wasn't renumbered - use "
+                "'מספר מחדש ברצף' (or fix the numbers) and try again.".format(p["n"]))
+        seen_ns[p["n"]] = True
+
     if abs(pieces[0]["v0"]) > 0.06 or abs(pieces[-1]["v1"] - total) > 0.06:
         raise RuntimeError("refusing: pieces don't span the full timeline (0 to {:.2f}); "
                             "got {:.2f} to {:.2f}".format(total, pieces[0]["v0"], pieces[-1]["v1"]))
@@ -487,6 +506,17 @@ def apply_witness(entry):
     reader, book_id, file_ = entry["reader"], entry["book_id"], entry["file"]
     fname = Path(file_).name
 
+    # Duplicate numbers would emit two witnesses.json items for the same
+    # reader+chapter - ambiguous, and whichever the app picks is arbitrary.
+    # (Same root cause as the Meir path: an un-renumbered split.)
+    dup_seen = set()
+    for p in entry["pieces"]:
+        if p["n"] in dup_seen:
+            raise RuntimeError(
+                "refusing: chapter number {} appears on more than one piece. "
+                "Use 'מספר מחדש ברצף' (or fix the numbers) and try again.".format(p["n"]))
+        dup_seen.add(p["n"])
+
     old_items = [it for it in wt["items"] if it["reader"] == reader and it["book_id"] == book_id
                  and any(s["file"].endswith(fname) for s in it.get("segs", []))]
     old_ns = set(it["sam_ch_number"] for it in old_items)
@@ -587,6 +617,31 @@ def push_to_cloud(message):
 
 # ───────────────────────── HTTP handler ─────────────────────────
 class Handler(BaseHTTPRequestHandler):
+    # HTTP/1.1 so browsers get correct Range/206 semantics, but WITHOUT
+    # keep-alive: switching pieces aborts the in-flight audio request
+    # mid-body, which leaves a reusable keep-alive connection out of sync
+    # (server mid-write, browser expecting a fresh response). The browser
+    # then reuses that poisoned connection for the next piece and the
+    # <audio> element hangs at readyState 0 - observed directly, and the
+    # exact "sometimes it plays, sometimes it doesn't" symptom. One
+    # connection per request costs nothing on localhost and makes a stale
+    # connection structurally impossible.
+    protocol_version = "HTTP/1.1"
+
+    def end_headers(self):
+        self.send_header("Connection", "close")
+        self.close_connection = True
+        BaseHTTPRequestHandler.end_headers(self)
+
+    def handle_one_request(self):
+        # A browser aborting an in-flight audio request (normal when switching
+        # pieces) surfaces here as a connection reset; without this it prints
+        # a full traceback per abort and tears the thread down noisily.
+        try:
+            BaseHTTPRequestHandler.handle_one_request(self)
+        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+            self.close_connection = True
+
     def _send_json(self, obj, code=200):
         body = json.dumps(obj, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
@@ -600,11 +655,22 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
+        # Local-only liveness check. The UI used to ping /api/cloud_divisions
+        # for this, which reaches out to the LIVE site - so whenever the
+        # deployed site was asleep the player reported "local server not
+        # available" even though it was running fine.
+        if parsed.path == "/api/ping":
+            self._send_json({"ok": True})
+            return
+
         if parsed.path == "/api/cloud_divisions":
             qs = urllib.parse.parse_qs(parsed.query)
             book_id = int(qs.get("book_id", ["1"])[0])
+            # retries=1: this also backs the "server connected?" ping on page
+            # load, so it must never hang the UI when the live site is down.
+            retries = int(qs.get("retries", ["1"])[0])
             try:
-                self._send_json(cloud_divisions(book_id))
+                self._send_json(cloud_divisions(book_id, retries=retries))
             except Exception as e:
                 self._send_json({"error": str(e)}, 500)
             return
@@ -628,7 +694,7 @@ class Handler(BaseHTTPRequestHandler):
             path = path.resolve()
             if not str(path).startswith(str(WEB.resolve())):
                 raise FileNotFoundError()
-            data = path.read_bytes()
+            file_size = path.stat().st_size
         except Exception:
             self.send_response(404)
             self.end_headers()
@@ -644,13 +710,44 @@ class Handler(BaseHTTPRequestHandler):
             ctype = "application/javascript"
         elif path.suffix == ".css":
             ctype = "text/css"
-        self.send_response(200)
+
+        # Real Range support: the server has always advertised Accept-Ranges
+        # but ignored the Range header and returned the whole file - the
+        # <audio> element relies on real 206 responses to seek, and a 200
+        # instead can make seeking/playback silently fail depending on
+        # where in the file you seek to (this is why playback looked
+        # "random": it depended on which byte offset was requested).
+        start, end, status = 0, file_size - 1, 200
+        range_header = self.headers.get("Range")
+        if range_header:
+            m = re.match(r"bytes=(\d*)-(\d*)", range_header)
+            if m and (m.group(1) or m.group(2)):
+                if m.group(1):
+                    start = int(m.group(1))
+                    end = int(m.group(2)) if m.group(2) else file_size - 1
+                else:
+                    start = max(0, file_size - int(m.group(2)))
+                    end = file_size - 1
+                start = max(0, min(start, file_size - 1)) if file_size else 0
+                end = max(start, min(end, file_size - 1)) if file_size else 0
+                status = 206
+        length = end - start + 1 if file_size else 0
+
+        self.send_response(status)
         self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Content-Length", str(length))
         self.send_header("Accept-Ranges", "bytes")
+        if status == 206:
+            self.send_header("Content-Range", "bytes {}-{}/{}".format(start, end, file_size))
         self.end_headers()
         if self.command != "HEAD":
-            self.wfile.write(data)
+            try:
+                with open(path, "rb") as f:
+                    f.seek(start)
+                    self.wfile.write(f.read(length))
+            except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                # browser moved on (switched pieces mid-download) - expected
+                self.close_connection = True
 
     def do_HEAD(self):
         self.do_GET()

@@ -200,7 +200,10 @@ function chMeta(n) { var cs = chapters(); for (var i = 0; i < cs.length; i++) if
 
 /* ================= server presence ================= */
 function pingServer() {
-  fetch(SERVER + '/api/cloud_divisions?book_id=1', { method: 'GET' }).then(function (r) {
+  /* /api/ping is local-only on purpose - pinging a cloud-touching endpoint
+     made this light go red whenever the DEPLOYED site was asleep, even
+     though the local server (the thing this light is about) was fine. */
+  fetch(SERVER + '/api/ping', { method: 'GET' }).then(function (r) {
     var el = $('serverStat');
     if (r.ok) { el.textContent = '🟢 שרת מקומי מחובר'; el.className = 'up'; }
     else { el.textContent = '🔴 שרת מקומי לא זמין'; el.className = 'down'; }
@@ -216,20 +219,40 @@ function saveEdits() { try { localStorage.setItem('torah-edits-v3', JSON.stringi
 function editedCount() { return Object.keys(edits).length; }
 
 /* ================= playback engine ================= */
-var Q = { items: [], idx: 0, cur: null, rate: null };
+var Q = { items: [], idx: 0, cur: null, rate: null, pieceIdx: null };
+/* au.play() returns a Promise that can silently reject (e.g. "interrupted by
+   a new load request" when the user clicks quickly) - if that's left
+   unhandled, `playing`/the UI say "playing" while nothing is actually
+   audible, with no error shown anywhere. playGen tags each play/pause
+   intent so a late-resolving promise from an already-superseded attempt
+   can recognize itself as stale and not clobber whatever state a newer
+   action already set. */
+var playGen = 0;
+function safePlay() {
+  var gen = ++playGen;
+  var p;
+  try { p = au.play(); } catch (e) { playFailed(gen, e); return; }
+  if (p && p.catch) p.catch(function (e) { playFailed(gen, e); });
+}
+function playFailed(gen, e) {
+  if (gen !== playGen) return;               /* superseded by a newer play/pause - not our business anymore */
+  if (e && e.name === 'AbortError') return;   /* benign: our own newer request interrupted this one */
+  playing = false; refreshTransport();
+  setStatus('שגיאת ניגון: לא ניתן היה להפעיל את הקטע (' + (e && e.message ? e.message : e) + ')');
+}
 function playQueue(items, rate) {
-  if (!items.length) return;
+  if (!items.length) { setStatus('אין מה לנגן בטווח הזה.'); return; }
   Q.items = items; Q.idx = 0; Q.rate = (rate != null) ? rate : null; playing = true; nextInQueue();
 }
-function stopAll() { Q.items = []; Q.cur = null; Q.rate = null; playing = false; au.pause(); }
-function pauseAll() { if (playing) { au.pause(); playing = false; refreshTransport(); } }
+function stopAll() { playGen++; Q.items = []; Q.cur = null; Q.rate = null; Q.pieceIdx = null; playing = false; au.pause(); }
+function pauseAll() { if (playing) { playGen++; au.pause(); playing = false; refreshTransport(); } }
 function nextInQueue() {
-  if (Q.idx >= Q.items.length) { Q.cur = null; playing = false; au.pause(); refreshTransport(); return; }
+  if (Q.idx >= Q.items.length) { playGen++; Q.cur = null; playing = false; au.pause(); refreshTransport(); return; }
   var it = Q.items[Q.idx++]; Q.cur = it;
   au.playbackRate = (Q.rate != null) ? Q.rate : parseFloat($('speedSel').value);
   var abs = new URL(it.src, location.href).href;
-  if (au.src === abs) { au.currentTime = it.from || 0; au.play(); }
-  else { au.src = it.src; au.onloadedmetadata = function () { au.currentTime = it.from || 0; au.play(); }; }
+  if (au.src === abs) { au.currentTime = it.from || 0; safePlay(); }
+  else { au.src = it.src; au.onloadedmetadata = function () { au.currentTime = it.from || 0; safePlay(); }; }
 }
 au.ontimeupdate = function () {
   var it = Q.cur; if (!it) return;
@@ -237,7 +260,35 @@ au.ontimeupdate = function () {
   if (it.to != null && au.currentTime >= it.to - 0.02) nextInQueue();
 };
 au.onended = function () { nextInQueue(); };
-au.onerror = function () { if (au.src) setStatus('שגיאת אודיו: ' + decodeURI(au.src.split('/').pop())); };
+au.onerror = function () {
+  if (au.src) setStatus('שגיאת אודיו: ' + decodeURI(au.src.split('/').pop()));
+  playGen++; playing = false; refreshTransport();
+};
+
+/* Watchdog: if the UI believes it's playing but the audio element is
+   actually stalled (paused, or the clock frozen) for a couple of seconds,
+   retry the current queue item once, then give up honestly rather than
+   sitting there looking like it's playing when it isn't. This is the
+   last-resort net for load/decode hiccups the events above don't surface. */
+var wdLast = -1, wdStuck = 0, wdRetried = false;
+setInterval(function () {
+  if (!playing || !Q.cur) { wdLast = -1; wdStuck = 0; wdRetried = false; return; }
+  var t = au.currentTime;
+  var frozen = (au.paused || Math.abs(t - wdLast) < 0.02);
+  wdLast = t;
+  if (!frozen) { wdStuck = 0; wdRetried = false; return; }
+  wdStuck++;
+  if (wdStuck === 4 && !wdRetried) {           /* ~2s stalled -> one silent retry */
+    wdRetried = true;
+    var it = Q.cur;
+    au.src = it.src;
+    au.onloadedmetadata = function () { au.currentTime = it.from || 0; safePlay(); };
+    au.load();
+  } else if (wdStuck >= 10) {                   /* ~5s -> stop pretending */
+    playGen++; playing = false; wdStuck = 0; refreshTransport();
+    setStatus('הניגון נתקע ולא התאושש — נסה ללחוץ שוב על ▶ (אם זה חוזר, רענן את הדף).');
+  }
+}, 500);
 $('speedSel').onchange = function () {
   var v = parseFloat(this.value);
   if (Q.cur && Q.rate == null) au.playbackRate = v;
@@ -419,7 +470,7 @@ function setNum(i, v) {
 }
 
 /* ================= play helpers ================= */
-function playFrom(v) { playQueue(mapRange(G.tl, v, null)); }
+function playFrom(v) { Q.pieceIdx = null; playQueue(mapRange(G.tl, v, null)); }
 function playRange(a, b, rate) { playQueue(mapRange(G.tl, Math.max(0, a), b), rate); }
 function pieceRate(i) {
   var sel = document.getElementById('prate-' + i);
@@ -427,11 +478,11 @@ function pieceRate(i) {
   var v = parseFloat(sel.value);
   return isNaN(v) ? null : v;
 }
-function playPieceMeir(i) { playRange(G.bounds[i], G.bounds[i + 1], pieceRate(i)); setStatus('▶ פרק ' + G.chs[i]); }
-function playPieceWit(i) { var s = G.pieces[i]; playRange(s.t0, s.t1, pieceRate(i)); setStatus('▶ פרק ' + s.n); }
+function playPieceMeir(i) { Q.pieceIdx = i; playRange(G.bounds[i], G.bounds[i + 1], pieceRate(i)); setStatus('▶ פרק ' + G.chs[i]); }
+function playPieceWit(i) { Q.pieceIdx = i; var s = G.pieces[i]; playRange(s.t0, s.t1, pieceRate(i)); setStatus('▶ פרק ' + s.n); }
 function togglePlay() {
-  if (playing) { au.pause(); playing = false; }
-  else if (Q.cur) { au.play(); playing = true; }
+  if (playing) { playGen++; au.pause(); playing = false; }
+  else if (Q.cur) { playing = true; safePlay(); }
   else playFrom(playPos);
   refreshTransport();
 }
@@ -447,10 +498,18 @@ function currentPieceIndex() {
 }
 /* per-row play button: starts this piece, or pauses/resumes it if it's already the current one */
 function togglePiece(i, isMeir) {
-  var cur = currentPieceIndex();
-  if (cur === i && Q.cur) {
-    if (playing) { au.pause(); playing = false; refreshTransport(); }
-    else { au.play(); playing = true; refreshTransport(); }
+  /* Q.pieceIdx is set synchronously the instant a piece starts playing -
+     currentPieceIndex() derives from playPos, which only updates once
+     au.ontimeupdate fires; using it here left a window right after a piece
+     started where a second click on the SAME button misread it as "a
+     different piece" and restarted it instead of pausing it. Clicked fast
+     enough (very normal - a click that doesn't look like it registered
+     invites a second one) that could repeat into a restart storm that
+     left playback stuck at 0:00 indefinitely. */
+  if (Q.pieceIdx === i && Q.cur) {
+    if (playing) { playGen++; au.pause(); playing = false; }
+    else { playing = true; safePlay(); }
+    refreshTransport();
   } else if (isMeir) playPieceMeir(i);
   else playPieceWit(i);
 }
@@ -556,7 +615,7 @@ function openChapter(n) {
 /* ================= cloud sync: divisions (cloud -> player, display only) ================= */
 function syncDivisionsFromCloud() {
   setStatus('מושך חלוקות מהענן…');
-  fetch(SERVER + '/api/cloud_divisions?book_id=' + book).then(function (r) {
+  fetch(SERVER + '/api/cloud_divisions?book_id=' + book + '&retries=3').then(function (r) {
     if (!r.ok) throw new Error('http ' + r.status);
     return r.json();
   }).then(function (data) {
