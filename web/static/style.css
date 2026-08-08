@@ -146,7 +146,8 @@ body.div-collapsed .div-handle{ height:26px; }
 .vpron .vpron-lat{ direction:ltr; unicode-bidi:isolate; font-family:'Translit',serif; color:#5a6b7a; font-size:15px; }
 .vpron .vpron-arrow{ color:#17a9c4; margin:0 7px; }
 .vpron .vpron-heb{ font-size:20px; color:var(--navy); }
-.bm-nav.pron-nav{ left:78px; padding:0 5px; font-size:19px; font-weight:700; line-height:1; color:#17a9c4; }
+.bm-nav.print-nav{ left:78px; font-size:16px; }
+.bm-nav.pron-nav{ left:150px; padding:0 5px; font-size:19px; font-weight:700; line-height:1; color:#17a9c4; }
 .pron-nav.on{ background:rgba(23,169,196,.9); color:#fff; border-radius:6px; }
 .vrow .num{ flex:0 0 auto; min-width:34px; height:30px; border:0; border-radius:6px;
             background:#c2cbef; color:var(--navy); font-family:inherit; font-size:14px; cursor:pointer; margin-top:4px; }
@@ -681,6 +682,59 @@ footer a{ color:var(--accent); text-decoration:none; }
 .dict-app-go:hover{ background:var(--accent); }
 .dict-app-hint{ color:var(--muted); font-size:13.5px; line-height:1.5; }
 #dictAppBody{ overflow-y:auto; }
+
+/* ── print-to-PDF ──────────────────────────────────────────────────────── */
+.modal-box.pr-opts{ gap:14px; }
+.pr-field{ display:flex; flex-direction:column; gap:6px; }
+.pr-label{ font-weight:700; color:var(--navy); font-size:14px; }
+.pr-choice{ display:flex; gap:8px; }
+.pr-opt{ flex:1; padding:10px; border:2px solid var(--navy); border-radius:8px; background:#fff;
+         color:var(--navy); font-weight:700; cursor:pointer; font-family:inherit; font-size:15px; }
+.pr-opt.sel{ background:var(--navy); color:#fff; }
+.pr-check{ display:flex; align-items:center; gap:8px; font-size:15px; color:var(--dark); cursor:pointer; }
+.pr-check input{ width:18px; height:18px; flex:0 0 auto; }
+.pr-trans-chosen{ font-size:13px; color:var(--accent); text-align:center; }
+
+/* #printArea is normally invisible on screen; it only becomes the whole page
+   either while previewing (body.print-preview) or while actually printing
+   (body.printing, via @media print). Built fresh by buildPrintPage() each time. */
+#printArea{ display:none; }
+.pr-page{ font-family:'Hebrew', serif; direction:rtl; }
+.pr-header{ text-align:center; border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:14px; }
+.pr-book{ font-size:22px; font-weight:900; }
+.pr-portion{ font-size:16px; font-weight:700; margin-top:2px; }
+.pr-chapter{ font-size:14px; margin-top:2px; color:#333; }
+.pr-main{ font-size:17px; line-height:1.9; }
+.pr-main .samchar{ font-family:'Samaritan'; }
+.pr-vrow{ margin-bottom:4px; }
+.pr-vnum{ font-weight:700; color:#555; font-size:12px; vertical-align:super; margin-inline-end:5px; }
+.pr-split{ display:flex; gap:14px; }
+.pr-col{ flex:1; border:1px solid #000; border-radius:6px; padding:10px; min-width:0; }
+.pr-dict, .pr-interp{ border:1px solid #000; border-radius:6px; padding:10px; margin-top:14px; }
+.pr-box-title{ font-weight:700; margin-bottom:6px; border-bottom:1px solid #ccc; padding-bottom:4px; }
+.pr-dict table.wtbl{ font-size:13px; }
+.pr-interp .pr-vrow{ line-height:1.6; }
+
+/* on-screen preview: same #printArea content shown as a scrollable page mock-up,
+   with a fixed action bar (הדפס / סגור) — no window.print() involved yet */
+body.print-preview #printArea{ display:block; position:fixed; inset:0; z-index:9990;
+  background:#8a8a8a; overflow-y:auto; padding:56px 16px 16px; }
+body.print-preview .pr-page{ background:#fff; max-width:780px; margin:0 auto 24px; padding:28px;
+  box-shadow:0 3px 16px rgba(0,0,0,.35); border-radius:2px; }
+#printPreviewBar{ position:fixed; top:0; inset-inline-start:0; inset-inline-end:0; z-index:9995;
+  display:flex; gap:10px; justify-content:center; padding:10px; background:var(--navy); }
+#printPreviewBar.hidden{ display:none; }
+#printPreviewBar button{ padding:9px 18px; border:0; border-radius:8px; font:inherit; font-size:15px;
+  font-weight:700; cursor:pointer; color:#fff; }
+#ppPrintBtn{ background:#3a6b34; }
+#ppCloseBtn{ background:#7a3030; }
+
+@media print{
+  body.printing > *:not(#printArea){ display:none !important; }
+  body.printing #printArea{ display:block !important; }
+  .pr-dict, .pr-interp{ page-break-inside:avoid; }
+  .pr-header{ page-break-after:avoid; }
+}
 #dictAppBody .dict-entry{ border-top:1px solid rgba(26,56,115,.15); padding-top:6px; margin-top:8px; }
 #dictAppBody .tal-head{ color:var(--navy); font-weight:700; font-size:19px; }
 /* dictionary app: mode tabs, page/index nav, clickable forms + locations */

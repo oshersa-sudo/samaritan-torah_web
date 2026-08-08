@@ -79,7 +79,7 @@
   </header>
 
   <!-- breadcrumb (with the bookmark sign pinned to its left corner) -->
-  <nav id="crumbs"><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button><button id="pronBtn" class="bm-nav pron-nav hidden" data-i18n-title="show_pron" title="הצג הגייה (תצוגה מקדימה)" aria-label="הצג הגייה">אָ</button></nav>
+  <nav id="crumbs"><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button><button id="printBtn" class="bm-nav print-nav hidden" data-i18n-title="print_ch" title="הדפסת פרק" aria-label="הדפסת פרק">🖨️</button><button id="pronBtn" class="bm-nav pron-nav hidden" data-i18n-title="show_pron" title="הצג הגייה (תצוגה מקדימה)" aria-label="הצג הגייה">אָ</button></nav>
 
   <!-- main scrolling content -->
   <main id="content"></main>
@@ -212,6 +212,47 @@
     <button class="share-opt cv-opt close" data-cv="" data-i18n="close">סגור</button>
   </div>
 </div>
+
+<!-- print options -->
+<div id="printModal" class="modal hidden">
+  <div class="modal-box pr-opts">
+    <div class="modal-title" data-i18n="print_title">הדפסת פרק</div>
+    <div class="pr-field">
+      <div class="pr-label" data-i18n="print_font">גופן להדפסה</div>
+      <div class="pr-choice">
+        <button class="pr-opt sel" data-font="samaritan" type="button" data-i18n="print_font_sam">שומרוני</button>
+        <button class="pr-opt" data-font="hebrew" type="button" data-i18n="print_font_heb">עברי</button>
+      </div>
+    </div>
+    <label class="pr-check"><input type="checkbox" id="prInterp"><span data-i18n="print_interp">כולל פירוש הפסוק</span></label>
+    <label class="pr-check"><input type="checkbox" id="prDict"><span data-i18n="print_dict">כולל מילון מילים</span></label>
+    <label class="pr-check"><input type="checkbox" id="prTrans"><span data-i18n="print_trans">כולל תרגום</span></label>
+    <div id="prTransChosen" class="pr-trans-chosen hidden"></div>
+    <button id="prPreview" class="share-opt" style="background:#3a6b34" data-i18n="print_preview">תצוגה מקדימה</button>
+    <button id="prGo" class="share-opt" style="background:var(--navy)" data-i18n="print_go">הדפס / שמור PDF</button>
+    <button class="share-opt close" id="prCancel" data-i18n="close">סגור</button>
+  </div>
+</div>
+
+<!-- print translation sub-picker (same 3 options as תרגומי התורה) -->
+<div id="printTransModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title" data-i18n="translate">תרגומי התורה</div>
+    <button class="share-opt pt-opt" data-tr="aramaic" style="background:#7a5a2e" data-i18n="to_aramaic">התרגום הארמי</button>
+    <button class="share-opt pt-opt" data-tr="arabic" style="background:#2f7d6b" data-i18n="to_arabic">התרגום לערבית</button>
+    <button class="share-opt pt-opt" data-tr="english" style="background:#3a6b34" data-i18n="to_english">התרגום לאנגלית</button>
+    <button class="share-opt pt-opt close" data-tr="" data-i18n="close">סגור</button>
+  </div>
+</div>
+
+<!-- on-screen preview action bar (shown only while previewing, over #printArea) -->
+<div id="printPreviewBar" class="hidden">
+  <button id="ppPrintBtn" data-i18n="print_go">🖨️ הדפס / שמור PDF</button>
+  <button id="ppCloseBtn" data-i18n="close">✕ סגור</button>
+</div>
+
+<!-- print-only output, built by buildPrintPage() right before printing/previewing -->
+<div id="printArea"></div>
 
 <!-- language picker -->
 <div id="langModal" class="modal hidden">
