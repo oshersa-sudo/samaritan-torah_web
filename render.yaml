@@ -10,7 +10,15 @@ services:
     region: frankfurt          # closest free region to Israel (much lower latency)
     # install ONLY Flask + gunicorn (not the phone-app's Kivy requirements)
     buildCommand: pip install -r web/requirements-prod.txt
-    startCommand: gunicorn web.server:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60
+    # ONE worker, not two: Render logs "Setting WEB_CONCURRENCY=1 by default, based
+    # on available CPUs in the instance" — this plan has ~0.5 CPU / 512MB, and an
+    # explicit --workers 2 overrode that advice, running two full Python processes
+    # (each with its own memory copy, both contending for half a core) and driving
+    # the service into a crash/restart loop. Concurrency comes from threads instead,
+    # which is the right model here: the app is I/O-bound (SQLite reads + static
+    # files) and thread-safe by construction — database.get_connection() opens a
+    # FRESH sqlite3 connection per call, with no shared module-level connection.
+    startCommand: gunicorn web.server:app --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 60
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.4"
