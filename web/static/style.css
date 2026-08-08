@@ -694,6 +694,7 @@ footer a{ color:var(--accent); text-decoration:none; }
 .pr-check{ display:flex; align-items:center; gap:8px; font-size:15px; color:var(--dark); cursor:pointer; }
 .pr-check input{ width:18px; height:18px; flex:0 0 auto; }
 .pr-check.pr-sub{ margin-inline-start:22px; font-size:13.5px; color:var(--muted,#777); }
+.pr-check.pr-disabled{ opacity:.4; cursor:default; }   /* Samaritan-only option, Hebrew font selected */
 .pr-trans-chosen{ font-size:13px; color:var(--accent); text-align:center; }
 
 /* #printArea is normally invisible on screen; it only becomes the whole page
@@ -708,6 +709,11 @@ footer a{ color:var(--accent); text-decoration:none; }
 .pr-chapter{ font-size:14px; margin-top:2px; color:#333; }
 .pr-main{ font-size:17px; line-height:1.9; text-align:justify; text-justify:inter-word; }
 .pr-main .samchar{ font-family:'Samaritan'; }
+/* continuous "scroll" flow (הסר מספרי פסוק): one justified block with no per-verse
+   line breaks. Deliberately NOT page-break-inside:avoid — a whole chapter as a
+   single block must be free to run across as many pages as it needs. */
+.pr-flow{ text-align:justify; text-justify:inter-word; }
+.pr-col .pr-flow{ font-size:inherit; }
 .pr-vrow{ margin-bottom:4px; page-break-inside:avoid; }
 .pr-vnum{ font-weight:700; color:#555; font-size:12px; vertical-align:super; margin-inline-end:5px; }
 .pr-split{ display:flex; gap:14px; }
