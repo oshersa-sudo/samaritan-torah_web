@@ -196,6 +196,8 @@ const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
 const GRADE_LETTER = {1:"א׳",2:"ב׳",3:"ג׳",4:"ד׳",5:"ה׳",6:"ו׳",7:"ז׳",8:"ח׳",9:"ט׳",10:"י׳",11:"י״א",12:"י״ב"};
 const MAX_LVL = 12;
 const LEVEL_NAME = Object.fromEntries(Object.entries(GRADE_LETTER).map(([k,v])=>[k,"כיתה "+v]));
+// The maths part names shift with the grade (see MATH_HI_LABEL) — use partName()
+// anywhere the child or parent reads it, not the raw table.
 const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
                     p5:"התאמת מילים",p6:"בלונים",
                     hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",hs:"נרדפות והפכים",wg:"מילה או קשקוש",hr:"הבנת הנקרא",
@@ -286,7 +288,23 @@ function teamHTML(){
   </div>`;
 }
 function curSubject(){ return SUBJECTS[S.subject] || SUBJECTS.english; }
-function curOrder(){ return curSubject().order; }
+// Which parts a subject serves at the child's grade. Only maths varies: the
+// order was fixed, so a first-grader who has not met multiplication yet was
+// handed multiplication, division and fractions.  כפל and חצי/רבע enter in ב׳,
+// division and real fractions in ג׳ — before that those parts are simply not
+// offered, and the score scales to the parts that are.
+function subjOrder(key,g){
+  const s=SUBJECTS[key]; if(!s)return [];
+  if(key!=="math")return s.order;
+  if(g<=1)return ["ma1","ma4","ma3","ma6"];
+  if(g<=2)return ["ma1","ma2","ma4","ma5","ma3","ma6"];
+  return s.order;
+}
+function curOrder(){ return subjOrder(S.subject,curLevel()); }
+function partName(scr,g){
+  const hi=(typeof MATH_HI_LABEL!=="undefined")&&/^ma/.test(scr)&&MATH_HI_LABEL[mathType(scr,g??curLevel())];
+  return (hi&&hi.name)||PART_NAME[scr]||"";
+}
 function subjTotal(){ return curOrder().reduce((a,p)=>a+(PART_QUOTA[p]||0),0); }
 const K = {session:p=>`session:${p}`,results:p=>`results:${p}`,seen:p=>`seen:${p}`};
 
@@ -1261,13 +1279,13 @@ function resumeHTML(){
   const f=S.found;
   // grade against the SAVED session's subject, not the currently-selected one,
   // so the percentage isn't normalised to the wrong denominator.
-  const fOrder=(SUBJECTS[f.subject]||curSubject()).order;
+  const fOrder=subjOrder(f.subject,curLevel());
   const fTotal=fOrder.reduce((a,p)=>a+(PART_QUOTA[p]||0),0)||1;
   const fGrade=Math.round(((f.score||0)/fTotal)*100);
   return `<section class="card hero">
   <span class="eyebrow">נמצא מבחן פתוח</span>
   <h1>להמשיך?</h1>
-  <p class="sub">נעצר ב<b>${esc(PART_NAME[f.screen]||"אמצע")}</b> בתאריך ${fmtDate(f.t)}, עם ${fGrade} מתוך 100.</p>
+  <p class="sub">נעצר ב<b>${esc(partName(f.screen)||"אמצע")}</b> בתאריך ${fmtDate(f.t)}, עם ${fGrade} מתוך 100.</p>
   <button class="primary" id="btn-resume">המשך מהמקום שנעצרתי</button>
   <button class="ghost" id="btn-fresh">התחל מבחן חדש</button>
 </section>`;
@@ -1488,11 +1506,11 @@ function menuHTML(){
     else{pill="מוכן";cls="ready";}
     return `<button class="skill-row" data-part="${part}">
       <span class="skill-num" style="background:${subj.grad}">${i+1}</span>
-      <span class="skill-body"><b>${PART_NAME[part]}</b><span>${PART_QUOTA[part]} ${PART_DESC[part]||""}</span></span>
+      <span class="skill-body"><b>${partName(part)}</b><span>${PART_QUOTA[part]} ${PART_DESC[part]||""}</span></span>
       <span class="skill-pill skill-${cls}">${pill}</span>
     </button>`;
   }).join("");
-  const nextName=cur>=0&&cur<order.length?PART_NAME[order[cur]]:PART_NAME[order[0]];
+  const nextName=cur>=0&&cur<order.length?partName(order[cur]):partName(order[0]);
   const rel=S.history.filter(r=>(r.subject||"english")===S.subject).slice(0,5);
   const hist=rel.length
     ?`<span class="eyebrow">מבחנים קודמים</span>
@@ -1951,7 +1969,7 @@ const MATH_CFG = {
   ma4:{eyebrow:"חשבון · המספר החסר",     lead:"איזה מספר משלים?",        type:"missing"},
 };
 function mathHTML(){
-  const c=MATH_CFG[S.screen]||MATH_CFG.ma1, t=TIME[S.screen]??300;
+  const c=mathLabel(S.screen,curLevel()), t=TIME[S.screen]??300;
   return `<section class="card">
   <div class="part-bar">
     <div><span class="eyebrow">${c.eyebrow}</span><p class="lead">${c.lead}</p></div>
@@ -1999,11 +2017,11 @@ function balloonsHTML(){
 
 function pausedHTML(){
   const lvl=curLevel();
-  const partName=PART_NAME[S.pausedFrom]||"התרגיל";
+  const pausedName=partName(S.pausedFrom)||"התרגיל";
   return `<section class="card hero pause-card kl-rise">
   <span class="eyebrow">הפסקה קטנה ⏸</span>
   <h1>מה עושים?</h1>
-  <p class="sub">${esc(S.name||"")}, עצרנו ב<b>${esc(partName)}</b>. אפשר להמשיך, לקבל עוד זמן, לשנות רמה, או לעבור מסך.</p>
+  <p class="sub">${esc(S.name||"")}, עצרנו ב<b>${esc(pausedName)}</b>. אפשר להמשיך, לקבל עוד זמן, לשנות רמה, או לעבור מסך.</p>
   <div class="pause-row">
     <button class="primary" id="pz-resume">▶ ממשיכים</button>
     <button class="pz-time" id="pz-time">⏱ עוד 2 דקות</button>
@@ -3068,10 +3086,32 @@ const MATH_RANGE={
   missing: {1:20,2:100,3:1000,4:1000, 5:10000, 6:100000},
 };
 const mathMax=(kind,g)=>MATH_RANGE[kind][Math.max(1,Math.min(6,g|0))] ?? MATH_RANGE[kind][6];
+
+// From ז׳ the curriculum leaves whole-number drill behind, so each slot serves
+// the strand that grade actually studies instead of a bigger version of the
+// same elementary exercise. Geometry and word problems keep their slots and
+// grow inside their own generators.
+const MATH_HI = {ma1:"signed", ma2:"percent", ma5:"algebra", ma4:"seq"};
+const mathType = (scr,g) => (g>=7 && MATH_HI[scr]) ? MATH_HI[scr] : (MATH_CFG[scr]||MATH_CFG.ma1).type;
+const MATH_HI_LABEL = {
+  signed :{eyebrow:"חשבון · מספרים מכוונים וחזקות", lead:"בחר/י את התשובה הנכונה", name:"מספרים מכוונים וחזקות"},
+  percent:{eyebrow:"חשבון · יחס, פרופורציה ואחוזים", lead:"בחר/י את התשובה הנכונה", name:"יחס ואחוזים"},
+  algebra:{eyebrow:"חשבון · אלגברה ומשוואות",       lead:"בחר/י את התשובה הנכונה", name:"אלגברה ומשוואות"},
+  seq    :{eyebrow:"חשבון · סדרות, הסתברות וסטטיסטיקה", lead:"בחר/י את התשובה הנכונה", name:"סדרות והסתברות"},
+};
+function mathLabel(scr,g){
+  const hi=MATH_HI_LABEL[mathType(scr,g)];
+  return hi || MATH_CFG[scr] || MATH_CFG.ma1;
+}
+
 function _genMathQ(lvl,type){
   // lvl is the school grade; sub-generators convert it themselves — converting
   // here too would map it twice and make their upper branches unreachable.
   type=type||"addsub";
+  if(type==="signed")  return _genSignedQ(lvl);
+  if(type==="percent") return _genPercentQ(lvl);
+  if(type==="algebra") return _genAlgebraQ(lvl);
+  if(type==="seq")     return _genSeqQ(lvl);
   const R=_mrand;
   if(type==="addsub"){
     const mx = mathMax("addsub",lvl);
@@ -3094,13 +3134,229 @@ function _genMathQ(lvl,type){
   if(type==="geom") return _genGeomQ(lvl);
   return _genWordProblem(lvl);            // type === "word"
 }
+// ══ Middle / high school strands (ז׳–י״ב) ═══════════════════════════════════
+// Israeli curriculum order: ז׳ signed numbers, powers, ratio, percentages and
+// first-degree equations; ח׳ brackets, two unknowns, linear functions,
+// statistics; ט׳ special products, factoring, quadratics, probability;
+// י׳–י״ב sequences, trigonometry and analytic geometry.
+const _shuf4=a=>shuffle([...new Set(a)]).slice(0,4);
+function _optsOf(ans,...wrong){
+  const s=[String(ans),...wrong.map(String)];
+  return {ans:String(ans),opts:_shuf4(s)};
+}
+
+// ── מספרים מכוונים, חזקות ושורשים ──
+function _genSignedQ(g){
+  const R=_mrand,pick=a=>a[R(0,a.length-1)];
+  const T=[
+    ()=>{const x=R(2,15),y=R(2,20);return {t:`(−${x}) + ${y}`,a:y-x,eq:true};},
+    ()=>{const x=R(2,15),y=R(2,15);return {t:`(−${x}) − (−${y})`,a:y-x,eq:true};},
+    ()=>{const x=R(2,9),y=R(2,9);return {t:`(−${x}) × (−${y})`,a:x*y,eq:true};},
+    ()=>{const x=R(2,9),y=R(2,9);return {t:`(−${x*y}) ÷ ${y}`,a:-x,eq:true};},
+    ()=>{const x=R(2,12);return {t:`|−${x}|`,a:x,eq:true};},
+    ()=>{const b=pick([2,3,4,5,6,10]),e=b<=3?R(2,4):R(2,3);return {t:`${b}^${e}`,a:Math.pow(b,e),eq:true};},
+    ()=>{const r=pick([4,9,16,25,36,49,64,81,100,121,144]);return {t:`√${r}`,a:Math.round(Math.sqrt(r)),eq:true};},
+    ()=>{const a=R(2,9),b=R(2,9),c=R(2,9);return {t:`${a} + ${b} × ${c}`,a:a+b*c,eq:true};},
+    ()=>{const a=R(2,9),b=R(2,9),c=R(2,6);return {t:`(${a} + ${b}) × ${c}`,a:(a+b)*c,eq:true};},
+  ];
+  if(g>=8)T.push(
+    ()=>{const b=pick([2,3,5]),m=R(2,4),n=R(2,3);
+      return {t:`${b}^${m} · ${b}^${n}`,rtl:false,..._optsOf(`${b}^${m+n}`,`${b}^${m*n}`,`${b*2}^${m+n}`,`${b}^${Math.abs(m-n)}`)};},
+    ()=>{const b=pick([2,3,5]),m=R(4,6),n=R(1,3);
+      return {t:`${b}^${m} : ${b}^${n}`,rtl:false,..._optsOf(`${b}^${m-n}`,`${b}^${m+n}`,`${b}^${m*n}`,`1^${m-n}`)};},
+    ()=>{const b=pick([2,3]),m=R(2,3),n=R(2,3);
+      return {t:`(${b}^${m})^${n}`,rtl:false,..._optsOf(`${b}^${m*n}`,`${b}^${m+n}`,`${b}^${m}`,`${b}^${n}`)};},
+    ()=>{const x=pick([2,3,4,5]);return {t:`(−${x})² מול −${x}²  →  כמה זה (−${x})²?`,a:x*x,rtl:true};},
+    ()=>{const x=pick([2,3,4,5]);return {t:`כמה זה −${x}² ?  (החזקה לפני הסימן)`,a:-(x*x),rtl:true};},
+  );
+  if(g>=9)T.push(
+    ()=>{const m=R(2,9),e=R(3,6);
+      return {t:`${m}·10^${e} — כמה אפסים אחרי הספרה ${m}?`,a:e,rtl:true};},
+    ()=>{const b=pick([2,3,5,10]),n=R(1,3);
+      return {t:`${b}^−${n}`,rtl:false,..._optsOf(`1/${Math.pow(b,n)}`,`−${Math.pow(b,n)}`,`${Math.pow(b,n)}`,`−1/${Math.pow(b,n)}`)};},
+    ()=>{const r=pick([8,27,64,125,1000]);return {t:`השורש השלישי של ${r}`,a:Math.round(Math.cbrt(r)),rtl:true};},
+  );
+  return pick(T)();
+}
+
+// ── יחס, פרופורציה ואחוזים ──
+function _genPercentQ(g){
+  const R=_mrand,pick=a=>a[R(0,a.length-1)];
+  const T=[
+    ()=>{const p=pick([10,20,25,50,75]),base=pick([20,40,60,80,100,200,400]);
+      return {t:`כמה זה ${p}% מ-${base}?`,a:base*p/100,rtl:true};},
+    ()=>{const base=pick([20,40,50,80,100,200]),p=pick([10,20,25,50]);
+      const part=base*p/100;                       // must come out whole
+      if(!Number.isInteger(part))return {t:`כמה זה 50% מ-${base}?`,a:base/2,rtl:true};
+      return {t:`${part} הם כמה אחוזים מ-${base}?`,a:p,rtl:true};},
+    ()=>{const a=R(1,5),b=R(1,5),k=R(2,9);
+      return {t:`היחס בין המספרים הוא ${a}:${b}. אם הראשון הוא ${a*k}, מהו השני?`,a:b*k,rtl:true};},
+    ()=>{const tot=pick([30,40,50,60,90,120]),a=R(1,4),b=R(1,4);
+      const sum=a+b,part=tot/sum*a;
+      if(!Number.isInteger(part))return {t:`כמה זה 50% מ-${tot}?`,a:tot/2,rtl:true};
+      return {t:`מחלקים ${tot} ביחס ${a}:${b}. מה החלק הראשון?`,a:part,rtl:true};},
+    ()=>{const n=R(2,9),c=pick([12,15,18,24,30]);
+      return {t:`${n} מחברות עולות ${n*c} ש״ח. כמה יעלו ${n+2} מחברות?`,a:(n+2)*c,rtl:true};},
+    ()=>{const price=pick([80,120,150,200,250,400]),d=pick([10,20,25,50]);
+      return {t:`מחיר של ${price} ש״ח הוזל ב-${d}%. מה המחיר החדש?`,a:price*(100-d)/100,rtl:true};},
+    ()=>{const price=pick([80,120,150,200,400]),u=pick([10,20,25,50]);
+      return {t:`מחיר של ${price} ש״ח התייקר ב-${u}%. מה המחיר החדש?`,a:price*(100+u)/100,rtl:true};},
+  ];
+  if(g>=8)T.push(
+    ()=>{const cap=pick([1000,2000,5000,8000]),r=pick([2,3,5,10]),y=R(1,3);
+      return {t:`הפקדה של ${cap} ש״ח נושאת ${r}% ריבית פשוטה לשנה. כמה ריבית תצטבר ב-${y} שנים?`,a:cap*r/100*y,rtl:true};},
+    ()=>{const before=pick([40,50,80,200]),after=pick([1.25,1.5,2]).valueOf();
+      const nv=Math.round(before*after);
+      return {t:`כמות גדלה מ-${before} ל-${nv}. בכמה אחוזים היא גדלה?`,a:Math.round((nv-before)/before*100),rtl:true};},
+    ()=>{const w=pick([200,400,500]),salt=pick([10,20,25]);
+      return {t:`בתמיסה של ${w} גרם יש ${w*salt/100} גרם מלח. מה אחוז המלח?`,a:salt,rtl:true};},
+  );
+  if(g>=9)T.push(
+    ()=>{const p=pick([100,200,400]),d=pick([10,20,50]);
+      const after=p*(100-d)/100;
+      return {t:`מוצר ב-${p} ש״ח הוזל ב-${d}% ואז התייקר ב-${d}%. מה המחיר הסופי?`,
+              a:Math.round(after*(100+d)/100*100)/100,rtl:true};},
+    ()=>{const orig=pick([200,300,500]),d=pick([20,25,40]);
+      return {t:`אחרי הנחה של ${d}% המחיר הוא ${orig*(100-d)/100} ש״ח. מה היה המחיר לפני ההנחה?`,a:orig,rtl:true};},
+  );
+  return pick(T)();
+}
+
+// ── ביטויים אלגבריים ומשוואות ──
+function _genAlgebraQ(g){
+  const R=_mrand,pick=a=>a[R(0,a.length-1)];
+  const T=[
+    ()=>{const a=R(2,9),x=R(2,12),b=R(1,20);
+      return {t:`${a}x + ${b} = ${a*x+b}   →   x = ?`,a:x};},
+    ()=>{const a=R(2,9),x=R(2,12),b=R(1,Math.min(15,a*x));
+      return {t:`${a}x − ${b} = ${a*x-b}   →   x = ?`,a:x};},   // right side stays ≥ 0
+    ()=>{const a=R(2,6),x=R(2,10);
+      return {t:`חשב/י את ערך הביטוי ${a}x + 3 כאשר x = ${x}`,a:a*x+3,rtl:true};},
+    ()=>{const a=R(2,6),b=R(2,6),x=R(2,9);
+      return {t:`חשב/י את ערך הביטוי ${a}x² − ${b} כאשר x = ${x}`,a:a*x*x-b,rtl:true};},
+    ()=>{const a=R(2,7),b=R(2,7);
+      return {t:`כנס/י איברים דומים: ${a}x + ${b}x`,rtl:false,..._optsOf(`${a+b}x`,`${a*b}x`,`${a+b}x²`,`${Math.abs(a-b)}x`)};},
+    ()=>{const a=R(2,6),b=R(2,8),x=R(2,9);
+      return {t:`${a}(x + ${b}) = ${a*(x+b)}   →   x = ?`,a:x};},
+  ];
+  if(g>=8)T.push(
+    ()=>{const a=R(3,9),b=R(1,2),x=R(2,10),c=R(1,12);
+      const co=k=>k===1?"":String(k);             // 1x reads as x
+      return {t:`${co(a)}x + ${c} = ${co(b)}x + ${(a-b)*x+c}   →   x = ?`,a:x};},
+    ()=>{const a=R(2,5),b=R(2,5);
+      return {t:`פתח/י סוגריים: ${a}(x + ${b})`,rtl:false,..._optsOf(`${a}x+${a*b}`,`${a}x+${b}`,`x+${a*b}`,`${a+b}x`)};},
+    ()=>{const a=R(3,9),b=R(2,8),x=Math.max(a,b),y=Math.min(a,b);
+      return {t:`x + y = ${x+y} ,  x − y = ${x-y}   →   x = ?`,a:x};},
+    ()=>{const m=R(2,5),c=R(1,9),x=R(2,8);
+      return {t:`בפונקציה y = ${m}x + ${c}, מה ערך y כאשר x = ${x}?`,a:m*x+c,rtl:true};},
+    ()=>{const m=R(2,6),c=R(1,9);
+      return {t:`מהו השיפוע של הישר y = ${m}x + ${c}?`,a:m,rtl:true};},
+  );
+  if(g>=9)T.push(
+    ()=>{const a=R(2,9);
+      return {t:`(x + ${a})²`,rtl:false,..._optsOf(`x²+${2*a}x+${a*a}`,`x²+${a*a}`,`x²+${a}x+${a*a}`,`x²+${2*a}x+${2*a}`)};},
+    ()=>{const a=R(2,9);
+      return {t:`(x − ${a})(x + ${a})`,rtl:false,..._optsOf(`x²−${a*a}`,`x²+${a*a}`,`x²−${2*a}x+${a*a}`,`x²−${a}x`)};},
+    ()=>{const r1=R(1,6),r2=R(1,6);
+      return {t:`x² − ${r1+r2}x + ${r1*r2} = 0 — מהו הפתרון הגדול?`,a:Math.max(r1,r2),rtl:true};},
+    ()=>{const a=R(2,6),b=R(2,6);
+      return {t:`פרק/י לגורמים: x² + ${a+b}x + ${a*b}`,rtl:false,
+              ..._optsOf(`(x+${a})(x+${b})`,`(x−${a})(x−${b})`,`(x+${a+b})(x+${a*b})`,`(x+${a})(x−${b})`)};},
+  );
+  if(g>=10)T.push(
+    ()=>{const a=R(1,3),h=R(1,5),k=R(1,9);
+      return {t:`מהו קדקוד הפרבולה y = ${a}(x − ${h})² + ${k}?`,rtl:true,
+              ..._optsOf(`(${h},${k})`,`(−${h},${k})`,`(${h},−${k})`,`(${k},${h})`)};},
+    ()=>{const b=R(2,8);
+      return {t:`מהי נקודת החיתוך של y = 2x + ${b} עם ציר ה-y?`,rtl:true,
+              ..._optsOf(`(0,${b})`,`(${b},0)`,`(0,2)`,`(−${b},0)`)};},
+  );
+  return pick(T)();
+}
+
+// ── סדרות, הסתברות וסטטיסטיקה ──
+function _genSeqQ(g){
+  const R=_mrand,pick=a=>a[R(0,a.length-1)];
+  const T=[
+    ()=>{const a1=R(1,9),d=R(2,9),n=4;
+      const s=Array.from({length:n},(_,i)=>a1+i*d);
+      return {t:`מהו האיבר הבא בסדרה: ${s.join(", ")}, ?`,a:a1+n*d,rtl:true};},
+    ()=>{const a1=R(1,5),q=pick([2,3]);
+      const s=Array.from({length:4},(_,i)=>a1*Math.pow(q,i));
+      return {t:`מהו האיבר הבא בסדרה: ${s.join(", ")}, ?`,a:a1*Math.pow(q,4),rtl:true};},
+    ()=>{const n=R(3,5),v=Array.from({length:n},()=>R(2,20));
+      const sum=v.reduce((a,b)=>a+b,0);
+      if(sum%n)v[0]+=n-(sum%n);
+      const s2=v.reduce((a,b)=>a+b,0);
+      return {t:`מהו הממוצע של המספרים: ${v.join(", ")}?`,a:s2/n,rtl:true};},
+    ()=>{const f=R(1,6);
+      return {t:`מטילים קובייה הוגנת. מה ההסתברות לקבל את המספר ${f}?`,rtl:true,
+              ..._optsOf("1/6","1/2","1/3","1/12")};},
+    ()=>({t:"מטילים מטבע פעמיים. מה ההסתברות לקבל פעמיים 'עץ'?",rtl:true,
+          ..._optsOf("1/4","1/2","1/3","2/4")}),
+  ];
+  if(g>=8)T.push(
+    ()=>{const v=shuffle([R(1,9),R(1,9),R(10,19),R(10,19),R(20,29)]);
+      const s=[...v].sort((a,b)=>a-b);
+      return {t:`מהו החציון של: ${v.join(", ")}?`,a:s[2],rtl:true};},
+    ()=>{const x=R(2,9),v=shuffle([x,x,x,R(10,19),R(20,29)]);
+      return {t:`מהו השכיח בקבוצה: ${v.join(", ")}?`,a:x,rtl:true};},
+    ()=>{const red=R(2,6),blue=R(2,6);
+      return {t:`בשקית ${red} כדורים אדומים ו-${blue} כחולים. מה ההסתברות להוציא אדום?`,rtl:true,
+              ..._optsOf(_fr(red,red+blue),_fr(blue,red+blue),_fr(red,blue),_fr(1,red+blue))};},
+    ()=>{const a1=R(1,9),d=R(2,7),n=R(5,12);
+      return {t:`בסדרה חשבונית a₁=${a1} והפרש d=${d}. מהו האיבר ה-${n}?`,a:a1+(n-1)*d,rtl:true};},
+  );
+  if(g>=9)T.push(
+    ()=>{const a1=R(1,6),d=R(2,6),n=R(5,10);
+      const sum=n*(2*a1+(n-1)*d)/2;
+      return {t:`בסדרה חשבונית a₁=${a1}, d=${d}. מהו סכום ${n} האיברים הראשונים?`,a:sum,rtl:true};},
+    ()=>{const a1=R(1,4),q=pick([2,3]),n=R(4,6);
+      return {t:`בסדרה הנדסית a₁=${a1} ומנה q=${q}. מהו האיבר ה-${n}?`,a:a1*Math.pow(q,n-1),rtl:true};},
+    ()=>({t:"מטילים שתי קוביות. מה ההסתברות שסכום התוצאות יהיה 12?",rtl:true,
+          ..._optsOf("1/36","1/6","1/12","2/36")}),
+  );
+  return pick(T)();
+}
+
 // ── Geometry & engineering (הנדסה וגיאומטריה) ──
 // Grounded in the Israeli curriculum (גאומטריה ומדידות): shapes & properties,
 // the four angle types, perimeter, area (rectangle/triangle/parallelogram/
 // trapezoid), 3-D solids (faces/edges/vertices), volume, symmetry, Pythagoras.
 function _genGeomQ(lvl){
+  const grade=lvl;
   lvl=gradeTier(lvl);
   const R=_mrand, pick=a=>a[R(0,a.length-1)];
+  // ז׳ ומעלה: trigonometry, analytic geometry, similarity and the solids the
+  // elementary branches never reach.
+  if(grade>=7){
+    const H=[
+      ()=>{const tr=pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17],[7,24,25],[9,40,41]]);
+        return {t:`במשולש ישר־זווית הניצבים ${tr[0]} ו-${tr[1]}. מה אורך היתר?`,a:tr[2],rtl:true};},
+      ()=>{const r=R(2,12);return {t:`למעגל רדיוס ${r} ס״מ. מה שטחו? (π·r², π≈3)`,a:3*r*r,rtl:true};},
+      ()=>{const r=R(2,12);return {t:`למעגל רדיוס ${r} ס״מ. מה היקפו? (2πr, π≈3)`,a:6*r,rtl:true};},
+      ()=>{const r=R(2,7),h=R(2,10);return {t:`לגליל רדיוס ${r} ס״מ וגובה ${h} ס״מ. מה נפחו? (π·r²·h, π≈3)`,a:3*r*r*h,rtl:true};},
+      ()=>{const n=pick([5,6,8,9,10,12]);return {t:`מהו סכום הזוויות הפנימיות במצולע בעל ${n} צלעות? ((n−2)·180°)`,a:(n-2)*180,rtl:true};},
+      ()=>{const k=R(2,5),a=R(2,9);return {t:`שני משולשים דומים ביחס ${1}:${k}. אם צלע בקטן היא ${a} ס״מ, מה הצלע המתאימה בגדול?`,a:a*k,rtl:true};},
+      ()=>{const k=R(2,4),s=R(2,6);return {t:`שני מצולעים דומים ביחס ${1}:${k}. פי כמה גדול שטח הגדול?`,a:k*k,rtl:true};},
+      ()=>{const x1=R(0,6),y1=R(0,6),d=pick([[3,4,5],[6,8,10],[5,12,13]]);
+        return {t:`מה המרחק בין הנקודות (${x1},${y1}) ו-(${x1+d[0]},${y1+d[1]})?`,a:d[2],rtl:true};},
+      ()=>{const x1=R(0,8)*2,y1=R(0,8)*2,x2=R(0,8)*2,y2=R(0,8)*2;
+        return {t:`מהי נקודת האמצע של הקטע שקצותיו (${x1},${y1}) ו-(${x2},${y2})?`,rtl:true,
+                ..._optsOf(`(${(x1+x2)/2},${(y1+y2)/2})`,`(${x1+x2},${y1+y2})`,
+                           `(${(x1+x2)/2},${y1+y2})`,`(${Math.abs(x1-x2)/2},${Math.abs(y1-y2)/2})`)};},
+    ];
+    if(grade>=9)H.push(
+      ()=>{const z=pick([[30,"1/2"],[45,"√2/2"],[60,"√3/2"]]);
+        return {t:`כמה זה sin ${z[0]}°?`,rtl:false,..._optsOf(z[1],"1","0","√3")};},
+      ()=>{const z=pick([[30,"√3/2"],[45,"√2/2"],[60,"1/2"]]);
+        return {t:`כמה זה cos ${z[0]}°?`,rtl:false,..._optsOf(z[1],"1","0","2")};},
+      ()=>({t:"כמה זה tan 45°?",a:1,rtl:false}),
+      ()=>{const r=R(2,6);return {t:`לכדור רדיוס ${r} ס״מ. מה נפחו? (4/3·π·r³, π≈3)`,a:4*r*r*r,rtl:true};},
+      ()=>{const r=R(2,6),h=R(3,9);return {t:`לחרוט רדיוס ${r} וגובה ${h} ס״מ. מה נפחו? (1/3·π·r²·h, π≈3)`,a:r*r*h,rtl:true};},
+    );
+    return pick(H)();
+  }
   const T=[];
   if(lvl<=1){
     T.push(
@@ -3193,6 +3449,41 @@ function _genFracQ(lvl){
 function _genWordProblem(lvl){
   // scaled by school grade, following the same number domain as the drills
   const R=_mrand, big = mathMax("missing",lvl);
+  // ז׳ ומעלה: the strands middle school word problems are actually built on —
+  // rate, percentage, ratio and work — instead of bigger cookie counts.
+  if(lvl>=7){
+    const pick=a=>a[R(0,a.length-1)];
+    const H=[
+      ()=>{const v=pick([40,50,60,80,90,100]),t=pick([2,3,4,5]);
+        return {t:`רכב נוסע במהירות ${v} קמ״ש במשך ${t} שעות. איזה מרחק עבר?`,a:v*t};},
+      ()=>{const v=pick([40,50,60,80]),d=v*pick([2,3,4]);
+        return {t:`רכב עבר ${d} ק״מ במהירות ${v} קמ״ש. כמה שעות נסע?`,a:d/v};},
+      ()=>{const d=pick([120,180,240,300]),t=pick([2,3,4]);
+        return {t:`אופנוע עבר ${d} ק״מ ב-${t} שעות. מה מהירותו הממוצעת בקמ״ש?`,a:d/t};},
+      ()=>{const p=pick([120,200,250,400]),d=pick([10,20,25,50]);
+        return {t:`חולצה עולה ${p} ש״ח ויש עליה הנחה של ${d}%. כמה תעלה?`,a:p*(100-d)/100};},
+      ()=>{const n=pick([20,25,40,50]),p=pick([10,20,40,50]);
+        return {t:`בכיתה ${n} תלמידים ו-${p}% מהם משתתפים במקהלה. כמה תלמידים משתתפים?`,a:n*p/100};},
+      ()=>{const a=R(2,5),b=R(2,5),tot=(a+b)*R(3,9);
+        return {t:`מחלקים ${tot} סוכריות בין שני ילדים ביחס ${a}:${b}. כמה קיבל הראשון?`,a:tot/(a+b)*a};},
+      ()=>{const h=pick([2,3,4,6]),w=pick([12,18,24,36]);
+        return {t:`פועל אחד מסיים עבודה ב-${w} שעות. כמה שעות ייקח ל-${h} פועלים באותו קצב?`,a:w/h};},
+      ()=>{const per=pick([15,20,25,30]),n=R(3,9);
+        return {t:`מחיר כרטיס ${per} ש״ח. כמה יעלו ${n} כרטיסים, ואם משלמים ב-${per*n+50} ש״ח כמה עודף מקבלים?`,a:50};},
+      ()=>{const c=pick([1500,2000,3000,5000]),r=pick([2,5,10]);
+        return {t:`חיסכון של ${c} ש״ח נושא ${r}% ריבית לשנה. כמה כסף יהיה אחרי שנה?`,a:c*(100+r)/100};},
+    ];
+    if(lvl>=9)H.push(
+      ()=>{const a=pick([20,30,40,60]),n=pick([100,200,300]);
+        const b=100-a;                             // the two shares make up the whole
+        return {t:`בתערובת של ${n} ק״ג, ${a}% קפה ו-${b}% סוכר. כמה ק״ג קפה יש בה?`,a:n*a/100};},
+      ()=>{const x=R(2,9);
+        return {t:`מספר כפול 3 ועוד 7 שווה ${3*x+7}. מהו המספר?`,a:x};},
+      ()=>{const x=R(5,20);
+        return {t:`היקף מלבן ${2*(x+x+4)} ס״מ, והאורך גדול ב-4 ס״מ מהרוחב. מה הרוחב?`,a:x};},
+    );
+    return H[R(0,H.length-1)]();
+  }
   const tmpls=[
     ()=>{const a=R(18,34),b=R(1,Math.min(a-1,12));return {t:`בכיתה יש ${a} תלמידים. ${b} מהם יצאו להפסקה. כמה תלמידים נשארו בכיתה?`,a:a-b};},
     ()=>{const a=R(3,big),b=R(1,big);return {t:`לרוני יש ${a} שקלים, והוא קיבל עוד ${b} שקלים. כמה שקלים יש לו עכשיו?`,a:a+b};},
@@ -3268,10 +3559,11 @@ function _genWordProblem(lvl){
   q.rtl=true; q.eq=false; return q;
 }
 function initMath(){
-  const scr=S.screen,cfg=MATH_CFG[scr]||MATH_CFG.ma1;
+  const scr=S.screen;
   const saved=S.prog[scr],lvl=curLevel(),n=PART_QUOTA[scr]||10,t=TIME[scr]??300;
+  const type=mathType(scr,lvl);          // the strand this grade actually studies
   if(saved&&saved.qs){MA.qs=saved.qs;MA.i=saved.i||0;}
-  else{MA.qs=Array.from({length:n},()=>_genMathQ(lvl,cfg.type));MA.i=0;}
+  else{MA.qs=Array.from({length:n},()=>_genMathQ(lvl,type));MA.i=0;}
   MA.picked=false;
   setPartCount(MA.qs.length);
   renderMathQ();
