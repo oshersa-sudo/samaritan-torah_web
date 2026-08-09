@@ -777,14 +777,63 @@ const AVATARS=["🦊","🐼","🦁","🐧","🐨","🦄","🐯","🐸","🐵","�
 // gives a natural mix: photos where available, emoji everywhere else.
 const PIC_API=(typeof window!=="undefined"&&window.PIC_KEY)?String(window.PIC_KEY):"";
 const _picCache={};
+
+// Pixabay ranks by popularity, so the first hit for a bare keyword is usually
+// an attractive SCENE that happens to contain the thing — "cup" returns a café
+// table, "bridge" returns a city skyline. In a vocabulary drill the picture has
+// to BE the word, not merely include it, so candidates are scored on how
+// central the word is to the image and anything that misses the bar keeps the
+// emoji, which is always exactly the object.
+const PIC_ISOLATED=/(isolated|white background|closeup|close up|close-up|macro|studio|cutout|cut out|single)/i;
+const PIC_SCENE=/^(landscape|scenery|city|street|urban|people|person|woman|man|girl|boy|child|kid|group|crowd|nature|background|wallpaper|texture|pattern|abstract|travel|holiday|vacation|sunset|sunrise|sky|panorama|view|architecture|building)$/i;
+// Words whose bare English form pulls the wrong subject or a scene; the query
+// is narrowed so the search itself returns the object.
+const PIC_QUERY={
+  bat:"bat animal", bank:"bank building", bark:"tree bark", bow:"bow ribbon",
+  can:"tin can", club:"golf club", crane:"crane bird", date:"date fruit",
+  fair:"funfair", fall:"autumn leaves", file:"nail file", fly:"fly insect",
+  jam:"fruit jam", kind:"kindness", light:"light bulb", match:"matchstick",
+  mine:"coal mine", mint:"mint leaves", mouse:"mouse animal", nail:"iron nail",
+  note:"music note", orange:"orange fruit", palm:"palm tree", park:"city park",
+  pen:"ballpoint pen", pitcher:"water pitcher", plant:"potted plant",
+  play:"children playing", point:"pencil point", pool:"swimming pool",
+  post:"wooden post", present:"gift box", punch:"fruit punch", race:"running race",
+  ring:"finger ring", rock:"stone rock", roll:"bread roll", row:"rowing boat",
+  saw:"hand saw", school:"school building", seal:"seal animal", spring:"spring season",
+  star:"star shape", state:"map state", stick:"wooden stick", tie:"neck tie",
+  train:"train locomotive", trunk:"elephant trunk", watch:"wrist watch",
+  well:"water well", wave:"ocean wave", yard:"back yard",
+};
+function _picScore(hit,word){
+  const raw=String(hit.tags||"").toLowerCase();
+  const tags=raw.split(/\s*,\s*/).filter(Boolean);
+  if(!tags.length)return -99;
+  const i=tags.indexOf(word);
+  let s;
+  if(i===0)      s=10;                  // the photo is ABOUT this word
+  else if(i===1) s=7;
+  else if(i>1)   s=3;
+  else if(tags.some(t=>t.split(/\s+/).includes(word))) s=2;   // only inside a phrase
+  else return -99;                      // the word isn't a tag at all → reject
+  if(PIC_ISOLATED.test(raw))s+=3;       // an object shot, not a situation
+  // a scene tag ranked ahead of our word means the photo is really that scene
+  const sc=tags.findIndex(t=>PIC_SCENE.test(t));
+  if(sc>=0&&sc<Math.max(i,0))s-=5;
+  return s;
+}
+const PIC_MIN_SCORE=7;                  // below this the emoji is the better picture
 function _picFetch(word){
   if(!PIC_API)return Promise.resolve(null);
   if(word in _picCache)return Promise.resolve(_picCache[word]);
-  const q=encodeURIComponent(word.replace(/^(a|an|the) /,""));
-  return fetch(`https://pixabay.com/api/?key=${PIC_API}&q=${q}&image_type=photo&safesearch=true&per_page=3`)
+  const bare=word.toLowerCase().replace(/^(a|an|the)\s+/,"").trim();
+  const q=encodeURIComponent(PIC_QUERY[bare]||bare);
+  return fetch(`https://pixabay.com/api/?key=${PIC_API}&q=${q}&image_type=photo&safesearch=true&per_page=20`)
     .then(r=>r.json()).then(j=>{
-      const hit=j&&j.hits&&j.hits[0]&&(j.hits[0].webformatURL||j.hits[0].previewURL);
-      _picCache[word]=hit||null;return _picCache[word];
+      const hits=(j&&j.hits)||[];
+      let best=null,bestS=-99;
+      for(const h of hits){ const s=_picScore(h,bare); if(s>bestS){bestS=s;best=h;} }
+      const url=(bestS>=PIC_MIN_SCORE&&best&&(best.webformatURL||best.previewURL))||null;
+      _picCache[word]=url;return url;
     }).catch(()=>null);
 }
 function showPic(id,item){
@@ -2331,11 +2380,28 @@ function initVocab(){
   TM.start(saved?.left??TIME.vocab,TIME.vocab,onVocabDone);
 }
 
+// The prompt is a picture ("מה רואים בתמונה?"), so a distractor that shows the
+// SAME picture makes the question unanswerable: the child picks a word the
+// picture genuinely depicts and is marked wrong. 102 emoji in the vocabulary
+// are shared by two or three words (💻 computer/programmer, 🍋 lemon/lime), so
+// this has to be filtered rather than left to chance.
+function vqOptions(item){
+  const clashes=x=>x.w===item.w||x.e===item.e;
+  const d=shuffle(V.pool.filter(x=>!clashes(x)));
+  if(d.length<4){                       // narrow level band — widen the net
+    const taken=new Set(d.map(x=>x.w));
+    for(const x of shuffle(VOCAB.filter(y=>y.e&&!clashes(y)&&!taken.has(y.w)))){
+      d.push(x); if(d.length>=4)break;
+    }
+  }
+  return shuffle([item,...d.slice(0,4)]);
+}
+
 function renderVQ(){
   const w=V.round[V.i];
   V.item=V.pool.find(x=>x.w===w)||VOCAB.find(x=>x.w===w);
   if(!V.item)return;
-  V.opts=shuffle([V.item,...shuffle(V.pool.filter(x=>x.w!==V.item.w)).slice(0,4)]);
+  V.opts=vqOptions(V.item);
   document.getElementById("q-ctr").textContent=`${V.i+1}/${V.round.length}`;
   showPic("q-pic",V.item);
   document.getElementById("q-opts").innerHTML=V.opts.map(o=>
@@ -2871,7 +2937,12 @@ function initBalloons(){
   if(saved&&saved.pairs){B.pairs=saved.pairs;B.topOrder=saved.topOrder;B.botOrder=saved.botOrder;B.solved=new Set(saved.solved||[]);}
   else{
     const pool=nearLevel(VOCAB.filter(x=>x.e),lvl,QUOTA.balloons);
-    B.pairs=pickFresh(pool,"balloons",QUOTA.balloons,x=>x.w).map(x=>({w:x.w,e:x.e,h:x.h}));
+    // two balloons showing the same emoji are indistinguishable — either word
+    // fits either balloon, so one of them is guaranteed to be marked wrong
+    const seenE=new Set();
+    B.pairs=pickFresh(pool,"balloons",QUOTA.balloons+6,x=>x.w)
+      .filter(x=>!seenE.has(x.e)&&seenE.add(x.e))
+      .slice(0,QUOTA.balloons).map(x=>({w:x.w,e:x.e,h:x.h}));
     B.topOrder=shuffle(B.pairs.map((_,k)=>k));
     B.botOrder=shuffle(B.pairs.map((_,k)=>k));
     B.solved=new Set();
