@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>התורה השומרונית הישראלית — עדכון מערכת</title>
+<style>
+  :root{ --navy:#1a3873; --gold:#c8a24a; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+        padding:24px; background:var(--navy); color:#fff;
+        font-family:'Frank Ruhl Libre','Times New Roman',serif; text-align:center; }
+  .card{ max-width:460px; }
+  .brand{ font-size:15px; letter-spacing:.22em; color:var(--gold); margin-bottom:26px; }
+  .ico{ font-size:52px; line-height:1; margin-bottom:18px; }
+  h1{ font-size:25px; font-weight:700; margin:0 0 16px; }
+  p{ font-size:17px; line-height:1.75; margin:0 0 10px; opacity:.93; }
+  .alt{ font-size:14px; opacity:.62; line-height:1.6; margin-top:22px;
+        border-top:1px solid rgba(255,255,255,.16); padding-top:18px; }
+  .alt div{ margin-bottom:4px; }
+  button{ margin-top:26px; padding:12px 30px; border:0; border-radius:9px;
+          background:var(--gold); color:var(--navy); font-family:inherit;
+          font-size:16px; font-weight:700; cursor:pointer; }
+  button:hover{ filter:brightness(1.08); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">אבני שהם</div>
+    <div class="ico">🛠️</div>
+    <h1>אנו מעדכנים את המערכת</h1>
+    <p>אנו מעדכנים את המערכת כרגע בתיקונים ובתוספות חדשים.<br>אנא נסה שוב מאוחר יותר.</p>
+    <button onclick="location.reload()">נסה שוב</button>
+    <div class="alt">
+      <div dir="ltr">The system is being updated with fixes and new features. Please try again later.</div>
+      <div>يجري تحديث النظام حاليًا بإصلاحات وإضافات جديدة. يُرجى المحاولة لاحقًا.</div>
+    </div>
+  </div>
+<script>
+  // come back on its own once the server answers again, so the reader does not
+  // have to sit and retry by hand during a deploy
+  setInterval(function(){
+    fetch('/api/admin/status', {cache:'no-store'})
+      .then(function(r){ if(r.ok) location.reload(); })
+      .catch(function(){});
+  }, 15000);
+</script>
+</body>
+</html>

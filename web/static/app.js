@@ -8,9 +8,34 @@ const $ = id => document.getElementById(id);
 // cache every GET response — the DB is read-only, so results never change within
 // a session. Re-navigating (books↔portions↔chapters↔verses) becomes instant.
 const _apiCache = new Map();
+// The service worker turns a failed PAGE load into the maintenance screen, but
+// the shell can also come back from cache and only then find the API dead (the
+// server went down after the app was already open). Catch that here too, so a
+// deploy never leaves the reader staring at an app that silently renders nothing.
+function showMaintenance(){
+  if (document.getElementById('maintScreen')) return;
+  const d = document.createElement('div');
+  d.id = 'maintScreen';
+  d.innerHTML = '<div class="maint-card">'
+    + '<div class="maint-brand">אבני שהם</div><div class="maint-ico">🛠️</div>'
+    + '<h1>אנו מעדכנים את המערכת</h1>'
+    + '<p>אנו מעדכנים את המערכת כרגע בתיקונים ובתוספות חדשים.<br>אנא נסה שוב מאוחר יותר.</p>'
+    + '<button onclick="location.reload()">נסה שוב</button></div>';
+  document.body.appendChild(d);
+  const t = setInterval(() => fetch('/api/admin/status', {cache:'no-store'})
+    .then(r => { if (r.ok) { clearInterval(t); location.reload(); } }).catch(()=>{}), 15000);
+}
 const api = async (path) => {
   if (_apiCache.has(path)) return _apiCache.get(path);
-  const data = await (await fetch('/api/' + path)).json();
+  let res;
+  try {
+    res = await fetch('/api/' + path);
+  } catch (err) {                       // network unreachable
+    if (navigator.onLine) showMaintenance();
+    throw err;
+  }
+  if (res.status >= 500) { showMaintenance(); throw new Error('server ' + res.status); }
+  const data = await res.json();
   _apiCache.set(path, data);
   return data;
 };
@@ -755,6 +780,21 @@ function commentaryText(text){
   if(!(S.samFont && S.samFontFull)) return esc(text||'');
   return samMarkupFree(addWordDots(stripNiqqud(text||'')));
 }
+// פירוש הפסוק text: unlike commentaryText() this keys off samFont ALONE, so a
+// reader in Samaritan script gets the commentary in the fluent Samaritan
+// commentary font (SamComment) without having to also turn on "כולל פירושים?".
+function interpText(text){
+  if(!S.samFont) return esc(text||'');
+  return samMarkupFree(addWordDots(stripNiqqud(text||'')));
+}
+// Is a side/bottom panel currently showing? Samaritan-font mode normally
+// suppresses panels and falls back to plain verse text, unless "כולל פירושים?"
+// is on — but פירוש הפסוק renders UNDER the verses in its own font, so it stays
+// available either way. Single source of truth: paintVerses and plainTextMode
+// both read this, so the two can never disagree about what is on screen.
+function panelActive(){
+  return !!(S.panel && (!S.samFont || S.samFontFull || S.panel==='interpret'));
+}
 // After layout, hide every separator middot that ends a visual line (the next word
 // wrapped to the line below). Re-run on zoom/resize so dots reappear when reducing
 // the text pulls more words up onto the line. Two passes: reset → measure → hide.
@@ -1065,14 +1105,14 @@ function paintVerses(){
   // "כולל פירושים?" (samFontFull) lets the reader keep the Samaritan-font mode ON
   // while still viewing a source/translation/commentary panel underneath it —
   // normally samFont suppresses all panels, falling back to plain verse text.
-  const usePanel = S.panel && (!S.samFont || S.samFontFull);
+  const usePanel = panelActive();
 
   if(usePanel && S.panel!=='compare'){
     addNumStrip(c, all);
     if(S.panel==='commentary'){ addPlainRows(c, verses); buildCommentary(c, verses); }
     else if(S.panel==='samaritan_src'){ if(S.samSrcChoice!=='translit') addPlainRows(c, verses); buildSamSrc(c, verses); }
     else if(S.panel==='variants'){ buildVariantsView(c, verses); }
-    else if(S.panel==='interpret'){ buildInterpret(c, verses); maybeDict(c, verses); }
+    else if(S.panel==='interpret'){ addPlainRows(c, verses); buildInterpret(c, verses); maybeDict(c, verses); }
     else if(S.panel==='aramaic'){ buildAramaic(c, verses); maybeDict(c, verses); }
     else if(S.panel==='arabic'){ buildArabic(c, verses); maybeDict(c, verses); }
   } else if(usePanel && S.panel==='compare'){
@@ -1272,10 +1312,15 @@ async function buildCompare(c, verses){
   c.appendChild(grid);
 }
 async function buildInterpret(c, verses){
-  // Show the verse commentary INLINE, in place of the original verse text
-  // (one row per verse), rather than as a separate panel beside the original.
+  // Rendered as its own panel BELOW the verse text (the caller adds the plain
+  // verses first), matching how "ממקור שומרון" presents its sources — rather
+  // than replacing the verse text inline the way it used to. In Samaritan-font
+  // mode the commentary comes out in the fluent Samaritan commentary font, so
+  // the original stands in Samaritan script with its interpretation beneath it.
   const m = await api('interpretations?verse_ids='+verses.map(v=>v.id).join(','));
   const fs = fsize();
+  const panel = el('div','srcpanel interp-panel');
+  panel.appendChild(el('div','ptitle', t('interp')));
   let any = false;
   for(const v of verses){
     let txt = (m[v.id]||'').trim();
@@ -1284,16 +1329,17 @@ async function buildInterpret(c, verses){
     txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
     if(!txt) continue;
     any = true;
-    const row = el('div','vrow');
-    const num = el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
+    const row = el('div','irow');
+    const num = el('button','inum'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
-    const t = el('div','vtext interp', commentaryText(txt));
-    t.style.fontSize = fs+'px';
-    row.appendChild(t); row.appendChild(num);
+    const body = el('div','itext', interpText(txt));
+    body.style.fontSize = fs+'px';
+    row.appendChild(num); row.appendChild(body);
     addPencil(row, v.id, 'interpretation', ()=>(m[v.id]||''));
-    c.appendChild(row);
+    panel.appendChild(row);
   }
-  if(!any) c.appendChild(el('div','note',t('no_interp')));
+  if(!any) panel.appendChild(el('div','note',t('no_interp')));
+  c.appendChild(panel);
 }
 // ── חילופי נוסח (von Gall critical apparatus) ───────────────────────────────
 // consonantal fold for matching an apparatus lemma to a word in the verse text
@@ -2044,7 +2090,7 @@ function plainTextMode(){
   // "כולל פירושים?" (samFontFull) lets the reader keep the Samaritan-font mode ON
   // while still viewing a source/translation/commentary panel underneath it —
   // normally samFont suppresses all panels, falling back to plain verse text.
-  const usePanel = S.panel && (!S.samFont || S.samFontFull);          // compare / commentary / aramaic …
+  const usePanel = panelActive();                                     // compare / commentary / aramaic / interpret
   return !usePanel && !(S.dict && !S.english);     // no comparison/commentary/dict panel
 }
 function makeFlipGhost(){

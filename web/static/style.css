@@ -683,6 +683,33 @@ footer a{ color:var(--accent); text-decoration:none; }
 .dict-app-hint{ color:var(--muted); font-size:13.5px; line-height:1.5; }
 #dictAppBody{ overflow-y:auto; }
 
+/* ── פירוש הפסוק panel (sits UNDER the verse text, like ממקור שומרון) ────── */
+.interp-panel{ margin-top:10px; }
+.interp-panel .ptitle{ text-align:center; font-weight:700; color:var(--navy);
+  font-size:17px; margin-bottom:8px; padding-bottom:6px;
+  border-bottom:1px solid rgba(26,56,115,.25); }
+.interp-panel .irow{ display:flex; align-items:flex-start; gap:8px; padding:6px 2px;
+  border-bottom:1px solid rgba(26,56,115,.10); }
+.interp-panel .irow:last-child{ border-bottom:0; }
+.interp-panel .inum{ flex:0 0 auto; min-width:32px; height:26px; border:0; border-radius:6px;
+  background:#c2cbef; color:var(--navy); font-family:inherit; font-size:13px; cursor:pointer; margin-top:3px; }
+.interp-panel .inum.active{ background:var(--accent); color:#fff; }
+.interp-panel .itext{ flex:1; line-height:1.75; direction:rtl; text-align:justify;
+  text-justify:inter-word; color:var(--dark); }
+.interp-panel .itext .samchar2{ font-family:'SamComment'; }
+
+/* ── "system is updating" blocking screen (server unreachable while online) ── */
+#maintScreen{ position:fixed; inset:0; z-index:99999; display:flex; align-items:center;
+  justify-content:center; padding:24px; background:var(--navy); color:#fff; text-align:center; }
+#maintScreen .maint-card{ max-width:460px; }
+#maintScreen .maint-brand{ font-size:15px; letter-spacing:.22em; color:var(--accent); margin-bottom:26px; }
+#maintScreen .maint-ico{ font-size:52px; line-height:1; margin-bottom:18px; }
+#maintScreen h1{ font-size:25px; font-weight:700; margin:0 0 16px; }
+#maintScreen p{ font-size:17px; line-height:1.75; margin:0; opacity:.93; }
+#maintScreen button{ margin-top:26px; padding:12px 30px; border:0; border-radius:9px;
+  background:var(--accent); color:var(--navy); font-family:inherit; font-size:16px;
+  font-weight:700; cursor:pointer; }
+
 /* ── print-to-PDF ──────────────────────────────────────────────────────── */
 .modal-box.pr-opts{ gap:14px; }
 .pr-field{ display:flex; flex-direction:column; gap:6px; }
