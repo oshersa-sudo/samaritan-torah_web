@@ -414,13 +414,14 @@ body {
   position: relative;
   display: flex;
   justify-content: space-between;
-  gap: 18px;
+  gap: var(--m-colgap, 18px);
   padding: 8px 4px;
   background: linear-gradient(135deg,#FFF6E9 0%,#EAF6FF 50%,#F3EEFF 100%);
   border-radius: 18px;
-  /* pan-y keeps vertical scrolling with the page (the board can be taller than
-     the screen) while still reserving horizontal drags for connecting pairs */
-  touch-action: pan-y;
+  /* Dragging a line and scrolling the page are the same finger gesture, so the
+     board is sized to fit the screen (see fitMatchBoard) and then claims the
+     gesture outright — a drag that starts here connects, it never scrolls. */
+  touch-action: none;
 }
 .match-svg {
   position: absolute;
@@ -438,8 +439,13 @@ body {
 .mcol {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  /* the two columns hold the same number of cards but different text lengths —
+     spreading them keeps the dots evenly reachable instead of bunching one
+     column at the top with dead space underneath */
+  justify-content: space-between;
+  gap: var(--m-gap, 10px);
   flex: 1;
+  min-width: 0;
   position: relative;
   z-index: 2;
 }
@@ -450,9 +456,11 @@ body {
   background: #fff;
   border: 2px solid #DCE9EE;
   border-radius: 14px;
-  padding: 12px 12px;
+  padding: var(--m-pad, 12px) 12px;
   font-family: 'Fredoka', sans-serif;
-  font-size: 16px;
+  font-size: var(--m-fs, 16px);
+  line-height: 1.25;
+  min-width: 0;
   color: #0B2430;
   cursor: pointer;
   box-shadow: 0 4px 10px -8px rgba(11,36,48,.5);
@@ -460,7 +468,35 @@ body {
 }
 .mitem { justify-content: flex-start; }
 .ritem { justify-content: flex-end; font-family: Rubik, sans-serif; font-weight: 500; }
-.mitem span, .ritem span { flex: 1; }
+.mitem span, .ritem span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+
+/* ── Fit-to-screen mode (matching board) ──────────────────────────────────
+   The board must be reachable without scrolling, so on these screens the
+   surrounding chrome is compacted: the mascot steps aside and the paddings
+   tighten. fitMatchBoard() then scales the cards themselves to what is left. */
+body.fit-board .game-mascot { display: none; }
+body.fit-board .topbar { margin-bottom: 8px; flex-wrap: nowrap; gap: 6px; }
+body.fit-board .tb-right { flex-wrap: nowrap; gap: 5px; }
+body.fit-board .tb-av { width: 36px; height: 36px; font-size: 20px; border-width: 2px; border-radius: 12px; }
+body.fit-board .tb-who b { font-size: 14px; }
+body.fit-board .tb-who span { font-size: 11px; }
+body.fit-board .iconbtn { width: 34px; height: 34px; font-size: 15px; border-radius: 11px; }
+body.fit-board .score { padding: 5px 10px; font-size: 15px; }
+/* the coin/streak chips are the first thing to go when the row is tight —
+   they are decoration, the board is the exercise */
+@media (max-width: 520px){ body.fit-board .tb-right .chip { display: none; } }
+@media (max-width: 380px){ body.fit-board .tb-who { display: none; } }
+body.fit-board .card { padding: 12px 14px; }
+body.fit-board .part-bar { margin-bottom: 6px; }
+body.fit-board .part-bar .eyebrow { margin-bottom: 4px; }
+body.fit-board .part-bar .lead { font-size: 14px; }
+body.fit-board .foot { margin: 0 0 6px; }
+body.fit-board .game-tip { display: none; }
+body.fit-board .app-credits { display: none; }
+/* last resort on a very short screen: the BOARD scrolls, never the page, so a
+   drag that starts on a card still connects */
+.match.m-scroll { overflow-y: auto; touch-action: pan-y; }
+.match.m-scroll .mitem, .match.m-scroll .ritem { touch-action: none; }
 .mitem:hover, .ritem:hover { border-color: #6C5CE7; transform: translateY(-1px); }
 /* tap-to-select: the chosen word stays highlighted until its meaning is tapped */
 .mitem.sel { border-color: #6C5CE7; background: #F3EEFF; box-shadow: 0 0 0 3px rgba(108,92,231,.18); }

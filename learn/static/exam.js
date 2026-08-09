@@ -2040,6 +2040,8 @@ function render(){
   if(isGame&&OPTION_SCREENS.has(S.screen)) body+=`<p class="game-tip">טיפ: אפשר לענות גם עם המקשים <b>1–4</b> ⌨️</p>`;
   body+=`<footer class="app-credits">© כל הזכויות שמורות ל־<b>OnyxApps</b> · אושר ששוני</footer>`;
   root.innerHTML=body;
+  // the drag-to-connect boards get a compact chrome so the whole exercise fits
+  document.body.classList.toggle("fit-board", S.screen==="p5"||S.screen==="hb"||S.screen==="p6");
   // tint the part eyebrow pill with the current subject's gradient
   root.style.setProperty("--subj-grad", isGame?curSubject().grad:"linear-gradient(180deg,#a78bfa,#7c3aed)");
   attachListeners();
@@ -2715,7 +2717,12 @@ function initHebMatch(){
   if(saved&&saved.pairs){M.pairs=saved.pairs;M.leftOrder=saved.leftOrder;M.rightOrder=saved.rightOrder;M.solved=new Set(saved.solved||[]);}
   else{
     const src=HEB_VOCAB.length?HEB_VOCAB:[{w:"בית",d:"מקום מגורים",lvl:3},{w:"שמח",d:"מרוצה",lvl:3},{w:"גדול",d:"רב־ממדים",lvl:3},{w:"מהיר",d:"זריז",lvl:3},{w:"יפה",d:"נאה",lvl:3},{w:"חכם",d:"נבון",lvl:3},{w:"קר",d:"צונן",lvl:3},{w:"חזק",d:"איתן",lvl:3}];
-    const pool=nearLevel(src.filter(x=>x.d),lvl,n+6);
+    let cand=src.filter(x=>x.d);
+    // Young readers get a fully vocalised board: mixing pointed and unpointed
+    // cards on the same screen is exactly the noise they are still learning to
+    // read past. Falls back to the whole pool if there aren't enough.
+    if(lvl<=4){ const voc=cand.filter(x=>HEB_NQ.words[x.w]); if(voc.length>=n) cand=voc; }
+    const pool=nearLevel(cand,lvl,n+6);
     M.pairs=dedupePairs(pickFresh(pool,"match:he",n+6,x=>x.w).map(x=>({w:x.w,h:x.d}))).slice(0,n);
     M.leftOrder=shuffle(M.pairs.map((_,k)=>k));
     M.rightOrder=shuffle(M.pairs.map((_,k)=>k));
@@ -2740,14 +2747,10 @@ function renderMatch(){
   updateMatchCtr();
   const wrap=document.getElementById("match-wrap"),svg=document.getElementById("match-svg");
   [...svg.querySelectorAll(".match-line")].forEach(l=>l.remove());
-  requestAnimationFrame(()=>{
-    const used=new Set();
-    [...M.solved].forEach(i=>{
-      const t=_mDef(M.pairs[M.leftOrder[i]]);
-      const j=M.rightOrder.findIndex((pi,jj)=>!used.has(jj)&&_mDef(M.pairs[pi])===t);
-      if(j>=0){used.add(j);drawMatchLine(i,j);}
-    });
-  });
+  // Fit synchronously — the cards are in the DOM, so their real height is
+  // already measurable, and a rAF here would let a half-sized board paint.
+  if(fitMatchBoard()==="retrimmed")return;   // re-rendered with fewer pairs
+  requestAnimationFrame(redrawMatchLines);
   // Tap-to-select: tap a word, then tap its meaning. Works alongside dragging
   // and, unlike dragging, leaves vertical scrolling to the page.
   const tapGuard=()=>{ if(wrap._moved){wrap._moved=false;return true;} return false; };
@@ -2762,6 +2765,67 @@ function renderMatch(){
 }
 
 function updateMatchCtr(){const c=document.getElementById("q-ctr");if(c)c.textContent=`${M.solved.size}/${M.pairs.length}`;}
+
+// Redraw the green lines for everything already solved. Kept separate from
+// renderMatch so a resize can re-place them after the board has been refitted.
+function redrawMatchLines(){
+  const svg=document.getElementById("match-svg");if(!svg)return;
+  [...svg.querySelectorAll(".match-line")].forEach(l=>l.remove());
+  const used=new Set();
+  [...M.solved].forEach(i=>{
+    const t=_mDef(M.pairs[M.leftOrder[i]]);
+    const j=M.rightOrder.findIndex((pi,jj)=>!used.has(jj)&&_mDef(M.pairs[pi])===t);
+    if(j>=0){used.add(j);drawMatchLine(i,j);}
+  });
+}
+
+// The whole board has to be visible at once: on a phone a drag and a scroll are
+// the same gesture, so anything below the fold is unreachable by dragging. Step
+// the card padding, gap and font down until the board fits the space left under
+// the header — and only if even the tightest step overflows, let the BOARD
+// scroll (never the page, so drags keep working).
+// The steps stop at 13px: below that the text stops being readable for the age
+// this exercise is for, so a board that still does not fit gives up a PAIR
+// rather than legibility (the score scales to the number actually asked).
+const _MFIT=[[10,12,16],[8,10,15],[7,9,14.5],[6,8,14],[5,7,13.5],[4,6,13]];
+const MIN_PAIRS=4;
+function fitMatchBoard(){
+  const wrap=document.getElementById("match-wrap");if(!wrap)return;
+  wrap.classList.remove("m-scroll");
+  wrap.style.maxHeight="";
+  const top=wrap.getBoundingClientRect().top;
+  const avail=Math.max(160,(window.innerHeight||640)-top-8);
+  let fits=false;
+  for(const [gap,pad,fs] of _MFIT){
+    wrap.style.setProperty("--m-gap",gap+"px");
+    wrap.style.setProperty("--m-pad",pad+"px");
+    wrap.style.setProperty("--m-fs",fs+"px");
+    wrap.style.setProperty("--m-colgap",(gap<6?10:18)+"px");
+    if(wrap.scrollHeight<=avail){fits=true;break;}
+  }
+  // Still too tall on a short screen: serve one pair fewer. Only before the
+  // child has matched anything — mid-game the board scrolls instead, so no
+  // answered pair is ever taken away.
+  if(!fits && M.solved.size===0 && M.pairs.length>MIN_PAIRS){ trimMatchPairs(M.pairs.length-1); return "retrimmed"; }
+  if(!fits){ wrap.style.maxHeight=avail+"px"; wrap.classList.add("m-scroll"); }
+  return fits?"fits":"scrolls";
+}
+function trimMatchPairs(n){
+  M.pairs=M.pairs.slice(0,n);
+  M.leftOrder=shuffle(M.pairs.map((_,k)=>k));
+  M.rightOrder=shuffle(M.pairs.map((_,k)=>k));
+  M.solved=new Set(); M.sel=null;
+  setPartCount(M.pairs.length);
+  renderMatch();
+}
+// Orientation changes and the mobile URL bar sliding away both change the
+// available height — refit and re-place the lines when they do.
+let _mfitT=null;
+window.addEventListener("resize",()=>{
+  if(S.screen!=="p5"&&S.screen!=="hb")return;
+  clearTimeout(_mfitT);
+  _mfitT=setTimeout(()=>{fitMatchBoard();redrawMatchLines();},120);
+});
 
 function drawMatchLine(i,j){
   const svg=document.getElementById("match-svg");
@@ -2888,8 +2952,10 @@ function bindDrag(wrap,svg,tempId,fromSel,toSel,ptFn,onConnect,isDragging,setDra
     temp.setAttribute("x1",a.x);temp.setAttribute("y1",a.y);
     temp.setAttribute("x2",a.x);temp.setAttribute("y2",a.y);temp.style.display="";
     try{wrap.setPointerCapture(e.pointerId);}catch(_){}
-    // NOTE: no preventDefault here — it would also cancel the page's vertical
-    // scrolling. touch-action (CSS) already reserves horizontal drags for us.
+    // The board owns this gesture (touch-action:none), so cancel the browser's
+    // default handling too — otherwise a drag also selects text or fires the
+    // long-press menu on top of the line being drawn.
+    if(e.cancelable)e.preventDefault();
   };
   wrap.onpointermove=e=>{
     if(!isDragging())return;
