@@ -2665,15 +2665,20 @@ document.querySelectorAll('#printModal .pr-opt').forEach(b=>{
     document.querySelectorAll('#printModal .pr-opt').forEach(x=>x.classList.toggle('sel', x===b));
     updatePrintNoNumsState(); };
 });
-// "הסר מספרי פסוק" is a Samaritan-script-only option (continuous scroll-style
-// flow) — greyed out and force-cleared while the Hebrew font is selected, so it
-// can never silently apply to a Hebrew printout.
+// "הסר מספרי פסוק" (continuous scroll-style flow) applies only to a
+// single-column Samaritan printout, so the checkbox is greyed out whenever it
+// cannot take effect — with the Hebrew font, and with a translation chosen
+// (there the columns must stay alignable verse-for-verse). The Hebrew-font case
+// also force-clears it, since that is a different rendering mode entirely;
+// the translation case only disables, so unchecking the translation brings the
+// user's choice back rather than silently discarding it.
 function updatePrintNoNumsState(){
-  const allowed = S_print.font === 'samaritan';
+  const samFont = S_print.font === 'samaritan';
+  const splitMode = !!(S_print.trans && S_print.trChoice);
   const cb = $('prNoNums');
-  cb.disabled = !allowed;
-  $('prNoNumsRow').classList.toggle('pr-disabled', !allowed);
-  if(!allowed && cb.checked){ cb.checked = false; S_print.noNums = false; }
+  cb.disabled = !samFont || splitMode;
+  $('prNoNumsRow').classList.toggle('pr-disabled', cb.disabled);
+  if(!samFont && cb.checked){ cb.checked = false; S_print.noNums = false; }
 }
 $('prNoNums').onchange = e => { S_print.noNums = e.target.checked; };
 $('prInterp').onchange    = e => { S_print.interp    = e.target.checked; };
@@ -2688,6 +2693,7 @@ $('prTrans').onchange = e => {
     S_print.trChoice = null;
   }
   updatePrintTransLabel();
+  updatePrintNoNumsState();
 };
 document.querySelectorAll('#printTransModal .pt-opt').forEach(b=>{
   b.onclick = () => {
@@ -2696,6 +2702,7 @@ document.querySelectorAll('#printTransModal .pt-opt').forEach(b=>{
     if(tr) S_print.trChoice = tr;
     else if(!S_print.trChoice){ S_print.trans = false; $('prTrans').checked = false; }
     updatePrintTransLabel();
+    updatePrintNoNumsState();
     $('printModal').classList.remove('hidden');
   };
 });
@@ -2757,7 +2764,10 @@ async function buildPrintPage(){
   // word-separator dots fall between verses by the very same rules they follow
   // inside one (its own PAUSE rule already suppresses a dot after a verse-final
   // ./׃), which is what makes the result read as an unbroken scroll line.
-  const flow = useSam && S_print.noNums;
+  // …but NOT when a translation is printed: there the two columns have to stay
+  // alignable verse-for-verse, so the numbers are kept regardless of the flag.
+  const splitMode = !!(S_print.trans && S_print.trChoice);
+  const flow = useSam && S_print.noNums && !splitMode;
   const flowBlock = (cls, texts, sam) => {
     const joined = texts.map(t => (t||'').trim()).filter(Boolean).join(' ');
     const d = el('div', cls + ' pr-flow');
@@ -2765,20 +2775,15 @@ async function buildPrintPage(){
     return d;
   };
 
-  if(S_print.trans && S_print.trChoice){
+  if(splitMode){
     const main = el('div','pr-main pr-split');
     const fld = PRINT_TR_FIELD[S_print.trChoice];
     const origCol = el('div','pr-col pr-orig');
     origCol.appendChild(el('div','pr-box-title','המקור'));
     const trCol = el('div','pr-col pr-tr');
     trCol.appendChild(el('div','pr-box-title', PRINT_TR_LABEL[S_print.trChoice]));
-    if(flow){
-      origCol.appendChild(flowBlock('', verses.map(v=>v.text), true));
-      trCol.appendChild(flowBlock('', verses.map(v=>v[fld]), false));
-    } else {
-      verses.forEach(v => origCol.appendChild(vrow(v.number, renderVerseText(v.text))));
-      verses.forEach(v => trCol.appendChild(vrow(v.number, esc(v[fld]||''))));
-    }
+    verses.forEach(v => origCol.appendChild(vrow(v.number, renderVerseText(v.text))));
+    verses.forEach(v => trCol.appendChild(vrow(v.number, esc(v[fld]||''))));
     main.appendChild(origCol); main.appendChild(trCol);
     page.appendChild(main);
   } else if(flow){
