@@ -91,14 +91,43 @@ SYSTEM = (
     "הקריאה החלופית. "
     "כתוב פרוזה עברית שוטפת בלבד — בלי כותרות Markdown, בלי כוכביות/הדגשה, "
     "בלי רשימות ממוספרות. מותר לצטט מילה או צירוף מהפסוק במירכאות ולפרשו. "
-    "היקף — זהו האילוץ החשוב ביותר: המטרה היא פירוש קריא בנוחות, לא אנציקלופדי. "
-    "בפסוק רגיל כתוב משפט אחד או שניים קצרים בלבד. גם כשהחומר עשיר מאוד "
-    "(למשל בפרק א׳ של בראשית, שעליו נכתב הרבה), בְּרֹר את הנקודה המעניינת "
-    "ביותר או שתיים לכל היותר — אל תנסה לכלול את כל מה שנאמר במקורות. "
-    "לכל היותר 3 משפטים קצרים לפסוק בודד, ורק כשמדובר בפסוק מרכזי שיש עליו "
-    "חומר יוצא דופן. זכור שהפירוש מוצג ברצף לכל פסוקי הפרק יחד — הפירוש "
-    "הכולל של הפרק כולו צריך להישאר קריא בנוחות בכמה דקות, לא יותר."
+    "ייחוס לאומרים — כאשר פירוש נשען על מקור שסופק לך ושמו נקוב (למשל 'פירוש צדקה "
+    "אל-חכים', 'תיבת מרקה', 'שו\"ת יעקב בן אהרן הכהן', 'סוד הלבבות', או מאמר "
+    "החתום בשם מחברו), הבא אותו בשם אומרו בתוך הפרוזה עצמה — למשל 'כדברי צדקה "
+    "אל-חכים…', 'לפי תיבת מרקה…', 'ומבאר פנחס בן אברהם הכהן…'. ייחס אך ורק למקור "
+    "שסופק בפועל לאותו פסוק ושמו מופיע בכותרת המקור. אם המקור מופיע בתווית גנרית "
+    "בלי שם אישי, או שהפירוש נובע מן התרגום הארמי או ממילון המילים בלבד — אל תייחס "
+    "לאיש והשאר את הניסוח כפי שהוא. לעולם אל תנחש שם, ואל תייחס דבר למי שאינו מופיע "
+    "בחומר שסופק. "
+    "היקף ומיצוי המקורות — זהו העיקר: מַצֶּה את כל החומר שסופק לך. עבור על "
+    "כל מקור שצורף לפרק והבא ממנו כל נקודה פרשנית ממשית — הסבר מילה, טעם, "
+    "מסורת, מחלוקת, או פרט שאינו עולה מפשט הכתוב. אל תסתפק בנקודה אחת "
+    "כשיש בחומר שלוש. היקף היעד לכלל הפרק (סכום כל פירושי הפסוקים יחד) "
+    "הוא בין 300 ל-500 מילים. כשהחומר עשיר הגע ל-500; כשהוא דל באמת אין "
+    "למתוח אותו. חלק את המכסה לפי מידת החומר שיש על כל פסוק: פסוק "
+    "שנסמכים עליו כמה מקורות יקבל כמה משפטים, ופסוק שאין עליו דבר "
+    "מלבד הפשט יקבל משפט קצר או מחרוזת commentary ריקה. אל תמלא מקום "
+    "בחזרה על לשון הפסוק עצמו — ציטוט הפסוק אינו פירוש. המגבלה היחידה "
+    "שאינה ניתנת למתיחה היא האיסור להמציא: הרחב רק על סמך מה שסופק."
 )
+
+# Samaritan commentary sources that feed the chapter prompt:
+#   (verse-link table, section table, text column, label shown to the model).
+# TO ADD A SOURCE LATER: create <x>_sections (id, text, ...) plus an
+# <x>_verse_links (section_id, verse_id) table tying each passage to the exact
+# verses it concerns, then add ONE row here - gather_chapter/build_prompt pick
+# it up automatically, and this label is the name the model cites when it brings
+# the point "bshem omro". If the section table also has an `author` column it is
+# appended to the label, so per-article bylines are credited by person rather
+# than by work.
+SOURCE_TABLES = [
+    ('eyalk_verse_links',   'eyalk_sections',   'text',   '\u05de\u05e1\u05d5\u05e8\u05ea \u05e9\u05d1\u05e2\u05dc-\u05e4\u05d4 \u05e9\u05d5\u05de\u05e8\u05d5\u05e0\u05d9\u05ea'),
+    ('tzdaka_verse_links',  'tzdaka_sections',  'text',   '\u05e4\u05d9\u05e8\u05d5\u05e9 \u05e6\u05d3\u05e7\u05d4 \u05d0\u05dc-\u05d7\u05db\u05d9\u05dd'),
+    ('sir_verse_links',     'sir_sections',     'text',   '\u05e1\u05d5\u05d3 \u05d4\u05dc\u05d1\u05d1\u05d5\u05ea'),
+    ('shyt_verse_links',    'shyt_sections',    'text',   '\u05e9\u05d5"\u05ea \u05d9\u05e2\u05e7\u05d1 \u05d1\u05df \u05d0\u05d4\u05e8\u05df \u05d4\u05db\u05d4\u05df'),
+    ('tm_verse_links',      'tm_sections',      'hebrew', '\u05ea\u05d9\u05d1\u05ea \u05de\u05e8\u05e7\u05d4'),
+    ('tradart_verse_links', 'tradart_sections', 'text',   '\u05de\u05d0\u05de\u05e8 \u05de\u05e1\u05d5\u05e8\u05ea \u05e9\u05d5\u05de\u05e8\u05d5\u05e0\u05d9\u05ea'),
+]
 
 
 def gather_chapter(cur, ch_id, book_name):
@@ -131,22 +160,23 @@ def gather_chapter(cur, ch_id, book_name):
         v['meliz'] = mz.get(v['id'], [])
 
     sources = []
-    for link_t, sect_t, col, label in [
-        ('eyalk_verse_links', 'eyalk_sections', 'text', 'מסורת שבעל-פה שומרונית'),
-        ('tzdaka_verse_links', 'tzdaka_sections', 'text', 'פירוש צדקה אל-חכים'),
-        ('sir_verse_links', 'sir_sections', 'text', 'סוד הלבבות'),
-        ('shyt_verse_links', 'shyt_sections', 'text', 'שו"ת יעקב בן אהרן הכהן'),
-        ('tm_verse_links', 'tm_sections', 'hebrew', 'תיבת מרקה'),
-        ('tradart_verse_links', 'tradart_sections', 'text', 'מאמר מסורת שומרונית'),
-    ]:
-        cur.execute(f'''SELECT s.id, s.{col}, GROUP_CONCAT(DISTINCT v.number)
+    for link_t, sect_t, col, label in SOURCE_TABLES:
+        # tradart is the one table whose sections carry a real byline; surface it
+        # in the label so "דברים בשם אומרם" has an actual name to cite instead of
+        # the generic 'מאמר מסורת שומרונית'.
+        _cols = [r[1] for r in cur.execute('PRAGMA table_info(%s)' % sect_t)]
+        auth_col = 's.author' if 'author' in _cols else "''"
+        cur.execute(f'''SELECT s.id, s.{col}, GROUP_CONCAT(DISTINCT v.number), {auth_col}
                         FROM {link_t} l JOIN {sect_t} s ON s.id=l.section_id
                         JOIN verses v ON v.id=l.verse_id
                         WHERE l.verse_id IN ({qmarks})
                         GROUP BY s.id''', vids)
-        for sid, text, vnums in cur.fetchall():
+        for sid, text, vnums, author in cur.fetchall():
             if text and text.strip():
-                sources.append({'label': label, 'verses': vnums or '', 'text': text.strip()})
+                lbl = label
+                if author and author.strip():
+                    lbl = '%s מאת %s' % (label, author.split('·')[0].strip())
+                sources.append({'label': lbl, 'verses': vnums or '', 'text': text.strip()})
     return verses, sources
 
 

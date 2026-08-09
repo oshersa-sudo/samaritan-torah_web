@@ -25,6 +25,8 @@ import time
 import sqlite3
 import argparse
 
+_ARGS = None
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import regen_interpretation as R   # SYSTEM, TOOL, MODEL, gather_chapter, build_prompt, DB_PATH, OUT_PATH
 
@@ -57,7 +59,7 @@ def _pending_chapters():
     rows = cur.execute(
         'SELECT id, book_id, number FROM sam_chapters WHERE book_id IN (1,2,3,4) '
         'ORDER BY book_id, number').fetchall()
-    done = set(str(k) for k in _checkpoint().keys())
+    done = set() if getattr(_ARGS, 'all', False) else set(str(k) for k in _checkpoint().keys())
     q = conn.cursor()
     out = []
     for cid, bid, num in rows:
@@ -73,6 +75,7 @@ def _pending_chapters():
 
 
 def cmd_submit(args):
+    globals()['_ARGS'] = args
     pend = _pending_chapters()
     if args.limit:
         pend = pend[:args.limit]
@@ -210,9 +213,26 @@ def cmd_collect(args):
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
-    s = sub.add_parser('submit'); s.add_argument('--limit', type=int); s.add_argument('--dry-run', action='store_true')
+
+    def _common(p):
+        # Attached to EVERY subcommand rather than the top-level parser: argparse
+        # only accepts top-level options before the subcommand name, which reads
+        # backwards on the command line.
+        p.add_argument('--out',   help='use a DIFFERENT checkpoint file (e.g. a v2 regeneration), '
+                                       'leaving the live one untouched')
+        p.add_argument('--state', help='use a different batch-state file')
+        return p
+
+    s = _common(sub.add_parser('submit'))
+    s.add_argument('--limit', type=int)
+    s.add_argument('--dry-run', action='store_true')
     s.add_argument('--chunk', type=int, default=100, help='requests per batch POST')
-    sub.add_parser('poll')
-    sub.add_parser('collect')
+    s.add_argument('--all', action='store_true', help='regenerate EVERY chapter, not only the missing ones')
+    _common(sub.add_parser('poll'))
+    _common(sub.add_parser('collect'))
+
     a = ap.parse_args()
+    _ARGS = a
+    if a.out:   R.OUT_PATH = os.path.abspath(a.out)
+    if a.state: STATE_PATH = os.path.abspath(a.state)
     {'submit': cmd_submit, 'poll': cmd_poll, 'collect': cmd_collect}[a.cmd](a)
