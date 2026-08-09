@@ -142,7 +142,19 @@ def cmd_poll(args):
 def cmd_collect(args):
     client = _client()
     ckpt = _checkpoint()
-    added = errored = skipped = 0
+    # The checkpoint format is {sam_ch_id: {VERSE_ID: text}} — the sync script
+    # resolves the model's verse NUMBERS against the DB before saving, and
+    # load_interpretations.py keys off verse ids. Do the identical mapping here,
+    # or the batch rows would be shaped differently from the sync ones and the
+    # loader would silently skip them.
+    conn = sqlite3.connect(R.DB_PATH)
+    vq = conn.cursor()
+
+    def num_to_id(ch_id):
+        vq.execute('SELECT id, number FROM verses WHERE sam_ch_id=?', (ch_id,))
+        return {str(n): i for i, n in vq.fetchall()}
+
+    added = errored = skipped = unmatched = 0
     err_samples = []
     for rec in _state()['batches']:
         b = client.messages.batches.retrieve(rec['batch_id'])
@@ -167,12 +179,28 @@ def cmd_collect(args):
             if ch_id in ckpt:
                 skipped += 1
                 continue
-            ckpt[ch_id] = payload
+            n2i = num_to_id(int(ch_id))
+            out = {}
+            for item in (payload.get('verses') or []):
+                if not isinstance(item, dict):
+                    continue
+                vid = n2i.get(str(item.get('number', '')).strip())
+                if vid is None:
+                    unmatched += 1
+                    continue
+                txt = (item.get('commentary') or '').strip()
+                if txt:
+                    out[str(vid)] = txt
+            if not out:
+                errored += 1
+                continue
+            ckpt[ch_id] = out
             added += 1
 
+    conn.close()
     json.dump(ckpt, open(R.OUT_PATH, 'w', encoding='utf-8'), ensure_ascii=False)
     print(f'merged into {R.OUT_PATH}')
-    print(f'  added {added} | already present {skipped} | failed {errored}')
+    print(f'  added {added} | already present {skipped} | failed {errored} | unmatched verse numbers {unmatched}')
     if err_samples:
         print('  first failures:', err_samples)
     print(f'  checkpoint now holds {len(ckpt)} chapters')
