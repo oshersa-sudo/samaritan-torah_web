@@ -1353,6 +1353,21 @@ def search_bhuq(q, limit=80):
     return out
 
 
+def _asatir_ar_col(conn):
+    """'s.arabic' when the DB has that column, else a literal empty string.
+
+    The live app reads its DB from a persistent disk, which is only re-seeded from
+    the repo on request — so a deploy can run new code against a DB written before
+    a column existed. Selecting `arabic` unconditionally made the library reader
+    return 500 there, and made the verse panel swallow the exception and show
+    nothing at all. Ask the DB what it has instead of assuming."""
+    try:
+        cols = [r[1] for r in conn.execute('PRAGMA table_info(asatir_sections)')]
+    except Exception:
+        cols = []
+    return 's.arabic' if 'arabic' in cols else "''"
+
+
 # ── ספר האסאטיר as a standalone library book ──
 # Unlike the other works on the shelf the Asatir is not a commentary keyed to
 # verses but a running chronicle from Adam to the end of days, divided here into
@@ -1382,8 +1397,9 @@ def get_asatir_chapter(chap):
         FROM asatir_verse_links l JOIN asatir_sections s ON s.id=l.section_id
         WHERE s.chap=? GROUP BY l.section_id""", (chap,)):
         vlink[r['sid']] = r['vid']
-    secs = conn.execute("SELECT id, ref, chap_title, text, arabic FROM asatir_sections "
-                        "WHERE chap=? ORDER BY ord", (chap,)).fetchall()
+    secs = conn.execute("SELECT s.id, s.ref, s.chap_title, s.text, %s arabic "
+                        "FROM asatir_sections s WHERE s.chap=? ORDER BY s.ord"
+                        % _asatir_ar_col(conn), (chap,)).fetchall()
     conn.close()
     title = secs[0]['chap_title'] if secs else ''
     out = [{'id': s['id'], 'ref': s['ref'] or '', 'title': '',
@@ -1816,7 +1832,8 @@ def get_asatir_commentary(verse_ids):
     placeholders = ','.join('?' * len(verse_ids))
     try:
         rows = conn.execute(
-            f"""SELECT DISTINCT s.id, s.chap, s.chap_title, s.ref, s.ord, s.text, s.arabic
+            f"""SELECT DISTINCT s.id, s.chap, s.chap_title, s.ref, s.ord, s.text,
+                       {_asatir_ar_col(conn)} arabic
                 FROM asatir_sections s
                 JOIN asatir_verse_links l ON l.section_id = s.id
                 WHERE l.verse_id IN ({placeholders})
@@ -1842,7 +1859,8 @@ def get_asatir_by_verse(verse_ids):
     placeholders = ','.join('?' * len(verse_ids))
     try:
         rows = conn.execute(
-            f"""SELECT l.verse_id vid, s.chap_title, s.ref, s.ord, s.text, s.arabic
+            f"""SELECT l.verse_id vid, s.chap_title, s.ref, s.ord, s.text,
+                       {_asatir_ar_col(conn)} arabic
                 FROM asatir_sections s
                 JOIN asatir_verse_links l ON l.section_id = s.id
                 WHERE l.verse_id IN ({placeholders})
