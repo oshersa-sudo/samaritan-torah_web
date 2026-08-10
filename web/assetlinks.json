@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "net.thesamaritans.torah",
+      "sha256_cert_fingerprints": [
+        "27:29:11:4A:7A:2B:46:AF:E9:A0:84:3F:5A:64:C2:F8:E1:D0:EE:82:ED:64:38:6D:CC:70:9A:9C:61:5F:7B:A8"
+      ]
+    }
+  }
+]

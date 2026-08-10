@@ -1,0 +1,41 @@
+{
+  "packageId": "net.thesamaritans.torah",
+  "host": "samaritan-torah.onrender.com",
+  "name": "התורה השומרונית הישראלית",
+  "launcherName": "תורה שומרונית",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#1a3873",
+  "themeColorDark": "#1a3873",
+  "navigationColor": "#1a3873",
+  "navigationColorDark": "#1a3873",
+  "navigationDividerColor": "#1a3873",
+  "navigationDividerColorDark": "#1a3873",
+  "backgroundColor": "#f7f7f2",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://samaritan-torah.onrender.com/static/img/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "torah"
+  },
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://samaritan-torah.onrender.com/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://samaritan-torah.onrender.com/",
+  "minSdkVersion": 24,
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "fingerprints": []
+}
