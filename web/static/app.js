@@ -140,7 +140,7 @@ const I18N = {
     samsrc_pick:'ממקור שומרון — בחר מקור', checking_sources:'בודק מקורות זמינים…',
     no_sam_source:'אין מקור שומרוני זמין לפסוקים אלה', back_sources:'‹ מקורות',
     src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים', src_bhuq:'פירוש אם בחקותי',
-    src_sir:'סוד הלבבות', src_shyt:'שו"ת — יעקב בן אהרן הכהן',
+    src_sir:'סוד הלבבות', src_shyt:'שו"ת — יעקב בן אהרן הכהן', src_asatir:'ספר האסאטיר',
     src_translit:'תעתיק הגייה', tr_source:'טקסט המקור', tr_translit:'תעתיק ההגייה השומרוני',
     no_translit:'אין תעתיק הגייה לפסוקים אלה',
     variants_title:'חילופי נוסח — מהדורת פון גאל',
@@ -159,6 +159,8 @@ const I18N = {
     tz_toc_hint:'בחר פרק לעיון:', tz_chapter_label:'פרק', tz_arabic_pending:'התרגום לערבית בהכנה — מוצג הנוסח העברי.',
     m_shyt_book:'שו"ת — יעקב בן אהרן הכהן', shyt_title:'שו"ת — יעקב בן אהרן הכהן', shyt_toc_hint:'בחר שאלה לעיון:',
     m_sir_book:'סוד הלבבות (סיר אל-קלוב)', sir_title:'סוד הלבבות — סיר אל-קלוב', sir_toc_hint:'בחר פרק לעיון:',
+    m_asatir_book:'ספר האסאטיר', asatir_title:'ספר האסאטיר', asatir_toc_hint:'בחר פרק לעיון:',
+    asatir_note:'ספר האסאטיר — דברי הימים השומרוני מאדם ועד אחרית הימים, בתעתיק עברי.',
     m_piyutim_book:'עיון בפיוטים השומרוניים', piy_title:'עיון בפיוטים השומרוניים',
     piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
     piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
@@ -206,7 +208,8 @@ const I18N = {
       '<p><b>גרסה 1.0 — המהדורה הוובית</b></p><ul><li>עיון בתורה השומרונית בחלוקה יהודית ושומרונית</li><li>כתב עברי-שומרוני ועברי; תרגומים: ארמי · ערבי · אנגלי</li><li>השוואה לנוסח המסורה, פרשנות יהודית, חיפוש ושיתוף</li></ul><p><b>גרסה 1.1 — מילונים ושורשים</b></p><ul><li>מילון הארמית של א. טל; "מילון מילים" טבלאי לכל מילה בפסוק</li><li>חיפוש מתקדם לפי שורש, בארמית, והצגת פירושים</li></ul>',
       '<p><b>גרסה 1.2 — ממקור שומרון</b></p><ul><li>תיבת מרקה, המסורת השומרונית, פירוש צדקה אל-חכים, סוד הלבבות, ספר האסאטיר</li><li>"פירוש הפסוק" — פירוש רציף רב-מקורי מוטמע</li></ul><p><b>גרסה 1.3 — חילופי נוסח והשוואות</b></p><ul><li>חילופי נוסח ממהדורת פון גאל, עם עדי-נוסח ותיאורי כתבי-יד</li><li>השוואה גם לתרגום השבעים; מחליף שפת ממשק (עברית/אנגלית/ערבית)</li></ul>',
       '<p><b>גרסה 1.4 — חוויית משתמש</b></p><ul><li>מסך פתיחה, חלון "ברוכים הבאים", אנימציית הפיכת דף, דפדוף רציף בין פרקים וספרים</li><li>כתב שומרוני מיושר, זום טקסט וקיפול הסרגל</li></ul><p><b>גרסה 1.5 — הספרייה השומרונית</b></p><ul><li>קוראי ספר מלאים: <b>תיבת מרקה</b> (ארמית/עברית) ו<b>פירוש צדקה אל-חכים</b> לכל בראשית (עברית/ערבית) — עם תוכן עניינים, חיפוש וקפיצה לפסוק</li><li>המילון הארמי שודרג: דפדוף עמודים, אינדקס, וכל מיקומי המילה במילון</li><li>כפתורי הגדלת טקסט בקוראים ובמילון</li></ul><p class="wc-sign"><b>תהנו!</b></p>',
-      '<p><b>גרסה 2.0 — הספרייה השומרונית</b></p><ul><li>הספרייה כעמוד כרטיסיות; קריאת פיוטים ומציאת חרוזים</li><li>האזנה להקראת פרקי התורה, עם בחירת קריין</li><li>כתב שומרוני גם לפירושים, ובראשית ב-250 פרקים מדויקים</li></ul><p><b>גרסה 2.1 — פירוש לכל התורה, ערבית והדפסה</b></p><ul><li>פירוש הפסוק נכתב מחדש לכל בראשית, שמות, ויקרא ובמדבר — וכל נקודה מובאת בשם אומרה</li><li>הפירוש בפאנל שמתחת לטקסט, עם מתגי כתב שומרוני וערבית וקישורי הרחבה</li><li>הדפסה ושמירה כ-PDF, עם תצוגה מקדימה</li><li>במחשב — מסך מלא; בנייד ללא שינוי</li></ul><p class=\"wc-sign\"><b>תהנו!</b></p>',
+      '<p><b>גרסה 2.0 — הספרייה השומרונית</b></p><ul><li>הספרייה כעמוד כרטיסיות; קריאת פיוטים ומציאת חרוזים</li><li>האזנה להקראת פרקי התורה, עם בחירת קריין</li><li>כתב שומרוני גם לפירושים, ובראשית ב-250 פרקים מדויקים</li></ul><p><b>גרסה 2.1 — פירוש לכל התורה, ערבית והדפסה</b></p><ul><li>פירוש הפסוק נכתב מחדש לכל בראשית, שמות, ויקרא ובמדבר — וכל נקודה מובאת בשם אומרה</li><li>הפירוש בפאנל שמתחת לטקסט, עם מתגי כתב שומרוני וערבית וקישורי הרחבה</li><li>הדפסה ושמירה כ-PDF, עם תצוגה מקדימה</li><li>במחשב — מסך מלא; בנייד ללא שינוי</li></ul>',
+      '<p><b>גרסה 2.2 — ספר האסאטיר</b></p><ul><li><b>ספר האסאטיר</b> נוסף לספרייה השומרונית כיחידה עצמאית: שישה-עשר פרקים, תוכן עניינים, חיפוש בתוך הספר, וקפיצה מכל פסקה אל הפסוק שהיא מספרת</li><li>הספר נוסף גם ל"ממקור שומרון": בכל פסוק שהאסאטיר מספר את מעשהו נפתח כפתור חדש ובו הפסקה הנוגעת בדבר, בציון פרק ופסקה</li></ul><p class=\"wc-sign\"><b>תהנו!</b></p>',
     ],
     interp_unavail:'פונקציה זו אינה פעילה באופן זמני.',
     welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
@@ -340,7 +343,7 @@ const I18N = {
     samsrc_pick:'Samaritan sources — choose a source', checking_sources:'Checking available sources…',
     no_sam_source:'No Samaritan source for these verses', back_sources:'‹ Sources',
     src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary", src_bhuq:'Commentary on Im Beḥuqotay',
-    src_sir:'Sīr al-Qulūb (Secret of Hearts)', src_shyt:'Responsa of Jacob ben Aaron',
+    src_sir:'Sīr al-Qulūb (Secret of Hearts)', src_shyt:'Responsa of Jacob ben Aaron', src_asatir:'The Book of Asatir',
     src_translit:'Pronunciation transcription', tr_source:'Source text', tr_translit:'Samaritan pronunciation',
     no_translit:'No pronunciation transcription for these verses',
     variants_title:'Textual variants — von Gall edition',
@@ -359,6 +362,8 @@ const I18N = {
     tz_toc_hint:'Choose a chapter:', tz_chapter_label:'Chapter', tz_arabic_pending:'The Arabic is being prepared — showing the Hebrew.',
     m_shyt_book:'Responsa of Jacob ben Aaron', shyt_title:'Responsa — Jacob ben Aaron the Priest', shyt_toc_hint:'Choose a question:',
     m_sir_book:'Sīr al-Qulūb (Secret of Hearts)', sir_title:'Sīr al-Qulūb — The Secret of Hearts', sir_toc_hint:'Choose a section:',
+    m_asatir_book:'The Book of Asatir', asatir_title:'The Book of Asatir', asatir_toc_hint:'Choose a chapter:',
+    asatir_note:'The Book of Asatir — the Samaritan chronicle from Adam to the end of days, in Hebrew transcription.',
     m_piyutim_book:'Samaritan Piyyutim', piy_title:'Samaritan Piyyutim',
     piy_back_tree:'Back to contents', piy_dict_toggle:'Word dictionary', piy_search_ph:'Search composition, author, or word…',
     piy_empty:'Choose a composition from the contents ←', piy_pick_first:'Choose a composition',
@@ -406,7 +411,8 @@ const I18N = {
       '<p><b>v1.0 — the web edition</b></p><ul><li>Study the Samaritan Torah in the Jewish and Samaritan divisions</li><li>Samaritan-Hebrew & Hebrew scripts; translations: Aramaic · Arabic · English</li><li>Comparison to the Masorah, Jewish commentary, search and sharing</li></ul><p><b>v1.1 — dictionaries & roots</b></p><ul><li>A. Tal’s Aramaic dictionary; a per-word table for every word in a verse</li><li>Advanced search by root, in the Aramaic, with meanings</li></ul>',
       '<p><b>v1.2 — Samaritan sources</b></p><ul><li>Tībåt Mårqe, the Samaritan tradition, Ṣadaqah al-Ḥakīm, Sīr al-Qulūb, the Book of Asatir</li><li>“Verse commentary” — a continuous, multi-source reading</li></ul><p><b>v1.3 — textual variants & comparisons</b></p><ul><li>von Gall’s variants, with witnesses and manuscript descriptions</li><li>Comparison to the Septuagint; UI language switcher (he/en/ar)</li></ul>',
       '<p><b>v1.4 — user experience</b></p><ul><li>Entry splash, a Welcome screen, a page-turn animation, continuous chapter & book paging</li><li>Justified Samaritan script, text zoom, and a collapsible bar</li></ul><p><b>v1.5 — the Samaritan Library</b></p><ul><li>Full-book readers: <b>Tībåt Mårqe</b> (Aramaic/Hebrew) and <b>Ṣadaqah al-Ḥakīm</b> on all of Genesis (Hebrew/Arabic) — with contents, search and verse jumps</li><li>The Aramaic dictionary upgraded: page browsing, an index, and every location of a word</li><li>Text-zoom buttons in the readers and the dictionary</li></ul><p class="wc-sign"><b>Enjoy!</b></p>',
-      '<p><b>Version 2.0 — the Samaritan library</b></p><ul><li>The library as a card gallery; a piyyutim reader and a rhyme finder</li><li>Listen to the Torah chapters read aloud, with a choice of reader</li><li>Samaritan script for the commentaries too, and Genesis in an exact 250 chapters</li></ul><p><b>Version 2.1 — commentary for the whole Torah, Arabic and printing</b></p><ul><li>The verse commentary was rewritten for all of Genesis, Exodus, Leviticus and Numbers — and every point is credited to the source that says it</li><li>It now sits in a panel beneath the text, with Samaritan-script and Arabic switches and links onward</li><li>Printing and saving as PDF, with an on-screen preview</li><li>On desktop the app fills the screen; on mobile nothing changed</li></ul><p class=\"wc-sign\"><b>Enjoy!</b></p>',
+      '<p><b>Version 2.0 — the Samaritan library</b></p><ul><li>The library as a card gallery; a piyyutim reader and a rhyme finder</li><li>Listen to the Torah chapters read aloud, with a choice of reader</li><li>Samaritan script for the commentaries too, and Genesis in an exact 250 chapters</li></ul><p><b>Version 2.1 — commentary for the whole Torah, Arabic and printing</b></p><ul><li>The verse commentary was rewritten for all of Genesis, Exodus, Leviticus and Numbers — and every point is credited to the source that says it</li><li>It now sits in a panel beneath the text, with Samaritan-script and Arabic switches and links onward</li><li>Printing and saving as PDF, with an on-screen preview</li><li>On desktop the app fills the screen; on mobile nothing changed</li></ul>',
+      '<p><b>Version 2.2 — the Book of Asatir</b></p><ul><li>The <b>Book of Asatir</b> joins the Samaritan Library as a unit of its own: sixteen chapters, a table of contents, in-book search, and a jump from any paragraph to the verse it retells</li><li>It is a Samaritan source now as well: on every verse the Asatir recounts, a new button opens the passage in question, cited by chapter and paragraph</li></ul><p class=\"wc-sign\"><b>Enjoy!</b></p>',
     ],
     interp_unavail:'This feature is temporarily unavailable.',
     welcome_title:'Welcome to the Avnei Shoham project',
@@ -540,7 +546,7 @@ const I18N = {
     samsrc_pick:'مصادر سامرية — اختر مصدراً', checking_sources:'جارٍ التحقق من المصادر…',
     no_sam_source:'لا يوجد مصدر سامري لهذه الآيات', back_sources:'‹ المصادر',
     src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم', src_bhuq:'تفسير «إن سلكتم في فرائضي»',
-    src_sir:'سرّ القلوب', src_shyt:'أجوبة يعقوب بن هارون الكاهن',
+    src_sir:'سرّ القلوب', src_shyt:'أجوبة يعقوب بن هارون الكاهن', src_asatir:'كتاب الأساطير',
     src_translit:'نسخ النطق', tr_source:'النصّ المصدر', tr_translit:'نطق السامريين',
     no_translit:'لا يوجد نسخ نطق لهذه الآيات',
     variants_title:'اختلافات النصّ — طبعة فون غال',
@@ -559,6 +565,8 @@ const I18N = {
     tz_toc_hint:'اختر أصحاحاً:', tz_chapter_label:'أصحاح', tz_arabic_pending:'الترجمة العربية قيد الإعداد — يُعرض النصّ العبري.',
     m_shyt_book:'أجوبة يعقوب بن هارون الكاهن', shyt_title:'أجوبة يعقوب بن هارون الكاهن', shyt_toc_hint:'اختر سؤالاً:',
     m_sir_book:'سِرّ القلوب', sir_title:'سِرّ القلوب', sir_toc_hint:'اختر فصلاً:',
+    m_asatir_book:'كتاب الأساطير', asatir_title:'كتاب الأساطير', asatir_toc_hint:'اختر أصحاحاً:',
+    asatir_note:'كتاب الأساطير — التاريخ السامري من آدم إلى آخر الأيام، بالنسخ العبري.',
     m_piyutim_book:'الأناشيد السامرية', piy_title:'تصفّح الأناشيد السامرية',
     piy_back_tree:'العودة للفهرس', piy_dict_toggle:'قاموس الكلمات', piy_search_ph:'بحث عن تأليف أو مؤلف أو كلمة…',
     piy_empty:'اختر تأليفًا من الفهرس ←', piy_pick_first:'اختر تأليفًا',
@@ -606,7 +614,8 @@ const I18N = {
       '<p><b>الإصدار 1.0 — النسخة الويبية</b></p><ul><li>مطالعة التوراة السامرية بالتقسيمين اليهودي والسامري</li><li>الخطّان العبري-السامري والعبري؛ ترجمات: آرامية · عربية · إنجليزية</li><li>مقارنة بالنصّ الماسوري، تفسير يهودي، بحث ومشاركة</li></ul><p><b>الإصدار 1.1 — المعاجم والجذور</b></p><ul><li>معجم أ. طال الآرامي؛ جدول لكلّ كلمة في الآية</li><li>بحث متقدّم حسب الجذر، في الآرامية، مع المعاني</li></ul>',
       '<p><b>الإصدار 1.2 — مصادر سامرية</b></p><ul><li>تيبات مارقه، التقليد السامري، تفسير صدقة الحكيم، سرّ القلوب، كتاب الأساطير</li><li>«تفسير الآية» — قراءة متّصلة متعدّدة المصادر</li></ul><p><b>الإصدار 1.3 — اختلافات النصّ والمقارنات</b></p><ul><li>اختلافات فون غال، مع الشهود وأوصاف المخطوطات</li><li>مقارنة بالسبعينية؛ مبدّل لغة الواجهة (he/en/ar)</li></ul>',
       '<p><b>الإصدار 1.4 — تجربة المستخدم</b></p><ul><li>شاشة بداية، نافذة ترحيب، تأثير قلب صفحة، تصفّح متّصل بين الأصحاحات والأسفار</li><li>ضبط الخطّ السامري، تكبير النصّ، وشريط قابل للطيّ</li></ul><p><b>الإصدار 1.5 — المكتبة السامرية</b></p><ul><li>قارئان كاملان: <b>تيبات مارقه</b> (آرامية/عبرية) و<b>تفسير صدقة الحكيم</b> لكامل التكوين (عبرية/عربية) — مع محتويات وبحث وقفزٍ إلى الآية</li><li>تطوير المعجم الآرامي: تصفّح الصفحات، فهرس، وكلّ مواضع الكلمة في المعجم</li><li>أزرار تكبير النصّ في القارئَين والمعجم</li></ul><p class="wc-sign"><b>استمتعوا!</b></p>',
-      '<p><b>الإصدار 2.0 — المكتبة السامرية</b></p><ul><li>المكتبة كصفحة بطاقات؛ قارئ للقصائد وباحث عن القوافي</li><li>الاستماع إلى تلاوة أصحاحات التوراة مع اختيار القارئ</li><li>الخطّ السامري للتفاسير أيضاً، والتكوين في 250 أصحاحاً دقيقاً</li></ul><p><b>الإصدار 2.1 — تفسير لكلّ التوراة، والعربية، والطباعة</b></p><ul><li>أُعيد كتابة تفسير الآية لكلّ التكوين والخروج واللاويين والعدد — وكلّ نقطة تُنسَب إلى قائلها</li><li>التفسير في لوحة تحت النصّ، مع مفتاحي الخطّ السامري والعربية وروابط للتوسّع</li><li>الطباعة والحفظ كـ PDF مع معاينة على الشاشة</li><li>على الحاسوب يملأ التطبيق الشاشة؛ وعلى الهاتف لم يتغيّر شيء</li></ul><p class=\"wc-sign\"><b>استمتعوا!</b></p>',
+      '<p><b>الإصدار 2.0 — المكتبة السامرية</b></p><ul><li>المكتبة كصفحة بطاقات؛ قارئ للقصائد وباحث عن القوافي</li><li>الاستماع إلى تلاوة أصحاحات التوراة مع اختيار القارئ</li><li>الخطّ السامري للتفاسير أيضاً، والتكوين في 250 أصحاحاً دقيقاً</li></ul><p><b>الإصدار 2.1 — تفسير لكلّ التوراة، والعربية، والطباعة</b></p><ul><li>أُعيد كتابة تفسير الآية لكلّ التكوين والخروج واللاويين والعدد — وكلّ نقطة تُنسَب إلى قائلها</li><li>التفسير في لوحة تحت النصّ، مع مفتاحي الخطّ السامري والعربية وروابط للتوسّع</li><li>الطباعة والحفظ كـ PDF مع معاينة على الشاشة</li><li>على الحاسوب يملأ التطبيق الشاشة؛ وعلى الهاتف لم يتغيّر شيء</li></ul>',
+      '<p><b>الإصدار 2.2 — كتاب الأساطير</b></p><ul><li>أُضيف <b>كتاب الأساطير</b> إلى المكتبة السامرية كوحدة مستقلّة: ستّة عشر أصحاحاً، ومحتويات، وبحث داخل الكتاب، وقفزٌ من أيّ فقرة إلى الآية التي ترويها</li><li>وصار أيضاً من «المصادر السامرية»: في كلّ آية يرويها الكتاب يظهر زرّ جديد بالفقرة المعنيّة، منسوبةً إلى أصحاحها وفقرتها</li></ul><p class=\"wc-sign\"><b>استمتعوا!</b></p>',
     ],
     interp_unavail:'هذه الميزة غير متاحة مؤقّتًا.',
     welcome_title:'أهلًا بكم في مشروع «أبني شوهم»',
@@ -1573,9 +1582,10 @@ async function buildSamSrc(c, verses){
     const loading=el('div','note',t('checking_sources')); panel.appendChild(loading);
     c.appendChild(panel);
     // only show a source that actually has content on the current verse(s)
-    const [tm, ey, tz, sir, shyt, bhuq, tr] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
+    const [tm, ey, tz, sir, shyt, bhuq, asa, tr] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
       api('eyalk?verse_ids='+ids), api('tzdaka?verse_ids='+ids), api('sir?verse_ids='+ids),
-      api('shyt?verse_ids='+ids), api('bhuq?verse_ids='+ids), api('translit?verse_ids='+ids)]);
+      api('shyt?verse_ids='+ids), api('bhuq?verse_ids='+ids), api('asatir?verse_ids='+ids),
+      api('translit?verse_ids='+ids)]);
     loading.remove();
     const avail=[];
     if(tm.length) avail.push([t('src_tibat'),'tm']);
@@ -1584,6 +1594,7 @@ async function buildSamSrc(c, verses){
     if(sir.length) avail.push([t('src_sir'),'sir']);
     if(shyt.length) avail.push([t('src_shyt'),'shyt']);
     if(bhuq.length) avail.push([t('src_bhuq'),'bhuq']);
+    if(asa.length) avail.push([t('src_asatir'),'asatir']);
     if(tr && Object.keys(tr).length) avail.push([t('src_translit'),'translit']);
     if(!avail.length){ panel.appendChild(el('div','note',t('no_sam_source'))); return; }
     for(const [label,ch] of avail){
@@ -1714,6 +1725,27 @@ async function buildSamSrc(c, verses){
       panel.appendChild(card);
     }
     panel.appendChild(el('div','canchors',"אבו אלפרג' איבן אל-כתאר · תרגום ד\"ר עלי ותד · מנוסח בעריכה"));
+    c.appendChild(panel); return;
+  }
+  if(S.samSrcChoice==='asatir'){
+    // The Asatir retells the Torah rather than commenting on it, so a passage is
+    // attached to the episode it recounts; the "אסאטיר ט,4" mark is its own
+    // chapter,paragraph citation, and the chapter heading follows it.
+    const items = await api('asatir?verse_ids='+ids);
+    const panel=el('div','srcpanel');
+    const head=el('div','shead');
+    const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle',t('src_asatir')));
+    panel.appendChild(head);
+    if(!items.length) panel.appendChild(el('div','note',t('no_sam_source')));
+    for(const it of items){
+      const card=el('div','card');
+      const lbl=[it.ref, it.title].filter(Boolean).join('  ·  ');
+      if(lbl) card.appendChild(el('div','chead',esc(lbl)));
+      const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      panel.appendChild(card);
+    }
+    panel.appendChild(el('div','canchors',t('asatir_note')));
     c.appendChild(panel); return;
   }
   // tm
@@ -3309,6 +3341,7 @@ const LIB_ITEMS = [
   {act:'tz_book',      titleKey:'m_tz_book',      open:()=>openTzBook()},
   {act:'shyt_book',    titleKey:'m_shyt_book',    open:()=>openShytBook()},
   {act:'sir_book',     titleKey:'m_sir_book',     open:()=>openSirBook()},
+  {act:'asatir_book',  titleKey:'m_asatir_book',  open:()=>openAsatirBook()},
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
   {act:'rhyme_book',   titleKey:'m_rhyme_book',   open:()=>openRhymeBook()},
   {act:'composer',     titleKey:'m_composer',     open:()=>openComposer(), adminOnly:true},
@@ -3353,6 +3386,7 @@ function menuAction(a){
   else if(a==='tz_book')   openTzBook();
   else if(a==='shyt_book') openShytBook();
   else if(a==='sir_book')  openSirBook();
+  else if(a==='asatir_book') openAsatirBook();
   else if(a==='piyutim_book') openPiyutimBook();
   else if(a==='rhyme_book')   openRhymeBook();
   else if(a==='install')   doInstall();
@@ -3761,6 +3795,21 @@ const BOOK_CFG = {
     searchTo:(r)=>({chap:r.id, dom:'rdsec-'+r.id}),
     langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
   },
+  asatir: {                            // ספר האסאטיר — 16 chapters, each a run of paragraphs
+    titleKey:'asatir_title', tocHintKey:'asatir_toc_hint',
+    toc:()=>api('asatir_toc'),
+    chapter:(id)=>api('asatir_chapter?chap='+encodeURIComponent(id)),
+    search:(q)=>api('asatir_search?q='+encodeURIComponent(q)),
+    words:null,
+    tocItem:(c)=>({id:c.chap, letter:c.heb, title:c.title, count:c.count}),
+    chapterTitle:(ch)=>esc(ch.heb)+'. '+esc(ch.title||''),
+    unitLabel:(s)=>esc(s.ref||''),
+    unitVid:(s)=>s.verse_id,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>esc(r.ref||'')+(r.title?('  ·  '+esc(r.title)):''),
+    searchTo:(r)=>({chap:r.chap, dom:'rdsec-'+r.id}),
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+  },
 };
 let RD = { key:null, cfg:null, chapter:null, lang:null, fs:parseFloat(localStorage.getItem('as_rd_fs')||'1')||1 };
 function rdApplyFs(){ $('rdBody').style.setProperty('--rd-fs', RD.fs); }
@@ -3780,6 +3829,7 @@ function openTmBook(){ openReader('tm'); }
 function openTzBook(){ openReader('tz'); }
 function openShytBook(){ openReader('shyt'); }
 function openSirBook(){ openReader('sir'); }
+function openAsatirBook(){ openReader('asatir'); }
 function rdSetBack(mode){           // '' hidden · 'toc' · 'chapter'
   const b=$('rdBack');
   if(!mode){ b.classList.add('hidden'); return; }

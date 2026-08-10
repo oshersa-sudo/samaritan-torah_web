@@ -29,6 +29,7 @@ _CONTENT_TABLES = [
     ('vongall_apparatus', 'verse_id'), ('binyamim_verse_links', 'verse_id'),
     ('eyalk_verse_links', 'verse_id'), ('shyt_verse_links', 'verse_id'), ('sir_verse_links', 'verse_id'),
     ('tm_verse_links', 'verse_id'), ('tradart_verse_links', 'verse_id'), ('tzdaka_verse_links', 'verse_id'),
+    ('bhuq_verse_links', 'verse_id'), ('asatir_verse_links', 'verse_id'),
 ]
 
 

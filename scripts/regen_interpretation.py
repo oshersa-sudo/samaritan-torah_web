@@ -134,6 +134,11 @@ SOURCE_TABLES = [
     # Torah, not only Leviticus 26.
     ('bhuq_verse_links',    'bhuq_sections',    'text',
      "\u05e4\u05d9\u05e8\u05d5\u05e9 \u05d0\u05dd \u05d1\u05d7\u05e7\u05d5\u05ea\u05d9 \u05dc\u05d0\u05d1\u05d5 \u05d0\u05dc\u05e4\u05e8\u05d2' \u05d0\u05d9\u05d1\u05df \u05d0\u05dc-\u05db\u05ea\u05d0\u05e8"),
+    # \u05e1\u05e4\u05e8 \u05d4\u05d0\u05e1\u05d0\u05d8\u05d9\u05e8 \u2014 a chronicle, not a commentary: its passages RETELL the
+    # episode a verse belongs to, so what it adds is narrative detail (names,
+    # dates, places, motives) rather than exegesis of the wording.
+    ('asatir_verse_links',  'asatir_sections',  'text',
+     '\u05e1\u05e4\u05e8 \u05d4\u05d0\u05e1\u05d0\u05d8\u05d9\u05e8'),
 ]
 
 

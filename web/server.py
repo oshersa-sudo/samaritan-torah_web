@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '2.1'
+APP_VERSION = '2.2'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 
 
@@ -286,7 +286,7 @@ _RESEED_CONTENT_TABLES = [
     ('vongall_apparatus', 'verse_id'), ('binyamim_verse_links', 'verse_id'),
     ('eyalk_verse_links', 'verse_id'), ('shyt_verse_links', 'verse_id'), ('sir_verse_links', 'verse_id'),
     ('tm_verse_links', 'verse_id'), ('tradart_verse_links', 'verse_id'), ('tzdaka_verse_links', 'verse_id'),
-    ('bhuq_verse_links', 'verse_id'),
+    ('bhuq_verse_links', 'verse_id'), ('asatir_verse_links', 'verse_id'),
 ]
 
 
@@ -1652,6 +1652,27 @@ def api_sir_chapter():
 @app.route('/api/sir_search')
 def api_sir_search():
     return jsonify(db.search_sir(request.args.get('q', '')))
+
+
+# ── ספר האסאטיר: verse source + full-book reader ──
+@app.route('/api/asatir')
+def api_asatir():
+    return jsonify(db.get_asatir_commentary(_ids_arg()))
+
+
+@app.route('/api/asatir_toc')
+def api_asatir_toc():
+    return jsonify(db.get_asatir_toc())
+
+
+@app.route('/api/asatir_chapter')
+def api_asatir_chapter():
+    return jsonify(db.get_asatir_chapter(request.args.get('chap', '')))
+
+
+@app.route('/api/asatir_search')
+def api_asatir_search():
+    return jsonify(db.search_asatir(request.args.get('q', '')))
 
 
 # ── Samaritan piyyutim reader + rhyme finder ────────────────────────────────

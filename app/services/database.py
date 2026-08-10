@@ -1193,6 +1193,67 @@ def search_sir(q, limit=80):
     return out
 
 
+# ── ספר האסאטיר as a standalone library book ──
+# Unlike the other works on the shelf the Asatir is not a commentary keyed to
+# verses but a running chronicle from Adam to the end of days, divided here into
+# its 16 chapters; a "section" is one paragraph of the chronicle, cited by
+# chapter,paragraph (e.g. "ט,4").
+def get_asatir_toc():
+    """The chapters of the Asatir — the table of contents."""
+    conn = get_connection()
+    rows = conn.execute("""SELECT chap, chap_title, COUNT(*) n FROM asatir_sections
+        GROUP BY chap, chap_title ORDER BY chap""").fetchall()
+    conn.close()
+    return [{'chap': r['chap'], 'heb': _num_he(r['chap']),
+             'title': r['chap_title'] or '', 'count': r['n']} for r in rows]
+
+
+def get_asatir_chapter(chap):
+    """All paragraphs of one Asatir chapter, in order, each with the Torah verse it
+    retells (for the citation jump) and inline verse refs made clickable."""
+    try:
+        chap = int(chap)
+    except (TypeError, ValueError):
+        return {'chap': None, 'sections': []}
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    vlink = {}
+    for r in conn.execute("""SELECT l.section_id sid, MIN(l.verse_id) vid
+        FROM asatir_verse_links l JOIN asatir_sections s ON s.id=l.section_id
+        WHERE s.chap=? GROUP BY l.section_id""", (chap,)):
+        vlink[r['sid']] = r['vid']
+    secs = conn.execute("SELECT id, ref, chap_title, text FROM asatir_sections "
+                        "WHERE chap=? ORDER BY ord", (chap,)).fetchall()
+    conn.close()
+    title = secs[0]['chap_title'] if secs else ''
+    out = [{'id': s['id'], 'ref': s['ref'] or '', 'title': '',
+            'hebrew': s['text'] or '',
+            'hebrew_html': _tm_mark_refs(s['text'] or '', vmap),
+            'verse_id': vlink.get(s['id'])} for s in secs]
+    return {'chap': chap, 'heb': _num_he(chap), 'title': title, 'sections': out}
+
+
+def search_asatir(q, limit=80):
+    """Search the Asatir (chapter titles + paragraph text)."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    rows = conn.execute("SELECT id, chap, chap_title, ref, text FROM asatir_sections "
+                        "WHERE text LIKE ? OR chap_title LIKE ? ORDER BY ord LIMIT ?",
+                        (like, like, limit)).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        txt = r['text'] or ''
+        i = txt.find(q)
+        snip = ('…' + txt[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0 else txt[:90]
+        out.append({'id': r['id'], 'chap': r['chap'], 'heb': _num_he(r['chap']),
+                    'title': r['chap_title'] or '', 'ref': r['ref'] or '', 'snippet': snip})
+    return out
+
+
 # ── Samaritan piyyutim ("עיון בפיוטים השומרוניים") + rhyme finder ──────────────
 # Two standalone library units built from the user's own pipeline export
 # (app_unit/piyutim_data.js + rhyme_data.js, imported via scripts/piyutim/
@@ -1540,6 +1601,33 @@ def get_sir_commentary(verse_ids):
         rows = []
     conn.close()
     return [{'title': r['title'] or '', 'text': r['text'] or ''} for r in rows]
+
+
+def get_asatir_commentary(verse_ids):
+    """ספר האסאטיר — the Samaritan chronicle's retelling of the given verse(s), in
+    reading order. Each item is {ref, title, text}, where `ref` is the chapter,
+    paragraph citation and `title` the chapter's heading. A passage is attached to
+    a verse either because it retells that episode or because it quotes the verse
+    outright, so one paragraph can surface on several verses; a paragraph reaching
+    several of the verses appears once. Returns [] when nothing is relevant."""
+    if not verse_ids:
+        return []
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT DISTINCT s.id, s.chap, s.chap_title, s.ref, s.ord, s.text
+                FROM asatir_sections s
+                JOIN asatir_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders})
+                ORDER BY s.ord""",
+            verse_ids
+        ).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    return [{'ref': 'אסאטיר ' + (r['ref'] or ''), 'title': r['chap_title'] or '',
+             'text': r['text'] or ''} for r in rows]
 
 
 _APP_TYPE = {'sub': 'חילוף', 'om': 'חיסור', 'add': 'תוספת', 'sic': 'sic!',
