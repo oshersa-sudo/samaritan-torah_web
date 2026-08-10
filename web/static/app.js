@@ -236,6 +236,7 @@ const I18N = {
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
     no_interp_ar:'התרגום הערבי לפירוש עדיין בהכנה', interp_ar_pending:'[טרם תורגם] ', interp_sam:'כתב שומרוני', interp_ar:'ערבית',
     interp_more:'להרחבה פנה אל:', interp_asatir_lead:'ומספר ספר האסאטיר',
+    interp_bhuq_lead:'ומדברי אבו אלפרג׳ איבן אל-כתאר בפירוש אם בחקותי',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
@@ -441,6 +442,7 @@ const I18N = {
     searching:'Searching…', no_interp:'No commentary for these verses',
     no_interp_ar:'The Arabic rendering is still being prepared', interp_ar_pending:'[not yet translated] ', interp_sam:'Samaritan script', interp_ar:'Arabic',
     interp_more:'Read further in:', interp_asatir_lead:'And the Book of Asatir recounts',
+    interp_bhuq_lead:'And Abū l-Faraj ibn al-Kathār says, in his commentary on Im Beḥuqotay',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
@@ -646,6 +648,7 @@ const I18N = {
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
     no_interp_ar:'الترجمة العربية للتفسير قيد الإعداد', interp_ar_pending:'[لم يُترجَم بعد] ', interp_sam:'الخط السامري', interp_ar:'العربية',
     interp_more:'للتوسّع راجِع:', interp_asatir_lead:'ويروي كتاب الأساطير',
+    interp_bhuq_lead:'ويقول أبو الفرج ابن الكثار في تفسير «إن سلكتم في فرائضي»',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
@@ -1360,6 +1363,12 @@ async function buildInterpret(c, verses){
   // into the prose. It has no Arabic rendering; like the scripture quotations
   // inside the Arabic commentary, it stays in Hebrew there too.
   const asa = await api('asatir_by_verse?verse_ids='+ids).catch(()=>({}));
+  // פירוש אם בחקותי sits beneath the commentary the same way, and for the
+  // opposite reason: it argues about the wording, so folding a fifth attributed
+  // voice into a paragraph that already names three or four would turn prose
+  // into a roll-call. Unlike the Asatir it does have an Arabic rendering, and
+  // /api/bhuq_by_verse falls back to the Hebrew per section where it is missing.
+  const bhq = await api('bhuq_by_verse?verse_ids='+ids+(ar?'&lang=ar':'')).catch(()=>({}));
   const fs = fsize();
   const panel = el('div','srcpanel interp-panel');
 
@@ -1384,10 +1393,12 @@ async function buildInterpret(c, verses){
     const fellBack = ar && !txt && !!(mHe[v.id]||'').trim();
     if(fellBack) txt = (mHe[v.id]||'').trim();
     const asaItems = asa[v.id] || [];
+    const bhqItems = bhq[v.id] || [];
     // strip leftover markdown (heading lines, ** bold) that leaked into the text
     txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
-    // a verse the Asatir recounts is worth a row even when it has no commentary
-    if(!txt && !asaItems.length) continue;
+    // a verse a source speaks about is worth a row even when it has no
+    // commentary of its own — that is what gives דברים anything to read
+    if(!txt && !asaItems.length && !bhqItems.length) continue;
     any = true;
     const row = el('div','irow');
     const num = el('button','inum'+(S.verseFilter===v.id?' active':''), String(v.number));
@@ -1410,6 +1421,22 @@ async function buildInterpret(c, verses){
         ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
       at.style.fontSize = fs+'px';
       box.appendChild(at);
+      col.appendChild(box);
+    }
+    for(const it of bhqItems){
+      const box = el('div','iasatir ibhuq');
+      const lead = t('interp_bhuq_lead')
+        + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ':';
+      box.appendChild(el('div','iasatir-lead', esc(lead)));
+      // Arabic mode shows the Arabic rendering; a section not yet translated
+      // falls back to its Hebrew, marked, exactly as the commentary above does
+      const showAr = ar && !it.pending;
+      const bt = el('div','iasatir-text'+(showAr?' iar':''), showAr ? esc(it.text)
+        : (!ar && (S.interpSam||S.samFont))
+          ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+      if(ar && it.pending) bt.prepend(el('span','ipend', t('interp_ar_pending')));
+      bt.style.fontSize = fs+'px';
+      box.appendChild(bt);
       col.appendChild(box);
     }
     row.appendChild(num); row.appendChild(col);
@@ -3008,22 +3035,31 @@ async function buildPrintPage(){
       const m = await api('interpretations?verse_ids='+vids);
       // the printed page carries what the screen carries, ספר האסאטיר included
       const asa = await api('asatir_by_verse?verse_ids='+vids).catch(()=>({}));
+      const bhq = await api('bhuq_by_verse?verse_ids='+vids).catch(()=>({}));
       let any = false;
       verses.forEach(v => {
         const txt = (m[v.id]||'').trim();
         const items = asa[v.id] || [];
-        if(!txt && !items.length) return;
+        const bitems = bhq[v.id] || [];
+        if(!txt && !items.length && !bitems.length) return;
         any = true;
         if(txt) box.appendChild(vrow(v.number, renderInterpText(txt)));
-        for(const it of items){
-          const lead = t('interp_asatir_lead')
-            + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '') + ': ';
+        // `first` carries the verse number onto whichever quoted source opens the
+        // row, so a verse with no commentary of its own is still numbered once
+        let first = !txt;
+        const quoted = (lead, text) => {
           const r = el('div','pr-vrow pr-asatir');
-          if(!txt) r.appendChild(el('span','pr-vnum', esc(String(v.number))));
+          if(first){ r.appendChild(el('span','pr-vnum', esc(String(v.number)))); first = false; }
           r.appendChild(el('span','pr-asatir-lead', esc(lead)));
-          r.insertAdjacentHTML('beforeend', renderInterpText(it.text));
+          r.insertAdjacentHTML('beforeend', renderInterpText(text));
           box.appendChild(r);
-        }
+        };
+        for(const it of items)
+          quoted(t('interp_asatir_lead')
+            + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '') + ': ', it.text);
+        for(const it of bitems)
+          quoted(t('interp_bhuq_lead')
+            + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ': ', it.text);
       });
       if(!any) box.appendChild(el('div','','אין פירוש זמין לפרק זה'));
     }catch(e){ box.appendChild(el('div','','שגיאה בטעינת פירוש הפסוק')); }

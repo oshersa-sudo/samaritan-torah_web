@@ -1676,6 +1676,14 @@ def api_sir_search():
     return jsonify(db.search_sir(request.args.get('q', '')))
 
 
+@app.route('/api/bhuq_by_verse')
+def api_bhuq_by_verse():
+    """פירוש אם בחקותי keyed by verse — feeds the verse-commentary panel, which
+    sets each passage under the verse it argues about."""
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_bhuq_by_verse(_ids_arg(), lang))
+
+
 # ── פירוש אם בחקותי: full-book reader (the verse source is /api/bhuq above) ──
 @app.route('/api/bhuq_toc')
 def api_bhuq_toc():

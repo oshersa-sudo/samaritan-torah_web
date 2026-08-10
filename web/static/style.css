@@ -761,6 +761,12 @@ footer a{ color:var(--accent); text-decoration:none; }
 .interp-panel .iasatir-text{ line-height:1.75; direction:rtl; text-align:justify;
   text-justify:inter-word; color:var(--dark); opacity:.92; }
 .interp-panel .iasatir-text .samchar2{ font-family:'SamComment'; }
+/* פירוש אם בחקותי quoted beneath the same way, on its own rule colour so two
+   quoted sources under one verse stay visibly distinct from each other */
+.interp-panel .ibhuq{ border-inline-start-color:rgba(150,90,30,.34); }
+.interp-panel .ibhuq .iasatir-lead{ color:#8a5a22; }
+.interp-panel .iasatir-text.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
+  direction:rtl; line-height:2.05; }
 /* Arabic rendering of the commentary: same column, Arabic shaping + numerals */
 .interp-panel .itext.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
   line-height:2.05; }

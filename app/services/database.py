@@ -1740,6 +1740,46 @@ def get_bhuq_commentary(verse_ids):
             for r in rows]
 
 
+def get_bhuq_by_verse(verse_ids, lang='he'):
+    """The same passages as get_bhuq_commentary, but keyed BY VERSE —
+    {verse_id: [{ref, title, text}, ...]} — so the verse-commentary panel can set
+    each passage beneath the verse it argues about instead of listing them all at
+    the end. A passage reaching several of the verses is repeated under each.
+
+    In Arabic mode the passage is served from `arabic`, falling back to the
+    Hebrew for a section not yet translated — an untranslated passage is better
+    read in Hebrew than not shown at all."""
+    if not verse_ids:
+        return {}
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            # DISTINCT: bhuq_verse_links is keyed by (section, verse, method), so a
+            # passage that both cites a verse AND quotes it has two rows and would
+            # otherwise be printed twice under that verse.
+            f"""SELECT DISTINCT l.verse_id vid, s.ref, s.title, s.ord, s.text, s.arabic
+                FROM bhuq_sections s
+                JOIN bhuq_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders})
+                ORDER BY l.verse_id, s.ord""",
+            verse_ids
+        ).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    out = {}
+    for r in rows:
+        txt = (r['arabic'] or '').strip() if lang == 'ar' else ''
+        pending = lang == 'ar' and not txt
+        if not txt:
+            txt = r['text'] or ''
+        out.setdefault(r['vid'], []).append(
+            {'ref': r['ref'] or '', 'title': r['title'] or '',
+             'text': txt, 'pending': pending})
+    return out
+
+
 def get_sir_commentary(verse_ids):
     """סוד הלבבות (Sīr al-Qulūb, ch.4, Abraham al-Kabatzi) relevant to any of the
     given verses, in reading order. Each item is {title, text}; a section linked to

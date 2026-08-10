@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS bhuq_sections (
   page   INTEGER,          -- printed page in the Watad edition
   ref    TEXT,             -- the {NN} manuscript paragraph mark, when present
   title  TEXT,             -- short heading we give the passage
-  text   TEXT NOT NULL     -- our reworked restatement, not the translator's wording
+  text   TEXT NOT NULL,    -- our reworked restatement, not the translator's wording
+  arabic TEXT              -- Arabic rendering of `text`; '' until translated
 );
 CREATE TABLE IF NOT EXISTS bhuq_verse_links (
   section_id INTEGER NOT NULL,
@@ -53,9 +54,19 @@ CREATE INDEX IF NOT EXISTS ix_bhuq_links_verse ON bhuq_verse_links(verse_id);
 '''
 
 
+def _ensure_cols(conn):
+    """Bring an already-created bhuq_sections up to the current schema. The
+    Arabic arrived after the table did, and CREATE TABLE IF NOT EXISTS will not
+    add it to a database that already has the table."""
+    have = [r[1] for r in conn.execute('PRAGMA table_info(bhuq_sections)')]
+    if have and 'arabic' not in have:
+        conn.execute('ALTER TABLE bhuq_sections ADD COLUMN arabic TEXT')
+
+
 def cmd_schema():
     conn = sqlite3.connect(DB_PATH)
     conn.executescript(SCHEMA)
+    _ensure_cols(conn)
     conn.commit()
     cols = lambda t: [r[1] for r in conn.execute('PRAGMA table_info(%s)' % t)]
     print('bhuq_sections   :', cols('bhuq_sections'))
@@ -71,6 +82,7 @@ def cmd_load(apply_it):
 
     idx = VerseIndex(DB_PATH)
     conn = sqlite3.connect(DB_PATH)
+    _ensure_cols(conn)
     cur = conn.cursor()
 
     linked = unlinked = nlinks = 0
@@ -105,10 +117,10 @@ def cmd_load(apply_it):
             b = book_of.get(vid)
             per_book[b] = per_book.get(b, 0) + 1
         if apply_it:
-            cur.execute('INSERT INTO bhuq_sections (id, ord, page, ref, title, text) '
-                        'VALUES (?,?,?,?,?,?)',
+            cur.execute('INSERT INTO bhuq_sections (id, ord, page, ref, title, text, arabic) '
+                        'VALUES (?,?,?,?,?,?,?)',
                         (i, s.get('ord', i), s.get('page'), s.get('ref', ''),
-                         s.get('title', ''), s['text']))
+                         s.get('title', ''), s['text'], s.get('arabic', '')))
             for vid, method, shown in rows:
                 cur.execute('INSERT OR IGNORE INTO bhuq_verse_links '
                             '(section_id, verse_id, method, shown) VALUES (?,?,?,?)',
