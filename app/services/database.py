@@ -1790,6 +1790,38 @@ def get_asatir_commentary(verse_ids):
              'text': r['text'] or ''} for r in rows]
 
 
+def get_asatir_by_verse(verse_ids):
+    """The same Asatir passages as get_asatir_commentary, but keyed BY VERSE —
+    {verse_id: [{ref, title, text}, ...]} — so the verse-commentary panel can set
+    each passage beneath the verse it retells instead of listing them all at the
+    end. A passage covering several of the verses is repeated under each, which is
+    what the reader wants there: every verse row stands on its own."""
+    if not verse_ids:
+        return {}
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT l.verse_id vid, s.chap_title, s.ref, s.ord, s.text
+                FROM asatir_sections s
+                JOIN asatir_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders})
+                ORDER BY l.verse_id, s.ord""",
+            verse_ids
+        ).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    out = {}
+    for r in rows:
+        # bare "יג,13" here (no book name): the panel names the book in its lead-in,
+        # unlike the sources panel where the ref has to carry it.
+        out.setdefault(r['vid'], []).append(
+            {'ref': r['ref'] or '', 'title': r['chap_title'] or '',
+             'text': r['text'] or ''})
+    return out
+
+
 _APP_TYPE = {'sub': 'חילוף', 'om': 'חיסור', 'add': 'תוספת', 'sic': 'sic!',
              'transp': 'היפוך סדר', 'del': 'מחיקה', 'orth': 'כתיב/ניקוד'}
 

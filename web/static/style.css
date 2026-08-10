@@ -750,6 +750,17 @@ footer a{ color:var(--accent); text-decoration:none; }
 .interp-panel .itext{ flex:1; line-height:1.75; direction:rtl; text-align:justify;
   text-justify:inter-word; color:var(--dark); }
 .interp-panel .itext .samchar2{ font-family:'SamComment'; }
+/* the commentary column: the verse's own commentary, then any source set beneath
+   it in its own name (ספר האסאטיר) — a quotation, kept visibly apart from the
+   synthesised prose above it rather than blended into it */
+.interp-panel .icol{ flex:1; min-width:0; }
+.interp-panel .iasatir{ margin-top:8px; padding-block:6px; padding-inline-start:10px;
+  border-inline-start:3px solid rgba(26,56,115,.28); }
+.interp-panel .iasatir-lead{ font-size:13px; font-weight:700; color:var(--navy);
+  opacity:.88; margin-bottom:3px; }
+.interp-panel .iasatir-text{ line-height:1.75; direction:rtl; text-align:justify;
+  text-justify:inter-word; color:var(--dark); opacity:.92; }
+.interp-panel .iasatir-text .samchar2{ font-family:'SamComment'; }
 /* Arabic rendering of the commentary: same column, Arabic shaping + numerals */
 .interp-panel .itext.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
   line-height:2.05; }
@@ -833,6 +844,10 @@ footer a{ color:var(--accent); text-decoration:none; }
 .pr-dict table.wtbl{ font-size:13px; }
 .pr-dict table.wtbl tr{ page-break-inside:avoid; }
 .pr-interp .pr-vrow{ line-height:1.6; text-align:justify; text-justify:inter-word; }
+/* ספר האסאטיר beneath a verse's commentary — quoted in its own name, so it is
+   indented and led by its reference rather than run on with the prose above */
+.pr-interp .pr-asatir{ margin-inline-start:14px; margin-bottom:6px; }
+.pr-asatir-lead{ font-weight:700; }
 .pr-interp .samchar2{ font-family:'SamComment'; }
 
 /* on-screen preview: same #printArea content shown as a scrollable page mock-up,

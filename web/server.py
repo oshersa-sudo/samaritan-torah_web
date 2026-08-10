@@ -1698,6 +1698,13 @@ def api_asatir():
     return jsonify(db.get_asatir_commentary(_ids_arg()))
 
 
+@app.route('/api/asatir_by_verse')
+def api_asatir_by_verse():
+    """Asatir passages keyed by verse — feeds the verse-commentary panel, which
+    sets each passage under the verse it retells."""
+    return jsonify(db.get_asatir_by_verse(_ids_arg()))
+
+
 @app.route('/api/asatir_toc')
 def api_asatir_toc():
     return jsonify(db.get_asatir_toc())
