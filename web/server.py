@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '2.3'
+APP_VERSION = '2.4'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 
 
