@@ -5654,8 +5654,18 @@ $('tourMute').onclick=()=>{ TOUR.muted=!TOUR.muted; tourSetMuteIcon();
 // book_id + sam chapter number it belongs to (ids drift across DB copies, numbers don't).
 let READINGS = null;                       // null = not loaded (or absent)
 const RD_SPEEDS = [1, 1.25, 1.5, 2, 0.75];     // tap ×N to cycle; saved per device
-const RDAU = { audio:null, key:null, playing:false, ui:null,
+const RDAU = { audio:null, el:null, key:null, playing:false, ui:null, seekFix:null,
                speed: (parseFloat(localStorage.getItem('rd_speed')) || 1) };
+// ── continuous reading (הקראה רציפה) ─────────────────────────────────────────
+// A flag on the chapter's play bar, remembered per device. While it is on, the end
+// of a chapter's recording turns the page to the next chapter and goes on reading
+// it at the same speed — with the same reading witness where that witness has this
+// chapter too, and with another one where it does not. A run always stops at the
+// end of the parasha (גמר פרשה), never crossing into the next one.
+//   want = the witness the reader themself started with (kept for the whole run,
+//          so a chapter that forced a substitute doesn't lose the original)
+//   last = the witness actually heard last, the fallback when `want` is missing
+const RDC = { on: localStorage.getItem('rd_cont')==='1', want:null, last:null, busy:false };
 fetch('/static/audio/readings/readings.json')
   .then(r=>r.ok ? r.json() : null)
   .then(j=>{ READINGS=j;
@@ -5753,29 +5763,63 @@ function readingOptions(){
   }
   return opts;
 }
+// which witness the bar opens with: the one the reader picked by hand (kept per
+// device), else — inside a continuous run — the one it started with, else the one
+// last heard, and only then the chapter's first option.
+function rdPickOption(opts){
+  const saved = localStorage.getItem('rd_reader');
+  return opts.find(o=>o.reader===saved)
+      || (RDC.on && RDC.want && opts.find(o=>o.reader===RDC.want))
+      || (RDC.on && RDC.last && opts.find(o=>o.reader===RDC.last))
+      || opts[0];
+}
+// a play the reader asked for: it also sets the witness the continuous run follows
+function rdUserPlay(rec, seekTo){ RDC.want = rec.reader; return readingToggle(rec, seekTo); }
+function rdLastOfPortion(){       // this chapter closes the parasha → nowhere to continue
+  return !(Array.isArray(S.chList) && S.chList.length) || S.chIdx >= S.chList.length-1;
+}
+function rdContChip(){
+  const b = el('button','reading-cont'+(RDC.on?' on':''), 'הקראה רציפה');
+  b.setAttribute('aria-pressed', RDC.on ? 'true' : 'false');
+  b.title = rdLastOfPortion()
+    ? 'הקראה רציפה — זה הפרק האחרון בפרשה, וההקראה נעצרת בסופו'
+    : 'הקראה רציפה — בתום הפרק האפליקציה עוברת לפרק הבא וממשיכה להשמיע, עד גמר הפרשה';
+  b.onclick = ()=>{
+    RDC.on = !RDC.on;
+    localStorage.setItem('rd_cont', RDC.on ? '1' : '0');
+    b.classList.toggle('on', RDC.on);
+    b.setAttribute('aria-pressed', RDC.on ? 'true' : 'false');
+    if(RDC.on){ if(RDAU.ui && RDAU.ui.rec) RDC.want = RDAU.ui.rec.reader; }
+    else { RDC.last = null; }
+    toast(RDC.on ? 'הקראה רציפה: מעבר אוטומטי לפרק הבא, עצירה בגמר הפרשה'
+                 : 'הקראה רציפה כבויה');
+  };
+  return b;
+}
 function readingBar(c){
   RDAU.ui = null;
   const opts = readingOptions(); if(!opts.length) return;
-  // keep the previously chosen witness when available for this chapter
-  const saved = localStorage.getItem('rd_reader');
-  let rec = opts.find(o=>o.reader===saved) || opts[0];
+  let rec = rdPickOption(opts);
   const bar = el('div','reading-bar');
+  const head = el('div','reading-head');
   const row = el('div','reading-row');
   const btn = el('button','reading-btn');
   const isCur = RDAU.audio && RDAU.key===rdKey(rec);
   btn.innerHTML = (isCur && RDAU.playing) ? '&#10074;&#10074;' : '&#9654;';
   btn.title = 'האזנה לעד קריאה';
-  btn.onclick = ()=>readingToggle(RDAU.ui.rec);
+  btn.onclick = ()=>rdUserPlay(RDAU.ui.rec);
   const title = el('div','reading-title');
   const renderTitle = r => { title.innerHTML = 'האזנה לעד קריאה &middot; ' + esc(r.reader); };
   renderTitle(rec);
-  bar.appendChild(title);
+  head.appendChild(title);
+  head.appendChild(rdContChip());
+  bar.appendChild(head);
   bar.appendChild(row);
   row.appendChild(btn);
   const seek = el('input','reading-seek'); seek.type='range'; seek.min=0; seek.step=0.1;
   seek.max = rec.duration || 0; seek.value = isCur ? rdVirtual() : 0;
   seek.oninput = ()=>{ const r=RDAU.ui.rec;
-                       readingToggle(r, parseFloat(seek.value)); };
+                       rdUserPlay(r, parseFloat(seek.value)); };
   row.appendChild(seek);
   const time = el('span','reading-time', rdFmt(isCur?rdVirtual():0)+' / '+rdFmt(rec.duration||0));
   row.appendChild(time);
@@ -5791,6 +5835,7 @@ function readingBar(c){
       const wasPlaying = RDAU.playing;
       const o = opts[+sel.value];
       localStorage.setItem('rd_reader', o.reader);
+      RDC.want = o.reader;                  // a continuous run follows the new choice too
       RDAU.ui.rec = o; renderTitle(o);
       seek.max = o.duration || 0; seek.value = 0;
       time.textContent = rdFmt(0)+' / '+rdFmt(o.duration||0);
@@ -5824,44 +5869,101 @@ function readingSync(){
            RDAU.ui.seek.value = vt;
            RDAU.ui.time.textContent = rdFmt(vt)+' / '+rdFmt(RDAU.ui.rec.duration||0); }
 }
+// ONE audio element for the whole session, reused for every segment, every witness
+// and every chapter. A media element is cleared for programmatic play() only once
+// the reader has tapped THAT element, so reusing it is what lets the next segment —
+// or the next chapter of a continuous run — start without a fresh tap (iOS).
+function rdEl(){
+  if(!RDAU.el){ const a = new Audio(); a.preload='auto'; RDAU.el = a; }
+  return RDAU.el;
+}
+function rdDetach(a){          // drop the previous play's handlers off the shared element
+  if(!a) return;
+  a.onplay=a.onpause=a.onended=a.ontimeupdate=a.onerror=null;
+  if(RDAU.seekFix){ a.removeEventListener('loadedmetadata', RDAU.seekFix); RDAU.seekFix=null; }
+}
 function rdPlayFrom(vt){
   const segs = rdSegs(RDAU.rec);
   let i = 0, acc = 0;
   while(i < segs.length-1 && vt >= acc + (segs[i].t1 - segs[i].t0)){ acc += segs[i].t1 - segs[i].t0; i++; }
   RDAU.segIdx = i; RDAU.segBase = acc;
   const s = segs[i];
-  if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){}
-    RDAU.audio.onplay=RDAU.audio.onpause=RDAU.audio.onended=RDAU.audio.ontimeupdate=RDAU.audio.onerror=null; }
-  const a = new Audio(s.file);
+  const a = rdEl();
+  try{ a.pause(); }catch(e){}
+  rdDetach(a);
+  const want = new URL(s.file, location.href).href;
+  if(a.src !== want) a.src = s.file;    // successive segments of one file: no reload
   a.playbackRate = RDAU.speed;
   RDAU.audio = a;
+  // seek even to 0: the shared element is left wherever the previous cut ended, so a
+  // replay of a segment that starts at 0 has to be rewound rather than resumed
   const pos = s.t0 + (vt - acc);
-  if(pos > 0){ const st=()=>{ try{ a.currentTime=pos; }catch(e){} };
-               st(); a.addEventListener('loadedmetadata', st, {once:true}); }
+  const st = ()=>{ try{ a.currentTime=pos; }catch(e){} };
+  st();                                 // …and again once metadata is in, if it wasn't yet
+  RDAU.seekFix = ()=>{ RDAU.seekFix=null; st(); };
+  a.addEventListener('loadedmetadata', RDAU.seekFix, {once:true});
   const advance = ()=>{ const done = RDAU.segBase + (s.t1 - s.t0);
-                        if(RDAU.segIdx < segs.length-1) rdPlayFrom(done); else readingStop(); };
-  a.onplay  = ()=>{ RDAU.playing=true;  readingSync(); };
+                        if(RDAU.segIdx < segs.length-1) rdPlayFrom(done); else rdFinish(); };
+  a.onplay  = ()=>{ RDAU.playing=true;
+                    if(a.playbackRate!==RDAU.speed) a.playbackRate=RDAU.speed;   // a fresh src can reset it
+                    readingSync(); };
   a.onpause = ()=>{ RDAU.playing=false; readingSync(); };
   a.onended = advance;
   a.ontimeupdate = ()=>{ if(a.currentTime >= s.t1 - 0.04) advance(); else readingSync(); };
-  a.onerror = ()=>readingStop();
-  a.play().catch(()=>{});
+  a.onerror = ()=>{ const run = RDC.on && RDC.last; readingStop();
+                    if(run) toast('ההקלטה לא נטענה — ההקראה הרציפה נעצרה'); };
+  const pr = a.play();
+  if(pr && pr.catch) pr.catch(()=>{});   // refusals are reported by whoever asked for the play
+  return pr;
 }
 function readingToggle(rec, seekTo){
   const key = rdKey(rec);
   if(RDAU.audio && RDAU.key===key && seekTo===undefined){
-    if(RDAU.playing) RDAU.audio.pause(); else RDAU.audio.play().catch(()=>{});
-    return;
+    if(RDAU.playing){ RDAU.audio.pause(); return null; }
+    const pr = RDAU.audio.play();
+    if(pr && pr.catch) pr.catch(()=>{});
+    return pr;
   }
   if(!(RDAU.audio && RDAU.key===key)) readingStop();
   if(typeof ttsStop==='function') ttsStop();     // recording and TTS are exclusive
   RDAU.rec = rec; RDAU.key = key;
-  rdPlayFrom(seekTo || 0);
+  return rdPlayFrom(seekTo || 0);
 }
 function readingStop(){
-  if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){} RDAU.audio.onplay=RDAU.audio.onpause=RDAU.audio.onended=RDAU.audio.ontimeupdate=RDAU.audio.onerror=null; }
+  if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){} rdDetach(RDAU.audio); }
   RDAU.audio=null; RDAU.key=null; RDAU.rec=null; RDAU.segIdx=0; RDAU.segBase=0; RDAU.playing=false;
   readingSync();
+}
+// the chapter's recording played out to its end
+function rdFinish(){
+  const reader = RDAU.rec && RDAU.rec.reader;
+  readingStop();
+  if(RDC.on) rdContinue(reader);
+}
+// …and, with the flag on, the reading goes on into the next chapter of the parasha.
+async function rdContinue(reader){
+  if(RDC.busy) return;
+  if(S.view!=='verses') return;                  // the reader has left the chapter meanwhile
+  if(rdLastOfPortion()){                         // גמר פרשה — a run never crosses it
+    RDC.last = null;
+    toast('גמר פרשה — ההקראה הרציפה נעצרה');
+    return;
+  }
+  RDC.last = reader || RDC.last;
+  const chId = S.curChId;
+  RDC.busy = true;
+  try{ await stepChapter(1); }
+  finally{ RDC.busy = false; }
+  if(S.view!=='verses' || S.curChId===chId) return;    // the page never turned
+  if(!RDAU.ui){                                        // the new chapter has no witness at all
+    RDC.last = null;
+    toast('אין עד קריאה לפרק זה — ההקראה הרציפה נעצרה');
+    return;
+  }
+  const rec = RDAU.ui.rec;                             // same witness where it exists, else another
+  if(reader && rec.reader!==reader) toast('עד הנוסח הוחלף: ' + rec.reader);
+  const pr = readingToggle(rec);                       // same speed: RDAU.speed carries over
+  if(pr && pr.catch) pr.catch(()=>toast('ההשמעה האוטומטית נחסמה — הקישו ▶ להמשך'));
 }
 
 // ── start ────────────────────────────────────────────────────────────────────
