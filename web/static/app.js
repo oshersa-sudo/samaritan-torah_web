@@ -167,6 +167,7 @@ const I18N = {
     pp_search_ph:'חיפוש שם, תקופה או עניין…', pp_back_list:'חזרה לרשימה',
     pp_by_era:'לפי תקופה', pp_by_abc:'לפי א״ב',
     pp_empty:'בחר אישיות מן הרשימה ←', pp_no_result:'לא נמצאה אישיות תואמת',
+    pp_unavailable:'היחידה עדיין אינה זמינה בשרת. נסו שוב בקרוב.',
     pp_era_bib:'תקופת המקרא', pp_era_anc:'העת העתיקה', pp_era_med:'ימי הביניים',
     pp_era_early:'ראשית העת החדשה', pp_era_mod:'העת החדשה', pp_era_unk:'תקופה לא ידועה',
     pp_source:'מקור', pp_contributor:'רשם:', pp_pron:'הגייה',
@@ -386,6 +387,7 @@ const I18N = {
     pp_search_ph:'Search a name, period or subject…', pp_back_list:'‹ Back to the list',
     pp_by_era:'By period', pp_by_abc:'A–Z',
     pp_empty:'Choose a figure from the list →', pp_no_result:'No matching figure',
+    pp_unavailable:'This unit is not available on the server yet. Please try again soon.',
     pp_era_bib:'Biblical era', pp_era_anc:'Antiquity', pp_era_med:'The Middle Ages',
     pp_era_early:'Early modern period', pp_era_mod:'Modern era', pp_era_unk:'Period unknown',
     pp_source:'Source', pp_contributor:'contributed by', pp_pron:'pron.',
@@ -605,6 +607,7 @@ const I18N = {
     pp_search_ph:'ابحث عن اسم أو حقبة أو موضوع…', pp_back_list:'العودة إلى القائمة',
     pp_by_era:'حسب الحقبة', pp_by_abc:'حسب الأبجدية',
     pp_empty:'اختر شخصية من القائمة ←', pp_no_result:'لم يُعثر على شخصية مطابقة',
+    pp_unavailable:'هذه الوحدة غير متاحة على الخادم بعد. حاول مرّة أخرى قريباً.',
     pp_era_bib:'العصر التوراتي', pp_era_anc:'العصور القديمة', pp_era_med:'العصور الوسطى',
     pp_era_early:'مطلع العصر الحديث', pp_era_mod:'العصر الحديث', pp_era_unk:'حقبة غير معروفة',
     pp_source:'المصدر', pp_contributor:'بقلم', pp_pron:'النطق',
@@ -4128,7 +4131,9 @@ $('rdToTorah').onclick=()=>$('bookModal').classList.add('hidden');     // ↩ re
 const PP = { toc:null, cur:null, mode:'era', _searchRows:null };
 const PP_ERA_ORDER = ['bib','anc','med','early','mod','unk'];
 async function ppEnsureData(){
-  if(!PP.toc) PP.toc = await api('people_toc');
+  // a live deployment's DB can predate the people table (it arrives with a
+  // reseed) — treat that as "no data yet" rather than letting the unit hang empty
+  if(!PP.toc){ try{ PP.toc = await api('people_toc'); }catch(e){ PP.toc = []; } }
   return PP.toc;
 }
 function openPeopleBook(){
@@ -4147,7 +4152,11 @@ function ppPeriod(p){ return (LANG==='en'?p.period : LANG==='ar'?p.period_ar : p
 function ppBuildList(){
   const list=$('ppList'); list.innerHTML='';
   const rows = PP._searchRows || PP.toc || [];
-  if(!rows.length){ list.appendChild(el('div','note', t('pp_no_result'))); return; }
+  if(!rows.length){
+    // nothing to browse at all is a different message from "your search matched nothing"
+    list.appendChild(el('div','note', (PP.toc && PP.toc.length) ? t('pp_no_result') : t('pp_unavailable')));
+    return;
+  }
   const groups={}, order=[];
   for(const p of rows){
     const key = PP.mode==='era' ? p.era : (ppName(p).replace(/^[^א-תA-Za-zء-ي]+/,'')[0]||'…').toUpperCase();

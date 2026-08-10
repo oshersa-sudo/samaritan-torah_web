@@ -1949,10 +1949,21 @@ _PEOPLE_LIST_COLS = ('id, ord, era, sort_year, name_he, name_en, name_ar, '
                      'period, period_he, period_ar')
 
 
+def _has_people(conn):
+    """A deployment's live DB sits on a persistent disk that can predate this
+    table (it arrives with a reseed from the bundled copy). Answer "no data" then,
+    so the unit says so in the reader's language instead of returning a 500."""
+    return conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='people'").fetchone() is not None
+
+
 def get_people_toc():
     """Light rows for every figure (names + period, no descriptions) — the client
     builds the era tree / A-Z list from this and fetches a person on demand."""
     conn = get_connection()
+    if not _has_people(conn):
+        conn.close()
+        return []
     rows = conn.execute('SELECT %s FROM people ORDER BY ord' % _PEOPLE_LIST_COLS).fetchall()
     conn.close()
     return [dict(r) for r in rows]
@@ -1961,6 +1972,9 @@ def get_people_toc():
 def get_person(pid):
     """One figure in full, including the three descriptions and the attribution."""
     conn = get_connection()
+    if not _has_people(conn):
+        conn.close()
+        return None
     r = conn.execute('SELECT * FROM people WHERE id=?', (pid or '',)).fetchone()
     conn.close()
     return dict(r) if r else None
@@ -1974,6 +1988,9 @@ def search_people(q, limit=200):
         return []
     like = '%' + q + '%'
     conn = get_connection()
+    if not _has_people(conn):
+        conn.close()
+        return []
     rows = conn.execute("""SELECT %s FROM people
         WHERE name_he LIKE ? OR name_en LIKE ? OR name_ar LIKE ?
            OR description_he LIKE ? OR description_en LIKE ? OR description_ar LIKE ?
