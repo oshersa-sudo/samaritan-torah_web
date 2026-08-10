@@ -139,7 +139,7 @@ const I18N = {
     save_yes:'כן, שמור', save_no:'לא, רק הפעם',
     samsrc_pick:'ממקור שומרון — בחר מקור', checking_sources:'בודק מקורות זמינים…',
     no_sam_source:'אין מקור שומרוני זמין לפסוקים אלה', back_sources:'‹ מקורות',
-    src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים',
+    src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים', src_bhuq:'פירוש אם בחקותי',
     src_sir:'סוד הלבבות', src_shyt:'שו"ת — יעקב בן אהרן הכהן',
     src_translit:'תעתיק הגייה', tr_source:'טקסט המקור', tr_translit:'תעתיק ההגייה השומרוני',
     no_translit:'אין תעתיק הגייה לפסוקים אלה',
@@ -339,7 +339,7 @@ const I18N = {
     save_yes:'Yes, save', save_no:'No, just now',
     samsrc_pick:'Samaritan sources — choose a source', checking_sources:'Checking available sources…',
     no_sam_source:'No Samaritan source for these verses', back_sources:'‹ Sources',
-    src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary",
+    src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary", src_bhuq:'Commentary on Im Beḥuqotay',
     src_sir:'Sīr al-Qulūb (Secret of Hearts)', src_shyt:'Responsa of Jacob ben Aaron',
     src_translit:'Pronunciation transcription', tr_source:'Source text', tr_translit:'Samaritan pronunciation',
     no_translit:'No pronunciation transcription for these verses',
@@ -539,7 +539,7 @@ const I18N = {
     save_yes:'نعم، احفظ', save_no:'لا، هذه المرّة فقط',
     samsrc_pick:'مصادر سامرية — اختر مصدراً', checking_sources:'جارٍ التحقق من المصادر…',
     no_sam_source:'لا يوجد مصدر سامري لهذه الآيات', back_sources:'‹ المصادر',
-    src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم',
+    src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم', src_bhuq:'تفسير «إن سلكتم في فرائضي»',
     src_sir:'سرّ القلوب', src_shyt:'أجوبة يعقوب بن هارون الكاهن',
     src_translit:'نسخ النطق', tr_source:'النصّ المصدر', tr_translit:'نطق السامريين',
     no_translit:'لا يوجد نسخ نطق لهذه الآيات',
@@ -1573,9 +1573,9 @@ async function buildSamSrc(c, verses){
     const loading=el('div','note',t('checking_sources')); panel.appendChild(loading);
     c.appendChild(panel);
     // only show a source that actually has content on the current verse(s)
-    const [tm, ey, tz, sir, shyt, tr] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
+    const [tm, ey, tz, sir, shyt, bhuq, tr] = await Promise.all([api('tibat_marqe?verse_ids='+ids),
       api('eyalk?verse_ids='+ids), api('tzdaka?verse_ids='+ids), api('sir?verse_ids='+ids),
-      api('shyt?verse_ids='+ids), api('translit?verse_ids='+ids)]);
+      api('shyt?verse_ids='+ids), api('bhuq?verse_ids='+ids), api('translit?verse_ids='+ids)]);
     loading.remove();
     const avail=[];
     if(tm.length) avail.push([t('src_tibat'),'tm']);
@@ -1583,6 +1583,7 @@ async function buildSamSrc(c, verses){
     if(tz.length) avail.push([t('src_tzdaka'),'tzdaka']);
     if(sir.length) avail.push([t('src_sir'),'sir']);
     if(shyt.length) avail.push([t('src_shyt'),'shyt']);
+    if(bhuq.length) avail.push([t('src_bhuq'),'bhuq']);
     if(tr && Object.keys(tr).length) avail.push([t('src_translit'),'translit']);
     if(!avail.length){ panel.appendChild(el('div','note',t('no_sam_source'))); return; }
     for(const [label,ch] of avail){
@@ -1693,6 +1694,26 @@ async function buildSamSrc(c, verses){
       if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
+    c.appendChild(panel); return;
+  }
+  if(S.samSrcChoice==='bhuq'){
+    // The commentary reasons from verses all over the Torah, so a section can
+    // surface far from Leviticus 26; the {NN} mark is the paragraph number of
+    // the manuscript, shown so a reader can find the place in the edition.
+    const items = await api('bhuq?verse_ids='+ids);
+    const panel=el('div','srcpanel');
+    const head=el('div','shead');
+    const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle',t('src_bhuq')));
+    panel.appendChild(head);
+    if(!items.length) panel.appendChild(el('div','note',t('no_sam_source')));
+    for(const it of items){
+      const card=el('div','card');
+      if(it.title) card.appendChild(el('div','chead',esc(it.title)+(it.ref?'  '+esc(it.ref):'')));
+      const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      panel.appendChild(card);
+    }
+    panel.appendChild(el('div','canchors',"אבו אלפרג' איבן אל-כתאר · תרגום ד\"ר עלי ותד · מנוסח בעריכה"));
     c.appendChild(panel); return;
   }
   // tm

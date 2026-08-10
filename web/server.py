@@ -286,6 +286,7 @@ _RESEED_CONTENT_TABLES = [
     ('vongall_apparatus', 'verse_id'), ('binyamim_verse_links', 'verse_id'),
     ('eyalk_verse_links', 'verse_id'), ('shyt_verse_links', 'verse_id'), ('sir_verse_links', 'verse_id'),
     ('tm_verse_links', 'verse_id'), ('tradart_verse_links', 'verse_id'), ('tzdaka_verse_links', 'verse_id'),
+    ('bhuq_verse_links', 'verse_id'),
 ]
 
 
@@ -1626,6 +1627,11 @@ def api_eyalk():
 @app.route('/api/tzdaka')
 def api_tzdaka():
     return jsonify(db.get_tzdaka_commentary(_ids_arg()))
+
+
+@app.route('/api/bhuq')
+def api_bhuq():
+    return jsonify(db.get_bhuq_commentary(_ids_arg()))
 
 
 @app.route('/api/sir')

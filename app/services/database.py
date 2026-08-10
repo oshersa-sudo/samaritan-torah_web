@@ -1492,6 +1492,33 @@ def get_tzdaka_commentary(verse_ids):
             for r in rows]
 
 
+def get_bhuq_commentary(verse_ids):
+    """פירוש אם בחקותי - Abū l-Faraj ibn al-Kathār on parashat אם בחקתי, in Ali
+    Watad's Hebrew translation, restated in our own words. A passage is attached
+    to a verse either because it cites it outright or because it quotes it, so
+    the same section can surface on verses far outside Leviticus 26 - that is
+    the point: the commentary argues from across the Torah. Each item is
+    {ref, title, text}; a section reaching several of the verses appears once."""
+    if not verse_ids:
+        return []
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT DISTINCT s.id, s.ref, s.title, s.ord, s.text
+                FROM bhuq_sections s
+                JOIN bhuq_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders})
+                ORDER BY s.ord""",
+            verse_ids
+        ).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    return [{'ref': r['ref'] or '', 'title': r['title'] or '', 'text': r['text'] or ''}
+            for r in rows]
+
+
 def get_sir_commentary(verse_ids):
     """סוד הלבבות (Sīr al-Qulūb, ch.4, Abraham al-Kabatzi) relevant to any of the
     given verses, in reading order. Each item is {title, text}; a section linked to
