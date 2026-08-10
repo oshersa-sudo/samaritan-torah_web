@@ -130,10 +130,11 @@ body.div-collapsed .div-handle{ height:26px; }
 .div-handle.show-down .tb-uparrow{ display:block; animation:tbArrowBlink .46s ease-in-out infinite alternate; }
 
 /* breadcrumb */
-/* padding-left reserves room for the three pinned buttons (bookmark 6px · PLAY 42px · הגייה 78px);
-   flex-wrap lets a long breadcrumb path drop to a second line instead of hiding under them */
+/* padding-left reserves room for the .bm-navs cluster pinned in the left corner
+   (it ends at ~83px with all three signs showing); flex-wrap lets a long breadcrumb
+   path drop to a second line, and the reservation keeps that line clear of the signs */
 #crumbs{ flex:0 0 auto; min-height:40px; display:flex; align-items:center; justify-content:flex-start;
-         gap:5px; padding:6px 10px 6px 108px; flex-wrap:wrap; font-size:15.5px; position:relative; }
+         gap:5px; padding:6px 10px 6px 98px; flex-wrap:wrap; font-size:15.5px; position:relative; }
 #crumbs .crumb{ color:var(--accent); cursor:pointer; background:none; border:0; font-family:inherit; font-size:15.5px; padding:0; }
 
 /* clear-filter bar — shown above the verses when a single verse is filtered */
@@ -200,8 +201,8 @@ body.div-collapsed .div-handle{ height:26px; }
 .vpron .vpron-lat{ direction:ltr; unicode-bidi:isolate; font-family:'Translit',serif; color:#5a6b7a; font-size:15px; }
 .vpron .vpron-arrow{ color:#17a9c4; margin:0 7px; }
 .vpron .vpron-heb{ font-size:20px; color:var(--navy); }
-.bm-nav.print-nav{ left:78px; font-size:16px; }
-.bm-nav.pron-nav{ left:150px; padding:0 5px; font-size:19px; font-weight:700; line-height:1; color:#17a9c4; }
+.bm-nav.print-nav{ font-size:16px; }
+.bm-nav.pron-nav{ padding:0 3px; font-size:19px; font-weight:700; line-height:1; color:#17a9c4; }
 .pron-nav.on{ background:rgba(23,169,196,.9); color:#fff; border-radius:6px; }
 .vrow .num{ flex:0 0 auto; min-width:34px; height:30px; border:0; border-radius:6px;
             background:#c2cbef; color:var(--navy); font-family:inherit; font-size:14px; cursor:pointer; margin-top:4px; }
@@ -446,6 +447,26 @@ body.div-collapsed .div-handle{ height:26px; }
 @keyframes tbArrowBlinkDown{
   from{ opacity:.18; transform:translate(-50%,-7px) scale(.8); }
   to{   opacity:1;   transform:translate(-50%,10px) scale(1.28); } }
+/* ── the standing hint: a tiny chevron that stays on a FOLDED handle, bobbing
+   gently for as long as the bar is closed, so the reader keeps knowing there is
+   something to pull open. It is put up only once the fold animation (and the big
+   transient arrow above, which it must never share the handle with) is over — the
+   `hint-on` class, set from the fold controller. Bottom bar points UP, the top
+   bar's own rule below points DOWN, each towards where its bar would open. */
+.tb-hint{ display:none; position:absolute; left:50%; width:6px; height:6px;
+  border-left:1.8px solid rgba(255,255,255,.9); border-top:1.8px solid rgba(255,255,255,.9);
+  filter:drop-shadow(0 0 2px rgba(0,0,0,.45)); pointer-events:none; }
+#toolbar.folded.hint-on .tb-hint{ display:block; top:5px; animation:tbHintUp 1.6s ease-in-out infinite; }
+body.div-collapsed .div-handle.hint-on .tb-hint{ display:block; bottom:5px; animation:tbHintDown 1.6s ease-in-out infinite; }
+@keyframes tbHintUp{
+  0%,100%{ transform:translate(-50%,2.5px) rotate(45deg);  opacity:.45; }
+  50%    { transform:translate(-50%,-2.5px) rotate(45deg); opacity:1; } }
+@keyframes tbHintDown{
+  0%,100%{ transform:translate(-50%,-2.5px) rotate(225deg); opacity:.45; }
+  50%    { transform:translate(-50%,2.5px) rotate(225deg);  opacity:1; } }
+@media (prefers-reduced-motion: reduce){        /* still shown, just not bobbing */
+  #toolbar.folded.hint-on .tb-hint{ animation:none; transform:translate(-50%,0) rotate(45deg); opacity:.9; }
+  body.div-collapsed .div-handle.hint-on .tb-hint{ animation:none; transform:translate(-50%,0) rotate(225deg); opacity:.9; } }
 /* zoom (magnifier ±) buttons centre their icon */
 .round{ display:inline-flex; align-items:center; justify-content:center; }
 .round .zoomi{ width:31px; height:31px; }
@@ -1284,9 +1305,14 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
              padding-top:12px; }
 .canon-note-count{ font-weight:600; color:var(--navy); font-size:15px; margin-bottom:4px; }
 .canon-note-text{ font-size:12px; color:var(--muted,#777); line-height:1.5; }
-/* bookmark sign — pinned to the left corner of the breadcrumb row, no background */
-.bm-nav{ position:absolute; left:6px; top:50%; transform:translateY(-50%); border:0; background:transparent;
-         padding:0 4px; font-size:24px; line-height:1; cursor:pointer; z-index:5; }
+/* the three chapter signs (bookmark · printer · pronunciation) — pinned as ONE tight
+   row to the left corner of the breadcrumb row. A flex row keeps them shoulder to
+   shoulder whatever width each glyph happens to take on the device's emoji font,
+   which per-button `left` offsets could not. */
+.bm-navs{ position:absolute; left:4px; top:50%; transform:translateY(-50%);
+          display:flex; align-items:center; gap:1px; z-index:5; }
+.bm-nav{ position:relative; border:0; background:transparent;
+         padding:0 2px; font-size:24px; line-height:1; cursor:pointer; }
 .bm-nav.hidden{ display:none; }
 .bm-nav:hover::after{ content:attr(title); position:absolute; top:34px; left:0; white-space:nowrap;
          background:var(--navy); color:#fff; font-size:13px; padding:5px 9px; border-radius:6px;
@@ -1329,6 +1355,12 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
             font-family:inherit; font-size:17px; cursor:pointer; }
 #infoBody .whatsnew{ white-space:pre-wrap; font-family:inherit; font-size:15px; line-height:1.7;
                      color:var(--dark); text-align:right; margin:0; }
+/* the system documentation is far longer than a changelog: smaller type, and the
+   section rules may not wrap, so it scrolls sideways inside its own box. It is
+   hand-wrapped at ~60 characters, so a phone drops another step to keep a source
+   line on one screen line instead of breaking every one of them in the middle. */
+#infoBody .whatsnew.sysdoc{ font-size:13.5px; line-height:1.65; overflow-x:auto; }
+@media (max-width:430px){ #infoBody .whatsnew.sysdoc{ font-size:11px; line-height:1.6; } }
 #infoBody .ver-num{ text-align:center; font-size:30px; font-weight:700; color:var(--navy); padding:14px; }
 
 /* ── responsive: narrow phones — bigger, comfortable touch targets ─────────── */
@@ -1503,33 +1535,35 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   font-size:12.5px; line-height:1.6; color:var(--muted); }
 
 /* ── chanted-reading recordings bar (הקלטות קריאה) ─────────────────────── */
-.reading-bar{ display:flex; flex-direction:column; align-items:stretch; gap:6px; direction:rtl;
+/* kept deliberately compact — every pixel here is a pixel of Torah text below it */
+.reading-bar{ display:flex; flex-direction:column; align-items:stretch; gap:3px; direction:rtl;
   background:linear-gradient(180deg,#fdfbf5,#f4efe2); border:1px solid #d9cfb6;
-  border-radius:12px; padding:8px 12px; margin:6px 0 12px;
+  border-radius:10px; padding:4px 9px 5px; margin:3px 0 7px;
   box-shadow:0 1px 4px rgba(0,0,0,.07); }
-.reading-head{ display:flex; align-items:center; gap:8px; direction:rtl; min-width:0; }
-.reading-row{ display:flex; align-items:center; gap:8px; direction:rtl; min-width:0; }
-.reading-btn{ flex:0 0 auto; width:42px; height:42px; border-radius:50%;
-  border:none; background:var(--accent); color:#fff; font-size:16px;
+.reading-head{ display:flex; align-items:center; gap:7px; direction:rtl; min-width:0; }
+.reading-row{ display:flex; align-items:center; gap:7px; direction:rtl; min-width:0; }
+.reading-btn{ flex:0 0 auto; width:32px; height:32px; border-radius:50%;
+  border:none; background:var(--accent); color:#fff; font-size:12px;
   cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .reading-btn:hover{ background:var(--active); }
 .reading-info{ flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
-.reading-title{ flex:1 1 auto; font-size:13px; font-weight:600; color:var(--navy);
-  white-space:normal; overflow:visible; line-height:1.35; min-width:0; }
+.reading-title{ flex:1 1 auto; font-size:12.5px; font-weight:600; color:var(--navy);
+  white-space:normal; overflow:visible; line-height:1.25; min-width:0; }
 /* continuous-reading flag (הקראה רציפה): keeps playing into the next chapter */
 .reading-cont{ flex:0 0 auto; border:1px solid var(--line); border-radius:999px;
-  background:#fff; color:var(--muted); font:inherit; font-size:11.5px; font-weight:700;
-  padding:3px 10px; cursor:pointer; white-space:nowrap; line-height:1.5; }
+  background:#fff; color:var(--muted); font:inherit; font-size:11px; font-weight:700;
+  padding:2px 9px; cursor:pointer; white-space:nowrap; line-height:1.45; }
 .reading-cont:hover{ border-color:var(--accent); color:var(--accent); }
 .reading-cont.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
-.reading-seek{ flex:1; min-width:60px; width:auto; direction:ltr; accent-color:var(--accent); margin:0; }
-.reading-time{ flex:0 0 auto; font-size:12px; color:var(--muted); direction:ltr; }
+.reading-seek{ flex:1; min-width:52px; width:auto; height:16px; direction:ltr;
+  accent-color:var(--accent); margin:0; }
+.reading-time{ flex:0 0 auto; font-size:11.5px; color:var(--muted); direction:ltr; }
 .reading-speed{ flex:0 0 auto; border:1px solid var(--line); border-radius:6px;
-  background:#fff; color:var(--navy); font:inherit; font-size:12.5px; font-weight:700;
-  padding:4px 8px; cursor:pointer; direction:ltr; }
+  background:#fff; color:var(--navy); font:inherit; font-size:12px; font-weight:700;
+  padding:2px 7px; cursor:pointer; direction:ltr; }
 .reading-speed:hover{ border-color:var(--accent); color:var(--accent); }
-.reading-witness{ flex:0 0 auto; width:88px; max-width:88px; border:1px solid var(--line);
+.reading-witness{ flex:0 0 auto; width:82px; max-width:82px; border:1px solid var(--line);
   border-radius:6px; background:#fff; color:var(--navy); font:inherit;
-  font-size:12.5px; padding:4px 4px; cursor:pointer;
+  font-size:12px; padding:2px 4px; cursor:pointer;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .cell-audio{ display:block; font-size:12px; color:var(--accent); line-height:1; margin-top:2px; }
