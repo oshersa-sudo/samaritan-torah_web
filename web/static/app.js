@@ -226,7 +226,7 @@ const I18N = {
     ws_melitz:'מן המליץ', ws_melitz_pending:'מקור המליץ טרם נוסף', ws_torah_occ:'מופעים בתורה (ארמית)', ws_marqe_occ:'מופעים בתיבת מרקה',
     ws_arabic:'מהתרגום הערבי', ws_from_arabic:'תרגום מהערבית לעברית', ws_arabic_pending:'התרגום מהערבית לעברית בהכנה',
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
-    no_interp_ar:'התרגום הערבי לפירוש עדיין בהכנה', interp_sam:'כתב שומרוני', interp_ar:'ערבית',
+    no_interp_ar:'התרגום הערבי לפירוש עדיין בהכנה', interp_ar_pending:'[טרם תורגם] ', interp_sam:'כתב שומרוני', interp_ar:'ערבית',
     interp_more:'להרחבה פנה אל:',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
@@ -423,7 +423,7 @@ const I18N = {
     ws_melitz:'from the Meliṣ', ws_melitz_pending:'the Meliṣ source is not yet added', ws_torah_occ:'occurrences in the Torah (Aramaic)', ws_marqe_occ:'occurrences in Tībåt Mårqe',
     ws_arabic:'from the Arabic', ws_from_arabic:'Arabic → Hebrew', ws_arabic_pending:'Arabic→Hebrew translation in preparation',
     searching:'Searching…', no_interp:'No commentary for these verses',
-    no_interp_ar:'The Arabic rendering is still being prepared', interp_sam:'Samaritan script', interp_ar:'Arabic',
+    no_interp_ar:'The Arabic rendering is still being prepared', interp_ar_pending:'[not yet translated] ', interp_sam:'Samaritan script', interp_ar:'Arabic',
     interp_more:'Read further in:',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
@@ -620,7 +620,7 @@ const I18N = {
     ws_melitz:'من المليص', ws_melitz_pending:'مصدر المليص لم يُضَف بعد', ws_torah_occ:'مواضع في التوراة (آرامية)', ws_marqe_occ:'مواضع في تيبات مارقه',
     ws_arabic:'من العربية', ws_from_arabic:'العربية ← العبرية', ws_arabic_pending:'ترجمة العربية إلى العبرية قيد الإعداد',
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
-    no_interp_ar:'الترجمة العربية للتفسير قيد الإعداد', interp_sam:'الخط السامري', interp_ar:'العربية',
+    no_interp_ar:'الترجمة العربية للتفسير قيد الإعداد', interp_ar_pending:'[لم يُترجَم بعد] ', interp_sam:'الخط السامري', interp_ar:'العربية',
     interp_more:'للتوسّع راجِع:',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
@@ -1325,7 +1325,12 @@ async function buildInterpret(c, verses){
   // mode the commentary comes out in the fluent Samaritan commentary font, so
   // the original stands in Samaritan script with its interpretation beneath it.
   const ar = (S.interpLang==='ar');
-  const m = await api('interpretations?verse_ids='+verses.map(v=>v.id).join(',')+(ar?'&lang=ar':''));
+  const ids = verses.map(v=>v.id).join(',');
+  // In Arabic mode fetch BOTH: a verse whose Arabic is still missing falls back
+  // to its Hebrew commentary with a marker, rather than silently vanishing from
+  // the panel and making the chapter look like it has fewer verses than it does.
+  const m  = await api('interpretations?verse_ids='+ids+(ar?'&lang=ar':''));
+  const mHe = ar ? await api('interpretations?verse_ids='+ids) : m;
   const fs = fsize();
   const panel = el('div','srcpanel interp-panel');
 
@@ -1347,6 +1352,8 @@ async function buildInterpret(c, verses){
   let any = false;
   for(const v of verses){
     let txt = (m[v.id]||'').trim();
+    const fellBack = ar && !txt && !!(mHe[v.id]||'').trim();
+    if(fellBack) txt = (mHe[v.id]||'').trim();
     if(!txt) continue;
     // strip leftover markdown (heading lines, ** bold) that leaked into the text
     txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
@@ -1355,8 +1362,10 @@ async function buildInterpret(c, verses){
     const row = el('div','irow');
     const num = el('button','inum'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
-    const body = el('div','itext'+(ar?' iar':''), ar ? esc(txt) : (S.interpSam||S.samFont)
+    const showAr = ar && !fellBack;
+    const body = el('div','itext'+(showAr?' iar':''), showAr ? esc(txt) : (!ar && (S.interpSam||S.samFont))
       ? samMarkupFree(addWordDots(stripNiqqud(txt))) : esc(txt));
+    if(fellBack) body.prepend(el('span','ipend', t('interp_ar_pending')));
     body.style.fontSize = fs+'px';
     row.appendChild(num); row.appendChild(body);
     if(!ar) addPencil(row, v.id, 'interpretation', ()=>(m[v.id]||''));

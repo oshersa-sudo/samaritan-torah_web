@@ -720,6 +720,8 @@ footer a{ color:var(--accent); text-decoration:none; }
 .ifoot-btn{ border:1px solid var(--accent); background:#fff; color:var(--accent);
   font-family:inherit; font-size:13px; padding:4px 12px; border-radius:999px; cursor:pointer; }
 .ifoot-btn:hover{ background:var(--accent); color:#fff; }
+/* marker on a verse still showing its Hebrew inside the Arabic view */
+.ipend{ font-size:.82em; color:var(--accent); opacity:.9; }
 
 /* ── "system is updating" blocking screen (server unreachable while online) ── */
 #maintScreen{ position:fixed; inset:0; z-index:99999; display:flex; align-items:center;

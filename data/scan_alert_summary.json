@@ -1,0 +1,17 @@
+{
+ "שמות": {
+  "segments": 91,
+  "shifted_pairs": 21,
+  "genuine": 49
+ },
+ "ויקרא": {
+  "segments": 57,
+  "shifted_pairs": 17,
+  "genuine": 23
+ },
+ "במדבר": {
+  "segments": 64,
+  "shifted_pairs": 8,
+  "genuine": 48
+ }
+}
