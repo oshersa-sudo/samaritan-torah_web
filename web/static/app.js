@@ -1417,8 +1417,11 @@ async function buildInterpret(c, verses){
       const lead = t('interp_asatir_lead')
         + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '') + ':';
       box.appendChild(el('div','iasatir-lead', esc(lead)));
-      const at = el('div','iasatir-text', (!ar && (S.interpSam||S.samFont))
-        ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+      const showArAsa = ar && !!(it.arabic||'').trim();
+      const at = el('div','iasatir-text'+(showArAsa?' iar':''),
+        showArAsa ? esc(it.arabic)
+        : ((!ar && (S.interpSam||S.samFont))
+            ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text)));
       at.style.fontSize = fs+'px';
       box.appendChild(at);
       col.appendChild(box);
@@ -3904,7 +3907,8 @@ const BOOK_CFG = {
     unitDom:(s)=>'rdsec-'+s.id,
     searchRef:(r)=>esc(r.ref||'')+(r.title?('  ·  '+esc(r.title)):''),
     searchTo:(r)=>({chap:r.chap, dom:'rdsec-'+r.id}),
-    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'},
+           {key:'arabic', labelKey:'rd_ar', dir:'rtl'}],
   },
 };
 let RD = { key:null, cfg:null, chapter:null, lang:null, fs:parseFloat(localStorage.getItem('as_rd_fs')||'1')||1 };

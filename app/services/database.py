@@ -1382,12 +1382,12 @@ def get_asatir_chapter(chap):
         FROM asatir_verse_links l JOIN asatir_sections s ON s.id=l.section_id
         WHERE s.chap=? GROUP BY l.section_id""", (chap,)):
         vlink[r['sid']] = r['vid']
-    secs = conn.execute("SELECT id, ref, chap_title, text FROM asatir_sections "
+    secs = conn.execute("SELECT id, ref, chap_title, text, arabic FROM asatir_sections "
                         "WHERE chap=? ORDER BY ord", (chap,)).fetchall()
     conn.close()
     title = secs[0]['chap_title'] if secs else ''
     out = [{'id': s['id'], 'ref': s['ref'] or '', 'title': '',
-            'hebrew': s['text'] or '',
+            'hebrew': s['text'] or '', 'arabic': s['arabic'] or '',
             'hebrew_html': _tm_mark_refs(s['text'] or '', vmap),
             'verse_id': vlink.get(s['id'])} for s in secs]
     return {'chap': chap, 'heb': _num_he(chap), 'title': title, 'sections': out}
@@ -1816,7 +1816,7 @@ def get_asatir_commentary(verse_ids):
     placeholders = ','.join('?' * len(verse_ids))
     try:
         rows = conn.execute(
-            f"""SELECT DISTINCT s.id, s.chap, s.chap_title, s.ref, s.ord, s.text
+            f"""SELECT DISTINCT s.id, s.chap, s.chap_title, s.ref, s.ord, s.text, s.arabic
                 FROM asatir_sections s
                 JOIN asatir_verse_links l ON l.section_id = s.id
                 WHERE l.verse_id IN ({placeholders})
@@ -1827,7 +1827,7 @@ def get_asatir_commentary(verse_ids):
         rows = []
     conn.close()
     return [{'ref': 'אסאטיר ' + (r['ref'] or ''), 'title': r['chap_title'] or '',
-             'text': r['text'] or ''} for r in rows]
+             'text': r['text'] or '', 'arabic': r['arabic'] or ''} for r in rows]
 
 
 def get_asatir_by_verse(verse_ids):
@@ -1842,7 +1842,7 @@ def get_asatir_by_verse(verse_ids):
     placeholders = ','.join('?' * len(verse_ids))
     try:
         rows = conn.execute(
-            f"""SELECT l.verse_id vid, s.chap_title, s.ref, s.ord, s.text
+            f"""SELECT l.verse_id vid, s.chap_title, s.ref, s.ord, s.text, s.arabic
                 FROM asatir_sections s
                 JOIN asatir_verse_links l ON l.section_id = s.id
                 WHERE l.verse_id IN ({placeholders})
@@ -1858,7 +1858,7 @@ def get_asatir_by_verse(verse_ids):
         # unlike the sources panel where the ref has to carry it.
         out.setdefault(r['vid'], []).append(
             {'ref': r['ref'] or '', 'title': r['chap_title'] or '',
-             'text': r['text'] or ''})
+             'text': r['text'] or '', 'arabic': r['arabic'] or ''})
     return out
 
 
