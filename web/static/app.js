@@ -2634,6 +2634,18 @@ function setView(){
 // the next/prev and zoom controls (in #navbar) stay put.
 let tbFolded=false, tbUserOpened=false, tbFoldTimer=null, tbInVerse=false;
 let divFolded=false, divUserOpened=false;
+// the standing hint arrow on a folded handle. It goes up only AFTER whatever
+// animation just ran has finished — the fold transition, and the big transient
+// arrow when one was shown — so the two never sit on the handle together.
+const TB_ARROW_MS = 3000, TB_FOLD_MS = 420;
+let tbHintTimer=null, divHintTimer=null;
+function hintAfterFold(node, folded, withArrow, timer){
+  clearTimeout(timer);
+  node.classList.remove('hint-on');
+  if(!folded) return null;
+  return setTimeout(()=>node.classList.add('hint-on'),
+                    withArrow ? TB_ARROW_MS + 250 : TB_FOLD_MS);
+}
 function setToolbarFolded(folded, withArrow){
   const wasFolded=tbFolded;
   tbFolded=folded;
@@ -2641,11 +2653,12 @@ function setToolbarFolded(folded, withArrow){
   tb.classList.remove('show-arrow'); tb.classList.remove('show-down');
   if(folded && withArrow){
     void tb.offsetWidth; tb.classList.add('show-arrow');             // up-arrow ~3s after folding
-    setTimeout(()=>tb.classList.remove('show-arrow'), 3000);
+    setTimeout(()=>tb.classList.remove('show-arrow'), TB_ARROW_MS);
   } else if(!folded && withArrow && wasFolded){
     void tb.offsetWidth; tb.classList.add('show-down');              // reverse: down-arrow ~2s after opening
     setTimeout(()=>tb.classList.remove('show-down'), 2000);
   }
+  tbHintTimer = hintAfterFold(tb, folded, withArrow, tbHintTimer);
   if(folded && !divFolded) setDivFolded(true, withArrow);           // FOLD links both bars (not open)
 }
 // the top division-toggle bar (יהודית/שומרונית) folds like the bottom toolbar, with
@@ -2656,8 +2669,9 @@ function setDivFolded(folded, withArrow){
   const h=$('divHandle');
   if(h){
     h.classList.remove('show-arrow'); h.classList.remove('show-down');
-    if(folded && withArrow){ void h.offsetWidth; h.classList.add('show-arrow'); setTimeout(()=>h.classList.remove('show-arrow'),3000); }
+    if(folded && withArrow){ void h.offsetWidth; h.classList.add('show-arrow'); setTimeout(()=>h.classList.remove('show-arrow'),TB_ARROW_MS); }
     else if(!folded && withArrow && was){ void h.offsetWidth; h.classList.add('show-down'); setTimeout(()=>h.classList.remove('show-down'),2000); }
+    divHintTimer = hintAfterFold(h, folded, withArrow, divHintTimer);
   }
   if(folded && !tbFolded) setToolbarFolded(true, withArrow);        // fold together
 }
