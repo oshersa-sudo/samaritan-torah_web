@@ -1298,6 +1298,12 @@ footer a{ color:var(--accent); text-decoration:none; }
             font-family:inherit; font-size:17px; cursor:pointer; }
 #infoBody .whatsnew{ white-space:pre-wrap; font-family:inherit; font-size:15px; line-height:1.7;
                      color:var(--dark); text-align:right; margin:0; }
+/* the system documentation is far longer than a changelog: smaller type, and the
+   section rules may not wrap, so it scrolls sideways inside its own box. It is
+   hand-wrapped at ~60 characters, so a phone drops another step to keep a source
+   line on one screen line instead of breaking every one of them in the middle. */
+#infoBody .whatsnew.sysdoc{ font-size:13.5px; line-height:1.65; overflow-x:auto; }
+@media (max-width:430px){ #infoBody .whatsnew.sysdoc{ font-size:11px; line-height:1.6; } }
 #infoBody .ver-num{ text-align:center; font-size:30px; font-weight:700; color:var(--navy); padding:14px; }
 
 /* ── responsive: narrow phones — bigger, comfortable touch targets ─────────── */

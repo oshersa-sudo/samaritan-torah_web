@@ -42,8 +42,9 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '2.4'
+APP_VERSION = '3.0'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
+_SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
 
 # ── admin text editing (LOCAL only; secured entirely server-side) ─────────────
@@ -1266,6 +1267,21 @@ def api_whats_new():
     except Exception:
         text = ''
     return jsonify({'version': APP_VERSION, 'text': text})
+
+
+@app.route('/api/admin/system_doc')
+def api_system_doc():
+    """The system's own documentation (SYSTEM_DOC.txt) — what the system is, what
+    it is built of, where each body of text came from and what every version did.
+    Maintainer-facing, so it is behind the admin token like the other tools."""
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        with open(_SYSTEM_DOC, encoding='utf-8') as f:
+            text = f.read()
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    return jsonify({'ok': True, 'version': APP_VERSION, 'text': text})
 
 
 @app.route('/fonts/<path:fn>')
