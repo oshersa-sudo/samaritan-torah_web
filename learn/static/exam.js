@@ -3140,6 +3140,17 @@ function _genMathQ(lvl,type){
 // statistics; ט׳ special products, factoring, quadratics, probability;
 // י׳–י״ב sequences, trigonometry and analytic geometry.
 const _shuf4=a=>shuffle([...new Set(a)]).slice(0,4);
+// Each template records the grade its topic is introduced in. A twelfth-grader
+// practising "(−11) − (−4)" is revising ז׳, not working at their level, so the
+// pool narrows to what the grade is actually studying — widening again only if
+// that leaves too little variety to build a round from.
+function _byGrade(T,g){
+  for(const back of [2,4,6]){
+    const cur=T.filter(t=>t.from>=g-back);
+    if(cur.length>=4)return cur;
+  }
+  return T;
+}
 function _optsOf(ans,...wrong){
   const s=[String(ans),...wrong.map(String)];
   return {ans:String(ans),opts:_shuf4(s)};
@@ -3148,7 +3159,8 @@ function _optsOf(ans,...wrong){
 // ── מספרים מכוונים, חזקות ושורשים ──
 function _genSignedQ(g){
   const R=_mrand,pick=a=>a[R(0,a.length-1)];
-  const T=[
+  const T=[],add=(from,...fns)=>{for(const f of fns)T.push({from,f});};
+  add(7,
     ()=>{const x=R(2,15),y=R(2,20);return {t:`(−${x}) + ${y}`,a:y-x,eq:true};},
     ()=>{const x=R(2,15),y=R(2,15);return {t:`(−${x}) − (−${y})`,a:y-x,eq:true};},
     ()=>{const x=R(2,9),y=R(2,9);return {t:`(−${x}) × (−${y})`,a:x*y,eq:true};},
@@ -3157,9 +3169,8 @@ function _genSignedQ(g){
     ()=>{const b=pick([2,3,4,5,6,10]),e=b<=3?R(2,4):R(2,3);return {t:`${b}^${e}`,a:Math.pow(b,e),eq:true};},
     ()=>{const r=pick([4,9,16,25,36,49,64,81,100,121,144]);return {t:`√${r}`,a:Math.round(Math.sqrt(r)),eq:true};},
     ()=>{const a=R(2,9),b=R(2,9),c=R(2,9);return {t:`${a} + ${b} × ${c}`,a:a+b*c,eq:true};},
-    ()=>{const a=R(2,9),b=R(2,9),c=R(2,6);return {t:`(${a} + ${b}) × ${c}`,a:(a+b)*c,eq:true};},
-  ];
-  if(g>=8)T.push(
+    ()=>{const a=R(2,9),b=R(2,9),c=R(2,6);return {t:`(${a} + ${b}) × ${c}`,a:(a+b)*c,eq:true};});
+  add(8,
     ()=>{const b=pick([2,3,5]),m=R(2,4),n=R(2,3);
       return {t:`${b}^${m} · ${b}^${n}`,rtl:false,..._optsOf(`${b}^${m+n}`,`${b}^${m*n}`,`${b*2}^${m+n}`,`${b}^${Math.abs(m-n)}`)};},
     ()=>{const b=pick([2,3,5]),m=R(4,6),n=R(1,3);
@@ -3167,26 +3178,56 @@ function _genSignedQ(g){
     ()=>{const b=pick([2,3]),m=R(2,3),n=R(2,3);
       return {t:`(${b}^${m})^${n}`,rtl:false,..._optsOf(`${b}^${m*n}`,`${b}^${m+n}`,`${b}^${m}`,`${b}^${n}`)};},
     ()=>{const x=pick([2,3,4,5]);return {t:`(−${x})² מול −${x}²  →  כמה זה (−${x})²?`,a:x*x,rtl:true};},
-    ()=>{const x=pick([2,3,4,5]);return {t:`כמה זה −${x}² ?  (החזקה לפני הסימן)`,a:-(x*x),rtl:true};},
-  );
-  if(g>=9)T.push(
-    ()=>{const m=R(2,9),e=R(3,6);
-      return {t:`${m}·10^${e} — כמה אפסים אחרי הספרה ${m}?`,a:e,rtl:true};},
+    ()=>{const x=pick([2,3,4,5]);return {t:`כמה זה −${x}² ?  (החזקה לפני הסימן)`,a:-(x*x),rtl:true};});
+  add(9,
+    ()=>{const m=R(2,9),e=R(3,6);return {t:`${m}·10^${e} — כמה אפסים אחרי הספרה ${m}?`,a:e,rtl:true};},
     ()=>{const b=pick([2,3,5,10]),n=R(1,3);
       return {t:`${b}^−${n}`,rtl:false,..._optsOf(`1/${Math.pow(b,n)}`,`−${Math.pow(b,n)}`,`${Math.pow(b,n)}`,`−1/${Math.pow(b,n)}`)};},
-    ()=>{const r=pick([8,27,64,125,1000]);return {t:`השורש השלישי של ${r}`,a:Math.round(Math.cbrt(r)),rtl:true};},
-  );
-  return pick(T)();
+    ()=>{const r=pick([8,27,64,125,1000]);return {t:`השורש השלישי של ${r}`,a:Math.round(Math.cbrt(r)),rtl:true};});
+  add(10,
+    // כתיב מדעי — פעולות
+    ()=>{const a=R(2,9),b=R(2,9),m=R(2,5),n=R(2,5);
+      return {t:`(${a}·10^${m}) · (${b}·10^${n}) — מהי החזקה של 10 בתוצאה (לפני נרמול)?`,a:m+n,rtl:true};},
+    ()=>{const n=pick([8,12,18,20,27,32,45,50,48,75]);
+      const sq=[2,3,4,5,6][[8,12,18,20,27,32,45,50,48,75].indexOf(n)>=0?0:0];
+      const map={8:["2√2",2],12:["2√3",2],18:["3√2",3],20:["2√5",2],27:["3√3",3],
+                 32:["4√2",4],45:["3√5",3],50:["5√2",5],48:["4√3",4],75:["5√3",5]};
+      return {t:`פשט/י את השורש: √${n}`,rtl:false,
+              ..._optsOf(map[n][0],`√${n}`,`${map[n][1]}√${n}`,`${map[n][1]*2}√2`)};},
+    ()=>{const a=R(2,9);return {t:`פתרו: |x| = ${a} — מהו הפתרון החיובי?`,a:a,rtl:true};},
+    ()=>{const b=pick([2,3,5]),n=R(2,4);return {t:`log₍${b}₎ ${Math.pow(b,n)} = ?`,a:n,rtl:false};},
+    ()=>{const a=R(2,6),b=R(2,6),c=R(2,5);
+      return {t:`${a} + ${b} × ${c}² − ${a}`,a:b*c*c,eq:true};});
+  add(11,
+    ()=>{const b=pick([2,3,10]),m=R(2,4),n=R(2,4);
+      return {t:`log₍${b}₎ ${Math.pow(b,m)} + log₍${b}₎ ${Math.pow(b,n)} = ?`,a:m+n,rtl:false};},
+    ()=>{const b=pick([2,3,10]),m=R(4,6),n=R(1,3);
+      return {t:`log₍${b}₎ ${Math.pow(b,m)} − log₍${b}₎ ${Math.pow(b,n)} = ?`,a:m-n,rtl:false};},
+    ()=>{const b=pick([2,3,5]),n=R(2,4),k=R(2,3);
+      return {t:`log₍${b}₎ (${Math.pow(b,n)}^${k}) = ?`,a:n*k,rtl:false};},
+    ()=>{const b=pick([2,3,5,10]);return {t:`log₍${b}₎ ${b} = ?`,a:1,rtl:false};},
+    ()=>{const x=pick([2,3,4]),b=pick([2,3]);
+      return {t:`פתרו: ${b}^x = ${Math.pow(b,x)} — מהו x?`,a:x,rtl:true};});
+  add(12,
+    ()=>{const n=pick([2,3,5,6,7,8,10]);
+      return {t:`האם √${n} הוא מספר רציונלי או אי־רציונלי?`,rtl:true,
+              ..._optsOf("אי־רציונלי","רציונלי","שלם","טבעי")};},
+    ()=>{const a=R(2,5),b=R(2,5);
+      return {t:`(${a} + ${b}i) + (${b} − ${a}i) — מהו החלק הממשי?`,a:a+b,rtl:true};},
+    ()=>{const b=pick([2,3]),x=R(2,4);
+      return {t:`f(x) = ${b}^x. מהו f(${x}) − f(${x-1})?`,a:Math.pow(b,x)-Math.pow(b,x-1),rtl:false};});
+  return pick(_byGrade(T,g)).f();
 }
 
 // ── יחס, פרופורציה ואחוזים ──
 function _genPercentQ(g){
   const R=_mrand,pick=a=>a[R(0,a.length-1)];
-  const T=[
+  const T=[],add=(from,...fns)=>{for(const f of fns)T.push({from,f});};
+  add(7,
     ()=>{const p=pick([10,20,25,50,75]),base=pick([20,40,60,80,100,200,400]);
       return {t:`כמה זה ${p}% מ-${base}?`,a:base*p/100,rtl:true};},
     ()=>{const base=pick([20,40,50,80,100,200]),p=pick([10,20,25,50]);
-      const part=base*p/100;                       // must come out whole
+      const part=base*p/100;
       if(!Number.isInteger(part))return {t:`כמה זה 50% מ-${base}?`,a:base/2,rtl:true};
       return {t:`${part} הם כמה אחוזים מ-${base}?`,a:p,rtl:true};},
     ()=>{const a=R(1,5),b=R(1,5),k=R(2,9);
@@ -3197,35 +3238,63 @@ function _genPercentQ(g){
       return {t:`מחלקים ${tot} ביחס ${a}:${b}. מה החלק הראשון?`,a:part,rtl:true};},
     ()=>{const n=R(2,9),c=pick([12,15,18,24,30]);
       return {t:`${n} מחברות עולות ${n*c} ש״ח. כמה יעלו ${n+2} מחברות?`,a:(n+2)*c,rtl:true};},
-    ()=>{const price=pick([80,120,150,200,250,400]),d=pick([10,20,25,50]);
+    ()=>{const price=pick([80,120,200,400]),d=pick([10,20,25,50]);
       return {t:`מחיר של ${price} ש״ח הוזל ב-${d}%. מה המחיר החדש?`,a:price*(100-d)/100,rtl:true};},
-    ()=>{const price=pick([80,120,150,200,400]),u=pick([10,20,25,50]);
-      return {t:`מחיר של ${price} ש״ח התייקר ב-${u}%. מה המחיר החדש?`,a:price*(100+u)/100,rtl:true};},
-  ];
-  if(g>=8)T.push(
+    ()=>{const price=pick([80,120,200,400]),u=pick([10,20,25,50]);
+      return {t:`מחיר של ${price} ש״ח התייקר ב-${u}%. מה המחיר החדש?`,a:price*(100+u)/100,rtl:true};});
+  add(8,
     ()=>{const cap=pick([1000,2000,5000,8000]),r=pick([2,3,5,10]),y=R(1,3);
       return {t:`הפקדה של ${cap} ש״ח נושאת ${r}% ריבית פשוטה לשנה. כמה ריבית תצטבר ב-${y} שנים?`,a:cap*r/100*y,rtl:true};},
-    ()=>{const before=pick([40,50,80,200]),after=pick([1.25,1.5,2]).valueOf();
-      const nv=Math.round(before*after);
+    ()=>{const before=pick([40,50,80,200]),f=pick([1.25,1.5,2]);
+      const nv=Math.round(before*f);
       return {t:`כמות גדלה מ-${before} ל-${nv}. בכמה אחוזים היא גדלה?`,a:Math.round((nv-before)/before*100),rtl:true};},
     ()=>{const w=pick([200,400,500]),salt=pick([10,20,25]);
-      return {t:`בתמיסה של ${w} גרם יש ${w*salt/100} גרם מלח. מה אחוז המלח?`,a:salt,rtl:true};},
-  );
-  if(g>=9)T.push(
+      return {t:`בתמיסה של ${w} גרם יש ${w*salt/100} גרם מלח. מה אחוז המלח?`,a:salt,rtl:true};});
+  add(9,
     ()=>{const p=pick([100,200,400]),d=pick([10,20,50]);
       const after=p*(100-d)/100;
       return {t:`מוצר ב-${p} ש״ח הוזל ב-${d}% ואז התייקר ב-${d}%. מה המחיר הסופי?`,
               a:Math.round(after*(100+d)/100*100)/100,rtl:true};},
     ()=>{const orig=pick([200,300,500]),d=pick([20,25,40]);
-      return {t:`אחרי הנחה של ${d}% המחיר הוא ${orig*(100-d)/100} ש״ח. מה היה המחיר לפני ההנחה?`,a:orig,rtl:true};},
-  );
-  return pick(T)();
+      return {t:`אחרי הנחה של ${d}% המחיר הוא ${orig*(100-d)/100} ש״ח. מה היה המחיר לפני ההנחה?`,a:orig,rtl:true};});
+  add(10,
+    // ריבית דריבית
+    ()=>{const c=pick([1000,2000,5000]),r=pick([10,20,50]),y=2;
+      return {t:`${c} ש״ח בריבית דריבית של ${r}% לשנה. כמה יהיה אחרי ${y} שנים?`,
+              a:Math.round(c*Math.pow(1+r/100,y)),rtl:true};},
+    ()=>{const c=pick([1000,2000,4000,8000]),r=50,y=R(2,3);
+      return {t:`ערך של ${c} ש״ח יורד ב-${r}% בכל שנה. מה ערכו אחרי ${y} שנים?`,
+              a:c*Math.pow(1-r/100,y),rtl:true};},
+    ()=>{const a=pick([20,25,40]),b=pick([20,25,40]);
+      return {t:`שיעור עלה מ-${a}% ל-${b+a}%. בכמה נקודות אחוז הוא עלה?`,a:b,rtl:true};},
+    ()=>{const base=pick([200,400,500]),p=pick([15,35,45,65]);
+      return {t:`כמה זה ${p}% מ-${base}?`,a:base*p/100,rtl:true};},
+    ()=>{const q1=pick([2,4,5]),q2=pick([2,4,5]),tot=pick([100,200,400]);
+      return {t:`מחלקים ${tot} ביחס ${q1}:${q2}:${q1+q2}. מה החלק הגדול?`,
+              a:tot/(2*(q1+q2))*(q1+q2),rtl:true};});
+  add(11,
+    ()=>{const c=pick([1000,4000]),y=3;
+      return {t:`${c} ש״ח בריבית דריבית של 100% לשנה. כמה יהיה אחרי ${y} שנים?`,a:c*Math.pow(2,y),rtl:true};},
+    ()=>{const half=pick([2,5,10]),n=R(2,4);
+      return {t:`לחומר זמן מחצית חיים של ${half} שנים. איזה חלק נשאר אחרי ${half*n} שנים?`,rtl:true,
+              ..._optsOf(`1/${Math.pow(2,n)}`,`1/${n}`,`1/${2*n}`,`${n}/${Math.pow(2,n)}`)};},
+    ()=>{const p=pick([2,5,10]),y=pick([10,20]);
+      return {t:`אוכלוסייה גדלה ב-${p}% בשנה. בקירוב, פי כמה תגדל ב-${y} שנים? (1+p)^n`,
+              a:Math.round(Math.pow(1+p/100,y)*10)/10,rtl:true};});
+  add(12,
+    ()=>{const a=pick([60,75,80]),b=pick([50,60,80]);
+      return {t:`מבין ${a}% שעברו מבחן ראשון, ${b}% עברו גם שני. איזה אחוז מכלל התלמידים עברו את שניהם?`,
+              a:a*b/100,rtl:true};},
+    ()=>{const base=pick([100,200]),r=pick([5,10,20]);
+      return {t:`מדד עלה מ-${base} ל-${base*(100+r)/100}. מה שיעור העלייה באחוזים?`,a:r,rtl:true};});
+  return pick(_byGrade(T,g)).f();
 }
 
 // ── ביטויים אלגבריים ומשוואות ──
 function _genAlgebraQ(g){
   const R=_mrand,pick=a=>a[R(0,a.length-1)];
-  const T=[
+  const T=[],add=(from,...fns)=>{for(const f of fns)T.push({from,f});};
+  add(7,
     ()=>{const a=R(2,9),x=R(2,12),b=R(1,20);
       return {t:`${a}x + ${b} = ${a*x+b}   →   x = ?`,a:x};},
     ()=>{const a=R(2,9),x=R(2,12),b=R(1,Math.min(15,a*x));
@@ -3238,8 +3307,8 @@ function _genAlgebraQ(g){
       return {t:`כנס/י איברים דומים: ${a}x + ${b}x`,rtl:false,..._optsOf(`${a+b}x`,`${a*b}x`,`${a+b}x²`,`${Math.abs(a-b)}x`)};},
     ()=>{const a=R(2,6),b=R(2,8),x=R(2,9);
       return {t:`${a}(x + ${b}) = ${a*(x+b)}   →   x = ?`,a:x};},
-  ];
-  if(g>=8)T.push(
+  );
+  add(8,
     ()=>{const a=R(3,9),b=R(1,2),x=R(2,10),c=R(1,12);
       const co=k=>k===1?"":String(k);             // 1x reads as x
       return {t:`${co(a)}x + ${c} = ${co(b)}x + ${(a-b)*x+c}   →   x = ?`,a:x};},
@@ -3252,7 +3321,7 @@ function _genAlgebraQ(g){
     ()=>{const m=R(2,6),c=R(1,9);
       return {t:`מהו השיפוע של הישר y = ${m}x + ${c}?`,a:m,rtl:true};},
   );
-  if(g>=9)T.push(
+  add(9,
     ()=>{const a=R(2,9);
       return {t:`(x + ${a})²`,rtl:false,..._optsOf(`x²+${2*a}x+${a*a}`,`x²+${a*a}`,`x²+${a}x+${a*a}`,`x²+${2*a}x+${2*a}`)};},
     ()=>{const a=R(2,9);
@@ -3263,21 +3332,73 @@ function _genAlgebraQ(g){
       return {t:`פרק/י לגורמים: x² + ${a+b}x + ${a*b}`,rtl:false,
               ..._optsOf(`(x+${a})(x+${b})`,`(x−${a})(x−${b})`,`(x+${a+b})(x+${a*b})`,`(x+${a})(x−${b})`)};},
   );
-  if(g>=10)T.push(
+  add(10,
     ()=>{const a=R(1,3),h=R(1,5),k=R(1,9);
       return {t:`מהו קדקוד הפרבולה y = ${a}(x − ${h})² + ${k}?`,rtl:true,
               ..._optsOf(`(${h},${k})`,`(−${h},${k})`,`(${h},−${k})`,`(${k},${h})`)};},
     ()=>{const b=R(2,8);
       return {t:`מהי נקודת החיתוך של y = 2x + ${b} עם ציר ה-y?`,rtl:true,
               ..._optsOf(`(0,${b})`,`(${b},0)`,`(0,2)`,`(−${b},0)`)};},
+    // אי־שוויונות
+    ()=>{const a=R(2,6),c=R(2,9);
+      return {t:`פתרו את אי־השוויון: ${a}x > ${a*c}`,rtl:false,
+              ..._optsOf(`x > ${c}`,`x < ${c}`,`x > ${a*c}`,`x ≥ ${c}`)};},
+    ()=>{const r1=R(1,5),r2=r1+R(1,4);
+      return {t:`מהם שורשי המשוואה x² − ${r1+r2}x + ${r1*r2} = 0?`,rtl:true,
+              ..._optsOf(`${r1} ו-${r2}`,`−${r1} ו-−${r2}`,`${r1} ו-−${r2}`,`${r1+r2} ו-${r1*r2}`)};},
+    ()=>{const r1=R(1,5),r2=r1+R(1,4);
+      return {t:`לפרבולה y = x² − ${r1+r2}x + ${r1*r2}, מהו שיעור ה-x של הקדקוד?`,
+              a:(r1+r2)/2,rtl:true};},
+    // לוגריתמים
+    ()=>{const b=pick([2,3,5,10]),n=R(2,4);
+      return {t:`log₍${b}₎ ${Math.pow(b,n)} = ?`,a:n,rtl:false};},
+    ()=>({t:"log₍10₎ 1 = ?",a:0,rtl:false}),
+    // סדרה הנדסית — סכום
+    ()=>{const a1=R(1,4),q=2,n=R(3,6);
+      return {t:`בסדרה הנדסית a₁=${a1}, q=${q}. מהו סכום ${n} האיברים הראשונים?`,
+              a:a1*(Math.pow(q,n)-1)/(q-1),rtl:true};},
+    // גדילה ודעיכה
+    ()=>{const p0=pick([1000,2000,5000]),r=pick([10,20,50]),y=2;
+      return {t:`אוכלוסייה של ${p0} גדלה ב-${r}% בשנה. מה גודלה אחרי ${y} שנים?`,
+              a:Math.round(p0*Math.pow(1+r/100,y)),rtl:true};},
   );
-  return pick(T)();
+  add(11,
+    // נגזרת של פולינום
+    ()=>{const a=R(2,6),n=R(2,4);
+      return {t:`מהי הנגזרת של f(x) = ${a}x^${n}?`,rtl:false,
+              ..._optsOf(`${a*n}x^${n-1}`,`${a*n}x^${n}`,`${a}x^${n-1}`,`${a+n}x^${n-1}`)};},
+    ()=>{const a=R(2,6),b=R(2,9);
+      return {t:`מהי הנגזרת של f(x) = ${a}x² + ${b}x?`,rtl:false,
+              ..._optsOf(`${2*a}x+${b}`,`${a}x+${b}`,`${2*a}x`,`${2*a}x+${b}x`)};},
+    ()=>{const a=R(2,5),b=R(2,9),x=R(1,4);
+      return {t:`f(x) = ${a}x² + ${b}x. מהו שיפוע המשיק בנקודה x = ${x}?`,a:2*a*x+b,rtl:true};},
+    ()=>{const a=R(1,3),b=R(2,8),co=a===1?"":String(a);
+      return {t:`f(x) = ${co}x² − ${2*a*b}x + 5. באיזה x הפונקציה מקבלת מינימום?`,a:b,rtl:true};},
+    // לוגריתמים — חוקים
+    ()=>{const b=pick([2,3,10]),m=R(2,4),n=R(2,4);
+      return {t:`log₍${b}₎ ${Math.pow(b,m)} + log₍${b}₎ ${Math.pow(b,n)} = ?`,a:m+n,rtl:false};},
+  );
+  add(12,
+    // אינטגרל
+    ()=>{const a=R(2,6),n=R(1,3);
+      return {t:`מהו האינטגרל של f(x) = ${a}x^${n}?`,rtl:false,
+              ..._optsOf(`${a}x^${n+1}/${n+1} + C`,`${a*n}x^${n-1} + C`,`${a}x^${n} + C`,`${a}x^${n+1} + C`)};},
+    ()=>{const a=R(2,5);
+      return {t:`מהו השטח מתחת ל-f(x) = ${a}x בין x=0 ל-x=2?`,a:2*a,rtl:true};},
+    ()=>{const a=R(2,6);
+      return {t:`∫₀¹ ${a}x dx = ?`,a:a/2,rtl:false};},
+    // פונקציה מעריכית
+    ()=>{const b=pick([2,3]),x=R(2,4);
+      return {t:`f(x) = ${b}^x. מהו f(${x})?`,a:Math.pow(b,x),rtl:false};},
+  );
+  return pick(_byGrade(T,g)).f();
 }
 
 // ── סדרות, הסתברות וסטטיסטיקה ──
 function _genSeqQ(g){
   const R=_mrand,pick=a=>a[R(0,a.length-1)];
-  const T=[
+  const T=[],add=(from,...fns)=>{for(const f of fns)T.push({from,f});};
+  add(7,
     ()=>{const a1=R(1,9),d=R(2,9),n=4;
       const s=Array.from({length:n},(_,i)=>a1+i*d);
       return {t:`מהו האיבר הבא בסדרה: ${s.join(", ")}, ?`,a:a1+n*d,rtl:true};},
@@ -3294,8 +3415,8 @@ function _genSeqQ(g){
               ..._optsOf("1/6","1/2","1/3","1/12")};},
     ()=>({t:"מטילים מטבע פעמיים. מה ההסתברות לקבל פעמיים 'עץ'?",rtl:true,
           ..._optsOf("1/4","1/2","1/3","2/4")}),
-  ];
-  if(g>=8)T.push(
+  );
+  add(8,
     ()=>{const v=shuffle([R(1,9),R(1,9),R(10,19),R(10,19),R(20,29)]);
       const s=[...v].sort((a,b)=>a-b);
       return {t:`מהו החציון של: ${v.join(", ")}?`,a:s[2],rtl:true};},
@@ -3307,7 +3428,7 @@ function _genSeqQ(g){
     ()=>{const a1=R(1,9),d=R(2,7),n=R(5,12);
       return {t:`בסדרה חשבונית a₁=${a1} והפרש d=${d}. מהו האיבר ה-${n}?`,a:a1+(n-1)*d,rtl:true};},
   );
-  if(g>=9)T.push(
+  add(9,
     ()=>{const a1=R(1,6),d=R(2,6),n=R(5,10);
       const sum=n*(2*a1+(n-1)*d)/2;
       return {t:`בסדרה חשבונית a₁=${a1}, d=${d}. מהו סכום ${n} האיברים הראשונים?`,a:sum,rtl:true};},
@@ -3316,7 +3437,31 @@ function _genSeqQ(g){
     ()=>({t:"מטילים שתי קוביות. מה ההסתברות שסכום התוצאות יהיה 12?",rtl:true,
           ..._optsOf("1/36","1/6","1/12","2/36")}),
   );
-  return pick(T)();
+  add(10,
+    ()=>{const a1=R(1,4),q=2,n=R(3,7);
+      return {t:`בסדרה הנדסית a₁=${a1}, q=${q}. מהו סכום ${n} האיברים הראשונים?`,
+              a:a1*(Math.pow(q,n)-1)/(q-1),rtl:true};},
+    ()=>{const n=R(3,6);
+      return {t:`בכמה סדרים שונים אפשר לסדר ${n} ספרים שונים על מדף? (${n}!)`,
+              a:Array.from({length:n},(_,i)=>i+1).reduce((a,b)=>a*b,1),rtl:true};},
+    ()=>({t:"בקבוצה 10 תלמידים. בכמה דרכים אפשר לבחור מהם ועד של 2? (C(10,2))",a:45,rtl:true}),
+    ()=>{const p=pick([[1,2,"1/4"],[1,3,"1/9"],[1,6,"1/36"]]);
+      return {t:`מאורע שהסתברותו ${p[0]}/${p[1]} מתרחש פעמיים ברצף. מה ההסתברות?`,rtl:true,
+              ..._optsOf(p[2],`${p[0]}/${p[1]}`,`${2*p[0]}/${p[1]}`,`${p[0]}/${2*p[1]}`)};},
+  );
+  add(11,
+    ()=>{const a1=R(1,3),q=pick([2,3]);
+      return {t:`בסדרה הנדסית a₁=${a1}, q=${q}. מהו a₁·q^(n−1) עבור n=4?`,a:a1*Math.pow(q,3),rtl:true};},
+    ()=>({t:"בסדרה הנדסית אינסופית a₁=1 ו-q=½. מהו סכום הסדרה? (a₁/(1−q))",a:2,rtl:true}),
+    ()=>{const v=[R(2,6),R(2,6),R(2,6)];const mean=v.reduce((a,b)=>a+b,0)/3;
+      if(!Number.isInteger(mean))return {t:`מהו הממוצע של ${v[0]}, ${v[0]}, ${v[0]}?`,a:v[0],rtl:true};
+      const varr=v.reduce((a,b)=>a+(b-mean)*(b-mean),0)/3;
+      if(!Number.isInteger(varr))return {t:`מהו הממוצע של ${v.join(", ")}?`,a:mean,rtl:true};
+      return {t:`מהי השונות של ${v.join(", ")}? (הממוצע הוא ${mean})`,a:varr,rtl:true};},
+    ()=>({t:"בהתפלגות נורמלית, כמה אחוזים מהנתונים נמצאים בתחום של סטיית תקן אחת מהממוצע?",rtl:true,
+          ..._optsOf("68%","95%","50%","99%")}),
+  );
+  return pick(_byGrade(T,g)).f();
 }
 
 // ── Geometry & engineering (הנדסה וגיאומטריה) ──
@@ -3330,7 +3475,8 @@ function _genGeomQ(lvl){
   // ז׳ ומעלה: trigonometry, analytic geometry, similarity and the solids the
   // elementary branches never reach.
   if(grade>=7){
-    const H=[
+    const H=[],add=(from,...fns)=>{for(const f of fns)H.push({from,f});};
+    add(7,
       ()=>{const tr=pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17],[7,24,25],[9,40,41]]);
         return {t:`במשולש ישר־זווית הניצבים ${tr[0]} ו-${tr[1]}. מה אורך היתר?`,a:tr[2],rtl:true};},
       ()=>{const r=R(2,12);return {t:`למעגל רדיוס ${r} ס״מ. מה שטחו? (π·r², π≈3)`,a:3*r*r,rtl:true};},
@@ -3344,18 +3490,64 @@ function _genGeomQ(lvl){
       ()=>{const x1=R(0,8)*2,y1=R(0,8)*2,x2=R(0,8)*2,y2=R(0,8)*2;
         return {t:`מהי נקודת האמצע של הקטע שקצותיו (${x1},${y1}) ו-(${x2},${y2})?`,rtl:true,
                 ..._optsOf(`(${(x1+x2)/2},${(y1+y2)/2})`,`(${x1+x2},${y1+y2})`,
-                           `(${(x1+x2)/2},${y1+y2})`,`(${Math.abs(x1-x2)/2},${Math.abs(y1-y2)/2})`)};},
-    ];
-    if(grade>=9)H.push(
+                           `(${(x1+x2)/2},${y1+y2})`,`(${Math.abs(x1-x2)/2},${Math.abs(y1-y2)/2})`)};});
+    add(10,
+      // משפט הסינוסים והקוסינוסים
+      ()=>{const a=R(3,9),b2=R(3,9);
+        return {t:`במשולש שתי צלעות ${a} ו-${b2} והזווית ביניהן 90°. מה שטחו? (½·a·b·sinC)`,a:a*b2/2,rtl:true};},
+      ()=>{const a=R(3,8),b2=R(3,8);
+        return {t:`במשולש a=${a}, b=${b2} והזווית ביניהן 60°. מה a²+b²−2ab·cos60°?`,a:a*a+b2*b2-a*b2,rtl:true};},
+      // מעגל — משוואה
+      ()=>{const r=pick([2,3,4,5,6,10]);
+        return {t:`מהי משוואת המעגל שמרכזו בראשית ורדיוסו ${r}?`,rtl:true,
+                ..._optsOf(`x²+y²=${r*r}`,`x²+y²=${r}`,`x+y=${r*r}`,`(x−${r})²+y²=0`)};},
+      ()=>{const a=R(1,6),b2=R(1,6),r=pick([2,3,4,5]);
+        return {t:`מהו מרכז המעגל (x−${a})² + (y−${b2})² = ${r*r}?`,rtl:true,
+                ..._optsOf(`(${a},${b2})`,`(−${a},−${b2})`,`(${r},${r})`,`(${a},−${b2})`)};},
+      // ישרים במישור
+      ()=>{const m=R(2,6);
+        return {t:`מהו שיפוע הישר המאונך לישר שמשפועו ${m}?`,rtl:true,
+                ..._optsOf(`−1/${m}`,`1/${m}`,`−${m}`,`${m}`)};},
+      ()=>{const m=R(2,5),c1=R(1,5),c2=c1+R(1,6);
+        return {t:`הישרים y=${m}x+${c1} ו-y=${m}x+${c2} הם…`,rtl:true,
+                ..._optsOf("מקבילים","מאונכים","נחתכים בראשית","מתלכדים")};},
+      ()=>{const x1=R(1,6),y1=R(1,6),d=pick([[3,4],[6,8],[5,12]]);
+        return {t:`מהו שיפוע הישר העובר דרך (${x1},${y1}) ו-(${x1+d[0]},${y1+d[1]})?`,rtl:true,
+                ..._optsOf(_fr(d[1],d[0]),_fr(d[0],d[1]),`${d[1]}`,`−${_fr(d[1],d[0])}`)};},
+    );
+    add(9,
       ()=>{const z=pick([[30,"1/2"],[45,"√2/2"],[60,"√3/2"]]);
         return {t:`כמה זה sin ${z[0]}°?`,rtl:false,..._optsOf(z[1],"1","0","√3")};},
       ()=>{const z=pick([[30,"√3/2"],[45,"√2/2"],[60,"1/2"]]);
         return {t:`כמה זה cos ${z[0]}°?`,rtl:false,..._optsOf(z[1],"1","0","2")};},
       ()=>({t:"כמה זה tan 45°?",a:1,rtl:false}),
       ()=>{const r=R(2,6);return {t:`לכדור רדיוס ${r} ס״מ. מה נפחו? (4/3·π·r³, π≈3)`,a:4*r*r*r,rtl:true};},
-      ()=>{const r=R(2,6),h=R(3,9);return {t:`לחרוט רדיוס ${r} וגובה ${h} ס״מ. מה נפחו? (1/3·π·r²·h, π≈3)`,a:r*r*h,rtl:true};},
-    );
-    return pick(H)();
+      ()=>{const r=R(2,6),h=R(3,9);return {t:`לחרוט רדיוס ${r} וגובה ${h} ס״מ. מה נפחו? (1/3·π·r²·h, π≈3)`,a:r*r*h,rtl:true};});
+    add(11,
+      // טריגונומטריה במשולש כללי ובמעגל
+      ()=>{const a=R(3,9),b2=R(3,9);
+        return {t:`במשולש a=${a}, b=${b2}, C=30°. מה שטח המשולש? (½ab·sin30°)`,a:a*b2/4,rtl:true};},
+      ()=>({t:"במשולש כללי, לפי משפט הסינוסים a/sinA שווה ל…",rtl:true,
+            ..._optsOf("b/sinB","b·sinB","sinB/b","a·sinA")}),
+      // even radius only, and angles that divide 360 cleanly, so the sector
+      // area comes out a whole number a student can pick from a list
+      ()=>{const r=R(1,5)*2,ang=pick([[90,4],[60,6],[120,3],[180,2]]);
+        return {t:`במעגל רדיוס ${r} ס״מ, מה שטח גזרה של ${ang[0]}°? (π·r²·${ang[0]}/360, π≈3)`,
+                a:3*r*r/ang[1],rtl:true};},
+      ()=>({t:"כמה רדיאנים הם 180°?",rtl:true,..._optsOf("π","2π","π/2","360")}),
+      ()=>{const r=R(2,8);return {t:`לכדור רדיוס ${r} ס״מ. מה שטח הפנים? (4πr², π≈3)`,a:12*r*r,rtl:true};});
+    add(12,
+      // גיאומטריה אנליטית מתקדמת ווקטורים
+      ()=>{const m=R(2,5),x=R(1,5),y=R(1,9);
+        return {t:`מהי משוואת הישר בשיפוע ${m} העובר דרך (${x},${y})?`,rtl:true,
+                ..._optsOf(`y = ${m}x + ${y-m*x}`,`y = ${m}x + ${y}`,`y = ${x}x + ${m}`,`y = ${m}x − ${y-m*x}`)};},
+      ()=>{const d=pick([[3,4],[6,8],[5,12],[8,15]]);
+        return {t:`מהו גודל הווקטור (${d[0]},${d[1]})?`,a:Math.round(Math.hypot(d[0],d[1])),rtl:true};},
+      ()=>{const a=R(1,5),b2=R(1,5),c=R(1,5),d2=R(1,5);
+        return {t:`מהי מכפלה סקלרית של (${a},${b2}) ו-(${c},${d2})?`,a:a*c+b2*d2,rtl:true};},
+      ()=>{const r=pick([2,3,4,5]),a=R(1,5),b2=R(1,5);
+        return {t:`מהו רדיוס המעגל (x−${a})² + (y−${b2})² = ${r*r}?`,a:r,rtl:true};});
+    return pick(_byGrade(H,grade)).f();
   }
   const T=[];
   if(lvl<=1){
@@ -3453,7 +3645,8 @@ function _genWordProblem(lvl){
   // rate, percentage, ratio and work — instead of bigger cookie counts.
   if(lvl>=7){
     const pick=a=>a[R(0,a.length-1)];
-    const H=[
+    const H=[],add=(from,...fns)=>{for(const f of fns)H.push({from,f});};
+    add(7,
       ()=>{const v=pick([40,50,60,80,90,100]),t=pick([2,3,4,5]);
         return {t:`רכב נוסע במהירות ${v} קמ״ש במשך ${t} שעות. איזה מרחק עבר?`,a:v*t};},
       ()=>{const v=pick([40,50,60,80]),d=v*pick([2,3,4]);
@@ -3462,8 +3655,10 @@ function _genWordProblem(lvl){
         return {t:`אופנוע עבר ${d} ק״מ ב-${t} שעות. מה מהירותו הממוצעת בקמ״ש?`,a:d/t};},
       ()=>{const p=pick([120,200,250,400]),d=pick([10,20,25,50]);
         return {t:`חולצה עולה ${p} ש״ח ויש עליה הנחה של ${d}%. כמה תעלה?`,a:p*(100-d)/100};},
-      ()=>{const n=pick([20,25,40,50]),p=pick([10,20,40,50]);
-        return {t:`בכיתה ${n} תלמידים ו-${p}% מהם משתתפים במקהלה. כמה תלמידים משתתפים?`,a:n*p/100};},
+      ()=>{const n=pick([20,40,50]),p=pick([10,20,40,50]);
+        const k=n*p/100;                           // whole children only
+        if(!Number.isInteger(k))return {t:`בכיתה ${n} תלמידים ו-50% מהם משתתפים במקהלה. כמה תלמידים משתתפים?`,a:n/2};
+        return {t:`בכיתה ${n} תלמידים ו-${p}% מהם משתתפים במקהלה. כמה תלמידים משתתפים?`,a:k};},
       ()=>{const a=R(2,5),b=R(2,5),tot=(a+b)*R(3,9);
         return {t:`מחלקים ${tot} סוכריות בין שני ילדים ביחס ${a}:${b}. כמה קיבל הראשון?`,a:tot/(a+b)*a};},
       ()=>{const h=pick([2,3,4,6]),w=pick([12,18,24,36]);
@@ -3471,18 +3666,41 @@ function _genWordProblem(lvl){
       ()=>{const per=pick([15,20,25,30]),n=R(3,9);
         return {t:`מחיר כרטיס ${per} ש״ח. כמה יעלו ${n} כרטיסים, ואם משלמים ב-${per*n+50} ש״ח כמה עודף מקבלים?`,a:50};},
       ()=>{const c=pick([1500,2000,3000,5000]),r=pick([2,5,10]);
-        return {t:`חיסכון של ${c} ש״ח נושא ${r}% ריבית לשנה. כמה כסף יהיה אחרי שנה?`,a:c*(100+r)/100};},
-    ];
-    if(lvl>=9)H.push(
+        return {t:`חיסכון של ${c} ש״ח נושא ${r}% ריבית לשנה. כמה כסף יהיה אחרי שנה?`,a:c*(100+r)/100};});
+    add(9,
       ()=>{const a=pick([20,30,40,60]),n=pick([100,200,300]);
         const b=100-a;                             // the two shares make up the whole
         return {t:`בתערובת של ${n} ק״ג, ${a}% קפה ו-${b}% סוכר. כמה ק״ג קפה יש בה?`,a:n*a/100};},
       ()=>{const x=R(2,9);
         return {t:`מספר כפול 3 ועוד 7 שווה ${3*x+7}. מהו המספר?`,a:x};},
       ()=>{const x=R(5,20);
-        return {t:`היקף מלבן ${2*(x+x+4)} ס״מ, והאורך גדול ב-4 ס״מ מהרוחב. מה הרוחב?`,a:x};},
-    );
-    return H[R(0,H.length-1)]();
+        return {t:`היקף מלבן ${2*(x+x+4)} ס״מ, והאורך גדול ב-4 ס״מ מהרוחב. מה הרוחב?`,a:x};});
+    add(10,
+      ()=>{const v1=pick([40,60,80]),v2=pick([50,70,100]),t=pick([2,3]);
+        return {t:`שני רכבים יוצאים זה מול זה במהירויות ${v1} ו-${v2} קמ״ש. איזה מרחק יעברו יחד ב-${t} שעות?`,a:(v1+v2)*t};},
+      ()=>{const w=pick([6,12,24]),a=pick([2,3,4]),b2=pick([2,3,6]);
+        const rate=1/a+1/b2; const hrs=1/rate;
+        if(!Number.isInteger(hrs*4))return {t:`פועל מסיים עבודה ב-${w} שעות. כמה יסיימו 2 פועלים?`,a:w/2};
+        return {t:`ברז אחד ממלא בריכה ב-${a} שעות והשני ב-${b2} שעות. בכמה שעות ימלאו יחד? (עגל/י לרבע)`,
+                a:Math.round(hrs*4)/4};},
+      ()=>{const c=pick([1000,2000,5000]),r=pick([10,20,50]);
+        return {t:`${c} ש״ח בריבית דריבית ${r}% לשנה. כמה יהיה אחרי שנתיים?`,a:Math.round(c*Math.pow(1+r/100,2))};},
+      ()=>{const n=pick([20,40,80]),a=pick([25,50,75]);
+        const boys=n*(100-a)/100;                  // must be a whole number of children
+        if(!Number.isInteger(boys))return {t:`בכיתה ${n} תלמידים, 50% בנות. כמה בנים יש בכיתה?`,a:n/2};
+        return {t:`בכיתה ${n} תלמידים, ${a}% בנות. כמה בנים יש בכיתה?`,a:boys};},
+      ()=>{const p=pick([100,200,400]),c=pick([25,50,75]);
+        return {t:`מוצר נקנה ב-${p} ש״ח ונמכר ברווח של ${c}%. מה מחיר המכירה?`,a:p*(100+c)/100};});
+    add(11,
+      ()=>{const d=pick([120,240,360]),v=pick([60,80,120]),extra=pick([20,40]);
+        return {t:`מרחק ${d} ק״מ נוסע במהירות ${v} קמ״ש. בכמה דקות תתקצר הנסיעה אם המהירות תגדל ל-${v+extra} קמ״ש?`,
+                a:Math.round((d/v-d/(v+extra))*60)};},
+      ()=>{const p0=pick([1000,5000,10000]),r=pick([10,20,50]),y=pick([2,3]);
+        return {t:`אוכלוסייה של ${p0} גדלה ב-${r}% בשנה. מה גודלה אחרי ${y} שנים?`,
+                a:Math.round(p0*Math.pow(1+r/100,y))};},
+      ()=>{const a=pick([20,40,60]),n=pick([100,200,500]);
+        return {t:`בתערובת של ${n} ליטר, ${a}% חומצה. כמה ליטר מים יש בה?`,a:n*(100-a)/100};});
+    return pick(_byGrade(H,lvl)).f();
   }
   const tmpls=[
     ()=>{const a=R(18,34),b=R(1,Math.min(a-1,12));return {t:`בכיתה יש ${a} תלמידים. ${b} מהם יצאו להפסקה. כמה תלמידים נשארו בכיתה?`,a:a-b};},
