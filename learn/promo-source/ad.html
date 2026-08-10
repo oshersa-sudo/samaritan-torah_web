@@ -1,0 +1,487 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8">
+<title>Onyx לימודי — פרסומת</title>
+<style>
+@font-face{font-family:RubikHe;font-weight:400;src:url("/f/rubik-hebrew-400-normal.woff2") format("woff2")}
+@font-face{font-family:RubikHe;font-weight:700;src:url("/f/rubik-hebrew-700-normal.woff2") format("woff2")}
+@font-face{font-family:RubikHe;font-weight:900;src:url("/f/rubik-hebrew-900-normal.woff2") format("woff2")}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;
+  font-family:RubikHe,"DejaVu Sans",sans-serif;color:#0B2430}
+.scene{position:absolute;inset:0;opacity:0;will-change:opacity,transform}
+svg{display:block}
+/* ── captions ─────────────────────────────────────────── */
+.cap{position:absolute;left:60px;right:60px;text-align:center;opacity:0;will-change:opacity,transform}
+.cap b{display:inline-block;font-weight:900;font-size:76px;line-height:1.18;letter-spacing:-1px;
+  color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.45)}
+.cap.dark b{color:#0B2430;text-shadow:0 4px 22px rgba(255,255,255,.85)}
+.cap.dark i{color:#4a3f6b;text-shadow:0 3px 16px rgba(255,255,255,.85)}
+.cap i{display:inline-block;font-style:normal;font-weight:700;font-size:44px;color:#fff;opacity:.92;
+  margin-top:16px;text-shadow:0 4px 20px rgba(0,0,0,.4)}
+.pill{display:inline-block;background:#fff;color:#6C5CE7;font-weight:900;font-size:40px;
+  padding:16px 40px;border-radius:999px;box-shadow:0 16px 40px -12px rgba(0,0,0,.5)}
+/* ── phone mock ───────────────────────────────────────── */
+.phone{position:absolute;left:50%;top:44%;width:600px;height:1300px;margin:-650px 0 0 -300px;
+  border-radius:74px;background:#12141c;padding:16px;
+  box-shadow:0 60px 120px -40px rgba(0,0,0,.75), 0 0 0 3px #2a2d3a inset;will-change:transform,opacity}
+.screen{position:relative;width:100%;height:100%;border-radius:60px;overflow:hidden;background:#fff}
+.screen img{position:absolute;left:0;top:0;width:100%;display:block;will-change:transform,opacity}
+.notch{position:absolute;left:50%;top:26px;width:150px;height:26px;margin-left:-75px;
+  background:#12141c;border-radius:20px;z-index:5}
+.tap{position:absolute;width:120px;height:120px;border-radius:50%;border:7px solid #fff;
+  opacity:0;pointer-events:none;z-index:6;box-shadow:0 0 40px rgba(255,255,255,.6)}
+/* ── logo card ────────────────────────────────────────── */
+.logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;width:900px}
+.logo .mark{width:260px;height:260px;margin:0 auto 44px;border-radius:64px;
+  background:linear-gradient(150deg,#a78bfa,#6C5CE7);display:grid;place-items:center;
+  font-size:150px;box-shadow:0 40px 90px -30px rgba(108,92,231,.85)}
+.logo h1{font-size:104px;font-weight:900;letter-spacing:-2px;color:#fff}
+.logo p{font-size:44px;font-weight:700;color:#c7b9ff;margin-top:10px}
+.logo .url{margin-top:52px;display:inline-block;background:#fff;color:#6C5CE7;
+  font-weight:900;font-size:46px;padding:24px 56px;border-radius:999px;direction:ltr}
+.logo .sub{margin-top:30px;font-size:34px;color:#a99ee0;font-weight:700}
+.vig{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(0,0,0,.28) 100%)}
+</style></head><body>
+<div id="stage"></div>
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+// Deterministic promo film. Nothing animates on wall-clock time: every visual
+// is a pure function of the frame's timestamp, so the renderer can screenshot
+// frame N without racing a CSS transition.
+// ════════════════════════════════════════════════════════════════════════════
+const W=1080,H=1920,FPS=30;
+const stage=document.getElementById("stage");
+
+// ── easing ──────────────────────────────────────────────────────────────────
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;      // in-out cubic
+const outCubic=t=>1-Math.pow(1-t,3);
+const outBack=t=>1+2.7*Math.pow(t-1,3)+1.7*Math.pow(t-1,2);
+// value that ramps 0→1 across [a,b]
+const seg=(t,a,b,f=ease)=>f(clamp((t-a)/(b-a)));
+// fade in over `fi`, hold, fade out over `fo`, inside [a,b]
+const win=(t,a,b,fi=.4,fo=.4)=>clamp(Math.min((t-a)/fi,(b-t)/fo));
+
+// ── SVG helpers: a flat-illustration cast ───────────────────────────────────
+function kidHead(x,y,r,skin,hair,hairStyle,look){
+  const eye=(dx)=>`<circle cx="${x+dx}" cy="${y-r*.08}" r="${r*.11}" fill="#2b2b3a"/>`;
+  let h="";
+  if(hairStyle==="short")
+    h=`<path d="M${x-r*1.06} ${y-r*.12} a${r*1.06} ${r*1.06} 0 0 1 ${r*2.12} 0
+        q-${r*.35} -${r*.55} -${r*1.06} -${r*.5} q-${r*.72} -${r*.06} -${r*1.06} ${r*.5} z" fill="${hair}"/>`;
+  else if(hairStyle==="long")
+    h=`<path d="M${x-r*1.12} ${y+r*.9} q-${r*.12} -${r*1.9} ${r*1.12} -${r*2.0}
+        q${r*1.24} ${r*.1} ${r*1.12} ${r*2.0} q-${r*.3} -${r*.9} -${r*1.12} -${r*.86}
+        q-${r*.82} -${r*.04} -${r*1.12} ${r*.86} z" fill="${hair}"/>`;
+  else // curly
+    h=`<g fill="${hair}"><circle cx="${x-r*.72}" cy="${y-r*.62}" r="${r*.42}"/>
+       <circle cx="${x-r*.2}" cy="${y-r*.92}" r="${r*.46}"/>
+       <circle cx="${x+r*.36}" cy="${y-r*.86}" r="${r*.44}"/>
+       <circle cx="${x+r*.82}" cy="${y-r*.44}" r="${r*.38}"/></g>`;
+  const mouth = look==="sad"
+    ? `<path d="M${x-r*.26} ${y+r*.5} q${r*.26} -${r*.2} ${r*.52} 0" stroke="#2b2b3a" stroke-width="${r*.09}" fill="none" stroke-linecap="round"/>`
+    : look==="joy"
+    ? `<path d="M${x-r*.34} ${y+r*.32} q${r*.34} ${r*.44} ${r*.68} 0 z" fill="#2b2b3a"/>`
+    : `<path d="M${x-r*.22} ${y+r*.42} q${r*.22} ${r*.16} ${r*.44} 0" stroke="#2b2b3a" stroke-width="${r*.09}" fill="none" stroke-linecap="round"/>`;
+  const eyes = look==="joy"
+    ? `<path d="M${x-r*.5} ${y-r*.06} q${r*.16} -${r*.22} ${r*.32} 0" stroke="#2b2b3a" stroke-width="${r*.1}" fill="none" stroke-linecap="round"/>
+       <path d="M${x+r*.18} ${y-r*.06} q${r*.16} -${r*.22} ${r*.32} 0" stroke="#2b2b3a" stroke-width="${r*.1}" fill="none" stroke-linecap="round"/>`
+    : eye(-r*.34)+eye(r*.34);
+  return `<g><circle cx="${x}" cy="${y}" r="${r}" fill="${skin}"/>${h}${eyes}${mouth}
+    <circle cx="${x-r*.62}" cy="${y+r*.3}" r="${r*.16}" fill="#ff9aa2" opacity=".55"/>
+    <circle cx="${x+r*.62}" cy="${y+r*.3}" r="${r*.16}" fill="#ff9aa2" opacity=".55"/></g>`;
+}
+const limb=(x1,y1,x2,y2,w,c)=>
+  `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+const phoneIcon=(x,y,w,h,rot,glow)=>
+  `<g transform="translate(${x} ${y}) rotate(${rot})">
+     <rect x="${-w/2}" y="${-h/2}" width="${w}" height="${h}" rx="${w*.16}" fill="#22242e"/>
+     <rect x="${-w/2+w*.07}" y="${-h/2+h*.05}" width="${w*.86}" height="${h*.9}" rx="${w*.1}"
+       fill="${glow}"/></g>`;
+
+// ════════════════════════════════════════════════════════════════════════════
+// SCENE 1+2 · the living room
+// ════════════════════════════════════════════════════════════════════════════
+function livingRoom(){
+  return `<svg width="${W}" height="${H}" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9ecf6"/><stop offset="1" stop-color="#cfd6ea"/></linearGradient>
+    <linearGradient id="tv" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2b3350"/><stop offset="1" stop-color="#141a2c"/></linearGradient>
+    <linearGradient id="sofa" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7c8ac8"/><stop offset="1" stop-color="#5d6bab"/></linearGradient>
+    <linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1024" stop-opacity=".62"/>
+      <stop offset="1" stop-color="#0b1024" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#wall)"/>
+  <!-- floor -->
+  <rect y="1290" width="1080" height="630" fill="#c8a882"/>
+  <rect y="1290" width="1080" height="18" fill="#b08f6c"/>
+  <g opacity=".18" stroke="#8a6b4a" stroke-width="4">
+    ${[0,1,2,3,4,5].map(i=>`<line x1="${i*200-60}" y1="1308" x2="${i*200-260}" y2="1920"/>`).join("")}
+  </g>
+  <!-- window with evening light -->
+  <g id="lr-window">
+    <rect x="700" y="330" width="300" height="360" rx="14" fill="#bcd6f2" stroke="#fff" stroke-width="14"/>
+    <line x1="850" y1="330" x2="850" y2="690" stroke="#fff" stroke-width="12"/>
+    <line x1="700" y1="510" x2="1000" y2="510" stroke="#fff" stroke-width="12"/>
+  </g>
+  <!-- wall clock -->
+  <g id="lr-clock" transform="translate(170 830)">
+    <circle r="86" fill="#fff" stroke="#b9c0d6" stroke-width="10"/>
+    <circle r="8" fill="#404a6b"/>
+    <line id="clk-h" x1="0" y1="0" x2="0" y2="-44" stroke="#404a6b" stroke-width="12" stroke-linecap="round"/>
+    <line id="clk-m" x1="0" y1="0" x2="0" y2="-68" stroke="#6C5CE7" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <!-- tv -->
+  <rect x="80" y="330" width="420" height="250" rx="16" fill="url(#tv)"/>
+  <rect x="255" y="580" width="70" height="40" fill="#3a4260"/>
+  <rect x="180" y="620" width="220" height="16" rx="8" fill="#3a4260"/>
+  <!-- sofa -->
+  <g>
+    <rect x="560" y="1010" width="470" height="300" rx="40" fill="url(#sofa)"/>
+    <rect x="590" y="1060" width="410" height="150" rx="26" fill="#8f9cd8"/>
+    <rect x="530" y="1150" width="90" height="220" rx="34" fill="#6a78b8"/>
+    <rect x="980" y="1150" width="90" height="220" rx="34" fill="#6a78b8"/>
+    <rect x="560" y="1300" width="470" height="90" rx="26" fill="#5d6bab"/>
+  </g>
+  <!-- rug -->
+  <ellipse cx="330" cy="1620" rx="330" ry="130" fill="#e0d3c0"/>
+  <ellipse cx="330" cy="1620" rx="250" ry="96" fill="#d3c3ac"/>
+
+  <!-- KID A · flat on his back on the sofa, legs over the far armrest,
+       phone held straight above his face -->
+  <g id="kidA">
+    ${limb(880,1180,1010,1120,46,"#3fb8b0")}
+    ${limb(1010,1120,1040,1210,44,"#3fb8b0")}
+    ${limb(860,1200,990,1160,46,"#3fb8b0")}
+    ${limb(990,1160,1020,1250,44,"#3fb8b0")}
+    <rect x="640" y="1145" width="280" height="86" rx="43" fill="#4ecdc4"/>
+    ${kidHead(600,1150,72,"#f3c9a0","#3d3226","curly","flat")}
+    ${limb(700,1150,640,1035,34,"#f3c9a0")}
+    ${limb(760,1155,700,1035,34,"#f3c9a0")}
+    <g id="phoneA">${phoneIcon(668,1000,92,158,-8,"#8fd6ff")}</g>
+  </g>
+
+  <!-- KID B · on her stomach on the rug, chin up, shins in the air,
+       the phone flat on the floor in front of her -->
+  <g id="kidB">
+    ${limb(250,1600,140,1620,46,"#e6b84f")}
+    ${limb(140,1620,120,1520,42,"#e6b84f")}
+    ${limb(270,1630,160,1662,46,"#e6b84f")}
+    ${limb(160,1662,142,1566,42,"#e6b84f")}
+    <rect x="230" y="1568" width="300" height="84" rx="42" fill="#ffd166"/>
+    ${limb(500,1620,566,1706,32,"#f0b48a")}
+    ${limb(566,1706,626,1690,32,"#f0b48a")}
+    ${kidHead(578,1548,68,"#f0b48a","#5b3a2e","long","flat")}
+    <g id="phoneB">${phoneIcon(672,1694,84,146,-72,"#ffb3e6")}</g>
+  </g>
+  <!-- the glow each screen throws on its owner's face -->
+  <ellipse id="glowA" cx="640" cy="1060" rx="150" ry="120" fill="#8fd6ff" opacity=".22"/>
+  <ellipse id="glowB" cx="640" cy="1640" rx="150" ry="110" fill="#ffb3e6" opacity=".18"/>
+  <!-- scrim so the caption stays legible over a bright room -->
+  <rect width="1080" height="700" fill="url(#scrim)"/>
+  <rect id="lr-dim" width="1080" height="1920" fill="#101426" opacity="0"/>
+  </svg>`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SCENE 3 · the teacher's office
+// ════════════════════════════════════════════════════════════════════════════
+function classroom(){
+  return `<svg width="${W}" height="${H}" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="cw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6f1e6"/><stop offset="1" stop-color="#e3dccb"/></linearGradient>
+    <linearGradient id="scrim2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a1020" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#1a1020" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#cw)"/>
+  <rect y="1400" width="1080" height="520" fill="#cbb79a"/>
+  <!-- blackboard -->
+  <rect x="90" y="300" width="900" height="470" rx="18" fill="#31584a" stroke="#8a6a44" stroke-width="20"/>
+  <g stroke="#cfe3d8" stroke-width="9" stroke-linecap="round" opacity=".8">
+    <line x1="170" y1="410" x2="560" y2="410"/><line x1="170" y1="480" x2="700" y2="480"/>
+    <line x1="170" y1="550" x2="470" y2="550"/><line x1="170" y1="620" x2="620" y2="620"/>
+  </g>
+  <!-- desk -->
+  <rect x="120" y="1290" width="840" height="60" rx="16" fill="#a97f4f"/>
+  <rect x="180" y="1350" width="46" height="240" fill="#8d6a41"/>
+  <rect x="854" y="1350" width="46" height="240" fill="#8d6a41"/>
+  <!-- report card on the desk -->
+  <g id="report" transform="translate(430 1210)">
+    <rect width="230" height="150" rx="10" fill="#fff" stroke="#d8cdb8" stroke-width="5"
+      transform="rotate(-6)"/>
+    <g transform="rotate(-6)" stroke="#b9c0d6" stroke-width="8" stroke-linecap="round">
+      <line x1="26" y1="42" x2="150" y2="42"/><line x1="26" y1="76" x2="180" y2="76"/>
+      <line x1="26" y1="110" x2="120" y2="110"/>
+    </g>
+    <text x="176" y="118" transform="rotate(-6)" font-family="RubikHe,sans-serif"
+      font-size="52" font-weight="900" fill="#F2545B">55</text>
+  </g>
+  <!-- TEACHER, behind the desk, pointing at the report -->
+  <g id="teacher">
+    <rect x="640" y="960" width="300" height="330" rx="60" fill="#6C5CE7"/>
+    ${kidHead(790,880,92,"#eabb92","#3a2c22","long","sad")}
+    <g id="tArm">${limb(680,1060,470,1215,42,"#eabb92")}</g>
+    <circle cx="470" cy="1215" r="26" fill="#eabb92"/>
+  </g>
+  <!-- PARENT + CHILD, seated, backs to us -->
+  <g id="pair">
+    <g id="parent">
+      <rect x="90" y="1080" width="250" height="300" rx="56" fill="#F2545B"/>
+      ${kidHead(215,1010,84,"#e9b285","#4a3a2c","short","sad")}
+    </g>
+    <g id="child">
+      <rect x="330" y="1160" width="200" height="240" rx="48" fill="#3FBF6F"/>
+      ${kidHead(430,1105,68,"#f3c9a0","#3d3226","curly","sad")}
+    </g>
+  </g>
+  <rect width="1080" height="640" fill="url(#scrim2)"/>
+  <rect id="cl-dim" width="1080" height="1920" fill="#1a1524" opacity="0"/>
+  </svg>`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SCENE 5 · the two of them, together, solving it
+// ════════════════════════════════════════════════════════════════════════════
+function together(){
+  return `<svg width="${W}" height="${H}" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="jw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff3d6"/><stop offset="1" stop-color="#ffe0f0"/></linearGradient>
+    <radialGradient id="burst"><stop offset="0" stop-color="#fff" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#jw)"/>
+  <circle id="jburst" cx="540" cy="1080" r="0" fill="url(#burst)"/>
+  <rect y="1500" width="1080" height="420" fill="#c8a882"/>
+  <ellipse cx="540" cy="1560" rx="420" ry="120" fill="#e0d3c0"/>
+  <!-- kid A -->
+  <g id="jA">
+    <rect x="230" y="1160" width="260" height="330" rx="60" fill="#4ecdc4"/>
+    ${kidHead(360,1080,88,"#f3c9a0","#3d3226","curly","joy")}
+    <g id="jArmA">${limb(270,1220,180,1000,40,"#f3c9a0")}</g>
+    ${limb(470,1230,540,1330,38,"#f3c9a0")}
+  </g>
+  <!-- kid B -->
+  <g id="jB">
+    <rect x="590" y="1160" width="260" height="330" rx="60" fill="#ffd166"/>
+    ${kidHead(720,1080,88,"#f0b48a","#5b3a2e","long","joy")}
+    <g id="jArmB">${limb(810,1220,900,1000,40,"#f0b48a")}</g>
+    ${limb(610,1230,540,1330,38,"#f0b48a")}
+  </g>
+  <!-- the phone they are both looking at -->
+  <g id="jPhone">${phoneIcon(540,1340,150,255,0,"#eafff3")}</g>
+  <text id="jTick" x="540" y="1385" text-anchor="middle" font-size="110" font-weight="900"
+    font-family="RubikHe,sans-serif" fill="#3FBF6F" opacity="0">✓</text>
+  <g id="confetti"></g>
+  </svg>`;
+}
+
+// ── build the DOM once ──────────────────────────────────────────────────────
+stage.innerHTML=`
+ <div class="scene" id="s-room">${livingRoom()}</div>
+ <div class="scene" id="s-class">${classroom()}</div>
+ <div class="scene" id="s-app" style="background:linear-gradient(160deg,#6C5CE7,#3b2f9e)">
+   <div class="vig"></div>
+   <div class="phone" id="ph"><div class="notch"></div>
+     <div class="screen" id="scr"></div>
+     <div class="tap" id="tap"></div></div>
+ </div>
+ <div class="scene" id="s-joy">${together()}</div>
+ <div class="scene" id="s-logo" style="background:linear-gradient(160deg,#241a5c,#0d0a24)">
+   <div class="logo">
+     <div class="mark">🦊</div>
+     <h1>Onyx לימודי</h1>
+     <p>אנגלית · עברית · חשבון · מדעים · תורה · גיאוגרפיה · היסטוריה</p>
+     <div class="url">learn.onyx-study.com</div>
+     <div class="sub">כיתות א׳–י״ב · מותאם לתוכנית משרד החינוך</div>
+   </div>
+ </div>
+ <div class="cap" id="cap1" style="top:150px"><b>הילדים כל היום<br>תקועים עם הפנים במסך</b></div>
+ <div class="cap" id="cap2" style="top:170px"><b>שעה. שעתיים.<br>ובסוף — כלום.</b></div>
+ <div class="cap" id="cap3" style="top:150px"><b>ההישגים טעונים שיפור?</b></div>
+ <div class="cap" id="cap4" style="top:1560px"><b id="cap4t"></b><i id="cap4s"></i></div>
+ <div class="cap dark" id="cap5" style="top:250px"><b>פתרנו!</b><br><i>אותו מסך. אחרת לגמרי.</i></div>
+`;
+
+// screenshots of the real app, pre-loaded into the phone mock
+const SHOTS=["hub","math","match","english","reading","geo","science","done"];
+const scr=document.getElementById("scr");
+scr.innerHTML=SHOTS.map((s,i)=>`<img id="sh${i}" src="/shots/${s}.png">`).join("");
+const IMG=SHOTS.map((_,i)=>document.getElementById("sh"+i));
+
+const CAP4=[
+ ["שבעה מקצועות","אנגלית, עברית, חשבון, מדעים, תורה, גיאוגרפיה והיסטוריה"],
+ ["מותאם לכיתה","מכיתה א׳ ועד י״ב — לפי תוכנית משרד החינוך"],
+ ["לומדים בלי להרגיש","משחקי מילים, בלונים, חידונים והבנת הנקרא"],
+ ["ההורים רואים הכול","כמה זמן, אילו שאלות, ואיזו תשובה נכתבה"],
+ ["ציון בסוף כל סבב","והתראה להורה כשהילד לא תרגל"],
+];
+
+// ── the timeline ────────────────────────────────────────────────────────────
+const T={ room:[0,7.4], clock:[3.6,7.4], cls:[7.2,12.6], app:[12.4,27.4],
+          joy:[27.2,31.6], logo:[31.4,36.0] };
+const DURATION=36.0;
+
+const el=id=>document.getElementById(id);
+const set=(id,o)=>{const e=el(id);if(!e)return;for(const k in o)e.style[k]=o[k];};
+
+function frame(t){
+  // ── scene visibility ──
+  set("s-room",{opacity:win(t,T.room[0],T.room[1],.5,.5)});
+  set("s-class",{opacity:win(t,T.cls[0],T.cls[1],.5,.5)});
+  set("s-app",{opacity:win(t,T.app[0],T.app[1],.5,.45)});
+  set("s-joy",{opacity:win(t,T.joy[0],T.joy[1],.45,.45)});
+  set("s-logo",{opacity:win(t,T.logo[0],T.logo[1]+1,.6,.4)});
+
+  // ── SCENE 1+2 · living room ──
+  if(t<T.room[1]+.6){
+    // slow push-in for the whole room
+    const z=lerp(1.0,1.10,seg(t,0,7.4,x=>x));
+    set("s-room",{transform:`scale(${z})`,transformOrigin:"55% 70%"});
+    // the two of them barely move — a thumb scroll, a leg swing
+    const br=Math.sin(t*2.1)*3;
+    set("kidA",{transform:`translateY(${br}px)`});
+    set("kidB",{transform:`translateY(${-br}px)`});
+    // the screen glow flickers as content scrolls past
+    const fa=.18+.12*Math.abs(Math.sin(t*3.7)), fb=.14+.12*Math.abs(Math.sin(t*2.9+1));
+    const ga=el("glowA"),gb=el("glowB");
+    if(ga)ga.setAttribute("opacity",fa); if(gb)gb.setAttribute("opacity",fb);
+    // time passes: the clock hands race, the daylight drains from the window
+    const cp=seg(t,3.4,7.2,x=>x);
+    const hm=el("clk-m"),hh=el("clk-h");
+    if(hm)hm.setAttribute("transform",`rotate(${cp*1440})`);
+    if(hh)hh.setAttribute("transform",`rotate(${cp*120})`);
+    const wnd=el("lr-window");
+    if(wnd)wnd.setAttribute("opacity",String(lerp(1,.35,cp)));
+    const dim=el("lr-dim");
+    if(dim)dim.setAttribute("opacity",String(lerp(0,.42,cp)));
+  }
+  // captions of scene 1 / 2
+  capShow("cap1",win(t,0.7,3.5,.55,.45),t,0.7);
+  capShow("cap2",win(t,4.0,7.1,.5,.45),t,4.0);
+
+  // ── SCENE 3 · the teacher ──
+  if(t>T.cls[0]-.6&&t<T.cls[1]+.6){
+    const z=lerp(1.02,1.12,seg(t,T.cls[0],T.cls[1],x=>x));
+    set("s-class",{transform:`scale(${z})`,transformOrigin:"45% 62%"});
+    // she taps the report twice while she speaks
+    const p=Math.max(0,t-T.cls[0]);
+    const tap=(p>1.0&&p<1.5)?Math.sin((p-1.0)*Math.PI/0.5):(p>1.7&&p<2.2)?Math.sin((p-1.7)*Math.PI/0.5):0;
+    set("tArm",{transform:`translateY(${tap*14}px)`});
+    // the parent and child sink a little
+    const s=seg(t,T.cls[0]+.6,T.cls[0]+2.6,x=>x);
+    set("pair",{transform:`translateY(${s*16}px)`});
+    const dim=el("cl-dim");
+    if(dim)dim.setAttribute("opacity",String(lerp(0,.16,s)));
+  }
+  capShow("cap3",win(t,T.cls[0]+0.9,T.cls[1]-0.35,.5,.4),t,T.cls[0]+0.9);
+
+  // ── SCENE 4 · the app itself ──
+  if(t>T.app[0]-.6&&t<T.app[1]+.6){
+    const p=Math.max(0,t-T.app[0]);            // 0 … 15 (never negative: the
+                                           // scene starts drawing early)
+    // the phone rises into frame and drifts gently
+    const rise=seg(t,T.app[0],T.app[0]+.9,outBack);
+    const drift=Math.sin(p*.55)*10;
+    set("ph",{transform:`translateY(${lerp(220,0,rise)+drift}px) rotate(${Math.sin(p*.4)*.7}deg)`});
+    // one screen per beat, each with a scroll and a tap
+    const BEAT=2.7, i=clamp(Math.floor(p/BEAT),0,SHOTS.length-1), q=(p%BEAT)/BEAT;
+    IMG.forEach((im,k)=>{
+      if(k!==i&&k!==i+1){ im.style.opacity=0; return; }
+      if(k===i){
+        im.style.opacity=String(clamp(q<.86?1:(1-(q-.86)/.14)));
+        // a slow scroll down the captured screen
+        const over=Math.max(0,im.naturalHeight?(im.naturalHeight*(im.clientWidth/im.naturalWidth)-im.parentElement.clientHeight):0);
+        im.style.transform=`translateY(${-over*ease(clamp(q/.8))}px)`;
+      }else{
+        im.style.opacity=String(clamp(q>.86?(q-.86)/.14:0));
+        im.style.transform="translateY(0px)";
+      }
+    });
+    // a finger tap ripple, once per beat
+    const tq=(q-.5)/.22;
+    const tp=el("tap");
+    if(tp){
+      if(tq>0&&tq<1){
+        const r=lerp(.4,1.5,outCubic(tq));
+        tp.style.opacity=String((1-tq)*.85);
+        tp.style.left=(140+((i*137)%320))+"px";
+        tp.style.top=(520+((i*211)%520))+"px";
+        tp.style.transform=`scale(${r})`;
+      } else tp.style.opacity=0;
+    }
+    // caption per beat
+    const c=CAP4[clamp(Math.floor(p/(15/CAP4.length)),0,CAP4.length-1)];
+    el("cap4t").textContent=c[0]; el("cap4s").textContent=c[1];
+    const cq=(p%(15/CAP4.length))/(15/CAP4.length);
+    const o=clamp(Math.min(cq/.16,(1-cq)/.16));
+    set("cap4",{opacity:String(o*win(t,T.app[0]+.5,T.app[1]-.2,.4,.4)),
+                transform:`translateY(${lerp(26,0,clamp(cq/.16))}px)`});
+  } else set("cap4",{opacity:"0"});
+
+  // ── SCENE 5 · together ──
+  if(t>T.joy[0]-.6&&t<T.joy[1]+.6){
+    const p=Math.max(0,t-T.joy[0]);
+    const pop=seg(t,T.joy[0]+.15,T.joy[0]+.75,outBack);
+    // arms fly up, both of them bounce
+    set("jArmA",{transform:`rotate(${lerp(0,-26,pop)}deg)`,transformOrigin:"270px 1220px"});
+    set("jArmB",{transform:`rotate(${lerp(0,26,pop)}deg)`,transformOrigin:"810px 1220px"});
+    const b=Math.abs(Math.sin(p*4.2))*(1-clamp(p/3.2))*26;
+    set("jA",{transform:`translateY(${-b}px)`});
+    set("jB",{transform:`translateY(${-b*.8}px)`});
+    const burst=el("jburst");
+    if(burst)burst.setAttribute("r",String(lerp(0,760,seg(t,T.joy[0]+.1,T.joy[0]+1.1,outCubic))));
+    const tick=el("jTick");
+    if(tick){ tick.setAttribute("opacity",String(seg(t,T.joy[0]+.35,T.joy[0]+.8)));
+      tick.setAttribute("transform",`translate(540 1340) scale(${lerp(.2,1,seg(t,T.joy[0]+.35,T.joy[0]+.85,outBack))}) translate(-540 -1340)`); }
+    // confetti
+    const cf=el("confetti");
+    if(cf){
+      const COLS=["#6C5CE7","#3FBF6F","#FFC94D","#F2545B","#4ecdc4"];
+      let s="";
+      for(let k=0;k<44;k++){
+        const seed=(k*97)%1000/1000, x=60+((k*173)%960);
+        const st=T.joy[0]+.25+seed*.7, pp=clamp((t-st)/2.6);
+        if(pp<=0)continue;
+        const y=lerp(-80,1900,pp*pp*.9+pp*.1), rot=(k*37+t*260)%360;
+        s+=`<rect x="${x}" y="${y}" width="22" height="34" rx="5" fill="${COLS[k%5]}"
+             transform="rotate(${rot} ${x+11} ${y+17})" opacity="${clamp((1-pp)*2)}"/>`;
+      }
+      cf.innerHTML=s;
+    }
+  }
+  capShow("cap5",win(t,T.joy[0]+.5,T.joy[1]-.2,.4,.4),t,T.joy[0]+.5);
+
+  // ── SCENE 6 · the logo ──
+  if(t>T.logo[0]-.6){
+    const p=seg(t,T.logo[0],T.logo[0]+1.0,outBack);
+    const lg=document.querySelector("#s-logo .logo");
+    if(lg)lg.style.transform=`translate(-50%,-50%) scale(${lerp(.82,1,p)})`;
+    const mk=document.querySelector("#s-logo .mark");
+    if(mk)mk.style.transform=`rotate(${lerp(-14,0,p)}deg) scale(${lerp(.7,1,p)})`;
+    const u=document.querySelector("#s-logo .url");
+    if(u){const up=seg(t,T.logo[0]+.55,T.logo[0]+1.15,outBack);
+      u.style.opacity=String(up); u.style.transform=`scale(${lerp(.8,1,up)})`;}
+    const sb=document.querySelector("#s-logo .sub");
+    if(sb)sb.style.opacity=String(seg(t,T.logo[0]+1.0,T.logo[0]+1.5));
+  }
+}
+function capShow(id,o,t,start){
+  set(id,{opacity:String(o),transform:`translateY(${lerp(34,0,seg(t,start,start+.55,outCubic))}px)`});
+}
+
+// the renderer calls this; also used for a live preview
+window.setFrame=n=>{ frame(n/FPS); };
+window.TOTAL_FRAMES=Math.round(DURATION*FPS);
+window.DURATION=DURATION;
+window.__ready=Promise.all(IMG.map(im=>im.complete?1:new Promise(r=>{im.onload=r;im.onerror=r;})));
+frame(0);
+</script></body></html>
