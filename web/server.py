@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '2.4'
+APP_VERSION = '2.5'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 
 
@@ -1765,6 +1765,25 @@ def api_piyutim_rhyme():
     start_letter = request.args.get('start_letter', '')
     group = request.args.get('group', '')
     return jsonify(db.piyutim_rhyme_search(mode, q, clean_only, start_letter, group))
+
+
+# ── אישי השומרונים (who's-who library unit) ─────────────────────────────────
+@app.route('/api/people_toc')
+def api_people_toc():
+    return jsonify(db.get_people_toc())
+
+
+@app.route('/api/person')
+def api_person():
+    r = db.get_person(request.args.get('id', ''))
+    if not r:
+        return jsonify({'error': 'not found'}), 404
+    return jsonify(r)
+
+
+@app.route('/api/people_search')
+def api_people_search():
+    return jsonify(db.search_people(request.args.get('q', '')))
 
 
 @app.route('/api/shyt')

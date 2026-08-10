@@ -163,6 +163,13 @@ const I18N = {
     bhuq_toc_hint:'החיבור מחולק כאן לחלקים לפי מהלך הטיעון; המספרים בסוגריים הם סעיפי המחבר. בחר חלק לעיון:',
     m_asatir_book:'ספר האסאטיר', asatir_title:'ספר האסאטיר', asatir_toc_hint:'בחר פרק לעיון:',
     asatir_note:'ספר האסאטיר — דברי הימים השומרוני מאדם ועד אחרית הימים, בתעתיק עברי.',
+    m_people_book:'אישי השומרונים', pp_title:'אישי השומרונים',
+    pp_search_ph:'חיפוש שם, תקופה או עניין…', pp_back_list:'חזרה לרשימה',
+    pp_by_era:'לפי תקופה', pp_by_abc:'לפי א״ב',
+    pp_empty:'בחר אישיות מן הרשימה ←', pp_no_result:'לא נמצאה אישיות תואמת',
+    pp_era_bib:'תקופת המקרא', pp_era_anc:'העת העתיקה', pp_era_med:'ימי הביניים',
+    pp_era_early:'ראשית העת החדשה', pp_era_mod:'העת החדשה', pp_era_unk:'תקופה לא ידועה',
+    pp_source:'מקור', pp_contributor:'רשם:', pp_pron:'הגייה',
     m_piyutim_book:'עיון בפיוטים השומרוניים', piy_title:'עיון בפיוטים השומרוניים',
     piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
     piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
@@ -211,7 +218,8 @@ const I18N = {
       '<p><b>גרסה 1.2 — ממקור שומרון</b></p><ul><li>תיבת מרקה, המסורת השומרונית, פירוש צדקה אל-חכים, סוד הלבבות, ספר האסאטיר</li><li>"פירוש הפסוק" — פירוש רציף רב-מקורי מוטמע</li></ul><p><b>גרסה 1.3 — חילופי נוסח והשוואות</b></p><ul><li>חילופי נוסח ממהדורת פון גאל, עם עדי-נוסח ותיאורי כתבי-יד</li><li>השוואה גם לתרגום השבעים; מחליף שפת ממשק (עברית/אנגלית/ערבית)</li></ul>',
       '<p><b>גרסה 1.4 — חוויית משתמש</b></p><ul><li>מסך פתיחה, חלון "ברוכים הבאים", אנימציית הפיכת דף, דפדוף רציף בין פרקים וספרים</li><li>כתב שומרוני מיושר, זום טקסט וקיפול הסרגל</li></ul><p><b>גרסה 1.5 — הספרייה השומרונית</b></p><ul><li>קוראי ספר מלאים: <b>תיבת מרקה</b> (ארמית/עברית) ו<b>פירוש צדקה אל-חכים</b> לכל בראשית (עברית/ערבית) — עם תוכן עניינים, חיפוש וקפיצה לפסוק</li><li>המילון הארמי שודרג: דפדוף עמודים, אינדקס, וכל מיקומי המילה במילון</li><li>כפתורי הגדלת טקסט בקוראים ובמילון</li></ul><p class="wc-sign"><b>תהנו!</b></p>',
       '<p><b>גרסה 2.0 — הספרייה השומרונית</b></p><ul><li>הספרייה כעמוד כרטיסיות; קריאת פיוטים ומציאת חרוזים</li><li>האזנה להקראת פרקי התורה, עם בחירת קריין</li><li>כתב שומרוני גם לפירושים, ובראשית ב-250 פרקים מדויקים</li></ul><p><b>גרסה 2.1 — פירוש לכל התורה, ערבית והדפסה</b></p><ul><li>פירוש הפסוק נכתב מחדש לכל בראשית, שמות, ויקרא ובמדבר — וכל נקודה מובאת בשם אומרה</li><li>הפירוש בפאנל שמתחת לטקסט, עם מתגי כתב שומרוני וערבית וקישורי הרחבה</li><li>הדפסה ושמירה כ-PDF, עם תצוגה מקדימה</li><li>במחשב — מסך מלא; בנייד ללא שינוי</li></ul>',
-      '<p><b>גרסה 2.2 — ספר האסאטיר</b></p><ul><li><b>ספר האסאטיר</b> נוסף לספרייה השומרונית כיחידה עצמאית: שישה-עשר פרקים, תוכן עניינים, חיפוש בתוך הספר, וקפיצה מכל פסקה אל הפסוק שהיא מספרת</li><li>הספר נוסף גם ל"ממקור שומרון": בכל פסוק שהאסאטיר מספר את מעשהו נפתח כפתור חדש ובו הפסקה הנוגעת בדבר, בציון פרק ופסקה</li></ul><p class=\"wc-sign\"><b>תהנו!</b></p>',
+      '<p><b>גרסה 2.2 — ספר האסאטיר</b></p><ul><li><b>ספר האסאטיר</b> נוסף לספרייה השומרונית כיחידה עצמאית: שישה-עשר פרקים, תוכן עניינים, חיפוש בתוך הספר, וקפיצה מכל פסקה אל הפסוק שהיא מספרת</li><li>הספר נוסף גם ל"ממקור שומרון": בכל פסוק שהאסאטיר מספר את מעשהו נפתח כפתור חדש ובו הפסקה הנוגעת בדבר, בציון פרק ופסקה</li></ul>',
+      '<p><b>גרסה 2.5 — אישי השומרונים, ומדף ספרים חדש</b></p><ul><li><b>אישי השומרונים</b> נוסף לספרייה כיחידה עצמאית: 95 דמויות — מאהרן הכהן ובאבא רבה, דרך פייטני ימי הביניים, ועד בני העדה וחוקריה במאה העשרים — ולכל אחת הסבר על מקומה במסורת</li><li>הרשימה נפרשת <b>לפי תקופה</b> או <b>לפי א״ב</b>, והחיפוש רץ גם על גוף ההסברים — כך שאפשר למצוא אישיות לפי עניין ולא רק לפי שמה</li><li>מדף הספרים עוצב מחדש: שם הספר כתוב על הכריכה עצמה, לכל ספר צבע משלו, והכריכות הוקטנו — כך נכנסים בשורה אחת כפליים ספרים מקודם</li></ul><p class=\"wc-sign\"><b>תהנו!</b></p>',
     ],
     interp_unavail:'פונקציה זו אינה פעילה באופן זמני.',
     welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
@@ -369,6 +377,13 @@ const I18N = {
     bhuq_toc_hint:'The treatise is divided here by the turns of its argument; the bracketed numbers are the author’s own paragraphs. Choose a part:',
     m_asatir_book:'The Book of Asatir', asatir_title:'The Book of Asatir', asatir_toc_hint:'Choose a chapter:',
     asatir_note:'The Book of Asatir — the Samaritan chronicle from Adam to the end of days, in Hebrew transcription.',
+    m_people_book:'Samaritan Personalities', pp_title:'Samaritan Personalities',
+    pp_search_ph:'Search a name, period or subject…', pp_back_list:'‹ Back to the list',
+    pp_by_era:'By period', pp_by_abc:'A–Z',
+    pp_empty:'Choose a figure from the list →', pp_no_result:'No matching figure',
+    pp_era_bib:'Biblical era', pp_era_anc:'Antiquity', pp_era_med:'The Middle Ages',
+    pp_era_early:'Early modern period', pp_era_mod:'Modern era', pp_era_unk:'Period unknown',
+    pp_source:'Source', pp_contributor:'contributed by', pp_pron:'pron.',
     m_piyutim_book:'Samaritan Piyyutim', piy_title:'Samaritan Piyyutim',
     piy_back_tree:'Back to contents', piy_dict_toggle:'Word dictionary', piy_search_ph:'Search composition, author, or word…',
     piy_empty:'Choose a composition from the contents ←', piy_pick_first:'Choose a composition',
@@ -417,7 +432,8 @@ const I18N = {
       '<p><b>v1.2 — Samaritan sources</b></p><ul><li>Tībåt Mårqe, the Samaritan tradition, Ṣadaqah al-Ḥakīm, Sīr al-Qulūb, the Book of Asatir</li><li>“Verse commentary” — a continuous, multi-source reading</li></ul><p><b>v1.3 — textual variants & comparisons</b></p><ul><li>von Gall’s variants, with witnesses and manuscript descriptions</li><li>Comparison to the Septuagint; UI language switcher (he/en/ar)</li></ul>',
       '<p><b>v1.4 — user experience</b></p><ul><li>Entry splash, a Welcome screen, a page-turn animation, continuous chapter & book paging</li><li>Justified Samaritan script, text zoom, and a collapsible bar</li></ul><p><b>v1.5 — the Samaritan Library</b></p><ul><li>Full-book readers: <b>Tībåt Mårqe</b> (Aramaic/Hebrew) and <b>Ṣadaqah al-Ḥakīm</b> on all of Genesis (Hebrew/Arabic) — with contents, search and verse jumps</li><li>The Aramaic dictionary upgraded: page browsing, an index, and every location of a word</li><li>Text-zoom buttons in the readers and the dictionary</li></ul><p class="wc-sign"><b>Enjoy!</b></p>',
       '<p><b>Version 2.0 — the Samaritan library</b></p><ul><li>The library as a card gallery; a piyyutim reader and a rhyme finder</li><li>Listen to the Torah chapters read aloud, with a choice of reader</li><li>Samaritan script for the commentaries too, and Genesis in an exact 250 chapters</li></ul><p><b>Version 2.1 — commentary for the whole Torah, Arabic and printing</b></p><ul><li>The verse commentary was rewritten for all of Genesis, Exodus, Leviticus and Numbers — and every point is credited to the source that says it</li><li>It now sits in a panel beneath the text, with Samaritan-script and Arabic switches and links onward</li><li>Printing and saving as PDF, with an on-screen preview</li><li>On desktop the app fills the screen; on mobile nothing changed</li></ul>',
-      '<p><b>Version 2.2 — the Book of Asatir</b></p><ul><li>The <b>Book of Asatir</b> joins the Samaritan Library as a unit of its own: sixteen chapters, a table of contents, in-book search, and a jump from any paragraph to the verse it retells</li><li>It is a Samaritan source now as well: on every verse the Asatir recounts, a new button opens the passage in question, cited by chapter and paragraph</li></ul><p class=\"wc-sign\"><b>Enjoy!</b></p>',
+      '<p><b>Version 2.2 — the Book of Asatir</b></p><ul><li>The <b>Book of Asatir</b> joins the Samaritan Library as a unit of its own: sixteen chapters, a table of contents, in-book search, and a jump from any paragraph to the verse it retells</li><li>It is a Samaritan source now as well: on every verse the Asatir recounts, a new button opens the passage in question, cited by chapter and paragraph</li></ul>',
+      '<p><b>Version 2.5 — Samaritan Personalities, and a new bookshelf</b></p><ul><li><b>Samaritan Personalities</b> joins the library as a unit of its own: 95 figures — from Aaron the priest and Baba Rabba, through the medieval poets, to community members and scholars of the twentieth century — each with an account of its place in the tradition</li><li>The list can be laid out <b>by period</b> or <b>A–Z</b>, and the search runs over the accounts themselves, so a figure can be found by subject and not only by name</li><li>The bookshelf was redrawn: each title is written on its own cover, every book has its own colour, and the covers are smaller — so a row now holds twice as many books as before</li></ul><p class=\"wc-sign\"><b>Enjoy!</b></p>',
     ],
     interp_unavail:'This feature is temporarily unavailable.',
     welcome_title:'Welcome to the Avnei Shoham project',
@@ -575,6 +591,13 @@ const I18N = {
     bhuq_toc_hint:'قُسّم الكتاب هنا حسب مسار الحجّة؛ الأرقام بين قوسين هي فقرات المؤلف. اختر قسمًا:',
     m_asatir_book:'كتاب الأساطير', asatir_title:'كتاب الأساطير', asatir_toc_hint:'اختر أصحاحاً:',
     asatir_note:'كتاب الأساطير — التاريخ السامري من آدم إلى آخر الأيام، بالنسخ العبري.',
+    m_people_book:'أعلام السامريين', pp_title:'أعلام السامريين',
+    pp_search_ph:'ابحث عن اسم أو حقبة أو موضوع…', pp_back_list:'العودة إلى القائمة',
+    pp_by_era:'حسب الحقبة', pp_by_abc:'حسب الأبجدية',
+    pp_empty:'اختر شخصية من القائمة ←', pp_no_result:'لم يُعثر على شخصية مطابقة',
+    pp_era_bib:'العصر التوراتي', pp_era_anc:'العصور القديمة', pp_era_med:'العصور الوسطى',
+    pp_era_early:'مطلع العصر الحديث', pp_era_mod:'العصر الحديث', pp_era_unk:'حقبة غير معروفة',
+    pp_source:'المصدر', pp_contributor:'بقلم', pp_pron:'النطق',
     m_piyutim_book:'الأناشيد السامرية', piy_title:'تصفّح الأناشيد السامرية',
     piy_back_tree:'العودة للفهرس', piy_dict_toggle:'قاموس الكلمات', piy_search_ph:'بحث عن تأليف أو مؤلف أو كلمة…',
     piy_empty:'اختر تأليفًا من الفهرس ←', piy_pick_first:'اختر تأليفًا',
@@ -623,7 +646,8 @@ const I18N = {
       '<p><b>الإصدار 1.2 — مصادر سامرية</b></p><ul><li>تيبات مارقه، التقليد السامري، تفسير صدقة الحكيم، سرّ القلوب، كتاب الأساطير</li><li>«تفسير الآية» — قراءة متّصلة متعدّدة المصادر</li></ul><p><b>الإصدار 1.3 — اختلافات النصّ والمقارنات</b></p><ul><li>اختلافات فون غال، مع الشهود وأوصاف المخطوطات</li><li>مقارنة بالسبعينية؛ مبدّل لغة الواجهة (he/en/ar)</li></ul>',
       '<p><b>الإصدار 1.4 — تجربة المستخدم</b></p><ul><li>شاشة بداية، نافذة ترحيب، تأثير قلب صفحة، تصفّح متّصل بين الأصحاحات والأسفار</li><li>ضبط الخطّ السامري، تكبير النصّ، وشريط قابل للطيّ</li></ul><p><b>الإصدار 1.5 — المكتبة السامرية</b></p><ul><li>قارئان كاملان: <b>تيبات مارقه</b> (آرامية/عبرية) و<b>تفسير صدقة الحكيم</b> لكامل التكوين (عبرية/عربية) — مع محتويات وبحث وقفزٍ إلى الآية</li><li>تطوير المعجم الآرامي: تصفّح الصفحات، فهرس، وكلّ مواضع الكلمة في المعجم</li><li>أزرار تكبير النصّ في القارئَين والمعجم</li></ul><p class="wc-sign"><b>استمتعوا!</b></p>',
       '<p><b>الإصدار 2.0 — المكتبة السامرية</b></p><ul><li>المكتبة كصفحة بطاقات؛ قارئ للقصائد وباحث عن القوافي</li><li>الاستماع إلى تلاوة أصحاحات التوراة مع اختيار القارئ</li><li>الخطّ السامري للتفاسير أيضاً، والتكوين في 250 أصحاحاً دقيقاً</li></ul><p><b>الإصدار 2.1 — تفسير لكلّ التوراة، والعربية، والطباعة</b></p><ul><li>أُعيد كتابة تفسير الآية لكلّ التكوين والخروج واللاويين والعدد — وكلّ نقطة تُنسَب إلى قائلها</li><li>التفسير في لوحة تحت النصّ، مع مفتاحي الخطّ السامري والعربية وروابط للتوسّع</li><li>الطباعة والحفظ كـ PDF مع معاينة على الشاشة</li><li>على الحاسوب يملأ التطبيق الشاشة؛ وعلى الهاتف لم يتغيّر شيء</li></ul>',
-      '<p><b>الإصدار 2.2 — كتاب الأساطير</b></p><ul><li>أُضيف <b>كتاب الأساطير</b> إلى المكتبة السامرية كوحدة مستقلّة: ستّة عشر أصحاحاً، ومحتويات، وبحث داخل الكتاب، وقفزٌ من أيّ فقرة إلى الآية التي ترويها</li><li>وصار أيضاً من «المصادر السامرية»: في كلّ آية يرويها الكتاب يظهر زرّ جديد بالفقرة المعنيّة، منسوبةً إلى أصحاحها وفقرتها</li></ul><p class=\"wc-sign\"><b>استمتعوا!</b></p>',
+      '<p><b>الإصدار 2.2 — كتاب الأساطير</b></p><ul><li>أُضيف <b>كتاب الأساطير</b> إلى المكتبة السامرية كوحدة مستقلّة: ستّة عشر أصحاحاً، ومحتويات، وبحث داخل الكتاب، وقفزٌ من أيّ فقرة إلى الآية التي ترويها</li><li>وصار أيضاً من «المصادر السامرية»: في كلّ آية يرويها الكتاب يظهر زرّ جديد بالفقرة المعنيّة، منسوبةً إلى أصحاحها وفقرتها</li></ul>',
+      '<p><b>الإصدار 2.5 — أعلام السامريين، ورفّ كتب جديد</b></p><ul><li>أُضيف <b>أعلام السامريين</b> إلى المكتبة كوحدة مستقلّة: 95 شخصية — من هارون الكاهن وبابا ربّا، مروراً بشعراء العصور الوسطى، وصولاً إلى أبناء الطائفة وباحثيها في القرن العشرين — ولكلّ واحدة شرح لمكانتها في التقليد</li><li>تُعرض القائمة <b>حسب الحقبة</b> أو <b>حسب الأبجدية</b>، والبحث يجري في متن الشروح أيضاً، فتُوجد الشخصية بموضوعها لا باسمها وحده</li><li>أُعيد رسم رفّ الكتب: اسم الكتاب مكتوب على غلافه نفسه، ولكلّ كتاب لونه الخاصّ، وصُغّرت الأغلفة — فصار السطر الواحد يتّسع لضعف ما كان</li></ul><p class=\"wc-sign\"><b>استمتعوا!</b></p>',
     ],
     interp_unavail:'هذه الميزة غير متاحة مؤقّتًا.',
     welcome_title:'أهلًا بكم في مشروع «أبني شوهم»',
@@ -3395,24 +3419,17 @@ document.querySelectorAll('.menu-item').forEach(b=>b.onclick=()=>{
   closeMenu(); menuAction(b.dataset.act);
 });
 
-// ── הספרייה השומרונית: full-page gallery (image + title per book, searchable) ──
-// A generic uniform book-cover graphic (per the approved design) — one shared
-// template, no per-book artwork, tinted the same for every card.
-let _libSvgId = 0;
-function bookCoverSVG(){
-  const id = 'bookclip' + (_libSvgId++);
-  return `<svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="lib-cover">
-    <defs><clipPath id="${id}"><rect x="14" y="8" width="96" height="144" rx="7"/></clipPath></defs>
-    <rect x="8" y="146" width="100" height="12" rx="4" fill="#d7e2e6"/>
-    <g clip-path="url(#${id})">
-      <rect x="14" y="8" width="96" height="144" fill="#c1585c"/>
-      <rect x="14" y="8" width="20" height="144" fill="#7c2e33"/>
-      <path d="M16 40 Q26 47 36 40" stroke="#dfa53c" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <path d="M16 120 Q26 127 36 120" stroke="#dfa53c" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <rect x="48" y="46" width="52" height="30" fill="#8a3439"/>
-    </g>
-    <rect x="14" y="8" width="96" height="144" rx="7" fill="none" stroke="#e2908f" stroke-width="2"/>
-  </svg>`;
+// ── הספרייה השומרונית: full-page gallery (searchable) ─────────────────────────
+// The cover IS the label: every book's title is written on its own front, so the
+// cards need no caption underneath and fit far more per row. Each book gets its
+// own colour, derived from its fixed position in LIB_ITEMS — so a given book
+// always wears the same binding, and books added later simply take the next hue
+// (past the palette's length the hues shift, never repeat outright).
+const LIB_HUES = [352, 210, 96, 32, 275, 186, 18, 228, 320, 152, 45, 258];
+function libCoverVars(i){
+  const h = (LIB_HUES[i % LIB_HUES.length] + Math.floor(i / LIB_HUES.length) * 17) % 360;
+  return { '--bk':`hsl(${h} 33% 39%)`, '--bk-dark':`hsl(${h} 40% 23%)`,
+           '--bk-lite':`hsl(${h} 29% 50%)` };
 }
 const LIB_ITEMS = [
   {act:'dict_app',     titleKey:'m_dict_aram',    open:()=>openDictApp()},
@@ -3424,6 +3441,7 @@ const LIB_ITEMS = [
   {act:'asatir_book',  titleKey:'m_asatir_book',  open:()=>openAsatirBook()},
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
   {act:'rhyme_book',   titleKey:'m_rhyme_book',   open:()=>openRhymeBook()},
+  {act:'people_book',  titleKey:'m_people_book',  open:()=>openPeopleBook()},
   {act:'composer',     titleKey:'m_composer',     open:()=>openComposer(), adminOnly:true},
   {act:'privatecomp',  titleKey:'m_privatecomp',  open:()=>openPrivateComp(), adminOnly:true},
 ];
@@ -3437,15 +3455,20 @@ function libBuildGrid(){
   const q=($('libGallerySearch').value||'').trim().toLowerCase();
   const grid=$('libGrid'); grid.innerHTML='';
   let shown=0;
-  for(const item of LIB_ITEMS){
-    if(item.adminOnly && !ADMIN.token) continue;   // "מחולל טיוטות פיוט" — שלב ראשון: מנהל בלבד
+  LIB_ITEMS.forEach((item, i)=>{
+    if(item.adminOnly && !ADMIN.token) return;   // "מחולל טיוטות פיוט" — שלב ראשון: מנהל בלבד
     const label=t(item.titleKey);
-    if(q && !label.toLowerCase().includes(q)) continue;
+    if(q && !label.toLowerCase().includes(q)) return;
     shown++;
-    const card=el('button','lib-card', bookCoverSVG()+`<span class="lib-card-title">${esc(label)}</span>`);
+    const card=el('button','lib-card', `<span class="lib-book"><span class="lib-book-title">${esc(label)}</span></span>`);
+    card.title=label;                       // the cover clips very long titles — the tooltip doesn't
+    // colour by the item's fixed index, not by its place in the filtered grid,
+    // so a book keeps its binding while the reader searches
+    const vars=libCoverVars(i);
+    for(const k in vars) card.style.setProperty(k, vars[k]);
     card.onclick=()=>{ $('libraryModal').classList.add('hidden'); item.open(); };
     grid.appendChild(card);
-  }
+  });
   $('libGalleryNoResult').classList.toggle('hidden', shown>0);
 }
 $('libGallerySearch').addEventListener('input', libBuildGrid);
@@ -3470,6 +3493,7 @@ function menuAction(a){
   else if(a==='asatir_book') openAsatirBook();
   else if(a==='piyutim_book') openPiyutimBook();
   else if(a==='rhyme_book')   openRhymeBook();
+  else if(a==='people_book')  openPeopleBook();
   else if(a==='install')   doInstall();
   else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
@@ -4068,6 +4092,116 @@ $('rdSearchBtn').onclick=rdSearch;
 $('rdInput').addEventListener('keydown',e=>{ if(e.key==='Enter') rdSearch(); });
 $('rdClose').onclick=()=>$('bookModal').classList.add('hidden');
 $('rdToTorah').onclick=()=>$('bookModal').classList.add('hidden');     // ↩ return to the Torah app
+
+// ── אישי השומרונים — a who's-who of 95 figures, list on one side, entry on the
+// other. Grouped by era (the import assigned the bucket + sort year) or by A-Z;
+// search runs server-side over names AND descriptions in all three languages.
+const PP = { toc:null, cur:null, mode:'era', _searchRows:null };
+const PP_ERA_ORDER = ['bib','anc','med','early','mod','unk'];
+async function ppEnsureData(){
+  if(!PP.toc) PP.toc = await api('people_toc');
+  return PP.toc;
+}
+function openPeopleBook(){
+  $('peopleModal').classList.remove('hidden');
+  $('ppBody').classList.remove('pp-detail-open');
+  $('ppBack').classList.add('hidden');
+  ppApplyFs();
+  ppEnsureData().then(()=>ppBuildList());
+  trackNav('ספריה · '+t('pp_title'));
+}
+function ppApplyFs(){ $('ppDetail').style.setProperty('--rd-fs', RD.fs); }
+$('ppZoomIn').onclick=()=>{ rdZoom(0.12); ppApplyFs(); };
+$('ppZoomOut').onclick=()=>{ rdZoom(-0.12); ppApplyFs(); };
+function ppName(p){ return (LANG==='en'?p.name_en : LANG==='ar'?p.name_ar : p.name_he) || p.name_he || p.name_en; }
+function ppPeriod(p){ return (LANG==='en'?p.period : LANG==='ar'?p.period_ar : p.period_he) || p.period || ''; }
+function ppBuildList(){
+  const list=$('ppList'); list.innerHTML='';
+  const rows = PP._searchRows || PP.toc || [];
+  if(!rows.length){ list.appendChild(el('div','note', t('pp_no_result'))); return; }
+  const groups={}, order=[];
+  for(const p of rows){
+    const key = PP.mode==='era' ? p.era : (ppName(p).replace(/^[^א-תA-Za-zء-ي]+/,'')[0]||'…').toUpperCase();
+    if(!groups[key]){ groups[key]=[]; order.push(key); }
+    groups[key].push(p);
+  }
+  const keys = PP.mode==='era'
+    ? PP_ERA_ORDER.filter(k=>groups[k])
+    : order.slice().sort((a,b)=>a.localeCompare(b, LANG==='ar'?'ar':LANG==='en'?'en':'he'));
+  for(const key of keys){
+    const items = PP.mode==='era' ? groups[key]
+      : groups[key].slice().sort((a,b)=>ppName(a).localeCompare(ppName(b)));
+    // a search shows every hit expanded; browsing opens the A-Z letters and, in
+    // era mode, just the first era — six shut drawers read as an empty page
+    const d=el('details','pp-group'); d.open = !!PP._searchRows || PP.mode==='abc' || key===keys[0];
+    const label = PP.mode==='era' ? t('pp_era_'+key) : key;
+    d.innerHTML=`<summary>${esc(label)} <span class="piy-count">(${items.length})</span></summary>`;
+    for(const p of items){
+      const it=el('div','pp-item'); it.dataset.id=p.id;
+      if(PP.cur && PP.cur.id===p.id) it.classList.add('sel');
+      it.innerHTML=`<span class="pp-item-name">${esc(ppName(p))}</span>`
+        +`<span class="pp-item-per">${esc(ppPeriod(p))}</span>`;
+      it.onclick=()=>ppShow(p.id);
+      d.appendChild(it);
+    }
+    list.appendChild(d);
+  }
+}
+async function ppShow(id){
+  let p; try{ p=await api('person?id='+encodeURIComponent(id)); }catch(e){ p=null; }
+  if(!p || p.error) return;
+  PP.cur=p;
+  document.querySelectorAll('#ppList .pp-item.sel').forEach(e=>e.classList.remove('sel'));
+  document.querySelectorAll(`#ppList .pp-item[data-id="${p.id}"]`).forEach(e=>e.classList.add('sel'));
+  const desc = (LANG==='en'?p.description_en : LANG==='ar'?p.description_ar : p.description_he)
+            || p.description_he || p.description_en || '';
+  // the two names the reader isn't currently reading in, kept as chips so every
+  // entry can be looked up under its Hebrew, Latin or Arabic form
+  const others = [
+    {lbl:'עב', val:p.name_he, d:'rtl', skip:LANG==='he'},
+    {lbl:'EN', val:p.name_en, d:'ltr', skip:LANG==='en'},
+    {lbl:'عر', val:p.name_ar, d:'rtl', skip:LANG==='ar'},
+  ].filter(n=>!n.skip && n.val);
+  const src = p.source ? `<div class="pp-src">${esc(t('pp_source'))}: ${esc(p.source)}`
+      + (p.contributor_initials && p.contributor_initials!=='unsigned'
+          ? ` · ${esc(t('pp_contributor'))} ${esc(p.contributor_initials)}` : '')
+      + `</div>` : '';
+  $('ppDetail').innerHTML=`
+    <h2 class="pp-name">${esc(ppName(p))}</h2>
+    <div class="pp-chips">
+      ${ppPeriod(p)?`<span class="pp-chip pp-chip-per">🕰 ${esc(ppPeriod(p))}</span>`:''}
+      ${others.map(n=>`<span class="pp-chip" dir="${n.d}"><b>${n.lbl}</b> ${esc(n.val)}</span>`).join('')}
+      ${p.pronunciation?`<span class="pp-chip" dir="ltr"><b>${esc(t('pp_pron'))}</b> /${esc(p.pronunciation)}/</span>`:''}
+    </div>
+    <div class="pp-desc">${esc(desc)}</div>
+    ${src}`;
+  $('ppBody').classList.add('pp-detail-open');   // mobile: swap list → entry
+  $('ppBack').classList.remove('hidden');
+  ppApplyFs();
+}
+function ppSetMode(m){
+  PP.mode=m;
+  $('ppModeEra').classList.toggle('on', m==='era');
+  $('ppModeAbc').classList.toggle('on', m==='abc');
+  ppBuildList();
+}
+$('ppModeEra').onclick=()=>ppSetMode('era');
+$('ppModeAbc').onclick=()=>ppSetMode('abc');
+let _ppSearchTimer=null;
+$('ppSearch').addEventListener('input', ()=>{
+  clearTimeout(_ppSearchTimer);
+  _ppSearchTimer=setTimeout(async ()=>{
+    const q=($('ppSearch').value||'').trim();
+    if(!q){ PP._searchRows=null; ppBuildList(); return; }
+    try{ PP._searchRows=await api('people_search?q='+encodeURIComponent(q)); }
+    catch(e){ PP._searchRows=[]; }
+    ppBuildList();
+  }, 250);
+});
+$('ppBack').onclick=()=>{ $('ppBody').classList.remove('pp-detail-open'); $('ppBack').classList.add('hidden'); };
+$('ppClose').onclick=()=>$('peopleModal').classList.add('hidden');
+$('ppToTorah').onclick=()=>$('peopleModal').classList.add('hidden');
+$('ppToLib').onclick=()=>{ $('peopleModal').classList.add('hidden'); openLibrary(); };
 
 // ── עיון בפיוטים השומרוניים — festival/genre tree + reader + inline word
 // dictionary. Ported from the standalone app_unit/piyutim_unit.html prototype
@@ -4689,7 +4823,9 @@ const HELP = {
       '<b>חיפוש מתקדם:</b> מדויק · לפי שורש · בתרגום הארמי · התעלם מסופיות · הצג פירוש המילים.',
       'כשהאפשרות <b>הצג פירוש המילים</b> דלוקה, מתחת לכל תוצאה מודגש הפירוש מתוך מילון א. טל, וניתן ללחוץ עליו לקבלת הערך המדויק מהמילון.']],
     ['הספרייה השומרונית', [
-      'בתפריט, תחת <b>הספרייה השומרונית</b>, נמצא <b>המילון הארמי-עברי השומרוני</b> — אפליקציית מילון: הקלד מילה בארמית (או שורש) וקבל את שורשה, פירושה העברי מתוך מילון א. טל, ומופעיה בתורה.']],
+      'בתפריט, תחת <b>הספרייה השומרונית</b>, נמצא <b>המילון הארמי-עברי השומרוני</b> — אפליקציית מילון: הקלד מילה בארמית (או שורש) וקבל את שורשה, פירושה העברי מתוך מילון א. טל, ומופעיה בתורה.',
+      'הספרייה נפתחת כעמוד כרטיסיות, וכל יחידה מצוירת ככריכת ספר בצבע משלה ששמו כתוב עליה. יש בה גם ספרי עיון מלאים, קריאת פיוטים ומציאת חרוזים.',
+      '<b>אישי השומרונים</b> — 95 דמויות מתקופת המקרא ועד ימינו, כל אחת עם הסבר על מקומה במסורת השומרונית. הרשימה נפרשת <b>לפי תקופה</b> או <b>לפי א״ב</b>, והחיפוש רץ גם על גוף ההסברים — בעברית, באנגלית ובערבית. לצד כל אישיות מובאים שמה בשלוש השפות, תקופתה ומקורה.']],
     ['מסך פתיחה והתקנה', [
       'בכניסה מוצג מסך פתיחה שבו יד כותבת את הפסוק בכתב השומרוני (עם צליל כתיבה — ניתן להפעילו בכפתור 🔊). <b>דלג ›</b> מדלג עליו; במכשיר שבו האפליקציה מותקנת מופיע גם <b>דלג תמיד</b> שנכנס ישר לאפליקציה בפעמים הבאות.',
       'בכניסה הראשונה מוצג חלון <b>ברוכים הבאים</b>. אם האפליקציה אינה מותקנת תוצע <b>התקנה</b>, ואם ההתראות לא אושרו עדיין תוצע אפשרות <b>לאשר התראות</b> על חידושים ועדכוני גרסה — לכל הצעה יש <b>אל תציג שוב</b>.']],
@@ -4732,7 +4868,9 @@ const HELP = {
       '<b>Advanced search:</b> exact · by root · in the Aramaic · ignore final letters · show word meanings.',
       'With <b>show word meanings</b> on, each result shows the meaning from A. Tal’s dictionary, clickable for the exact entry.']],
     ['The Samaritan Library', [
-      'In the menu, under <b>The Samaritan Library</b>, is <b>The Samaritan Aramaic–Hebrew Dictionary</b> — type an Aramaic word (or root) to get its root, its Hebrew meaning from A. Tal’s dictionary, and its Torah occurrences.']],
+      'In the menu, under <b>The Samaritan Library</b>, is <b>The Samaritan Aramaic–Hebrew Dictionary</b> — type an Aramaic word (or root) to get its root, its Hebrew meaning from A. Tal’s dictionary, and its Torah occurrences.',
+      'The library opens as a page of cards: every unit is drawn as a book binding in its own colour, with its title written on the cover. It also holds full reading editions, the piyyutim reader and the rhyme finder.',
+      '<b>Samaritan Personalities</b> — 95 figures from the biblical era to our own day, each with an account of its place in the Samaritan tradition. The list can be laid out <b>by period</b> or <b>A–Z</b>, and the search runs over the accounts themselves too — in Hebrew, English and Arabic. Each entry carries the name in all three languages, its period and its source.']],
     ['Entry splash & install', [
       'On entry a splash shows a hand writing the verse in Samaritan script (with a writing sound — tap 🔊 to enable it). <b>Skip ›</b> skips it; on the installed app an <b>Always skip</b> option goes straight in next time.',
       'On the first visit a <b>Welcome</b> window appears. If the app isn’t installed you’ll be offered to <b>install</b> it, and if notifications aren’t enabled yet you’ll be offered to <b>allow notifications</b> about new features and versions — each prompt has a <b>Don’t show again</b> option.']],
@@ -4775,7 +4913,9 @@ const HELP = {
       '<b>بحث متقدم:</b> تطابق تامّ · حسب الجذر · في الآرامية · تجاهل النهائية · إظهار المعاني.',
       'عند تفعيل <b>إظهار المعاني</b>، يظهر تحت كلّ نتيجة المعنى من معجم أ. طال، ويمكن الضغط عليه للمدخل الدقيق.']],
     ['المكتبة السامرية', [
-      'في القائمة، ضمن <b>المكتبة السامرية</b>، يوجد <b>المعجم الآرامي-العبري السامري</b> — اكتب كلمة آرامية (أو جذراً) لتحصل على جذرها ومعناها العبري من معجم أ. طال ومواضعها في التوراة.']],
+      'في القائمة، ضمن <b>المكتبة السامرية</b>، يوجد <b>المعجم الآرامي-العبري السامري</b> — اكتب كلمة آرامية (أو جذراً) لتحصل على جذرها ومعناها العبري من معجم أ. طال ومواضعها في التوراة.',
+      'تُفتح المكتبة كصفحة بطاقات، وكلّ وحدة مرسومة كغلاف كتاب بلونه الخاصّ واسمه مكتوب عليه. وفيها أيضاً كتب كاملة للمطالعة، وقراءة الأناشيد، وإيجاد القوافي.',
+      '<b>أعلام السامريين</b> — 95 شخصية من العصر التوراتي حتى يومنا، ولكلّ واحدة شرح لمكانتها في التقليد السامري. تُعرض القائمة <b>حسب الحقبة</b> أو <b>حسب الأبجدية</b>، والبحث يجري في متن الشروح أيضاً — بالعبرية والإنجليزية والعربية. ويرد مع كلّ شخصية اسمها باللغات الثلاث وحقبتها ومصدرها.']],
     ['شاشة الدخول والتثبيت', [
       'عند الدخول تظهر شاشة بداية فيها يد تكتب الآية بالخطّ السامري (مع صوت كتابة — اضغط 🔊 لتفعيله). <b>تخطٍّ ›</b> يتخطّاها؛ وعلى التطبيق المثبّت يظهر <b>تخطٍّ دائماً</b> للدخول مباشرةً في المرّات التالية.',
       'في أوّل زيارة تظهر نافذة <b>ترحيب</b>. إن لم يكن التطبيق مثبّتاً يُقترح <b>تثبيته</b>، وإن لم تُفعّل الإشعارات بعد يُقترح <b>السماح بالإشعارات</b> حول الميزات والإصدارات الجديدة — ولكلّ اقتراح خيار <b>لا تُظهر مرّة أخرى</b>.']],

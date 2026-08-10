@@ -1939,6 +1939,50 @@ def _vongall_legend(conn):
     return _VG_LEGEND
 
 
+# ── אישי השומרונים: a browsable who's-who as a standalone library unit ─────────
+# 95 figures (biblical priests through 20th-century scholars), each summarised in
+# Hebrew/English/Arabic with its source page. Imported by scripts/people/
+# import_people.py, which also assigns the era bucket + sort year the reader
+# groups by — the source `period` is free English text ("late 13th - early 14th
+# century"), useless for ordering as-is.
+_PEOPLE_LIST_COLS = ('id, ord, era, sort_year, name_he, name_en, name_ar, '
+                     'period, period_he, period_ar')
+
+
+def get_people_toc():
+    """Light rows for every figure (names + period, no descriptions) — the client
+    builds the era tree / A-Z list from this and fetches a person on demand."""
+    conn = get_connection()
+    rows = conn.execute('SELECT %s FROM people ORDER BY ord' % _PEOPLE_LIST_COLS).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_person(pid):
+    """One figure in full, including the three descriptions and the attribution."""
+    conn = get_connection()
+    r = conn.execute('SELECT * FROM people WHERE id=?', (pid or '',)).fetchone()
+    conn.close()
+    return dict(r) if r else None
+
+
+def search_people(q, limit=200):
+    """Search names AND descriptions in all three languages; returns the same light
+    rows as get_people_toc() so the client can re-filter its list to the matches."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    like = '%' + q + '%'
+    conn = get_connection()
+    rows = conn.execute("""SELECT %s FROM people
+        WHERE name_he LIKE ? OR name_en LIKE ? OR name_ar LIKE ?
+           OR description_he LIKE ? OR description_en LIKE ? OR description_ar LIKE ?
+           OR period LIKE ? OR period_he LIKE ? OR period_ar LIKE ?
+        ORDER BY ord LIMIT ?""" % _PEOPLE_LIST_COLS, (like,) * 9 + (limit,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
 def _describe_witness(siglum, legend):
     """A witness siglum carries a hand suffix (C2, E3, X2); the legend is keyed by the
     base letter. Returns {siglum, repository, shelfmark, date}."""
