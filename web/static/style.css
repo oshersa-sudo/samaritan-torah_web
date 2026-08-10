@@ -1355,6 +1355,9 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
             font-family:inherit; font-size:17px; cursor:pointer; }
 #infoBody .whatsnew{ white-space:pre-wrap; font-family:inherit; font-size:15px; line-height:1.7;
                      color:var(--dark); text-align:right; margin:0; }
+/* the changelog is hand-wrapped at ~55 characters; on a phone 15px breaks nearly
+   every one of those lines a second time, so it steps down to keep them whole */
+@media (max-width:430px){ #infoBody .whatsnew{ font-size:12.5px; line-height:1.6; } }
 /* the system documentation is far longer than a changelog: smaller type, and the
    section rules may not wrap, so it scrolls sideways inside its own box. It is
    hand-wrapped at ~60 characters, so a phone drops another step to keep a source

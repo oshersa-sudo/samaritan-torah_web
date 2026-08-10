@@ -252,6 +252,7 @@ const I18N = {
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
     adm_sysdoc:'📘 תיעוד המערכת', adm_loading:'טוען…', adm_version_word:'גרסה',
+    adm_no_log:'אין עדיין יומן גרסאות להצגה.',
     adm_analytics:'📊 נתוני כניסה ופעילות', adm_analytics_empty:'אין עדיין נתוני ביקורים.',
     adm_analytics_hint:'שם המכשיר מבוסס על מזהה הדפדפן — דפדפנים אינם חושפים את שם הטלפון/המחשב עצמו מטעמי פרטיות.',
     adm_first:'כניסה ראשונה', adm_last:'פעילות אחרונה', adm_duration:'משך ביקור', adm_min:'ד׳', adm_sec:'שנ׳',
@@ -470,6 +471,7 @@ const I18N = {
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
     adm_sysdoc:'📘 System documentation', adm_loading:'Loading…', adm_version_word:'version',
+    adm_no_log:'No changelog to show yet.',
     adm_analytics:'📊 Visitor login & activity', adm_analytics_empty:'No visit data yet.',
     adm_analytics_hint:'The "device" name is guessed from the browser\'s user-agent — browsers don\'t expose the actual phone/computer name, for privacy reasons.',
     adm_first:'First seen', adm_last:'Last active', adm_duration:'Time on site', adm_min:'m', adm_sec:'s',
@@ -688,6 +690,7 @@ const I18N = {
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
     adm_sysdoc:'📘 توثيق النظام', adm_loading:'جارٍ التحميل…', adm_version_word:'إصدار',
+    adm_no_log:'لا يوجد سجلّ إصدارات لعرضه بعد.',
     adm_analytics:'📊 بيانات دخول ونشاط الزوار', adm_analytics_empty:'لا توجد بيانات زيارات بعد.',
     adm_analytics_hint:'اسم الجهاز مُستنتج من بيانات المتصفح — المتصفحات لا تكشف اسم الهاتف/الحاسوب الفعلي لأسباب خصوصية.',
     adm_first:'أول دخول', adm_last:'آخر نشاط', adm_duration:'مدة الزيارة', adm_min:'د', adm_sec:'ث',
@@ -3527,7 +3530,7 @@ function menuAction(a){
   else if(a==='whatsnew')  showWhatsNewCarousel();
   else if(a==='help')      showHelp();
   else if(a==='tour')      startTour();
-  else if(a==='version')   showInfo('גרסא נוכחית', `<div class="ver-num">גרסה ${esc(window.APP_VERSION||'1.0')}</div>`);
+  else if(a==='version')   showVersionLog();
   else if(a==='contact')   openContact();
 }
 
@@ -5027,14 +5030,19 @@ function showSearchHelp(){
 }
 $('searchHelpBtn').onclick=showSearchHelp;
 
-async function showWhatsNew(){
-  showInfo('מה חדש?', '<div class="note">טוען…</div>');
+// "גרסא נוכחית": the version number, and beneath it the changelog itself — read
+// from VER_UPDATES.txt on the server, so the file the maintainer keeps is the one
+// the reader sees. (Until now the menu item showed the number alone and this
+// loader had no caller, leaving the whole log unreachable from the app.)
+async function showVersionLog(){
+  const num = `<div class="ver-num">${esc(t('adm_version_word'))} ${esc(window.APP_VERSION||'1.0')}</div>`;
+  showInfo(t('m_version'), num + `<div class="note">${esc(t('adm_loading'))}</div>`);
   try{
     const d=await api('whats_new');
-    const txt=(d.text||'').trim() || 'אין חידושים להצגה.';
-    $('infoTitle').textContent='מה חדש? — גרסה '+(d.version||'');
-    $('infoBody').innerHTML='<pre class="whatsnew">'+esc(txt)+'</pre>';
-  }catch(e){ $('infoBody').innerHTML='<div class="note">שגיאה בטעינת החידושים.</div>'; }
+    const txt=(d.text||'').trim();
+    $('infoBody').innerHTML = num + (txt ? '<pre class="whatsnew">'+esc(txt)+'</pre>'
+                                         : `<div class="note">${esc(t('adm_no_log'))}</div>`);
+  }catch(e){ $('infoBody').innerHTML = num + `<div class="note">${esc(t('edit_err'))}</div>`; }
 }
 
 // ── contact form ─────────────────────────────────────────────────────────────
