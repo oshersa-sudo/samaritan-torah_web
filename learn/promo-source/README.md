@@ -26,6 +26,31 @@ and the app's own correct/celebrate sounds, and a closing chime. The app sounds
 are the real recordings from `static/sounds/`, so the advert sounds like the
 product. Peak is −0.5 dBFS.
 
+## The cast
+
+The people are **Humaaans** (Pablo Stanley, free for commercial use — see
+ATTRIBUTION.md), not hand-drawn. `humaaans.py` converts the package's React
+components to plain SVG; `build_people.py` assembles and recolours them into
+`people.js`.
+
+Two things make the assembly correct:
+
+* The part offsets are Humaaans' own — head (82,0), bottom (0,187), torso
+  (22,82) inside `translate(40,31)` standing or `translate(40,24)` sitting — so
+  the anatomy joins exactly as the library intends.
+* Recolouring is per part, never global. `#191847` is both the hair colour and
+  the shading on skinny jeans, so a blanket substitution would repaint someone's
+  trousers when you meant to dye their hair.
+
+The library has no lying-down pose, but its figures are drawn in side profile,
+so a quarter turn gives a convincing one: `PointingUp` becomes a child on their
+back holding a phone above their face, and `Sprint` becomes a child on their
+stomach with their shins in the air.
+
+Figures are placed by the rectangle they should occupy rather than by a guessed
+transform — `who()` in ad.html scales from the measured bounding boxes in
+`people_bbox.json`, produced by `measure_people.js`.
+
 ## Rebuilding
 
 Frames are a pure function of their timestamp — `setFrame(n)` never reads the
@@ -36,7 +61,9 @@ own.
 # 0. a Node with Playwright + Chromium, and ffmpeg
 npm i ffmpeg-static @fontsource/rubik
 
-# 1. re-capture the app screens (needs the app served on :8391)
+# 1. rebuild the cast, and re-capture the app screens (app served on :8391)
+python3 humaaans.py && python3 build_people.py
+node serve.js & node measure_people.js      # writes people_bbox.json
 node capture-app-shots.js
 
 # 2. serve this folder and render 1080 frames

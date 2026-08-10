@@ -44,6 +44,7 @@ svg{display:block}
   background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(0,0,0,.28) 100%)}
 </style></head><body>
 <div id="stage"></div>
+<script src="/people.js"></script>
 <script>
 // ════════════════════════════════════════════════════════════════════════════
 // Deterministic promo film. Nothing animates on wall-clock time: every visual
@@ -64,7 +65,28 @@ const seg=(t,a,b,f=ease)=>f(clamp((t-a)/(b-a)));
 // fade in over `fi`, hold, fade out over `fo`, inside [a,b]
 const win=(t,a,b,fi=.4,fo=.4)=>clamp(Math.min((t-a)/fi,(b-t)/fo));
 
-// ── SVG helpers: a flat-illustration cast ───────────────────────────────────
+
+// Place a Humaaans figure by the rectangle it should occupy, rather than by a
+// guessed transform. `h` is the height it should end up (or `len`, the length
+// along the body, for a figure turned a quarter turn to lie down); `cx`/`footY`
+// or `cx`/`cy` say where. The measured bounding boxes come from people.js, so
+// this is exact rather than eyeballed.
+function who(id,o){
+  const B=(window.PEOPLE_BBOX||{})[id]; const art=(window.PEOPLE||{})[id];
+  if(!B||!art)return "";
+  const bx=B.x+B.w/2, by=B.y+B.h/2;
+  const rot=o.rot||0, turned=Math.abs(rot)===90;
+  const s = o.len!=null ? o.len/(turned?B.h:B.w)
+                        : o.h/(turned?B.w:B.h);
+  const drawnH = (turned?B.w:B.h)*s;
+  const cx = o.cx, cy = (o.cy!=null) ? o.cy : (o.footY - drawnH/2);
+  const t=[`translate(${cx-s*bx} ${cy-s*by})`,`scale(${s})`];
+  if(rot) t.push(`rotate(${rot} ${bx} ${by})`);
+  if(o.flip) t.push(`translate(${bx} ${by}) scale(-1,1) translate(${-bx} ${-by})`);
+  return `<g transform="${t.join(" ")}">${art}</g>`;
+}
+
+// ── SVG helpers ─────────────────────────────────────────────────────────────
 function kidHead(x,y,r,skin,hair,hairStyle,look){
   const eye=(dx)=>`<circle cx="${x+dx}" cy="${y-r*.08}" r="${r*.11}" fill="#2b2b3a"/>`;
   let h="";
@@ -153,36 +175,18 @@ function livingRoom(){
   <ellipse cx="330" cy="1620" rx="330" ry="130" fill="#e0d3c0"/>
   <ellipse cx="330" cy="1620" rx="250" ry="96" fill="#d3c3ac"/>
 
-  <!-- KID A · flat on his back on the sofa, legs over the far armrest,
-       phone held straight above his face -->
-  <g id="kidA">
-    ${limb(880,1180,1010,1120,46,"#3fb8b0")}
-    ${limb(1010,1120,1040,1210,44,"#3fb8b0")}
-    ${limb(860,1200,990,1160,46,"#3fb8b0")}
-    ${limb(990,1160,1020,1250,44,"#3fb8b0")}
-    <rect x="640" y="1145" width="280" height="86" rx="43" fill="#4ecdc4"/>
-    ${kidHead(600,1150,72,"#f3c9a0","#3d3226","curly","flat")}
-    ${limb(700,1150,640,1035,34,"#f3c9a0")}
-    ${limb(760,1155,700,1035,34,"#f3c9a0")}
-    <g id="phoneA">${phoneIcon(668,1000,92,158,-8,"#8fd6ff")}</g>
-  </g>
+  <!-- KID A · on his back along the sofa, phone held above his face.
+       The figure is a standing Humaaan turned a quarter turn. -->
+  <g id="kidA">${who("kidSofa",{cx:800,cy:1150,len:430,rot:-90})}
+    <g id="phoneA">${phoneIcon(858,1016,92,158,-8,"#8fd6ff")}</g></g>
 
-  <!-- KID B · on her stomach on the rug, chin up, shins in the air,
-       the phone flat on the floor in front of her -->
-  <g id="kidB">
-    ${limb(250,1600,140,1620,46,"#e6b84f")}
-    ${limb(140,1620,120,1520,42,"#e6b84f")}
-    ${limb(270,1630,160,1662,46,"#e6b84f")}
-    ${limb(160,1662,142,1566,42,"#e6b84f")}
-    <rect x="230" y="1568" width="300" height="84" rx="42" fill="#ffd166"/>
-    ${limb(500,1620,566,1706,32,"#f0b48a")}
-    ${limb(566,1706,626,1690,32,"#f0b48a")}
-    ${kidHead(578,1548,68,"#f0b48a","#5b3a2e","long","flat")}
-    <g id="phoneB">${phoneIcon(672,1694,84,146,-72,"#ffb3e6")}</g>
-  </g>
-  <!-- the glow each screen throws on its owner's face -->
-  <ellipse id="glowA" cx="640" cy="1060" rx="150" ry="120" fill="#8fd6ff" opacity=".22"/>
-  <ellipse id="glowB" cx="640" cy="1640" rx="150" ry="110" fill="#ffb3e6" opacity=".18"/>
+  <!-- KID B · on her stomach on the rug, shins in the air -->
+  <g id="kidB">${who("kidFloor",{cx:330,cy:1620,len:400,rot:-90,flip:true})}
+    <g id="phoneB">${phoneIcon(543,1682,86,150,-74,"#ffb3e6")}</g></g>
+
+  <!-- the glow each screen throws on its owner -->
+  <ellipse id="glowA" cx="690" cy="1050" rx="170" ry="130" fill="#8fd6ff" opacity=".22"/>
+  <ellipse id="glowB" cx="560" cy="1650" rx="160" ry="120" fill="#ffb3e6" opacity=".18"/>
   <!-- scrim so the caption stays legible over a bright room -->
   <rect width="1080" height="700" fill="url(#scrim)"/>
   <rect id="lr-dim" width="1080" height="1920" fill="#101426" opacity="0"/>
@@ -209,12 +213,14 @@ function classroom(){
     <line x1="170" y1="410" x2="560" y2="410"/><line x1="170" y1="480" x2="700" y2="480"/>
     <line x1="170" y1="550" x2="470" y2="550"/><line x1="170" y1="620" x2="620" y2="620"/>
   </g>
+  <!-- the teacher stands behind the desk, so she is drawn before it -->
+  <g id="teacher">${who("teacher",{cx:770,footY:1560,h:600})}</g>
   <!-- desk -->
   <rect x="120" y="1290" width="840" height="60" rx="16" fill="#a97f4f"/>
   <rect x="180" y="1350" width="46" height="240" fill="#8d6a41"/>
   <rect x="854" y="1350" width="46" height="240" fill="#8d6a41"/>
-  <!-- report card on the desk -->
-  <g id="report" transform="translate(430 1210)">
+  <!-- the report card she is talking about -->
+  <g id="report" transform="translate(330 1180)">
     <rect width="230" height="150" rx="10" fill="#fff" stroke="#d8cdb8" stroke-width="5"
       transform="rotate(-6)"/>
     <g transform="rotate(-6)" stroke="#b9c0d6" stroke-width="8" stroke-linecap="round">
@@ -224,23 +230,10 @@ function classroom(){
     <text x="176" y="118" transform="rotate(-6)" font-family="RubikHe,sans-serif"
       font-size="52" font-weight="900" fill="#F2545B">55</text>
   </g>
-  <!-- TEACHER, behind the desk, pointing at the report -->
-  <g id="teacher">
-    <rect x="640" y="960" width="300" height="330" rx="60" fill="#6C5CE7"/>
-    ${kidHead(790,880,92,"#eabb92","#3a2c22","long","sad")}
-    <g id="tArm">${limb(680,1060,470,1215,42,"#eabb92")}</g>
-    <circle cx="470" cy="1215" r="26" fill="#eabb92"/>
-  </g>
-  <!-- PARENT + CHILD, seated, backs to us -->
+  <!-- the parent and the child sit in front of the desk, facing her -->
   <g id="pair">
-    <g id="parent">
-      <rect x="90" y="1080" width="250" height="300" rx="56" fill="#F2545B"/>
-      ${kidHead(215,1010,84,"#e9b285","#4a3a2c","short","sad")}
-    </g>
-    <g id="child">
-      <rect x="330" y="1160" width="200" height="240" rx="48" fill="#3FBF6F"/>
-      ${kidHead(430,1105,68,"#f3c9a0","#3d3226","curly","sad")}
-    </g>
+    ${who("parent",{cx:250,footY:1660,h:430})}
+    ${who("childSeat",{cx:520,footY:1690,h:380})}
   </g>
   <rect width="1080" height="640" fill="url(#scrim2)"/>
   <rect id="cl-dim" width="1080" height="1920" fill="#1a1524" opacity="0"/>
@@ -262,23 +255,12 @@ function together(){
   <circle id="jburst" cx="540" cy="1080" r="0" fill="url(#burst)"/>
   <rect y="1500" width="1080" height="420" fill="#c8a882"/>
   <ellipse cx="540" cy="1560" rx="420" ry="120" fill="#e0d3c0"/>
-  <!-- kid A -->
-  <g id="jA">
-    <rect x="230" y="1160" width="260" height="330" rx="60" fill="#4ecdc4"/>
-    ${kidHead(360,1080,88,"#f3c9a0","#3d3226","curly","joy")}
-    <g id="jArmA">${limb(270,1220,180,1000,40,"#f3c9a0")}</g>
-    ${limb(470,1230,540,1330,38,"#f3c9a0")}
-  </g>
-  <!-- kid B -->
-  <g id="jB">
-    <rect x="590" y="1160" width="260" height="330" rx="60" fill="#ffd166"/>
-    ${kidHead(720,1080,88,"#f0b48a","#5b3a2e","long","joy")}
-    <g id="jArmB">${limb(810,1220,900,1000,40,"#f0b48a")}</g>
-    ${limb(610,1230,540,1330,38,"#f0b48a")}
-  </g>
+  <!-- the two of them, leaning in over one phone -->
+  <g id="jA">${who("cheerA",{cx:355,footY:1600,h:470})}</g>
+  <g id="jB">${who("cheerB",{cx:735,footY:1600,h:450,flip:true})}</g>
   <!-- the phone they are both looking at -->
-  <g id="jPhone">${phoneIcon(540,1340,150,255,0,"#eafff3")}</g>
-  <text id="jTick" x="540" y="1385" text-anchor="middle" font-size="110" font-weight="900"
+  <g id="jPhone">${phoneIcon(545,1285,150,255,0,"#eafff3")}</g>
+  <text id="jTick" x="545" y="1330" text-anchor="middle" font-size="110" font-weight="900"
     font-family="RubikHe,sans-serif" fill="#3FBF6F" opacity="0">✓</text>
   <g id="confetti"></g>
   </svg>`;
@@ -375,7 +357,7 @@ function frame(t){
     // she taps the report twice while she speaks
     const p=Math.max(0,t-T.cls[0]);
     const tap=(p>1.0&&p<1.5)?Math.sin((p-1.0)*Math.PI/0.5):(p>1.7&&p<2.2)?Math.sin((p-1.7)*Math.PI/0.5):0;
-    set("tArm",{transform:`translateY(${tap*14}px)`});
+    set("teacher",{transform:`translateY(${tap*10}px)`});
     // the parent and child sink a little
     const s=seg(t,T.cls[0]+.6,T.cls[0]+2.6,x=>x);
     set("pair",{transform:`translateY(${s*16}px)`});
@@ -432,16 +414,18 @@ function frame(t){
     const p=Math.max(0,t-T.joy[0]);
     const pop=seg(t,T.joy[0]+.15,T.joy[0]+.75,outBack);
     // arms fly up, both of them bounce
-    set("jArmA",{transform:`rotate(${lerp(0,-26,pop)}deg)`,transformOrigin:"270px 1220px"});
-    set("jArmB",{transform:`rotate(${lerp(0,26,pop)}deg)`,transformOrigin:"810px 1220px"});
+    set("jA",{transformOrigin:"355px 1600px"});
+    set("jB",{transformOrigin:"735px 1600px"});
     const b=Math.abs(Math.sin(p*4.2))*(1-clamp(p/3.2))*26;
-    set("jA",{transform:`translateY(${-b}px)`});
-    set("jB",{transform:`translateY(${-b*.8}px)`});
+    set("jA",{transform:`translateY(${-b}px) rotate(${lerp(0,-7,pop)}deg)`,
+              transformOrigin:"355px 1600px"});
+    set("jB",{transform:`translateY(${-b*.85}px) rotate(${lerp(0,7,pop)}deg)`,
+              transformOrigin:"735px 1600px"});
     const burst=el("jburst");
     if(burst)burst.setAttribute("r",String(lerp(0,760,seg(t,T.joy[0]+.1,T.joy[0]+1.1,outCubic))));
     const tick=el("jTick");
     if(tick){ tick.setAttribute("opacity",String(seg(t,T.joy[0]+.35,T.joy[0]+.8)));
-      tick.setAttribute("transform",`translate(540 1340) scale(${lerp(.2,1,seg(t,T.joy[0]+.35,T.joy[0]+.85,outBack))}) translate(-540 -1340)`); }
+      tick.setAttribute("transform",`translate(545 1295) scale(${lerp(.2,1,seg(t,T.joy[0]+.35,T.joy[0]+.85,outBack))}) translate(-545 -1295)`); }
     // confetti
     const cf=el("confetti");
     if(cf){

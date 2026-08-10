@@ -1,0 +1,56 @@
+{
+ "head": [
+  "Afro",
+  "Airy",
+  "Caesar",
+  "Chongo",
+  "Curly",
+  "Hijab",
+  "Hijab2",
+  "Long",
+  "NoHair",
+  "Pony",
+  "Rad",
+  "Short",
+  "Short2",
+  "ShortBeard",
+  "Top",
+  "Turban",
+  "Turban2",
+  "Wavy"
+ ],
+ "torso": [
+  "Hoodie",
+  "Jacket",
+  "Jacket2",
+  "LabCoat",
+  "LongSleeve",
+  "PointingForward",
+  "PointingUp",
+  "Pregnant",
+  "TrenchCoat",
+  "TurtleNeck"
+ ],
+ "standing": [
+  "BaggyPants",
+  "Jogging",
+  "Shorts",
+  "SkinnyJeans",
+  "SkinnyJeansWalk",
+  "Skirt",
+  "Sprint",
+  "SweatPants"
+ ],
+ "sitting": [
+  "BaggyPants",
+  "SkinnyJeans",
+  "SweatPants",
+  "Wheelchair"
+ ],
+ "scene": [
+  "Home",
+  "Plants",
+  "Whiteboard",
+  "Wireframe"
+ ]
+}
