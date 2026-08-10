@@ -17,7 +17,15 @@ module.exports = {
       // (falls back to emoji on any miss). The key is a read-only free-tier
       // key and is embedded in the page for the browser to query Pixabay
       // directly, so it is not a secret.
-      PIXABAY_KEY: "56860993-5e9530afd69d12c263f7a242f"
+      PIXABAY_KEY: "56860993-5e9530afd69d12c263f7a242f",
+      // ── Admin console at /admin ──────────────────────────────────────────
+      // Set a real password on the server; leaving it empty keeps the console
+      // DISABLED (it refuses every login) rather than open. Do not commit the
+      // real value — set it on the VPS, e.g.:
+      //   pm2 set onyx-trainer:ADMIN_PASSWORD '<your password>'
+      // or edit this file on the server only.
+      ADMIN_USER: "admin",
+      ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || ""
     },
     max_restarts: 10,
     autorestart: true

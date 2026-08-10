@@ -1046,6 +1046,24 @@ function beacon(path,body){
   return fetch(BACKEND+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
     .then(r=>r.json()).catch(()=>null);
 }
+// Product analytics for the admin console: which kind of thing happened, never
+// what the child answered. Fire-and-forget — a failure here must never be felt
+// in a lesson.
+function track(kind,meta){
+  if(!BACKEND)return;
+  try{
+    const body=JSON.stringify({kind,phone:S.phone||"",meta:meta||""});
+    if(navigator.sendBeacon){
+      navigator.sendBeacon(BACKEND+"/api/event",new Blob([body],{type:"application/json"}));
+    }else{
+      fetch(BACKEND+"/api/event",{method:"POST",headers:{"Content-Type":"application/json"},
+        body,keepalive:true}).catch(()=>{});
+    }
+  }catch(e){}
+}
+
+try{ if(typeof window!=="undefined") window.track=track; }catch(e){}
+
 function syncRegister(){
   if(!BACKEND)return;
   beacon("/api/register",{name:S.name,phone:S.phone,age:S.age}).then(j=>{
@@ -2334,6 +2352,7 @@ function logAns(part,prompt,chosen,answer,ok){
 // Begin a brand-new test: clear score/progress and the per-question log, and
 // reset the active-time stopwatch so this test's duration starts at zero.
 function startFreshTest(){
+  track("test_start",S.subject);
   S.score=0;S.prog={};S.answerLog=[];S.partCounts={};
   try{TT.sess=0;}catch(e){}
   try{childPushEnsure(true);}catch(e){}   // this tap is a good moment to enable reminders
@@ -3983,6 +4002,7 @@ function finish(){
   S.history=[rec,...S.history].slice(0,30);
   sSet(K.results(S.phone),S.history);sDel(K.session(S.phone));
   syncResult({...rec,dur,detail});
+  track("test_done",S.subject+":"+g);
   TT.sync();   // flush the day's minutes now that a test just ended
   S.lastGain=gamAward(g,S.score);
   S.prog={};S.screen="done";render();
@@ -4009,6 +4029,7 @@ window.addEventListener("DOMContentLoaded",()=>{
     else S.screen="subject";   // the main home hub
     render();
   }else render();
+  track("open", (window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)?"app":"browser");
   TT.start();   // begin counting daily time-on-task
   childPushEnsure(false);   // silently (re)subscribe this device if already allowed
   // flush the day's minutes when the app is backgrounded or closed
@@ -4083,6 +4104,7 @@ function showParentHelp(){
   document.getElementById("ph-close").addEventListener("click",close);
 }
 function doInstall(){
+  track("install_click", (window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)?"already":"prompt");
   const dp=window.__installPrompt;
   if(dp&&dp.prompt){
     dp.prompt();

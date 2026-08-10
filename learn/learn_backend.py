@@ -33,6 +33,12 @@ from flask import Flask, Blueprint, request, jsonify, Response
 DB_PATH = os.environ.get("LEARN_DB", os.path.join(os.path.dirname(__file__), "learn.db"))
 DEV     = os.environ.get("LEARN_DEV", "0") == "1"   # fail-closed: codes go out by e-mail, not the API
 PORT    = int(os.environ.get("LEARN_PORT", "8000"))
+# Admin console. Locked to a single super-user password supplied through the
+# environment — with no ADMIN_PASSWORD set the console refuses every login
+# rather than falling back to a default, so a misconfigured deploy is closed,
+# not open.
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
+ADMIN_USER     = os.environ.get("ADMIN_USER", "admin")
 
 # Routes live on a Blueprint so this service can either run standalone
 # (python3 web/learn_backend.py) or be mounted inside the unified onyx_app.
@@ -95,6 +101,18 @@ def init_db():
             k TEXT PRIMARY KEY,
             v TEXT
         );
+        -- Product analytics for the admin console. One row per event; no
+        -- personal content, only which kind of thing happened and when. The
+        -- phone is kept so "how many distinct children" can be counted, and is
+        -- never shown in full in the console.
+        CREATE TABLE IF NOT EXISTS events(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            kind TEXT NOT NULL,
+            phone TEXT,
+            day TEXT NOT NULL,
+            meta TEXT,
+            ts INTEGER NOT NULL
+        );
         -- browser/phone push subscriptions. role='parent' → parent_phone set;
         -- role='child' → student_phone set (the student's own device).
         CREATE TABLE IF NOT EXISTS push_subs(
@@ -108,6 +126,8 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_results_phone ON results(phone);
         CREATE INDEX IF NOT EXISTS idx_ptok_phone ON parent_tokens(parent_phone);
         CREATE INDEX IF NOT EXISTS idx_time_phone ON study_time(phone);
+        CREATE INDEX IF NOT EXISTS idx_events_day ON events(day, kind);
+        CREATE INDEX IF NOT EXISTS idx_events_kind ON events(kind, ts);
         """)
         # ── idempotent migrations for databases created before these columns ──
         for tbl, col, ddl in (
@@ -526,6 +546,7 @@ def parent_link():
             return jerr("wrong parent code", 401)
         c.execute("""INSERT OR REPLACE INTO links(parent_phone,parent_name,parent_email,student_phone,created)
                      VALUES(?,?,?,?,?)""", (pphone, pname, pemail, sphone, int(time.time())))
+    log_event("parent_link", sphone)
     # proven ownership of a parent_code → hand out an access token for reads
     token = new_parent_token(pphone)
     return jsonify({"ok": True, "student_name": st["name"], "token": token})
@@ -589,6 +610,7 @@ def parent_result():
 
 @bp.route("/parent")
 def parent_portal():
+    log_event("parent_open")
     return Response(PARENT_HTML, mimetype="text/html")
 
 PRIVACY_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
@@ -654,6 +676,158 @@ PRIVACY_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
 @bp.route("/privacy")
 def privacy():
     return Response(PRIVACY_HTML, mimetype="text/html")
+
+# ─── Product analytics + admin console ─────────────────────────────────────
+# The app posts small, content-free events here (a screen was opened, the
+# install button was pressed, a test was finished). They answer "how much is
+# this being used" without recording anything a child typed.
+EVENT_KINDS = {
+    "open",            # the app was opened
+    "install_click",   # the install button was pressed
+    "install_done",    # the browser reported the app was installed
+    "test_start",
+    "test_done",
+    "parent_open",     # the parent portal was opened
+    "parent_link",     # a parent linked to a child
+}
+
+def log_event(kind, phone=None, meta=None):
+    if kind not in EVENT_KINDS:
+        return
+    now = int(time.time())
+    day = time.strftime("%Y-%m-%d", time.localtime(now))
+    try:
+        with db() as c:
+            c.execute("INSERT INTO events(kind,phone,day,meta,ts) VALUES(?,?,?,?,?)",
+                      (kind, norm_phone(phone) if phone else None, day,
+                       (str(meta)[:120] if meta else None), now))
+    except Exception:
+        pass          # analytics must never break a child's lesson
+
+@bp.route("/api/event", methods=["POST"])
+def api_event():
+    d = request.get_json(silent=True) or {}
+    kind = (d.get("kind") or "").strip()
+    if kind not in EVENT_KINDS:
+        return jerr("unknown event")
+    # one address can only file so many events; a stuck client cannot flood the table
+    if not rate_ok("event", client_ip(), 240, 3600):
+        return jsonify({"ok": True, "throttled": True})
+    log_event(kind, d.get("phone"), d.get("meta"))
+    return jsonify({"ok": True})
+
+# ── super-user auth ────────────────────────────────────────────────────────
+def admin_from_token(tok):
+    if not tok:
+        return False
+    with db() as c:
+        row = c.execute("SELECT v FROM meta WHERE k=?", ("admin_tok:" + tok,)).fetchone()
+    if not row:
+        return False
+    try:
+        return int(row["v"]) > int(time.time())
+    except Exception:
+        return False
+
+def require_admin():
+    return admin_from_token(read_token())
+
+@bp.route("/api/admin/login", methods=["POST"])
+def admin_login():
+    d = request.get_json(silent=True) or {}
+    user = (d.get("user") or "").strip()
+    pw   = d.get("password") or ""
+    # Fail closed: an unset ADMIN_PASSWORD means the console is disabled, not open.
+    if not ADMIN_PASSWORD:
+        return jerr("admin console is not configured", 503)
+    if not rate_ok("admin", client_ip(), 8, 900):
+        return jerr("too many attempts, try again later", 429)
+    ok = secrets.compare_digest(user, ADMIN_USER) and secrets.compare_digest(pw, ADMIN_PASSWORD)
+    if not ok:
+        return jerr("wrong user or password", 401)
+    tok = secrets.token_urlsafe(24)
+    with db() as c:
+        c.execute("INSERT OR REPLACE INTO meta(k,v) VALUES(?,?)",
+                  ("admin_tok:" + tok, str(int(time.time()) + 12 * 3600)))
+        # drop expired tokens so the table does not grow without bound
+        now = int(time.time())
+        for r in c.execute("SELECT k,v FROM meta WHERE k LIKE 'admin_tok:%'").fetchall():
+            try:
+                if int(r["v"]) < now:
+                    c.execute("DELETE FROM meta WHERE k=?", (r["k"],))
+            except Exception:
+                pass
+    return jsonify({"ok": True, "token": tok})
+
+@bp.route("/api/admin/logout", methods=["POST"])
+def admin_logout():
+    tok = read_token()
+    if tok:
+        with db() as c:
+            c.execute("DELETE FROM meta WHERE k=?", ("admin_tok:" + tok,))
+    return jsonify({"ok": True})
+
+@bp.route("/api/admin/stats")
+def admin_stats():
+    if not require_admin():
+        return jerr("unauthorized", 401)
+    days = max(1, min(180, int(request.args.get("days") or 30)))
+    since = int(time.time()) - days * 86400
+    since_day = time.strftime("%Y-%m-%d", time.localtime(since))
+    with db() as c:
+        one = lambda q, *a: (c.execute(q, a).fetchone() or [0])[0]
+        totals = {
+            "students":       one("SELECT COUNT(*) FROM students"),
+            "students_new":   one("SELECT COUNT(*) FROM students WHERE created>=?", since),
+            "parents":        one("SELECT COUNT(DISTINCT parent_phone) FROM links"),
+            "links":          one("SELECT COUNT(*) FROM links"),
+            "tests":          one("SELECT COUNT(*) FROM results"),
+            "tests_period":   one("SELECT COUNT(*) FROM results WHERE ts>=?", since * 1000),
+            "push_subs":      one("SELECT COUNT(*) FROM push_subs"),
+            "study_hours":    round((one("SELECT COALESCE(SUM(seconds),0) FROM study_time") or 0) / 3600.0, 1),
+            "install_clicks": one("SELECT COUNT(*) FROM events WHERE kind='install_click'"),
+            "install_done":   one("SELECT COUNT(*) FROM events WHERE kind='install_done'"),
+            "install_clicks_period": one("SELECT COUNT(*) FROM events WHERE kind='install_click' AND day>=?", since_day),
+            "app_opens_period":      one("SELECT COUNT(*) FROM events WHERE kind='open' AND day>=?", since_day),
+        }
+        # how many DISTINCT devices pressed install, not how many presses
+        totals["install_devices"] = one(
+            "SELECT COUNT(DISTINCT COALESCE(phone,'?')) FROM events WHERE kind='install_click' AND phone IS NOT NULL")
+
+        by_kind = {r["kind"]: r["n"] for r in c.execute(
+            "SELECT kind, COUNT(*) n FROM events WHERE day>=? GROUP BY kind", (since_day,)).fetchall()}
+
+        daily = [dict(r) for r in c.execute(
+            """SELECT day,
+                      SUM(kind='open')          opens,
+                      SUM(kind='install_click') installs,
+                      SUM(kind='test_done')     tests
+               FROM events WHERE day>=? GROUP BY day ORDER BY day""", (since_day,)).fetchall()]
+
+        active = [dict(r) for r in c.execute(
+            """SELECT day, COUNT(DISTINCT phone) n FROM study_time
+               WHERE day>=? AND seconds>0 GROUP BY day ORDER BY day""", (since_day,)).fetchall()]
+
+        subjects = [dict(r) for r in c.execute(
+            """SELECT subject, COUNT(*) n, ROUND(AVG(grade),1) avg_grade
+               FROM results WHERE ts>=? GROUP BY subject ORDER BY n DESC""", (since * 1000,)).fetchall()]
+
+        # Roster, de-identified: the console shows how much each account is used,
+        # never the child's answers. The phone is masked to its last three digits.
+        roster = [dict(r) for r in c.execute(
+            """SELECT s.name, s.age, s.phone, s.created,
+                      (SELECT COUNT(*) FROM results r WHERE r.phone=s.phone) tests,
+                      (SELECT MAX(ts)   FROM results r WHERE r.phone=s.phone) last_ts,
+                      (SELECT COALESCE(SUM(seconds),0) FROM study_time t WHERE t.phone=s.phone) secs,
+                      (SELECT COUNT(*) FROM links l WHERE l.student_phone=s.phone) parents
+               FROM students s ORDER BY s.created DESC LIMIT 200""").fetchall()]
+    for r in roster:
+        p = r.pop("phone", "") or ""
+        r["phone_tail"] = p[-3:] if len(p) >= 3 else "?"
+        r["minutes"] = round((r.pop("secs", 0) or 0) / 60.0)
+    return jsonify({"ok": True, "days": days, "totals": totals, "by_kind": by_kind,
+                    "daily": daily, "active": active, "subjects": subjects, "roster": roster})
+
 
 # Service worker for the parent portal — receives phone push notifications and
 # opens the portal when tapped (works with the screen locked).
@@ -886,6 +1060,161 @@ def health():
     return jsonify({"ok": True, "dev": DEV})
 
 # ─── Parent portal page (self-contained) ───────────────────────────────────
+ADMIN_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Onyx לימודי · ניהול</title>
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;font-family:Rubik,Arial,sans-serif;background:#0f172a;color:#e2e8f0}
+ .wrap{max-width:1100px;margin:0 auto;padding:18px}
+ h1{font-size:22px;margin:0 0 4px}
+ .sub{color:#94a3b8;font-size:13px;margin:0 0 18px}
+ .card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px;margin-bottom:14px}
+ .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+ .kpi{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:12px}
+ .kpi b{display:block;font-size:26px;line-height:1.1;color:#38bdf8}
+ .kpi span{font-size:12px;color:#94a3b8}
+ .kpi.hi b{color:#4ade80}
+ table{width:100%;border-collapse:collapse;font-size:13px}
+ th,td{text-align:right;padding:7px 8px;border-bottom:1px solid #334155;white-space:nowrap}
+ th{color:#94a3b8;font-weight:600;font-size:12px}
+ .scroll{overflow-x:auto}
+ input,button,select{font-family:inherit;font-size:14px;border-radius:10px;border:1px solid #334155;
+   padding:10px 12px;background:#0f172a;color:#e2e8f0}
+ button{background:#0284c7;border-color:#0284c7;color:#fff;cursor:pointer;font-weight:600}
+ button.ghost{background:transparent;color:#94a3b8}
+ .login{max-width:340px;margin:12vh auto}
+ .login input{width:100%;margin-bottom:10px}
+ .login button{width:100%}
+ .err{color:#f87171;font-size:13px;min-height:18px;margin-top:8px}
+ .bars{display:flex;align-items:flex-end;gap:3px;height:110px;margin-top:10px}
+ .bars div{flex:1;background:#0284c7;border-radius:3px 3px 0 0;min-height:2px;position:relative}
+ .bars div.i{background:#4ade80}
+ .legend{font-size:12px;color:#94a3b8;margin-top:6px}
+ .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+ .muted{color:#64748b}
+</style></head><body>
+<div class="wrap">
+ <div id="login" class="login card">
+   <h1>ניהול · Onyx לימודי</h1>
+   <p class="sub">כניסה למשתמש על בלבד</p>
+   <input id="u" placeholder="שם משתמש" autocomplete="username" value="admin">
+   <input id="p" type="password" placeholder="סיסמה" autocomplete="current-password">
+   <button id="go">כניסה</button>
+   <div class="err" id="lerr"></div>
+ </div>
+
+ <div id="app" style="display:none">
+  <div class="row" style="justify-content:space-between">
+    <div><h1>ניהול · Onyx לימודי</h1><p class="sub" id="range"></p></div>
+    <div class="row">
+      <select id="days">
+        <option value="7">7 ימים</option>
+        <option value="30" selected>30 יום</option>
+        <option value="90">90 יום</option>
+      </select>
+      <button class="ghost" id="out">יציאה</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="grid" id="kpis"></div>
+  </div>
+
+  <div class="card">
+    <b>פעילות יומית</b>
+    <div class="bars" id="bars"></div>
+    <div class="legend"><span style="color:#38bdf8">■</span> פתיחות אפליקציה &nbsp;
+      <span style="color:#4ade80">■</span> לחיצות על התקנה</div>
+  </div>
+
+  <div class="card">
+    <b>לפי מקצוע</b>
+    <div class="scroll"><table id="subj"></table></div>
+  </div>
+
+  <div class="card">
+    <b>משתמשים</b>
+    <p class="sub">מספר הטלפון מוצג בשלוש ספרות אחרונות בלבד. תשובות התלמידים אינן מוצגות כאן.</p>
+    <div class="scroll"><table id="roster"></table></div>
+  </div>
+ </div>
+</div>
+<script>
+const TK="onyx_admin_tok";
+const $=id=>document.getElementById(id);
+const esc=t=>String(t==null?"":t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function tok(){ return localStorage.getItem(TK)||""; }
+
+async function login(){
+  $("lerr").textContent="";
+  const r=await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({user:$("u").value.trim(),password:$("p").value})});
+  const j=await r.json().catch(()=>({}));
+  if(!j.ok){
+    $("lerr").textContent = j.error==="wrong user or password" ? "שם משתמש או סיסמה שגויים"
+      : j.error==="admin console is not configured" ? "מסך הניהול לא הוגדר בשרת (חסר ADMIN_PASSWORD)"
+      : r.status===429 ? "יותר מדי ניסיונות — נסו שוב בעוד רבע שעה" : ("שגיאה: "+(j.error||r.status));
+    return;
+  }
+  localStorage.setItem(TK,j.token); show();
+}
+async function load(){
+  const r=await fetch("/api/admin/stats?days="+$("days").value,{headers:{Authorization:"Bearer "+tok()}});
+  if(r.status===401){ localStorage.removeItem(TK); show(); return; }
+  const j=await r.json();
+  if(!j.ok) return;
+  $("range").textContent="נתונים ל-"+j.days+" הימים האחרונים";
+  const T=j.totals;
+  const kpi=(v,l,hi)=>`<div class="kpi${hi?" hi":""}"><b>${v}</b><span>${l}</span></div>`;
+  $("kpis").innerHTML=
+    kpi(T.students,"תלמידים רשומים")+
+    kpi(T.students_new,"נרשמו בתקופה")+
+    kpi(T.parents,"הורים מקושרים")+
+    kpi(T.tests,"מבחנים שהושלמו")+
+    kpi(T.tests_period,"מבחנים בתקופה")+
+    kpi(T.study_hours,"שעות לימוד מצטברות")+
+    kpi(T.app_opens_period,"פתיחות אפליקציה בתקופה")+
+    kpi(T.install_clicks,"לחיצות על 'התקן אפליקציה'",1)+
+    kpi(T.install_done,"התקנות שהושלמו",1)+
+    kpi(T.push_subs,"מכשירים עם התראות");
+
+  const d=j.daily||[];
+  const mx=Math.max(1,...d.map(x=>Math.max(x.opens||0,x.installs||0)));
+  $("bars").innerHTML=d.length? d.map(x=>
+    `<div title="${x.day}: ${x.opens||0} פתיחות" style="height:${Math.round((x.opens||0)/mx*100)}%"></div>`+
+    `<div class="i" title="${x.day}: ${x.installs||0} התקנות" style="height:${Math.round((x.installs||0)/mx*100)}%"></div>`
+  ).join("") : '<div class="muted" style="height:auto">אין עדיין נתונים בתקופה זו</div>';
+
+  $("subj").innerHTML="<tr><th>מקצוע</th><th>מבחנים</th><th>ציון ממוצע</th></tr>"+
+    ((j.subjects||[]).map(x=>`<tr><td>${esc(x.subject)}</td><td>${x.n}</td><td>${x.avg_grade==null?"—":x.avg_grade}</td></tr>`).join("")
+     || '<tr><td colspan="3" class="muted">אין נתונים</td></tr>');
+
+  $("roster").innerHTML="<tr><th>שם</th><th>גיל</th><th>טלפון</th><th>מבחנים</th><th>דקות</th><th>הורים</th><th>פעילות אחרונה</th></tr>"+
+    ((j.roster||[]).map(x=>`<tr><td>${esc(x.name)}</td><td>${x.age||"—"}</td><td class="muted" dir="ltr">···${esc(x.phone_tail)}</td>`+
+      `<td>${x.tests}</td><td>${x.minutes}</td><td>${x.parents}</td>`+
+      `<td>${x.last_ts?new Date(x.last_ts).toLocaleDateString("he-IL"):"—"}</td></tr>`).join("")
+     || '<tr><td colspan="7" class="muted">אין נתונים</td></tr>');
+}
+function show(){
+  const on=!!tok();
+  $("login").style.display=on?"none":"block";
+  $("app").style.display=on?"block":"none";
+  if(on)load();
+}
+$("go").onclick=login;
+$("p").addEventListener("keydown",e=>{if(e.key==="Enter")login();});
+$("days").onchange=load;
+$("out").onclick=async()=>{ await fetch("/api/admin/logout",{method:"POST",headers:{Authorization:"Bearer "+tok()}}).catch(()=>{});
+  localStorage.removeItem(TK); show(); };
+show();
+</script></body></html>"""
+
+@bp.route("/admin")
+def admin_page():
+    return Response(ADMIN_HTML, mimetype="text/html")
+
 PARENT_HTML = """<!doctype html><html lang="he" dir="rtl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>מעקב הורים — Onyx לימודי</title>

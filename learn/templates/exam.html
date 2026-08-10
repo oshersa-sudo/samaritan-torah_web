@@ -44,7 +44,8 @@ window.__installPrompt = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); window.__installPrompt = e;
   document.body.classList.add("can-install");
   window.dispatchEvent(new Event("installable")); });
-window.addEventListener("appinstalled", () => { window.__installPrompt = null; document.body.classList.remove("can-install"); });
+window.addEventListener("appinstalled", () => { window.__installPrompt = null; document.body.classList.remove("can-install");
+  try{ window.track && window.track("install_done"); }catch(e){} });
 // register the service worker (served at root scope so it controls /exam)
 if ("serviceWorker" in navigator) window.addEventListener("load", () =>
   navigator.serviceWorker.register("/sw.js").catch(() => {}));
