@@ -51,6 +51,24 @@ Figures are placed by the rectangle they should occupy rather than by a guessed
 transform — `who()` in ad.html scales from the measured bounding boxes in
 `people_bbox.json`, produced by `measure_people.js`.
 
+## Live footage instead of illustration
+
+Three of the six scenes show people, and any of them can be swapped for real
+footage without touching the script, the captions, the timing or the sound.
+
+`ad.html?plate=caps` renders the captions alone on transparency — plus the
+payoff confetti, which falls over the live shot. `render_plate.js` writes those
+plates, and `live.sh` scales each clip to cover the 9:16 frame, crops it, adds
+a slow push-in so the crop reads as a choice, grades it, lays the plate on top,
+and joins the result to the app section and the logo, which are never replaced.
+
+Put licensed clips in `footage/` (see the README there for names, specs and the
+licensing rule) and run `bash live.sh`.
+
+Note the scrim: in the illustrated scenes it is painted into the artwork, so on
+the caption plate it has to travel with the captions instead — otherwise white
+text lands on a bright room with nothing behind it.
+
 ## Rebuilding
 
 Frames are a pure function of their timestamp — `setFrame(n)` never reads the

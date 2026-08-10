@@ -40,6 +40,8 @@ svg{display:block}
 .logo .url{margin-top:52px;display:inline-block;background:#fff;color:#6C5CE7;
   font-weight:900;font-size:46px;padding:24px 56px;border-radius:999px;direction:ltr}
 .logo .sub{margin-top:30px;font-size:34px;color:#a99ee0;font-weight:700}
+.pscrim{position:absolute;left:0;right:0;top:0;height:760px;opacity:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(6,9,20,.72) 0%,rgba(6,9,20,.45) 45%,rgba(6,9,20,0) 100%)}
 .vig{position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(0,0,0,.28) 100%)}
 </style></head><body>
@@ -52,6 +54,11 @@ svg{display:block}
 // frame N without racing a CSS transition.
 // ════════════════════════════════════════════════════════════════════════════
 const W=1080,H=1920,FPS=30;
+// ?plate=caps renders the captions alone on transparency, so live footage can
+// be laid underneath scenes that use it instead of the illustrated set.
+const PLATE=new URLSearchParams(location.search).get("plate");
+if(PLATE==="caps"){document.documentElement.style.background="transparent";
+  document.body.style.background="transparent";}
 const stage=document.getElementById("stage");
 
 // ── easing ──────────────────────────────────────────────────────────────────
@@ -251,6 +258,7 @@ function together(){
     <radialGradient id="burst"><stop offset="0" stop-color="#fff" stop-opacity=".95"/>
       <stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
   </defs>
+  <g id="joy-set">
   <rect width="1080" height="1920" fill="url(#jw)"/>
   <circle id="jburst" cx="540" cy="1080" r="0" fill="url(#burst)"/>
   <rect y="1500" width="1080" height="420" fill="#c8a882"/>
@@ -262,6 +270,7 @@ function together(){
   <g id="jPhone">${phoneIcon(545,1285,150,255,0,"#eafff3")}</g>
   <text id="jTick" x="545" y="1330" text-anchor="middle" font-size="110" font-weight="900"
     font-family="RubikHe,sans-serif" fill="#3FBF6F" opacity="0">✓</text>
+  </g>
   <g id="confetti"></g>
   </svg>`;
 }
@@ -286,11 +295,12 @@ stage.innerHTML=`
      <div class="sub">כיתות א׳–י״ב · מותאם לתוכנית משרד החינוך</div>
    </div>
  </div>
+ <div class="pscrim" id="pscrim"></div>
  <div class="cap" id="cap1" style="top:150px"><b>הילדים כל היום<br>תקועים עם הפנים במסך</b></div>
  <div class="cap" id="cap2" style="top:170px"><b>שעה. שעתיים.<br>ובסוף — כלום.</b></div>
  <div class="cap" id="cap3" style="top:150px"><b>ההישגים טעונים שיפור?</b></div>
  <div class="cap" id="cap4" style="top:1560px"><b id="cap4t"></b><i id="cap4s"></i></div>
- <div class="cap dark" id="cap5" style="top:250px"><b>פתרנו!</b><br><i>אותו מסך. אחרת לגמרי.</i></div>
+ <div class="cap" id="cap5" style="top:250px"><b>פתרנו!</b><br><i>אותו מסך. אחרת לגמרי.</i></div>
 `;
 
 // screenshots of the real app, pre-loaded into the phone mock
@@ -316,12 +326,21 @@ const el=id=>document.getElementById(id);
 const set=(id,o)=>{const e=el(id);if(!e)return;for(const k in o)e.style[k]=o[k];};
 
 function frame(t){
+  _scrimNeed=0;
+  if(PLATE==="caps"){                      // captions only, over transparency
+    for(const id of ["s-room","s-class","s-app","s-logo"]) set(id,{opacity:"0"});
+    // the payoff keeps its confetti — it falls over the live shot
+    set("s-joy",{opacity: (t>T.joy[0]-.3&&t<T.joy[1]+.6)?"1":"0"});
+    const js=el("joy-set"); if(js)js.style.display="none";
+  }
   // ── scene visibility ──
+  if(PLATE!=="caps"){
   set("s-room",{opacity:win(t,T.room[0],T.room[1],.5,.5)});
   set("s-class",{opacity:win(t,T.cls[0],T.cls[1],.5,.5)});
   set("s-app",{opacity:win(t,T.app[0],T.app[1],.5,.45)});
   set("s-joy",{opacity:win(t,T.joy[0],T.joy[1],.45,.45)});
   set("s-logo",{opacity:win(t,T.logo[0],T.logo[1]+1,.6,.4)});
+  }
 
   // ── SCENE 1+2 · living room ──
   if(t<T.room[1]+.6){
@@ -444,6 +463,8 @@ function frame(t){
   }
   capShow("cap5",win(t,T.joy[0]+.5,T.joy[1]-.2,.4,.4),t,T.joy[0]+.5);
 
+  if(PLATE==="caps"){ set("pscrim",{opacity:String(_scrimNeed)}); _scrimNeed=0; }
+
   // ── SCENE 6 · the logo ──
   if(t>T.logo[0]-.6){
     const p=seg(t,T.logo[0],T.logo[0]+1.0,outBack);
@@ -458,7 +479,9 @@ function frame(t){
     if(sb)sb.style.opacity=String(seg(t,T.logo[0]+1.0,T.logo[0]+1.5));
   }
 }
+let _scrimNeed=0;
 function capShow(id,o,t,start){
+  if(PLATE==="caps") _scrimNeed=Math.max(_scrimNeed,o);
   set(id,{opacity:String(o),transform:`translateY(${lerp(34,0,seg(t,start,start+.55,outCubic))}px)`});
 }
 
