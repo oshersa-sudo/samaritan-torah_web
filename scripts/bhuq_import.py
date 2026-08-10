@@ -83,6 +83,14 @@ def cmd_load(apply_it):
         cur.execute('DELETE FROM bhuq_verse_links')
         cur.execute('DELETE FROM bhuq_sections')
 
+    # Where the parasha itself begins - ויקרא כו:3, "אם בחקתי תלכו". A stretch of
+    # this commentary is sustained theological argument carrying no citation at
+    # all; with only the two signals such a passage reaches no verse and so is
+    # never seen, which would leave the work on screen as disconnected fragments
+    # instead of an argument. Those passages fall back to the parasha's opening
+    # verse - the place a reader looking for this commentary actually goes.
+    home = idx.by_reference(3, 26, 3)
+
     for i, s in enumerate(secs, 1):
         found = find_links(s['text'], idx)
         rows = found['refs'] + found['quotes']
@@ -90,6 +98,8 @@ def cmd_load(apply_it):
             linked += 1
         else:
             unlinked += 1
+            if home:
+                rows = [(home, 'home', 'פתיחת הפרשה')]
         nlinks += len(rows)
         for vid, _m, _sh in rows:
             b = book_of.get(vid)
