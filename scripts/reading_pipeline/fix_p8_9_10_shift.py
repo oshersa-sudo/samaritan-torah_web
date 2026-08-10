@@ -20,7 +20,8 @@ def chapter_meta(sam_num):
         FROM verses v JOIN chapters c ON v.chapter_id=c.id
         WHERE v.sam_ch_id=? ORDER BY v.id""", (sid,)).fetchall()
     locs = [l[0] for l in locs]
-    t1 = cur.execute("SELECT text FROM verses WHERE sam_ch_id=? ORDER BY id LIMIT 1", (sid,)).fetchone()
+    t1 = cur.execute("""SELECT v.text FROM verses v JOIN chapters c ON v.chapter_id=c.id
+        WHERE v.sam_ch_id=? ORDER BY c.number*1000+CAST(v.number AS INTEGER) LIMIT 1""", (sid,)).fetchone()
     fl, ll = locs[0], locs[-1]
     return {
         "sam_ch_id": sid,

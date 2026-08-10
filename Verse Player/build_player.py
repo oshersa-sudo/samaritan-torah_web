@@ -219,7 +219,8 @@ function saveEdits() { try { localStorage.setItem('torah-edits-v3', JSON.stringi
 function editedCount() { return Object.keys(edits).length; }
 
 /* ================= playback engine ================= */
-var Q = { items: [], idx: 0, cur: null, rate: null, pieceIdx: null };
+var Q = { items: [], idx: 0, cur: null, rate: null, pieceIdx: null,
+          rangeFrom: null, rangeTo: null, rangeRate: null };
 /* au.play() returns a Promise that can silently reject (e.g. "interrupted by
    a new load request" when the user clicks quickly) - if that's left
    unhandled, `playing`/the UI say "playing" while nothing is actually
@@ -241,11 +242,38 @@ function playFailed(gen, e) {
   setStatus('שגיאת ניגון: לא ניתן היה להפעיל את הקטע (' + (e && e.message ? e.message : e) + ')');
 }
 function playQueue(items, rate) {
-  if (!items.length) { setStatus('אין מה לנגן בטווח הזה.'); return; }
+  if (!items.length) { setStatus('אין מה לנגן בטווח הזה.'); playing = false; refreshTransport(); return; }
   Q.items = items; Q.idx = 0; Q.rate = (rate != null) ? rate : null; playing = true; nextInQueue();
 }
-function stopAll() { playGen++; Q.items = []; Q.cur = null; Q.rate = null; Q.pieceIdx = null; playing = false; au.pause(); }
-function pauseAll() { if (playing) { playGen++; au.pause(); playing = false; refreshTransport(); } }
+/* playPos - not the audio element's own clock - is the single source of truth
+   for "where the playhead is". It is sampled from the audio clock the moment
+   we pause/stop (ontimeupdate only fires ~4x/sec, so the mirror on its own is
+   up to a quarter second stale), and every ▶ starts exactly there. Nothing may
+   restart a piece from its beginning behind the user's back. */
+function syncPlayPos() {
+  var it = Q.cur; if (!it || it.vFrom == null) return;
+  var t = au.currentTime; if (isNaN(t)) return;
+  playPos = Math.max(0, it.vFrom + (t - it.from));
+}
+function stopAll() {
+  syncPlayPos();                     /* ⏹ keeps the position too - ▶ resumes from here */
+  playGen++; Q.items = []; Q.cur = null; Q.rate = null; Q.pieceIdx = null;
+  Q.rangeFrom = null; Q.rangeTo = null; Q.rangeRate = null;
+  playing = false; au.pause();
+}
+function pausePlayback() { if (!playing) return; playGen++; au.pause(); syncPlayPos(); playing = false; }
+function resumePlayback() {
+  if (playing) return;
+  if (Q.cur) { playing = true; safePlay(); return; }   /* audio element is still parked exactly at playPos */
+  /* the queue was dropped by a seek - rebuild it starting at playPos, keeping
+     the end bound + speed of whatever range was playing (so resuming a single
+     piece still stops at that piece's end instead of running on) */
+  var pi = Q.pieceIdx;
+  if (Q.rangeTo != null && Q.rangeFrom != null && playPos >= Q.rangeFrom - 0.05 && playPos < Q.rangeTo - 0.05) {
+    startRange(playPos, Q.rangeTo, Q.rangeRate); Q.pieceIdx = pi;
+  } else playFrom(playPos);
+}
+function pauseAll() { if (playing) { pausePlayback(); refreshTransport(); } }
 function nextInQueue() {
   if (Q.idx >= Q.items.length) { playGen++; Q.cur = null; playing = false; au.pause(); refreshTransport(); return; }
   var it = Q.items[Q.idx++]; Q.cur = it;
@@ -257,6 +285,7 @@ function nextInQueue() {
 au.ontimeupdate = function () {
   var it = Q.cur; if (!it) return;
   if (it.vFrom != null) { playPos = it.vFrom + (au.currentTime - it.from); refreshTransport(); }
+  if (!playing) return;    /* a stray update while paused must not roll into the next item */
   if (it.to != null && au.currentTime >= it.to - 0.02) nextInQueue();
 };
 au.onended = function () { nextInQueue(); };
@@ -281,8 +310,11 @@ setInterval(function () {
   if (wdStuck === 4 && !wdRetried) {           /* ~2s stalled -> one silent retry */
     wdRetried = true;
     var it = Q.cur;
+    /* retry where the playhead actually is, not at the start of the item -
+       a stall in the middle of a chapter must not throw the user back to 0 */
+    var at = (it.vFrom != null) ? (it.from + Math.max(0, playPos - it.vFrom)) : (it.from || 0);
     au.src = it.src;
-    au.onloadedmetadata = function () { au.currentTime = it.from || 0; safePlay(); };
+    au.onloadedmetadata = function () { au.currentTime = at; safePlay(); };
     au.load();
   } else if (wdStuck >= 10) {                   /* ~5s -> stop pretending */
     playGen++; playing = false; wdStuck = 0; refreshTransport();
@@ -470,20 +502,29 @@ function setNum(i, v) {
 }
 
 /* ================= play helpers ================= */
-function playFrom(v) { Q.pieceIdx = null; playQueue(mapRange(G.tl, v, null)); }
-function playRange(a, b, rate) { playQueue(mapRange(G.tl, Math.max(0, a), b), rate); }
+/* the single entry point that starts audio: remembers the virtual range it
+   started, so a later pause/seek can resume *inside* that range instead of
+   falling back to "play the rest of the group" */
+function startRange(a, b, rate) {
+  a = Math.max(0, a);
+  Q.pieceIdx = null; Q.rangeFrom = a; Q.rangeTo = (b == null ? null : b);
+  Q.rangeRate = (rate == null ? null : rate);
+  playPos = a;                       /* move the UI playhead at once, don't wait for the first timeupdate */
+  playQueue(mapRange(G.tl, a, b), rate);
+}
+function playFrom(v) { startRange(v, null, null); }
+function playRange(a, b, rate) { startRange(a, b, rate); }
 function pieceRate(i) {
   var sel = document.getElementById('prate-' + i);
   if (!sel || sel.value === '') return null;
   var v = parseFloat(sel.value);
   return isNaN(v) ? null : v;
 }
-function playPieceMeir(i) { Q.pieceIdx = i; playRange(G.bounds[i], G.bounds[i + 1], pieceRate(i)); setStatus('▶ פרק ' + G.chs[i]); }
-function playPieceWit(i) { Q.pieceIdx = i; var s = G.pieces[i]; playRange(s.t0, s.t1, pieceRate(i)); setStatus('▶ פרק ' + s.n); }
+/* Q.pieceIdx is assigned after the call - startRange() clears it */
+function playPieceMeir(i) { playRange(G.bounds[i], G.bounds[i + 1], pieceRate(i)); Q.pieceIdx = i; setStatus('▶ פרק ' + G.chs[i]); }
+function playPieceWit(i) { var s = G.pieces[i]; playRange(s.t0, s.t1, pieceRate(i)); Q.pieceIdx = i; setStatus('▶ פרק ' + s.n); }
 function togglePlay() {
-  if (playing) { playGen++; au.pause(); playing = false; }
-  else if (Q.cur) { playing = true; safePlay(); }
-  else playFrom(playPos);
+  if (playing) pausePlayback(); else resumePlayback();
   refreshTransport();
 }
 /* which piece row (index) the playhead currently sits inside, or -1 */
@@ -500,22 +541,45 @@ function currentPieceIndex() {
 function togglePiece(i, isMeir) {
   /* Q.pieceIdx is set synchronously the instant a piece starts playing -
      currentPieceIndex() derives from playPos, which only updates once
-     au.ontimeupdate fires; using it here left a window right after a piece
-     started where a second click on the SAME button misread it as "a
+     au.ontimeupdate fires; relying on it alone left a window right after a
+     piece started where a second click on the SAME button misread it as "a
      different piece" and restarted it instead of pausing it. Clicked fast
      enough (very normal - a click that doesn't look like it registered
      invites a second one) that could repeat into a restart storm that
-     left playback stuck at 0:00 indefinitely. */
-  if (Q.pieceIdx === i && Q.cur) {
-    if (playing) { playGen++; au.pause(); playing = false; }
-    else { playing = true; safePlay(); }
-    refreshTransport();
-  } else if (isMeir) playPieceMeir(i);
-  else playPieceWit(i);
+     left playback stuck at 0:00 indefinitely.
+     currentPieceIndex() is still consulted *in addition*, because while the
+     top player runs across the whole group Q.pieceIdx is null even though
+     this row is lit up and its button shows ⏸ - clicking it used to restart
+     the chapter from 0:00 instead of pausing. */
+  var a = isMeir ? G.bounds[i] : G.pieces[i].t0;
+  var b = isMeir ? G.bounds[i + 1] : G.pieces[i].t1;
+  if (playing && (Q.pieceIdx === i || currentPieceIndex() === i)) { pausePlayback(); refreshTransport(); return; }
+  if (!playing && playPos > a + 0.15 && playPos < b - 0.05) {   /* paused inside this piece -> continue, don't restart */
+    playRange(playPos, b, pieceRate(i)); Q.pieceIdx = i;
+    setStatus('▶ פרק ' + (isMeir ? G.chs[i] : G.pieces[i].n) + ' — המשך מ-' + fmt(playPos));
+    refreshTransport(); return;
+  }
+  if (isMeir) playPieceMeir(i); else playPieceWit(i);
 }
+/* move the playhead to an absolute position; keeps playing/paused as it was,
+   and (crucially) drops the now-stale queue so the next ▶ starts exactly here
+   rather than resuming the audio element wherever it was left */
 function jumpTo(v) {
+  if (!G) return;
+  var wasPlaying = playing;
+  playGen++; au.pause(); playing = false;
+  Q.items = []; Q.idx = 0; Q.cur = null;
   playPos = Math.max(0, Math.min(G.total, v));
-  if (playing) playFrom(playPos); else refreshTransport();
+  if (wasPlaying) resumePlayback();
+  refreshTransport();
+}
+/* ±1 second nudges for the top player - uses the live audio clock, so the
+   step is measured from where the sound actually is, not from the ~4Hz mirror */
+function stepPlayhead(d) {
+  if (!G) return;
+  syncPlayPos();
+  jumpTo(playPos + d);
+  setStatus((d > 0 ? '⏩ ' : '⏪ ') + 'הנגן הוזז ל-' + fmt(playPos));
 }
 /* per-row speed <select> changed while its piece is the one currently playing */
 function pieceRateChange(i) {
@@ -817,6 +881,8 @@ function renderEditor() {
   h += '<div class="transport">' +
        '<button id="playBtn" class="grn" onclick="togglePlay()">▶ נגן</button>' +
        '<button onclick="stopAll();refreshTransport()">⏹ עצור</button>' +
+       '<button onclick="stepPlayhead(-1)" title="הזז את הנגן שנייה אחת אחורה (עובד גם בזמן ניגון וגם בהשהיה)">⏪ שנייה אחורה</button>' +
+       '<button onclick="stepPlayhead(1)" title="הזז את הנגן שנייה אחת קדימה (עובד גם בזמן ניגון וגם בהשהיה)">⏩ שנייה קדימה</button>' +
        '<div class="seekWrap"><input type="range" id="seek" min="0" max="' + G.total + '" step="0.05" value="' + playPos + '">' +
        '<div class="seekMarks" id="seekMarks"></div></div>' +
        '<span class="tcur" id="tcur"></span>' +
@@ -858,7 +924,7 @@ function renderEditor() {
 
   var sb = $('seek');
   sb.oninput = function () { sb.dragging = true; playPos = parseFloat(sb.value); refreshTransport(); };
-  sb.onchange = function () { sb.dragging = false; playPos = parseFloat(sb.value); if (playing) playFrom(playPos); refreshTransport(); };
+  sb.onchange = function () { sb.dragging = false; jumpTo(parseFloat(sb.value)); };
   renderSeekMarks();
   refreshTransport();
 }
@@ -868,7 +934,7 @@ function pieceRow(i, n, a, b, isMeir, canEditStart, canEditEnd) {
   var listenStart = isMeir ? ('playRange(' + a + '-3,' + a + '+3)') : ('playRange(G.pieces[' + i + '].t0,G.pieces[' + i + '].t0+3.2)');
   var listenEnd   = isMeir ? ('playRange(' + b + '-3,' + b + '+3)') : ('playRange(G.pieces[' + i + '].t1-3.2,G.pieces[' + i + '].t1)');
   var h = '<div class="piece"><div class="rowa">' +
-    '<button class="grn" id="pbtn-' + i + '" onclick="togglePiece(' + i + ',' + isMeir + ')" title="נגן/השהה קטע זה">▶</button>' +
+    '<button class="grn" id="pbtn-' + i + '" onclick="togglePiece(' + i + ',' + isMeir + ')" title="נגן/השהה קטע זה (חזרה על ▶ ממשיכה מהמקום שנעצר, לא מההתחלה)">▶</button>' +
     '<button onclick="stopAll();refreshTransport()" title="עצור">⏹</button>' +
     '<select id="prate-' + i + '" class="prate" title="מהירות ניגון לקטע זה" onchange="pieceRateChange(' + i + ')">' +
       '<option value="">מהירות ברירת מחדל</option>' +
