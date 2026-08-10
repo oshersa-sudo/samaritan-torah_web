@@ -159,6 +159,8 @@ const I18N = {
     tz_toc_hint:'בחר פרק לעיון:', tz_chapter_label:'פרק', tz_arabic_pending:'התרגום לערבית בהכנה — מוצג הנוסח העברי.',
     m_shyt_book:'שו"ת — יעקב בן אהרן הכהן', shyt_title:'שו"ת — יעקב בן אהרן הכהן', shyt_toc_hint:'בחר שאלה לעיון:',
     m_sir_book:'סוד הלבבות (סיר אל-קלוב)', sir_title:'סוד הלבבות — סיר אל-קלוב', sir_toc_hint:'בחר פרק לעיון:',
+    m_bhuq_book:'פירוש אם בחקותי', bhuq_title:'פירוש אם בחקותי — אבו אלפרג׳ איבן אל-כתאר',
+    bhuq_toc_hint:'החיבור מחולק כאן לחלקים לפי מהלך הטיעון; המספרים בסוגריים הם סעיפי המחבר. בחר חלק לעיון:',
     m_asatir_book:'ספר האסאטיר', asatir_title:'ספר האסאטיר', asatir_toc_hint:'בחר פרק לעיון:',
     asatir_note:'ספר האסאטיר — דברי הימים השומרוני מאדם ועד אחרית הימים, בתעתיק עברי.',
     m_piyutim_book:'עיון בפיוטים השומרוניים', piy_title:'עיון בפיוטים השומרוניים',
@@ -362,6 +364,8 @@ const I18N = {
     tz_toc_hint:'Choose a chapter:', tz_chapter_label:'Chapter', tz_arabic_pending:'The Arabic is being prepared — showing the Hebrew.',
     m_shyt_book:'Responsa of Jacob ben Aaron', shyt_title:'Responsa — Jacob ben Aaron the Priest', shyt_toc_hint:'Choose a question:',
     m_sir_book:'Sīr al-Qulūb (Secret of Hearts)', sir_title:'Sīr al-Qulūb — The Secret of Hearts', sir_toc_hint:'Choose a section:',
+    m_bhuq_book:'Commentary on Im Beḥuqotay', bhuq_title:'Im Beḥuqotay — Abū l-Faraj ibn al-Kathār',
+    bhuq_toc_hint:'The treatise is divided here by the turns of its argument; the bracketed numbers are the author’s own paragraphs. Choose a part:',
     m_asatir_book:'The Book of Asatir', asatir_title:'The Book of Asatir', asatir_toc_hint:'Choose a chapter:',
     asatir_note:'The Book of Asatir — the Samaritan chronicle from Adam to the end of days, in Hebrew transcription.',
     m_piyutim_book:'Samaritan Piyyutim', piy_title:'Samaritan Piyyutim',
@@ -565,6 +569,8 @@ const I18N = {
     tz_toc_hint:'اختر أصحاحاً:', tz_chapter_label:'أصحاح', tz_arabic_pending:'الترجمة العربية قيد الإعداد — يُعرض النصّ العبري.',
     m_shyt_book:'أجوبة يعقوب بن هارون الكاهن', shyt_title:'أجوبة يعقوب بن هارون الكاهن', shyt_toc_hint:'اختر سؤالاً:',
     m_sir_book:'سِرّ القلوب', sir_title:'سِرّ القلوب', sir_toc_hint:'اختر فصلاً:',
+    m_bhuq_book:'تفسير إم بحقوتي', bhuq_title:'تفسير إم بحقوتي — أبو الفرج ابن الكثار',
+    bhuq_toc_hint:'قُسّم الكتاب هنا حسب مسار الحجّة؛ الأرقام بين قوسين هي فقرات المؤلف. اختر قسمًا:',
     m_asatir_book:'كتاب الأساطير', asatir_title:'كتاب الأساطير', asatir_toc_hint:'اختر أصحاحاً:',
     asatir_note:'كتاب الأساطير — التاريخ السامري من آدم إلى آخر الأيام، بالنسخ العبري.',
     m_piyutim_book:'الأناشيد السامرية', piy_title:'تصفّح الأناشيد السامرية',
@@ -3341,6 +3347,7 @@ const LIB_ITEMS = [
   {act:'tz_book',      titleKey:'m_tz_book',      open:()=>openTzBook()},
   {act:'shyt_book',    titleKey:'m_shyt_book',    open:()=>openShytBook()},
   {act:'sir_book',     titleKey:'m_sir_book',     open:()=>openSirBook()},
+  {act:'bhuq_book',    titleKey:'m_bhuq_book',    open:()=>openBhuqBook()},
   {act:'asatir_book',  titleKey:'m_asatir_book',  open:()=>openAsatirBook()},
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
   {act:'rhyme_book',   titleKey:'m_rhyme_book',   open:()=>openRhymeBook()},
@@ -3386,6 +3393,7 @@ function menuAction(a){
   else if(a==='tz_book')   openTzBook();
   else if(a==='shyt_book') openShytBook();
   else if(a==='sir_book')  openSirBook();
+  else if(a==='bhuq_book') openBhuqBook();
   else if(a==='asatir_book') openAsatirBook();
   else if(a==='piyutim_book') openPiyutimBook();
   else if(a==='rhyme_book')   openRhymeBook();
@@ -3795,6 +3803,24 @@ const BOOK_CFG = {
     searchTo:(r)=>({chap:r.id, dom:'rdsec-'+r.id}),
     langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
   },
+  bhuq: {                              // פירוש אם בחקותי — one treatise, grouped into parts
+    titleKey:'bhuq_title', tocHintKey:'bhuq_toc_hint',
+    toc:()=>api('bhuq_toc'),
+    chapter:(id)=>api('bhuq_chapter?part='+encodeURIComponent(id)),
+    search:(q)=>api('bhuq_search?q='+encodeURIComponent(q)),
+    words:null,
+    // the badge is the part number; the paragraph range rides along in the title
+    // so the reader can see which of the author's sections a part covers
+    tocItem:(c)=>({id:c.part, letter:c.letter,
+                   title:c.title+(c.paras?('  ·  '+c.paras):''), count:c.count}),
+    chapterTitle:(ch)=>esc(ch.title||''),
+    unitLabel:(s)=>esc(s.ref||'')+(s.title?('  ·  '+esc(s.title)):''),
+    unitVid:(s)=>s.verse_id,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>esc(r.ref||'')+(r.title?('  ·  '+esc(r.title)):''),
+    searchTo:(r)=>({chap:r.part, dom:'rdsec-'+r.id}),
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+  },
   asatir: {                            // ספר האסאטיר — 16 chapters, each a run of paragraphs
     titleKey:'asatir_title', tocHintKey:'asatir_toc_hint',
     toc:()=>api('asatir_toc'),
@@ -3829,6 +3855,7 @@ function openTmBook(){ openReader('tm'); }
 function openTzBook(){ openReader('tz'); }
 function openShytBook(){ openReader('shyt'); }
 function openSirBook(){ openReader('sir'); }
+function openBhuqBook(){ openReader('bhuq'); }
 function openAsatirBook(){ openReader('asatir'); }
 function rdSetBack(mode){           // '' hidden · 'toc' · 'chapter'
   const b=$('rdBack');

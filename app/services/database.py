@@ -1193,6 +1193,166 @@ def search_sir(q, limit=80):
     return out
 
 
+# ── פירוש אם בחקותי as a standalone library book ──
+# The edition prints no table of contents, so the work's only division is the
+# author's own numbered paragraphs {1}–{235}. 234 of them make an unusable index
+# and average barely two sections each, which reads badly for what is really one
+# continuous treatise. These parts group the paragraphs where the argument
+# actually turns: the boundaries are the author's own paragraph numbers, the
+# titles describe the stretch they open.
+BHUQ_PARTS = [
+    (1, 7, 'פתיחה: המיליות ״אם״ והבי״ת'),
+    (8, 13, 'אמיתות שליחות משה, ומי הם המחויבים'),
+    (14, 25, 'מי חייב במצוות: השכל, הגיל והיכולת'),
+    (26, 36, 'מניין המצוות — תרי״ג ופירוטן'),
+    (37, 45, 'הגמול: חובה או חסד'),
+    (46, 55, 'ברכות הפרשה — הבטחה לכלל ולא ליחיד'),
+    (56, 62, 'העולם הבא וההוכחה השכלית לקיומו'),
+    (63, 67, 'שירת האזינו כראיה לעולם הבא'),
+    (68, 76, 'תשובה לעובדי האלילים, ויום הנקם'),
+    (77, 86, 'הגשם: לשון, טבע וייחוד ארץ כנען'),
+    (87, 90, 'ה״א ההדגשה, ונס שאינו מאמת שקר'),
+    (91, 103, 'ארבע שלמויות השליח: גוף, חושים וידע'),
+    (104, 111, 'שני העצים — הטוב והרע שבאדם'),
+    (112, 121, 'עצי השיטים, הארון והמתהלכים לפני האל'),
+    (122, 135, '״של נעליך״: לבוש האור והמסווה'),
+    (136, 143, 'המטה ומופתיו'),
+    (144, 151, 'העולם המלאכי, הרקיע והמסלולים'),
+    (152, 163, 'מסע המדבר: מרה, אילים, רפידים ועמלק'),
+    (164, 177, 'העלייה אל הערפל וחמש מעלות ההר'),
+    (178, 189, 'עשרת הדברים שבהם התייחד משה'),
+    (190, 197, '״מעון הקדש״ ומסלול הדיבור והתפילה'),
+    (198, 212, 'לשון הברכה: ״והשיג לכם דיש״ ו״ואכלתם לחמכם״'),
+    (213, 226, '״וישבתם לבטח בארצכם״ — הארץ והמורשת'),
+    (227, 235, '״צלם״: יראת האל כיסוד התורה'),
+]
+_BHUQ_COLOPHON = len(BHUQ_PARTS) + 1          # the copyist's colophon, kept as a last part
+
+# This edition cites verses as '(שמי לג 22)' — abbreviated book, gematria
+# chapter, then an Arabic numeral — not the '(שמות ג,ז)' form _TM_REF handles.
+_BHUQ_ABBR = {'ברי': 1, 'בר': 1, 'בראשית': 1, 'שמי': 2, 'שמ': 2, 'שמות': 2,
+              'ויקי': 3, 'ויק': 3, 'ויקרא': 3, 'במי': 4, 'במ': 4, 'במדבר': 4,
+              'דבי': 5, 'דב': 5, 'דברים': 5}
+_BHUQ_REF = re.compile(r'\(\s*(' + '|'.join(sorted(_BHUQ_ABBR, key=len, reverse=True)) +
+                       r')\s*[׳\']?\s*([א-ת]{1,4})\s*[׳\']?\s+(\d{1,3})'
+                       # swallow the rest of the parenthesis ('… נייש)') so the whole
+                       # citation is the link, but stay optional: a citation left
+                       # unclosed in the source still links on the reference itself
+                       r'(?:[^)\n]{0,14}\))?')
+
+
+def _bhuq_mark_refs(text, vmap):
+    """Escape `text`, wrapping each '(שמי לג 22)' citation in a clickable ref."""
+    out, last = [], 0
+    for m in _BHUQ_REF.finditer(text or ''):
+        out.append(_tm_esc(text[last:m.start()]))
+        vid = vmap.get((_BHUQ_ABBR[m.group(1)], _tm_gem(m.group(2)), int(m.group(3))))
+        lbl = _tm_esc(m.group(0))
+        out.append('<a class="tm-ref" data-vid="%d">%s</a>' % (vid, lbl) if vid else lbl)
+        last = m.end()
+    out.append(_tm_esc((text or '')[last:]))
+    return ''.join(out)
+
+
+def _bhuq_para(ref):
+    """'{169}' → 169. The colophon rows carry a word, not a number → None."""
+    m = re.match(r'^\s*\{(\d+)\}\s*$', ref or '')
+    return int(m.group(1)) if m else None
+
+
+def _bhuq_part_of(ref):
+    """Which part a section belongs to; colophon rows fall in the last part."""
+    n = _bhuq_para(ref)
+    if n is None:
+        return _BHUQ_COLOPHON
+    for i, (lo, hi, _t) in enumerate(BHUQ_PARTS, start=1):
+        if lo <= n <= hi:
+            return i
+    return len(BHUQ_PARTS)                     # anything past the table joins the last part
+
+
+def get_bhuq_toc():
+    """Table of contents for פירוש אם בחקותי — one card per part."""
+    conn = get_connection()
+    try:
+        rows = conn.execute("SELECT id, ref, page FROM bhuq_sections ORDER BY ord").fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    agg = {}
+    for r in rows:
+        p = _bhuq_part_of(r['ref'])
+        a = agg.setdefault(p, {'n': 0, 'p1': r['page'], 'p2': r['page']})
+        a['n'] += 1
+        a['p1'] = min(a['p1'], r['page'] or 0)
+        a['p2'] = max(a['p2'], r['page'] or 0)
+    out = []
+    for i, (lo, hi, title) in enumerate(BHUQ_PARTS, start=1):
+        a = agg.get(i)
+        if not a:
+            continue
+        out.append({'part': i, 'letter': str(i), 'title': title, 'count': a['n'],
+                    'paras': '{%d}–{%d}' % (lo, hi), 'pages': [a['p1'], a['p2']]})
+    if _BHUQ_COLOPHON in agg:
+        a = agg[_BHUQ_COLOPHON]
+        out.append({'part': _BHUQ_COLOPHON, 'letter': '·', 'title': 'קולופון המעתיק',
+                    'count': a['n'], 'paras': '', 'pages': [a['p1'], a['p2']]})
+    return out
+
+
+def get_bhuq_chapter(part):
+    """One part of the treatise: every section in it, in reading order, with
+    inline citations made clickable and the verse each section is linked to."""
+    try:
+        part = int(part)
+    except (TypeError, ValueError):
+        return {'part': None, 'title': '', 'sections': []}
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    try:
+        rows = conn.execute("SELECT id, ord, page, ref, title, text "
+                            "FROM bhuq_sections ORDER BY ord").fetchall()
+        vlink = {r['sid']: r['vid'] for r in conn.execute(
+            "SELECT section_id sid, MIN(verse_id) vid FROM bhuq_verse_links GROUP BY section_id")}
+    except Exception:
+        rows, vlink = [], {}
+    conn.close()
+    secs = [r for r in rows if _bhuq_part_of(r['ref']) == part]
+    if part == _BHUQ_COLOPHON:
+        title = 'קולופון המעתיק'
+    else:
+        lo, hi, title = BHUQ_PARTS[part - 1] if 1 <= part <= len(BHUQ_PARTS) else (0, 0, '')
+    out = [{'id': s['id'], 'ref': s['ref'] or '', 'title': s['title'] or '',
+            'page': s['page'],
+            'hebrew': s['text'] or '', 'hebrew_html': _bhuq_mark_refs(s['text'] or '', vmap),
+            'verse_id': vlink.get(s['id'])} for s in secs]
+    return {'part': part, 'title': title, 'sections': out}
+
+
+def search_bhuq(q, limit=80):
+    """Search the treatise (section titles + text)."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    try:
+        rows = conn.execute("SELECT id, ord, page, ref, title, text FROM bhuq_sections "
+                            "WHERE text LIKE ? OR title LIKE ? ORDER BY ord LIMIT ?",
+                            (like, like, limit)).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    out = []
+    for r in rows:
+        txt = r['text'] or ''
+        i = txt.find(q)
+        snip = ('…' + txt[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0 else txt[:90]
+        out.append({'id': r['id'], 'part': _bhuq_part_of(r['ref']), 'page': r['page'],
+                    'ref': r['ref'] or '', 'title': r['title'] or '', 'snippet': snip})
+    return out
+
+
 # ── ספר האסאטיר as a standalone library book ──
 # Unlike the other works on the shelf the Asatir is not a commentary keyed to
 # verses but a running chronicle from Adam to the end of days, divided here into

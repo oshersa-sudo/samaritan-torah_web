@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '2.2'
+APP_VERSION = '2.3'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 
 
@@ -1287,6 +1287,28 @@ def manifest():
     return send_from_directory(app.static_folder, 'manifest.json')
 
 
+# TWA (the Android app): Digital Asset Links proves that the signed package is
+# allowed to act for this domain — without it the app opens with a URL bar on
+# top, like a plain browser tab. The fingerprints are read from the environment
+# (TWA_FINGERPRINTS, comma-separated SHA-256) so the signing key can be added or
+# rotated on Render without a commit; web/assetlinks.json is the fallback.
+@app.route('/.well-known/assetlinks.json')
+def assetlinks():
+    fps = [f.strip().upper()
+           for f in os.environ.get('TWA_FINGERPRINTS', '').split(',') if f.strip()]
+    if not fps:
+        return send_from_directory(_WEB_DIR, 'assetlinks.json',
+                                   mimetype='application/json')
+    return jsonify([{
+        'relation': ['delegate_permission/common.handle_all_urls'],
+        'target': {
+            'namespace': 'android_app',
+            'package_name': os.environ.get('TWA_PACKAGE', 'net.thesamaritans.torah'),
+            'sha256_cert_fingerprints': fps,
+        },
+    }])
+
+
 # ── navigation API ─────────────────────────────────────────────────────────
 @app.route('/api/books')
 def api_books():
@@ -1652,6 +1674,22 @@ def api_sir_chapter():
 @app.route('/api/sir_search')
 def api_sir_search():
     return jsonify(db.search_sir(request.args.get('q', '')))
+
+
+# ── פירוש אם בחקותי: full-book reader (the verse source is /api/bhuq above) ──
+@app.route('/api/bhuq_toc')
+def api_bhuq_toc():
+    return jsonify(db.get_bhuq_toc())
+
+
+@app.route('/api/bhuq_chapter')
+def api_bhuq_chapter():
+    return jsonify(db.get_bhuq_chapter(request.args.get('part', '')))
+
+
+@app.route('/api/bhuq_search')
+def api_bhuq_search():
+    return jsonify(db.search_bhuq(request.args.get('q', '')))
 
 
 # ── ספר האסאטיר: verse source + full-book reader ──
