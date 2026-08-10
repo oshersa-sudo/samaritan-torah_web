@@ -23,9 +23,12 @@ def main():
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument('--dry-run', action='store_true')
     g.add_argument('--apply', action='store_true')
+    # Each regeneration round writes its own checkpoint (v2, v3, ...) so a bad
+    # run can never overwrite the one already proven good; name it here.
+    ap.add_argument('--file', default=OUT_PATH, help='checkpoint to load (default: %s)' % OUT_PATH)
     args = ap.parse_args()
 
-    with open(OUT_PATH, encoding='utf-8') as f:
+    with open(args.file, encoding='utf-8') as f:
         checkpoint = json.load(f)
 
     conn = sqlite3.connect(DB_PATH)
@@ -51,7 +54,7 @@ def main():
 
     if args.apply:
         conn.commit()
-        print('APPLIED to', DB_PATH)
+        print('APPLIED to', DB_PATH, 'from', args.file)
     else:
         print('DRY RUN — no writes made. Re-run with --apply to write.')
     conn.close()

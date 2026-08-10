@@ -226,6 +226,8 @@ const I18N = {
     ws_melitz:'מן המליץ', ws_melitz_pending:'מקור המליץ טרם נוסף', ws_torah_occ:'מופעים בתורה (ארמית)', ws_marqe_occ:'מופעים בתיבת מרקה',
     ws_arabic:'מהתרגום הערבי', ws_from_arabic:'תרגום מהערבית לעברית', ws_arabic_pending:'התרגום מהערבית לעברית בהכנה',
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
+    no_interp_ar:'התרגום הערבי לפירוש עדיין בהכנה', interp_sam:'כתב שומרוני', interp_ar:'ערבית',
+    interp_more:'להרחבה פנה אל:',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
@@ -421,6 +423,8 @@ const I18N = {
     ws_melitz:'from the Meliṣ', ws_melitz_pending:'the Meliṣ source is not yet added', ws_torah_occ:'occurrences in the Torah (Aramaic)', ws_marqe_occ:'occurrences in Tībåt Mårqe',
     ws_arabic:'from the Arabic', ws_from_arabic:'Arabic → Hebrew', ws_arabic_pending:'Arabic→Hebrew translation in preparation',
     searching:'Searching…', no_interp:'No commentary for these verses',
+    no_interp_ar:'The Arabic rendering is still being prepared', interp_sam:'Samaritan script', interp_ar:'Arabic',
+    interp_more:'Read further in:',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
@@ -616,6 +620,8 @@ const I18N = {
     ws_melitz:'من المليص', ws_melitz_pending:'مصدر المليص لم يُضَف بعد', ws_torah_occ:'مواضع في التوراة (آرامية)', ws_marqe_occ:'مواضع في تيبات مارقه',
     ws_arabic:'من العربية', ws_from_arabic:'العربية ← العبرية', ws_arabic_pending:'ترجمة العربية إلى العبرية قيد الإعداد',
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
+    no_interp_ar:'الترجمة العربية للتفسير قيد الإعداد', interp_sam:'الخط السامري', interp_ar:'العربية',
+    interp_more:'للتوسّع راجِع:',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
@@ -705,6 +711,7 @@ const S = {
   curChId: null, curChNum: null, portionName: '',
   verses: [], verseFilter: null,
   commentarySel: null, samSrcChoice: null, tmSel: null,
+  interpSam: false, interpLang: 'he',   // פירוש הפסוק view switches, panel-local
   searchReturn: false, searchFontOffset: 0,
   stack: [],                      // navigation breadcrumb stack for Back
 };
@@ -1317,10 +1324,26 @@ async function buildInterpret(c, verses){
   // than replacing the verse text inline the way it used to. In Samaritan-font
   // mode the commentary comes out in the fluent Samaritan commentary font, so
   // the original stands in Samaritan script with its interpretation beneath it.
-  const m = await api('interpretations?verse_ids='+verses.map(v=>v.id).join(','));
+  const ar = (S.interpLang==='ar');
+  const m = await api('interpretations?verse_ids='+verses.map(v=>v.id).join(',')+(ar?'&lang=ar':''));
   const fs = fsize();
   const panel = el('div','srcpanel interp-panel');
-  panel.appendChild(el('div','ptitle', t('interp')));
+
+  // Header: title on one side, the two view switches on the other. Both are
+  // panel-local — the Samaritan one deliberately does NOT touch S.samFont, so
+  // switching the commentary to Samaritan script leaves the verse text alone.
+  const head = el('div','ptitle irow-head');
+  head.appendChild(el('span','', t('interp')));
+  const tools = el('div','ihead-tools');
+  const samOn = (S.interpSam || S.samFont) && !ar;
+  const bSam = el('button','ihead-btn'+(samOn?' on':''), t('interp_sam'));
+  bSam.onclick=()=>{ S.interpLang='he'; S.interpSam = !samOn; paintVerses(); };
+  const bAr  = el('button','ihead-btn'+(ar?' on':''), t('interp_ar'));
+  bAr.onclick=()=>{ S.interpLang = ar ? 'he' : 'ar'; paintVerses(); };
+  tools.appendChild(bSam); tools.appendChild(bAr);
+  head.appendChild(tools);
+  panel.appendChild(head);
+
   let any = false;
   for(const v of verses){
     let txt = (m[v.id]||'').trim();
@@ -1332,14 +1355,28 @@ async function buildInterpret(c, verses){
     const row = el('div','irow');
     const num = el('button','inum'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
-    const body = el('div','itext', interpText(txt));
+    const body = el('div','itext'+(ar?' iar':''), ar ? esc(txt) : (S.interpSam||S.samFont)
+      ? samMarkupFree(addWordDots(stripNiqqud(txt))) : esc(txt));
     body.style.fontSize = fs+'px';
     row.appendChild(num); row.appendChild(body);
-    addPencil(row, v.id, 'interpretation', ()=>(m[v.id]||''));
+    if(!ar) addPencil(row, v.id, 'interpretation', ()=>(m[v.id]||''));
     panel.appendChild(row);
   }
-  if(!any) panel.appendChild(el('div','note',t('no_interp')));
+  if(!any) panel.appendChild(el('div','note', ar ? t('no_interp_ar') : t('no_interp')));
+  else panel.appendChild(interpFooter());
   c.appendChild(panel);
+}
+// "להרחבה פנה אל…" — the commentary is a synthesis, so every panel ends with
+// one-click routes to the material it was distilled from (the Samaritan
+// sources), to the Jewish commentators for contrast, and to the word glossary.
+function interpFooter(){
+  const f = el('div','ifoot');
+  f.appendChild(el('span','ifoot-lead', t('interp_more')));
+  const mk=(label,fn)=>{ const b=el('button','ifoot-btn',label); b.onclick=fn; f.appendChild(b); };
+  mk(t('samsrc'),     ()=>togglePanel('samaritan_src'));
+  mk(t('commentary'), ()=>togglePanel('commentary'));
+  mk(t('dict'),       ()=>{ S.dict=!S.dict; syncToolbar(true); paintVerses(); });
+  return f;
 }
 // ── חילופי נוסח (von Gall critical apparatus) ───────────────────────────────
 // consonantal fold for matching an apparatus lemma to a word in the verse text
@@ -2601,7 +2638,7 @@ $('searchBtn').onclick=()=>showSearch(true);
 $('backBtn').onclick=()=>{ spinBack($('backBtn')); goBack(); };
 
 // every content/display mode is mutually exclusive — turning one on clears the rest
-function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=false; S.samFontFull=false; S.dictWord=null; DICT_SELECT_MAP={}; }
+function clearModes(){ S.panel=null; S.dict=false; S.english=false; S.samFont=false; S.samFontFull=false; S.dictWord=null; S.interpSam=false; S.interpLang='he'; DICT_SELECT_MAP={}; }
 // like clearModes(), but when the reader has "כולל פירושים?" on AND is switching
 // to/from one of the three surfaces it actually covers (ממקור שומרון / Aramaic
 // translation / verse interpretation), the Samaritan-font state survives the

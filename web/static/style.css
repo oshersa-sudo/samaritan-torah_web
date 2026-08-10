@@ -697,6 +697,29 @@ footer a{ color:var(--accent); text-decoration:none; }
 .interp-panel .itext{ flex:1; line-height:1.75; direction:rtl; text-align:justify;
   text-justify:inter-word; color:var(--dark); }
 .interp-panel .itext .samchar2{ font-family:'SamComment'; }
+/* Arabic rendering of the commentary: same column, Arabic shaping + numerals */
+.interp-panel .itext.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
+  line-height:2.05; }
+
+/* header: title centred as before, with the two view switches pinned to the end
+   of the same row so they never push the title off-centre */
+.interp-panel .irow-head{ display:flex; align-items:center; justify-content:space-between;
+  gap:8px; text-align:right; }
+.interp-panel .irow-head > span{ flex:1; text-align:center; }
+.ihead-tools{ display:flex; gap:6px; flex:0 0 auto; }
+.ihead-btn{ border:1px solid rgba(26,56,115,.35); background:#fff; color:var(--navy);
+  font-family:inherit; font-size:12px; padding:3px 9px; border-radius:999px; cursor:pointer;
+  white-space:nowrap; }
+.ihead-btn:hover{ background:#eef1fb; }
+.ihead-btn.on{ background:var(--navy); color:#fff; border-color:var(--navy); }
+
+/* footer: routes onward to the material the commentary was distilled from */
+.ifoot{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:10px;
+  padding-top:9px; border-top:1px solid rgba(26,56,115,.20); }
+.ifoot-lead{ font-size:13px; color:var(--navy); opacity:.85; margin-inline-end:2px; }
+.ifoot-btn{ border:1px solid var(--accent); background:#fff; color:var(--accent);
+  font-family:inherit; font-size:13px; padding:4px 12px; border-radius:999px; cursor:pointer; }
+.ifoot-btn:hover{ background:var(--accent); color:#fff; }
 
 /* ── "system is updating" blocking screen (server unreachable while online) ── */
 #maintScreen{ position:fixed; inset:0; z-index:99999; display:flex; align-items:center;

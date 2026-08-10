@@ -1436,7 +1436,8 @@ def api_canon_note():
 def api_interpretations():
     ids = _ids_arg()
     rows = [{'id': i} for i in ids]
-    m = get_chapter_interpretations(rows) if ids else {}
+    lang = request.args.get('lang', 'he')
+    m = get_chapter_interpretations(rows, lang) if ids else {}
     return jsonify({str(k): v for k, v in m.items()})
 
 
