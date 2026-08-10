@@ -30,6 +30,59 @@ body{
    so Torah text never stretches into unreadably long lines. */
 @media (min-width:860px){ #app{ max-width:min(94vw, 1100px); } }
 
+/* ── desktop: fill the screen ────────────────────────────────────────────────
+   From 1200px the app stops being a centred card and takes the whole viewport,
+   so the navy chrome runs edge to edge like a real desktop application.
+
+   Width alone would wreck the reading, though: a Torah verse set across 2000px
+   is unreadable, and stretching the toolbar's 6 buttons that far makes them
+   look like banners. So the frame goes full-bleed while the CONTENT keeps two
+   shared measures, both centred on the same axis:
+     --measure-wide  multi-column things (selection grids, version comparison,
+                     the two-panel view) — more width genuinely helps them
+     --measure-read  single-column prose (verse rows, source panels) — capped
+                     at a comfortable line length no matter how wide the screen
+   Everything here is scoped to the media query, so phones and tablets keep
+   exactly the layout they have today. */
+@media (min-width:1200px){
+  :root{ --measure-wide:min(96vw,1560px); --measure-read:min(92vw,1040px); }
+
+  #app{ max-width:none; width:100%; box-shadow:none; }
+
+  /* chrome spans the viewport; its contents stay on the wide measure */
+  #hdr .brand-top, #hdr .title-row, #hdr .toggle-row,
+  #crumbs, #navbar, #toolbar .tb-rows, #toolbar .tb-handle, #hdr .div-handle{
+    max-width:var(--measure-wide); margin-inline:auto; width:100%; }
+
+  #content{ padding:10px 16px; }
+  /* The reading measure is the DEFAULT for everything in the content area, and
+     only genuinely multi-column layouts opt up to the wide one. Deliberately
+     this way round: a single-column element stretched to 1560px (five book
+     buttons as full-width banners, a verse on one endless line) is the failure
+     mode worth defaulting against, and anything added here later inherits the
+     safe measure instead of silently spanning the screen. */
+  #content > *{ max-width:var(--measure-read); margin-inline:auto; }
+  #content > .grid, #content > .cmp-grid, #content > .pair,
+  #content > .lib-grid, #content > .dict-wgrid{ max-width:var(--measure-wide); }
+
+  /* more chapter cells per row instead of 8 very wide ones */
+  .grid.g15{ grid-template-columns:repeat(14,1fr); }
+  .grid.g5{ grid-template-columns:repeat(7,1fr); }
+
+  /* the spread/wide buttons follow the same axis rather than spanning the screen */
+  #spreadBtn, .wide-btn{ max-width:var(--measure-read); margin-inline:auto; }
+
+  /* The library gallery is a full-viewport overlay, so it sits outside #content
+     and needs the measure applied directly: its auto-fill tracks otherwise
+     produce 20 postage-stamp columns on an ultra-wide monitor. Bigger minimum
+     tiles keep the covers legible. The other overlays (dictionary app, book
+     reader) already have deliberate desktop sizing and are left alone. */
+  .lib-grid{ max-width:var(--measure-wide); margin-inline:auto;
+             grid-template-columns:repeat(auto-fill,minmax(158px,1fr)); }
+}
+/* very wide monitors: one more column, still on the same measures */
+@media (min-width:1800px){ .grid.g15{ grid-template-columns:repeat(18,1fr); } }
+
 /* The native Kivy app is laid out physically left→right (first-added widget on
    the left), so "חלוקה שומרונית" (added 2nd) sits on the RIGHT. We reproduce that
    exact physical order by making the button bars LTR; the Hebrew TEXT inside each
