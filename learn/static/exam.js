@@ -1584,6 +1584,7 @@ function vocabHTML(){
     <div><span class="eyebrow">חלק 1 · אוצר מילים</span><p class="lead">מה רואים בתמונה?</p></div>
     <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.vocab?.left??TIME.vocab,TIME.vocab)}</span></div>
   </div>
+  ${studyHTML()}
   <div class="pic" id="q-pic"></div>
   <div class="opts" id="q-opts"></div>
   <p class="hint" id="q-hint"></p>
@@ -1645,6 +1646,72 @@ const HEB_MC_CFG = {
   iv:{eyebrow:"היסטוריה · מושגים",        lead:"איזה מושג מתאים להגדרה?", prompt:"d", answer:"w"},
   iw:{eyebrow:"היסטוריה · פירוש מושגים",  lead:"מה פירוש המושג?",         prompt:"w", answer:"d"},
 };
+// ─── Word bank preview (עיון לפני המבחן) ──────────────────────────────────
+// From ג׳ upward a vocabulary part opens with the whole bank it is about to
+// test — every word with its meaning, and its picture where one exists. The
+// clock does not start until the child says they are ready, so browsing costs
+// nothing.
+const STUDY={active:false,items:[],startTimer:null};
+const studyOffered = () => curLevel()>=3;
+
+function studyHTML(){
+  return `<div class="study" id="study" hidden>
+    <div class="study-head">
+      <div>
+        <span class="eyebrow">לפני המבחן</span>
+        <p class="lead" id="study-lead"></p>
+      </div>
+      <span class="study-count" id="study-count"></span>
+    </div>
+    <div class="study-list" id="study-list"></div>
+    <button class="primary study-go" id="study-go">אני מוכן/ה — למבחן</button>
+    <p class="study-note">השעון מתחיל רק כשלוחצים</p>
+  </div>`;
+}
+// items: [{w, d, e, dir}] — dir is the reading direction of the word itself
+function beginStudy(items,lead,startTimer){
+  if(!studyOffered()||!items.length){ startTimer(); return false; }
+  STUDY.active=true; STUDY.items=items; STUDY.startTimer=startTimer;
+  const box=document.getElementById("study"); if(!box){ startTimer(); return false; }
+  const card=box.closest(".card"); if(card)card.classList.add("studying");
+  box.hidden=false;
+  document.getElementById("study-lead").textContent=lead;
+  document.getElementById("study-count").textContent=`${items.length} מילים`;
+  const anyPic=items.some(it=>it.e);
+  const list=document.getElementById("study-list");
+  list.classList.toggle("no-pic",!anyPic);     // no column where there is nothing to show
+  list.innerHTML=items.map((it,i)=>`
+    <div class="study-row">
+      ${anyPic?`<span class="study-pic" id="sp${i}">${it.e?esc(it.e):""}</span>`:""}
+      <span class="study-w" dir="${it.dir||"rtl"}">${esc(it.w)}</span>
+      <span class="study-d" dir="rtl">${esc(it.d)}</span>
+    </div>`).join("");
+  // upgrade the emoji to a real photo where one clears the bar, the same test
+  // the questions themselves use — so the child studies the picture they will
+  // be shown
+  items.forEach((it,i)=>{
+    if(!it.e||!it.pic)return;
+    _picFetch(it.pic).then(url=>{
+      if(!url)return;
+      const cell=document.getElementById("sp"+i); if(!cell)return;
+      const img=new Image(); img.alt="";
+      img.onload=()=>{const c=document.getElementById("sp"+i);if(c){c.innerHTML="";c.appendChild(img);}};
+      img.src=url;
+    });
+  });
+  const go=document.getElementById("study-go");
+  go.onclick=()=>endStudy();
+  go.focus({preventScroll:true});
+  return true;
+}
+function endStudy(){
+  STUDY.active=false;
+  const box=document.getElementById("study");
+  if(box){ box.hidden=true; const card=box.closest(".card"); if(card)card.classList.remove("studying"); }
+  const st=STUDY.startTimer; STUDY.startTimer=null;
+  if(st)st();
+}
+
 function mcHTML(){
   const c=HEB_MC_CFG[S.screen]||HEB_MC_CFG.hv, t=TIME[S.screen]??240;
   return `<section class="card">
@@ -1652,6 +1719,7 @@ function mcHTML(){
     <div><span class="eyebrow">${c.eyebrow}</span><p class="lead">${c.lead}</p></div>
     <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog[S.screen]?.left??t,t)}</span></div>
   </div>
+  ${studyHTML()}
   <div class="mc-prompt" id="mc-prompt"></div>
   <button class="ghost sm" id="mc-speak">🔊 שמע/י</button>
   <div class="opts" id="q-opts"></div>
@@ -1677,7 +1745,12 @@ function initHebMC(){
   HM.picked=false;
   setPartCount(HM.qs.length);
   renderHebMCQ();
-  TM.start(saved?.left??t,t,()=>gotoNext(scr));
+  const startMCTimer=()=>TM.start(saved?.left??t,t,()=>gotoNext(scr));
+  if(saved&&saved.qs){ startMCTimer(); }
+  else{
+    beginStudy(HM.qs.map(q=>({w:nqW(q.w),d:nqD(q.w,q.d),e:"",dir:"rtl"})),
+               "אלה המושגים שייבדקו. אפשר לעיין כמה שרוצים.",startMCTimer);
+  }
 }
 function renderHebMCQ(){
   const q=HM.qs[HM.i], hv=(S.screen==="hv"||S.screen==="sv"||S.screen==="tv");
@@ -2520,7 +2593,15 @@ function initVocab(){
   V.picked=null;
   setPartCount(V.round.length);
   renderVQ();
-  TM.start(saved?.left??TIME.vocab,TIME.vocab,onVocabDone);
+  const startVocabTimer=()=>TM.start(saved?.left??TIME.vocab,TIME.vocab,onVocabDone);
+  // resumed mid-part → straight back to the question, no second study round
+  if(saved&&saved.round&&saved.round.length){ startVocabTimer(); }
+  else{
+    beginStudy(V.round.map(w=>{
+      const it=V.pool.find(x=>x.w===w)||VOCAB.find(x=>x.w===w)||{w};
+      return {w:it.w,d:it.h||"",e:it.e||"",pic:it.w,dir:"ltr"};
+    }),"אלה המילים שייבדקו. אפשר לעיין כמה שרוצים.",startVocabTimer);
+  }
 }
 
 // The prompt is a picture ("מה רואים בתמונה?"), so a distractor that shows the

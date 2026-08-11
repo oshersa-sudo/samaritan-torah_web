@@ -1113,3 +1113,54 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
   .ab-head { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .ab-bead { transition: none; } }
+
+/* ══════════ Word bank preview (עיון לפני המבחן) · ג׳ ומעלה ══════════
+   The whole bank the part is about to test, shown before the first question.
+   The card hides the question while this is open, so nothing competes for
+   attention and the child is not answering something half-read. */
+.study {
+  display: flex; flex-direction: column; gap: 12px;
+  background: linear-gradient(180deg,#FFFDF7,#F5F1FF);
+  border: 2px solid #ece3ff; border-radius: 18px; padding: 16px 14px 14px;
+}
+.study[hidden] { display: none; }
+.card.studying .mc-prompt,
+.card.studying .pic,
+.card.studying .opts,
+.card.studying .hint,
+.card.studying #mc-speak,
+.card.studying #btn-speak { display: none; }
+
+.study-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.study-head .lead { margin: 4px 0 0; }
+.study-count {
+  flex: none; background: #6C5CE7; color: #fff; border-radius: 999px;
+  padding: 4px 12px; font-size: 13px; font-weight: 700; white-space: nowrap;
+}
+.study-list {
+  display: flex; flex-direction: column; gap: 7px;
+  max-height: min(44vh, 360px); overflow-y: auto; padding-inline-end: 2px;
+  overscroll-behavior: contain;
+}
+.study-list.no-pic .study-row { grid-template-columns: minmax(0,auto) minmax(0,1fr); }
+.study-row {
+  display: grid; grid-template-columns: 40px minmax(0,auto) minmax(0,1fr);
+  align-items: center; gap: 10px;
+  background: #fff; border: 1.5px solid #eee6fb; border-radius: 13px; padding: 9px 11px;
+}
+.study-pic { font-size: 26px; line-height: 1; text-align: center; }
+.study-pic img { width: 34px; height: 34px; object-fit: cover; border-radius: 8px; }
+.study-w {
+  font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 17px;
+  color: var(--ink); overflow-wrap: anywhere;
+}
+.study-d { font-size: 14px; color: var(--ink-soft); line-height: 1.4; overflow-wrap: anywhere; }
+.study-go { margin-top: 2px; }
+.study-note { margin: 0; text-align: center; font-size: 12.5px; color: var(--ink-soft); }
+
+@media (max-width: 420px) {
+  .study-row { grid-template-columns: 32px minmax(0,auto) minmax(0,1fr); gap: 8px; padding: 8px 9px; }
+  .study-w { font-size: 15.5px; }
+  .study-d { font-size: 13px; }
+  .study-list { max-height: min(40vh, 300px); }
+}
