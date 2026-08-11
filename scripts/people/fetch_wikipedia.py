@@ -29,8 +29,8 @@ OUT = os.path.join(_ROOT, 'data', 'people', 'wikipedia.json')
 UA = 'SamaritanTorahApp/1.0 (https://samaritan-torah.onrender.com; oshersa@gmail.com)'
 LANGS = ('he', 'en', 'ar')
 
-# The seven Samaritan figures of the unit that have a Wikipedia article, with one
-# known article each as the seed; the others are resolved from its langlinks.
+# The Samaritan figures of the unit that have a Wikipedia article, with one known
+# article each as the seed; the others are resolved from its langlinks.
 SEED = {
     'simon_magus':              ('en', 'Simon Magus'),
     'baba_rabba':               ('en', 'Baba Rabba'),
@@ -39,6 +39,8 @@ SEED = {
     'abu_lfath_ibn_abi_lhasan': ('en', "Abu'l-Fath"),
     'aharon_ben_manir':         ('he', 'אהרן בן מניר'),
     'dustan_dositheus':         ('en', 'Dositheos (Samaritan)'),
+    # added at the owner's request, from the Hebrew article he pointed at
+    'ibrahim_al_ayya':          ('he', 'אברהם בן יעקב הדנפי'),
 }
 
 
