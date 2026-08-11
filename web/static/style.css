@@ -709,6 +709,8 @@ footer a{ color:var(--accent); text-decoration:none; }
 .tal-sense{ color:var(--dark); font-size:15px; line-height:1.6; margin:3px 0; }
 .tal-sense .pos{ color:var(--muted); font-size:12.5px; font-style:italic; }
 .tal-sense .tal-pg{ color:var(--muted); font-size:12px; }
+/* form analysis of an inflected piyyut/Marqe word, above the root entries */
+.tal-infl{ border-inline-start:3px solid var(--accent,#b9975b); padding-inline-start:10px; margin:4px 0 10px; }
 .tal-locs{ display:flex; flex-wrap:wrap; gap:5px; }
 .tal-loc{ background:#eef2fd; color:var(--navy); border-radius:5px; padding:2px 7px; font-size:13px; white-space:nowrap; }
 .tal-loc.occ-link{ cursor:pointer; border:1px solid transparent; }
@@ -1128,8 +1130,10 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 }
 
 /* ── אישי השומרונים: era/A-Z list on one side, the figure's entry on the other ── */
-.pp-search-row{ align-items:center; }
-.pp-search-row input{ flex:1 1 auto; }
+/* the row is shared with the other readers, which are nowrap — this one carries a
+   second control, so it must be allowed to wrap or the toggle is pushed off-screen */
+.pp-search-row{ align-items:center; flex-wrap:wrap; }
+.pp-search-row input{ flex:1 1 200px; min-width:0; }
 .pp-modes{ display:flex; gap:3px; background:#f1eede; border-radius:8px; padding:3px; flex:0 0 auto; }
 .pp-mode{ border:0; background:transparent; padding:7px 13px; border-radius:6px; cursor:pointer;
   font:inherit; font-size:13.5px; color:var(--dark); }
@@ -1167,7 +1171,11 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   .pp-body.pp-detail-open .pp-list{ display:none; }
   .pp-body:not(.pp-detail-open) .pp-list{ display:block; flex:1 1 auto; border-left:0; }
   .pp-body:not(.pp-detail-open) .pp-detail{ display:none; }
-  .pp-modes{ width:100%; justify-content:center; }
+  /* the search takes the first line to itself and the toggle the second, each
+     button splitting the width so both are comfortable to tap */
+  .pp-search-row input{ flex:1 1 100%; }
+  .pp-modes{ width:100%; justify-content:stretch; }
+  .pp-mode{ flex:1 1 0; text-align:center; padding:9px 8px; }
 }
 
 /* ── מציאת חרוזים: word/suffix/sound rhyme search over the piyyutim word bank ── */
