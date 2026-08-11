@@ -3239,18 +3239,27 @@ function _genMathQ(lvl,type){
   if(type==="seq")     return _genSeqQ(lvl);
   const R=_mrand;
   if(type==="addsub"){
-    const mx = mathMax("addsub",lvl);
+    // כיתה א׳ works inside ten for most of the year and only reaches twenty
+    // later, so two of every three exercises stay inside ten.
+    const mx = lvl===1 ? (Math.random()<2/3 ? 10 : 20) : mathMax("addsub",lvl);
     // keep the SUM inside the grade's number domain, not just each operand
     if(Math.random()<0.5){const x=R(1,mx-1),y=R(1,mx-x);return {t:`${x} + ${y}`,a:x+y,eq:true};}
     const x=R(2,mx),y=R(1,x);return {t:`${x} − ${y}`,a:x-y,eq:true};
   }
   if(type==="muldiv"){
+    if(lvl<=2){
+      // ב׳ meets multiplication through the 2, 5 and 10 families first, not the
+      // whole table, and division only back out of those same families.
+      const fam=[2,5,10][R(0,2)], k=R(2,Math.min(10,Math.floor(50/fam)));
+      if(Math.random()<0.5)return {t:`${fam} × ${k}`,a:fam*k,eq:true};
+      return {t:`${fam*k} ÷ ${fam}`,a:k,eq:true};
+    }
     const top = mathMax("muldiv",lvl);
     if(Math.random()<0.5){const x=R(2,top),y=R(2,top);return {t:`${x} × ${y}`,a:x*y,eq:true};}
     const y=R(2,top),q=R(2,top);return {t:`${y*q} ÷ ${y}`,a:q,eq:true};
   }
   if(type==="missing"){
-    const mx = mathMax("missing",lvl);
+    const mx = lvl===1 ? (Math.random()<2/3 ? 10 : 20) : mathMax("missing",lvl);
     // every number shown must stay inside the grade's domain — including the total
     if(Math.random()<0.5){const x=R(1,mx-1),y=R(1,mx-x);return {t:`${x} + ? = ${x+y}`,a:y,eq:false};}
     const x=R(2,mx),y=R(1,x-1);return {t:`${x} − ? = ${x-y}`,a:y,eq:false};
@@ -3746,7 +3755,8 @@ function _genFracQ(lvl){
   const R=_mrand;
   if(lvl<=2){                                   // "רבע מ-12" → whole-number answer
     const opts=lvl<=1?[[2,"חצי"],[4,"רבע"]]:[[2,"חצי"],[3,"שליש"],[4,"רבע"]];
-    const [d,name]=opts[R(0,opts.length-1)],q=R(2,9),whole=d*q;
+    const [d,name]=opts[R(0,opts.length-1)];
+    const q=R(2,Math.max(2,Math.floor(20/d))), whole=d*q;   // the whole stays inside twenty
     return {t:`כמה זה ${name} מ-${whole}?`,a:q,rtl:true,eq:false};
   }
   let rn,rd,t;
@@ -3770,6 +3780,48 @@ function _genFracQ(lvl){
 function _genWordProblem(lvl){
   // scaled by school grade, following the same number domain as the drills
   const R=_mrand, big = mathMax("missing",lvl);
+  // א׳–ב׳ get their own set. The general list below is shared by ג׳–ו׳ and
+  // contains multiplication and division, which a first-grader has not met, and
+  // numbers that run past the grade's domain — so the youngest grades never
+  // reach it.
+  if(lvl<=2){
+    const pick=a=>a[R(0,a.length-1)];
+    const mx = lvl===1 ? (Math.random()<2/3 ? 10 : 20) : 100;
+    const T=[
+      ()=>{const a=R(3,mx),b=R(1,a-1);
+        return {t:`בקופסה היו ${a} עוגיות, ודנה אכלה ${b}. כמה עוגיות נשארו?`,a:a-b};},
+      ()=>{const a=R(1,mx-1),b=R(1,mx-a);
+        return {t:`לרוני יש ${a} שקלים, והוא קיבל עוד ${b} שקלים. כמה שקלים יש לו עכשיו?`,a:a+b};},
+      ()=>{const a=R(3,mx),b=R(1,Math.max(1,a-1));
+        return {t:`בכיתה היו ${a} ילדים, ו-${b} יצאו להפסקה. כמה ילדים נשארו בכיתה?`,a:a-b};},
+      ()=>{const a=R(3,mx),b=R(1,Math.max(1,a-1));
+        return {t:`על העץ ישבו ${a} ציפורים, ו-${b} עפו. כמה ציפורים נשארו על העץ?`,a:a-b};},
+      ()=>{const a=R(1,mx-1),b=R(1,mx-a);
+        return {t:`לדני ${a} בלונים ולתמר ${b} בלונים. כמה בלונים יש להם יחד?`,a:a+b};},
+      ()=>{const a=R(1,mx-1),b=R(1,mx-a);
+        return {t:`בשקית היו ${a} תפוחים, ואמא הוסיפה עוד ${b}. כמה תפוחים יש בשקית?`,a:a+b};},
+      ()=>{const a=R(2,mx),b=R(1,a-1);
+        return {t:`ליואב ${a} גולות ולנועה ${b}. בכמה גולות יש ליואב יותר?`,a:a-b};},
+      ()=>{const a=R(1,mx-1),b=R(1,mx-a);
+        return {t:`בגן יש ${a} ילדות ו-${b} ילדים. כמה ילדים יש בגן בסך הכול?`,a:a+b};},
+    ];
+    if(lvl>=2)T.push(
+      // ב׳ has met the 2, 5 and 10 families — nothing beyond them
+      ()=>{const per=pick([2,5,10]),g=R(2,Math.min(10,Math.floor(50/per)));
+        return {t:`בכל שולחן יושבים ${per} ילדים, ויש ${g} שולחנות. כמה ילדים בסך הכול?`,a:per*g};},
+      ()=>{const price=pick([2,5,10]),n=R(2,Math.min(10,Math.floor(50/price)));
+        return {t:`מחיר עיפרון אחד הוא ${price} שקלים. כמה יעלו ${n} עפרונות?`,a:price*n};},
+      ()=>{const per=pick([2,5,10]),g=R(2,Math.min(10,Math.floor(50/per)));
+        return {t:`${per*g} סוכריות חולקו שווה בשווה ל-${g} ילדים. כמה סוכריות קיבל כל ילד?`,a:per};},
+      ()=>{const a=R(5,40),b=R(5,40),c=R(5,Math.max(5,100-a-b));
+        return {t:`בשלושה ימים נמכרו ${a}, ${b} ו-${c} כרטיסים. כמה כרטיסים נמכרו בסך הכול?`,a:a+b+c};},
+      ()=>({t:"כמה דקות יש בשעה?",a:60}),
+      ()=>({t:"כמה סנטימטרים יש במטר אחד?",a:100}),
+      ()=>{const a=R(10,90);
+        return {t:`לאורי ${a} שקלים. כמה שקלים חסרים לו כדי שיהיו לו 100?`,a:100-a};},
+    );
+    return pick(T)();
+  }
   // ז׳ ומעלה: the strands middle school word problems are actually built on —
   // rate, percentage, ratio and work — instead of bigger cookie counts.
   if(lvl>=7){
