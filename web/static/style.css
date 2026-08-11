@@ -1576,13 +1576,17 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   padding:2px 9px; cursor:pointer; white-space:nowrap; line-height:1.45; }
 .reading-cont:hover{ border-color:var(--accent); color:var(--accent); }
 .reading-cont.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
-/* repeat (השמעה חוזרת): off · this reading (a "1" in the loop) · the whole parasha */
+/* repeat (השמעה חוזרת): off · this reading (play + "1" in the loop) · the parasha.
+   The button itself stays transparent — the loop is the frame and the play stands
+   inside it; --rd-rep-bg is what the "1" is knocked out of, i.e. whatever shows
+   through behind the play. */
 .reading-repeat{ flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center;
-  width:25px; height:25px; padding:0; border:1px solid var(--line); border-radius:50%;
-  background:#fff; color:var(--muted); cursor:pointer; }
-.reading-repeat svg{ width:15px; height:15px; }
-.reading-repeat:hover{ border-color:var(--accent); color:var(--accent); }
-.reading-repeat.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  --rd-rep-bg:#fbf8ef;
+  width:23px; height:23px; padding:0; border:0; border-radius:50%;
+  background:transparent; color:var(--muted); cursor:pointer; }
+.reading-repeat svg{ width:22px; height:22px; }   /* borderless: the glyph fills the box */
+.reading-repeat:hover{ color:var(--accent); }
+.reading-repeat.on{ color:var(--accent); }
 .reading-seek{ flex:1; min-width:52px; width:auto; height:16px; direction:ltr;
   accent-color:var(--accent); margin:0; }
 .reading-time{ flex:0 0 auto; font-size:11.5px; color:var(--muted); direction:ltr; }
