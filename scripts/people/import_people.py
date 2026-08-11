@@ -191,6 +191,9 @@ NAME_HE = {
     'abdallah_b_salama':        'עבד-אלה (עבדאללה) בן שלמה (בן סלאמה)',
     # the same Salama, in a name whose Hebrew part was already Hebrew throughout
     'ab_hisda_abu_lhasan_b_jacob': 'אב חסדא (אבו אלחסן) בן יעקב בן אהרן בן שלמה',
+    # al-Qabbas reads אל-קבצי by the owner's ruling — the one nisba he did rule on;
+    # hyphenated to match the house style of יוסף אל-עסכרי / אבראהים אל-חקילאני
+    'abraham_qabbasa':          'אברהם אל-קבצי (אבראהים אלקבאץ)',
 }
 
 _BOOK = 'A Companion to Samaritan Studies'
