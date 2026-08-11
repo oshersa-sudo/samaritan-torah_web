@@ -972,17 +972,33 @@ const TORAH_STORIES = (typeof window!=="undefined" && Array.isArray(window.TORAH
 const LASHON_QUIZ   = (typeof window!=="undefined" && Array.isArray(window.LASHON_QUIZ))   ? window.LASHON_QUIZ   : [];
 // Israeli Ministry of Education curriculum map (from curriculum.js)
 const CURRICULUM = (typeof window!=="undefined" && window.CURRICULUM) ? window.CURRICULUM : null;
-// the curriculum grade (1–6) that matches the student's current level
-function curGrade(){ return Math.max(1,Math.min(6, S.subject==="english" ? Math.max(3,curLevel()) : curLevel())); }
+// The curriculum grade to show. It used to clamp to six, so a ninth-grader was
+// shown the sixth-grade programme; it now returns the child's real grade,
+// pulled to the nearest grade the subject actually has (English starts at ג׳,
+// geography at ב׳, history at ו׳).
+function curGrade(subj){
+  const key=subj||S.subject, g=curLevel();
+  const c=CURRICULUM&&CURRICULUM[key];
+  if(!c||!c.grades)return g;
+  const have=Object.keys(c.grades).map(Number).sort((a,b)=>a-b);
+  if(!have.length)return g;
+  if(c.grades[g])return g;
+  return have.reduce((best,x)=>Math.abs(x-g)<Math.abs(best-g)?x:best,have[0]);
+}
 // build the "aligned to the curriculum" card for the current subject
 function curriculumCardHTML(){
   if(!CURRICULUM||!CURRICULUM[S.subject])return "";
-  const c=CURRICULUM[S.subject], g=curGrade();
-  const gradeName={1:"א׳",2:"ב׳",3:"ג׳",4:"ד׳",5:"ה׳",6:"ו׳"};
-  // show the current grade plus its neighbours so families see the sequence
+  const c=CURRICULUM[S.subject], g=curGrade(), mine=curLevel();
+  // the child's own grade, with the one before and after so the sequence is
+  // visible. A subject that starts later than the child's grade — English at
+  // ג׳, history at ו׳ — is labelled as starting there rather than pretending
+  // it is their grade.
   const near=[g-1,g,g+1].filter(x=>c.grades[x]);
+  const tag = g===mine ? " · הכיתה שלך"
+            : g>mine   ? " · המקצוע מתחיל כאן"
+                       : " · הכיתה הגבוהה במקצוע";
   const rows=near.map(x=>`<div class="cur-grade${x===g?" cur-now":""}">
-    <b>כיתה ${gradeName[x]||x}</b>
+    <b>כיתה ${GRADE_LETTER[x]||x}${x===g?tag:""}</b>
     <ul>${c.grades[x].map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`).join("");
   return `<div class="mini-card cur-card">
     <div class="mini-label">📚 מותאם לתכנית הלימודים · ${esc(c.name)}</div>
@@ -1326,6 +1342,14 @@ function subjectHTML(){
   <div class="home-greet">
     <div class="home-buddy">${S.avatar}</div>
     <div class="home-hello"><h1>שלום, ${esc(S.name||"")}!</h1><p>מה לומדים היום?</p></div>
+  </div>
+
+  <div class="mini-card hub-grade">
+    <div class="mini-label">הכיתה שלי · חלה על כל המקצועות</div>
+    <div class="pill-row" id="hub-levels">
+      ${Object.keys(GRADE_LETTER).map(Number).map(L=>`<button type="button" class="pill${curLevel()===L?" pill-on":""}" data-lvl="${L}" aria-pressed="${curLevel()===L}">${esc(GRADE_LETTER[L])}</button>`).join("")}
+    </div>
+    <p class="hub-grade-note" id="hub-grade-note"></p>
   </div>
 
   <div class="subj-cards" id="hub-subjects">
@@ -2316,6 +2340,31 @@ function render(){
   saveSession();
 }
 
+// Setting the grade is the same action wherever it is offered — the hub, a
+// subject's menu, or the pause screen. It applies to every subject and is
+// remembered against this student, so it survives closing the app.
+function setGrade(L,pillRow,msg){
+  S.lvlOverride=L; S.adaptLvl=L;
+  if(S.phone)sSet("lvl:"+S.phone,L);
+  if(pillRow)pillRow.querySelectorAll(".pill").forEach(x=>{
+    const on=+x.dataset.lvl===L;
+    x.classList.toggle("pill-on",on); x.setAttribute("aria-pressed",String(on));
+  });
+  hubGradeNote();
+  showToast("good",msg||"הכיתה עודכנה ונשמרה — לכל המקצועות");
+}
+// tell the child what their choice means, in the subjects' own words
+function hubGradeNote(){
+  const el=document.getElementById("hub-grade-note"); if(!el)return;
+  const g=curLevel();
+  const names=Object.entries(SUBJECTS)
+    .filter(([k])=>CURRICULUM&&CURRICULUM[k]&&CURRICULUM[k].grades&&CURRICULUM[k].grades[g])
+    .map(([,v])=>v.name);
+  el.textContent = names.length
+    ? `כיתה ${GRADE_LETTER[g]} · תכנית הלימודים תוצג לפי הכיתה הזאת ב-${names.length} מקצועות`
+    : `כיתה ${GRADE_LETTER[g]}`;
+}
+
 function attachListeners(){
   const pb=document.getElementById("btn-pause");
   if(pb)pb.addEventListener("click",doPause);
@@ -2435,6 +2484,10 @@ function attachListeners(){
         S.subject=b.dataset.subj;SFX.jingle(S.subject);S.score=0;S.prog={};S.screen="menu";render();
       });
     });
+    const hl=document.getElementById("hub-levels");
+    if(hl)hl.addEventListener("click",e=>{const b=e.target.closest(".pill");if(!b)return;
+      setGrade(+b.dataset.lvl,hl);});
+    hubGradeNote();
     const lo=document.getElementById("btn-logout-hub");
     if(lo)lo.addEventListener("click",doLogout);
   }
@@ -2448,10 +2501,8 @@ function attachListeners(){
     if(cb)cb.addEventListener("click",()=>{S.returnTo="menu";S.screen="curriculum";render();});
     const ml=document.getElementById("menu-levels");
     if(ml)ml.addEventListener("click",e=>{const b=e.target.closest(".pill");if(!b)return;
-      S.lvlOverride=+b.dataset.lvl;S.adaptLvl=S.lvlOverride;
-      if(S.phone)sSet("lvl:"+S.phone,S.lvlOverride);   // remember this student's level
-      ml.querySelectorAll(".pill").forEach(x=>x.classList.toggle("pill-on",x===b));
-      showToast("good","הרמה עודכנה ונשמרה");});
+      setGrade(+b.dataset.lvl,ml);
+      render();});   // the curriculum card on this screen follows the grade
     document.getElementById("btn-start").addEventListener("click",()=>{startFreshTest();S.adaptLvl=S.lvlOverride||levelForAge(S.age);S.screen=curOrder()[0];render();});
     const rvb=document.getElementById("btn-review");
     if(rvb)rvb.addEventListener("click",()=>{S.screen="rv";render();});
@@ -2466,10 +2517,7 @@ function attachListeners(){
     document.getElementById("pz-time").addEventListener("click",()=>{pauseAddTime(120);showToast("good","נוספו 2 דקות ⏱");S.screen=back;render();});
     const pl=document.getElementById("pz-levels");
     if(pl)pl.addEventListener("click",e=>{const b=e.target.closest(".pill");if(!b)return;
-      const L=+b.dataset.lvl;S.lvlOverride=L;S.adaptLvl=L;
-      if(S.phone)sSet("lvl:"+S.phone,L);   // remember this student's level
-      pl.querySelectorAll(".pill").forEach(x=>x.classList.toggle("pill-on",x===b));
-      showToast("good","הרמה תשתנה מהחלק הבא");});
+      setGrade(+b.dataset.lvl,pl,"הכיתה תשתנה מהחלק הבא");});
     document.getElementById("pz-plan").addEventListener("click",()=>{S.screen="menu";render();});
     document.getElementById("pz-hub").addEventListener("click",()=>{S.screen="subject";render();});
     document.getElementById("pz-logout").addEventListener("click",doLogout);
