@@ -1079,6 +1079,10 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 .modal.book-full{ align-items:stretch; justify-content:stretch; padding:0; }
 .modal-box.book-reader{ max-width:none; width:100%; height:100%; max-height:100%;
   border-radius:0; gap:10px; padding:14px; }
+/* ציר הזמן: a whole page of its own inside the app, so it gets the full box with
+   only the return bar above it — no padding to waste and no border to box it in */
+.modal-box.tl-box{ padding:10px 10px 0; gap:8px; }
+#tlFrame{ flex:1 1 auto; width:100%; border:0; min-height:0; background:#fff; }
 /* explicit "return to the Torah app" button inside the reader / dictionary apps */
 .rd-totorah{ flex:0 0 auto; border:1px solid var(--navy); background:var(--navy); color:#fff;
              border-radius:8px; padding:7px 12px; font-family:inherit; font-size:14px; font-weight:700;

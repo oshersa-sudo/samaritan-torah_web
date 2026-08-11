@@ -25,7 +25,7 @@ _WEB_DIR = os.path.dirname(os.path.abspath(__file__))
 if _WEB_DIR not in sys.path:
     sys.path.insert(0, _WEB_DIR)
 
-from flask import Flask, jsonify, request, render_template, send_from_directory, send_file
+from flask import Flask, jsonify, request, render_template, send_from_directory, send_file, redirect
 
 from app.services import database as db
 from app.services.interpreter import get_chapter_interpretations
@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '3.2'
+APP_VERSION = '3.3'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 _SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
@@ -1256,6 +1256,38 @@ def _sam_opening(sam_ch_id):
 @app.route('/')
 def index():
     return render_template('index.html', version=APP_VERSION)
+
+
+# ── ציר הזמן ההיסטורי השומרוני ───────────────────────────────────────────────
+# A self-contained page of its own (its own HTML/CSS/JS and its own generated
+# data files), served straight out of History_timeline/ rather than copied into
+# web/static — one copy on disk, so its build script (History_timeline/scripts/
+# build_data.py) keeps regenerating the very files the app serves. The app opens
+# it in a full-screen frame from the menu.
+_TIMELINE_DIR = os.path.join(_ROOT, 'History_timeline')
+
+
+@app.route('/timeline')
+def timeline_root():
+    """The page asks for css/style.css and js/app.js by RELATIVE path. Without the
+    trailing slash those resolve against the site root and 404, so the timeline
+    would arrive unstyled and unscripted — hence the redirect rather than serving
+    index.html here."""
+    qs = request.query_string.decode()
+    return redirect('/timeline/' + (('?' + qs) if qs else ''))
+
+
+@app.route('/timeline/')
+@app.route('/timeline/<path:sub>')
+def timeline_page(sub='index.html'):
+    return send_from_directory(_TIMELINE_DIR, sub)
+
+
+@app.route('/favicon.ico')
+def favicon():
+    """index.html names its own icon, but a page that doesn't — the timeline —
+    makes the browser ask for /favicon.ico and log a 404 in the console."""
+    return send_from_directory(app.static_folder, 'img/app_icon.png')
 
 
 @app.route('/api/whats_new')

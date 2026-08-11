@@ -149,6 +149,7 @@ const I18N = {
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך המילון', no_dict:'אין מילון זמין לפסוק זה',
     dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
     more_results:'תוצאות נוספות', phr_occurrences:'מופעים', phr_words:'מילות הצירוף', phr_head:'מטבעות לשון', phr_formula:'כינוי קבוע', phr_idiom:'ניב', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון.', tal_click_precise:'לחץ לפירוש המדויק מתוך המילון ⬅',
+    m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
@@ -219,6 +220,7 @@ const I18N = {
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     // newest first: a reader opening "מה חדש" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>גרסה 3.3 — ציר הזמן ההיסטורי השומרוני</b></p><ul><li>בתפריט, מעל הספרייה, נוסף <b>ציר הזמן ההיסטורי השומרוני</b> — ציר אינטראקטיבי מבריאת העולם ועד ימינו, הנפתח בתוך האפליקציה וחוזר לתורה בלחיצה אחת</li><li>ארבע שכבות שאפשר לכבות ולהדליק — תולדות השומרונים, עם ישראל ויהודה, ימי המקרא, והעולם והשלטונות — ולצדן אישים וחוקרים ורצועות של נושאי משרה: הכהנים הגדולים, ראשי הממשלה והנשיאים</li><li><b>נקודת ה־0</b> היא קו קבוע שהציר חולף תחתיו, ולידה נקראות יחד השנה הגרגוריאנית, השנה לבריאת העולם, השנה לכניסה לארץ כנען, ושם הכהן הגדול שכיהן באותה שנה</li><li>חיפוש אירוע, אישיות או שנה בכל אחד משלושת המניינים; לחיצה על אירוע פותחת כרטיס עם המקור; וכפתור <b>מסע</b> מניע את הציר מאליו</li></ul>',
       '<p><b>גרסה 3.2 — ההדפסה: הדף עצמו, ולא צילום של האפליקציה</b></p><ul><li>מה שיוצא מהמדפסת הוא בדיוק מה שנראה ב<b>תצוגה המקדימה</b> — הדף מוגדר פעם אחת, במידות של נייר, והתצוגה מציגה גיליון A4 אמיתי בגודל הכתב שיודפס בפועל</li><li>על הנייר עולים <b>הטקסט ופירושיו בלבד</b>: מסגרת האפליקציה, שורת ההאזנה והכפתורים אינם מודפסים — גם בהדפסה מהדפדפן עצמו</li><li>בחירת הגופן — <b>שומרוני או עברי</b> — חלה על כל הדף, הפירוש בכלל זה, וחלון ההדפסה נפתח בכתב שעל המסך</li><li><b>פירוש הפסוק</b> בא מיד מתחת לפרק שלו ו<b>מילון מילים</b> אחריו; כל אחד מהם מופרד בקו ולא ממוסגר, וגודל הכתב קבוע בכל דף ובכל מכשיר</li><li>תוקן: פרק ארוך נחתך בסוף העמוד הראשון ולא הודפס עד סופו</li><li>גם <b>יחידות הספרייה</b> נושאות מעתה סמל מדפסת, ומדפיסות על אותו גיליון: הפרק הפתוח בספר או תוכן העניינים שלו, פיוט על שורותיו (ופירושי מילותיו אם המילון פתוח), ערך של אישיות או רשימת השמות, ותוצאות המילון ומציאת החרוזים</li><li>ולשבעת השומרונים שיש להם ערך בוויקיפדיה נוסף פרק מתקפל <b>מורחב — הערך המלא</b>, ובו הערך כולו כלשונו, בשפת הממשק היכן שהוא קיים בה</li></ul>',
       '<p><b>גרסה 3.1 — אישים וחוקרים שומרוניים, ומדף ספרים חדש</b></p><ul><li><b>אישים וחוקרים שומרוניים</b> נוסף לספרייה כיחידה עצמאית: 95 דמויות — מאהרן הכהן ובאבא רבה, דרך פייטני ימי הביניים, ועד בני העדה וחוקריה במאה העשרים — ולכל אחת הסבר על מקומה במסורת</li><li>הרשימה נפרשת <b>לפי תקופה</b> או <b>לפי א״ב</b>, והחיפוש רץ גם על גוף ההסברים — כך שאפשר למצוא אישיות לפי עניין ולא רק לפי שמה</li><li>ל-23 מן האישים נוספה <b>הרחבה</b> — תאריכים, תיקונים והקשר שאין בערך עצמו — ולצדה <b>לקריאה נוספת</b>; ושמותיהם העבריים הובאו במקום הצורה הערבית היכן שהם ידועים</li><li>מדף הספרים עוצב מחדש: שם הספר כתוב על הכריכה עצמה, לכל ספר צבע משלו, והכריכות הוקטנו — כך נכנסים בשורה אחת כפליים ספרים מקודם</li></ul>',
       '<p><b>גרסה 3.0 — אבו אלפרג׳ בתוך פירוש הפסוק, והקראה רציפה</b></p><ul><li>דעתו של <b>אבו אלפרג׳</b> מובאת מתחת לפירוש כל פסוק שהוא מדבר עליו — בשמו ובציון סעיף המחבר; 654 פסוקים ב-352 פרקים שומרוניים, והחיבור כולו תורגם לערבית</li><li><b>הקראה רציפה</b>: דגל בסרגל הניגון שממשיך אל הפרק הבא בתום ההקלטה — באותו עד קריאה ובאותה מהירות — ונעצר תמיד בגמר הפרשה</li><li>סרגל הניגון צומצם לטובת הטקסט, שלושת הסימנים שבשורת הניווט הוצמדו, וסרגל מקופל מסמן את עצמו בחץ קטן מתנדנד</li></ul>',
@@ -375,6 +377,7 @@ const I18N = {
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from the dictionary", no_dict:'No dictionary for this verse',
     dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
     more_results:'More results', phr_occurrences:'occurrences', phr_words:'Words of the phrase', phr_head:'Set phrases', phr_formula:'fixed epithet', phr_idiom:'idiom', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in the dictionary.', tal_click_precise:'Tap for the exact entry from the dictionary ⬅',
+    m_timeline:'The Samaritan Historical Timeline',
     m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
@@ -445,6 +448,7 @@ const I18N = {
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     // newest first: a reader opening "What's new" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>Version 3.3 — The Samaritan Historical Timeline</b></p><ul><li>The menu gains <b>The Samaritan Historical Timeline</b>, above the library: an interactive axis from the creation of the world to our own day, opening inside the app and returning to the Torah with one tap</li><li>Four layers you can switch on and off — Samaritan history, Israel and Judah, the biblical age, and the world and its rulers — beside figures and scholars, and bands of office-holders: the high priests, the prime ministers and the presidents</li><li>The <b>zero point</b> is a fixed line the timeline passes beneath, reading out together the Gregorian year, the year from the creation of the world, the year from the entry into Canaan, and the high priest of that year</li><li>Search an event, a person or a year in any of the three reckonings; tap an event for a card with its source; and <b>Journey</b> sets the timeline moving on its own</li></ul>',
       '<p><b>Version 3.2 — Printing: the sheet itself, not a photograph of the app</b></p><ul><li>What comes out of the printer is exactly what the <b>preview</b> showed — the page is defined once, in paper measures, and the preview draws a real A4 sheet at the type size that will actually be printed</li><li>Only <b>the text and its commentaries</b> reach the paper: the app frame, the reading bar and the buttons are never printed — not even from the browser\'s own print command</li><li>The font choice — <b>Samaritan or Hebrew</b> — governs the whole sheet, the commentary included, and the dialog opens on the script that is on the screen</li><li>The <b>verse commentary</b> comes directly beneath its chapter and the <b>word dictionary</b> after it; each is set off by a rule rather than boxed, and the type size is fixed on every page and every device</li><li>Fixed: a long chapter was cut off at the end of the first page instead of printing in full</li><li>The <b>library units</b> now carry a printer of their own, onto the same sheet: a book\'s open chapter or its contents, a piyyut with its lines (and its word glosses if the dictionary is open), a figure\'s entry or the list of names, and the results of the dictionary and the rhyme finder</li><li>The seven Samaritan figures who have a Wikipedia article carry a folded <b>Expanded — the full article</b> panel holding it whole, in the interface language wherever it exists there</li></ul>',
       '<p><b>Version 3.1 — Samaritan Figures and Scholars, and a new bookshelf</b></p><ul><li><b>Samaritan Figures and Scholars</b> joins the library as a unit of its own: 95 figures — from Aaron the priest and Baba Rabba, through the medieval poets, to community members and scholars of the twentieth century — each with an account of its place in the tradition</li><li>The list can be laid out <b>by period</b> or <b>A–Z</b>, and the search runs over the accounts themselves, so a figure can be found by subject and not only by name</li><li>23 of the figures carry <b>further detail</b> — dates, corrections and context the entry itself lacks — and a <b>further reading</b> list beside it; and their Hebrew names now lead where those are known</li><li>The bookshelf was redrawn: each title is written on its own cover, every book has its own colour, and the covers are smaller — so a row now holds twice as many books as before</li></ul>',
       '<p><b>Version 3.0 — Abu\'l-Faraj inside the verse commentary, and continuous reading</b></p><ul><li><b>Abu\'l-Faraj</b>\'s view is now set beneath the commentary on every verse he speaks about, in his name and with the author\'s section number: 654 verses across 352 Samaritan chapters, the whole work rendered in Arabic too</li><li><b>Continuous reading</b>: a flag on the play bar that carries on into the next chapter when a recording ends — same reading witness, same speed — and always stops at the end of the parasha</li><li>The play bar was slimmed down for the sake of the text, the three chapter signs were drawn together, and a folded bar now marks itself with a small bobbing arrow</li></ul>',
@@ -601,6 +605,7 @@ const I18N = {
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من المعجم', no_dict:'لا يوجد معجم لهذه الآية',
     dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
     more_results:'نتائج إضافية', phr_occurrences:'مواضع', phr_words:'كلمات التعبير', phr_head:'تعابير ثابتة', phr_formula:'لقب ثابت', phr_idiom:'تعبير اصطلاحي', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في المعجم.', tal_click_precise:'اضغط للمدخل الدقيق من المعجم ⬅',
+    m_timeline:'الخطّ الزمني التاريخي السامري',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
@@ -671,6 +676,7 @@ const I18N = {
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     // newest first: a reader opening "ما الجديد" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>الإصدار 3.3 — الخطّ الزمني التاريخي السامري</b></p><ul><li>أُضيف إلى القائمة، فوق المكتبة، <b>الخطّ الزمني التاريخي السامري</b>: خطّ تفاعلي من خلق العالم إلى أيّامنا، يُفتح داخل التطبيق ويعود إلى التوراة بضغطة واحدة</li><li>أربع طبقات تُطفأ وتُشعل — تاريخ السامريين، وبنو إسرائيل ويهوذا، وأيّام المقرأ، والعالم والحكّام — وإلى جانبها الأعلام والباحثون وأشرطة أصحاب المناصب: الكهنة الكبار، ورؤساء الحكومة، والرؤساء</li><li><b>نقطة الصفر</b> خطّ ثابت يمرّ الزمن تحته، وتُقرأ عنده معاً السنة الميلادية، والسنة لخلق العالم، والسنة لدخول أرض كنعان، واسم الكاهن الأكبر في تلك السنة</li><li>بحث عن حدث أو شخصية أو سنة بأيّ من التقاويم الثلاثة؛ والضغط على حدث يفتح بطاقة بمصدره؛ وزرّ <b>رحلة</b> يُسيّر الخطّ من تلقائه</li></ul>',
       '<p><b>الإصدار 3.2 — الطباعة: الورقة نفسها لا صورةٌ عن التطبيق</b></p><ul><li>ما يخرج من الطابعة هو تماماً ما أظهرته <b>المعاينة</b> — فالصفحة معرَّفة مرّة واحدة بمقاييس الورق، والمعاينة تعرض ورقة A4 حقيقية بحجم الخطّ الذي سيُطبع فعلاً</li><li>لا يصل إلى الورق سوى <b>النصّ وتفاسيره</b>: هيكل التطبيق وشريط الاستماع والأزرار لا تُطبع — ولا حتّى من أمر الطباعة في المتصفّح نفسه</li><li>اختيار الخطّ — <b>السامري أو العبري</b> — يسري على الورقة كلّها والتفسير منها، ونافذة الطباعة تفتح على الخطّ الظاهر على الشاشة</li><li><b>تفسير الآية</b> يأتي تحت أصحاحه مباشرة و<b>معجم الكلمات</b> بعده؛ يفصل كلاًّ منهما خطّ لا إطار، وحجم الخطّ ثابت في كلّ صفحة وعلى كلّ جهاز</li><li>أُصلح: كان الأصحاح الطويل يُقصّ عند نهاية الصفحة الأولى فلا يُطبع كاملاً</li><li>ولوحدات <b>المكتبة</b> الآن طابعتها الخاصّة، وعلى الورقة نفسها: أصحاح الكتاب المفتوح أو محتوياته، وقصيدة بأسطرها (وشروح كلماتها إن كان المعجم مفتوحاً)، ومدخل عَلَم أو قائمة الأسماء، ونتائج المعجم وباحث القوافي</li><li>وللشخصيات السامرية السبع التي لها مقالة في ويكيبيديا أُضيف قسم مطويّ <b>موسّع — المقالة كاملة</b> يحملها بتمامها، بلغة الواجهة حيثما وُجدت بها</li></ul>',
       '<p><b>الإصدار 3.1 — أعلام وباحثون سامريّون، ورفّ كتب جديد</b></p><ul><li>أُضيف <b>أعلام وباحثون سامريّون</b> إلى المكتبة كوحدة مستقلّة: 95 شخصية — من هارون الكاهن وبابا ربّا، مروراً بشعراء العصور الوسطى، وصولاً إلى أبناء الطائفة وباحثيها في القرن العشرين — ولكلّ واحدة شرح لمكانتها في التقليد</li><li>تُعرض القائمة <b>حسب الحقبة</b> أو <b>حسب الأبجدية</b>، والبحث يجري في متن الشروح أيضاً، فتُوجد الشخصية بموضوعها لا باسمها وحده</li><li>أُضيف إلى 23 شخصية <b>تفصيل إضافي</b> — تواريخ وتصويبات وسياق لا يرد في المدخل نفسه — وإلى جانبه قائمة <b>لمزيد من القراءة</b>؛ وصارت أسماؤهم العبرية تتصدّر حيثما كانت معروفة</li><li>أُعيد رسم رفّ الكتب: اسم الكتاب مكتوب على غلافه نفسه، ولكلّ كتاب لونه الخاصّ، وصُغّرت الأغلفة — فصار السطر الواحد يتّسع لضعف ما كان</li></ul>',
       '<p><b>الإصدار 3.0 — أبو الفرج داخل شرح الآية، والقراءة المتواصلة</b></p><ul><li>يَرِد رأي <b>أبي الفرج</b> الآن تحت شرح كلّ آية يتحدّث عنها، باسمه وبرقم فقرة المؤلّف: 654 آية في 352 أصحاحاً سامرياً، والمصنَّف كلّه مترجَم إلى العربية</li><li><b>القراءة المتواصلة</b>: علامة في شريط التشغيل تتابع إلى الأصحاح التالي عند انتهاء التسجيل — بالقارئ نفسه وبالسرعة نفسها — وتتوقّف دائماً عند نهاية البارشاة</li><li>جرى تضييق شريط التشغيل لصالح النصّ، وقُرِّبت العلامات الثلاث في سطر التنقّل بعضها إلى بعض، وصار الشريط المطويّ يشير إلى نفسه بسهم صغير متمايل</li></ul>',
@@ -3767,6 +3773,36 @@ const LIB_ITEMS = [
   {act:'composer',     titleKey:'m_composer',     open:()=>openComposer(), adminOnly:true},
   {act:'privatecomp',  titleKey:'m_privatecomp',  open:()=>openPrivateComp(), adminOnly:true},
 ];
+// ── ציר הזמן ההיסטורי השומרוני ───────────────────────────────────────────────
+// A page of its own (/timeline) with its own code and its own generated data,
+// shown in a frame that fills the app rather than replacing it: the reader keeps
+// the app around the timeline and returns with one tap, as from the library. The
+// frame is loaded once and kept, so coming back lands where it was left — unless
+// the app's language changed meanwhile, which the timeline reads from ?lang.
+let _tlLang = null;
+function openTimeline(){
+  const f = $('tlFrame');
+  // the trailing slash matters: the timeline's own css/ and js/ are relative
+  if(_tlLang !== LANG){ _tlLang = LANG; f.src = '/timeline/?lang=' + encodeURIComponent(LANG); }
+  $('timelineModal').classList.remove('hidden');
+  trackNav(t('m_timeline'));
+}
+// The timeline also stands on its own outside the app, so it carries a link back
+// to the-samaritans.net and a home link on its title. In the frame those two
+// would navigate away from the app with no way back, so they are neutralised
+// from here — not in the timeline's own source, which must keep working when the
+// page is opened directly.
+$('tlFrame').addEventListener('load', () => {
+  try{
+    const d = $('tlFrame').contentDocument;
+    if(!d || !d.head) return;
+    const s = d.createElement('style');
+    s.textContent = '#backSite{display:none!important}#brandHome{pointer-events:none;cursor:default}';
+    d.head.appendChild(s);
+  }catch(e){ /* a cross-origin frame would throw here; this one never is */ }
+});
+$('tlToTorah').onclick = () => $('timelineModal').classList.add('hidden');
+
 function openLibrary(){
   $('libraryModal').classList.remove('hidden');
   $('libGallerySearch').value='';
@@ -3805,6 +3841,7 @@ $('dictToLib').onclick=()=>{ $('dictModal').classList.add('hidden'); openLibrary
 function menuAction(a){
   if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
   else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
+  else if(a==='timeline')  openTimeline();
   else if(a==='library')   openLibrary();
   else if(a==='dict_app')  openDictApp();
   else if(a==='tm_book')   openTmBook();
@@ -5235,6 +5272,12 @@ const HELP = {
       '<b>תווים כלליים:</b> <b>?</b> = תו אחד · <b>*</b> = מחרוזת · <b>+</b> = כל המילים באותו פסוק.',
       '<b>חיפוש מתקדם:</b> מדויק · לפי שורש · בתרגום הארמי · התעלם מסופיות · הצג פירוש המילים.',
       'כשהאפשרות <b>הצג פירוש המילים</b> דלוקה, מתחת לכל תוצאה מודגש הפירוש מתוך המילון, וניתן ללחוץ עליו לקבלת הערך המדויק מהמילון.']],
+    ['ציר הזמן ההיסטורי השומרוני 🕰️', [
+      'בתפריט, מעל הספרייה, נפתח <b>ציר זמן אינטראקטיבי</b> מבריאת העולם ועד ימינו — בתוך האפליקציה עצמה, וכפתור <b>↩ התורה</b> מחזיר לטקסט בדיוק למקום שבו היית.',
+      'גרירת הציר, הגלגלת או החצים מזיזות בזמן; <b>Ctrl</b> עם הגלגלת, הכפתורים + ו-− או המחוון משנים את קנה המידה; והסרגל האנכי שמן הצד מראה איזה חלק מן הציר כולו מוצג כרגע.',
+      'ה<b>שכבות</b> נדלקות ונכבות לפי העניין — תולדות השומרונים, עם ישראל ויהודה, ימי המקרא, העולם והשלטונות, ואישים וחוקרים — ולצדן <b>רצועות</b> של נושאי משרה: הכהנים הגדולים לדורותיהם, ראשי הממשלה והנשיאים.',
+      'הקו הזהוב הקבוע הוא <b>נקודת ה-0</b>: הציר חולף תחתיו, ולידו נקראות בבת אחת השנה הגרגוריאנית, השנה לבריאת העולם, השנה לכניסה לארץ כנען, ושמו של הכהן הגדול שכיהן אז.',
+      'ב<b>חיפוש</b> אפשר להקליד אירוע, אישיות או שנה בכל אחד משלושת המניינים; לחיצה על אירוע פותחת כרטיס עם התיאור המלא ומקורו; וכפתור <b>מסע</b> (או מקש הרווח) מניע את הציר מאליו.']],
     ['הספרייה השומרונית', [
       'בתפריט, תחת <b>הספרייה השומרונית</b>, נמצא <b>המילון הארמי-עברי השומרוני</b> — אפליקציית מילון: הקלד מילה בארמית (או שורש) וקבל את שורשה, פירושה העברי מתוך המילון, ומופעיה בתורה.',
       'הספרייה נפתחת כעמוד כרטיסיות, וכל יחידה מצוירת ככריכת ספר בצבע משלה ששמו כתוב עליה. יש בה גם ספרי עיון מלאים, קריאת פיוטים ומציאת חרוזים.',
@@ -5282,6 +5325,12 @@ const HELP = {
       '<b>Wildcards:</b> <b>?</b> = one letter · <b>*</b> = a string · <b>+</b> = all words in the same verse.',
       '<b>Advanced search:</b> exact · by root · in the Aramaic · ignore final letters · show word meanings.',
       'With <b>show word meanings</b> on, each result shows the meaning from the dictionary, clickable for the exact entry.']],
+    ['The Samaritan Historical Timeline 🕰️', [
+      'Above the library the menu opens an <b>interactive timeline</b> from the creation of the world to our own day — inside the app itself, with <b>↩ התורה</b> returning you to the text exactly where you left it.',
+      'Drag the axis, or use the wheel and the arrows, to move in time; <b>Ctrl</b> with the wheel, the + and − buttons or the slider change the scale; and the vertical rail at the side shows which part of the whole is on screen.',
+      'The <b>layers</b> switch on and off as you please — Samaritan history, Israel and Judah, the biblical age, the world and its rulers, and figures and scholars — beside <b>bands</b> of office-holders: the high priests through the generations, the prime ministers and the presidents.',
+      'The fixed golden line is the <b>zero point</b>: the timeline passes beneath it, and beside it you read at once the Gregorian year, the year from the creation of the world, the year from the entry into Canaan, and the high priest who served then.',
+      '<b>Search</b> takes an event, a person or a year in any of the three reckonings; tapping an event opens a card with the full description and its source; and <b>Journey</b> (or the space bar) sets the timeline moving.']],
     ['The Samaritan Library', [
       'In the menu, under <b>The Samaritan Library</b>, is <b>The Samaritan Aramaic–Hebrew Dictionary</b> — type an Aramaic word (or root) to get its root, its Hebrew meaning from the dictionary, and its Torah occurrences.',
       'The library opens as a page of cards: every unit is drawn as a book binding in its own colour, with its title written on the cover. It also holds full reading editions, the piyyutim reader and the rhyme finder.',
@@ -5329,6 +5378,12 @@ const HELP = {
       '<b>أحرف عامة:</b> <b>?</b> = حرف واحد · <b>*</b> = سلسلة · <b>+</b> = كلّ الكلمات في الآية نفسها.',
       '<b>بحث متقدم:</b> تطابق تامّ · حسب الجذر · في الآرامية · تجاهل النهائية · إظهار المعاني.',
       'عند تفعيل <b>إظهار المعاني</b>، يظهر تحت كلّ نتيجة المعنى من المعجم، ويمكن الضغط عليه للمدخل الدقيق.']],
+    ['الخطّ الزمني التاريخي السامري 🕰️', [
+      'فوق المكتبة تفتح القائمة <b>خطّاً زمنيّاً تفاعليّاً</b> من خلق العالم إلى أيّامنا — داخل التطبيق نفسه، وزرّ <b>↩ התורה</b> يعيدك إلى النصّ في الموضع الذي تركته.',
+      'سحب الخطّ أو العجلة أو الأسهم يحرّك الزمن؛ و<b>Ctrl</b> مع العجلة أو الزرّان + و− أو المؤشّر تغيّر المقياس؛ والشريط العمودي جانباً يبيّن أيّ جزء من الخطّ كلّه معروض الآن.',
+      'تُطفأ <b>الطبقات</b> وتُشعل حسب الحاجة — تاريخ السامريين، وبنو إسرائيل ويهوذا، وأيّام المقرأ، والعالم والحكّام، والأعلام والباحثون — وإلى جانبها <b>أشرطة</b> أصحاب المناصب: الكهنة الكبار عبر الأجيال، ورؤساء الحكومة، والرؤساء.',
+      'الخطّ الذهبي الثابت هو <b>نقطة الصفر</b>: يمرّ الزمن تحته، وتُقرأ عنده معاً السنة الميلادية، والسنة لخلق العالم، والسنة لدخول أرض كنعان، واسم الكاهن الأكبر الذي خدم حينها.',
+      'ويقبل <b>البحث</b> حدثاً أو شخصية أو سنة بأيّ من التقاويم الثلاثة؛ والضغط على حدث يفتح بطاقة بالوصف الكامل ومصدره؛ وزرّ <b>رحلة</b> (أو مفتاح المسافة) يُسيّر الخطّ من تلقائه.']],
     ['المكتبة السامرية', [
       'في القائمة، ضمن <b>المكتبة السامرية</b>، يوجد <b>المعجم الآرامي-العبري السامري</b> — اكتب كلمة آرامية (أو جذراً) لتحصل على جذرها ومعناها العبري من المعجم ومواضعها في التوراة.',
       'تُفتح المكتبة كصفحة بطاقات، وكلّ وحدة مرسومة كغلاف كتاب بلونه الخاصّ واسمه مكتوب عليه. وفيها أيضاً كتب كاملة للمطالعة، وقراءة الأناشيد، وإيجاد القوافي.',

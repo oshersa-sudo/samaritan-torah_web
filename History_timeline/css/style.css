@@ -1,0 +1,589 @@
+/* ציר הזמן ההיסטורי — הישראלים השומרונים */
+
+:root {
+  --bg:        #0d1117;
+  --bg-2:      #131a24;
+  --panel:     #182029;
+  --line:      #2a3646;
+  --ink:       #e8e3d6;
+  --ink-dim:   #9aa5b4;
+  --gold:      #d9b166;
+  --gold-soft: #6b5426;
+
+  --c-samaritan: #e0a63c;
+  --c-israel:    #5ba4d8;
+  --c-torah:     #86c98a;
+  --c-world:     #b98bd6;
+  --c-priest:    #d97c5a;
+  --c-people:    #7fbfa8;
+  --c-pm:        #6f9fd8;
+  --c-pres:      #b58fd0;
+
+  --rail-w: 74px;
+  --ruler-h: 62px;
+  --priest-h: 40px;
+  --head-h: 58px;
+  --filters-h: 38px;
+  --foot-h: 30px;
+
+  --font: "Segoe UI", "Arial Hebrew", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ───────────────────────── סרגל עליון ───────────────────────── */
+
+#topbar {
+  height: var(--head-h);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 16px;
+  background: linear-gradient(180deg, #161d27, #101720);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  z-index: 40;
+}
+
+.brand { text-decoration: none; display: block; }
+.brand .mark {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 1.6px;
+  color: #8d7a4f;
+  text-transform: uppercase;
+}
+.brand:hover .mark { color: var(--gold); }
+.brand h1 {
+  margin: 0;
+  font-size: 19px;
+  letter-spacing: .4px;
+  color: var(--gold);
+  font-weight: 700;
+}
+.brand .sub { font-size: 12px; color: var(--ink-dim); }
+
+.controls {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-wrap { position: relative; }
+
+#search {
+  width: 230px;
+  padding: 7px 11px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: #0b1017;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+}
+#search:focus { outline: none; border-color: var(--gold-soft); }
+
+.results {
+  position: absolute;
+  top: 110%;
+  inset-inline-start: 0;
+  width: 340px;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.55);
+  z-index: 60;
+}
+.results .r {
+  padding: 8px 11px;
+  cursor: pointer;
+  border-bottom: 1px solid #1e2836;
+  font-size: 13px;
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+}
+.results .r:hover { background: #1f2937; }
+.results .r .y { color: var(--gold); font-size: 12px; white-space: nowrap; }
+.results .r .t { flex: 1; }
+.results .empty { padding: 12px; color: var(--ink-dim); font-size: 13px; }
+
+.zoom { display: flex; align-items: center; gap: 6px; }
+.langs { display: flex; gap: 2px; }
+.langs button { padding: 0 8px; font-size: 12px; min-width: 34px; }
+.langs button.on { background: var(--gold-soft); border-color: var(--gold); color: #fff5df; }
+a.btn {
+  display: inline-flex; align-items: center; height: 30px; padding: 0 11px;
+  border: 1px solid var(--line); border-radius: 7px; background: #1c2530;
+  color: var(--ink); font-size: 13px; text-decoration: none;
+}
+a.btn:hover { background: #26313f; border-color: var(--gold-soft); }
+.zoom input[type=range] { width: 130px; accent-color: var(--gold); }
+
+button {
+  background: #1c2530;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  width: 30px; height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+button:hover { background: #26313f; border-color: var(--gold-soft); }
+button.txt { width: auto; padding: 0 11px; font-size: 13px; }
+button.on { background: var(--gold-soft); border-color: var(--gold); color: #fff5df; }
+
+/* ───────────────────────── שכבות ───────────────────────── */
+
+#filters {
+  height: var(--filters-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  background: #0f151d;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+  overflow-x: auto;
+  white-space: nowrap;
+  position: relative;
+  z-index: 30;
+}
+.flabel { color: var(--ink-dim); }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+}
+.chip input { accent-color: currentColor; margin: 0; }
+.chip[data-track=samaritan] { color: var(--c-samaritan); }
+.chip[data-track=israel]    { color: var(--c-israel); }
+.chip[data-track=torah]     { color: var(--c-torah); }
+.chip[data-track=world]     { color: var(--c-world); }
+.chip[data-track=people]    { color: var(--c-people); }
+.chip[data-roster=priests]  { color: var(--c-priest); }
+.chip[data-roster=pm]       { color: var(--c-pm); }
+.chip[data-roster=pres]     { color: var(--c-pres); }
+.flabel.sep { margin-inline-start: 8px; padding-inline-start: 10px; border-inline-start: 1px solid var(--line); }
+.chip.off { opacity: .38; }
+
+/* ───────────────────────── פריסה ───────────────────────── */
+
+#main {
+  position: absolute;
+  inset: calc(var(--head-h) + var(--filters-h)) 0 var(--foot-h) 0;
+  display: flex;
+  direction: ltr;          /* הציר עצמו רץ משמאל לימין */
+}
+
+/* ── הסרגל האנכי בצד שמאל ── */
+#rail {
+  width: var(--rail-w);
+  flex: 0 0 var(--rail-w);
+  background: linear-gradient(180deg, #121a24, #0c1119);
+  border-inline-end: 1px solid var(--line);
+  position: relative;
+  cursor: grab;
+  user-select: none;
+}
+#rail.dragging { cursor: grabbing; }
+
+#railTrack { position: absolute; inset: 10px 0; }
+
+#railFill {
+  position: absolute;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  top: 0; bottom: 0;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #3a2f16, #6b5426 35%, #8a6c2c 70%, #c39a4d);
+}
+
+#railWindow {
+  position: absolute;
+  inset-inline: 6px;
+  min-height: 14px;
+  border-radius: 6px;
+  background: rgba(217,177,102,.22);
+  border: 1px solid var(--gold);
+  box-shadow: 0 0 12px rgba(217,177,102,.25);
+}
+
+.rail-tick {
+  position: absolute;
+  inset-inline-start: 0;
+  width: 100%;
+  font-size: 9.5px;
+  color: var(--ink-dim);
+  text-align: center;
+  pointer-events: none;
+  line-height: 1.1;
+  transform: translateY(-50%);
+}
+.rail-tick b { display: block; color: #cbb583; font-size: 10px; }
+.rail-tick.era { color: var(--gold); }
+
+/* ── אזור הציר ── */
+#viewport {
+  flex: 1;
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  background:
+    radial-gradient(1200px 400px at 20% 0%, #16202c 0%, transparent 70%),
+    var(--bg);
+}
+#viewport.dragging { cursor: grabbing; }
+#viewport::-webkit-scrollbar { height: 11px; }
+#viewport::-webkit-scrollbar-track { background: #0b1017; }
+#viewport::-webkit-scrollbar-thumb { background: #2f3d4e; border-radius: 6px; }
+#viewport::-webkit-scrollbar-thumb:hover { background: #435468; }
+
+#stage { position: relative; height: 100%; min-width: 100%; }
+
+/* ── רצועות תקופה ── */
+#bands { position: absolute; inset: 0; }
+.band {
+  position: absolute;
+  top: var(--ruler-h); bottom: 0;
+  border-inline-start: 1px solid rgba(255,255,255,.06);
+  overflow: hidden;
+}
+.band .bl {
+  position: sticky;
+  inset-inline-start: 4px;
+  top: 4px;
+  display: inline-block;
+  padding: 2px 7px;
+  margin: 5px;
+  font-size: 11px;
+  letter-spacing: .3px;
+  color: #cfd8e3;
+  background: rgba(0,0,0,.35);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ── סרגל השנים ── */
+#ruler {
+  position: absolute;
+  top: 0; inset-inline-start: 0;
+  height: var(--ruler-h);
+  width: 100%;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(19,26,36,.97), rgba(13,17,23,.9));
+  backdrop-filter: blur(2px);
+  z-index: 12;
+}
+.tick { position: absolute; top: 0; height: 100%; }
+.tick .stem { position: absolute; top: 0; width: 1px; height: 11px; background: #3d4c5f; }
+.tick.major .stem { height: 17px; background: var(--gold-soft); }
+.tick .lab {
+  position: absolute;
+  top: 13px;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #9fb0c4;
+  white-space: nowrap;
+  direction: rtl;
+}
+.tick.major .lab { color: var(--gold); font-weight: 600; font-size: 11.5px; }
+.tick .sub {
+  position: absolute;
+  top: 29px;
+  transform: translateX(-50%);
+  font-size: 9.5px;
+  color: #6d7c8e;
+  white-space: nowrap;
+  direction: rtl;
+  line-height: 1.25;
+  text-align: center;
+}
+
+#gridlines { position: absolute; inset: var(--ruler-h) 0 0 0; pointer-events: none; }
+.gl { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.035); }
+.gl.major { background: rgba(217,177,102,.10); }
+
+/* ── רצועת הכהנים הגדולים ── */
+#rosters {
+  position: absolute;
+  top: var(--ruler-h);
+  width: 100%;
+  z-index: 8;
+}
+.rband {
+  position: relative;
+  height: var(--priest-h);
+  border-bottom: 1px solid var(--line);
+}
+.priest {
+  position: absolute;
+  top: 6px;
+  height: 26px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #4a2f22, #35211a);
+  border: 1px solid #7a4a33;
+  color: #f0c9b4;
+  font-size: 11px;
+  line-height: 24px;
+  padding: 0 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  direction: rtl;
+  text-align: center;
+}
+.rband[data-color=pm] .priest { background: linear-gradient(180deg,#1e3350,#16243a); border-color:#3d6491; color:#cfe2f7; }
+.rband[data-color=pres] .priest { background: linear-gradient(180deg,#33244a,#241a34); border-color:#5f4785; color:#e0d0f2; }
+.priest:nth-child(even) { background: linear-gradient(180deg, #422a1f, #2d1c16); }
+.priest:hover { border-color: var(--c-priest); color: #fff; z-index: 3; }
+.priest.hi { box-shadow: 0 0 0 2px var(--gold); z-index: 5; }
+.priest.gap { background: repeating-linear-gradient(45deg,#20262e,#20262e 6px,#262d37 6px,#262d37 12px); border-color:#3a4553; color:#8494a6; }
+
+/* ── מסלולי אירועים ── */
+#lanes {
+  position: absolute;
+  top: calc(var(--ruler-h) + var(--priest-h));
+  bottom: 16px;
+  width: 100%;
+  z-index: 10;
+}
+.ev {
+  position: absolute;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-inline-end: 8px;
+  cursor: pointer;
+  direction: ltr;
+  white-space: nowrap;
+}
+.ev .dot {
+  position: relative;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex: 0 0 9px;
+  background: currentColor;
+  box-shadow: 0 0 0 3px rgba(0,0,0,.45), 0 0 9px currentColor;
+}
+.ev .dot::before {           /* מרחיב את שטח הלחיצה סביב הנקודה */
+  content: '';
+  position: absolute;
+  inset: -8px -10px;
+}
+.ev .tl {
+  direction: rtl;
+  unicode-bidi: isolate;
+  font-size: 11.5px;
+  color: #cfd6e0;
+  background: rgba(13,17,23,.72);
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  max-width: 330px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ev:hover { z-index: 20; }
+.ev:hover .tl { color: #fff; border-color: currentColor; background: #131a24; }
+.ev.span .bar {
+  position: absolute;
+  inset-inline-start: 4px;
+  top: 10px;
+  height: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: .5;
+}
+.ev.hi .tl { border-color: var(--gold); color: #fff; box-shadow: 0 0 12px rgba(217,177,102,.35); }
+
+.ev[data-track=samaritan] { color: var(--c-samaritan); }
+.ev[data-track=israel]    { color: var(--c-israel); }
+.ev[data-track=torah]     { color: var(--c-torah); }
+.ev[data-track=world]     { color: var(--c-world); }
+.ev[data-track=people]    { color: var(--c-people); }
+
+/* ── נקודת ה-0 ── */
+/* נקודת ה-0 יושבת מעל ה-viewport ואינה נגררת עם הגלילה */
+#playhead {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--rail-w);
+  width: 0;
+  pointer-events: none;
+  z-index: 25;
+}
+.ph-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold), rgba(217,177,102,.15));
+  box-shadow: 0 0 14px rgba(217,177,102,.5);
+}
+.ph-readout {
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  direction: rtl;
+  background: rgba(10,14,20,.93);
+  border: 1px solid var(--gold-soft);
+  border-radius: 7px;
+  padding: 5px 9px;
+  font-size: 11px;
+  color: var(--ink-dim);
+  line-height: 1.5;
+  white-space: nowrap;
+  min-width: 118px;
+}
+.ph-readout b { display: block; color: var(--gold); font-size: 13.5px; }
+.ph-readout span { display: block; }
+.ph-readout em {
+  display: block;
+  margin-top: 3px;
+  padding-top: 3px;
+  border-top: 1px solid #2a3646;
+  color: var(--c-priest);
+  font-style: normal;
+}
+
+#foot {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--foot-h);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  background: #0b1017;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px;
+  color: #6f7d8e;
+  z-index: 35;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+#foot a { color: #8fa3bb; text-decoration: none; }
+#foot a:hover { color: var(--gold); text-decoration: underline; }
+#foot .foot-brand { margin-inline-start: auto; color: #7c6a44; letter-spacing: .5px; }
+
+/* ───────────────────────── כרטיס אירוע ───────────────────────── */
+
+#card {
+  position: fixed;
+  bottom: calc(var(--foot-h) + 12px);
+  right: 18px;          /* תמיד בצד הנגדי לנקודת ה-0 שבשמאל */
+  left: auto;
+  width: 380px;
+  max-width: calc(100vw - 36px);
+  max-height: 62vh;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #1a232e, #131a23);
+  border: 1px solid var(--gold-soft);
+  border-radius: 12px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.65);
+  z-index: 80;
+  direction: rtl;
+}
+#card .close, .help-inner .close {
+  position: absolute;
+  top: 8px; inset-inline-end: 8px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  font-size: 17px;
+  line-height: 1;
+}
+.card-year { color: var(--gold); font-size: 13px; font-weight: 700; padding-inline-end: 34px; }
+#card h2 { margin: 4px 0 8px; font-size: 17px; color: #fff; line-height: 1.35; padding-inline-end: 6px; }
+.card-eras { font-size: 11.5px; color: var(--ink-dim); margin-bottom: 10px; }
+#cardBody { margin: 0; font-size: 13.5px; line-height: 1.7; color: #d7dee7; white-space: pre-wrap; }
+.card-priest {
+  margin-top: 11px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--c-priest);
+}
+.card-src { margin-top: 8px; font-size: 11.5px; color: #6f7d8e; }
+
+/* ───────────────────────── עזרה ───────────────────────── */
+
+#help {
+  position: fixed;
+  inset: 0;
+  background: rgba(4,7,11,.78);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.help-inner {
+  position: relative;
+  max-width: 640px;
+  max-height: 82vh;
+  overflow-y: auto;
+  background: #151d27;
+  border: 1px solid var(--gold-soft);
+  border-radius: 14px;
+  padding: 24px 28px;
+  direction: rtl;
+}
+.help-inner h2 { margin-top: 0; color: var(--gold); font-size: 19px; }
+.help-inner h3 { color: var(--gold); font-size: 15px; margin-bottom: 6px; }
+.help-inner ul { padding-inline-start: 20px; margin: 0 0 14px; }
+.help-inner li { margin-bottom: 9px; font-size: 13.5px; line-height: 1.7; color: #d7dee7; }
+.help-inner p { font-size: 13px; line-height: 1.75; color: #c3ccd7; }
+.credits {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--ink-dim);
+  line-height: 1.7;
+}
+
+[hidden] { display: none !important; }
+
+/* ───────────────────────── מסכים קטנים ───────────────────────── */
+@media (max-width: 760px) {
+  :root { --rail-w: 54px; --head-h: 52px; }
+  #topbar { gap: 8px; padding: 0 8px; overflow-x: auto; }
+  .brand h1 { font-size: 15px; white-space: nowrap; }
+  .brand .sub { display: none; }
+  .controls { gap: 6px; }
+  #zoomFit, #playBtn { display: none; }
+  .results { width: min(320px, calc(100vw - 24px)); }
+  #search { width: 110px; }
+  .zoom input[type=range] { width: 70px; }
+  #card { left: 10px; right: 10px; width: auto; }
+  #foot { gap: 10px; font-size: 10.5px; }
+  #foot .foot-brand { display: none; }
+  .brand .mark { font-size: 9px; letter-spacing: 1px; }
+  .backlink span, .langs { font-size: 11px; }
+  .ev .tl { max-width: 190px; }
+}
