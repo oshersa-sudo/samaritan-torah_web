@@ -6,10 +6,12 @@ Written for the Abū l-Faraj ibn al-Kathār commentary on אם בחקתי but de
 source-agnostic: any future work whose text cites Torah locations, or quotes the
 Torah, can be linked with the same two signals.
 
-  1. EXPLICIT REFERENCE - a citation like "(ויקי כו 12)" or "(דבי כח 10)".
-     Book abbreviations follow this edition (ברי / שמי / ויקי / במי / דבי), the
+  1. EXPLICIT REFERENCE - a citation like "(ויק׳ כו 12)" or "(דב׳ כח 10)".
+     Book abbreviations follow this edition (בר׳ / שמ׳ / ויק׳ / במ׳ / דב׳), the
      chapter is in Hebrew letters and the verse in digits. Trailing editorial
-     marks such as "נייש" are ignored.
+     marks such as "נ״ש" are ignored. Both the geresh form and the yod form the
+     first transcription produced (ברי / שמי …) are accepted, so the linker keeps
+     working on text fixed and unfixed.
 
   2. QUOTED SCRIPTURE - a phrase in quotation marks that is a run of words from
      the Torah. Matched on the CONSONANTAL SKELETON (א ה ו י dropped, final
@@ -52,6 +54,14 @@ REF_RE = re.compile(
 
 # a quoted run: this edition uses ״…״ / "…" / ׳…׳
 QUOTE_RE = re.compile(r'[״"]([^״"]{6,240})[״"]')
+
+# Hebrew uses the SAME gershayim for quotation and for abbreviation (נ״ש, פה״פ,
+# יו״ד, בי״ת). Treating an abbreviation's mark as a quote delimiter shifts every
+# following quote by one and silently loses the links they would have made, so
+# mask the ones sitting between two letters - a real quote mark never is - and
+# put them back after the scan.
+_ABBR_MARK = re.compile(r'(?<=[א-ת])[״"](?=[א-ת])')
+_MASK = ''
 
 
 def gematria(s):
@@ -159,8 +169,8 @@ def find_links(text, index, home_book=None, home_chapter=None):
             seen.add((vid, 'ref'))
             out['refs'].append((vid, 'ref', m.group(0).strip('( ')))
 
-    for m in QUOTE_RE.finditer(text or ''):
-        q = m.group(1)
+    for m in QUOTE_RE.finditer(_ABBR_MARK.sub(_MASK, text or '')):
+        q = m.group(1).replace(_MASK, '״')
         for vid in index.by_quote(q):
             if (vid, 'quote') not in seen:
                 seen.add((vid, 'quote'))
