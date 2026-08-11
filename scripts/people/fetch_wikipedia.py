@@ -41,6 +41,39 @@ SEED = {
     'dustan_dositheus':         ('en', 'Dositheos (Samaritan)'),
     # added at the owner's request, from the Hebrew article he pointed at
     'ibrahim_al_ayya':          ('he', 'אברהם בן יעקב הדנפי'),
+    # Confirmed by scripts/people/scan_wikipedia.py and then checked one by one
+    # against each article's opening lines — the search alone offered a serial
+    # killer for Rogers, a US senator for Robertson and St James for Marhib.
+    'alexander_the_great_and_samaritans': ('en', 'Alexander the Great'),
+    'john_hyrcanus':            ('en', 'John Hyrcanus'),
+    'postel_guillaume':         ('en', 'Guillaume Postel'),
+    'sancy_achille':            ('en', 'Achille de Harlay de Sancy'),
+    'morin_jean':               ('en', 'Jean Morin (theologian)'),
+    'castell_edmund':           ('en', 'Edmund Castell'),
+    'hottinger_johann':         ('en', 'Johann Heinrich Hottinger'),
+    'huntington_robert':        ('en', 'Robert Huntington'),
+    'marsh_narcissus':          ('en', 'Narcissus Marsh'),
+    'ecchellensis_abraham':     ('en', 'Abraham Ecchellensis'),
+    'kennicott_benjamin':       ('en', 'Benjamin Kennicott'),
+    'gesenius_wilhelm':         ('en', 'Wilhelm Gesenius'),
+    'firkowicz_abraham':        ('he', "אברהם פירקוביץ'"),
+    'petermann_julius':         ('en', 'Julius Heinrich Petermann'),
+    'payne_smith_robert':       ('en', 'Robert Payne Smith'),
+    'guerin_victor':            ('en', 'Victor Guérin'),
+    'harkavy_abraham':          ('he', 'אברהם אליהו הרכבי'),
+    'conder_claude':            ('en', 'Claude Reignier Conder'),
+    'gaster_moses':             ('en', 'Moses Gaster'),
+    'adler_elkan_nathan':       ('en', 'Elkan Nathan Adler'),
+    'cowley_arthur':            ('en', 'Arthur Ernest Cowley'),
+    'yellin_david':             ('en', 'David Yellin'),
+    'montgomery_ja':            ('en', 'James Alan Montgomery'),
+    'gall_august_georg':        ('en', 'August von Gall'),
+    'kahle_paul':               ('en', 'Paul E. Kahle'),
+    'yahuda_abraham_shalom':    ('en', 'Abraham Yahuda'),
+    'robertson_edward':         ('en', 'Edward Robertson (Semitic scholar)'),
+    'ben_zvi_yishaq':           ('en', 'Yitzhak Ben-Zvi'),
+    'jeremias_joachim':         ('en', 'Joachim Jeremias'),
+    'halkin_abraham':           ('en', 'Abraham Halkin'),
 }
 
 

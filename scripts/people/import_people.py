@@ -188,16 +188,18 @@ NAME_HE = {
     # Hidr = Pinhas — the pairing is in the entry's own name, Hebrew now leads.
     # Nagi = אבישע is the owner's ruling for this priest (2026-08-11).
     'nagi_b_hidr':              'אבישע (נאג׳י) בן פנחס (חדר) בן יצחק',
-    # Ishaq = Isaac, Ibrahim = Abraham; al-Musannif ("the compiler") is a title, kept
-    'abu_ishaq_ibrahim_al_musannif': 'אברהם אלמצנף (אבו אסחאק אבראהים)',
-    # 'Abd Allah = עבד-אלה and Salama = שלמה, both by the owner's ruling. His
-    # hymns are signed with the acrostic "עבד יהוה" / "עבד אלוה" (see the entry).
-    'abdallah_b_salama':        'עבד-אלה (עבדאללה) בן שלמה (בן סלאמה)',
     # the same Salama, in a name whose Hebrew part was already Hebrew throughout
     'ab_hisda_abu_lhasan_b_jacob': 'אב חסדא (אבו אלחסן) בן יעקב בן אהרן בן שלמה',
-    # al-Qabbas reads אל-קבצי by the owner's ruling — the one nisba he did rule on;
-    # hyphenated to match the house style of יוסף אל-עסכרי / אבראהים אל-חקילאני
-    'abraham_qabbasa':          'אברהם אל-קבצי (אבראהים אלקבאץ)',
+    # Six names the owner's own survey, "אישים בהיסטוריה ובתרבות השומרונים
+    # הישראלית", gives in a fuller Hebrew form than the delivered dataset did. His
+    # ruling: take the name as his document has it, and let the epithet stand with
+    # it (אלמצנף · אלעסכרי · הקבצי · הדנפי · המרחיבי).
+    'abraham_qabbasa':               'אברהם בן יוסף הקבצי',
+    'abu_ishaq_ibrahim_al_musannif': 'אברהם אב-יצחק בן מארות׳ אלמצנף',
+    'yusuf_al_askari':               'יוסף בן שלמה אלעסכרי',
+    'abdallah_b_salama':             'עבד-אלה בן שלמה',
+    'ab_sakwa':                      'אב-סכוה בן סעד הדנפי',
+    'marhib_b_jacob':                'מרחיב בן יעקב המרחיבי',
 }
 
 # Figures the delivered dataset skipped, read back off the scanned encyclopedia
@@ -273,6 +275,44 @@ EXTRA_PEOPLE = [
         enriched_note_en=None, enriched_note_he=None, enriched_note_ar=None,
         references_json='[]',
         source='ויקיפדיה העברית, הערך "אברהם בן יעקב הדנפי"',
+        contributor_initials=None,
+    ),
+    dict(
+        id='rogers_edward_thomas',
+        name_en='Rogers, Edward Thomas',
+        name_he='רוג׳רס, אדוארד תומאס',
+        name_ar='روجرز، إدوارد توماس',
+        pronunciation=None,
+        period='19th century',
+        description_en=(
+            "British vice-consul at Haifa in the 1850s, and the Rogers who helped Jacob esh-Shelaby "
+            "get away to London when his life was in danger at Nablus. He gathered Shelaby's account "
+            "from him and translated it, publishing it in London in 1855 as 'Notices of the Modern "
+            "Samaritans, illustrated by incidents in the life of Jacob esh Shelaby' — for a long time "
+            "one of the few first-hand accounts of the community available to European readers. He was "
+            "the brother of Mary Eliza Rogers, whose own book on Palestine drew on the years she spent "
+            "keeping house for him at his consular posts."),
+        description_he=(
+            'סגן הקונסול הבריטי בחיפה בשנות החמישים של המאה ה-19, והוא רוג׳רס שסייע ליעקב אלשלבי '
+            'להימלט ללונדון כשחייו היו בסכנה בשכם. הוא אסף מפיו את סיפורו, תרגמו, ופרסמו בלונדון '
+            'בשנת 1855 בשם "ידיעות על השומרונים בני ימינו, מלוות במאורעות מחייו של יעקב אלשלבי" — '
+            'שהיה במשך שנים אחד המקורות המעטים מכלי ראשון על העדה שעמדו לפני קוראים באירופה. אחיה '
+            'של מרי אליזה רוג׳רס, שספרה שלה על ארץ-ישראל נשען על השנים שבהן ניהלה את ביתו במקומות '
+            'כהונתו הקונסולרית.'),
+        description_ar=(
+            'نائب القنصل البريطاني في حيفا في خمسينيات القرن التاسع عشر، وهو روجرز الذي ساعد يعقوب '
+            'الشلبي على الفرار إلى لندن حين غدت حياته في خطر في نابلس. جمع روايته من فمه وترجمها، '
+            'ونشرها في لندن سنة 1855 بعنوان "أخبار عن السامريين المعاصرين، مع وقائع من حياة يعقوب '
+            'الشلبي" — وظلّ زمنًا من المصادر القليلة المباشرة عن الطائفة المتاحة للقارئ الأوروبي. '
+            'وهو شقيق ماري إليزا روجرز، التي استندت في كتابها عن فلسطين إلى السنوات التي دبّرت فيها '
+            'بيته في مقارّ قنصليته.'),
+        enriched_note_en=None, enriched_note_he=None, enriched_note_ar=None,
+        references_json=json.dumps([
+            {'type': 'book', 'lang': 'en', 'url': '',
+             'title': "E. T. Rogers, Notices of the Modern Samaritans, illustrated by incidents in the "
+                      "life of Jacob esh Shelaby (London, 1855)"},
+        ], ensure_ascii=False),
+        source='אישים בהיסטוריה ובתרבות השומרונים הישראלית',
         contributor_initials=None,
     ),
 ]
