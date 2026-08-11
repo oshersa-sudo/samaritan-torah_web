@@ -1043,3 +1043,73 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
   .parade-track, body::before, body::after, .done-card .confetti i { animation: none; }
   .parade-track { transform: none; }
 }
+
+/* ══════════ Bead frame (חשבונית) · grades א׳–ב׳ ══════════
+   A counting frame the child can open beside the exercise. Rendered LTR
+   inside, because "left" and "right" here are the physical sides of a real
+   object, not reading order. */
+.ab-wrap { margin: 0 0 12px; }
+.ab-panel { margin-top: 14px; }
+.ab-toggle {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: #fff; border: 2px solid #ede4ff; border-radius: 16px;
+  padding: 7px 14px 7px 9px; cursor: pointer;
+  font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink);
+  box-shadow: 0 4px 0 rgba(139,92,246,.14);
+}
+.ab-toggle:hover { background: #faf7ff; }
+.ab-toggle.on { border-color: #b9a9f0; background: #f4efff; }
+.ab-toggle:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+.ab-ico { display: grid; place-items: center; }
+
+.ab-panel {
+  margin-top: 10px; background: linear-gradient(180deg,#FFFDF6,#F6F1FF);
+  border: 2px solid #ece3ff; border-radius: 18px; padding: 12px 12px 10px;
+}
+.ab-panel[hidden] { display: none; }
+
+.ab-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px;
+  margin-bottom: 10px; font-size: 13px; font-weight: 600; color: var(--ink);
+}
+.ab-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #fff; border: 1.5px solid #e6ddf8; border-radius: 999px; padding: 3px 10px;
+}
+.ab-chip i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.ab-hint { color: var(--ink-soft); font-weight: 500; }
+.ab-totals { display: flex; gap: 6px; margin-inline-start: auto; }
+.ab-sum { background: #6C5CE7; color: #fff; border-radius: 999px; padding: 3px 11px;
+  white-space: nowrap; }
+.ab-sum b { font-family: 'Fredoka', sans-serif; font-size: 15px; }
+.ab-sum.ab-left { background: #3FBF6F; }
+
+.ab-frame { display: flex; flex-direction: column; gap: 7px; }
+.ab-row {
+  position: relative; display: flex; justify-content: space-between;
+  align-items: center; min-height: 34px; padding: 0 6px;
+}
+/* the rod the beads sit on */
+.ab-rod {
+  position: absolute; left: 6px; right: 6px; top: 50%; height: 4px;
+  margin-top: -2px; background: #d9cfc0; border-radius: 2px;
+}
+.ab-side { position: relative; display: flex; gap: 2px; z-index: 1; }
+.ab-bead {
+  width: 28px; height: 28px; border-radius: 50%; border: 0; padding: 0;
+  cursor: pointer; background: var(--bc);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,.16), inset 0 3px 0 rgba(255,255,255,.4),
+              0 2px 4px -1px rgba(40,20,80,.35);
+  transition: transform .1s;
+}
+.ab-bead:hover { transform: scale(1.12); }
+.ab-bead:active { transform: scale(.94); }
+.ab-bead:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+.ab-clear { margin-top: 10px; font-size: 13px; padding: 6px 14px; }
+
+@media (max-width: 420px) {
+  .ab-bead { width: 23px; height: 23px; }
+  .ab-row { min-height: 29px; padding: 0 3px; }
+  .ab-head { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .ab-bead { transition: none; } }

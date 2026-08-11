@@ -1986,6 +1986,110 @@ const MATH_CFG = {
   ma3:{eyebrow:"חשבון · בעיות מילוליות", lead:"קרא/י ובחר/י תשובה",      type:"word"},
   ma4:{eyebrow:"חשבון · המספר החסר",     lead:"איזה מספר משלים?",        type:"missing"},
 };
+// ─── Bead frame (חשבונית) ──────────────────────────────────────────────────
+// The counting frame first-graders use in class: five rods of ten, one colour
+// each. A bead on the left moves right when tapped and back when tapped again —
+// one tap, one bead — so a child counting to four taps four times and can read
+// the answer off the frame. Offered on the parts where counting is the method:
+// addition and subtraction, the missing number, and word problems, in א׳–ב׳.
+const AB_ROWS=[
+  {name:"אדום", c:"#F2545B"},
+  {name:"כתום", c:"#FF9F43"},
+  {name:"צהוב", c:"#FFC94D"},
+  {name:"ירוק", c:"#3FBF6F"},
+  {name:"כחול", c:"#4A9DEC"},
+];
+const AB_PER_ROW=10;
+const AB_TOTAL=AB_ROWS.length*AB_PER_ROW;      // 50 beads
+const AB={open:false,rows:AB_ROWS.map(()=>0)}; // rows[i] = beads moved to the right
+const abacusOffered = () => curLevel()<=2 &&
+  (S.screen==="ma1"||S.screen==="ma4"||S.screen==="ma3");
+
+function abacusHTML(){
+  if(!abacusOffered())return "";
+  return `<div class="ab-wrap">
+    <button class="ab-toggle" id="ab-toggle" aria-expanded="false" aria-controls="ab-panel">
+      <span class="ab-ico" aria-hidden="true">${abIconSVG()}</span>
+      <span>חשבונית</span>
+    </button>
+  </div>`;
+}
+function abacusPanelHTML(){
+  if(!abacusOffered())return "";
+  return `<div class="ab-panel" id="ab-panel" hidden>
+      <div class="ab-head" id="ab-head"></div>
+      <div class="ab-frame" id="ab-frame" dir="ltr"></div>
+      <button class="ghost sm ab-clear" id="ab-clear">להתחיל מחדש</button>
+    </div>`;
+}
+// a small frame drawn as the button's icon
+function abIconSVG(){
+  let rods="";
+  AB_ROWS.forEach((r,i)=>{
+    const y=6+i*5.2;
+    rods+=`<line x1="3" y1="${y}" x2="29" y2="${y}" stroke="#c9c2e8" stroke-width="1.1"/>`;
+    for(let k=0;k<4;k++) rods+=`<circle cx="${5.5+k*2.6}" cy="${y}" r="1.7" fill="${r.c}"/>`;
+    for(let k=0;k<3;k++) rods+=`<circle cx="${20+k*2.6}" cy="${y}" r="1.7" fill="${r.c}"/>`;
+  });
+  return `<svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
+    <rect x="1" y="1.5" width="30" height="29" rx="4" fill="#fff" stroke="#b9a9f0" stroke-width="1.6"/>
+    ${rods}</svg>`;
+}
+function abacusRight(){ return AB.rows.reduce((a,b)=>a+b,0); }
+function renderAbacus(){
+  const frame=document.getElementById("ab-frame");if(!frame)return;
+  frame.innerHTML=AB_ROWS.map((r,ri)=>{
+    const right=AB.rows[ri], left=AB_PER_ROW-right;
+    const bead=(side,k)=>`<button class="ab-bead" style="--bc:${r.c}"
+        data-row="${ri}" data-side="${side}"
+        aria-label="${r.name}, ${side==="l"?"בצד שמאל":"בצד ימין"}"></button>`;
+    return `<div class="ab-row" role="group" aria-label="שורה ${r.name}">
+      <span class="ab-rod"></span>
+      <span class="ab-side">${Array.from({length:left},(_,k)=>bead("l",k)).join("")}</span>
+      <span class="ab-side ab-right">${Array.from({length:right},(_,k)=>bead("r",k)).join("")}</span>
+    </div>`;
+  }).join("");
+  const head=document.getElementById("ab-head");
+  if(head){
+    const moved=AB_ROWS.map((r,i)=>({r,n:AB.rows[i]})).filter(x=>x.n>0);
+    const right=abacusRight();
+    head.innerHTML=
+      (moved.length
+        ? moved.map(x=>`<span class="ab-chip"><i style="background:${x.r.c}"></i>${x.r.name} ${x.n}</span>`).join("")
+        : `<span class="ab-hint">הקישו על חרוז כדי להזיז אותו ימינה</span>`)
+      +`<span class="ab-totals"><span class="ab-sum">בימין <b>${right}</b></span>`
+      +`<span class="ab-sum ab-left">בשמאל <b>${AB_TOTAL-right}</b></span></span>`;
+  }
+}
+function abacusTap(row,side){
+  if(side==="l"){ if(AB.rows[row]<AB_PER_ROW)AB.rows[row]++; }
+  else{ if(AB.rows[row]>0)AB.rows[row]--; }
+  try{SFX._clip("tap",0.25);}catch(e){}
+  renderAbacus();
+}
+function wireAbacus(){
+  const tg=document.getElementById("ab-toggle"); if(!tg)return;
+  const panel=document.getElementById("ab-panel");
+  tg.onclick=()=>{
+    AB.open=!AB.open;
+    panel.hidden=!AB.open;
+    tg.setAttribute("aria-expanded",String(AB.open));
+    tg.classList.toggle("on",AB.open);
+    if(AB.open)renderAbacus();
+  };
+  panel.hidden=!AB.open;
+  tg.classList.toggle("on",AB.open);
+  tg.setAttribute("aria-expanded",String(AB.open));
+  const frame=document.getElementById("ab-frame");
+  frame.onclick=e=>{
+    const b=e.target.closest(".ab-bead"); if(!b)return;
+    abacusTap(+b.dataset.row,b.dataset.side);
+  };
+  const cl=document.getElementById("ab-clear");
+  if(cl)cl.onclick=()=>{AB.rows=AB_ROWS.map(()=>0);renderAbacus();};
+  if(AB.open)renderAbacus();
+}
+
 function mathHTML(){
   const c=mathLabel(S.screen,curLevel()), t=TIME[S.screen]??300;
   return `<section class="card">
@@ -1993,8 +2097,10 @@ function mathHTML(){
     <div><span class="eyebrow">${c.eyebrow}</span><p class="lead">${c.lead}</p></div>
     <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog[S.screen]?.left??t,t)}</span></div>
   </div>
+  ${abacusHTML()}
   <div class="math-q" id="math-q"></div>
   <div class="opts" id="q-opts"></div>
+  ${abacusPanelHTML()}
 </section>`;
 }
 
@@ -3799,6 +3905,7 @@ function initMath(){
   const scr=S.screen;
   const saved=S.prog[scr],lvl=curLevel(),n=PART_QUOTA[scr]||10,t=TIME[scr]??300;
   const type=mathType(scr,lvl);          // the strand this grade actually studies
+  wireAbacus();
   if(saved&&saved.qs){MA.qs=saved.qs;MA.i=saved.i||0;}
   else{MA.qs=Array.from({length:n},()=>_genMathQ(lvl,type));MA.i=0;}
   MA.picked=false;
