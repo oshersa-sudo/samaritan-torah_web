@@ -67,6 +67,8 @@ PERIOD_MAP = {
         ('המאות ה-3–4 לספירה', 'القرنان الثالث والرابع للميلاد', 300, 'anc'),
     '4th century CE (or 3rd century)':
         ('המאה ה-4 לספירה (או המאה ה-3)', 'القرن الرابع للميلاد (أو الثالث)', 330, 'anc'),
+    '4th century CE':
+        ('המאה ה-4 לספירה', 'القرن الرابع للميلاد', 350, 'anc'),
     '347-395 CE (ruled 379-395)':
         ('347–395 לספירה (מלך 379–395)', '347–395 م (حكم 379–395)', 347, 'anc'),
     'c. 440 - c. 500 CE':
@@ -198,6 +200,44 @@ NAME_HE = {
     'abraham_qabbasa':          'אברהם אל-קבצי (אבראהים אלקבאץ)',
 }
 
+# Figures the delivered dataset skipped, read back off the scanned encyclopedia
+# (האנציקלופדיה השומרונית.pdf) at the page each one names. The summaries follow
+# the delivered entries' own style — condensed, in the three languages — rather
+# than copying the printed article.
+EXTRA_PEOPLE = [
+    dict(
+        id='ninna_b_marqe',
+        name_en='Ninna (son of Marqe)',
+        name_he='נינה (ננה) בן מרקה',
+        name_ar='نينّا بن مرقة',
+        pronunciation=None,
+        period='4th century CE',
+        description_en=(
+            "Son of the poet Marqe and grandson of 'Amram Dare, and the third and last of the "
+            "series of known Samaritan poets who wrote Aramaic at its height. Ben-Hayyim's edition "
+            "of the liturgical hymns carries one hymn of his, and he may also be the author of a "
+            "second attributed there to Marqe. His name is read two ways: Cowley derived it from "
+            "the Roman Nonus — his father's and grandfather's names are Roman in origin too — while "
+            "Ben-Hayyim linked it to the Talmudic name Nanny, pronounced with a doubled N."),
+        description_he=(
+            'בנו של המשורר מרקה ונכדו של עמרם דרה, השלישי והאחרון בשלשלת המשוררים השומרונים '
+            'הידועים שכתבו ארמית בשיא פריחתה. במהדורת הפיוטים של בן-חיים מובא פיוט אחד משלו, '
+            'ויש שמייחסים לו גם פיוט נוסף הרשום שם על שם מרקה. שמו נדרש בשתי דרכים: קאולי גזר '
+            'אותו מן השם הרומי נונוס — גם שמות אביו וסבו רומיים במקורם — ואילו בן-חיים קשר אותו '
+            'לשם התלמודי "ננאי", הנהגה בנו"ן כפולה.'),
+        description_ar=(
+            'ابن الشاعر مرقة وحفيد عمرام دارا، وثالث وآخر سلسلة الشعراء السامريين المعروفين الذين '
+            'كتبوا بالآرامية في أوجها. تحمل طبعة بن حَيّيم للأناشيد نشيدًا واحدًا له، وقد يكون أيضًا '
+            'صاحب نشيد آخر منسوب هناك إلى مرقة. ويُقرأ اسمه على وجهين: اشتقّه كاولي من الاسم '
+            'الروماني نونوس — واسما أبيه وجدّه رومانيان أصلًا — بينما ربطه بن حَيّيم بالاسم التلمودي '
+            '"ناني" بنونٍ مشدَّدة.'),
+        enriched_note_en=None, enriched_note_he=None, enriched_note_ar=None,
+        references_json='[]',
+        source='p. 172',
+        contributor_initials='M.F.',
+    ),
+]
+
 _BOOK = 'A Companion to Samaritan Studies'
 
 
@@ -217,6 +257,8 @@ def main(apply):
     src.row_factory = sqlite3.Row
     rows = [dict(r) for r in src.execute('SELECT * FROM people')]
     src.close()
+    have = {r['id'] for r in rows}
+    rows += [dict(x) for x in EXTRA_PEOPLE if x['id'] not in have]
 
     # the Wikipedia articles for the seven Samaritan figures, per language
     wiki = {}
