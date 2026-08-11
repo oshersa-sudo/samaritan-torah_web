@@ -6117,19 +6117,24 @@ function rdLastOfPortion(){       // this chapter closes the parasha → nowhere
   return !(Array.isArray(S.chList) && S.chList.length) || S.chIdx >= S.chList.length-1;
 }
 // the repeat button: the players' own loop glyph, carrying a "1" in state 1
-function rdRepeatSvg(one){
-  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"'
+// The loop is only a frame, drawn open so the middle stays clear: state 1 stands a
+// play inside it with a "1" knocked out of the play itself, state 2 the same play
+// without the "1", and the idle state the bare loop.
+function rdRepeatSvg(mode){
+  const play = '<path d="M8.4 8.1 16.5 12l-8.1 3.9z" fill="currentColor" stroke="none"/>';
+  const one  = '<text x="10.4" y="14.3" text-anchor="middle" font-size="7.2" font-weight="700"'
+             + ' stroke="none" fill="var(--rd-rep-bg,#fdfbf5)">1</text>';
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"'
        + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
        + '<polyline points="17 2 21 6 17 10"/><path d="M3 12V10a4 4 0 0 1 4-4h14"/>'
        + '<polyline points="7 22 3 18 7 14"/><path d="M21 12v2a4 4 0 0 1-4 4H3"/>'
-       + (one ? '<text x="12" y="15.6" text-anchor="middle" font-size="10.5" font-weight="700"'
-              + ' stroke="none" fill="currentColor">1</text>' : '')
+       + (mode ? play : '') + (mode===1 ? one : '')
        + '</svg>';
 }
 function rdRepeatBtn(){
   const b = el('button','reading-repeat');
   const paint = ()=>{
-    b.innerHTML = rdRepeatSvg(RDR.mode===1);
+    b.innerHTML = rdRepeatSvg(RDR.mode);
     b.classList.toggle('on', RDR.mode>0);
     b.title = RDR.mode===1 ? 'השמעה חוזרת — ההקראה הזו שוב ושוב'
             : RDR.mode===2 ? 'השמעה חוזרת — הפרשה כולה שוב ושוב'
