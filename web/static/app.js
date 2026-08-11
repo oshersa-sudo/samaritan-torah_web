@@ -5882,6 +5882,12 @@ const RDAU = { audio:null, el:null, key:null, playing:false, ui:null, seekFix:nu
 //          so a chapter that forced a substitute doesn't lose the original)
 //   last = the witness actually heard last, the fallback when `want` is missing
 const RDC = { on: localStorage.getItem('rd_cont')==='1', want:null, last:null, busy:false };
+// ── repeat (השמעה חוזרת) ─────────────────────────────────────────────────────
+// The play bar's repeat button, in the three states media players use:
+//   0 off · 1 (🔂, a "1" in the loop) this reading over and over · 2 (🔁) the
+//   whole parasha over and over, wrapping from its last chapter back to its
+//   first. Either repeating state keeps going until the reader stops it.
+const RDR = { mode: (parseInt(localStorage.getItem('rd_repeat'), 10) || 0) % 3 };
 fetch('/static/audio/readings/readings.json')
   .then(r=>r.ok ? r.json() : null)
   .then(j=>{ READINGS=j;
@@ -5994,6 +6000,38 @@ function rdUserPlay(rec, seekTo){ RDC.want = rec.reader; return readingToggle(re
 function rdLastOfPortion(){       // this chapter closes the parasha → nowhere to continue
   return !(Array.isArray(S.chList) && S.chList.length) || S.chIdx >= S.chList.length-1;
 }
+// the repeat button: the players' own loop glyph, carrying a "1" in state 1
+function rdRepeatSvg(one){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"'
+       + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+       + '<polyline points="17 2 21 6 17 10"/><path d="M3 12V10a4 4 0 0 1 4-4h14"/>'
+       + '<polyline points="7 22 3 18 7 14"/><path d="M21 12v2a4 4 0 0 1-4 4H3"/>'
+       + (one ? '<text x="12" y="15.6" text-anchor="middle" font-size="10.5" font-weight="700"'
+              + ' stroke="none" fill="currentColor">1</text>' : '')
+       + '</svg>';
+}
+function rdRepeatBtn(){
+  const b = el('button','reading-repeat');
+  const paint = ()=>{
+    b.innerHTML = rdRepeatSvg(RDR.mode===1);
+    b.classList.toggle('on', RDR.mode>0);
+    b.title = RDR.mode===1 ? 'השמעה חוזרת — ההקראה הזו שוב ושוב'
+            : RDR.mode===2 ? 'השמעה חוזרת — הפרשה כולה שוב ושוב'
+            : 'השמעה חוזרת';
+    b.setAttribute('aria-label', b.title);
+    b.setAttribute('aria-pressed', RDR.mode>0 ? 'true' : 'false');
+  };
+  paint();
+  b.onclick = ()=>{
+    RDR.mode = (RDR.mode + 1) % 3;               // off → this reading → the parasha → off
+    localStorage.setItem('rd_repeat', String(RDR.mode));
+    paint();
+    toast(RDR.mode===1 ? 'השמעה חוזרת: ההקראה הזו תושמע שוב ושוב'
+        : RDR.mode===2 ? 'השמעה חוזרת: הפרשה כולה תושמע שוב ושוב'
+        : 'השמעה חוזרת כבויה');
+  };
+  return b;
+}
 function rdContChip(){
   const b = el('button','reading-cont'+(RDC.on?' on':''), 'הקראה רציפה');
   b.setAttribute('aria-pressed', RDC.on ? 'true' : 'false');
@@ -6028,6 +6066,7 @@ function readingBar(c){
   const renderTitle = r => { title.innerHTML = 'האזנה לעד קריאה &middot; ' + esc(r.reader); };
   renderTitle(rec);
   head.appendChild(title);
+  head.appendChild(rdRepeatBtn());     // RTL: lands immediately to the right of the flag
   head.appendChild(rdContChip());
   bar.appendChild(head);
   bar.appendChild(row);
@@ -6152,15 +6191,19 @@ function readingStop(){
 }
 // the chapter's recording played out to its end
 function rdFinish(){
+  if(RDR.mode===1 && RDAU.rec){ rdPlayFrom(0); return; }   // 🔂 — the same reading again
   const reader = RDAU.rec && RDAU.rec.reader;
   readingStop();
-  if(RDC.on) rdContinue(reader);
+  // 🔁 carries on through the parasha even when the continuous flag is off: there
+  // is no other way to repeat a parasha than to read it through
+  if(RDR.mode===2 || RDC.on) rdContinue(reader);
 }
 // …and, with the flag on, the reading goes on into the next chapter of the parasha.
 async function rdContinue(reader){
   if(RDC.busy) return;
   if(S.view!=='verses') return;                  // the reader has left the chapter meanwhile
-  if(rdLastOfPortion()){                         // גמר פרשה — a run never crosses it
+  const wrap = rdLastOfPortion();                // standing on the parasha's last chapter
+  if(wrap && RDR.mode!==2){                      // גמר פרשה — a run never crosses it
     RDC.last = null;
     toast('גמר פרשה — ההקראה הרציפה נעצרה');
     return;
@@ -6168,9 +6211,13 @@ async function rdContinue(reader){
   RDC.last = reader || RDC.last;
   const chId = S.curChId;
   RDC.busy = true;
-  try{ await stepChapter(1); }
+  // 🔁 turns back to the parasha's first chapter instead of stepping past its last
+  const delta = wrap ? -S.chIdx : 1;
+  try{ await stepChapter(delta); }
   finally{ RDC.busy = false; }
-  if(S.view!=='verses' || S.curChId===chId) return;    // the page never turned
+  if(S.view!=='verses') return;
+  if(!wrap && S.curChId===chId) return;          // the page never turned
+  if(wrap) toast('סוף הפרשה — חוזר לתחילתה');
   if(!RDAU.ui){                                        // the new chapter has no witness at all
     RDC.last = null;
     toast('אין עד קריאה לפרק זה — ההקראה הרציפה נעצרה');
