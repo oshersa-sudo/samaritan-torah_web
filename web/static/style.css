@@ -734,6 +734,10 @@ footer a{ color:var(--accent); text-decoration:none; }
 .rd-tolib{ flex:0 0 auto; border:1px solid #8a5a2e; background:#8a5a2e; color:#fff;
   border-radius:8px; padding:7px 12px; font:inherit; font-size:16px; cursor:pointer; }
 .rd-tolib:hover{ background:#a8703c; }
+/* every standalone unit carries the same printer, in the same place in its header */
+.rd-print{ flex:0 0 auto; border:1px solid var(--line,#c9cfe0); background:#fff;
+  border-radius:8px; padding:7px 10px; font:inherit; font-size:16px; cursor:pointer; }
+.rd-print:hover{ background:#eef2fd; border-color:var(--accent); }
 /* same textured background as the Torah reading screen (#app), instead of the
    modals' default flat white */
 .modal-box.lib-gallery{
@@ -926,6 +930,25 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
              vertical-align:top; line-height:1.35; }
 .pr-wtbl tr{ page-break-inside:avoid; }
 .pr-wtbl .samchar{ font-family:'Samaritan'; }
+/* a library unit's own sheet. Its references are words, not verse numbers ("§ 12",
+   a question number, a citation), so they stand above the passage rather than
+   superscript to it. */
+.pr-unitrow{ margin-bottom:6pt; }
+.pr-unit-ref{ font-weight:700; font-size:9pt; color:#333; margin-bottom:1pt; }
+.pr-meta{ font-size:9pt; color:#333; margin-bottom:6pt; }
+.pr-lines{ white-space:pre-line; text-align:start; }   /* a poem keeps its own line breaks */
+.pr-ar{ font-family:'Arabic', serif; }
+/* verse citations and links are live on screen and dead on paper */
+.pr-page .tm-ref, .pr-page a{ color:inherit; text-decoration:none; font-weight:inherit; }
+/* the two tool units (dictionary app, rhyme finder) print the pane they filled,
+   so the screen's colours, chips and shadows are flattened to ink here */
+.pr-clone{ font-size:var(--pr-interp); line-height:1.45; }
+.pr-clone *{ color:#000 !important; background:none !important; box-shadow:none !important;
+             border-color:#999 !important; max-width:100% !important; }
+.pr-clone table{ width:100%; border-collapse:collapse; }
+.pr-clone th, .pr-clone td{ border-bottom:.5pt solid #999; padding:2pt 4pt;
+                            text-align:right; vertical-align:top; }
+.pr-clone tr, .pr-clone .pp-item, .pr-clone .dict-entry{ page-break-inside:avoid; }
 
 /* on-screen preview: the very same .pr-page, drawn as the actual sheet it will be
    printed on — 210mm wide with the printer's own margins — over a grey backdrop,

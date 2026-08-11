@@ -3316,7 +3316,6 @@ async function rdPrint(){
   }
   unitPreview(page);
 }
-$('rdPrint').onclick = rdPrint;
 
 // a piyyut, as it is read: its heading line, the poem itself, and — only if the
 // reader has the word dictionary open — the glosses beneath it.
@@ -3350,7 +3349,6 @@ function piyPrint(){
   }
   unitPreview(page);
 }
-$('piyPrint').onclick = piyPrint;
 
 // a figure's entry — or, when none is open, the list of names as it currently
 // stands (the reader's era/A-Z choice and search included).
@@ -3385,7 +3383,6 @@ function ppPrint(){
   if(p.source) page.appendChild(el('div','pr-meta', esc(t('pp_source') + ': ' + p.source)));
   unitPreview(page);
 }
-$('ppPrint').onclick = ppPrint;
 
 // the rhyme finder and the dictionary app both answer with a table of results,
 // so they print what they found, lifted from their own pane.
@@ -3396,7 +3393,6 @@ function rhyPrint(){
   unitClone(page, res);
   unitPreview(page);
 }
-$('rhyPrint').onclick = rhyPrint;
 
 function dictPrint(){
   const body = $('dictAppBody');
@@ -3405,7 +3401,16 @@ function dictPrint(){
   unitClone(page, body);
   unitPreview(page);
 }
-$('dictPrint').onclick = dictPrint;
+
+// One binding for all five, and each guarded: a printer button lives in another
+// unit's header markup, and a single missing one must not take the whole script
+// down with it — an unbound button is a button that does nothing, which is
+// recoverable; a thrown TypeError here stops every line of app.js after it.
+[['rdPrint', rdPrint], ['piyPrint', piyPrint], ['ppPrint', ppPrint],
+ ['rhyPrint', rhyPrint], ['dictPrint', dictPrint]].forEach(([id, fn]) => {
+  const b = $(id);
+  if(b) b.onclick = fn; else console.warn('print button missing:', id);
+});
 
 function goBack(){
   // jumped here from a source app (Memar / Ṣadaqah) → one Back returns to that app,
