@@ -1225,6 +1225,20 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   border:1px solid rgba(26,56,115,.18); border-radius:8px;
   font-size:calc(15px*var(--rd-fs,1)); line-height:1.8; color:var(--dark); }
 .pp-note h4, .pp-refs h4{ margin:0 0 6px; color:var(--navy); font-size:14px; }
+/* the full Wikipedia article, folded away so it does not bury the entry itself */
+.pp-wiki{ margin-top:16px; border:1px solid rgba(26,56,115,.18); border-radius:8px; background:#fff; }
+.pp-wiki > summary{ cursor:pointer; padding:10px 13px; color:var(--navy); font-weight:600;
+  font-size:14px; list-style:none; }
+.pp-wiki > summary::-webkit-details-marker{ display:none; }
+.pp-wiki > summary::before{ content:'▸ '; }
+.pp-wiki[open] > summary::before{ content:'▾ '; }
+.pp-wiki[open] > summary{ border-bottom:1px solid rgba(26,56,115,.14); }
+.pp-wiki-body{ padding:4px 14px 2px; font-size:calc(15.5px*var(--rd-fs,1)); line-height:1.85; color:var(--dark); }
+.pp-wiki-body p{ margin:0 0 10px; }
+.pp-wiki-body h5{ margin:16px 0 6px; color:var(--navy); font-size:calc(16px*var(--rd-fs,1)); }
+.pp-wiki-body .pp-wiki-h3{ font-size:calc(14.5px*var(--rd-fs,1)); color:var(--dark); }
+.pp-wiki-credit{ padding:8px 14px 11px; color:var(--muted); font-size:12px;
+  border-top:1px dashed rgba(26,56,115,.18); }
 .pp-refs{ margin-top:14px; }
 .pp-refs ul{ margin:0; padding-inline-start:18px; }
 .pp-refs li{ font-size:13.5px; line-height:1.7; }

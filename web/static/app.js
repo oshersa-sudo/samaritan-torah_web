@@ -172,6 +172,8 @@ const I18N = {
     pp_era_early:'ראשית העת החדשה', pp_era_mod:'העת החדשה', pp_era_unk:'תקופה לא ידועה',
     pp_source:'מקור', pp_contributor:'רשם:', pp_pron:'הגייה',
     pp_more:'הרחבה', pp_refs:'לקריאה נוספת',
+    pp_wiki_open:'מורחב — הערך המלא', pp_wiki_credit:'מתוך ויקיפדיה, הערך',
+    pp_wiki_lang_he:'בעברית', pp_wiki_lang_en:'באנגלית', pp_wiki_lang_ar:'בערבית',
     m_piyutim_book:'עיון בפיוטים השומרוניים', piy_title:'עיון בפיוטים השומרוניים',
     piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
     piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
@@ -217,7 +219,7 @@ const I18N = {
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     // newest first: a reader opening "מה חדש" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>גרסה 3.2 — ההדפסה: הדף עצמו, ולא צילום של האפליקציה</b></p><ul><li>מה שיוצא מהמדפסת הוא בדיוק מה שנראה ב<b>תצוגה המקדימה</b> — הדף מוגדר פעם אחת, במידות של נייר, והתצוגה מציגה גיליון A4 אמיתי בגודל הכתב שיודפס בפועל</li><li>על הנייר עולים <b>הטקסט ופירושיו בלבד</b>: מסגרת האפליקציה, שורת ההאזנה והכפתורים אינם מודפסים — גם בהדפסה מהדפדפן עצמו</li><li>בחירת הגופן — <b>שומרוני או עברי</b> — חלה על כל הדף, הפירוש בכלל זה, וחלון ההדפסה נפתח בכתב שעל המסך</li><li><b>פירוש הפסוק</b> בא מיד מתחת לפרק שלו ו<b>מילון מילים</b> אחריו; כל אחד מהם מופרד בקו ולא ממוסגר, וגודל הכתב קבוע בכל דף ובכל מכשיר</li><li>תוקן: פרק ארוך נחתך בסוף העמוד הראשון ולא הודפס עד סופו</li><li>גם <b>יחידות הספרייה</b> נושאות מעתה סמל מדפסת, ומדפיסות על אותו גיליון: הפרק הפתוח בספר או תוכן העניינים שלו, פיוט על שורותיו (ופירושי מילותיו אם המילון פתוח), ערך של אישיות או רשימת השמות, ותוצאות המילון ומציאת החרוזים</li></ul>',
+      '<p><b>גרסה 3.2 — ההדפסה: הדף עצמו, ולא צילום של האפליקציה</b></p><ul><li>מה שיוצא מהמדפסת הוא בדיוק מה שנראה ב<b>תצוגה המקדימה</b> — הדף מוגדר פעם אחת, במידות של נייר, והתצוגה מציגה גיליון A4 אמיתי בגודל הכתב שיודפס בפועל</li><li>על הנייר עולים <b>הטקסט ופירושיו בלבד</b>: מסגרת האפליקציה, שורת ההאזנה והכפתורים אינם מודפסים — גם בהדפסה מהדפדפן עצמו</li><li>בחירת הגופן — <b>שומרוני או עברי</b> — חלה על כל הדף, הפירוש בכלל זה, וחלון ההדפסה נפתח בכתב שעל המסך</li><li><b>פירוש הפסוק</b> בא מיד מתחת לפרק שלו ו<b>מילון מילים</b> אחריו; כל אחד מהם מופרד בקו ולא ממוסגר, וגודל הכתב קבוע בכל דף ובכל מכשיר</li><li>תוקן: פרק ארוך נחתך בסוף העמוד הראשון ולא הודפס עד סופו</li><li>גם <b>יחידות הספרייה</b> נושאות מעתה סמל מדפסת, ומדפיסות על אותו גיליון: הפרק הפתוח בספר או תוכן העניינים שלו, פיוט על שורותיו (ופירושי מילותיו אם המילון פתוח), ערך של אישיות או רשימת השמות, ותוצאות המילון ומציאת החרוזים</li><li>ולשבעת השומרונים שיש להם ערך בוויקיפדיה נוסף פרק מתקפל <b>מורחב — הערך המלא</b>, ובו הערך כולו כלשונו, בשפת הממשק היכן שהוא קיים בה</li></ul>',
       '<p><b>גרסה 3.1 — אישים וחוקרים שומרוניים, ומדף ספרים חדש</b></p><ul><li><b>אישים וחוקרים שומרוניים</b> נוסף לספרייה כיחידה עצמאית: 95 דמויות — מאהרן הכהן ובאבא רבה, דרך פייטני ימי הביניים, ועד בני העדה וחוקריה במאה העשרים — ולכל אחת הסבר על מקומה במסורת</li><li>הרשימה נפרשת <b>לפי תקופה</b> או <b>לפי א״ב</b>, והחיפוש רץ גם על גוף ההסברים — כך שאפשר למצוא אישיות לפי עניין ולא רק לפי שמה</li><li>ל-23 מן האישים נוספה <b>הרחבה</b> — תאריכים, תיקונים והקשר שאין בערך עצמו — ולצדה <b>לקריאה נוספת</b>; ושמותיהם העבריים הובאו במקום הצורה הערבית היכן שהם ידועים</li><li>מדף הספרים עוצב מחדש: שם הספר כתוב על הכריכה עצמה, לכל ספר צבע משלו, והכריכות הוקטנו — כך נכנסים בשורה אחת כפליים ספרים מקודם</li></ul>',
       '<p><b>גרסה 3.0 — אבו אלפרג׳ בתוך פירוש הפסוק, והקראה רציפה</b></p><ul><li>דעתו של <b>אבו אלפרג׳</b> מובאת מתחת לפירוש כל פסוק שהוא מדבר עליו — בשמו ובציון סעיף המחבר; 654 פסוקים ב-352 פרקים שומרוניים, והחיבור כולו תורגם לערבית</li><li><b>הקראה רציפה</b>: דגל בסרגל הניגון שממשיך אל הפרק הבא בתום ההקלטה — באותו עד קריאה ובאותה מהירות — ונעצר תמיד בגמר הפרשה</li><li>סרגל הניגון צומצם לטובת הטקסט, שלושת הסימנים שבשורת הניווט הוצמדו, וסרגל מקופל מסמן את עצמו בחץ קטן מתנדנד</li></ul>',
       '<p><b>האזנה להקראת התורה</b></p><ul><li>כל פרק נפתח עם סרגל ניגון, וההקראה נשמעת מפי <b>שמונה עדי קריאה</b> מן העדה — היכן שיש לפרק יותר מעד אחד אפשר לבחור ביניהם ולהשוות ביניהם</li><li><b>מאיר בן יפנה ששוני</b> הקריא את התורה כולה לפי החלוקה השומרונית: 941 פרקים, כשבע-עשרה שעות</li><li>לצדו ארכיון עדי הקריאה ההיסטוריים — <b>פנחס אברהם כהן, רצון צדקה, עובדיה צדקה, ישראל צדקה, אברהם צדקה, אלעזר צדקה כהן ואברהם בן יששכר המרחיב</b> — כארבע-עשרה שעות, שנחתכו ל-757 קטעים כך שכל פרק שומרוני נשמע במדויק גם מתוך הקלטה שנעשתה לפי החלוקה היהודית</li><li>בורר מהירות, סימון ♪ על כל פרק שיש לו הקלטה, והקראה רציפה עד גמר הפרשה</li></ul>',
@@ -396,6 +398,8 @@ const I18N = {
     pp_era_early:'Early modern period', pp_era_mod:'Modern era', pp_era_unk:'Period unknown',
     pp_source:'Source', pp_contributor:'contributed by', pp_pron:'pron.',
     pp_more:'Further detail', pp_refs:'Further reading',
+    pp_wiki_open:'Expanded — the full article', pp_wiki_credit:'From Wikipedia, the article',
+    pp_wiki_lang_he:'in Hebrew', pp_wiki_lang_en:'in English', pp_wiki_lang_ar:'in Arabic',
     m_piyutim_book:'Samaritan Piyyutim', piy_title:'Samaritan Piyyutim',
     piy_back_tree:'Back to contents', piy_dict_toggle:'Word dictionary', piy_search_ph:'Search composition, author, or word…',
     piy_empty:'Choose a composition from the contents ←', piy_pick_first:'Choose a composition',
@@ -441,7 +445,7 @@ const I18N = {
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     // newest first: a reader opening "What's new" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>Version 3.2 — Printing: the sheet itself, not a photograph of the app</b></p><ul><li>What comes out of the printer is exactly what the <b>preview</b> showed — the page is defined once, in paper measures, and the preview draws a real A4 sheet at the type size that will actually be printed</li><li>Only <b>the text and its commentaries</b> reach the paper: the app frame, the reading bar and the buttons are never printed — not even from the browser\'s own print command</li><li>The font choice — <b>Samaritan or Hebrew</b> — governs the whole sheet, the commentary included, and the dialog opens on the script that is on the screen</li><li>The <b>verse commentary</b> comes directly beneath its chapter and the <b>word dictionary</b> after it; each is set off by a rule rather than boxed, and the type size is fixed on every page and every device</li><li>Fixed: a long chapter was cut off at the end of the first page instead of printing in full</li><li>The <b>library units</b> now carry a printer of their own, onto the same sheet: a book\'s open chapter or its contents, a piyyut with its lines (and its word glosses if the dictionary is open), a figure\'s entry or the list of names, and the results of the dictionary and the rhyme finder</li></ul>',
+      '<p><b>Version 3.2 — Printing: the sheet itself, not a photograph of the app</b></p><ul><li>What comes out of the printer is exactly what the <b>preview</b> showed — the page is defined once, in paper measures, and the preview draws a real A4 sheet at the type size that will actually be printed</li><li>Only <b>the text and its commentaries</b> reach the paper: the app frame, the reading bar and the buttons are never printed — not even from the browser\'s own print command</li><li>The font choice — <b>Samaritan or Hebrew</b> — governs the whole sheet, the commentary included, and the dialog opens on the script that is on the screen</li><li>The <b>verse commentary</b> comes directly beneath its chapter and the <b>word dictionary</b> after it; each is set off by a rule rather than boxed, and the type size is fixed on every page and every device</li><li>Fixed: a long chapter was cut off at the end of the first page instead of printing in full</li><li>The <b>library units</b> now carry a printer of their own, onto the same sheet: a book\'s open chapter or its contents, a piyyut with its lines (and its word glosses if the dictionary is open), a figure\'s entry or the list of names, and the results of the dictionary and the rhyme finder</li><li>The seven Samaritan figures who have a Wikipedia article carry a folded <b>Expanded — the full article</b> panel holding it whole, in the interface language wherever it exists there</li></ul>',
       '<p><b>Version 3.1 — Samaritan Figures and Scholars, and a new bookshelf</b></p><ul><li><b>Samaritan Figures and Scholars</b> joins the library as a unit of its own: 95 figures — from Aaron the priest and Baba Rabba, through the medieval poets, to community members and scholars of the twentieth century — each with an account of its place in the tradition</li><li>The list can be laid out <b>by period</b> or <b>A–Z</b>, and the search runs over the accounts themselves, so a figure can be found by subject and not only by name</li><li>23 of the figures carry <b>further detail</b> — dates, corrections and context the entry itself lacks — and a <b>further reading</b> list beside it; and their Hebrew names now lead where those are known</li><li>The bookshelf was redrawn: each title is written on its own cover, every book has its own colour, and the covers are smaller — so a row now holds twice as many books as before</li></ul>',
       '<p><b>Version 3.0 — Abu\'l-Faraj inside the verse commentary, and continuous reading</b></p><ul><li><b>Abu\'l-Faraj</b>\'s view is now set beneath the commentary on every verse he speaks about, in his name and with the author\'s section number: 654 verses across 352 Samaritan chapters, the whole work rendered in Arabic too</li><li><b>Continuous reading</b>: a flag on the play bar that carries on into the next chapter when a recording ends — same reading witness, same speed — and always stops at the end of the parasha</li><li>The play bar was slimmed down for the sake of the text, the three chapter signs were drawn together, and a folded bar now marks itself with a small bobbing arrow</li></ul>',
       '<p><b>Listening to the Torah read aloud</b></p><ul><li>Every chapter opens with a play bar, and the reading is heard from <b>eight reading witnesses</b> of the community — where a chapter has more than one, you can choose between them and compare</li><li><b>Meir ben Yefune Sassoni</b> recited the whole Torah in the Samaritan division: 941 chapters, some seventeen hours</li><li>Beside him an archive of historical witnesses — <b>Pinhas Abraham Cohen, Ratson Tsedaka, Ovadya Tsedaka, Israel Tsedaka, Abraham Tsedaka, Elazar Tsedaka Cohen and Abraham ben Yissachar</b> — some fourteen hours, cut into 757 segments so that every Samaritan chapter can be heard exactly, even from a recording made by the Jewish division</li><li>A speed selector, a ♪ mark on every chapter that has a recording, and continuous reading to the end of the parasha</li></ul>',
@@ -620,6 +624,8 @@ const I18N = {
     pp_era_early:'مطلع العصر الحديث', pp_era_mod:'العصر الحديث', pp_era_unk:'حقبة غير معروفة',
     pp_source:'المصدر', pp_contributor:'بقلم', pp_pron:'النطق',
     pp_more:'تفصيل إضافي', pp_refs:'لمزيد من القراءة',
+    pp_wiki_open:'موسّع — المقالة كاملة', pp_wiki_credit:'من ويكيبيديا، مقالة',
+    pp_wiki_lang_he:'بالعبرية', pp_wiki_lang_en:'بالإنجليزية', pp_wiki_lang_ar:'بالعربية',
     m_piyutim_book:'الأناشيد السامرية', piy_title:'تصفّح الأناشيد السامرية',
     piy_back_tree:'العودة للفهرس', piy_dict_toggle:'قاموس الكلمات', piy_search_ph:'بحث عن تأليف أو مؤلف أو كلمة…',
     piy_empty:'اختر تأليفًا من الفهرس ←', piy_pick_first:'اختر تأليفًا',
@@ -665,7 +671,7 @@ const I18N = {
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     // newest first: a reader opening "ما الجديد" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>الإصدار 3.2 — الطباعة: الورقة نفسها لا صورةٌ عن التطبيق</b></p><ul><li>ما يخرج من الطابعة هو تماماً ما أظهرته <b>المعاينة</b> — فالصفحة معرَّفة مرّة واحدة بمقاييس الورق، والمعاينة تعرض ورقة A4 حقيقية بحجم الخطّ الذي سيُطبع فعلاً</li><li>لا يصل إلى الورق سوى <b>النصّ وتفاسيره</b>: هيكل التطبيق وشريط الاستماع والأزرار لا تُطبع — ولا حتّى من أمر الطباعة في المتصفّح نفسه</li><li>اختيار الخطّ — <b>السامري أو العبري</b> — يسري على الورقة كلّها والتفسير منها، ونافذة الطباعة تفتح على الخطّ الظاهر على الشاشة</li><li><b>تفسير الآية</b> يأتي تحت أصحاحه مباشرة و<b>معجم الكلمات</b> بعده؛ يفصل كلاًّ منهما خطّ لا إطار، وحجم الخطّ ثابت في كلّ صفحة وعلى كلّ جهاز</li><li>أُصلح: كان الأصحاح الطويل يُقصّ عند نهاية الصفحة الأولى فلا يُطبع كاملاً</li><li>ولوحدات <b>المكتبة</b> الآن طابعتها الخاصّة، وعلى الورقة نفسها: أصحاح الكتاب المفتوح أو محتوياته، وقصيدة بأسطرها (وشروح كلماتها إن كان المعجم مفتوحاً)، ومدخل عَلَم أو قائمة الأسماء، ونتائج المعجم وباحث القوافي</li></ul>',
+      '<p><b>الإصدار 3.2 — الطباعة: الورقة نفسها لا صورةٌ عن التطبيق</b></p><ul><li>ما يخرج من الطابعة هو تماماً ما أظهرته <b>المعاينة</b> — فالصفحة معرَّفة مرّة واحدة بمقاييس الورق، والمعاينة تعرض ورقة A4 حقيقية بحجم الخطّ الذي سيُطبع فعلاً</li><li>لا يصل إلى الورق سوى <b>النصّ وتفاسيره</b>: هيكل التطبيق وشريط الاستماع والأزرار لا تُطبع — ولا حتّى من أمر الطباعة في المتصفّح نفسه</li><li>اختيار الخطّ — <b>السامري أو العبري</b> — يسري على الورقة كلّها والتفسير منها، ونافذة الطباعة تفتح على الخطّ الظاهر على الشاشة</li><li><b>تفسير الآية</b> يأتي تحت أصحاحه مباشرة و<b>معجم الكلمات</b> بعده؛ يفصل كلاًّ منهما خطّ لا إطار، وحجم الخطّ ثابت في كلّ صفحة وعلى كلّ جهاز</li><li>أُصلح: كان الأصحاح الطويل يُقصّ عند نهاية الصفحة الأولى فلا يُطبع كاملاً</li><li>ولوحدات <b>المكتبة</b> الآن طابعتها الخاصّة، وعلى الورقة نفسها: أصحاح الكتاب المفتوح أو محتوياته، وقصيدة بأسطرها (وشروح كلماتها إن كان المعجم مفتوحاً)، ومدخل عَلَم أو قائمة الأسماء، ونتائج المعجم وباحث القوافي</li><li>وللشخصيات السامرية السبع التي لها مقالة في ويكيبيديا أُضيف قسم مطويّ <b>موسّع — المقالة كاملة</b> يحملها بتمامها، بلغة الواجهة حيثما وُجدت بها</li></ul>',
       '<p><b>الإصدار 3.1 — أعلام وباحثون سامريّون، ورفّ كتب جديد</b></p><ul><li>أُضيف <b>أعلام وباحثون سامريّون</b> إلى المكتبة كوحدة مستقلّة: 95 شخصية — من هارون الكاهن وبابا ربّا، مروراً بشعراء العصور الوسطى، وصولاً إلى أبناء الطائفة وباحثيها في القرن العشرين — ولكلّ واحدة شرح لمكانتها في التقليد</li><li>تُعرض القائمة <b>حسب الحقبة</b> أو <b>حسب الأبجدية</b>، والبحث يجري في متن الشروح أيضاً، فتُوجد الشخصية بموضوعها لا باسمها وحده</li><li>أُضيف إلى 23 شخصية <b>تفصيل إضافي</b> — تواريخ وتصويبات وسياق لا يرد في المدخل نفسه — وإلى جانبه قائمة <b>لمزيد من القراءة</b>؛ وصارت أسماؤهم العبرية تتصدّر حيثما كانت معروفة</li><li>أُعيد رسم رفّ الكتب: اسم الكتاب مكتوب على غلافه نفسه، ولكلّ كتاب لونه الخاصّ، وصُغّرت الأغلفة — فصار السطر الواحد يتّسع لضعف ما كان</li></ul>',
       '<p><b>الإصدار 3.0 — أبو الفرج داخل شرح الآية، والقراءة المتواصلة</b></p><ul><li>يَرِد رأي <b>أبي الفرج</b> الآن تحت شرح كلّ آية يتحدّث عنها، باسمه وبرقم فقرة المؤلّف: 654 آية في 352 أصحاحاً سامرياً، والمصنَّف كلّه مترجَم إلى العربية</li><li><b>القراءة المتواصلة</b>: علامة في شريط التشغيل تتابع إلى الأصحاح التالي عند انتهاء التسجيل — بالقارئ نفسه وبالسرعة نفسها — وتتوقّف دائماً عند نهاية البارشاة</li><li>جرى تضييق شريط التشغيل لصالح النصّ، وقُرِّبت العلامات الثلاث في سطر التنقّل بعضها إلى بعض، وصار الشريط المطويّ يشير إلى نفسه بسهم صغير متمايل</li></ul>',
       '<p><b>الاستماع إلى قراءة التوراة</b></p><ul><li>يُفتح كلّ أصحاح مع شريط تشغيل، وتُسمع القراءة بأصوات <b>ثمانية من قرّاء الطائفة</b> — وحيث يوجد للأصحاح أكثر من قارئ يمكن الاختيار بينهم والمقارنة</li><li>قرأ <b>مئير بن يفنه ششوني</b> التوراة كلّها وفق التقسيم السامري: 941 أصحاحاً، نحو سبع عشرة ساعة</li><li>وإلى جانبه أرشيف القرّاء التاريخيّين — <b>فنحاس أبراهام كوهين، ورصون صدقة، وعوبديا صدقة، وإسرائيل صدقة، وأبراهام صدقة، وألعازار صدقة كوهين، وأبراهام بن يساخر</b> — نحو أربع عشرة ساعة، قُطّعت إلى 757 مقطعاً كي يُسمع كلّ أصحاح سامريّ بدقّة حتى من تسجيل جرى وفق التقسيم اليهودي</li><li>مُحدِّد سرعة، وعلامة ♪ على كلّ أصحاح له تسجيل، وقراءة متواصلة حتى نهاية البارشاة</li></ul>',
@@ -4517,6 +4523,27 @@ async function ppShow(id){
             || p.enriched_note_he || p.enriched_note_en || '';
   const noteHtml = (note||'').trim()
     ? `<div class="pp-note"><h4>${esc(t('pp_more'))}</h4><div>${esc(note)}</div></div>` : '';
+  // the Wikipedia article, in the reader's own language where that Wikipedia has
+  // one — nothing is machine-translated — falling back to whatever language does.
+  // CC BY-SA, so the article's name, its link and the licence travel with the text.
+  const wiki = p.wikipedia || {};
+  const wLang = wiki[LANG] ? LANG : (['he','en','ar'].find(l=>wiki[l]) || null);
+  let wikiHtml = '';
+  if(wLang){
+    const w = wiki[wLang];
+    const body = (w.text||'').split('\n').map(line=>{
+      const h = line.match(/^(=+)\s*(.*?)\s*=+$/);
+      if(h) return `<h5 class="pp-wiki-h${Math.min(h[1].length,3)}">${esc(h[2])}</h5>`;
+      return line.trim() ? `<p>${esc(line)}</p>` : '';
+    }).join('');
+    const via = wLang===LANG ? '' : ' · '+esc(t('pp_wiki_lang_'+wLang));
+    wikiHtml = `<details class="pp-wiki"><summary>${esc(t('pp_wiki_open'))}${via}</summary>`
+      + `<div class="pp-wiki-body" dir="${wLang==='en'?'ltr':'rtl'}" lang="${wLang}">${body}</div>`
+      + `<div class="pp-wiki-credit">${esc(t('pp_wiki_credit'))} `
+      + `<a href="${esc(w.url||'')}" target="_blank" rel="noopener noreferrer">${esc(w.title||'')}</a>`
+      + ` · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></div>`
+      + `</details>`;
+  }
   const refs = (p.references||[]).filter(r=>r && (r.url||r.title));
   const refsHtml = refs.length
     ? `<div class="pp-refs"><h4>${esc(t('pp_refs'))}</h4><ul>` + refs.map(r=>{
@@ -4533,6 +4560,7 @@ async function ppShow(id){
     </div>
     <div class="pp-desc">${esc(desc)}</div>
     ${noteHtml}
+    ${wikiHtml}
     ${refsHtml}
     ${src}`;
   $('ppBody').classList.add('pp-detail-open');   // mobile: swap list → entry

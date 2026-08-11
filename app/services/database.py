@@ -1987,6 +1987,12 @@ def get_person(pid):
     except (TypeError, ValueError):
         refs = []
     out['references'] = [x for x in refs if isinstance(x, dict) and (x.get('title') or x.get('url'))]
+    # {lang: {title, url, text}} for the figures that have a Wikipedia article —
+    # each language's own article, so nothing had to be machine-translated
+    try:
+        out['wikipedia'] = json.loads(out.pop('wikipedia_json', None) or '{}')
+    except (TypeError, ValueError):
+        out['wikipedia'] = {}
     return out
 
 
@@ -2006,7 +2012,8 @@ def search_people(q, limit=200):
            OR description_he LIKE ? OR description_en LIKE ? OR description_ar LIKE ?
            OR enriched_note_he LIKE ? OR enriched_note_en LIKE ? OR enriched_note_ar LIKE ?
            OR period LIKE ? OR period_he LIKE ? OR period_ar LIKE ?
-        ORDER BY ord LIMIT ?""" % _PEOPLE_LIST_COLS, (like,) * 12 + (limit,)).fetchall()
+           OR wikipedia_json LIKE ?
+        ORDER BY ord LIMIT ?""" % _PEOPLE_LIST_COLS, (like,) * 13 + (limit,)).fetchall()
     conn.close()
     return [dict(r) for r in rows]
 

@@ -23,6 +23,7 @@ nothing is invented or half-translated.
   py -3 scripts/people/import_people.py            # dry-run: parse + print the grouping
   py -3 scripts/people/import_people.py --apply    # write the `people` table
 """
+import json
 import os
 import re
 import sqlite3
@@ -30,6 +31,7 @@ import sys
 
 _ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 SRC = os.path.join(_ROOT, 'data', 'people', 'samaritan_people.db')   # unpacked from files_persons.zip
+WIKI = os.path.join(_ROOT, 'data', 'people', 'wikipedia.json')       # scripts/people/fetch_wikipedia.py
 DB = os.path.join(_ROOT, 'data', 'torah.db')
 
 # era buckets (codes are what the UI groups by; labels live in the app's I18N table)
@@ -216,6 +218,12 @@ def main(apply):
     rows = [dict(r) for r in src.execute('SELECT * FROM people')]
     src.close()
 
+    # the Wikipedia articles for the seven Samaritan figures, per language
+    wiki = {}
+    if os.path.exists(WIKI):
+        with open(WIKI, encoding='utf-8') as f:
+            wiki = json.load(f)
+
     unmapped = []
     renamed = 0
     for r in rows:
@@ -232,6 +240,8 @@ def main(apply):
         for k in ('enriched_note_en', 'enriched_note_he', 'enriched_note_ar'):
             r.setdefault(k, None)
         r.setdefault('references_json', '[]')
+        arts = wiki.get(r['id']) or {}
+        r['wikipedia_json'] = json.dumps(arts, ensure_ascii=False) if arts else None
 
     rows.sort(key=lambda r: (ERA_ORDER.index(r['era']), r['sort_year'], r['name_he']))
     for i, r in enumerate(rows, 1):
@@ -247,6 +257,9 @@ def main(apply):
           % (sum(1 for r in rows if (r.get('enriched_note_he') or '').strip()),
              sum(1 for r in rows if (r.get('references_json') or '[]') not in ('[]', '', None)),
              renamed))
+    wk = [r for r in rows if r.get('wikipedia_json')]
+    print('  Wikipedia articles: %d figures, %d articles'
+          % (len(wk), sum(len(json.loads(r['wikipedia_json'])) for r in wk)))
     if unmapped:
         print('UNMAPPED periods (left in English): %s' % sorted(set(unmapped)))
     if not apply:
@@ -261,17 +274,17 @@ def main(apply):
         period TEXT, period_he TEXT, period_ar TEXT,
         description_en TEXT, description_he TEXT, description_ar TEXT,
         enriched_note_en TEXT, enriched_note_he TEXT, enriched_note_ar TEXT,
-        references_json TEXT,
+        references_json TEXT, wikipedia_json TEXT,
         source TEXT, contributor_initials TEXT)''')
     conn.executemany('''INSERT INTO people(id, ord, era, sort_year, name_en, name_he, name_ar,
         pronunciation, period, period_he, period_ar,
         description_en, description_he, description_ar,
-        enriched_note_en, enriched_note_he, enriched_note_ar, references_json,
+        enriched_note_en, enriched_note_he, enriched_note_ar, references_json, wikipedia_json,
         source, contributor_initials)
         VALUES(:id,:ord,:era,:sort_year,:name_en,:name_he,:name_ar,:pronunciation,
                :period,:period_he,:period_ar,:description_en,:description_he,
                :description_ar,:enriched_note_en,:enriched_note_he,:enriched_note_ar,
-               :references_json,:source,:contributor_initials)''', rows)
+               :references_json,:wikipedia_json,:source,:contributor_initials)''', rows)
     conn.execute('CREATE INDEX IF NOT EXISTS idx_people_ord ON people(ord)')
     conn.commit()
     conn.close()
