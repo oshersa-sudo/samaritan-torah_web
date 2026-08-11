@@ -1,8 +1,11 @@
 """Import the Samaritan personalities dataset into torah.db as a new library unit.
 
-Source: files_persons.zip (samaritan_people.db / .json) — 95 figures summarised in
+Source: files_persons2.zip (samaritan_people.db / .json) — 95 figures summarised in
 Hebrew, English and Arabic from *A Companion to Samaritan Studies*, each with its
-page reference and (where signed) the contributor's initials.
+page reference and (where signed) the contributor's initials. The second delivery
+kept those summaries word for word and added, for 23 of the 95, an `enriched_note`
+in all three languages (dates, corrections and context the encyclopedia entry
+lacks) plus a `references` list of further reading. Both are carried through.
 
 The source table is copied as-is; four presentation columns are added so the
 reader can group and sort the list without re-parsing English prose per request:
@@ -154,6 +157,22 @@ def resolve_period(p):
     return (p, p, 9999, 'unk')
 
 
+# Hebrew names. Samaritan men carry an Arabic name and a Hebrew one, and the
+# dataset itself pairs several ("מרחיב (מופרג')", "אב גלוגה (אבו חמד)"). Only
+# pairs the data itself documents, or equivalences that are not in doubt, are
+# applied here — the Hebrew form leads and the Arabic follows in parentheses.
+# Anything needing the project owner's ruling is left alone rather than guessed.
+NAME_HE = {
+    # Ghazal = Ṭabya (gazelle) — the pairing is spelled out in this entry's own name
+    'ghazal_tabya_ad_duweik':   'טביה (ע׳זאל) אד-דוויק',
+    # Murjan = Ab Sikkuwwa — likewise; spelling unified with ab_sakwa_murjan below
+    'murgan_ab_sikkuwwa':       'אב סכוה (מרג׳אן) בן צדקה',
+    # Hidr = Pinhas — the pairing is in the entry's own name, Hebrew now leads
+    'nagi_b_hidr':              'נאגי בן פנחס (חדר) בן יצחק',
+    # the reader's own examples: Ishaq = Isaac, Ibrahim = Abraham
+    'abu_ishaq_ibrahim_al_musannif': 'אברהם אלמצנף (אבו אסחאק אבראהים)',
+}
+
 _BOOK = 'A Companion to Samaritan Studies'
 
 
@@ -175,12 +194,21 @@ def main(apply):
     src.close()
 
     unmapped = []
+    renamed = 0
     for r in rows:
         he, ar, year, era = resolve_period(r['period'])
         if era == 'unk' and r['period'] not in PERIOD_MAP:
             unmapped.append(r['period'])
         r['period_he'], r['period_ar'], r['sort_year'], r['era'] = he, ar, year, era
         r['source'] = norm_source(r['source'])
+        if r['id'] in NAME_HE and NAME_HE[r['id']] != r['name_he']:
+            r['name_he'] = NAME_HE[r['id']]
+            renamed += 1
+        # the second delivery's columns are optional — an older source file
+        # simply leaves them empty rather than failing the import
+        for k in ('enriched_note_en', 'enriched_note_he', 'enriched_note_ar'):
+            r.setdefault(k, None)
+        r.setdefault('references_json', '[]')
 
     rows.sort(key=lambda r: (ERA_ORDER.index(r['era']), r['sort_year'], r['name_he']))
     for i, r in enumerate(rows, 1):
@@ -192,6 +220,10 @@ def main(apply):
     print('people: %d' % len(rows))
     for e in ERA_ORDER:
         print('  %-6s %d' % (e, counts.get(e, 0)))
+    print('  enriched notes: %d · with further reading: %d · Hebrew names applied: %d'
+          % (sum(1 for r in rows if (r.get('enriched_note_he') or '').strip()),
+             sum(1 for r in rows if (r.get('references_json') or '[]') not in ('[]', '', None)),
+             renamed))
     if unmapped:
         print('UNMAPPED periods (left in English): %s' % sorted(set(unmapped)))
     if not apply:
@@ -205,13 +237,18 @@ def main(apply):
         name_en TEXT, name_he TEXT, name_ar TEXT, pronunciation TEXT,
         period TEXT, period_he TEXT, period_ar TEXT,
         description_en TEXT, description_he TEXT, description_ar TEXT,
+        enriched_note_en TEXT, enriched_note_he TEXT, enriched_note_ar TEXT,
+        references_json TEXT,
         source TEXT, contributor_initials TEXT)''')
     conn.executemany('''INSERT INTO people(id, ord, era, sort_year, name_en, name_he, name_ar,
         pronunciation, period, period_he, period_ar,
-        description_en, description_he, description_ar, source, contributor_initials)
+        description_en, description_he, description_ar,
+        enriched_note_en, enriched_note_he, enriched_note_ar, references_json,
+        source, contributor_initials)
         VALUES(:id,:ord,:era,:sort_year,:name_en,:name_he,:name_ar,:pronunciation,
                :period,:period_he,:period_ar,:description_en,:description_he,
-               :description_ar,:source,:contributor_initials)''', rows)
+               :description_ar,:enriched_note_en,:enriched_note_he,:enriched_note_ar,
+               :references_json,:source,:contributor_initials)''', rows)
     conn.execute('CREATE INDEX IF NOT EXISTS idx_people_ord ON people(ord)')
     conn.commit()
     conn.close()

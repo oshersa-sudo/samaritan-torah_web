@@ -1970,14 +1970,24 @@ def get_people_toc():
 
 
 def get_person(pid):
-    """One figure in full, including the three descriptions and the attribution."""
+    """One figure in full: the three descriptions, the enriched note where the
+    source supplied one, the further-reading links (stored as JSON text, handed
+    over as a list), and the attribution."""
     conn = get_connection()
     if not _has_people(conn):
         conn.close()
         return None
     r = conn.execute('SELECT * FROM people WHERE id=?', (pid or '',)).fetchone()
     conn.close()
-    return dict(r) if r else None
+    if not r:
+        return None
+    out = dict(r)
+    try:
+        refs = json.loads(out.pop('references_json', None) or '[]')
+    except (TypeError, ValueError):
+        refs = []
+    out['references'] = [x for x in refs if isinstance(x, dict) and (x.get('title') or x.get('url'))]
+    return out
 
 
 def search_people(q, limit=200):
@@ -1994,8 +2004,9 @@ def search_people(q, limit=200):
     rows = conn.execute("""SELECT %s FROM people
         WHERE name_he LIKE ? OR name_en LIKE ? OR name_ar LIKE ?
            OR description_he LIKE ? OR description_en LIKE ? OR description_ar LIKE ?
+           OR enriched_note_he LIKE ? OR enriched_note_en LIKE ? OR enriched_note_ar LIKE ?
            OR period LIKE ? OR period_he LIKE ? OR period_ar LIKE ?
-        ORDER BY ord LIMIT ?""" % _PEOPLE_LIST_COLS, (like,) * 9 + (limit,)).fetchall()
+        ORDER BY ord LIMIT ?""" % _PEOPLE_LIST_COLS, (like,) * 12 + (limit,)).fetchall()
     conn.close()
     return [dict(r) for r in rows]
 

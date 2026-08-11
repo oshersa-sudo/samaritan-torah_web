@@ -23,7 +23,18 @@
   "description_he": "משורר שומרוני שפעל בראשית המאה הארבע עשרה, וכתב בשומרונית היברידית (עברית-ארמית). ככל הנראה זהו \"החכם בן מניר\" הנזכר, יחד עם המשורר סעדאללה חכתרי, כמחבר-שותף של הקינה \"בכות גדולות\" - להבדיל מכהן קודם בעל אותו שם הנזכר בכרוניקת התולידה.",
   "description_ar": "شاعر سامري نشط في مطلع القرن الرابع عشر، وكتب بالسامرية الهجينة (عبرية-آرامية). ويُرجَّح أنه \"الحكيم ابن منير\" الذي يُنسَب إليه، مع الشاعر سعد الله الكتاري، تأليف مرثية \"بخوت جدولوت\" (بكاء العظماء) - وهو غير الكاهن الذي يحمل الاسم نفسه المذكور في وقائع التوليدة.",
   "source": "A Companion to Samaritan Studies, p. 1",
-  "contributor_initials": "M.F."
+  "contributor_initials": "M.F.",
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "he",
+    "url": "https://he.wikipedia.org/wiki/%D7%90%D7%94%D7%A8%D7%9F_%D7%91%D7%9F_%D7%9E%D7%A0%D7%99%D7%A8",
+    "title": "אהרן בן מניר - ויקיפדיה העברית"
+   }
+  ],
+  "enriched_note_en": "According to the Hebrew Wikipedia article (which was contributed by Osher of Avnei Shoham), his full name in acrostic form is 'ben Manir Aharon Eleazar ha-Rabban', indicating priestly lineage. Prof. Menahem Haran argued that the enumeration of commandments mentioned by ben Manir reflects a tradition predating Maimonides. His liturgical poems for Yom Kippur remain part of the Samaritan liturgy.",
+  "enriched_note_he": "לפי ערך הוויקיפדיה העברית (שהוכנס ע\"י אושר מאבני שהם), שמו המלא באקרוסטיכון הוא 'בן מניר אהרן אלעזר הרבן', המעיד על שושלת כהנית. פרופ' מנחם הרן טען שמניין המצוות שמזכיר בן מניר משקף מסורת קדומה מזו של הרמב\"ם. פיוטיו ליום הכיפורים נותרו חלק מהליטורגיה השומרונית.",
+  "enriched_note_ar": "وفقًا لمقالة ويكيبيديا العبرية، اسمه الكامل في شكل تعمية هو 'بن منير هارون إلعازار الربّان'، مما يدل على سلالة كهنوتية. وادعى البروفيسور مناحيم هران أن تعداد الوصايا الذي يذكره ابن منير يعكس تقليدًا أقدم من تقليد الرمبام."
  },
  {
   "id": "aaron_the_doctor",
@@ -101,7 +112,24 @@
   "description_he": "חוקר שומרוני חשוב, ששמו ככל הנראה אבו אלחסן יצחק בן פרג' (מרחיב) בן מרחיב הצורי, הידוע בעיקר בזכות חיבורו ההלכתי-תיאולוגי הסמכותי \"כתאב אלטבאח\", העוסק בתיאולוגיה, הלכה, פולמוס נגד יהודים, נוצרים, מוסלמים וקראים, ופרשנות מקרא. הוא נמנה עם הכותבים השומרונים הראשונים בערבית, וככל הנראה היה אביו של הרופא אבו אסחאק אבراהים אלמצנף.",
   "description_ar": "عالم سامري مهم، اسمه على الأرجح أبو الحسن إسحق بن فرج (مرحيب) بن مرحيب الصوري، اشتهر بمصنَّفه الشرعي-اللاهوتي المرجعي \"كتاب الطباخ\"، الذي يتناول اللاهوت والفقه والجدل ضد اليهود والنصارى والمسلمين والقرائين وتفسير الكتاب المقدس. كان من أوائل السامريين الذين كتبوا بالعربية، ويُرجَّح أنه والد الطبيب أبي إسحق إبراهيم المصنِّف.",
   "source": "A Companion to Samaritan Studies, p. 4-5",
-  "contributor_initials": "H.S."
+  "contributor_initials": "H.S.",
+  "references": [
+   {
+    "type": "academic",
+    "lang": "en",
+    "url": "https://www.researchgate.net/publication/343548170",
+    "title": "Abū l-Ḥasan al-Ṣūrī's Kitāb fī bāb al-qibla and its Qaraite Refutation (ResearchGate)"
+   },
+   {
+    "type": "book",
+    "lang": "de",
+    "url": "https://books.google.com/books/about/Kitab_at_Tabbah_des_Samaritaners_Abu_l_H.html?id=i4bCjgEACAAJ",
+    "title": "Gerhard Wedel, Kitab at-Tabbah des Samaritaners Abu l-Hasan as-Suri (PhD diss., FU Berlin, 1987)"
+   }
+  ],
+  "enriched_note_en": "The Kitab at-Tabbah's first half was critically edited, translated into German and commented on by Gerhard Wedel (1987 dissertation, Freie Universität Berlin). Abu l-Hasan also authored a treatise on the qibla (direction of prayer) that was specifically refuted by a Qaraite scholar, demonstrating active intellectual exchange between Samaritans and Karaites. Sergio Noja published an Italian translation of the Kitab al-Kafi (another key Samaritan halakhic text) in 1968-1970.",
+  "enriched_note_he": "מחציתו הראשונה של 'כתאב אלטבאח' נערכה ביקורתית ותורגמה לגרמנית ע\"י גרהרד ודל (דיסרטציה, 1987, אוניברסיטת ברלין החופשית). אבו אלחסן חיבר גם מסה על הקיבלה (כיוון התפילה) שהופרכה במיוחד ע\"י חוקר קראי, מה שמעיד על חילופי דעות אינטלקטואליים בין שומרונים לקראים.",
+  "enriched_note_ar": "حُرر النصف الأول من 'كتاب الطباخ' نقديًا وتُرجم إلى الألمانية على يد غيرهارد فيدل (أطروحة دكتوراه 1987، جامعة برلين الحرة). كتب أبو الحسن أيضًا رسالة عن القبلة (اتجاه الصلاة) دحضها عالم قرائي، مما يدل على تبادل فكري نشط بين السامريين والقرائين."
  },
  {
   "id": "ab_sakwa",
@@ -231,7 +259,36 @@
   "description_he": "בן המאה הארבע עשרה ממשפחת דנפי, וחיבר את \"כתאב אלתאריח\", הכרוניקה השומרונית הסמכותית ביותר ששרדה. יזם את החיבור לבקשת הכהן הגדול פנחס ב-1352, לאחר שלא הצליח להשיב לשאלותיו של חוקר בנוגע להיסטוריה השומרונית, והחל לכתוב בחודש רמדאן 1356.",
   "description_ar": "من القرن الرابع عشر، وينتمي إلى عائلة دنفي، وهو مؤلف \"كتاب التاريخ\"، أوثق سجل سامري باقٍ. تولى تأليفه بطلب من الكاهن الأكبر فينحاس سنة 1352، بعدما عجز عن الإجابة عن أسئلة عالِم حول التاريخ السامري، وبدأ الكتابة في شهر رمضان سنة 1356.",
   "source": "A Companion to Samaritan Studies, p. 7-8",
-  "contributor_initials": "P.L.S."
+  "contributor_initials": "P.L.S.",
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Abu%27l-Fath",
+    "title": "Abu'l-Fath - Wikipedia"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.encyclopedia.com/religion/encyclopedias-almanacs-transcripts-and-maps/abu-al-fat",
+    "title": "Abu al-Fat - Encyclopedia.com (Encyclopaedia Judaica)"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "https://ses.library.usyd.edu.au/handle/2123/20346",
+    "title": "Paul Stenhouse, The Kitab al-Tarikh of Abu 'l-Fath (Sydney, 1985)"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "https://www.jstor.org/stable/j.ctv1b9f5x9",
+    "title": "Milka Levy-Rubin, The Continuatio of the Samaritan Chronicle (JSTOR)"
+   }
+  ],
+  "enriched_note_en": "Born in Damascus of the Danafi family (renowned for scholars and scribes), Abu l-Fath went on pilgrimage to Nablus in 1352. His full Arabic name is Abu al-Fath ibn Abi al-Hasan al-Samiri al-Danafi. He brought fragmentary Hebrew chronicles and a genealogical Silsila from Damascus and was given additional sources by the Nablus high priest. The Kitab al-Tarikh covers history from Adam to Muhammad and remains the oldest complete surviving Samaritan chronicle. Paul Stenhouse published the first complete English translation in 1985.",
+  "enriched_note_he": "נולד בדמשק למשפחת דנפי (ידועה בחוקריה וסופריה), ועלה לרגל לשכם ב-1352. שמו הערבי המלא: אבו אלפתח אבן אבי אלחסן א-סאמרי א-דנפי. הביא מדמשק כרוניקות עבריות מקוטעות ושלשלת יוחסין, וקיבל מקורות נוספים מהכהן הגדול בשכם. פול סטנהאוס פרסם את התרגום האנגלי המלא הראשון ב-1985.",
+  "enriched_note_ar": "وُلد في دمشق من عائلة دنفي (المعروفة بعلمائها ونسّاخها)، وحجّ إلى نابلس سنة 1352. اسمه العربي الكامل: أبو الفتح ابن أبي الحسن السامري الدنفي. جلب من دمشق سجلات عبرية مجزأة وسلسلة أنساب، وحصل على مصادر إضافية من الكاهن الأكبر في نابلس. نشر بول ستنهاوس أول ترجمة إنجليزية كاملة عام 1985."
  },
  {
   "id": "abu_lfarag_munajja",
@@ -283,7 +340,18 @@
   "description_he": "לפי יוספוס פלאוויוס, אלכסנדר נעזר בשמונת אלפים חיילים שומרונים ששלח לו סנבלט במצור על צור, ובתמורה התיר בניית מקדש על הר גריזים - צעד שתרם להעמקת הפילוג בין יהודים לשומרונים. לאחר מות סנבלט הידרדרו היחסים; מרד שומרוני נגד המושל שמינה אלכסנדר דוכא באכזריות, ושומרון הפכה למושבה צבאית מקדונית.",
   "description_ar": "بحسب يوسيفوس، استعان الإسكندر بثمانية آلاف جندي سامري أرسلهم سنبلط أثناء حصاره لصور، وسمح في المقابل ببناء معبد على جبل جرزيم - خطوة أسهمت في تعميق الانشقاق بين اليهود والسامريين. وبعد وفاة سنبلط ساءت العلاقات؛ وقُمعت بوحشية ثورة سامرية ضد الوالي الذي عيّنه الإسكندر، وتحوّلت السامرة إلى مستعمرة عسكرية مقدونية.",
   "source": "A Companion to Samaritan Studies, p. 9-10",
-  "contributor_initials": "unsigned"
+  "contributor_initials": "unsigned",
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Alexander_the_Great",
+    "title": "Alexander the Great - Wikipedia"
+   }
+  ],
+  "enriched_note_en": "The Wadi Daliyeh papyri, discovered in 1962, confirmed the Samaritan revolt against Alexander's governor and provided evidence of the dynasty of Samaritan governors (paparchs) ending with Sanballat III. The destruction of Samaria and its refounding as a Macedonian colony are corroborated by archaeological evidence from the city.",
+  "enriched_note_he": "פפירוסי ואדי דאליה, שהתגלו ב-1962, אישרו את המרד השומרוני נגד מושלו של אלכסנדר וסיפקו עדות על שושלת המושלים השומרונים (הפחות) שהסתיימה בסנבלט השלישי. חורבן שומרון וייסודה מחדש כמושבה מקדונית נתמכים בעדות ארכיאולוגית.",
+  "enriched_note_ar": "أكدت بردية وادي الدالية، المكتشفة عام 1962، الثورة السامرية ضد والي الإسكندر وقدمت أدلة على سلالة الحكام السامريين المنتهية بسنبلط الثالث. تدمير السامرة وإعادة تأسيسها كمستعمرة مقدونية مؤيدان بالأدلة الأثرية."
  },
  {
   "id": "al_ifan",
@@ -335,7 +403,18 @@
   "description_ar": "أقدم شاعر سامري معروف بالاسم، عاصر بابا ربّا ويُرجَّح أنه نفسه عمرام بن سرد — كاهن أكبر وعضو في مجلس حكماء بابا ربّا. أناشيده، المكتوبة بآرامية صافية دون تأثير عبري أو عربي، لا تزال شائعة في ليتورجيا السبت والأعياد. 'دارا' تعني 'الشيخ' بالآرامية.",
   "source": "p. 13-14",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "https://www.jstor.org/stable/10.5325/j.ctv296mt0g",
+    "title": "Classical Samaritan Poetry (JSTOR) - includes Amram Dare's hymns"
+   }
+  ],
+  "enriched_note_en": "The JSTOR volume 'Classical Samaritan Poetry' includes translations and analysis of Amram Dare's hymns alongside those of Marqe and Ninna. Unlike later Samaritan poets, Amram Dare composed in pure Aramaic — his language is closer to the Aramaic of the Talmud and Midrash than to later hybrid Samaritan. His verse lacks rhyme and regular meter, characteristic of the earliest stratum of Samaritan liturgical poetry.",
+  "enriched_note_he": "הכרך 'Classical Samaritan Poetry' מ-JSTOR כולל תרגומים וניתוח של פיוטי עמרם דרה לצד אלה של מרקה ונינה. שלא כמשוררים שומרוניים מאוחרים, עמרם דרה חיבר בארמית טהורה — שפתו קרובה יותר לארמית התלמוד והמדרש. שיריו חסרי חרוז ומשקל סדיר, מאפיין טיפוסי לשכבה העתיקה ביותר של הפיוט הליטורגי השומרוני.",
+  "enriched_note_ar": "يتضمن مجلد 'الشعر السامري الكلاسيكي' على JSTOR ترجمات وتحليلًا لأناشيد عمرام دارا إلى جانب أناشيد مرقة ونينّا. على عكس الشعراء السامريين اللاحقين، ألّف بآرامية صافية — لغته أقرب إلى آرامية التلمود والمدراش."
  },
  {
   "id": "aqbon_high_priests",
@@ -374,7 +453,42 @@
   "description_ar": "الزعيم القومي والمصلح الأكبر للسامريين، الابن البكر للكاهن الأكبر نتنئيل. أسس مجلسًا من سبعة حكماء، وبنى كنائس ومقواة بالقرب من جبل جرزيم، وقسّم الأرض إلى اثني عشر مقاطعة إدارية. رغم أنه عاش 32 سنة فقط وفق أبي الفتح، يُذكر كقائد عسكري بطولي؛ وتقول الأسطورة إنه اسْتُدرج إلى القسطنطينية ومات في المنفى. واسمه — 'الباب الكبير' — يربطه بتقاليد حراس الأبواب السماوية في الشرق القديم.",
   "source": "p. 38-39",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Baba_Rabba",
+    "title": "Baba Rabba - Wikipedia"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.jewishvirtuallibrary.org/baba-rabbah",
+    "title": "Baba Rabbah - Jewish Virtual Library"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.encyclopedia.com/religion/encyclopedias-almanacs-transcripts-and-maps/baba-rabbah",
+    "title": "Baba Rabbah - Encyclopedia.com (Encyclopaedia Judaica)"
+   },
+   {
+    "type": "reference",
+    "lang": "en",
+    "url": "https://www.oxfordreference.com/display/10.1093/acref/9780198662778.001.0001/acref-9780198662778-e-585",
+    "title": "Baba Rabba - Oxford Reference"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "",
+    "title": "Jeffrey M. Cohen, A Samaritan Chronicle: Source-Critical Analysis of Baba Rabbah (1981)"
+   }
+  ],
+  "enriched_note_en": "His Samaritan Aramaic name bābāʾ råbbå literally means 'Great Father' (not 'Great Gate' as in the encyclopedia). Cohen dates his birth to c. 288 and death to c. 328 CE, born in Kiryat Hagga (modern Hajjah). His reforms coincided with the Samaritan golden age after the Bar Kokhba revolt's aftermath left a power vacuum, and the community may have reached one million members. All information derives exclusively from Samaritan chronicles — no external Roman sources confirm his existence.",
+  "enriched_note_he": "שמו בארמית השומרונית 'באבא רבא' פירושו 'האב הגדול'. קוהן מתארך את לידתו לסביבות 288 ומותו לסביבות 328 לספירה, ונולד בקרית חגה (חג'ה של ימינו). הרפורמות שלו חלו בתור הזהב השומרוני, כשהקהילה אולי הגיעה למיליון חברים. כל המידע עליו נובע אך ורק מכרוניקות שומרוניות.",
+  "enriched_note_ar": "اسمه بالآرامية السامرية 'بابا ربّا' يعني حرفيًا 'الأب العظيم'. يؤرخ كوهين ولادته بحوالي 288 ووفاته بحوالي 328م، وُلد في قرية حجة. تزامنت إصلاحاته مع العصر الذهبي السامري، حين ربما بلغت الطائفة مليون نسمة. كل المعلومات عنه مصدرها حصريًا السجلات السامرية."
  },
  {
   "id": "barberini_francesco",
@@ -400,7 +514,24 @@
   "description_ar": "ثاني رؤساء دولة إسرائيل، أولى اهتمامًا عميقًا بيهود الشرق وبالدراسات السامرية. كانت صداقته مع يافت بن إبراهيم صدقة منذ 1907 حاسمة في إعادة توطين السامريين في حولون بعد استقلال إسرائيل. لا يزال كتابه الشامل 'سيفر هشومرونيم' مرجعًا أساسيًا.",
   "source": "p. 40",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Yitzhak_Ben-Zvi",
+    "title": "Yitzhak Ben-Zvi - Wikipedia"
+   },
+   {
+    "type": "wikipedia",
+    "lang": "he",
+    "url": "https://he.wikipedia.org/wiki/%D7%99%D7%A6%D7%97%D7%A7_%D7%91%D7%9F-%D7%A6%D7%91%D7%99",
+    "title": "יצחק בן-צבי - ויקיפדיה"
+   }
+  ],
+  "enriched_note_en": "Born in Poltava, Ukraine, Ben-Zvi was a founder of the labor Zionist movement and co-founded with David Ben-Gurion the Poalei Zion party. He served as Israel's second president from 1952 until his death in 1963. His 'Sefer HaShomronim' has appeared in three editions. The Yad Ben-Zvi Institute in Jerusalem, which he founded, continues to be a center for research on Jewish communities of the East.",
+  "enriched_note_he": "נולד בפולטבה, אוקראינה, היה ממייסדי תנועת הפועלים הציונית והקים עם דוד בן-גוריון את מפלגת פועלי ציון. כיהן כנשיא ישראל השני מ-1952 עד פטירתו ב-1963. 'ספר השומרונים' שלו יצא בשלוש מהדורות. מכון יד בן-צבי בירושלים שהקים ממשיך לשמש מרכז מחקר על קהילות יהודיות במזרח.",
+  "enriched_note_ar": "وُلد في بولتافا بأوكرانيا، كان من مؤسسي حركة العمل الصهيونية وأسس مع دافيد بن غوريون حزب بوعلي تسيون. شغل منصب ثاني رؤساء إسرائيل من 1952 حتى وفاته عام 1963. صدر كتابه 'سيفر هشومرونيم' في ثلاث طبعات. يواصل معهد ياد بن تسفي في القدس العمل كمركز بحثي."
  },
  {
   "id": "brull_adolph",
@@ -452,7 +583,18 @@
   "description_ar": "مستشرق بارز من أكسفورد وأمين مكتبة البودلية، نشر 'الليتورجيا السامرية' في مجلدين — وهي أول طبعة شاملة للنصوص الليتورجية السامرية — وحافظ على علاقات بحثية وثيقة مع الطائفة السامرية.",
   "source": "p. 61",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Arthur_Ernest_Cowley",
+    "title": "Arthur Ernest Cowley - Wikipedia"
+   }
+  ],
+  "enriched_note_en": "Cowley served as Bodley's Librarian at Oxford from 1919 to 1931. His two-volume 'The Samaritan Liturgy' (1909) remains the standard edition of the liturgical texts and is cited throughout Samaritan studies as 'Cowley, SL'. He also published Aramaic Papyri of the Fifth Century B.C. (1923).",
+  "enriched_note_he": "קאולי שימש כספרן הראשי של ספריית הבודליאנית באוקספורד 1919-1931. מהדורתו בשני כרכים 'The Samaritan Liturgy' (1909) נותרת המהדורה הסטנדרטית של הטקסטים הליטורגיים ומצוטטת כ-'Cowley, SL' בכל מחקרי השומרונים.",
+  "enriched_note_ar": "شغل كاولي منصب أمين مكتبة البودلية في أكسفورد 1919-1931. يبقى كتابه 'الليتورجيا السامرية' (1909) بمجلديه الطبعة القياسية للنصوص الليتورجية ويُستشهد به في كل الدراسات السامرية."
  },
  {
   "id": "dustan_dositheus",
@@ -465,7 +607,30 @@
   "description_ar": "المؤسس الغامض للفرقة السامرية الكبرى — الدوستانية. تختلف المصادر حول فترته وطبيعته — بعض الروايات تضعه قبل يسوع وأخرى بعده. يُنسب إليه تيار زهدي من السامرية مع التزام صارم بالسبت، وانقسم أتباعه إلى فروع عديدة استمرت لعدة قرون.",
   "source": "p. 73-80",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Dositheos_(Samaritan)",
+    "title": "Dositheos (Samaritan) - Wikipedia"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.jewishencyclopedia.com/articles/5293-dositheus",
+    "title": "Dositheus - Jewish Encyclopedia"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.newadvent.org/cathen/05136c.htm",
+    "title": "Dositheans - Catholic Encyclopedia"
+   }
+  ],
+  "enriched_note_en": "Also known as Nathanael (both names mean 'gift of God'). The Pseudo-Clementine literature tells how Dositheus installed himself as head of Simon Magus's sect by spreading a false report of Simon's death. His sect practiced circumcision, vegetarianism, and possibly celibacy. Epiphanius adds that he retired to a cave and starved himself to death. By Origen's time (3rd century), only about 30 Dositheans remained, though Arabic sources attest their existence as late as the 12th century.",
+  "enriched_note_he": "ידוע גם בשם נתנאל (שני השמות פירושם 'מתנת אלוהים'). הספרות הפסאודו-קלמנטינית מספרת כיצד דוסתאוס מינה עצמו לראש כת שמעון המאגוס על ידי הפצת שמועת שווא על מותו. כתו נהגה מילה, צמחונות, ואולי גם צניעות. בימי אוריגנס (המאה ה-3) נותרו רק כ-30 דוסתאים, אם כי מקורות ערביים מעידים על קיומם עד המאה ה-12.",
+  "enriched_note_ar": "يُعرف أيضًا باسم نتنئيل (كلا الاسمين يعنيان 'هبة الله'). تروي الأدبيات الكلمنتية الزائفة كيف نصّب دوسيثيوس نفسه رئيسًا لفرقة سيمون ماغوس بنشر خبر كاذب عن موته. مارست فرقته الختان والنباتية وربما العفة. بحلول زمن أوريجانوس (القرن الثالث) لم يتبقَّ إلا نحو 30 دوستانيًا، وإن كانت مصادر عربية تشهد بوجودهم حتى القرن الثاني عشر."
  },
  {
   "id": "ecchellensis_abraham",
@@ -478,7 +643,18 @@
   "description_ar": "عالم ماروني لبناني أصبح أستاذًا للعربية والسريانية في كوليج دو فرانس وفي روما. شارك في إعداد الكتاب المقدس المتعدد اللغات في باريس الذي شمل التوراة السامرية، وألّف أعمالًا مقارنة بين النصوص السامرية والعربية.",
   "source": "p. 83-84",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Abraham_Ecchellensis",
+    "title": "Abraham Ecchellensis - Wikipedia"
+   }
+  ],
+  "enriched_note_en": "Born Ibrahim al-Haqilani in Ehden, Lebanon, he was educated at the Maronite College in Rome. He became professor of Arabic and Syriac at the Collège de France in Paris and at the Sapienza in Rome. His involvement with the Paris Polyglot Bible included work on the Samaritan, Syriac, and Arabic texts.",
+  "enriched_note_he": "נולד כאבראהים אל-חקילאני באחדן, לבנון, ולמד בקולג' המרוני ברומא. הפך לפרופסור לערבית וסורית בקולז' דה פרנס בפריז ובספיינצה ברומא. מעורבותו בתנ\"ך הפוליגלוטי של פריז כללה עבודה על הטקסטים השומרוניים, הסוריים והערביים.",
+  "enriched_note_ar": "وُلد باسم إبراهيم الحقيلاني في إهدن بلبنان، وتعلم في الكلية المارونية في روما. أصبح أستاذًا للعربية والسريانية في كوليج دو فرانس بباريس وفي جامعة سابيينزا بروما."
  },
  {
   "id": "ephraim",
@@ -530,7 +706,48 @@
   "description_ar": "عالم وُلد في رومانيا وأصبح كبير حاخامات الطائفة السفاردية في إنجلترا وأحد أغزر الباحثين الغربيين في الدراسات السامرية إنتاجًا. نشر بكثافة حول الليتورجيا والأخرويات وسجل الأساطير والتمائم السامرية، وجمع مجموعة خاصة كبيرة من المخطوطات السامرية.",
   "source": "p. 98",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Moses_Gaster",
+    "title": "Moses Gaster - Wikipedia"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.encyclopedia.com/religion/encyclopedias-almanacs-transcripts-and-maps/gaster-moses",
+    "title": "Gaster, Moses - Encyclopedia.com (Encyclopaedia Judaica)"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://encyclopedia.yivo.org/article.aspx/gaster_moses",
+    "title": "Gaster, Moses - YIVO Encyclopedia"
+   },
+   {
+    "type": "academic",
+    "lang": "en",
+    "url": "https://www.manchesterjewishstudies.org/moses-gaster-projects",
+    "title": "Moses Gaster Projects - Centre for Jewish Studies, Manchester"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "https://archive.org/details/studiestextsinfo21gast",
+    "title": "Studies and Texts in Folklore, Magic... (Internet Archive, 1925)"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "https://archive.org/details/MN40245ucmf_0",
+    "title": "The Asatir, Samaritan Book of Secrets of Moses (Internet Archive, 1927)"
+   }
+  ],
+  "enriched_note_en": "Born in Bucharest, Gaster studied at the University of Breslau and its Jewish Theological Seminary. Expelled from Romania in 1885 for protesting antisemitism, he settled in England and served as Hakham (chief rabbi) of the Sephardic community in London from 1887 to 1918. A passionate Zionist, he was also a close associate of Theodor Herzl. His Samaritan publications include 'The Samaritans' (1925), the editio princeps of the Asatir chronicle (1927), and the three-volume 'Studies and Texts' (1925-28). His massive manuscript collection is now at the John Rylands Library in Manchester. His son Theodor became a noted Dead Sea Scrolls scholar.",
+  "enriched_note_he": "נולד בבוקרשט, למד באוניברסיטת ברסלאו ובסמינר התיאולוגי היהודי שם. גורש מרומניה ב-1885 בשל מחאותיו נגד אנטישמיות, התיישב באנגליה ושימש כחכם (רב ראשי) של הקהילה הספרדית בלונדון 1887-1918. ציוני נלהב ושותף קרוב של הרצל. פרסומיו השומרוניים כוללים את 'The Samaritans' (1925), מהדורה ראשונה של כרוניקת האסתיר (1927), ו-'Studies and Texts' בשלושה כרכים. אוסף כתבי היד שלו נמצא כיום בספריית ג'ון ריילנדס במנצ'סטר.",
+  "enriched_note_ar": "وُلد في بوخارست، درس في جامعة بريسلاو ومعهدها اللاهوتي اليهودي. طُرد من رومانيا عام 1885 لاحتجاجه على معاداة السامية، واستقر في إنجلترا حيث شغل منصب الحكام (كبير الحاخامات) للطائفة السفاردية في لندن 1887-1918. صهيوني متحمس وشريك مقرب لهرتسل. تشمل منشوراته السامرية 'The Samaritans' (1925) والطبعة الأولى لسجل الأساطير (1927). مجموعة مخطوطاته الآن في مكتبة جون ريلاندز بمانشستر."
  },
  {
   "id": "gesenius_wilhelm",
@@ -738,7 +955,18 @@
   "description_ar": "الحاكم الحشموني الذي دمّر المعبد السامري على جبل جرزيم حوالي 128 ق.م، ثم خرّب مدينة شكيم لاحقًا — أحداث عمّقت الشرخ الذي لا يُرأب بين المجتمعين اليهودي والسامري.",
   "source": "p. 138-139",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/John_Hyrcanus",
+    "title": "John Hyrcanus - Wikipedia"
+   }
+  ],
+  "enriched_note_en": "Archaeological excavations at Tell er-Ras on Mount Gerizim confirmed the destruction of the Samaritan temple, dated to approximately 111-110 BCE under Hyrcanus. Josephus describes the campaign in detail in Antiquities XIII. The destruction of Shechem was confirmed by excavation at Tell Balata.",
+  "enriched_note_he": "חפירות ארכיאולוגיות בתל א-ראס על הר גריזים אישרו את חורבן המקדש השומרוני, המתוארך לסביבות 111-110 לפנה\"ס בימי הורקנוס. יוספוס מתאר את המסע בפירוט בקדמוניות היהודים י\"ג. חורבן שכם אושר בחפירות בתל בלאטה.",
+  "enriched_note_ar": "أكدت الحفريات الأثرية في تل الراس على جبل جرزيم تدمير المعبد السامري المؤرخ بحوالي 111-110 ق.م في عهد هيركانوس. يصف يوسيفوس الحملة بالتفصيل في 'العاديات' الثالث عشر."
  },
  {
   "id": "josephus",
@@ -751,7 +979,18 @@
   "description_ar": "المؤرخ اليهودي القديم الكبير الذي توفر أعماله — لا سيما 'العاديات اليهودية' و'حروب اليهود' — السرد الخارجي الرئيسي للتاريخ السامري، بما في ذلك تدمير معبد جرزيم وتعاملات الإسكندر مع سنبلط وعلاقات السامريين بالسلطات الرومانية.",
   "source": "p. 141",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Josephus",
+    "title": "Josephus - Wikipedia"
+   }
+  ],
+  "enriched_note_en": "Josephus's accounts of the Samaritans must be read with caution as he held them in contempt. His key passages on Samaritans include the building of the Gerizim temple (Ant. XI), its destruction by John Hyrcanus (Ant. XIII), Pilate's massacre at Tirathana (Ant. XVIII), and the Samaritan delegation to Alexander (Ant. XI).",
+  "enriched_note_he": "יש לקרוא את דיווחי יוספוס על השומרונים בזהירות, שכן ביזה אותם. קטעיו המרכזיים על השומרונים כוללים את בניית מקדש גריזים (קדמ' י\"א), חורבנו בידי יוחנן הורקנוס (קדמ' י\"ג), טבח פילאטוס בתרתנא (קדמ' י\"ח), ומשלחת השומרונים לאלכסנדר.",
+  "enriched_note_ar": "يجب قراءة روايات يوسيفوس عن السامريين بحذر إذ كان يحتقرهم. فقراته الرئيسية عن السامريين تشمل بناء معبد جرزيم (العاديات 11) وتدميره على يد هيركانوس (العاديات 13) ومذبحة بيلاطس في تيراثانا (العاديات 18)."
  },
  {
   "id": "justasas",
@@ -777,7 +1016,18 @@
   "description_ar": "مستشرق ألماني قدّم إسهامات كبرى في دراسة التوراة السامرية ولفافة أبيشع والمخطوطات الليتورجية السامرية، وكان من أوائل الباحثين الذين طبّقوا الأساليب الباليوغرافية والكوديكولوجية الحديثة على النصوص السامرية.",
   "source": "p. 143",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Paul_Kahle",
+    "title": "Paul Kahle - Wikipedia"
+   }
+  ],
+  "enriched_note_en": "A German Protestant orientalist who studied in Marburg and Halle. Kahle's seminal 1953 article 'The Abisha Scroll of the Samaritans' applied modern palaeographic analysis to the scroll for the first time. He fled Nazi Germany in 1938 and settled in England, later Oxford. His broader work on the Cairo Geniza and the Masoretic text is also foundational.",
+  "enriched_note_he": "מזרחן פרוטסטנטי גרמני שלמד במרבורג והאלה. מאמרו המכונן של קאהלה מ-1953 על מגילת אבישע יישם לראשונה ניתוח פליאוגרפי מודרני על המגילה. ברח מגרמניה הנאצית ב-1938 והתיישב באנגליה. עבודתו הרחבה על גניזת קהיר והטקסט המסורתי גם היא יסודית.",
+  "enriched_note_ar": "مستشرق بروتستانتي ألماني درس في ماربورغ وهالّه. طبّق مقاله المؤسس عام 1953 عن لفافة أبيشع التحليل الباليوغرافي الحديث لأول مرة. فرّ من ألمانيا النازية عام 1938 واستقر في إنجلترا."
  },
  {
   "id": "kennicott_benjamin",
@@ -790,7 +1040,18 @@
   "description_ar": "قسيس وعالم توراة إنجليزي من أكسفورد أنتج العمل الضخم 'Vetus Testamentum Hebraicum cum variis lectionibus' (1776-1780)، الذي تضمن قراءات بديلة من مخطوطات التوراة السامرية وحفّز الاهتمام البحثي بتقاليد النص السامري.",
   "source": "p. 145",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Benjamin_Kennicott",
+    "title": "Benjamin Kennicott - Wikipedia"
+   }
+  ],
+  "enriched_note_en": "Kennicott spent 30 years at Oxford collecting variant readings from over 600 Hebrew manuscripts and 16 printed editions for his monumental collation. His work demonstrated the range of textual variation in the Hebrew Bible and drew fresh attention to the Samaritan witnesses.",
+  "enriched_note_he": "קניקוט השקיע 30 שנה באוקספורד באיסוף גרסאות חלופיות מלמעלה מ-600 כתבי יד עבריים ו-16 מהדורות מודפסות עבור הקולציה המונומנטלית שלו. עבודתו הדגימה את טווח השונות הטקסטואלית בתנ\"ך העברי והפנתה תשומת לב מחודשת לעדי הטקסט השומרוניים.",
+  "enriched_note_ar": "أمضى كينيكوت 30 عامًا في أكسفورد يجمع القراءات البديلة من أكثر من 600 مخطوطة عبرية و16 طبعة مطبوعة. أظهر عمله نطاق التنوع النصي في الكتاب المقدس العبري ولفت انتباهًا جديدًا إلى الشواهد السامرية."
  },
  {
   "id": "levi_dosithean",
@@ -855,7 +1116,30 @@
   "description_ar": "فيلسوف أفلاطوني محدث وُلد في فلافيا نيابوليس (نابلس)، يُعرَّف تقليديًا بأنه من أصل سامري، أصبح رئيس الأكاديمية الأفلاطونية في أثينا وكتب سيرة أستاذه بروقلس. يوضح أصله المدى الثقافي للسامريين المتعلمين في العالم الروماني المتأخر.",
   "source": "p. 152-153",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Marinus_of_Neapolis",
+    "title": "Marinus of Neapolis - Wikipedia"
+   },
+   {
+    "type": "academic",
+    "lang": "en",
+    "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Marinus/",
+    "title": "Marinus of Neapolis - MacTutor History of Mathematics"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/marinus-neapolis",
+    "title": "Marinus of Neapolis - Encyclopedia.com"
+   }
+  ],
+  "enriched_note_en": "According to his pupil Damascius, Marinus was born a Samaritan and later converted. He came into conflict with his co-religionists over what he considered their innovations. He succeeded Proclus as head (diadochos) of the Platonic Academy in Athens in 485 CE — one of the last heads before Justinian closed it in 529. During Christian persecutions of pagan philosophers, he was compelled to flee to Epidaurus. His surviving works include an introduction to Euclid's Data, his biography of Proclus ('Life of Proclus, or Concerning Happiness'), and two astronomical texts.",
+  "enriched_note_he": "לפי תלמידו דמסקיוס, מרינוס נולד שומרוני ואחר כך המיר. הוא נכנס לעימות עם בני דתו בשל מה שראה כחידושים שלהם. ירש את פרוקלוס כראש (דיאדוכוס) האקדמיה האפלטונית באתונה ב-485 לספירה — אחד הראשים האחרונים לפני שיוסטיניאנוס סגר אותה ב-529. בזמן רדיפות נוצריות נאלץ לברוח לאפידאורוס. כתביו ששרדו כוללים מבוא ל-Data של אוקלידס, ביוגרפיה של פרוקלוס, ושני טקסטים אסטרונומיים.",
+  "enriched_note_ar": "وفقًا لتلميذه داماسكيوس، وُلد مارينوس سامريًا ثم تحوّل لاحقًا. ودخل في نزاع مع أبناء ملّته بسبب ما اعتبره بدعًا لديهم. خلف بروقلس رئيسًا (ديادوخوس) للأكاديمية الأفلاطونية في أثينا عام 485م — أحد آخر الرؤساء قبل أن يغلقها يوستينيان عام 529. خلال الاضطهاد المسيحي للفلاسفة الوثنيين، اضطر للفرار إلى إبيداوروس."
  },
  {
   "id": "marqe",
@@ -868,7 +1152,36 @@
   "description_ar": "أعظم لاهوتي وشاعر ليتورجي سامري، ابن عمرام دارا وعضو في مجلس بابا ربّا. عمله الرئيسي 'طيبت مرقة' (ميمار مرقة) نص لاهوتي سامري أساسي يتناول موسى والخروج والأخرويات. شكّلت أناشيده بالآرامية السامرية التقليد الليتورجي تشكيلًا عميقًا.",
   "source": "p. 153-154",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Marqah",
+    "title": "Marqah - Wikipedia"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "https://www.amazon.com/dp/3110442329",
+    "title": "Abraham Tal, Tibåt Mårqe: The Ark of Marqe (De Gruyter, 2019)"
+   },
+   {
+    "type": "academic",
+    "lang": "en",
+    "url": "https://www.jstor.org/stable/10.5325/j.ctv296mt0g",
+    "title": "Classical Samaritan Poetry (JSTOR)"
+   },
+   {
+    "type": "academic",
+    "lang": "en",
+    "url": "https://www.researchgate.net/publication/338728680",
+    "title": "Tibåt Mårqe: A New Edition with English Translation (ResearchGate)"
+   }
+  ],
+  "enriched_note_en": "Marqe is considered by Samaritans to be 'the greatest writer of all time' and 'the source of wisdom' (bedawah de-hakhamatah). The Tibat Marqe consists of six volumes of midrashic compositions, the first five corresponding to Torah books; the sixth contains unique dialogues between Moses and the letters of the alphabet. Abraham Tal published a landmark new critical edition with English translation in 2019 (De Gruyter, Studia Samaritana 9), based on superior manuscripts to the earlier Ben-Hayyim edition.",
+  "enriched_note_he": "מרקה נחשב בעיני השומרונים ל'הסופר הגדול מכל הזמנים' ול'מקור החכמה'. טיבת מרקה כוללת שישה כרכים של חיבורים מדרשיים, חמישה מהם מקבילים לחומשי התורה; השישי מכיל דיאלוגים ייחודיים בין משה לאותיות האלף-בית. אברהם טל פרסם מהדורה ביקורתית חדשנית עם תרגום לאנגלית ב-2019 (De Gruyter).",
+  "enriched_note_ar": "يعتبره السامريون 'أعظم كاتب على الإطلاق' و'منبع الحكمة'. تتألف طيبت مرقة من ستة مجلدات من المؤلفات المدراشية، خمسة منها توازي أسفار التوراة؛ والسادس يتضمن حوارات فريدة بين موسى وحروف الأبجدية. نشر إبراهيم طال طبعة نقدية جديدة مع ترجمة إنجليزية عام 2019."
  },
  {
   "id": "marsh_narcissus",
@@ -907,7 +1220,30 @@
   "description_ar": "عالم توراة أمريكي كان كتابه 'السامريون: أقدم فرقة يهودية' (1907) أول دراسة علمية شاملة بالإنجليزية عن السامريين، وظل مرجعًا أساسيًا لعقود.",
   "source": "p. 159",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/James_Alan_Montgomery",
+    "title": "James Alan Montgomery - Wikipedia"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "https://books.google.com/books/about/The_Samaritans_the_Earliest_Jewish_Sect.html?id=aXIM0YJ-1H0C",
+    "title": "The Samaritans, the Earliest Jewish Sect (Google Books, 1907)"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "https://openlibrary.org/books/OL6983903M/The_Samaritans_the_earliest_Jewish_sect",
+    "title": "The Samaritans, the earliest Jewish sect (Open Library)"
+   }
+  ],
+  "enriched_note_en": "An Episcopal clergyman and professor at the University of Pennsylvania, Montgomery based his 1907 book on his Bohlen Lectures of 1906. It covered fourteen chapters from the rediscovery of the Samaritans through their theology and literature. Despite its age, it remained the standard English-language introduction for decades and is still cited. Available as a reprint from multiple publishers.",
+  "enriched_note_he": "כומר אפיסקופלי ופרופסור באוניברסיטת פנסילבניה, מונטגומרי ביסס את ספרו מ-1907 על הרצאות בוהלן שלו מ-1906. הספר כיסה ארבעה עשר פרקים מגילוי מחדש של השומרונים ועד תיאולוגיה וספרות. למרות גילו, נותר המבוא הסטנדרטי באנגלית במשך עשרות שנים ועודנו מצוטט.",
+  "enriched_note_ar": "قسيس أسقفي وأستاذ في جامعة بنسلفانيا، بنى مونتغمري كتابه عام 1907 على محاضرات بوهلين عام 1906. غطى أربعة عشر فصلًا من إعادة اكتشاف السامريين حتى لاهوتهم وأدبهم. رغم قدمه، ظل المقدمة القياسية بالإنجليزية لعقود ولا يزال يُستشهد به."
  },
  {
   "id": "morin_jean",
@@ -920,7 +1256,30 @@
   "description_ar": "كاهن أوراتوري فرنسي دافع عن التوراة السامرية بوصفها قد تحفظ نصًّا أقرب إلى الأصل من النسخة الماسورية اليهودية — موقف جريء أثار جدلاً علميًا حادًا ودفع الدراسة الغربية المبكرة للمخطوطات السامرية.",
   "source": "p. 159-160",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Jean_Morin_(theologian)",
+    "title": "Jean Morin (theologian) - Wikipedia"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.britannica.com/biography/Jean-Morin-French-theologian",
+    "title": "Jean Morin - Encyclopaedia Britannica"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.encyclopedia.com/religion/encyclopedias-almanacs-transcripts-and-maps/morin-jean",
+    "title": "Morin, Jean - Encyclopedia.com (New Catholic Encyclopedia)"
+   }
+  ],
+  "enriched_note_en": "Born Protestant in Blois, Morin converted to Catholicism and joined the Oratory in 1618. He taught himself the Samaritan language without a teacher by studying newly arrived manuscripts, and published the editio princeps of the Samaritan Pentateuch and Targum in the Paris Polyglot Bible (1629-45). His 'Exercitationes ecclesiasticae in utrumque Samaritanorum Pentateuchum' (1631) argued — controversially — that the Samaritan text was superior to the Jewish Masoretic text, provoking fierce opposition from Hebraists like Hottinger and Buxtorf. Received by Pope Urban VIII in Rome in 1640.",
+  "enriched_note_he": "נולד פרוטסטנטי בבלואה, התנצר והצטרף לאורטוריום ב-1618. למד בעצמו את השפה השומרונית ללא מורה מתוך כתבי יד שזה עתה הגיעו, ופרסם את המהדורה הראשונה של התורה והתרגום השומרוניים בתנ\"ך הפוליגלוטי של פריז (1629-45). חיבורו 'Exercitationes' (1631) טען באופן שנוי במחלוקת שהטקסט השומרוני עדיף על הנוסח המסורתי היהודי, מה שעורר התנגדות עזה מהיבראיסטים כמו הוטינגר ובוקסטורף.",
+  "enriched_note_ar": "وُلد بروتستانتيًا في بلوا، اعتنق الكاثوليكية وانضم إلى الأوراتوار عام 1618. تعلّم اللغة السامرية بنفسه دون معلم من دراسة المخطوطات الواصلة حديثًا، ونشر الطبعة الأولى للتوراة والترجوم السامريين في الكتاب المقدس المتعدد اللغات في باريس (1629-45). جادل في كتابه 'Exercitationes' (1631) بأن النص السامري أفضل من النص الماسوري اليهودي، مما أثار معارضة شديدة."
  },
  {
   "id": "moses",
@@ -1024,7 +1383,24 @@
   "description_ar": "مستشرق فرنسي جلب أول مخطوطة للتوراة السامرية إلى أوروبا سنة 1538، مما أشعل قرونًا من الدراسة العلمية. كان اقتناؤه من دمشق لحظة فاصلة في تاريخ الدراسات السامرية.",
   "source": "p. 187",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Guillaume_Postel",
+    "title": "Guillaume Postel - Wikipedia"
+   },
+   {
+    "type": "academic",
+    "lang": "en",
+    "url": "https://mospace.umsystem.edu/xmlui/bitstream/handle/10355/72830/GuillaumePostelWithLabelsExhibit.pdf",
+    "title": "Guillaume Postel and Oriental Studies (University of Missouri)"
+   }
+  ],
+  "enriched_note_en": "Postel was the first European to reproduce the Samaritan alphabet in his 'Linguarum Duodecim' (1538) and the first to recognize Samaritan script on ancient Judean coins. He actually first encountered Samaritans in 1536 during his embassy to Istanbul; later in 1549 he visited Nablus directly. However, the first manuscript to reach European scholars for study was purchased only in 1616 by Pietro della Valle in Damascus, at the request of the ambassador Achille de Sancy, and was published by Jean Morin in the Paris Polyglot Bible.",
+  "enriched_note_he": "פוסטל היה האירופי הראשון ששחזר את האלף-בית השומרוני ב-'Linguarum Duodecim' (1538) והראשון שזיהה כתב שומרוני על מטבעות יהודיות עתיקות. בפועל פגש שומרונים לראשונה ב-1536 בשגרירותו לאיסטנבול; ב-1549 ביקר ישירות בשכם. אך כתב היד הראשון שהגיע לחוקרים אירופיים נרכש רק ב-1616 ע\"י פייטרו דלה ואלה בדמשק, לבקשת השגריר דה סנסי, ופורסם ע\"י ז'אן מורן בתנ\"ך הפוליגלוטי של פריז.",
+  "enriched_note_ar": "كان بوستل أول أوروبي يعيد إنتاج الأبجدية السامرية في 'Linguarum Duodecim' (1538) وأول من تعرّف على الخط السامري على العملات اليهودية القديمة. التقى السامريين لأول مرة عام 1536 خلال سفارته إلى إسطنبول؛ وزار نابلس مباشرة عام 1549. لكن أول مخطوطة وصلت للباحثين الأوروبيين اشتُريت عام 1616 من قبل بييترو ديلا فالي في دمشق."
  },
  {
   "id": "reland_adrian",
@@ -1037,7 +1413,24 @@
   "description_ar": "مستشرق وجغرافي هولندي نشر 'De Samaritanis' وأعمالًا أخرى جمّعت وحللت بشكل منهجي المعرفة حول الدين واللغة والعادات السامرية، وأجرى مراسلات واسعة مع السامريين.",
   "source": "p. 202-204",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Adriaan_Reland",
+    "title": "Adriaan Reland - Wikipedia"
+   },
+   {
+    "type": "book",
+    "lang": "en",
+    "url": "",
+    "title": "Bart Jaski et al., The Orient in Utrecht: Adriaan Reland (1676-1718) (Brill, 2021)"
+   }
+  ],
+  "enriched_note_en": "Born in De Rijp, North Holland, Reland became Professor of Oriental Languages at the University of Utrecht at age 25, already fluent in Hebrew and Arabic. His 'Palaestina ex monumentis veteribus illustrata' (1714) was the first geographically accurate description of Palestine based on ancient sources. Despite never leaving the Netherlands, he maintained extensive correspondence with Samaritans and other Eastern communities. A 2021 Brill volume ('The Orient in Utrecht') comprehensively reassesses his scholarly legacy.",
+  "enriched_note_he": "נולד בדה רייפ, צפון הולנד, ומונה לפרופסור לשפות מזרחיות באוניברסיטת אוטרכט בגיל 25, כשהוא כבר שולט בעברית ובערבית. ספרו 'Palaestina' (1714) היה התיאור הגאוגרפי המדויק הראשון של ארץ ישראל. למרות שמעולם לא עזב את הולנד, קיים התכתבות ענפה עם שומרונים וקהילות מזרחיות אחרות. כרך של Brill מ-2021 מעריך מחדש את מורשתו המחקרית.",
+  "enriched_note_ar": "وُلد في دي ريب بشمال هولندا، وعُيّن أستاذًا للغات الشرقية بجامعة أوتريخت في سن الخامسة والعشرين وهو يتقن العبرية والعربية. كتابه 'Palaestina' (1714) كان أول وصف جغرافي دقيق لفلسطين. رغم أنه لم يغادر هولندا قط، أجرى مراسلات واسعة مع السامريين ومجتمعات شرقية أخرى."
  },
  {
   "id": "robertson_edward",
@@ -1076,7 +1469,18 @@
   "description_ar": "سفير فرنسا في القسطنطينية الذي اقتنى مخطوطة من التوراة السامرية انتقلت إلى أوراتوار باريس واستُخدمت لاحقًا في الكتاب المقدس المتعدد اللغات في باريس، مما عزز بشكل كبير وصول الأوروبيين إلى النص السامري.",
   "source": "p. 210",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.encyclopedia.com/religion/encyclopedias-almanacs-transcripts-and-maps/pentateuch-samaritan",
+    "title": "Pentateuch, Samaritan - Encyclopedia.com (describes Sancy's role)"
+   }
+  ],
+  "enriched_note_en": "The manuscript Sancy obtained was purchased for him in Damascus by the famous Italian traveler Pietro della Valle in 1616. Sancy gave it to the French Oratory, where Jean Morin used it for his editio princeps in the Paris Polyglot Bible. The same manuscript was later re-used by Brian Walton for the London Polyglot (1657).",
+  "enriched_note_he": "כתב היד שסנסי השיג נרכש עבורו בדמשק ע\"י המטייל האיטלקי המפורסם פייטרו דלה ואלה ב-1616. סנסי מסר אותו לאורטוריום הצרפתי, שם השתמש בו ז'אן מורן למהדורתו הראשונה בתנ\"ך הפוליגלוטי של פריז. אותו כתב יד שימש מאוחר יותר גם את בריאן ואלטון לפוליגלוט הלונדוני (1657).",
+  "enriched_note_ar": "اشترى المخطوطة التي حصل عليها سانسي الرحالة الإيطالي الشهير بييترو ديلا فالي في دمشق عام 1616. سلّمها سانسي للأوراتوار الفرنسي حيث استخدمها جان موران في طبعته الأولى ضمن الكتاب المقدس المتعدد اللغات."
  },
  {
   "id": "simon_magus",
@@ -1089,7 +1493,36 @@
   "description_ar": "سامري من قرية جتّا، وُصف في أعمال الرسل (الإصحاح 8) بأنه يمارس السحر في السامرة ويدّعي أنه 'قوة الله العظيمة'. ويقدم يوستينوس الشهيد، وهو أيضًا من السامرة، تفاصيل إضافية. صوّره التقليد المسيحي اللاحق كرأس الهراطقة وأب الغنوصية، رغم أن الشخصية التاريخية وراء هذه الروايات لا تزال موضع جدل.",
   "source": "p. 215-216",
   "pronunciation": null,
-  "contributor_initials": null
+  "contributor_initials": null,
+  "references": [
+   {
+    "type": "wikipedia",
+    "lang": "en",
+    "url": "https://en.wikipedia.org/wiki/Simon_Magus",
+    "title": "Simon Magus - Wikipedia"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.britannica.com/biography/Simon-Magus",
+    "title": "Simon Magus - Encyclopaedia Britannica"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.jewishencyclopedia.com/articles/13747-simon-magus",
+    "title": "Simon Magus - Jewish Encyclopedia"
+   },
+   {
+    "type": "encyclopedia",
+    "lang": "en",
+    "url": "https://www.newadvent.org/cathen/13797b.htm",
+    "title": "Simon Magus - Catholic Encyclopedia"
+   }
+  ],
+  "enriched_note_en": "The term 'simony' (buying or selling spiritual gifts or ecclesiastical offices) derives directly from his name. Justin Martyr, himself a Samaritan from Nablus, provides the earliest detailed account beyond Acts. Later traditions describe Simon's confrontation with St. Peter in Rome, where he allegedly tried to fly to heaven but fell to his death. The Pseudo-Clementine literature (3rd-4th century) vastly expands his legend. His consort Helena was said to be the incarnation of God's First Thought (Ennoia).",
+  "enriched_note_he": "המונח 'סימוניה' (מכירת או קניית מתנות רוחניות או משרות כנסייתיות) נגזר ישירות משמו. יוסטינוס מרטיר, עצמו שומרוני משכם, מספק את הדיווח המפורט המוקדם ביותר מעבר למעשי השליחים. מסורות מאוחרות מתארות את עימותו עם פטרוס ברומא, שם לכאורה ניסה לעוף לשמים אך נפל למוות. בת זוגו הלנה נחשבה לגילום המחשבה הראשונה של האל (אנויה).",
+  "enriched_note_ar": "مصطلح 'السيمونية' (شراء أو بيع الهبات الروحية أو المناصب الكنسية) مشتق مباشرة من اسمه. يوستينوس الشهيد، وهو نفسه سامري من نابلس، يقدم أقدم رواية مفصلة بعد أعمال الرسل. وتصف الروايات اللاحقة مواجهته مع بطرس في روما حيث حاول الطيران إلى السماء لكنه سقط ميتًا. ووُصفت رفيقته هيلينا بأنها تجسيد للفكرة الأولى لله (إينويا)."
  },
  {
   "id": "tabya_ibn_darta",

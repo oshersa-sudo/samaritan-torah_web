@@ -171,6 +171,7 @@ const I18N = {
     pp_era_bib:'תקופת המקרא', pp_era_anc:'העת העתיקה', pp_era_med:'ימי הביניים',
     pp_era_early:'ראשית העת החדשה', pp_era_mod:'העת החדשה', pp_era_unk:'תקופה לא ידועה',
     pp_source:'מקור', pp_contributor:'רשם:', pp_pron:'הגייה',
+    pp_more:'הרחבה', pp_refs:'לקריאה נוספת',
     m_piyutim_book:'עיון בפיוטים השומרוניים', piy_title:'עיון בפיוטים השומרוניים',
     piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
     piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
@@ -391,6 +392,7 @@ const I18N = {
     pp_era_bib:'Biblical era', pp_era_anc:'Antiquity', pp_era_med:'The Middle Ages',
     pp_era_early:'Early modern period', pp_era_mod:'Modern era', pp_era_unk:'Period unknown',
     pp_source:'Source', pp_contributor:'contributed by', pp_pron:'pron.',
+    pp_more:'Further detail', pp_refs:'Further reading',
     m_piyutim_book:'Samaritan Piyyutim', piy_title:'Samaritan Piyyutim',
     piy_back_tree:'Back to contents', piy_dict_toggle:'Word dictionary', piy_search_ph:'Search composition, author, or word…',
     piy_empty:'Choose a composition from the contents ←', piy_pick_first:'Choose a composition',
@@ -611,6 +613,7 @@ const I18N = {
     pp_era_bib:'العصر التوراتي', pp_era_anc:'العصور القديمة', pp_era_med:'العصور الوسطى',
     pp_era_early:'مطلع العصر الحديث', pp_era_mod:'العصر الحديث', pp_era_unk:'حقبة غير معروفة',
     pp_source:'المصدر', pp_contributor:'بقلم', pp_pron:'النطق',
+    pp_more:'تفصيل إضافي', pp_refs:'لمزيد من القراءة',
     m_piyutim_book:'الأناشيد السامرية', piy_title:'تصفّح الأناشيد السامرية',
     piy_back_tree:'العودة للفهرس', piy_dict_toggle:'قاموس الكلمات', piy_search_ph:'بحث عن تأليف أو مؤلف أو كلمة…',
     piy_empty:'اختر تأليفًا من الفهرس ←', piy_pick_first:'اختر تأليفًا',
@@ -4204,6 +4207,19 @@ async function ppShow(id){
       + (p.contributor_initials && p.contributor_initials!=='unsigned'
           ? ` · ${esc(t('pp_contributor'))} ${esc(p.contributor_initials)}` : '')
       + `</div>` : '';
+  // the second delivery's additions, shown only where the source supplied them:
+  // a note that fills in dates/corrections the encyclopedia entry lacks, and links onward
+  const note = (LANG==='en'?p.enriched_note_en : LANG==='ar'?p.enriched_note_ar : p.enriched_note_he)
+            || p.enriched_note_he || p.enriched_note_en || '';
+  const noteHtml = (note||'').trim()
+    ? `<div class="pp-note"><h4>${esc(t('pp_more'))}</h4><div>${esc(note)}</div></div>` : '';
+  const refs = (p.references||[]).filter(r=>r && (r.url||r.title));
+  const refsHtml = refs.length
+    ? `<div class="pp-refs"><h4>${esc(t('pp_refs'))}</h4><ul>` + refs.map(r=>{
+        const label = esc(r.title || r.url);
+        return `<li>` + (r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+                               : label) + `</li>`;
+      }).join('') + `</ul></div>` : '';
   $('ppDetail').innerHTML=`
     <h2 class="pp-name">${esc(ppName(p))}</h2>
     <div class="pp-chips">
@@ -4212,6 +4228,8 @@ async function ppShow(id){
       ${p.pronunciation?`<span class="pp-chip" dir="ltr"><b>${esc(t('pp_pron'))}</b> /${esc(p.pronunciation)}/</span>`:''}
     </div>
     <div class="pp-desc">${esc(desc)}</div>
+    ${noteHtml}
+    ${refsHtml}
     ${src}`;
   $('ppBody').classList.add('pp-detail-open');   // mobile: swap list → entry
   $('ppBack').classList.remove('hidden');

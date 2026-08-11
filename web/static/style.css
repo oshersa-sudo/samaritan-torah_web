@@ -1150,6 +1150,16 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 .pp-chip b{ color:var(--muted); font-weight:600; font-size:11px; }
 .pp-chip-per{ background:#eef3fb; }
 .pp-desc{ font-size:calc(16.5px*var(--rd-fs,1)); line-height:1.85; color:var(--dark); }
+/* the enrichment: a note that fills in what the encyclopedia entry left out,
+   and links onward — both present only for the figures the source covered */
+.pp-note{ margin-top:16px; padding:11px 13px; background:#fbfaf5;
+  border:1px solid rgba(26,56,115,.18); border-radius:8px;
+  font-size:calc(15px*var(--rd-fs,1)); line-height:1.8; color:var(--dark); }
+.pp-note h4, .pp-refs h4{ margin:0 0 6px; color:var(--navy); font-size:14px; }
+.pp-refs{ margin-top:14px; }
+.pp-refs ul{ margin:0; padding-inline-start:18px; }
+.pp-refs li{ font-size:13.5px; line-height:1.7; }
+.pp-refs a{ color:var(--navy); }
 .pp-src{ margin-top:16px; padding-top:9px; border-top:1px dashed rgba(26,56,115,.22);
   color:var(--muted); font-size:12.5px; }
 @media (max-width:800px){
