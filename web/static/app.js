@@ -148,7 +148,7 @@ const I18N = {
     app_hint:'המילים המודגשות בפסוק נושאות חילופי נוסח — לחץ על מילה כדי לקפוץ לחילופיה, ולחץ על חילוף כדי לחזור למילה.',
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך מילון א. טל', no_dict:'אין מילון זמין לפסוק זה',
     dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
-    more_results:'תוצאות נוספות', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
+    more_results:'תוצאות נוספות', phr_occurrences:'מופעים', phr_words:'מילות הצירוף', phr_head:'מטבעות לשון', phr_formula:'כינוי קבוע', phr_idiom:'ניב', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון א. טל.', tal_click_precise:'לחץ לפירוש המדויק מתוך מילון א. טל ⬅',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
@@ -369,7 +369,7 @@ const I18N = {
     app_hint:'The emphasised words in the verse carry textual variants — tap a word to jump to its variants, and tap a variant to jump back to the word.',
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from A. Tal's dictionary", no_dict:'No dictionary for this verse',
     dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
-    more_results:'More results', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
+    more_results:'More results', phr_occurrences:'occurrences', phr_words:'Words of the phrase', phr_head:'Set phrases', phr_formula:'fixed epithet', phr_idiom:'idiom', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in A. Tal\'s dictionary.', tal_click_precise:'Tap for the exact entry from A. Tal\'s dictionary ⬅',
     m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
@@ -590,7 +590,7 @@ const I18N = {
     app_hint:'الكلمات المميّزة في الآية تحمل اختلافات نصّية — اضغط على كلمة للانتقال إلى اختلافاتها، واضغط على اختلاف للعودة إلى الكلمة.',
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من معجم أ. طال', no_dict:'لا يوجد معجم لهذه الآية',
     dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
-    more_results:'نتائج إضافية', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
+    more_results:'نتائج إضافية', phr_occurrences:'مواضع', phr_words:'كلمات التعبير', phr_head:'تعابير ثابتة', phr_formula:'لقب ثابت', phr_idiom:'تعبير اصطلاحي', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في معجم أ. طال.', tal_click_precise:'اضغط للمدخل الدقيق من معجم أ. طال ⬅',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
@@ -2197,6 +2197,21 @@ async function showTalFull(word){
     if(!inf) body.appendChild(el('div','note',t('tal_none')));
     return;
   }
+  // Set phrases the word takes part in, with the Hebrew that Memar Marqe's own
+  // translation gives them. Only formulas and idioms are stored, never free pairs.
+  const phr=(d&&d.phrases)||[];
+  if(phr.length){
+    body.appendChild(el('div','tal-sec',t('phr_head')));
+    for(const p of phr){
+      const it=el('div','tal-phrase');
+      it.innerHTML='<b>'+esc(p.phrase)+'</b> <span class="pos">'
+        +esc(p.cls==='formula'?t('phr_formula'):t('phr_idiom'))+'</span>';
+      if(p.hebrew) it.appendChild(el('div','tal-sense','← '+esc(p.hebrew)));
+      else if(p.parts) it.appendChild(el('div','note',esc(p.parts)));
+      it.appendChild(el('span','tal-pg','  ('+esc(p.ref)+', '+p.count+')'));
+      body.appendChild(it);
+    }
+  }
   for(const rt of roots){
     body.appendChild(el('div','tal-head','שורש '+esc(rt.root)));
     // 1) meaning(s) from the dictionary
@@ -2930,15 +2945,20 @@ $('variantsBtn').onclick=()=>togglePanel('variants');
 // (body.print-preview) or hands it to the browser's native print/Save-as-PDF
 // dialog (body.printing, via @media print in style.css — see there for why a
 // body-class toggle was used instead of listing every modal id).
+//
+// Preview and paper are ONE layout, not two: the .pr-* rules sit outside any
+// media query and are written in pt/mm, and the preview draws the page at its
+// true A4 size. They used to be styled separately, which is precisely how the
+// two drifted apart — what came out of the printer was not what the preview
+// had shown.
 const PRINT_TR_FIELD  = {aramaic:'sam_aramaic', arabic:'arabic_trans', english:'english'};
 const PRINT_TR_LABEL  = {aramaic:'תרגום ארמי',  arabic:'תרגום ערבי',  english:'תרגום אנגלי'};
-const S_print = {font:'samaritan', noNums:false, interp:false, interpSam:false, dict:false, trans:false, trChoice:null};
+const S_print = {font:'samaritan', noNums:false, interp:false, dict:false, trans:false, trChoice:null};
 
 $('printBtn').onclick = () => {
   document.querySelectorAll('#printModal .pr-opt').forEach(b=>b.classList.toggle('sel', b.dataset.font===S_print.font));
   $('prNoNums').checked = S_print.noNums;
   $('prInterp').checked = S_print.interp;
-  $('prInterpSam').checked = S_print.interpSam;
   $('prDict').checked = S_print.dict;
   $('prTrans').checked = S_print.trans;
   updatePrintNoNumsState();
@@ -2967,9 +2987,8 @@ function updatePrintNoNumsState(){
   if(!samFont && cb.checked){ cb.checked = false; S_print.noNums = false; }
 }
 $('prNoNums').onchange = e => { S_print.noNums = e.target.checked; };
-$('prInterp').onchange    = e => { S_print.interp    = e.target.checked; };
-$('prInterpSam').onchange = e => { S_print.interpSam = e.target.checked; };
-$('prDict').onchange      = e => { S_print.dict      = e.target.checked; };
+$('prInterp').onchange = e => { S_print.interp = e.target.checked; };
+$('prDict').onchange   = e => { S_print.dict   = e.target.checked; };
 $('prTrans').onchange = e => {
   S_print.trans = e.target.checked;
   if(S_print.trans && !S_print.trChoice){
@@ -3000,9 +3019,22 @@ function updatePrintTransLabel(){
 $('prPreview').onclick = async () => {
   $('printModal').classList.add('hidden');
   await buildPrintPage();
+  fitPreviewSheet();
   document.body.classList.add('print-preview');
   $('printPreviewBar').classList.remove('hidden');
 };
+// The preview shows a real A4 sheet — 210mm wide, which on a phone is wider than
+// the screen. Zoom it down to fit rather than scale it: `zoom` shrinks the layout
+// box with the content, so the scroll area follows, while `transform` would leave
+// the sheet's original footprint behind as empty grey.
+function fitPreviewSheet(){
+  const A4 = 210 / 25.4 * 96;                   // 210mm in CSS pixels (96dpi)
+  document.documentElement.style.setProperty(
+    '--pr-zoom', Math.min(1, (window.innerWidth - 16) / A4).toFixed(3));
+}
+window.addEventListener('resize', () => {
+  if(document.body.classList.contains('print-preview')) fitPreviewSheet();
+});
 $('ppCloseBtn').onclick = () => {
   document.body.classList.remove('print-preview');
   $('printPreviewBar').classList.add('hidden');
@@ -3020,6 +3052,20 @@ $('prGo').onclick = async () => {
   document.body.classList.add('printing');
   setTimeout(()=>window.print(), 60);   // let layout/fonts settle before the print dialog opens
 };
+// Ctrl+P, the browser's own menu and the phone's share→print never pass through
+// the buttons above, so body.printing would never be set and the whole app —
+// header, toolbar, reading bar and all — would land on the paper. Catch the print
+// at the last moment instead: if a page was already built (from the preview) use
+// it, otherwise build the chapter on the spot. beforeprint cannot await, so that
+// fallback is the text alone — the commentary and the dictionary need the server.
+window.addEventListener('beforeprint', () => {
+  if(document.body.classList.contains('printing')) return;
+  if(!$('printArea').children.length){
+    if(!(S.verses || []).length) return;        // not in a chapter — leave the page alone
+    $('printArea').appendChild(printSkeleton());
+  }
+  document.body.classList.add('printing');
+});
 window.addEventListener('afterprint', () => { document.body.classList.remove('printing'); });
 
 async function buildPrintPage(){
@@ -3797,6 +3843,29 @@ async function dictWordDetail(word, root){
   };
   body.appendChild(back);
   body.appendChild(el('div','dict-detail-word', esc(d.word)));
+  // A set phrase is its own entry — its meaning is the phrase's, not a root's, so
+  // it gets the phrase card instead of the root-by-root breakdown below.
+  if(d.is_phrase){
+    for(const s of (d.senses||[])){
+      const card=el('div','dict-mcard');
+      card.appendChild(el('div','dict-mroot', esc(s.cls==='formula'?t('phr_formula'):t('phr_idiom'))));
+      if(s.hebrew) card.appendChild(el('div','tal-sense','← '+esc(s.hebrew)));
+      if(s.parts) card.appendChild(el('div','note', esc(s.parts)));
+      card.appendChild(el('div','note', esc(s.ref)+' · '+s.count+' '+t('phr_occurrences')));
+      body.appendChild(card);
+    }
+    if(d.words && d.words.length){
+      body.appendChild(el('div','tal-sec',t('phr_words')));
+      const wrap=el('div','tal-formlist');
+      d.words.forEach((w,i)=>{
+        const a=el('span','dict-form', esc(w));
+        a.onclick=()=>dictWordDetail(w);
+        wrap.appendChild(a); if(i<d.words.length-1) wrap.appendChild(document.createTextNode('  ·  '));
+      });
+      body.appendChild(wrap);
+    }
+    body.scrollTop=0; return;
+  }
   if(!d.meanings || !d.meanings.length){ body.appendChild(el('div','note',t('dict_app_empty'))); body.scrollTop=0; return; }
   for(const m of d.meanings){
     const card=el('div','dict-mcard');
