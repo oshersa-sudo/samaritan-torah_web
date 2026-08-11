@@ -236,18 +236,61 @@ EXTRA_PEOPLE = [
         source='p. 172',
         contributor_initials='M.F.',
     ),
+    dict(
+        id='ibrahim_al_ayya',
+        name_en="Abraham b. Jacob ad-Danafi (Ibrahim al-'Ayya)",
+        name_he='אברהם בן יעקב הדנפי (אלעיה)',
+        name_ar="إبراهيم بن يعقوب الدنفي (العَيَّه)",
+        pronunciation=None,
+        period='1719-?',
+        description_en=(
+            "An eighteenth-century Samaritan poet, commentator, historian and public figure, "
+            "counted among the greatest Samaritan poets and exegetes of any generation. His "
+            "Arabic byname al-'Ayya, 'the pleader', was earned by the many compositions he wrote "
+            "pleading on the community's behalf through the hard years of his lifetime. He came "
+            "of the Danafi family, the community's largest household to this day, descended from "
+            "the last remnant of the Damascus community. His greatest work is a five-thousand-page "
+            "commentary on the Torah, written together with the elder Tabya b. Ab Zehuta al-Matari "
+            "and now in Berlin; he also wrote on grammar and on the correct reading of the Torah, "
+            "and with the High Priest Tabya b. Isaac he set the order of prayers for the fourteen "
+            "days of the mishmar. His hymns are still sung in the synagogue on the festivals."),
+        description_he=(
+            'פייטן, פרשן, היסטוריון ואיש ציבור שומרוני בן המאה ה-18, הנמנה עם גדולי פייטני '
+            'השומרונים ופרשניהם לאורך הדורות. כינויו הערבי "אלעיה" — הפצרן או המתחנן — ניתן לו '
+            'על שום חיבוריו הרבים שבהם התחנן בעד העדה בשנותיה הקשות. בן משפחת הדנפים, בית האב '
+            'הגדול בעדה עד ימינו, שמוצאה משרידי קהילת דמשק. מפעלו הגדול הוא פירוש לתורה בן חמשת '
+            'אלפים עמודים, שכתב עם הזקן טביה בן אב זהותה המטרי ומצוי כיום בברלין; חיבר גם חיבורים '
+            'בדקדוק ובקריאת התורה, ועם הכהן הגדול טביה בן יצחק כונן את סדר התפילות לארבעה עשר ימי '
+            'המשמרת. פיוטיו נאמרים בבתי הכנסת עד היום בימי המועדים.'),
+        description_ar=(
+            'شاعر ومفسّر ومؤرّخ ورجل عامّة سامري من القرن الثامن عشر، يُعدّ من كبار شعراء السامريين '
+            'ومفسّريهم على مرّ الأجيال. ولقبه العربي "العَيَّه" — أي المتضرّع — ناله لكثرة ما كتب '
+            'متضرّعًا عن الطائفة في سنيّها الصعبة. وهو من آل الدنفي، أكبر بيوت الطائفة حتى اليوم، '
+            'المنحدرة من بقايا جماعة دمشق. وأعظم أعماله تفسير للتوراة في خمسة آلاف صفحة، كتبه مع '
+            'الشيخ طابيا بن أب زهوتة المطري وهو اليوم في برلين؛ وله أيضًا مصنّفات في النحو وفي '
+            'قراءة التوراة، ومع الكاهن الأكبر طابيا بن إسحق وضع ترتيب صلوات أيام المشمار الأربعة '
+            'عشر. وما زالت أناشيده تُرتَّل في الكنائس أيام الأعياد.'),
+        enriched_note_en=None, enriched_note_he=None, enriched_note_ar=None,
+        references_json='[]',
+        source='ויקיפדיה העברית, הערך "אברהם בן יעקב הדנפי"',
+        contributor_initials=None,
+    ),
 ]
 
 _BOOK = 'A Companion to Samaritan Studies'
 
 
+_BARE_PAGE = re.compile(r'^p+\. ?\d')
+
+
 def norm_source(s):
     """22 rows name the book, 73 carry only 'p. 131' — the reference is the same
-    work throughout, so give every entry the full citation."""
+    work throughout, so complete those. A citation that names something else (an
+    entry read off another source) is left exactly as it stands."""
     s = (s or '').strip()
     if not s or s.startswith(_BOOK):
         return s
-    return '%s, %s' % (_BOOK, s)
+    return '%s, %s' % (_BOOK, s) if _BARE_PAGE.match(s) else s
 
 
 def main(apply):
