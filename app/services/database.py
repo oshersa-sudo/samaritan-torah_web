@@ -2712,25 +2712,21 @@ def _tal_roots(word, conn):
             rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM tal_forms WHERE form_norm=?", (cn,))]
             if rs:
                 return dedup(rs)
-        for cn in cnorms:                       # 4) inflected forms of the piyyutim
-            try:                                #    and Memar Marqe (dict_infl)
-                rs = [r['root'] for r in conn.execute(
-                    "SELECT root FROM dict_infl WHERE form_norm=? "
-                    "AND TRIM(COALESCE(root,''))<>'' ORDER BY rank", (cn,))]
-            except sqlite3.OperationalError:    # table absent in older copies
-                rs = []
-            if rs:
-                return dedup(rs)
-        for c in cands:                         # 5) word→root gloss (every Torah word)
+        # A root is only ever READ, never inferred. The affix-stripping analysis in
+        # dict_infl is deliberately NOT consulted here: stripping ־ה off קמאה — a
+        # word Tal does not contain at all — reaches the unrelated head-word קמא
+        # "בוז, ביזיון" and would send the reader to that root's occurrences. A word
+        # Tal does not know must return no root, not a plausible-looking wrong one.
+        for c in cands:                         # 4) word→root gloss (every Torah word)
             rs = [r['root'] for r in conn.execute(
                 "SELECT root FROM tal_word_gloss WHERE word=? AND TRIM(COALESCE(root,''))<>''", (c,))]
             if rs:
                 return dedup(rs)
-        for cn in cnorms:                       # 6) Torah-text root index
+        for cn in cnorms:                       # 5) Torah-text root index
             rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM root_index WHERE form_norm=?", (cn,))]
             if rs:
                 return dedup(rs)
-        for c in cands:                         # 7) old forms index
+        for c in cands:                         # 6) Tal's own word→root index
             rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM dict_root_index WHERE word=?", (c,))]
             if rs:
                 return dedup(rs)
@@ -2801,23 +2797,34 @@ def tal_full_lookup(word, torah_limit=16):
         out['roots'].append({'root': root, 'senses': senses, 'torah': torah,
                              'torah_count': len(locs), 'forms': forms})
 
-    # If the word reached us as an inflected form of the piyyutim / Memar Marqe,
-    # say how it was resolved — which affixes were stripped, on what evidence, and
-    # what Memar Marqe's own Hebrew translation calls it. Absent for plain lookups.
-    try:
-        r = conn.execute(
-            "SELECT root, derivation, evidence, gloss, gloss_tal, memar_he, memar_conf, "
-            "       freq_piyut, freq_memar, status FROM dict_infl "
-            "WHERE form_norm=? ORDER BY rank LIMIT 1", (_norm_fin(word),)).fetchone()
-        if r and (r['derivation'] or '').strip():
-            out['inflection'] = {
-                'root': r['root'], 'derivation': r['derivation'], 'evidence': r['evidence'],
-                'gloss': r['gloss'], 'gloss_tal': r['gloss_tal'],
-                'memar_he': r['memar_he'], 'memar_conf': r['memar_conf'],
-                'freq_piyut': r['freq_piyut'], 'freq_memar': r['freq_memar'],
-                'status': r['status']}
-    except sqlite3.OperationalError:
-        pass
+    # A word Tal's dictionary does not contain gets its MEANING and nothing else —
+    # no root, no root's inflections, no root's Torah occurrences. The meaning is
+    # quoted from a text that actually renders the word: Memar Marqe's own Hebrew
+    # translation, or the word-by-word glossary of the Torah targum. Nothing here
+    # is derived; if neither text renders it, the word simply has no answer yet.
+    if not out['roots']:
+        wn = _norm_fin(word)
+        meaning = src = ''
+        try:
+            r = conn.execute(
+                "SELECT memar_he, memar_conf FROM dict_infl WHERE form_norm=? "
+                "AND TRIM(COALESCE(memar_he,''))<>'' ORDER BY rank LIMIT 1", (wn,)).fetchone()
+            if r:
+                meaning, src = r['memar_he'], 'memar'
+        except sqlite3.OperationalError:
+            pass
+        if not meaning:
+            r = conn.execute("SELECT gloss FROM tal_word_gloss WHERE word=? "
+                             "AND TRIM(COALESCE(gloss,''))<>'' LIMIT 1", (word,)).fetchone()
+            if r:
+                meaning, src = r['gloss'], 'torah'
+        if not meaning:
+            r = conn.execute("SELECT he FROM word_align WHERE ar=? "
+                             "AND TRIM(COALESCE(he,''))<>'' LIMIT 1", (word,)).fetchone()
+            if r:
+                meaning, src = r['he'], 'torah'
+        if meaning:
+            out['meaning'] = {'gloss': meaning, 'source': src}
     conn.close()
     out['phrases'] = dict_phrases_for(word)
     return out
