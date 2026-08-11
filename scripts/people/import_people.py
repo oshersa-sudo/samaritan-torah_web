@@ -168,10 +168,12 @@ def resolve_period(p):
 # Hebrew leads and the Arabic follows in parentheses.
 #
 # Equivalences used: Ishaq = יצחק and Ibrahim = אברהם (the owner's own examples);
-# Salama = שלמה (his ruling on 'Abd Allah b. Salama); Ghazal = טביה, Murjan =
-# אב סכוה, Hidr = פנחס — each of the three already paired inside these entries'
-# own names in the source data. Names still without a settled Hebrew form
-# (ברכאת · אסעד · נאגי · מנג'א · גריב · סעיד) are left untouched, not guessed at.
+# Salama = שלמה and 'Abd Allah = עבד-אלה (his ruling on 'Abd Allah b. Salama);
+# Nagi = אבישע (his ruling on that priest); Ghazal = טביה, Murjan = אב סכוה,
+# Hidr = פנחס — each of the three already paired inside these entries' own names
+# in the source data. The owner ruled that the remaining Arabic personal names
+# stand as they are: אב סכוה and אסעד explicitly, and the rest with them
+# (ברכאת · מנג'א · גריב · סעיד). They are left untouched, not guessed at.
 NAME_HE = {
     # Ghazal = Ṭabya (gazelle) — the pairing is spelled out in this entry's own name
     'ghazal_tabya_ad_duweik':   'טביה (ע׳זאל) אד-דוויק',
@@ -179,8 +181,9 @@ NAME_HE = {
     'abu_lhasan_b_ghazal':      'אבו אלחסן בן טביה (ע׳זאל) בן אבי סעיד',
     # Murjan = Ab Sikkuwwa — likewise; spelling unified with ab_sakwa below
     'murgan_ab_sikkuwwa':       'אב סכוה (מרג׳אן) בן צדקה',
-    # Hidr = Pinhas — the pairing is in the entry's own name, Hebrew now leads
-    'nagi_b_hidr':              'נאגי בן פנחס (חדר) בן יצחק',
+    # Hidr = Pinhas — the pairing is in the entry's own name, Hebrew now leads.
+    # Nagi = אבישע is the owner's ruling for this priest (2026-08-11).
+    'nagi_b_hidr':              'אבישע (נאג׳י) בן פנחס (חדר) בן יצחק',
     # Ishaq = Isaac, Ibrahim = Abraham; al-Musannif ("the compiler") is a title, kept
     'abu_ishaq_ibrahim_al_musannif': 'אברהם אלמצנף (אבו אסחאק אבראהים)',
     # 'Abd Allah = עבד-אלה and Salama = שלמה, both by the owner's ruling. His
