@@ -1871,6 +1871,13 @@ def api_dict_words():
                                         prefix=request.args.get('prefix', '')))
 
 
+@app.route('/api/dict_phrases')
+def api_dict_phrases():
+    """Browse the Aramaic set phrases — epithets and idioms harvested from the
+    piyyutim and Memar Marqe. `q` filters by any word in the phrase."""
+    return jsonify(db.dict_phrases_browse(request.args.get('q', '')))
+
+
 @app.route('/api/dict_he')
 def api_dict_he():
     """Hebrew-side word index — Hebrew words leading to their Aramaic root(s)."""

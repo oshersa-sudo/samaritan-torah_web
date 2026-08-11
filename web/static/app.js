@@ -203,7 +203,7 @@ const I18N = {
     rhy_col_word:'מילה', rhy_col_freq:'שכיחות', rhy_col_group:'קבוצת חרוז', rhy_col_def:'תרגום (מילון)', rhy_col_occ:'היכן מופיעה',
     rd_he:'עברית', rd_ar:'ערבית', rd_aram:'ארמית', rd_show:'הצג:',
     dict_app_title:'מילון ארמי&nbsp;-&nbsp;עברי,&nbsp;עברי&nbsp;ארמי', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
-    dict_tab_search:'חיפוש', dict_tab_index:'אינדקס מילים', dict_tab_pages:'דפדוף עמודים',
+    dict_tab_search:'חיפוש', dict_tab_index:'אינדקס מילים', dict_tab_phrases:'מטבעות לשון', dict_phrases_hint:'צירופי לשון קבועים מן הפיוטים וממימר מרקה — כינויים ונוסחאות וניבים, עם התרגום העברי שמימר מרקה עצמו נותן להם. הקש על צירוף לפירושו המלא.', dict_tab_pages:'דפדוף עמודים',
     dict_index_hint:'דפדף בכל מילות המילון (לפי א״ב). הקלד אות/מילה לקפיצה. לחץ על מילה כדי לראות את מופעיה בתורה ובתיבת מרקה — באותה משמעות.', dict_index_ph:'קפוץ לאות/מילה…',
     dict_dir_aram:'ארמית ← עברית', dict_dir_he:'עברית ← ארמית', dict_he_ph:'הקלד מילה בעברית…',
     dict_he_index_hint:'דפדף במילים בעברית (לפי א״ב). לחץ על מילה כדי להגיע לפירושה הארמי.',
@@ -429,7 +429,7 @@ const I18N = {
     rhy_col_word:'Word', rhy_col_freq:'Frequency', rhy_col_group:'Rhyme group', rhy_col_def:'Gloss', rhy_col_occ:'Where it appears',
     rd_he:'Hebrew', rd_ar:'Arabic', rd_aram:'Aramaic', rd_show:'Show:',
     dict_app_title:'Aramaic&nbsp;-&nbsp;Hebrew,&nbsp;Hebrew&nbsp;-&nbsp;Aramaic Dictionary', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
-    dict_tab_search:'Search', dict_tab_index:'Word index', dict_tab_pages:'Browse pages',
+    dict_tab_search:'Search', dict_tab_index:'Word index', dict_tab_phrases:'Set phrases', dict_phrases_hint:'Fixed Aramaic phrases from the piyyutim and Memar Marqe — epithets, formulas and idioms, with the Hebrew that Memar Marqe’s own translation gives them. Tap one for its full entry.', dict_tab_pages:'Browse pages',
     dict_index_hint:'Browse every word in the dictionary (A–Z). Type a letter/word to jump. Tap a word to see where it occurs in the Torah and in Tībåt Mårqe — in the same meaning.', dict_index_ph:'Jump to a letter/word…',
     dict_dir_aram:'Aramaic → Hebrew', dict_dir_he:'Hebrew → Aramaic', dict_he_ph:'Type a Hebrew word…',
     dict_he_index_hint:'Browse the Hebrew words (A–Z). Tap a word to reach its Aramaic entry.',
@@ -655,7 +655,7 @@ const I18N = {
     rhy_col_word:'الكلمة', rhy_col_freq:'التكرار', rhy_col_group:'مجموعة القافية', rhy_col_def:'الترجمة', rhy_col_occ:'أين تظهر',
     rd_he:'العبرية', rd_ar:'العربية', rd_aram:'الآرامية', rd_show:'اعرض:',
     dict_app_title:'معجم آرامي&nbsp;-&nbsp;عبري،&nbsp;عبري&nbsp;آرامي', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
-    dict_tab_search:'بحث', dict_tab_index:'فهرس الكلمات', dict_tab_pages:'تصفّح الصفحات',
+    dict_tab_search:'بحث', dict_tab_index:'فهرس الكلمات', dict_tab_phrases:'تعابير ثابتة', dict_phrases_hint:'تعابير آرامية ثابتة من القصائد ومن ميمر مرقة — ألقاب وصيغ وتعابير اصطلاحية، مع الترجمة العبرية التي يمنحها ميمر مرقة نفسه. اضغط على تعبير لعرض مدخله الكامل.', dict_tab_pages:'تصفّح الصفحات',
     dict_index_hint:'تصفّح كلّ كلمات المعجم (أ–ي). اكتب حرفاً/كلمة للقفز. اضغط كلمة لرؤية مواضعها في التوراة وفي تيبات مارقه — بالمعنى نفسه.', dict_index_ph:'اقفز إلى حرف/كلمة…',
     dict_dir_aram:'آرامية ← عبرية', dict_dir_he:'عبرية ← آرامية', dict_he_ph:'اكتب كلمة عبرية…',
     dict_he_index_hint:'تصفّح الكلمات العبرية (أ–ي). اضغط كلمة للوصول إلى مدخلها الآرامي.',
@@ -3867,7 +3867,29 @@ function dictSetMode(mode){
   const he = DICT_DIR==='he';
   if(mode==='search'){ $('dictAppHint').textContent=t(he?'dict_he_search_hint':'dict_app_hint'); inp.placeholder=t(he?'dict_he_ph':'dict_app_ph'); }
   else if(mode==='index'){ $('dictAppHint').textContent=t(he?'dict_he_index_hint':'dict_index_hint'); inp.placeholder=t(he?'dict_he_ph':'dict_index_ph'); (he?dictHeBrowse:dictWords)(0); }
+  else if(mode==='phrases'){ $('dictAppHint').textContent=t('dict_phrases_hint'); inp.placeholder=t('dict_app_ph'); dictPhrases(''); }
   else if(mode==='pages'){ $('dictAppHint').textContent=t('dict_pages_hint'); dictPage(1); }
+}
+// Browse the set phrases (dict_phrase): epithets and idioms only — free word
+// pairs were never stored. Each row shows the Hebrew that Memar Marqe's own
+// translation gives the phrase, or, where no rendering recurred often enough to
+// trust, the word-by-word meaning instead.
+async function dictPhrases(q){
+  const body=$('dictAppBody'); body.innerHTML='';
+  body.appendChild(el('div','note',t('searching')));
+  let d; try{ d=await api('dict_phrases?q='+encodeURIComponent(q||'')); }
+  catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
+  body.innerHTML='';
+  const items=(d&&d.items)||[];
+  if(!items.length){ body.appendChild(el('div','note',t('dict_app_empty'))); return; }
+  for(const p of items){
+    const row=el('button','tm-result');
+    row.appendChild(el('span','tm-res-ref', esc(p.phrase)+'  ·  '+esc(p.cls==='formula'?t('phr_formula'):t('phr_idiom'))));
+    row.appendChild(el('span','tm-res-snip', esc(p.hebrew || p.parts || '')));
+    row.appendChild(el('span','tal-pg', esc(p.ref)+'  ·  '+p.count+' '+t('phr_occurrences')));
+    row.onclick=()=>{ DICT_RETURN=null; dictWordDetail(p.phrase); };
+    body.appendChild(row);
+  }
 }
 document.querySelectorAll('.dict-tab').forEach(b=>b.onclick=()=>dictSetMode(b.dataset.mode));
 
@@ -3876,6 +3898,7 @@ document.querySelectorAll('.dict-tab').forEach(b=>b.onclick=()=>dictSetMode(b.da
 function dictGo(){
   const q=($('dictAppInput').value||'').trim();
   if(DICT_DIR==='he'){ if(DICT_MODE==='index') dictHeBrowse(0, q); else dictHeSearch(q); return; }
+  if(DICT_MODE==='phrases'){ dictPhrases(q); return; }
   if(DICT_MODE==='index') dictWords(0, q); else dictAppSearch();
 }
 

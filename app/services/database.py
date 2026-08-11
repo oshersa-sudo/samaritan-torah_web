@@ -2761,6 +2761,33 @@ def dict_phrases_for(word, limit=12):
             for r in rows]
 
 
+def dict_phrases_browse(q='', limit=200):
+    """The set-phrase list for the dictionary's own tab. Best-attested first, and
+    the ones carrying a Hebrew rendering confirmed against Memar Marqe's
+    translation lead — a phrase we can actually translate is worth more to a
+    reader than one we can only take apart."""
+    conn = get_connection()
+    sql = ("SELECT phrase, hebrew, parts_gloss, cls, count, ref FROM dict_phrase ")
+    args = []
+    q = (q or '').strip()
+    if q:
+        sql += "WHERE phrase_norm LIKE ? "
+        args.append('%' + _norm_fin(q) + '%')
+    sql += ("ORDER BY (CASE WHEN TRIM(COALESCE(hebrew,''))<>'' THEN 0 ELSE 1 END), "
+            "count DESC LIMIT ?")
+    args.append(limit)
+    try:
+        rows = conn.execute(sql, args).fetchall()
+    except sqlite3.OperationalError:
+        conn.close()
+        return {'items': [], 'total': 0}
+    total = conn.execute("SELECT COUNT(*) FROM dict_phrase").fetchone()[0]
+    conn.close()
+    return {'total': total, 'items': [
+        {'phrase': r['phrase'], 'hebrew': r['hebrew'] or '', 'parts': r['parts_gloss'] or '',
+         'cls': r['cls'], 'count': r['count'], 'ref': r['ref']} for r in rows]}
+
+
 def tal_full_lookup(word, torah_limit=16):
     """Everything Tal's dictionary holds for an Aramaic word, grounded in the
     authoritative page extraction. Returns {word, roots:[{root, senses, torah,
