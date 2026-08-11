@@ -217,6 +217,7 @@ const I18N = {
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     // newest first: a reader opening "מה חדש" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>גרסה 3.2 — ההדפסה: הדף עצמו, ולא צילום של האפליקציה</b></p><ul><li>מה שיוצא מהמדפסת הוא בדיוק מה שנראה ב<b>תצוגה המקדימה</b> — הדף מוגדר פעם אחת, במידות של נייר, והתצוגה מציגה גיליון A4 אמיתי בגודל הכתב שיודפס בפועל</li><li>על הנייר עולים <b>הטקסט ופירושיו בלבד</b>: מסגרת האפליקציה, שורת ההאזנה והכפתורים אינם מודפסים — גם בהדפסה מהדפדפן עצמו</li><li>בחירת הגופן — <b>שומרוני או עברי</b> — חלה על כל הדף, הפירוש בכלל זה, וחלון ההדפסה נפתח בכתב שעל המסך</li><li><b>פירוש הפסוק</b> בא מיד מתחת לפרק שלו ו<b>מילון מילים</b> אחריו; כל אחד מהם מופרד בקו ולא ממוסגר, וגודל הכתב קבוע בכל דף ובכל מכשיר</li><li>תוקן: פרק ארוך נחתך בסוף העמוד הראשון ולא הודפס עד סופו</li></ul>',
       '<p><b>גרסה 3.1 — אישים וחוקרים שומרוניים, ומדף ספרים חדש</b></p><ul><li><b>אישים וחוקרים שומרוניים</b> נוסף לספרייה כיחידה עצמאית: 95 דמויות — מאהרן הכהן ובאבא רבה, דרך פייטני ימי הביניים, ועד בני העדה וחוקריה במאה העשרים — ולכל אחת הסבר על מקומה במסורת</li><li>הרשימה נפרשת <b>לפי תקופה</b> או <b>לפי א״ב</b>, והחיפוש רץ גם על גוף ההסברים — כך שאפשר למצוא אישיות לפי עניין ולא רק לפי שמה</li><li>ל-23 מן האישים נוספה <b>הרחבה</b> — תאריכים, תיקונים והקשר שאין בערך עצמו — ולצדה <b>לקריאה נוספת</b>; ושמותיהם העבריים הובאו במקום הצורה הערבית היכן שהם ידועים</li><li>מדף הספרים עוצב מחדש: שם הספר כתוב על הכריכה עצמה, לכל ספר צבע משלו, והכריכות הוקטנו — כך נכנסים בשורה אחת כפליים ספרים מקודם</li></ul>',
       '<p><b>גרסה 3.0 — אבו אלפרג׳ בתוך פירוש הפסוק, והקראה רציפה</b></p><ul><li>דעתו של <b>אבו אלפרג׳</b> מובאת מתחת לפירוש כל פסוק שהוא מדבר עליו — בשמו ובציון סעיף המחבר; 654 פסוקים ב-352 פרקים שומרוניים, והחיבור כולו תורגם לערבית</li><li><b>הקראה רציפה</b>: דגל בסרגל הניגון שממשיך אל הפרק הבא בתום ההקלטה — באותו עד קריאה ובאותה מהירות — ונעצר תמיד בגמר הפרשה</li><li>סרגל הניגון צומצם לטובת הטקסט, שלושת הסימנים שבשורת הניווט הוצמדו, וסרגל מקופל מסמן את עצמו בחץ קטן מתנדנד</li></ul>',
       '<p><b>האזנה להקראת התורה</b></p><ul><li>כל פרק נפתח עם סרגל ניגון, וההקראה נשמעת מפי <b>שמונה עדי קריאה</b> מן העדה — היכן שיש לפרק יותר מעד אחד אפשר לבחור ביניהם ולהשוות ביניהם</li><li><b>מאיר בן יפנה ששוני</b> הקריא את התורה כולה לפי החלוקה השומרונית: 941 פרקים, כשבע-עשרה שעות</li><li>לצדו ארכיון עדי הקריאה ההיסטוריים — <b>פנחס אברהם כהן, רצון צדקה, עובדיה צדקה, ישראל צדקה, אברהם צדקה, אלעזר צדקה כהן ואברהם בן יששכר המרחיב</b> — כארבע-עשרה שעות, שנחתכו ל-757 קטעים כך שכל פרק שומרוני נשמע במדויק גם מתוך הקלטה שנעשתה לפי החלוקה היהודית</li><li>בורר מהירות, סימון ♪ על כל פרק שיש לו הקלטה, והקראה רציפה עד גמר הפרשה</li></ul>',
@@ -297,7 +298,7 @@ const I18N = {
     bm_add:'הוסף סימניה לפרק זה', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
     print_ch:'הדפסת פרק', print_title:'הדפסת פרק', print_font:'גופן להדפסה', print_font_sam:'שומרוני', print_font_heb:'עברי',
     print_nonums:'הסר מספרי פסוק (רצף, כתב שומרוני בלבד)',
-    print_interp:'כולל פירוש הפסוק', print_interp_sam:'הפירוש בכתב השומרוני (הגופן הנוסף)', print_dict:'כולל מילון מילים', print_trans:'כולל תרגום',
+    print_interp:'כולל פירוש הפסוק', print_dict:'כולל מילון מילים', print_trans:'כולל תרגום',
     print_preview:'תצוגה מקדימה', print_go:'הדפס / שמור PDF',
     bm_note_ph:'הוסף הערה…', bm_max:'הגעת למקסימום של 20 סימניות.', bm_dup:'כבר קיימת סימניה לפרק זה.',
     bm_added:'סימניה נוספה.', bm_empty:'אין סימניות.', bm_del_q:'למחוק את הסימניות שנבחרו?',
@@ -438,6 +439,7 @@ const I18N = {
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     // newest first: a reader opening "What's new" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>Version 3.2 — Printing: the sheet itself, not a photograph of the app</b></p><ul><li>What comes out of the printer is exactly what the <b>preview</b> showed — the page is defined once, in paper measures, and the preview draws a real A4 sheet at the type size that will actually be printed</li><li>Only <b>the text and its commentaries</b> reach the paper: the app frame, the reading bar and the buttons are never printed — not even from the browser\'s own print command</li><li>The font choice — <b>Samaritan or Hebrew</b> — governs the whole sheet, the commentary included, and the dialog opens on the script that is on the screen</li><li>The <b>verse commentary</b> comes directly beneath its chapter and the <b>word dictionary</b> after it; each is set off by a rule rather than boxed, and the type size is fixed on every page and every device</li><li>Fixed: a long chapter was cut off at the end of the first page instead of printing in full</li></ul>',
       '<p><b>Version 3.1 — Samaritan Figures and Scholars, and a new bookshelf</b></p><ul><li><b>Samaritan Figures and Scholars</b> joins the library as a unit of its own: 95 figures — from Aaron the priest and Baba Rabba, through the medieval poets, to community members and scholars of the twentieth century — each with an account of its place in the tradition</li><li>The list can be laid out <b>by period</b> or <b>A–Z</b>, and the search runs over the accounts themselves, so a figure can be found by subject and not only by name</li><li>23 of the figures carry <b>further detail</b> — dates, corrections and context the entry itself lacks — and a <b>further reading</b> list beside it; and their Hebrew names now lead where those are known</li><li>The bookshelf was redrawn: each title is written on its own cover, every book has its own colour, and the covers are smaller — so a row now holds twice as many books as before</li></ul>',
       '<p><b>Version 3.0 — Abu\'l-Faraj inside the verse commentary, and continuous reading</b></p><ul><li><b>Abu\'l-Faraj</b>\'s view is now set beneath the commentary on every verse he speaks about, in his name and with the author\'s section number: 654 verses across 352 Samaritan chapters, the whole work rendered in Arabic too</li><li><b>Continuous reading</b>: a flag on the play bar that carries on into the next chapter when a recording ends — same reading witness, same speed — and always stops at the end of the parasha</li><li>The play bar was slimmed down for the sake of the text, the three chapter signs were drawn together, and a folded bar now marks itself with a small bobbing arrow</li></ul>',
       '<p><b>Listening to the Torah read aloud</b></p><ul><li>Every chapter opens with a play bar, and the reading is heard from <b>eight reading witnesses</b> of the community — where a chapter has more than one, you can choose between them and compare</li><li><b>Meir ben Yefune Sassoni</b> recited the whole Torah in the Samaritan division: 941 chapters, some seventeen hours</li><li>Beside him an archive of historical witnesses — <b>Pinhas Abraham Cohen, Ratson Tsedaka, Ovadya Tsedaka, Israel Tsedaka, Abraham Tsedaka, Elazar Tsedaka Cohen and Abraham ben Yissachar</b> — some fourteen hours, cut into 757 segments so that every Samaritan chapter can be heard exactly, even from a recording made by the Jewish division</li><li>A speed selector, a ♪ mark on every chapter that has a recording, and continuous reading to the end of the parasha</li></ul>',
@@ -518,7 +520,7 @@ const I18N = {
     bm_add:'Bookmark this chapter', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
     print_ch:'Print chapter', print_title:'Print chapter', print_font:'Print font', print_font_sam:'Samaritan', print_font_heb:'Hebrew',
     print_nonums:'Remove verse numbers (continuous, Samaritan script only)',
-    print_interp:'Include verse commentary', print_interp_sam:'Commentary in Samaritan script (alternate font)', print_dict:'Include word dictionary', print_trans:'Include translation',
+    print_interp:'Include verse commentary', print_dict:'Include word dictionary', print_trans:'Include translation',
     print_preview:'Preview', print_go:'Print / Save as PDF',
     bm_note_ph:'Add a note…', bm_max:'You have reached the maximum of 20 bookmarks.', bm_dup:'This chapter is already bookmarked.',
     bm_added:'Bookmark added.', bm_empty:'No bookmarks.', bm_del_q:'Delete the selected bookmarks?',
@@ -659,6 +661,7 @@ const I18N = {
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     // newest first: a reader opening "ما الجديد" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>الإصدار 3.2 — الطباعة: الورقة نفسها لا صورةٌ عن التطبيق</b></p><ul><li>ما يخرج من الطابعة هو تماماً ما أظهرته <b>المعاينة</b> — فالصفحة معرَّفة مرّة واحدة بمقاييس الورق، والمعاينة تعرض ورقة A4 حقيقية بحجم الخطّ الذي سيُطبع فعلاً</li><li>لا يصل إلى الورق سوى <b>النصّ وتفاسيره</b>: هيكل التطبيق وشريط الاستماع والأزرار لا تُطبع — ولا حتّى من أمر الطباعة في المتصفّح نفسه</li><li>اختيار الخطّ — <b>السامري أو العبري</b> — يسري على الورقة كلّها والتفسير منها، ونافذة الطباعة تفتح على الخطّ الظاهر على الشاشة</li><li><b>تفسير الآية</b> يأتي تحت أصحاحه مباشرة و<b>معجم الكلمات</b> بعده؛ يفصل كلاًّ منهما خطّ لا إطار، وحجم الخطّ ثابت في كلّ صفحة وعلى كلّ جهاز</li><li>أُصلح: كان الأصحاح الطويل يُقصّ عند نهاية الصفحة الأولى فلا يُطبع كاملاً</li></ul>',
       '<p><b>الإصدار 3.1 — أعلام وباحثون سامريّون، ورفّ كتب جديد</b></p><ul><li>أُضيف <b>أعلام وباحثون سامريّون</b> إلى المكتبة كوحدة مستقلّة: 95 شخصية — من هارون الكاهن وبابا ربّا، مروراً بشعراء العصور الوسطى، وصولاً إلى أبناء الطائفة وباحثيها في القرن العشرين — ولكلّ واحدة شرح لمكانتها في التقليد</li><li>تُعرض القائمة <b>حسب الحقبة</b> أو <b>حسب الأبجدية</b>، والبحث يجري في متن الشروح أيضاً، فتُوجد الشخصية بموضوعها لا باسمها وحده</li><li>أُضيف إلى 23 شخصية <b>تفصيل إضافي</b> — تواريخ وتصويبات وسياق لا يرد في المدخل نفسه — وإلى جانبه قائمة <b>لمزيد من القراءة</b>؛ وصارت أسماؤهم العبرية تتصدّر حيثما كانت معروفة</li><li>أُعيد رسم رفّ الكتب: اسم الكتاب مكتوب على غلافه نفسه، ولكلّ كتاب لونه الخاصّ، وصُغّرت الأغلفة — فصار السطر الواحد يتّسع لضعف ما كان</li></ul>',
       '<p><b>الإصدار 3.0 — أبو الفرج داخل شرح الآية، والقراءة المتواصلة</b></p><ul><li>يَرِد رأي <b>أبي الفرج</b> الآن تحت شرح كلّ آية يتحدّث عنها، باسمه وبرقم فقرة المؤلّف: 654 آية في 352 أصحاحاً سامرياً، والمصنَّف كلّه مترجَم إلى العربية</li><li><b>القراءة المتواصلة</b>: علامة في شريط التشغيل تتابع إلى الأصحاح التالي عند انتهاء التسجيل — بالقارئ نفسه وبالسرعة نفسها — وتتوقّف دائماً عند نهاية البارشاة</li><li>جرى تضييق شريط التشغيل لصالح النصّ، وقُرِّبت العلامات الثلاث في سطر التنقّل بعضها إلى بعض، وصار الشريط المطويّ يشير إلى نفسه بسهم صغير متمايل</li></ul>',
       '<p><b>الاستماع إلى قراءة التوراة</b></p><ul><li>يُفتح كلّ أصحاح مع شريط تشغيل، وتُسمع القراءة بأصوات <b>ثمانية من قرّاء الطائفة</b> — وحيث يوجد للأصحاح أكثر من قارئ يمكن الاختيار بينهم والمقارنة</li><li>قرأ <b>مئير بن يفنه ششوني</b> التوراة كلّها وفق التقسيم السامري: 941 أصحاحاً، نحو سبع عشرة ساعة</li><li>وإلى جانبه أرشيف القرّاء التاريخيّين — <b>فنحاس أبراهام كوهين، ورصون صدقة، وعوبديا صدقة، وإسرائيل صدقة، وأبراهام صدقة، وألعازار صدقة كوهين، وأبراهام بن يساخر</b> — نحو أربع عشرة ساعة، قُطّعت إلى 757 مقطعاً كي يُسمع كلّ أصحاح سامريّ بدقّة حتى من تسجيل جرى وفق التقسيم اليهودي</li><li>مُحدِّد سرعة، وعلامة ♪ على كلّ أصحاح له تسجيل، وقراءة متواصلة حتى نهاية البارشاة</li></ul>',
@@ -739,7 +742,7 @@ const I18N = {
     bm_add:'إضافة إشارة لهذا الأصحاح', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
     print_ch:'طباعة الأصحاح', print_title:'طباعة الأصحاح', print_font:'خط الطباعة', print_font_sam:'سامري', print_font_heb:'عبري',
     print_nonums:'إزالة أرقام الآيات (نصّ متّصل، بالخط السامري فقط)',
-    print_interp:'تضمين تفسير الآية', print_interp_sam:'التفسير بالخط السامري (الخط الإضافي)', print_dict:'تضمين قاموس الكلمات', print_trans:'تضمين الترجمة',
+    print_interp:'تضمين تفسير الآية', print_dict:'تضمين قاموس الكلمات', print_trans:'تضمين الترجمة',
     print_preview:'معاينة', print_go:'طباعة / حفظ كملف PDF',
     bm_note_ph:'أضف ملاحظة…', bm_max:'وصلت إلى الحدّ الأقصى 20 إشارة.', bm_dup:'هذا الأصحاح مُؤشَّر بالفعل.',
     bm_added:'تمت إضافة الإشارة.', bm_empty:'لا توجد إشارات.', bm_del_q:'حذف الإشارات المحدّدة؟',
@@ -2953,9 +2956,14 @@ $('variantsBtn').onclick=()=>togglePanel('variants');
 // had shown.
 const PRINT_TR_FIELD  = {aramaic:'sam_aramaic', arabic:'arabic_trans', english:'english'};
 const PRINT_TR_LABEL  = {aramaic:'תרגום ארמי',  arabic:'תרגום ערבי',  english:'תרגום אנגלי'};
-const S_print = {font:'samaritan', noNums:false, interp:false, dict:false, trans:false, trChoice:null};
+const S_print = {font:'samaritan', fontTouched:false, noNums:false, interp:false,
+                 dict:false, trans:false, trChoice:null};
 
 $('printBtn').onclick = () => {
+  // open on the script the reader is actually looking at, so printing follows
+  // what is on the screen — until the reader picks a font themselves, after
+  // which their choice stands and is not overwritten on the next open.
+  if(!S_print.fontTouched) S_print.font = S.samFont ? 'samaritan' : 'hebrew';
   document.querySelectorAll('#printModal .pr-opt').forEach(b=>b.classList.toggle('sel', b.dataset.font===S_print.font));
   $('prNoNums').checked = S_print.noNums;
   $('prInterp').checked = S_print.interp;
@@ -2967,7 +2975,7 @@ $('printBtn').onclick = () => {
 };
 $('prCancel').onclick = () => $('printModal').classList.add('hidden');
 document.querySelectorAll('#printModal .pr-opt').forEach(b=>{
-  b.onclick = () => { S_print.font = b.dataset.font;
+  b.onclick = () => { S_print.font = b.dataset.font; S_print.fontTouched = true;
     document.querySelectorAll('#printModal .pr-opt').forEach(x=>x.classList.toggle('sel', x===b));
     updatePrintNoNumsState(); };
 });
@@ -3068,29 +3076,46 @@ window.addEventListener('beforeprint', () => {
 });
 window.addEventListener('afterprint', () => { document.body.classList.remove('printing'); });
 
-async function buildPrintPage(){
+// The page is built in two steps so that it can also be produced synchronously:
+// printSkeleton() is everything that needs no server call — the header and the
+// chapter text itself — and buildPrintPage() adds the commentary and the
+// dictionary on top of it. beforeprint, which cannot await, prints the skeleton.
+const prVerseText = text => S_print.font === 'samaritan'
+  ? samMarkup(addWordDots(text||'')) : esc(text||'');
+// Commentary and quoted sources follow the SAME script chosen for the text —
+// Samaritan (in the fluent SamComment face that prose uses on screen) or plain
+// Hebrew. There is no separate choice for them: one sheet, one script.
+const prProse = txt => S_print.font === 'samaritan'
+  ? samMarkupFree(addWordDots(stripNiqqud(txt||''))) : esc(txt||'');
+const prVrow = (num, innerHTML, cls) => {
+  const r = el('div','pr-vrow' + (cls ? ' ' + cls : ''));
+  if(num != null) r.appendChild(el('span','pr-vnum', esc(String(num))));
+  r.insertAdjacentHTML('beforeend', innerHTML);
+  return r;
+};
+// פירוש הפסוק and מילון מילים are sections of the sheet, not boxes on it: a frame
+// drawn round a commentary that runs over three pages breaks badly, so each is
+// set off from the text above it by a rule instead.
+const prSection = title => {
+  const s = el('div','pr-sec');
+  s.appendChild(el('div','pr-sec-title', title));
+  return s;
+};
+
+function printSkeleton(){
   const verses = S.verses || [];
-  if(!verses.length) return;
   const useSam = S_print.font === 'samaritan';
-  const area = $('printArea'); area.innerHTML = '';
   const page = el('div','pr-page');
 
   const hdr = el('div','pr-header');
   hdr.appendChild(el('div','pr-book', esc(S.bookName||'')));
   hdr.appendChild(el('div','pr-portion', esc(S.portionName||'')));
   let chLabel = S.chMode==='samaritan' ? ('פרק שומרוני '+S.curChNum) : ('פרק '+S.curChNum);
-  const opening = (verses[0].text||'').trim().split(/\s+/).filter(Boolean).slice(0,4).join(' ');
+  const opening = ((verses[0]||{}).text||'').trim().split(/\s+/).filter(Boolean).slice(0,4).join(' ');
   if(opening) chLabel += ' (' + opening + ')';
   hdr.appendChild(el('div','pr-chapter', esc(chLabel)));
   page.appendChild(hdr);
 
-  const renderVerseText = text => useSam ? samMarkup(addWordDots(text||'')) : esc(text||'');
-  const vrow = (num, innerHTML) => {
-    const r = el('div','pr-vrow');
-    r.appendChild(el('span','pr-vnum', esc(String(num))));
-    r.insertAdjacentHTML('beforeend', innerHTML);
-    return r;
-  };
   // "הסר מספרי פסוק": one continuous justified block instead of a row per verse,
   // Samaritan script only. The verse texts are joined BEFORE addWordDots so the
   // word-separator dots fall between verses by the very same rules they follow
@@ -3100,97 +3125,100 @@ async function buildPrintPage(){
   // alignable verse-for-verse, so the numbers are kept regardless of the flag.
   const splitMode = !!(S_print.trans && S_print.trChoice);
   const flow = useSam && S_print.noNums && !splitMode;
-  const flowBlock = (cls, texts, sam) => {
-    const joined = texts.map(t => (t||'').trim()).filter(Boolean).join(' ');
-    const d = el('div', cls + ' pr-flow');
-    d.innerHTML = sam ? samMarkup(addWordDots(joined)) : esc(joined);
-    return d;
-  };
 
   if(splitMode){
     const main = el('div','pr-main pr-split');
     const fld = PRINT_TR_FIELD[S_print.trChoice];
     const origCol = el('div','pr-col pr-orig');
-    origCol.appendChild(el('div','pr-box-title','המקור'));
+    origCol.appendChild(el('div','pr-col-title','המקור'));
     const trCol = el('div','pr-col pr-tr');
-    trCol.appendChild(el('div','pr-box-title', PRINT_TR_LABEL[S_print.trChoice]));
-    verses.forEach(v => origCol.appendChild(vrow(v.number, renderVerseText(v.text))));
-    verses.forEach(v => trCol.appendChild(vrow(v.number, esc(v[fld]||''))));
+    if(S_print.trChoice === 'english') trCol.dir = 'ltr';
+    trCol.appendChild(el('div','pr-col-title', PRINT_TR_LABEL[S_print.trChoice]));
+    verses.forEach(v => origCol.appendChild(prVrow(v.number, prVerseText(v.text))));
+    verses.forEach(v => trCol.appendChild(prVrow(v.number, esc(v[fld]||''))));
     main.appendChild(origCol); main.appendChild(trCol);
     page.appendChild(main);
   } else if(flow){
-    page.appendChild(flowBlock('pr-main', verses.map(v=>v.text), true));
+    const joined = verses.map(v => (v.text||'').trim()).filter(Boolean).join(' ');
+    const d = el('div','pr-main pr-flow');
+    d.innerHTML = samMarkup(addWordDots(joined));
+    page.appendChild(d);
   } else {
     const main = el('div','pr-main');
-    verses.forEach(v => main.appendChild(vrow(v.number, renderVerseText(v.text))));
+    verses.forEach(v => main.appendChild(prVrow(v.number, prVerseText(v.text))));
     page.appendChild(main);
   }
+  return page;
+}
 
-  // word dictionary appears first, per the requested order (dict, then commentary)
-  if(S_print.dict){
-    const box = el('div','pr-dict');
-    box.appendChild(el('div','pr-box-title','מילון מילים'));
-    try{
-      const m = await api('word_table?verse_ids='+verses.map(v=>v.id).join(','));
-      const tbl = el('table','wtbl','<thead><tr><th>מילה</th><th>ארמית</th><th>עברית</th><th>טל</th></tr></thead>');
-      const tbody = el('tbody');
-      verses.forEach(v => (m[v.id]||[]).forEach(row => {
-        const tr = el('tr','','');
-        tr.innerHTML = '<td>'+esc(row.word||'')+'</td><td>'+esc(row.aramaic||'')+'</td>'
-                     + '<td>'+esc(row.meaning||'')+'</td><td>'+esc(row.tal||'')+'</td>';
-        tbody.appendChild(tr);
-      }));
-      tbl.appendChild(tbody);
-      box.appendChild(tbl);
-    }catch(e){ box.appendChild(el('div','','שגיאה בטעינת מילון המילים')); }
-    page.appendChild(box);
-  }
-
-  if(S_print.interp){
-    const box = el('div','pr-interp');
-    box.appendChild(el('div','pr-box-title','פירוש הפסוק'));
-    // "הגופן השני" — the alternate SamComment (ben-nor23) font used on-screen for
-    // Samaritan-script commentary prose, independent of the main VERSE font choice.
-    const renderInterpText = txt => S_print.interpSam
-      ? samMarkupFree(addWordDots(stripNiqqud(txt)))
-      : esc(txt);
-    try{
-      const vids = verses.map(v=>v.id).join(',');
-      const m = await api('interpretations?verse_ids='+vids);
-      // the printed page carries what the screen carries, ספר האסאטיר included
-      const asa = await api('asatir_by_verse?verse_ids='+vids).catch(()=>({}));
-      const bhq = await api('bhuq_by_verse?verse_ids='+vids).catch(()=>({}));
-      let any = false;
-      verses.forEach(v => {
-        const txt = (m[v.id]||'').trim();
-        const items = asa[v.id] || [];
-        const bitems = bhq[v.id] || [];
-        if(!txt && !items.length && !bitems.length) return;
-        any = true;
-        if(txt) box.appendChild(vrow(v.number, renderInterpText(txt)));
-        // `first` carries the verse number onto whichever quoted source opens the
-        // row, so a verse with no commentary of its own is still numbered once
-        let first = !txt;
-        const quoted = (lead, text) => {
-          const r = el('div','pr-vrow pr-asatir');
-          if(first){ r.appendChild(el('span','pr-vnum', esc(String(v.number)))); first = false; }
-          r.appendChild(el('span','pr-asatir-lead', esc(lead)));
-          r.insertAdjacentHTML('beforeend', renderInterpText(text));
-          box.appendChild(r);
-        };
-        for(const it of items)
-          quoted(t('interp_asatir_lead')
-            + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '') + ': ', it.text);
-        for(const it of bitems)
-          quoted(t('interp_bhuq_lead')
-            + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ': ', it.text);
-      });
-      if(!any) box.appendChild(el('div','','אין פירוש זמין לפרק זה'));
-    }catch(e){ box.appendChild(el('div','','שגיאה בטעינת פירוש הפסוק')); }
-    page.appendChild(box);
-  }
-
+async function buildPrintPage(){
+  const verses = S.verses || [];
+  if(!verses.length) return;
+  const area = $('printArea'); area.innerHTML = '';
+  const page = printSkeleton();
   area.appendChild(page);
+  // the commentary belongs to the chapter above it and so follows it directly;
+  // the dictionary — a reference table rather than a reading — comes after both.
+  if(S_print.interp) await addPrintInterp(page, verses);
+  if(S_print.dict)   await addPrintDict(page, verses);
+}
+
+async function addPrintInterp(page, verses){
+  const sec = prSection('פירוש הפסוק');
+  try{
+    const vids = verses.map(v=>v.id).join(',');
+    const m = await api('interpretations?verse_ids='+vids);
+    // the printed page carries what the screen carries, ספר האסאטיר included
+    const asa = await api('asatir_by_verse?verse_ids='+vids).catch(()=>({}));
+    const bhq = await api('bhuq_by_verse?verse_ids='+vids).catch(()=>({}));
+    let any = false;
+    verses.forEach(v => {
+      const txt = (m[v.id]||'').trim();
+      const items = asa[v.id] || [];
+      const bitems = bhq[v.id] || [];
+      if(!txt && !items.length && !bitems.length) return;
+      any = true;
+      if(txt) sec.appendChild(prVrow(v.number, prProse(txt)));
+      // `first` carries the verse number onto whichever quoted source opens the
+      // row, so a verse with no commentary of its own is still numbered once
+      let first = !txt;
+      const quoted = (lead, text) => {
+        const r = prVrow(first ? v.number : null, '', 'pr-quoted');
+        first = false;
+        r.appendChild(el('span','pr-quoted-lead', esc(lead)));
+        r.insertAdjacentHTML('beforeend', prProse(text));
+        sec.appendChild(r);
+      };
+      for(const it of items)
+        quoted(t('interp_asatir_lead')
+          + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '') + ': ', it.text);
+      for(const it of bitems)
+        quoted(t('interp_bhuq_lead')
+          + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ': ', it.text);
+    });
+    if(!any) sec.appendChild(el('div','','אין פירוש זמין לפרק זה'));
+  }catch(e){ sec.appendChild(el('div','','שגיאה בטעינת פירוש הפסוק')); }
+  page.appendChild(sec);
+}
+
+async function addPrintDict(page, verses){
+  const sec = prSection('מילון מילים');
+  try{
+    const m = await api('word_table?verse_ids='+verses.map(v=>v.id).join(','));
+    const tbl = el('table','pr-wtbl','<thead><tr><th>מילה</th><th>ארמית</th><th>עברית</th><th>טל</th></tr></thead>');
+    const tbody = el('tbody');
+    verses.forEach(v => (m[v.id]||[]).forEach(row => {
+      const tr = el('tr','','');
+      // the word itself is the verse's own word, so it is set in the script the
+      // reader chose for the verses; the glosses stay in Hebrew, as they are
+      tr.innerHTML = '<td>'+prVerseText(row.word||'')+'</td><td>'+esc(row.aramaic||'')+'</td>'
+                   + '<td>'+esc(row.meaning||'')+'</td><td>'+esc(row.tal||'')+'</td>';
+      tbody.appendChild(tr);
+    }));
+    tbl.appendChild(tbody);
+    sec.appendChild(tbl);
+  }catch(e){ sec.appendChild(el('div','','שגיאה בטעינת מילון המילים')); }
+  page.appendChild(sec);
 }
 
 function goBack(){
@@ -4952,9 +4980,10 @@ const HELP = {
       '<b>שתף</b> — וואטסאפ, אימייל או פייסבוק.']],
     ['הדפסה ושמירה כ-PDF 🖨️', [
       'בשורת הניווט שמעל הטקסט יש <b>סמל מדפסת</b> — הוא מכין את הפרק להדפסה או לשמירה כקובץ PDF, עם כותרת הנושאת את שם הספר, הפרשה, מספר הפרק ומילות הפתיחה שלו.',
-      'בחלון ההדפסה בוחרים גופן (שומרוני או עברי) ומסמנים מה לצרף: <b>פירוש הפסוק</b> (ואף בכתב השומרוני הרהוט), <b>מילון מילים</b> ו<b>תרגום</b>. במצב תרגום מודפסות שתי עמודות זו לצד זו — המקור מימין והתרגום משמאל.',
+      'בחלון ההדפסה בוחרים גופן — <b>שומרוני</b> או <b>עברי</b> — והבחירה חלה על כל הדף, הפירוש בכלל זה. מסמנים מה לצרף: <b>פירוש הפסוק</b>, <b>מילון מילים</b> ו<b>תרגום</b>. במצב תרגום מודפסות שתי עמודות זו לצד זו — המקור מימין והתרגום משמאל.',
+      'הדף הוא הטקסט ופירושיו בלבד: הפירוש בא מיד מתחת לפרק שלו, המילון אחריו, וכל אחד מהם מופרד בקו ולא ממוסגר. מסגרת האפליקציה, שורת ההאזנה והכפתורים אינם מודפסים — לא מן התצוגה המקדימה, לא מכפתור ההדפסה ולא מהדפסה של הדפדפן עצמו (Ctrl+P).',
       '<b>הסר מספרי פסוק</b> — מדפיס את הפרק ברצף אחד, בלי קפיצת שורה לכל פסוק ועם יישור לשני הצדדים. האפשרות רלוונטית לגופן השומרוני; במצב תרגום המספור נשמר.',
-      '<b>תצוגה מקדימה</b> — מציגה את העמודים על המסך כפי שיודפסו, לפני ששולחים למדפסת.']],
+      '<b>תצוגה מקדימה</b> — מציגה את גיליון ה-A4 עצמו, בגודלו האמיתי ובגודל הכתב שיודפס בפועל, לפני ששולחים למדפסת.']],
     ['במחשב ובנייד', [
       'במסכי מחשב האפליקציה <b>פרושה על מלוא המסך</b>. הטקסט עצמו נשמר ברוחב קריא וממורכז, והמקום הנוסף מנוצל לרשתות הפרקים, להשוואות ולספרייה — כך שאין שורות ארוכות מדי לקריאה. בנייד ובטאבלט התצוגה נשארת כשהייתה.',
       'אם המערכת בעדכון והשרת אינו זמין לרגע, מוצג מסך <b>"אנו מעדכנים את המערכת"</b>, והאפליקציה חוזרת מעצמה כשהשרת שב.']],
@@ -4997,9 +5026,10 @@ const HELP = {
       '<b>Share</b> — WhatsApp, email or Facebook.']],
     ['Printing and saving as PDF 🖨️', [
       'The navigation row above the text carries a <b>printer icon</b>: it lays the chapter out for printing or for saving as a PDF, with a header naming the book, the portion, the chapter number and its opening words.',
-      'In the print dialog you choose a font (Samaritan or Hebrew) and tick what to include: the <b>verse commentary</b> (optionally in the fluent Samaritan script), the <b>word dictionary</b> and a <b>translation</b>. In translation mode the page prints as two columns side by side — the original on the right, the translation on the left.',
+      'In the print dialog you choose a font — <b>Samaritan</b> or <b>Hebrew</b> — and that choice governs the whole sheet, the commentary included. Then tick what to include: the <b>verse commentary</b>, the <b>word dictionary</b> and a <b>translation</b>. In translation mode the page prints as two columns side by side — the original on the right, the translation on the left.',
+      'The sheet carries the text and its commentaries, nothing else: the commentary comes directly beneath the chapter it belongs to, the dictionary after it, each set off by a rule rather than boxed. The app frame, the reading bar and the buttons are never printed — not from the preview, not from the print button, and not from the browser\'s own Ctrl+P.',
       '<b>Drop verse numbers</b> prints the chapter as continuous text, without a line break per verse and justified on both sides. It applies to the Samaritan font; in translation mode the numbering is kept.',
-      '<b>Preview</b> shows the pages on screen exactly as they will print, before anything is sent to the printer.']],
+      '<b>Preview</b> shows the A4 sheet itself, at its true size and at the type size that will actually be printed, before anything is sent to the printer.']],
     ['On desktop and on mobile', [
       'On desktop screens the app <b>fills the whole screen</b>. The text itself stays at a readable width and centred, while the extra room goes to the chapter grids, the comparison views and the library — so lines never stretch too long to read. On phones and tablets the layout is unchanged.',
       'If the system is being updated and the server is briefly unavailable, a <b>“We are updating the system”</b> screen appears, and the app returns by itself once the server is back.']],
@@ -5042,9 +5072,10 @@ const HELP = {
       '<b>مشاركة</b> — واتساب، بريد إلكتروني أو فيسبوك.']],
     ['الطباعة والحفظ كـ PDF 🖨️', [
       'في شريط التنقّل فوق النصّ <b>رمز طابعة</b> يهيئ الأصحاح للطباعة أو للحفظ كملفّ PDF، مع عنوان يحمل اسم السفر والفصل ورقم الأصحاح وكلماته الافتتاحية.',
-      'في نافذة الطباعة تختار الخطّ (السامري أو العبري) وتحدّد ما ترفقه: <b>تفسير الآية</b> (وربّما بالخطّ السامري المتصل)، و<b>معجم الكلمات</b>، و<b>ترجمة</b>. وفي وضع الترجمة تُطبع عمودان متجاوران — الأصل يميناً والترجمة يساراً.',
+      'في نافذة الطباعة تختار الخطّ — <b>السامري</b> أو <b>العبري</b> — ويسري الاختيار على الورقة كلّها، والتفسير منها. ثمّ تحدّد ما ترفقه: <b>تفسير الآية</b>، و<b>معجم الكلمات</b>، و<b>ترجمة</b>. وفي وضع الترجمة تُطبع عمودان متجاوران — الأصل يميناً والترجمة يساراً.',
+      'الورقة نصٌّ وتفاسيره لا غير: التفسير يأتي تحت أصحاحه مباشرة، والمعجم بعده، ويفصل بينهما خطّ لا إطار. أمّا هيكل التطبيق وشريط الاستماع والأزرار فلا تُطبع — لا من المعاينة، ولا من زرّ الطباعة، ولا من طباعة المتصفّح نفسه (Ctrl+P).',
       '<b>إزالة أرقام الآيات</b> تطبع الأصحاح نصّاً متصلاً دون كسر سطر عند كلّ آية ومضبوطاً من الجهتين؛ وهي تخصّ الخطّ السامري، وفي وضع الترجمة تبقى الأرقام.',
-      '<b>المعاينة</b> تعرض الصفحات على الشاشة كما ستُطبع تماماً، قبل إرسالها إلى الطابعة.']],
+      '<b>المعاينة</b> تعرض ورقة A4 نفسها بحجمها الحقيقي وبحجم الخطّ الذي سيُطبع فعلاً، قبل إرسالها إلى الطابعة.']],
     ['على الحاسوب وعلى الهاتف', [
       'على شاشات الحاسوب <b>يملأ التطبيق الشاشة كلّها</b>. ويبقى النصّ نفسه بعرض مريح للقراءة وفي الوسط، بينما تذهب المساحة الزائدة إلى شبكات الأصحاحات والمقارنات والمكتبة — فلا تطول السطور أكثر ممّا يُقرأ. أمّا على الهواتف والأجهزة اللوحية فالعرض كما كان.',
       'وإذا كان النظام قيد التحديث والخادم غير متاح للحظات، تظهر شاشة <b>«نحن نحدّث النظام»</b> ويعود التطبيق تلقائياً عند عودة الخادم.']],

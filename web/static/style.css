@@ -872,48 +872,71 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 /* #printArea is normally invisible on screen; it only becomes the whole page
    either while previewing (body.print-preview, screen only — see below) or
    while actually printing (body.printing, via @media print further down).
-   Built fresh by buildPrintPage() each time. */
+   Built fresh by buildPrintPage() each time.
+
+   Everything from here to the preview block is SHARED by both destinations and
+   sized in pt/mm, never in px or in anything relative to the screen. That is the
+   whole point: the preview draws the same A4 sheet the printer produces, at the
+   same physical size, so the two cannot drift apart — and a chapter comes out at
+   one fixed text size whatever device it was sent from. */
+:root{
+  --pr-text:12.5pt;      /* the verse text — fixed, never scaled to the content */
+  --pr-interp:10pt;      /* פירוש הפסוק and the sources quoted under it */
+  --pr-dict:9pt;         /* the word table */
+  --pr-sheet:210mm;      /* A4 */
+}
 #printArea{ display:none; }
-.pr-page{ font-family:'Hebrew', serif; direction:rtl; }
-.pr-header{ text-align:center; border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:14px; }
-.pr-book{ font-size:22px; font-weight:900; }
-.pr-portion{ font-size:16px; font-weight:700; margin-top:2px; }
-.pr-chapter{ font-size:14px; margin-top:2px; color:#333; }
-.pr-main{ font-size:17px; line-height:1.9; text-align:justify; text-justify:inter-word; }
+.pr-page{ font-family:'Hebrew', serif; direction:rtl; color:#000; background:#fff; }
+.pr-header{ text-align:center; border-bottom:1.5pt solid #000; padding-bottom:5pt; margin-bottom:10pt; }
+.pr-book{ font-size:17pt; font-weight:900; }
+.pr-portion{ font-size:12pt; font-weight:700; margin-top:1pt; }
+.pr-chapter{ font-size:10pt; margin-top:1pt; color:#333; }
+.pr-main{ font-size:var(--pr-text); line-height:1.85; text-align:justify; text-justify:inter-word; }
 .pr-main .samchar{ font-family:'Samaritan'; }
 /* continuous "scroll" flow (הסר מספרי פסוק): one justified block with no per-verse
    line breaks. Deliberately NOT page-break-inside:avoid — a whole chapter as a
    single block must be free to run across as many pages as it needs. */
 .pr-flow{ text-align:justify; text-justify:inter-word; }
 .pr-col .pr-flow{ font-size:inherit; }
-.pr-vrow{ margin-bottom:4px; page-break-inside:avoid; }
-.pr-vnum{ font-weight:700; color:#555; font-size:12px; vertical-align:super; margin-inline-end:5px; }
-.pr-split{ display:flex; gap:14px; }
-.pr-col{ flex:1; border:1px solid #000; border-radius:6px; padding:10px; min-width:0;
-         text-align:justify; text-justify:inter-word; }
-/* the boxes themselves must be free to flow across as many printed pages as the
-   content needs (a long פירוש must never be cut short) — only each individual
-   row inside is kept from splitting mid-line (via .pr-vrow / tr rules above/below) */
-.pr-dict, .pr-interp{ border:1px solid #000; border-radius:6px; padding:10px; margin-top:14px;
-                       page-break-inside:auto; }
-.pr-box-title{ font-weight:700; margin-bottom:6px; border-bottom:1px solid #ccc; padding-bottom:4px; }
-.pr-dict table.wtbl{ font-size:13px; }
-.pr-dict table.wtbl tr{ page-break-inside:avoid; }
-.pr-interp .pr-vrow{ line-height:1.6; text-align:justify; text-justify:inter-word; }
-/* ספר האסאטיר beneath a verse's commentary — quoted in its own name, so it is
+.pr-vrow{ margin-bottom:2pt; page-break-inside:avoid; }
+.pr-vnum{ font-weight:700; color:#555; font-size:8pt; vertical-align:super; margin-inline-end:3pt; }
+/* facing columns (original ‖ translation): a single rule between them rather than
+   a box round each — same principle as the sections below. */
+.pr-split{ display:flex; gap:8mm; }
+.pr-col{ flex:1; min-width:0; text-align:justify; text-justify:inter-word; }
+.pr-orig{ border-inline-end:.75pt solid #000; padding-inline-end:8mm; }
+.pr-col-title{ font-weight:700; font-size:10pt; margin-bottom:4pt; text-align:center; }
+/* פירוש הפסוק / מילון מילים: sections of the sheet, not boxes on it. A frame drawn
+   round a commentary that runs over three pages breaks badly at every page edge,
+   so each section is set off by a rule above it and is otherwise free to flow. */
+.pr-sec{ margin-top:8pt; padding-top:6pt; border-top:.75pt solid #000; page-break-inside:auto; }
+.pr-sec-title{ font-weight:700; font-size:11pt; margin-bottom:5pt; }
+.pr-sec .pr-vrow{ font-size:var(--pr-interp); line-height:1.55;
+                  text-align:justify; text-justify:inter-word; }
+/* a source quoted under a verse's commentary (ספר האסאטיר, פירוש אם בחקותי) —
    indented and led by its reference rather than run on with the prose above */
-.pr-interp .pr-asatir{ margin-inline-start:14px; margin-bottom:6px; }
-.pr-asatir-lead{ font-weight:700; }
-.pr-interp .samchar2{ font-family:'SamComment'; }
+.pr-quoted{ margin-inline-start:5mm; margin-bottom:4pt; }
+.pr-quoted-lead{ font-weight:700; }
+.pr-sec .samchar2{ font-family:'SamComment'; }
+.pr-wtbl{ width:100%; border-collapse:collapse; font-size:var(--pr-dict); }
+.pr-wtbl th{ text-align:right; font-weight:700; border-bottom:.75pt solid #000; padding:2pt 4pt; }
+/* an explicit line-height, because the Samaritan face's own ascent/descent are
+   far taller than the type size and would otherwise leave each row half empty */
+.pr-wtbl td{ text-align:right; border-bottom:.5pt solid #999; padding:2pt 4pt;
+             vertical-align:top; line-height:1.35; }
+.pr-wtbl tr{ page-break-inside:avoid; }
+.pr-wtbl .samchar{ font-family:'Samaritan'; }
 
-/* on-screen preview: same #printArea content shown as a scrollable page mock-up,
-   with a fixed action bar (הדפס / סגור) — no window.print() involved yet.
-   Scoped to screen only so it can never leak into the actual print output. */
+/* on-screen preview: the very same .pr-page, drawn as the actual sheet it will be
+   printed on — 210mm wide with the printer's own margins — over a grey backdrop,
+   with a fixed action bar (הדפס / סגור). --pr-zoom (set by fitPreviewSheet) shrinks
+   the sheet to fit a narrow screen; `zoom`, not `transform`, so the scroll area
+   shrinks with it. Screen-scoped, so none of it can reach the paper. */
 @media screen{
   body.print-preview #printArea{ display:block; position:fixed; inset:0; z-index:9990;
-    background:#8a8a8a; overflow-y:auto; padding:56px 16px 16px; }
-  body.print-preview .pr-page{ background:#fff; max-width:780px; margin:0 auto 24px; padding:28px;
-    box-shadow:0 3px 16px rgba(0,0,0,.35); border-radius:2px; }
+    background:#8a8a8a; overflow:auto; padding:56px 8px 24px; }
+  body.print-preview .pr-page{ width:var(--pr-sheet); padding:15mm; margin:0 auto 16px;
+    zoom:var(--pr-zoom, 1); box-shadow:0 3px 16px rgba(0,0,0,.35); }
 }
 #printPreviewBar{ position:fixed; top:0; inset-inline-start:0; inset-inline-end:0; z-index:9995;
   display:flex; gap:10px; justify-content:center; padding:10px; background:var(--navy); }
@@ -924,13 +947,22 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 #ppCloseBtn{ background:#7a3030; }
 
 @media print{
+  @page{ size:A4; margin:15mm; }
+  /* The app shell holds itself to one viewport — html,body{height:100%} plus
+     body{overflow:hidden} — which is right for a phone app and fatal on paper:
+     the printer clips everything past the first page, so a chapter came out
+     truncated and nothing matched the preview. Undo it for print only. */
+  html, body{ height:auto !important; overflow:visible !important; background:#fff !important; }
   /* body.printing is the ONLY thing that governs print output — hides every
      top-level sibling (app UI, every modal, the preview action bar) so nothing
      but #printArea's own content ever reaches paper, regardless of whether
-     print was triggered from the options modal or from within the preview. */
+     print was triggered from the options modal, from within the preview, or
+     from the browser's own Ctrl+P (see the beforeprint handler in app.js). */
   body.printing > *:not(#printArea){ display:none !important; }
   body.printing #printArea{ display:block !important; }
-  .pr-header{ page-break-after:avoid; }
+  /* the sheet is the paper itself here: @page supplies the margins */
+  .pr-page{ width:auto; padding:0; }
+  .pr-header, .pr-sec-title, .pr-col-title{ page-break-after:avoid; }
 }
 #dictAppBody .dict-entry{ border-top:1px solid rgba(26,56,115,.15); padding-top:6px; margin-top:8px; }
 #dictAppBody .tal-head{ color:var(--navy); font-weight:700; font-size:19px; }
