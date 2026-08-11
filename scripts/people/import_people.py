@@ -158,19 +158,36 @@ def resolve_period(p):
 
 
 # Hebrew names. Samaritan men carry an Arabic name and a Hebrew one, and the
-# dataset itself pairs several ("מרחיב (מופרג')", "אב גלוגה (אבו חמד)"). Only
-# pairs the data itself documents, or equivalences that are not in doubt, are
-# applied here — the Hebrew form leads and the Arabic follows in parentheses.
-# Anything needing the project owner's ruling is left alone rather than guessed.
+# dataset itself pairs several ("מרחיב (מופרג')", "אב גלוגה (אבו חמד)").
+#
+# The project owner's ruling (2026-08-11): translate PERSONAL names only, and
+# leave the kunya ("אבו X") and the nisba (אל-עסכרי, אלבצרי, א-סורי, אד-דוויק)
+# exactly as they stand — those are the forms scholarship knows these figures by.
+# European scholars keep their encyclopedic order ("פוסטל, גיום"), so the A-Z
+# list still sorts by surname. Where a Hebrew and an Arabic form both exist, the
+# Hebrew leads and the Arabic follows in parentheses.
+#
+# Equivalences used: Ishaq = יצחק and Ibrahim = אברהם (the owner's own examples);
+# Salama = שלמה (his ruling on 'Abd Allah b. Salama); Ghazal = טביה, Murjan =
+# אב סכוה, Hidr = פנחס — each of the three already paired inside these entries'
+# own names in the source data. Names still without a settled Hebrew form
+# (ברכאת · אסעד · נאגי · מנג'א · גריב · סעיד) are left untouched, not guessed at.
 NAME_HE = {
     # Ghazal = Ṭabya (gazelle) — the pairing is spelled out in this entry's own name
     'ghazal_tabya_ad_duweik':   'טביה (ע׳זאל) אד-דוויק',
-    # Murjan = Ab Sikkuwwa — likewise; spelling unified with ab_sakwa_murjan below
+    # the same equivalence applied to another man's father; the kunya stays
+    'abu_lhasan_b_ghazal':      'אבו אלחסן בן טביה (ע׳זאל) בן אבי סעיד',
+    # Murjan = Ab Sikkuwwa — likewise; spelling unified with ab_sakwa below
     'murgan_ab_sikkuwwa':       'אב סכוה (מרג׳אן) בן צדקה',
     # Hidr = Pinhas — the pairing is in the entry's own name, Hebrew now leads
     'nagi_b_hidr':              'נאגי בן פנחס (חדר) בן יצחק',
-    # the reader's own examples: Ishaq = Isaac, Ibrahim = Abraham
+    # Ishaq = Isaac, Ibrahim = Abraham; al-Musannif ("the compiler") is a title, kept
     'abu_ishaq_ibrahim_al_musannif': 'אברהם אלמצנף (אבו אסחאק אבראהים)',
+    # 'Abd Allah = עבד-אלה and Salama = שלמה, both by the owner's ruling. His
+    # hymns are signed with the acrostic "עבד יהוה" / "עבד אלוה" (see the entry).
+    'abdallah_b_salama':        'עבד-אלה (עבדאללה) בן שלמה (בן סלאמה)',
+    # the same Salama, in a name whose Hebrew part was already Hebrew throughout
+    'ab_hisda_abu_lhasan_b_jacob': 'אב חסדא (אבו אלחסן) בן יעקב בן אהרן בן שלמה',
 }
 
 _BOOK = 'A Companion to Samaritan Studies'
