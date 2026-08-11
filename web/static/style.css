@@ -1105,7 +1105,16 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   min-width:30px; padding:5px 7px; font:inherit; font-size:14px; font-weight:700; cursor:pointer; line-height:1; }
 .rd-zbtn:hover{ background:#eef2fb; }
 .dict-app-head{ display:flex; align-items:center; gap:8px; }
-.dict-app-head .modal-title{ flex:1 1 auto; text-align:right; }
+.dict-app-head .modal-title{ flex:1 1 auto; min-width:0; text-align:right; }
+/* The title is bound with non-breaking spaces so it can only ever break after
+   "מילון". Beside the buttons that unbreakable half needs ~116px, which a phone
+   header cannot spare — so below 800px the row wraps and the title takes a line
+   of its own, where it fits whole. The break-after-מילון fallback still applies
+   on anything narrower than that. */
+@media (max-width:800px){
+  .dict-app-head{ flex-wrap:wrap; }
+  .dict-app-head .modal-title{ flex:1 1 100%; order:3; text-align:center; }
+}
 .tm-ref{ color:var(--accent); font-weight:600; cursor:pointer; text-decoration:underline dotted; }
 .tm-ref:hover{ color:var(--active); }
 /* search results */
