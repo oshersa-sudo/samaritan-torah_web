@@ -2705,16 +2705,25 @@ def _tal_roots(word, conn):
             rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM tal_forms WHERE form_norm=?", (cn,))]
             if rs:
                 return dedup(rs)
-        for c in cands:                         # 4) word→root gloss (every Torah word)
+        for cn in cnorms:                       # 4) inflected forms of the piyyutim
+            try:                                #    and Memar Marqe (dict_infl)
+                rs = [r['root'] for r in conn.execute(
+                    "SELECT root FROM dict_infl WHERE form_norm=? "
+                    "AND TRIM(COALESCE(root,''))<>'' ORDER BY rank", (cn,))]
+            except sqlite3.OperationalError:    # table absent in older copies
+                rs = []
+            if rs:
+                return dedup(rs)
+        for c in cands:                         # 5) word→root gloss (every Torah word)
             rs = [r['root'] for r in conn.execute(
                 "SELECT root FROM tal_word_gloss WHERE word=? AND TRIM(COALESCE(root,''))<>''", (c,))]
             if rs:
                 return dedup(rs)
-        for cn in cnorms:                       # 5) Torah-text root index
+        for cn in cnorms:                       # 6) Torah-text root index
             rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM root_index WHERE form_norm=?", (cn,))]
             if rs:
                 return dedup(rs)
-        for c in cands:                         # 6) old forms index
+        for c in cands:                         # 7) old forms index
             rs = [r['root'] for r in conn.execute("SELECT DISTINCT root FROM dict_root_index WHERE word=?", (c,))]
             if rs:
                 return dedup(rs)
@@ -2722,6 +2731,31 @@ def _tal_roots(word, conn):
 
     full, prefixed = _tal_variants(base)
     return resolve(full) or (resolve(prefixed) if prefixed else [])
+
+
+def dict_phrases_for(word, limit=12):
+    """The Aramaic set phrases (מטבעות לשון) that a word takes part in, with the
+    Hebrew Memar Marqe's own translation gives each one. Formulas and idioms only —
+    free word sequences were never stored. Best-attested first."""
+    wn = _norm_fin(word)
+    if not wn or len(wn) < 2:
+        return []
+    conn = get_connection()
+    try:
+        rows = conn.execute(
+            "SELECT phrase, hebrew, parts_gloss, cls, count, corpus, ref, status "
+            "FROM dict_phrase WHERE phrase_norm = ? OR phrase_norm LIKE ? "
+            "   OR phrase_norm LIKE ? OR phrase_norm LIKE ? "
+            "ORDER BY count DESC LIMIT ?",
+            (wn, wn + ' %', '% ' + wn, '% ' + wn + ' %', limit)).fetchall()
+    except sqlite3.OperationalError:        # table absent in older copies
+        conn.close()
+        return []
+    conn.close()
+    return [{'phrase': r['phrase'], 'hebrew': r['hebrew'] or '',
+             'parts': r['parts_gloss'] or '', 'cls': r['cls'], 'count': r['count'],
+             'corpus': r['corpus'], 'ref': r['ref'], 'status': r['status']}
+            for r in rows]
 
 
 def tal_full_lookup(word, torah_limit=16):
@@ -2759,7 +2793,26 @@ def tal_full_lookup(word, torah_limit=16):
             "SELECT DISTINCT form FROM tal_forms WHERE root_norm=? LIMIT 24", (rn,))]
         out['roots'].append({'root': root, 'senses': senses, 'torah': torah,
                              'torah_count': len(locs), 'forms': forms})
+
+    # If the word reached us as an inflected form of the piyyutim / Memar Marqe,
+    # say how it was resolved — which affixes were stripped, on what evidence, and
+    # what Memar Marqe's own Hebrew translation calls it. Absent for plain lookups.
+    try:
+        r = conn.execute(
+            "SELECT root, derivation, evidence, gloss, gloss_tal, memar_he, memar_conf, "
+            "       freq_piyut, freq_memar, status FROM dict_infl "
+            "WHERE form_norm=? ORDER BY rank LIMIT 1", (_norm_fin(word),)).fetchone()
+        if r and (r['derivation'] or '').strip():
+            out['inflection'] = {
+                'root': r['root'], 'derivation': r['derivation'], 'evidence': r['evidence'],
+                'gloss': r['gloss'], 'gloss_tal': r['gloss_tal'],
+                'memar_he': r['memar_he'], 'memar_conf': r['memar_conf'],
+                'freq_piyut': r['freq_piyut'], 'freq_memar': r['freq_memar'],
+                'status': r['status']}
+    except sqlite3.OperationalError:
+        pass
     conn.close()
+    out['phrases'] = dict_phrases_for(word)
     return out
 
 
@@ -3024,6 +3077,27 @@ def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
     split into separate meanings, never mixed."""
     wn = _norm_fin(word)
     conn = get_connection()
+
+    # A set phrase is an entry in its own right: its meaning belongs to the phrase,
+    # not to any one root, so the root-driven path below has nothing to say about it.
+    if ' ' in wn.strip():
+        try:
+            rows = conn.execute(
+                "SELECT phrase, hebrew, parts_gloss, cls, count, corpus, ref, support, status "
+                "FROM dict_phrase WHERE phrase_norm=? ORDER BY count DESC", (wn,)).fetchall()
+        except sqlite3.OperationalError:
+            rows = []
+        if rows:
+            words = [w for w in re.findall(r'[א-ת]{2,}', rows[0]['phrase'])]
+            out = {'word': word, 'is_phrase': True, 'words': words, 'meanings': [],
+                   'senses': [{'phrase': r['phrase'], 'hebrew': r['hebrew'] or '',
+                               'parts': r['parts_gloss'] or '', 'cls': r['cls'],
+                               'count': r['count'], 'corpus': r['corpus'],
+                               'ref': r['ref'], 'support': r['support'],
+                               'status': r['status']} for r in rows]}
+            conn.close()
+            return out
+
     q = "SELECT DISTINCT root, root_norm FROM dict_word_index WHERE word_norm=?"
     args = [wn]
     if root:

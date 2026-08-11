@@ -71,6 +71,24 @@ def main():
     # (d) every Torah word with a Tal gloss
     for row in c.execute("SELECT word, root, gloss FROM tal_word_gloss"):
         add(row['word'], row['root'], row['gloss'] or '')
+    # (e) inflected forms harvested from the piyyutim and Memar Marqe. These are
+    # the forms a reader actually types and the older sources never listed; see
+    # scripts/dict_expand/. Skipped silently if that table has not been built.
+    try:
+        for row in c.execute("SELECT form, root, gloss FROM dict_infl ORDER BY rank"):
+            add(row['form'], row['root'], row['gloss'] or '')
+    except sqlite3.OperationalError:
+        pass
+    # (f) set phrases that have a Hebrew rendering confirmed against Memar Marqe's
+    # own translation. They are entries in their own right, so they bypass
+    # clean_words() — splitting them into tokens is exactly what must not happen.
+    phrase_rows = []
+    try:
+        phrase_rows = c.execute(
+            "SELECT phrase, hebrew FROM dict_phrase "
+            "WHERE TRIM(COALESCE(hebrew,''))<>'' ORDER BY count DESC").fetchall()
+    except sqlite3.OperationalError:
+        pass
 
     # ── 2. presence maps ──────────────────────────────────────────────────────
     # Torah: a root is "present" if it has occurrences in root_index.
@@ -113,6 +131,15 @@ def main():
             it = 1 if (rn and rn in torah_roots) else 0
             im = 1 if (rn and rn in memar_roots) else 0
             rows.append((w, wn, r, rn, g, it, im))
+    # phrases carry no root — their meaning is the phrase's own, not a root's
+    seen_ph = set()
+    for row in phrase_rows:
+        ph = bare(row['phrase'])
+        pn = norm(ph)
+        if pn in seen_ph:
+            continue
+        seen_ph.add(pn)
+        rows.append((ph, pn, '', '', (row['hebrew'] or '').strip(), 0, 1))
     c.executemany("INSERT INTO dict_word_index VALUES (?,?,?,?,?,?,?)", rows)
     c.execute("CREATE INDEX ix_dwi_norm ON dict_word_index(word_norm)")
     c.execute("CREATE INDEX ix_dwi_root ON dict_word_index(root_norm)")

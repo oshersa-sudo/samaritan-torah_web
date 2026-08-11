@@ -43,3 +43,9 @@ data/onkelos/heb_cache/
 # local visit-analytics DB (admin dashboard) — resets on redeploy without a
 # persistent disk; never meant to be committed
 data/analytics.db
+
+# dict_expand: bulky intermediates, regenerable by scripts/dict_expand/*.py
+data/dict_expand/proposals.tsv
+data/dict_expand/phrase_candidates.tsv
+data/dict_expand/*.pkl
+data/dict_expand/dictionary_backup_pre_expand.sql
