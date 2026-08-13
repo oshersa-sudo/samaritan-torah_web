@@ -280,6 +280,17 @@ const I18N = {
     adm_disk_cleaned:'גיבויים נמחקו ומקום שוחרר.',
     edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
     edit_which_ver:'לאיזה נוסח לבצע את השינוי?',
+    vmerge_prev:'אחד פסוק עם הקודם', vmerge_next:'אחד פסוק עם הבא',
+    vmerge_pick_prev:'בחר פסוק לאיחוד עם הפסוק שמעליו', vmerge_pick_next:'בחר פסוק לאיחוד עם הפסוק שמתחתיו',
+    vmerge_q:'לאחד את פסוק {a} אל תוך פסוק {b}? השניים יהיו לפסוק אחד, ומספרו {b}.',
+    vmerge_ok:'פסוק {a} אוחד אל תוך פסוק {b}.', vmerge_none:'אין פסוק שכן לאיחוד בכיוון זה.',
+    canon_set:'קבע קאנון לפרשה', canon_set_book:'קבע קאנון לפרשה ולספר',
+    canon_set_q:'להטביע {n} פרקים כקאנון של פרשת {p}? החתימה תיחתם בשמך ובתאריך, וכל שינוי במניין יבקש מכאן ואילך את מילת האישור.',
+    canon_set_q_book:'זו הפרשה האחרונה בספר: הלחיצה תטביע את מניין הפרקים של כל פרשות הספר ואת סך הפרקים בספר, כפי שהם עכשיו ({n} בפרשת {p}). להמשיך?',
+    canon_set_ok:'נחתם:', canon_book_total:'סה"כ בספר:',
+    canon_drift:'שים לב: כרגע {a} פרקים בפועל מול {b} החתומים.',
+    admin_badge:'מצב מנהל', admin_exit_q:'האם ברצונך לצאת ממצב מנהל?', admin_off:'יצאת ממצב מנהל.',
+    apk_downloads:'קובץ ההתקנה הורד', apk_last_dl:'אחרון:',
     merge_next:'אחד עם הבא', split_chapter:'פצל פרק', split_verse:'פצל פסוק',
     split_pick:'בחר את הפסוק שאחריו יחל הפרק החדש (לחץ על מספר פסוק)', split_cancel:'ביטול פיצול',
     vsplit_pick:'בחר פסוק לפיצול (לחץ על מספר פסוק)',
@@ -508,6 +519,17 @@ const I18N = {
     adm_disk_cleaned:'Backups deleted and space freed.',
     edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
     edit_which_ver:'Which version do you want to edit?',
+    vmerge_prev:'Merge verse with previous', vmerge_next:'Merge verse with next',
+    vmerge_pick_prev:'Pick a verse to merge into the one above it', vmerge_pick_next:'Pick a verse to merge with the one below it',
+    vmerge_q:'Merge verse {a} into verse {b}? The two become one, numbered {b}.',
+    vmerge_ok:'Verse {a} was merged into verse {b}.', vmerge_none:'There is no neighbouring verse in that direction.',
+    canon_set:'Engrave the canon of this portion', canon_set_book:'Engrave the canon: portion and book',
+    canon_set_q:'Engrave {n} chapters as the canon of portion {p}? It is signed and dated in your name, and from then on any change to the count asks for the confirmation phrase.',
+    canon_set_q_book:'This is the last portion of the book: this engraves the chapter count of every portion of the book and its own total, as they now stand ({n} in {p}). Continue?',
+    canon_set_ok:'Engraved:', canon_book_total:'Book total:',
+    canon_drift:'Note: {a} chapters at present against {b} engraved.',
+    admin_badge:'Admin mode', admin_exit_q:'Leave admin mode?', admin_off:'You have left admin mode.',
+    apk_downloads:'Install file downloaded', apk_last_dl:'last:',
     merge_next:'Merge with next', split_chapter:'Split chapter', split_verse:'Split verse',
     split_pick:'Choose the verse after which the new chapter starts (tap a verse number)', split_cancel:'Cancel split',
     vsplit_pick:'Choose a verse to split (tap a verse number)',
@@ -736,6 +758,17 @@ const I18N = {
     adm_disk_cleaned:'تم حذف النسخ الاحتياطية وتحرير المساحة.',
     edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
     edit_which_ver:'ما هو النصّ الذي تريد تعديله؟',
+    vmerge_prev:'دمج الآية مع السابقة', vmerge_next:'دمج الآية مع التالية',
+    vmerge_pick_prev:'اختر آية لدمجها مع التي فوقها', vmerge_pick_next:'اختر آية لدمجها مع التي تحتها',
+    vmerge_q:'دمج الآية {a} في الآية {b}؟ تصيران آية واحدة رقمها {b}.',
+    vmerge_ok:'دُمجت الآية {a} في الآية {b}.', vmerge_none:'لا توجد آية مجاورة في هذا الاتجاه.',
+    canon_set:'تثبيت قانون الفصل', canon_set_book:'تثبيت القانون: الفصل والسفر',
+    canon_set_q:'تثبيت {n} أصحاحاً قانوناً لفصل {p}؟ يُوقَّع باسمك وبتاريخه، ومن ثمّ يطلب كلّ تغيير في العدد كلمة التأكيد.',
+    canon_set_q_book:'هذا آخر فصول السفر: يثبّت هذا عدد أصحاح كلّ فصل من فصوله ومجموع السفر كما هي الآن ({n} في {p}). أنتابع؟',
+    canon_set_ok:'ثُبِّت:', canon_book_total:'مجموع السفر:',
+    canon_drift:'انتبه: {a} أصحاحاً فعلياً مقابل {b} مثبَّتاً.',
+    admin_badge:'وضع الإدارة', admin_exit_q:'هل تريد الخروج من وضع الإدارة؟', admin_off:'خرجت من وضع الإدارة.',
+    apk_downloads:'نُزّل ملفّ التثبيت', apk_last_dl:'الأخير:',
     merge_next:'دمج مع التالي', split_chapter:'تقسيم الأصحاح', split_verse:'تقسيم الآية',
     split_pick:'اختر الآية التي يبدأ بعدها الأصحاح الجديد (اضغط رقم آية)', split_cancel:'إلغاء التقسيم',
     vsplit_pick:'اختر آية للتقسيم (اضغط رقم آية)',
@@ -1176,6 +1209,12 @@ function paintVerses(){
       const cancel=el('button','admin-btn cancel', t('split_cancel'));
       cancel.onclick=()=>{ S.renumMode=false; paintVerses(); };
       bar.appendChild(cancel);
+    } else if(S.vmergeMode){
+      bar.appendChild(el('span','admin-hint',
+        S.vmergeMode==='prev' ? t('vmerge_pick_prev') : t('vmerge_pick_next')));
+      const cancel=el('button','admin-btn cancel', t('split_cancel'));
+      cancel.onclick=()=>{ S.vmergeMode=null; paintVerses(); };
+      bar.appendChild(cancel);
     } else {
       const mb=el('button','admin-btn', t('merge_next')); mb.onclick=mergeNext;
       bar.appendChild(mb);
@@ -1185,6 +1224,13 @@ function paintVerses(){
         bar.appendChild(vb);
         const rb=el('button','admin-btn', t('renum')); rb.onclick=()=>{ S.renumMode=true; paintVerses(); };
         bar.appendChild(rb);
+        // merge a verse into the one above it, or swallow the one below — either
+        // way the pair ends up under the EARLIER number
+        for(const dir of ['prev','next']){
+          const b=el('button','admin-btn', t(dir==='prev' ? 'vmerge_prev' : 'vmerge_next'));
+          b.onclick=()=>{ S.vmergeMode=dir; paintVerses(); };
+          bar.appendChild(b);
+        }
       }
       const sb=el('button','admin-btn', t('split_chapter')); sb.onclick=()=>{ S.splitMode=true; paintVerses(); };
       bar.appendChild(sb);
@@ -1232,9 +1278,31 @@ function paintVerses(){
     // documenting the permanent chapter count set by the project owner.
     if(S.chMode==='samaritan' && !S.english && S.verseFilter==null && S.canonNote){
       const cn=el('div','canon-note');
-      cn.appendChild(el('div','canon-note-count', 'סה"כ '+S.canonNote.count+' פרקים בחלוקה השומרונית'));
-      cn.appendChild(el('div','canon-note-text', S.canonNote.note));
-      c.appendChild(cn);
+      if(S.canonNote.count!=null){
+        cn.appendChild(el('div','canon-note-count', 'סה"כ '+S.canonNote.count+' פרקים בחלוקה השומרונית'));
+        cn.appendChild(el('div','canon-note-text', S.canonNote.note));
+      }
+      // the same one level down: at the end of a portion, its own signature —
+      // and, for an admin, the button that engraves it
+      const P = S.canonNote.portion;
+      if(P){
+        if(P.count!=null){
+          cn.appendChild(el('div','canon-note-count',
+            'פרשת '+P.name+' — '+P.count+' פרקים בחלוקה השומרונית'));
+          cn.appendChild(el('div','canon-note-text', P.note||''));
+        }
+        if(ADMIN.token){
+          const wholeBook = S.canonNote.count!=null;   // the book's last chapter as well
+          const b=el('button','admin-btn canon-set-btn',
+                     t(wholeBook ? 'canon_set_book' : 'canon_set') + ' (' + P.live + ')');
+          b.onclick=()=>setCanon(P.sam_ch_id, P.name, P.live, wholeBook);
+          cn.appendChild(b);
+          if(P.count!=null && P.count!==P.live)
+            cn.appendChild(el('div','canon-note-text canon-drift',
+              t('canon_drift').replace('{a}', P.live).replace('{b}', P.count)));
+        }
+      }
+      if(cn.children.length) c.appendChild(cn);
     }
   }
   scheduleDotTrim();   // drop justification dots that fall at a line edge (Samaritan font)
@@ -1251,6 +1319,7 @@ function addPlainRows(c, verses){
       if(ADMIN.token && S.splitMode)  return askSplit(v);
       if(ADMIN.token && S.vsplitMode) return openVsplit(v);
       if(ADMIN.token && S.renumMode)  return openRenumber(v);
+      if(ADMIN.token && S.vmergeMode) return askMergeVerse(v, S.vmergeMode);
       return filterVerse(v.id);
     };
     const vh = verseHTML(v);
@@ -5164,7 +5233,10 @@ const INSTALL_UI = {
 // offering a download that 404s.
 let APK_INFO = null;
 async function loadApkInfo(){
-  try{ APK_INFO = await (await fetch('/api/apk_info')).json(); }
+  // with an admin token the answer also carries the download tally, which is
+  // why this is re-fetched on entering admin mode rather than cached for good
+  const q = ADMIN.token ? '?token=' + encodeURIComponent(ADMIN.token) : '';
+  try{ APK_INFO = await (await fetch('/api/apk_info' + q)).json(); }
   catch(e){ APK_INFO = {available:false}; }
   return APK_INFO;
 }
@@ -5187,10 +5259,17 @@ function apkBlock(U){
   if(!APK_INFO || !APK_INFO.available) return '';
   const meta = [APK_INFO.version ? U.apk_ver+' '+APK_INFO.version : '',
                 APK_INFO.size_mb ? APK_INFO.size_mb+' MB' : ''].filter(Boolean).join(' · ');
+  // admin only: how many times the file has actually been downloaded, and when
+  const tally = (ADMIN.token && APK_INFO.downloads != null)
+    ? '<p class="pwa-tally">' + esc(t('apk_downloads')) + ' <b>' + APK_INFO.downloads + '</b>'
+      + (APK_INFO.last_download ? ' <span>· ' + esc(t('apk_last_dl')) + ' ' + esc(APK_INFO.last_download) + '</span>' : '')
+      + '</p>'
+    : '';
   return '<div class="pwa-or"><span>'+U.or+'</span></div>'+
          '<p class="pwa-opt-h">'+U.apk_h+'</p>'+
          '<p class="pwa-opt-sub">'+U.apk_sub+(meta?' <span class="pwa-opt-meta">'+meta+'</span>':'')+'</p>'+
          '<a class="pwa-btn" href="/download/samaritan-torah.apk" download>'+INSTALL_ICONS.down+' '+U.apk_btn+'</a>'+
+         tally +
          '<p class="pwa-hint">'+U.apk_note+'</p>';
 }
 function instBody(plat, L, U){
@@ -5249,7 +5328,8 @@ function doInstall(){
   renderInstallCard();
   // the APK option appears as soon as its details arrive, so opening the card
   // never waits on the network
-  if(!APK_INFO) loadApkInfo().then(renderInstallCard);
+  // as an admin, always re-ask: the tally moves, and it is only in the admin answer
+  if(!APK_INFO || ADMIN.token) loadApkInfo().then(renderInstallCard);
 }
 
 function showInfo(title, html){
@@ -5644,7 +5724,8 @@ function waSupported(){
             && PublicKeyCredential.parseRequestOptionsFromJSON);
 }
 function openAdminLogin(){
-  if(ADMIN.token){ ADMIN.token=null; $('adminMenuItem').textContent=t('m_admin'); paintVerses(); return; } // logout
+  if(ADMIN.token){ ADMIN.token=null; $('adminMenuItem').textContent=t('m_admin');
+                   adminBadge(false); paintVerses(); return; }   // logout
   $('admErr').textContent=''; $('admUser').value=''; $('admPass').value='';
   $('admWebauthnBtn').classList.toggle('hidden', !(ADMIN.webauthn && waSupported()));
   $('adminModal').classList.remove('hidden'); $('admUser').focus();
@@ -5657,9 +5738,30 @@ $('admLogin').onclick=async ()=>{
   if(r && r.ok){ adminLoggedIn(r.token); }
   else { $('admErr').textContent=t('adm_bad'); }
 };
+// A standing reminder that this session can rewrite the text — and the way out
+// of it. Yellow, beside the hamburger, so it is impossible to be in admin mode
+// without knowing it.
+function adminBadge(on){
+  const b = $('adminBadge');
+  if(!b) return;
+  b.classList.toggle('hidden', !on);
+  b.textContent = t('admin_badge');
+}
+$('adminBadge').onclick = async () => {
+  if(!ADMIN.token) return;
+  if(!await askConfirm(t('admin_badge'), t('admin_exit_q'), t('confirm_yes'), t('c_cancel'))) return;
+  ADMIN.token = null;
+  S.splitMode = S.vsplitMode = S.renumMode = false; S.vmergeMode = null;
+  $('adminMenuItem').textContent = t('m_admin');
+  adminBadge(false);
+  paintVerses();
+  showInfo(t('m_admin'), `<div class="note">${esc(t('admin_off'))}</div>`);
+};
 function adminLoggedIn(token){
   ADMIN.token=token; $('adminModal').classList.add('hidden');
   $('adminMenuItem').textContent='✓ '+t('m_admin');
+  adminBadge(true);
+  APK_INFO = null;                     // re-ask, so the download tally comes with it
   let extra = '';
   if(!ADMIN.webauthn && waSupported())
     extra = `<button class="admin-btn" onclick="waRegister()">${esc(t('wa_setup'))}</button>`;
@@ -5995,6 +6097,46 @@ async function mergeNext(){
   if(r&&r.ok){ await reloadChapters(); showInfo(t('m_admin'), `<div class="note">${esc(t('merged_ok'))}</div>`); }
   else showInfo(t('m_admin'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
 }
+// Merge a verse with its neighbour. Whichever direction is chosen, the survivor
+// is the earlier of the two and keeps its own number — merging upwards files this
+// verse under the one above, merging downwards swallows the one below into this
+// one. The client picks the neighbour out of its already-ordered S.verses rather
+// than letting the server re-derive an order from mixed '10' / '10-1' numbers.
+async function askMergeVerse(v, dir){
+  const all = S.verses || [];
+  const i = all.findIndex(x => x.id === v.id);
+  const other = dir === 'prev' ? all[i-1] : all[i+1];
+  if(!other){ showInfo(t('m_admin'), `<div class="note">${esc(t('vmerge_none'))}</div>`); return; }
+  const keep = dir === 'prev' ? other : v;          // the earlier of the pair
+  const drop = dir === 'prev' ? v : other;
+  const q = t('vmerge_q').replace('{a}', drop.number).replace('{b}', keep.number);
+  if(!await askConfirm(t(dir==='prev' ? 'vmerge_prev' : 'vmerge_next'), q, t('confirm_yes'), t('c_cancel'))) return;
+  S.vmergeMode = null;
+  let r; try{ r = await apiPost('admin/merge_verse',
+      {token:ADMIN.token, verse_id:v.id, other_verse_id:other.id, direction:dir}); }catch(e){ r={ok:false}; }
+  await reloadChapters();
+  showInfo(t('m_admin'), `<div class="note">${esc(r&&r.ok
+      ? t('vmerge_ok').replace('{a}', r.dropped).replace('{b}', r.number)
+      : ((r&&r.error)||t('edit_err')))}</div>`);
+}
+// Engrave the count as it now stands: from the last Samaritan chapter of a
+// portion it signs that portion, and from the last portion of a book it signs
+// every portion of the book and the book's own total.
+async function setCanon(samChId, portionName, live, wholeBook){
+  const q = (wholeBook ? t('canon_set_q_book') : t('canon_set_q'))
+              .replace('{p}', portionName).replace('{n}', live);
+  if(!await askConfirm(t('canon_set'), q, t('confirm_yes'), t('c_cancel'))) return;
+  let r; try{ r = await apiPost('admin/set_canon', {token:ADMIN.token, sam_ch_id:samChId}); }
+  catch(e){ r = {ok:false}; }
+  if(r && r.ok){
+    _apiCache.clear();
+    const lines = (r.stamped||[]).map(x => `${esc(x.portion)} — ${x.count}`).join('<br>');
+    showInfo(t('canon_set'), `<div class="note">${esc(t('canon_set_ok'))}<br>${lines}`
+      + (r.book_total ? `<br><b>${esc(t('canon_book_total'))} ${r.book_total}</b>` : '') + '</div>');
+    await renderVerses(S.curChId, S.curChNum, S.curPid, S.portionName);
+  } else showInfo(t('canon_set'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
+}
+
 async function askSplit(v){
   if(!await askConfirm(t('split_chapter'), t('split_q')+v.number+'?', t('confirm_yes'), t('c_cancel'))) return;
   S.splitMode=false;

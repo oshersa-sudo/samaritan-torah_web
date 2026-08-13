@@ -35,6 +35,10 @@ def _connect():
         path TEXT, title TEXT)''')
     conn.execute('''CREATE TABLE IF NOT EXISTS webauthn_credentials(
         credential_id TEXT PRIMARY KEY, public_key BLOB, sign_count INTEGER, created INTEGER)''')
+    # plain named counters (the APK download tally, for one) — here and not in
+    # torah.db so that "טען DB מהמאגר" cannot reset them
+    conn.execute('''CREATE TABLE IF NOT EXISTS counters(
+        name TEXT PRIMARY KEY, n INTEGER NOT NULL DEFAULT 0, last_ts INTEGER)''')
     conn.execute('CREATE INDEX IF NOT EXISTS idx_visits_session ON visits(session_id)')
     conn.execute('CREATE INDEX IF NOT EXISTS idx_sessions_last ON sessions(last_seen)')
     return conn
@@ -155,3 +159,28 @@ def wa_update_sign_count(credential_id, sign_count):
         conn.commit()
     finally:
         conn.close()
+
+
+def bump_counter(name):
+    """+1, and the moment it happened. Never raises: a counter must not be able to
+    fail the thing it is counting."""
+    try:
+        conn = _connect()
+        with conn:
+            conn.execute('INSERT INTO counters(name, n, last_ts) VALUES (?,1,?) '
+                         'ON CONFLICT(name) DO UPDATE SET n = n + 1, last_ts = excluded.last_ts',
+                         (name, int(time.time())))
+        conn.close()
+    except Exception:
+        pass
+
+
+def counter(name):
+    """(count, last timestamp) — zeros before anything was ever counted."""
+    try:
+        conn = _connect()
+        r = conn.execute('SELECT n, last_ts FROM counters WHERE name=?', (name,)).fetchone()
+        conn.close()
+        return (r[0], r[1]) if r else (0, None)
+    except Exception:
+        return (0, None)

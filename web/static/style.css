@@ -1367,6 +1367,13 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 .menu-btn{ flex:0 0 auto; width:38px; height:38px; border:0; background:transparent; color:#fff;
            font-size:24px; line-height:1; cursor:pointer; border-radius:6px; }
 .menu-btn:hover{ background:rgba(255,255,255,.15); }
+/* in admin mode this sits beside the hamburger — the session can rewrite the
+   text, and that should never be a state one is in unawares */
+.admin-badge{ flex:0 0 auto; border:0; border-radius:7px; padding:4px 9px; cursor:pointer;
+  background:#f0c33c; color:#3a2d00; font-family:inherit; font-size:12.5px; font-weight:800;
+  box-shadow:0 1px 4px rgba(0,0,0,.25); white-space:nowrap; }
+.admin-badge:hover{ background:#ffd75e; }
+.admin-badge.hidden{ display:none; }
 .menu-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:60; }
 /* The drawer has grown past the height of a phone, and the app frame around it
    cannot scroll (body is overflow:hidden), so the last entries were simply cut
@@ -1428,6 +1435,13 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
              padding-top:12px; }
 .canon-note-count{ font-weight:600; color:var(--navy); font-size:15px; margin-bottom:4px; }
 .canon-note-text{ font-size:12px; color:var(--muted,#777); line-height:1.5; }
+/* engraving the count from the end of the portion itself */
+.canon-set-btn{ margin-top:8px; }
+.canon-note-text.canon-drift{ color:#8a3030; font-weight:700; margin-top:4px; }
+/* admin-only: how many times the Android file has been taken */
+.pwa-tally{ margin:6px 0 0; font-size:13px; color:#3a2d00; background:#fdf3d0;
+  border:1px solid #e2c96a; border-radius:7px; padding:5px 9px; text-align:center; }
+.pwa-tally b{ font-size:15px; } .pwa-tally span{ color:#7a6a3a; }
 /* the warning that a split/merge takes the count off canon — it asks, it does not refuse */
 .modal-box.canon-ask .modal-title{ color:#8a3030; }
 .canon-tbl{ width:100%; border-collapse:collapse; font-size:14px; margin:2px 0 6px; }

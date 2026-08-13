@@ -694,6 +694,40 @@ def _portion_id_for_sam_chapter(conn, sam_id):
     return r['id'] if r else None
 
 
+def _portion_chapter_counts(conn, book_id):
+    """Every Samaritan-mode portion of a book with how many Samaritan chapters it
+    holds and the number of its last one. A chapter belongs to the portion its
+    FIRST verse falls in — one that opens in a portion and runs past its end is
+    still that portion's chapter, and counting it by where it ends would file it
+    under the next one."""
+    por = [dict(r) for r in conn.execute(
+        "SELECT id, name, order_n, start_ch, start_v, end_ch, end_v FROM portions "
+        "WHERE book_id=? AND mode='samaritan' ORDER BY order_n", (book_id,))]
+    out = {p['id']: {'portion_id': p['id'], 'name': p['name'], 'order_n': p['order_n'],
+                     'count': 0, 'last_number': None} for p in por}
+    rows = conn.execute("""
+        SELECT sc.id, sc.number, sc.portion_id AS pin, c.number ch,
+               CAST(v.number AS INTEGER) vn
+        FROM sam_chapters sc
+        JOIN (SELECT sam_ch_id, MIN(id) fid FROM verses GROUP BY sam_ch_id) f ON f.sam_ch_id = sc.id
+        JOIN verses v ON v.id = f.fid
+        JOIN chapters c ON c.id = v.chapter_id
+        WHERE sc.book_id = ? ORDER BY sc.number""", (book_id,)).fetchall()
+    for r in rows:
+        pid = r['pin']
+        if pid not in out:
+            pid = None
+            k = r['ch'] * 10000 + (r['vn'] or 0)
+            for p in por:
+                if (p['start_ch'] * 10000 + p['start_v']) <= k <= (p['end_ch'] * 10000 + min(p['end_v'], 9999)):
+                    pid = p['id']
+                    break
+        if pid in out:
+            out[pid]['count'] += 1
+            out[pid]['last_number'] = r['number']
+    return {k: v for k, v in out.items() if v['count']}
+
+
 # The canon WARNS, it does not block (the project owner's instruction, 2026-08-14):
 # a split or merge that moves a count off its canon is still the owner's to make,
 # so it is answered with a confirmation request carrying the exact numbers, and it
@@ -1063,6 +1097,165 @@ def admin_split_verse():
     return jsonify({'ok': True, 'new_number': new_number})
 
 
+# ── merging two verses into one ────────────────────────────────────────────────
+# The inverse of admin_split_verse, and the answer to a scan that carries as one
+# verse what we carry as two. The survivor is always the EARLIER of the pair and
+# it keeps its own number — merge upwards and the lower verse joins the one above
+# under that number; merge downwards and the pair is filed under this verse's
+# number. The later row is then deleted, so everything hanging off it (word
+# glosses, dictionary rows, source links, transliteration, the root index) is
+# first carried over to the survivor rather than orphaned.
+_MERGE_PROSE_COLS = ('text', 'masoretic_text', 'lxx_text', 'onkelos_text', 'qumran_text',
+                     'sam_aramaic', 'english', 'site_english', 'simple_hebrew', 'sam_hebrew',
+                     'arabic_trans', 'interpretation', 'interpretation_ar', 'old_text',
+                     'rashi', 'ramban', 'cassuto', 'baal_haturim')
+
+
+def _carry_verse_refs(conn, keep_id, drop_id):
+    """Move every row that points at the swallowed verse onto the survivor.
+    Word-level tables are keyed UNIQUE(verse_id, pos) — the merged verse's words
+    are the two lists one after the other, so those positions are shifted past
+    the survivor's own rather than colliding with them."""
+    for tbl in ('word_gloss', 'word_jewish', 'word_samaritan', 'word_align'):
+        base = conn.execute('SELECT COALESCE(MAX(pos), -1) FROM %s WHERE verse_id=?' % tbl,
+                            (keep_id,)).fetchone()[0]
+        conn.execute('UPDATE %s SET verse_id=?, pos=pos+? WHERE verse_id=?' % tbl,
+                     (keep_id, base + 1, drop_id))
+    # one row per verse: the two readings become one, in order
+    for tbl in ('verse_translit', 'verse_translit_fix'):
+        a = conn.execute('SELECT text FROM %s WHERE verse_id=?' % tbl, (keep_id,)).fetchone()
+        b = conn.execute('SELECT text FROM %s WHERE verse_id=?' % tbl, (drop_id,)).fetchone()
+        if b and (b['text'] or '').strip():
+            if a:
+                conn.execute('UPDATE %s SET text=? WHERE verse_id=?' % tbl,
+                             (' '.join(x for x in ((a['text'] or '').strip(), b['text'].strip()) if x), keep_id))
+                conn.execute('DELETE FROM %s WHERE verse_id=?' % tbl, (drop_id,))
+            else:
+                conn.execute('UPDATE %s SET verse_id=? WHERE verse_id=?' % tbl, (keep_id, drop_id))
+        else:
+            conn.execute('DELETE FROM %s WHERE verse_id=?' % tbl, (drop_id,))
+    # UNIQUE(verse_id, root_norm): a root both verses share is already recorded
+    conn.execute('UPDATE OR IGNORE dict_torah_sense SET verse_id=? WHERE verse_id=?', (keep_id, drop_id))
+    conn.execute('DELETE FROM dict_torah_sense WHERE verse_id=?', (drop_id,))
+    # the root index also carries the reference in words
+    pos = conn.execute('''SELECT c.number ch, v.number vn FROM verses v
+                          JOIN chapters c ON c.id=v.chapter_id WHERE v.id=?''', (keep_id,)).fetchone()
+    if pos:
+        conn.execute('UPDATE root_index SET verse_id=?, chapter=?, verse=? WHERE verse_id=?',
+                     (keep_id, pos['ch'], pos['vn'], drop_id))
+    # everything else that names a verse, discovered from the schema so a table
+    # added later is carried too
+    done = {'word_gloss', 'word_jewish', 'word_samaritan', 'word_align', 'verse_translit',
+            'verse_translit_fix', 'dict_torah_sense', 'root_index', 'verses'}
+    for (tbl,) in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall():
+        if tbl in done:
+            continue
+        if any(c[1] == 'verse_id' for c in conn.execute('PRAGMA table_info(%s)' % tbl)):
+            conn.execute('UPDATE OR IGNORE %s SET verse_id=? WHERE verse_id=?' % tbl, (keep_id, drop_id))
+            conn.execute('DELETE FROM %s WHERE verse_id=?' % tbl, (drop_id,))
+
+
+@app.route('/api/admin/merge_verse', methods=['POST'])
+def admin_merge_verse():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        verse_id = int(d.get('verse_id')); other_id = int(d.get('other_verse_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    direction = d.get('direction')          # 'prev' | 'next', for the message only
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        a = conn.execute('SELECT * FROM verses WHERE id=?', (verse_id,)).fetchone()
+        b = conn.execute('SELECT * FROM verses WHERE id=?', (other_id,)).fetchone()
+        if not a or not b:
+            return jsonify({'ok': False, 'error': 'verse not found'}), 404
+        if a['chapter_id'] != b['chapter_id']:
+            return jsonify({'ok': False, 'error': 'הפסוקים אינם באותו פרק'}), 400
+        if a['sam_ch_id'] != b['sam_ch_id']:
+            return jsonify({'ok': False, 'error': 'הפסוקים אינם באותו פרק שומרוני'}), 400
+        keep, drop = (a, b) if direction == 'next' else (b, a)
+        cols = [c[1] for c in conn.execute('PRAGMA table_info(verses)')]
+        sets, vals = [], []
+        for col in cols:
+            if col in ('id', 'chapter_id', 'number', 'sam_ch_id'):
+                continue
+            if col in _MERGE_PROSE_COLS:
+                parts = [str(keep[col] or '').strip(), str(drop[col] or '').strip()]
+                sets.append('%s=?' % col); vals.append(' '.join(p for p in parts if p))
+            elif not str(keep[col] or '').strip() and str(drop[col] or '').strip():
+                sets.append('%s=?' % col); vals.append(drop[col])
+        if sets:
+            conn.execute('UPDATE verses SET %s WHERE id=?' % ', '.join(sets), vals + [keep['id']])
+        _carry_verse_refs(conn, keep['id'], drop['id'])
+        conn.execute('DELETE FROM verses WHERE id=?', (drop['id'],))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True, 'number': keep['number'], 'dropped': drop['number']})
+
+
+# ── engraving the canon from the app itself ───────────────────────────────────
+@app.route('/api/admin/set_canon', methods=['POST'])
+def admin_set_canon():
+    """Stamp the count as it stands: the portion's, from its last Samaritan
+    chapter — and from the last portion of a book, every portion of that book and
+    the book's own total. What is stamped is signed and dated, and from then on
+    the canon gate asks for the phrase before anything moves it."""
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        sam_id = int(d.get('sam_ch_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    _backup_db()
+    conn = db.get_connection()
+    try:
+        sc = conn.execute('SELECT id, book_id, number FROM sam_chapters WHERE id=?', (sam_id,)).fetchone()
+        if not sc:
+            return jsonify({'ok': False, 'error': 'chapter not found'}), 404
+        pid = _portion_id_for_sam_chapter(conn, sam_id)
+        if not pid:
+            return jsonify({'ok': False, 'error': 'לא נמצאה פרשה לפרק זה'}), 400
+        counts = _portion_chapter_counts(conn, sc['book_id'])
+        if not counts.get(pid) or counts[pid]['last_number'] != sc['number']:
+            return jsonify({'ok': False,
+                            'error': 'אפשר לקבוע קאנון רק מן הפרק השומרוני האחרון בפרשה'}), 400
+        stamp = time.strftime('%d/%m/%Y')
+        note = ('נחתם ע"י בעל הפרויקט ב-%s: %%d פרקים בחלוקה השומרונית. '
+                'החתימה נעולה — כל שינוי במניין מחייב את מילת האישור.') % stamp
+        last_portion = max(counts.values(), key=lambda x: x['order_n'])['portion_id'] == pid
+        stamped = []
+        targets = list(counts.items()) if last_portion else [(pid, counts[pid])]
+        for p_id, info in targets:
+            conn.execute('INSERT OR REPLACE INTO canon_portion_counts '
+                         '(portion_id, book_id, portion_name, canonical_count, note) VALUES (?,?,?,?,?)',
+                         (p_id, sc['book_id'], info['name'], info['count'], note % info['count']))
+            stamped.append({'portion': info['name'], 'count': info['count']})
+        book_total = None
+        if last_portion:
+            book_total = conn.execute('SELECT COUNT(*) FROM sam_chapters WHERE book_id=?',
+                                      (sc['book_id'],)).fetchone()[0]
+            bname = conn.execute('SELECT name FROM books WHERE id=?', (sc['book_id'],)).fetchone()['name']
+            conn.execute('INSERT OR REPLACE INTO canon_chapter_counts '
+                         '(book_id, book_name, canonical_count, note) VALUES (?,?,?,?)',
+                         (sc['book_id'], bname, book_total, note % book_total))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+    return jsonify({'ok': True, 'stamped': stamped, 'book_total': book_total,
+                    'whole_book': bool(book_total)})
+
+
 # ── comparison-text "reflow" ops (split / merge across ADJACENT rows) ──────────
 # The Masoretic/LXX/Onkelos/Qumran/Aramaic columns have no independent verse
 # numbering of their own — each is just a string field living on the same
@@ -1422,14 +1615,20 @@ def api_apk_info():
             version = _json.load(f).get('appVersion', '')
     except Exception:
         pass
-    return jsonify({'available': True, 'version': version,
-                    'size_mb': round(os.path.getsize(path) / 1048576.0, 1)})
+    out = {'available': True, 'version': version,
+           'size_mb': round(os.path.getsize(path) / 1048576.0, 1)}
+    if _valid_token(request.args.get('token')):     # the tally is the admin's, not the public's
+        n, last = analytics.counter('apk_download')
+        out['downloads'] = n
+        out['last_download'] = time.strftime('%d/%m/%Y %H:%M', time.localtime(last)) if last else None
+    return jsonify(out)
 
 
 @app.route('/download/samaritan-torah.apk')
 def download_apk():
     if not os.path.exists(os.path.join(_APK_DIR, _APK_NAME)):
         return jsonify({'error': 'apk not published'}), 404
+    analytics.bump_counter('apk_download')   # counted where the file actually leaves
     return send_from_directory(_APK_DIR, _APK_NAME, as_attachment=True,
                                mimetype='application/vnd.android.package-archive')
 
@@ -1572,11 +1771,23 @@ def api_canon_note():
     sc = conn.execute('SELECT book_id, number FROM sam_chapters WHERE id=?', (sid,)).fetchone()
     if not sc:
         return jsonify(None)
+    out = {}
     canon = conn.execute('SELECT canonical_count, note FROM canon_chapter_counts WHERE book_id=?',
                           (sc['book_id'],)).fetchone()
-    if not canon or sc['number'] != canon['canonical_count']:
-        return jsonify(None)
-    return jsonify({'count': canon['canonical_count'], 'note': canon['note']})
+    if canon and sc['number'] == canon['canonical_count']:
+        out.update({'count': canon['canonical_count'], 'note': canon['note']})
+    # the same, one level down: the portion's own signature, after its last chapter
+    counts = _portion_chapter_counts(conn, sc['book_id'])
+    pid = _portion_id_for_sam_chapter(conn, sid)
+    info = counts.get(pid)
+    if info and info['last_number'] == sc['number']:
+        pc = conn.execute('SELECT canonical_count, portion_name, note FROM canon_portion_counts '
+                          'WHERE portion_id=?', (pid,)).fetchone()
+        out['portion'] = {'name': info['name'], 'live': info['count'], 'last': True,
+                          'sam_ch_id': sid,
+                          'count': pc['canonical_count'] if pc else None,
+                          'note': pc['note'] if pc else None}
+    return jsonify(out or None)
 
 
 # ── content-mode API ───────────────────────────────────────────────────────
