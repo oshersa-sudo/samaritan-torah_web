@@ -44,6 +44,17 @@ jobs:
           yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
           "$SDKMANAGER" "platforms;android-36" "build-tools;36.1.0" "platform-tools"
 
+      # Bubblewrap validates the SDK root by requiring a legacy `tools/` or `bin/`
+      # directory. Modern SDK installs — including the runner image — have neither,
+      # so `bubblewrap build` dies with "The provided androidSdk isn't correct."
+      # Linking sdkmanager into `bin/` satisfies the check, and is also exactly
+      # where Bubblewrap looks for it if it ever needs to install build-tools.
+      - name: Give Bubblewrap the SDK layout it expects
+        run: |
+          mkdir -p "$ANDROID_SDK_ROOT/bin"
+          ln -sf "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
+                 "$ANDROID_SDK_ROOT/bin/sdkmanager"
+
       - name: Point Bubblewrap at the runner's JDK and Android SDK
         run: |
           mkdir -p ~/.bubblewrap
