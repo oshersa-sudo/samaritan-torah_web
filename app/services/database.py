@@ -2826,21 +2826,33 @@ def tal_full_lookup(word, torah_limit=16):
     # No root from the dictionary's own reading? A derivation may still stand in,
     # but only if Memar Marqe's translation of this very word agrees with what the
     # derived root means. Derivation alone is not evidence; agreement is.
-    derived = None
+    # A derived root becomes a real root only when a second source vouches for it:
+    # dict_form_root (the dictionary lists the form under that root), Memar Marqe's
+    # translation, or the Torah glossary — recorded in dict_infl.verified. Where
+    # nothing vouches, the derivation is still shown, but as a suggestion, never as
+    # a root: sending a reader to ק.ד.מ's occurrences because קמאה happened to strip
+    # to something was the whole complaint.
+    derived = suggestion = None
     if not roots:
         try:
             r = conn.execute(
-                "SELECT root, gloss, gloss_tal, memar_he, derivation FROM dict_infl "
-                "WHERE form_norm=? AND TRIM(COALESCE(root,''))<>'' ORDER BY rank",
-                (_norm_fin(word),)).fetchall()
+                "SELECT root, gloss, gloss_tal, memar_he, derivation, verified "
+                "FROM dict_infl WHERE form_norm=? AND TRIM(COALESCE(root,''))<>'' "
+                "ORDER BY rank", (_norm_fin(word),)).fetchall()
         except sqlite3.OperationalError:
             r = []
         for row in r:
-            if _gloss_matches_memar(row['gloss_tal'] or row['gloss'], row['memar_he']):
+            if (row['verified'] or '').strip():
                 roots = [row['root']]
-                derived = {'derivation': row['derivation'], 'memar_he': row['memar_he']}
+                derived = {'derivation': row['derivation'], 'verified': row['verified'],
+                           'memar_he': row['memar_he']}
                 break
-    out = {'word': word, 'roots': [], 'derived_root': derived}
+        if not roots and r:
+            row = r[0]
+            suggestion = {'root': row['root'], 'gloss': row['gloss_tal'] or row['gloss'],
+                          'derivation': row['derivation'], 'memar_he': row['memar_he']}
+    out = {'word': word, 'roots': [], 'derived_root': derived,
+           'suggestion': suggestion}
     for root in roots:
         rn = _norm_fin(root)
         senses = []

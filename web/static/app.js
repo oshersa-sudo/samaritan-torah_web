@@ -148,7 +148,7 @@ const I18N = {
     app_hint:'המילים המודגשות בפסוק נושאות חילופי נוסח — לחץ על מילה כדי לקפוץ לחילופיה, ולחץ על חילוף כדי לחזור למילה.',
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך המילון', no_dict:'אין מילון זמין לפסוק זה',
     dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
-    more_results:'תוצאות נוספות', phr_occurrences:'מופעים', phr_words:'מילות הצירוף', phr_head:'מטבעות לשון', phr_formula:'כינוי קבוע', phr_idiom:'ניב', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון.', tal_click_precise:'לחץ לפירוש המדויק מתוך המילון ⬅',
+    more_results:'תוצאות נוספות', phr_occurrences:'מופעים', phr_words:'מילות הצירוף', phr_head:'מטבעות לשון', phr_formula:'כינוי קבוע', phr_idiom:'ניב', sug_head:'הצעה מתוך גזירה', sug_note:'לא אומתה מול המילון, מרקה או התורה — אין הפניה לשורש', ver_by:'מאומת לפי', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון.', tal_click_precise:'לחץ לפירוש המדויק מתוך המילון ⬅',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
@@ -376,7 +376,7 @@ const I18N = {
     app_hint:'The emphasised words in the verse carry textual variants — tap a word to jump to its variants, and tap a variant to jump back to the word.',
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from the dictionary", no_dict:'No dictionary for this verse',
     dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
-    more_results:'More results', phr_occurrences:'occurrences', phr_words:'Words of the phrase', phr_head:'Set phrases', phr_formula:'fixed epithet', phr_idiom:'idiom', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in the dictionary.', tal_click_precise:'Tap for the exact entry from the dictionary ⬅',
+    more_results:'More results', phr_occurrences:'occurrences', phr_words:'Words of the phrase', phr_head:'Set phrases', phr_formula:'fixed epithet', phr_idiom:'idiom', sug_head:'Suggested by derivation', sug_note:'not confirmed against the dictionary, Marqe or the Torah — no root is offered', ver_by:'confirmed by', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in the dictionary.', tal_click_precise:'Tap for the exact entry from the dictionary ⬅',
     m_timeline:'The Samaritan Historical Timeline',
     m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
@@ -604,7 +604,7 @@ const I18N = {
     app_hint:'الكلمات المميّزة في الآية تحمل اختلافات نصّية — اضغط على كلمة للانتقال إلى اختلافاتها، واضغط على اختلاف للعودة إلى الكلمة.',
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من المعجم', no_dict:'لا يوجد معجم لهذه الآية',
     dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
-    more_results:'نتائج إضافية', phr_occurrences:'مواضع', phr_words:'كلمات التعبير', phr_head:'تعابير ثابتة', phr_formula:'لقب ثابت', phr_idiom:'تعبير اصطلاحي', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في المعجم.', tal_click_precise:'اضغط للمدخل الدقيق من المعجم ⬅',
+    more_results:'نتائج إضافية', phr_occurrences:'مواضع', phr_words:'كلمات التعبير', phr_head:'تعابير ثابتة', phr_formula:'لقب ثابت', phr_idiom:'تعبير اصطلاحي', sug_head:'اقتراح من الاشتقاق', sug_note:'غير مؤكَّد مقابل المعجم أو مرقة أو التوراة — لا يُعطى جذر', ver_by:'مؤكَّد بواسطة', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في المعجم.', tal_click_precise:'اضغط للمدخل الدقيق من المعجم ⬅',
     m_timeline:'الخطّ الزمني التاريخي السامري',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
@@ -2204,6 +2204,23 @@ async function showTalFull(word){
   // The word may be an inflected form harvested from the piyyutim / Memar Marqe.
   // Show how it was taken apart before the root entries, so the reader can judge
   // the derivation rather than trust it.
+  // A derivation nothing could confirm: show the meaning, say plainly that it is
+  // unconfirmed, and offer no root — an unverified root is what sent readers to
+  // the wrong occurrences.
+  const sug=d&&d.suggestion;
+  if(sug){
+    body.appendChild(el('div','tal-sec',t('sug_head')));
+    const box=el('div','tal-infl');
+    if(sug.gloss) box.appendChild(el('div','tal-sense', esc(sug.gloss)));
+    box.appendChild(el('div','note', t('infl_deriv')+': '+esc(sug.derivation||'')));
+    box.appendChild(el('div','note', t('sug_note')));
+    body.appendChild(box);
+  }
+  const dv=d&&d.derived_root;
+  if(dv){
+    body.appendChild(el('div','note', t('ver_by')+': '+esc(dv.verified||'')
+      +(dv.memar_he?(' · '+esc(dv.memar_he)):'')));
+  }
   const inf=d&&d.inflection;
   if(inf){
     body.appendChild(el('div','tal-sec',t('infl_head')));
