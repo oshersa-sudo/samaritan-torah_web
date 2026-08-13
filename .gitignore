@@ -26,6 +26,8 @@ data/_*
 data/dict_ocr/
 data/Genesis_Pic/
 *.apk
+# ...except the published Android app, which the site serves as a download
+!web/downloads/*.apk
 data/vongall/
 
 # generated read-aloud audio cache
