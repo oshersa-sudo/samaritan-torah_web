@@ -63,6 +63,8 @@
       <button id="menuBtn" class="menu-btn" aria-label="תפריט">&#9776;</button>
       <button id="adminBadge" class="admin-badge hidden" data-i18n="admin_badge">מצב מנהל</button>
       <h1 data-i18n="app_title">התורה השומרונית הישראלית</h1>
+      <!-- today's date by the Samaritan reckoning; always in Hebrew, whatever the interface language -->
+      <div id="samDate" class="sam-date" dir="rtl" lang="he"></div>
       <div class="brand-stack">
         <img class="scroll-ico" src="{{ url_for('static', filename='img/torah_scroll_nobg.png') }}" alt="">
         <span class="ver">v{{ version }}</span>
@@ -122,7 +124,7 @@
       <button id="searchBtn" class="tb navy" data-i18n="search">חיפוש</button>
       <button id="dictBtn" class="tb" disabled data-i18n="dict">מילון מילים</button>
       <button id="fontBtn" class="tb font-btn" disabled title="כתב שומרוני" aria-label="כתב שומרוני"><span class="font-ab sam-script">ࠀࠁ</span></button>
-      <button id="interpBtn" class="tb has-ico" disabled><svg class="tbi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h11a1 1 0 0 1 1 1v13a3 3 0 0 0 3 3H8a3 3 0 0 1-3-3V5"/><path d="M5 5a2 2 0 1 0-4 0c0 1.1.9 2 2 2h2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg><span class="tb-label" data-i18n="interp">פירוש הפסוק</span></button>
+      <button id="interpBtn" class="tb" disabled><span class="tb-label" data-i18n="interp">פירוש הפסוק</span></button>
     </div>
     <div class="tb-row">
       <button id="commentaryBtn" class="tb" disabled data-i18n="commentary">פרשנות יהודית</button>

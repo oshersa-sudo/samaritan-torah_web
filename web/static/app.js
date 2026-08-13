@@ -149,6 +149,7 @@ const I18N = {
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך המילון', no_dict:'אין מילון זמין לפסוק זה',
     dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
     more_results:'תוצאות נוספות', phr_occurrences:'מופעים', phr_words:'מילות הצירוף', phr_head:'מטבעות לשון', phr_formula:'כינוי קבוע', phr_idiom:'ניב', sug_head:'הצעה מתוך גזירה', sug_note:'לא אומתה מול המילון, מרקה או התורה — אין הפניה לשורש', ver_by:'מאומת לפי', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון.', tal_click_precise:'לחץ לפירוש המדויק מתוך המילון ⬅',
+    week_portion:'פרשת השבוע', week_portion_here:'פרשת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
@@ -388,6 +389,7 @@ const I18N = {
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from the dictionary", no_dict:'No dictionary for this verse',
     dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
     more_results:'More results', phr_occurrences:'occurrences', phr_words:'Words of the phrase', phr_head:'Set phrases', phr_formula:'fixed epithet', phr_idiom:'idiom', sug_head:'Suggested by derivation', sug_note:'not confirmed against the dictionary, Marqe or the Torah — no root is offered', ver_by:'confirmed by', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in the dictionary.', tal_click_precise:'Tap for the exact entry from the dictionary ⬅',
+    week_portion:'This week’s portion', week_portion_here:'The portion of this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
     m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
@@ -627,6 +629,7 @@ const I18N = {
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من المعجم', no_dict:'لا يوجد معجم لهذه الآية',
     dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
     more_results:'نتائج إضافية', phr_occurrences:'مواضع', phr_words:'كلمات التعبير', phr_head:'تعابير ثابتة', phr_formula:'لقب ثابت', phr_idiom:'تعبير اصطلاحي', sug_head:'اقتراح من الاشتقاق', sug_note:'غير مؤكَّد مقابل المعجم أو مرقة أو التوراة — لا يُعطى جذر', ver_by:'مؤكَّد بواسطة', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في المعجم.', tal_click_precise:'اضغط للمدخل الدقيق من المعجم ⬅',
+    week_portion:'فصل الأسبوع', week_portion_here:'فصل هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
@@ -844,6 +847,53 @@ const S = {
 
 const COMMENTATORS = [['rashi','רש"י'],['ramban','רמב"ן'],['cassuto','קאסוטו'],
                       ['baal_haturim','בעל הטורים']];
+// ── the Samaritan calendar ───────────────────────────────────────────────────
+// Baked out of the calendar project's own engine (scripts/calendar/build_calendar_data.py)
+// into one small file per Gregorian year, so the date and the portion of the week
+// are there even with no network — and the calendar site is never on the critical
+// path of opening the Torah.
+const CAL = { days:null, shabbat:null, today:null, week:null };
+function _isoDay(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0')
+                            + '-' + String(d.getDate()).padStart(2,'0'); }
+async function loadSamCalendar(){
+  const now = new Date();
+  // the coming Sabbath (today, when today IS the Sabbath) may fall in the next year
+  const sat = new Date(now); sat.setDate(sat.getDate() + ((6 - sat.getDay()) % 7));
+  const years = [...new Set([now.getFullYear(), sat.getFullYear()])];
+  const days = {}, shabbat = {};
+  for(const y of years){
+    try{
+      const r = await fetch('/static/data/calendar/' + y + '.json');
+      if(!r.ok) continue;
+      const j = await r.json();
+      Object.assign(days, j.days || {});
+      Object.assign(shabbat, j.shabbat || {});
+    }catch(e){ /* offline and not yet cached — the app simply says nothing */ }
+  }
+  CAL.days = days; CAL.shabbat = shabbat;
+  CAL.today = days[_isoDay(now)] || null;
+  CAL.week = shabbat[_isoDay(sat)] || null;
+  paintSamDate();
+  if(S.view === 'books') showBooks();          // repaint if the list is already up
+  else if(S.view === 'portions' && S.book) showPortions(S.book, S.bookName);
+}
+// the line under the title: 'ב׳ מן החדש החמישי', and the day's event after it
+function paintSamDate(){
+  const el_ = $('samDate'); if(!el_) return;
+  const d = CAL.today;
+  if(!d){ el_.textContent = ''; return; }
+  let txt = d.d + ' מן החדש ' + d.m;
+  if(d.ev && d.ev.length) txt += ' · ' + d.ev.join(' · ');
+  el_.textContent = txt;
+}
+// is this portion the one read this coming Sabbath?
+function isWeekPortion(portionId){
+  return !!(CAL.week && CAL.week.id && portionId === CAL.week.id);
+}
+function isWeekBook(bookId){
+  return !!(CAL.week && CAL.week.book && bookId === CAL.week.book);
+}
+
 const PANEL_MODES = ['compare','interpret','aramaic','arabic','commentary','samaritan_src','variants'];
 
 // ── Samaritan rendering (ports _add_word_dots + _sam_markup) ─────────────────
@@ -1004,8 +1054,10 @@ async function showBooks(){
   for(const b of books){
     const label = S.division==='samaritan'
       ? `${esc(b.name)} <small>(${b.n_portions}-${b.n_chapters})</small>` : esc(b.name);
-    const btn = el('button','listbtn',
-      `<img class="ico" src="/static/img/icon_book_dark.png" alt=""><span>${label}</span>`);
+    const mark = (S.division==='samaritan' && isWeekBook(b.id))
+      ? `<span class="week-mark">${esc(t('week_portion'))} ⟵</span>` : '';
+    const btn = el('button','listbtn'+(mark?' is-week':''),
+      `<img class="ico" src="/static/img/icon_book_dark.png" alt=""><span>${label}</span>${mark}`);
     btn.onclick = ()=>showPortions(b.id, b.name);
     c.appendChild(btn);
   }
@@ -1031,8 +1083,10 @@ async function showPortions(bookId, bookName){
   for(const p of S.portions){
     const label = S.division==='samaritan'
       ? `${esc(p.name)} <small>(${p.n_chapters})</small>` : esc(p.name);
-    const btn = el('button','listbtn',
-      `<img class="ico" src="/static/img/icon_portion_dark.png" alt=""><span>${label}</span>`);
+    const mark = (S.division==='samaritan' && isWeekPortion(p.id))
+      ? `<span class="week-mark">${esc(t('week_portion'))}</span>` : '';
+    const btn = el('button','listbtn'+(mark?' is-week':''),
+      `<img class="ico" src="/static/img/icon_portion_dark.png" alt=""><span>${label}</span>${mark}`);
     btn.onclick = ()=> S.division==='samaritan'
       ? showSamChapters(p.id, p.name) : showChapters(p.id, p.name);
     c.appendChild(btn);
@@ -1236,6 +1290,13 @@ function paintVerses(){
       bar.appendChild(sb);
     }
     c.appendChild(bar);
+  }
+  // reading inside the portion of the week, in the Samaritan division: say so,
+  // right above the play bar
+  if(S.chMode==='samaritan' && isWeekPortion(S.curPid)){
+    const w = el('div','week-banner');
+    w.textContent = t('week_portion_here').replace('{p}', (CAL.week && CAL.week.name) || '');
+    c.appendChild(w);
   }
   if(typeof readingBar==='function') readingBar(c);   // chanted-reading recording, if one exists
   const all = S.verses;
@@ -5716,6 +5777,8 @@ document.querySelectorAll('#langModal .lang-opt, #langModal .close').forEach(b=>
 // ── admin editing (login + floating-pencil edit; gated entirely server-side) ──
 const ADMIN = { token:null, webauthn:false };
 // reveal "כניסת מנהל" only where admin is enabled (the local server has a password)
+loadSamCalendar();          // the date under the title, and the portion of the week
+
 api('admin/status').then(s=>{ if(s && s.enabled){
   $('adminSep').classList.remove('hidden'); $('adminMenuItem').classList.remove('hidden'); ADMIN.webauthn=!!s.webauthn;
 } }).catch(()=>{});
