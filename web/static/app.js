@@ -5945,11 +5945,53 @@ async function reloadChapters(){
   S.chIdx = Math.max(0, S.chList.findIndex(x=>x.id===S.curChId));
   await renderVerses(S.curChId, S.curChNum, S.curPid, S.portionName);
 }
+// The canon warns, it does not block: a split or merge that would take a book's
+// or a portion's Samaritan chapter count off its canon comes back from the server
+// as a confirmation request, with the numbers, rather than as a refusal. It goes
+// through once the agreed phrase is typed — a second, deliberate gate against an
+// accidental drift, not a lock: this number is the owner's to move.
+function askCanonPhrase(d){
+  return new Promise(res=>{
+    const rows = [];
+    if(d && d.book) rows.push(['בספר', d.book.now, d.book.after, d.book.canon, d.book.closer]);
+    if(d && d.portion) rows.push(['בפרשת ' + d.portion.name, d.portion.now, d.portion.after,
+                                  d.portion.canon, d.portion.closer]);
+    const m = el('div','modal');
+    m.innerHTML = `<div class="modal-box canon-ask">
+      <div class="modal-title">⚠ חריגה מן הקאנון</div>
+      <table class="canon-tbl"><tr><th></th><th>עכשיו</th><th>אחרי</th><th>קאנון</th><th></th></tr>`
+      + rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${r[1]}</td><td class="after">${r[2]}</td><td>${r[3]}</td>`
+                 + `<td class="${r[4]?'closer':'farther'}">${r[4]?'מתקרב':'מתרחק'}</td></tr>`).join('')
+      + `</table>
+      <div class="note">הפעולה תבוצע — אך המניין יצא מן הקאנון. להמשך, הקלד את מילת האישור.</div>
+      <input id="canonPhrase" type="text" dir="rtl" placeholder="מילת האישור" autocomplete="off">
+      <button class="share-opt" id="canonGo" style="background:#8a3030">בצע בכל זאת</button>
+      <button class="share-opt close" id="canonNo">ביטול</button></div>`;
+    document.body.appendChild(m);
+    const inp = m.querySelector('#canonPhrase');
+    inp.focus();
+    const done = v => { m.remove(); res(v); };
+    m.querySelector('#canonGo').onclick = () => done(inp.value.trim());
+    m.querySelector('#canonNo').onclick = () => done(null);
+    inp.onkeydown = e => { if(e.key === 'Enter') done(inp.value.trim()); };
+  });
+}
+// one attempt, and if the canon stands in the way a second one carrying the phrase
+async function postCanon(ep, body){
+  let r; try{ r = await apiPost(ep, body); }catch(e){ r = {ok:false}; }
+  if(r && r.canon_confirm){
+    const phrase = await askCanonPhrase(r.details);
+    if(!phrase) return {ok:false, error:'בוטל — המניין לא שונה.'};
+    try{ r = await apiPost(ep, Object.assign({}, body, {canon_phrase:phrase})); }catch(e){ r = {ok:false}; }
+    if(r && r.canon_confirm) return {ok:false, error:'מילת האישור אינה נכונה — לא בוצע שינוי.'};
+  }
+  return r;
+}
 async function mergeNext(){
   if(!ADMIN.token) return;
   if(!await askConfirm(t('merge_next'), t('merge_q'), t('confirm_yes'), t('c_cancel'))) return;
   const ep = S.chMode==='samaritan' ? 'admin/merge_next_sam' : 'admin/merge_next';
-  let r; try{ r=await apiPost(ep, {token:ADMIN.token, chapter_id:S.curChId}); }catch(e){ r={ok:false}; }
+  const r = await postCanon(ep, {token:ADMIN.token, chapter_id:S.curChId});
   if(r&&r.ok){ await reloadChapters(); showInfo(t('m_admin'), `<div class="note">${esc(t('merged_ok'))}</div>`); }
   else showInfo(t('m_admin'), `<div class="note">${esc((r&&r.error)||t('edit_err'))}</div>`);
 }
@@ -5957,7 +5999,7 @@ async function askSplit(v){
   if(!await askConfirm(t('split_chapter'), t('split_q')+v.number+'?', t('confirm_yes'), t('c_cancel'))) return;
   S.splitMode=false;
   const ep = S.chMode==='samaritan' ? 'admin/split_sam' : 'admin/split';
-  let r; try{ r=await apiPost(ep, {token:ADMIN.token, chapter_id:S.curChId, after_verse_id:v.id}); }catch(e){ r={ok:false}; }
+  const r = await postCanon(ep, {token:ADMIN.token, chapter_id:S.curChId, after_verse_id:v.id});
   await reloadChapters();
   showInfo(t('m_admin'), `<div class="note">${esc(r&&r.ok ? t('split_ok') : ((r&&r.error)||t('edit_err')))}</div>`);
 }

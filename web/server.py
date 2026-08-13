@@ -694,17 +694,33 @@ def _portion_id_for_sam_chapter(conn, sam_id):
     return r['id'] if r else None
 
 
-def _canon_guard(conn, book_id, sam_id, delta):
-    """Block a split (delta=+1) or merge (delta=-1) that would move the book's or
-    the affected portion's Samaritan chapter count away from its engraved canon.
-    Returns an error string, or None if the operation is allowed."""
+# The canon WARNS, it does not block (the project owner's instruction, 2026-08-14):
+# a split or merge that moves a count off its canon is still the owner's to make,
+# so it is answered with a confirmation request carrying the exact numbers, and it
+# goes through once the agreed phrase is typed. Settable per deployment; the
+# default is the phrase the owner chose.
+CANON_PHRASE = os.environ.get('CANON_OVERRIDE_PHRASE', 'קאנון מאושר')
+
+
+def _canon_phrase_ok(given):
+    """Whitespace-insensitive, so a stray double space or a trailing blank from a
+    phone keyboard does not read as the wrong phrase."""
+    norm = lambda s: ' '.join(str(s or '').split())
+    return bool(norm(given)) and norm(given) == norm(CANON_PHRASE)
+
+
+def _canon_check(conn, book_id, sam_id, delta):
+    """How far a split (delta=+1) or merge (delta=-1) moves the book's and the
+    affected portion's Samaritan chapter count from its engraved canon.
+    Returns None when both stay exactly on canon, otherwise a report the caller
+    turns into a confirmation request."""
+    out = {'book': None, 'portion': None}
     canon = conn.execute('SELECT canonical_count FROM canon_chapter_counts WHERE book_id=?',
                          (book_id,)).fetchone()
     if canon:
         n_now = conn.execute('SELECT COUNT(*) FROM sam_chapters WHERE book_id=?', (book_id,)).fetchone()[0]
         if n_now + delta != canon['canonical_count']:
-            return ('פעולה זו תשנה את מספר הפרקים השומרוניים בספר מ-%d — הקאנון הקבוע לספר זה. '
-                    'הפעולה נחסמה.') % canon['canonical_count']
+            out['book'] = {'now': n_now, 'after': n_now + delta, 'canon': canon['canonical_count']}
     pid = _portion_id_for_sam_chapter(conn, sam_id)
     if pid:
         pc = conn.execute('SELECT canonical_count, portion_name FROM canon_portion_counts WHERE portion_id=?',
@@ -720,9 +736,36 @@ def _canon_guard(conn, book_id, sam_id, delta):
                                  '(c.number<p.end_ch OR (c.number=p.end_ch AND CAST(v.number AS INTEGER)<=p.end_v))))',
                                  (pid,)).fetchone()[0]
             if p_now + delta != pc['canonical_count']:
-                return ('פעולה זו תשנה את מספר הפרקים השומרוניים בפרשת "%s" מ-%d — '
-                        'הקאנון הקבוע לפרשה זו. הפעולה נחסמה.') % (pc['portion_name'], pc['canonical_count'])
-    return None
+                out['portion'] = {'name': pc['portion_name'], 'now': p_now,
+                                  'after': p_now + delta, 'canon': pc['canonical_count']}
+    if not out['book'] and not out['portion']:
+        return None
+    # whether each count walks toward its canon or away from it — the reviewer's
+    # first question, and the two can point in opposite directions at once
+    for k in ('book', 'portion'):
+        if out[k]:
+            x = out[k]
+            x['closer'] = abs(x['after'] - x['canon']) < abs(x['now'] - x['canon'])
+    parts = []
+    if out['book']:
+        b = out['book']
+        parts.append('בספר: %d ← %d (הקאנון %d, %s)'
+                     % (b['now'], b['after'], b['canon'], 'מתקרב' if b['closer'] else 'מתרחק'))
+    if out['portion']:
+        p = out['portion']
+        parts.append('בפרשת "%s": %d ← %d (הקאנון %d, %s)'
+                     % (p['name'], p['now'], p['after'], p['canon'], 'מתקרב' if p['closer'] else 'מתרחק'))
+    out['message'] = 'הפעולה מוציאה את מניין הפרקים השומרוניים מן הקאנון — ' + ' · '.join(parts)
+    return out
+
+
+def _canon_gate(conn, book_id, sam_id, delta, given_phrase):
+    """None to proceed, or the (response, status) that asks for the phrase."""
+    dev = _canon_check(conn, book_id, sam_id, delta)
+    if not dev or _canon_phrase_ok(given_phrase):
+        return None
+    return jsonify({'ok': False, 'canon_confirm': True,
+                    'error': dev['message'], 'details': dev}), 409
 
 
 def _fix_portions(conn, spans):
@@ -911,9 +954,9 @@ def admin_merge_next_sam():
                            (cur['book_id'], cur['number'] + 1)).fetchone()
         if not nxt:
             return jsonify({'ok': False, 'error': 'אין פרק הבא לאיחוד'}), 400
-        guard_err = _canon_guard(conn, cur['book_id'], cur['id'], -1)
-        if guard_err:
-            return jsonify({'ok': False, 'error': guard_err}), 400
+        gate = _canon_gate(conn, cur['book_id'], cur['id'], -1, d.get('canon_phrase'))
+        if gate:
+            return gate
         conn.execute('UPDATE verses SET sam_ch_id=? WHERE sam_ch_id=?', (cur['id'], nxt['id']))
         conn.execute('DELETE FROM sam_chapters WHERE id=?', (nxt['id'],))
         conn.execute('UPDATE sam_chapters SET number=number-1 WHERE book_id=? AND number>?',
@@ -943,9 +986,9 @@ def admin_split_sam():
         cur = conn.execute('SELECT id,book_id,number,portion_id FROM sam_chapters WHERE id=?', (sam_id,)).fetchone()
         if not cur:
             return jsonify({'ok': False, 'error': 'chapter not found'}), 404
-        guard_err = _canon_guard(conn, cur['book_id'], cur['id'], +1)
-        if guard_err:
-            return jsonify({'ok': False, 'error': guard_err}), 400
+        gate = _canon_gate(conn, cur['book_id'], cur['id'], +1, d.get('canon_phrase'))
+        if gate:
+            return gate
         ids = [r['id'] for r in conn.execute(
             """SELECT v.id FROM verses v JOIN chapters c ON c.id=v.chapter_id
                WHERE v.sam_ch_id=? ORDER BY c.number, CAST(v.number AS INTEGER), v.id""", (cur['id'],)).fetchall()]

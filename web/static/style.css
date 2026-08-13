@@ -1428,6 +1428,17 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
              padding-top:12px; }
 .canon-note-count{ font-weight:600; color:var(--navy); font-size:15px; margin-bottom:4px; }
 .canon-note-text{ font-size:12px; color:var(--muted,#777); line-height:1.5; }
+/* the warning that a split/merge takes the count off canon — it asks, it does not refuse */
+.modal-box.canon-ask .modal-title{ color:#8a3030; }
+.canon-tbl{ width:100%; border-collapse:collapse; font-size:14px; margin:2px 0 6px; }
+.canon-tbl th{ background:#f7ece9; color:#8a3030; font-weight:700; padding:3px 6px; }
+.canon-tbl td{ padding:3px 6px; text-align:center; border-top:1px solid rgba(138,48,48,.15); }
+.canon-tbl td:first-child{ text-align:right; color:var(--navy); }
+.canon-tbl td.after{ font-weight:800; color:#8a3030; }
+.canon-tbl td.closer{ color:#2f6d3a; font-size:12.5px; }
+.canon-tbl td.farther{ color:#8a3030; font-size:12.5px; font-weight:700; }
+.modal-box.canon-ask input{ width:100%; padding:9px 10px; border:2px solid #8a3030; border-radius:8px;
+  font-family:inherit; font-size:16px; text-align:center; }
 /* the three chapter signs (bookmark · printer · pronunciation) — pinned as ONE tight
    row to the left corner of the breadcrumb row. A flex row keeps them shoulder to
    shoulder whatever width each glyph happens to take on the device's emoji font,
