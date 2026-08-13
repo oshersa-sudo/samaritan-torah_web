@@ -5127,12 +5127,30 @@ function installPlatform(){
 // install module: a navy-and-gold parchment card with the אבני שהם logo.
 const INSTALL_UI = {
   he:{ title:'הוספת התורה למסך הבית', sub:'גישה מהירה במסך מלא, גם ללא רשת.', install:'התקנת האפליקציה', close:'סגירה',
-       hint_and:'ההתקנה מוסיפה אייקון למסך הבית ופותחת את האפליקציה במסך מלא.', hint_desk:'יתווסף קיצור לאפליקציה שייפתח בחלון נפרד.' },
+       hint_and:'ההתקנה מוסיפה אייקון למסך הבית ופותחת את האפליקציה במסך מלא.', hint_desk:'יתווסף קיצור לאפליקציה שייפתח בחלון נפרד.',
+       or:'או', pwa_h:'התקנה מהדפדפן', apk_h:'הורדת אפליקציית אנדרואיד', apk_sub:'קובץ התקנה להורדה ישירה למכשיר.',
+       apk_btn:'הורדת האפליקציה', apk_ver:'גרסה',
+       apk_note:'בסיום ההורדה פתח את הקובץ ואשר את ההתקנה. אם המכשיר שואל — אשר התקנה ממקור זה.' },
   en:{ title:'Add the Torah to your home screen', sub:'Quick full-screen access, even offline.', install:'Install the app', close:'Close',
-       hint_and:'Installing adds an icon to your home screen and opens the app full-screen.', hint_desk:'A shortcut will be added that opens in its own window.' },
+       hint_and:'Installing adds an icon to your home screen and opens the app full-screen.', hint_desk:'A shortcut will be added that opens in its own window.',
+       or:'or', pwa_h:'Install from the browser', apk_h:'Download the Android app', apk_sub:'An installer file, downloaded straight to your device.',
+       apk_btn:'Download the app', apk_ver:'version',
+       apk_note:'When the download finishes, open the file and confirm the installation. If your device asks, allow installing from this source.' },
   ar:{ title:'أضِف التوراة إلى الشاشة الرئيسية', sub:'وصول سريع بملء الشاشة، حتى دون اتصال.', install:'تثبيت التطبيق', close:'إغلاق',
-       hint_and:'يضيف التثبيت أيقونة إلى شاشتك الرئيسية ويفتح التطبيق بملء الشاشة.', hint_desk:'ستتم إضافة اختصار يُفتح في نافذة مستقلة.' },
+       hint_and:'يضيف التثبيت أيقونة إلى شاشتك الرئيسية ويفتح التطبيق بملء الشاشة.', hint_desk:'ستتم إضافة اختصار يُفتح في نافذة مستقلة.',
+       or:'أو', pwa_h:'التثبيت من المتصفّح', apk_h:'تنزيل تطبيق أندرويد', apk_sub:'ملف تثبيت يُنزَّل مباشرةً إلى جهازك.',
+       apk_btn:'تنزيل التطبيق', apk_ver:'الإصدار',
+       apk_note:'عند انتهاء التنزيل افتح الملف وأكّد التثبيت. إذا سألك الجهاز، اسمح بالتثبيت من هذا المصدر.' },
 };
+// The signed APK, offered next to the PWA install on Android. Fetched once and
+// cached; when it isn't published the card simply omits the option rather than
+// offering a download that 404s.
+let APK_INFO = null;
+async function loadApkInfo(){
+  try{ APK_INFO = await (await fetch('/api/apk_info')).json(); }
+  catch(e){ APK_INFO = {available:false}; }
+  return APK_INFO;
+}
 const INSTALL_ICONS = {
   share:'<svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 1.5v12" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round"/><path d="M6 5l4-4 4 4" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9H3.2A1.2 1.2 0 0 0 2 10.2v9.1A1.2 1.2 0 0 0 3.2 20.5h13.6A1.2 1.2 0 0 0 18 19.3v-9.1A1.2 1.2 0 0 0 16.8 9H15" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   add:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2.2" y="2.2" width="17.6" height="17.6" rx="4.4" stroke="#1F3864" stroke-width="1.7"/><path d="M11 7v8M7 11h8" stroke="#B8860B" stroke-width="1.9" stroke-linecap="round"/></svg>',
@@ -5147,6 +5165,17 @@ function instStep(glyph, html){
          (glyph?'<span class="pwa-glyph">'+glyph+'</span>':'')+
          '<span class="pwa-text">'+html+'</span></li>';
 }
+// the second install option: a direct download of the signed Android app
+function apkBlock(U){
+  if(!APK_INFO || !APK_INFO.available) return '';
+  const meta = [APK_INFO.version ? U.apk_ver+' '+APK_INFO.version : '',
+                APK_INFO.size_mb ? APK_INFO.size_mb+' MB' : ''].filter(Boolean).join(' · ');
+  return '<div class="pwa-or"><span>'+U.or+'</span></div>'+
+         '<p class="pwa-opt-h">'+U.apk_h+'</p>'+
+         '<p class="pwa-opt-sub">'+U.apk_sub+(meta?' <span class="pwa-opt-meta">'+meta+'</span>':'')+'</p>'+
+         '<a class="pwa-btn" href="/download/samaritan-torah.apk" download>'+INSTALL_ICONS.down+' '+U.apk_btn+'</a>'+
+         '<p class="pwa-hint">'+U.apk_note+'</p>';
+}
 function instBody(plat, L, U){
   const I = INSTALL_ICONS;
   const btn = '<button class="pwa-btn" id="pwaCardInstall">'+I.down+' '+U.install+'</button>';
@@ -5154,12 +5183,20 @@ function instBody(plat, L, U){
   if(plat === 'ios-safari')
     return '<ul class="pwa-steps">'+instStep(I.share,L.ios[0])+instStep(I.add,L.ios[1])+instStep(I.check,L.ios[2])+
            '</ul><p class="pwa-hint">'+L.ios_only+'</p>';
-  if(plat === 'ios-inapp' || plat === 'android-inapp')
-    return '<div class="pwa-warn">'+I.warn+'<p>'+L.inapp_warn+'</p></div><ul class="pwa-steps">'+
-           instStep(I.dots,L.inapp[0])+instStep('',L.inapp[1])+instStep(I.share,L.inapp[2])+'</ul>';
-  if(plat === 'android'){
-    if(deferredInstall) return btn+'<p class="pwa-hint">'+U.hint_and+'</p>';
-    return '<ul class="pwa-steps">'+instStep(I.dots,L.android[0])+instStep(I.add,L.android[1])+instStep(I.check,L.android[2])+'</ul>';
+  const inappSteps = '<div class="pwa-warn">'+I.warn+'<p>'+L.inapp_warn+'</p></div><ul class="pwa-steps">'+
+                     instStep(I.dots,L.inapp[0])+instStep('',L.inapp[1])+instStep(I.share,L.inapp[2])+'</ul>';
+  if(plat === 'ios-inapp') return inappSteps;
+  if(plat === 'android' || plat === 'android-inapp'){
+    // Two ways in: install from the browser, or download the signed APK. The
+    // in-app browser can't do the first but downloads the second just fine, so
+    // the APK is the more useful option exactly where the PWA route is blocked.
+    let browserWay;
+    if(plat === 'android-inapp')  browserWay = inappSteps;
+    else if(deferredInstall)      browserWay = btn+'<p class="pwa-hint">'+U.hint_and+'</p>';
+    else                          browserWay = '<ul class="pwa-steps">'+instStep(I.dots,L.android[0])+
+                                               instStep(I.add,L.android[1])+instStep(I.check,L.android[2])+'</ul>';
+    const apk = apkBlock(U);
+    return apk ? '<p class="pwa-opt-h">'+U.pwa_h+'</p>'+browserWay+apk : browserWay;
   }
   if(deferredInstall) return btn+'<p class="pwa-hint">'+U.hint_desk+'</p>';      // desktop
   return '<ul class="pwa-steps">'+instStep('',L.desktop[0])+instStep('',L.desktop[1])+'</ul>';
@@ -5193,6 +5230,9 @@ function renderInstallCard(){
 function doInstall(){
   $('installModal').classList.remove('hidden');
   renderInstallCard();
+  // the APK option appears as soon as its details arrive, so opening the card
+  // never waits on the network
+  if(!APK_INFO) loadApkInfo().then(renderInstallCard);
 }
 
 function showInfo(title, html){

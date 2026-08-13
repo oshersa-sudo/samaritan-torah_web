@@ -617,6 +617,15 @@ body.div-collapsed .div-handle.hint-on .tb-hint{ display:block; bottom:5px; anim
 .pwa-warn{ display:flex; gap:12px; align-items:flex-start; background:#FBF1E6; border:1px solid #E8C9A0;
   border-radius:12px; padding:13px 14px; margin-bottom:12px; }
 .pwa-warn svg{ flex:none; margin-top:1px; } .pwa-warn p{ margin:0; font-size:14.5px; color:#7A4A12; line-height:1.5; }
+/* the install card offers two routes — install from the browser, or download the
+   signed Android app — separated by a labelled rule so neither reads as a footnote */
+.pwa-opt-h{ margin:0 0 3px; font-size:13px; font-weight:700; letter-spacing:.02em; color:#1F3864; }
+.pwa-opt-sub{ margin:0 0 12px; font-size:13.5px; color:#6B6B63; line-height:1.5; }
+.pwa-opt-meta{ display:inline-block; margin-inline-start:4px; padding:1px 7px; border-radius:999px;
+  background:#F1EADA; border:1px solid #E4D9BE; font-size:12px; color:#7A6A45; white-space:nowrap; }
+.pwa-or{ display:flex; align-items:center; gap:10px; margin:18px 0 14px; color:#9A907A; font-size:12.5px; }
+.pwa-or::before, .pwa-or::after{ content:''; flex:1; height:1px; background:#E4D9BE; }
+a.pwa-btn{ text-decoration:none; box-sizing:border-box; }
 .pwa-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 14px 11px;
   border-top:1px solid #E4D9BE; background:#FBF8F0; }
 .pwa-langs{ display:inline-flex; gap:2px; padding:2px; background:#F4EEDF; border:1px solid #E4D9BE; border-radius:9px; }

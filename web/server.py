@@ -1357,6 +1357,40 @@ def assetlinks():
     }])
 
 
+# The signed Android app (the TWA), offered in the install menu alongside the
+# PWA install. It lives in web/downloads/ rather than web/static/ so the service
+# worker — which caches everything under /static/ — never pulls a 1.7 MB APK
+# into the page cache.
+_APK_DIR = os.path.join(_WEB_DIR, 'downloads')
+_APK_NAME = 'samaritan-torah.apk'
+
+
+@app.route('/api/apk_info')
+def api_apk_info():
+    """Size and version for the install card, and 'available': False before the
+    APK is ever published — so the card simply omits the option instead of
+    offering a download that 404s."""
+    path = os.path.join(_APK_DIR, _APK_NAME)
+    if not os.path.exists(path):
+        return jsonify({'available': False})
+    version = ''
+    try:                                    # single source of truth: the TWA manifest
+        with open(os.path.join(_ROOT, 'twa', 'twa-manifest.json'), encoding='utf-8') as f:
+            version = _json.load(f).get('appVersion', '')
+    except Exception:
+        pass
+    return jsonify({'available': True, 'version': version,
+                    'size_mb': round(os.path.getsize(path) / 1048576.0, 1)})
+
+
+@app.route('/download/samaritan-torah.apk')
+def download_apk():
+    if not os.path.exists(os.path.join(_APK_DIR, _APK_NAME)):
+        return jsonify({'error': 'apk not published'}), 404
+    return send_from_directory(_APK_DIR, _APK_NAME, as_attachment=True,
+                               mimetype='application/vnd.android.package-archive')
+
+
 # ── navigation API ─────────────────────────────────────────────────────────
 @app.route('/api/books')
 def api_books():
