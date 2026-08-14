@@ -1115,10 +1115,12 @@ async function showBooks(){
 }
 
 // ── the poem in the space under the book list ────────────────────────────────
-// Four couplets, each split at its colon: what stands before the colon is the
+// Five couplets, each split at its colon: what stands before the colon is the
 // right column, what stands after it the left. Both columns keep one width all
 // the way down and the words inside a half are spread to fill it, so the poem
 // reads as the table it is on the page — without any of the rules drawn.
+// The letters are set in the Torah's own face; the marks that close a line are
+// left exactly as they are written, in the plain face, like everywhere else.
 const BOOKS_POEM = [
   ['סיחון סיחוניך עדן:',      'משקה החיים מגן עדן.'],
   ['הן הוה הים מלא מן מים:',  'כן כתבה מלא רחמים:'],
@@ -1126,10 +1128,23 @@ const BOOKS_POEM = [
   ['מן הוה בכתבה דביק:',      'יהי אנש טב וצדיק:'],
   ['מן דרש אלה עליו יחמל:',   'לא יסור ימין ושמאל:-'],
 ];
+// letters → the Samaritan face; every mark (the colon that divides the line, the
+// period, the dash that closes the poem) is left untouched, in the plain face
+const POEM_LETTERS = /[א-ת]+/g;
+function poemMarkup(half){
+  let html='', last=0, m;
+  POEM_LETTERS.lastIndex = 0;
+  while((m = POEM_LETTERS.exec(half)) !== null){
+    if(m.index > last) html += esc(half.slice(last, m.index));
+    html += '<span class="samchar">' + esc(m[0]) + '</span>';
+    last = POEM_LETTERS.lastIndex;
+  }
+  return html + esc(half.slice(last));
+}
 function bookPoem(){
   const wrap = el('div','bkpoem'), grid = el('div','bkpoem-grid');
   for(const couplet of BOOKS_POEM)
-    for(const half of couplet) grid.appendChild(el('div','bkpoem-cell', esc(half)));
+    for(const half of couplet) grid.appendChild(el('div','bkpoem-cell', poemMarkup(half)));
   wrap.appendChild(grid);
   // setTimeout rather than rAF, which does not fire on a page that is not
   // compositing; and again once the Torah face is in, since it is measured.
@@ -1139,7 +1154,7 @@ function bookPoem(){
 }
 // It may never break a line and never be cut off, at any width: measure the poem
 // at its full size and take the type down to whatever room the screen gives it.
-const POEM_MAX = 23, POEM_MIN = 7;
+const POEM_MAX = 20, POEM_MIN = 7;
 function fitBookPoem(){
   const wrap = document.querySelector('.bkpoem'); if(!wrap) return;
   const grid = wrap.firstElementChild, cs = getComputedStyle(wrap);
@@ -1305,6 +1320,7 @@ async function renderVerses(chId, chNum, pid, pname){
   ]);
   navState('chapter');
   document.querySelectorAll('.verse-bless').forEach(e=>e.remove());   // clear on navigation
+  _blessBusy=false; _blessNext=null; _cueFired.clear();   // a new chapter, blessed afresh
   if(SHOW_PRON) await ensurePron();          // pronunciation preview data for this chapter
   paintVerses();
   if(isSam) blessOnLanding(chNum);
@@ -1316,6 +1332,21 @@ async function renderVerses(chId, chNum, pid, pname){
 //                   spelling of the text itself never breaks the rule)
 //   ctx.has(s)    — some verse of the chapter begins with them
 //   ctx.prevWord  — the last word of the previous Samaritan chapter (from the server)
+// 'שלום יהוה על הנביא…' answers three different places, so it is written once
+const BLESS_MOSHE = 'שלום יהוה על הנביא הצדיק התמים הטהור הנאמן משה';
+// דברים — the chapters of the rebuke, from 'והיה אם לא תשמע' through 'אם לא תשמר',
+// eight consecutive chapters. Named by their openings rather than their numbers,
+// so a renumbering of the Samaritan chapters can never move the rule off them.
+const DEUT_REBUKE = [
+  'והיה אם לא תשמע בקול יהוה אלהיך',
+  'יכך יהוה בשחפת ובקדחת',
+  'יכך יהוה בשחין מצרים',
+  'יוליך יהוה אתך ואת מלכך',
+  'ישא יהוה עליך גוי מרחק',
+  'האיש הרך בך והענג מאד',
+  'הרכה בך וענגה',
+  'אם לא תשמר לעשות את כל דברי התורה הזאת',
+];
 const BLESSINGS = [
   { text:'שלום יהוה על משה',                          // Moses' birth, שמות ב׳:1
     when: c => c.book===2 && c.has('וילך איש מבית לוי') },
@@ -1327,6 +1358,14 @@ const BLESSINGS = [
     when: c => c.book===5 && c.opens('שמע ישראל יהוה אלהינו') },
   { text:'יתגלג קראה דקרא עסרתי מליה:',                // the Ten Words, in שמות
     when: c => c.book===2 && c.opens('וידבר אלהים את כל הדברים האלה לאמר') },
+  { text:'יתרבה זה השם הקדוש',                         // אהיה אשר אהיה, in שמות
+    when: c => c.book===2 && c.opens('ויאמר אלהים אל משה אהיה אשר אהיה') },
+  { text:BLESS_MOSHE,                                  // the day the tabernacle was raised
+    when: c => c.book===4 && c.opens('וביום הוקם את המשכן') },
+  { text:BLESS_MOSHE,                                  // וביום השמיני עצרת, in פרשת פינחס
+    when: c => c.book===4 && c.opens('וביום השמיני עצרת') },
+  { text:'אדני יהוה שוב מחרון אפך',                    // every chapter of the rebuke in דברים
+    when: c => c.book===5 && DEUT_REBUKE.some(o => c.opens(o)) },
 ];
 async function blessOnLanding(chNum){
   const first = _vfold((S.verses[0] || {}).text || '');
@@ -1344,6 +1383,15 @@ async function blessOnLanding(chNum){
   const hit = BLESSINGS.find(b => { try{ return b.when(ctx); }catch(e){ return false; } });
   if(hit) playVerseBlessing(hit.text);
 }
+// Only one blessing is on the screen at a time. A second place reached while the
+// first is still showing waits for it (one deep — a reader moving fast is not
+// owed a queue of them), and the wait is dropped when the chapter changes.
+let _blessBusy = false, _blessNext = null;
+function queueVerseBlessing(text){
+  if(!text) return;
+  if(_blessBusy){ _blessNext = _blessNext || text; return; }
+  playVerseBlessing(text);
+}
 function playVerseBlessing(text){
   document.querySelectorAll('.verse-bless').forEach(e=>e.remove());
   const c=$('content'); const rect=c.getBoundingClientRect();
@@ -1359,9 +1407,96 @@ function playVerseBlessing(text){
     { opacity:.34, transform:'scale(1.03)', offset:.55 },
     { opacity:0,   transform:'scale(1.08)' },
   ], { duration:5200, easing:'ease-in-out' });
-  let gone=false; const done=()=>{ if(gone) return; gone=true; ov.remove(); };
+  _blessBusy = true;
+  let gone=false;
+  const done=()=>{
+    if(gone) return;
+    gone=true; ov.remove(); _blessBusy=false;
+    const nx=_blessNext; _blessNext=null;
+    if(nx) setTimeout(()=>{ if(!_blessBusy && S.view==='verses') playVerseBlessing(nx); }, 400);
+  };
   a.onfinish=done; a.oncancel=done; setTimeout(done, 5600);
 }
+
+// ── blessings the reading itself calls for, rather than the landing ──────────
+// Not answers to a chapter's opening but to a place reached in it: the end of any
+// verse closing with 'כאשר צוה יהוה את משה', the verse telling that the work of
+// the tabernacle was finished, and the end of each chapter of the rebuke in
+// פרשת אם בחקתי. A cue is planted at the point that has to be reached — after the
+// verse for an end, before it for an entry — and an observer on the scrolling
+// area fires it the first time it is scrolled into view. Once per chapter: a
+// repaint (a font change, a panel opened) re-plants the cues but never re-blesses
+// a place already blessed.
+const LEV_REBUKE = [    // אם בחקתי, through 'והנשארים בכם והבאתי מרך בלבבם'
+  'אם בחקתי תלכו',
+  'ואם לא תשמעו לי',
+  'ואם עד אלה לא תשמעו לי',
+  'ואם באלה לא תוסרו לי',
+  'ואם בזאת לא תשמעו לי',
+  'והנשארים בכם והבאתי מרך בלבבם',
+];
+function readingCues(){
+  const out = [], verses = S.verses || [];
+  const closing = _vfold('כאשר צוה יהוה את משה');
+  for(const v of verses){
+    const f = _vfold(v.text||'');
+    if(!f) continue;
+    if(f.endsWith(closing)) out.push({vid:v.id, where:'after', text:BLESS_MOSHE + '.'});
+    if(S.book===2 && f.startsWith(_vfold('ותכל כל עבדת המשכן')))
+      out.push({vid:v.id, where:'before',
+                text:'מרי השיב עלינן מן ברכת הנביא הצדיק התמים הטהור הנאמן משה.'});
+  }
+  // the rebuke — at the END of the chapter, and only in the Samaritan division,
+  // where each of these is a chapter of its own
+  const first = _vfold((verses[0]||{}).text || ''), last = verses[verses.length-1];
+  if(S.chMode==='samaritan' && S.book===3 && last
+     && LEV_REBUKE.some(o => first.startsWith(_vfold(o))))
+    out.push({vid:last.id, where:'after', text:'אדני יהוה סלח נא לעון העם הזה כגדל חסדך.'});
+  return out;
+}
+let _cueMarks = [], _cueFired = new Set(), _cueLive = false, _cueTimer = null;
+function armReadingBlessings(){
+  _cueLive = false; _cueMarks = [];
+  document.querySelectorAll('.bless-cue').forEach(e => e.remove());
+  if(S.view !== 'verses') return;
+  const root = $('content'); if(!root) return;
+  for(const cue of readingCues()){
+    const key = cue.vid + ':' + cue.where;
+    if(_cueFired.has(key)) continue;
+    const row = root.querySelector('.vrow[data-vid="'+cue.vid+'"]');
+    if(!row || !row.parentNode) continue;
+    const mark = el('i','bless-cue');
+    mark.dataset.text = cue.text; mark.dataset.key = key;
+    row.parentNode.insertBefore(mark, cue.where==='before' ? row : row.nextSibling);
+    _cueMarks.push(mark);
+  }
+  if(!_cueMarks.length) return;
+  // a moment's grace, so a blessing owed to the landing has the screen to itself
+  setTimeout(() => { if(S.view==='verses'){ _cueLive = true; cueCheck(); } }, 1400);
+}
+// a cue is reached when its mark stands inside the reading area. Measured on the
+// scroll rather than watched by an observer: the mark is a zero-height line in
+// the flow, and comparing rectangles answers the same question everywhere.
+function cueCheck(){
+  if(!_cueLive || !_cueMarks.length) return;
+  const root = $('content'); if(!root) return;
+  const r = root.getBoundingClientRect();
+  for(const m of _cueMarks){
+    if(!m.isConnected || _cueFired.has(m.dataset.key)) continue;
+    const b = m.getBoundingClientRect();
+    if(b.top <= r.bottom && b.bottom >= r.top){
+      _cueFired.add(m.dataset.key);                 // each place blesses once
+      queueVerseBlessing(m.dataset.text);
+    }
+  }
+}
+(function(){
+  const root = $('content'); if(!root) return;
+  root.addEventListener('scroll', () => {
+    if(!_cueLive || _cueTimer) return;
+    _cueTimer = setTimeout(() => { _cueTimer = null; cueCheck(); }, 120);
+  }, {passive:true});
+})();
 
 // the actual verse-area painter (re-run on every mode/filter/font change)
 function paintVerses(){
@@ -1491,6 +1626,7 @@ function paintVerses(){
     }
   }
   scheduleDotTrim();   // drop justification dots that fall at a line edge (Samaritan font)
+  armReadingBlessings();   // plant the cues for blessings the reading itself calls for
 }
 
 function addPlainRows(c, verses){
@@ -3014,7 +3150,9 @@ function hintAfterFold(node, folded, withArrow, timer){
   return setTimeout(()=>node.classList.add('hint-on'),
                     withArrow ? TB_ARROW_MS + 250 : TB_FOLD_MS);
 }
-function setToolbarFolded(folded, withArrow){
+// linkDiv=false folds the bottom bar ALONE — used on the book list, where the
+// division toggle above is the whole point of the screen and must stay up.
+function setToolbarFolded(folded, withArrow, linkDiv){
   const wasFolded=tbFolded;
   tbFolded=folded;
   const tb=$('toolbar'); tb.classList.toggle('folded', folded);
@@ -3027,7 +3165,7 @@ function setToolbarFolded(folded, withArrow){
     setTimeout(()=>tb.classList.remove('show-down'), 2000);
   }
   tbHintTimer = hintAfterFold(tb, folded, withArrow, tbHintTimer);
-  if(folded && !divFolded) setDivFolded(true, withArrow);           // FOLD links both bars (not open)
+  if(folded && linkDiv!==false && !divFolded) setDivFolded(true, withArrow);   // FOLD links both bars (not open)
 }
 // the top division-toggle bar (יהודית/שומרונית) folds like the bottom toolbar, with
 // its own handle. Folding links both bars; opening one does NOT open the other.
@@ -3049,7 +3187,15 @@ function armAutoFold(){   // fold (with the arrow animation) after 3s
 }
 function updateToolbarFold(isVerse){
   clearTimeout(tbFoldTimer);
-  if(!isVerse){ tbInVerse=false; setToolbarFolded(false,false); setDivFolded(false,false); return; }  // not a text screen
+  if(!isVerse){                                  // not a text screen
+    tbInVerse=false; setToolbarFolded(false,false); setDivFolded(false,false);
+    // the book list carries the poem in the space beneath the books: fold the
+    // bottom bar away after a moment so the poem is in view. The bar above it
+    // stays — choosing the division is what that screen is for.
+    if(S.view==='books')
+      tbFoldTimer=setTimeout(()=>{ if(S.view==='books') setToolbarFolded(true,true,false); }, 1500);
+    return;
+  }
   const fresh = !tbInVerse;   // arriving at a text/comparison screen from elsewhere
   tbInVerse=true;
   // every fresh entry: show the bar open, then auto-fold (with animation) after 3s —

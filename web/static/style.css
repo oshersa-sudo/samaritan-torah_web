@@ -168,6 +168,10 @@ body.div-collapsed .div-handle{ height:26px; }
   text-shadow:0 1px 2px rgba(255,255,255,.5), 0 3px 22px rgba(120,86,20,.35); }
 #searchScreen{ flex:1 1 auto; display:flex; flex-direction:column; overflow:hidden; padding:10px; }
 
+/* the invisible mark planted at a place in the text that carries a blessing —
+   after the verse for an end, before it for an entry; it must take no room */
+.bless-cue{ display:block; height:0; margin:0; padding:0; }
+
 /* list buttons (books / portions) */
 .listbtn{ display:flex; align-items:center; gap:8px; width:100%; margin-bottom:3px;
           padding:12px 12px; border:0; border-radius:6px; background:#d9d9d9; color:var(--dark);
@@ -182,9 +186,9 @@ body.div-collapsed .div-handle{ height:26px; }
    half are spread across their column, so the colons and both outer edges fall on
    the same four vertical lines. Never wraps (nowrap) and never clipped — the type
    is measured and scaled to the width available; see fitBookPoem(). */
-.bkpoem{ display:flex; justify-content:center; overflow:hidden; padding:22px 6px 16px; }
+.bkpoem{ display:flex; justify-content:center; overflow:hidden; padding:22px 14px 16px; }
 .bkpoem-grid{ flex:0 0 auto; display:grid; grid-template-columns:max-content max-content;
-              column-gap:.7em; row-gap:.34em; direction:rtl; white-space:nowrap;
+              column-gap:.55em; row-gap:.34em; direction:rtl; white-space:nowrap;
               font-family:'Hebrew',serif; font-size:23px; line-height:1.45;
               color:#8a6a1f; text-shadow:0 1px 0 rgba(255,255,255,.6); }
 /* nowrap keeps the half on one line; justifying the last line (which is also the
