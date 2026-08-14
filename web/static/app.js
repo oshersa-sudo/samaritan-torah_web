@@ -879,12 +879,22 @@ async function loadSamCalendar(){
 }
 // the line under the title: 'ב׳ מן החדש החמישי', and the day's event after it
 function paintSamDate(){
-  const el_ = $('samDate'); if(!el_) return;
+  const box = $('samDate'), run = $('samDateRun');
+  if(!box || !run) return;
   const d = CAL.today;
-  if(!d){ el_.textContent = ''; return; }
+  if(!d){ box.classList.add('empty'); run.textContent = ''; return; }
   let txt = d.d + ' מן החדש ' + d.m;
   if(d.ev && d.ev.length) txt += ' · ' + d.ev.join(' · ');
-  el_.textContent = txt;
+  run.textContent = txt;
+  box.classList.remove('empty');
+  // the same speed whatever the day's line says: time the run by the distance it
+  // has to cover, not by a fixed number of seconds. setTimeout rather than
+  // requestAnimationFrame — rAF does not fire on a page that is not compositing
+  // (a background tab), and the line must be timed correctly when it comes back.
+  setTimeout(() => {
+    const dist = run.offsetWidth + box.offsetWidth;
+    if(dist > 0) run.style.animationDuration = Math.max(9, Math.round(dist / 34)) + 's';
+  }, 0);
 }
 // is this portion the one read this coming Sabbath?
 function isWeekPortion(portionId){
@@ -1055,7 +1065,7 @@ async function showBooks(){
     const label = S.division==='samaritan'
       ? `${esc(b.name)} <small>(${b.n_portions}-${b.n_chapters})</small>` : esc(b.name);
     const mark = (S.division==='samaritan' && isWeekBook(b.id))
-      ? `<span class="week-mark">${esc(t('week_portion'))} ⟵</span>` : '';
+      ? `<span class="week-mark">⟶ ${esc(t('week_portion'))}</span>` : '';
     const btn = el('button','listbtn'+(mark?' is-week':''),
       `<img class="ico" src="/static/img/icon_book_dark.png" alt=""><span>${label}</span>${mark}`);
     btn.onclick = ()=>showPortions(b.id, b.name);
@@ -6592,6 +6602,37 @@ let READINGS = null;                       // null = not loaded (or absent)
 const RD_SPEEDS = [1, 1.25, 1.5, 2, 0.75];     // tap ×N to cycle; saved per device
 const RDAU = { audio:null, el:null, key:null, playing:false, ui:null, seekFix:null,
                speed: (parseFloat(localStorage.getItem('rd_speed')) || 1) };
+// ── keeping the phone awake while it reads ───────────────────────────────────
+// A recording that runs on into the next chapter — repeat on, or continuous
+// reading on — is exactly the case where the reader puts the phone down. The
+// screen then locks and playback dies with it. A screen wake lock holds it open
+// for as long as something is actually playing, and is dropped the moment it
+// stops, so it never keeps a screen alive for nothing.
+//
+// The lock is released by the browser whenever the page is hidden (switching
+// apps, the user locking the screen by hand), so it is re-taken on the way back
+// if the reading is still going.
+const WAKE = { lock:null };
+async function wakeKeep(){
+  if(WAKE.lock || !('wakeLock' in navigator) || document.visibilityState !== 'visible') return;
+  try{
+    WAKE.lock = await navigator.wakeLock.request('screen');
+    WAKE.lock.addEventListener('release', () => { WAKE.lock = null; });
+  }catch(e){ WAKE.lock = null; }   // refused (battery saver, an older browser) — play on regardless
+}
+function wakeRelease(){
+  const l = WAKE.lock; WAKE.lock = null;
+  if(l){ try{ l.release(); }catch(e){} }
+}
+// one place decides: something is playing → hold the screen; nothing is → let go
+function wakeSync(){
+  const playing = !!(RDAU && RDAU.playing) || !!(typeof ttsAudio !== 'undefined' && ttsAudio && !ttsAudio.paused);
+  if(playing) wakeKeep(); else wakeRelease();
+}
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible') wakeSync(); else WAKE.lock = null;
+});
+
 // ── continuous reading (הקראה רציפה) ─────────────────────────────────────────
 // A flag on the chapter's play bar, remembered per device. While it is on, the end
 // of a chapter's recording turns the page to the next chapter and goes on reading
@@ -6886,8 +6927,8 @@ function rdPlayFrom(vt){
                         if(RDAU.segIdx < segs.length-1) rdPlayFrom(done); else rdFinish(); };
   a.onplay  = ()=>{ RDAU.playing=true;
                     if(a.playbackRate!==RDAU.speed) a.playbackRate=RDAU.speed;   // a fresh src can reset it
-                    readingSync(); };
-  a.onpause = ()=>{ RDAU.playing=false; readingSync(); };
+                    wakeSync(); readingSync(); };
+  a.onpause = ()=>{ RDAU.playing=false; wakeSync(); readingSync(); };
   a.onended = advance;
   a.ontimeupdate = ()=>{ if(a.currentTime >= s.t1 - 0.04) advance(); else readingSync(); };
   a.onerror = ()=>{ const run = RDC.on && RDC.last; readingStop();
@@ -6912,6 +6953,7 @@ function readingToggle(rec, seekTo){
 function readingStop(){
   if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){} rdDetach(RDAU.audio); }
   RDAU.audio=null; RDAU.key=null; RDAU.rec=null; RDAU.segIdx=0; RDAU.segBase=0; RDAU.playing=false;
+  wakeSync();          // nothing is reading any more — let the screen sleep
   readingSync();
 }
 // the chapter's recording played out to its end

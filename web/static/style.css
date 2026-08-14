@@ -1732,11 +1732,22 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 
 /* today's date by the Samaritan reckoning, under the title — small, gold, and
    always in Hebrew whatever the interface language */
-.sam-date{ text-align:center; color:#f0c33c; font-size:11.5px; font-weight:600;
-  letter-spacing:.2px; padding:0 10px 3px; line-height:1.3; }
+/* a ticker rather than a static line: the track starts where the title row's own
+   content starts and runs to its end, and the text crosses it right to left. */
+.sam-date{ overflow:hidden; padding:0 10px 3px; line-height:1.35; height:17px; }
+.sam-date.empty{ display:none; }
+.sam-date #samDateRun{ display:inline-block; white-space:nowrap; will-change:transform;
+  color:#f0c33c; font-size:11px; font-weight:600; letter-spacing:.2px;
+  animation:samTick 16s linear infinite; }
+@keyframes samTick{ from{ transform:translateX(100%); } to{ transform:translateX(-100%); } }
+@media (prefers-reduced-motion:reduce){        /* a reader who asked for stillness gets it */
+  .sam-date{ text-align:center; }
+  .sam-date #samDateRun{ animation:none; }
+}
 .sam-date:empty{ display:none; }
 /* the portion read this coming Sabbath, in the book and portion lists */
 .week-mark{ margin-inline-start:auto; color:#8a6a12; background:#fdf3d0; border:1px solid #e2c96a;
+  direction:rtl;
   border-radius:6px; padding:1px 7px; font-size:12px; font-weight:800; white-space:nowrap; }
 .listbtn.is-week{ border-color:#e2c96a; box-shadow:inset 0 0 0 1px #f0c33c33; }
 /* and while reading inside it, above the play bar */
