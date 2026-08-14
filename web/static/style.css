@@ -175,6 +175,22 @@ body.div-collapsed .div-handle{ height:26px; }
 .listbtn .ico{ width:28px; height:28px; opacity:.8; }
 .listbtn small{ color:var(--muted); font-size:15px; }
 
+/* the poem in the space under the book list — set in the Torah face, centred as a
+   block, and laid out as a two-column table with the rules taken away: the right
+   column holds each line up to its colon, the left column what follows it. Both
+   columns keep one width down the page (max-content tracks), and the words of a
+   half are spread across their column, so the colons and both outer edges fall on
+   the same four vertical lines. Never wraps (nowrap) and never clipped — the type
+   is measured and scaled to the width available; see fitBookPoem(). */
+.bkpoem{ display:flex; justify-content:center; overflow:hidden; padding:22px 6px 16px; }
+.bkpoem-grid{ flex:0 0 auto; display:grid; grid-template-columns:max-content max-content;
+              column-gap:.7em; row-gap:.34em; direction:rtl; white-space:nowrap;
+              font-family:'Hebrew',serif; font-size:23px; line-height:1.45;
+              color:#8a6a1f; text-shadow:0 1px 0 rgba(255,255,255,.6); }
+/* nowrap keeps the half on one line; justifying the last line (which is also the
+   only line) spreads its words across the whole column, so the colons line up */
+.bkpoem-cell{ text-align:justify; text-align-last:justify; }
+
 .hint{ color:var(--muted); font-size:14px; padding:6px 4px; }
 
 /* chapter grids */

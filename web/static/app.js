@@ -931,7 +931,10 @@ function fitSamDate(){
   }
 }
 let _samFitTimer = null;
-addEventListener('resize', () => { clearTimeout(_samFitTimer); _samFitTimer = setTimeout(fitSamDate, 120); });
+addEventListener('resize', () => {
+  clearTimeout(_samFitTimer);
+  _samFitTimer = setTimeout(() => { fitSamDate(); fitBookPoem(); }, 120);
+});
 
 // is this portion the one read this coming Sabbath?
 function isWeekPortion(portionId){
@@ -1108,6 +1111,48 @@ async function showBooks(){
     btn.onclick = ()=>showPortions(b.id, b.name);
     c.appendChild(btn);
   }
+  c.appendChild(bookPoem());
+}
+
+// ── the poem in the space under the book list ────────────────────────────────
+// Four couplets, each split at its colon: what stands before the colon is the
+// right column, what stands after it the left. Both columns keep one width all
+// the way down and the words inside a half are spread to fill it, so the poem
+// reads as the table it is on the page — without any of the rules drawn.
+const BOOKS_POEM = [
+  ['סיחון סיחוניך עדן:',      'משקה החיים מגן עדן.'],
+  ['הן הוה הים מלא מן מים:',  'כן כתבה מלא רחמים:'],
+  ['המאור הגדול יתכסה:',      'ונהר כתבה לא יתכסה:'],
+  ['מן הוה בכתבה דביק:',      'יהי אנש טב וצדיק:'],
+  ['מן דרש אלה עליו יחמל:',   'לא יסור ימין ושמאל:-'],
+];
+function bookPoem(){
+  const wrap = el('div','bkpoem'), grid = el('div','bkpoem-grid');
+  for(const couplet of BOOKS_POEM)
+    for(const half of couplet) grid.appendChild(el('div','bkpoem-cell', esc(half)));
+  wrap.appendChild(grid);
+  // setTimeout rather than rAF, which does not fire on a page that is not
+  // compositing; and again once the Torah face is in, since it is measured.
+  setTimeout(fitBookPoem, 0);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitBookPoem);
+  return wrap;
+}
+// It may never break a line and never be cut off, at any width: measure the poem
+// at its full size and take the type down to whatever room the screen gives it.
+const POEM_MAX = 23, POEM_MIN = 7;
+function fitBookPoem(){
+  const wrap = document.querySelector('.bkpoem'); if(!wrap) return;
+  const grid = wrap.firstElementChild, cs = getComputedStyle(wrap);
+  // the room is the wrapper's CONTENT box: clientWidth still carries its padding
+  const avail = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 1;
+  if(avail <= 0) return;                       // not on screen yet
+  grid.style.fontSize = POEM_MAX + 'px';
+  const nat = grid.getBoundingClientRect().width;    // never shrinks: flex 0 0 auto
+  if(!nat) return;
+  let px = Math.max(POEM_MIN, Math.min(POEM_MAX, POEM_MAX * avail / nat));
+  grid.style.fontSize = px.toFixed(2) + 'px';
+  const got = grid.getBoundingClientRect().width;    // one pass for the rounding
+  if(got > avail) grid.style.fontSize = Math.max(POEM_MIN, px * avail / got).toFixed(2) + 'px';
 }
 
 // make sure the book list (for the current division) is cached, so chapter paging
@@ -1276,7 +1321,7 @@ const BLESSINGS = [
     when: c => c.book===2 && c.has('וילך איש מבית לוי') },
   { text:'ישתבח יהוה אלהים : ברוך יהוה אלהים',        // בראשית, Samaritan chapter 10
     when: c => c.book===1 && c.num===10 },
-  { text:'ישתבח קימה דלא מת',                          // after a chapter that ended 'וימת'
+  { text:'ישתבח קעימה דלא מת',                         // after a chapter that ended 'וימת'
     when: c => c.book===1 && c.prevWord==='וימת' },
   { text:'ישתבח אלהים לית אלה אלא אחד',                // שמע ישראל, in דברים
     when: c => c.book===5 && c.opens('שמע ישראל יהוה אלהינו') },
