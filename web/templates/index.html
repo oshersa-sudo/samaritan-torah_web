@@ -259,6 +259,23 @@
   <button id="ppCloseBtn" data-i18n="close">✕ סגור</button>
 </div>
 
+<!-- shown while the app is waiting on data (chapters, portions, a book): an
+     hourglass that drains, centred over whatever is on screen -->
+<div id="hourglass" class="hourglass" aria-hidden="true">
+  <svg viewBox="0 0 48 64" width="66" height="88">
+    <defs>
+      <clipPath id="hgTopBulb"><path d="M14 6h20v9c0 6-10 10-10 15S14 21 14 15z"/></clipPath>
+      <clipPath id="hgBotBulb"><path d="M24 30c0 5 10 9 10 15v9H14v-9c0-6 10-10 10-15z"/></clipPath>
+    </defs>
+    <g class="hg-sand">
+      <rect class="hg-top" x="12" y="4" width="24" height="28" clip-path="url(#hgTopBulb)"/>
+      <rect class="hg-bot" x="12" y="30" width="24" height="30" clip-path="url(#hgBotBulb)"/>
+      <rect class="hg-drip" x="23.2" y="29" width="1.6" height="14"/>
+    </g>
+    <path class="hg-frame" d="M11 4h26M11 60h26M14 5v10c0 6 10 10 10 15s-10 9-10 15v10M34 5v10c0 6-10 10-10 15s10 9 10 15v10"/>
+  </svg>
+</div>
+
 <!-- print-only output, built by buildPrintPage() right before printing/previewing -->
 <div id="printArea"></div>
 

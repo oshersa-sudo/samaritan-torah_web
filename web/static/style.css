@@ -1757,3 +1757,30 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
 /* and while reading inside it, above the play bar */
 .week-banner{ margin:0 0 6px; text-align:center; color:#8a6a12; background:#fdf3d0;
   border:1px solid #e2c96a; border-radius:8px; padding:4px 10px; font-size:13.5px; font-weight:700; }
+
+/* ── the hourglass shown while the app waits on data ────────────────────────
+   Centred over everything, and deliberately not a spinner: an hourglass that
+   actually drains says "this is taking a moment" the way a spinner cannot. It
+   is raised only after 220ms of waiting (see busyStart), so a fast answer never
+   makes the screen flash. */
+.hourglass{ position:fixed; inset:0; z-index:9200; display:none;
+  align-items:center; justify-content:center; pointer-events:none; }
+.hourglass.on{ display:flex; animation:hgIn .18s ease-out both; }
+@keyframes hgIn{ from{ opacity:0; } to{ opacity:1; } }
+.hourglass svg{ filter:drop-shadow(0 6px 18px rgba(0,0,0,.45)); }
+.hg-frame{ fill:none; stroke:#f0c33c; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+.hg-sand rect{ fill:#f0c33c; }
+/* the top bulb empties, the bottom fills, and the whole glass turns over between
+   runs — one 2.4s cycle, in step */
+.hg-top{ transform-box:fill-box; transform-origin:bottom; animation:hgTop 2.4s linear infinite; }
+.hg-bot{ transform-box:fill-box; transform-origin:bottom; animation:hgBot 2.4s linear infinite; }
+.hg-drip{ animation:hgDrip 2.4s linear infinite; }
+.hourglass svg{ animation:hgFlip 2.4s ease-in-out infinite; }
+@keyframes hgTop{ 0%{ transform:scaleY(1); } 88%,100%{ transform:scaleY(0); } }
+@keyframes hgBot{ 0%{ transform:scaleY(0); } 88%,100%{ transform:scaleY(1); } }
+@keyframes hgDrip{ 0%,88%{ opacity:.9; } 92%,100%{ opacity:0; } }
+@keyframes hgFlip{ 0%,86%{ transform:rotate(0deg); } 100%{ transform:rotate(180deg); } }
+@media (prefers-reduced-motion:reduce){
+  .hg-top,.hg-bot,.hg-drip,.hourglass svg{ animation:none; }
+  .hg-top{ transform:scaleY(.45); } .hg-bot{ transform:scaleY(.55); }
+}

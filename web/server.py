@@ -1762,6 +1762,30 @@ def api_sam_verses():
     return jsonify(out)
 
 
+@app.route('/api/sam_chapter_marks')
+def api_sam_chapter_marks():
+    """What a chapter's landing needs and cannot see in its own verses: the last
+    word of the PREVIOUS Samaritan chapter of the same book. Genesis blesses the
+    reader who has just come through a chapter that ended in death."""
+    sid = int(request.args['sam_ch_id'])
+    conn = db.get_connection()
+    out = {'prev_last_word': None}
+    sc = conn.execute('SELECT book_id, number FROM sam_chapters WHERE id=?', (sid,)).fetchone()
+    if sc and sc['number'] > 1:
+        prev = conn.execute('SELECT id FROM sam_chapters WHERE book_id=? AND number=?',
+                            (sc['book_id'], sc['number'] - 1)).fetchone()
+        if prev:
+            r = conn.execute("""SELECT v.text FROM verses v JOIN chapters c ON c.id = v.chapter_id
+                                WHERE v.sam_ch_id = ?
+                                ORDER BY c.number DESC, CAST(v.number AS INTEGER) DESC LIMIT 1""",
+                             (prev['id'],)).fetchone()
+            if r:
+                words = re.findall(r'[א-ת]+', r['text'] or '')
+                out['prev_last_word'] = words[-1] if words else None
+    conn.close()
+    return jsonify(out)
+
+
 @app.route('/api/canon_note')
 def api_canon_note():
     """Canon note for a book, if this sam_ch_id is that book's LAST Samaritan chapter —

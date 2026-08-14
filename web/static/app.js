@@ -25,19 +25,39 @@ function showMaintenance(){
   const t = setInterval(() => fetch('/api/admin/status', {cache:'no-store'})
     .then(r => { if (r.ok) { clearInterval(t); location.reload(); } }).catch(()=>{}), 15000);
 }
+// ── "the app is thinking" ────────────────────────────────────────────────────
+// Every wait for data goes through api(), so the hourglass is raised there and
+// nowhere else. It is held back for a moment first: a chapter that arrives in
+// 60ms should not make the screen flash, and only a wait long enough to be felt
+// deserves to be shown. Counted, because several requests overlap on a landing.
+let _busyN = 0, _busyTimer = null;
+function busyStart(){
+  if(++_busyN === 1 && !_busyTimer)
+    _busyTimer = setTimeout(() => { const h = $('hourglass'); if(h) h.classList.add('on'); }, 220);
+}
+function busyEnd(){
+  if(--_busyN > 0) return;
+  _busyN = 0;
+  clearTimeout(_busyTimer); _busyTimer = null;
+  const h = $('hourglass'); if(h) h.classList.remove('on');
+}
 const api = async (path) => {
   if (_apiCache.has(path)) return _apiCache.get(path);
   let res;
+  busyStart();
   try {
     res = await fetch('/api/' + path);
   } catch (err) {                       // network unreachable
+    busyEnd();
     if (navigator.onLine) showMaintenance();
     throw err;
   }
-  if (res.status >= 500) { showMaintenance(); throw new Error('server ' + res.status); }
-  const data = await res.json();
-  _apiCache.set(path, data);
-  return data;
+  if (res.status >= 500) { busyEnd(); showMaintenance(); throw new Error('server ' + res.status); }
+  try {
+    const data = await res.json();
+    _apiCache.set(path, data);
+    return data;
+  } finally { busyEnd(); }
 };
 const apiPost = async (path, body) =>
   (await fetch('/api/' + path, {method:'POST', headers:{'Content-Type':'application/json'},
@@ -1082,7 +1102,7 @@ async function showBooks(){
     const label = S.division==='samaritan'
       ? `${esc(b.name)} <small>(${b.n_portions}-${b.n_chapters})</small>` : esc(b.name);
     const mark = (S.division==='samaritan' && isWeekBook(b.id))
-      ? `<span class="week-mark">⟶ ${esc(t('week_portion'))}</span>` : '';
+      ? `<span class="week-mark">⟶ ${esc(t('week_portion'))} · ${esc(CAL.week.name)}</span>` : '';
     const btn = el('button','listbtn'+(mark?' is-week':''),
       `<img class="ico" src="/static/img/icon_book_dark.png" alt=""><span>${label}</span>${mark}`);
     btn.onclick = ()=>showPortions(b.id, b.name);
@@ -1242,16 +1262,48 @@ async function renderVerses(chId, chNum, pid, pname){
   document.querySelectorAll('.verse-bless').forEach(e=>e.remove());   // clear on navigation
   if(SHOW_PRON) await ensurePron();          // pronunciation preview data for this chapter
   paintVerses();
-  // Samaritan division only: landing on "וילך איש מבית לוי" (Moses' birth, Exod 2:1)
-  // floats a slow-dissolving blessing over the text, replayed on each landing.
-  if(isSam && S.verses.some(v=>_vfold(v.text||'').startsWith(BLESS_KEY))) playVerseBlessing();
+  if(isSam) blessOnLanding(chNum);
 }
-const BLESS_KEY = 'וילכאישמביתלוי';   // _vfold of "וילך איש מבית לוי"
-function playVerseBlessing(){
+// ── blessings floated over a chapter as the reader lands on it ───────────────
+// Samaritan division only. Each is the community's own praise at that place, and
+// each is replayed on every landing rather than once per session.
+//   ctx.opens(s)  — the chapter BEGINS with these words (skeleton-matched, so the
+//                   spelling of the text itself never breaks the rule)
+//   ctx.has(s)    — some verse of the chapter begins with them
+//   ctx.prevWord  — the last word of the previous Samaritan chapter (from the server)
+const BLESSINGS = [
+  { text:'שלום יהוה על משה',                          // Moses' birth, שמות ב׳:1
+    when: c => c.book===2 && c.has('וילך איש מבית לוי') },
+  { text:'ישתבח יהוה אלהים : ברוך יהוה אלהים',        // בראשית, Samaritan chapter 10
+    when: c => c.book===1 && c.num===10 },
+  { text:'ישתבח קימה דלא מת',                          // after a chapter that ended 'וימת'
+    when: c => c.book===1 && c.prevWord==='וימת' },
+  { text:'ישתבח אלהים לית אלה אלא אחד',                // שמע ישראל, in דברים
+    when: c => c.book===5 && c.opens('שמע ישראל יהוה אלהינו') },
+  { text:'יתגלג קראה דקרא עסרתי מליה:',                // the Ten Words, in שמות
+    when: c => c.book===2 && c.opens('וידבר אלהים את כל הדברים האלה לאמר') },
+];
+async function blessOnLanding(chNum){
+  const first = _vfold((S.verses[0] || {}).text || '');
+  const ctx = {
+    book: S.book, num: chNum, prevWord: null,
+    opens: str => first.startsWith(_vfold(str)),
+    has: str => S.verses.some(v => _vfold(v.text||'').startsWith(_vfold(str))),
+  };
+  // only fetched when a rule could actually turn on it, so no chapter pays for it
+  if(S.book === 1){
+    try{ const m = await api('sam_chapter_marks?sam_ch_id=' + S.curChId); ctx.prevWord = m && m.prev_last_word; }
+    catch(e){}
+    if(S.curChNum !== chNum) return;        // the reader moved on while we asked
+  }
+  const hit = BLESSINGS.find(b => { try{ return b.when(ctx); }catch(e){ return false; } });
+  if(hit) playVerseBlessing(hit.text);
+}
+function playVerseBlessing(text){
   document.querySelectorAll('.verse-bless').forEach(e=>e.remove());
   const c=$('content'); const rect=c.getBoundingClientRect();
   if(rect.width<10) return;
-  const ov=el('div','verse-bless','שלום יהוה על משה');
+  const ov=el('div','verse-bless', esc(text || 'שלום יהוה על משה'));
   Object.assign(ov.style,{ left:rect.left+'px', top:rect.top+'px',
     width:rect.width+'px', height:rect.height+'px' });
   document.body.appendChild(ov);
@@ -3002,6 +3054,9 @@ const BTN_BASE = {
 };
 function syncToolbar(isVerse){
   $('shareBtn').classList.toggle('hidden', !isVerse);
+  // "עיון" goes to the book list — so on the book list itself it does nothing, and
+  // it greys out there like any other button with nothing to do
+  $('browseBtn').disabled = (S.view === 'books');
   const setBtn=(id,enabled,on)=>{
     const b=$(id); b.disabled=!enabled; b.classList.toggle('on',!!on);
     b.style.background = !enabled ? '#555' : (on ? 'var(--active)' : (BTN_BASE[id]||''));
