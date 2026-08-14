@@ -456,6 +456,12 @@ body.div-collapsed .div-handle{ height:26px; }
 .tb-hint{ display:none; position:absolute; left:50%; width:6px; height:6px;
   border-left:1.8px solid rgba(255,255,255,.9); border-top:1.8px solid rgba(255,255,255,.9);
   filter:drop-shadow(0 0 2px rgba(0,0,0,.45)); pointer-events:none; }
+/* a DOUBLE chevron, so the invitation to pull cannot be mistaken for decoration.
+   The second one is drawn inside the first and offset along the element's own
+   +x/+y diagonal — which the 45° rotation sends BEHIND the tip, and the 225° one
+   equally behind the tip the other way, so a single rule serves both directions. */
+.tb-hint::after{ content:''; position:absolute; left:3.6px; top:3.6px; width:6px; height:6px;
+  border-left:1.8px solid rgba(255,255,255,.72); border-top:1.8px solid rgba(255,255,255,.72); }
 #toolbar.folded.hint-on .tb-hint{ display:block; top:5px; animation:tbHintUp 1.6s ease-in-out infinite; }
 body.div-collapsed .div-handle.hint-on .tb-hint{ display:block; bottom:5px; animation:tbHintDown 1.6s ease-in-out infinite; }
 @keyframes tbHintUp{
