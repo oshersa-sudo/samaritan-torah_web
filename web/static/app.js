@@ -1154,7 +1154,7 @@ function bookPoem(){
 }
 // It may never break a line and never be cut off, at any width: measure the poem
 // at its full size and take the type down to whatever room the screen gives it.
-const POEM_MAX = 20, POEM_MIN = 7;
+const POEM_MAX = 23, POEM_MIN = 7;
 function fitBookPoem(){
   const wrap = document.querySelector('.bkpoem'); if(!wrap) return;
   const grid = wrap.firstElementChild, cs = getComputedStyle(wrap);
