@@ -1127,11 +1127,37 @@ const BOOKS_POEM = [
   ['מן הוה בכתבה דביק:',      'יהי אנש טב וצדיק:'],
   ['מן דרש אלה עליו יחמל:',   'לא יסור ימין ושמאל:-'],
 ];
+// The rule that frames the poem, above it and (turned about) below it: two lines
+// running the width of the page, a point set in the middle of them, and at one
+// end the quill — two feathers lying along the line, its shaft sweeping up into
+// an open curl. Drawn once and used twice; the lower one is the same rule turned
+// through half a circle, so the curl falls at the other end.
+function ornRule(cls){
+  const s = el('div','orn-rule'+(cls?' '+cls:''));
+  s.innerHTML =
+    '<svg viewBox="0 0 1000 76" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'
+    + '<g fill="none" stroke="#6b4d1e" stroke-linecap="round">'
+    +   '<path d="M4 52 H735" stroke-width="2.4"/>'
+    +   '<path d="M24 60 H690" stroke-width=".9"/>'
+    +   '<path d="M735 52 C 792 52 830 44 856 30" stroke-width="1.8"/>'
+    +   '<path d="M690 60 C 750 60 792 52 820 40" stroke-width=".9"/>'
+    +   '<path d="M856 30 C 884 14 918 12 932 24 C 946 36 936 54 916 54 C 900 54 892 42 900 32" stroke-width="1.5"/>'
+    +   '<path d="M820 40 C 852 28 876 24 892 28" stroke-width=".85"/>'
+    + '</g>'
+    + '<path d="M762 48 C 792 34 834 27 856 29 C 834 44 796 54 762 48 Z" fill="#8a6a2c"/>'
+    + '<path d="M668 57 C 692 49 716 45 730 47 C 714 57 690 61 668 57 Z" fill="#c2ab84"/>'
+    + '<circle cx="368" cy="52" r="2.6" fill="#6b4d1e"/>'
+    + '</svg>';
+  return s;
+}
 function bookPoem(){
-  const wrap = el('div','bkpoem'), grid = el('div','bkpoem-grid');
+  const wrap = el('div','bkpoem'), frame = el('div','ornframe'), grid = el('div','bkpoem-grid');
   for(const couplet of BOOKS_POEM)
     for(const half of couplet) grid.appendChild(el('div','bkpoem-cell', esc(half)));
-  wrap.appendChild(grid);
+  frame.appendChild(ornRule());
+  frame.appendChild(grid);
+  frame.appendChild(ornRule('bot'));
+  wrap.appendChild(frame);
   // setTimeout rather than rAF, which does not fire on a page that is not
   // compositing; and again once the Torah face is in, since it is measured.
   setTimeout(fitBookPoem, 0);
@@ -1143,7 +1169,8 @@ function bookPoem(){
 const POEM_MAX = 23, POEM_MIN = 7;
 function fitBookPoem(){
   const wrap = document.querySelector('.bkpoem'); if(!wrap) return;
-  const grid = wrap.firstElementChild, cs = getComputedStyle(wrap);
+  const grid = wrap.querySelector('.bkpoem-grid'), cs = getComputedStyle(wrap);
+  if(!grid) return;
   // the room is the wrapper's CONTENT box: clientWidth still carries its padding
   const avail = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 1;
   if(avail <= 0) return;                       // not on screen yet

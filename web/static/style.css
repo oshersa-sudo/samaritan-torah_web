@@ -186,9 +186,14 @@ body.div-collapsed .div-handle{ height:26px; }
    half are spread across their column, so the colons and both outer edges fall on
    the same four vertical lines. Never wraps (nowrap) and never clipped — the type
    is measured and scaled to the width available; see fitBookPoem(). */
-.bkpoem{ display:flex; justify-content:center; overflow:hidden; padding:22px 14px 16px; }
+.bkpoem{ display:flex; justify-content:center; overflow:hidden; padding:10px 14px 6px; }
+/* the quill rule above the poem and, turned about, below it */
+.ornframe{ width:100%; display:flex; flex-direction:column; align-items:center; gap:9px; }
+.orn-rule{ width:100%; line-height:0; }
+.orn-rule svg{ display:block; width:100%; height:auto; }
+.orn-rule.bot{ transform:rotate(180deg); }
 .bkpoem-grid{ flex:0 0 auto; display:grid; grid-template-columns:max-content max-content;
-              column-gap:1.1em; row-gap:.34em; direction:rtl; white-space:nowrap;
+              column-gap:1.1em; row-gap:.3em; direction:rtl; white-space:nowrap;
               font-family:'Hebrew',serif; font-size:23px; line-height:1.45;
               color:#8a6a1f; text-shadow:0 1px 0 rgba(255,255,255,.6); }
 /* nowrap keeps the half on one line; justifying the last line (which is also the
