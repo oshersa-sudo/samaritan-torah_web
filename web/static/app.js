@@ -859,14 +859,18 @@ async function loadSamCalendar(){
   const now = new Date();
   // the coming Sabbath (today, when today IS the Sabbath) may fall in the next year
   const sat = new Date(now); sat.setDate(sat.getDate() + ((6 - sat.getDay()) % 7));
-  const years = [...new Set([now.getFullYear(), sat.getFullYear()])];
+  // A file holds one SAMARITAN year — Abib to Abib — so from January until Abib
+  // today's date lives in the previous Gregorian year's file, not this one.
+  const years = [...new Set([now.getFullYear() - 1, now.getFullYear(), sat.getFullYear()])];
   const days = {}, shabbat = {};
   for(const y of years){
     try{
       const r = await fetch('/static/data/calendar/' + y + '.json');
       if(!r.ok) continue;
       const j = await r.json();
-      Object.assign(days, j.days || {});
+      // the Canaan year belongs to the Samaritan year the file holds, so it is
+      // stamped onto its days as they are merged with the neighbouring year's
+      for(const [k, v] of Object.entries(j.days || {})) days[k] = Object.assign({y: j.canaan}, v);
       Object.assign(shabbat, j.shabbat || {});
     }catch(e){ /* offline and not yet cached — the app simply says nothing */ }
   }
@@ -884,6 +888,7 @@ function paintSamDate(){
   const d = CAL.today;
   if(!d){ box.classList.add('empty'); run.textContent = ''; return; }
   let txt = d.d + ' מן החדש ' + d.m;
+  if(d.y) txt += ' · שנת ' + d.y + ' לכניסה לכנען';
   if(d.ev && d.ev.length) txt += ' · ' + d.ev.join(' · ');
   run.textContent = txt;
   box.classList.remove('empty');

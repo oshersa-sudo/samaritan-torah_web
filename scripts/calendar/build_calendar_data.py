@@ -124,8 +124,11 @@ def main():
                                             'name': p['name'] if p else parasha}
         path = os.path.join(OUT_DIR, '%d.json' % gy)
         with io.open(path, 'w', encoding='utf-8', newline='') as f:
-            json.dump({'year': gy, 'days': days, 'shabbat': shabbat}, f, ensure_ascii=False,
-                      separators=(',', ':'))
+            # canaan: the year of the entry into Canaan for THIS Samaritan year — one
+            # value for the whole file, since a file is exactly one Samaritan year
+            # (Abib to Abib), not a Gregorian one
+            json.dump({'year': gy, 'canaan': y['canaan_year'], 'days': days, 'shabbat': shabbat},
+                      f, ensure_ascii=False, separators=(',', ':'))
         index[gy] = {'days': len(days), 'shabbatot': len(shabbat),
                      'kb': round(os.path.getsize(path) / 1024.0, 1)}
         print('%d → %s  (%d ימים · %d שבתות · %.1f KB)'
