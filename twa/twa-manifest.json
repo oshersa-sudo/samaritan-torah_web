@@ -15,6 +15,7 @@
   "enableNotifications": false,
   "startUrl": "/",
   "iconUrl": "https://samaritan-torah.onrender.com/static/img/icon-512.png",
+  "maskableIconUrl": "https://samaritan-torah.onrender.com/static/img/icon-maskable-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "./android.keystore",
