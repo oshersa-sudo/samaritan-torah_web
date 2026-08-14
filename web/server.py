@@ -1494,6 +1494,15 @@ def index():
     return render_template('index.html', version=APP_VERSION)
 
 
+# Google Play will not publish an app without a reachable privacy policy, and it
+# has to stay reachable for as long as the listing is up. Served as its own page,
+# standalone (no app.js, no service worker shell), so a reviewer — or anyone —
+# can read it without loading the whole reader. ?lang=en switches to English.
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+
 # ── ציר הזמן ההיסטורי השומרוני ───────────────────────────────────────────────
 # A self-contained page of its own (its own HTML/CSS/JS and its own generated
 # data files), served straight out of History_timeline/ rather than copied into
