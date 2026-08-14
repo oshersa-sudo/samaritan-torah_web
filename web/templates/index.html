@@ -63,13 +63,15 @@
       <button id="menuBtn" class="menu-btn" aria-label="תפריט">&#9776;</button>
       <button id="adminBadge" class="admin-badge hidden" data-i18n="admin_badge">מצב מנהל</button>
       <h1 data-i18n="app_title">התורה השומרונית הישראלית</h1>
-      <!-- today's date by the Samaritan reckoning; always in Hebrew, whatever the interface language -->
-      <div id="samDate" class="sam-date" dir="rtl" lang="he"></div>
       <div class="brand-stack">
         <img class="scroll-ico" src="{{ url_for('static', filename='img/torah_scroll_nobg.png') }}" alt="">
         <span class="ver">v{{ version }}</span>
       </div>
     </div>
+    <!-- today's date by the Samaritan reckoning, on its own line BELOW the title row —
+         inside it, it competed with the title for the row's width. Always in Hebrew,
+         whatever the interface language. -->
+    <div id="samDate" class="sam-date" dir="rtl" lang="he"></div>
     <div class="toggle-row">
       <button id="btnStandard" class="divbtn" data-i18n="div_jewish">חלוקה יהודית</button>
       <button id="btnSamaritan" class="divbtn active" data-i18n="div_sam">חלוקה שומרונית</button>

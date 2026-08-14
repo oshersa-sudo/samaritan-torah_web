@@ -50,7 +50,7 @@ body{
   #app{ max-width:none; width:100%; box-shadow:none; }
 
   /* chrome spans the viewport; its contents stay on the wide measure */
-  #hdr .brand-top, #hdr .title-row, #hdr .toggle-row,
+  #hdr .brand-top, #hdr .title-row, #hdr .sam-date, #hdr .toggle-row,
   #crumbs, #navbar, #toolbar .tb-rows, #toolbar .tb-handle, #hdr .div-handle{
     max-width:var(--measure-wide); margin-inline:auto; width:100%; }
 
@@ -1732,8 +1732,8 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 
 /* today's date by the Samaritan reckoning, under the title — small, gold, and
    always in Hebrew whatever the interface language */
-.sam-date{ flex:1 1 100%; order:9; text-align:center; color:#f0c33c; font-size:11.5px;
-  font-weight:600; letter-spacing:.2px; margin-top:1px; }
+.sam-date{ text-align:center; color:#f0c33c; font-size:11.5px; font-weight:600;
+  letter-spacing:.2px; padding:0 10px 3px; line-height:1.3; }
 .sam-date:empty{ display:none; }
 /* the portion read this coming Sabbath, in the book and portion lists */
 .week-mark{ margin-inline-start:auto; color:#8a6a12; background:#fdf3d0; border:1px solid #e2c96a;
