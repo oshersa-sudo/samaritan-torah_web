@@ -1732,18 +1732,16 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 
 /* today's date by the Samaritan reckoning, under the title — small, gold, and
    always in Hebrew whatever the interface language */
-/* a ticker rather than a static line: the track starts where the title row's own
-   content starts and runs to its end, and the text crosses it right to left. */
-.sam-date{ overflow:hidden; padding:0 10px 3px; line-height:1.35; height:17px; }
+/* one centred line, never two: when it is too long for the width it is given, the
+   type is stepped down (in JS) until it fits rather than wrapping or being cut. */
+.sam-date{ text-align:center; padding:0 10px 3px; line-height:1.35; overflow:hidden;
+  transition:max-height .25s ease, opacity .2s ease, padding .25s ease; max-height:24px; }
 .sam-date.empty{ display:none; }
-.sam-date #samDateRun{ display:inline-block; white-space:nowrap; will-change:transform;
-  color:#f0c33c; font-size:11px; font-weight:600; letter-spacing:.2px;
-  animation:samTick 16s linear infinite; }
-@keyframes samTick{ from{ transform:translateX(100%); } to{ transform:translateX(-100%); } }
-@media (prefers-reduced-motion:reduce){        /* a reader who asked for stillness gets it */
-  .sam-date{ text-align:center; }
-  .sam-date #samDateRun{ animation:none; }
-}
+.sam-date #samDateRun{ display:inline-block; white-space:nowrap;
+  color:#f0c33c; font-size:11px; font-weight:600; letter-spacing:.2px; }
+/* the top bar folds upward over the date as well, for the sake of the text */
+body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
+  padding-top:0 !important; padding-bottom:0 !important; }
 .sam-date:empty{ display:none; }
 /* the portion read this coming Sabbath, in the book and portion lists */
 .week-mark{ margin-inline-start:auto; color:#8a6a12; background:#fdf3d0; border:1px solid #e2c96a;

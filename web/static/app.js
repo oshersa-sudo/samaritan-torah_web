@@ -892,15 +892,27 @@ function paintSamDate(){
   if(d.ev && d.ev.length) txt += ' · ' + d.ev.join(' · ');
   run.textContent = txt;
   box.classList.remove('empty');
-  // the same speed whatever the day's line says: time the run by the distance it
-  // has to cover, not by a fixed number of seconds. setTimeout rather than
-  // requestAnimationFrame — rAF does not fire on a page that is not compositing
-  // (a background tab), and the line must be timed correctly when it comes back.
-  setTimeout(() => {
-    const dist = run.offsetWidth + box.offsetWidth;
-    if(dist > 0) run.style.animationDuration = Math.max(9, Math.round(dist / 34)) + 's';
-  }, 0);
+  // one line, centred: step the type down until it fits the width it is given.
+  // setTimeout rather than requestAnimationFrame — rAF does not fire on a page
+  // that is not compositing, and the line must still be sized correctly.
+  setTimeout(() => fitSamDate(), 0);
 }
+// The line must never wrap or be clipped: from 11px down to 8px, stop at the first
+// size that fits the track. Re-run on resize, since the width it has to fit changes
+// with the window (and with the phone turning).
+function fitSamDate(){
+  const box = $('samDate'), run = $('samDateRun');
+  if(!box || !run || !run.textContent) return;
+  const avail = box.clientWidth - 2;
+  if(avail <= 0) return;
+  for(const px of [11, 10.5, 10, 9.5, 9, 8.5, 8]){
+    run.style.fontSize = px + 'px';
+    if(run.scrollWidth <= avail) return;
+  }
+}
+let _samFitTimer = null;
+addEventListener('resize', () => { clearTimeout(_samFitTimer); _samFitTimer = setTimeout(fitSamDate, 120); });
+
 // is this portion the one read this coming Sabbath?
 function isWeekPortion(portionId){
   return !!(CAL.week && CAL.week.id && portionId === CAL.week.id);
