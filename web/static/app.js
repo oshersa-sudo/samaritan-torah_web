@@ -1119,8 +1119,7 @@ async function showBooks(){
 // right column, what stands after it the left. Both columns keep one width all
 // the way down and the words inside a half are spread to fill it, so the poem
 // reads as the table it is on the page — without any of the rules drawn.
-// The letters are set in the Torah's own face; the marks that close a line are
-// left exactly as they are written, in the plain face, like everywhere else.
+// Set in the face the Torah's text is read in, marks and all.
 const BOOKS_POEM = [
   ['סיחון סיחוניך עדן:',      'משקה החיים מגן עדן.'],
   ['הן הוה הים מלא מן מים:',  'כן כתבה מלא רחמים:'],
@@ -1128,23 +1127,10 @@ const BOOKS_POEM = [
   ['מן הוה בכתבה דביק:',      'יהי אנש טב וצדיק:'],
   ['מן דרש אלה עליו יחמל:',   'לא יסור ימין ושמאל:-'],
 ];
-// letters → the Samaritan face; every mark (the colon that divides the line, the
-// period, the dash that closes the poem) is left untouched, in the plain face
-const POEM_LETTERS = /[א-ת]+/g;
-function poemMarkup(half){
-  let html='', last=0, m;
-  POEM_LETTERS.lastIndex = 0;
-  while((m = POEM_LETTERS.exec(half)) !== null){
-    if(m.index > last) html += esc(half.slice(last, m.index));
-    html += '<span class="samchar">' + esc(m[0]) + '</span>';
-    last = POEM_LETTERS.lastIndex;
-  }
-  return html + esc(half.slice(last));
-}
 function bookPoem(){
   const wrap = el('div','bkpoem'), grid = el('div','bkpoem-grid');
   for(const couplet of BOOKS_POEM)
-    for(const half of couplet) grid.appendChild(el('div','bkpoem-cell', poemMarkup(half)));
+    for(const half of couplet) grid.appendChild(el('div','bkpoem-cell', esc(half)));
   wrap.appendChild(grid);
   // setTimeout rather than rAF, which does not fire on a page that is not
   // compositing; and again once the Torah face is in, since it is measured.
