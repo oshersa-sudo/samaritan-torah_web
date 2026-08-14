@@ -23,6 +23,14 @@ ANALYTICS_DB_PATH = os.environ.get('ANALYTICS_DB_PATH') or os.path.join(_DEFAULT
 
 _SID_RE = re.compile(r'^[A-Za-z0-9_-]{6,64}$')
 
+# Visit history is kept for this long and then deleted, as the privacy policy at
+# /privacy promises. Only the visit trail expires: the admin's WebAuthn
+# credential and the named counters (the APK download tally) are not visit data
+# and are never touched. Override with ANALYTICS_RETENTION_DAYS; 0 disables.
+RETENTION_DAYS = int(os.environ.get('ANALYTICS_RETENTION_DAYS', '30'))
+_PURGE_MARK = '_analytics_purge'      # counters row holding the last purge time
+_PURGE_EVERY = 24 * 3600              # at most one sweep a day
+
 
 def _connect():
     os.makedirs(os.path.dirname(os.path.abspath(ANALYTICS_DB_PATH)), exist_ok=True)
@@ -41,6 +49,8 @@ def _connect():
         name TEXT PRIMARY KEY, n INTEGER NOT NULL DEFAULT 0, last_ts INTEGER)''')
     conn.execute('CREATE INDEX IF NOT EXISTS idx_visits_session ON visits(session_id)')
     conn.execute('CREATE INDEX IF NOT EXISTS idx_sessions_last ON sessions(last_seen)')
+    # the retention sweep deletes by age; without this it would scan every visit
+    conn.execute('CREATE INDEX IF NOT EXISTS idx_visits_ts ON visits(ts)')
     return conn
 
 
@@ -72,6 +82,38 @@ def device_summary(ua):
     return ('%s · %s' % (device, browser)) if browser else device
 
 
+def purge_old(conn, now):
+    """Delete the visit trail older than RETENTION_DAYS, returning how many rows
+    went. The caller owns the connection and the commit.
+
+    Sessions are cut by last_seen and visits by their own timestamp, which cannot
+    orphan anything: a visit is never newer than its session's last_seen, so a
+    session old enough to delete has no surviving visits. A session still in use
+    keeps its row and loses only the visits that aged out from under it."""
+    if RETENTION_DAYS <= 0:
+        return 0, 0
+    cutoff = now - RETENTION_DAYS * 86400
+    visits = conn.execute('DELETE FROM visits WHERE ts < ?', (cutoff,)).rowcount
+    sessions = conn.execute('DELETE FROM sessions WHERE last_seen < ?', (cutoff,)).rowcount
+    return visits, sessions
+
+
+def _maybe_purge(conn, now):
+    """Sweep at most once a day. This host has no scheduler, so the sweep rides
+    along with ordinary traffic instead: two DELETEs, each driven by an index on
+    the age column, so the day's unlucky request pays almost nothing and every
+    other request pays a single indexed lookup of the last-sweep timestamp."""
+    if RETENTION_DAYS <= 0:
+        return
+    row = conn.execute('SELECT last_ts FROM counters WHERE name=?', (_PURGE_MARK,)).fetchone()
+    if row and row[0] and (now - row[0]) < _PURGE_EVERY:
+        return
+    purge_old(conn, now)
+    conn.execute('INSERT INTO counters(name, n, last_ts) VALUES(?,1,?) '
+                 'ON CONFLICT(name) DO UPDATE SET n = n + 1, last_ts = excluded.last_ts',
+                 (_PURGE_MARK, now))
+
+
 def track(session_id, ip, user_agent, path, title):
     if not session_id or not _SID_RE.match(session_id):
         return
@@ -89,6 +131,7 @@ def track(session_id, ip, user_agent, path, title):
         if path:
             conn.execute('INSERT INTO visits(session_id, ts, path, title) VALUES(?,?,?,?)',
                          (session_id, now, path[:200], (title or '')[:200]))
+        _maybe_purge(conn, now)
         conn.commit()
     finally:
         conn.close()
