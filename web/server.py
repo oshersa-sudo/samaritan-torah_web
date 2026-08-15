@@ -1607,6 +1607,11 @@ def fonts(fn):
 # that decides everything else.
 _STATIC_MEDIA = ('.png', '.jpg', '.jpeg', '.webp', '.svg', '.ico', '.mp3', '.m4a', '.json')
 
+# Rewritten by every boundary edit, so they must never be served from cache
+# without revalidating — everything else about a recording is read from them.
+_LIVE_MANIFESTS = ('/static/audio/readings/readings.json',
+                   '/static/audio/witnesses.json')
+
 
 @app.after_request
 def _cache_rules(resp):
@@ -1616,7 +1621,13 @@ def _cache_rules(resp):
     elif p.startswith('/fonts/'):
         resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
     elif p.startswith('/static/'):
-        if request.args.get('v'):
+        if p in _LIVE_MANIFESTS:
+            # These two index the recordings and are rewritten by every boundary
+            # edit. A week of caching meant a listener kept the old split — and
+            # kept it even after the audio itself was fixed, because the stale
+            # manifest is what names the files and their cut points.
+            resp.headers['Cache-Control'] = 'no-cache'
+        elif request.args.get('v'):
             resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
         elif p.endswith(_STATIC_MEDIA):
             resp.headers['Cache-Control'] = 'public, max-age=604800, stale-while-revalidate=86400'

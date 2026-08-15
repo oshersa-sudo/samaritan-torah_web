@@ -7252,6 +7252,19 @@ function witnessesFor(bookId, samNum){
 }
 // an option's audio = list of segments; plain files are a single full-length segment
 const rdSegs = rec => rec.segs || [{file:rec.file, t0:0, t1:rec.duration||1e9}];
+// A chapter recording is re-cut IN PLACE: same filename, different bytes. A
+// plain URL therefore keeps serving whatever the browser cached — the listener
+// goes on hearing the old split even after the fix is live, and no amount of
+// redeploying reaches them. Tagging the URL with the chapter's duration (which
+// a re-cut changes, and which is read from the never-cached manifest) turns
+// each cut into its own URL, so a new cut simply cannot be answered from the
+// old cache entry. The '?v=' also promotes it to immutable server-side.
+// Archive files under /masorot/ are never re-cut, so they are left untagged.
+const rdSrc = (file, rec) => {
+  if(!file || file.indexOf('/audio/readings/') < 0 || file.indexOf('?') >= 0) return file;
+  const v = rec && rec.duration;
+  return v ? file + '?v=' + String(v).replace('.', '') : file;
+};
 const rdKey  = rec => rec.segs ? ('segs:'+rec.segs.map(s=>s.file+'@'+s.t0).join('|')) : rec.file;
 const _vnum = v => { const m=String(v==null?'':v).match(/\d+/); return m?+m[0]:null; };
 // witness label: which verses of which standard chapter this file actually covers
@@ -7464,8 +7477,9 @@ function rdPlayFrom(vt){
   const a = rdEl();
   try{ a.pause(); }catch(e){}
   rdDetach(a);
-  const want = new URL(s.file, location.href).href;
-  if(a.src !== want) a.src = s.file;    // successive segments of one file: no reload
+  const src = rdSrc(s.file, RDAU.rec);
+  const want = new URL(src, location.href).href;
+  if(a.src !== want) a.src = src;       // successive segments of one file: no reload
   a.playbackRate = RDAU.speed;
   RDAU.audio = a;
   // seek even to 0: the shared element is left wherever the previous cut ended, so a
