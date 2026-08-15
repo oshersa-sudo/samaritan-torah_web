@@ -1104,7 +1104,7 @@ async function showBooks(){
   for(const b of books){
     const nm = bookLabel(b.id, b.name);
     const label = S.division==='samaritan'
-      ? `${esc(nm)}<span class="bk-sam"> – <span class="samchar">${esc(nm)}</span></span>`
+      ? `${esc(nm)}<span class="bk-sam"> – ${samWords(nm)}</span>`
         + ` <small>(${b.n_portions}-${b.n_chapters})</small>`
       : esc(b.name);
     const mark = (S.division==='samaritan' && isWeekBook(b.id))
@@ -1192,6 +1192,13 @@ function fitBookPoem(){
 // list, the breadcrumbs, the print header and the share text all agree; the list
 // itself also sets each name beside itself in the Samaritan script.
 const SAM_BOOK_NAMES = {1:'בראשית', 2:'ואלה שמות', 3:'ויקרא', 4:'במדבר סיני', 5:'ואלה הדברים'};
+// the name in Samaritan letters, its words held apart and a separator dot set
+// mid-line between them, the way a Samaritan scribe divides words
+function samWords(name){
+  return name.trim().split(/\s+/)
+             .map(w => '<span class="samchar">' + esc(w) + '</span>')
+             .join('<span class="wsep">·</span>');
+}
 function bookLabel(id, name){
   return (S.division==='samaritan' && SAM_BOOK_NAMES[id]) ? SAM_BOOK_NAMES[id] : name;
 }

@@ -189,6 +189,11 @@ body.div-collapsed .div-handle{ height:26px; }
    to the next line rather than pushing the name off the screen */
 .listbtn.twoscripts .week-mark{ margin-inline-start:auto; }
 .listbtn .bk-sam{ font-size:.58em; color:#6b4d1e; white-space:nowrap; }
+/* the separator between the words of a Samaritan name: a gap, and a dot
+   sitting halfway up the line inside it. Not in the Samaritan face — that
+   font has no middle dot and would render an empty box (see .wsep above). */
+.listbtn .bk-sam .wsep{ font-family:'Hebrew',sans-serif; font-size:.8em;
+                        margin:0 .42em; vertical-align:.28em; opacity:.85; }
 /* a name is never broken across lines — on the book of the week, where the
    badge shares the row, 'במדבר סיני' was splitting in two */
 .listbtn.twoscripts > span{ white-space:nowrap; }
