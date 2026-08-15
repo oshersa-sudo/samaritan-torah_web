@@ -22,8 +22,10 @@ function showMaintenance(){
     + '<p>אנו מעדכנים את המערכת כרגע בתיקונים ובתוספות חדשים.<br>אנא נסה שוב מאוחר יותר.</p>'
     + '<button onclick="location.reload()">נסה שוב</button></div>';
   document.body.appendChild(d);
+  // and it takes itself down as soon as the server answers again — a deploy is
+  // over in half a minute, and nobody should have to reload to find that out
   const t = setInterval(() => fetch('/api/admin/status', {cache:'no-store'})
-    .then(r => { if (r.ok) { clearInterval(t); location.reload(); } }).catch(()=>{}), 15000);
+    .then(r => { if (r.ok) { clearInterval(t); location.reload(); } }).catch(()=>{}), 5000);
 }
 // ── "the app is thinking" ────────────────────────────────────────────────────
 // Every wait for data goes through api(), so the hourglass is raised there and
@@ -41,22 +43,53 @@ function busyEnd(){
   clearTimeout(_busyTimer); _busyTimer = null;
   const h = $('hourglass'); if(h) h.classList.remove('on');
 }
+// ── when is the server really down? ─────────────────────────────────────────
+// The maintenance screen used to go up at the FIRST failed request, which meant
+// a lift, a tunnel or the few seconds of a deploy threw the reader out of a
+// chapter he was in the middle of. A single failure now means nothing: the call
+// itself is tried three times over about a second, and only after several calls
+// have failed in a row does the app go and ask the server whether it is there at
+// all — twice, a second and a half apart. The screen goes up only if that also
+// fails, i.e. after some ten seconds of a server that truly is not answering.
+let _failStreak = 0, _lastFail = 0, _probing = false;
+const _sleep = ms => new Promise(r => setTimeout(r, ms));
+async function serverSeemsDown(){
+  const now = Date.now();
+  if(now - _lastFail > 20000) _failStreak = 0;      // an old failure is not part of this
+  _lastFail = now;
+  if(++_failStreak < 3 || _probing) return;
+  _probing = true;
+  try{
+    for(let i = 0; i < 2; i++){
+      try{
+        const r = await fetch('/api/admin/status', {cache:'no-store'});
+        if(r.ok){ _failStreak = 0; return; }        // it is answering after all
+      }catch(e){}
+      await _sleep(1500);
+    }
+    showMaintenance();
+  } finally { _probing = false; }
+}
 const api = async (path) => {
   if (_apiCache.has(path)) return _apiCache.get(path);
-  let res;
   busyStart();
   try {
-    res = await fetch('/api/' + path);
-  } catch (err) {                       // network unreachable
-    busyEnd();
-    if (navigator.onLine) showMaintenance();
-    throw err;
-  }
-  if (res.status >= 500) { busyEnd(); showMaintenance(); throw new Error('server ' + res.status); }
-  try {
-    const data = await res.json();
-    _apiCache.set(path, data);
-    return data;
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const res = await fetch('/api/' + path);
+        if (res.status >= 500) throw new Error('server ' + res.status);
+        const data = await res.json();
+        _apiCache.set(path, data);
+        _failStreak = 0;
+        return data;
+      } catch (err) {
+        if (attempt >= 2) {                          // three goes, then give up on it
+          if (navigator.onLine) serverSeemsDown();
+          throw err;
+        }
+        await _sleep(400 * (attempt + 1));
+      }
+    }
   } finally { busyEnd(); }
 };
 const apiPost = async (path, body) =>

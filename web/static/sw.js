@@ -1,7 +1,7 @@
 /* Service worker: NETWORK-FIRST so the app always loads the latest code when
    online (an earlier cache-first version served stale assets after updates),
    falling back to the cache only when offline. /api/* always hits the network. */
-const CACHE = 'torah-web-v219';
+const CACHE = 'torah-web-v220';
 const SHELL = [
   '/', '/manifest.json',      // app.js + style.css are cached by the page's own
                              // versioned request; precaching them here fetched
@@ -46,8 +46,16 @@ self.addEventListener('fetch', e => {
                     u.pathname.startsWith('/fonts/') || u.pathname === '/';
   const isNav = e.request.mode === 'navigate';
 
+  // A page load gets a second chance before anything is concluded: a restarting
+  // server refuses one request and answers the next, and a reader reloading in
+  // that half-second should not be shown a maintenance page.
+  const tryFetch = () => fetch(e.request).catch(err => {
+    if (!isNav) throw err;
+    return new Promise(r => setTimeout(r, 900)).then(() => fetch(e.request));
+  });
+
   e.respondWith(
-    fetch(e.request).then(resp => {                 // network first
+    tryFetch().then(resp => {                       // network first
       // A deploying/restarting Render instance answers 5xx rather than refusing
       // the connection; treat that as "server is down" too, otherwise the error
       // page would be cached and shown as if it were the app.
