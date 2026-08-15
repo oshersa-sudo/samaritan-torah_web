@@ -1222,10 +1222,12 @@ async function showPortions(bookId, bookName){
   const c = $('content'); c.innerHTML='';
   for(const p of S.portions){
     const label = S.division==='samaritan'
-      ? `${esc(p.name)} <small>(${p.n_chapters})</small>` : esc(p.name);
+      ? `${esc(p.name)}<span class="bk-sam"> – ${samWords(p.name)}</span>`
+        + ` <small>(${p.n_chapters})</small>`
+      : esc(p.name);
     const mark = (S.division==='samaritan' && isWeekPortion(p.id))
       ? `<span class="week-mark">${esc(t('week_portion'))}</span>` : '';
-    const btn = el('button','listbtn'+(mark?' is-week':''),
+    const btn = el('button','listbtn'+(S.division==='samaritan'?' twoscripts':'')+(mark?' is-week':''),
       `<img class="ico" src="/static/img/icon_portion_dark.png" alt=""><span>${label}</span>${mark}`);
     btn.onclick = ()=> S.division==='samaritan'
       ? showSamChapters(p.id, p.name) : showChapters(p.id, p.name);
