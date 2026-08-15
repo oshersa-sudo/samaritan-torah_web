@@ -1,104 +1,104 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 540" width="400" height="540"><defs></defs>
 
           <g fill="#b8912f">
-            <ellipse cx="118" cy="54" rx="15" ry="14"></ellipse>
-            <ellipse cx="118" cy="86" rx="22" ry="20"></ellipse>
-            <rect x="92" y="100" width="52" height="11" rx="4"></rect>
-            <rect x="108" y="111" width="20" height="329" rx="6"></rect>
-            <ellipse cx="282" cy="54" rx="15" ry="14"></ellipse>
-            <ellipse cx="282" cy="86" rx="22" ry="20"></ellipse>
-            <rect x="256" y="100" width="52" height="11" rx="4"></rect>
-            <rect x="272" y="111" width="20" height="329" rx="6"></rect>
+            <ellipse cx="104" cy="54" rx="15" ry="14"></ellipse>
+            <ellipse cx="104" cy="86" rx="22" ry="20"></ellipse>
+            <rect x="78" y="100" width="52" height="11" rx="4"></rect>
+            <rect x="94" y="111" width="20" height="329" rx="6"></rect>
+            <ellipse cx="296" cy="54" rx="15" ry="14"></ellipse>
+            <ellipse cx="296" cy="86" rx="22" ry="20"></ellipse>
+            <rect x="270" y="100" width="52" height="11" rx="4"></rect>
+            <rect x="286" y="111" width="20" height="329" rx="6"></rect>
             <ellipse cx="200" cy="32" rx="14" ry="13"></ellipse>
             <ellipse cx="200" cy="62" rx="19" ry="18"></ellipse>
             <rect x="177" y="76" width="46" height="11" rx="4"></rect>
             <rect x="193" y="87" width="14" height="42"></rect>
 
-            <g transform="translate(98,111)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
-            <g transform="translate(138,111)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
-            <g transform="translate(262,111)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
-            <g transform="translate(302,111)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
+            <g transform="translate(84,111)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
+            <g transform="translate(124,111)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
+            <g transform="translate(276,111)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
+            <g transform="translate(316,111)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
             <g transform="translate(178,87)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
             <g transform="translate(222,87)"><rect x="-1.5" y="0" width="3" height="4"></rect><path d="M-2 4 H2 L2 6 C6 8 7 12 8 15 H-8 C-7 12 -6 8 -2 6 Z"></path><circle cx="0" cy="17" r="2.2"></circle></g>
 
-            <rect x="88" y="129" width="224" height="16" rx="5"></rect>
-            <g fill="#b8912f"><path d="M91 129 H99 L95 120 Z M105 129 H113 L109 120 Z M119 129 H127 L123 120 Z M133 129 H141 L137 120 Z M147 129 H155 L151 120 Z M161 129 H169 L165 120 Z M175 129 H183 L179 120 Z M189 129 H197 L193 120 Z M203 129 H211 L207 120 Z M217 129 H225 L221 120 Z M231 129 H239 L235 120 Z M245 129 H253 L249 120 Z M259 129 H267 L263 120 Z M273 129 H281 L277 120 Z M287 129 H295 L291 120 Z M301 129 H309 L305 120 Z"></path></g>
-            <rect x="88" y="424" width="224" height="16" rx="5"></rect>
-            <g><path d="M95 435 C98.2 430 98.2 427.5 95 426 C91.8 427.5 91.8 430 95 435 Z M109 435 C112.2 430 112.2 427.5 109 426 C105.8 427.5 105.8 430 109 435 Z M123 435 C126.2 430 126.2 427.5 123 426 C119.8 427.5 119.8 430 123 435 Z M137 435 C140.2 430 140.2 427.5 137 426 C133.8 427.5 133.8 430 137 435 Z M151 435 C154.2 430 154.2 427.5 151 426 C147.8 427.5 147.8 430 151 435 Z M165 435 C168.2 430 168.2 427.5 165 426 C161.8 427.5 161.8 430 165 435 Z M179 435 C182.2 430 182.2 427.5 179 426 C175.8 427.5 175.8 430 179 435 Z M193 435 C196.2 430 196.2 427.5 193 426 C189.8 427.5 189.8 430 193 435 Z M207 435 C210.2 430 210.2 427.5 207 426 C203.8 427.5 203.8 430 207 435 Z M221 435 C224.2 430 224.2 427.5 221 426 C217.8 427.5 217.8 430 221 435 Z M235 435 C238.2 430 238.2 427.5 235 426 C231.8 427.5 231.8 430 235 435 Z M249 435 C252.2 430 252.2 427.5 249 426 C245.8 427.5 245.8 430 249 435 Z M263 435 C266.2 430 266.2 427.5 263 426 C259.8 427.5 259.8 430 263 435 Z M277 435 C280.2 430 280.2 427.5 277 426 C273.8 427.5 273.8 430 277 435 Z M291 435 C294.2 430 294.2 427.5 291 426 C287.8 427.5 287.8 430 291 435 Z M305 435 C308.2 430 308.2 427.5 305 426 C301.8 427.5 301.8 430 305 435 Z" fill="rgba(0,0,0,.45)" transform="translate(0,0.8)"></path><path d="M95 435 C98.2 430 98.2 427.5 95 426 C91.8 427.5 91.8 430 95 435 Z M109 435 C112.2 430 112.2 427.5 109 426 C105.8 427.5 105.8 430 109 435 Z M123 435 C126.2 430 126.2 427.5 123 426 C119.8 427.5 119.8 430 123 435 Z M137 435 C140.2 430 140.2 427.5 137 426 C133.8 427.5 133.8 430 137 435 Z M151 435 C154.2 430 154.2 427.5 151 426 C147.8 427.5 147.8 430 151 435 Z M165 435 C168.2 430 168.2 427.5 165 426 C161.8 427.5 161.8 430 165 435 Z M179 435 C182.2 430 182.2 427.5 179 426 C175.8 427.5 175.8 430 179 435 Z M193 435 C196.2 430 196.2 427.5 193 426 C189.8 427.5 189.8 430 193 435 Z M207 435 C210.2 430 210.2 427.5 207 426 C203.8 427.5 203.8 430 207 435 Z M221 435 C224.2 430 224.2 427.5 221 426 C217.8 427.5 217.8 430 221 435 Z M235 435 C238.2 430 238.2 427.5 235 426 C231.8 427.5 231.8 430 235 435 Z M249 435 C252.2 430 252.2 427.5 249 426 C245.8 427.5 245.8 430 249 435 Z M263 435 C266.2 430 266.2 427.5 263 426 C259.8 427.5 259.8 430 263 435 Z M277 435 C280.2 430 280.2 427.5 277 426 C273.8 427.5 273.8 430 277 435 Z M291 435 C294.2 430 294.2 427.5 291 426 C287.8 427.5 287.8 430 291 435 Z M305 435 C308.2 430 308.2 427.5 305 426 C301.8 427.5 301.8 430 305 435 Z" fill="rgba(255,255,255,.34)" transform="translate(0,-0.8)"></path></g>
-            <rect x="108" y="430" width="20" height="70" rx="6"></rect>
-            <rect x="272" y="430" width="20" height="70" rx="6"></rect>
-            <circle cx="118" cy="503" r="19"></circle>
-            <circle cx="282" cy="503" r="19"></circle>
-            <g fill="none" stroke-linecap="round"><path d="M108 438 L128 432 M108 446 L128 440 M108 454 L128 448 M108 462 L128 456 M108 470 L128 464 M108 478 L128 472 M108 486 L128 480 M272 438 L292 432 M272 446 L292 440 M272 454 L292 448 M272 462 L292 456 M272 470 L292 464 M272 478 L292 472 M272 486 L292 480" stroke="rgba(0,0,0,.5)" stroke-width="2.4" transform="translate(0,1)"></path><path d="M108 438 L128 432 M108 446 L128 440 M108 454 L128 448 M108 462 L128 456 M108 470 L128 464 M108 478 L128 472 M108 486 L128 480 M272 438 L292 432 M272 446 L292 440 M272 454 L292 448 M272 462 L292 456 M272 470 L292 464 M272 478 L292 472 M272 486 L292 480" stroke="rgba(255,255,255,.38)" stroke-width="1.8" transform="translate(0,-0.8)"></path></g>
+            <rect x="74" y="129" width="252" height="16" rx="5"></rect>
+            <g fill="#b8912f"><path d="M77 129 H85 L81 120 Z M91 129 H99 L95 120 Z M105 129 H113 L109 120 Z M119 129 H127 L123 120 Z M133 129 H141 L137 120 Z M147 129 H155 L151 120 Z M161 129 H169 L165 120 Z M175 129 H183 L179 120 Z M189 129 H197 L193 120 Z M203 129 H211 L207 120 Z M217 129 H225 L221 120 Z M231 129 H239 L235 120 Z M245 129 H253 L249 120 Z M259 129 H267 L263 120 Z M273 129 H281 L277 120 Z M287 129 H295 L291 120 Z M301 129 H309 L305 120 Z M315 129 H323 L319 120 Z"></path></g>
+            <rect x="74" y="424" width="252" height="16" rx="5"></rect>
+            <g><path d="M81 435 C84.2 430 84.2 427.5 81 426 C77.8 427.5 77.8 430 81 435 Z M95 435 C98.2 430 98.2 427.5 95 426 C91.8 427.5 91.8 430 95 435 Z M109 435 C112.2 430 112.2 427.5 109 426 C105.8 427.5 105.8 430 109 435 Z M123 435 C126.2 430 126.2 427.5 123 426 C119.8 427.5 119.8 430 123 435 Z M137 435 C140.2 430 140.2 427.5 137 426 C133.8 427.5 133.8 430 137 435 Z M151 435 C154.2 430 154.2 427.5 151 426 C147.8 427.5 147.8 430 151 435 Z M165 435 C168.2 430 168.2 427.5 165 426 C161.8 427.5 161.8 430 165 435 Z M179 435 C182.2 430 182.2 427.5 179 426 C175.8 427.5 175.8 430 179 435 Z M193 435 C196.2 430 196.2 427.5 193 426 C189.8 427.5 189.8 430 193 435 Z M207 435 C210.2 430 210.2 427.5 207 426 C203.8 427.5 203.8 430 207 435 Z M221 435 C224.2 430 224.2 427.5 221 426 C217.8 427.5 217.8 430 221 435 Z M235 435 C238.2 430 238.2 427.5 235 426 C231.8 427.5 231.8 430 235 435 Z M249 435 C252.2 430 252.2 427.5 249 426 C245.8 427.5 245.8 430 249 435 Z M263 435 C266.2 430 266.2 427.5 263 426 C259.8 427.5 259.8 430 263 435 Z M277 435 C280.2 430 280.2 427.5 277 426 C273.8 427.5 273.8 430 277 435 Z M291 435 C294.2 430 294.2 427.5 291 426 C287.8 427.5 287.8 430 291 435 Z M305 435 C308.2 430 308.2 427.5 305 426 C301.8 427.5 301.8 430 305 435 Z M319 435 C322.2 430 322.2 427.5 319 426 C315.8 427.5 315.8 430 319 435 Z" fill="rgba(0,0,0,.45)" transform="translate(0,0.8)"></path><path d="M81 435 C84.2 430 84.2 427.5 81 426 C77.8 427.5 77.8 430 81 435 Z M95 435 C98.2 430 98.2 427.5 95 426 C91.8 427.5 91.8 430 95 435 Z M109 435 C112.2 430 112.2 427.5 109 426 C105.8 427.5 105.8 430 109 435 Z M123 435 C126.2 430 126.2 427.5 123 426 C119.8 427.5 119.8 430 123 435 Z M137 435 C140.2 430 140.2 427.5 137 426 C133.8 427.5 133.8 430 137 435 Z M151 435 C154.2 430 154.2 427.5 151 426 C147.8 427.5 147.8 430 151 435 Z M165 435 C168.2 430 168.2 427.5 165 426 C161.8 427.5 161.8 430 165 435 Z M179 435 C182.2 430 182.2 427.5 179 426 C175.8 427.5 175.8 430 179 435 Z M193 435 C196.2 430 196.2 427.5 193 426 C189.8 427.5 189.8 430 193 435 Z M207 435 C210.2 430 210.2 427.5 207 426 C203.8 427.5 203.8 430 207 435 Z M221 435 C224.2 430 224.2 427.5 221 426 C217.8 427.5 217.8 430 221 435 Z M235 435 C238.2 430 238.2 427.5 235 426 C231.8 427.5 231.8 430 235 435 Z M249 435 C252.2 430 252.2 427.5 249 426 C245.8 427.5 245.8 430 249 435 Z M263 435 C266.2 430 266.2 427.5 263 426 C259.8 427.5 259.8 430 263 435 Z M277 435 C280.2 430 280.2 427.5 277 426 C273.8 427.5 273.8 430 277 435 Z M291 435 C294.2 430 294.2 427.5 291 426 C287.8 427.5 287.8 430 291 435 Z M305 435 C308.2 430 308.2 427.5 305 426 C301.8 427.5 301.8 430 305 435 Z M319 435 C322.2 430 322.2 427.5 319 426 C315.8 427.5 315.8 430 319 435 Z" fill="rgba(255,255,255,.34)" transform="translate(0,-0.8)"></path></g>
+            <rect x="94" y="430" width="20" height="70" rx="6"></rect>
+            <rect x="286" y="430" width="20" height="70" rx="6"></rect>
+            <circle cx="104" cy="503" r="19"></circle>
+            <circle cx="296" cy="503" r="19"></circle>
+            <g fill="none" stroke-linecap="round"><path d="M94 438 L114 432 M94 446 L114 440 M94 454 L114 448 M94 462 L114 456 M94 470 L114 464 M94 478 L114 472 M94 486 L114 480 M286 438 L306 432 M286 446 L306 440 M286 454 L306 448 M286 462 L306 456 M286 470 L306 464 M286 478 L306 472 M286 486 L306 480" stroke="rgba(0,0,0,.5)" stroke-width="2.4" transform="translate(0,1)"></path><path d="M94 438 L114 432 M94 446 L114 440 M94 454 L114 448 M94 462 L114 456 M94 470 L114 464 M94 478 L114 472 M94 486 L114 480 M286 438 L306 432 M286 446 L306 440 M286 454 L306 448 M286 462 L306 456 M286 470 L306 464 M286 478 L306 472 M286 486 L306 480" stroke="rgba(255,255,255,.38)" stroke-width="1.8" transform="translate(0,-0.8)"></path></g>
           </g>
 
-          <rect x="88" y="145" width="224" height="279" fill="#e3d7b4"></rect>
-          <rect x="88" y="145" width="60" height="279" rx="9" fill="#2f4a33"></rect>
-          <rect x="252" y="145" width="60" height="279" rx="9" fill="#2f4a33"></rect>
-          <rect x="90" y="149" width="7" height="271" rx="3.5" fill="#ffffff" opacity=".1"></rect>
-          <rect x="303" y="149" width="7" height="271" rx="3.5" fill="#ffffff" opacity=".1"></rect>
-          <rect x="139" y="149" width="6" height="271" rx="3" fill="#000000" opacity=".14"></rect>
-          <rect x="255" y="149" width="6" height="271" rx="3" fill="#000000" opacity=".14"></rect>
+          <rect x="74" y="145" width="252" height="279" fill="#e3d7b4"></rect>
+          <rect x="74" y="145" width="60" height="279" rx="9" fill="#2f4a33"></rect>
+          <rect x="266" y="145" width="60" height="279" rx="9" fill="#2f4a33"></rect>
+          <rect x="76" y="149" width="7" height="271" rx="3.5" fill="#ffffff" opacity=".1"></rect>
+          <rect x="317" y="149" width="7" height="271" rx="3.5" fill="#ffffff" opacity=".1"></rect>
+          <rect x="125" y="149" width="6" height="271" rx="3" fill="#000000" opacity=".14"></rect>
+          <rect x="269" y="149" width="6" height="271" rx="3" fill="#000000" opacity=".14"></rect>
           <g fill="#6b5228">
             <ellipse cx="172" cy="182" rx="22" ry="12" opacity=".07"></ellipse>
             <ellipse cx="226" cy="242" rx="24" ry="13" opacity=".06"></ellipse>
             <ellipse cx="166" cy="304" rx="19" ry="11" opacity=".07"></ellipse>
             <ellipse cx="220" cy="362" rx="23" ry="12" opacity=".06"></ellipse>
             <ellipse cx="192" cy="408" rx="17" ry="8" opacity=".07"></ellipse>
-            <rect x="148" y="145" width="104" height="15" opacity=".1"></rect>
-            <rect x="148" y="409" width="104" height="15" opacity=".1"></rect>
-            <rect x="148" y="145" width="8" height="279" opacity=".08"></rect>
-            <rect x="244" y="145" width="8" height="279" opacity=".08"></rect>
+            <rect x="134" y="145" width="132" height="15" opacity=".1"></rect>
+            <rect x="134" y="409" width="132" height="15" opacity=".1"></rect>
+            <rect x="134" y="145" width="8" height="279" opacity=".08"></rect>
+            <rect x="258" y="145" width="8" height="279" opacity=".08"></rect>
           </g>
           <g stroke="#6b5228" fill="none" stroke-width="1" opacity=".13">
-            <path d="M150 232 H250"></path>
-            <path d="M150 332 H250"></path>
+            <path d="M136 232 H264"></path>
+            <path d="M136 332 H264"></path>
           </g>
 
-          <g font-family="&#39;SamScript&#39;, serif" font-size="8" fill="#d4b05c" text-anchor="middle" direction="rtl">
-            <text x="282" y="168" textLength="48" lengthAdjust="spacingAndGlyphs">יברכך</text>
-            <text x="282" y="187" textLength="48" lengthAdjust="spacingAndGlyphs">יהוה</text>
-            <text x="282" y="206" textLength="48" lengthAdjust="spacingAndGlyphs">וישמרך</text>
-            <text x="282" y="225" textLength="48" lengthAdjust="spacingAndGlyphs">יאיר</text>
-            <text x="282" y="244" textLength="48" lengthAdjust="spacingAndGlyphs">יהוה</text>
-            <text x="282" y="263" textLength="48" lengthAdjust="spacingAndGlyphs">פניו</text>
-            <text x="282" y="282" textLength="48" lengthAdjust="spacingAndGlyphs">אליך</text>
-            <text x="282" y="301" textLength="48" lengthAdjust="spacingAndGlyphs">ויחנך</text>
-            <text x="282" y="320" textLength="48" lengthAdjust="spacingAndGlyphs">ישא</text>
-            <text x="282" y="339" textLength="48" lengthAdjust="spacingAndGlyphs">יהוה</text>
-            <text x="282" y="358" textLength="48" lengthAdjust="spacingAndGlyphs">פניו אליך</text>
-            <text x="282" y="377" textLength="48" lengthAdjust="spacingAndGlyphs">וישם</text>
-            <text x="282" y="396" textLength="48" lengthAdjust="spacingAndGlyphs">לך שלום</text>
+          <g font-family="&#39;SamScript&#39;, serif" font-size="6" fill="#d4b05c" text-anchor="middle" direction="rtl">
+            <text x="296" y="168">יברכך</text>
+            <text x="296" y="187">יהוה</text>
+            <text x="296" y="206">וישמרך</text>
+            <text x="296" y="225">יאיר</text>
+            <text x="296" y="244">יהוה</text>
+            <text x="296" y="263">פניו</text>
+            <text x="296" y="282">אליך</text>
+            <text x="296" y="301">ויחנך</text>
+            <text x="296" y="320">ישא</text>
+            <text x="296" y="339">יהוה</text>
+            <text x="296" y="358">פניו אליך</text>
+            <text x="296" y="377">וישם</text>
+            <text x="296" y="396">לך שלום</text>
           </g>
 
-          <g font-family="&#39;SamScript&#39;, serif" font-size="7" fill="#d4b05c" text-anchor="middle" direction="rtl">
-            <text x="118" y="170" textLength="50" lengthAdjust="spacingAndGlyphs">ע·ש·ה</text>
-            <text x="118" y="189" textLength="50" lengthAdjust="spacingAndGlyphs">ז·ה</text>
-            <text x="118" y="208" textLength="50" lengthAdjust="spacingAndGlyphs">ה·א·ר·ו·ן</text>
-            <text x="118" y="227" textLength="50" lengthAdjust="spacingAndGlyphs">ל·ס·פ·ר</text>
-            <text x="118" y="246" textLength="50" lengthAdjust="spacingAndGlyphs">ה·ת·ו·ר·ה</text>
-            <text x="118" y="265" textLength="50" lengthAdjust="spacingAndGlyphs">ה·ק·ד·ו·ש·ה</text>
-            <text x="118" y="284" textLength="50" lengthAdjust="spacingAndGlyphs">א·ס·ע·ד</text>
-            <text x="118" y="303" textLength="50" lengthAdjust="spacingAndGlyphs">ב·ן</text>
-            <text x="118" y="322" textLength="50" lengthAdjust="spacingAndGlyphs">א·ב</text>
-            <text x="118" y="341" textLength="50" lengthAdjust="spacingAndGlyphs">ס·כ·ו·ה</text>
-            <text x="118" y="360" textLength="50" lengthAdjust="spacingAndGlyphs">ד·מ·ב·נ·י</text>
-            <text x="118" y="379" textLength="50" lengthAdjust="spacingAndGlyphs">ד·נ·פ·ת·ה</text>
+          <g font-family="&#39;SamScript&#39;, serif" font-size="5.5" fill="#d4b05c" text-anchor="middle" direction="rtl">
+            <text x="104" y="170">ע·ש·ה</text>
+            <text x="104" y="189">ז·ה</text>
+            <text x="104" y="208">ה·א·ר·ו·ן</text>
+            <text x="104" y="227">ל·ס·פ·ר</text>
+            <text x="104" y="246">ה·ת·ו·ר·ה</text>
+            <text x="104" y="265">ה·ק·ד·ו·ש·ה</text>
+            <text x="104" y="284">א·ס·ע·ד</text>
+            <text x="104" y="303">ב·ן</text>
+            <text x="104" y="322">א·ב</text>
+            <text x="104" y="341">ס·כ·ו·ה</text>
+            <text x="104" y="360">ד·מ·ב·נ·י</text>
+            <text x="104" y="379">ד·נ·פ·ת·ה</text>
           </g>
 
-          <g font-family="&#39;SamScript&#39;, serif" font-size="8" fill="#2e281c" text-anchor="middle" direction="rtl">
-            <text x="200" y="168" textLength="90" lengthAdjust="spacingAndGlyphs">וישא אהרן</text>
-            <text x="200" y="188" textLength="90" lengthAdjust="spacingAndGlyphs">את ידו</text>
-            <text x="200" y="208" textLength="90" lengthAdjust="spacingAndGlyphs">על העם</text>
-            <text x="200" y="228" textLength="90" lengthAdjust="spacingAndGlyphs">ויברכם</text>
-            <text x="200" y="248" textLength="90" lengthAdjust="spacingAndGlyphs">וירד מעשות</text>
-            <text x="200" y="268" textLength="90" lengthAdjust="spacingAndGlyphs">החטאת והעלה</text>
-            <text x="200" y="288" textLength="90" lengthAdjust="spacingAndGlyphs">והשלמים</text>
-            <text x="200" y="308" textLength="90" lengthAdjust="spacingAndGlyphs">ויבא ואהרן</text>
-            <text x="200" y="328" textLength="90" lengthAdjust="spacingAndGlyphs">אל אהל מועד</text>
-            <text x="200" y="348" textLength="90" lengthAdjust="spacingAndGlyphs">ויצאו ויברכו</text>
-            <text x="200" y="368" textLength="90" lengthAdjust="spacingAndGlyphs">את העם ויראה</text>
-            <text x="200" y="388" textLength="90" lengthAdjust="spacingAndGlyphs">כבוד יהוה</text>
-            <text x="200" y="408" textLength="90" lengthAdjust="spacingAndGlyphs">אל כל העם :-</text>
+          <g font-family="&#39;SamScript&#39;, serif" font-size="11" fill="#2e281c" word-spacing="4" text-anchor="middle" direction="rtl">
+            <text x="200" y="168" textLength="116" lengthAdjust="spacing">וישא אהרן</text>
+            <text x="200" y="188" textLength="116" lengthAdjust="spacing">את ידו</text>
+            <text x="200" y="208" textLength="116" lengthAdjust="spacing">על העם</text>
+            <text x="200" y="228" textLength="116" lengthAdjust="spacing">ויברכם</text>
+            <text x="200" y="248" textLength="116" lengthAdjust="spacing">וירד מעשות</text>
+            <text x="200" y="268" textLength="116" lengthAdjust="spacing">החטאת והעלה</text>
+            <text x="200" y="288" textLength="116" lengthAdjust="spacing">והשלמים</text>
+            <text x="200" y="308" textLength="116" lengthAdjust="spacing">ויבא ואהרן</text>
+            <text x="200" y="328" textLength="116" lengthAdjust="spacing">אל אהל מועד</text>
+            <text x="200" y="348" textLength="116" lengthAdjust="spacing">ויצאו ויברכו</text>
+            <text x="200" y="368" textLength="116" lengthAdjust="spacing">את העם ויראה</text>
+            <text x="200" y="388" textLength="116" lengthAdjust="spacing">כבוד יהוה</text>
+            <text x="200" y="408" textLength="116" lengthAdjust="spacing">אל כל העם :-</text>
           </g>
         </svg>
