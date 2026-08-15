@@ -27,7 +27,10 @@ import json
 import io
 import os
 
-TORAH = r"C:\Users\osher\Documents\torah"
+# Derive the project root from this file's own location rather than hardcoding
+# it - the repo lives in more than one checkout (main clone + web-deploy
+# worktree) and a fixed path made this write into the wrong one.
+TORAH = os.environ.get("TORAH_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WEB = os.path.join(TORAH, "web")
 
 rd = json.load(io.open(os.path.join(WEB, "static", "audio", "readings", "readings.json"), encoding="utf-8"))

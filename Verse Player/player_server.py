@@ -60,7 +60,12 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import audio_analysis
 
-TORAH = Path(r"C:\Users\osher\Documents\torah")
+# Derive the project root from this file's own location (<root>/Verse Player/…)
+# instead of hardcoding it. The repo is checked out in more than one place
+# (main clone + a `git worktree` for web-deploy), and a hardcoded path made the
+# tool silently read the OTHER checkout - wrong branch, no audio files.
+# Override with the TORAH_ROOT env var if you ever need to point elsewhere.
+TORAH = Path(os.environ.get("TORAH_ROOT") or Path(__file__).resolve().parent.parent)
 WEB = TORAH / "web"
 READINGS = WEB / "static" / "audio" / "readings"
 READINGS_JSON = READINGS / "readings.json"
