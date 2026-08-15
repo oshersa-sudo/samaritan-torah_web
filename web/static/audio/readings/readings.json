@@ -9714,358 +9714,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - ואיש או אשה - 56",
-     "incipit": "והבגד כי יהיה בו",
-     "sam_ch_id": 1573,
-     "n": 56,
-     "verses": "יג:מז-יג:נב",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 56,
-     "file": "/static/audio/readings/b3-p04-c056.mp3",
-     "duration": 73.85,
-     "src_start": 193.53,
-     "src_end": 267.38,
-     "verses_num": "13:47-13:52"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 7,
-     "name": "ויקרא - ואיש או אשה - 57",
-     "incipit": "ואם יראה הכהן והנה",
-     "sam_ch_id": 1574,
-     "n": 57,
-     "verses": "יג:נג-יג:נט",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 57,
-     "file": "/static/audio/readings/b3-p04-c057.mp3",
-     "duration": 88.77,
-     "src_start": 267.38,
-     "src_end": 356.15,
-     "verses_num": "13:53-13:59"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - ואיש או אשה - 58",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1575,
-     "n": 58,
-     "verses": "יד:א-יד:ט",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 58,
-     "file": "/static/audio/readings/b3-p04-c058.mp3",
-     "duration": 94.1,
-     "src_start": 356.15,
-     "src_end": 450.25,
-     "verses_num": "14:1-14:9"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - ואיש או אשה - 59",
-     "incipit": "וביום השמיני יקח שני",
-     "sam_ch_id": 1576,
-     "n": 59,
-     "verses": "יד:י-יד:יג",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 59,
-     "file": "/static/audio/readings/b3-p04-c059.mp3",
-     "duration": 56.99,
-     "src_start": 450.25,
-     "src_end": 507.24,
-     "verses_num": "14:10-14:13"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 7,
-     "name": "ויקרא - ואיש או אשה - 60",
-     "incipit": "ולקח הכהן מדם האשם:",
-     "sam_ch_id": 1577,
-     "n": 60,
-     "verses": "יד:יד-יד:כ",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 60,
-     "file": "/static/audio/readings/b3-p04-c060.mp3",
-     "duration": 75.39,
-     "src_start": 507.24,
-     "src_end": 582.63,
-     "verses_num": "14:14-14:20"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 12,
-     "name": "ויקרא - ואיש או אשה - 61",
-     "incipit": "ואם דל הוא ואין",
-     "sam_ch_id": 1578,
-     "n": 61,
-     "verses": "יד:כא-יד:לב",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 61,
-     "file": "/static/audio/readings/b3-p04-c061.mp3",
-     "duration": 137.29,
-     "src_start": 582.63,
-     "src_end": 719.92,
-     "verses_num": "14:21-14:32"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 10,
-     "name": "ויקרא - ואיש או אשה - 62",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1579,
-     "n": 62,
-     "verses": "יד:לג-יד:מב",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 62,
-     "file": "/static/audio/readings/b3-p04-c062.mp3",
-     "duration": 101.73,
-     "src_start": 719.92,
-     "src_end": 821.65,
-     "verses_num": "14:33-14:42"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 15,
-     "name": "ויקרא - ואיש או אשה - 63",
-     "incipit": "ואם ישוב הנגע ופרח",
-     "sam_ch_id": 1580,
-     "n": 63,
-     "verses": "יד:מג-יד:נז",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 63,
-     "file": "/static/audio/readings/b3-p04-c063.mp3",
-     "duration": 127.26,
-     "src_start": 821.65,
-     "src_end": 948.91,
-     "verses_num": "14:43-14:57"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 12,
-     "name": "ויקרא - ואיש או אשה - 64",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1581,
-     "n": 64,
-     "verses": "טו:א-טו:יב",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 64,
-     "file": "/static/audio/readings/b3-p04-c064.mp3",
-     "duration": 110.06,
-     "src_start": 948.91,
-     "src_end": 1058.97,
-     "verses_num": "15:1-15:12"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - ואיש או אשה - 65",
-     "incipit": "וכי יטהר הזב מזובו",
-     "sam_ch_id": 1582,
-     "n": 65,
-     "verses": "טו:יג-טו:יח",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 65,
-     "file": "/static/audio/readings/b3-p04-c065.mp3",
-     "duration": 66.3,
-     "src_start": 1058.97,
-     "src_end": 1125.27,
-     "verses_num": "15:13-15:18"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - ואיש או אשה - 66",
-     "incipit": "ואשה כי תהיה זבה",
-     "sam_ch_id": 1583,
-     "n": 66,
-     "verses": "טו:יט-טו:כד",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 66,
-     "file": "/static/audio/readings/b3-p04-c066.mp3",
-     "duration": 62.31,
-     "src_start": 1125.27,
-     "src_end": 1187.58,
-     "verses_num": "15:19-15:24"
-    },
-    {
-     "src": {
-      "youtube_id": "XoZeQ4aFCU4"
-     },
-     "verse_count": 10,
-     "name": "ויקרא - ואיש או אשה - 67",
-     "incipit": "ואשה כי יזוב זוב",
-     "sam_ch_id": 1584,
-     "n": 67,
-     "verses": "טו:כה-טז:א",
-     "portion": {
-      "order": 4,
-      "name": "ואיש או אשה",
-      "id": 33
-     },
-     "sam_ch_number": 67,
-     "file": "/static/audio/readings/b3-p04-c067.mp3",
-     "duration": 105.14,
-     "src_start": 1187.58,
-     "src_end": 1292.72,
-     "verses_num": "15:25-16:1"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 3,
-     "name": "ויקרא - אחרי מות - 68",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1585,
-     "n": 68,
-     "verses": "טז:ב-טז:ד",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 68,
-     "file": "/static/audio/readings/b3-p05-c068.mp3",
-     "duration": 58.1,
-     "src_start": 0.0,
-     "src_end": 58.1,
-     "verses_num": "16:2-16:4"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - אחרי מות - 69",
-     "incipit": "ומאת עדת בני ישראל",
-     "sam_ch_id": 1586,
-     "n": 69,
-     "verses": "טז:ה-טז:יג",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 69,
-     "file": "/static/audio/readings/b3-p05-c069.mp3",
-     "duration": 85.83,
-     "src_start": 58.1,
-     "src_end": 143.93,
-     "verses_num": "16:5-16:13"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 12,
-     "name": "ויקרא - אחרי מות - 70",
-     "incipit": "ולקח מדם הפר והזה",
-     "sam_ch_id": 1587,
-     "n": 70,
-     "verses": "טז:יד-טז:כה",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 70,
-     "file": "/static/audio/readings/b3-p05-c070.mp3",
-     "duration": 145.68,
-     "src_start": 143.93,
-     "src_end": 289.61,
-     "verses_num": "16:14-16:25"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - אחרי מות - 71",
-     "incipit": "והמשלח את השעיר לעזאזל",
-     "sam_ch_id": 1588,
-     "n": 71,
-     "verses": "טז:כו-טז:לד",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 71,
-     "file": "/static/audio/readings/b3-p05-c071.mp3",
-     "duration": 39.69,
-     "src_start": 289.61,
-     "src_end": 329.3,
-     "verses_num": "16:26-16:34"
-    },
-    {
-     "src": {
       "youtube_id": "aogBwymaV_U"
      },
      "verse_count": 9,
@@ -12505,6 +12153,358 @@
      "verse_count": 9,
      "incipit": "ואיש או אשה: כי",
      "name": "ויקרא - וישא אהרן - 55"
+    },
+    {
+     "n": 56,
+     "sam_ch_number": 56,
+     "file": "/static/audio/readings/b3-p04-c056.mp3",
+     "duration": 105.46,
+     "src_start": 0,
+     "src_end": 105.46,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1573,
+     "verses": "יג:מז-יג:נב",
+     "verses_num": "13:47-13:52",
+     "verse_count": 6,
+     "incipit": "והבגד כי יהיה בו",
+     "name": "ויקרא - ואיש או אשה - 56"
+    },
+    {
+     "n": 57,
+     "sam_ch_number": 57,
+     "file": "/static/audio/readings/b3-p04-c057.mp3",
+     "duration": 88.03,
+     "src_start": 0,
+     "src_end": 88.03,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1574,
+     "verses": "יג:נג-יג:נט",
+     "verses_num": "13:53-13:59",
+     "verse_count": 7,
+     "incipit": "ואם יראה הכהן: והנה",
+     "name": "ויקרא - ואיש או אשה - 57"
+    },
+    {
+     "n": 58,
+     "sam_ch_number": 58,
+     "file": "/static/audio/readings/b3-p04-c058.mp3",
+     "duration": 73.85,
+     "src_start": 0,
+     "src_end": 73.85,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1575,
+     "verses": "יד:א-יד:ט",
+     "verses_num": "14:1-14:9",
+     "verse_count": 9,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ואיש או אשה - 58"
+    },
+    {
+     "n": 59,
+     "sam_ch_number": 59,
+     "file": "/static/audio/readings/b3-p04-c059.mp3",
+     "duration": 88.78,
+     "src_start": 0,
+     "src_end": 88.78,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1576,
+     "verses": "יד:י-יד:יג",
+     "verses_num": "14:10-14:13",
+     "verse_count": 4,
+     "incipit": "וביום השמיני יקח שני",
+     "name": "ויקרא - ואיש או אשה - 59"
+    },
+    {
+     "n": 60,
+     "sam_ch_number": 60,
+     "file": "/static/audio/readings/b3-p04-c060.mp3",
+     "duration": 94.09,
+     "src_start": 0,
+     "src_end": 94.09,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1577,
+     "verses": "יד:יד-יד:כ",
+     "verses_num": "14:14-14:20",
+     "verse_count": 7,
+     "incipit": "ולקח הכהן מדם האשם:",
+     "name": "ויקרא - ואיש או אשה - 60"
+    },
+    {
+     "n": 61,
+     "sam_ch_number": 61,
+     "file": "/static/audio/readings/b3-p04-c061.mp3",
+     "duration": 56.99,
+     "src_start": 0,
+     "src_end": 56.99,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1578,
+     "verses": "יד:כא-יד:לב",
+     "verses_num": "14:21-14:32",
+     "verse_count": 12,
+     "incipit": "ואם דל הוא ואין",
+     "name": "ויקרא - ואיש או אשה - 61"
+    },
+    {
+     "n": 62,
+     "sam_ch_number": 62,
+     "file": "/static/audio/readings/b3-p04-c062.mp3",
+     "duration": 75.01,
+     "src_start": 0,
+     "src_end": 75.01,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1579,
+     "verses": "יד:לג-יד:מב",
+     "verses_num": "14:33-14:42",
+     "verse_count": 10,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ואיש או אשה - 62"
+    },
+    {
+     "n": 63,
+     "sam_ch_number": 63,
+     "file": "/static/audio/readings/b3-p04-c063.mp3",
+     "duration": 55.42,
+     "src_start": 0,
+     "src_end": 55.42,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1580,
+     "verses": "יד:מג-יד:נז",
+     "verses_num": "14:43-14:57",
+     "verse_count": 15,
+     "incipit": "ואם ישוב הנגע ופרח",
+     "name": "ויקרא - ואיש או אשה - 63"
+    },
+    {
+     "n": 64,
+     "sam_ch_number": 64,
+     "file": "/static/audio/readings/b3-p04-c064.mp3",
+     "duration": 82.25,
+     "src_start": 0,
+     "src_end": 82.25,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1581,
+     "verses": "טו:א-טו:יב",
+     "verses_num": "15:1-15:12",
+     "verse_count": 12,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ואיש או אשה - 64"
+    },
+    {
+     "n": 65,
+     "sam_ch_number": 65,
+     "file": "/static/audio/readings/b3-p04-c065.mp3",
+     "duration": 101.74,
+     "src_start": 0,
+     "src_end": 101.74,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1582,
+     "verses": "טו:יג-טו:יח",
+     "verses_num": "15:13-15:18",
+     "verse_count": 6,
+     "incipit": "וכי יטהר הזב מזובו:",
+     "name": "ויקרא - ואיש או אשה - 65"
+    },
+    {
+     "n": 66,
+     "sam_ch_number": 66,
+     "file": "/static/audio/readings/b3-p04-c066.mp3",
+     "duration": 55.23,
+     "src_start": 0,
+     "src_end": 55.23,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1583,
+     "verses": "טו:יט-טו:כד",
+     "verses_num": "15:19-15:24",
+     "verse_count": 6,
+     "incipit": "ואשה כי תהיה זבה:",
+     "name": "ויקרא - ואיש או אשה - 66"
+    },
+    {
+     "n": 67,
+     "sam_ch_number": 67,
+     "file": "/static/audio/readings/b3-p04-c067.mp3",
+     "duration": 67.93,
+     "src_start": 0,
+     "src_end": 67.93,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1584,
+     "verses": "טו:כה-טז:א",
+     "verses_num": "15:25-16:1",
+     "verse_count": 10,
+     "incipit": "ואשה כי יזוב זוב",
+     "name": "ויקרא - ואיש או אשה - 67"
+    },
+    {
+     "n": 68,
+     "sam_ch_number": 68,
+     "file": "/static/audio/readings/b3-p04-c068.mp3",
+     "duration": 114.16,
+     "src_start": 0,
+     "src_end": 114.16,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1585,
+     "verses": "טז:ב-טז:ד",
+     "verses_num": "16:2-16:4",
+     "verse_count": 3,
+     "incipit": "ויאמר יהוה אל משה:",
+     "name": "ויקרא - ואיש או אשה - 68"
+    },
+    {
+     "n": 69,
+     "sam_ch_number": 69,
+     "file": "/static/audio/readings/b3-p04-c069.mp3",
+     "duration": 66.29,
+     "src_start": 0,
+     "src_end": 66.29,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1586,
+     "verses": "טז:ה-טז:יג",
+     "verses_num": "16:5-16:13",
+     "verse_count": 9,
+     "incipit": "ומאת עדת בני ישראל",
+     "name": "ויקרא - ואיש או אשה - 69"
+    },
+    {
+     "n": 70,
+     "sam_ch_number": 70,
+     "file": "/static/audio/readings/b3-p04-c070.mp3",
+     "duration": 62.32,
+     "src_start": 0,
+     "src_end": 62.32,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1587,
+     "verses": "טז:יד-טז:כה",
+     "verses_num": "16:14-16:25",
+     "verse_count": 12,
+     "incipit": "ולקח מדם הפר והזה",
+     "name": "ויקרא - ואיש או אשה - 70"
+    },
+    {
+     "n": 71,
+     "sam_ch_number": 71,
+     "file": "/static/audio/readings/b3-p04-c071.mp3",
+     "duration": 105.12,
+     "src_start": 0,
+     "src_end": 105.12,
+     "portion": {
+      "order": 4,
+      "id": 33,
+      "name": "ואיש או אשה"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1588,
+     "verses": "טז:כו-טז:לד",
+     "verses_num": "16:26-16:34",
+     "verse_count": 9,
+     "incipit": "והמשלח את השעיר לעזאזל",
+     "name": "ויקרא - ואיש או אשה - 71"
     }
    ],
    "playlist": "PLl-48IEqLtluI0oPyh0rmC0-iKVCEMvt_",
