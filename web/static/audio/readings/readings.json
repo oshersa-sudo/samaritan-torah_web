@@ -9714,380 +9714,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 5,
-     "name": "ויקרא - צוה את אהרן - 21",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1538,
-     "n": 21,
-     "verses": "ו:יב-ו:טז",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 21,
-     "file": "/static/audio/readings/b3-p02-c021.mp3",
-     "duration": 46.56,
-     "src_start": 125.11,
-     "src_end": 171.67,
-     "verses_num": "6:12-6:16"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 7,
-     "name": "ויקרא - צוה את אהרן - 22",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1539,
-     "n": 22,
-     "verses": "ו:יז-ו:כג",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 22,
-     "file": "/static/audio/readings/b3-p02-c022.mp3",
-     "duration": 68.78,
-     "src_start": 171.67,
-     "src_end": 240.45,
-     "verses_num": "6:17-6:23"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 10,
-     "name": "ויקרא - צוה את אהרן - 23",
-     "incipit": "וזאת תורת האשם: קדש",
-     "sam_ch_id": 1540,
-     "n": 23,
-     "verses": "ז:א-ז:י",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 23,
-     "file": "/static/audio/readings/b3-p02-c023.mp3",
-     "duration": 88.76,
-     "src_start": 240.45,
-     "src_end": 329.21,
-     "verses_num": "7:1-7:10"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 11,
-     "name": "ויקרא - צוה את אהרן - 24",
-     "incipit": "וזאת תורת זבח השלמים:",
-     "sam_ch_id": 1541,
-     "n": 24,
-     "verses": "ז:יא-ז:כא",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 24,
-     "file": "/static/audio/readings/b3-p02-c024.mp3",
-     "duration": 128.34,
-     "src_start": 329.21,
-     "src_end": 457.55,
-     "verses_num": "7:11-7:21"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - צוה את אהרן - 25",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1542,
-     "n": 25,
-     "verses": "ז:כב-ז:כז",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 25,
-     "file": "/static/audio/readings/b3-p02-c025.mp3",
-     "duration": 44.0,
-     "src_start": 457.55,
-     "src_end": 501.55,
-     "verses_num": "7:22-7:27"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 11,
-     "name": "ויקרא - צוה את אהרן - 26",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1543,
-     "n": 26,
-     "verses": "ז:כח-ז:לח",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 26,
-     "file": "/static/audio/readings/b3-p02-c026.mp3",
-     "duration": 106.24,
-     "src_start": 501.55,
-     "src_end": 607.79,
-     "verses_num": "7:28-7:38"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - צוה את אהרן - 27",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1544,
-     "n": 27,
-     "verses": "ח:א-ח:ט",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 27,
-     "file": "/static/audio/readings/b3-p02-c027.mp3",
-     "duration": 83.75,
-     "src_start": 607.79,
-     "src_end": 691.54,
-     "verses_num": "8:1-8:9"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - צוה את אהרן - 28",
-     "incipit": "ויקח משה את שמן",
-     "sam_ch_id": 1545,
-     "n": 28,
-     "verses": "ח:י-ח:יג",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 28,
-     "file": "/static/audio/readings/b3-p02-c028.mp3",
-     "duration": 51.74,
-     "src_start": 691.54,
-     "src_end": 743.28,
-     "verses_num": "8:10-8:13"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - צוה את אהרן - 29",
-     "incipit": "ויגש את פר החטאת:",
-     "sam_ch_id": 1546,
-     "n": 29,
-     "verses": "ח:יד-ח:יז",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 29,
-     "file": "/static/audio/readings/b3-p02-c029.mp3",
-     "duration": 57.07,
-     "src_start": 743.28,
-     "src_end": 800.35,
-     "verses_num": "8:14-8:17"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - צוה את אהרן - 30",
-     "incipit": "ויגש את איל העלה:",
-     "sam_ch_id": 1547,
-     "n": 30,
-     "verses": "ח:יח-ח:כא",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 30,
-     "file": "/static/audio/readings/b3-p02-c030.mp3",
-     "duration": 35.22,
-     "src_start": 800.35,
-     "src_end": 835.57,
-     "verses_num": "8:18-8:21"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 7,
-     "name": "ויקרא - צוה את אהרן - 31",
-     "incipit": "ויקרב את איל השני",
-     "sam_ch_id": 1548,
-     "n": 31,
-     "verses": "ח:כב-ח:כח",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 31,
-     "file": "/static/audio/readings/b3-p02-c031.mp3",
-     "duration": 92.76,
-     "src_start": 835.57,
-     "src_end": 928.33,
-     "verses_num": "8:22-8:28"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 2,
-     "name": "ויקרא - צוה את אהרן - 32",
-     "incipit": "ויקח משה את החזה",
-     "sam_ch_id": 1549,
-     "n": 32,
-     "verses": "ח:כט-ח:ל",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 32,
-     "file": "/static/audio/readings/b3-p02-c032.mp3",
-     "duration": 33.34,
-     "src_start": 928.33,
-     "src_end": 961.67,
-     "verses_num": "8:29-8:30"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - צוה את אהרן - 33",
-     "incipit": "ויאמר משה אל אהרן",
-     "sam_ch_id": 1550,
-     "n": 33,
-     "verses": "ח:לא-ח:לו",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 33,
-     "file": "/static/audio/readings/b3-p02-c033.mp3",
-     "duration": 73.75,
-     "src_start": 961.67,
-     "src_end": 1035.42,
-     "verses_num": "8:31-8:36"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - צוה את אהרן - 34",
-     "incipit": "ויהי ביום השמיני קרא",
-     "sam_ch_id": 1551,
-     "n": 34,
-     "verses": "ט:א-ט:ו",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 34,
-     "file": "/static/audio/readings/b3-p02-c034.mp3",
-     "duration": 59.29,
-     "src_start": 1035.42,
-     "src_end": 1094.71,
-     "verses_num": "9:1-9:6"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 5,
-     "name": "ויקרא - צוה את אהרן - 35",
-     "incipit": "ויאמר משה אל אהרן",
-     "sam_ch_id": 1552,
-     "n": 35,
-     "verses": "ט:ז-ט:יא",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 35,
-     "file": "/static/audio/readings/b3-p02-c035.mp3",
-     "duration": 49.94,
-     "src_start": 1094.71,
-     "src_end": 1144.65,
-     "verses_num": "9:7-9:11"
-    },
-    {
-     "src": {
-      "youtube_id": "fTQG7fdhQRc"
-     },
-     "verse_count": 10,
-     "name": "ויקרא - צוה את אהרן - 36",
-     "incipit": "וישחט את העלה: וימציאו",
-     "sam_ch_id": 1553,
-     "n": 36,
-     "verses": "ט:יב-ט:כא",
-     "portion": {
-      "order": 2,
-      "name": "צוה את אהרן",
-      "id": 31
-     },
-     "sam_ch_number": 36,
-     "file": "/static/audio/readings/b3-p02-c036.mp3",
-     "duration": 90.63,
-     "src_start": 1144.65,
-     "src_end": 1235.28,
-     "verses_num": "9:12-9:21"
-    },
-    {
-     "src": {
-      "youtube_id": "0euccTxU7EM"
-     },
-     "verse_count": 5,
-     "name": "ויקרא - וישא אהרן - 37",
-     "incipit": "וישא אהרן את ידו",
-     "sam_ch_id": 1554,
-     "n": 37,
-     "verses": "ט:כב-י:ב",
-     "portion": {
-      "order": 3,
-      "name": "וישא אהרן",
-      "id": 32
-     },
-     "sam_ch_number": 37,
-     "file": "/static/audio/readings/b3-p03-c037.mp3",
-     "duration": 61.82,
-     "src_start": 0.0,
-     "src_end": 61.82,
-     "verses_num": "9:22-10:2"
-    },
-    {
-     "src": {
       "youtube_id": "0euccTxU7EM"
      },
      "verse_count": 3,
@@ -12531,7 +12157,7 @@
     {
      "n": 20,
      "sam_ch_number": 20,
-     "file": "/static/audio/readings/b3-p30-c020.mp3",
+     "file": "/static/audio/readings/b3-p02-c020.mp3",
      "duration": 65.74,
      "src_start": 0,
      "src_end": 65.74,
@@ -12541,7 +12167,7 @@
       "name": "צוה את אהרן"
      },
      "src": {
-      "youtube_id": "veqabhxb0OY"
+      "youtube_id": "fTQG7fdhQRc"
      },
      "sam_ch_id": 1537,
      "verses": "ו:ז-ו:יא",
@@ -12549,6 +12175,358 @@
      "verse_count": 5,
      "incipit": "וזאת תורת המנחה: הקריבו",
      "name": "ויקרא - צוה את אהרן - 20"
+    },
+    {
+     "n": 22,
+     "sam_ch_number": 22,
+     "file": "/static/audio/readings/b3-p02-c022.mp3",
+     "duration": 46.56,
+     "src_start": 0,
+     "src_end": 46.56,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1539,
+     "verses": "ו:יז-ו:כג",
+     "verses_num": "6:17-6:23",
+     "verse_count": 7,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - צוה את אהרן - 22"
+    },
+    {
+     "n": 23,
+     "sam_ch_number": 23,
+     "file": "/static/audio/readings/b3-p02-c023.mp3",
+     "duration": 68.78,
+     "src_start": 0,
+     "src_end": 68.78,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1540,
+     "verses": "ז:א-ז:י",
+     "verses_num": "7:1-7:10",
+     "verse_count": 10,
+     "incipit": "וזאת תורת האשם: קדש",
+     "name": "ויקרא - צוה את אהרן - 23"
+    },
+    {
+     "n": 24,
+     "sam_ch_number": 24,
+     "file": "/static/audio/readings/b3-p02-c024.mp3",
+     "duration": 88.76,
+     "src_start": 0,
+     "src_end": 88.76,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1541,
+     "verses": "ז:יא-ז:כא",
+     "verses_num": "7:11-7:21",
+     "verse_count": 11,
+     "incipit": "וזאת תורת זבח השלמים:",
+     "name": "ויקרא - צוה את אהרן - 24"
+    },
+    {
+     "n": 25,
+     "sam_ch_number": 25,
+     "file": "/static/audio/readings/b3-p02-c025.mp3",
+     "duration": 128.34,
+     "src_start": 0,
+     "src_end": 128.34,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1542,
+     "verses": "ז:כב-ז:כז",
+     "verses_num": "7:22-7:27",
+     "verse_count": 6,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - צוה את אהרן - 25"
+    },
+    {
+     "n": 26,
+     "sam_ch_number": 26,
+     "file": "/static/audio/readings/b3-p02-c026.mp3",
+     "duration": 44.0,
+     "src_start": 0,
+     "src_end": 44.0,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1543,
+     "verses": "ז:כח-ז:לח",
+     "verses_num": "7:28-7:38",
+     "verse_count": 11,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - צוה את אהרן - 26"
+    },
+    {
+     "n": 27,
+     "sam_ch_number": 27,
+     "file": "/static/audio/readings/b3-p02-c027.mp3",
+     "duration": 106.24,
+     "src_start": 0,
+     "src_end": 106.24,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1544,
+     "verses": "ח:א-ח:ט",
+     "verses_num": "8:1-8:9",
+     "verse_count": 9,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - צוה את אהרן - 27"
+    },
+    {
+     "n": 28,
+     "sam_ch_number": 28,
+     "file": "/static/audio/readings/b3-p02-c028.mp3",
+     "duration": 83.75,
+     "src_start": 0,
+     "src_end": 83.75,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1545,
+     "verses": "ח:י-ח:יג",
+     "verses_num": "8:10-8:13",
+     "verse_count": 4,
+     "incipit": "ויקח משה את שמן",
+     "name": "ויקרא - צוה את אהרן - 28"
+    },
+    {
+     "n": 29,
+     "sam_ch_number": 29,
+     "file": "/static/audio/readings/b3-p02-c029.mp3",
+     "duration": 51.74,
+     "src_start": 0,
+     "src_end": 51.74,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1546,
+     "verses": "ח:יד-ח:יז",
+     "verses_num": "8:14-8:17",
+     "verse_count": 4,
+     "incipit": "ויגש את פר החטאת:",
+     "name": "ויקרא - צוה את אהרן - 29"
+    },
+    {
+     "n": 30,
+     "sam_ch_number": 30,
+     "file": "/static/audio/readings/b3-p02-c030.mp3",
+     "duration": 57.07,
+     "src_start": 0,
+     "src_end": 57.07,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1547,
+     "verses": "ח:יח-ח:כא",
+     "verses_num": "8:18-8:21",
+     "verse_count": 4,
+     "incipit": "ויגש את איל העלה:",
+     "name": "ויקרא - צוה את אהרן - 30"
+    },
+    {
+     "n": 31,
+     "sam_ch_number": 31,
+     "file": "/static/audio/readings/b3-p02-c031.mp3",
+     "duration": 45.14,
+     "src_start": 0,
+     "src_end": 45.14,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1548,
+     "verses": "ח:כב-ח:כח",
+     "verses_num": "8:22-8:28",
+     "verse_count": 7,
+     "incipit": "ויקרב את איל השני:",
+     "name": "ויקרא - צוה את אהרן - 31"
+    },
+    {
+     "n": 32,
+     "sam_ch_number": 32,
+     "file": "/static/audio/readings/b3-p02-c032.mp3",
+     "duration": 82.84,
+     "src_start": 0,
+     "src_end": 82.84,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1549,
+     "verses": "ח:כט-ח:ל",
+     "verses_num": "8:29-8:30",
+     "verse_count": 2,
+     "incipit": "ויקח משה את החזה:",
+     "name": "ויקרא - צוה את אהרן - 32"
+    },
+    {
+     "n": 33,
+     "sam_ch_number": 33,
+     "file": "/static/audio/readings/b3-p02-c033.mp3",
+     "duration": 33.34,
+     "src_start": 0,
+     "src_end": 33.34,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1550,
+     "verses": "ח:לא-ח:לו",
+     "verses_num": "8:31-8:36",
+     "verse_count": 6,
+     "incipit": "ויאמר משה אל אהרן",
+     "name": "ויקרא - צוה את אהרן - 33"
+    },
+    {
+     "n": 34,
+     "sam_ch_number": 34,
+     "file": "/static/audio/readings/b3-p02-c034.mp3",
+     "duration": 73.75,
+     "src_start": 0,
+     "src_end": 73.75,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1551,
+     "verses": "ט:א-ט:ו",
+     "verses_num": "9:1-9:6",
+     "verse_count": 6,
+     "incipit": "ויהי ביום השמיני: קרא",
+     "name": "ויקרא - צוה את אהרן - 34"
+    },
+    {
+     "n": 35,
+     "sam_ch_number": 35,
+     "file": "/static/audio/readings/b3-p02-c035.mp3",
+     "duration": 59.29,
+     "src_start": 0,
+     "src_end": 59.29,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1552,
+     "verses": "ט:ז-ט:יא",
+     "verses_num": "9:7-9:11",
+     "verse_count": 5,
+     "incipit": "ויאמר משה אל אהרן:",
+     "name": "ויקרא - צוה את אהרן - 35"
+    },
+    {
+     "n": 36,
+     "sam_ch_number": 36,
+     "file": "/static/audio/readings/b3-p02-c036.mp3",
+     "duration": 49.94,
+     "src_start": 0,
+     "src_end": 49.94,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1553,
+     "verses": "ט:יב-ט:כא",
+     "verses_num": "9:12-9:21",
+     "verse_count": 10,
+     "incipit": "וישחט את העלה: וימציאו",
+     "name": "ויקרא - צוה את אהרן - 36"
+    },
+    {
+     "n": 37,
+     "sam_ch_number": 37,
+     "file": "/static/audio/readings/b3-p02-c037.mp3",
+     "duration": 90.63,
+     "src_start": 0,
+     "src_end": 90.63,
+     "portion": {
+      "order": 2,
+      "id": 31,
+      "name": "צוה את אהרן"
+     },
+     "src": {
+      "youtube_id": "fTQG7fdhQRc"
+     },
+     "sam_ch_id": 1554,
+     "verses": "ט:כב-י:ב",
+     "verses_num": "9:22-10:2",
+     "verse_count": 5,
+     "incipit": "וישא אהרן את ידו",
+     "name": "ויקרא - צוה את אהרן - 37"
     }
    ],
    "playlist": "PLl-48IEqLtluI0oPyh0rmC0-iKVCEMvt_",
