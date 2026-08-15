@@ -12221,6 +12221,28 @@
      "name": "ויקרא - ואיש או אשה - 71"
     },
     {
+     "n": 84,
+     "sam_ch_number": 84,
+     "file": "/static/audio/readings/b3-p05-c084.mp3",
+     "duration": 67.47,
+     "src_start": 0,
+     "src_end": 67.47,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1601,
+     "verses": "כ:כב-כ:כז",
+     "verses_num": "20:22-20:27",
+     "verse_count": 6,
+     "incipit": "ושמרתם את כל חקותי",
+     "name": "ויקרא - ובקצירכם - 84"
+    },
+    {
      "n": 72,
      "sam_ch_number": 72,
      "file": "/static/audio/readings/b3-p05-c072.mp3",
@@ -12422,9 +12444,9 @@
      "n": 81,
      "sam_ch_number": 81,
      "file": "/static/audio/readings/b3-p05-c081.mp3",
-     "duration": 46.93,
+     "duration": 175.26,
      "src_start": 0,
-     "src_end": 46.93,
+     "src_end": 175.26,
      "portion": {
       "order": 5,
       "id": 34,
@@ -12444,9 +12466,9 @@
      "n": 82,
      "sam_ch_number": 82,
      "file": "/static/audio/readings/b3-p05-c082.mp3",
-     "duration": 128.33,
+     "duration": 70.98,
      "src_start": 0,
-     "src_end": 128.33,
+     "src_end": 70.98,
      "portion": {
       "order": 5,
       "id": 34,
@@ -12461,50 +12483,6 @@
      "verse_count": 8,
      "incipit": "וידבר יהוה אל משה",
      "name": "ויקרא - אחרי מות - 82"
-    },
-    {
-     "n": 83,
-     "sam_ch_number": 83,
-     "file": "/static/audio/readings/b3-p05-c083.mp3",
-     "duration": 70.98,
-     "src_start": 0,
-     "src_end": 70.98,
-     "portion": {
-      "order": 5,
-      "id": 34,
-      "name": "אחרי מות"
-     },
-     "src": {
-      "youtube_id": null
-     },
-     "sam_ch_id": 1600,
-     "verses": "כ:ט-כ:כא",
-     "verses_num": "20:9-20:21",
-     "verse_count": 13,
-     "incipit": "כי איש איש: אשר",
-     "name": "ויקרא - אחרי מות - 83"
-    },
-    {
-     "n": 84,
-     "sam_ch_number": 84,
-     "file": "/static/audio/readings/b3-p05-c084.mp3",
-     "duration": 67.47,
-     "src_start": 0,
-     "src_end": 67.47,
-     "portion": {
-      "order": 6,
-      "id": 35,
-      "name": "ובקצירכם"
-     },
-     "src": {
-      "youtube_id": null
-     },
-     "sam_ch_id": 1601,
-     "verses": "כ:כב-כ:כז",
-     "verses_num": "20:22-20:27",
-     "verse_count": 6,
-     "incipit": "ושמרתם את כל חקותי",
-     "name": "ויקרא - ובקצירכם - 84"
     }
    ],
    "playlist": "PLl-48IEqLtluI0oPyh0rmC0-iKVCEMvt_",
