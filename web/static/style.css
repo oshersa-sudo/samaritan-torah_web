@@ -245,6 +245,12 @@ body.div-collapsed .div-handle{ height:26px; }
 .anim-text{ flex:1 1 190px; min-width:0; font-family:inherit; font-size:14px; color:var(--dark);
             border:1px solid #d9d2bd; border-radius:6px; padding:3px 7px; background:#fff; }
 .anim-where{ font-size:12.5px; color:var(--muted); }
+/* the flags the administrator can press, and a row switched off */
+.anim-flag.clickable{ cursor:pointer; user-select:none; }
+.anim-flag.clickable:hover{ border-color:#b8912f; }
+.anim-row.off .anim-text{ color:var(--muted); background:#f4f2ec; text-decoration:line-through; }
+.anim-undo{ border:1px solid #d9d2bd; background:#fff; border-radius:6px; cursor:pointer;
+            font-size:14px; line-height:1; padding:3px 7px; color:#6b4d1e; }
 .anim-none{ display:flex; align-items:center; gap:8px; }
 .anim-none-t{ font-size:13px; color:var(--muted); }
 /* the same lamp, small, on a chapter cell in the spread */

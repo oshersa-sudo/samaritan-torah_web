@@ -1841,7 +1841,7 @@ def api_sam_chapter_marks():
     reader who has just come through a chapter that ended in death."""
     sid = int(request.args['sam_ch_id'])
     conn = db.get_connection()
-    out = {'prev_last_word': None}
+    out = {'prev_last_word': None, 'anim': _anim_overrides(conn, sid)}
     sc = conn.execute('SELECT book_id, number FROM sam_chapters WHERE id=?', (sid,)).fetchone()
     if sc and sc['number'] > 1:
         prev = conn.execute('SELECT id FROM sam_chapters WHERE book_id=? AND number=?',
@@ -1864,6 +1864,70 @@ def api_sam_chapter_marks():
 # it ended on, and whether any verse inside it opens or closes with a given
 # phrase. The PHRASES come from the client, so the rules themselves stay in one
 # place (the blessing tables in app.js) and only the searching happens here.
+# ── the administrator's changes to a chapter's animations ────────────────────
+# The rules in app.js say what a chapter carries by nature; this table is where
+# the project owner overrules them — turning one off, moving it from the opening
+# of a chapter to its end, or giving it other words. One row per animation, kept
+# by the chapter and a stable slot ('entry', 'chapter-end', 'verse-end:5'), and
+# read by EVERY reader, not only by an admin: a blessing switched off here must
+# stop appearing for everyone.
+def _anim_table(conn):
+    conn.execute("""CREATE TABLE IF NOT EXISTS anim_overrides (
+        sam_ch_id  INTEGER NOT NULL,
+        slot       TEXT    NOT NULL,
+        enabled    INTEGER NOT NULL DEFAULT 1,
+        text       TEXT,
+        timing     TEXT,
+        updated_at TEXT,
+        PRIMARY KEY (sam_ch_id, slot))""")
+
+
+def _anim_overrides(conn, sam_ch_id):
+    _anim_table(conn)
+    out = {}
+    for r in conn.execute('SELECT slot, enabled, text, timing FROM anim_overrides WHERE sam_ch_id=?',
+                          (sam_ch_id,)):
+        out[r['slot']] = {'enabled': bool(r['enabled']),
+                          'text': r['text'], 'timing': r['timing']}
+    return out
+
+
+@app.route('/api/admin/anim_override', methods=['POST'])
+def admin_anim_override():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        sid = int(d.get('sam_ch_id'))
+    except Exception:
+        return jsonify({'ok': False, 'error': 'bad params'}), 400
+    slot = (d.get('slot') or '').strip()
+    if not slot:
+        return jsonify({'ok': False, 'error': 'no slot'}), 400
+    timing = d.get('timing')
+    if timing not in (None, '', 'entry', 'chapter-end', 'verse-end', 'verse-start'):
+        return jsonify({'ok': False, 'error': 'bad timing'}), 400
+    text = d.get('text')
+    if text is not None:
+        text = str(text)[:50].strip() or None      # the field the admin types in is fifty long
+    enabled = 1 if d.get('enabled', True) else 0
+    conn = db.get_connection()
+    try:
+        _anim_table(conn)
+        conn.execute("""INSERT INTO anim_overrides (sam_ch_id, slot, enabled, text, timing, updated_at)
+                        VALUES (?,?,?,?,?,?)
+                        ON CONFLICT(sam_ch_id, slot) DO UPDATE SET
+                          enabled=excluded.enabled, text=excluded.text,
+                          timing=excluded.timing, updated_at=excluded.updated_at""",
+                     (sid, slot, enabled, text, (timing or None),
+                      time.strftime('%Y-%m-%d %H:%M:%S')))
+        conn.commit()
+        out = _anim_overrides(conn, sid)
+    finally:
+        conn.close()
+    return jsonify({'ok': True, 'anim': out})
+
+
 @app.route('/api/anim_marks')
 def api_anim_marks():
     bid = int(request.args['book_id'])
