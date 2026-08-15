@@ -616,8 +616,41 @@ def push_to_cloud(message):
     if not status.strip():
         return {"pushed": False, "reason": "no changes staged"}
     run_in(TORAH, ["git", "commit", "-m", message])
+
+    # The repo is worked on from more than one place, so the remote often has
+    # commits we don't - git then rejects the push as non-fast-forward and the
+    # button just fails with a wall of git hint text. Catch up first.
+    rebased_onto = None
+    run_in(TORAH, ["git", "fetch", "private"])
+    behind = run_in(TORAH, ["git", "rev-list", "--count", "web-deploy..private/main"]).strip()
+    if behind and behind != "0":
+        # Refuse to rebase if the incoming commits touch the same files we do -
+        # that needs a human, not an automatic replay of audio edits.
+        ours = set(run_in(TORAH, ["git", "diff", "--name-only", "private/main...web-deploy"]).split("\n"))
+        theirs = set(run_in(TORAH, ["git", "diff", "--name-only", "web-deploy...private/main"]).split("\n"))
+        clash = sorted(f for f in (ours & theirs) if f.strip())
+        if clash:
+            raise RuntimeError(
+                "the cloud has {} new commit(s) that change the SAME files as your edits "
+                "({}{}). Not rebasing automatically - your work is committed locally and "
+                "safe; this needs to be merged by hand.".format(
+                    behind, ", ".join(clash[:3]), " and more" if len(clash) > 3 else ""))
+        try:
+            run_in(TORAH, ["git", "rebase", "private/main"])
+        except Exception as e:
+            # --abort itself throws if no rebase actually started; don't let
+            # that mask the real error.
+            try:
+                run_in(TORAH, ["git", "rebase", "--abort"])
+            except Exception:
+                pass
+            raise RuntimeError(
+                "could not replay your edits on top of the {} new cloud commit(s): {}. "
+                "Your work is committed locally and safe.".format(behind, e))
+        rebased_onto = behind
+
     push_out = run_in(TORAH, ["git", "push", "private", "web-deploy:main"])
-    return {"pushed": True, "output": push_out, "status": status}
+    return {"pushed": True, "output": push_out, "status": status, "rebased_onto": rebased_onto}
 
 
 # ───────────────────────── HTTP handler ─────────────────────────
