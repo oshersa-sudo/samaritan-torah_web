@@ -1263,6 +1263,7 @@ async function showChapters(pid, pname){
   renderChapterGrid(rows, 'בחר פרק', (r)=>openChapter(r.id, r.number, pid, pname, false));
 }
 async function showSamChapters(pid, pname){
+  loadReadingManifests();          // the ▶ marks are about to matter
   S.view='sam_chapters'; S.curPid=pid; S.portionName=pname; setView();
   setCrumbs([{t:S.bookName, fn:()=>showPortions(S.book,S.bookName)}, {t:pname}]);
   S.stack=[{t:S.bookName, fn:()=>showPortions(S.book,S.bookName)},
@@ -1313,11 +1314,16 @@ async function openSamChapter(samId, samNum, pid, pname, fromSearch){
 }
 
 async function renderVerses(chId, chNum, pid, pname){
+  loadReadingManifests();          // the play bar is about to matter
   if(typeof ttsStop==='function') ttsStop();   // a new chapter ends any read-aloud
   if(typeof readingStop==='function') readingStop();   // …and any reading recording
   S.view='verses'; S.curChId=chId; S.curChNum=chNum; setView();
   await ensureBooks();   // populate S.books so the nav buttons can relabel at book edges
   const isSam = S.chMode==='samaritan';
+  // the four Jewish commentaries are 90% of a chapter's JSON and are read only
+  // inside "פרשנות יהודית"; the chapter comes without them and the panel asks
+  // for them itself (ensureFullVerses) the moment it is opened
+  S.versesFull = null;
   S.verses = isSam ? await api('sam_verses?sam_ch_id='+chId)
                    : await api('verses?chapter_id='+chId+(pid?('&portion_id='+pid):''));
   S.canonNote = isSam ? await api('canon_note?sam_ch_id='+chId) : null;
@@ -3361,6 +3367,20 @@ function scrollToEl(selector){
   setTimeout(tick,60);
 }
 $('dictBtn').onclick=()=>{ const was=S.dict; clearModes(); S.dict=!was; syncToolbar(true); paintVerses(); };
+// "פרשנות יהודית" is the one panel that needs what the chapter deliberately did
+// not carry. Fetch the full verses once per chapter, keeping the reader's place.
+async function ensureFullVerses(){
+  if(S.versesFull === S.curChId || S.curChId == null) return;
+  const q = S.chMode==='samaritan'
+    ? 'sam_verses?sam_ch_id=' + S.curChId + '&full=1'
+    : 'verses?chapter_id=' + S.curChId + (S.curPid ? ('&portion_id=' + S.curPid) : '') + '&full=1';
+  const want = S.curChId;
+  try{
+    const full = await api(q);
+    if(S.curChId !== want) return;        // the reader moved on while we asked
+    S.verses = full; S.versesFull = want;
+  }catch(e){}
+}
 function togglePanel(name){
   const was = (S.panel===name);
   clearModesPreserveFont(name);
@@ -3370,6 +3390,8 @@ function togglePanel(name){
     if(S.panel==='samaritan_src'){ S.samSrcChoice=null; S.tmSel=null; }
   }
   syncToolbar(true); paintVerses();
+  if(S.panel==='commentary')
+    ensureFullVerses().then(()=>{ if(S.panel==='commentary') paintVerses(); });
   if(S.panel) scrollToEl('.pair, .srcpanel');
 }
 $('interpBtn').onclick=()=>togglePanel('interpret');
@@ -6925,15 +6947,35 @@ const RDC = { on: localStorage.getItem('rd_cont')==='1', want:null, last:null, b
 //   whole parasha over and over, wrapping from its last chapter back to its
 //   first. Either repeating state keeps going until the reader stops it.
 const RDR = { mode: (parseInt(localStorage.getItem('rd_repeat'), 10) || 0) % 3 };
-fetch('/static/audio/readings/readings.json')
-  .then(r=>r.ok ? r.json() : null)
-  .then(j=>{ READINGS=j;
-    if(!j) return;
-    // repaint whatever is on screen so ▶ / ♪ appear without a manual refresh
-    if(S.view==='verses') paintVerses();
-    else if(S.view==='sam_chapters' && S.curPid!=null) showSamChapters(S.curPid, S.portionName);
-  })
-  .catch(()=>{});
+// The two manifests below are 665KB together and nothing on the first screen
+// needs them — they only say WHICH chapters carry a recording. Fetching them
+// while the app is starting made every reader, on every visit, wait for two
+// thirds of a megabyte before the book list could settle. They are asked for
+// once the app is up and idle instead; whatever is on screen repaints itself
+// when they land, exactly as it did before.
+function loadReadingManifests(){
+  if(loadReadingManifests.done) return;
+  loadReadingManifests.done = true;
+  fetch('/static/audio/readings/readings.json')
+    .then(r=>r.ok ? r.json() : null)
+    .then(j=>{ READINGS=j;
+      if(!j) return;
+      // repaint whatever is on screen so ▶ / ♪ appear without a manual refresh
+      if(S.view==='verses') paintVerses();
+      else if(S.view==='sam_chapters' && S.curPid!=null) showSamChapters(S.curPid, S.portionName);
+    })
+    .catch(()=>{});
+  fetch('/static/audio/witnesses.json')
+    .then(r=>r.ok ? r.json() : null)
+    .then(j=>{ WITNESSES=j; if(j && S.view==='verses') paintVerses(); })
+    .catch(()=>{});
+}
+// after the first screen has had its three seconds, and then only when the
+// browser is idle — or at once if the reader is already heading for a chapter
+setTimeout(()=>{
+  if(window.requestIdleCallback) requestIdleCallback(loadReadingManifests, {timeout:6000});
+  else loadReadingManifests();
+}, 3000);
 function readingFor(samNum, bookId){
   // Keyed by book + Samaritan chapter NUMBER (ids drift across DB copies after
   // admin merges/splits; numbers are the stable coordinate). Supports the
@@ -6966,10 +7008,7 @@ function masorotFor(bookId, stdChapter){
 // exact per-reader Samaritan-chapter witnesses: time ranges INSIDE the masorot
 // files (no separate audio), computed offline by the reading pipeline.
 let WITNESSES = null;
-fetch('/static/audio/witnesses.json')
-  .then(r=>r.ok ? r.json() : null)
-  .then(j=>{ WITNESSES=j; if(j && S.view==='verses') paintVerses(); })
-  .catch(()=>{});
+// (fetched by loadReadingManifests(), above, once the app is idle)
 function witnessesFor(bookId, samNum){
   if(!WITNESSES || !Array.isArray(WITNESSES.items)) return [];
   return WITNESSES.items.filter(it=>it.book_id===bookId && it.sam_ch_number===samNum);

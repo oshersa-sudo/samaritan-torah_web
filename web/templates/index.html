@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="תורה שומרונית">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ asset_build }}">
 <!-- splash display fonts (Hebrew); degrade gracefully to system fonts if offline -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -861,14 +861,18 @@
   window.SamaritanSplash={ skip, finish, config:SPLASH_CONFIG };
 })();
 </script>
-<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script src="{{ url_for('static', filename='app.js') }}?v={{ asset_build }}"></script>
 <script>
   if ('serviceWorker' in navigator) {
-    // auto-reload once when a new service worker takes control, so an updated
-    // version is shown immediately instead of a stale cached one.
+    // Auto-reload once when a NEW service worker takes over from an old one, so
+    // an updated version is shown immediately instead of a stale cached one.
+    // Only then: on a first visit there is no controller yet, and the worker
+    // claiming the page was making every new reader load the whole app twice —
+    // the page they had just waited for, thrown away and fetched again.
+    const _hadWorker = !!navigator.serviceWorker.controller;
     let _reloaded = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!_reloaded) { _reloaded = true; location.reload(); }
+      if (_hadWorker && !_reloaded) { _reloaded = true; location.reload(); }
     });
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')

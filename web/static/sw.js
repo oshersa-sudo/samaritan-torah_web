@@ -1,19 +1,22 @@
 /* Service worker: NETWORK-FIRST so the app always loads the latest code when
    online (an earlier cache-first version served stale assets after updates),
    falling back to the cache only when offline. /api/* always hits the network. */
-const CACHE = 'torah-web-v211';
+const CACHE = 'torah-web-v212';
 const SHELL = [
-  '/', '/static/style.css', '/static/app.js', '/manifest.json',
+  '/', '/manifest.json',      // app.js + style.css are cached by the page's own
+                             // versioned request; precaching them here fetched
+                             // a second, unversioned copy of 640KB on every visit
   '/static/maintenance.html',
   '/static/img/icon-192.png', '/static/img/icon-512.png',
   '/static/img/icon-maskable-512.png',
   '/static/img/app_icon.png', '/static/img/torah_scroll_nobg.png',
   '/static/img/icon_book_dark.png', '/static/img/icon_portion_dark.png',
-  '/static/img/background.jpg', '/static/img/splash_elder.jpg',
-  '/static/img/quill_hand.png',
-  '/fonts/SBL_Hbrw.ttf', '/fonts/Sam_font.ttf',
-  '/fonts/Amiri-Regular.ttf', '/fonts/CharisSIL-Regular.ttf',
-  '/fonts/ben-nor23.ttf'
+  '/static/img/background.jpg',
+  '/fonts/SBL_Hbrw.ttf', '/fonts/Sam_font.ttf'
+  // Amiri (Arabic), CharisSIL (transcription) and ben-nor23 (Samaritan
+  // commentary) are cached the first time a screen actually asks for them —
+  // precaching them cost every reader 200KB for pages most never open
+
 ];
 
 self.addEventListener('install', e => {

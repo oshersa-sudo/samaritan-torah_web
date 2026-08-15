@@ -1401,15 +1401,27 @@ _VERSE_COLS = ('id', 'number', 'text', 'english', 'masoretic_text', 'lxx_text',
                'sam_aramaic', 'onkelos_text', 'qumran_text', 'qumran_scroll',
                'arabic_trans', 'interpretation', 'rashi', 'ramban',
                'cassuto', 'baal_haturim')
+# The four Jewish commentaries are the heaviest thing a verse carries — on the
+# first chapter of Genesis they are 90% of the whole chapter's JSON (Cassuto
+# alone 33,600 characters against 260 for the Samaritan text) — and the reader
+# sees them only inside "פרשנות יהודית". So a chapter goes out without them, and
+# the panel asks for them by ?full=1 when it is opened.
+_HEAVY_COLS = ('rashi', 'ramban', 'cassuto', 'baal_haturim')
+_LIGHT_COLS = tuple(c for c in _VERSE_COLS if c not in _HEAVY_COLS)
 _NIKUD_RE = re.compile(u'[֑-ׇ]')
 # everything that is NOT a Hebrew consonant (incl. niqqud, te'amim, U+034F and
 # punctuation); used to reduce a word to bare consonants for the compare diff.
 _HEB_LETTERS_RE = re.compile(u'[^א-ת]')
 
 
-def _verse_dict(row):
+def _verse_dict(row, cols=None):
     keys = row.keys()
-    return {k: (row[k] if k in keys else None) for k in _VERSE_COLS}
+    return {k: (row[k] if k in keys else None) for k in (cols or _VERSE_COLS)}
+
+
+def _verse_cols():
+    """Which columns this request wants — everything only when it says ?full=1."""
+    return _VERSE_COLS if request.args.get('full') == '1' else _LIGHT_COLS
 
 
 def _ids_arg(name='verse_ids'):
@@ -1489,9 +1501,23 @@ def _sam_opening(sam_ch_id):
 
 
 # ── pages ──────────────────────────────────────────────────────────────────
+def _asset_build():
+    """A stamp that changes whenever app.js or style.css does, so the page can ask
+    for them by version and they can then be cached for good."""
+    try:
+        newest = max(os.path.getmtime(os.path.join(app.static_folder, n))
+                     for n in ('app.js', 'style.css'))
+        return str(int(newest))
+    except OSError:
+        return APP_VERSION
+
+
+ASSET_BUILD = _asset_build()
+
+
 @app.route('/')
 def index():
-    return render_template('index.html', version=APP_VERSION)
+    return render_template('index.html', version=APP_VERSION, asset_build=ASSET_BUILD)
 
 
 # Google Play will not publish an app without a reachable privacy policy, and it
@@ -1564,6 +1590,41 @@ def api_system_doc():
 @app.route('/fonts/<path:fn>')
 def fonts(fn):
     return send_from_directory(os.path.join(app.static_folder, 'fonts'), fn)
+
+
+# ── how long each thing may be kept ──────────────────────────────────────────
+# Everything went out as `no-cache` (Flask's default for static files), which
+# meant the CDN in front of the app could not hold a single byte: every visit
+# fetched app.js, the five fonts and every image from Frankfurt again, and the
+# service worker then fetched the same files a SECOND time to fill its own
+# cache — a cold load of 5.8MB where 2.9MB of it was the same files twice.
+# The rules below are ordered by how a file actually changes:
+#   fonts                 never change → a year
+#   ?v=<build> assets     the URL itself changes on deploy → a year, immutable
+#   images / audio / json → a week, and served from cache while refreshed behind
+#   anything else static  → an hour
+# The service worker and the page itself are never cached: they carry the state
+# that decides everything else.
+_STATIC_MEDIA = ('.png', '.jpg', '.jpeg', '.webp', '.svg', '.ico', '.mp3', '.m4a', '.json')
+
+
+@app.after_request
+def _cache_rules(resp):
+    p = request.path
+    if p in ('/sw.js', '/manifest.json') or p.startswith('/api/'):
+        resp.headers['Cache-Control'] = 'no-cache'
+    elif p.startswith('/fonts/'):
+        resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+    elif p.startswith('/static/'):
+        if request.args.get('v'):
+            resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+        elif p.endswith(_STATIC_MEDIA):
+            resp.headers['Cache-Control'] = 'public, max-age=604800, stale-while-revalidate=86400'
+        else:
+            resp.headers['Cache-Control'] = 'public, max-age=3600'
+    elif (resp.mimetype or '').startswith('text/html'):
+        resp.headers['Cache-Control'] = 'no-cache'      # the page names the build
+    return resp
 
 
 # PWA: service worker + manifest must be served from the root scope ('/').
@@ -1741,9 +1802,10 @@ def api_verses():
     cid = int(request.args['chapter_id'])
     pid = request.args.get('portion_id')
     rows = db.get_verses(cid, portion_id=int(pid) if pid else None)
+    cols = _verse_cols()
     out = []
     for r in rows:
-        dd = _verse_dict(r)
+        dd = _verse_dict(r, cols)
         mc = r['mas_chapter'] if 'mas_chapter' in r.keys() else None
         dd['jchapter'] = mc if mc else (r['jchapter'] if 'jchapter' in r.keys() else None)
         mn = r['mas_number'] if 'mas_number' in r.keys() else None
@@ -1757,9 +1819,10 @@ def api_sam_verses():
     """Samaritan-division verses of a Samaritan chapter."""
     sid = int(request.args['sam_ch_id'])
     rows = db.get_verses_by_sam_ch(sid)
+    cols = _verse_cols()
     out = []
     for r in rows:
-        dd = _verse_dict(r)
+        dd = _verse_dict(r, cols)
         mc = r['mas_chapter'] if 'mas_chapter' in r.keys() else None
         dd['jchapter'] = mc if mc else (r['jchapter'] if 'jchapter' in r.keys() else None)
         mn = r['mas_number'] if 'mas_number' in r.keys() else None
