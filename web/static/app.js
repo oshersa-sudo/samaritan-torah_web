@@ -1552,7 +1552,8 @@ function rawAnimations(){
 // reader sees, not only what the admin panel shows.
 function chapterAnimations(){
   const ov = S.animOv || {};
-  return rawAnimations().map(a => {
+  const raw = rawAnimations();
+  const out = raw.map(a => {
     const o = ov[a.slot] || {};
     return Object.assign({}, a, {
       dfltText: a.text, dfltKind: a.kind,
@@ -1561,6 +1562,20 @@ function chapterAnimations(){
       kind: o.timing || a.kind,
     });
   });
+  // …and the ones the owner wrote himself, on a chapter whose rules say nothing:
+  // an override with words of its own and no rule behind it stands on its own.
+  const known = new Set(raw.map(a => a.slot));
+  const verses = S.verses || [], last = verses[verses.length-1];
+  for(const slot of Object.keys(ov)){
+    if(known.has(slot)) continue;
+    const o = ov[slot] || {};
+    if(!o.text) continue;
+    out.push({ slot, own:true, text:o.text, dfltText:o.text,
+               kind: o.timing || 'entry', dfltKind: o.timing || 'entry',
+               enabled: o.enabled === false ? false : true,
+               vid: last && last.id });
+  }
+  return out;
 }
 // what the reading itself has to plant: everything except the one that answers
 // the landing. An animation moved to the end of the chapter attaches to its
@@ -1646,9 +1661,13 @@ function animSave(a, patch){
     text:    patch.text    !== undefined ? patch.text    : a.text,
     timing:  patch.kind    !== undefined ? patch.kind    : a.kind,
   };
-  if(patch.reset){ body.enabled = true; body.text = null; body.timing = null; }
-  else {
-    if(body.text === a.dfltText) body.text = null;      // no need to store the rule's own words
+  if(patch.del){ body.delete = true; }
+  else if(patch.reset){ body.enabled = true; body.text = null; body.timing = null; }
+  else if(!a.own){
+    // for an animation that comes from a rule there is no need to store what the
+    // rule already says — but a blessing the owner wrote IS its record, and
+    // dropping its words would erase the blessing when it is merely switched off
+    if(body.text === a.dfltText) body.text = null;
     if(body.timing === a.dfltKind) body.timing = null;
   }
   return apiPost('admin/anim_override', body).then(r => {
@@ -1662,11 +1681,9 @@ function animSave(a, patch){
 function animAdminPanel(){
   const box = el('div','anim-adm');
   const anims = chapterAnimations();
-  if(!anims.length){
+  if(!anims.length)
     box.appendChild(el('div','anim-none', animFlag('אנימציה', false).outerHTML
                                         + '<span class="anim-none-t">אין אנימציה בפרק זה</span>'));
-    return box;
-  }
   for(const a of anims){
     const row = el('div','anim-row' + (a.enabled ? '' : ' off'));
 
@@ -1694,13 +1711,44 @@ function animAdminPanel(){
       row.appendChild(el('span','anim-where',
         (a.kind === 'verse-start' ? 'בכניסה לפסוק ' : 'בסוף פסוק ') + esc(String(a.vnum || ''))));
 
-    const changed = (a.text !== a.dfltText) || (a.kind !== a.dfltKind) || !a.enabled;
-    if(changed){
+    if(a.own){
+      const del = el('button','anim-undo','✕'); del.title = 'מחק את הברכה שהוספת';
+      del.onclick = ()=>{ if(confirm('למחוק את הברכה שהוספת לפרק זה?'))
+                            animSave(a, {del:true}); };
+      row.appendChild(del);
+    } else if((a.text !== a.dfltText) || (a.kind !== a.dfltKind) || !a.enabled){
       const undo = el('button','anim-undo','↺'); undo.title = 'החזר את האנימציה למקורה';
       undo.onclick = ()=>animSave(a, {reset:true});
       row.appendChild(undo);
     }
     box.appendChild(row);
+  }
+  // ── writing one where the rules give none (or one more beside them) ────────
+  if(!anims.some(a => a.own)){
+    const add = el('div','anim-row anim-add');
+    add.appendChild(el('span','anim-add-lab','הוסף ברכה:'));
+    const inp = document.createElement('input');
+    inp.className = 'anim-text'; inp.type = 'text'; inp.maxLength = 50;
+    inp.placeholder = 'נוסח הברכה (עד 50 תווים)';
+    add.appendChild(inp);
+    let kind = 'entry';
+    const flags = [];
+    for(const [label, k] of [['בכניסה','entry'], ['בסוף הפרק','chapter-end']]){
+      const f = animFlag(label, k === kind);
+      f.classList.add('clickable');
+      f.onclick = ()=>{ kind = k; flags.forEach(([g, gk]) => g.classList.toggle('on', gk === kind)); };
+      flags.push([f, k]); add.appendChild(f);
+    }
+    const go = el('button','anim-undo','✚'); go.title = 'הוסף את הברכה לפרק';
+    go.onclick = ()=>{
+      const text = inp.value.trim();
+      if(!text) return inp.focus();
+      animSave({slot:'own', text:'', dfltText:'', kind:'entry', dfltKind:'entry', enabled:true},
+               {text, kind});
+    };
+    inp.onkeydown = e => { if(e.key === 'Enter') go.onclick(); };
+    add.appendChild(go);
+    box.appendChild(add);
   }
   return box;
 }

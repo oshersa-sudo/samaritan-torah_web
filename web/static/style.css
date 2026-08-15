@@ -251,6 +251,9 @@ body.div-collapsed .div-handle{ height:26px; }
 .anim-row.off .anim-text{ color:var(--muted); background:#f4f2ec; text-decoration:line-through; }
 .anim-undo{ border:1px solid #d9d2bd; background:#fff; border-radius:6px; cursor:pointer;
             font-size:14px; line-height:1; padding:3px 7px; color:#6b4d1e; }
+.anim-add{ border-top:1px dashed #d9d2bd; padding-top:6px; margin-top:1px; }
+.anim-add-lab{ font-size:13px; color:#6b4d1e; font-weight:600; }
+.anim-text::placeholder{ color:#b3ab97; font-size:13px; }
 .anim-none{ display:flex; align-items:center; gap:8px; }
 .anim-none-t{ font-size:13px; color:var(--muted); }
 /* the same lamp, small, on a chapter cell in the spread */

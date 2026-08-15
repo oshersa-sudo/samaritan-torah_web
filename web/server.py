@@ -1914,6 +1914,10 @@ def admin_anim_override():
     conn = db.get_connection()
     try:
         _anim_table(conn)
+        if d.get('delete'):                    # a blessing the owner added, taken back
+            conn.execute('DELETE FROM anim_overrides WHERE sam_ch_id=? AND slot=?', (sid, slot))
+            conn.commit()
+            return jsonify({'ok': True, 'anim': _anim_overrides(conn, sid)})
         conn.execute("""INSERT INTO anim_overrides (sam_ch_id, slot, enabled, text, timing, updated_at)
                         VALUES (?,?,?,?,?,?)
                         ON CONFLICT(sam_ch_id, slot) DO UPDATE SET
