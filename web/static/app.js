@@ -1237,6 +1237,32 @@ async function showPortions(bookId, bookName){
 }
 $('spreadBtn').onclick = ()=>showSpread();
 
+// ── which chapters carry an animation, seen from the outside ────────────────
+// Same rules as the blessings themselves; only the facts they judge are fetched,
+// and the phrases the reading-cues watch are sent along so the rules never have
+// to be written down a second time on the server.
+const ANIM_ENDS   = ['כאשר צוה יהוה את משה'];
+const ANIM_STARTS = ['ותכל כל עבדת המשכן'];
+let _animMarks = {};
+async function animMarks(bookId){
+  if(_animMarks[bookId]) return _animMarks[bookId];
+  const q = 'anim_marks?book_id=' + bookId
+          + ANIM_ENDS.map(p => '&ends=' + encodeURIComponent(p)).join('')
+          + ANIM_STARTS.map(p => '&starts=' + encodeURIComponent(p)).join('');
+  try{ return (_animMarks[bookId] = await api(q)); }catch(e){ return {}; }
+}
+function chapterHasAnimation(marks, book, num, rows){
+  const m = marks[String(num)];
+  if(!m) return false;
+  const first = _vfold(m.first || '');
+  const prev = marks[String(num - 1)];
+  const ctx = { book, num, prevWord: prev ? prev.last_word : null,
+                opens: str => first.startsWith(_vfold(str)),
+                has:   str => first.startsWith(_vfold(str)) };
+  if(BLESSINGS.some(b => { try{ return b.when(ctx); }catch(e){ return false; } })) return true;
+  if(book === 3 && LEV_REBUKE.some(o => first.startsWith(_vfold(o)))) return true;
+  return !!(m.ends || (book === 2 && m.starts));
+}
 async function showSpread(){
   S.view='spread'; setView();
   setCrumbs([{t:S.bookName, fn:()=>showPortions(S.book,S.bookName)}, {t:'פריסת פרקים'}]);
@@ -1250,9 +1276,17 @@ async function showSpread(){
       for(const sc of scs) if(!(sc.id in ch2port)) ch2port[sc.id]=p;
     }
     const rows = await api('sam_chapters?book_id='+S.book);
+    // the administrator sees which chapters carry an animation. The facts the
+    // rules need about a chapter seen from outside — its opening words, the word
+    // the chapter before it ended on, and whether a verse inside it opens or
+    // closes with the phrases the cues watch — are asked of the server once.
+    const marks = ADMIN.token ? await animMarks(S.book) : null;
     for(const r of rows){
       const p = ch2port[r.id]||{id:null,name:''};
-      const b=el('button','cell',String(r.number));
+      const b=el('button','cell'+(marks && chapterHasAnimation(marks, S.book, r.number, rows) ? ' has-anim' : ''),
+                 String(r.number));
+      if(marks && chapterHasAnimation(marks, S.book, r.number, rows))
+        b.appendChild(el('span','cell-anim','✦'));
       b.onclick=()=>{ S.curPid=p.id; S.portionName=p.name;
         openSamChapter(r.id, r.number, p.id, p.name, false); };
       grid.appendChild(b);
@@ -1410,6 +1444,7 @@ const BLESSINGS = [
 ];
 async function blessOnLanding(chNum){
   const first = _vfold((S.verses[0] || {}).text || '');
+  S.prevWord = null;
   const ctx = {
     book: S.book, num: chNum, prevWord: null,
     opens: str => first.startsWith(_vfold(str)),
@@ -1417,7 +1452,11 @@ async function blessOnLanding(chNum){
   };
   // only fetched when a rule could actually turn on it, so no chapter pays for it
   if(S.book === 1){
-    try{ const m = await api('sam_chapter_marks?sam_ch_id=' + S.curChId); ctx.prevWord = m && m.prev_last_word; }
+    try{ const m = await api('sam_chapter_marks?sam_ch_id=' + S.curChId);
+          ctx.prevWord = S.prevWord = m && m.prev_last_word;
+          // the flags were drawn before this answer came back, and one rule turns
+          // on it — redraw them now that the chapter's whole story is known
+          if(ADMIN.token) refreshAnimPanel(); }
     catch(e){}
     if(S.curChNum !== chNum) return;        // the reader moved on while we asked
   }
@@ -1482,9 +1521,10 @@ function readingCues(){
   for(const v of verses){
     const f = _vfold(v.text||'');
     if(!f) continue;
-    if(f.endsWith(closing)) out.push({vid:v.id, where:'after', text:BLESS_MOSHE + '.'});
+    if(f.endsWith(closing))
+      out.push({vid:v.id, where:'after', kind:'verse-end', vnum:v.number, text:BLESS_MOSHE + '.'});
     if(S.book===2 && f.startsWith(_vfold('ותכל כל עבדת המשכן')))
-      out.push({vid:v.id, where:'before',
+      out.push({vid:v.id, where:'before', kind:'verse-start', vnum:v.number,
                 text:'מרי השיב עלינן מן ברכת הנביא הצדיק התמים הטהור הנאמן משה.'});
   }
   // the rebuke — at the END of the chapter, and only in the Samaritan division,
@@ -1492,7 +1532,25 @@ function readingCues(){
   const first = _vfold((verses[0]||{}).text || ''), last = verses[verses.length-1];
   if(S.chMode==='samaritan' && S.book===3 && last
      && LEV_REBUKE.some(o => first.startsWith(_vfold(o))))
-    out.push({vid:last.id, where:'after', text:'אדני יהוה סלח נא לעון העם הזה כגדל חסדך.'});
+    out.push({vid:last.id, where:'after', kind:'chapter-end',
+              text:'אדני יהוה סלח נא לעון העם הזה כגדל חסדך.'});
+  return out;
+}
+// ── what animations a chapter carries (for the admin's flags) ───────────────
+// Read off the SAME tables the blessings themselves use — BLESSINGS for the one
+// that answers a landing, readingCues() for the ones the reading calls for — so
+// a rule added there shows up in the panel by itself, with no second list to
+// keep. Each entry says what it says and where it fires.
+function chapterAnimations(){
+  const out = [], verses = S.verses || [];
+  if(!verses.length) return out;
+  const first = _vfold((verses[0]||{}).text || '');
+  const ctx = { book:S.book, num:S.curChNum, prevWord:S.prevWord,
+                opens: str => first.startsWith(_vfold(str)),
+                has:   str => verses.some(v => _vfold(v.text||'').startsWith(_vfold(str))) };
+  const hit = BLESSINGS.find(b => { try{ return b.when(ctx); }catch(e){ return false; } });
+  if(hit) out.push({ text:hit.text, kind:'entry' });
+  for(const c of readingCues()) out.push({ text:c.text, kind:c.kind, vnum:c.vnum });
   return out;
 }
 let _cueMarks = [], _cueFired = new Set(), _cueLive = false, _cueTimer = null;
@@ -1538,6 +1596,45 @@ function cueCheck(){
     _cueTimer = setTimeout(() => { _cueTimer = null; cueCheck(); }, 120);
   }, {passive:true});
 })();
+
+// ── the animation flags, for the administrator only ─────────────────────────
+// A lamp for "this chapter carries an animation", the words it says in a field
+// of fifty, and two lamps for WHERE it fires: on entering the chapter, or on
+// reaching its end. A blessing that answers a single verse lights neither, and
+// says which verse it answers instead. All of it appears only while an admin is
+// signed in — leaving admin mode repaints the chapter and it is gone.
+function animFlag(label, on){
+  return el('span','anim-flag'+(on?' on':''), '<i></i>' + esc(label));
+}
+function refreshAnimPanel(){
+  const old = document.querySelector('.anim-adm');
+  if(old && old.parentNode) old.parentNode.replaceChild(animAdminPanel(), old);
+}
+function animAdminPanel(){
+  const box = el('div','anim-adm');
+  const anims = chapterAnimations();
+  if(!anims.length){
+    box.appendChild(el('div','anim-none', animFlag('אנימציה', false).outerHTML
+                                        + '<span class="anim-none-t">אין אנימציה בפרק זה</span>'));
+    return box;
+  }
+  for(const a of anims){
+    const row = el('div','anim-row');
+    row.appendChild(animFlag('אנימציה', true));
+    const inp = document.createElement('input');
+    inp.className = 'anim-text'; inp.type = 'text'; inp.maxLength = 50;
+    inp.value = (a.text || '').slice(0, 50); inp.readOnly = true;
+    inp.title = a.text || '';
+    row.appendChild(inp);
+    row.appendChild(animFlag('בכניסה', a.kind === 'entry'));
+    row.appendChild(animFlag('בסוף הפרק', a.kind === 'chapter-end'));
+    if(a.kind === 'verse-end' || a.kind === 'verse-start')
+      row.appendChild(el('span','anim-where',
+        (a.kind === 'verse-start' ? 'בכניסה לפסוק ' : 'בסוף פסוק ') + esc(String(a.vnum || ''))));
+    box.appendChild(row);
+  }
+  return box;
+}
 
 // the actual verse-area painter (re-run on every mode/filter/font change)
 function paintVerses(){
@@ -1590,6 +1687,7 @@ function paintVerses(){
       bar.appendChild(sb);
     }
     c.appendChild(bar);
+    if(S.chMode==='samaritan' && !S.english) c.appendChild(animAdminPanel());
   }
   // reading inside the portion of the week, in the Samaritan division: say so,
   // right above the play bar

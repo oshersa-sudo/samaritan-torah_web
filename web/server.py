@@ -1858,6 +1858,52 @@ def api_sam_chapter_marks():
     return jsonify(out)
 
 
+# The admin's animation flags have to judge every chapter of a book from the
+# outside, and the rules turn on things a chapter list does not carry: the words
+# a chapter opens with (beyond its two-word incipit), the word the chapter before
+# it ended on, and whether any verse inside it opens or closes with a given
+# phrase. The PHRASES come from the client, so the rules themselves stay in one
+# place (the blessing tables in app.js) and only the searching happens here.
+@app.route('/api/anim_marks')
+def api_anim_marks():
+    bid = int(request.args['book_id'])
+    ends = [p for p in request.args.getlist('ends') if p.strip()]
+    starts = [p for p in request.args.getlist('starts') if p.strip()]
+    conn = db.get_connection()
+    rows = conn.execute("""SELECT sc.number num, v.text
+                           FROM verses v
+                           JOIN chapters c ON c.id = v.chapter_id
+                           JOIN sam_chapters sc ON sc.id = v.sam_ch_id
+                           WHERE c.book_id = ? AND v.sam_ch_id IS NOT NULL
+                           ORDER BY sc.number, c.number, CAST(v.number AS INTEGER)""", (bid,)).fetchall()
+    conn.close()
+
+    def fold(s):
+        s = _HEB_LETTERS_RE.sub('', _NIKUD_RE.sub('', s or ''))
+        for a, b in (('ך', 'כ'), ('ם', 'מ'), ('ן', 'נ'), ('ף', 'פ'), ('ץ', 'צ')):
+            s = s.replace(a, b)
+        return s
+
+    fends = [fold(p) for p in ends]
+    fstarts = [fold(p) for p in starts]
+    per = {}                    # Samaritan chapter number → what the rules ask about
+    for r in rows:
+        d = per.setdefault(str(r['num']), {'first': '', 'last_word': None,
+                                           'ends': False, 'starts': False})
+        if not d['first']:
+            d['first'] = (r['text'] or '')[:200]
+        words = re.findall(r'[א-ת]+', r['text'] or '')
+        if words:
+            d['last_word'] = words[-1]
+        f = fold(r['text'])
+        if f:
+            if any(f.endswith(p) for p in fends):
+                d['ends'] = True
+            if any(f.startswith(p) for p in fstarts):
+                d['starts'] = True
+    return jsonify(per)
+
+
 @app.route('/api/canon_note')
 def api_canon_note():
     """Canon note for a book, if this sam_ch_id is that book's LAST Samaritan chapter —

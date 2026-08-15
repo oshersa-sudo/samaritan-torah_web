@@ -232,6 +232,26 @@ body.div-collapsed .div-handle{ height:26px; }
    only line) spreads its words across the whole column, so the colons line up */
 .bkpoem-cell{ text-align:justify; text-align-last:justify; }
 
+/* ── the administrator's animation flags (chapter view + chapter spread) ──── */
+.anim-adm{ display:flex; flex-direction:column; gap:5px; margin:0 0 8px; padding:7px 8px;
+           border:1px dashed #c9b98a; border-radius:8px; background:rgba(184,145,47,.06); }
+.anim-row{ display:flex; flex-wrap:wrap; align-items:center; gap:7px; }
+.anim-flag{ display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--muted);
+            border:1px solid #d9d2bd; border-radius:999px; padding:2px 9px; background:#fff; }
+.anim-flag i{ width:9px; height:9px; border-radius:50%; background:#cfc9b8;
+              box-shadow:inset 0 0 0 1px rgba(0,0,0,.12); }
+.anim-flag.on{ color:#6b4d1e; border-color:#b8912f; background:#fdf7e6; font-weight:600; }
+.anim-flag.on i{ background:#e0b53c; box-shadow:0 0 6px rgba(224,181,60,.85); }
+.anim-text{ flex:1 1 190px; min-width:0; font-family:inherit; font-size:14px; color:var(--dark);
+            border:1px solid #d9d2bd; border-radius:6px; padding:3px 7px; background:#fff; }
+.anim-where{ font-size:12.5px; color:var(--muted); }
+.anim-none{ display:flex; align-items:center; gap:8px; }
+.anim-none-t{ font-size:13px; color:var(--muted); }
+/* the same lamp, small, on a chapter cell in the spread */
+.cell.has-anim{ position:relative; }
+.cell .cell-anim{ position:absolute; top:1px; inset-inline-end:3px; font-size:10px; color:#c99a20;
+                  text-shadow:0 0 5px rgba(224,181,60,.7); line-height:1; }
+
 .hint{ color:var(--muted); font-size:14px; padding:6px 4px; }
 
 /* chapter grids */
