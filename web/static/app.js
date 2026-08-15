@@ -1102,13 +1102,16 @@ async function showBooks(){
   S.books = books; S.booksMode = mode;          // cached for cross-book chapter paging
   const c = $('content'); c.innerHTML='';
   for(const b of books){
+    const nm = bookLabel(b.id, b.name);
     const label = S.division==='samaritan'
-      ? `${esc(b.name)} <small>(${b.n_portions}-${b.n_chapters})</small>` : esc(b.name);
+      ? `${esc(nm)}<span class="bk-sam"> – <span class="samchar">${esc(nm)}</span></span>`
+        + ` <small>(${b.n_portions}-${b.n_chapters})</small>`
+      : esc(b.name);
     const mark = (S.division==='samaritan' && isWeekBook(b.id))
       ? `<span class="week-mark">⟶ ${esc(t('week_portion'))} · ${esc(CAL.week.name)}</span>` : '';
-    const btn = el('button','listbtn'+(mark?' is-week':''),
+    const btn = el('button','listbtn'+(S.division==='samaritan'?' twoscripts':'')+(mark?' is-week':''),
       `<img class="ico" src="/static/img/icon_book_dark.png" alt=""><span>${label}</span>${mark}`);
-    btn.onclick = ()=>showPortions(b.id, b.name);
+    btn.onclick = ()=>showPortions(b.id, nm);
     c.appendChild(btn);
   }
   c.appendChild(bookPoem());
@@ -1181,6 +1184,16 @@ function fitBookPoem(){
   grid.style.fontSize = px.toFixed(2) + 'px';
   const got = grid.getBoundingClientRect().width;    // one pass for the rounding
   if(got > avail) grid.style.fontSize = Math.max(POEM_MIN, px * avail / got).toFixed(2) + 'px';
+}
+
+// ── the books as the Samaritan tradition names them ──────────────────────────
+// In the Samaritan division a book is called by the words it opens with, not by
+// the short Jewish name. bookLabel() is used everywhere a book is named, so the
+// list, the breadcrumbs, the print header and the share text all agree; the list
+// itself also sets each name beside itself in the Samaritan script.
+const SAM_BOOK_NAMES = {1:'בראשית', 2:'ואלה שמות', 3:'ויקרא', 4:'במדבר סיני', 5:'ואלה הדברים'};
+function bookLabel(id, name){
+  return (S.division==='samaritan' && SAM_BOOK_NAMES[id]) ? SAM_BOOK_NAMES[id] : name;
 }
 
 // make sure the book list (for the current division) is cached, so chapter paging
@@ -2892,7 +2905,7 @@ async function crossBook(delta){
   const nb = bIdx+delta; if(bIdx<0 || nb<0 || nb>=S.books.length) return;
   const book = S.books[nb];
   const mode = S.division==='samaritan'?'samaritan':'standard';
-  S.book = book.id; S.bookName = book.name;
+  S.book = book.id; S.bookName = bookLabel(book.id, book.name);
   S.portions = await api(`portions?book_id=${book.id}&mode=${mode}`);
   if(!S.portions.length) return;
   const p = delta>0 ? S.portions[0] : S.portions[S.portions.length-1];
@@ -2923,7 +2936,7 @@ async function crossBookPortion(delta){
   const nb=bIdx+delta; if(bIdx<0||nb<0||nb>=S.books.length) return;
   const book=S.books[nb];
   const mode=S.division==='samaritan'?'samaritan':'standard';
-  S.book=book.id; S.bookName=book.name;
+  S.book=book.id; S.bookName=bookLabel(book.id, book.name);
   S.portions=await api(`portions?book_id=${book.id}&mode=${mode}`);
   if(!S.portions.length) return;
   const p = delta>0 ? S.portions[0] : S.portions[S.portions.length-1];
@@ -4172,7 +4185,7 @@ function cleanPron(p){ return (p||'').replace(/\([^)]*[א-ת؀-ۿ][^)]*\)/g,'').
 async function goToJewish(r){
   showSearch(false); S.searchReturn=true; S.division='standard';
   $('btnStandard').classList.add('active'); $('btnSamaritan').classList.remove('active');
-  S.book=r.book_id; S.bookName=r.book_name;
+  S.book=r.book_id; S.bookName=bookLabel(r.book_id, r.book_name);
   S.portions = await api(`portions?book_id=${r.book_id}&mode=standard`);
   S.verseFilter=r.id;
   await openChapter(r.chapter_id, r.chapter_num, r.portion_id, r.portion_name, true);
@@ -4180,7 +4193,7 @@ async function goToJewish(r){
 async function goToSam(r){
   showSearch(false); S.searchReturn=true; S.division='samaritan';
   $('btnSamaritan').classList.add('active'); $('btnStandard').classList.remove('active');
-  S.book=r.book_id; S.bookName=r.book_name;
+  S.book=r.book_id; S.bookName=bookLabel(r.book_id, r.book_name);
   S.portions = await api(`portions?book_id=${r.book_id}&mode=samaritan`);
   S.verseFilter=r.id;
   await openSamChapter(r.sam.sam_ch_id, r.sam.sam_ch_num, r.sam.sam_portion_id, r.sam.sam_portion_name, true);

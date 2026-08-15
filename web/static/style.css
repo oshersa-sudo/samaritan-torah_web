@@ -178,6 +178,20 @@ body.div-collapsed .div-handle{ height:26px; }
           font-family:inherit; font-size:20px; text-align:right; cursor:pointer; }
 .listbtn .ico{ width:28px; height:28px; opacity:.8; }
 .listbtn small{ color:var(--muted); font-size:15px; }
+/* A book named twice — in Hebrew letters and again in the Samaritan script,
+   with a dash between them. The Samaritan letters are far wider than the Hebrew,
+   so the row's type gives a little on a narrow screen (never below 15px, never
+   above the 20px the one-name rows use) and the second name is set smaller
+   still; that keeps both names and the counts on ONE line down to a 360px
+   phone, which is where they stopped fitting. */
+.listbtn.twoscripts{ font-size:clamp(15px, 4.7vw, 20px); flex-wrap:wrap; }
+/* …and when the week's badge cannot fit beside a whole name, IT gives way
+   to the next line rather than pushing the name off the screen */
+.listbtn.twoscripts .week-mark{ margin-inline-start:auto; }
+.listbtn .bk-sam{ font-size:.58em; color:#6b4d1e; white-space:nowrap; }
+/* a name is never broken across lines — on the book of the week, where the
+   badge shares the row, 'במדבר סיני' was splitting in two */
+.listbtn.twoscripts > span{ white-space:nowrap; }
 
 /* the poem in the space under the book list — set in the Torah face, centred as a
    block, and laid out as a two-column table with the rules taken away: the right
