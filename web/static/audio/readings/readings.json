@@ -9714,292 +9714,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - אחרי מות - 72",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1589,
-     "n": 72,
-     "verses": "יז:א-יז:ט",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 72,
-     "file": "/static/audio/readings/b3-p05-c072.mp3",
-     "duration": 138.37,
-     "src_start": 329.3,
-     "src_end": 467.67,
-     "verses_num": "17:1-17:9"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 3,
-     "name": "ויקרא - אחרי מות - 73",
-     "incipit": "ואיש איש מבית ישראל:",
-     "sam_ch_id": 1590,
-     "n": 73,
-     "verses": "יז:י-יז:יב",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 73,
-     "file": "/static/audio/readings/b3-p05-c073.mp3",
-     "duration": 62.36,
-     "src_start": 467.67,
-     "src_end": 530.03,
-     "verses_num": "17:10-17:12"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - אחרי מות - 74",
-     "incipit": "ואיש איש מבית ישראל",
-     "sam_ch_id": 1591,
-     "n": 74,
-     "verses": "יז:יג-יז:טז",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 74,
-     "file": "/static/audio/readings/b3-p05-c074.mp3",
-     "duration": 44.25,
-     "src_start": 530.03,
-     "src_end": 574.28,
-     "verses_num": "17:13-17:16"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 23,
-     "name": "ויקרא - אחרי מות - 75",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1592,
-     "n": 75,
-     "verses": "יח:א-יח:כג",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 75,
-     "file": "/static/audio/readings/b3-p05-c075.mp3",
-     "duration": 222.49,
-     "src_start": 574.28,
-     "src_end": 796.77,
-     "verses_num": "18:1-18:23"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 7,
-     "name": "ויקרא - אחרי מות - 76",
-     "incipit": "אל תטמאו בכל אלה:",
-     "sam_ch_id": 1593,
-     "n": 76,
-     "verses": "יח:כד-יח:ל",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 76,
-     "file": "/static/audio/readings/b3-p05-c076.mp3",
-     "duration": 70.97,
-     "src_start": 796.77,
-     "src_end": 867.74,
-     "verses_num": "18:24-18:30"
-    },
-    {
-     "src": {
-      "youtube_id": "aogBwymaV_U"
-     },
-     "verse_count": 8,
-     "name": "ויקרא - אחרי מות - 77",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1594,
-     "n": 77,
-     "verses": "יט:א-יט:ח",
-     "portion": {
-      "order": 5,
-      "name": "אחרי מות",
-      "id": 34
-     },
-     "sam_ch_number": 77,
-     "file": "/static/audio/readings/b3-p05-c077.mp3",
-     "duration": 67.49,
-     "src_start": 867.74,
-     "src_end": 935.23,
-     "verses_num": "19:1-19:8"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 11,
-     "name": "ויקרא - ובקצירכם - 78",
-     "incipit": "ובקצירכם את קציר ארצכם",
-     "sam_ch_id": 1595,
-     "n": 78,
-     "verses": "יט:ט-יט:יט",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 78,
-     "file": "/static/audio/readings/b3-p06-c078.mp3",
-     "duration": 114.38,
-     "src_start": 0.0,
-     "src_end": 114.38,
-     "verses_num": "19:9-19:19"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 3,
-     "name": "ויקרא - ובקצירכם - 79",
-     "incipit": "ואיש כי ישכב את",
-     "sam_ch_id": 1596,
-     "n": 79,
-     "verses": "יט:כ-יט:כב",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 79,
-     "file": "/static/audio/readings/b3-p06-c079.mp3",
-     "duration": 38.07,
-     "src_start": 114.38,
-     "src_end": 152.45,
-     "verses_num": "19:20-19:22"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 10,
-     "name": "ויקרא - ובקצירכם - 80",
-     "incipit": "וכי תבאו אל הארץ",
-     "sam_ch_id": 1597,
-     "n": 80,
-     "verses": "יט:כג-יט:לב",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 80,
-     "file": "/static/audio/readings/b3-p06-c080.mp3",
-     "duration": 98.36,
-     "src_start": 152.45,
-     "src_end": 250.81,
-     "verses_num": "19:23-19:32"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 5,
-     "name": "ויקרא - ובקצירכם - 81",
-     "incipit": "וכי יגור אתכם גר",
-     "sam_ch_id": 1598,
-     "n": 81,
-     "verses": "יט:לג-יט:לז",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 81,
-     "file": "/static/audio/readings/b3-p06-c081.mp3",
-     "duration": 58.48,
-     "src_start": 250.81,
-     "src_end": 309.29,
-     "verses_num": "19:33-19:37"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 8,
-     "name": "ויקרא - ובקצירכם - 82",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1599,
-     "n": 82,
-     "verses": "כ:א-כ:ח",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 82,
-     "file": "/static/audio/readings/b3-p06-c082.mp3",
-     "duration": 93.68,
-     "src_start": 309.29,
-     "src_end": 402.97,
-     "verses_num": "20:1-20:8"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 13,
-     "name": "ויקרא - ובקצירכם - 83",
-     "incipit": "כי איש איש אשר",
-     "sam_ch_id": 1600,
-     "n": 83,
-     "verses": "כ:ט-כ:כא",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 83,
-     "file": "/static/audio/readings/b3-p06-c083.mp3",
-     "duration": 323.98,
-     "src_start": 402.97,
-     "src_end": 726.95,
-     "verses_num": "20:9-20:21"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - ובקצירכם - 84",
-     "incipit": "ושמרתם את כל חקותי",
-     "sam_ch_id": 1601,
-     "n": 84,
-     "verses": "כ:כב-כ:כז",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 84,
-     "file": "/static/audio/readings/b3-p06-c084.mp3",
-     "duration": 59.61,
-     "src_start": 726.95,
-     "src_end": 786.56,
-     "verses_num": "20:22-20:27"
-    },
-    {
-     "src": {
       "youtube_id": "kyRmh5B0guA"
      },
      "verse_count": 9,
@@ -12505,6 +12219,292 @@
      "verse_count": 9,
      "incipit": "והמשלח את השעיר לעזאזל",
      "name": "ויקרא - ואיש או אשה - 71"
+    },
+    {
+     "n": 72,
+     "sam_ch_number": 72,
+     "file": "/static/audio/readings/b3-p05-c072.mp3",
+     "duration": 58.07,
+     "src_start": 0,
+     "src_end": 58.07,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1589,
+     "verses": "יז:א-יז:ט",
+     "verses_num": "17:1-17:9",
+     "verse_count": 9,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - אחרי מות - 72"
+    },
+    {
+     "n": 73,
+     "sam_ch_number": 73,
+     "file": "/static/audio/readings/b3-p05-c073.mp3",
+     "duration": 87.91,
+     "src_start": 0,
+     "src_end": 87.91,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1590,
+     "verses": "יז:י-יז:יב",
+     "verses_num": "17:10-17:12",
+     "verse_count": 3,
+     "incipit": "ואיש איש מבית ישראל:",
+     "name": "ויקרא - אחרי מות - 73"
+    },
+    {
+     "n": 74,
+     "sam_ch_number": 74,
+     "file": "/static/audio/readings/b3-p05-c074.mp3",
+     "duration": 63.76,
+     "src_start": 0,
+     "src_end": 63.76,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1591,
+     "verses": "יז:יג-יז:טז",
+     "verses_num": "17:13-17:16",
+     "verse_count": 4,
+     "incipit": "ואיש איש מבית ישראל",
+     "name": "ויקרא - אחרי מות - 74"
+    },
+    {
+     "n": 75,
+     "sam_ch_number": 75,
+     "file": "/static/audio/readings/b3-p05-c075.mp3",
+     "duration": 79.83,
+     "src_start": 0,
+     "src_end": 79.83,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1592,
+     "verses": "יח:א-יח:כג",
+     "verses_num": "18:1-18:23",
+     "verse_count": 23,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - אחרי מות - 75"
+    },
+    {
+     "n": 76,
+     "sam_ch_number": 76,
+     "file": "/static/audio/readings/b3-p05-c076.mp3",
+     "duration": 38.96,
+     "src_start": 0,
+     "src_end": 38.96,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1593,
+     "verses": "יח:כד-יח:ל",
+     "verses_num": "18:24-18:30",
+     "verse_count": 7,
+     "incipit": "אל תטמאו בכל אלה:",
+     "name": "ויקרא - אחרי מות - 76"
+    },
+    {
+     "n": 77,
+     "sam_ch_number": 77,
+     "file": "/static/audio/readings/b3-p05-c077.mp3",
+     "duration": 83.87,
+     "src_start": 0,
+     "src_end": 83.87,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1594,
+     "verses": "יט:א-יט:ח",
+     "verses_num": "19:1-19:8",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - אחרי מות - 77"
+    },
+    {
+     "n": 78,
+     "sam_ch_number": 78,
+     "file": "/static/audio/readings/b3-p05-c078.mp3",
+     "duration": 117.59,
+     "src_start": 0,
+     "src_end": 117.59,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1595,
+     "verses": "יט:ט-יט:יט",
+     "verses_num": "19:9-19:19",
+     "verse_count": 11,
+     "incipit": "ובקצירכם את קציר ארצכם:",
+     "name": "ויקרא - אחרי מות - 78"
+    },
+    {
+     "n": 79,
+     "sam_ch_number": 79,
+     "file": "/static/audio/readings/b3-p05-c079.mp3",
+     "duration": 44.25,
+     "src_start": 0,
+     "src_end": 44.25,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1596,
+     "verses": "יט:כ-יט:כב",
+     "verses_num": "19:20-19:22",
+     "verse_count": 3,
+     "incipit": "ואיש כי ישכב את",
+     "name": "ויקרא - אחרי מות - 79"
+    },
+    {
+     "n": 80,
+     "sam_ch_number": 80,
+     "file": "/static/audio/readings/b3-p05-c080.mp3",
+     "duration": 47.22,
+     "src_start": 0,
+     "src_end": 47.22,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1597,
+     "verses": "יט:כג-יט:לב",
+     "verses_num": "19:23-19:32",
+     "verse_count": 10,
+     "incipit": "וכי תבאו אל הארץ:",
+     "name": "ויקרא - אחרי מות - 80"
+    },
+    {
+     "n": 81,
+     "sam_ch_number": 81,
+     "file": "/static/audio/readings/b3-p05-c081.mp3",
+     "duration": 46.93,
+     "src_start": 0,
+     "src_end": 46.93,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1598,
+     "verses": "יט:לג-יט:לז",
+     "verses_num": "19:33-19:37",
+     "verse_count": 5,
+     "incipit": "וכי יגור אתכם גר",
+     "name": "ויקרא - אחרי מות - 81"
+    },
+    {
+     "n": 82,
+     "sam_ch_number": 82,
+     "file": "/static/audio/readings/b3-p05-c082.mp3",
+     "duration": 128.33,
+     "src_start": 0,
+     "src_end": 128.33,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1599,
+     "verses": "כ:א-כ:ח",
+     "verses_num": "20:1-20:8",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - אחרי מות - 82"
+    },
+    {
+     "n": 83,
+     "sam_ch_number": 83,
+     "file": "/static/audio/readings/b3-p05-c083.mp3",
+     "duration": 70.98,
+     "src_start": 0,
+     "src_end": 70.98,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1600,
+     "verses": "כ:ט-כ:כא",
+     "verses_num": "20:9-20:21",
+     "verse_count": 13,
+     "incipit": "כי איש איש: אשר",
+     "name": "ויקרא - אחרי מות - 83"
+    },
+    {
+     "n": 84,
+     "sam_ch_number": 84,
+     "file": "/static/audio/readings/b3-p05-c084.mp3",
+     "duration": 67.47,
+     "src_start": 0,
+     "src_end": 67.47,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1601,
+     "verses": "כ:כב-כ:כז",
+     "verses_num": "20:22-20:27",
+     "verse_count": 6,
+     "incipit": "ושמרתם את כל חקותי",
+     "name": "ויקרא - ובקצירכם - 84"
     }
    ],
    "playlist": "PLl-48IEqLtluI0oPyh0rmC0-iKVCEMvt_",
