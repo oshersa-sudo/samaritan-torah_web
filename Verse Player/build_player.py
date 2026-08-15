@@ -798,7 +798,10 @@ function pushToCloud() {
     .then(function (res) {
       if (!res.ok) throw new Error(res.error || 'push failed');
       if (!res.result.pushed) { setStatus('אין שינויים לדחוף.'); return; }
-      setStatus('✓ נדחף לענן בהצלחה. הפריסה (Render) לוקחת כמה דקות — הנורות יתעדכנו אוטומטית.');
+      var sync = res.result.rebased_onto
+        ? ' (בדרך, סונכרנו ' + res.result.rebased_onto + ' עדכונים חדשים מהענן — העריכות שלך הושתלו מעליהם)'
+        : '';
+      setStatus('✓ נדחף לענן בהצלחה' + sync + '. הפריסה (Render) לוקחת כמה דקות — הנורות יתעדכנו אוטומטית.');
       setTimeout(fetchSyncStatus, 120000);   /* deploy usually lands within ~2 min */
     })
     .catch(function (e) { setStatus('שגיאה בדחיפה: ' + e.message); });
