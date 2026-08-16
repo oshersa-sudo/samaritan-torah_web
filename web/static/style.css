@@ -1840,6 +1840,11 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
   direction:rtl;
   border-radius:6px; padding:1px 7px; font-size:12px; font-weight:800; white-space:nowrap; }
 .listbtn.is-week{ border-color:#e2c96a; box-shadow:inset 0 0 0 1px #f0c33c33; }
+/* the SECOND portion of a Sabbath that reads two together — the same badge in a
+   quieter colour, so the portion of the week keeps the eye and the one read with
+   it is plainly the companion */
+.week-mark.extra{ color:#4a5d78; background:#eef2f9; border-color:#b9c6dc; }
+.week-banner.extra{ color:#4a5d78; background:#eef2f9; border-color:#b9c6dc; }
 /* and while reading inside it, above the play bar */
 .week-banner{ margin:0 0 6px; text-align:center; color:#8a6a12; background:#fdf3d0;
   border:1px solid #e2c96a; border-radius:8px; padding:4px 10px; font-size:13.5px; font-weight:700; }

@@ -114,14 +114,29 @@ def main():
                     d['ev'] = evs
                 days[rec['greg']] = d
                 if parasha:
-                    p = pmap.get(norm(parasha.split('+')[0].strip()))
-                    if not p:
-                        unmatched[parasha] = unmatched.get(parasha, 0) + 1
-                    shabbat[rec['greg']] = {'p': parasha,
-                                            'id': p['id'] if p else None,
-                                            'book': p['book_id'] if p else None,
-                                            'book_name': books.get(p['book_id']) if p else None,
-                                            'name': p['name'] if p else parasha}
+                    # Some Sabbaths read TWO portions together — the engine writes
+                    # them as 'כי אתם עברים + בנים אתם'. Every one of them is
+                    # resolved and kept: the first as the portion of the week, the
+                    # rest under 'also', so the app can mark them all.
+                    parts = [x.strip() for x in parasha.split('+') if x.strip()]
+                    rows = []
+                    for nm in parts:
+                        r = pmap.get(norm(nm))
+                        if not r:
+                            unmatched[nm] = unmatched.get(nm, 0) + 1
+                        rows.append((nm, r))
+                    (nm0, p) = rows[0]
+                    rec_out = {'p': parasha,
+                               'id': p['id'] if p else None,
+                               'book': p['book_id'] if p else None,
+                               'book_name': books.get(p['book_id']) if p else None,
+                               'name': p['name'] if p else nm0}
+                    also = [{'id': r['id'], 'book': r['book_id'],
+                             'book_name': books.get(r['book_id']), 'name': r['name']}
+                            for nm, r in rows[1:] if r]
+                    if also:
+                        rec_out['also'] = also
+                    shabbat[rec['greg']] = rec_out
         path = os.path.join(OUT_DIR, '%d.json' % gy)
         with io.open(path, 'w', encoding='utf-8', newline='') as f:
             # canaan: the year of the entry into Canaan for THIS Samaritan year — one

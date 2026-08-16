@@ -203,6 +203,7 @@ const I18N = {
     dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
     more_results:'תוצאות נוספות', phr_occurrences:'מופעים', phr_words:'מילות הצירוף', phr_head:'מטבעות לשון', phr_formula:'כינוי קבוע', phr_idiom:'ניב', sug_head:'הצעה מתוך גזירה', sug_note:'לא אומתה מול המילון, מרקה או התורה — אין הפניה לשורש', ver_by:'מאומת לפי', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון.', tal_click_precise:'לחץ לפירוש המדויק מתוך המילון ⬅',
     week_portion:'פרשת השבוע', week_portion_here:'פרשת השבוע — {p}',
+    week_portion_extra:'פרשה נוספת', week_portion_here_extra:'פרשה נוספת הנקראת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
@@ -443,6 +444,7 @@ const I18N = {
     dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
     more_results:'More results', phr_occurrences:'occurrences', phr_words:'Words of the phrase', phr_head:'Set phrases', phr_formula:'fixed epithet', phr_idiom:'idiom', sug_head:'Suggested by derivation', sug_note:'not confirmed against the dictionary, Marqe or the Torah — no root is offered', ver_by:'confirmed by', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in the dictionary.', tal_click_precise:'Tap for the exact entry from the dictionary ⬅',
     week_portion:'This week’s portion', week_portion_here:'The portion of this week — {p}',
+    week_portion_extra:'Additional portion', week_portion_here_extra:'An additional portion read this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
     m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
@@ -683,6 +685,7 @@ const I18N = {
     dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
     more_results:'نتائج إضافية', phr_occurrences:'مواضع', phr_words:'كلمات التعبير', phr_head:'تعابير ثابتة', phr_formula:'لقب ثابت', phr_idiom:'تعبير اصطلاحي', sug_head:'اقتراح من الاشتقاق', sug_note:'غير مؤكَّد مقابل المعجم أو مرقة أو التوراة — لا يُعطى جذر', ver_by:'مؤكَّد بواسطة', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في المعجم.', tal_click_precise:'اضغط للمدخل الدقيق من المعجم ⬅',
     week_portion:'فصل الأسبوع', week_portion_here:'فصل هذا الأسبوع — {p}',
+    week_portion_extra:'فصل إضافي', week_portion_here_extra:'فصل إضافي يُقرأ هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
@@ -970,12 +973,28 @@ addEventListener('resize', () => {
 });
 
 // is this portion the one read this coming Sabbath?
-function isWeekPortion(portionId){
-  return !!(CAL.week && CAL.week.id && portionId === CAL.week.id);
+// Some Sabbaths read TWO portions together (the calendar carries the second
+// under 'also'). Both are marked: the first as the portion of the week, the
+// second as the one read with it.
+function weekPortions(){
+  if(!CAL.week) return [];
+  const out = CAL.week.id ? [{id:CAL.week.id, book:CAL.week.book, name:CAL.week.name, extra:false}] : [];
+  for(const a of (CAL.week.also || []))
+    if(a && a.id) out.push({id:a.id, book:a.book, name:a.name, extra:true});
+  return out;
 }
-function isWeekBook(bookId){
-  return !!(CAL.week && CAL.week.book && bookId === CAL.week.book);
+// null · {extra:false} for the portion of the week · {extra:true} for one read with it
+function weekPortionMark(portionId){
+  return weekPortions().find(p => p.id === portionId) || null;
 }
+function weekBookMark(bookId){
+  const hits = weekPortions().filter(p => p.book === bookId);
+  if(!hits.length) return null;
+  const main = hits.find(p => !p.extra);
+  return { extra: !main, names: hits.map(p => p.name) };
+}
+function isWeekPortion(portionId){ return !!weekPortionMark(portionId); }
+function isWeekBook(bookId){ return !!weekBookMark(bookId); }
 
 const PANEL_MODES = ['compare','interpret','aramaic','arabic','commentary','samaritan_src','variants'];
 
@@ -1140,8 +1159,10 @@ async function showBooks(){
       ? `${esc(nm)}<span class="bk-sam"> – ${samWords(nm)}</span>`
         + ` <small>(${b.n_portions}-${b.n_chapters})</small>`
       : esc(b.name);
-    const mark = (S.division==='samaritan' && isWeekBook(b.id))
-      ? `<span class="week-mark">⟶ ${esc(t('week_portion'))} · ${esc(CAL.week.name)}</span>` : '';
+    const wb = S.division==='samaritan' ? weekBookMark(b.id) : null;
+    const mark = wb
+      ? `<span class="week-mark${wb.extra?' extra':''}">⟶ ${esc(t(wb.extra?'week_portion_extra':'week_portion'))}`
+        + ` · ${esc(wb.names.join(' · '))}</span>` : '';
     const btn = el('button','listbtn'+(S.division==='samaritan'?' twoscripts':'')+(mark?' is-week':''),
       `<img class="ico" src="/static/img/icon_book_dark.png" alt=""><span>${label}</span>${mark}`);
     btn.onclick = ()=>showPortions(b.id, nm);
@@ -1258,8 +1279,10 @@ async function showPortions(bookId, bookName){
       ? `${esc(p.name)}<span class="bk-sam"> – ${samWords(p.name)}</span>`
         + ` <small>(${p.n_chapters})</small>`
       : esc(p.name);
-    const mark = (S.division==='samaritan' && isWeekPortion(p.id))
-      ? `<span class="week-mark">${esc(t('week_portion'))}</span>` : '';
+    const wp = S.division==='samaritan' ? weekPortionMark(p.id) : null;
+    const mark = wp
+      ? `<span class="week-mark${wp.extra?' extra':''}">${esc(t(wp.extra?'week_portion_extra':'week_portion'))}</span>`
+      : '';
     const btn = el('button','listbtn'+(S.division==='samaritan'?' twoscripts':'')+(mark?' is-week':''),
       `<img class="ico" src="/static/img/icon_portion_dark.png" alt=""><span>${label}</span>${mark}`);
     btn.onclick = ()=> S.division==='samaritan'
@@ -1842,8 +1865,10 @@ function paintVerses(){
   // reading inside the portion of the week, in the Samaritan division: say so,
   // right above the play bar
   if(S.chMode==='samaritan' && isWeekPortion(S.curPid)){
-    const w = el('div','week-banner');
-    w.textContent = t('week_portion_here').replace('{p}', (CAL.week && CAL.week.name) || '');
+    const wp = weekPortionMark(S.curPid);
+    const w = el('div','week-banner' + (wp && wp.extra ? ' extra' : ''));
+    w.textContent = t(wp && wp.extra ? 'week_portion_here_extra' : 'week_portion_here')
+                      .replace('{p}', (wp && wp.name) || (CAL.week && CAL.week.name) || '');
     c.appendChild(w);
   }
   if(typeof readingBar==='function') readingBar(c);   // chanted-reading recording, if one exists
