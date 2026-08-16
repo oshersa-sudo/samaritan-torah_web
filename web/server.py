@@ -1570,6 +1570,14 @@ def timeline_page(sub='index.html'):
     return send_from_directory(_TIMELINE_DIR, sub)
 
 
+# ── אוצר השירה השומרונית ──────────────────────────────────────────────────────
+# The recordings archive, another page of its own, opened from the menu in the
+# same way. Its routes live in web/shira.py because it brings a catalog and a
+# media server with it, where the timeline is only files. See that module.
+from shira import shira as _shira_bp                                # noqa: E402
+app.register_blueprint(_shira_bp)
+
+
 @app.route('/favicon.ico')
 def favicon():
     """index.html names its own icon, but a page that doesn't — the timeline —

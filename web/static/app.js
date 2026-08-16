@@ -205,6 +205,7 @@ const I18N = {
     week_portion:'פרשת השבוע', week_portion_here:'פרשת השבוע — {p}',
     week_portion_extra:'פרשה נוספת', week_portion_here_extra:'פרשה נוספת הנקראת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
+    m_shira:'אוצר השירה השומרונית',
     m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
@@ -446,6 +447,7 @@ const I18N = {
     week_portion:'This week’s portion', week_portion_here:'The portion of this week — {p}',
     week_portion_extra:'Additional portion', week_portion_here_extra:'An additional portion read this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
+    m_shira:'The Treasury of Samaritan Song',
     m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
@@ -687,6 +689,7 @@ const I18N = {
     week_portion:'فصل الأسبوع', week_portion_here:'فصل هذا الأسبوع — {p}',
     week_portion_extra:'فصل إضافي', week_portion_here_extra:'فصل إضافي يُقرأ هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
+    m_shira:'كنز الترتيل السامري',
     m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
@@ -4555,6 +4558,19 @@ $('tlFrame').addEventListener('load', () => {
 });
 $('tlToTorah').onclick = () => $('timelineModal').classList.add('hidden');
 
+// ── אוצר השירה השומרונית ─────────────────────────────────────────────────────
+// The recordings archive (/shira), shown in a frame of its own like the
+// timeline. The audio itself comes from a media server, not from here. The
+// frame is loaded once and kept, which is what lets a recording go on playing
+// while the reader returns to the Torah in front of it.
+function openShira(){
+  const f = $('shFrame');
+  if(!f.src) f.src = '/shira/';
+  $('shiraModal').classList.remove('hidden');
+  trackNav(t('m_shira'));
+}
+$('shToTorah').onclick = () => $('shiraModal').classList.add('hidden');
+
 function openLibrary(){
   $('libraryModal').classList.remove('hidden');
   $('libGallerySearch').value='';
@@ -4594,6 +4610,7 @@ function menuAction(a){
   if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
   else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
   else if(a==='timeline')  openTimeline();
+  else if(a==='shira')     openShira();
   else if(a==='library')   openLibrary();
   else if(a==='dict_app')  openDictApp();
   else if(a==='tm_book')   openTmBook();

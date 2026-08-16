@@ -1,0 +1,551 @@
+/* אוצר השירה השומרונית — standalone unit.
+   Palette and type follow web/static/style.css so the unit can be dropped
+   into the Torah app without restyling. */
+@font-face{
+  font-family:'Samaritan';
+  src:url('fonts/Sam_font.ttf') format('truetype');
+  font-display:swap;
+}
+:root{
+  --navy:#1a3873; --accent:#2e61b8; --active:#3880e6; --cream:#f7f7f2;
+  --share:#218c66; --dark:#141414; --muted:#73738c; --line:#c9cfe0;
+  --card:#fff; --shadow:0 1px 3px rgba(26,56,115,.10);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--cream); color:var(--dark);
+  font-family:'Heebo','Segoe UI',system-ui,sans-serif;
+  padding-bottom:88px;
+}
+.hidden{display:none !important}
+
+/* ------------------------------------------------------------- header */
+.top{background:var(--navy);color:#fff}
+.top-in{max-width:1080px;margin:0 auto;padding:26px 16px 14px}
+.top h1{
+  margin:0;font-family:'Frank Ruhl Libre',serif;font-size:1.65rem;
+  font-weight:700;letter-spacing:.01em;
+}
+.sub{margin:5px 0 0;font-size:.86rem;opacity:.82}
+.top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+/* the action row keeps its own line, so a button appearing later (the first
+   playlist, the admin tools) cannot reflow the ones already there */
+.top-act{flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:16px;padding-inline-start:34px}
+
+/* ------------------------------------------------------------ gramophone */
+.gramo{position:relative;flex:0 0 auto;width:98px;line-height:0}
+.gramo img{
+  width:100%;height:auto;display:block;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.35));
+}
+/* the sound rises from the bell, which fills the upper-left of the photo.
+   The header reserves room for it, so nothing is clipped at the top. */
+/* sized in percentages, not pixels, so the sound keeps leaving the bell mouth
+   at whatever size the gramophone is drawn */
+.gramo .notes{
+  position:absolute;left:-47%;top:-8%;width:127%;height:auto;
+  overflow:visible;pointer-events:none;
+}
+.gramo .note{fill:#fff}
+.gramo .note path{stroke:#fff;stroke-width:2.2;stroke-linecap:round;fill:none}
+.gramo .note.sm{opacity:.7}
+.gramo .samch{font-family:'Samaritan',serif;font-size:20px;fill:#f3e5bd}
+.gramo .samch.sm{font-size:16px;opacity:.82}
+/* «שיראן» writes itself out of the horn one letter at a time, holds while the
+   word stands complete, then fades and starts over. Each letter sits at its
+   final place and only its arrival is animated — literal keyframes, because
+   var() inside @keyframes is not interpolated reliably across browsers. */
+.gramo .wv{
+  opacity:0;
+  animation-name:wave;
+  animation-duration:5.2s;
+  animation-timing-function:ease-out;
+  animation-iteration-count:infinite;
+}
+.gramo .w1{animation-delay:0s}
+.gramo .w2{animation-delay:.28s}
+.gramo .w3{animation-delay:.56s}
+.gramo .w4{animation-delay:.84s}
+.gramo .w5{animation-delay:1.12s}
+
+@keyframes wave{
+  0%   {opacity:0; transform:translate(11px,7px) scale(.45)}
+  9%   {opacity:1; transform:translate(0,0)      scale(1.12)}
+  14%  {opacity:1; transform:translate(0,0)      scale(1)}
+  72%  {opacity:1; transform:translate(0,0)      scale(1)}
+  88%  {opacity:0; transform:translate(-7px,-5px) scale(1.1)}
+  100% {opacity:0; transform:translate(-7px,-5px) scale(1.1)}
+}
+
+/* the notes stay put and only shiver, as though the horn were sounding */
+.gramo .tr{animation-name:tremble;animation-iteration-count:infinite;
+           animation-timing-function:ease-in-out;
+           transform-box:fill-box;transform-origin:center}  /* rotate on itself */
+.gramo .t1{animation-duration:.42s}
+.gramo .t2{animation-duration:.55s;animation-delay:.1s}
+
+@keyframes tremble{
+  0%,100%{transform:translate(0,0)   rotate(0deg)}
+  25%    {transform:translate(-.9px,-1.2px) rotate(-3deg)}
+  50%    {transform:translate(.8px,.5px)    rotate(2deg)}
+  75%    {transform:translate(-.4px,1px)    rotate(-1.5deg)}
+}
+
+/* Windows with "animation effects" off makes Chrome report reduced motion,
+   which silently killed this. It was asked for explicitly, so it keeps
+   running — just calmer. */
+@media (prefers-reduced-motion:reduce){
+  .gramo .wv{animation-duration:7.5s}
+  .gramo .t1{animation-duration:.9s}
+  .gramo .t2{animation-duration:1.1s}
+}
+.top-act{display:flex;gap:7px;flex-wrap:wrap}
+.tbtn{
+  border:1px solid rgba(255,255,255,.34);background:rgba(255,255,255,.09);
+  color:#fff;font-family:inherit;font-size:.83rem;border-radius:8px;
+  padding:6px 11px;cursor:pointer;position:relative;white-space:nowrap;
+}
+.tbtn:hover{background:rgba(255,255,255,.2)}
+.badge{
+  background:#e6b422;color:#3a2c00;border-radius:999px;font-size:.7rem;
+  font-weight:700;padding:0 5px;margin-inline-start:5px;display:inline-block;
+}
+
+/* ------------------------------------------------------------- modals */
+.modal{
+  position:fixed;inset:0;z-index:60;background:rgba(20,26,44,.5);
+  display:grid;place-items:center;padding:16px;
+}
+.sheet{
+  background:#fff;border-radius:13px;width:min(620px,100%);max-height:88vh;
+  display:flex;flex-direction:column;box-shadow:0 8px 34px rgba(0,0,0,.28);
+}
+.sheet.narrow{width:min(400px,100%)}
+.sheet-h{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 17px;border-bottom:1px solid var(--line);
+}
+.sheet-h h2{margin:0;font-family:'Frank Ruhl Libre',serif;font-size:1.16rem;color:var(--navy)}
+.sheet-h .x{border:0;background:none;font-size:1rem;color:var(--muted);cursor:pointer;padding:4px 7px;border-radius:6px}
+.sheet-h .x:hover{background:#eef1f7;color:var(--dark)}
+.sheet-b{padding:15px 17px;overflow:auto}
+.sheet-f{
+  display:flex;justify-content:flex-start;gap:9px;padding:12px 17px;
+  border-top:1px solid var(--line);
+}
+.sheet-b label{display:block;margin-bottom:12px;font-size:.87rem;font-weight:600;color:var(--navy)}
+.sheet-b .opt,.sheet-b .req{font-weight:400;font-size:.78rem;color:var(--muted)}
+.sheet-b .req{color:#b3312f}
+.sheet-b input,.sheet-b select,.sheet-b textarea{
+  display:block;width:100%;margin-top:5px;padding:9px 11px;font:inherit;
+  font-weight:400;font-size:.92rem;border:1px solid var(--line);border-radius:8px;
+  background:#fff;color:var(--dark);
+}
+.sheet-b input:focus,.sheet-b select:focus,.sheet-b textarea:focus{
+  outline:none;border-color:var(--active);box-shadow:0 0 0 3px rgba(56,128,230,.14)}
+.hint{margin:0 0 13px;font-size:.84rem;color:var(--muted);line-height:1.6}
+.err{margin:6px 0 0;font-size:.84rem;color:#b3312f;font-weight:600}
+.btn{
+  border:0;background:var(--accent);color:#fff;font-family:inherit;font-size:.9rem;
+  padding:9px 17px;border-radius:8px;cursor:pointer;font-weight:600;
+}
+.btn:hover{background:var(--active)}
+.btn.ghost{background:#eceef4;color:var(--navy)}
+.btn.ghost:hover{background:#dfe3ee}
+.btn[disabled]{opacity:.55;cursor:default}
+.uplist{margin:-4px 0 12px;font-size:.82rem;color:var(--muted);line-height:1.7}
+.uplist div{direction:ltr;text-align:left}
+.bar{height:5px;background:#e6eaf3;border-radius:3px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+
+/* מה חדש */
+.news-item{
+  border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin-bottom:9px;
+  cursor:pointer;background:#fff;
+}
+.news-item:hover{border-color:var(--active);background:#f7f9fe}
+.news-item.fresh{border-inline-start:4px solid #e6b422}
+.news-item h4{margin:0 0 3px;font-size:.98rem;color:var(--navy);font-family:'Frank Ruhl Libre',serif}
+.news-item .m{font-size:.79rem;color:var(--muted)}
+.news-empty{color:var(--muted);font-size:.9rem}
+
+/* performer photos */
+.card.person{display:flex;gap:12px;align-items:flex-start}
+.pf-img{
+  flex:0 0 auto;width:54px;height:54px;border-radius:50%;object-fit:cover;
+  background:#e8edf8;border:1px solid var(--line);
+}
+.pf-img.ph{
+  display:grid;place-items:center;font-family:'Frank Ruhl Libre',serif;
+  font-size:1.2rem;color:var(--accent);font-weight:700;
+}
+.card.person .body{flex:1 1 auto;min-width:0}
+.pf-preview{margin-bottom:12px;display:flex;align-items:center;gap:11px}
+.pf-preview img{width:74px;height:74px;border-radius:9px;object-fit:cover;border:1px solid var(--line)}
+.pf-preview .none{color:var(--muted);font-size:.85rem}
+.pf-credit{font-size:.72rem;color:var(--muted);margin-top:3px}
+
+/* admin affordances */
+.sheet-b label.check{display:flex;align-items:center;gap:8px;font-weight:600}
+.sheet-b label.check input{width:auto;margin:0}
+/* add / remove a recording from the personal playlist */
+.qadd{
+  flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--accent);
+  border-radius:7px;font-size:.78rem;padding:4px 8px;cursor:pointer;
+  font-family:inherit;white-space:nowrap;
+}
+.qadd:hover{border-color:var(--active);background:#eef3fc}
+.qadd.on{background:var(--share);border-color:var(--share);color:#fff}
+.tbtn.on{background:#e6b422;border-color:#e6b422;color:#3a2c00;font-weight:700}
+
+/* deletion — visually separated, and deliberately not one click away */
+.danger{
+  margin-top:16px;padding:12px 13px;border:1px solid #e6c3c1;border-radius:9px;
+  background:#fdf5f4;
+}
+.danger b{color:#8c2f2c;font-size:.88rem}
+.danger p{margin:5px 0 9px;font-size:.82rem;color:#6d4340;line-height:1.6}
+.danger .check{margin-bottom:9px;font-size:.84rem;color:#6d4340}
+.danger-btn{background:#8c2f2c}
+.danger-btn:hover{background:#a33a36}
+.danger-btn[disabled]{background:#c9a3a1}
+
+/* tabs inside a sheet */
+.subtabs{display:flex;gap:2px;padding:0 17px;border-bottom:1px solid var(--line)}
+.subtab{
+  border:0;background:none;font-family:inherit;font-size:.88rem;color:var(--muted);
+  padding:9px 13px;cursor:pointer;border-bottom:3px solid transparent;
+}
+.subtab:hover{color:var(--navy)}
+.subtab.on{color:var(--navy);font-weight:600;border-bottom-color:var(--active)}
+.feat{border-bottom:1px solid var(--line);padding:11px 0}
+.feat:last-child{border-bottom:0}
+.feat h4{margin:0 0 4px;font-size:.95rem;color:var(--navy);font-family:'Frank Ruhl Libre',serif}
+.feat p{margin:0;font-size:.85rem;color:var(--muted);line-height:1.65}
+
+/* playlists */
+.pl-pick{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+  border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px 13px;
+  margin-bottom:7px;cursor:pointer;font-family:inherit;text-align:right;color:var(--navy);
+  font-size:.92rem;
+}
+.pl-pick:hover{border-color:var(--active);background:#f5f8ff}
+.pl-pick span{font-size:.78rem;color:var(--muted);font-weight:400}
+.pl-pick.big{flex-direction:column;align-items:flex-start;gap:3px;padding:12px 14px}
+.pl-bar{
+  display:flex;align-items:center;gap:8px;padding:11px 17px;
+  border-bottom:1px solid var(--line);flex-wrap:wrap;
+}
+.pl-bar .tbtn2.wide{width:auto;padding:0 11px;height:34px;font-size:.8rem;
+  background:#eceef4;border-color:var(--line);color:var(--navy)}
+.pl-bar .tbtn2.wide.on{background:#e6b422;border-color:#e6b422;color:#3a2c00;font-weight:700}
+.pl-count{margin-inline-start:auto;font-size:.8rem;color:var(--muted)}
+.local-note{
+  background:#f3f6fc;border:1px solid var(--line);border-radius:8px;padding:9px 11px;
+}
+.danger-txt{color:#b3312f}
+.qmove{display:flex;flex-direction:column;gap:1px}
+.qmove button{
+  border:1px solid var(--line);background:#fff;color:var(--accent);cursor:pointer;
+  font-size:.6rem;line-height:1;padding:2px 5px;border-radius:4px;
+}
+.qmove button:hover:not([disabled]){background:#eef3fc;border-color:var(--active)}
+.qmove button[disabled]{opacity:.3;cursor:default}
+
+/* playlist rows */
+.qrow{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;
+  border:1px solid var(--line);margin-bottom:7px;background:#fff;
+}
+.qrow.on{border-color:var(--active);background:#eef3fc}
+.qrow .qt{flex:1 1 auto;min-width:0;font-size:.88rem;line-height:1.5}
+.qrow .qt .s{font-size:.78rem;color:var(--muted)}
+.qplay,.qdel{
+  border:0;background:none;cursor:pointer;font-size:.95rem;padding:4px 7px;
+  border-radius:6px;color:var(--accent);
+}
+.qdel{color:var(--muted)}
+.qplay:hover{background:#eef3fc}
+.qdel:hover{background:#fdeaea;color:#b3312f}
+
+.edit-btn{
+  flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--accent);
+  border-radius:7px;font-size:.76rem;padding:4px 9px;cursor:pointer;font-family:inherit;
+}
+.edit-btn:hover{border-color:var(--active);background:#eef3fc}
+.row.hidden-rec{opacity:.6}
+.row.hidden-rec .row-t .t::after{
+  content:' · מוסתר';font-weight:400;font-size:.76rem;color:#b3312f}
+.year-tag{
+  background:#f2ecdd;color:#7a5a12;border-radius:5px;padding:2px 7px;font-size:.72rem}
+
+/* --------------------------------------------------------- deck window
+   Opens on picking a recording; carries the whole transport. Minimising
+   collapses it to its title bar, and playback carries on. */
+.deckwin{
+  position:fixed;left:18px;bottom:18px;z-index:45;width:min(430px,calc(100vw - 36px));
+  background:#20252f;border:1px solid #39414f;border-radius:13px;overflow:hidden;
+  box-shadow:0 12px 38px rgba(0,0,0,.42);
+}
+.dw-bar{
+  display:flex;align-items:center;gap:8px;padding:8px 10px 8px 12px;
+  background:#161a22;border-bottom:1px solid #39414f;
+}
+.dw-name{
+  flex:1 1 auto;color:#e8ecf4;font-size:.86rem;font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.dw-btn{
+  border:0;background:none;color:#aab3c4;font-family:inherit;font-size:.9rem;
+  cursor:pointer;padding:3px 8px;border-radius:6px;line-height:1;
+}
+.dw-btn:hover{background:#2c3340;color:#fff}
+.dw-body{padding:12px}
+.deckwin.min .dw-body{display:none}
+.deckwin.min{width:min(300px,calc(100vw - 36px))}
+
+/* ------------------------------------------------------------- cassette */
+.deck{display:block;width:100%;line-height:0;margin-bottom:12px}
+.deck svg{
+  display:block;width:100%;height:auto;
+  filter:drop-shadow(0 3px 9px rgba(20,26,44,.3));
+}
+/* Hebrew on the label is right-anchored; the counters stay LTR so
+   "0:41 / 3:12" and "1.5×" do not get reordered by the bidi algorithm. */
+.deck .cmono{font-family:'Courier New',ui-monospace,monospace;direction:ltr}
+.deck .chand{font-family:'Frank Ruhl Libre',Georgia,serif}
+/* direction stays ltr so text-anchor:end means the *physical* right edge;
+   `isolate` still lays the Hebrew run out right-to-left inside itself. */
+.deck .chand,.deck .che{direction:ltr;unicode-bidi:isolate}
+.deck .che{font-family:'Heebo','Segoe UI',system-ui,sans-serif}
+/* the reels are rotated from JS around their own centres */
+.deck .reel{transition:none}
+
+/* speed slider in the player */
+.pvol{display:flex;align-items:center;gap:2px;flex:0 0 auto}
+.pvol .pnav{font-size:.95rem;padding:3px 6px;line-height:1}
+.pvoln{font-size:.74rem;opacity:.85;min-width:3.1em;text-align:center;font-variant-numeric:tabular-nums}
+.deckwin.muted .pvoln{opacity:.45;text-decoration:line-through}
+.prate{display:flex;align-items:center;gap:7px;flex:0 0 auto;font-size:.76rem;opacity:.9}
+.prate input{width:82px;accent-color:#d98b31}
+.prate span{font-size:.78rem;font-variant-numeric:tabular-nums;min-width:2.9em}
+
+/* the tape head rides up into the cassette on play, and back out on stop */
+.deck #head{transition:transform .5s cubic-bezier(.35,1.25,.5,1)}
+
+@media (max-width:720px){
+  .deckwin{left:8px;right:8px;bottom:8px;width:auto}
+  .deckwin.min{width:auto}
+  .prate input{width:64px}
+}
+
+/* toast */
+.toast{
+  position:fixed;top:14px;inset-inline:0;margin:0 auto;z-index:70;width:max-content;
+  max-width:88vw;background:var(--share);color:#fff;border-radius:9px;
+  padding:11px 18px;font-size:.9rem;font-weight:600;
+  box-shadow:0 4px 18px rgba(0,0,0,.24);
+}
+.toast.warn{background:#8c2f2c}
+
+/* ------------------------------------------------------------- search */
+.searchbar{
+  position:sticky;top:0;z-index:20;background:var(--cream);
+  border-bottom:1px solid var(--line);padding:12px 16px 0;
+}
+.search-in{max-width:1080px;margin:0 auto;position:relative}
+#q{
+  width:100%;padding:11px 14px;font-size:1rem;font-family:inherit;
+  border:1px solid var(--line);border-radius:9px;background:#fff;
+  color:var(--dark);
+}
+#q:focus{outline:none;border-color:var(--active);box-shadow:0 0 0 3px rgba(56,128,230,.14)}
+.qclear{
+  position:absolute;left:8px;top:50%;transform:translateY(-50%);
+  border:0;background:none;color:var(--muted);font-size:1rem;cursor:pointer;
+  padding:4px 7px;border-radius:6px;
+}
+.qclear:hover{background:#eceef4;color:var(--dark)}
+.barrow{
+  max-width:1080px;margin:0 auto;padding:9px 0 11px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.sortbox{
+  display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted);
+}
+.sortbox select{
+  font:inherit;font-size:.82rem;color:var(--navy);background:#fff;
+  border:1px solid var(--line);border-radius:7px;padding:4px 8px;cursor:pointer;
+}
+.sortbox select:focus{outline:none;border-color:var(--active)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;background:#e8edf8;
+  color:var(--navy);border:1px solid #cfd9ee;border-radius:999px;
+  padding:4px 11px;font-size:.82rem;
+}
+.chip b{font-weight:600}
+.chip button{border:0;background:none;color:var(--accent);cursor:pointer;font-size:.9rem;padding:0 1px}
+.chip button:hover{color:#b3312f}
+
+/* --------------------------------------------------------------- tabs */
+.tabs{
+  position:sticky;top:64px;z-index:19;background:var(--cream);
+  border-bottom:1px solid var(--line);
+  display:flex;gap:2px;max-width:1080px;margin:0 auto;padding:0 16px;
+  overflow-x:auto;
+}
+.tab{
+  border:0;background:none;font-family:inherit;font-size:.95rem;
+  color:var(--muted);padding:11px 15px;cursor:pointer;white-space:nowrap;
+  border-bottom:3px solid transparent;
+}
+.tab:hover{color:var(--navy)}
+.tab.on{color:var(--navy);font-weight:600;border-bottom-color:var(--active)}
+
+/* --------------------------------------------------------------- list */
+.pane{max-width:1080px;margin:0 auto;padding:16px}
+.empty{max-width:1080px;margin:0 auto;padding:28px 16px;color:var(--muted)}
+
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(268px,1fr))}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:11px;
+  padding:13px 15px;box-shadow:var(--shadow);cursor:pointer;text-align:right;
+  font-family:inherit;color:inherit;display:block;width:100%;
+}
+.card:hover{border-color:var(--active);box-shadow:0 2px 10px rgba(26,56,115,.14)}
+.card h3{
+  margin:0 0 5px;font-size:1.03rem;font-weight:600;color:var(--navy);
+  font-family:'Frank Ruhl Libre',serif;
+}
+.card .meta{font-size:.8rem;color:var(--muted);line-height:1.55}
+.card .tags{margin-top:7px;display:flex;flex-wrap:wrap;gap:5px}
+.tag{
+  background:#eef2fa;color:var(--accent);border-radius:5px;
+  padding:2px 7px;font-size:.72rem;
+}
+.tag.ev{background:#eaf5f0;color:var(--share)}
+
+/* section heading inside a drill-down */
+.head{
+  background:#fff;border:1px solid var(--line);border-radius:11px;
+  padding:15px 17px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.head h2{
+  margin:0 0 4px;font-family:'Frank Ruhl Libre',serif;font-size:1.3rem;
+  color:var(--navy);
+}
+.head .meta{font-size:.85rem;color:var(--muted)}
+.desc{margin:11px 0 0;font-size:.9rem;line-height:1.7}
+.desc .lbl{
+  display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.02em;
+  background:#eef2fa;color:var(--accent);border-radius:4px;padding:1px 6px;
+  margin-inline-end:6px;vertical-align:1px;
+}
+.desc.note .lbl{background:#fdf2e3;color:#9a6316}
+.desc.note{border-top:1px dashed var(--line);padding-top:10px;margin-top:10px}
+
+/* recording rows */
+.rows{display:flex;flex-direction:column;gap:8px}
+.row{
+  background:#fff;border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.row-h{
+  display:flex;align-items:center;gap:11px;padding:11px 14px;cursor:pointer;
+  width:100%;border:0;background:none;font-family:inherit;text-align:right;
+  color:inherit;
+}
+.row-h:hover{background:#f6f8fd}
+.row-play{
+  flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:0;
+  background:var(--accent);color:#fff;font-size:.85rem;cursor:pointer;
+  display:grid;place-items:center;
+}
+.row-play:hover{background:var(--active)}
+.row-t{flex:1 1 auto;min-width:0}
+.row-t .t{
+  font-weight:600;color:var(--navy);font-size:.98rem;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.row-t .s{font-size:.78rem;color:var(--muted);margin-top:2px}
+.row-d{flex:0 0 auto;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.tracks{border-top:1px solid var(--line);background:#fbfcfe;padding:6px 0}
+.track{
+  display:flex;align-items:center;gap:10px;padding:6px 15px;font-size:.87rem;
+  cursor:pointer;border:0;background:none;width:100%;text-align:right;
+  font-family:inherit;color:inherit;
+}
+.track:hover{background:#eef3fc}
+.track.on{background:#e3ecfb;font-weight:600}
+.track .n{color:var(--muted);font-variant-numeric:tabular-nums;min-width:2.1em}
+.track .nm{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.track .d{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.8rem}
+.path{
+  padding:7px 15px 9px;font-size:.73rem;color:var(--muted);
+  border-top:1px dashed var(--line);direction:ltr;text-align:left;
+  word-break:break-all;
+}
+
+/* ------------------------------------------------------------- player */
+.dw-ctl{color:#fff}
+.pmeta{min-width:0;margin-bottom:9px}
+.ptitle{font-weight:600;font-size:.94rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.psub{font-size:.78rem;opacity:.72;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* the scrubber runs with time, left to right, matching the counter beside it */
+.seekrow{display:flex;align-items:center;gap:9px;direction:ltr}
+.pseek{flex:1 1 auto;accent-color:#d98b31;min-width:60px;direction:ltr}
+/* ltr: in an rtl box "1:24 / 3:47" would otherwise be read out reversed */
+.ptime{
+  font-size:.78rem;font-variant-numeric:tabular-nums;opacity:.85;
+  white-space:nowrap;direction:ltr;
+}
+/* ltr: transport controls follow the tape, not the text — rewind on the left,
+   fast-forward on the right, as on every deck */
+.transport{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:10px 0 4px;direction:ltr;
+}
+.pbtn{
+  flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:0;
+  background:#d98b31;color:#1a1206;cursor:pointer;
+  display:grid;place-items:center;
+}
+.pbtn:hover{background:#e6a049}
+.pbtn svg{width:19px;height:19px;fill:#1a1206}
+.tbtn2{
+  border:1px solid #39414f;background:#2a303c;color:#e8ecf4;
+  width:38px;height:38px;border-radius:9px;cursor:pointer;font-family:inherit;
+  display:grid;place-items:center;
+}
+.tbtn2 svg{width:17px;height:17px;fill:#e8ecf4}
+.tbtn2:active svg{fill:#1a1206}
+.tbtn2:hover{background:#353d4c}
+.tbtn2:active{background:#d98b31;color:#1a1206}
+.knobs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pnav{
+  border:0;background:none;color:#fff;font-size:1rem;cursor:pointer;
+  opacity:.85;padding:4px 6px;
+}
+.pnav:hover{opacity:1}
+.perr{
+  position:fixed;bottom:96px;inset-inline:16px;z-index:41;max-width:560px;
+  margin:0 auto;background:#8c2f2c;color:#fff;border-radius:9px;
+  padding:11px 14px;font-size:.86rem;line-height:1.6;box-shadow:var(--shadow);
+}
+.perr code{direction:ltr;display:inline-block;font-size:.8rem;opacity:.9}
+
+@media (max-width:720px){
+  /* no room for the sound to rise beside the horn — keep the photo, drop
+     the letters, and let the title have the width */
+  .gramo{width:58px}
+  .gramo .notes{display:none}
+  .brand{padding-inline-start:0;gap:11px}
+  .top-in{padding-top:16px}
+  .top h1{font-size:1.35rem}
+  .tabs{top:60px}
+  .grid{grid-template-columns:1fr}
+}
