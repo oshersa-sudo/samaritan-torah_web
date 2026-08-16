@@ -140,8 +140,16 @@ def track(session_id, ip, user_agent, path, title):
 def recent_sessions(limit=300):
     conn = _connect()
     try:
+        # By address AND by time: the visits of one address stand together, the
+        # address that was here most recently first, and inside it the newest
+        # visit first. (A reader who came twice used to appear twice, far apart
+        # in the list, with no way to see it was the same person.)
         rows = conn.execute('''SELECT session_id, first_seen, last_seen, ip, user_agent, device
-            FROM sessions ORDER BY last_seen DESC LIMIT ?''', (limit,)).fetchall()
+            FROM sessions
+            ORDER BY MAX(last_seen) OVER (PARTITION BY COALESCE(ip,'')) DESC,
+                     COALESCE(ip,''),
+                     last_seen DESC
+            LIMIT ?''', (limit,)).fetchall()
         out = []
         for session_id, first_seen, last_seen, ip, ua, device in rows:
             pages = conn.execute('''SELECT COALESCE(NULLIF(title,''), path) label, MAX(ts) last_ts, COUNT(*) c

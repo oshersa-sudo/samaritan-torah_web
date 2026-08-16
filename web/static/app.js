@@ -315,7 +315,7 @@ const I18N = {
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
     adm_sysdoc:'📘 תיעוד המערכת', adm_loading:'טוען…', adm_version_word:'גרסה',
     adm_no_log:'אין עדיין יומן גרסאות להצגה.',
-    adm_analytics:'📊 נתוני כניסה ופעילות', adm_analytics_empty:'אין עדיין נתוני ביקורים.',
+    adm_analytics:'📊 נתוני כניסה ופעילות', adm_analytics_empty:'אין עדיין נתוני ביקורים.', adm_visit_again:'ביקור מס׳',
     adm_analytics_hint:'שם המכשיר מבוסס על מזהה הדפדפן — דפדפנים אינם חושפים את שם הטלפון/המחשב עצמו מטעמי פרטיות.',
     adm_first:'כניסה ראשונה', adm_last:'פעילות אחרונה', adm_duration:'משך ביקור', adm_min:'ד׳', adm_sec:'שנ׳',
     wa_setup:'🔒 הפעל כניסה בטביעת אצבע', wa_login:'כניסה בטביעת אצבע', wa_ok:'הכניסה בטביעת אצבע הופעלה בהצלחה.',
@@ -556,7 +556,7 @@ const I18N = {
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
     adm_sysdoc:'📘 System documentation', adm_loading:'Loading…', adm_version_word:'version',
     adm_no_log:'No changelog to show yet.',
-    adm_analytics:'📊 Visitor login & activity', adm_analytics_empty:'No visit data yet.',
+    adm_analytics:'📊 Visitor login & activity', adm_analytics_empty:'No visit data yet.', adm_visit_again:'visit no.',
     adm_analytics_hint:'The "device" name is guessed from the browser\'s user-agent — browsers don\'t expose the actual phone/computer name, for privacy reasons.',
     adm_first:'First seen', adm_last:'Last active', adm_duration:'Time on site', adm_min:'m', adm_sec:'s',
     wa_setup:'🔒 Enable fingerprint sign-in', wa_login:'Sign in with fingerprint', wa_ok:'Fingerprint sign-in enabled successfully.',
@@ -797,7 +797,7 @@ const I18N = {
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
     adm_sysdoc:'📘 توثيق النظام', adm_loading:'جارٍ التحميل…', adm_version_word:'إصدار',
     adm_no_log:'لا يوجد سجلّ إصدارات لعرضه بعد.',
-    adm_analytics:'📊 بيانات دخول ونشاط الزوار', adm_analytics_empty:'لا توجد بيانات زيارات بعد.',
+    adm_analytics:'📊 بيانات دخول ونشاط الزوار', adm_analytics_empty:'لا توجد بيانات زيارات بعد.', adm_visit_again:'زيارة رقم',
     adm_analytics_hint:'اسم الجهاز مُستنتج من بيانات المتصفح — المتصفحات لا تكشف اسم الهاتف/الحاسوب الفعلي لأسباب خصوصية.',
     adm_first:'أول دخول', adm_last:'آخر نشاط', adm_duration:'مدة الزيارة', adm_min:'د', adm_sec:'ث',
     wa_setup:'🔒 تفعيل الدخول ببصمة الإصبع', wa_login:'الدخول ببصمة الإصبع', wa_ok:'تم تفعيل الدخول ببصمة الإصبع بنجاح.',
@@ -6527,13 +6527,20 @@ async function openAnalytics(){
   const fmt = ts => ts ? new Date(ts*1000).toLocaleString(locale) : '';
   const dur = sec => { sec=sec||0; const m=Math.floor(sec/60), s=sec%60;
     return m>0 ? `${m}${t('adm_min')} ${s}${t('adm_sec')}` : `${s}${t('adm_sec')}`; };
+  // the list arrives sorted by address and then by time, so the visits of one
+  // address are consecutive; the second and further visits of the same address
+  // are drawn as a continuation of the first rather than as strangers
   const html = `<div class="note" style="margin-bottom:8px">${esc(t('adm_analytics_hint'))}</div>`
-    + '<div class="an-list">' + rows.map(s => `
-      <div class="an-row">
-        <div class="an-top"><b>${esc(s.device||'?')}</b><span class="an-ip">${esc(s.ip||'')}</span></div>
+    + '<div class="an-list">' + rows.map((s, i) => {
+      const same = i > 0 && (rows[i-1].ip||'') === (s.ip||'');
+      const nth  = same ? rows.slice(0, i).filter(x => (x.ip||'') === (s.ip||'')).length + 1 : 1;
+      return `
+      <div class="an-row${same ? ' an-same' : ''}">
+        <div class="an-top"><b>${esc(s.device||'?')}</b><span class="an-ip">${esc(s.ip||'')}</span>${
+          same ? `<span class="an-again">${esc(t('adm_visit_again'))} ${nth}</span>` : ''}</div>
         <div class="an-meta">${esc(t('adm_first'))}: ${esc(fmt(s.first_seen))} · ${esc(t('adm_last'))}: ${esc(fmt(s.last_seen))} · ${esc(t('adm_duration'))}: ${dur(s.duration)}</div>
         <div class="an-pages">${(s.pages||[]).map(p=>esc(p.label)+(p.count>1?` ×${p.count}`:'')).join(' · ')}</div>
-      </div>`).join('') + '</div>';
+      </div>`; }).join('') + '</div>';
   showInfo(t('adm_analytics'), html);
 }
 // build the HTML body of the reseed diff-report — every section is skipped

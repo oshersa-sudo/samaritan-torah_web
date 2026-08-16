@@ -1513,6 +1513,13 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 /* admin analytics dashboard — one card per visitor session */
 .an-list{ display:flex; flex-direction:column; gap:8px; }
 .an-row{ border:1px solid var(--line); border-radius:8px; padding:8px 10px; background:#fafafa; }
+/* a further visit from the SAME address: drawn as a continuation of the one
+   above it — tucked in, tied by a rule, and told which visit it is */
+.an-row.an-same{ margin-inline-start:14px; border-top-color:transparent;
+  border-start-start-radius:0; border-start-end-radius:0; background:#f4f6fa;
+  border-inline-start:3px solid #b9c6dc; }
+.an-again{ margin-inline-start:auto; font-size:11.5px; color:#4a5d78;
+  background:#eef2f9; border:1px solid #b9c6dc; border-radius:999px; padding:0 7px; }
 .an-top{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
 .an-top b{ color:var(--navy); font-size:15px; }
 .an-ip{ color:var(--muted); font-size:12.5px; direction:ltr; }
