@@ -295,7 +295,9 @@ body{
   cursor:pointer;padding:3px 8px;border-radius:6px;line-height:1;
 }
 .dw-btn:hover{background:#2c3340;color:#fff}
-.dw-body{padding:12px}
+/* the window never grows past the screen — opening the mixer scrolls the
+   body instead of pushing the title bar off the top */
+.dw-body{padding:12px;overflow-y:auto;max-height:calc(100vh - 120px)}
 .deckwin.min .dw-body{display:none}
 .deckwin.min{width:min(300px,calc(100vw - 36px))}
 
@@ -577,14 +579,73 @@ body{
 }
 .perr code{direction:ltr;display:inline-block;font-size:.8rem;opacity:.9}
 
+/* ------------------------------------------------------------- phones
+   The layout was drawn for a desktop header: a wide brand block beside a
+   single row of long buttons. On a phone that row is wider than the screen,
+   so it has to wrap and the labels have to shrink. */
 @media (max-width:720px){
   /* no room for the sound to rise beside the horn — keep the photo, drop
      the letters, and let the title have the width */
-  .gramo{width:58px}
+  .gramo{width:52px}
   .gramo .notes{display:none}
-  .brand{padding-inline-start:0;gap:11px}
-  .top-in{padding-top:16px}
-  .top h1{font-size:1.35rem}
-  .tabs{top:60px}
+  .brand{padding-inline-start:0;gap:10px;flex:1 1 100%}
+  .top-in{padding:14px 12px 12px}
+  .top h1{font-size:1.22rem;line-height:1.25}
+  .sub{font-size:.76rem;line-height:1.5}
+  .top-row{gap:10px}
+
+  /* the action row wraps here — on a desktop it must not, on a phone it must */
+  .top-act{flex:1 1 100%;gap:6px}
+  .tbtn{font-size:.76rem;padding:5px 9px}
+
+  .searchbar{padding:10px 12px 0}
+  #q{font-size:.95rem;padding:10px 12px}
+  .barrow{padding:8px 0 9px;gap:8px}
+  .sortbox{font-size:.78rem}
+  .tabs{top:56px;padding:0 12px}
+  .tab{padding:10px 11px;font-size:.88rem}
+  .pane{padding:12px}
   .grid{grid-template-columns:1fr}
+
+  /* recording rows: let the title wrap instead of pushing the row wide */
+  .row-h{gap:9px;padding:10px 11px;flex-wrap:wrap}
+  .row-t{flex:1 1 60%}
+  .row-t .t{white-space:normal}
+  .row-d{margin-inline-start:auto}
+  .qadd,.edit-btn{font-size:.72rem;padding:3px 7px}
+  .path{font-size:.68rem}
+
+  /* sheets take the whole screen rather than floating in it */
+  .modal{padding:0;place-items:stretch}
+  .sheet,.sheet.narrow{width:100%;max-height:100vh;border-radius:0}
+  .sheet-b{padding:13px}
+  .sheet-h,.sheet-f{padding:11px 13px}
+  .sheet-f{flex-wrap:wrap}
+  .sheet-f .btn{flex:1 1 auto}
+  .subtabs{padding:0 13px}
+  .pl-bar{padding:10px 13px}
+
+  /* the deck fills the width and its controls wrap */
+  .deckwin{left:0;right:0;bottom:0;width:auto;border-radius:13px 13px 0 0}
+  .deckwin.min{width:auto}
+  .dw-body{padding:10px}
+  .knobs{gap:8px}
+  .prate input{width:70px}
+  .mix-row label{flex:1 1 100%}
+  .transport{gap:6px}
+  .tbtn2{width:34px;height:34px}
+  .pbtn{width:42px;height:42px}
+  .qrow{flex-wrap:wrap}
+  .qrow .qt{flex:1 1 60%}
+}
+
+/* very narrow phones: the buttons keep only their icons */
+@media (max-width:430px){
+  .top h1{font-size:1.1rem}
+  .tbtn{font-size:0;padding:6px 9px;gap:0}
+  .tbtn::first-letter{font-size:1rem}
+  .badge{font-size:.62rem}
+  .card{padding:11px 12px}
+  .card h3{font-size:.97rem}
+  .ptime{font-size:.72rem}
 }
