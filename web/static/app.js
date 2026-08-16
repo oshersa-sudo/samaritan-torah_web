@@ -315,7 +315,7 @@ const I18N = {
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
     adm_sysdoc:'📘 תיעוד המערכת', adm_loading:'טוען…', adm_version_word:'גרסה',
     adm_no_log:'אין עדיין יומן גרסאות להצגה.',
-    adm_analytics:'📊 נתוני כניסה ופעילות', adm_analytics_empty:'אין עדיין נתוני ביקורים.', adm_visit_again:'ביקור מס׳',
+    adm_analytics:'📊 נתוני כניסה ופעילות', adm_social:'פרסום ברשתות', adm_social_hint:'הפוסט השבועי נבנה מן הפרשה הקרובה ונשלח לחשבונות שחוברו וחומשו — בלי מגע יד. חשבון שאינו חמוש אינו מקבל דבר.', adm_social_build:'בנה מחדש', adm_social_send:'פרסם עכשיו', adm_social_conn:'מחובר', adm_social_noconn:'לא מחובר', adm_social_arm:'חמוש', adm_social_save:'שמור', adm_social_hist:'פוסטים אחרונים', adm_social_notsent:'לא נשלח', adm_social_nopost:'טרם נבנה פוסט לשבוע זה.', adm_social_confirm:'לפרסם עכשיו לכל החשבונות החמושים?', adm_social_dry:'נבנה בלבד — אין חשבון חמוש.', adm_analytics_empty:'אין עדיין נתוני ביקורים.', adm_visit_again:'ביקור מס׳',
     adm_analytics_hint:'שם המכשיר מבוסס על מזהה הדפדפן — דפדפנים אינם חושפים את שם הטלפון/המחשב עצמו מטעמי פרטיות.',
     adm_first:'כניסה ראשונה', adm_last:'פעילות אחרונה', adm_duration:'משך ביקור', adm_min:'ד׳', adm_sec:'שנ׳',
     wa_setup:'🔒 הפעל כניסה בטביעת אצבע', wa_login:'כניסה בטביעת אצבע', wa_ok:'הכניסה בטביעת אצבע הופעלה בהצלחה.',
@@ -556,7 +556,7 @@ const I18N = {
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
     adm_sysdoc:'📘 System documentation', adm_loading:'Loading…', adm_version_word:'version',
     adm_no_log:'No changelog to show yet.',
-    adm_analytics:'📊 Visitor login & activity', adm_analytics_empty:'No visit data yet.', adm_visit_again:'visit no.',
+    adm_analytics:'📊 Visitor login & activity', adm_social:'Social posting', adm_social_hint:'The weekly post is built from the coming portion and sent to the accounts you have connected AND armed — by the app, with no hand. An unarmed account receives nothing.', adm_social_build:'Rebuild', adm_social_send:'Publish now', adm_social_conn:'connected', adm_social_noconn:'not connected', adm_social_arm:'armed', adm_social_save:'Save', adm_social_hist:'Recent posts', adm_social_notsent:'not sent', adm_social_nopost:'No post built for this week yet.', adm_social_confirm:'Publish now to every armed account?', adm_social_dry:'Built only — no account is armed.', adm_analytics_empty:'No visit data yet.', adm_visit_again:'visit no.',
     adm_analytics_hint:'The "device" name is guessed from the browser\'s user-agent — browsers don\'t expose the actual phone/computer name, for privacy reasons.',
     adm_first:'First seen', adm_last:'Last active', adm_duration:'Time on site', adm_min:'m', adm_sec:'s',
     wa_setup:'🔒 Enable fingerprint sign-in', wa_login:'Sign in with fingerprint', wa_ok:'Fingerprint sign-in enabled successfully.',
@@ -797,7 +797,7 @@ const I18N = {
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
     adm_sysdoc:'📘 توثيق النظام', adm_loading:'جارٍ التحميل…', adm_version_word:'إصدار',
     adm_no_log:'لا يوجد سجلّ إصدارات لعرضه بعد.',
-    adm_analytics:'📊 بيانات دخول ونشاط الزوار', adm_analytics_empty:'لا توجد بيانات زيارات بعد.', adm_visit_again:'زيارة رقم',
+    adm_analytics:'📊 بيانات دخول ونشاط الزوار', adm_social:'النشر على الشبكات', adm_social_hint:'المنشور الأسبوعي يُبنى من فصل الأسبوع ويُرسل إلى الحسابات الموصولة والمسلّحة — دون تدخل. الحساب غير المسلّح لا يتلقى شيئًا.', adm_social_build:'إعادة بناء', adm_social_send:'انشر الآن', adm_social_conn:'موصول', adm_social_noconn:'غير موصول', adm_social_arm:'مسلّح', adm_social_save:'حفظ', adm_social_hist:'المنشورات الأخيرة', adm_social_notsent:'لم يُرسل', adm_social_nopost:'لم يُبنَ منشور لهذا الأسبوع بعد.', adm_social_confirm:'النشر الآن لكل الحسابات المسلّحة؟', adm_social_dry:'بُني فقط — لا حساب مسلّح.', adm_analytics_empty:'لا توجد بيانات زيارات بعد.', adm_visit_again:'زيارة رقم',
     adm_analytics_hint:'اسم الجهاز مُستنتج من بيانات المتصفح — المتصفحات لا تكشف اسم الهاتف/الحاسوب الفعلي لأسباب خصوصية.',
     adm_first:'أول دخول', adm_last:'آخر نشاط', adm_duration:'مدة الزيارة', adm_min:'د', adm_sec:'ث',
     wa_setup:'🔒 تفعيل الدخول ببصمة الإصبع', wa_login:'الدخول ببصمة الإصبع', wa_ok:'تم تفعيل الدخول ببصمة الإصبع بنجاح.',
@@ -6468,6 +6468,7 @@ function adminDbControls(){
   return `<div class="note" style="margin-top:10px;display:flex;flex-direction:column;gap:6px">`
     + `<button class="admin-btn" onclick="openSystemDoc()">${esc(t('adm_sysdoc'))}</button>`
     + `<button class="admin-btn" onclick="openAnalytics()">${esc(t('adm_analytics'))}</button>`
+    + `<button class="admin-btn" onclick="openSocial()">📣 ${esc(t('adm_social'))}</button>`
     + `<button class="admin-btn" onclick="openDiskUsage()">${esc(t('adm_disk'))}</button>`
     + `<a class="admin-btn" style="text-decoration:none;text-align:center" `
     + `href="/api/admin/download_db?token=${encodeURIComponent(ADMIN.token)}">${esc(t('admin_dl_db'))}</a>`
@@ -6516,6 +6517,64 @@ async function adminCleanBackups(){
   showInfo(t('adm_disk'), `<div class="note">${r&&r.ok ? esc(t('adm_disk_cleaned'))+' ('+fmtBytes(r.freed_bytes)+')' : esc((r&&r.error)||'error')}</div>`);
 }
 // admin analytics dashboard — who visited (device/IP), how long, which pages
+// ── the weekly post to the social accounts ──────────────────────────────────
+// Connect an account by filling what its own API asks for, look at the post the
+// coming week would send, and only then arm it. An armed account is published to
+// by the app itself, once a week, with nobody pressing anything.
+async function openSocial(){
+  if(!ADMIN.token) return;
+  let r; try{ r = await fetch('/api/admin/social?token='+encodeURIComponent(ADMIN.token)).then(x=>x.json()); }
+  catch(e){ r={ok:false}; }
+  if(!r || !r.ok) return showInfo(t('adm_social'), `<div class="note">${esc(t('edit_err'))}</div>`);
+  const post = r.post || {};
+  const poster = post.poster ? `/static/social/${post.poster}` : '';
+  let h = `<div class="note">${esc(t('adm_social_hint'))}</div>`;
+  h += `<div class="soc-week"><b>${esc(r.week||'')}</b> — ${esc(r.portion||'—')}</div>`;
+  h += '<div class="soc-preview">'
+     + (poster ? `<img src="${poster}?t=${Date.now()}" alt="">` : '')
+     + `<pre class="soc-text">${esc(post.text||t('adm_social_nopost'))}</pre></div>`;
+  h += `<div class="soc-btns">
+      <button class="admin-btn" onclick="socialPreview()">${esc(t('adm_social_build'))}</button>
+      <button class="admin-btn" onclick="socialPublish()">${esc(t('adm_social_send'))}</button></div>`;
+  for(const a of r.accounts){
+    h += `<div class="soc-acc" data-net="${a.key}">
+      <div class="soc-acc-top"><b>${esc(a.label)}</b>
+        <span class="soc-state ${a.connected?'on':''}">${esc(a.connected?t('adm_social_conn'):t('adm_social_noconn'))}</span>
+        <label class="soc-arm"><input type="checkbox" ${a.armed?'checked':''}
+           onchange="socialSave('${a.key}', this)"> ${esc(t('adm_social_arm'))}</label></div>
+      <div class="soc-note">${esc(a.note)}</div>`;
+    for(const f of a.fields)
+      h += `<input class="soc-f" data-f="${f.name}" placeholder="${esc(f.label)}${f.filled?' ✓':''}" ${f.filled?'':''}>`;
+    h += `<button class="admin-btn" onclick="socialSave('${a.key}')">${esc(t('adm_social_save'))}</button></div>`;
+  }
+  if((r.history||[]).length){
+    h += `<div class="soc-hist"><b>${esc(t('adm_social_hist'))}</b>`;
+    for(const p of r.history)
+      h += `<div>${esc(p.week)} · ${esc(p.portion||'')} — ${esc(p.sent_at || t('adm_social_notsent'))}</div>`;
+    h += '</div>';
+  }
+  showInfo(t('adm_social'), h);
+}
+async function socialSave(net, box){
+  const wrap = document.querySelector(`.soc-acc[data-net="${net}"]`);
+  const config = {};
+  wrap.querySelectorAll('.soc-f').forEach(i => { if(i.value.trim()) config[i.dataset.f] = i.value.trim(); });
+  const armed = (box || wrap.querySelector('.soc-arm input')).checked;
+  const r = await apiPost('admin/social', {token:ADMIN.token, network:net, config, armed});
+  if(!r || !r.ok) return alert(t('edit_err'));
+  openSocial();
+}
+async function socialPreview(){
+  const r = await apiPost('admin/social/preview', {token:ADMIN.token});
+  if(!r || !r.ok) return alert(t('edit_err'));
+  openSocial();
+}
+async function socialPublish(){
+  if(!confirm(t('adm_social_confirm'))) return;
+  const r = await apiPost('admin/social/publish', {token:ADMIN.token, force:true});
+  alert(r && r.ok ? (r.dry ? t('adm_social_dry') : JSON.stringify(r.results)) : t('edit_err'));
+  openSocial();
+}
 async function openAnalytics(){
   if(!ADMIN.token) return;
   let r; try{ r = await fetch('/api/admin/analytics?token='+encodeURIComponent(ADMIN.token)).then(x=>x.json()); }

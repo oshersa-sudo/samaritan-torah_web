@@ -1882,3 +1882,22 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
   .hg-top,.hg-bot,.hg-drip,.hourglass svg{ animation:none; }
   .hg-top{ transform:scaleY(.45); } .hg-bot{ transform:scaleY(.55); }
 }
+
+/* ── the weekly social post, in the admin panel ───────────────────────────── */
+.soc-week{ font-size:15px; margin:8px 0 6px; color:var(--navy); }
+.soc-preview{ display:flex; gap:10px; align-items:flex-start; margin-bottom:8px; }
+.soc-preview img{ width:120px; border-radius:8px; border:1px solid var(--line); }
+.soc-text{ flex:1 1 0; min-width:0; white-space:pre-wrap; font-family:inherit; font-size:13px;
+           background:#fafafa; border:1px solid var(--line); border-radius:8px; padding:8px;
+           max-height:220px; overflow:auto; margin:0; }
+.soc-btns{ display:flex; gap:6px; margin-bottom:10px; }
+.soc-acc{ border:1px solid var(--line); border-radius:8px; padding:8px; margin-bottom:7px; background:#fff; }
+.soc-acc-top{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.soc-state{ font-size:12px; color:#8a6a12; background:#fdf3d0; border:1px solid #e2c96a;
+            border-radius:999px; padding:0 8px; }
+.soc-state.on{ color:#2f4a33; background:#e9f3ea; border-color:#8fbf98; }
+.soc-arm{ margin-inline-start:auto; font-size:13px; display:flex; align-items:center; gap:5px; }
+.soc-note{ font-size:12px; color:var(--muted); margin:4px 0 6px; }
+.soc-f{ width:100%; box-sizing:border-box; font-family:inherit; font-size:13px; padding:5px 7px;
+        border:1px solid var(--line); border-radius:6px; margin-bottom:5px; }
+.soc-hist{ font-size:12.5px; color:var(--muted); margin-top:8px; }

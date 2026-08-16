@@ -1516,6 +1516,15 @@ def _asset_build():
 ASSET_BUILD = _asset_build()
 
 
+# the weekly post goes out on its own; see web/social.py for what "on its own"
+# is allowed to mean (nothing, until an account is connected and armed)
+try:
+    import social as _social
+    _social.start_scheduler()
+except Exception as _e:                      # never let it keep the app from starting
+    print('social scheduler off:', _e)
+
+
 @app.route('/')
 # Every screen of the app has an address of its own — /t/sam/1/8/10 is the tenth
 # Samaritan chapter of the eighth portion of Genesis — so a chapter can be linked
@@ -1997,6 +2006,53 @@ def admin_anim_override():
     finally:
         conn.close()
     return jsonify({'ok': True, 'anim': out})
+
+
+# ── the weekly post about the portion of the week ────────────────────────────
+# The mechanism itself is web/social.py. Here are only the three doors the admin
+# panel knocks on: what is connected, what the coming week's post looks like, and
+# "send it". Nothing publishes without an account being connected AND armed by
+# the owner, and the weekly hand (social.start_scheduler) does the same work on
+# its own — a person is never in the loop.
+@app.route('/api/admin/social', methods=['GET', 'POST'])
+def admin_social():
+    d = request.get_json(silent=True) or {}
+    tok = d.get('token') or request.args.get('token')
+    if not _valid_token(tok):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    import social
+    if request.method == 'POST':
+        net = d.get('network')
+        try:
+            accounts = social.set_account(net, d.get('config') or {}, bool(d.get('armed')))
+        except ValueError as e:
+            return jsonify({'ok': False, 'error': str(e)}), 400
+    else:
+        accounts = social.accounts()
+    week, entry = social.coming_sabbath()
+    return jsonify({'ok': True, 'accounts': accounts, 'week': week,
+                    'portion': (entry or {}).get('name'), 'post': social.post_row(week),
+                    'history': social.recent_posts()})
+
+
+@app.route('/api/admin/social/preview', methods=['POST'])
+def admin_social_preview():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    import social
+    week, entry = social.coming_sabbath()
+    post = social.build(week, entry)
+    return jsonify({'ok': bool(post), 'week': week, 'post': post})
+
+
+@app.route('/api/admin/social/publish', methods=['POST'])
+def admin_social_publish():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    import social
+    return jsonify(social.publish(dry=bool(d.get('dry')), force=bool(d.get('force'))))
 
 
 @app.route('/api/anim_marks')
