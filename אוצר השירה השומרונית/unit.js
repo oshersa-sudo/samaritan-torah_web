@@ -363,6 +363,8 @@ function playRec(recId, idx, quiet) {
   setTimeout(() => { switching = false; }, 400);
   au.src = audioURL(t.f);
   if (!quiet && !sameRec) sfx('play');   // the deck's own click
+  mixInit();                            // the chain must exist before playback
+  if (MIX.ctx && MIX.ctx.state === 'suspended') MIX.ctx.resume();
   au.play().catch(() => {});
   setRate($('prate').value);            // a new source resets playbackRate
   openDeck();
@@ -468,6 +470,113 @@ function syncBtn() {
 au.addEventListener('play',  () => { headIn(true); syncBtn(); keepAwake(true); });
 au.addEventListener('pause', () => { syncBtn(); keepAwake(false); });
 au.addEventListener('ended', () => keepAwake(true));
+
+/* ------------------------------------------------------------- the mixer
+ * A real processing chain on the playing audio. These are field recordings off
+ * cassette, so the useful controls are the ones that fight tape: rumble below
+ * the voice, hiss above it, a shelf each end, and levelling for takes that
+ * swing between a whisper and a shout.
+ *
+ *   element → highpass → lowpass → bass → mid → treble → comp → gain
+ *           → analyser → speakers
+ */
+const MIX = { ctx: null, nodes: null, on: false };
+
+function mixInit() {
+  if (MIX.ctx) return MIX.nodes;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  try {
+    const ctx = new AC();
+    const src  = ctx.createMediaElementSource(au);
+    const hp   = ctx.createBiquadFilter(); hp.type = 'highpass';  hp.frequency.value = 20;
+    const lp   = ctx.createBiquadFilter(); lp.type = 'lowpass';   lp.frequency.value = 20000;
+    const bass = ctx.createBiquadFilter(); bass.type = 'lowshelf';  bass.frequency.value = 180;
+    const mid  = ctx.createBiquadFilter(); mid.type = 'peaking';    mid.frequency.value = 1100; mid.Q.value = .9;
+    const treb = ctx.createBiquadFilter(); treb.type = 'highshelf'; treb.frequency.value = 3800;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = 0; comp.ratio.value = 1; comp.knee.value = 24;
+    comp.attack.value = .006; comp.release.value = .22;
+    const gain = ctx.createGain();
+    const an   = ctx.createAnalyser(); an.fftSize = 1024; an.smoothingTimeConstant = .75;
+
+    src.connect(hp); hp.connect(lp); lp.connect(bass); bass.connect(mid);
+    mid.connect(treb); treb.connect(comp); comp.connect(gain);
+    gain.connect(an);  an.connect(ctx.destination);
+
+    MIX.ctx = ctx;
+    MIX.nodes = { src, hp, lp, bass, mid, treb, comp, gain, an };
+    return MIX.nodes;
+  } catch (e) { return null; }         // already routed, or blocked
+}
+
+function mixApply() {
+  const n = mixInit();
+  if (!n) return;
+  const v = id => +$(id).value;
+  n.bass.gain.value = v('mBass');
+  n.mid.gain.value  = v('mMid');
+  n.treb.gain.value = v('mTreb');
+  n.hp.frequency.value = Math.max(20, v('mHP'));
+  n.lp.frequency.value = v('mLP');
+  const amt = v('mComp');                     // 0 → off, 40 → firm
+  n.comp.threshold.value = amt ? -amt : 0;
+  n.comp.ratio.value     = amt ? 1 + amt / 8 : 1;
+  n.gain.gain.value      = v('mGain') / 100;
+  const dB = x => (x > 0 ? '+' : '') + x;
+  $('mBassN').textContent = dB(v('mBass'));
+  $('mMidN').textContent  = dB(v('mMid'));
+  $('mTrebN').textContent = dB(v('mTreb'));
+  $('mHPN').textContent   = v('mHP') ? v('mHP') + ' הרץ' : 'כבוי';
+  $('mLPN').textContent   = v('mLP') >= 20000 ? 'כבוי' : Math.round(v('mLP') / 1000) + ' קילוהרץ';
+  $('mCompN').textContent = amt ? amt + '' : 'כבוי';
+  $('mGainN').textContent = v('mGain') + '%';
+  localStorage.setItem('shira_mix', JSON.stringify(
+    ['mBass','mMid','mTreb','mHP','mLP','mComp','mGain'].map(id => $(id).value)));
+}
+
+function mixSet(vals) {
+  ['mBass','mMid','mTreb','mHP','mLP','mComp','mGain']
+    .forEach((id, i) => { $(id).value = vals[i]; });
+  mixApply();
+}
+$('mFlat').onclick  = () => { mixSet([0, 0, 0, 0, 20000, 0, 100]); $('mixNote').textContent = 'ללא עיבוד'; };
+$('mVoice').onclick = () => { mixSet([-3, 4, 2, 90, 20000, 14, 115]); $('mixNote').textContent = 'הדגשת הדיבור והחזנות'; };
+$('mTape').onclick  = () => { mixSet([2, 1, -4, 70, 7000, 20, 125]); $('mixNote').textContent = 'ריכוך רעש סרט והחזרת גוף'; };
+['mBass','mMid','mTreb','mHP','mLP','mComp','mGain'].forEach(id =>
+  $(id).addEventListener('input', () => { mixApply(); $('mixNote').textContent = ''; }));
+
+$('mixToggle').onclick = () => {
+  const open = $('mixer').classList.toggle('hidden');
+  $('mixToggle').classList.toggle('on', !open);
+  if (!open) mixApply();
+};
+
+/* --------------------------------------------------------------- VU lamps */
+const LAMPS = 14;
+(function buildVU() {
+  $('vu').innerHTML = Array.from({ length: LAMPS }, (_, i) =>
+    `<i class="${i < LAMPS * 0.62 ? 'g' : i < LAMPS * 0.85 ? 'y' : 'r'}"></i>`).join('');
+})();
+const vuBuf = new Uint8Array(1024);
+
+function vuTick() {
+  const lamps = $('vu').children;
+  let lit = 0;
+  if (MIX.nodes && !au.paused) {
+    MIX.nodes.an.getByteTimeDomainData(vuBuf);
+    let sum = 0;
+    for (let i = 0; i < vuBuf.length; i++) {
+      const d = (vuBuf[i] - 128) / 128;
+      sum += d * d;
+    }
+    const rms = Math.sqrt(sum / vuBuf.length);
+    lit = Math.round(Math.min(1, rms * 3.2) * LAMPS);
+  }
+  for (let i = 0; i < lamps.length; i++) lamps[i].classList.toggle('on', i < lit);
+  requestAnimationFrame(vuTick);
+}
+requestAnimationFrame(vuTick);
 
 /* ------------------------------------------------------- keep the screen on
  * A phone that sleeps mid-piyyut also stops the playlist on some devices.
@@ -924,6 +1033,8 @@ document.querySelectorAll('.modal').forEach(m =>
 function showAdminUI(redraw) {
   $('addBtn').classList.toggle('hidden', !ADMIN.token);
   $('trashBtn').classList.toggle('hidden', !ADMIN.token);   // admins only
+  $('perfBtn').classList.toggle('hidden', !ADMIN.token);
+  $('adminFlag').classList.toggle('hidden', !ADMIN.token);
   $('adminBtn').classList.toggle('hidden', !ADMIN.enabled || !!ADMIN.token);
   if (ADMIN.token) loadTrash();
   if (redraw && C) draw();               // edit affordances appear on login
@@ -969,6 +1080,16 @@ function drawTrash() {
   });
 }
 $('trashBtn').onclick = async () => { await loadTrash(); openModal('trashModal'); };
+
+/* the standing flag doubles as the way out of admin mode */
+$('adminFlag').onclick = async () => {
+  if (!confirm('לצאת ממצב מנהל?')) return;
+  ADMIN.token = '';
+  sessionStorage.removeItem('shira_admin');
+  await loadCatalog();                 // back to what a visitor sees
+  showAdminUI(true);
+  toast('יצאת ממצב מנהל');
+};
 
 $('adminBtn').onclick = () => {
   $('liErr').classList.add('hidden');
@@ -1099,7 +1220,9 @@ function openEdit(recId) {
   $('edYear').value  = r.year || '';
   $('edNote').value  = r.note || '';
   $('edPub').checked = !r.hidden;
-  $('dlPerf2').innerHTML = C.performers.map(p => `<option value="${esc(p.name)}">`).join('');
+  fillPerfSelect($('edPerf'), perfName(r.p));
+  $('edNewPerfWrap').classList.add('hidden');
+  $('edNewPerf').value = '';
   const ev = eventName(r.e);
   $('edEvent').innerHTML = C.events
     .map(e => `<option${e.name === ev ? ' selected' : ''}>${esc(e.name)}</option>`).join('');
@@ -1121,6 +1244,65 @@ function openEdit(recId) {
 
 let edRec = null;
 $('edDelOk').onchange = e => { $('edDel').disabled = !e.target.checked; };
+
+/* the performer picker is fed from the managed list, with a way to register a
+ * new name without leaving the recording being edited */
+const NEW_PERF = '__new__';
+function fillPerfSelect(sel, chosen) {
+  const names = C.performers.map(p => p.name)
+    .sort((a, b) => a.localeCompare(b, 'he'));
+  sel.innerHTML = names.map(n =>
+    `<option${n === chosen ? ' selected' : ''}>${esc(n)}</option>`).join('') +
+    `<option value="${NEW_PERF}">＋ מבצע חדש…</option>`;
+}
+$('edPerf').addEventListener('change', e => {
+  const isNew = e.target.value === NEW_PERF;
+  $('edNewPerfWrap').classList.toggle('hidden', !isNew);
+  if (isNew) setTimeout(() => $('edNewPerf').focus(), 50);
+});
+
+/* ------------------------------------------- ניהול רשימת המבצעים (מנהל) */
+$('perfBtn').onclick = () => { drawPerfList(); openModal('perfListModal'); };
+
+function drawPerfList() {
+  const list = C.performers.slice().sort((a, b) => a.name.localeCompare(b.name, 'he'));
+  $('perfListBody').innerHTML = list.map(p => `
+    <div class="qrow">
+      <span class="qt"><b>${esc(p.name)}</b><br>
+        <span class="s">${p.n_rec} הקלטות${p.years ? ' · ' + esc(p.years) : ''}${
+          p.photo ? ' · יש תמונה' : ''}</span></span>
+      <button class="btn ghost" data-pedit="${esc(p.name)}">✎ פרטים</button>
+    </div>`).join('');
+  $('perfListBody').querySelectorAll('[data-pedit]').forEach(b =>
+    b.onclick = () => {
+      const p = C.performers.find(x => x.name === b.dataset.pedit);
+      if (p) { closeModal('perfListModal'); openPerf(p); }
+    });
+}
+
+async function addPerformer(name) {
+  const fd = new FormData();
+  fd.append('name', name);
+  fd.append('create', '1');
+  const r = await fetch('api/performer', {
+    method: 'POST', headers: { 'X-Admin-Token': ADMIN.token }, body: fd,
+  }).then(r => r.json()).catch(() => ({}));
+  if (r.ok) await loadCatalog();
+  return r.ok;
+}
+
+$('npAdd').onclick = async () => {
+  const name = $('npName').value.trim();
+  const err = m => { $('npErr').textContent = m; $('npErr').classList.remove('hidden'); };
+  if (!name) return err('יש להזין שם.');
+  if (C.performers.some(p => p.name === name)) return err('המבצע כבר קיים ברשימה.');
+  $('npErr').classList.add('hidden');
+  if (!await addPerformer(name)) return err('ההוספה נכשלה — ייתכן שפג תוקף הכניסה.');
+  $('npName').value = '';
+  drawPerfList();
+  toast(`«${name}» נוסף לרשימת המבצעים`);
+};
+$('npName').addEventListener('keydown', e => { if (e.key === 'Enter') $('npAdd').click(); });
 
 $('edDel').onclick = async () => {
   if (!edRec || !$('edDelOk').checked) return;
@@ -1148,11 +1330,26 @@ $('edDel').onclick = async () => {
 };
 
 $('edGo').onclick = async () => {
+  // a name typed into the "new performer" box joins the list first, so the
+  // recording is linked to a real entry and not to a loose string
+  let performer = $('edPerf').value;
+  if (performer === NEW_PERF) {
+    const fresh = $('edNewPerf').value.trim();
+    if (!fresh) {
+      $('edErr').textContent = 'יש להזין שם למבצע החדש.';
+      return $('edErr').classList.remove('hidden');
+    }
+    if (!C.performers.some(p => p.name === fresh) && !await addPerformer(fresh)) {
+      $('edErr').textContent = 'הוספת המבצע נכשלה.';
+      return $('edErr').classList.remove('hidden');
+    }
+    performer = fresh;
+  }
   const body = {
     key:   edKey,
     title: $('edTitle').value.trim(),
     desc:  $('edDesc').value.trim(),
-    performer: $('edPerf').value.trim(),
+    performer,
     year:  $('edYear').value.trim(),
     event: $('edEvent').value,
     note:  $('edNote').value.trim(),

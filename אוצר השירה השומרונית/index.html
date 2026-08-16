@@ -18,20 +18,23 @@
           <img src="img/gramophone.png" alt="גרמופון">
           <svg class="notes" viewBox="0 0 120 96" xmlns="http://www.w3.org/2000/svg"
                aria-hidden="true">
-            <!-- כולם יוצאים מאותה נקודה — פתח החצוצרה — ונישאים החוצה
-                 בזוויות שונות, בלולאה מתמדת -->
-            <!-- «שיראן» נבנית אות אחרי אות כגל היוצא מן החצוצרה, ואז
-                 מתפוגגת ומתחילה מחדש. האותיות יושבות במקומן הסופי. -->
-            <text class="samch wv w1" x="72" y="46">ש</text>
-            <text class="samch wv w2" x="57" y="35">י</text>
-            <text class="samch wv w3" x="42" y="28">ר</text>
-            <text class="samch wv w4" x="27" y="25">א</text>
-            <text class="samch wv w5" x="12" y="27">ן</text>
-            <!-- התווים נראים תמיד ורק רוטטים במקום -->
-            <g class="note tr t1"><circle cx="90" cy="30" r="3.4"/>
-              <path d="M93.4 30 V19 h5.6" fill="none"/></g>
-            <g class="note sm tr t2"><circle cx="104" cy="46" r="2.6"/>
-              <path d="M106.6 46 V37 h4.4" fill="none"/></g>
+            <!-- «שיראן» בקשת קבועה, ללא אנימציה -->
+            <text class="samch"    x="74" y="34">ש</text>
+            <text class="samch"    x="58" y="20">י</text>
+            <text class="samch sm" x="42" y="14">ר</text>
+            <text class="samch sm" x="26" y="20">א</text>
+            <text class="samch sm" x="10" y="32">ן</text>
+            <!-- סימני הצליל נראים תמיד ורוטטים במקום -->
+            <g class="note tr t1"><circle cx="92" cy="24" r="3.4"/>
+              <path d="M95.4 24 V13 h5.6" fill="none"/></g>
+            <g class="note sm tr t2"><circle cx="107" cy="42" r="2.6"/>
+              <path d="M109.6 42 V33 h4.4" fill="none"/></g>
+            <g class="note tr t3"><circle cx="86" cy="8" r="2.8"/>
+              <path d="M88.8 8 V1 h4.6" fill="none"/></g>
+            <g class="note sm tr t4"><circle cx="66" cy="5" r="2.2"/>
+              <path d="M68.2 5 V0 h3.8" fill="none"/></g>
+            <g class="note sm tr t5"><circle cx="108" cy="12" r="2.2"/>
+              <path d="M110.2 12 V5 h3.8" fill="none"/></g>
           </svg>
         </div>
         <div>
@@ -45,6 +48,7 @@
         </button>
         <button id="adminBtn" class="tbtn hidden" title="כניסת מנהל">🔑 מנהל</button>
         <button id="addBtn"   class="tbtn hidden" title="הוספת הקלטה">＋ הוספה</button>
+        <button id="perfBtn" class="tbtn hidden" title="ניהול רשימת המבצעים — מנהל בלבד">🎤 מבצעים</button>
         <button id="trashBtn" class="tbtn hidden" title="סל המחזור — מנהל בלבד">
           🗑 סל מחזור<span id="trashN" class="badge hidden">0</span>
         </button>
@@ -57,6 +61,9 @@
     </div>
   </div>
 </header>
+
+<!-- חיווי קבוע שהמשתמש נמצא בתצוגת מנהל -->
+<button id="adminFlag" class="admin-flag hidden" title="לחץ כדי לצאת ממצב מנהל">מצב מנהל</button>
 
 <!-- toast notification -->
 <div id="toast" class="toast hidden"></div>
@@ -250,7 +257,10 @@
       <p class="hint" id="edWhat"></p>
       <label>כותרת ההקלטה<input id="edTitle"></label>
       <label>תיאור ההקלטה<textarea id="edDesc" rows="3"></textarea></label>
-      <label>מבצע<input id="edPerf" list="dlPerf2"><datalist id="dlPerf2"></datalist></label>
+      <label>מבצע <span class="opt">(מתוך רשימת המבצעים)</span>
+        <select id="edPerf"></select></label>
+      <label id="edNewPerfWrap" class="hidden">שם המבצע החדש
+        <input id="edNewPerf" maxlength="80" placeholder="ייווסף לרשימת המבצעים"></label>
       <label>שנת הביצוע <span class="opt">(למשל 1968, או «שנות ה־70»)</span>
         <input id="edYear"></label>
       <label>חג או אירוע<select id="edEvent"></select></label>
@@ -268,6 +278,29 @@
     <div class="sheet-f">
       <button class="btn ghost" data-close="editModal">ביטול</button>
       <button class="btn" id="edGo">שמור</button>
+    </div>
+  </div>
+</div>
+
+<!-- ניהול רשימת המבצעים (מנהל) -->
+<div id="perfListModal" class="modal hidden">
+  <div class="sheet">
+    <div class="sheet-h">
+      <h2>רשימת המבצעים</h2>
+      <button class="x" data-close="perfListModal">✕</button>
+    </div>
+    <div class="sheet-b">
+      <p class="hint">כאן מוסיפים מבצע לרשימה ומעדכנים את פרטיו.
+        שיוך מבצע להקלטה נעשה בעריכת ההקלטה עצמה — כפתור ✎ שליד כל הקלטה.</p>
+      <div class="addperf">
+        <input id="npName" placeholder="שם מבצע חדש" maxlength="80">
+        <button class="btn" id="npAdd">הוסף לרשימה</button>
+      </div>
+      <p id="npErr" class="err hidden"></p>
+      <div id="perfListBody"></div>
+    </div>
+    <div class="sheet-f">
+      <button class="btn ghost" data-close="perfListModal">סגור</button>
     </div>
   </div>
 </div>
@@ -458,6 +491,31 @@
           <button id="pvdn" class="pnav" title="החלשת עוצמה">−</button>
           <span id="pvolN" class="pvoln">100%</span>
           <button id="pvup" class="pnav" title="הגברת עוצמה">＋</button>
+        </div>
+      </div>
+
+      <button class="mix-toggle" id="mixToggle"><span class="mix-ico">🎛</span>מיקסר</button>
+
+      <!-- מיקסר: שרשרת עיבוד על האודיו החי -->
+      <div class="mixer hidden" id="mixer">
+        <div class="mix-row">
+          <label>באס<input type="range" id="mBass" min="-15" max="15" step="1" value="0"><span id="mBassN">0</span></label>
+          <label>אמצע<input type="range" id="mMid" min="-15" max="15" step="1" value="0"><span id="mMidN">0</span></label>
+          <label>טרבל<input type="range" id="mTreb" min="-15" max="15" step="1" value="0"><span id="mTrebN">0</span></label>
+        </div>
+        <div class="mix-row">
+          <label>סינון רעש עמוק<input type="range" id="mHP" min="0" max="300" step="10" value="0"><span id="mHPN">כבוי</span></label>
+          <label>ריכוך שריקות<input type="range" id="mLP" min="3000" max="20000" step="500" value="20000"><span id="mLPN">כבוי</span></label>
+        </div>
+        <div class="mix-row">
+          <label>איזון עוצמה<input type="range" id="mComp" min="0" max="40" step="2" value="0"><span id="mCompN">כבוי</span></label>
+          <label>הגברה<input type="range" id="mGain" min="0" max="300" step="5" value="100"><span id="mGainN">100%</span></label>
+        </div>
+        <div class="mix-foot">
+          <button class="btn ghost" id="mFlat">איפוס</button>
+          <button class="btn ghost" id="mVoice">קול ברור</button>
+          <button class="btn ghost" id="mTape">שיקום קלטת</button>
+          <span class="mix-note" id="mixNote"></span>
         </div>
       </div>
     </div>

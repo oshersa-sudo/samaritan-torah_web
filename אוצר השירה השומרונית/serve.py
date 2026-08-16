@@ -344,6 +344,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             row['photo'] = 'photos/' + os.path.basename(dest)
         if fields.get('remove_photo'):
             row.pop('photo', None)
+        if fields.get('create'):
+            # a performer may be registered with nothing but a name, so that a
+            # recording can be assigned to them straight away
+            row.setdefault('added', time.strftime('%Y-%m-%d'))
 
         if row:
             meta[name] = row
