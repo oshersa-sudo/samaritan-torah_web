@@ -1,0 +1,23 @@
+# runtime, not source: what the local admin panel writes and what the upload
+# leaves behind. The archive itself was never here — it lives on the drive.
+__pycache__/
+added/
+deleted/
+photos/
+data/upload.log
+data/upload_list.txt
+deploy/.shira-media.rendered
+
+# intermediate build products — rebuilt from the drive by scripts/*.py
+data/raw_inventory.json
+data/durations.json
+data/hash_cache.json
+data/duplicates.json
+data/recordings.json
+data/tracks.json
+
+# local admin state: edits, playlists, deletions, performer details
+data/additions.json
+data/overrides.json
+data/performers.json
+data/removed.json
