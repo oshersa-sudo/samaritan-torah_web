@@ -522,9 +522,14 @@
   </div>
 </section>
 
-<!-- להאזנה, לא להורדה: אין פקד הורדה ואין תפריט הקשר על הנגן. את הזרם עצמו
+<!-- crossorigin חובה, לא קישוט: המיקסר מעביר את הנגן דרך Web Audio, ושמע
+     שהגיע מדומיין אחר בלי בקשת CORS מפורשת נחשב «מורעל» — הגרף ימשיך לרוץ
+     ויוציא שקט מוחלט. שרת המדיה מחזיר Access-Control-Allow-Origin, וזה מה
+     שהופך את הזרם לנגיש למיקסר.
+     להאזנה, לא להורדה: אין פקד הורדה ואין תפריט הקשר על הנגן. את הזרם עצמו
      אי אפשר למנוע מדפדפן שמנגן אותו — החסימה האמיתית היא בשרת המדיה. -->
-<audio id="au" preload="none" controlsList="nodownload noplaybackrate"
+<audio id="au" preload="none" crossorigin="anonymous"
+       controlsList="nodownload noplaybackrate"
        disablePictureInPicture oncontextmenu="return false"></audio>
 
 <script src="unit.js"></script>
