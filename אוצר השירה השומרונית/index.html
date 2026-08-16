@@ -522,7 +522,10 @@
   </div>
 </section>
 
-<audio id="au" preload="none"></audio>
+<!-- להאזנה, לא להורדה: אין פקד הורדה ואין תפריט הקשר על הנגן. את הזרם עצמו
+     אי אפשר למנוע מדפדפן שמנגן אותו — החסימה האמיתית היא בשרת המדיה. -->
+<audio id="au" preload="none" controlsList="nodownload noplaybackrate"
+       disablePictureInPicture oncontextmenu="return false"></audio>
 
 <script src="unit.js"></script>
 </body>

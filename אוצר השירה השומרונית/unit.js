@@ -348,6 +348,14 @@ function audioURL(rel) {
   return base + enc;
 }
 
+/* Let go of the recording. Assigning '' would leave the element pointing at the
+ * page itself and fire a load error for a failure that never happened; dropping
+ * the attribute and reloading is the way to end playback quietly. */
+function stopAudio() {
+  au.removeAttribute('src');
+  au.load();
+}
+
 /* `quiet` suppresses the button click: moving from track 3 to track 4 of one
  * recording is a continuation, not a new press of PLAY. */
 function playRec(recId, idx, quiet) {
@@ -402,7 +410,7 @@ $('dwMin').onclick = () => {
   $('dwMin').textContent = min ? '▢' : '─';   // playback continues either way
 };
 $('dwClose').onclick = () => {
-  au.pause(); au.src = '';
+  au.pause(); stopAudio();
   headIn(false);
   $('deckWin').classList.add('hidden');
   deckLabel(null, 0);
@@ -981,19 +989,20 @@ $('prate').addEventListener('input', e => setRate(e.target.value));
 $('prate').addEventListener('dblclick', () => setRate(1));   // snap back to 1×
 setRate(localStorage.getItem('shira_rate') || 1);
 
-/* The archive lives on an external drive; say so plainly when it is absent. */
+/* A recording that will not play. Where the file sits and why it is unreachable
+ * is ours to fix, not the listener's to read, so the message says only what it
+ * means for them. */
 function clearErr() { document.querySelector('.perr')?.remove(); }
 au.onerror = () => {
+  /* Stopping playback empties the source, and an empty source counts as a load
+   * error by the letter of the spec — nothing failed, so say nothing. */
+  if (!au.getAttribute('src')) return;
   clearErr();
-  const r = byId(C.recordings, cur.rec);
   const box = document.createElement('div');
   box.className = 'perr';
-  box.innerHTML = 'הקובץ אינו נגיש כרגע. ודא שכונן הארכיון מחובר ושהיחידה ' +
-    'מוגשת דרך <code>py -3 serve.py</code>.<br><code>' +
-    esc(C.meta.root + '\\' + (r && r.tr[cur.idx] ? r.tr[cur.idx].f.replace(/\//g, '\\') : '')) +
-    '</code>';
+  box.textContent = 'ההקלטה הזאת לא מתנגנת כרגע. נסו שוב בעוד רגע.';
   document.body.appendChild(box);
-  setTimeout(() => box.remove(), 9000);
+  setTimeout(() => box.remove(), 6000);
 };
 
 /* ---------------------------------------------------------------- events */
@@ -1320,7 +1329,7 @@ $('edDel').onclick = async () => {
   }
   const gone = edRec.ttl;
   closeModal('editModal');
-  if (cur.rec === edRec.id) { au.pause(); au.src = ''; $('deckWin').classList.add('hidden'); }
+  if (cur.rec === edRec.id) { au.pause(); stopAudio(); $('deckWin').classList.add('hidden'); }
   PL.lists.forEach(l => { l.items = l.items.filter(id => id !== edRec.id); });
   plSave();
   await loadCatalog();
