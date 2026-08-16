@@ -1164,3 +1164,16 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
   .study-d { font-size: 13px; }
   .study-list { max-height: min(40vh, 300px); }
 }
+
+/* ══════════ Grade picker on the home hub ══════════
+   One choice, applying to every subject and remembered against the student. */
+.hub-grade { margin: 2px 0 14px; }
+/* twelve grades, two tidy rows of six — a flex row wraps 6/5/1 because
+   the two-letter grades (י״א, י״ב) are wider than the rest. */
+.hub-grade .pill-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.hub-grade .pill { padding: 8px 4px; }
+.hub-grade-note {
+  margin: 9px 2px 0; font-size: 12.5px; color: var(--ink-soft); line-height: 1.4;
+}
+.cur-grade b { display: block; margin-bottom: 4px; }
+.cur-grade.cur-now b { color: var(--violet); }
