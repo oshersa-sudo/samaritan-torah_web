@@ -1153,6 +1153,7 @@ async function showBooks(){
   const books = await api('books?mode='+mode);
   S.books = books; S.booksMode = mode;          // cached for cross-book chapter paging
   const c = $('content'); c.innerHTML='';
+  markRoute();
   for(const b of books){
     const nm = bookLabel(b.id, b.name);
     const label = S.division==='samaritan'
@@ -1273,6 +1274,7 @@ async function showPortions(bookId, bookName){
   $('backBtn').disabled = false;
   const mode = S.division==='samaritan'?'samaritan':'standard';
   S.portions = await api(`portions?book_id=${bookId}&mode=${mode}`);
+  markRoute();
   const c = $('content'); c.innerHTML='';
   for(const p of S.portions){
     const label = S.division==='samaritan'
@@ -1366,7 +1368,7 @@ function portionForChapter(num){
 
 // ── chapter lists ────────────────────────────────────────────────────────────
 async function showChapters(pid, pname){
-  S.view='chapters'; S.curPid=pid; S.portionName=pname; setView();
+  S.view='chapters'; S.curPid=pid; S.portionName=pname; setView(); markRoute();
   setCrumbs([{t:S.bookName, fn:()=>showPortions(S.book,S.bookName)}, {t:pname}]);
   S.stack=[{t:S.bookName, fn:()=>showPortions(S.book,S.bookName)},
            {t:pname, fn:()=>showChapters(pid,pname)}];
@@ -1376,7 +1378,7 @@ async function showChapters(pid, pname){
 }
 async function showSamChapters(pid, pname){
   loadReadingManifests();          // the ▶ marks are about to matter
-  S.view='sam_chapters'; S.curPid=pid; S.portionName=pname; setView();
+  S.view='sam_chapters'; S.curPid=pid; S.portionName=pname; setView(); markRoute();
   setCrumbs([{t:S.bookName, fn:()=>showPortions(S.book,S.bookName)}, {t:pname}]);
   S.stack=[{t:S.bookName, fn:()=>showPortions(S.book,S.bookName)},
            {t:pname, fn:()=>showSamChapters(pid,pname)}];
@@ -1429,7 +1431,7 @@ async function renderVerses(chId, chNum, pid, pname){
   loadReadingManifests();          // the play bar is about to matter
   if(typeof ttsStop==='function') ttsStop();   // a new chapter ends any read-aloud
   if(typeof readingStop==='function') readingStop();   // …and any reading recording
-  S.view='verses'; S.curChId=chId; S.curChNum=chNum; setView();
+  S.view='verses'; S.curChId=chId; S.curChNum=chNum; setView(); markRoute();
   await ensureBooks();   // populate S.books so the nav buttons can relabel at book edges
   const isSam = S.chMode==='samaritan';
   // the four Jewish commentaries are 90% of a chapter's JSON and are read only
@@ -1749,7 +1751,7 @@ function animAdminPanel(){
     row.appendChild(on);
 
     const inp = document.createElement('input');
-    inp.className = 'anim-text'; inp.type = 'text'; inp.maxLength = 50;
+    inp.className = 'anim-text'; inp.type = 'text'; inp.maxLength = 80;
     inp.value = a.text || ''; inp.title = a.text || '';
     inp.disabled = !a.enabled;
     inp.onkeydown = e => { if(e.key === 'Enter') inp.blur(); };
@@ -1784,8 +1786,8 @@ function animAdminPanel(){
     const add = el('div','anim-row anim-add');
     add.appendChild(el('span','anim-add-lab','הוסף ברכה:'));
     const inp = document.createElement('input');
-    inp.className = 'anim-text'; inp.type = 'text'; inp.maxLength = 50;
-    inp.placeholder = 'נוסח הברכה (עד 50 תווים)';
+    inp.className = 'anim-text'; inp.type = 'text'; inp.maxLength = 80;
+    inp.placeholder = 'נוסח הברכה (עד 80 תווים)';
     add.appendChild(inp);
     let kind = 'entry';
     const flags = [];
@@ -7620,7 +7622,103 @@ async function rdContinue(reader){
   if(pr && pr.catch) pr.catch(()=>toast('ההשמעה האוטומטית נחסמה — הקישו ▶ להמשך'));
 }
 
+
+// ── an address for every screen ──────────────────────────────────────────────
+// Until now the app had one URL for everything, which meant a chapter could not
+// be linked to, a refresh threw the reader back to the book list, and the
+// phone's Back button left the app instead of stepping back inside it. Each
+// screen now writes its own address:
+//
+//     /                          the books
+//     /t/sam/1                   the portions of בראשית
+//     /t/sam/1/8                 the chapters of its eighth portion
+//     /t/sam/1/8/10              the tenth chapter of that portion
+//     /t/jew/2/3/14/v7           …the Jewish division, with one verse in view
+//
+// The parts are POSITIONS, not database ids (a portion's id changes when the
+// text is re-cut; 'the eighth portion of Genesis' does not), so an address
+// keeps meaning across edits and across a rebuilt database.
+const ROUTE_BASE = '/t/';
+function routeDiv(){ return S.division === 'samaritan' ? 'sam' : 'jew'; }
+function portionIndex(){
+  const i = (S.portions || []).findIndex(p => p.id === S.curPid);
+  return i < 0 ? null : i + 1;
+}
+function currentPath(){
+  if(!S.book || S.view === 'books') return '/';
+  const parts = [routeDiv(), S.book];
+  const pi = portionIndex();
+  if(S.view === 'portions' || pi == null) return ROUTE_BASE + parts.join('/');
+  parts.push(pi);
+  if(S.view === 'chapters' || S.view === 'sam_chapters') return ROUTE_BASE + parts.join('/');
+  if(S.view === 'verses' && S.curChNum != null){
+    parts.push(S.curChNum);
+    const v = S.verseFilter != null && (S.verses || []).find(x => x.id === S.verseFilter);
+    if(v) parts.push('v' + v.number);
+    return ROUTE_BASE + parts.join('/');
+  }
+  return ROUTE_BASE + parts.join('/');
+}
+// Called by every screen once it is up. Replaces rather than pushes when the
+// address has not really changed, so the Back button never has to be pressed
+// twice for one step.
+let _routeSilent = false;
+function markRoute(){
+  if(_routeSilent) return;
+  const path = currentPath();
+  if(path === location.pathname) return;
+  try{ history.pushState({app:1}, '', path); }catch(e){}
+}
+async function openRoute(path, silent){
+  const m = /^\/t\/(sam|jew)\/(\d+)(?:\/(\d+))?(?:\/(\d+))?(?:\/v([\w.-]+))?\/?$/.exec(path || '');
+  if(!m){ if(silent) _routeSilent = true; await showBooks(); _routeSilent = false; return !!(path === '/' || !path); }
+  const [, div, bookS, portS, chapS, verse] = m;
+  const book = parseInt(bookS, 10);
+  _routeSilent = !!silent;
+  try{
+    S.division = (div === 'sam') ? 'samaritan' : 'standard';
+    const btnS = $('btnSamaritan'), btnJ = $('btnStandard');
+    if(btnS && btnJ){ btnS.classList.toggle('active', div === 'sam'); btnJ.classList.toggle('active', div !== 'sam'); }
+    const mode = S.division === 'samaritan' ? 'samaritan' : 'standard';
+    const books = await api('books?mode=' + mode);
+    S.books = books; S.booksMode = mode;
+    const b = books.find(x => x.id === book);
+    if(!b){ await showBooks(); return false; }
+    const name = bookLabel(b.id, b.name);
+    await showPortions(b.id, name);
+    if(!portS) return true;
+    const p = (S.portions || [])[parseInt(portS, 10) - 1];
+    if(!p){ return false; }
+    if(!chapS){
+      await (S.division === 'samaritan' ? showSamChapters(p.id, p.name) : showChapters(p.id, p.name));
+      return true;
+    }
+    const want = parseInt(chapS, 10);
+    if(S.division === 'samaritan'){
+      const rows = await api('sam_chapters?portion_id=' + p.id);
+      const hit = rows.find(r => r.number === want);
+      if(!hit) return false;
+      S.curPid = p.id; S.portionName = p.name;
+      await openSamChapter(hit.id, hit.number, p.id, p.name, false);
+    } else {
+      const rows = await api('chapters?book_id=' + b.id);
+      const hit = rows.find(r => r.number === want);
+      if(!hit) return false;
+      S.curPid = p.id; S.portionName = p.name;
+      await openChapter(hit.id, hit.number, p.id, p.name, false);
+    }
+    if(verse){
+      const v = (S.verses || []).find(x => String(x.number) === String(verse));
+      if(v) filterVerse(v.id);
+    }
+    return true;
+  } finally { _routeSilent = false; }
+}
+// the phone's Back button, and the browser's, walk the app
+addEventListener('popstate', () => { openRoute(location.pathname, true); });
+
 // ── start ────────────────────────────────────────────────────────────────────
-showBooks();
+// open whatever the address asks for; a plain '/' is the book list as before
+openRoute(location.pathname, true);
 applyI18n();
 updateBmMenu();

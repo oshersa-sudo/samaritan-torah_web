@@ -1,0 +1,34 @@
+# The smoke test — does the app still stand up and answer?
+name: Smoke test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true          # data/torah.db is an LFS object; without this it is a pointer
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install the app's own dependencies
+        run: pip install -r web/requirements-prod.txt
+
+      - name: The API — every route the reader depends on
+        run: python tests/smoke.py --no-browser
+
+      - name: Install a browser
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: The app itself — it paints, deep links open, Back walks back
+        run: python tests/smoke.py

@@ -19,6 +19,10 @@ services:
     # files) and thread-safe by construction — database.get_connection() opens a
     # FRESH sqlite3 connection per call, with no shared module-level connection.
     startCommand: gunicorn web.server:app --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 60
+    # Render holds traffic on the old instance until this answers, and the route
+    # deliberately reads from the database — so the import, the file open and the
+    # first page-cache fill are paid by the deploy, not by the first reader.
+    healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.4"

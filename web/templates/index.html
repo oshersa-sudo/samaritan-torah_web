@@ -7,6 +7,7 @@
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>התורה השומרונית הישראלית</title>
+<meta name="description" content="התורה השומרונית הישראלית — חמישה חומשי תורה בנוסח השומרוני, בכתב השומרוני ובאותיות עבריות, עם פרשנות מן המקורות השומרוניים, השוואת נוסחים, תרגומים, מילון מילים, הקלטות קריאה ולוח השנה השומרוני.">
 <link rel="icon" href="{{ url_for('static', filename='img/app_icon.png') }}">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#1a3873">
@@ -826,7 +827,7 @@
   // scratch sound — and (unlike tapping the backdrop) does NOT skip the splash.
   const soundBtn=document.getElementById('sp-sound');
   if(soundBtn) soundBtn.addEventListener('click', e=>{
-    e.stopPropagation(); initAudio(); resumeAudio(); soundBtn.classList.add('on');
+    e.stopPropagation(); state.audioAllowed = true; initAudio(); resumeAudio(); soundBtn.classList.add('on');
   });
   // "always skip" — offered only on the installed app; the choice is stored locally
   if(installed && skipAlwaysBtn) skipAlwaysBtn.classList.remove('hidden');
@@ -843,7 +844,11 @@
   async function run(){
     buildPages(); fitVerse();
     if(reduce){ lines.forEach(l=>l.style.clipPath='none'); verse.classList.add('lit'); await wait(1500); return finish(); }
-    initAudio(); resumeAudio();
+    // Only if a gesture has already unlocked audio. Creating the context here
+    // regardless made every visit log "The AudioContext was not allowed to
+    // start" — the browser had refused it, and the sound button exists exactly
+    // so the reader can allow it.
+    if(state.audioAllowed){ initAudio(); resumeAudio(); }
     await wait(1250); if(state.cancelled) return;
     await writeLine(lines[0]); if(state.cancelled) return;
     await wait(SPLASH_CONFIG.interLineGap); if(state.cancelled) return;

@@ -596,6 +596,7 @@ def _backup_glob(src):
 
 
 def _backup_db():
+    _mem_clear()          # the text is about to change; the small cache must go
     src = getattr(db, 'DB_PATH', None)
     if src and os.path.exists(src):
         shutil.copy2(src, '%s.bak_admin_%s' % (src, _dt.now().strftime('%Y%m%d_%H%M%S')))
@@ -1516,7 +1517,13 @@ ASSET_BUILD = _asset_build()
 
 
 @app.route('/')
-def index():
+# Every screen of the app has an address of its own — /t/sam/1/8/10 is the tenth
+# Samaritan chapter of the eighth portion of Genesis — so a chapter can be linked
+# to, a refresh returns to where the reader was, and the phone's Back button
+# steps back through the app instead of leaving it. The app itself reads the path
+# and opens it; the server's part is simply to hand the same page to all of them.
+@app.route('/t/<path:_rest>')
+def index(_rest=None):
     return render_template('index.html', version=APP_VERSION, asset_build=ASSET_BUILD)
 
 
@@ -1715,16 +1722,56 @@ def download_apk():
 
 
 # ── navigation API ─────────────────────────────────────────────────────────
+# Render waits for this to answer before it sends anyone to a new instance. It
+# deliberately does real work — opens the database and reads from it — so that
+# the warming up (importing, opening the file, filling the page cache) is paid
+# by the deploy and not by the first reader, who used to wait about four seconds.
+@app.route('/healthz')
+def healthz():
+    t0 = time.time()
+    try:
+        books = db.get_books()
+        _books_payload('samaritan')                      # fills the small cache too
+        return jsonify({'ok': True, 'books': len(books),
+                        'ms': round((time.time() - t0) * 1000)})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+
+# ── a small cache for the answers that never change between deploys ──────────
+# books, portions and the chapter lists are read-mostly and tiny; they were being
+# rebuilt from SQLite on every navigation (~300ms each on the live server). They
+# are held in memory instead and dropped whenever an admin writes to the text.
+_MEM = {}
+
+
+def _mem(key, build):
+    if key not in _MEM:
+        _MEM[key] = build()
+    return _MEM[key]
+
+
+def _mem_clear():
+    _MEM.clear()
+
+
+def _books_payload(mode):
+    def build():
+        out = []
+        for b in db.get_books():
+            item = {'id': b['id'], 'name': b['name']}
+            if mode == 'samaritan':
+                item['n_portions'] = len(db.get_portions(b['id'], mode='samaritan'))
+                item['n_chapters'] = len(db.get_sam_chapters(b['id']))
+            out.append(item)
+        return out
+    return _mem('books:' + mode, build)
+
+
 @app.route('/api/books')
 def api_books():
     mode = request.args.get('mode', 'samaritan')
-    out = []
-    for b in db.get_books():
-        item = {'id': b['id'], 'name': b['name']}
-        if mode == 'samaritan':
-            item['n_portions'] = len(db.get_portions(b['id'], mode='samaritan'))
-            item['n_chapters'] = len(db.get_sam_chapters(b['id']))
-        out.append(item)
+    out = _books_payload(mode)
     return jsonify(out)
 
 
@@ -1732,6 +1779,9 @@ def api_books():
 def api_portions():
     book_id = int(request.args['book_id'])
     mode = request.args.get('mode', 'samaritan')          # 'samaritan' | 'standard'
+    key = 'portions:%s:%s' % (book_id, mode)
+    if key in _MEM:
+        return jsonify(_MEM[key])
     pmode = 'jewish' if mode == 'standard' else 'samaritan'
     out = []
     for p in db.get_portions(book_id, mode=pmode):
@@ -1740,6 +1790,7 @@ def api_portions():
         if mode == 'samaritan':
             item['n_chapters'] = db.count_sam_chapters_in_portion(p['id'])
         out.append(item)
+    _MEM[key] = out
     return jsonify(out)
 
 
@@ -1757,6 +1808,9 @@ def api_sam_chapters():
     """Samaritan chapters whose first verse falls in the portion; or all of a book."""
     pid = request.args.get('portion_id')
     bid = request.args.get('book_id')
+    key = 'samch:%s:%s' % (pid, bid)
+    if key in _MEM:
+        return jsonify(_MEM[key])
     if pid and pid.isdigit():   # the SPA can send a literal 'null' before its state settles
         rows = db.get_sam_chapters_in_portion(int(pid))
     elif bid and bid.isdigit():
@@ -1765,8 +1819,10 @@ def api_sam_chapters():
         return jsonify([])
     texts = [r['first_text'] if 'first_text' in r.keys() else '' for r in rows]
     openings = _dedupe_openings(texts)
-    return jsonify([{'id': r['id'], 'number': r['number'], 'opening': o}
-                    for r, o in zip(rows, openings)])
+    out = [{'id': r['id'], 'number': r['number'], 'opening': o}
+           for r, o in zip(rows, openings)]
+    _MEM[key] = out
+    return jsonify(out)
 
 
 def _opening_words(text, n=2):
@@ -1920,7 +1976,7 @@ def admin_anim_override():
         return jsonify({'ok': False, 'error': 'bad timing'}), 400
     text = d.get('text')
     if text is not None:
-        text = str(text)[:50].strip() or None      # the field the admin types in is fifty long
+        text = str(text)[:80].strip() or None      # as long as the field the admin types in
     enabled = 1 if d.get('enabled', True) else 0
     conn = db.get_connection()
     try:
