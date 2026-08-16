@@ -584,12 +584,14 @@ body{
    single row of long buttons. On a phone that row is wider than the screen,
    so it has to wrap and the labels have to shrink. */
 @media (max-width:720px){
-  /* no room for the sound to rise beside the horn — keep the photo, drop
-     the letters, and let the title have the width */
-  .gramo{width:52px}
-  .gramo .notes{display:none}
+  /* There is no room for the sound to rise *beside* the horn on a phone, so
+     it rises above it instead — the header reserves the height for it. */
+  .gramo{width:60px}
+  .gramo .notes{left:-57%;top:-30%;width:150%}
+  .gramo .samch{font-size:15px}
+  .gramo .samch.sm{font-size:12px}
   .brand{padding-inline-start:0;gap:10px;flex:1 1 100%}
-  .top-in{padding:14px 12px 12px}
+  .top-in{padding:38px 12px 12px}
   .top h1{font-size:1.22rem;line-height:1.25}
   .sub{font-size:.76rem;line-height:1.5}
   .top-row{gap:10px}
