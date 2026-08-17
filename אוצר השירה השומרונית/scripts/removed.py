@@ -118,9 +118,26 @@ def apply(catalog, gone):
     live_p = {r['p'] for r in keep}
     live_e = {r['e'] for r in keep}
     live_y = {r['y'] for r in keep}
-    cat['performers'] = [p for p in catalog['performers'] if p['id'] in live_p]
-    cat['events']     = [e for e in catalog['events'] if e['id'] in live_e]
-    cat['piyyutim']   = [y for y in catalog['piyyutim'] if y['id'] in live_y]
+    cat['performers'] = [dict(p) for p in catalog['performers'] if p['id'] in live_p]
+    cat['events']     = [dict(e) for e in catalog['events'] if e['id'] in live_e]
+    cat['piyyutim']   = [dict(y) for y in catalog['piyyutim'] if y['id'] in live_y]
+
+    # the counts have to be re-derived, or every index still advertises the
+    # recordings that were just taken away
+    for seq, key in ((cat['performers'], 'p'), (cat['events'], 'e'),
+                     (cat['piyyutim'], 'y')):
+        tally = {}
+        for r in keep:
+            t = tally.setdefault(r[key], [0, 0, 0, set()])
+            t[0] += 1
+            t[1] += r['n']
+            t[2] += r['s']
+            t[3].add(r['y'])
+        for row in seq:
+            n, tr, sec, ys = tally.get(row['id'], (0, 0, 0, set()))
+            row['n_rec'], row['n_tracks'], row['seconds'] = n, tr, sec
+            if 'n_piyyut' in row:
+                row['n_piyyut'] = len(ys)
     m = dict(catalog['meta'])
     m['n_rec']    = len(keep)
     m['n_tracks'] = sum(r['n'] for r in keep)

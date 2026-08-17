@@ -212,6 +212,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.api_override()
         if p == '/api/performer':
             return self.api_performer()
+        if p == '/api/rename_performer':
+            return self.api_rename_performer()
         if p == '/api/delete_recording':
             return self.api_delete_recording()
         if p == '/api/restore_recording':
@@ -301,6 +303,31 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             ovr.pop(key, None)
         OVR.save(ovr)
         self.json_out({'ok': True, 'override': row})
+
+    def api_rename_performer(self):
+        """Rename a performer across every recording at once. Renaming onto a
+        name that already exists merges the two — the way duplicates are fixed."""
+        if not self.is_admin():
+            return self.json_out({'ok': False, 'error': 'unauthorized'}, 401)
+        try:
+            d = json.loads(self.read_body() or b'{}')
+        except ValueError:
+            return self.json_out({'ok': False, 'error': 'bad json'}, 400)
+        old = str(d.get('old') or '').strip()
+        new = str(d.get('new') or '').strip()
+        if not old or not new:
+            return self.json_out({'ok': False, 'error': 'missing name'}, 400)
+
+        ovr = OVR.load()
+        OVR.set_rename(ovr, old, new)
+        OVR.save(ovr)
+
+        # carry the photo / bio across to the new name
+        meta = PEOPLE.load()
+        if old in meta:
+            meta.setdefault(new, {}).update(meta.pop(old))
+            PEOPLE.save(meta)
+        self.json_out({'ok': True, 'renames': OVR.renames(OVR.load())})
 
     def api_performer(self):
         """Admin edit of a performer: photo (uploaded file), credit, bio, years."""

@@ -1309,13 +1309,40 @@ function drawPerfList() {
       <span class="qt"><b>${esc(p.name)}</b><br>
         <span class="s">${p.n_rec} הקלטות${p.years ? ' · ' + esc(p.years) : ''}${
           p.photo ? ' · יש תמונה' : ''}</span></span>
-      <button class="btn ghost" data-pedit="${esc(p.name)}">✎ פרטים</button>
+      <button class="btn ghost" data-pren="${esc(p.name)}">✎ שם</button>
+      <button class="btn ghost" data-pedit="${esc(p.name)}">פרטים</button>
     </div>`).join('');
   $('perfListBody').querySelectorAll('[data-pedit]').forEach(b =>
     b.onclick = () => {
       const p = C.performers.find(x => x.name === b.dataset.pedit);
       if (p) { closeModal('perfListModal'); openPerf(p); }
     });
+  $('perfListBody').querySelectorAll('[data-pren]').forEach(b =>
+    b.onclick = () => renamePerformer(b.dataset.pren));
+}
+
+/* Renaming onto a name that already exists merges the two — that is how the
+ * duplicate entries in this list get folded together. */
+async function renamePerformer(old) {
+  const name = prompt(
+    `שם חדש ל«${old}».\n` +
+    'הזנת שם שכבר קיים תאחד את השניים לאותו מבצע.', old);
+  if (!name || !name.trim() || name.trim() === old) return;
+  const fresh = name.trim();
+  const merging = C.performers.some(p => p.name === fresh);
+  if (merging && !confirm(`«${fresh}» כבר קיים. לאחד את «${old}» לתוכו?`)) return;
+
+  const r = await fetch('api/rename_performer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Admin-Token': ADMIN.token },
+    body: JSON.stringify({ old, new: fresh }),
+  }).then(r => r.json()).catch(() => ({}));
+  if (!r.ok) return toast(r.error === 'unauthorized'
+    ? 'פג תוקף הכניסה. היכנס שוב.' : 'השינוי נכשל', true);
+  await loadCatalog();
+  drawPerfList();
+  draw();
+  toast(merging ? `«${old}» אוחד לתוך «${fresh}»` : `השם שונה ל«${fresh}»`);
 }
 
 async function addPerformer(name) {

@@ -178,6 +178,18 @@ catalog = {
     'recordings': out_recs,
 }
 
+# Deletions made in the local admin panel are baked in here, so the catalog the
+# cloud serves matches what the maintainer sees. The cloud copy is read-only —
+# this file is the only way those removals reach it.
+sys.path.insert(0, HERE)
+import removed as GONE                                   # noqa: E402
+gone = GONE.keys()
+if gone:
+    before = len(catalog['recordings'])
+    catalog = GONE.apply(catalog, gone)
+    print('deletions applied: %d recordings removed (%d → %d)'
+          % (before - len(catalog['recordings']), before, len(catalog['recordings'])))
+
 json.dump(catalog, open(D('catalog.json'), 'w', encoding='utf-8'),
           ensure_ascii=False, separators=(',', ':'))
 
