@@ -315,16 +315,17 @@ function toggleTracks(id) {
   const row = $('pane').querySelector(`.row[data-rec="${id}"]`);
   if (!row) return;
   const open = row.querySelector('.tracks');
-  if (open) { open.remove(); row.querySelector('.path')?.remove(); return; }
+  if (open) { open.remove(); return; }
 
+  // the track list only — where the file sits on the archive drive is not
+  // something a listener needs to read
   const r = byId(C.recordings, id);
   const html = '<div class="tracks">' + r.tr.map((t, i) =>
     `<button class="track" data-t="${id}:${i}">
        <span class="n">${i + 1}.</span>
-       <span class="nm" dir="auto">${esc(t.n)}</span>
+       <span class="nm" dir="auto">${esc(trackName(r, i))}</span>
        <span class="d">${dur(t.s)}</span>
-     </button>`).join('') + '</div>' +
-    `<div class="path">${esc(r.dir || '(שורש הארכיון)')}</div>`;
+     </button>`).join('') + '</div>';
   row.insertAdjacentHTML('beforeend', html);
   row.querySelectorAll('[data-t]').forEach(b => {
     b.onclick = () => {
@@ -1098,7 +1099,7 @@ function drawTrash() {
   if (!body) return;
   body.innerHTML = TRASH.length ? TRASH.map(it => `
     <div class="qrow">
-      <span class="qt"><b>${esc(it.title || it.key)}</b><br>
+      <span class="qt"><b>${esc(it.title || 'הקלטה ללא שם')}</b><br>
         <span class="s">${it.files.length} קבצים ·
           ${it.trashed.length ? `${it.trashed.length} בסל` : 'קובצי המקור נשמרו בארכיון'}
           · הוסר ב־${esc((it.when || '').replace('T', ' ').slice(0, 16))}</span></span>
@@ -1253,7 +1254,9 @@ function openEdit(recId) {
   const r = byId(C.recordings, recId);
   if (!r) return;
   edKey = (r.tr && r.tr[0] ? r.tr[0].f : '') || r.dir;
-  $('edWhat').textContent = `${r.dir || 'שורש הארכיון'} · ${r.n} רצועות · ${dur(r.s)}`;
+  $('edWhat').textContent =
+    `${perfName(r.p)} · ${eventName(r.e)} · ` +
+    `${r.n === 1 ? 'רצועה אחת' : r.n + ' רצועות'} · ${dur(r.s)}`;
   $('edTitle').value = r.ttl || '';
   $('edDesc').value  = r.desc || '';
   $('edPerf').value  = perfName(r.p);
