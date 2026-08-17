@@ -147,6 +147,13 @@
   </div>
 </div>
 
+<!-- תפריט קטן שנפתח ליד הכפתור: הרשימות הקיימות, ו-＋ לחדשה -->
+<div id="plMenu" class="plmenu hidden">
+  <div class="plmenu-h">הוספה לרשימה</div>
+  <div id="plMenuList" class="plmenu-list"></div>
+  <button class="plmenu-new" id="plMenuNew">＋ רשימה חדשה</button>
+</div>
+
 <!-- יצירת רשימה / בחירת רשימה להוספה -->
 <div id="plAddModal" class="modal hidden">
   <div class="sheet narrow">
@@ -522,7 +529,15 @@
   </div>
 </section>
 
-<audio id="au" preload="none"></audio>
+<!-- crossorigin חובה, לא קישוט: המיקסר מעביר את הנגן דרך Web Audio, ושמע
+     שהגיע מדומיין אחר בלי בקשת CORS מפורשת נחשב «מורעל» — הגרף ימשיך לרוץ
+     ויוציא שקט מוחלט. שרת המדיה מחזיר Access-Control-Allow-Origin, וזה מה
+     שהופך את הזרם לנגיש למיקסר.
+     להאזנה, לא להורדה: אין פקד הורדה ואין תפריט הקשר על הנגן. את הזרם עצמו
+     אי אפשר למנוע מדפדפן שמנגן אותו — החסימה האמיתית היא בשרת המדיה. -->
+<audio id="au" preload="none" crossorigin="anonymous"
+       controlsList="nodownload noplaybackrate"
+       disablePictureInPicture oncontextmenu="return false"></audio>
 
 <script src="unit.js"></script>
 </body>

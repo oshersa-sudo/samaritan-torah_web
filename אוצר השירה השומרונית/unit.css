@@ -165,6 +165,33 @@ body{
   font-size:1.2rem;color:var(--accent);font-weight:700;
 }
 .card.person .body{flex:1 1 auto;min-width:0}
+/* the little menu that drops out of the ♪+ button */
+.plmenu{
+  position:absolute;z-index:65;min-width:210px;max-width:min(280px,92vw);
+  background:#fff;border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 8px 26px rgba(20,26,44,.24);overflow:hidden;
+}
+.plmenu-h{
+  padding:8px 12px;font-size:.76rem;color:var(--muted);
+  border-bottom:1px solid var(--line);background:#f7f9fd;
+}
+.plmenu-list{max-height:46vh;overflow:auto}
+.plmenu-list button{
+  display:flex;align-items:center;justify-content:space-between;gap:9px;
+  width:100%;border:0;background:none;font-family:inherit;font-size:.9rem;
+  color:var(--navy);text-align:right;padding:9px 12px;cursor:pointer;
+}
+.plmenu-list button:hover{background:#eef3fc}
+.plmenu-list button.has span{color:var(--share);font-weight:700}
+.plmenu-list span{font-size:.74rem;color:var(--muted);font-weight:400}
+.plmenu-list .none{padding:11px 12px;font-size:.84rem;color:var(--muted)}
+.plmenu-new{
+  width:100%;border:0;border-top:1px solid var(--line);background:#f7f9fd;
+  font-family:inherit;font-size:.86rem;color:var(--accent);font-weight:600;
+  padding:10px 12px;cursor:pointer;text-align:right;
+}
+.plmenu-new:hover{background:#eef3fc}
+
 /* add a performer to the managed list */
 .addperf{display:flex;gap:8px;margin-bottom:10px;align-items:stretch}
 .addperf input{

@@ -295,7 +295,7 @@ function draw() {
     };
   });
   $('pane').querySelectorAll('[data-q]').forEach(b => {
-    b.onclick = ev => { ev.stopPropagation(); toggleQueue(+b.dataset.q); };
+    b.onclick = ev => { ev.stopPropagation(); toggleQueue(+b.dataset.q, b); };
   });
   $('pane').querySelectorAll('[data-play]').forEach(b => {
     b.onclick = ev => { ev.stopPropagation(); playRec(+b.dataset.play, 0); };
@@ -346,6 +346,14 @@ function audioURL(rel) {
   const enc = rel.split('/').map(encodeURIComponent).join('/');
   const base = (C && C.meta && C.meta.media) || 'audio/';
   return base + enc;
+}
+
+/* Let go of the recording. Assigning '' would leave the element pointing at the
+ * page itself and fire a load error for a failure that never happened; dropping
+ * the attribute and reloading is the way to end playback quietly. */
+function stopAudio() {
+  au.removeAttribute('src');
+  au.load();
 }
 
 /* `quiet` suppresses the button click: moving from track 3 to track 4 of one
@@ -402,7 +410,7 @@ $('dwMin').onclick = () => {
   $('dwMin').textContent = min ? '▢' : '─';   // playback continues either way
 };
 $('dwClose').onclick = () => {
-  au.pause(); au.src = '';
+  au.pause(); stopAudio();
   headIn(false);
   $('deckWin').classList.add('hidden');
   deckLabel(null, 0);
@@ -682,37 +690,66 @@ function plSave() {
 const plById = id => PL.lists.find(l => l.id === id);
 const inQueue = id => PL.lists.some(l => l.items.includes(id));
 
-/* ------------------------------------------------------ adding a recording */
-function toggleQueue(recId) {
-  // already somewhere? the click takes it out again
-  const holder = PL.lists.find(l => l.items.includes(recId));
-  if (holder) {
-    holder.items = holder.items.filter(x => x !== recId);
-    plSave(); draw(); drawPl();
-    return toast(`הוסר מ«${holder.name}»`);
-  }
+/* ------------------------------------------------------ adding a recording
+ * The ♪+ button drops a small menu of the existing lists next to itself.
+ * Picking one adds (or removes) the recording there and then; ＋ opens the
+ * naming dialog. With no lists yet there is nothing to pick, so the dialog
+ * opens straight away.
+ */
+function toggleQueue(recId, anchor) {
   PL.pending = recId;
-  $('plAddErr').classList.add('hidden');
-  $('plNewName').value = '';
-  $('plAddTitle').textContent = PL.lists.length ? 'הוספה לרשימת השמעה'
-                                                : 'יצירת רשימת השמעה';
-  $('plAddList').innerHTML = PL.lists.length
-    ? '<p class="hint">בחר רשימה קיימת:</p>' + PL.lists.map(l =>
-        `<button class="pl-pick" data-pick="${l.id}">${esc(l.name)}
-           <span>${l.items.length} פריטים</span></button>`).join('') +
-      '<p class="hint">או צור חדשה:</p>'
-    : '';
-  $('plAddList').querySelectorAll('[data-pick]').forEach(b => {
+  if (!PL.lists.length) return newListDialog();
+
+  const menu = $('plMenu');
+  $('plMenuList').innerHTML = PL.lists.map(l => {
+    const has = l.items.includes(recId);
+    return `<button data-pick="${l.id}" class="${has ? 'has' : ''}">
+      <b>${esc(l.name)}</b>
+      <span>${has ? '✓ ברשימה'
+              : l.items.length === 0 ? 'ריקה'
+              : l.items.length === 1 ? 'פריט אחד'
+              : l.items.length + ' פריטים'}</span></button>`;
+  }).join('');
+  $('plMenuList').querySelectorAll('[data-pick]').forEach(b => {
     b.onclick = () => {
       const l = plById(+b.dataset.pick);
-      l.items.push(PL.pending);
-      plSave(); draw(); closeModal('plAddModal');
-      toast(`נוסף ל«${l.name}»`);
+      const at = l.items.indexOf(PL.pending);
+      if (at >= 0) { l.items.splice(at, 1); toast(`הוסר מ«${l.name}»`); }
+      else         { l.items.push(PL.pending); toast(`נוסף ל«${l.name}»`); }
+      plSave(); draw(); drawPl(); closeMenu();
     };
   });
+
+  menu.classList.remove('hidden');
+  // place it under the button, kept inside the window on both edges
+  const r = (anchor || document.body).getBoundingClientRect();
+  const mw = menu.offsetWidth, mh = menu.offsetHeight;
+  let left = r.left + scrollX;
+  left = Math.max(8, Math.min(left, scrollX + innerWidth - mw - 8));
+  let top = r.bottom + scrollY + 6;
+  if (r.bottom + mh + 12 > innerHeight) top = r.top + scrollY - mh - 6;
+  menu.style.left = left + 'px';
+  menu.style.top  = Math.max(8, top) + 'px';
+}
+
+function closeMenu() { $('plMenu').classList.add('hidden'); }
+document.addEventListener('click', e => {
+  if (!$('plMenu').classList.contains('hidden') &&
+      !e.target.closest('#plMenu') && !e.target.closest('[data-q]')) closeMenu();
+}, true);
+addEventListener('resize', closeMenu);
+addEventListener('scroll', closeMenu, true);
+
+function newListDialog() {
+  closeMenu();
+  $('plAddErr').classList.add('hidden');
+  $('plNewName').value = '';
+  $('plAddTitle').textContent = 'רשימת השמעה חדשה';
+  $('plAddList').innerHTML = '';
   openModal('plAddModal');
   setTimeout(() => $('plNewName').focus(), 60);
 }
+$('plMenuNew').onclick = newListDialog;
 
 $('plCreate').onclick = () => {
   const name = $('plNewName').value.trim();
@@ -981,19 +1018,20 @@ $('prate').addEventListener('input', e => setRate(e.target.value));
 $('prate').addEventListener('dblclick', () => setRate(1));   // snap back to 1×
 setRate(localStorage.getItem('shira_rate') || 1);
 
-/* The archive lives on an external drive; say so plainly when it is absent. */
+/* A recording that will not play. Where the file sits and why it is unreachable
+ * is ours to fix, not the listener's to read, so the message says only what it
+ * means for them. */
 function clearErr() { document.querySelector('.perr')?.remove(); }
 au.onerror = () => {
+  /* Stopping playback empties the source, and an empty source counts as a load
+   * error by the letter of the spec — nothing failed, so say nothing. */
+  if (!au.getAttribute('src')) return;
   clearErr();
-  const r = byId(C.recordings, cur.rec);
   const box = document.createElement('div');
   box.className = 'perr';
-  box.innerHTML = 'הקובץ אינו נגיש כרגע. ודא שכונן הארכיון מחובר ושהיחידה ' +
-    'מוגשת דרך <code>py -3 serve.py</code>.<br><code>' +
-    esc(C.meta.root + '\\' + (r && r.tr[cur.idx] ? r.tr[cur.idx].f.replace(/\//g, '\\') : '')) +
-    '</code>';
+  box.textContent = 'ההקלטה הזאת לא מתנגנת כרגע. נסו שוב בעוד רגע.';
   document.body.appendChild(box);
-  setTimeout(() => box.remove(), 9000);
+  setTimeout(() => box.remove(), 6000);
 };
 
 /* ---------------------------------------------------------------- events */
@@ -1320,7 +1358,7 @@ $('edDel').onclick = async () => {
   }
   const gone = edRec.ttl;
   closeModal('editModal');
-  if (cur.rec === edRec.id) { au.pause(); au.src = ''; $('deckWin').classList.add('hidden'); }
+  if (cur.rec === edRec.id) { au.pause(); stopAudio(); $('deckWin').classList.add('hidden'); }
   PL.lists.forEach(l => { l.items = l.items.filter(id => id !== edRec.id); });
   plSave();
   await loadCatalog();
