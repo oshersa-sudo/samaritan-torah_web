@@ -133,11 +133,17 @@ def apply(catalog, ovr, include_hidden=False):
         r = dict(rec)
         if r['p'] in moved:
             r['p'] = moved[r['p']]
-        if o.get('title'):
-            r['ttl'] = o['title']
         for f in ('desc', 'year', 'note'):
             if o.get(f):
                 r[f] = o[f]
+        # What the site shows: an explicit title wins, but a description is
+        # just as much a name the admin chose — most recordings are titled
+        # after their file, so a written description should replace that.
+        if o.get('title'):
+            r['ttl'] = o['title']
+        elif o.get('desc'):
+            r['ttl'] = o['desc'].strip().splitlines()[0][:120]
+            r['from_desc'] = 1
         if o.get('hidden'):
             r['hidden'] = 1
         if o.get('performer'):

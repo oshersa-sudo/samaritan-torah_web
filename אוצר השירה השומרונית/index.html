@@ -98,13 +98,22 @@
       <h2>סל המחזור</h2>
       <button class="x" data-close="trashModal">✕</button>
     </div>
+    <div class="subtabs" id="trashTabs">
+      <button class="subtab on" data-ttab="bin">בסל</button>
+      <button class="subtab"    data-ttab="log">יומן מחיקות</button>
+    </div>
     <div class="sheet-b">
-      <p class="hint">הקלטות שהוסרו. הן אינן מופיעות באינדקס ואינן מוגשות,
-        ורק מנהל רואה אותן כאן. אפשר להשיב כל אחת למקומה.</p>
-      <div id="trashBody"></div>
+      <div id="trashBin">
+        <p class="hint">הקלטות שהוסרו. הן אינן מופיעות באינדקס ואינן מוגשות,
+          ורק מנהל רואה אותן כאן. אפשר להשיב כל אחת למקומה, או למחוק אותה
+          מן הענן לצמיתות — קובצי המקור שעל הכונן אינם נמחקים לעולם.</p>
+        <div id="trashBody"></div>
+      </div>
+      <div id="trashLog" class="hidden"></div>
     </div>
     <div class="sheet-f">
       <button class="btn ghost" data-close="trashModal">סגור</button>
+      <button class="btn ghost danger-txt" id="purgeAll">מחק הכול מן הענן</button>
     </div>
   </div>
 </div>

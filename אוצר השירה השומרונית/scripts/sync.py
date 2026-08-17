@@ -77,7 +77,14 @@ def _summarise(old, new):
 
 
 def run(branch='main', message=None):
-    """Rebuild, compare, commit and push. Returns a result dict."""
+    """Rebuild, compare, and publish onto `branch`.
+
+    The commit is assembled with plumbing against a scratch index rather than
+    by committing the checked-out branch: the working tree is usually on some
+    other branch, mid-edit, and may hold unrelated changes. This way publishing
+    never moves the current branch, never touches an unrelated file, and works
+    no matter what state the checkout is in.
+    """
     build = subprocess.run([sys.executable, os.path.join(HERE, 'build_catalog.py')],
                            cwd=UNIT, capture_output=True, text=True,
                            encoding='utf-8', errors='replace')
@@ -87,32 +94,67 @@ def run(branch='main', message=None):
 
     with open(CATALOG, encoding='utf-8') as fh:
         new = json.load(fh)
+
+    fetch = _git('fetch', 'private', branch)
+    if fetch.returncode:
+        return {'ok': False, 'stage': 'push', 'error': fetch.stderr[-600:],
+                'hint': 'אין חיבור לשרת הגיט'}
+    base = _git('rev-parse', 'FETCH_HEAD').stdout.strip()
     diff = _summarise(_live_catalog(branch), new)
 
-    _git('fetch', 'private', branch)
-    paths = [f'{REL}/{p}' for p in PUBLISH]
-    add = _git('add', '--', *paths)
-    if add.returncode:
-        return {'ok': False, 'stage': 'add', 'error': add.stderr[-600:]}
+    idx = os.path.join(REPO, '.git', 'shira-sync-index')
+    env = dict(os.environ, GIT_INDEX_FILE=idx)
 
-    staged = _git('diff', '--cached', '--name-only', '--', f'{REL}/')
-    changed = [l for l in staged.stdout.splitlines() if l.strip()]
-    if not changed:
-        return {'ok': True, 'nothing': True, 'diff': diff, 'files': 0}
+    def g(*a):
+        return subprocess.run(['git', '-c', 'core.quotepath=false', *a], cwd=REPO,
+                              capture_output=True, text=True, encoding='utf-8',
+                              errors='replace', env=env)
+    try:
+        if os.path.exists(idx):
+            os.remove(idx)
+        r = g('read-tree', base)                      # start from what is live
+        if r.returncode:
+            return {'ok': False, 'stage': 'add', 'error': r.stderr[-600:]}
 
-    msg = message or ('אוצר השירה: סנכרון היחידה לאתר החי\n\n'
-                      'נבנה מחדש מן הנתונים המקומיים ונדחף כפי שהוא.\n\n'
-                      'Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>')
-    com = _git('commit', '-m', msg, '--', *paths)
-    if com.returncode and 'nothing to commit' not in (com.stdout + com.stderr):
-        return {'ok': False, 'stage': 'commit',
-                'error': (com.stderr or com.stdout)[-600:]}
+        # stage the unit's published files from the working directory
+        files = []
+        for p in PUBLISH:
+            full = os.path.join(UNIT, p.replace('/', os.sep))
+            if os.path.isdir(full):
+                for dp, dn, fn in os.walk(full):
+                    dn[:] = [d for d in dn if d != '__pycache__']
+                    files += [os.path.join(dp, f) for f in fn]
+            elif os.path.isfile(full):
+                files.append(full)
+        rel = [os.path.relpath(f, REPO).replace(os.sep, '/') for f in files]
+        r = g('update-index', '--add', '--', *rel)
+        if r.returncode:
+            return {'ok': False, 'stage': 'add', 'error': r.stderr[-600:]}
 
-    push = _git('push', 'private', f'HEAD:{branch}')
-    if push.returncode:
-        return {'ok': False, 'stage': 'push', 'error': (push.stderr or push.stdout)[-600:],
-                'hint': 'ייתכן שהענף מאחור — משכו ונסו שוב'}
+        tree = g('write-tree').stdout.strip()
+        base_tree = _git('rev-parse', f'{base}^{{tree}}').stdout.strip()
+        if tree == base_tree:
+            return {'ok': True, 'nothing': True, 'diff': diff, 'files': 0}
 
-    head = _git('rev-parse', '--short', 'HEAD').stdout.strip()
-    return {'ok': True, 'diff': diff, 'files': len(changed),
-            'commit': head, 'branch': branch}
+        changed = g('diff-tree', '-r', '--name-only', base_tree, tree).stdout
+        n_files = len([l for l in changed.splitlines() if l.strip()])
+
+        msg = message or ('אוצר השירה: סנכרון היחידה לאתר החי\n\n'
+                          'נבנה מחדש מן הנתונים המקומיים — מחיקות, עריכות\n'
+                          'ושינויי שמות — ונדחף כפי שהוא.\n\n'
+                          'Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>')
+        r = g('commit-tree', tree, '-p', base, '-m', msg)
+        if r.returncode:
+            return {'ok': False, 'stage': 'commit', 'error': r.stderr[-600:]}
+        commit = r.stdout.strip()
+
+        push = _git('push', 'private', f'{commit}:refs/heads/{branch}')
+        if push.returncode:
+            return {'ok': False, 'stage': 'push',
+                    'error': (push.stderr or push.stdout)[-600:],
+                    'hint': 'ייתכן שמישהו דחף בינתיים — נסו שוב'}
+        return {'ok': True, 'diff': diff, 'files': n_files,
+                'commit': commit[:7], 'branch': branch}
+    finally:
+        if os.path.exists(idx):
+            os.remove(idx)

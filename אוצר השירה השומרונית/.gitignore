@@ -21,3 +21,4 @@ data/additions.json
 data/overrides.json
 data/performers.json
 data/removed.json
+data/purge_log.json
