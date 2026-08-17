@@ -1075,6 +1075,8 @@ function showAdminUI(redraw) {
   $('addBtn').classList.toggle('hidden', !ADMIN.token);
   $('trashBtn').classList.toggle('hidden', !ADMIN.token);   // admins only
   $('perfBtn').classList.toggle('hidden', !ADMIN.token);
+  // publishing exists only in the local copy — the cloud has nowhere to push
+  $('syncBtn').classList.toggle('hidden', !ADMIN.token || !!(C && C.meta.readonly));
   $('adminFlag').classList.toggle('hidden', !ADMIN.token);
   $('adminBtn').classList.toggle('hidden', !ADMIN.enabled || !!ADMIN.token);
   if (ADMIN.token) loadTrash();
@@ -1303,6 +1305,72 @@ $('edPerf').addEventListener('change', e => {
   $('edNewPerfWrap').classList.toggle('hidden', !isNew);
   if (isNew) setTimeout(() => $('edNewPerf').focus(), 50);
 });
+
+/* ------------------------------------------------ סנכרון לאתר החי (מנהל)
+ * The live site serves whatever catalog is committed, so publishing is:
+ * rebuild → see what changed → push. The report says how much moved.
+ */
+$('syncBtn').onclick = () => {
+  $('syncTitle').textContent = 'סנכרון היחידה לאתר החי';
+  $('syncBody').innerHTML = `<p class="hint">
+    היחידה תיבנה מחדש מן הנתונים המקומיים — כולל מחיקות, עריכות ושינויי שמות —
+    ותידחף לאתר החי. האתר יתעדכן תוך כמה דקות.</p>`;
+  $('syncGo').disabled = false;
+  $('syncGo').textContent = 'סנכרן עכשיו';
+  openModal('syncModal');
+};
+
+$('syncGo').onclick = async () => {
+  $('syncGo').disabled = true;
+  $('syncGo').textContent = 'מסנכרן…';
+  $('syncBody').innerHTML = '<p class="hint">בונה את הקטלוג ודוחף…</p>';
+
+  const r = await fetch('api/sync', {
+    method: 'POST', headers: { 'X-Admin-Token': ADMIN.token },
+  }).then(r => r.json()).catch(e => ({ ok: false, error: String(e) }));
+
+  if (!r.ok) {
+    const where = { build: 'בבניית הקטלוג', add: 'בהוספה ל-git',
+                    commit: 'בשמירת השינוי', push: 'בדחיפה לאתר',
+                    run: 'בהרצה' }[r.stage] || '';
+    $('syncTitle').textContent = 'הסנכרון נכשל';
+    $('syncBody').innerHTML =
+      `<p class="err">הסנכרון נעצר ${esc(where)}.</p>` +
+      (r.hint ? `<p class="hint">${esc(r.hint)}</p>` : '') +
+      `<pre class="synclog">${esc(r.error || 'ללא פירוט')}</pre>`;
+    $('syncGo').disabled = false;
+    $('syncGo').textContent = 'נסה שוב';
+    return toast('הסנכרון נכשל', true);
+  }
+
+  if (r.nothing) {
+    $('syncTitle').textContent = 'אין מה לסנכרן';
+    $('syncBody').innerHTML =
+      '<p class="hint">האתר החי כבר מעודכן — לא נמצא שינוי להעלות.</p>';
+    $('syncGo').classList.add('hidden');
+    return toast('האתר כבר מעודכן');
+  }
+
+  const d = r.diff || {};
+  const rows = d.first
+    ? [['הקלטות שפורסמו', d.recordings]]
+    : [['הקלטות שהוסרו', d.removed], ['הקלטות שנוספו', d.added],
+       ['הקלטות שעודכנו', d.edited],
+       ['הקלטות באתר', `${d.recordings_before} ← ${d.recordings_after}`],
+       ['מבצעים', `${d.performers_before} ← ${d.performers_after}`]];
+  const total = d.first ? d.recordings : (d.removed + d.added + d.edited);
+
+  $('syncTitle').textContent = 'הסנכרון הושלם';
+  $('syncBody').innerHTML =
+    `<p class="syncbig">${total} עדכונים נשלחו לאתר</p>` +
+    '<table class="synctab">' + rows.map(([k, v]) =>
+      `<tr><td>${esc(k)}</td><td>${esc(String(v))}</td></tr>`).join('') + '</table>' +
+    `<p class="hint">${r.files} קבצים נדחפו · גרסה ${esc(r.commit || '')} ·
+      האתר החי יתעדכן תוך כמה דקות.</p>`;
+  $('syncGo').classList.add('hidden');
+  toast(`הסנכרון הושלם — ${total} עדכונים`);
+  await loadCatalog();
+};
 
 /* ------------------------------------------- ניהול רשימת המבצעים (מנהל) */
 $('perfBtn').onclick = () => { drawPerfList(); openModal('perfListModal'); };
