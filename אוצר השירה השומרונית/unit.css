@@ -515,11 +515,7 @@ body{
 .track .n{color:var(--muted);font-variant-numeric:tabular-nums;min-width:2.1em}
 .track .nm{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .track .d{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.8rem}
-.path{
-  padding:7px 15px 9px;font-size:.73rem;color:var(--muted);
-  border-top:1px dashed var(--line);direction:ltr;text-align:left;
-  word-break:break-all;
-}
+
 
 /* ------------------------------------------------- VU lamps + mixer */
 .vu{
@@ -642,7 +638,6 @@ body{
   .row-t .t{white-space:normal}
   .row-d{margin-inline-start:auto}
   .qadd,.edit-btn{font-size:.72rem;padding:3px 7px}
-  .path{font-size:.68rem}
 
   /* sheets take the whole screen rather than floating in it */
   .modal{padding:0;place-items:stretch}
