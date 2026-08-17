@@ -410,18 +410,35 @@ $('dwMin').onclick = () => {
   const min = $('deckWin').classList.toggle('min');
   $('dwMin').textContent = min ? '▢' : '─';   // playback continues either way
 };
+/* Closing the player ejects the cassette rather than just blinking the window
+ * away: the lid swings up, and the cassette tips back on its rails and rises
+ * out of the well — held out, the way a deck offers it to be taken. */
 $('dwClose').onclick = () => {
-  au.pause(); stopAudio();
+  au.pause(); stopAudio(); spoolStop(false);
   headIn(false);
-  $('deckWin').classList.add('hidden');
-  deckLabel(null, 0);
+  syncBtn();
+  const win = $('deckWin');
+  if (win.classList.contains('ejecting')) return;
+  win.classList.add('ejecting');
+  setTimeout(() => {
+    win.classList.remove('ejecting');
+    win.classList.add('hidden');
+    deckLabel(null, 0);
+  }, 640);
 };
 
 /* ---------------------------------------------------- the tape head
  * The head assembly is parked 96 units below the slot in the artwork.
- * Play drives it up into the cassette; stop parks it again. */
+ * Play drives it up into the cassette; stop parks it again.
+ *
+ * The straight run of tape reacts: with the head down the run lies flat, and
+ * when the head comes up against it the tape is pushed in and rides over it
+ * in a shallow wave, the way it does when the pad presses it to the gap.
+ */
 function headIn(on) {
   $('head').style.transform = on ? 'translate(0px,0px)' : 'translate(0px,96px)';
+  headEngaged = on;
+  paintTape();
 }
 
 /* --------------------------------------------------- play / pause / stop */
@@ -466,15 +483,71 @@ $('pstop').onclick = () => {
   }, 40);
 };
 
-/* nudge buttons */
-$('prew').onclick = () => { if (au.src) au.currentTime = Math.max(0, au.currentTime - 15); };
-$('pff').onclick  = () => { if (au.src && au.duration)
-                              au.currentTime = Math.min(au.duration, au.currentTime + 15); };
+/* ------------------------------------------------------ rewind / forward
+ * Held down, these spool the tape the way the mechanical keys do: the head
+ * lifts off, so nothing is heard, and the tape runs at twice speed for as
+ * long as the key is down. A press first gives the mechanical clack of the
+ * key itself, and then the whirr of the spool — the same whirr both ways.
+ * Releasing the key drops the tape back where it stands.
+ */
+let spooling = 0;
+const SPOOL_RATE = 2;                    // twice the playing speed
+
+function spoolStart(dir) {
+  if (!au.src || spooling) return;
+  const wasPlaying = !au.paused;
+  au.pause();
+  headIn(false);                         // off the tape: a spooling deck is mute
+  syncBtn();
+  sfx('stop');                           // the key goes down…
+  setTimeout(() => sfx('spool'), 130);   // …then the spool picks up
+  const t0 = Date.now(), from = au.currentTime;
+  spooling = setInterval(() => {
+    const moved = ((Date.now() - t0) / 1000) * SPOOL_RATE * dir;
+    const to = from + moved;
+    const end = au.duration || 0;
+    au.currentTime = Math.min(end || to, Math.max(0, to));
+    deckPaint();
+    if (au.currentTime <= 0 || (end && au.currentTime >= end)) spoolStop(wasPlaying);
+  }, 40);
+  $('prew').dataset.resume = $('pff').dataset.resume = wasPlaying ? '1' : '';
+}
+
+function spoolStop(resume) {
+  if (!spooling) return;
+  clearInterval(spooling);
+  spooling = 0;
+  sfxStop('spool');
+  if (resume === undefined) resume = $('prew').dataset.resume === '1';
+  if (resume) { headIn(true); au.play().catch(() => {}); }
+  syncBtn();
+  deckPaint();
+}
+
+for (const [id, dir] of [['prew', -1], ['pff', 1]]) {
+  const b = $(id);
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    spoolStart(dir);
+    // capture so a finger sliding off the key still ends the spool on release;
+    // it is a convenience, and must never be what stops the key working
+    try { b.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(
+    ev => b.addEventListener(ev, () => spoolStop()));
+  // keyboard: the key repeats while held, and stops on release
+  b.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); spoolStart(dir); }
+  });
+  b.addEventListener('keyup', () => spoolStop());
+}
 
 function syncBtn() {
   $('icPlay').classList.toggle('hidden', !au.paused);
   $('icPause').classList.toggle('hidden', au.paused);
   $('pbtn').title = au.paused ? 'נגן' : 'השהה';
+  // the key stays latched down while the tape runs, as it does on the machine
+  $('pbtn').classList.toggle('down', !au.paused);
 }
 au.addEventListener('play',  () => { headIn(true); syncBtn(); keepAwake(true); });
 au.addEventListener('pause', () => { syncBtn(); keepAwake(false); });
@@ -908,6 +981,88 @@ $('pseek').oninput = () => {
 const DEG_PER_SEC = 132;                  // a readable spin at 1× speed
 let deckLast = null;
 
+/* The threading of the tape, the way a cassette is actually laced.
+ *
+ * It runs right to left. The tape leaves the right-hand side of the right
+ * pack on a steep diagonal, comes down to the right of the guide at the
+ * corner of the shell, wraps it, runs straight across the head opening to
+ * the left guide, wraps that one on its left, and climbs steeply back to the
+ * left pack, which fills as the right one empties. Every one of those wraps
+ * turns its guide the same way — to the right — because the tape only ever
+ * passes on the outside of them.
+ *
+ * The two diagonals meet their packs on the exact tangent point, so they
+ * read as one length of tape unwinding from the one and winding onto the
+ * other rather than a line pasted between them. They are recomputed as the
+ * packs change size.
+ *
+ * The tape is painted twice. #tapeBand and #tapeRun are the dim pass: that
+ * is the tape as it shows through the cassette's opaque shell. #tapeLit
+ * repeats the run at full strength but clipped to the head opening, so the
+ * only place the tape is plainly seen is the window the head reaches
+ * through — and it is drawn after the head, so it passes in front of it.
+ *
+ * Pack centres are fixed at (360,330) and (640,330); only the radii move.
+ */
+const TAPE_LX = 360, TAPE_RX = 640, TAPE_Y = 330;
+const COG_LX  = 196, COG_RX  = 804, COG_Y  = 512;
+const COG_R   = 28;                  // the radius the tape rides at on a guide
+const RUN_Y   = COG_Y + COG_R;       // so the straight run passes below them
+/* every part of the head assembly that takes the tape, right to left: the
+   right roller, the head itself, the left roller. Their x spans match the
+   artwork's rects exactly, so the tape is pressed in under each of them. */
+const PRESS   = [[630, 664], [470, 530], [336, 370]];
+const PRESS_Y = RUN_Y - 10;
+
+let headEngaged = false;
+let packL = 40, packR = 88;          // the two tape packs, right one full at rest
+
+/* The shared outward normal of a pack and its guide: the direction in which
+ * both are touched by the tape that runs taut between them. */
+function outerNormal(px, py, r, cx, cy, s) {
+  const dx = cx - px, dy = cy - py;
+  const d  = Math.hypot(dx, dy) || 1;
+  const ux = dx / d, uy = dy / d;
+  const c  = (r - COG_R) / d;
+  const k  = Math.sqrt(Math.max(0, 1 - c * c));
+  return [c * ux + s * k * -uy, c * uy + s * k * ux];
+}
+
+function paintTape() {
+  const [nlx, nly] = outerNormal(TAPE_LX, TAPE_Y, packL, COG_LX, COG_Y,  1);
+  const [nrx, nry] = outerNormal(TAPE_RX, TAPE_Y, packR, COG_RX, COG_Y, -1);
+  const f = n => n.toFixed(1);
+
+  // where the diagonals leave the packs, and where they reach the guides
+  const plx = TAPE_LX + packL * nlx, ply = TAPE_Y + packL * nly;
+  const prx = TAPE_RX + packR * nrx, pry = TAPE_Y + packR * nry;
+  const qlx = COG_LX  + COG_R * nlx, qly = COG_Y  + COG_R * nly;
+  const qrx = COG_RX  + COG_R * nrx, qry = COG_Y  + COG_R * nry;
+
+  $('tapeBand').setAttribute('d',
+    `M${f(prx)} ${f(pry)}L${f(qrx)} ${f(qry)}` +
+    `M${f(plx)} ${f(ply)}L${f(qlx)} ${f(qly)}`);
+
+  // With the head assembly parked the run lies taut and flat. Driven up, every
+  // one of its parts — the two rollers and the head itself — takes the tape
+  // and presses it in, so the run leaves the flat and rides over each of them
+  // in turn. The tape is painted before the assembly, so it passes under them.
+  const mid = headEngaged
+    ? PRESS.map(([a, b]) =>
+        `C${b + 17} ${RUN_Y} ${b + 8} ${PRESS_Y + 1} ${b} ${PRESS_Y}` +
+        `L${a} ${PRESS_Y}` +
+        `C${a - 8} ${PRESS_Y + 1} ${a - 17} ${RUN_Y} ${a - 30} ${RUN_Y}`
+      ).join('') + `L${COG_LX} ${RUN_Y}`
+    : `L${COG_LX} ${RUN_Y}`;
+
+  // sweep 1: each wrap turns the guide clockwise, the way the tape travels
+  const run = `M${f(qrx)} ${f(qry)}A${COG_R} ${COG_R} 0 0 1 ${COG_RX} ${RUN_Y}` +
+              mid +
+              `A${COG_R} ${COG_R} 0 0 1 ${f(qlx)} ${f(qly)}`;
+  $('tapeRun').setAttribute('d', run);
+  $('tapeLit').setAttribute('d', run);
+}
+
 function deckPaint() {
   const t = au.currentTime || 0;
   if (t === deckLast) return;             // paused: nothing to redraw
@@ -915,13 +1070,20 @@ function deckPaint() {
   const a = t * DEG_PER_SEC;              // + winds forward, − winds back
   $('reelL').style.transform = `rotate(${a}deg)`;
   $('reelR').style.transform = `rotate(${a}deg)`;
-  // The tape runs the same way the seek bar does, left to right: the left reel
-  // starts full and empties, the right one fills.
+  // the drive cogs turn with the tape, both the same way as the reels
+  $('cogL').style.transform = `rotate(${a}deg)`;
+  $('cogR').style.transform = `rotate(${a}deg)`;
+  // The tape runs right to left, the way it is read: the right reel starts
+  // full and pays out, the left one takes up and fills.
   const p = au.duration ? Math.min(1, Math.max(0, t / au.duration)) : 0;
-  $('tapeL').setAttribute('r', (88 - 48 * p).toFixed(1));
-  $('tapeR').setAttribute('r', (40 + 48 * p).toFixed(1));
+  packR = 88 - 48 * p;
+  packL = 40 + 48 * p;
+  $('tapeL').setAttribute('r', packL.toFixed(1));
+  $('tapeR').setAttribute('r', packR.toFixed(1));
+  paintTape();
   $('cTime').textContent = `${dur(t)} / ${dur(au.duration || 0)}`;
 }
+paintTape();                              // laced before anything plays, too
 
 /* Most track names in the archive are bare numbering ("AudioTrack 04"); those
  * say nothing, so the position within the recording is shown instead. */
@@ -962,8 +1124,9 @@ requestAnimationFrame(deckTick);
 const SOUNDS = {
   play:    'sounds/play.mp3',    // לחיצה על PLAY
   stop:    'sounds/play.mp3',    // אותו כפתור — אותה נקישה מכנית
-  rewind:  'sounds/rewind.mp3',  // הרצה לאחור
-  forward: 'sounds/forward.mp3', // הרצה קדימה
+  rewind:  'sounds/rewind.mp3',  // גלגול הסרט לאחור בעצירה
+  // הגלגול נשמע אותו הדבר לשני הכיוונים, כמו במנוע אחד שמושך את שני הצדדים
+  spool:   'sounds/rewind.mp3',  // הרצה קדימה ואחורה בהחזקת הכפתור
   pause:   '',                   // ללא צליל
 };
 const SFX = {};
@@ -1009,12 +1172,48 @@ function setVol(v, muted) {
   $('pvolN').textContent = Math.round(v * 100) + '%';
   $('pmute').textContent = au.muted || v === 0 ? '🔇' : v < 0.5 ? '🔉' : '🔊';
   $('deckWin').classList.toggle('muted', au.muted || v === 0);
+  // the knob keeps its place while muted, so releasing mute restores the level
+  if (+$('pvol').value !== Math.round(v * 100)) $('pvol').value = Math.round(v * 100);
   localStorage.setItem('shira_vol', v);
   localStorage.setItem('shira_muted', au.muted ? '1' : '');
 }
-$('pvup').onclick  = () => setVol(au.volume + 0.1, false);
-$('pvdn').onclick  = () => setVol(au.volume - 0.1);
+
+/* The fader. Sliding the knob sets the level; pressing it where it stands,
+ * without sliding, is the mute — so the one control does both without a
+ * separate button, as on the machines this is modelled on. */
+const volSlider = $('pvol');
+let volPress = null;
+
+volSlider.addEventListener('pointerdown', e => {
+  const r = volSlider.getBoundingClientRect();
+  const THUMB = 13;                       // matches the knob width in the CSS
+  const frac = (+volSlider.value - +volSlider.min) /
+               ((+volSlider.max - +volSlider.min) || 1);
+  const knobX = r.left + THUMB / 2 + frac * (r.width - THUMB);
+  volPress = { x: e.clientX, v: +volSlider.value, moved: false,
+               onKnob: Math.abs(e.clientX - knobX) <= THUMB / 2 + 3 };
+});
+volSlider.addEventListener('pointermove', e => {
+  if (volPress && Math.abs(e.clientX - volPress.x) > 3) volPress.moved = true;
+});
+volSlider.addEventListener('pointerup', () => {
+  if (volPress && volPress.onKnob && !volPress.moved) {
+    volSlider.value = volPress.v;         // a press is not a move
+    setVol(volPress.v / 100, !au.muted);
+  }
+  volPress = null;
+});
+volSlider.addEventListener('pointercancel', () => { volPress = null; });
+volSlider.addEventListener('input', () => {
+  // hold the level while the knob is merely being pressed
+  if (volPress && volPress.onKnob && !volPress.moved) return;
+  setVol(volSlider.value / 100, false);
+});
+
 $('pmute').onclick = () => setVol(au.volume, !au.muted);
+$('pmute').onkeydown = e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('pmute').onclick(); }
+};
 setVol(parseFloat(localStorage.getItem('shira_vol') ?? '1'),
        localStorage.getItem('shira_muted') === '1');
 $('prate').addEventListener('input', e => setRate(e.target.value));

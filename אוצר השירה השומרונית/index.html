@@ -372,6 +372,8 @@
 <!-- חלון נגן הקלטות: נפתח בלחיצה על הקלטה, וניתן למזער אותו -->
 <section class="deckwin hidden" id="deckWin" aria-label="נגן הקלטות">
   <header class="dw-bar" id="dwBar">
+    <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר -->
+    <span class="dw-handle" aria-hidden="true"><i></i></span>
     <span class="dw-name" id="dwName">נגן הקלטות</span>
     <button class="dw-btn" id="dwMin" title="מזער">─</button>
     <button class="dw-btn" id="dwClose" title="סגור">✕</button>
@@ -379,7 +381,10 @@
   <div class="dw-body">
     <!-- לוח המכשיר: רמקול מנוקב משמאל, וחלון הקלטת מימין -->
     <div class="deck-face">
-      <div class="grille" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="grille" aria-hidden="true"></div>
+      <!-- תא הקלטת: המסילות שעליהן היא מונחת, ונחשפות כשהיא נפלטת -->
+      <div class="well">
+      <span class="rails" aria-hidden="true"></span>
 <aside class="deck" id="deck">
   <svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg" role="img"
        aria-label="נגן קלטות">
@@ -398,8 +403,22 @@
       <radialGradient id="cTape" cx="0.4" cy="0.35" r="0.8">
         <stop offset="0" stop-color="#6b4a2f"/><stop offset="1" stop-color="#2e1e12"/>
       </radialGradient>
+      <!-- הסרט המתוח בין שני הפקעים, בגוון הסרט שסביבם -->
+      <linearGradient id="cBand" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#7a563a"/><stop offset=".5" stop-color="#503320"/>
+        <stop offset="1" stop-color="#2b1c11"/>
+      </linearGradient>
       <clipPath id="cLabelClip"><rect x="70" y="42" width="860" height="352" rx="10"/></clipPath>
       <clipPath id="cSlotClip"><rect x="300" y="470" width="400" height="96" rx="10"/></clipPath>
+      <!-- קו הטרפז: פתוח בתחתיתו, ושתי צלעותיו נמתחות עד לקצה הקלטת.
+           מצויר פעמיים — הקו עצמו בגוון הקווים הבהירים של הקלטת, וצל דק
+           ממש מתחתיו — וכך הוא נקרא כצלע מובלטת ולא כקו מצויר. -->
+      <path id="cTrap" d="M206.3 630 L288 460 L712 460 L793.7 630"/>
+      <!-- הסרט אינו נראה מבעד למדבקה: מותר לו רק מתחתיה, ובחלון הסלילים -->
+      <clipPath id="cNoLabel">
+        <rect x="8" y="394" width="984" height="238"/>
+        <rect x="255" y="240" width="490" height="180" rx="16"/>
+      </clipPath>
     </defs>
 
     <rect x="8" y="8" width="984" height="624" rx="26" fill="url(#cShell)"/>
@@ -413,16 +432,23 @@
       <rect x="70" y="352" width="860" height="42" fill="#e6dcc2"/>
       <line x1="110" y1="196" x2="890" y2="196" stroke="#a99b7f" stroke-width="1.5"/>
       <line x1="110" y1="238" x2="890" y2="238" stroke="#a99b7f" stroke-width="1.5"/>
-      <text x="898" y="66" text-anchor="end" class="che" font-size="19" fill="#f6efdd" id="cRec">אוצר השירה השומרונית</text>
-      <text x="102" y="66" class="cmono" font-size="18" letter-spacing="3" fill="#f6efdd" id="cParts">C-90</text>
-      <text x="898" y="286" text-anchor="end" class="che" font-size="19" fill="#7d7263" id="cEvent">—</text>
+      <!-- הקלטת צרה יותר עכשיו, לצד הרמקול, ולכן הכתב הקטן הוגדל
+           כדי שייקרא באותו הגודל שנקרא בו קודם -->
+      <text x="898" y="66" text-anchor="end" class="che" font-size="23" fill="#f6efdd" id="cRec">אוצר השירה השומרונית</text>
+      <text x="102" y="66" class="cmono" font-size="21" letter-spacing="3" fill="#f6efdd" id="cParts">C-90</text>
+      <text x="898" y="288" text-anchor="end" class="che" font-size="24" fill="#7d7263" id="cEvent">—</text>
     </g>
     <rect x="70" y="42" width="860" height="352" rx="10" fill="none" stroke="#0f0d0b" stroke-width="2" opacity=".5"/>
 
     <g>
       <rect x="255" y="240" width="490" height="180" rx="16" fill="url(#cWin)"/>
-      <circle id="tapeL" cx="360" cy="330" r="88" fill="url(#cTape)"/>
-      <circle id="tapeR" cx="640" cy="330" r="40" fill="url(#cTape)"/>
+      <!-- הסרט היורד מן הפקעים אל המובילים שבתחתית. נצמד לכל פקע במשיק,
+           ולכן נראה כמתפרק מן האחד ונאסף אל האחר. מחושב ב-deckPaint. -->
+      <path id="tapeBand" class="tape ghost" clip-path="url(#cNoLabel)"
+            d="M717.8 288.9L828.8 498.9M329.0 304.7L174.3 494.3"/>
+      <!-- במנוחה הפקע הימני מלא והשמאלי ריק: הסרט נע מימין לשמאל -->
+      <circle id="tapeL" cx="360" cy="330" r="40" fill="url(#cTape)"/>
+      <circle id="tapeR" cx="640" cy="330" r="88" fill="url(#cTape)"/>
       <g id="reelL" class="reel" style="transform-origin:360px 330px">
         <circle cx="360" cy="330" r="34" fill="#ded6cb"/>
         <circle cx="360" cy="330" r="17" fill="#2a2521"/>
@@ -441,11 +467,76 @@
       </g>
       <rect x="255" y="240" width="490" height="180" rx="16" fill="none" stroke="#0a0908" stroke-width="3"/>
       <path d="M271 250 L400 250 L300 300 Z" fill="#fff" opacity=".07"/>
+      <!-- החלונית שבין הסלילים, בדיוק במרכז שביניהם. היא רחבה דיה כדי
+           שקצות הפקעים ייכנסו לתוכה, ולכן הפקע המתמלא נראה גדל מאחוריה. -->
+      <g>
+        <rect x="414" y="304" width="172" height="52" rx="5" fill="#fff" opacity=".07"/>
+        <rect x="414" y="304" width="172" height="52" rx="5" fill="none"
+              stroke="#d5cdc0" stroke-width="1.6" opacity=".34"/>
+        <path d="M420 352 L462 308 L476 308 L434 352 Z" fill="#fff" opacity=".07"/>
+        <!-- שלושה תבליטים אנכיים על הפלסטיק השקוף, במרווח שווה: קו מואר
+             וצל דק לצידו, כמו הצלעות המוטבעות בגוף הקלטת -->
+        <g stroke-linecap="round">
+          <g stroke="#0a0908" stroke-width="2.2" opacity=".32">
+            <path d="M458.6 314 V346"/><path d="M501.6 314 V346"/><path d="M544.6 314 V346"/>
+          </g>
+          <g stroke="#e8e1d4" stroke-width="1.8" opacity=".3">
+            <path d="M457 314 V346"/><path d="M500 314 V346"/><path d="M543 314 V346"/>
+          </g>
+        </g>
+      </g>
     </g>
 
     <rect x="300" y="470" width="400" height="96" rx="10" fill="#15120f"/>
+    <!-- ההטבעה שסביב הפתח שאליו יורד מנגנון המקלט: טרפז שצלעותיו יורדות
+         באלכסון עד לקצה התחתון של הקלטת. אין כאן קו מצויר אלא צלע מובלטת
+         מגוף הקלטת: צל נופל מתחתיה, גוף בגוון הפלסטיק, ורכס מואר מעליה. -->
+    <g fill="none" stroke-linejoin="round" class="ridge">
+      <use href="#cTrap" transform="translate(0 2)"
+           stroke="#0d0b09" stroke-width="3" opacity=".9"/>
+      <use href="#cTrap" stroke="#6d655b" stroke-width="2" opacity=".5"/>
+    </g>
+    <!-- החורים הנקובים בתוך הטרפז, משני צידי הבורג המרכזי -->
+    <g>
+      <circle cx="318" cy="588" r="13" fill="#0d0b0a"/>
+      <circle cx="682" cy="588" r="13" fill="#0d0b0a"/>
+      <circle cx="318" cy="588" r="13" fill="none" stroke="#7d7468"
+              stroke-width="1.4" opacity=".45"/>
+      <circle cx="682" cy="588" r="13" fill="none" stroke="#7d7468"
+              stroke-width="1.4" opacity=".45"/>
+    </g>
+    <g fill="none" stroke="#0d0b09" stroke-width="2">
+      <rect x="330" y="486" width="46" height="64" rx="6"/>
+      <rect x="624" y="486" width="46" height="64" rx="6"/>
+    </g>
+    <!-- החורים הקטנים שבתחתית הקלטת, ובתוכם גלגלי שיניים המסתובבים עם הסרט.
+         השיניים נוצרות מקו מקווקו סביב מעגל, ולכן הן מרווחות שווה בשווה. -->
+    <g fill="#0f0d0b"><circle cx="196" cy="512" r="26"/><circle cx="804" cy="512" r="26"/></g>
+    <g class="cog" id="cogL" style="transform-origin:196px 512px">
+      <circle cx="196" cy="512" r="16" fill="none" stroke="#7d756a" stroke-width="7"
+              stroke-dasharray="5 5.05"/>
+      <circle cx="196" cy="512" r="13.5" fill="#9a9186"/>
+      <circle cx="196" cy="512" r="6" fill="#2a2521"/>
+      <rect x="194.6" y="498" width="2.8" height="9" rx="1.4" fill="#3f3a34"/>
+    </g>
+    <g class="cog" id="cogR" style="transform-origin:804px 512px">
+      <circle cx="804" cy="512" r="16" fill="none" stroke="#7d756a" stroke-width="7"
+              stroke-dasharray="5 5.05"/>
+      <circle cx="804" cy="512" r="13.5" fill="#9a9186"/>
+      <circle cx="804" cy="512" r="6" fill="#2a2521"/>
+      <rect x="802.6" y="498" width="2.8" height="9" rx="1.4" fill="#3f3a34"/>
+    </g>
+    <!-- הסרט מקיף את שני הגלגלים ורץ ביניהם מול ראש ההקלטה. מצויר פעמיים:
+         פעם עמומה — כך הוא נראה מבעד לפלסטיק האטום של הקלטת — ופעם
+         במלוא עוצמתו, חתוך אל תוך הפתח שבו הראש נכנס ולוחץ עליו. -->
+    <path id="tapeRun" class="tape ghost"
+          d="M828.8 498.9A28 28 0 0 1 804 540L196 540A28 28 0 0 1 174.3 494.3"/>
+    <path id="tapeLit" class="tape lit" clip-path="url(#cSlotClip)"
+          d="M828.8 498.9A28 28 0 0 1 804 540L196 540A28 28 0 0 1 174.3 494.3"/>
+
     <!-- ראש הטייפ והגלגלות. במנוחה הם מוסטים 96 פיקסלים מטה ונחתכים מחוץ
-         לחריץ; בלחיצה על נגינה ה-JS מחזיר את ההיסט לאפס והם נכנסים פנימה. -->
+         לחריץ; בלחיצה על נגינה ה-JS מחזיר את ההיסט לאפס והם נכנסים פנימה.
+         מצוירים אחרי הסרט, ולכן הסרט עובר תחתיהם והם לוחצים עליו וקוראים. -->
     <g clip-path="url(#cSlotClip)"><g id="head" transform="translate(0 96)">
       <g fill="#8e8a84">
         <rect x="470" y="486" width="60" height="66" rx="5"/>
@@ -460,11 +551,7 @@
         <rect x="638" y="492" width="8" height="54" rx="4" fill="#5b554d" opacity=".5"/>
       </g>
     </g></g>
-    <g fill="none" stroke="#0d0b09" stroke-width="2">
-      <rect x="330" y="486" width="46" height="64" rx="6"/>
-      <rect x="624" y="486" width="46" height="64" rx="6"/>
-    </g>
-    <g fill="#0f0d0b"><circle cx="222" cy="512" r="26"/><circle cx="778" cy="512" r="26"/></g>
+
     <g fill="#4b443d">
       <circle cx="60" cy="60" r="11"/><circle cx="940" cy="60" r="11"/>
       <circle cx="60" cy="580" r="11"/><circle cx="940" cy="580" r="11"/>
@@ -473,16 +560,26 @@
 
     <!-- פרטי ההקלטה, נכתבים על התווית -->
     <g clip-path="url(#cLabelClip)">
-      <text x="110" y="150" class="che" font-size="23" fill="#8a7f6b">רצועה</text>
-      <text x="890" y="152" text-anchor="end" class="chand" font-size="44" fill="#2f2a24" id="cTitle">—</text>
-      <text x="110" y="196" class="che" font-size="23" fill="#8a7f6b">מבצע</text>
-      <text x="890" y="198" text-anchor="end" class="chand" font-size="38" fill="#4a4034" id="cPerf">בחר הקלטה כדי לנגן</text>
-      <text x="890" y="236" text-anchor="end" class="chand" font-size="26" fill="#6b6153" id="cLine2"></text>
-      <text x="110" y="382" class="cmono" font-size="22" font-weight="700" letter-spacing="3" fill="#b8452e" id="cRate">1.0×</text>
-      <text x="890" y="382" text-anchor="end" class="cmono" font-size="20" letter-spacing="2" fill="#7d7263" id="cTime">0:00 / 0:00</text>
+      <text x="110" y="150" class="che" font-size="26" fill="#8a7f6b">רצועה</text>
+      <text x="890" y="152" text-anchor="end" class="chand" font-size="46" fill="#2f2a24" id="cTitle">—</text>
+      <text x="110" y="196" class="che" font-size="26" fill="#8a7f6b">מבצע</text>
+      <text x="890" y="198" text-anchor="end" class="chand" font-size="40" fill="#4a4034" id="cPerf">בחר הקלטה כדי לנגן</text>
+      <text x="890" y="237" text-anchor="end" class="chand" font-size="30" fill="#6b6153" id="cLine2"></text>
+      <!-- שם היצרן מוטבע על המדבקה, משמאל לחלון הסלילים, כמו בקלטת שבתמונה.
+           העותק הבהיר שמתחת נותן את תחושת ההטבעה בנייר. -->
+      <g class="cbrand">
+        <text x="171" y="299.5" text-anchor="middle" font-size="54" font-weight="800"
+              letter-spacing="1" fill="#f6efdd" opacity=".85">TDK</text>
+        <text x="171" y="298" text-anchor="middle" font-size="54" font-weight="800"
+              letter-spacing="1" fill="#c0392b">TDK</text>
+        <rect x="104" y="311" width="134" height="4" rx="2" fill="#c0392b" opacity=".8"/>
+      </g>
+      <text x="110" y="382" class="cmono" font-size="26" font-weight="700" letter-spacing="3" fill="#b8452e" id="cRate">1.0×</text>
+      <text x="890" y="382" text-anchor="end" class="cmono" font-size="24" letter-spacing="2" fill="#7d7263" id="cTime">0:00 / 0:00</text>
     </g>
   </svg>
 </aside>
+      </div>
     </div>
 
     <!-- מנורות חיווי כמו במכשירים ישנים, נדלקות לפי עוצמת ההשמעה -->
@@ -490,8 +587,68 @@
 
     <div class="dw-ctl" id="player">
       <div class="pmeta">
-        <div class="ptitle" id="ptitle"></div>
-        <div class="psub"   id="psub"></div>
+        <div class="pmeta-txt">
+          <div class="ptitle" id="ptitle"></div>
+          <div class="psub"   id="psub"></div>
+        </div>
+        <!-- לוח המיקסר, מצויר ולא סמליל של המערכת, כדי שייראה אותו הדבר בכל
+             מכשיר. לחיצה עליו פותחת ומקפלת את המיקסר. -->
+        <button class="mix-toggle" id="mixToggle" title="פתיחת המיקסר"
+                aria-label="מיקסר">
+          <!-- לוח ערוצים: ידיות סיבוב ענבריות למעלה, ומחווני החלקה
+               אנכיים עם ידיות שנהב, בצבעי המכשיר עצמו -->
+          <svg class="mix-ico" viewBox="0 0 100 62" aria-hidden="true">
+            <rect x="0" y="0" width="100" height="62" rx="5" class="mx-case"/>
+            <rect x="3" y="3" width="94" height="56" rx="3" class="mx-face"/>
+            <g class="mx-strip">
+              <rect x="6"    y="6" width="9.6" height="53" rx="1"/>
+              <rect x="26.4" y="6" width="9.6" height="53" rx="1"/>
+              <rect x="46.8" y="6" width="9.6" height="53" rx="1"/>
+              <rect x="67.2" y="6" width="9.6" height="53" rx="1"/>
+            </g>
+            <g class="mx-knob">
+              <circle cx="10.8" cy="12" r="3"/><circle cx="21"   cy="12" r="3"/>
+              <circle cx="31.2" cy="12" r="3"/><circle cx="41.4" cy="12" r="3"/>
+              <circle cx="51.6" cy="12" r="3"/><circle cx="61.8" cy="12" r="3"/>
+              <circle cx="72"   cy="12" r="3"/><circle cx="82.2" cy="12" r="3"/>
+            </g>
+            <g class="mx-sw">
+              <rect x="8.3"  y="18" width="5" height="2.6" rx=".6"/>
+              <rect x="18.5" y="18" width="5" height="2.6" rx=".6"/>
+              <rect x="28.7" y="18" width="5" height="2.6" rx=".6"/>
+              <rect x="38.9" y="18" width="5" height="2.6" rx=".6"/>
+              <rect x="49.1" y="18" width="5" height="2.6" rx=".6"/>
+              <rect x="59.3" y="18" width="5" height="2.6" rx=".6"/>
+              <rect x="69.5" y="18" width="5" height="2.6" rx=".6"/>
+              <rect x="79.7" y="18" width="5" height="2.6" rx=".6"/>
+            </g>
+            <g class="mx-slot">
+              <rect x="10"   y="24" width="1.6" height="29" rx=".8"/>
+              <rect x="20.2" y="24" width="1.6" height="29" rx=".8"/>
+              <rect x="30.4" y="24" width="1.6" height="29" rx=".8"/>
+              <rect x="40.6" y="24" width="1.6" height="29" rx=".8"/>
+              <rect x="50.8" y="24" width="1.6" height="29" rx=".8"/>
+              <rect x="61"   y="24" width="1.6" height="29" rx=".8"/>
+              <rect x="71.2" y="24" width="1.6" height="29" rx=".8"/>
+              <rect x="81.4" y="24" width="1.6" height="29" rx=".8"/>
+            </g>
+            <g class="mx-cap">
+              <rect x="6.9"  y="35"   width="7.8" height="4.6" rx="1.2"/>
+              <rect x="17.1" y="41"   width="7.8" height="4.6" rx="1.2"/>
+              <rect x="27.3" y="31.5" width="7.8" height="4.6" rx="1.2"/>
+              <rect x="37.5" y="44"   width="7.8" height="4.6" rx="1.2"/>
+              <rect x="47.7" y="28"   width="7.8" height="4.6" rx="1.2"/>
+              <rect x="57.9" y="38"   width="7.8" height="4.6" rx="1.2"/>
+              <rect x="68.1" y="33"   width="7.8" height="4.6" rx="1.2"/>
+              <rect x="78.3" y="42"   width="7.8" height="4.6" rx="1.2"/>
+            </g>
+            <!-- מקטע הקבוצות, מופרד בקו כמו בלוח אמיתי -->
+            <rect x="88.4" y="6" width=".9" height="53" class="mx-div"/>
+            <g class="mx-slot"><rect x="92.4" y="24" width="1.6" height="29" rx=".8"/></g>
+            <g class="mx-cap"><rect x="89.3" y="36" width="7.8" height="4.6" rx="1.2"/></g>
+          </svg>
+          <b>מיקסר</b>
+        </button>
       </div>
 
       <div class="seekrow">
@@ -534,17 +691,24 @@
           </datalist>
           <span id="prateN">1.0×</span>
         </label>
+        <!-- מחוון עוצמה נגרר, עם סרגל מדידה מעליו כמו במכשירים הישנים.
+             לחיצה על הידית עצמה, בלי לגרור, משתיקה ומחזירה. -->
         <div class="pvol">
-          <button id="pmute" class="pnav" title="השתקה">🔊</button>
-          <button id="pvdn" class="pnav" title="החלשת עוצמה">−</button>
+          <span class="pvol-ico" id="pmute" role="button" tabindex="0"
+                title="השתקה">🔊</span>
+          <div class="fader">
+            <div class="fader-scale" aria-hidden="true">
+              <b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>
+            </div>
+            <input id="pvol" class="pvolr" type="range" min="0" max="100" step="1"
+                   value="100" title="עוצמת ההשמעה — לחיצה על הידית משתיקה"
+                   aria-label="עוצמת ההשמעה">
+          </div>
           <span id="pvolN" class="pvoln">100%</span>
-          <button id="pvup" class="pnav" title="הגברת עוצמה">＋</button>
         </div>
       </div>
 
-      <button class="mix-toggle" id="mixToggle"><span class="mix-ico">🎛</span>מיקסר</button>
-
-      <!-- מיקסר: שרשרת עיבוד על האודיו החי -->
+      <!-- מיקסר: שרשרת עיבוד על האודיו החי. נפתח מלוח המיקסר שבשורת השם. -->
       <div class="mixer hidden" id="mixer">
         <div class="mix-row">
           <label>באס<input type="range" id="mBass" min="-15" max="15" step="1" value="0"><span id="mBassN">0</span></label>

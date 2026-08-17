@@ -319,33 +319,134 @@ body{
 
 /* --------------------------------------------------------- deck window
    Opens on picking a recording; carries the whole transport. Minimising
-   collapses it to its title bar, and playback carries on. */
+   collapses it to its title bar, and playback carries on.
+
+   The window is dressed as a portable shoebox recorder: moulded dark
+   plastic, a perforated speaker beside the cassette door, and a row of
+   mechanical piano keys. Nothing here changes what the controls do — the
+   ids, the markup order and the handlers are all as they were. */
 .deckwin{
   position:fixed;left:18px;bottom:18px;z-index:45;width:min(430px,calc(100vw - 36px));
-  background:#20252f;border:1px solid #39414f;border-radius:13px;overflow:hidden;
-  box-shadow:0 12px 38px rgba(0,0,0,.42);
+  border-radius:16px;overflow:hidden;
+  color:#e8ecf4;
+  /* מרקם הפלסטיק: פסים דקיקים מעל שיפוע כהה */
+  background:
+    repeating-linear-gradient(180deg,
+      rgba(255,255,255,.026) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg,#3b3f46 0,#2b2f36 6%,#22262c 46%,#191c21 100%);
+  border:1px solid #10131a;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 -2px 0 rgba(0,0,0,.5),
+    0 14px 40px rgba(0,0,0,.5);
 }
+/* the top of the case, with the carry handle recessed into it */
 .dw-bar{
-  display:flex;align-items:center;gap:8px;padding:8px 10px 8px 12px;
-  background:#161a22;border-bottom:1px solid #39414f;
+  position:relative;
+  display:flex;align-items:center;gap:8px;padding:9px 10px 9px 12px;
+  background:linear-gradient(180deg,#4a4f57 0,#33373e 55%,#25282e 100%);
+  border-bottom:1px solid #0e1116;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 0 rgba(255,255,255,.05);
 }
+/* the carry handle, folded flat on the top of the case: a grip bar between
+   two hinge posts screwed into the shell */
+.dw-handle{
+  position:absolute;top:50%;inset-inline-start:50%;transform:translate(50%,-50%);
+  width:132px;height:17px;pointer-events:none;
+}
+.dw-handle i{                  /* הידית עצמה */
+  position:absolute;inset:0 14px;border-radius:9px;
+  background:linear-gradient(180deg,#5c626c 0,#3a3f47 42%,#22262c 72%,#151920 100%);
+  border:1px solid #0d1015;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -2px 3px rgba(0,0,0,.55),
+             0 2px 4px rgba(0,0,0,.45);
+}
+/* both pivots ride above the grip; without the z-index the ::before one would
+   be painted under it and only the right-hand pivot would show */
+.dw-handle::before,.dw-handle::after{   /* הצירים שבהם היא נתפסת לגוף */
+  content:'';position:absolute;top:4px;z-index:1;
+  width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#575d66,#272b31 62%,#14171c);
+  box-shadow:inset 0 0 0 1px #0d1015;
+}
+.dw-handle::before{left:18px}
+.dw-handle::after{right:18px}
 .dw-name{
   flex:1 1 auto;color:#e8ecf4;font-size:.86rem;font-weight:600;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  text-shadow:0 1px 1px rgba(0,0,0,.6);position:relative;z-index:1;
 }
 .dw-btn{
-  border:0;background:none;color:#aab3c4;font-family:inherit;font-size:.9rem;
-  cursor:pointer;padding:3px 8px;border-radius:6px;line-height:1;
+  position:relative;z-index:1;
+  border:1px solid #14181e;background:linear-gradient(180deg,#4b515a,#31363d);
+  color:#cfd6e2;font-family:inherit;font-size:.82rem;
+  cursor:pointer;padding:2px 8px;border-radius:5px;line-height:1.3;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
 }
-.dw-btn:hover{background:#2c3340;color:#fff}
+.dw-btn:hover{background:linear-gradient(180deg,#5a616b,#3b4149);color:#fff}
+.dw-btn:active{box-shadow:inset 0 2px 3px rgba(0,0,0,.55)}
 /* the window never grows past the screen — opening the mixer scrolls the
    body instead of pushing the title bar off the top */
 .dw-body{padding:12px;overflow-y:auto;max-height:calc(100vh - 120px)}
 .deckwin.min .dw-body{display:none}
 .deckwin.min{width:min(300px,calc(100vw - 36px))}
 
+/* ------------------------------------------- the front panel of the case
+   Speaker on one side, cassette door on the other — side by side, so the
+   recorder look costs no extra height. */
+/* ltr: the case is laid out like the machine, speaker on the left and the
+   cassette door on the right — not mirrored by the surrounding Hebrew */
+.deck-face{
+  display:flex;align-items:stretch;gap:9px;margin-bottom:11px;direction:ltr;
+  padding:8px;border-radius:11px;
+  background:linear-gradient(180deg,#191c22,#14171c);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.07);
+}
+/* Two offset dot grids give the staggered perforation of a real speaker
+   cloth, and because both are plain tiles the pattern runs edge to edge with
+   no seam or half-drilled row at the bottom. */
+.grille{
+  position:relative;flex:0 0 60px;border-radius:8px;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 50%,#090b0e 0 1.5px,transparent 1.9px) 0 0/6px 6px,
+    radial-gradient(circle at 50% 50%,#090b0e 0 1.5px,transparent 1.9px) 3px 3px/6px 6px,
+    linear-gradient(180deg,#31353c,#212429);
+  box-shadow:inset 0 0 0 1px #0e1116, inset 0 2px 6px rgba(0,0,0,.55);
+}
+
+/* the well the cassette drops into, and the rails it rests on. Both only
+   show when the cassette lifts out of it on eject. */
+.well{position:relative;flex:1 1 auto;min-width:0}
+.rails{
+  position:absolute;inset:0;border-radius:8px;
+  background:linear-gradient(180deg,#0a0c0e,#131519);
+  box-shadow:inset 0 0 16px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05);
+}
+.rails::before,.rails::after{      /* the two guide rails */
+  content:'';position:absolute;top:14%;bottom:14%;width:5px;border-radius:3px;
+  background:linear-gradient(90deg,#3d434d,#232830);
+  box-shadow:0 0 4px rgba(0,0,0,.7);
+}
+.rails::before{left:7%}
+.rails::after{right:7%}
+
 /* ------------------------------------------------------------- cassette */
-.deck{display:block;width:100%;line-height:0;margin-bottom:12px}
+.deck{
+  display:block;position:relative;z-index:1;width:100%;line-height:0;
+  transform-origin:50% 100%;
+}
+/* Closing the player ejects the cassette: it tips up on its hinge and rises
+   out of the well, held out to be taken. */
+.deckwin.ejecting .deck{
+  animation:eject .62s cubic-bezier(.22,.85,.3,1) forwards;
+}
+@keyframes eject{
+  0%  {transform:perspective(840px) rotateX(0deg)  translateY(0)   scale(1)}
+  45% {transform:perspective(840px) rotateX(50deg) translateY(-6px) scale(1.01)}
+  100%{transform:perspective(840px) rotateX(43deg) translateY(-22px) scale(1.03)}
+}
+.deckwin.ejecting{animation:ejectfade .62s ease-in forwards;pointer-events:none}
+@keyframes ejectfade{0%,62%{opacity:1}100%{opacity:0}}
 .deck svg{
   display:block;width:100%;height:auto;
   filter:drop-shadow(0 3px 9px rgba(20,26,44,.3));
@@ -358,14 +459,82 @@ body{
    `isolate` still lays the Hebrew run out right-to-left inside itself. */
 .deck .chand,.deck .che{direction:ltr;unicode-bidi:isolate}
 .deck .che{font-family:'Heebo','Segoe UI',system-ui,sans-serif}
-/* the reels are rotated from JS around their own centres */
-.deck .reel{transition:none}
+/* the maker's mark printed on the label — latin, so it stays left to right */
+.deck .cbrand text{
+  font-family:'Arial Black','Segoe UI',Impact,system-ui,sans-serif;
+  direction:ltr;unicode-bidi:isolate;
+}
+/* the reels and the drive cogs are rotated from JS around their own centres */
+.deck .reel,.deck .cog{transition:none}
+/* the laced tape: a stroked run rather than a filled band, so the bends at
+   the guides round off on their own */
+.deck .tape{
+  fill:none;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;
+}
+/* Where the shell is solid the tape is only half-guessed at, the way it is
+   through the smoked plastic of a real cassette... */
+.deck .tape.ghost{stroke:#6b4a2f;opacity:.3}
+/* ...and in the opening the head reaches through, it is in the clear. */
+.deck .tape.lit{
+  stroke:#6b4a2f;filter:drop-shadow(0 1px 1px rgba(0,0,0,.6));
+}
 
-/* speed slider in the player */
-.pvol{display:flex;align-items:center;gap:2px;flex:0 0 auto}
-.pvol .pnav{font-size:.95rem;padding:3px 6px;line-height:1}
+/* ------------------------------------------------- volume: a sliding fader
+   A travelling knob under a printed scale, the way volume was set on these
+   machines. Pressing the knob itself — without sliding it — mutes. */
+.pvol{display:flex;align-items:center;gap:6px;flex:0 0 auto;direction:ltr}
+.pvol-ico{font-size:.9rem;line-height:1;cursor:pointer;user-select:none;opacity:.9}
+.pvol-ico:hover{opacity:1}
+.fader{position:relative;width:96px;padding-top:10px}
+/* the numbers printed above the travel, 1 to 5, as on the old front panels */
+.fader-scale{
+  position:absolute;top:0;left:6px;right:6px;height:9px;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  direction:ltr;pointer-events:none;
+}
+.fader-scale b{
+  font-size:6.5px;line-height:1;font-weight:400;color:#9aa3b2;
+  font-family:'Segoe UI',system-ui,sans-serif;letter-spacing:.04em;
+  position:relative;
+}
+.fader-scale b::after{               /* השנתות שמתחת לספרות */
+  content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:1px;height:2px;background:#6b7382;
+}
+/* the slot the knob travels in */
+.pvolr{
+  -webkit-appearance:none;appearance:none;width:100%;height:14px;
+  background:none;margin:0;cursor:pointer;display:block;
+}
+.pvolr::-webkit-slider-runnable-track{
+  height:6px;border-radius:3px;
+  background:linear-gradient(180deg,#0b0e12,#191d23);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.09);
+}
+.pvolr::-moz-range-track{
+  height:6px;border-radius:3px;background:#0b0e12;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.85);
+}
+/* the knob: a ridged plastic cap, like the transport keys */
+.pvolr::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:13px;height:18px;margin-top:-6px;
+  border-radius:3px;border:1px solid #6f6a62;border-top-color:#e6e2da;
+  background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px),
+    linear-gradient(180deg,#e2ded5,#b0aca4 60%,#8f8c86);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 2px 3px rgba(0,0,0,.5);
+}
+.pvolr::-moz-range-thumb{
+  width:13px;height:18px;border-radius:3px;border:1px solid #6f6a62;
+  background:linear-gradient(180deg,#e2ded5,#b0aca4 60%,#8f8c86);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 2px 3px rgba(0,0,0,.5);
+}
 .pvoln{font-size:.74rem;opacity:.85;min-width:3.1em;text-align:center;font-variant-numeric:tabular-nums}
+/* muted: the knob keeps its place, so releasing mute returns the same level */
 .deckwin.muted .pvoln{opacity:.45;text-decoration:line-through}
+.deckwin.muted .pvolr::-webkit-slider-thumb{background:linear-gradient(180deg,#8e8a84,#65625d);border-top-color:#a9a59d}
+.deckwin.muted .pvolr::-moz-range-thumb{background:linear-gradient(180deg,#8e8a84,#65625d)}
+.deckwin.muted .fader-scale b{opacity:.45}
 .prate{display:flex;align-items:center;gap:7px;flex:0 0 auto;font-size:.76rem;opacity:.9}
 .prate input{width:82px;accent-color:#d98b31}
 .prate span{font-size:.78rem;font-variant-numeric:tabular-nums;min-width:2.9em}
@@ -377,6 +546,16 @@ body{
   .deckwin{left:8px;right:8px;bottom:8px;width:auto}
   .deckwin.min{width:auto}
   .prate input{width:64px}
+}
+/* on a phone the case narrows, so the speaker gives its width to the door
+   and the keys keep their icons but drop the printed labels */
+@media (max-width:430px){
+  .deck-face{gap:7px;padding:6px}
+  .grille{flex:0 0 42px}
+  .grille .brand{font-size:.52rem;inset-inline:2px}
+  .transport{gap:2px;padding:4px 4px 5px}
+  .tbtn2 b,.pbtn b{font-size:.44rem;letter-spacing:.02em}
+  .tbtn2 svg,.pbtn svg{width:14px;height:14px}
 }
 
 /* a standing reminder that this session can change things */
@@ -534,9 +713,11 @@ body{
 
 
 /* ------------------------------------------------- VU lamps + mixer */
+/* the level meter, sunk into the case beside the door */
 .vu{
-  display:flex;gap:3px;align-items:flex-end;height:15px;margin:2px 0 10px;
-  padding:3px 5px;background:#12151b;border:1px solid #2b3240;border-radius:6px;
+  display:flex;gap:3px;align-items:flex-end;height:15px;margin:0 0 10px;
+  padding:3px 5px;background:#0d1014;border:1px solid #0b0e12;border-radius:6px;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.75),0 1px 0 rgba(255,255,255,.07);
 }
 .vu i{
   flex:1 1 0;height:100%;border-radius:2px;background:#1e2530;
@@ -546,18 +727,49 @@ body{
 .vu i.on.y{background:#e6b422;box-shadow:0 0 5px #e6b422}
 .vu i.on.r{background:#e2483d;box-shadow:0 0 6px #e2483d}
 
+/* the mixing desk itself, sitting on the panel beside the track name */
 .mix-toggle{
-  margin-top:10px;width:100%;border:1px solid #39414f;background:#2a303c;
-  color:#e8ecf4;font-family:inherit;font-size:.82rem;padding:7px;border-radius:8px;
-  cursor:pointer;
-  /* the icon sits to the left of the word, held off the edge */
-  display:flex;align-items:center;justify-content:center;gap:9px;
-  flex-direction:row-reverse;
+  flex:0 0 auto;border:0;background:none;padding:0;cursor:pointer;
+  font-family:inherit;display:block;line-height:0;
 }
-.mix-ico{margin-inline-end:14px;font-size:1rem;line-height:1}
-.mix-toggle:hover{background:#353d4c}
-.mix-toggle.on{background:#d98b31;border-color:#d98b31;color:#1a1206;font-weight:600}
-.mixer{margin-top:9px;border:1px solid #39414f;border-radius:9px;padding:10px;background:#1b202a}
+.mix-ico{
+  display:block;width:88px;height:55px;border-radius:5px;
+  box-shadow:0 2px 5px rgba(0,0,0,.55),0 0 0 1px #0a0c0f;
+}
+.mix-toggle b{
+  display:block;line-height:1;margin-top:4px;text-align:center;
+  font-size:.66rem;font-weight:600;color:#aab3c4;
+}
+/* the desk is painted in the deck's own palette: charcoal panel, amber
+   rotaries, and fader caps in the same ivory as the transport keys */
+.mix-ico .mx-case{fill:#0b0e12}
+.mix-ico .mx-face{fill:#2b3039}
+.mix-ico .mx-strip{fill:#333944}          /* channel strips, one shade up */
+.mix-ico .mx-knob{fill:#d98b31;stroke:#12151b;stroke-width:.7}
+.mix-ico .mx-sw{fill:#171b21}
+.mix-ico .mx-slot{fill:#0b0e12}
+.mix-ico .mx-cap{fill:#ddd8ce;stroke:#7e7a73;stroke-width:.5}
+.mix-ico .mx-div{fill:#161a20}
+.mix-toggle:hover .mx-face{fill:#343a45}
+.mix-toggle:hover .mx-strip{fill:#3d4450}
+.mix-toggle:hover b{color:#e8ecf4}
+/* open: the panel warms to the amber the rest of the deck lights up in */
+.mix-toggle.on .mx-face{fill:#33220c}
+.mix-toggle.on .mx-strip{fill:#3f2b10}
+.mix-toggle.on .mx-knob{fill:#f0b063}
+.mix-toggle.on .mx-cap{fill:#fbeacf}
+.mix-toggle.on b{color:#e6a049}
+.mix-toggle:hover{background:linear-gradient(180deg,#5a616c,#3b4149)}
+.mix-toggle.on{
+  background:linear-gradient(180deg,#eda044,#c87c25);border-color:#8a5415;
+  color:#2a1a05;font-weight:600;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.35);transform:translateY(2px);
+}
+.mixer{
+  margin-top:9px;border:1px solid #0d1015;border-radius:9px;padding:10px;
+  background:linear-gradient(180deg,#15181d,#1c2027);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.6);
+}
 .mix-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:9px}
 .mix-row label{
   flex:1 1 110px;display:flex;flex-direction:column;gap:3px;
@@ -572,9 +784,17 @@ body{
 
 /* ------------------------------------------------------------- player */
 .dw-ctl{color:#fff}
-.pmeta{min-width:0;margin-bottom:9px}
-.ptitle{font-weight:600;font-size:.94rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.psub{font-size:.78rem;opacity:.72;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* the printed strip above the keys, where the machine names what it plays;
+   the mixing desk stands on the free end of it */
+.pmeta{
+  display:flex;align-items:center;gap:10px;
+  min-width:0;margin-bottom:8px;padding:6px 9px;border-radius:7px;
+  background:linear-gradient(180deg,#14171c,#1b1f25);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.07);
+}
+.pmeta-txt{flex:1 1 auto;min-width:0}
+.ptitle{font-weight:600;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.psub{font-size:.76rem;opacity:.72;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* the scrubber runs with time, left to right, matching the counter beside it */
 .seekrow{display:flex;align-items:center;gap:9px;direction:ltr}
 .pseek{flex:1 1 auto;accent-color:#d98b31;min-width:60px;direction:ltr}
@@ -584,28 +804,58 @@ body{
   white-space:nowrap;direction:ltr;
 }
 /* ltr: transport controls follow the tape, not the text — rewind on the left,
-   fast-forward on the right, as on every deck */
+   fast-forward on the right, as on every deck.
+   The row is the key bezel: a sunken tray the mechanical keys rise out of. */
 .transport{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  margin:10px 0 4px;direction:ltr;
+  display:flex;align-items:stretch;justify-content:center;gap:3px;
+  margin:9px 0 5px;direction:ltr;
+  padding:5px 6px 6px;border-radius:9px;
+  background:linear-gradient(180deg,#15181d,#1e2229);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.08);
 }
+/* one key, moulded in light plastic, pressed down when it latches */
+.tbtn2,.pbtn{
+  flex:1 1 0;min-width:0;padding:5px 2px 3px;cursor:pointer;font-family:inherit;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  border:1px solid #6f6a62;border-top-color:#e6e2da;
+  border-radius:3px 3px 5px 5px;
+  background:linear-gradient(180deg,#e2ded5 0,#c4c0b7 42%,#a9a59d 76%,#93908a 100%);
+  color:#2a2723;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.85),
+    inset 0 -3px 4px rgba(0,0,0,.22),
+    0 3px 0 #4b4741, 0 4px 5px rgba(0,0,0,.45);
+  transition:transform .07s linear, box-shadow .07s linear;
+}
+/* held down, REW and F.F spool the tape — a drag on them must not scroll */
+#prew,#pff{touch-action:none;-webkit-user-select:none;user-select:none}
+.tbtn2 b,.pbtn b{
+  font-size:.5rem;font-weight:700;letter-spacing:.06em;line-height:1;
+  color:#4a4640;text-shadow:0 1px 0 rgba(255,255,255,.55);
+}
+.tbtn2 .key,.pbtn .key{display:grid;place-items:center;line-height:0}
+.tbtn2 svg,.pbtn svg{width:15px;height:15px;fill:#33302b}
+.tbtn2:hover,.pbtn:hover{background:linear-gradient(180deg,#efece5 0,#d0ccc3 42%,#b3afa7 76%,#9b9892 100%)}
+/* the mechanical press: the key drops and its plinth all but disappears */
+.tbtn2:active,.pbtn:active,.tbtn2.down,.pbtn.down{
+  transform:translateY(3px);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.4),0 0 0 #4b4741,0 1px 2px rgba(0,0,0,.4);
+}
+/* PLAY is the coloured key, as the record key is on the real machine */
 .pbtn{
-  flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:0;
-  background:#d98b31;color:#1a1206;cursor:pointer;
-  display:grid;place-items:center;
+  background:linear-gradient(180deg,#f0b063 0,#e09437 44%,#c87c25 78%,#a9661b 100%);
+  border-color:#8a5415;border-top-color:#f6cd97;color:#2a1a05;
 }
-.pbtn:hover{background:#e6a049}
-.pbtn svg{width:19px;height:19px;fill:#1a1206}
-.tbtn2{
-  border:1px solid #39414f;background:#2a303c;color:#e8ecf4;
-  width:38px;height:38px;border-radius:9px;cursor:pointer;font-family:inherit;
-  display:grid;place-items:center;
+.pbtn b{color:#3a2508;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.pbtn svg{fill:#2a1a05}
+.pbtn:hover{background:linear-gradient(180deg,#f7bd75 0,#eda044 44%,#d3872c 78%,#b47021 100%)}
+/* the small controls on the case front, below the keys */
+.knobs{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:6px 8px;border-radius:7px;
+  background:linear-gradient(180deg,#14171c,#1b1f25);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.06);
 }
-.tbtn2 svg{width:17px;height:17px;fill:#e8ecf4}
-.tbtn2:active svg{fill:#1a1206}
-.tbtn2:hover{background:#353d4c}
-.tbtn2:active{background:#d98b31;color:#1a1206}
-.knobs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .pnav{
   border:0;background:none;color:#fff;font-size:1rem;cursor:pointer;
   opacity:.85;padding:4px 6px;
