@@ -2202,6 +2202,33 @@ def _tal_roots(word, conn):
     return resolve(full) or (resolve(prefixed) if prefixed else [])
 
 
+def _he_stem_one(w):
+    """Hebrew word minus one proclitic, so האמת and אמת compare equal."""
+    w = _norm_fin(w)
+    return w[1:] if (len(w) >= 4 and w[0] in 'הובלכמש') else w
+
+
+def _gloss_matches_memar(gloss, memar_he):
+    """Does a root's dictionary meaning say the same thing as the Hebrew that
+    Memar Marqe's own translation puts opposite the word?
+
+    This is the corroboration that lets a DERIVED root be trusted. Stripping
+    affixes off a word Tal does not list can land anywhere — קמאה reaches קמא
+    "בוז, ביזיון" — so the derivation alone proves nothing. But when the root we
+    landed on already means what the translated text says the word means, two
+    independent sources agree, and the reading is safe to show."""
+    if not gloss or not memar_he:
+        return False
+    m = _he_stem_one(memar_he)
+    if len(m) < 2:
+        return False
+    for tok in re.findall(r'[א-ת]{2,}', gloss):
+        g = _he_stem_one(tok)
+        if g == m or (len(g) >= 3 and len(m) >= 3 and (g.startswith(m) or m.startswith(g))):
+            return True
+    return False
+
+
 def tal_full_lookup(word, torah_limit=16):
     """Everything Tal's dictionary holds for an Aramaic word, grounded in the
     authoritative page extraction. Returns {word, roots:[{root, senses, torah,
@@ -2210,7 +2237,24 @@ def tal_full_lookup(word, torah_limit=16):
     (book/ch/verse/verse_id), and forms are other surface forms of the root."""
     conn = get_connection()
     roots = _tal_roots(word, conn)
-    out = {'word': word, 'roots': []}
+    # No root from the dictionary's own reading? A derivation may still stand in,
+    # but only if Memar Marqe's translation of this very word agrees with what the
+    # derived root means. Derivation alone is not evidence; agreement is.
+    derived = None
+    if not roots:
+        try:
+            r = conn.execute(
+                "SELECT root, gloss, gloss_tal, memar_he, derivation FROM dict_infl "
+                "WHERE form_norm=? AND TRIM(COALESCE(root,''))<>'' ORDER BY rank",
+                (_norm_fin(word),)).fetchall()
+        except sqlite3.OperationalError:
+            r = []
+        for row in r:
+            if _gloss_matches_memar(row['gloss_tal'] or row['gloss'], row['memar_he']):
+                roots = [row['root']]
+                derived = {'derivation': row['derivation'], 'memar_he': row['memar_he']}
+                break
+    out = {'word': word, 'roots': [], 'derived_root': derived}
     for root in roots:
         rn = _norm_fin(root)
         senses = []
