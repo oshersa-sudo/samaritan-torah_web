@@ -377,6 +377,9 @@
     <button class="dw-btn" id="dwClose" title="סגור">✕</button>
   </header>
   <div class="dw-body">
+    <!-- לוח המכשיר: רמקול מנוקב משמאל, וחלון הקלטת מימין -->
+    <div class="deck-face">
+      <div class="grille" aria-hidden="true"><i></i><i></i><i></i></div>
 <aside class="deck" id="deck">
   <svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg" role="img"
        aria-label="נגן קלטות">
@@ -480,6 +483,7 @@
     </g>
   </svg>
 </aside>
+    </div>
 
     <!-- מנורות חיווי כמו במכשירים ישנים, נדלקות לפי עוצמת ההשמעה -->
     <div class="vu" id="vu" aria-hidden="true"></div>
@@ -497,20 +501,27 @@
 
       <!-- אייקוני SVG ולא אמוג'י: אמוג'י מסוימים מוצגים בצבע המערכת
            ובגודל אחר, וכך הכפתורים יצאו לא אחידים -->
+      <!-- מקשי הפסנתר של המכשיר. אייקוני SVG ולא אמוג'י, שאחרת הם מוצגים
+           בצבע המערכת ובגדלים שונים -->
       <div class="transport">
         <button id="pprev" class="tbtn2" title="הרצועה הקודמת" aria-label="הרצועה הקודמת">
-          <svg viewBox="0 0 24 24"><path d="M20 5 9 12l11 7z"/><rect x="4" y="5" width="2.8" height="14" rx="1"/></svg></button>
+          <span class="key"><svg viewBox="0 0 24 24"><path d="M20 5 9 12l11 7z"/><rect x="4" y="5" width="2.8" height="14" rx="1"/></svg></span>
+          <b>PREV</b></button>
         <button id="prew" class="tbtn2" title="הרצה לאחור" aria-label="הרצה לאחור">
-          <svg viewBox="0 0 24 24"><path d="M12 5 2 12l10 7zM22 5 12 12l10 7z"/></svg></button>
+          <span class="key"><svg viewBox="0 0 24 24"><path d="M12 5 2 12l10 7zM22 5 12 12l10 7z"/></svg></span>
+          <b>REW</b></button>
         <button id="pbtn" class="pbtn" title="נגן" aria-label="נגן">
-          <svg viewBox="0 0 24 24" id="icPlay"><path d="M6 4l14 8-14 8z"/></svg>
-          <svg viewBox="0 0 24 24" id="icPause" class="hidden"><path d="M7 4h4v16H7zM13 4h4v16h-4z"/></svg></button>
+          <span class="key"><svg viewBox="0 0 24 24" id="icPlay"><path d="M6 4l14 8-14 8z"/></svg><svg viewBox="0 0 24 24" id="icPause" class="hidden"><path d="M7 4h4v16H7zM13 4h4v16h-4z"/></svg></span>
+          <b>PLAY</b></button>
         <button id="pstop" class="tbtn2" title="עצור והחזר לאחור" aria-label="עצור">
-          <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></button>
+          <span class="key"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span>
+          <b>STOP</b></button>
         <button id="pff" class="tbtn2" title="הרצה קדימה" aria-label="הרצה קדימה">
-          <svg viewBox="0 0 24 24"><path d="M2 5l10 7-10 7zM12 5l10 7-10 7z"/></svg></button>
+          <span class="key"><svg viewBox="0 0 24 24"><path d="M2 5l10 7-10 7zM12 5l10 7-10 7z"/></svg></span>
+          <b>F.F</b></button>
         <button id="pnext" class="tbtn2" title="הרצועה הבאה" aria-label="הרצועה הבאה">
-          <svg viewBox="0 0 24 24"><path d="M4 5l11 7-11 7z"/><rect x="17.2" y="5" width="2.8" height="14" rx="1"/></svg></button>
+          <span class="key"><svg viewBox="0 0 24 24"><path d="M4 5l11 7-11 7z"/><rect x="17.2" y="5" width="2.8" height="14" rx="1"/></svg></span>
+          <b>NEXT</b></button>
       </div>
 
       <div class="knobs">
