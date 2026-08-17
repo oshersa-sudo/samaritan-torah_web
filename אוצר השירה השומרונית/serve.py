@@ -192,7 +192,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             # the recycle bin is admin-only: it lists what was taken down
             if not self.is_admin():
                 return self.json_out({'ok': False, 'error': 'unauthorized'}, 401)
-            return self.json_out({'ok': True, 'items': GONE.listing()})
+            import purge as PURGE
+            return self.json_out({'ok': True, 'items': GONE.listing(),
+                                  'purged': PURGE.log_read()[::-1][:60]})
         return super().do_GET()
 
     def do_HEAD(self):
@@ -216,6 +218,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.api_rename_performer()
         if p == '/api/sync':
             return self.api_sync()
+        if p == '/api/purge':
+            return self.api_purge()
         if p == '/api/delete_recording':
             return self.api_delete_recording()
         if p == '/api/restore_recording':
@@ -305,6 +309,48 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             ovr.pop(key, None)
         OVR.save(ovr)
         self.json_out({'ok': True, 'override': row})
+
+    def api_purge(self):
+        """Delete trashed recordings from the media server for good.
+
+        `key` purges one; `all: true` purges the whole bin. The masters on the
+        archive drive are never touched, and every deletion is logged.
+        """
+        if not self.is_admin():
+            return self.json_out({'ok': False, 'error': 'unauthorized'}, 401)
+        try:
+            d = json.loads(self.read_body() or b'{}')
+        except ValueError:
+            return self.json_out({'ok': False, 'error': 'bad json'}, 400)
+
+        import purge as PURGE
+        trash = GONE.load()
+        keys = list(trash) if d.get('all') else [str(d.get('key') or '')]
+        keys = [k for k in keys if k in trash]
+        if not keys:
+            return self.json_out({'ok': False, 'error': 'not in trash'}, 404)
+
+        done, failed = [], []
+        for k in keys:
+            try:
+                e = PURGE.purge(k, trash[k], by=ADMIN_USER)
+            except Exception as exc:
+                failed.append({'key': k, 'error': str(exc)[:200]})
+                continue
+            (failed if e.get('error') else done).append(e)
+            if not e.get('error'):
+                trash.pop(k, None)       # gone for good — leaves the bin too
+        GONE.save(trash)
+
+        self.json_out({
+            'ok': not failed or bool(done),
+            'purged': len(done),
+            'failed': len(failed),
+            'files_deleted': sum(e.get('deleted_from_server', 0) for e in done),
+            'not_on_server': sum(e.get('not_on_server', 0) for e in done),
+            'errors': [f.get('error') for f in failed][:3],
+            'remaining': len(trash),
+        })
 
     def api_sync(self):
         """Publish the unit to the live site. Local admin only — the cloud copy

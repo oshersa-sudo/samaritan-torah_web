@@ -219,6 +219,8 @@ body{
 .qadd.on{background:var(--share);border-color:var(--share);color:#fff}
 .tbtn.on{background:#e6b422;border-color:#e6b422;color:#3a2c00;font-weight:700}
 
+.qrow.bad{border-color:#e6c3c1;background:#fdf5f4}
+
 /* the sync report */
 .syncbig{
   margin:0 0 12px;font-family:'Frank Ruhl Libre',serif;font-size:1.3rem;

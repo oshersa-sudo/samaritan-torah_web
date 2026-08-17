@@ -243,7 +243,7 @@ function recRow(r) {
       <span class="row-t">
         <span class="t">${esc(r.ttl)}</span>
         <span class="s">${sub.join(' · ')}</span>
-        ${r.desc ? `<span class="s">${esc(r.desc)}</span>` : ''}
+        ${r.desc && !r.from_desc ? `<span class="s">${esc(r.desc)}</span>` : ''}
       </span>
       <span class="qadd${inQueue(r.id) ? ' on' : ''}" data-q="${r.id}"
             title="${inQueue(r.id) ? 'הסר מרשימת ההשמעה' : 'הוסף לרשימת ההשמעה'}">${
@@ -1086,13 +1086,53 @@ function showAdminUI(redraw) {
 /* ------------------------------------------------------------ סל המחזור */
 let TRASH = [];
 
+let PURGED = [];
+
 async function loadTrash() {
-  if (!ADMIN.token) { TRASH = []; return drawTrash(); }
+  if (!ADMIN.token) { TRASH = []; PURGED = []; return drawTrash(); }
   const r = await fetch('api/trash', { headers: { 'X-Admin-Token': ADMIN.token } })
     .then(r => r.json()).catch(() => ({}));
   TRASH = r.items || [];
+  PURGED = r.purged || [];
   drawTrash();
 }
+
+/* ------------------------------------------------- permanent deletion
+ * Removes the audio from the media server. The masters on the drive are never
+ * touched, and every deletion is written to the log tab.
+ */
+async function purge(key, title) {
+  const one = !!key;
+  const what = one ? `«${title}»` : `כל ${TRASH.length} ההקלטות שבסל`;
+  if (!confirm(
+    `למחוק ${what} מן הענן לצמיתות?\n\n` +
+    'הקבצים יימחקו משרת המדיה ולא ניתן יהיה להשיב אותם.\n' +
+    'קובצי המקור שעל כונן הארכיון לא ייגעו.')) return;
+  if (!one && prompt('לאישור סופי הקלד: מחק') !== 'מחק') return;
+
+  toast('מוחק מן הענן…');
+  const r = await fetch('api/purge', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Admin-Token': ADMIN.token },
+    body: JSON.stringify(one ? { key } : { all: true }),
+  }).then(r => r.json()).catch(e => ({ ok: false, errors: [String(e)] }));
+
+  await loadTrash();
+  if (!r.ok) return toast('המחיקה נכשלה: ' + (r.errors?.[0] || r.error || ''), true);
+  toast(`נמחקו לצמיתות: ${r.purged} הקלטות · ${r.files_deleted} קבצים מן השרת` +
+        (r.failed ? ` · ${r.failed} נכשלו` : ''));
+}
+$('purgeAll').onclick = () => TRASH.length ? purge(null) : toast('סל המחזור ריק');
+
+$('trashTabs').addEventListener('click', e => {
+  const b = e.target.closest('.subtab');
+  if (!b) return;
+  const bin = b.dataset.ttab === 'bin';
+  $('trashTabs').querySelectorAll('.subtab').forEach(x =>
+    x.classList.toggle('on', x === b));
+  $('trashBin').classList.toggle('hidden', !bin);
+  $('trashLog').classList.toggle('hidden', bin);
+});
 
 function drawTrash() {
   $('trashN').textContent = TRASH.length;
@@ -1106,8 +1146,28 @@ function drawTrash() {
           ${it.trashed.length ? `${it.trashed.length} בסל` : 'קובצי המקור נשמרו בארכיון'}
           · הוסר ב־${esc((it.when || '').replace('T', ' ').slice(0, 16))}</span></span>
       <button class="btn ghost" data-restore="${esc(it.key)}">השב</button>
+      <button class="btn ghost danger-txt" data-purge="${esc(it.key)}"
+              title="מחיקה לצמיתות מן הענן">🗑</button>
     </div>`).join('')
     : '<p class="news-empty">סל המחזור ריק.</p>';
+
+  $('purgeAll').classList.toggle('hidden', !TRASH.length);
+  $('trashLog').innerHTML = PURGED.length ? PURGED.map(e => `
+    <div class="qrow${e.error ? ' bad' : ''}">
+      <span class="qt"><b>${esc(e.title || 'ללא שם')}</b><br>
+        <span class="s">${e.deleted_from_server} קבצים נמחקו מן השרת${
+          e.not_on_server ? ` · ${e.not_on_server} לא נמצאו` : ''} ·
+          ${esc((e.when || '').replace('T', ' ').slice(0, 16))}${
+          e.by ? ' · ' + esc(e.by) : ''}${
+          e.error ? ' · נכשל' : ''}</span></span>
+    </div>`).join('') +
+    '<p class="hint">קובצי המקור שעל כונן הארכיון נשמרו בכל המקרים.</p>'
+    : '<p class="news-empty">טרם נמחקה הקלטה לצמיתות.</p>';
+
+  $('trashBody').querySelectorAll('[data-purge]').forEach(b => {
+    const it = TRASH.find(x => x.key === b.dataset.purge);
+    b.onclick = () => purge(b.dataset.purge, it ? (it.title || 'ללא שם') : '');
+  });
   body.querySelectorAll('[data-restore]').forEach(b => {
     b.onclick = async () => {
       const r = await fetch('api/restore_recording', {
@@ -1259,7 +1319,11 @@ function openEdit(recId) {
   $('edWhat').textContent =
     `${perfName(r.p)} · ${eventName(r.e)} · ` +
     `${r.n === 1 ? 'רצועה אחת' : r.n + ' רצועות'} · ${dur(r.s)}`;
-  $('edTitle').value = r.ttl || '';
+  // when the shown name came from the description, the title box stays empty —
+  // filling it in would silently promote the description to an explicit title
+  $('edTitle').value = r.from_desc ? '' : (r.ttl || '');
+  $('edTitle').placeholder = r.from_desc
+    ? 'ריק — מוצג התיאור שלמטה' : 'שם ההקלטה';
   $('edDesc').value  = r.desc || '';
   $('edPerf').value  = perfName(r.p);
   $('edYear').value  = r.year || '';
