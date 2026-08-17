@@ -295,7 +295,7 @@ function draw() {
     };
   });
   $('pane').querySelectorAll('[data-q]').forEach(b => {
-    b.onclick = ev => { ev.stopPropagation(); toggleQueue(+b.dataset.q); };
+    b.onclick = ev => { ev.stopPropagation(); toggleQueue(+b.dataset.q, b); };
   });
   $('pane').querySelectorAll('[data-play]').forEach(b => {
     b.onclick = ev => { ev.stopPropagation(); playRec(+b.dataset.play, 0); };
@@ -690,37 +690,66 @@ function plSave() {
 const plById = id => PL.lists.find(l => l.id === id);
 const inQueue = id => PL.lists.some(l => l.items.includes(id));
 
-/* ------------------------------------------------------ adding a recording */
-function toggleQueue(recId) {
-  // already somewhere? the click takes it out again
-  const holder = PL.lists.find(l => l.items.includes(recId));
-  if (holder) {
-    holder.items = holder.items.filter(x => x !== recId);
-    plSave(); draw(); drawPl();
-    return toast(`הוסר מ«${holder.name}»`);
-  }
+/* ------------------------------------------------------ adding a recording
+ * The ♪+ button drops a small menu of the existing lists next to itself.
+ * Picking one adds (or removes) the recording there and then; ＋ opens the
+ * naming dialog. With no lists yet there is nothing to pick, so the dialog
+ * opens straight away.
+ */
+function toggleQueue(recId, anchor) {
   PL.pending = recId;
-  $('plAddErr').classList.add('hidden');
-  $('plNewName').value = '';
-  $('plAddTitle').textContent = PL.lists.length ? 'הוספה לרשימת השמעה'
-                                                : 'יצירת רשימת השמעה';
-  $('plAddList').innerHTML = PL.lists.length
-    ? '<p class="hint">בחר רשימה קיימת:</p>' + PL.lists.map(l =>
-        `<button class="pl-pick" data-pick="${l.id}">${esc(l.name)}
-           <span>${l.items.length} פריטים</span></button>`).join('') +
-      '<p class="hint">או צור חדשה:</p>'
-    : '';
-  $('plAddList').querySelectorAll('[data-pick]').forEach(b => {
+  if (!PL.lists.length) return newListDialog();
+
+  const menu = $('plMenu');
+  $('plMenuList').innerHTML = PL.lists.map(l => {
+    const has = l.items.includes(recId);
+    return `<button data-pick="${l.id}" class="${has ? 'has' : ''}">
+      <b>${esc(l.name)}</b>
+      <span>${has ? '✓ ברשימה'
+              : l.items.length === 0 ? 'ריקה'
+              : l.items.length === 1 ? 'פריט אחד'
+              : l.items.length + ' פריטים'}</span></button>`;
+  }).join('');
+  $('plMenuList').querySelectorAll('[data-pick]').forEach(b => {
     b.onclick = () => {
       const l = plById(+b.dataset.pick);
-      l.items.push(PL.pending);
-      plSave(); draw(); closeModal('plAddModal');
-      toast(`נוסף ל«${l.name}»`);
+      const at = l.items.indexOf(PL.pending);
+      if (at >= 0) { l.items.splice(at, 1); toast(`הוסר מ«${l.name}»`); }
+      else         { l.items.push(PL.pending); toast(`נוסף ל«${l.name}»`); }
+      plSave(); draw(); drawPl(); closeMenu();
     };
   });
+
+  menu.classList.remove('hidden');
+  // place it under the button, kept inside the window on both edges
+  const r = (anchor || document.body).getBoundingClientRect();
+  const mw = menu.offsetWidth, mh = menu.offsetHeight;
+  let left = r.left + scrollX;
+  left = Math.max(8, Math.min(left, scrollX + innerWidth - mw - 8));
+  let top = r.bottom + scrollY + 6;
+  if (r.bottom + mh + 12 > innerHeight) top = r.top + scrollY - mh - 6;
+  menu.style.left = left + 'px';
+  menu.style.top  = Math.max(8, top) + 'px';
+}
+
+function closeMenu() { $('plMenu').classList.add('hidden'); }
+document.addEventListener('click', e => {
+  if (!$('plMenu').classList.contains('hidden') &&
+      !e.target.closest('#plMenu') && !e.target.closest('[data-q]')) closeMenu();
+}, true);
+addEventListener('resize', closeMenu);
+addEventListener('scroll', closeMenu, true);
+
+function newListDialog() {
+  closeMenu();
+  $('plAddErr').classList.add('hidden');
+  $('plNewName').value = '';
+  $('plAddTitle').textContent = 'רשימת השמעה חדשה';
+  $('plAddList').innerHTML = '';
   openModal('plAddModal');
   setTimeout(() => $('plNewName').focus(), 60);
 }
+$('plMenuNew').onclick = newListDialog;
 
 $('plCreate').onclick = () => {
   const name = $('plNewName').value.trim();
