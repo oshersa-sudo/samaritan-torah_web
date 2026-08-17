@@ -17,6 +17,29 @@ PATH = os.path.join(DATA, 'overrides.json')
 
 FIELDS = {'title', 'desc', 'performer', 'event', 'year', 'note', 'hidden'}
 
+# performer renames, applied to every recording of that performer at once:
+# {old name: new name}. Kept beside the per-recording edits in the same file
+# under a reserved key, so one file still holds all the admin's changes.
+RENAME_KEY = '__performer_renames__'
+
+
+def renames(ovr):
+    return dict(ovr.get(RENAME_KEY) or {})
+
+
+def set_rename(ovr, old, new):
+    r = renames(ovr)
+    # follow an existing chain so A→B→C collapses to A→C
+    for k, v in list(r.items()):
+        if v == old:
+            r[k] = new
+    if old != new:
+        r[old] = new
+    else:
+        r.pop(old, None)
+    ovr[RENAME_KEY] = r
+    return ovr
+
 
 def load():
     if os.path.exists(PATH):
@@ -44,8 +67,10 @@ def apply(catalog, ovr, include_hidden=False):
     Also enforces the `hidden` flag the build itself may set (a performer kept
     out of the public index), not just hiding chosen through the admin panel.
     """
+    ren = renames(ovr)
+    ovr = {k: v for k, v in ovr.items() if k != RENAME_KEY}
     baked_hidden = any(r.get('hidden') for r in catalog['recordings'])
-    if not ovr and not (baked_hidden and not include_hidden):
+    if not ovr and not ren and not (baked_hidden and not include_hidden):
         return catalog
 
     cat = {
@@ -55,6 +80,28 @@ def apply(catalog, ovr, include_hidden=False):
         'piyyutim':   [dict(p) for p in catalog['piyyutim']],
         'recordings': [],
     }
+    # a rename merges into an existing performer when the new name is taken,
+    # which is how duplicate entries get folded together
+    if ren:
+        seen = {}
+        merged = []
+        for p in cat['performers']:
+            name = ren.get(p['name'], p['name'])
+            if name in seen:
+                seen[name]['n_rec']    += p['n_rec']
+                seen[name]['n_tracks'] += p['n_tracks']
+                seen[name]['seconds']  += p['seconds']
+                p['merged_into'] = seen[name]['id']
+                continue
+            p['name'] = name
+            seen[name] = p
+            merged.append(p)
+        moved = {p['id']: p['merged_into'] for p in cat['performers']
+                 if p.get('merged_into')}
+        cat['performers'] = merged
+    else:
+        moved = {}
+
     perf_by  = {p['name']: p for p in cat['performers']}
     event_by = {e['name']: e for e in cat['events']}
     piy_by   = {p['id']: p for p in cat['piyyutim']}
@@ -78,9 +125,14 @@ def apply(catalog, ovr, include_hidden=False):
             hidden += 1
             continue                                  # not published — drop it
         if not o:
-            cat['recordings'].append(rec)
+            # a merged-away performer id has to be redirected even when this
+            # recording carries no edit of its own
+            cat['recordings'].append(
+                dict(rec, p=moved[rec['p']]) if rec['p'] in moved else rec)
             continue
         r = dict(rec)
+        if r['p'] in moved:
+            r['p'] = moved[r['p']]
         if o.get('title'):
             r['ttl'] = o['title']
         for f in ('desc', 'year', 'note'):
