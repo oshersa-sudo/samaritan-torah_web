@@ -49,6 +49,7 @@
         <button id="adminBtn" class="tbtn hidden" title="כניסת מנהל">🔑 מנהל</button>
         <button id="addBtn"   class="tbtn hidden" title="הוספת הקלטה">＋ הוספה</button>
         <button id="perfBtn" class="tbtn hidden" title="ניהול רשימת המבצעים — מנהל בלבד">🎤 מבצעים</button>
+        <button id="syncBtn" class="tbtn hidden" title="פרסום היחידה לאתר החי">⇧ סנכרן יחידה</button>
         <button id="trashBtn" class="tbtn hidden" title="סל המחזור — מנהל בלבד">
           🗑 סל מחזור<span id="trashN" class="badge hidden">0</span>
         </button>
@@ -143,6 +144,21 @@
       <button class="btn ghost" data-close="plModal">סגור</button>
       <button class="btn ghost" id="plRename">שנה שם</button>
       <button class="btn ghost danger-txt" id="plDelete">מחק רשימה</button>
+    </div>
+  </div>
+</div>
+
+<!-- דיווח הסנכרון לאתר החי -->
+<div id="syncModal" class="modal hidden">
+  <div class="sheet narrow">
+    <div class="sheet-h">
+      <h2 id="syncTitle">סנכרון היחידה</h2>
+      <button class="x" data-close="syncModal">✕</button>
+    </div>
+    <div class="sheet-b" id="syncBody"></div>
+    <div class="sheet-f">
+      <button class="btn" id="syncGo">סנכרן עכשיו</button>
+      <button class="btn ghost" data-close="syncModal">סגור</button>
     </div>
   </div>
 </div>

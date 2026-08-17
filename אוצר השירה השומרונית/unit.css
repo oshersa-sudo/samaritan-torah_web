@@ -219,6 +219,20 @@ body{
 .qadd.on{background:var(--share);border-color:var(--share);color:#fff}
 .tbtn.on{background:#e6b422;border-color:#e6b422;color:#3a2c00;font-weight:700}
 
+/* the sync report */
+.syncbig{
+  margin:0 0 12px;font-family:'Frank Ruhl Libre',serif;font-size:1.3rem;
+  color:var(--share);font-weight:700;
+}
+.synctab{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:.87rem}
+.synctab td{padding:6px 2px;border-bottom:1px solid var(--line)}
+.synctab td:last-child{text-align:left;font-weight:700;color:var(--navy);direction:ltr}
+.synclog{
+  background:#f4f5f8;border:1px solid var(--line);border-radius:7px;padding:9px;
+  font-size:.72rem;max-height:180px;overflow:auto;white-space:pre-wrap;
+  direction:ltr;text-align:left;margin:0;
+}
+
 /* deletion — visually separated, and deliberately not one click away */
 .danger{
   margin-top:16px;padding:12px 13px;border:1px solid #e6c3c1;border-radius:9px;

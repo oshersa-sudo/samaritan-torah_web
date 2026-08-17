@@ -214,6 +214,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.api_performer()
         if p == '/api/rename_performer':
             return self.api_rename_performer()
+        if p == '/api/sync':
+            return self.api_sync()
         if p == '/api/delete_recording':
             return self.api_delete_recording()
         if p == '/api/restore_recording':
@@ -303,6 +305,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             ovr.pop(key, None)
         OVR.save(ovr)
         self.json_out({'ok': True, 'override': row})
+
+    def api_sync(self):
+        """Publish the unit to the live site. Local admin only — the cloud copy
+        has no such route, and would have nowhere to push to anyway."""
+        if not self.is_admin():
+            return self.json_out({'ok': False, 'error': 'unauthorized'}, 401)
+        import sync
+        try:
+            self.json_out(sync.run())
+        except Exception as e:                       # git missing, no network…
+            self.json_out({'ok': False, 'stage': 'run', 'error': str(e)[:400]}, 500)
 
     def api_rename_performer(self):
         """Rename a performer across every recording at once. Renaming onto a
