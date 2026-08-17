@@ -490,7 +490,12 @@
 
       <div class="knobs">
         <label class="prate" title="מהירות ההשמעה">מהירות
-          <input id="prate" type="range" min="0.5" max="2" step="0.05" value="1">
+          <input id="prate" type="range" min="0.5" max="2" step="0.5" value="1"
+                 list="rateTicks">
+          <datalist id="rateTicks">
+            <option value="0.5"></option><option value="1"></option>
+            <option value="1.5"></option><option value="2"></option>
+          </datalist>
           <span id="prateN">1.0×</span>
         </label>
         <div class="pvol">

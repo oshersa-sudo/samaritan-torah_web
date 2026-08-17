@@ -988,11 +988,13 @@ function sfxStop(name) {
 
 /* ---------------------------------------------------------- playing speed */
 function setRate(v) {
-  v = Math.min(2, Math.max(0.5, Number(v) || 1));
+  // four steps only: 0.5 · 1 · 1.5 · 2 — a value stored by an earlier build
+  // (0.85, say) is snapped onto the nearest one
+  v = Math.min(2, Math.max(0.5, Math.round((Number(v) || 1) * 2) / 2));
   au.playbackRate = v;
   au.preservesPitch = au.mozPreservesPitch = au.webkitPreservesPitch = true;
   $('prate').value = v;
-  const txt = v.toFixed(2).replace(/0$/, '') + '×';
+  const txt = v.toFixed(1) + '×';
   $('prateN').textContent = $('cRate').textContent = txt;
   localStorage.setItem('shira_rate', v);
 }
