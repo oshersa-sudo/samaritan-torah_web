@@ -302,8 +302,14 @@ function subjOrder(key,g){
 }
 function curOrder(){ return subjOrder(S.subject,curLevel()); }
 function partName(scr,g){
+  const lo=(typeof mathLo!=="undefined")&&mathLo(scr,g??curLevel());
+  if(lo)return lo.name;
   const hi=(typeof MATH_HI_LABEL!=="undefined")&&/^ma/.test(scr)&&MATH_HI_LABEL[mathType(scr,g??curLevel())];
   return (hi&&hi.name)||PART_NAME[scr]||"";
+}
+function partDesc(scr,g){
+  const lo=(typeof mathLo!=="undefined")&&mathLo(scr,g??curLevel());
+  return (lo&&lo.desc)||PART_DESC[scr]||"";
 }
 function subjTotal(){ return curOrder().reduce((a,p)=>a+(PART_QUOTA[p]||0),0); }
 const K = {session:p=>`session:${p}`,results:p=>`results:${p}`,seen:p=>`seen:${p}`};
@@ -1548,7 +1554,7 @@ function menuHTML(){
     else{pill="מוכן";cls="ready";}
     return `<button class="skill-row" data-part="${part}">
       <span class="skill-num" style="background:${subj.grad}">${i+1}</span>
-      <span class="skill-body"><b>${partName(part)}</b><span>${PART_QUOTA[part]} ${PART_DESC[part]||""}</span></span>
+      <span class="skill-body"><b>${partName(part)}</b><span>${PART_QUOTA[part]} ${partDesc(part)}</span></span>
       <span class="skill-pill skill-${cls}">${pill}</span>
     </button>`;
   }).join("");
@@ -2119,20 +2125,28 @@ function abacusPanelHTML(){
       <button class="ghost sm ab-clear" id="ab-clear">להתחיל מחדש</button>
     </div>`;
 }
-// a small frame drawn as the button's icon
+// the wooden frame in miniature, so the button looks like what it opens
 function abIconSVG(){
   let rods="";
   AB_ROWS.forEach((r,i)=>{
-    const y=6+i*5.2;
-    rods+=`<line x1="3" y1="${y}" x2="29" y2="${y}" stroke="#c9c2e8" stroke-width="1.1"/>`;
-    for(let k=0;k<4;k++) rods+=`<circle cx="${5.5+k*2.6}" cy="${y}" r="1.7" fill="${r.c}"/>`;
-    for(let k=0;k<3;k++) rods+=`<circle cx="${20+k*2.6}" cy="${y}" r="1.7" fill="${r.c}"/>`;
+    const y=7.4+i*4.6;
+    rods+=`<line x1="4.5" y1="${y}" x2="27.5" y2="${y}" stroke="#9aa3b1" stroke-width=".9"/>`;
+    for(let k=0;k<4;k++) rods+=`<circle cx="${6.6+k*2.3}" cy="${y}" r="1.6" fill="${r.c}"/>`;
+    for(let k=0;k<3;k++) rods+=`<circle cx="${20.8+k*2.3}" cy="${y}" r="1.6" fill="${r.c}"/>`;
   });
   return `<svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
-    <rect x="1" y="1.5" width="30" height="29" rx="4" fill="#fff" stroke="#b9a9f0" stroke-width="1.6"/>
+    <rect x="1" y="1.5" width="30" height="29" rx="4.5" fill="#EFD5A4" stroke="#C08F4E" stroke-width="1.6"/>
+    <rect x="3.2" y="3.6" width="3" height="24.8" rx="1.5" fill="#DDB77C"/>
+    <rect x="25.8" y="3.6" width="3" height="24.8" rx="1.5" fill="#DDB77C"/>
     ${rods}</svg>`;
 }
 function abacusRight(){ return AB.rows.reduce((a,b)=>a+b,0); }
+// Every exercise starts on a clean frame: beads left where the previous question
+// finished are someone else's count. The panel stays open if the child opened it.
+function abacusReset(){
+  AB.rows=AB_ROWS.map(()=>0);
+  if(AB.open)renderAbacus();
+}
 function renderAbacus(){
   const frame=document.getElementById("ab-frame");if(!frame)return;
   frame.innerHTML=AB_ROWS.map((r,ri)=>{
@@ -3353,9 +3367,16 @@ const MATH_HI_LABEL = {
   algebra:{eyebrow:"חשבון · אלגברה ומשוואות",       lead:"בחר/י את התשובה הנכונה", name:"אלגברה ומשוואות"},
   seq    :{eyebrow:"חשבון · סדרות, הסתברות וסטטיסטיקה", lead:"בחר/י את התשובה הנכונה", name:"סדרות והסתברות"},
 };
+// In כיתה ב׳ this part asks only "חצי מ-8" and "רבע מ-12" — whole answers, and
+// exactly what the grade teaches. Naming it "שברים" made it read to a parent as
+// material years ahead of the child, so the label follows the content.
+const MATH_LO_LABEL = {
+  ma5:{eyebrow:"חשבון · חצי ורבע", lead:"בחר/י את התשובה הנכונה",
+       name:"חצי ורבע", desc:"חצי ורבע · 6 דק׳"},
+};
+const mathLo = (scr,g) => (g<=2 && MATH_LO_LABEL[scr]) || null;
 function mathLabel(scr,g){
-  const hi=MATH_HI_LABEL[mathType(scr,g)];
-  return hi || MATH_CFG[scr] || MATH_CFG.ma1;
+  return mathLo(scr,g) || MATH_HI_LABEL[mathType(scr,g)] || MATH_CFG[scr] || MATH_CFG.ma1;
 }
 
 function _genMathQ(lvl,type){
@@ -3818,14 +3839,39 @@ function _genGeomQ(lvl){
   }
   const T=[];
   if(lvl<=1){
+    // כיתות א׳–ב׳: זיהוי צורות, צלעות וקדקודים, גופים וספירה.
+    // רוב התבניות כאן היו שאלות קבועות בלי מספרים לשנות, כך שכל המאגר
+    // הסתכם באחת־עשרה שאלות — פחות מכמות השאלות בסבב אחד.
+    const FLAT=[["משולש","משולשים",3],["ריבוע","ריבועים",4],["מלבן","מלבנים",4],
+                ["מחומש","מחומשים",5],["משושה","משושים",6]];
+    const UNIQ=[["משולש",3],["מחומש",5],["משושה",6]];   // מספר הצלעות מזהה את הצורה
     T.push(
-      ()=>{const s=pick([["מְשֻׁלָּשׁ","משולש",3],["מְרֻבָּע","מרובע",4],["מְחֻמָּשׁ","מחומש",5],["מְשֻׁשֶּׁה","משושה",6]]);
-        return {t:`כמה צלעות יש ל${s[1]}?`,a:s[2],rtl:true};},
-      ()=>{const s=pick([["ריבוע",4],["משולש",3],["מלבן",4],["מחומש",5]]);
-        return {t:`כמה פינות (קדקודים) יש ל${s[0]}?`,a:s[1],rtl:true};},
-      ()=>({t:"לאיזו צורה יש 3 צלעות?",opts:shuffle(["משולש","ריבוע","עיגול","מלבן"]),ans:"משולש",rtl:true}),
+      ()=>{const s=pick(FLAT);return {t:`כמה צלעות יש ל${s[0]}?`,a:s[2],rtl:true};},
+      ()=>{const s=pick(FLAT);return {t:`כמה פינות (קדקודים) יש ל${s[0]}?`,a:s[2],rtl:true};},
+      ()=>{const s=pick(UNIQ);
+        return {t:`לאיזו צורה יש ${s[1]} צלעות?`,
+                opts:shuffle([...UNIQ.map(x=>x[0]),"עיגול"]),ans:s[0],rtl:true};},
       ()=>({t:"לאיזו צורה אין פינות כלל?",opts:shuffle(["עיגול","ריבוע","משולש","מלבן"]),ans:"עיגול",rtl:true}),
-      ()=>({t:"כמה זוויות ישרות יש בריבוע?",a:4,rtl:true}),
+      ()=>{const s=pick(["ריבוע","מלבן"]);return {t:`כמה זוויות ישרות יש ב${s}?`,a:4,rtl:true};},
+      // ספירת צלעות של כמה צורות יחד — גם גיאומטריה וגם חיבור
+      ()=>{const s=pick(FLAT),n=R(2,4);
+        return {t:`ל-${n} ${s[1]} יחד, כמה צלעות בסך הכול?`,a:n*s[2],rtl:true};},
+      ()=>{const s=pick(FLAT),n=R(2,4);
+        return {t:`ל-${n} ${s[1]} יחד, כמה פינות בסך הכול?`,a:n*s[2],rtl:true};},
+      // ספירת צורות בציור
+      ()=>{const a=R(2,7),b=R(2,7),p=pick([["משולשים","עיגולים"],["ריבועים","משולשים"],
+                                           ["עיגולים","מלבנים"],["מלבנים","משושים"]]);
+        return {t:`בציור יש ${a} ${p[0]} ו-${b} ${p[1]}. כמה צורות יש בסך הכול?`,a:a+b,rtl:true};},
+      ()=>{const a=R(4,9),b=R(1,3),p=pick(["משולשים","ריבועים","עיגולים","מלבנים"]);
+        return {t:`בציור היו ${a} ${p} ו-${b} נמחקו. כמה נשארו?`,a:a-b,rtl:true};},
+      // גופים
+      ()=>({t:"איזה גוף מתגלגל?",opts:shuffle(["כדור","קובייה","תיבה","פירמידה"]),ans:"כדור",rtl:true}),
+      ()=>({t:"לאיזה גוף יש 6 פאות שוות?",opts:shuffle(["קובייה","כדור","גליל","חרוט"]),ans:"קובייה",rtl:true}),
+      ()=>({t:"כמה פאות יש לקובייה?",a:6,rtl:true}),
+      ()=>{const s=pick([["משולש","שלוש צלעות ושלוש פינות"],["ריבוע","ארבע צלעות שוות"],
+                         ["מלבן","שתי צלעות ארוכות ושתיים קצרות"],["עיגול","קו מעוגל בלי פינות"]]);
+        return {t:`איזו צורה מתאימה לתיאור: ${s[1]}?`,
+                opts:shuffle(["משולש","ריבוע","מלבן","עיגול"]),ans:s[0],rtl:true};},
     );
   } else if(lvl===2){
     T.push(
@@ -3849,6 +3895,24 @@ function _genGeomQ(lvl){
       ()=>{const b=R(3,12),h=R(1,6)*2;return {t:`למשולש בסיס ${b} ס״מ וגובה ${h} ס״מ. מה השטח? (בסיס×גובה÷2)`,a:b*h/2,rtl:true};},
       ()=>{const l=R(2,8),w=R(2,8),h=R(2,8);return {t:`לתיבה מידות ${l}×${w}×${h} ס״מ. מה הנפח?`,a:l*w*h,rtl:true};},
       ()=>{const s=R(2,7);return {t:`לקובייה צלע ${s} ס״מ. מה הנפח? (צלע בשלישית)`,a:s*s*s,rtl:true};},
+      // ההיקף לצד השטח, והמעבר ביניהם — לב החומר בכיתות ה׳–ו׳
+      ()=>{const w=R(3,14),h=R(2,12);return {t:`למלבן אורך ${w} ורוחב ${h} ס״מ. מה ההיקף?`,a:2*(w+h),rtl:true};},
+      ()=>{const s=R(3,15);return {t:`לריבוע צלע ${s} ס״מ. מה ההיקף?`,a:4*s,rtl:true};},
+      ()=>{const s=pick([2,3,4,5,6,7,8,9,10,11,12]);
+        return {t:`שטח ריבוע הוא ${s*s} סמ״ר. מה אורך צלעו?`,a:s,rtl:true};},
+      ()=>{const w=R(2,12),h=R(2,12);
+        return {t:`שטח מלבן ${w*h} סמ״ר ואורכו ${w} ס״מ. מה רוחבו?`,a:h,rtl:true};},
+      ()=>{const a=R(20,100),b=R(20,Math.max(20,150-a));   // השלישית תמיד חיובית
+        return {t:`במשולש שתי זוויות ${a}° ו-${b}°. מה הזווית השלישית? (סכום=180°)`,a:180-a-b,rtl:true};},
+      ()=>{const s=pick([["ריבוע",4],["מלבן",2],["משולש שווה־צלעות",3],["משולש שווה־שוקיים",1]]);
+        return {t:`כמה צירי סימטריה יש ל${s[0]}?`,
+                opts:shuffle(["1","2","3","4"]),ans:String(s[1]),rtl:true};},
+      ()=>{const l=R(2,9),w=R(2,9),h=R(2,9);
+        return {t:`לתיבה מידות ${l}×${w}×${h} ס״מ. מה שטח הפנים? (2·(אורך·רוחב + אורך·גובה + רוחב·גובה))`,
+                a:2*(l*w+l*h+w*h),rtl:true};},
+      ()=>{const s=R(2,8);return {t:`לקובייה צלע ${s} ס״מ. מה שטח הפנים? (6·צלע²)`,a:6*s*s,rtl:true};},
+      ()=>{const b=R(2,12),h=R(2,12);
+        return {t:`למקבילית בסיס ${b} ס״מ וגובה ${h} ס״מ. מה השטח? (בסיס×גובה)`,a:b*h,rtl:true};},
     );
   } else if(lvl===4){
     T.push(
@@ -4086,13 +4150,35 @@ function _genWordProblem(lvl){
   const q=tmpls[R(0,tmpls.length-1)]();
   q.rtl=true; q.eq=false; return q;
 }
+// Questions used to be drawn one at a time with no memory, so a strand with few
+// templates repeated itself inside a single round — geometry worst of all, where
+// several templates carry no numbers to vary. Draw each question against what is
+// already on the sheet: never the same text twice, and spread the templates out.
+const _qSig = t => String(t).replace(/-?\d+(?:[.,]\d+)?/g,"#");
+function _genMathSet(lvl,type,n){
+  const out=[],seen=new Set(),used=new Map();
+  for(let i=0;i<n;i++){
+    let best=null,bestUse=Infinity;
+    for(let k=0;k<40;k++){
+      const c=_genMathQ(lvl,type);
+      if(seen.has(c.t))continue;
+      const u=used.get(_qSig(c.t))||0;
+      if(u<bestUse){best=c;bestUse=u;if(!u)break;}
+    }
+    const q=best||_genMathQ(lvl,type);   // pool genuinely smaller than the quota
+    seen.add(q.t);
+    const sg=_qSig(q.t); used.set(sg,(used.get(sg)||0)+1);
+    out.push(q);
+  }
+  return out;
+}
 function initMath(){
   const scr=S.screen;
   const saved=S.prog[scr],lvl=curLevel(),n=PART_QUOTA[scr]||10,t=TIME[scr]??300;
   const type=mathType(scr,lvl);          // the strand this grade actually studies
   wireAbacus();
   if(saved&&saved.qs){MA.qs=saved.qs;MA.i=saved.i||0;}
-  else{MA.qs=Array.from({length:n},()=>_genMathQ(lvl,type));MA.i=0;}
+  else{MA.qs=_genMathSet(lvl,type,n);MA.i=0;}
   MA.picked=false;
   setPartCount(MA.qs.length);
   renderMathQ();
@@ -4100,6 +4186,7 @@ function initMath(){
 }
 function renderMathQ(){
   const q=MA.qs[MA.i];
+  abacusReset();                        // a fresh frame for every exercise
   MA.opts=q.opts?q.opts:_mkOpts(q.a);   // explicit options (fractions, geometry) or numeric
   document.getElementById("q-ctr").textContent=`${MA.i+1}/${MA.qs.length}`;
   document.getElementById("math-q").innerHTML = q.rtl

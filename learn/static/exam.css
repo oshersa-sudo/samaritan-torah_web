@@ -1084,22 +1084,50 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .ab-sum b { font-family: 'Fredoka', sans-serif; font-size: 15px; }
 .ab-sum.ab-left { background: #3FBF6F; }
 
-.ab-frame { display: flex; flex-direction: column; gap: 7px; }
+/* ── the frame, drawn like the wooden classroom bead frame ────────────────── */
+.ab-frame {
+  position: relative; display: flex; flex-direction: column; gap: 3px;
+  padding: 13px 20px;   /* clear of the uprights */
+  background:
+    repeating-linear-gradient(96deg, rgba(150,102,48,.05) 0 3px, rgba(255,255,255,.05) 3px 7px),
+    linear-gradient(180deg, #FBEBC8, #EFD5A4 55%, #E1BE85);
+  border: 2px solid #C08F4E; border-radius: 16px;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.75),
+              inset 0 -4px 0 rgba(140,92,40,.22),
+              0 6px 0 -1px #BD8B4A, 0 12px 18px -8px rgba(90,58,18,.5);
+}
+/* the two uprights the rods run between */
+.ab-frame::before, .ab-frame::after {
+  content: ""; position: absolute; top: 5px; bottom: 5px; width: 11px;
+  border-radius: 6px; pointer-events: none;
+  background: linear-gradient(90deg, #DDB77C, #FAEACA 42%, #CE9F5E);
+  box-shadow: 0 1px 2px rgba(120,78,26,.4);
+}
+.ab-frame::before { left: 4px; }
+.ab-frame::after  { right: 4px; }
+
 .ab-row {
   position: relative; display: flex; justify-content: space-between;
-  align-items: center; min-height: 34px; padding: 0 6px;
+  align-items: center; min-height: 32px;
 }
-/* the rod the beads sit on */
+/* the metal rod the beads slide along */
 .ab-rod {
-  position: absolute; left: 6px; right: 6px; top: 50%; height: 4px;
-  margin-top: -2px; background: #d9cfc0; border-radius: 2px;
+  position: absolute; left: -3px; right: -3px; top: 50%; height: 3px;
+  margin-top: -1.5px; border-radius: 2px;
+  background: linear-gradient(180deg, #FFFFFF, #C6CCD6 45%, #8C95A3);
+  box-shadow: 0 1px 1px rgba(0,0,0,.2);
 }
-.ab-side { position: relative; display: flex; gap: 2px; z-index: 1; }
+.ab-side { position: relative; display: flex; gap: 1px; z-index: 1; }
+/* a glossy sphere: highlight up-left, shading down-right */
 .ab-bead {
-  width: 28px; height: 28px; border-radius: 50%; border: 0; padding: 0;
-  cursor: pointer; background: var(--bc);
-  box-shadow: inset 0 -3px 0 rgba(0,0,0,.16), inset 0 3px 0 rgba(255,255,255,.4),
-              0 2px 4px -1px rgba(40,20,80,.35);
+  width: 27px; height: 27px; border-radius: 50%; border: 0; padding: 0;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 33% 27%, rgba(255,255,255,.95) 0 7%,
+                    rgba(255,255,255,.5) 17%, rgba(255,255,255,0) 44%),
+    radial-gradient(circle at 70% 80%, rgba(0,0,0,.34) 0 20%, rgba(0,0,0,0) 62%),
+    var(--bc);
+  box-shadow: inset 0 0 0 1px rgba(90,50,10,.18), 0 2px 3px -1px rgba(70,42,12,.55);
   transition: transform .1s;
 }
 .ab-bead:hover { transform: scale(1.12); }
@@ -1108,8 +1136,10 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 .ab-clear { margin-top: 10px; font-size: 13px; padding: 6px 14px; }
 
 @media (max-width: 420px) {
-  .ab-bead { width: 23px; height: 23px; }
-  .ab-row { min-height: 29px; padding: 0 3px; }
+  .ab-bead { width: 22px; height: 22px; }
+  .ab-row { min-height: 26px; }
+  .ab-frame { padding: 11px 14px; gap: 2px; }
+  .ab-frame::before, .ab-frame::after { width: 9px; }
   .ab-head { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .ab-bead { transition: none; } }
