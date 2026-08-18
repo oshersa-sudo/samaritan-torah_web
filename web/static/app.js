@@ -1239,19 +1239,21 @@ function poemGrid(cls){
 // exactly their shape and rises out of them. The field is deliberately coarse
 // (a cell is some two screen pixels) and the canvas is stretched over the poem,
 // which both costs little and gives the softness that fire has.
-const FIRE_SCALE = 0.6, FIRE_HEAD = 30;    // grid fineness · room above for the flame
+const FIRE_SCALE = 0.8, FIRE_HEAD = 32;    // grid fineness · room above for the flame
 const FIRE_HEAT = 196, FIRE_SPARK = 59;    // how hot a letter is, and how it varies
-const FIRE_DECAY = 32;                     // how fast the flame dies — its height
-const FIRE_FUEL = .68;                     // how much of the ink catches: less is
+const FIRE_DECAY = 29;                     // how fast the flame dies — its height
+const FIRE_FUEL = .58;                     // how much of the ink catches: less is
                                            // separate tongues, more is a sheet
+// The edge is cut rather than faded, and the colours part company early: that is
+// what makes a flame look like fire and not like a glow behind glass.
 const FIRE_PALETTE = (() => {
   const p = new Uint8Array(256 * 4);
   for(let i = 1; i < 256; i++){
     const t = i / 255;
-    p[i*4]     = Math.min(255, 90 + 560*t) | 0;
-    p[i*4 + 1] = t < .24 ? 0 : Math.min(255, (t - .24) * 400) | 0;
-    p[i*4 + 2] = t < .70 ? 0 : Math.min(255, (t - .70) * 700) | 0;
-    p[i*4 + 3] = (Math.pow(t, 1.35) * 242) | 0;
+    p[i*4]     = Math.min(255, 120 + 620*t) | 0;
+    p[i*4 + 1] = t < .30 ? 0 : Math.min(255, (t - .30) * 470) | 0;
+    p[i*4 + 2] = t < .74 ? 0 : Math.min(255, (t - .74) * 820) | 0;
+    p[i*4 + 3] = t < .12 ? 0 : (Math.pow((t - .12) / .88, 1.05) * 252) | 0;
   }
   return p;                                   // heat 0 stays wholly transparent
 })();
@@ -1290,26 +1292,88 @@ function startPoemFire(){
   for(let i = 0; i < fuel.length; i++)
     if(ink[i*4+3] > 90 && Math.random() < FIRE_FUEL){ fuel[i] = 1; any++; }
   if(!any) return;
+  // A tongue breaks out where a letter has bare page beside it — not from the
+  // thick of the writing, where it would be lost among the other flames. The
+  // side it faces is kept with it (in the low bit), and that is the way it goes.
+  const seats = [];
+  for(let y = 0; y < H; y++)
+    for(let x = 0; x < W; x++){
+      const i = y*W + x;
+      if(!fuel[i]) continue;
+      if(x + 6 < W && !fuel[i+3] && !fuel[i+4] && !fuel[i+5] && !fuel[i+6]) seats.push(i*2 + 1);
+      else if(x - 6 >= 0 && !fuel[i-3] && !fuel[i-4] && !fuel[i-5] && !fuel[i-6]) seats.push(i*2);
+    }
+  if(!seats.length) for(let i = 0; i < fuel.length; i++) if(fuel[i]) seats.push(i*2 + 1);
+
+  // ── no two letters burn alike ──────────────────────────────────────────────
+  // Three slow waves run across the page, their wavelength about the width of a
+  // letter, so a letter and its neighbour never agree: one leans right, the next
+  // stands straight, a third leans left and burns the taller for it. The waves
+  // travel, so the same letter burns otherwise a moment later.
+  const LET = Math.max(3.5, fs * FIRE_SCALE * .62);      // a letter, in cells
+  const k1 = 2*Math.PI / (LET * 1.9), k2 = 2*Math.PI / (LET * .85);
+  const lean = new Float32Array(W), hot = new Float32Array(W), dec = new Float32Array(W);
 
   const ctx = cv.getContext('2d');
   const heat = new Uint8Array(W * H);
   const img = ctx.createImageData(W, H), d = img.data, pal = FIRE_PALETTE;
-  let raf = 0, tick = 0, alive = true;
+  const flares = [];                            // the tongues that break out
+  let raf = 0, tick = 0, frame = 0, nextFlare = 20, alive = true;
+
   function step(){
     if(!alive || !cv.isConnected){ alive = false; return; }
     raf = requestAnimationFrame(step);
     if((tick++ & 1) || document.hidden) return;        // some thirty times a second
+    const t = frame++ / 30;
+    for(let x = 0; x < W; x++){
+      const s = Math.sin(x*k1 + t*.55)*.62 + Math.sin(x*k2 - t*.9 + 1.7)*.38;
+      lean[x] = s;                                     // which way this letter leans
+      const h = .68 + .38 * (.5 + .5*Math.sin(x*k1*.8 + t*.31 + 2.1));
+      hot[x] = h;                                      // and how fiercely it burns
+      dec[x] = FIRE_DECAY * (1.32 - .46*h);            // the fierce burn the taller
+    }
+    // now and then a tongue breaks out of one letter and licks the bare page
+    if(frame >= nextFlare){
+      nextFlare = frame + 24 + ((Math.random()*22)|0);          // about once a second
+      if(flares.length < 2){
+        const v = seats[(Math.random()*seats.length)|0];
+        const i = v >> 1, side = (v & 1) ? 1 : -1;
+        const fl = { x: i % W, y: (i / W)|0, vx: side*(.95 + Math.random()*.7),
+                     vy: -(.28 + Math.random()*.42), life: 20 + ((Math.random()*11)|0) };
+        fl.max = fl.life;
+        flares.push(fl);
+      }
+    }
     // a letter does not burn evenly: each stroke takes and gives up the flame
     for(let i = 0; i < fuel.length; i++)
-      if(fuel[i]) heat[i] = FIRE_HEAT + ((Math.random()*FIRE_SPARK)|0);
+      if(fuel[i]){
+        const v = hot[i % W] * FIRE_HEAT + Math.random()*FIRE_SPARK;
+        heat[i] = v > 255 ? 255 : v|0;
+      }
+    for(let f = flares.length - 1; f >= 0; f--){
+      const fl = flares[f];
+      const r = .6 + 1.15 * (fl.life / fl.max);         // it thins as it goes out
+      const cx = Math.round(fl.x), cy = Math.round(fl.y), ri = Math.ceil(r);
+      for(let dy = -ri; dy <= ri; dy++){
+        const yy = cy + dy; if(yy < 0 || yy >= H) continue;
+        for(let dx = -ri; dx <= ri; dx++){
+          const xx = cx + dx; if(xx < 0 || xx >= W) continue;
+          if(dx*dx + dy*dy > r*r) continue;
+          const v = 236 + ((Math.random()*19)|0);
+          if(heat[yy*W + xx] < v) heat[yy*W + xx] = v;
+        }
+      }
+      fl.x += fl.vx; fl.y += fl.vy; fl.vy -= .045; fl.vx *= .97;   // it curls upward
+      if(--fl.life <= 0 || fl.y < 0) flares.splice(f, 1);
+    }
     for(let y = 0; y < H-1; y++){
       const row = y*W, below = (y+1)*W;
       for(let x = 0; x < W; x++){
         const v = heat[below + x];
         if(!v){ if(!fuel[row+x]) heat[row+x] = 0; continue; }
-        const nv = v - ((Math.random()*FIRE_DECAY)|0);
+        const nv = v - ((Math.random()*dec[x])|0);
         let nx = x;
-        if(Math.random() < .6) nx += Math.random() < .5 ? -1 : 1;   // the draught
+        if(Math.random() < .62) nx += Math.random() < .5 + lean[x]*.42 ? 1 : -1;
         if(nx < 0) nx = 0; else if(nx >= W) nx = W-1;
         heat[row + nx] = nv > 0 ? nv : 0;
       }

@@ -265,7 +265,7 @@ body.div-collapsed .div-handle{ height:26px; }
 .bkpoem-stack{ flex:0 0 auto; position:relative; }
 .pfirecv{ position:absolute; left:0; width:100%; z-index:1;
           pointer-events:none; user-select:none;
-          filter:blur(2.1px); opacity:.86; }   /* the grid is coarse; fire is not */
+          filter:blur(1.1px); opacity:.88; }   /* just enough to take the grid off */
 .pchar{ position:relative; z-index:2; }
 .psparks{ z-index:4; }
 .pfire{ position:absolute; inset:0; width:100%; height:100%; z-index:3;
