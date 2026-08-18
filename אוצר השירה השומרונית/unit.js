@@ -2054,17 +2054,20 @@ function dncRim() {
   // the drawing is 1000 units across, so this is how many screen pixels one
   // unit of outline is actually worth
   const perUnit = w / 1000;
-  let px = 1.5;                                   // the outline, in real pixels
-  if (w < 330) px = 2.3;
-  else if (w < 420) px = 2.0;
-  if (matchMedia('(prefers-color-scheme: dark)').matches) px += 0.35;
-  if (matchMedia('(prefers-contrast: more)').matches) px += 0.7;
-  const r = Math.max(1.6, Math.min(6, px / (perUnit || 0.4)));
+  // A hairline, not a border. What carries her on a dim screen is that the
+  // line is pure white and lit, not that it is thick — a thick one only
+  // fattens her and loses the figure.
+  let px = 0.7;                                   // the outline, in real pixels
+  if (w < 330) px = 1.05;
+  else if (w < 420) px = 0.9;
+  if (matchMedia('(prefers-color-scheme: dark)').matches) px += 0.12;
+  if (matchMedia('(prefers-contrast: more)').matches) px += 0.3;
+  const r = Math.max(0.9, Math.min(3.4, px / (perUnit || 0.4)));
   const f = document.querySelector('#dncRim feMorphology');
   if (f) f.setAttribute('radius', r.toFixed(2));
   const d = $('dancer');
-  d.style.setProperty('--rim', (px * 1.5).toFixed(2) + 'px');
-  d.style.setProperty('--rimop', (w < 420 ? 0.75 : 0.5).toFixed(2));
+  d.style.setProperty('--rim', (px * 2.6).toFixed(2) + 'px');   // the glow
+  d.style.setProperty('--rimop', (w < 420 ? 0.95 : 0.8).toFixed(2));
 }
 dncRim();
 addEventListener('resize', dncRim);
@@ -2138,7 +2141,7 @@ function dancerResume() {
 }
 
 function dancerIn() {
-  if (DNC.at !== 'off' || !DNC_ON) return;
+  if (DNC.at !== 'off' || !DNC_ON || PIX.on) return;
   const d = $('dancer');
   DNC.at = 'in';
   dncClear();
@@ -2933,7 +2936,10 @@ const PIX_NOT = /logo|icon|symbol|wiki|commons|open.?access|flag|coat.of.arms|bl
 /* Commons holds millions of scanned book pages, and a search for words like
  * "ceremony" or "people" brings them up by the hundred. They are engravings
  * out of Victorian encyclopaedias, not photographs of anybody's life. */
-const PIX_BOOK = /\(IA |bub_gb_|internet archive|encyclopa|microform|- being a|wherein is|\bplate \d|\bpage \d|frontispiece|woodcut|engraving|lithograph|\bvol\b|\bed\.\b|\(micr/i;
+const PIX_BOOK = /\(IA |bub_gb_|internet archive|encyclopa|microform|- being a|wherein is|\bplate \d|\bpage \d|frontispiece|woodcut|engraving|lithograph|\bvol\b|\bed\.\b|\(micr|news\b|newspaper|clipping|poster|leaflet|cover\b|seminar|conference|delegation|ulpan/i;
+/* a scan reproduced under fair use is somebody's newspaper page, not a
+ * picture of anybody's life, and it has no licence to show it under */
+const PIX_FAIR = /fair.?use|שימוש הוגן|non.?free/i;
 
 /* And a search anchored only by subject words still wanders, so a picture is
  * kept only if the file itself is named for this community — Samaritan in one
@@ -2946,7 +2952,11 @@ const PIX_SUBJ = /samarit|samaritain|samariter|shomron|shumron|schomron|gerizim|
 function pixUsable(p, w, h, anchored) {
   if (!p.src || !/\.(jpe?g|png)$/i.test(p.src.split('?')[0])) return false;
   if (PIX_NOT.test(p.ttl) || PIX_BOOK.test(p.ttl)) return false;
-  if (anchored && !PIX_SUBJ.test(`${p.ttl} ${(p.cats || []).join(' ')}`)) return false;
+  const cats = (p.cats || []).join(' ');
+  if (PIX_FAIR.test(`${p.lic} ${cats}`)) return false;
+  // A free search has to prove the picture is of this community; the
+  // article's own images do not — being in it is the proof.
+  if (anchored && !PIX_SUBJ.test(`${p.ttl} ${cats}`)) return false;
   if (w && w < 620) return false;                 // an icon, not a photograph
   if (w && h && (w / h > 3.2 || h / w > 2.6)) return false;   // a banner or a strip
   return true;
@@ -2984,6 +2994,49 @@ async function pixGiven() {
   } catch (e) { return []; }
 }
 
+/* ---- the archive's own pictures and films.
+ *
+ * scripts/scan_media.py reads the folder they are kept in and writes what it
+ * found to data/local_media.json; the files themselves are served from the
+ * same media host as the recordings. These come before anything fetched from
+ * outside — they are the community's own, and they are what the screen is
+ * really for.
+ *
+ * The feast a picture belongs to is written into where it was filed and what
+ * it was called: a folder named Passover03, a film called 2016-Shavuot-ORI…
+ * That is enough to show a recording made at Sukkot the Sukkot pictures. */
+const PIX_FEAST = [
+  [/passover|pesa|פסח|מצות/i,            [4, 5]],
+  [/sukkot|sukkoth|succot|סוכות|סוכה/i,  [10, 11]],
+  [/shavuot|שבועות/i,                     [6]],
+  [/yom.?kippur|כיפור/i,                  [9]],
+  [/wedding|חתונה|חתנה/i,                 [14]],
+  [/torah|תורה|ספר/i,                     [15]],
+];
+
+async function pixLocal() {
+  let man = null;
+  try { man = await fetch('data/local_media.json').then(r => r.ok ? r.json() : null); }
+  catch (e) { return []; }
+  if (!man || !Array.isArray(man.items) || !man.items.length) return [];
+  const root = man.base || (C.meta && C.meta.media_pix) || '';
+  if (!root) return [];                    // nowhere to serve them from yet
+  const base = root.replace(/\/?$/, '/');
+  const credit = man.credit || 'ארכיון אוצר השירה השומרונית';
+  return man.items.map(x => {
+    const path = `${x.folder || ''}/${x.f}`;
+    const feasts = PIX_FEAST.filter(([re]) => re.test(path)).flatMap(([, ids]) => ids);
+    return {
+      src: base + x.f.split('/').map(encodeURIComponent).join('/'),
+      kind: x.kind === 'video' ? 'video' : 'image',
+      secs: x.secs || 0,
+      by: x.by || credit, lic: x.lic || 'מארכיון הקהילה',
+      ttl: x.f.split('/').pop().replace(/\.[a-z0-9]+$/i, ''),
+      feasts, local: true,
+    };
+  });
+}
+
 async function pixLoad() {
   const r = cur.rec ? byId(C.recordings, cur.rec) : null;
   const key = String((r && r.e) || 0);
@@ -2999,6 +3052,11 @@ async function pixLoad() {
     if (!seen.has(x.src)) { seen.add(x.src); out.push(Object.assign(x, { rank })); }
   });
   take(await pixGiven(), 0);
+  // the archive's own: those that suit this feast first, then the rest of it
+  const mine = await pixLocal();
+  const ev = (r && r.e) || 0;
+  take(mine.filter(x => x.feasts.includes(ev)), 0);
+  take(mine.filter(x => !x.feasts.length), 1);
   if (!PIX.on) return false;
 
   const own = PIX_Q[r && r.e] || [];
@@ -3015,10 +3073,31 @@ async function pixLoad() {
     if (out.length >= 34) break;                    // enough for a long recording
   }
   if (!out.length) return false;
+  // Where the feast's own search found plenty, the general one is not wanted
+  // at all: it is there to fill a gap, not to dilute what fits.
+  const close = out.filter(p => p.rank <= 2);
+  let pool = close.length >= 14 ? close : out;
+
+  /* Two caps, and they matter more than any of the filtering above. A search
+   * returns one photographer's whole session — thirty frames of the same
+   * afternoon, or a seminar somebody once photographed — and without a limit
+   * that one series takes over the screen entirely. So no photographer gives
+   * more than a handful, and neither does any one run of consecutively
+   * numbered files. */
+  const stem = p => p.ttl.replace(/[\s_-]*\(?\d[\d\s.]*\)?$/, '').trim().toLowerCase();
+  const perBy = new Map(), perStem = new Map();
+  pool = pool.filter(p => {
+    const b = p.by || '?', s = stem(p);
+    const nb = (perBy.get(b) || 0) + 1, ns = (perStem.get(s) || 0) + 1;
+    if (nb > 5 || ns > 6) return false;
+    perBy.set(b, nb); perStem.set(s, ns);
+    return true;
+  });
+
   // Somebody in the picture first, and the feast's own before the general.
   // Pictures that plainly have nobody in them are dropped outright, so long
   // as enough are left without them.
-  const scored = out.map(p => ({ p, s: pixPeople(p) }))
+  const scored = pool.map(p => ({ p, s: pixPeople(p) }))
     .sort((a, b) => (b.s - a.s) || (a.p.rank - b.p.rank));
   const kept = scored.filter(x => x.s >= 0).map(x => x.p);
   const rest = scored.filter(x => x.s < 0).map(x => x.p);
@@ -3049,11 +3128,28 @@ function pixSpread(list) {
   return out;
 }
 
-/* one picture after another, each fading up over the one before it */
+/* One picture after another, each fading up over the one before it.
+ *
+ * A film is treated as one of them, and never brings its own sound: what is
+ * being listened to is the recording. A short one runs through; a long one
+ * would hold the screen for ten minutes, so only about ten seconds of it are
+ * shown — and a different ten seconds each time it comes round, so that a
+ * long film gives up all of itself over the course of a long recording
+ * instead of the same opening again and again.
+ */
+const PIX_CLIP = 10;                     // seconds of a long film at a time
+const pixSeen = new Map();               // how many times each film has been on
+
 function pixNext() {
   if (!PIX.on || !PIX.list.length) return;
   const p = PIX.list[PIX.i % PIX.list.length];
   PIX.i++;
+  clearTimeout(PIX.timer);
+  const vid = $('tvV');
+  if (p.kind === 'video') return pixFilm(p, vid);
+
+  vid.classList.remove('on');
+  try { vid.pause(); } catch (e) {}
   const show = PIX.which === 'A' ? $('tvB') : $('tvA');
   const hide = PIX.which === 'A' ? $('tvA') : $('tvB');
   PIX.which = PIX.which === 'A' ? 'B' : 'A';
@@ -3065,8 +3161,38 @@ function pixNext() {
   };
   show.onerror = () => { if (PIX.on) pixNext(); };    // a picture that will not come
   show.src = p.src;
-  clearTimeout(PIX.timer);
   PIX.timer = setTimeout(pixNext, 7200);
+}
+
+function pixFilm(p, vid) {
+  const n = (pixSeen.get(p.src) || 0);
+  pixSeen.set(p.src, n + 1);
+  vid.muted = true;                        // said twice, because it matters
+  vid.volume = 0;
+  vid.onerror = () => { if (PIX.on) pixNext(); };
+  vid.onloadedmetadata = () => {
+    if (!PIX.on) return;
+    const len = vid.duration || p.secs || 0;
+    let run = len;
+    if (len > PIX_CLIP + 3) {
+      // a different part on each showing, walking through the film
+      const parts = Math.max(1, Math.floor(len / PIX_CLIP));
+      const at = (n % parts) * PIX_CLIP;
+      try { vid.currentTime = Math.min(at, Math.max(0, len - PIX_CLIP)); } catch (e) {}
+      run = PIX_CLIP;
+    }
+    vid.play().catch(() => {});
+    $('tvA').classList.remove('on'); $('tvB').classList.remove('on');
+    vid.classList.add('on');
+    $('tvCap').textContent = pixCredit(p) +
+      (len > PIX_CLIP + 3 ? ` · קטע ${(n % Math.max(1, Math.floor(len / PIX_CLIP))) + 1}` : '');
+    clearTimeout(PIX.timer);
+    PIX.timer = setTimeout(pixNext, run * 1000 + 400);
+  };
+  vid.src = p.src;
+  vid.load();
+  // if the film never arrives, do not leave the screen stuck on it
+  PIX.timer = setTimeout(() => { if (PIX.on && !vid.classList.contains('on')) pixNext(); }, 9000);
 }
 
 function pixCredit(p) {
@@ -3084,14 +3210,33 @@ function pixOff() {
   tv.classList.add('hidden');
   tv.classList.remove('on');
   ['tvA', 'tvB'].forEach(id => { $(id).classList.remove('on'); $(id).removeAttribute('src'); });
+  const v = $('tvV');
+  v.classList.remove('on');
+  try { v.pause(); } catch (e) {}
+  v.removeAttribute('src'); v.load();
   $('dwPix').setAttribute('aria-pressed', 'false');
   $('dwPix').title = 'תמונות מחיי השומרונים';
+  // the cassette is back, so she may come on again with it
+  dancerWatch();
+}
+
+/* While the pictures are up there is nothing of her to see — the screen is
+ * over the whole cassette — so she stops rather than dancing behind it. This
+ * does not touch whether the listener wants her at all: that is their own
+ * setting, and it is waiting for her when the cassette comes back. */
+function dancerAside() {
+  dncClear();
+  clearTimeout(DNC.figT); DNC.figT = 0;
+  dncSet(null);
+  $('dancer').classList.remove('show');
+  DNC.at = 'off';
 }
 
 $('dwPix').onclick = async () => {
   sfx('click');
   if (PIX.on) return pixOff();
   PIX.on = true;
+  dancerAside();                                  // nothing of her would show
   const tv = $('tv');
   tv.classList.remove('hidden');
   void tv.offsetWidth;

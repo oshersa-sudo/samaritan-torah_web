@@ -547,13 +547,11 @@
            ומתעבה ככל שהתנאים גרועים יותר. -->
       <filter id="dncRim" x="-45%" y="-45%" width="190%" height="190%"
               color-interpolation-filters="sRGB">
-        <feMorphology in="SourceAlpha" operator="dilate" radius="2.6" result="fat"/>
+        <feMorphology in="SourceAlpha" operator="dilate" radius="1.6" result="fat"/>
         <feFlood flood-color="#ffffff" flood-opacity="1" result="lit"/>
         <feComposite in="lit" in2="fat" operator="in" result="rim"/>
-        <feGaussianBlur in="rim" stdDeviation=".5" result="soft"/>
         <feMerge>
-          <feMergeNode in="soft"/><feMergeNode in="rim"/>
-          <feMergeNode in="SourceGraphic"/>
+          <feMergeNode in="rim"/><feMergeNode in="SourceGraphic"/>
         </feMerge>
       </filter>
       <!-- הסרט אינו נראה מבעד למדבקה: מותר לו רק מתחתיה, ובחלון הסלילים -->
@@ -835,6 +833,9 @@
       <div class="tv hidden" id="tv" aria-hidden="true">
         <img class="tv-img" id="tvA" alt="">
         <img class="tv-img" id="tvB" alt="">
+        <!-- הסרטונים רצים כאן, תמיד בלי קול: ההקלטה היא הנשמעת -->
+        <video class="tv-img tv-vid" id="tvV" muted playsinline
+               preload="metadata" disablepictureinpicture></video>
         <span class="tv-scan" aria-hidden="true"></span>
         <span class="tv-glass" aria-hidden="true"></span>
         <div class="tv-cap"><span id="tvCap">מחפש תמונות…</span></div>
