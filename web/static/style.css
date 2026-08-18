@@ -220,7 +220,22 @@ body.div-collapsed .div-handle{ height:26px; }
    is measured and scaled to the width available; see fitBookPoem(). */
 .bkpoem{ display:flex; justify-content:center; overflow:hidden; padding:10px 14px 6px; }
 /* the quill rule above the poem and, turned about, below it */
-.ornframe{ width:100%; display:flex; flex-direction:column; align-items:center; gap:9px; }
+.ornframe{ width:100%; max-width:100%; box-sizing:border-box;
+           display:flex; flex-direction:column; align-items:center; gap:9px;
+           position:relative; isolation:isolate; border-radius:10px; padding:16px 12px 14px; }
+/* ── the open codex the poem is set upon ────────────────────────────────────
+   The photograph of the manuscript is the frame's own background, not a picture
+   of its own: it covers the frame's box, is clipped by the frame's rounded
+   corners, and the frame is only ever as wide as the book list itself — so
+   however wide the page grows, the codex cannot spill past the menu. The file
+   (poem_manuscript.jpg) is already lightened: the photograph is dark and the
+   poem is written in gold, so the plate was blended toward the app's parchment
+   until the writing sits plainly upon it and the manuscript still shows through. */
+.ornframe::before{
+  content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit;
+  background:url('/static/img/poem_manuscript.jpg') center/cover no-repeat #f7f4ea;
+  box-shadow:inset 0 0 0 1px rgba(138,106,31,.16);
+}
 .orn-rule{ width:100%; line-height:0; }
 .orn-rule svg{ display:block; width:100%; height:auto; }
 .orn-rule.bot{ transform:rotate(180deg); }
