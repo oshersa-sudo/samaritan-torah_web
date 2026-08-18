@@ -442,8 +442,18 @@ body{
 .dw-dnc[aria-pressed="false"] .dn-no{display:block}
 .dw-dnc[aria-pressed="false"]{background:linear-gradient(180deg,#3a2f2e,#241c1b)}
 
-.dw-pix .px-fr{stroke:#cfd6e2}
-.dw-pix .px-sun,.dw-pix .px-hill{fill:#cfd6e2}
+/* The pictures key is the one that turns the machine into something else, so
+   it is the one key that does not look like the rest of the row: a warmer
+   face, a lit rim, and a picture in colour inside its frame. */
+.dw-pix{
+  background:linear-gradient(180deg,#6a6154,#443d33);
+  border-color:#241f18;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 0 6px rgba(224,178,92,.28);
+}
+.dw-pix:hover{background:linear-gradient(180deg,#7b7263,#514a3e)}
+.dw-pix .px-fr{stroke:#f0e6d2}
+.dw-pix .px-sun{fill:#ffd166}
+.dw-pix .px-hill{fill:#8fd0a8}
 .dw-pix[aria-pressed="true"]{background:linear-gradient(180deg,#1e3d63,#132840)}
 .dw-pix[aria-pressed="true"] .px-fr{stroke:#6ab6ff}
 .dw-pix[aria-pressed="true"] .px-sun,.dw-pix[aria-pressed="true"] .px-hill{fill:#6ab6ff}
@@ -1380,12 +1390,15 @@ body{
   .transport{gap:2px;padding:4px 4px 5px}
   .tbtn2 b,.pbtn b{font-size:.44rem;letter-spacing:.02em}
   .tbtn2 svg,.pbtn svg{width:14px;height:14px}
-  /* eight keys on a narrow bar: they close ranks and the handle gives way */
+  /* Eight keys on a narrow bar: they close ranks either side, and the handle
+     takes what is left between them — which is most of the middle, and far
+     more than it was given at first. The maker's name is the only writing on
+     the machine and it has to be legible at arm's length. */
   .dw-bar{gap:3px;padding:8px 5px}
   .dw-btn{padding:2px 5px}
   .dw-ico,.dw-quiet,.dw-bt{padding:3px 3px}
-  .dw-handle{width:78px}
-  .dw-handle b{font-size:.46rem;letter-spacing:.04em}
+  .dw-handle{width:166px}
+  .dw-handle b{font-size:.58rem;letter-spacing:.07em}
   .dw-name{max-width:calc(50% - 104px)}
   .dw-name{max-width:calc(50% - 70px)}
 
