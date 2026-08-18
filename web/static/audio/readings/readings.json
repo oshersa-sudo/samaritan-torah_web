@@ -13449,9 +13449,9 @@
      "n": 44,
      "verses": "ו:כב-ו:כז",
      "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
      },
      "sam_ch_number": 44,
      "file": "/static/audio/readings/b4-p03-c044.mp3",
@@ -14219,9 +14219,9 @@
      "n": 79,
      "verses": "יג:א-יג:יז",
      "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
      },
      "sam_ch_number": 79,
      "file": "/static/audio/readings/b4-p04-c079.mp3",
@@ -14615,9 +14615,9 @@
      "n": 97,
      "verses": "טז:א-טז:ז",
      "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
      },
      "sam_ch_number": 97,
      "file": "/static/audio/readings/b4-p05-c097.mp3",
@@ -15099,9 +15099,9 @@
      "n": 119,
      "verses": "כ:יד-כ:כב",
      "portion": {
-      "order": 6,
-      "name": "וישלח משה",
-      "id": 43
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
      },
      "sam_ch_number": 119,
      "file": "/static/audio/readings/b4-p06-c119.mp3",
@@ -15121,9 +15121,9 @@
      "n": 120,
      "verses": "כ:כג-כ:כט",
      "portion": {
-      "order": 6,
-      "name": "וישלח משה",
-      "id": 43
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
      },
      "sam_ch_number": 120,
      "file": "/static/audio/readings/b4-p06-c120.mp3",
@@ -15143,9 +15143,9 @@
      "n": 121,
      "verses": "כא:א-כא:ג",
      "portion": {
-      "order": 6,
-      "name": "וישלח משה",
-      "id": 43
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
      },
      "sam_ch_number": 121,
      "file": "/static/audio/readings/b4-p06-c121.mp3",
@@ -15671,9 +15671,9 @@
      "n": 145,
      "verses": "כה:י-כה:טו",
      "portion": {
-      "order": 7,
-      "name": "פינחס",
-      "id": 44
+      "order": 6,
+      "id": 43,
+      "name": "וישלח משה"
      },
      "sam_ch_number": 145,
      "file": "/static/audio/readings/b4-p07-c145.mp3",
@@ -15693,9 +15693,9 @@
      "n": 146,
      "verses": "כה:טז-כה:יט",
      "portion": {
-      "order": 7,
-      "name": "פינחס",
-      "id": 44
+      "order": 6,
+      "id": 43,
+      "name": "וישלח משה"
      },
      "sam_ch_number": 146,
      "file": "/static/audio/readings/b4-p07-c146.mp3",
@@ -15715,9 +15715,9 @@
      "n": 147,
      "verses": "כו:א-כו:ז",
      "portion": {
-      "order": 7,
-      "name": "פינחס",
-      "id": 44
+      "order": 6,
+      "id": 43,
+      "name": "וישלח משה"
      },
      "sam_ch_number": 147,
      "file": "/static/audio/readings/b4-p07-c147.mp3",
@@ -15737,9 +15737,9 @@
      "n": 148,
      "verses": "כו:ח-כו:יא",
      "portion": {
-      "order": 7,
-      "name": "פינחס",
-      "id": 44
+      "order": 6,
+      "id": 43,
+      "name": "וישלח משה"
      },
      "sam_ch_number": 148,
      "file": "/static/audio/readings/b4-p07-c148.mp3",
@@ -16639,9 +16639,9 @@
      "n": 189,
      "verses": "לא:לב-לא:מא",
      "portion": {
-      "order": 8,
-      "name": "ויהי המלקח",
-      "id": 45
+      "order": 7,
+      "id": 44,
+      "name": "פינחס"
      },
      "sam_ch_number": 189,
      "file": "/static/audio/readings/b4-p08-c189.mp3",
@@ -16661,9 +16661,9 @@
      "n": 190,
      "verses": "לא:מב-לא:מז",
      "portion": {
-      "order": 8,
-      "name": "ויהי המלקח",
-      "id": 45
+      "order": 7,
+      "id": 44,
+      "name": "פינחס"
      },
      "sam_ch_number": 190,
      "file": "/static/audio/readings/b4-p08-c190.mp3",
@@ -16683,9 +16683,9 @@
      "n": 191,
      "verses": "לא:מח-לא:נד",
      "portion": {
-      "order": 8,
-      "name": "ויהי המלקח",
-      "id": 45
+      "order": 7,
+      "id": 44,
+      "name": "פינחס"
      },
      "sam_ch_number": 191,
      "file": "/static/audio/readings/b4-p08-c191.mp3",
@@ -16705,9 +16705,9 @@
      "n": 192,
      "verses": "לב:א-לב:ה",
      "portion": {
-      "order": 8,
-      "name": "ויהי המלקח",
-      "id": 45
+      "order": 7,
+      "id": 44,
+      "name": "פינחס"
      },
      "sam_ch_number": 192,
      "file": "/static/audio/readings/b4-p08-c192.mp3",
