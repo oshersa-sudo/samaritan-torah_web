@@ -1249,6 +1249,9 @@ const FIRE_DECAY = 29;                     // how fast the flame dies — its he
 const FIRE_FUEL = .58, FIRE_FUEL_NARROW = .40;
 // The edge is cut rather than faded, and the colours part company early: that is
 // what makes a flame look like fire and not like a glow behind glass.
+// the photograph of the page, kept in hand so a hole can be cut clean out of it
+const plateImg = new Image();
+plateImg.src = '/static/img/poem_manuscript.jpg';
 const FIRE_PALETTE = (() => {
   const p = new Uint8Array(256 * 4);
   for(let i = 1; i < 256; i++){
@@ -1314,10 +1317,10 @@ function startPoemFire(){
   const ink = oc.getImageData(0, 0, W, H).data;
   const fuel = new Uint8Array(W * H);
   const dens = innerWidth < 560 ? FIRE_FUEL_NARROW : FIRE_FUEL;
-  let any = 0;
+  const ash = [];                               // every cell that is alight, listed
   for(let i = 0; i < fuel.length; i++)
-    if(ink[i*4+3] > 90 && Math.random() < dens){ fuel[i] = 1; any++; }
-  if(!any) return;
+    if(ink[i*4+3] > 90 && Math.random() < dens){ fuel[i] = 1; ash.push(i); }
+  if(!ash.length) return;
   // A tongue breaks out wherever a letter has bare page beside it — to its left
   // or right, above it or below it, at the outer edge of a line or in the gap
   // between two letters. Every such place is a seat, and the way it faces is
@@ -1334,6 +1337,27 @@ function startPoemFire(){
     }
   if(!seats.length) for(let i = 0; i < fuel.length; i++) if(fuel[i]) seats.push(i*4 + 2);
   const SEAT_ANGLE = [Math.PI, 0, -Math.PI/2, Math.PI/2];   // left · right · up · down
+  // a cell alight in the other column, on about the same line — the far end of a
+  // flame that will span the gap between the two columns of the poem
+  function acrossFrom(i){
+    const x = i % W, y = (i / W)|0;
+    for(let tries = 0; tries < 40; tries++){
+      const j = ash[(Math.random()*ash.length)|0];
+      const jx = j % W, jy = (j / W)|0, dx = Math.abs(jx - x);
+      if(Math.abs(jy - y) <= 3 && dx > W*.20 && dx < W*.62) return j;
+    }
+    return -1;
+  }
+  // another letter close by, to have a flame thrown at it
+  function nearbyEmber(i){
+    const x = i % W, y = (i / W)|0;
+    for(let tries = 0; tries < 24; tries++){
+      const j = ash[(Math.random()*ash.length)|0];
+      const dx = (j % W) - x, dy = ((j / W)|0) - y, dd = dx*dx + dy*dy;
+      if(dd > 140 && dd < 3000) return j;
+    }
+    return -1;
+  }
   // where the writing ends and the bare margin of the page begins
   let fx0 = W, fx1 = 0, fy0 = H, fy1 = 0;
   for(let y = 0; y < H; y++)
@@ -1356,9 +1380,23 @@ function startPoemFire(){
   const heat = new Uint8Array(W * H);
   const img = ctx.createImageData(W, H), d = img.data, pal = FIRE_PALETTE;
   const flares = [];                            // the tongues that break out
-  const holes = [];                             // and the wounds they leave
+  const holes = [];                             // the wounds they leave
+  const bridges = [];                           // and the ropes of fire between columns
   let raf = 0, tick = 0, frame = 0, alive = true;
-  let nextFlare = 20, holeWait = 90, nextEdge = 200, nextScrap = 120;
+  let nextFlare = 20, holeWait = 90, nextEdge = 200, nextScrap = 90, nextBridge = 260;
+  // a hot round mark laid into the field of heat, wherever a flame touches
+  function scorch(gx, gy, rad, base){
+    const ri = Math.ceil(rad);
+    for(let dy = -ri; dy <= ri; dy++){
+      const yy = gy + dy; if(yy < 0 || yy >= H) continue;
+      for(let dx = -ri; dx <= ri; dx++){
+        const xx = gx + dx; if(xx < 0 || xx >= W) continue;
+        if(dx*dx + dy*dy > rad*rad) continue;
+        const v = base + ((Math.random()*19)|0);
+        if(heat[yy*W + xx] < v) heat[yy*W + xx] = v;
+      }
+    }
+  }
 
   // ── the wound, and its healing ─────────────────────────────────────────────
   // A burn is either a hole eaten through the page or a bite taken out of one of
@@ -1368,13 +1406,19 @@ function startPoemFire(){
   // sends a flame up out of itself until that dies down like an ember, and only
   // then closes again from its edges inward, slowly, the way a living body
   // returns to itself. What is left of the scar fades last of all.
+  // the outline is drawn through the midpoints between one radius and the next,
+  // so the burn has the soft, eaten edge of paper and not the points of a star
   function scarPath(h, r, mul){
-    sx.beginPath();
-    const n = h.pts.length;
+    const n = h.pts.length, px = [], py = [];
     for(let k = 0; k < n; k++){
       const a = k / n * Math.PI * 2, rr = r * mul * h.pts[k];
-      const px = h.cx + Math.cos(a)*rr*h.ax, py = h.cy + Math.sin(a)*rr*h.ay;
-      k ? sx.lineTo(px, py) : sx.moveTo(px, py);
+      px.push(h.cx + Math.cos(a)*rr*h.ax); py.push(h.cy + Math.sin(a)*rr*h.ay);
+    }
+    sx.beginPath();
+    sx.moveTo((px[n-1] + px[0])/2, (py[n-1] + py[0])/2);
+    for(let k = 0; k < n; k++){
+      const j = (k + 1) % n;
+      sx.quadraticCurveTo(px[k], py[k], (px[k] + px[j])/2, (py[k] + py[j])/2);
     }
     sx.closePath();
   }
@@ -1399,8 +1443,28 @@ function startPoemFire(){
       heal: 190 + ((Math.random()*140)|0)
     });
   }
+  // While anything is burnt through, the page is not the photograph behind the
+  // frame but this canvas: the same photograph drawn here, the void cut clean out
+  // of it, and the char laid round the cut. Through the void one sees whatever
+  // lies behind the book — for a piece of the scroll is genuinely missing. When
+  // the last wound has closed the photograph goes back to being the frame's own.
+  function roundRect(g, w, h, r){
+    g.beginPath();
+    g.moveTo(r, 0); g.lineTo(w-r, 0); g.quadraticCurveTo(w, 0, w, r);
+    g.lineTo(w, h-r); g.quadraticCurveTo(w, h, w-r, h);
+    g.lineTo(r, h); g.quadraticCurveTo(0, h, 0, h-r);
+    g.lineTo(0, r); g.quadraticCurveTo(0, 0, r, 0); g.closePath();
+  }
   function drawScars(){
     sx.clearRect(0, 0, box.width, box.height);
+    const pierce = holes.length && plateImg.complete && plateImg.naturalWidth;
+    frameEl.classList.toggle('pierced', !!pierce);
+    sx.save();
+    if(pierce){
+      roundRect(sx, box.width, box.height, 10); sx.clip();
+      sx.drawImage(plateImg, 0, 0, box.width, box.height);
+    }
+    const live = [];
     for(let i = holes.length - 1; i >= 0; i--){
       const h = holes[i], a = h.age++;
       const lit = h.burn + h.flame;
@@ -1412,20 +1476,41 @@ function startPoemFire(){
         const u = (a - lit - h.glow) / h.heal;            // 0 → 1 as the page grows back
         if(u >= 1){ holes.splice(i, 1); continue; }
         r = h.rmax * (1 - u*u*(3 - 2*u));                 // slowly, and evenly
-        ember = Math.max(0, .1 - u*.5);
+        ember = Math.max(0, .12 - u*.5);
         fade = u > .78 ? (1 - u)/.22 : 1;                 // the scar is the last to go
       }
       if(r < .4) continue;
-      sx.globalAlpha = .20 * fade; sx.fillStyle = '#5c3816'; scarPath(h, r, 1.75); sx.fill();
-      sx.globalAlpha = .55 * fade; sx.fillStyle = '#2a1608'; scarPath(h, r, 1.22); sx.fill();
-      sx.globalAlpha = .92 * fade; sx.fillStyle = '#120a04'; scarPath(h, r, 1);    sx.fill();
-      if(ember > .02){
-        sx.globalAlpha = ember * fade; sx.strokeStyle = '#ff8c1e'; sx.lineWidth = 1.7;
-        sx.shadowColor = 'rgba(255,120,20,.9)'; sx.shadowBlur = 7;
-        scarPath(h, r, 1.04); sx.stroke(); sx.shadowBlur = 0;
-      }
-      sx.globalAlpha = 1;
+      live.push({ h, r, ember, fade });
     }
+    // the scorch first, wide and soft, then the char — the broad rim of the burn
+    for(const o of live){
+      sx.globalAlpha = .22 * o.fade; sx.fillStyle = '#5c3816'; scarPath(o.h, o.r, 1.8);  sx.fill();
+      sx.globalAlpha = .62 * o.fade; sx.fillStyle = '#33200e'; scarPath(o.h, o.r, 1.34); sx.fill();
+      sx.globalAlpha = .88 * o.fade; sx.fillStyle = '#150c05'; scarPath(o.h, o.r, 1.06); sx.fill();
+    }
+    // and then the middle is taken clean away
+    if(pierce){
+      sx.globalCompositeOperation = 'destination-out';
+      for(const o of live){ sx.globalAlpha = 1; scarPath(o.h, o.r, .62); sx.fill(); }
+      sx.globalCompositeOperation = 'source-over';
+    }
+    // a little fire lives on the charred rim — not a flame, but embers waking and
+    // going out along the edge of the burn
+    for(const o of live){
+      if(o.ember <= .02) continue;
+      const h = o.h, n = h.pts.length;
+      for(let k = 0; k < n; k++){
+        const glint = Math.sin(frame*.21 + k*2.3 + h.cx);
+        if(glint < .25) continue;
+        const ang = k / n * Math.PI * 2, rr = o.r * .84 * h.pts[k];
+        const px = h.cx + Math.cos(ang)*rr*h.ax, py = h.cy + Math.sin(ang)*rr*h.ay;
+        sx.globalAlpha = o.ember * o.fade * (glint - .25) / .75;
+        sx.fillStyle = glint > .8 ? '#ffcf7a' : '#e8681a';
+        sx.beginPath(); sx.arc(px, py, .8 + glint, 0, 6.283); sx.fill();
+      }
+    }
+    sx.globalAlpha = 1;
+    sx.restore();
   }
 
   // ── the scraps that fly off ────────────────────────────────────────────────
@@ -1434,23 +1519,32 @@ function startPoemFire(){
   // are eaten as they go until nothing is left. They are drawn on a canvas fixed
   // over the whole window, and they never take a touch or a click.
   const scraps = [];
+  const SCRAP_MAX = 26;
+  function makeScrap(px, py, size, vx, vy, life){
+    const pts = [];
+    for(let k = 0; k < 8; k++) pts.push(.55 + Math.random()*.7);   // a torn thing
+    const s = { x: px, y: py, pts, vx, vy,
+                rot: Math.random()*6.28, vrot: (Math.random() - .5)*.26,
+                size, sway: Math.random()*6.28,
+                edge: Math.random()*6.28,                          // where it is alight
+                life, max: life };
+    scraps.push(s);
+    return s;
+  }
   function throwScrap(){
-    if(!wind || scraps.length >= 7) return;
+    if(!wind || scraps.length >= SCRAP_MAX) return;
     const b = frameEl.getBoundingClientRect();
     if(!b.width) return;
     const side = (Math.random()*4)|0;
     const px = side === 3 ? b.left : side === 2 ? b.right : b.left + Math.random()*b.width;
     const py = side === 0 ? b.top  : side === 1 ? b.bottom : b.top + Math.random()*b.height;
     const out = px < innerWidth/2 ? -1 : 1;               // away, toward the nearer margin
-    const pts = [];
-    for(let k = 0; k < 8; k++) pts.push(.55 + Math.random()*.7);   // a torn thing
-    scraps.push({ x: px, y: py, pts,
-                  vx: out * (.9 + Math.random()*1.9), vy: -(.8 + Math.random()*1.6),
-                  rot: Math.random()*6.28, vrot: (Math.random() - .5)*.2,
-                  size: 8 + Math.random()*14, sway: Math.random()*6.28,
-                  edge: Math.random()*6.28,                        // where it is alight
-                  life: 110 + ((Math.random()*130)|0) });
-    scraps[scraps.length-1].max = scraps[scraps.length-1].life;
+    const n = 1 + ((Math.random()*3)|0);                  // they leave in twos and threes
+    for(let k = 0; k < n; k++)
+      makeScrap(px + (Math.random()-.5)*14, py + (Math.random()-.5)*14,
+                4 + Math.random()*7,
+                out * (.9 + Math.random()*2.1), -(.8 + Math.random()*1.7),
+                110 + ((Math.random()*130)|0));
   }
   function drawScraps(){
     wx.clearRect(0, 0, innerWidth, innerHeight);
@@ -1460,6 +1554,15 @@ function startPoemFire(){
       s.vy += .035; s.vx *= .995; s.sway += .11; s.rot += s.vrot;
       if(--s.life <= 0 || s.y > innerHeight + 40 || s.x < -40 || s.x > innerWidth + 40){
         scraps.splice(i, 1); continue;
+      }
+      // and as it burns it comes apart, and the pieces fly on smaller still
+      if(s.size > 3.4 && u > .2 && scraps.length < SCRAP_MAX && Math.random() < .014){
+        const n = 1 + ((Math.random()*2)|0);
+        for(let k = 0; k < n; k++)
+          makeScrap(s.x, s.y, s.size*(.42 + Math.random()*.2),
+                    s.vx + (Math.random()-.5)*1.5, s.vy + (Math.random()-.5)*1.2,
+                    (s.life*(.55 + Math.random()*.4))|0);
+        s.size *= .66; s.vrot *= 1.5;
       }
       const r = s.size * (1 - u*.72), fade = u > .82 ? (1 - u)/.18 : 1;
       const n = s.pts.length;
@@ -1513,24 +1616,52 @@ function startPoemFire(){
     // into a long lock falling and rising as it goes.
     if(frame >= nextFlare){
       nextFlare = frame + 16 + ((Math.random()*30)|0);
-      if(flares.length < 3){
+      if(flares.length < 4){
         const v = seats[(Math.random()*seats.length)|0];
-        const i = v >> 2;
-        const ang = SEAT_ANGLE[v & 3] + (Math.random() - .5) * 1.7;
-        const sp = 1.15 + Math.random()*1.5;
-        const fl = { x: i % W, y: (i / W)|0,
-                     vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp - .25,
-                     life: 34 + ((Math.random()*34)|0),
-                     lift: .022 + Math.random()*.038,
-                     curl: Math.random() < .45, ph: Math.random()*6.28,
-                     amp: .10 + Math.random()*.30, rate: .07 + Math.random()*.22 };
-        fl.max = fl.life;
-        flares.push(fl);
+        const i = v >> 2, x0 = i % W, y0 = (i / W)|0;
+        const target = Math.random() < .28 ? nearbyEmber(i) : -1;
+        if(target >= 0){
+          // a flame thrown from one letter to another, which lands and sets it going
+          const tx = target % W, ty = (target / W)|0;
+          const dx = tx - x0, dy = ty - y0, dist = Math.hypot(dx, dy) || 1;
+          const sp = 1.5 + Math.random()*1.1;
+          flares.push({ x: x0, y: y0, vx: dx/dist*sp, vy: dy/dist*sp,
+                        life: Math.ceil(dist/sp) + 4, max: Math.ceil(dist/sp) + 4,
+                        lift: .004, curl: false, ph: 0, amp: 0, rate: 0,
+                        tx, ty });
+        } else {
+          const ang = SEAT_ANGLE[v & 3] + (Math.random() - .5) * 1.7;
+          const down = Math.sin(ang) > .3;               // this one is aimed downward
+          const sp = 1.15 + Math.random()*1.5;
+          const fl = { x: x0, y: y0,
+                       vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp + (down ? .45 : -.25),
+                       life: 34 + ((Math.random()*34)|0),
+                       // a flame that goes down keeps going down a while before the
+                       // heat in it turns it back up again
+                       lift: down ? .004 + Math.random()*.012 : .022 + Math.random()*.038,
+                       curl: Math.random() < .45, ph: Math.random()*6.28,
+                       amp: .10 + Math.random()*.30, rate: .07 + Math.random()*.22 };
+          fl.max = fl.life;
+          flares.push(fl);
+        }
+      }
+    }
+    // and now and then a flame spans the gap and joins a letter of one column to
+    // a letter of the other — a rope of fire hung between them, which sags,
+    // brightens, and breaks
+    if(frame >= nextBridge){
+      nextBridge = frame + 230 + ((Math.random()*280)|0);
+      if(bridges.length < 2){
+        const a0 = ash[(Math.random()*ash.length)|0], a1 = acrossFrom(a0);
+        if(a1 >= 0)
+          bridges.push({ x0: a0 % W, y0: (a0 / W)|0, x1: a1 % W, y1: (a1 / W)|0,
+                         age: 0, life: 55 + ((Math.random()*60)|0),
+                         sag: -(2 + Math.random()*7), ph: Math.random()*6.28 });
       }
     }
     // and the page, burning, throws pieces of itself into the air
     if(frame >= nextScrap){
-      nextScrap = frame + 55 + ((Math.random()*130)|0);
+      nextScrap = frame + 34 + ((Math.random()*80)|0);
       throwScrap();
     }
     // a burn of its own now and then, so that in time every margin is eaten
@@ -1545,20 +1676,26 @@ function startPoemFire(){
         const v = hot[i % W] * FIRE_HEAT + Math.random()*FIRE_SPARK;
         heat[i] = v > 255 ? 255 : v|0;
       }
+    // the ropes of fire strung between the columns
+    for(let b = bridges.length - 1; b >= 0; b--){
+      const br = bridges[b], u = br.age++ / br.life;
+      if(u >= 1){ bridges.splice(b, 1); continue; }
+      const thick = Math.sin(Math.PI * u);               // it kindles, holds, and breaks
+      const mx = (br.x0 + br.x1)/2, my = (br.y0 + br.y1)/2 + br.sag * (.5 + thick*.9);
+      const steps = 26;
+      for(let k = 0; k <= steps; k++){
+        const s2 = k/steps, w0 = (1-s2)*(1-s2), w1 = 2*(1-s2)*s2, w2 = s2*s2;
+        const px = w0*br.x0 + w1*mx + w2*br.x1;
+        const py = w0*br.y0 + w1*my + w2*br.y1 + Math.sin(br.ph + s2*7 + frame*.22)*.9;
+        scorch(Math.round(px), Math.round(py), .7 + thick*1.2, 228);
+      }
+    }
     // a hole that is still alight burns out of itself, and may throw a tongue
     for(const h of holes){
       if(h.age < h.burn || h.age >= h.burn + h.flame) continue;
-      const gx = Math.round(h.cx * sc), gy = Math.round(h.cy * sc), ri = 2;
-      for(let dy = -ri; dy <= ri; dy++){
-        const yy = gy + dy; if(yy < 0 || yy >= H) continue;
-        for(let dx = -ri; dx <= ri; dx++){
-          const xx = gx + dx; if(xx < 0 || xx >= W) continue;
-          if(dx*dx + dy*dy > ri*ri) continue;
-          const v = 232 + ((Math.random()*23)|0);
-          if(heat[yy*W + xx] < v) heat[yy*W + xx] = v;
-        }
-      }
-      if(flares.length < 3 && Math.random() < .045){
+      const gx = Math.round(h.cx * sc), gy = Math.round(h.cy * sc);
+      scorch(gx, gy, 2, 232);
+      if(flares.length < 4 && Math.random() < .045){
         const ang = -Math.PI/2 + (Math.random() - .5) * 2.2, sp = 1.1 + Math.random()*1.3;
         flares.push({ x: gx, y: gy, vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp,
                       life: 34 + ((Math.random()*30)|0), max: 60,
@@ -1570,15 +1707,12 @@ function startPoemFire(){
     for(let f = flares.length - 1; f >= 0; f--){
       const fl = flares[f];
       const r = .6 + 1.15 * (fl.life / fl.max);         // it thins as it goes out
-      const cx = Math.round(fl.x), cy = Math.round(fl.y), ri = Math.ceil(r);
-      for(let dy = -ri; dy <= ri; dy++){
-        const yy = cy + dy; if(yy < 0 || yy >= H) continue;
-        for(let dx = -ri; dx <= ri; dx++){
-          const xx = cx + dx; if(xx < 0 || xx >= W) continue;
-          if(dx*dx + dy*dy > r*r) continue;
-          const v = 236 + ((Math.random()*19)|0);
-          if(heat[yy*W + xx] < v) heat[yy*W + xx] = v;
-        }
+      scorch(Math.round(fl.x), Math.round(fl.y), r, 236);
+      // a thrown flame that reaches the letter it was aimed at bursts upon it
+      if(fl.tx !== undefined &&
+         Math.abs(fl.x - fl.tx) < 2.5 && Math.abs(fl.y - fl.ty) < 2.5){
+        scorch(fl.tx, fl.ty, 3.2, 240);
+        flares.splice(f, 1); continue;
       }
       if(fl.curl){                                       // the long lock, turning
         const a = Math.sin(fl.ph) * fl.amp; fl.ph += fl.rate;
