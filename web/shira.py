@@ -91,6 +91,10 @@ def api_catalog():
     cat = OVR.apply(cat, OVR.load(), include_hidden=False)
     cat = PEOPLE.apply(cat, PEOPLE.load())
     cat['meta']['admin'] = False
+    # the page reads these to know it is the online copy: it takes the
+    # recording straight to the media server rather than to a local drive
+    cat['meta']['readonly'] = True
+    cat['meta']['can_record'] = bool(REC_PASSWORD)
     cat['meta']['media'] = MEDIA
     cat['meta'].pop('root', None)     # the archive drive's own path is nobody's business
     return jsonify(cat)
