@@ -254,6 +254,53 @@ body.div-collapsed .div-handle{ height:26px; }
                           0 0 12px rgba(116,38,5,.52),
                           0 0 24px rgba(58,24,5,.44),      /* smoke into the page */
                           0 1px 1px rgba(18,7,1,.85); }
+/* ── the letters are still burning ──────────────────────────────────────────
+   Four layers stand one upon another over the codex (see bookPoem()):
+     · pfirecv — the simulated flame, rising out of the letters and above them;
+     · pchar   — the letters that are read, charred, and never covered;
+     · pfire   — the same letters filled with a live ember, wrung by turbulence;
+     · psparks — what the fire throws off.
+   The flame is beneath the letters on purpose: what burns stays legible, and the
+   fire is seen licking around it and streaming off its tops. */
+.bkpoem-stack{ flex:0 0 auto; position:relative; }
+.pfirecv{ position:absolute; left:0; width:100%; z-index:1;
+          pointer-events:none; user-select:none;
+          filter:blur(2.1px); opacity:.86; }   /* the grid is coarse; fire is not */
+.pchar{ position:relative; z-index:2; }
+.psparks{ z-index:4; }
+.pfire{ position:absolute; inset:0; width:100%; height:100%; z-index:3;
+        pointer-events:none; user-select:none;
+        color:transparent; -webkit-text-fill-color:transparent;
+        -webkit-background-clip:text; background-clip:text;
+        /* one gradient to a line — 1.45em of line box and .3em of gap — so every
+           line burns from its own feet up, and the tiling makes the flow seamless */
+        background-repeat:repeat; background-size:100% 1.75em;
+        background-image:linear-gradient(0deg,
+          #fffbe6 0%, #ffe487 14%, #ffb62c 30%, #ff7d09 46%,
+          #d8380a 62%, rgba(130,22,0,.30) 78%, rgba(130,22,0,0) 92%);
+        filter:url(#poemFire) blur(.5px); opacity:.8;
+        /* the bloom — fire gives light, and the light leans upward */
+        text-shadow:0 0 5px rgba(255,150,26,.55), 0 0 13px rgba(255,96,10,.38),
+                    0 -7px 18px rgba(255,120,20,.3);
+        animation:pfireFlow 2.1s linear infinite, pfireBreath 2.6s ease-in-out infinite; }
+@keyframes pfireFlow{ from{ background-position:0 0; } to{ background-position:0 -1.75em; } }
+@keyframes pfireBreath{ 0%,100%{ opacity:.8; } 41%{ opacity:.64; } 68%{ opacity:.9; } }
+/* the sparks the fire throws off, rising and going out */
+.psparks{ position:absolute; inset:0; pointer-events:none; overflow:visible; }
+.psparks i{ position:absolute; width:3px; height:3px; border-radius:50%;
+            background:#fff0bd; box-shadow:0 0 5px 2px rgba(255,146,26,.85);
+            opacity:0; animation:pspark 2.4s linear infinite; }
+@keyframes pspark{
+  0%{ opacity:0; transform:translate(0,0) scale(.6); }
+  12%{ opacity:.95; }
+  70%{ opacity:.5; }
+  100%{ opacity:0; transform:translate(-6px,-38px) scale(.2); } }
+.fire-defs{ position:absolute; width:0; height:0; overflow:hidden; }
+/* a reader who asks for stillness gets the burn without the burning */
+@media (prefers-reduced-motion:reduce){
+  .pfire, .psparks i{ animation:none; }
+  .psparks, .pfirecv{ display:none; }
+}
 /* nowrap keeps the half on one line; justifying the last line (which is also the
    only line) spreads its words across the whole column, so the colons line up */
 .bkpoem-cell{ text-align:justify; text-align-last:justify; }

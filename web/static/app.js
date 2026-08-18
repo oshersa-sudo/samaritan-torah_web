@@ -1211,13 +1211,157 @@ function ornRule(cls){
     + '</svg>';
   return s;
 }
-function bookPoem(){
-  const wrap = el('div','bkpoem'), frame = el('div','ornframe'), grid = el('div','bkpoem-grid');
+// The letters are not merely scorched but still alight. Over the codex lie four
+// layers: the simulated flame (startPoemFire), the charred letters that are
+// read, the same letters filled with a live ember, and the sparks. Only the
+// letters are read by a screen reader; the rest is fire, and both lettered
+// layers take their size from fitBookPoem() together.
+function poemGrid(cls){
+  const grid = el('div','bkpoem-grid ' + (cls || 'pchar'));
+  if(cls){ grid.setAttribute('aria-hidden','true'); }
   for(const couplet of BOOKS_POEM)
-    for(const half of couplet) grid.appendChild(el('div','bkpoem-cell', esc(half)));
+    for(const half of couplet){
+      // each word in its own span: the justification is unaffected (it works on
+      // the spaces between them), but the fire can now be told where every word
+      // stands on the page, and stamp the letters into its heat
+      const cell = el('div','bkpoem-cell');
+      cell.innerHTML = esc(half).split(/\s+/).map(w => '<span class="pw">'+w+'</span>').join(' ');
+      grid.appendChild(cell);
+    }
+  return grid;
+}
+// ── the fire ────────────────────────────────────────────────────────────────
+// A flame is not a shape but a process, so it is simulated rather than drawn.
+// Over the poem lies a coarse field of heat. Every frame each cell takes the
+// heat of the cell beneath it, less a little, and drifts a step to one side —
+// that, and nothing else, is fire. The letters are stamped into the field from
+// their own words, measured where they stand on the page, so the flame has
+// exactly their shape and rises out of them. The field is deliberately coarse
+// (a cell is some two screen pixels) and the canvas is stretched over the poem,
+// which both costs little and gives the softness that fire has.
+const FIRE_SCALE = 0.6, FIRE_HEAD = 30;    // grid fineness · room above for the flame
+const FIRE_HEAT = 196, FIRE_SPARK = 59;    // how hot a letter is, and how it varies
+const FIRE_DECAY = 32;                     // how fast the flame dies — its height
+const FIRE_FUEL = .68;                     // how much of the ink catches: less is
+                                           // separate tongues, more is a sheet
+const FIRE_PALETTE = (() => {
+  const p = new Uint8Array(256 * 4);
+  for(let i = 1; i < 256; i++){
+    const t = i / 255;
+    p[i*4]     = Math.min(255, 90 + 560*t) | 0;
+    p[i*4 + 1] = t < .24 ? 0 : Math.min(255, (t - .24) * 400) | 0;
+    p[i*4 + 2] = t < .70 ? 0 : Math.min(255, (t - .70) * 700) | 0;
+    p[i*4 + 3] = (Math.pow(t, 1.35) * 242) | 0;
+  }
+  return p;                                   // heat 0 stays wholly transparent
+})();
+let _fireStop = null;
+function startPoemFire(){
+  if(_fireStop){ _fireStop(); _fireStop = null; }
+  const stack = document.querySelector('.bkpoem-stack');
+  const cv = stack && stack.querySelector('.pfirecv');
+  const grid = stack && stack.querySelector('.pchar');
+  if(!cv || !grid) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = stack.getBoundingClientRect();
+  const W = Math.max(8, Math.round(box.width * FIRE_SCALE));
+  const H = Math.max(8, Math.round((box.height + FIRE_HEAD) * FIRE_SCALE));
+  if(!box.width || !box.height) return;
+  cv.width = W; cv.height = H;
+  cv.style.top = (-FIRE_HEAD) + 'px';
+  cv.style.height = (box.height + FIRE_HEAD) + 'px';
+
+  // stamp the words where they stand, and keep only their ink as fuel
+  const off = document.createElement('canvas'); off.width = W; off.height = H;
+  const oc = off.getContext('2d');
+  const fs = parseFloat(getComputedStyle(grid).fontSize) || 20;
+  oc.font = (fs * FIRE_SCALE).toFixed(1) + "px 'Hebrew', serif";
+  oc.textAlign = 'right'; oc.textBaseline = 'middle'; oc.fillStyle = '#fff';
+  for(const w of grid.querySelectorAll('.pw')){
+    const r = w.getBoundingClientRect();
+    if(!r.width) continue;
+    oc.fillText(w.textContent,
+                (r.right - box.left) * FIRE_SCALE,
+                (r.top + r.height/2 - box.top + FIRE_HEAD) * FIRE_SCALE);
+  }
+  const ink = oc.getImageData(0, 0, W, H).data;
+  const fuel = new Uint8Array(W * H);
+  let any = 0;
+  for(let i = 0; i < fuel.length; i++)
+    if(ink[i*4+3] > 90 && Math.random() < FIRE_FUEL){ fuel[i] = 1; any++; }
+  if(!any) return;
+
+  const ctx = cv.getContext('2d');
+  const heat = new Uint8Array(W * H);
+  const img = ctx.createImageData(W, H), d = img.data, pal = FIRE_PALETTE;
+  let raf = 0, tick = 0, alive = true;
+  function step(){
+    if(!alive || !cv.isConnected){ alive = false; return; }
+    raf = requestAnimationFrame(step);
+    if((tick++ & 1) || document.hidden) return;        // some thirty times a second
+    // a letter does not burn evenly: each stroke takes and gives up the flame
+    for(let i = 0; i < fuel.length; i++)
+      if(fuel[i]) heat[i] = FIRE_HEAT + ((Math.random()*FIRE_SPARK)|0);
+    for(let y = 0; y < H-1; y++){
+      const row = y*W, below = (y+1)*W;
+      for(let x = 0; x < W; x++){
+        const v = heat[below + x];
+        if(!v){ if(!fuel[row+x]) heat[row+x] = 0; continue; }
+        const nv = v - ((Math.random()*FIRE_DECAY)|0);
+        let nx = x;
+        if(Math.random() < .6) nx += Math.random() < .5 ? -1 : 1;   // the draught
+        if(nx < 0) nx = 0; else if(nx >= W) nx = W-1;
+        heat[row + nx] = nv > 0 ? nv : 0;
+      }
+    }
+    for(let i = 0, j = 0; i < heat.length; i++, j += 4){
+      const k = heat[i] << 2;
+      d[j] = pal[k]; d[j+1] = pal[k+1]; d[j+2] = pal[k+2]; d[j+3] = pal[k+3];
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  raf = requestAnimationFrame(step);
+  _fireStop = () => { alive = false; cancelAnimationFrame(raf); };
+}
+// the wringing itself: fractal noise driving a displacement map, its frequency
+// and seed always on the move, which is what keeps the flame alive
+function fireDefs(){
+  const holder = el('div','fire-defs');
+  holder.innerHTML =
+    '<svg width="0" height="0" aria-hidden="true" focusable="false">'
+    + '<filter id="poemFire" x="-25%" y="-45%" width="150%" height="190%" color-interpolation-filters="sRGB">'
+    +   '<feTurbulence type="fractalNoise" baseFrequency="0.02 0.055" numOctaves="2" seed="7" result="n">'
+    +     '<animate attributeName="baseFrequency" dur="4.7s" repeatCount="indefinite"'
+    +             ' values="0.02 0.05;0.026 0.078;0.018 0.06;0.02 0.05"/>'
+    +     '<animate attributeName="seed" dur="3.1s" repeatCount="indefinite" values="2;9;16;2"/>'
+    +   '</feTurbulence>'
+    +   '<feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>'
+    + '</filter>'
+    + '</svg>';
+  return holder;
+}
+function bookPoem(){
+  const wrap = el('div','bkpoem'), frame = el('div','ornframe');
+  const stack = el('div','bkpoem-stack');
+  const cv = el('canvas','pfirecv'); cv.setAttribute('aria-hidden','true');
+  stack.appendChild(cv);                  // the flame rising off them
+  stack.appendChild(poemGrid());          // the letters that are read
+  stack.appendChild(poemGrid('pfire'));   // the ember in them
+  const sparks = el('div','psparks');     // and what the fire throws off
+  sparks.setAttribute('aria-hidden','true');
+  for(let i = 0; i < 11; i++){
+    const s = el('i');
+    s.style.cssText = 'left:' + (5 + i * 8.6).toFixed(1) + '%;'
+                    + 'top:' + (24 + (i * 37) % 62) + '%;'
+                    + 'animation-delay:' + (i * 0.53).toFixed(2) + 's;'
+                    + 'animation-duration:' + (2.1 + (i % 4) * 0.45).toFixed(2) + 's';
+    sparks.appendChild(s);
+  }
+  stack.appendChild(sparks);
   frame.appendChild(ornRule());
-  frame.appendChild(grid);
+  frame.appendChild(stack);
   frame.appendChild(ornRule('bot'));
+  frame.appendChild(fireDefs());
   wrap.appendChild(frame);
   // setTimeout rather than rAF, which does not fire on a page that is not
   // compositing; and again once the Torah face is in, since it is measured.
@@ -1233,29 +1377,33 @@ function fitBookPoem(){
   const frame = wrap.querySelector('.ornframe'), grid = wrap.querySelector('.bkpoem-grid');
   if(!grid || !frame) return;
   const cs = getComputedStyle(frame);
+  // the flame and the plume are drawn from the same words and must be lettered
+  // to the same size, or the fire would part from what is burning
+  const size = v => { for(const g of wrap.querySelectorAll('.bkpoem-grid')) g.style.fontSize = v; };
   // the room is the frame's CONTENT box: clientWidth still carries its padding
   const avail = frame.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 1;
   if(avail <= 0) return;                       // not on screen yet
-  grid.style.fontSize = POEM_MAX + 'px';
+  size(POEM_MAX + 'px');
   const nat = grid.getBoundingClientRect().width;    // never shrinks: flex 0 0 auto
   if(!nat) return;
   let px = Math.max(POEM_MIN, Math.min(POEM_MAX, POEM_MAX * avail / nat));
-  grid.style.fontSize = px.toFixed(2) + 'px';
+  size(px.toFixed(2) + 'px');
   const got = grid.getBoundingClientRect().width;    // one pass for the rounding
   if(got > avail){
     px = Math.max(POEM_MIN, px * avail / got);
-    grid.style.fontSize = px.toFixed(2) + 'px';
+    size(px.toFixed(2) + 'px');
   }
   // The frame now holds the whole codex, so its height is fixed by the picture's
   // proportion rather than by the poem. Take the type down again if the five
   // couplets and the two rules would stand taller than the page they are on.
   let room = frame.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
   const gap = parseFloat(cs.rowGap) || 0;
-  for(const kid of frame.children)
-    if(kid !== grid) room -= kid.getBoundingClientRect().height + gap;
+  const rules = frame.querySelectorAll('.orn-rule');
+  for(const r of rules) room -= r.getBoundingClientRect().height + gap;
   const tall = grid.getBoundingClientRect().height;
   if(room > 0 && tall > room)
-    grid.style.fontSize = Math.max(POEM_MIN, px * room / tall).toFixed(2) + 'px';
+    size(Math.max(POEM_MIN, px * room / tall).toFixed(2) + 'px');
+  startPoemFire();          // the letters have moved; the flame must be re-laid
 }
 
 // ── the books as the Samaritan tradition names them ──────────────────────────
