@@ -1990,7 +1990,10 @@ const DNC = {
   y: 650,             // below the shell's edge, hovering over the lamps
   inX: 906,           // centre stage for her: beside the far right screw
   startX: 1090, offLeft: -130, offRight: 1130,
-  stage: [-190, 44],  // how far the figures may carry her either way
+  // How far the figures may carry her. Leftwards she goes as far as the first
+  // of the punched holes inside the trapezoid — its edge is at x=707 — and
+  // rightwards to just short of the shell's own corner.
+  stage: [707 - 906, 968 - 906],
 };
 
 function dncClear() {
@@ -2010,6 +2013,14 @@ function dncPlace(x) {
 function dncFace(dir) {
   $('dancer').querySelector('.dnc-turn').style.transform = `scaleX(${dir})`;
 }
+
+/* An SVG element has no offsetWidth — reading it returns undefined and forces
+ * nothing — so the usual `void el.offsetWidth` does not flush the style here.
+ * Without a flush the browser coalesces "put her off the right edge" and
+ * "walk her to her mark" into one recalculation, and she slides in from
+ * wherever her transform happened to be instead of walking on from the wing.
+ * getBoundingClientRect does force the layout, on SVG as on anything else. */
+function dncFlush() { $('dancer').getBoundingClientRect(); }
 
 function dncSet(cls) {
   const d = $('dancer');
@@ -2038,9 +2049,9 @@ function dncSettle(state) {
     return [el, getComputedStyle(el).transform];
   });
   held.forEach(([el, t]) => { if (t && t !== 'none') el.style.transform = t; });
-  void d.offsetWidth;
+  dncFlush();
   dncSet('settling');                 // the dance is off; the inline pose holds
-  void d.offsetWidth;
+  dncFlush();
   held.forEach(([el]) => { el.style.transform = ''; });   // …and eases to standing
   DNC.at = state;
   dncClear();
@@ -2062,16 +2073,20 @@ function dancerIn() {
   const d = $('dancer');
   DNC.at = 'in';
   dncClear();
-  // she starts just off the right edge, in profile, facing the way she walks
-  d.querySelector('.dnc-x').style.transition = 'none';
+  // She starts just off the right edge, already in profile and already facing
+  // the way she will walk. Every transition is off while that is arranged, so
+  // that nothing of the setting-up is animated — she is simply there, off in
+  // the wing, and the only thing the eye is given is the walk on.
+  const x = d.querySelector('.dnc-x'), turn = d.querySelector('.dnc-turn'),
+        step = d.querySelector('.dnc-step');
+  x.style.transition = turn.style.transition = step.style.transition = 'none';
   dncPlace(DNC.startX);
   dncFace(-1);
   DNC.dx = 0;
-  d.querySelector('.dnc-step').style.transition = 'none';
-  d.querySelector('.dnc-step').style.transform = '';
+  step.style.transform = '';
   d.classList.add('show');
-  void d.offsetWidth;
-  d.querySelector('.dnc-x').style.transition = '';
+  dncFlush();
+  x.style.transition = turn.style.transition = '';
   dncSet('walking');
   dncPlace(DNC.inX);
 
@@ -2175,9 +2190,11 @@ function dncFigure() {
   dncSet('fig ' + f.k);
 
   if (f.go) {
-    // she turns to the way she is going and covers what room is left that way
+    // She turns to the way she is going and covers most of what room is left
+    // that way — most, not a fraction of it, or she would creep towards the
+    // ends of the strip and never actually arrive at either.
     const room = f.go > 0 ? DNC.stage[1] - DNC.dx : DNC.dx - DNC.stage[0];
-    const span = Math.max(20, Math.min(70, room * 0.6)) * f.go;
+    const span = Math.max(24, Math.min(112, room * 0.8)) * f.go;
     DNC.dx = Math.max(DNC.stage[0], Math.min(DNC.stage[1], DNC.dx + span));
     dncFace(f.go);
     dncStep(DNC.dx, dur);
