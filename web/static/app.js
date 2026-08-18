@@ -1272,6 +1272,13 @@ function startPoemFire(){
   const scar = frameEl && frameEl.querySelector('.pscar');
   const grid = stack && stack.querySelector('.pchar');
   if(!cv || !scar || !grid) return;
+  // the scraps fly over the whole window, so their canvas hangs from the body
+  // itself, clear of anything that might clip it; it goes when the poem goes
+  let wind = document.querySelector('.pscraps');
+  if(!wind){
+    wind = el('canvas','pscraps'); wind.setAttribute('aria-hidden','true');
+    document.body.appendChild(wind);
+  }
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const box = frameEl.getBoundingClientRect();
   if(!box.width || !box.height) return;
@@ -1285,6 +1292,12 @@ function startPoemFire(){
   scar.width = Math.round(box.width * sdpr); scar.height = Math.round(box.height * sdpr);
   const sx = scar.getContext('2d');
   sx.setTransform(sdpr, 0, 0, sdpr, 0, 0);
+  let wx = null;
+  if(wind){
+    wind.width = Math.round(innerWidth * sdpr); wind.height = Math.round(innerHeight * sdpr);
+    wx = wind.getContext('2d');
+    wx.setTransform(sdpr, 0, 0, sdpr, 0, 0);
+  }
 
   // stamp the words where they stand, and keep only their ink as fuel
   const off = document.createElement('canvas'); off.width = W; off.height = H;
@@ -1305,19 +1318,22 @@ function startPoemFire(){
   for(let i = 0; i < fuel.length; i++)
     if(ink[i*4+3] > 90 && Math.random() < dens){ fuel[i] = 1; any++; }
   if(!any) return;
-  // A tongue breaks out where a letter has bare page beside it or above it — not
-  // from the thick of the writing, where it would be lost among the other
-  // flames. Which way it faces is kept with it, and that is the way it goes.
-  const seats = [];                             // index·4 + 0 left · 1 right · 2 up
+  // A tongue breaks out wherever a letter has bare page beside it — to its left
+  // or right, above it or below it, at the outer edge of a line or in the gap
+  // between two letters. Every such place is a seat, and the way it faces is
+  // kept with it; that is roughly, but only roughly, the way the tongue goes.
+  const seats = [];                     // index·4 + 0 left · 1 right · 2 up · 3 down
   for(let y = 0; y < H; y++)
     for(let x = 0; x < W; x++){
       const i = y*W + x;
       if(!fuel[i]) continue;
-      if(x + 6 < W && !fuel[i+3] && !fuel[i+4] && !fuel[i+5] && !fuel[i+6]) seats.push(i*4 + 1);
-      else if(x - 6 >= 0 && !fuel[i-3] && !fuel[i-4] && !fuel[i-5] && !fuel[i-6]) seats.push(i*4);
-      else if(y - 4 >= 0 && !fuel[i-2*W] && !fuel[i-3*W] && !fuel[i-4*W]) seats.push(i*4 + 2);
+      if(x + 4 < W && !fuel[i+2] && !fuel[i+3] && !fuel[i+4]) seats.push(i*4 + 1);
+      if(x - 4 >= 0 && !fuel[i-2] && !fuel[i-3] && !fuel[i-4]) seats.push(i*4);
+      if(y - 4 >= 0 && !fuel[i-2*W] && !fuel[i-3*W] && !fuel[i-4*W]) seats.push(i*4 + 2);
+      if(y + 4 < H && !fuel[i+2*W] && !fuel[i+3*W] && !fuel[i+4*W]) seats.push(i*4 + 3);
     }
   if(!seats.length) for(let i = 0; i < fuel.length; i++) if(fuel[i]) seats.push(i*4 + 2);
+  const SEAT_ANGLE = [Math.PI, 0, -Math.PI/2, Math.PI/2];   // left · right · up · down
   // where the writing ends and the bare margin of the page begins
   let fx0 = W, fx1 = 0, fy0 = H, fy1 = 0;
   for(let y = 0; y < H; y++)
@@ -1341,35 +1357,62 @@ function startPoemFire(){
   const img = ctx.createImageData(W, H), d = img.data, pal = FIRE_PALETTE;
   const flares = [];                            // the tongues that break out
   const holes = [];                             // and the wounds they leave
-  let raf = 0, tick = 0, frame = 0, nextFlare = 20, holeWait = 90, alive = true;
+  let raf = 0, tick = 0, frame = 0, alive = true;
+  let nextFlare = 20, holeWait = 90, nextEdge = 200, nextScrap = 120;
 
   // ── the wound, and its healing ─────────────────────────────────────────────
-  // Where a tongue reaches a margin it may catch, and a hole is burnt through
-  // the page: a black eye with a rim of ember and a scorch about it. Then it
-  // closes again from its edges inward, slowly, the way a living body returns to
-  // itself, and what is left of the scar fades last of all.
+  // A burn is either a hole eaten through the page or a bite taken out of one of
+  // its four margins — the second is simply a hole whose centre sits ON the edge,
+  // wide along the edge and shallow into the page, so half of it falls outside
+  // and what is seen is the margin eaten inward. Either way it opens, sometimes
+  // sends a flame up out of itself until that dies down like an ember, and only
+  // then closes again from its edges inward, slowly, the way a living body
+  // returns to itself. What is left of the scar fades last of all.
   function scarPath(h, r, mul){
     sx.beginPath();
     const n = h.pts.length;
     for(let k = 0; k < n; k++){
       const a = k / n * Math.PI * 2, rr = r * mul * h.pts[k];
-      const px = h.cx + Math.cos(a)*rr, py = h.cy + Math.sin(a)*rr;
+      const px = h.cx + Math.cos(a)*rr*h.ax, py = h.cy + Math.sin(a)*rr*h.ay;
       k ? sx.lineTo(px, py) : sx.moveTo(px, py);
     }
     sx.closePath();
+  }
+  // side: 0 a hole in the page · 1 top · 2 bottom · 3 left · 4 right
+  function openBurn(cx, cy, side){
+    if(holes.length >= 3) return;
+    const pts = [];
+    for(let k = 0; k < 17; k++) pts.push(.62 + Math.random()*.66);
+    const edge = !!side, big = edge ? 9 + Math.random()*11 : 7 + Math.random()*8;
+    if(side === 1){ cx = 12 + Math.random()*(box.width - 24);  cy = 0; }
+    if(side === 2){ cx = 12 + Math.random()*(box.width - 24);  cy = box.height; }
+    if(side === 3){ cy = 12 + Math.random()*(box.height - 24); cx = 0; }
+    if(side === 4){ cy = 12 + Math.random()*(box.height - 24); cx = box.width; }
+    holes.push({
+      cx, cy, rmax: big, pts, side,
+      ax: side === 1 || side === 2 ? 1.3 + Math.random()*.8 : 1,
+      ay: side === 3 || side === 4 ? 1.3 + Math.random()*.8 : 1,
+      age: 0, burn: 14 + ((Math.random()*10)|0),
+      // now and then the hole itself keeps a flame alight before it may close
+      flame: Math.random() < .55 ? 40 + ((Math.random()*70)|0) : 0,
+      glow: 18 + ((Math.random()*22)|0),
+      heal: 190 + ((Math.random()*140)|0)
+    });
   }
   function drawScars(){
     sx.clearRect(0, 0, box.width, box.height);
     for(let i = holes.length - 1; i >= 0; i--){
       const h = holes[i], a = h.age++;
+      const lit = h.burn + h.flame;
       let r, ember, fade;
       if(a < h.burn){ r = h.rmax * (a + 1) / h.burn; ember = 1; fade = 1; }
-      else if(a < h.burn + h.glow){ r = h.rmax; ember = 1 - (a - h.burn)/h.glow*.5; fade = 1; }
+      else if(a < lit){ r = h.rmax; ember = 1; fade = 1; }            // still alight
+      else if(a < lit + h.glow){ r = h.rmax; ember = 1 - (a - lit)/h.glow*.92; fade = 1; }
       else {
-        const u = (a - h.burn - h.glow) / h.heal;         // 0 → 1 as the hole closes
+        const u = (a - lit - h.glow) / h.heal;            // 0 → 1 as the page grows back
         if(u >= 1){ holes.splice(i, 1); continue; }
         r = h.rmax * (1 - u*u*(3 - 2*u));                 // slowly, and evenly
-        ember = Math.max(0, .5 - u*1.1);
+        ember = Math.max(0, .1 - u*.5);
         fade = u > .78 ? (1 - u)/.22 : 1;                 // the scar is the last to go
       }
       if(r < .4) continue;
@@ -1385,8 +1428,72 @@ function startPoemFire(){
     }
   }
 
+  // ── the scraps that fly off ────────────────────────────────────────────────
+  // A page that burns throws pieces of itself into the air. They leave the book
+  // at its edge, tumble, are carried out toward the margins of the screen, and
+  // are eaten as they go until nothing is left. They are drawn on a canvas fixed
+  // over the whole window, and they never take a touch or a click.
+  const scraps = [];
+  function throwScrap(){
+    if(!wind || scraps.length >= 7) return;
+    const b = frameEl.getBoundingClientRect();
+    if(!b.width) return;
+    const side = (Math.random()*4)|0;
+    const px = side === 3 ? b.left : side === 2 ? b.right : b.left + Math.random()*b.width;
+    const py = side === 0 ? b.top  : side === 1 ? b.bottom : b.top + Math.random()*b.height;
+    const out = px < innerWidth/2 ? -1 : 1;               // away, toward the nearer margin
+    const pts = [];
+    for(let k = 0; k < 8; k++) pts.push(.55 + Math.random()*.7);   // a torn thing
+    scraps.push({ x: px, y: py, pts,
+                  vx: out * (.9 + Math.random()*1.9), vy: -(.8 + Math.random()*1.6),
+                  rot: Math.random()*6.28, vrot: (Math.random() - .5)*.2,
+                  size: 8 + Math.random()*14, sway: Math.random()*6.28,
+                  edge: Math.random()*6.28,                        // where it is alight
+                  life: 110 + ((Math.random()*130)|0) });
+    scraps[scraps.length-1].max = scraps[scraps.length-1].life;
+  }
+  function drawScraps(){
+    wx.clearRect(0, 0, innerWidth, innerHeight);
+    for(let i = scraps.length - 1; i >= 0; i--){
+      const s = scraps[i], u = 1 - s.life / s.max;        // 0 whole → 1 wholly eaten
+      s.x += s.vx + Math.sin(s.sway) * .5; s.y += s.vy;
+      s.vy += .035; s.vx *= .995; s.sway += .11; s.rot += s.vrot;
+      if(--s.life <= 0 || s.y > innerHeight + 40 || s.x < -40 || s.x > innerWidth + 40){
+        scraps.splice(i, 1); continue;
+      }
+      const r = s.size * (1 - u*.72), fade = u > .82 ? (1 - u)/.18 : 1;
+      const n = s.pts.length;
+      const at = k => { const a = k / n * Math.PI * 2, rr = r * s.pts[k % n];
+                        return [Math.cos(a)*rr, Math.sin(a)*rr*.78]; };
+      wx.save(); wx.translate(s.x, s.y); wx.rotate(s.rot); wx.globalAlpha = fade;
+      wx.beginPath();
+      for(let k = 0; k < n; k++){ const p = at(k); k ? wx.lineTo(p[0], p[1]) : wx.moveTo(p[0], p[1]); }
+      wx.closePath();
+      const g = wx.createLinearGradient(-r, -r, r, r);           // the paper itself
+      g.addColorStop(0, '#f2ead6'); g.addColorStop(1, '#cdbe9c');
+      wx.fillStyle = g; wx.fill();
+      wx.strokeStyle = 'rgba(48,28,12,' + (.35 + u*.5) + ')';    // its charred edge
+      wx.lineWidth = .8 + u*2.4; wx.stroke();
+      // only part of the rim is alight, and the fire creeps round it as it flies
+      s.edge += .05;
+      wx.beginPath();
+      const k0 = (s.edge / (Math.PI*2) * n) | 0;
+      for(let j = 0; j <= 3; j++){ const p = at(k0 + j); j ? wx.lineTo(p[0], p[1]) : wx.moveTo(p[0], p[1]); }
+      wx.strokeStyle = 'rgba(255,150,40,' + (.9 - u*.55) + ')';
+      wx.lineWidth = 1.6; wx.lineCap = 'round';
+      wx.shadowColor = 'rgba(255,110,20,.85)'; wx.shadowBlur = 5 + u*5;
+      wx.stroke(); wx.shadowBlur = 0;
+      wx.restore();
+    }
+    wx.globalAlpha = 1;
+  }
+
   function step(){
-    if(!alive || !cv.isConnected){ alive = false; return; }
+    if(!alive || !cv.isConnected){
+      alive = false;
+      if(wind && wind.parentNode) wind.remove();     // the poem is gone; so is its ash
+      return;
+    }
     raf = requestAnimationFrame(step);
     if((tick++ & 1) || document.hidden) return;        // some thirty times a second
     const t = frame++ / 30;
@@ -1398,21 +1505,39 @@ function startPoemFire(){
       hot[x] = h;                                      // and how fiercely it burns
       dec[x] = FIRE_DECAY * (1.32 - .46*h);            // the fierce burn the taller
     }
-    // now and then a tongue breaks out of one letter and licks the bare page
+    // Now and then a tongue breaks out of a letter. Nothing about it is fixed:
+    // the seat is drawn at random and so is its direction — roughly the way its
+    // bare side faces, but wide of it by as much as a right angle, so tongues go
+    // out to every quarter, sideways, downward and up. Some of them curl: a slow
+    // turning of the whole flame, one way and then the other, which draws it out
+    // into a long lock falling and rising as it goes.
     if(frame >= nextFlare){
-      nextFlare = frame + 24 + ((Math.random()*22)|0);          // about once a second
-      if(flares.length < 2){
+      nextFlare = frame + 16 + ((Math.random()*30)|0);
+      if(flares.length < 3){
         const v = seats[(Math.random()*seats.length)|0];
-        const i = v >> 2, code = v & 3;
-        // it reaches out further now, for the margin of the page is its errand
-        const fl = code === 2
-          ? { x: i % W, y: (i / W)|0, vx: (Math.random() - .5) * 1.1,
-              vy: -(1.05 + Math.random()*.75), life: 30 + ((Math.random()*16)|0) }
-          : { x: i % W, y: (i / W)|0, vx: (code ? 1 : -1) * (1.25 + Math.random()*.95),
-              vy: -(.4 + Math.random()*.6), life: 30 + ((Math.random()*16)|0) };
+        const i = v >> 2;
+        const ang = SEAT_ANGLE[v & 3] + (Math.random() - .5) * 1.7;
+        const sp = 1.15 + Math.random()*1.5;
+        const fl = { x: i % W, y: (i / W)|0,
+                     vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp - .25,
+                     life: 34 + ((Math.random()*34)|0),
+                     lift: .022 + Math.random()*.038,
+                     curl: Math.random() < .45, ph: Math.random()*6.28,
+                     amp: .10 + Math.random()*.30, rate: .07 + Math.random()*.22 };
         fl.max = fl.life;
         flares.push(fl);
       }
+    }
+    // and the page, burning, throws pieces of itself into the air
+    if(frame >= nextScrap){
+      nextScrap = frame + 55 + ((Math.random()*130)|0);
+      throwScrap();
+    }
+    // a burn of its own now and then, so that in time every margin is eaten
+    if(frame >= nextEdge){
+      nextEdge = frame + 430 + ((Math.random()*470)|0);
+      openBurn(0, 0, 1 + ((Math.random()*4)|0));
+      if(Math.random() < .35) throwScrap();
     }
     // a letter does not burn evenly: each stroke takes and gives up the flame
     for(let i = 0; i < fuel.length; i++)
@@ -1420,6 +1545,28 @@ function startPoemFire(){
         const v = hot[i % W] * FIRE_HEAT + Math.random()*FIRE_SPARK;
         heat[i] = v > 255 ? 255 : v|0;
       }
+    // a hole that is still alight burns out of itself, and may throw a tongue
+    for(const h of holes){
+      if(h.age < h.burn || h.age >= h.burn + h.flame) continue;
+      const gx = Math.round(h.cx * sc), gy = Math.round(h.cy * sc), ri = 2;
+      for(let dy = -ri; dy <= ri; dy++){
+        const yy = gy + dy; if(yy < 0 || yy >= H) continue;
+        for(let dx = -ri; dx <= ri; dx++){
+          const xx = gx + dx; if(xx < 0 || xx >= W) continue;
+          if(dx*dx + dy*dy > ri*ri) continue;
+          const v = 232 + ((Math.random()*23)|0);
+          if(heat[yy*W + xx] < v) heat[yy*W + xx] = v;
+        }
+      }
+      if(flares.length < 3 && Math.random() < .045){
+        const ang = -Math.PI/2 + (Math.random() - .5) * 2.2, sp = 1.1 + Math.random()*1.3;
+        flares.push({ x: gx, y: gy, vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp,
+                      life: 34 + ((Math.random()*30)|0), max: 60,
+                      lift: .03 + Math.random()*.035,
+                      curl: Math.random() < .5, ph: Math.random()*6.28,
+                      amp: .12 + Math.random()*.28, rate: .07 + Math.random()*.2 });
+      }
+    }
     for(let f = flares.length - 1; f >= 0; f--){
       const fl = flares[f];
       const r = .6 + 1.15 * (fl.life / fl.max);         // it thins as it goes out
@@ -1433,21 +1580,27 @@ function startPoemFire(){
           if(heat[yy*W + xx] < v) heat[yy*W + xx] = v;
         }
       }
-      fl.x += fl.vx; fl.y += fl.vy; fl.vy -= .038; fl.vx *= .985;  // it curls upward
+      if(fl.curl){                                       // the long lock, turning
+        const a = Math.sin(fl.ph) * fl.amp; fl.ph += fl.rate;
+        const c = Math.cos(a), s2 = Math.sin(a);
+        const nvx = fl.vx*c - fl.vy*s2, nvy = fl.vx*s2 + fl.vy*c;
+        fl.vx = nvx; fl.vy = nvy;
+      }
+      fl.x += fl.vx; fl.y += fl.vy; fl.vy -= fl.lift; fl.vx *= .992;  // heat lifts it
       // out in the bare margin — clear of the writing, but still on the page —
       // it sometimes catches, and the Torah itself begins to burn
       const inMargin = fl.x < fx0-7 || fl.x > fx1+7 || fl.y < fy0-7 || fl.y > fy1+7;
-      const onPage = fl.x > 8 && fl.x < W-9 && fl.y > 8 && fl.y < H-9;
-      if(holeWait === 0 && holes.length < 3 && inMargin && onPage && Math.random() < .5){
-        holeWait = 210 + ((Math.random()*180)|0);        // seldom — seven seconds or more
-        const pts = [];
-        for(let k = 0; k < 15; k++) pts.push(.70 + Math.random()*.55);
-        holes.push({ cx: fl.x / sc, cy: fl.y / sc,
-                     rmax: 7 + Math.random()*8, pts,
-                     age: 0, burn: 16, glow: 16, heal: 220 });
+      const onPage = fl.x > 6 && fl.x < W-7 && fl.y > 6 && fl.y < H-7;
+      if(holeWait === 0 && inMargin && onPage && Math.random() < .5){
+        holeWait = 260 + ((Math.random()*280)|0);        // nine seconds or more apart
+        openBurn(fl.x / sc, fl.y / sc, 0);
+        // and while one place burns, another often catches at the same moment
+        if(Math.random() < .3) openBurn(0, 0, 1 + ((Math.random()*4)|0));
+        if(Math.random() < .5) throwScrap();
         fl.life = 1;
       }
-      if(--fl.life <= 0 || fl.y < 0) flares.splice(f, 1);
+      if(--fl.life <= 0 || fl.y < -3 || fl.y > H + 3 || fl.x < -3 || fl.x > W + 3)
+        flares.splice(f, 1);
     }
     for(let y = 0; y < H-1; y++){
       const row = y*W, below = (y+1)*W;
@@ -1467,10 +1620,14 @@ function startPoemFire(){
     }
     ctx.putImageData(img, 0, 0);
     if(holes.length || scarDrawn){ drawScars(); scarDrawn = holes.length > 0; }
+    if(wind && (scraps.length || scrapDrawn)){ drawScraps(); scrapDrawn = scraps.length > 0; }
   }
-  let scarDrawn = false;
+  let scarDrawn = false, scrapDrawn = false;
   raf = requestAnimationFrame(step);
-  _fireStop = () => { alive = false; cancelAnimationFrame(raf); };
+  _fireStop = () => {
+    alive = false; cancelAnimationFrame(raf);
+    if(wind) wx.clearRect(0, 0, wind.width, wind.height);
+  };
 }
 // the wringing itself: fractal noise driving a displacement map, its frequency
 // and seed always on the move, which is what keeps the flame alive
