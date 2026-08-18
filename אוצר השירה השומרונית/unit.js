@@ -2053,7 +2053,6 @@ function dncRim() {
   const w = deck ? deck.getBoundingClientRect().width : 400;
   // the drawing is 1000 units across, so this is how many screen pixels one
   // unit of outline is actually worth
-  const perUnit = w / 1000;
   // A hairline, not a border. What carries her on a dim screen is that the
   // line is pure white and lit, not that it is thick — a thick one only
   // fattens her and loses the figure.
@@ -2062,12 +2061,9 @@ function dncRim() {
   else if (w < 420) px = 0.9;
   if (matchMedia('(prefers-color-scheme: dark)').matches) px += 0.12;
   if (matchMedia('(prefers-contrast: more)').matches) px += 0.3;
-  const r = Math.max(0.9, Math.min(3.4, px / (perUnit || 0.4)));
-  const f = document.querySelector('#dncRim feMorphology');
-  if (f) f.setAttribute('radius', r.toFixed(2));
   const d = $('dancer');
-  d.style.setProperty('--rim', (px * 2.6).toFixed(2) + 'px');   // the glow
-  d.style.setProperty('--rimop', (w < 420 ? 0.95 : 0.8).toFixed(2));
+  d.style.setProperty('--rim', px.toFixed(2) + 'px');
+  d.style.setProperty('--rimop', (w < 420 ? 0.95 : 0.85).toFixed(2));
 }
 dncRim();
 addEventListener('resize', dncRim);

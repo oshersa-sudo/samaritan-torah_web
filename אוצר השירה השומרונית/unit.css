@@ -648,13 +648,23 @@ body{
    cassette shows through around her exactly as it is. The pale rim is the
    one concession: without it a black figure would disappear into the black
    shell she walks along. She is hidden until there is music. */
-/* The white outline comes from the SVG filter, whose thickness JS sets; the
-   glow on top of it is what carries her on a screen turned right down. */
+/* The white outline, built out of drop-shadows rather than out of a proper
+   outline filter.
+   feMorphology would give a truer line, and it did — but it is the most
+   expensive primitive there is, and putting it on a figure whose every joint
+   is animating means dilating her whole body again on every frame. She went
+   on dancing and the screen stopped keeping up, which looks exactly like a
+   dancer who has stopped. Four tight white shadows, one per quarter turn,
+   ring her for a fraction of the cost, and drop-shadow is the one filter the
+   compositor handles on the card. */
 .dancer{
   visibility:hidden;
-  filter:url(#dncRim)
-         drop-shadow(0 0 var(--rim,2px) rgba(255,255,255,var(--rimop,.5)))
-         drop-shadow(0 1.5px 2px rgba(0,0,0,.5));
+  --r:var(--rim,1px);
+  filter:drop-shadow(var(--r) 0 0 rgba(255,255,255,var(--rimop,.95)))
+         drop-shadow(calc(var(--r) * -1) 0 0 rgba(255,255,255,var(--rimop,.95)))
+         drop-shadow(0 var(--r) 0 rgba(255,255,255,var(--rimop,.95)))
+         drop-shadow(0 calc(var(--r) * -1) 0 rgba(255,255,255,var(--rimop,.95)))
+         drop-shadow(0 0 calc(var(--r) * 2.4) rgba(255,255,255,.55));
 }
 .dancer.show{visibility:visible}
 .dancer line{stroke:#080706;stroke-width:6.4;stroke-linecap:round;fill:none}
