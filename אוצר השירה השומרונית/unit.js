@@ -397,20 +397,16 @@ function playRec(recId, idx, quiet) {
  * the percentage, says when there is enough to start, and finishes green.
  * The scrubber stays out of reach until seeking is safe.
  */
-const LOAD = { on: false, started: false, done: 0, timer: 0, greenAt: 0 };
-const PLAY_AT = 0.12;                 // enough of it down to start on
+const LOAD = { on: false, started: false, timer: 0, greenAt: 0,
+               bytes: 0, total: 0, token: 0, blob: '' };
+const PLAY_AT = 0.10;                 // enough of it down to start on
+const MAX_FETCH = 90 * 1024 * 1024;   // past this, stream it and leave it alone
 
-function loadPct() {
-  if (!au.duration || !isFinite(au.duration)) return 0;
-  let end = 0;
-  for (let i = 0; i < au.buffered.length; i++) end = Math.max(end, au.buffered.end(i));
-  return Math.min(1, end / au.duration);
-}
-
-function loadSay(cls, text) {
+function loadSay(cls, text, frac) {
   const box = $('pticker');
   box.className = 'pticker on ' + cls;
   $('ptickerTxt').textContent = text;
+  box.style.setProperty('--load', Math.round((frac || 0) * 100) + '%');
 }
 
 function loadHide() {
@@ -425,32 +421,105 @@ function seekable(on) {
 
 function beginLoad(track) {
   clearInterval(LOAD.timer);
-  LOAD.on = true; LOAD.started = false; LOAD.done = 0; LOAD.greenAt = 0;
+  const token = ++LOAD.token;
+  LOAD.on = true; LOAD.started = false; LOAD.greenAt = 0;
+  LOAD.bytes = 0; LOAD.total = 0;
   TRIM.start = 0; TRIM.end = 0;
+  if (LOAD.blob) { URL.revokeObjectURL(LOAD.blob); LOAD.blob = ''; }
   seekable(false);
-  loadSay('load', 'טוען הקלטה… 0%');
-  LOAD.timer = setInterval(loadTick, 250);
-  loadTick();
-  scanSilence(track);                 // in parallel: where the music starts
+  loadSay('load', 'טוען הקלטה… 0%', 0);
+  LOAD.timer = setInterval(loadTick, 200);
+  fetchTrack(track, token);            // the actual download onto the device
+}
+
+/* The element streams only a little ahead of the needle and then waits — which
+ * is why the figure used to sit still, and why reaching for the scrubber
+ * stranded the player. So the recording is pulled down in full alongside the
+ * playing, byte by byte, and the moment it is here the player is switched onto
+ * the copy in memory: from then on every point in it is instant. */
+async function fetchTrack(track, token) {
+  const url = audioURL(track.f);
+  try {
+    const res = await fetch(url);
+    if (!res.ok || !res.body) return failFetch(token);
+    LOAD.total = +(res.headers.get('content-length') || 0);
+    if (!LOAD.total || LOAD.total > MAX_FETCH) {  // too big to hold in memory
+      if (res.body.cancel) res.body.cancel().catch(() => {});
+      return failFetch(token);
+    }
+    const reader = res.body.getReader();
+    const chunks = [];
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (token !== LOAD.token) { reader.cancel().catch(() => {}); return; }
+      chunks.push(value);
+      LOAD.bytes += value.length;
+    }
+    if (token !== LOAD.token) return;
+    const type = res.headers.get('content-type') || 'audio/mpeg';
+    const bytes = new Blob(chunks, { type });
+    swapToBlob(bytes, token);
+    scanSilence(await bytes.arrayBuffer(), token);
+  } catch (e) { failFetch(token); }
+}
+
+/* no download — carry on streaming, and say so honestly rather than showing a
+   figure that will not move */
+function failFetch(token) {
+  if (token !== LOAD.token || !LOAD.on) return;
+  LOAD.total = -1;
+}
+
+/* the same recording, now held in memory: keep the place and the play state */
+function swapToBlob(bytes, token) {
+  if (token !== LOAD.token) return;
+  const at = au.currentTime, playing = !au.paused;
+  const href = URL.createObjectURL(bytes);
+  LOAD.blob = href;
+  switching = true;
+  setTimeout(() => { switching = false; }, 400);
+  const resume = () => {
+    au.removeEventListener('loadedmetadata', resume);
+    if (token !== LOAD.token) return;
+    try { au.currentTime = Math.max(at, TRIM.start || 0); } catch (e) {}
+    if (playing) au.play().catch(() => {});
+  };
+  au.addEventListener('loadedmetadata', resume);
+  au.src = href;
+  setRate($('prate').value);
 }
 
 function loadTick() {
   if (!LOAD.on) return;
-  const p = loadPct();
+  const streaming = LOAD.total < 0;
+  const p = streaming ? 0 : (LOAD.total ? LOAD.bytes / LOAD.total : 0);
   const pct = Math.round(p * 100);
 
-  // enough of it is down to start, and the scrubber can be trusted
-  if (!LOAD.started && (p >= PLAY_AT || au.readyState >= 4)) {
+  // enough of it is here to start, and the scrubber can be trusted
+  if (!LOAD.started && (streaming ? au.readyState >= 3 : p >= PLAY_AT)) {
     LOAD.started = true;
     seekable(true);
     au.play().catch(() => {});
   }
-  if (p >= 0.999 || au.readyState >= 4 && p === 0) {
-    // fully down (or a source that reports no ranges): green, then away
+  if (streaming) {
+    // no byte count to show: it plays as it arrives, and says only that
+    if (!LOAD.greenAt && au.readyState >= 3) {
+      LOAD.greenAt = Date.now();
+      seekable(true);
+      loadSay('done', 'האזנה נעימה', 1);
+    } else if (LOAD.greenAt && Date.now() - LOAD.greenAt > 3000) {
+      LOAD.on = false; clearInterval(LOAD.timer); loadHide();
+    } else if (!LOAD.greenAt) {
+      loadSay('load', 'טוען הקלטה…', 0);
+    }
+    return;
+  }
+  if (p >= 0.999) {
     if (!LOAD.greenAt) {
       LOAD.greenAt = Date.now();
       seekable(true);
-      loadSay('done', 'האזנה נעימה');
+      loadSay('done', 'האזנה נעימה', 1);
     } else if (Date.now() - LOAD.greenAt > 3000) {
       LOAD.on = false; clearInterval(LOAD.timer); loadHide();
     }
@@ -458,7 +527,7 @@ function loadTick() {
   }
   loadSay('load', LOAD.started
     ? `טוען הקלטה… ${pct}% · מתחיל בהשמעה`
-    : `טוען הקלטה… ${pct}%`);
+    : `טוען הקלטה… ${pct}%`, p);
 }
 
 /* ---------------------------------------------------- trimming the silence
@@ -471,24 +540,13 @@ function loadTick() {
  */
 const TRIM = { start: 0, end: 0 };
 const SILENCE = 0.012;                // below this counts as nothing
-const MAX_SCAN = 40 * 1024 * 1024;    // a long recording is left alone
 
-async function scanSilence(track) {
+/* The bytes are already here — the download did that — so this only decodes
+ * them and reads where the sound begins and ends. */
+async function scanSilence(buf, token) {
   if (!window.AudioContext && !window.webkitAudioContext) return;
-  const url = audioURL(track.f);
+  if (token !== LOAD.token) return;
   try {
-    const res = await fetch(url);
-    if (!res.ok) return;
-    const len = +(res.headers.get('content-length') || 0);
-    // a long recording is left alone: decoding it whole would cost more than
-    // the trim is worth. Drop the body rather than letting it stream down.
-    if (!len || len > MAX_SCAN) {
-      if (res.body && res.body.cancel) res.body.cancel().catch(() => {});
-      return;
-    }
-    const buf = await res.arrayBuffer();
-    if (cur.rec == null || audioURL((byId(C.recordings, cur.rec).tr[cur.idx] || {}).f) !== url)
-      return;                                     // the user moved on meanwhile
     const AC = window.AudioContext || window.webkitAudioContext;
     const ctx = new AC();
     const audio = await ctx.decodeAudioData(buf);
@@ -510,10 +568,11 @@ async function scanSilence(track) {
     const start = Math.max(0, a / rate - 0.15);   // leave a breath either side
     const end   = Math.min(audio.duration, (b + win) / rate + 0.25);
     if (end - start < 1) return;                  // nothing but silence: leave it
+    if (token !== LOAD.token) return;             // the user moved on meanwhile
     TRIM.start = start > 0.4 ? start : 0;
     TRIM.end   = end < audio.duration - 0.4 ? end : 0;
     if (TRIM.start && au.currentTime < TRIM.start) au.currentTime = TRIM.start;
-  } catch (e) { /* CORS, an odd codec, a slow line — play it as it comes */ }
+  } catch (e) { /* an odd codec, a short read — play it as it comes */ }
 }
 
 // the tail: stop where the singing stopped, and move on as if it had ended
