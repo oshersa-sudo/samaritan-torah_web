@@ -444,6 +444,16 @@
         </g>
       </svg>
     </button>
+    <!-- הופך את חלל הקלטת למסך, ובו תמונות מחיי השומרונים -->
+    <button class="dw-btn dw-ico dw-pix" id="dwPix" aria-pressed="false"
+            title="תמונות מחיי השומרונים">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect class="px-fr" x="2.6" y="4.6" width="18.8" height="14.8" rx="2.2"
+              fill="none" stroke-width="1.9"/>
+        <circle class="px-sun" cx="8.4" cy="9.6" r="1.9"/>
+        <path class="px-hill" d="M4 17.2 9.6 11.6l3.4 3.4 2.9-2.6 4.1 4.8z"/>
+      </svg>
+    </button>
     <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר ונושאת את שם היצרן -->
     <span class="dw-handle" aria-hidden="true"><i><b>Panasonic</b></i></span>
     <!-- שולח את ההשמעה אל רמקול הבלוטות' של המכשיר. הצימוד עצמו נעשה
@@ -802,6 +812,16 @@
     </g>
   </svg>
 </aside>
+      <!-- המסך. הוא תופס בדיוק את מקומה של הקלטת ואינו משנה את גודל
+           החלון, וההשמעה ממשיכה מאחוריו כרגיל: התמונות רצות אחת אחר
+           השנייה, וכל אחת נושאת את שם מי שצילם אותה ואת רישיונה. -->
+      <div class="tv hidden" id="tv" aria-hidden="true">
+        <img class="tv-img" id="tvA" alt="">
+        <img class="tv-img" id="tvB" alt="">
+        <span class="tv-scan" aria-hidden="true"></span>
+        <span class="tv-glass" aria-hidden="true"></span>
+        <div class="tv-cap"><span id="tvCap">מחפש תמונות…</span></div>
+      </div>
       </div>
     </div>
 

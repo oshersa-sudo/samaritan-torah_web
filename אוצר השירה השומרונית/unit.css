@@ -361,9 +361,11 @@ body{
    two hinge posts screwed into the shell */
 /* centred on the bar, whatever else it holds. The title is capped short of
    the handle (see .dw-name) so the two can never run into each other. */
+/* the carry handle is centred and out of the flow, so it has to give way as
+   keys are added to the bar either side of it */
 .dw-handle{
   position:absolute;top:50%;inset-inline-start:50%;transform:translate(50%,-50%);
-  width:150px;height:18px;pointer-events:none;
+  width:120px;height:18px;pointer-events:none;
 }
 .dw-handle i{                  /* הידית עצמה */
   position:absolute;inset:0 14px;border-radius:9px;
@@ -439,6 +441,67 @@ body{
 .dw-dnc[aria-pressed="false"] .dn-fig-t{fill:#7c8496}
 .dw-dnc[aria-pressed="false"] .dn-no{display:block}
 .dw-dnc[aria-pressed="false"]{background:linear-gradient(180deg,#3a2f2e,#241c1b)}
+
+.dw-pix .px-fr{stroke:#cfd6e2}
+.dw-pix .px-sun,.dw-pix .px-hill{fill:#cfd6e2}
+.dw-pix[aria-pressed="true"]{background:linear-gradient(180deg,#1e3d63,#132840)}
+.dw-pix[aria-pressed="true"] .px-fr{stroke:#6ab6ff}
+.dw-pix[aria-pressed="true"] .px-sun,.dw-pix[aria-pressed="true"] .px-hill{fill:#6ab6ff}
+
+/* ------------------------------------------------------------ the screen
+   It takes the cassette's own place in the well and nothing else moves for
+   it — the window keeps its size and the recording keeps playing behind it.
+   Two images are stacked so that one can fade up while the other is still
+   there, and the strip along the bottom carries the credit, which is not
+   decoration: these are photographs somebody took and licensed, and the
+   licence is what asks for their name to travel with them. */
+.tv{
+  position:absolute;inset:0;z-index:2;border-radius:9px;overflow:hidden;
+  background:#07090c;
+  box-shadow:inset 0 0 26px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.06),
+             0 1px 3px rgba(0,0,0,.6);
+}
+.tv.hidden{display:none}
+/* Switching on the way a tube did: a line of light down the middle that
+   opens out. It is done by clipping and brightness rather than by scaling
+   anything, so neither the screen nor the machine around it ever changes
+   size — the picture arrives inside a box that has not moved. */
+.tv.on{animation:tvOn .44s cubic-bezier(.2,.9,.3,1)}
+@keyframes tvOn{
+  0%  {clip-path:inset(49.4% 14% 49.4% 14%);filter:brightness(3.6)}
+  55% {clip-path:inset(0 0 0 0);filter:brightness(1.8)}
+  100%{clip-path:inset(0 0 0 0);filter:brightness(1)}
+}
+.tv-img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity .9s ease;
+}
+.tv-img.on{opacity:1}
+/* the picture is a little warm and a little soft, the way a set of that age
+   showed everything */
+.tv-img{filter:saturate(.9) contrast(1.04) brightness(.96)}
+.tv-scan{
+  position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(180deg,
+    rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px);
+  opacity:.55;
+}
+.tv-glass{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 50% 44%,rgba(255,255,255,.07) 0,
+                    rgba(0,0,0,0) 42%,rgba(0,0,0,.5) 100%),
+    linear-gradient(115deg,rgba(255,255,255,.1) 0,rgba(255,255,255,0) 34%);
+}
+.tv-cap{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:4px 8px;direction:rtl;text-align:start;
+  font-size:.56rem;line-height:1.35;color:#dfe5ee;
+  background:linear-gradient(180deg,rgba(6,8,11,0),rgba(6,8,11,.86) 42%);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-shadow:0 1px 2px rgba(0,0,0,.9);
+}
+@media (max-width:430px){ .tv-cap{font-size:.5rem;padding:3px 6px} }
 
 /* the key that sends the sound to a paired speaker */
 .dw-bt{padding:3px 6px;line-height:0}
@@ -1299,11 +1362,11 @@ body{
   .transport{gap:2px;padding:4px 4px 5px}
   .tbtn2 b,.pbtn b{font-size:.44rem;letter-spacing:.02em}
   .tbtn2 svg,.pbtn svg{width:14px;height:14px}
-  /* seven keys on a narrow bar: they close ranks and the handle gives way */
-  .dw-bar{gap:4px;padding:8px 6px}
-  .dw-btn{padding:2px 6px}
-  .dw-ico,.dw-quiet,.dw-bt{padding:3px 4px}
-  .dw-handle{width:104px}
+  /* eight keys on a narrow bar: they close ranks and the handle gives way */
+  .dw-bar{gap:3px;padding:8px 5px}
+  .dw-btn{padding:2px 5px}
+  .dw-ico,.dw-quiet,.dw-bt{padding:3px 3px}
+  .dw-handle{width:78px}
   .dw-handle b{font-size:.46rem;letter-spacing:.04em}
   .dw-name{max-width:calc(50% - 104px)}
   .dw-name{max-width:calc(50% - 70px)}

@@ -2764,6 +2764,324 @@ function openFromLink() {
   return true;
 }
 
+/* ------------------------------------------ pictures in place of the tape
+ *
+ * The cassette's own place in the well becomes a screen, and photographs of
+ * Samaritan life run across it one after another — of the feast the
+ * recording was made at where there are such pictures, and of the community
+ * more generally where there are not. Nothing else changes for it: the
+ * window keeps its size and the singing carries on behind.
+ *
+ * The pictures come from Wikimedia Commons, which is where the freely
+ * licensed ones are, and which will say who took each of them. That last
+ * part is not a nicety — the licences these are published under ask for the
+ * photographer to be named wherever the picture is shown — so the credit
+ * runs along the bottom of the screen and changes with the picture. Anything
+ * that arrives without a photographer's name says so rather than passing it
+ * over in silence.
+ */
+const PIX = {
+  on: false, list: [], i: 0, timer: 0, load: 0, which: 'A', key: '',
+};
+/* what to look for, by the feast the recording belongs to. The archive's own
+ * event list is in Hebrew; Commons is catalogued in English. */
+/* Kept to two or three words apiece. Commons wants every word of a search to
+ * appear, and its files are named plainly — "Samaritans marking Sukkot on
+ * Mount Gerizim", "Samaritans' Passover at Mount Gerizim" — so a longer
+ * phrase simply finds nothing. The preference for people is applied when the
+ * results are sorted, not by loading it into the query. */
+const PIX_Q = {
+  2:  ['Samaritan synagogue', 'Samaritan prayer'],
+  3:  ['Samaritan synagogue'],
+  4:  ['Samaritans Passover', 'Samaritan Passover sacrifice'],
+  5:  ['Samaritans Passover', 'Samaritan matzot'],
+  6:  ['Samaritans Shavuot', 'Samaritan pilgrimage'],
+  7:  ['Samaritan pilgrimage', 'Samaritans Gerizim'],
+  8:  ['Samaritans Gerizim', 'Samaritan priests'],
+  9:  ['Samaritans Yom Kippur', 'Samaritan synagogue'],
+  10: ['Samaritans Sukkot', 'Samaritan sukkah'],
+  11: ['Samaritans Sukkot', 'Samaritans Gerizim'],
+  12: ['Samaritan pilgrimage', 'Samaritans Luza'],
+  14: ['Samaritan wedding', 'Samaritan celebration'],
+  15: ['Samaritan Torah', 'Samaritan Pentateuch'],
+};
+const PIX_ANY = ['Samaritans Israel', 'Samaritan high priest',
+                 'Samaritan festival', 'Samaritan priests',
+                 'Samaritans Gerizim', 'Samaritans Holon', 'Samaritan community'];
+
+/* What is wanted on that screen is the life of the community, which means
+ * people in it — the priests, the pilgrims, a family at a feast — and not the
+ * mountain by itself, a manuscript under glass, or a plan of a building. No
+ * browser can look at a picture and say who is in it, but Commons says a good
+ * deal in what it calls a file and what it files it under, and that is enough
+ * to sort the ones with somebody in them to the front. */
+const PIX_WHO = /priest|people|men\b|women|family|families|pilgrim|worship|pray|congregation|crowd|ceremon|celebrat|dance|dancing|singer|choir|children|boy|girl|elder|rabbi|portrait|group|sacrific|slaughter|feast|festival|wedding|reading|blessing|procession/i;
+const PIX_NOBODY = /manuscript|scroll|codex|inscription|map\b|plan\b|diagram|chart|coin|stamp|seal\b|tomb|grave|ruins?\b|archaeolog|excavat|panorama|landscape|aerial|view of|skyline|mountain\b|hill\b|building|architecture|facade|interior of|exterior|street|road|sign\b|book|page\b|folio|text\b|font|alphabet|script\b|letter/i;
+
+function pixPeople(p) {
+  let s = 0;
+  const t = `${p.ttl} ${(p.cats || []).join(' ')}`;
+  if (PIX_WHO.test(t)) s += 2;
+  if (PIX_NOBODY.test(t)) s -= 3;
+  return s;
+}
+
+/* Commons hands the photographer back as a scrap of HTML. It is parsed in an
+ * inert document and only its text taken: nothing from out there is ever put
+ * into this page as markup. */
+function pixText(html) {
+  if (!html) return '';
+  try {
+    const doc = new DOMParser().parseFromString(String(html), 'text/html');
+    return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+  } catch (e) { return ''; }
+}
+
+/* Where the uploader gave no machine-readable author, Commons writes a
+ * sentence about it and puts the name it worked out inside — which is the
+ * name the credit wants, not the sentence. */
+function pixName(s) {
+  const m = /No machine-readable author provided\.\s*(.+?)(?:~commonswiki)?\s*assumed/i.exec(s);
+  if (m && m[1]) return m[1].trim();
+  return /No machine-readable author/i.test(s) ? '' : s;
+}
+
+async function pixSearch(term) {
+  const u = 'https://commons.wikimedia.org/w/api.php?action=query&format=json'
+    + '&origin=*&generator=search&gsrnamespace=6&gsrlimit=24'
+    + '&prop=imageinfo|categories&cllimit=24'
+    + '&iiprop=url|size|extmetadata&iiurlwidth=900'
+    + '&gsrsearch=' + encodeURIComponent('intitle:' + term);
+  const j = await fetch(u).then(r => r.ok ? r.json() : Promise.reject(r.status));
+  return Object.values((j.query && j.query.pages) || {}).map(p => {
+    const ii = (p.imageinfo || [])[0] || {}, m = ii.extmetadata || {};
+    const by = pixName(pixText(m.Artist && m.Artist.value));
+    const x = {
+      src: ii.thumburl || '',
+      by: by.length > 64 ? by.slice(0, 63) + '…' : by,
+      lic: pixText(m.LicenseShortName && m.LicenseShortName.value),
+      ttl: (p.title || '').replace(/^[^:]+:/, '').replace(/\.[a-z]+$/i, ''),
+      cats: (p.categories || []).map(c => c.title.replace(/^[^:]+:/, '')),
+    };
+    return pixUsable(x, ii.width, ii.height, true) ? x : null;
+  }).filter(Boolean);
+}
+
+/* the same search need not be made twice in a day */
+function pixCached(key) {
+  try {
+    const c = JSON.parse(localStorage.getItem('shira_pix_' + key) || 'null');
+    if (c && Date.now() - c.t < 432e5) return c.v;          // half a day
+  } catch (e) {}
+  return null;
+}
+function pixKeep(key, v) {
+  try { localStorage.setItem('shira_pix_' + key, JSON.stringify({ t: Date.now(), v })); }
+  catch (e) {}
+}
+
+/* The pictures illustrating the Hebrew Wikipedia article on the Samaritans —
+ * asked for by name, and a good set: somebody has already chosen them as the
+ * ones that show the community. The article's own images are fetched, and
+ * each brings its photographer and licence with it. */
+/* An article carries more than photographs: the site's own logos, the little
+ * icons the templates use, maps, coats of arms. None of those belong on a
+ * screen showing the life of the community, and they are recognisable both
+ * by what they are called and by being far too small to be a photograph. */
+const PIX_NOT = /logo|icon|symbol|wiki|commons|open.?access|flag|coat.of.arms|blank|placeholder|question|edit|magnify|ambox|stub|portal|disambig|nuvola|crystal|emblem|barnstar|template/i;
+
+/* Commons holds millions of scanned book pages, and a search for words like
+ * "ceremony" or "people" brings them up by the hundred. They are engravings
+ * out of Victorian encyclopaedias, not photographs of anybody's life. */
+const PIX_BOOK = /\(IA |bub_gb_|internet archive|encyclopa|microform|- being a|wherein is|\bplate \d|\bpage \d|frontispiece|woodcut|engraving|lithograph|\bvol\b|\bed\.\b|\(micr/i;
+
+/* And a search anchored only by subject words still wanders, so a picture is
+ * kept only if the file itself is named for this community — Samaritan in one
+ * of its spellings, or the mountain and the village that are theirs and
+ * nobody else's. Nablus and Holon are deliberately not on this list: a
+ * picture of either is a picture of a town, and only the words below make it
+ * a picture of the Samaritans. */
+const PIX_SUBJ = /samarit|samaritain|samariter|shomron|shumron|schomron|gerizim|garizim|kiryat.?luza|\bluza\b/i;
+
+function pixUsable(p, w, h, anchored) {
+  if (!p.src || !/\.(jpe?g|png)$/i.test(p.src.split('?')[0])) return false;
+  if (PIX_NOT.test(p.ttl) || PIX_BOOK.test(p.ttl)) return false;
+  if (anchored && !PIX_SUBJ.test(`${p.ttl} ${(p.cats || []).join(' ')}`)) return false;
+  if (w && w < 620) return false;                 // an icon, not a photograph
+  if (w && h && (w / h > 3.2 || h / w > 2.6)) return false;   // a banner or a strip
+  return true;
+}
+
+async function pixArticle(site, title) {
+  const u = `https://${site}/w/api.php?action=query&format=json&origin=*`
+    + '&generator=images&gimlimit=100&prop=imageinfo|categories'
+    + '&iiprop=url|size|extmetadata&iiurlwidth=900&cllimit=24&titles=' + encodeURIComponent(title);
+  const j = await fetch(u).then(r => r.ok ? r.json() : Promise.reject(r.status));
+  return Object.values((j.query && j.query.pages) || {}).map(p => {
+    const ii = (p.imageinfo || [])[0] || {}, m = ii.extmetadata || {};
+    const by = pixName(pixText(m.Artist && m.Artist.value));
+    const x = { src: ii.thumburl || '', by: by.length > 64 ? by.slice(0, 63) + '…' : by,
+                lic: pixText(m.LicenseShortName && m.LicenseShortName.value),
+                ttl: (p.title || '').replace(/^[^:]+:/, '').replace(/\.[a-z]+$/i, ''),
+                cats: (p.categories || []).map(c => c.title.replace(/^[^:]+:/, '')) };
+    return pixUsable(x, ii.width, ii.height) ? x : null;
+  }).filter(Boolean);
+}
+
+/* Pictures given to the archive directly rather than found — a photographer
+ * who has said yes, a page whose owner has said yes. They live in a list of
+ * their own beside the catalogue, each with the credit it is to be shown
+ * under, and they go first because they are the closest to home. The file is
+ * optional: without it nothing here changes. */
+async function pixGiven() {
+  try {
+    const j = await fetch('data/pix_sources.json').then(r => r.ok ? r.json() : null);
+    if (!Array.isArray(j)) return [];
+    return j.filter(x => x && x.src).map(x => ({
+      src: String(x.src), by: String(x.by || ''), lic: String(x.lic || ''),
+      ttl: String(x.ttl || ''), src_name: String(x.source || ''),
+    }));
+  } catch (e) { return []; }
+}
+
+async function pixLoad() {
+  const r = cur.rec ? byId(C.recordings, cur.rec) : null;
+  const key = String((r && r.e) || 0);
+  if (PIX.key === key && PIX.list.length) return true;
+  const cache = pixCached(key);
+  if (cache && cache.length) { PIX.key = key; PIX.list = cache; PIX.i = 0; return true; }
+
+  // `rank` is how close a picture is to this particular recording: what was
+  // given to the archive, then what the feast's own search found, then the
+  // article's, then the general searches
+  const seen = new Set(), out = [];
+  const take = (got, rank) => got.forEach(x => {
+    if (!seen.has(x.src)) { seen.add(x.src); out.push(Object.assign(x, { rank })); }
+  });
+  take(await pixGiven(), 0);
+  if (!PIX.on) return false;
+
+  const own = PIX_Q[r && r.e] || [];
+  for (const t of own) {
+    if (!PIX.on) return false;
+    try { take(await pixSearch(t), 1); } catch (e) {}
+  }
+  try { take(await pixArticle('he.wikipedia.org', 'שומרונים'), 2); } catch (e) {}
+  for (const t of PIX_ANY) {
+    if (!PIX.on) return false;                      // switched off while loading
+    let got = [];
+    try { got = await pixSearch(t); } catch (e) { continue; }
+    take(got, 3);
+    if (out.length >= 34) break;                    // enough for a long recording
+  }
+  if (!out.length) return false;
+  // Somebody in the picture first, and the feast's own before the general.
+  // Pictures that plainly have nobody in them are dropped outright, so long
+  // as enough are left without them.
+  const scored = out.map(p => ({ p, s: pixPeople(p) }))
+    .sort((a, b) => (b.s - a.s) || (a.p.rank - b.p.rank));
+  const kept = scored.filter(x => x.s >= 0).map(x => x.p);
+  const rest = scored.filter(x => x.s < 0).map(x => x.p);
+  const list = kept.length >= 8 ? kept : kept.concat(rest);
+  PIX.key = key; PIX.list = pixSpread(list); PIX.i = 0;
+  pixKeep(key, PIX.list);
+  return true;
+}
+
+/* A search comes back in the order the files were uploaded, which means one
+ * photographer's whole afternoon in a row. Dealt round by photographer
+ * instead, so that the pictures — and the name under them — keep changing. */
+function pixSpread(list) {
+  const by = new Map();
+  list.forEach(p => {
+    const k = p.by || '?';
+    if (!by.has(k)) by.set(k, []);
+    by.get(k).push(p);
+  });
+  // the photographers whose pictures came closest to this recording deal first
+  const hands = [...by.values()].sort((a, b) => (a[0].rank || 0) - (b[0].rank || 0));
+  const out = [];
+  for (let n = 0; out.length < list.length; n++) {
+    let any = false;
+    for (const h of hands) if (h.length) { out.push(h.shift()); any = true; }
+    if (!any) break;
+  }
+  return out;
+}
+
+/* one picture after another, each fading up over the one before it */
+function pixNext() {
+  if (!PIX.on || !PIX.list.length) return;
+  const p = PIX.list[PIX.i % PIX.list.length];
+  PIX.i++;
+  const show = PIX.which === 'A' ? $('tvB') : $('tvA');
+  const hide = PIX.which === 'A' ? $('tvA') : $('tvB');
+  PIX.which = PIX.which === 'A' ? 'B' : 'A';
+  show.onload = () => {
+    if (!PIX.on) return;
+    show.classList.add('on');
+    hide.classList.remove('on');
+    $('tvCap').textContent = pixCredit(p);
+  };
+  show.onerror = () => { if (PIX.on) pixNext(); };    // a picture that will not come
+  show.src = p.src;
+  clearTimeout(PIX.timer);
+  PIX.timer = setTimeout(pixNext, 7200);
+}
+
+function pixCredit(p) {
+  const bits = [];
+  bits.push(p.by ? `צילום: ${p.by}` : 'צילום: לא צוין שם הצלם');
+  if (p.lic) bits.push(p.lic);
+  bits.push('ויקישיתוף');
+  return bits.join(' · ');
+}
+
+function pixOff() {
+  PIX.on = false;
+  clearTimeout(PIX.timer);
+  const tv = $('tv');
+  tv.classList.add('hidden');
+  tv.classList.remove('on');
+  ['tvA', 'tvB'].forEach(id => { $(id).classList.remove('on'); $(id).removeAttribute('src'); });
+  $('dwPix').setAttribute('aria-pressed', 'false');
+  $('dwPix').title = 'תמונות מחיי השומרונים';
+}
+
+$('dwPix').onclick = async () => {
+  sfx('click');
+  if (PIX.on) return pixOff();
+  PIX.on = true;
+  const tv = $('tv');
+  tv.classList.remove('hidden');
+  void tv.offsetWidth;
+  tv.classList.add('on');
+  $('tvCap').textContent = 'מחפש תמונות…';
+  $('dwPix').setAttribute('aria-pressed', 'true');
+  $('dwPix').title = 'חזרה אל הקלטת';
+  const ok = await pixLoad();
+  if (!PIX.on) return;                            // switched off meanwhile
+  if (!ok) {
+    $('tvCap').textContent = 'לא ניתן להביא תמונות כרגע';
+    toast('לא ניתן להביא תמונות מוויקישיתוף כרגע', true);
+    return;
+  }
+  pixNext();
+};
+/* a new recording may belong to another feast, so the pictures follow it */
+au.addEventListener('loadedmetadata', () => {
+  if (!PIX.on) return;
+  const r = cur.rec ? byId(C.recordings, cur.rec) : null;
+  if (String((r && r.e) || 0) === PIX.key) return;
+  pixLoad().then(ok => { if (ok && PIX.on) pixNext(); });
+});
+/* Reaching for one of the transport keys is reaching for the tape, so the
+ * screen gets out of its way and the cassette comes back. Caught on the way
+ * down and before anything else, so that the key's own work still happens. */
+document.querySelector('.transport').addEventListener('pointerdown', () => {
+  if (PIX.on) pixOff();
+}, true);
+
 /* ------------------------------------------------------------ the dancer
  * She is a pleasure, not a fixture: whoever would rather watch the reels
  * turn can send her off, and the deck remembers it on that device. */
