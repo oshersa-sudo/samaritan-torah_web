@@ -35,6 +35,47 @@ function fold(s) {
 }
 function loose(s) { return fold(s).replace(/[אהוי]/g, ''); }
 
+/* ---- matching what was typed against what there is.
+ *
+ * Whoever is looking for a recording types the scraps they remember: a word
+ * of the piyyut and the singer's family name, a fragment of each, in whatever
+ * order they come to mind. Those scraps are almost never next to each other,
+ * in that order, anywhere — so matching the query as one run of characters
+ * finds nothing, and did not: "שער אל" for a recording called "אל שער השמים
+ * נפן" returned nothing at all, and so did the title's own word beside its
+ * own singer's.
+ *
+ * So the query is taken apart, and every word of it has to appear somewhere —
+ * anywhere, in any order, as part of a longer word. Each is tried both as it
+ * was typed and with the vowel letters dropped, which is what lets one
+ * Samaritan spelling find another. A word that is nothing but vowel letters
+ * is only tried as it stands, or it would match everything.
+ */
+function terms(q) { return fold(q).split(/\s+/).filter(Boolean); }
+
+function hits(hay, low, ts) {
+  for (const t of ts) {
+    if (hay.includes(t)) continue;
+    const lt = loose(t);
+    if (lt && low.includes(lt)) continue;
+    return false;
+  }
+  return true;
+}
+
+/* Everything a recording can be found by, folded once and kept — the title,
+ * the description, the editor's note, the singer, the feast, the piyyut, the
+ * year, and the names of its own tracks. */
+function recHay(r) {
+  if (r._hay === undefined) {
+    r._hay = fold([r.ttl, r.desc, r.note, perfName(r.p), eventName(r.e),
+                   piyName(r.y), r.year,
+                   (r.tr || []).map(t => t.n).join(' ')].filter(Boolean).join(' '));
+    r._low = loose(r._hay);
+  }
+  return r;
+}
+
 /* "שונות" is the absence of an occasion — only worth showing when it is all
  * a piyyut has. */
 function named(events) {
@@ -51,14 +92,14 @@ const piyName   = id => (byId(C.piyyutim, id) || {}).name || '';
 /* Recordings passing every active filter except the one named in `skip`,
  * so each index can show what is still reachable from the current selection. */
 function filtered(skip) {
-  const q = fold(F.q), ql = loose(F.q);
+  const ts = terms(F.q);
   return C.recordings.filter(r => {
     if (skip !== 'perf'   && F.perf   && r.p !== F.perf)   return false;
     if (skip !== 'event'  && F.event  && r.e !== F.event)  return false;
     if (skip !== 'piyyut' && F.piyyut && r.y !== F.piyyut) return false;
-    if (!q) return true;
-    const hay = fold(`${r.ttl} ${perfName(r.p)} ${eventName(r.e)} ${piyName(r.y)}`);
-    return hay.includes(q) || loose(hay).includes(ql);
+    if (!ts.length) return true;
+    recHay(r);
+    return hits(r._hay, r._low, ts);
   });
 }
 
@@ -121,14 +162,15 @@ const chip = (label, val, key) =>
 function viewPiyyut() {
   const recs = filtered('piyyut');
   const live = new Set(recs.map(r => r.y));
-  const q = fold(F.q), ql = loose(F.q);
+  const ts = terms(F.q);
 
   let list = C.piyyutim.filter(p => live.has(p.id));
-  if (F.q) {                                    // also match the piyyut's own name
-    const extra = C.piyyutim.filter(p =>
-      !live.has(p.id) &&
-      (fold(p.name).includes(q) || loose(p.name).includes(ql) ||
-       p.variants.some(v => fold(v).includes(q))));
+  if (ts.length) {          // a piyyut is also found by its own name or a variant
+    const extra = C.piyyutim.filter(p => {
+      if (live.has(p.id)) return false;
+      const h = fold([p.name].concat(p.variants || []).join(' '));
+      return hits(h, loose(h), ts);
+    });
     list = list.concat(extra.filter(p => !F.perf && !F.event));
   }
   const count = {}, secs = {};
@@ -159,10 +201,11 @@ function viewPerf() {
     count[r.p] = (count[r.p] || 0) + 1;
     secs[r.p]  = (secs[r.p] || 0) + r.s;
   });
-  const q = fold(F.q);
+  const ts = terms(F.q);
   const s = SORT_STATE.perf;
   const list = C.performers
-    .filter(p => count[p.id] || (F.q && fold(p.name).includes(q)))
+    .filter(p => count[p.id] ||
+                 (ts.length && hits(fold(p.name), loose(p.name), ts)))
     .sort((a, b) =>
       s === 'abc'   ? he(a.name, b.name) :
       s === 'count' ? (count[b.id] || 0) - (count[a.id] || 0)
@@ -202,10 +245,11 @@ function viewEvent() {
     count[r.e] = (count[r.e] || 0) + 1;
     secs[r.e]  = (secs[r.e] || 0) + r.s;
   });
-  const q = fold(F.q);
+  const ts = terms(F.q);
   const s = SORT_STATE.event;
   // C.events already arrives in calendar order, so 'year' just keeps it
-  const list = C.events.filter(e => count[e.id] || (F.q && fold(e.name).includes(q)));
+  const list = C.events.filter(e => count[e.id] ||
+    (ts.length && hits(fold(e.name), loose(e.name), ts)));
   if (s !== 'year') list.sort((a, b) =>
     s === 'abc'   ? he(a.name, b.name) :
     s === 'count' ? (count[b.id] || 0) - (count[a.id] || 0)
