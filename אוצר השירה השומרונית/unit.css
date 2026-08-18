@@ -795,6 +795,26 @@ body{
 .vu i.on.y{background:#e6b422;box-shadow:0 0 5px #e6b422}
 .vu i.on.r{background:#e2483d;box-shadow:0 0 6px #e2483d}
 
+/* what is being done to the sound, said plainly beside the plate — it stays
+   readable when the desk is folded away, which is most of the time */
+.mix-side{
+  flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;
+  gap:4px;max-width:74px;
+}
+.mix-state,.tape-state{
+  font-size:.56rem;line-height:1.25;font-weight:600;color:#7f8896;
+  text-align:center;
+}
+.mix-state.on{color:#46d67a;text-shadow:0 0 5px rgba(70,214,122,.45)}
+.tape-state{
+  border:1px solid #2a3038;border-radius:4px;padding:2px 4px;cursor:pointer;
+  background:#171b21;font-family:inherit;color:#46d67a;
+  text-shadow:0 0 5px rgba(70,214,122,.45);
+}
+.tape-state:hover{background:#20252c;border-color:#3a424c}
+/* switched off: the recording is being played exactly as it is held */
+.tape-state.off{color:#8b94a5;text-shadow:none}
+
 /* the mixing desk itself, sitting on the panel beside the track name */
 .mix-toggle{
   flex:0 0 auto;border:0;background:none;padding:0;cursor:pointer;

@@ -994,6 +994,26 @@ function mixInit() {
   try {
     const ctx = new AC();
     const src  = ctx.createMediaElementSource(au);
+
+    /* The tape-restoration stage, ahead of everything the user touches.
+     * These are cassettes: forty years of rumble under the singing, mains hum
+     * picked up by whatever recorded them, hiss across the top, and the sharp
+     * edge of a dropout where the tape faltered. Each of these is dealt with
+     * where the singing is not:
+     *   rumble  — nothing sung sits below 60 Hz
+     *   hum     — two narrow notches, on the mains tone and its harmonic
+     *   hiss    — a gentle shelf above 9 kHz, well over the voice
+     *   jumps   — a fast limiter that takes the spike off a click
+     * Nothing is cut from the middle of the band, so no word is lost, and the
+     * whole stage can be stepped past in one press. */
+    const rHP  = ctx.createBiquadFilter(); rHP.type = 'highpass'; rHP.frequency.value = 62; rHP.Q.value = .7;
+    const rN1  = ctx.createBiquadFilter(); rN1.type = 'notch'; rN1.frequency.value = 50;  rN1.Q.value = 18;
+    const rN2  = ctx.createBiquadFilter(); rN2.type = 'notch'; rN2.frequency.value = 100; rN2.Q.value = 18;
+    const rHS  = ctx.createBiquadFilter(); rHS.type = 'highshelf'; rHS.frequency.value = 9000; rHS.gain.value = -5;
+    const rLim = ctx.createDynamicsCompressor();
+    rLim.threshold.value = -6; rLim.ratio.value = 12; rLim.knee.value = 2;
+    rLim.attack.value = .0015; rLim.release.value = .08;
+
     const hp   = ctx.createBiquadFilter(); hp.type = 'highpass';  hp.frequency.value = 20;
     const lp   = ctx.createBiquadFilter(); lp.type = 'lowpass';   lp.frequency.value = 20000;
     const bass = ctx.createBiquadFilter(); bass.type = 'lowshelf';  bass.frequency.value = 180;
@@ -1023,7 +1043,9 @@ function mixInit() {
     lim.threshold.value = 0; lim.ratio.value = 1; lim.knee.value = 0;
     lim.attack.value = .002; lim.release.value = .12;
 
-    src.connect(hp); hp.connect(lp); lp.connect(bass); bass.connect(mid);
+    src.connect(rHP); rHP.connect(rN1); rN1.connect(rN2); rN2.connect(rHS);
+    rHS.connect(rLim); rLim.connect(hp);
+    hp.connect(lp); lp.connect(bass); bass.connect(mid);
     mid.connect(treb); treb.connect(hum1); hum1.connect(hum2);
     hum2.connect(comp);
     comp.connect(pre);  comp.connect(gate);
@@ -1034,7 +1056,9 @@ function mixInit() {
 
     MIX.ctx = ctx;
     MIX.nodes = { src, hp, lp, bass, mid, treb, comp, gain, an,
-                  hum1, hum2, dly, fb, wet, pre, gate, match, lim };
+                  hum1, hum2, dly, fb, wet, pre, gate, match, lim,
+                  rHP, rN1, rN2, rHS, rLim };
+    restoreApply();
     return MIX.nodes;
   } catch (e) { return null; }         // already routed, or blocked
 }
@@ -1066,12 +1090,61 @@ function mixApply() {
   $('mGainN').textContent = v('mGain') + '%';
   localStorage.setItem('shira_mix', JSON.stringify(
     MIX_IDS.map(id => $(id).value)));
+  paintMixState();
 }
 
 function mixSet(vals) {
   MIX_IDS.forEach((id, i) => { if (vals[i] !== undefined) $(id).value = vals[i]; });
   mixApply();
 }
+
+/* Where every control sits when it is doing nothing. Anything away from this
+   means the sound is being shaped, and the strip beside the plate says so. */
+const MIX_NEUTRAL = { mBass: 0, mMid: 0, mMidF: 1100, mTreb: 0, mHP: 0,
+                      mLP: 20000, mComp: 0, mGate: 0, mGain: 100 };
+
+function mixActive() {
+  if (MIX_IDS.some(id => +$(id).value !== MIX_NEUTRAL[id])) return true;
+  return !!(FX.echo || FX.pitch || FX.denoise || FX.limit || FX.match);
+}
+
+function paintMixState() {
+  const on = mixActive();
+  $('mixState').textContent = on ? 'אפקטי מיקסר' : 'ללא אפקטי מיקסר';
+  $('mixState').classList.toggle('on', on);
+}
+
+/* ------------------------------------------------- the tape restoration
+ * On by default: every recording here came off a cassette, and every one of
+ * them carries the same four faults. One press steps past the whole stage and
+ * plays the tape exactly as the archive holds it.
+ */
+let RESTORE = localStorage.getItem('shira_restore') !== 'off';
+
+function restoreApply() {
+  const n = MIX.nodes;
+  if (n) {
+    // stepping past it is a matter of making each filter transparent
+    n.rHP.frequency.value = RESTORE ? 62 : 10;
+    n.rN1.Q.value = n.rN2.Q.value = RESTORE ? 18 : 0.0001;
+    n.rHS.gain.value = RESTORE ? -5 : 0;
+    n.rLim.threshold.value = RESTORE ? -6 : 0;
+    n.rLim.ratio.value     = RESTORE ? 12 : 1;
+  }
+  $('tapeState').textContent = RESTORE ? 'עיבוד קלטת' : 'מקור';
+  $('tapeState').classList.toggle('off', !RESTORE);
+  $('tapeState').title = RESTORE
+    ? 'רעש רקע, המהום וקפיצות סרט מרוככים — לחיצה תחזיר את ההקלטה כפי שהיא בארכיון'
+    : 'ההקלטה מושמעת כפי שהיא בארכיון — לחיצה תחזיר את עיבוד הקלטת';
+  localStorage.setItem('shira_restore', RESTORE ? 'on' : 'off');
+}
+
+$('tapeState').onclick = () => {
+  RESTORE = !RESTORE;
+  mixInit();
+  restoreApply();
+  toast(RESTORE ? 'עיבוד קלטת פועל' : 'מושמע מן המקור, ללא עיבוד');
+};
 /* the three ready-made settings, chosen with the mode knob. The order is
    MIX_IDS: bass · mid · mid-frequency · treble · rumble · hiss · levelling ·
    gate · gain */
@@ -1135,6 +1208,7 @@ function fxApply() {
   if (FX.denoise) bits.push('ניקוי המהום');
   $('mixNote').textContent = bits.join(' · ');
   localStorage.setItem('shira_fx', JSON.stringify(FX));
+  paintMixState();
 }
 
 /* --------------------------------------------------------- the knobs
@@ -1302,6 +1376,9 @@ $('mixReset').onclick = () => {
 try {
   Object.assign(FX, JSON.parse(localStorage.getItem('shira_fx') || '{}'));
 } catch (e) {}
+// whatever was carried over from last time, say so before anything is touched
+paintMixState();
+restoreApply();
 
 let mixShut = 0;
 function mixOpen(on) {
