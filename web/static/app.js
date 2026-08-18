@@ -1239,11 +1239,14 @@ function poemGrid(cls){
 // exactly their shape and rises out of them. The field is deliberately coarse
 // (a cell is some two screen pixels) and the canvas is stretched over the poem,
 // which both costs little and gives the softness that fire has.
-const FIRE_SCALE = 0.8, FIRE_HEAD = 32;    // grid fineness · room above for the flame
+const FIRE_SCALE = 0.8;                    // grid fineness — a cell is some 1¼ px
+const FIRE_CELLS = 64000;                  // but never more cells than the eye needs
 const FIRE_HEAT = 196, FIRE_SPARK = 59;    // how hot a letter is, and how it varies
 const FIRE_DECAY = 29;                     // how fast the flame dies — its height
-const FIRE_FUEL = .58;                     // how much of the ink catches: less is
-                                           // separate tongues, more is a sheet
+// how much of the ink catches: less is separate tongues, more is a sheet. On a
+// telephone the letters stand close, and at the wider setting their flames run
+// together into one blaze — so a narrow screen is given the sparser fire.
+const FIRE_FUEL = .58, FIRE_FUEL_NARROW = .40;
 // The edge is cut rather than faded, and the colours part company early: that is
 // what makes a flame look like fire and not like a glow behind glass.
 const FIRE_PALETTE = (() => {
@@ -1260,57 +1263,76 @@ const FIRE_PALETTE = (() => {
 let _fireStop = null;
 function startPoemFire(){
   if(_fireStop){ _fireStop(); _fireStop = null; }
-  const stack = document.querySelector('.bkpoem-stack');
-  const cv = stack && stack.querySelector('.pfirecv');
+  // The fire is laid over the WHOLE page, not over the poem alone: a tongue that
+  // breaks out must be able to reach any margin of the Torah, and where it
+  // reaches one it may set the page itself alight.
+  const frameEl = document.querySelector('.ornframe');
+  const stack = frameEl && frameEl.querySelector('.bkpoem-stack');
+  const cv = frameEl && frameEl.querySelector('.pfirecv');
+  const scar = frameEl && frameEl.querySelector('.pscar');
   const grid = stack && stack.querySelector('.pchar');
-  if(!cv || !grid) return;
+  if(!cv || !scar || !grid) return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const box = stack.getBoundingClientRect();
-  const W = Math.max(8, Math.round(box.width * FIRE_SCALE));
-  const H = Math.max(8, Math.round((box.height + FIRE_HEAD) * FIRE_SCALE));
+  const box = frameEl.getBoundingClientRect();
   if(!box.width || !box.height) return;
+  let sc = FIRE_SCALE;                        // the page may be large; the grid may not
+  const want = box.width * box.height * sc * sc;
+  if(want > FIRE_CELLS) sc *= Math.sqrt(FIRE_CELLS / want);
+  const W = Math.max(8, Math.round(box.width * sc));
+  const H = Math.max(8, Math.round(box.height * sc));
   cv.width = W; cv.height = H;
-  cv.style.top = (-FIRE_HEAD) + 'px';
-  cv.style.height = (box.height + FIRE_HEAD) + 'px';
+  const sdpr = Math.min(2, window.devicePixelRatio || 1);
+  scar.width = Math.round(box.width * sdpr); scar.height = Math.round(box.height * sdpr);
+  const sx = scar.getContext('2d');
+  sx.setTransform(sdpr, 0, 0, sdpr, 0, 0);
 
   // stamp the words where they stand, and keep only their ink as fuel
   const off = document.createElement('canvas'); off.width = W; off.height = H;
   const oc = off.getContext('2d');
   const fs = parseFloat(getComputedStyle(grid).fontSize) || 20;
-  oc.font = (fs * FIRE_SCALE).toFixed(1) + "px 'Hebrew', serif";
+  oc.font = (fs * sc).toFixed(1) + "px 'Hebrew', serif";
   oc.textAlign = 'right'; oc.textBaseline = 'middle'; oc.fillStyle = '#fff';
   for(const w of grid.querySelectorAll('.pw')){
     const r = w.getBoundingClientRect();
     if(!r.width) continue;
-    oc.fillText(w.textContent,
-                (r.right - box.left) * FIRE_SCALE,
-                (r.top + r.height/2 - box.top + FIRE_HEAD) * FIRE_SCALE);
+    oc.fillText(w.textContent, (r.right - box.left) * sc,
+                (r.top + r.height/2 - box.top) * sc);
   }
   const ink = oc.getImageData(0, 0, W, H).data;
   const fuel = new Uint8Array(W * H);
+  const dens = innerWidth < 560 ? FIRE_FUEL_NARROW : FIRE_FUEL;
   let any = 0;
   for(let i = 0; i < fuel.length; i++)
-    if(ink[i*4+3] > 90 && Math.random() < FIRE_FUEL){ fuel[i] = 1; any++; }
+    if(ink[i*4+3] > 90 && Math.random() < dens){ fuel[i] = 1; any++; }
   if(!any) return;
-  // A tongue breaks out where a letter has bare page beside it — not from the
-  // thick of the writing, where it would be lost among the other flames. The
-  // side it faces is kept with it (in the low bit), and that is the way it goes.
-  const seats = [];
+  // A tongue breaks out where a letter has bare page beside it or above it — not
+  // from the thick of the writing, where it would be lost among the other
+  // flames. Which way it faces is kept with it, and that is the way it goes.
+  const seats = [];                             // index·4 + 0 left · 1 right · 2 up
   for(let y = 0; y < H; y++)
     for(let x = 0; x < W; x++){
       const i = y*W + x;
       if(!fuel[i]) continue;
-      if(x + 6 < W && !fuel[i+3] && !fuel[i+4] && !fuel[i+5] && !fuel[i+6]) seats.push(i*2 + 1);
-      else if(x - 6 >= 0 && !fuel[i-3] && !fuel[i-4] && !fuel[i-5] && !fuel[i-6]) seats.push(i*2);
+      if(x + 6 < W && !fuel[i+3] && !fuel[i+4] && !fuel[i+5] && !fuel[i+6]) seats.push(i*4 + 1);
+      else if(x - 6 >= 0 && !fuel[i-3] && !fuel[i-4] && !fuel[i-5] && !fuel[i-6]) seats.push(i*4);
+      else if(y - 4 >= 0 && !fuel[i-2*W] && !fuel[i-3*W] && !fuel[i-4*W]) seats.push(i*4 + 2);
     }
-  if(!seats.length) for(let i = 0; i < fuel.length; i++) if(fuel[i]) seats.push(i*2 + 1);
+  if(!seats.length) for(let i = 0; i < fuel.length; i++) if(fuel[i]) seats.push(i*4 + 2);
+  // where the writing ends and the bare margin of the page begins
+  let fx0 = W, fx1 = 0, fy0 = H, fy1 = 0;
+  for(let y = 0; y < H; y++)
+    for(let x = 0; x < W; x++)
+      if(fuel[y*W + x]){
+        if(x < fx0) fx0 = x; if(x > fx1) fx1 = x;
+        if(y < fy0) fy0 = y; if(y > fy1) fy1 = y;
+      }
 
   // ── no two letters burn alike ──────────────────────────────────────────────
   // Three slow waves run across the page, their wavelength about the width of a
   // letter, so a letter and its neighbour never agree: one leans right, the next
   // stands straight, a third leans left and burns the taller for it. The waves
   // travel, so the same letter burns otherwise a moment later.
-  const LET = Math.max(3.5, fs * FIRE_SCALE * .62);      // a letter, in cells
+  const LET = Math.max(3.5, fs * sc * .62);              // a letter, in cells
   const k1 = 2*Math.PI / (LET * 1.9), k2 = 2*Math.PI / (LET * .85);
   const lean = new Float32Array(W), hot = new Float32Array(W), dec = new Float32Array(W);
 
@@ -1318,13 +1340,57 @@ function startPoemFire(){
   const heat = new Uint8Array(W * H);
   const img = ctx.createImageData(W, H), d = img.data, pal = FIRE_PALETTE;
   const flares = [];                            // the tongues that break out
-  let raf = 0, tick = 0, frame = 0, nextFlare = 20, alive = true;
+  const holes = [];                             // and the wounds they leave
+  let raf = 0, tick = 0, frame = 0, nextFlare = 20, holeWait = 90, alive = true;
+
+  // ── the wound, and its healing ─────────────────────────────────────────────
+  // Where a tongue reaches a margin it may catch, and a hole is burnt through
+  // the page: a black eye with a rim of ember and a scorch about it. Then it
+  // closes again from its edges inward, slowly, the way a living body returns to
+  // itself, and what is left of the scar fades last of all.
+  function scarPath(h, r, mul){
+    sx.beginPath();
+    const n = h.pts.length;
+    for(let k = 0; k < n; k++){
+      const a = k / n * Math.PI * 2, rr = r * mul * h.pts[k];
+      const px = h.cx + Math.cos(a)*rr, py = h.cy + Math.sin(a)*rr;
+      k ? sx.lineTo(px, py) : sx.moveTo(px, py);
+    }
+    sx.closePath();
+  }
+  function drawScars(){
+    sx.clearRect(0, 0, box.width, box.height);
+    for(let i = holes.length - 1; i >= 0; i--){
+      const h = holes[i], a = h.age++;
+      let r, ember, fade;
+      if(a < h.burn){ r = h.rmax * (a + 1) / h.burn; ember = 1; fade = 1; }
+      else if(a < h.burn + h.glow){ r = h.rmax; ember = 1 - (a - h.burn)/h.glow*.5; fade = 1; }
+      else {
+        const u = (a - h.burn - h.glow) / h.heal;         // 0 → 1 as the hole closes
+        if(u >= 1){ holes.splice(i, 1); continue; }
+        r = h.rmax * (1 - u*u*(3 - 2*u));                 // slowly, and evenly
+        ember = Math.max(0, .5 - u*1.1);
+        fade = u > .78 ? (1 - u)/.22 : 1;                 // the scar is the last to go
+      }
+      if(r < .4) continue;
+      sx.globalAlpha = .20 * fade; sx.fillStyle = '#5c3816'; scarPath(h, r, 1.75); sx.fill();
+      sx.globalAlpha = .55 * fade; sx.fillStyle = '#2a1608'; scarPath(h, r, 1.22); sx.fill();
+      sx.globalAlpha = .92 * fade; sx.fillStyle = '#120a04'; scarPath(h, r, 1);    sx.fill();
+      if(ember > .02){
+        sx.globalAlpha = ember * fade; sx.strokeStyle = '#ff8c1e'; sx.lineWidth = 1.7;
+        sx.shadowColor = 'rgba(255,120,20,.9)'; sx.shadowBlur = 7;
+        scarPath(h, r, 1.04); sx.stroke(); sx.shadowBlur = 0;
+      }
+      sx.globalAlpha = 1;
+    }
+  }
 
   function step(){
     if(!alive || !cv.isConnected){ alive = false; return; }
     raf = requestAnimationFrame(step);
     if((tick++ & 1) || document.hidden) return;        // some thirty times a second
     const t = frame++ / 30;
+    if(holeWait > 0) holeWait--;
     for(let x = 0; x < W; x++){
       const s = Math.sin(x*k1 + t*.55)*.62 + Math.sin(x*k2 - t*.9 + 1.7)*.38;
       lean[x] = s;                                     // which way this letter leans
@@ -1337,9 +1403,13 @@ function startPoemFire(){
       nextFlare = frame + 24 + ((Math.random()*22)|0);          // about once a second
       if(flares.length < 2){
         const v = seats[(Math.random()*seats.length)|0];
-        const i = v >> 1, side = (v & 1) ? 1 : -1;
-        const fl = { x: i % W, y: (i / W)|0, vx: side*(.95 + Math.random()*.7),
-                     vy: -(.28 + Math.random()*.42), life: 20 + ((Math.random()*11)|0) };
+        const i = v >> 2, code = v & 3;
+        // it reaches out further now, for the margin of the page is its errand
+        const fl = code === 2
+          ? { x: i % W, y: (i / W)|0, vx: (Math.random() - .5) * 1.1,
+              vy: -(1.05 + Math.random()*.75), life: 30 + ((Math.random()*16)|0) }
+          : { x: i % W, y: (i / W)|0, vx: (code ? 1 : -1) * (1.25 + Math.random()*.95),
+              vy: -(.4 + Math.random()*.6), life: 30 + ((Math.random()*16)|0) };
         fl.max = fl.life;
         flares.push(fl);
       }
@@ -1363,7 +1433,20 @@ function startPoemFire(){
           if(heat[yy*W + xx] < v) heat[yy*W + xx] = v;
         }
       }
-      fl.x += fl.vx; fl.y += fl.vy; fl.vy -= .045; fl.vx *= .97;   // it curls upward
+      fl.x += fl.vx; fl.y += fl.vy; fl.vy -= .038; fl.vx *= .985;  // it curls upward
+      // out in the bare margin — clear of the writing, but still on the page —
+      // it sometimes catches, and the Torah itself begins to burn
+      const inMargin = fl.x < fx0-7 || fl.x > fx1+7 || fl.y < fy0-7 || fl.y > fy1+7;
+      const onPage = fl.x > 8 && fl.x < W-9 && fl.y > 8 && fl.y < H-9;
+      if(holeWait === 0 && holes.length < 3 && inMargin && onPage && Math.random() < .5){
+        holeWait = 210 + ((Math.random()*180)|0);        // seldom — seven seconds or more
+        const pts = [];
+        for(let k = 0; k < 15; k++) pts.push(.70 + Math.random()*.55);
+        holes.push({ cx: fl.x / sc, cy: fl.y / sc,
+                     rmax: 7 + Math.random()*8, pts,
+                     age: 0, burn: 16, glow: 16, heal: 220 });
+        fl.life = 1;
+      }
       if(--fl.life <= 0 || fl.y < 0) flares.splice(f, 1);
     }
     for(let y = 0; y < H-1; y++){
@@ -1383,7 +1466,9 @@ function startPoemFire(){
       d[j] = pal[k]; d[j+1] = pal[k+1]; d[j+2] = pal[k+2]; d[j+3] = pal[k+3];
     }
     ctx.putImageData(img, 0, 0);
+    if(holes.length || scarDrawn){ drawScars(); scarDrawn = holes.length > 0; }
   }
+  let scarDrawn = false;
   raf = requestAnimationFrame(step);
   _fireStop = () => { alive = false; cancelAnimationFrame(raf); };
 }
@@ -1407,8 +1492,10 @@ function fireDefs(){
 function bookPoem(){
   const wrap = el('div','bkpoem'), frame = el('div','ornframe');
   const stack = el('div','bkpoem-stack');
+  const scar = el('canvas','pscar'); scar.setAttribute('aria-hidden','true');
   const cv = el('canvas','pfirecv'); cv.setAttribute('aria-hidden','true');
-  stack.appendChild(cv);                  // the flame rising off them
+  frame.appendChild(scar);                // the burns in the page, and their healing
+  frame.appendChild(cv);                  // the flame — over the whole page, not the poem
   stack.appendChild(poemGrid());          // the letters that are read
   stack.appendChild(poemGrid('pfire'));   // the ember in them
   const sparks = el('div','psparks');     // and what the fire throws off

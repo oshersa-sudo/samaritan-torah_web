@@ -263,9 +263,13 @@ body.div-collapsed .div-handle{ height:26px; }
    The flame is beneath the letters on purpose: what burns stays legible, and the
    fire is seen licking around it and streaming off its tops. */
 .bkpoem-stack{ flex:0 0 auto; position:relative; }
-.pfirecv{ position:absolute; left:0; width:100%; z-index:1;
+/* the flame covers the whole page, so a tongue may reach any of its margins */
+.pfirecv{ position:absolute; inset:0; width:100%; height:100%; z-index:1;
           pointer-events:none; user-select:none;
           filter:blur(1.1px); opacity:.88; }   /* just enough to take the grid off */
+/* the burns themselves lie on the page, beneath everything drawn upon it */
+.pscar{ position:absolute; inset:0; width:100%; height:100%; z-index:-1;
+        pointer-events:none; user-select:none; filter:blur(.6px); }
 .pchar{ position:relative; z-index:2; }
 .psparks{ z-index:4; }
 .pfire{ position:absolute; inset:0; width:100%; height:100%; z-index:3;
@@ -299,7 +303,7 @@ body.div-collapsed .div-handle{ height:26px; }
 /* a reader who asks for stillness gets the burn without the burning */
 @media (prefers-reduced-motion:reduce){
   .pfire, .psparks i{ animation:none; }
-  .psparks, .pfirecv{ display:none; }
+  .psparks, .pfirecv, .pscar{ display:none; }
 }
 /* nowrap keeps the half on one line; justifying the last line (which is also the
    only line) spreads its words across the whole column, so the colons line up */
