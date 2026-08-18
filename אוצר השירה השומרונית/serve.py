@@ -138,8 +138,33 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*a, directory=HERE, **kw)
 
     def log_message(self, fmt, *args):
-        if '/audio/' not in (self.path or ''):
+        # Every request is logged to stderr, and a program running without a
+        # console — the packaged window — has no stderr to log to. Left alone,
+        # writing the log line raises inside the handler and the request dies:
+        # the server sits there perfectly healthy, answering nothing. So the
+        # log is written where there is somewhere to write it, and skipped
+        # where there is not.
+        if '/audio/' in (self.path or ''):
+            return
+        if not getattr(sys, 'stderr', None):
+            return
+        try:
             super().log_message(fmt, *args)
+        except Exception:                           # noqa: BLE001
+            pass                                    # a log line is never worth a request
+
+    def handle_one_request(self):
+        try:
+            super().handle_one_request()
+        except Exception:                           # noqa: BLE001
+            # the same again for anything the base class logs on its way out
+            try:
+                self.close_connection = True
+            except Exception:                       # noqa: BLE001
+                pass
+
+    def log_error(self, fmt, *args):
+        self.log_message(fmt, *args)
 
     def end_headers(self):
         # The unit's own files must never be served stale — an edited unit.js
@@ -191,6 +216,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.serve_local_media()
         if p == '/data/local_media.json':
             return self.local_media_list()
+        if p == '/api/version':
+            # which build this is, so the window and the page agree
+            try:
+                with io.open(os.path.join(HERE, 'VERSION'), encoding='utf-8') as fh:
+                    v = fh.read().strip()
+            except OSError:
+                v = ''
+            return self.json_out({'version': v, 'local': True})
         if p == '/api/catalog':
             return self.api_catalog()
         if p == '/api/admin/status':
@@ -690,18 +723,41 @@ class Server(socketserver.ThreadingTCPServer):
     allow_reuse_address = True
 
 
+def say(line):
+    """Print without ever being able to bring the server down.
+
+    The banner is Hebrew and has ticks in it, and a Windows console handed a
+    cp1255 encoding cannot write either. That used to end the process before
+    it had bound a socket — the server dying of its own greeting. Whatever
+    cannot be written is simply not written.
+    """
+    try:
+        print(line)
+    except Exception:                               # noqa: BLE001
+        try:
+            sys.stdout.write(line.encode('ascii', 'replace').decode() + '\n')
+        except Exception:                           # noqa: BLE001
+            pass                                    # nowhere to say it; carry on
+
+
 if __name__ == '__main__':
-    print('אוצר השירה השומרונית')
-    print('  http://127.0.0.1:%d' % PORT)
-    print('  ארכיון : %s  %s' % (ARCHIVE,
-          '✓' if os.path.isdir(ARCHIVE) else '✗ לא מחובר — האינדקס יעבוד, נגינה לא'))
-    print('  הוספות : %s (%d)' % (ADDED, len(ADD.load())))
-    print('  מנהל   : %s' % ('✓ מופעל (אותה סיסמה כמו עריכת התורה)' if ADMIN_PASSWORD
-                             else '✗ אין ADMIN_PASSWORD ב-.env — העלאה מושבתת'))
+    # ask for UTF-8 where the stream allows it, so the banner reads properly
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding='utf-8', errors='replace')
+        except Exception:                           # noqa: BLE001
+            pass
+    say('אוצר השירה השומרונית')
+    say('  http://127.0.0.1:%d' % PORT)
+    say('  ארכיון : %s  %s' % (ARCHIVE,
+        'מחובר' if os.path.isdir(ARCHIVE) else 'לא מחובר — האינדקס יעבוד, נגינה לא'))
+    say('  הוספות : %s (%d)' % (ADDED, len(ADD.load())))
+    say('  מנהל   : %s' % ('מופעל (אותה סיסמה כמו עריכת התורה)' if ADMIN_PASSWORD
+                           else 'אין ADMIN_PASSWORD ב-.env — העלאה מושבתת'))
     if not os.path.exists(CATALOG):
-        print('  ✗ data/catalog.json חסר — הרץ: py -3 scripts/build_catalog.py')
+        say('  data/catalog.json חסר — הרץ: py -3 scripts/build_catalog.py')
     try:
         with Server(('127.0.0.1', PORT), Handler) as srv:
             srv.serve_forever()
     except KeyboardInterrupt:
-        print('\nהופסק.')
+        say('\nהופסק.')

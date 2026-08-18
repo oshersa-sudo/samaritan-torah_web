@@ -1469,6 +1469,31 @@ function mixOpen(on) {
 }
 $('mixToggle').onclick = () => mixOpen($('mixer').classList.contains('hidden'));
 $('mixMin').onclick    = () => mixOpen(false);
+
+/* A wheel over the desk turns whatever is under the pointer, and moves
+ * nothing else. CSS alone cannot say this — overscroll-behavior only stops
+ * the chain once a scrollable box has hit its end, and the mixer has no
+ * scrollable box at all, so the wheel went straight past it to the archive
+ * behind. Taken here instead, and not passed on. */
+$('mixer').addEventListener('wheel', e => {
+  const kn = e.target.closest && e.target.closest('.mx-kn[data-fx]');
+  if (kn) {                        // a wheel on a knob turns the knob
+    e.preventDefault();
+    const fx = kn.dataset.fx;
+    if (KNOBS[fx]) knobSet(fx, knobIndex(fx) + (e.deltaY < 0 ? 1 : -1));
+    return;
+  }
+  const r = e.target.closest && e.target.closest('input[type=range]');
+  if (r) {                         // and on a fader, moves the fader
+    e.preventDefault();
+    const step = Number(r.step) || 1;
+    const to = Number(r.value) + (e.deltaY < 0 ? step : -step);
+    r.value = Math.max(Number(r.min), Math.min(Number(r.max), to));
+    r.dispatchEvent(new Event('input', { bubbles: true }));
+    return;
+  }
+  e.preventDefault();              // anywhere else on the panel: nothing moves
+}, { passive: false });
 addEventListener('resize', () => {
   if (!$('mixer').classList.contains('hidden')) sizeFaders();
 });
@@ -4311,7 +4336,9 @@ function statsLine() {
   ];
   if (HOLD.pix) bits.push(`${HOLD.pix.toLocaleString('he')} תמונות`);
   if (HOLD.film) bits.push(`${HOLD.film} סרטונים`);
-  return bits.join(' · ');
+  let line = bits.join(' · ');
+  if (HOLD.version) line += `   ·   גרסה ${HOLD.version}`;
+  return line;
 }
 
 async function countPictures() {
@@ -4333,6 +4360,10 @@ async function countPictures() {
   });
   HOLD.pix  = (site ? site.pix : 0) + (mine ? mine.pix : 0);
   HOLD.film = (site ? site.film : 0) + (mine ? mine.film : 0);
+  // which build this is — only the program on the archive's own machine
+  // answers this, so online the line simply does not carry it
+  const v = await one('api/version', j => j && j.version);
+  if (v) HOLD.version = v;
   if (C && C.meta) $('stats').textContent = statsLine();
 }
 

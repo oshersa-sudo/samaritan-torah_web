@@ -33,3 +33,8 @@ data/tracks.json
 # They are tracked now. scripts/publish_check.py compares them against what
 # the live site is actually serving.
 data/purge_log.json
+
+# the built program and PyInstaller's workings — rebuilt by build_app.py
+build/
+dist/
+*.exe
