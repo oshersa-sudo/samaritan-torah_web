@@ -1,160 +1,145 @@
 # -*- coding: utf-8 -*-
-"""Publish the local unit to the live site.
+"""Take in what is new, and put the archive online — one action.
 
-The cloud copy is read-only: it serves whatever `data/catalog.json` is committed
-on `main`. So publishing means three things in order — rebuild the catalog so
-the admin's deletions and edits are baked in, work out what actually changed
-against what the site is serving now, and push.
+    py -3 scripts/sync.py                 # the whole round
+    py -3 scripts/sync.py --check         # say what would happen, do nothing
+    py -3 scripts/sync.py --no-inbox      # only publish what is already here
 
-Nothing here touches the audio archive or any file outside the unit.
+Four steps, in the order that keeps everything safe if one of them fails:
+
+  1  read the watched folder, and file whatever is in it
+  2  send the audio up to the media server
+  3  commit the editor's own files to the branch the site is built from
+  4  say what the site is still missing, if anything
+
+Nothing is deleted anywhere, and step 3 writes only the files the site reads —
+it does not touch the working branch, so an unfinished edit in the checkout is
+never published by accident.
 """
-import io, json, os, subprocess, sys
+import io
+import json
+import os
+import subprocess
+import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-UNIT = os.path.normpath(os.path.join(HERE, '..'))
-REPO = os.path.normpath(os.path.join(UNIT, '..'))
-REL  = os.path.basename(UNIT)                       # the unit's folder name
-CATALOG = os.path.join(UNIT, 'data', 'catalog.json')
+UNIT = os.path.dirname(HERE)
+REPO = os.path.dirname(UNIT)
+REL  = os.path.basename(UNIT)
+sys.path.insert(0, HERE)
 
-# only these are published; runtime state stays on this machine
-PUBLISH = ['index.html', 'unit.css', 'unit.js', 'serve.py',
-           'data/catalog.json', 'scripts', 'sounds', 'img', 'fonts', 'README.md']
+REMOTE = os.environ.get('SHIRA_REMOTE', 'private')
+BRANCH = os.environ.get('SHIRA_BRANCH_NAME', 'main')
+
+# what the web edition reads to build the catalogue the world sees
+FEEDS = ['data/catalog.json', 'data/overrides.json', 'data/additions.json',
+         'data/performers.json', 'data/removed.json',
+         'data/pix_sources.json', 'data/local_media.json']
 
 
 def _git(*args, **kw):
-    return subprocess.run(['git', '-c', 'core.quotepath=false', *args],
-                          cwd=REPO, capture_output=True, text=True,
-                          encoding='utf-8', errors='replace', **kw)
+    r = subprocess.run(['git'] + list(args), cwd=REPO,
+                       capture_output=True, **kw)
+    return r.returncode, r.stdout, r.stderr
 
 
-def _live_catalog(branch='main'):
-    """The catalog the site is serving right now, or None if unreachable."""
-    r = _git('show', f'{branch}:{REL}/data/catalog.json')
-    if r.returncode:
-        r = _git('show', f'private/{branch}:{REL}/data/catalog.json')
-    if r.returncode:
-        return None
-    try:
-        return json.loads(r.stdout)
-    except ValueError:
-        return None
+def publish(message, check=False):
+    """Commit the feeds straight onto the published branch.
 
-
-def _summarise(old, new):
-    """What changed, in terms a person would report."""
-    if not old:
-        return {'first': True, 'recordings': len(new['recordings'])}
-    def by_key(cat):
-        out = {}
-        for r in cat['recordings']:
-            out[(r.get('tr') or [{}])[0].get('f', '') or r.get('dir', '')] = r
-        return out
-    a, b = by_key(old), by_key(new)
-    removed = [k for k in a if k not in b]
-    added   = [k for k in b if k not in a]
-    pn_old = {p['id']: p['name'] for p in old['performers']}
-    pn_new = {p['id']: p['name'] for p in new['performers']}
-    ev_old = {e['id']: e['name'] for e in old['events']}
-    ev_new = {e['id']: e['name'] for e in new['events']}
-    edited = 0
-    for k, r in b.items():
-        o = a.get(k)
-        if not o:
-            continue
-        if (o['ttl'] != r['ttl'] or pn_old.get(o['p']) != pn_new.get(r['p'])
-                or ev_old.get(o['e']) != ev_new.get(r['e'])
-                or o.get('year') != r.get('year') or o.get('note') != r.get('note')
-                or o.get('desc') != r.get('desc')):
-            edited += 1
-    return {
-        'first': False,
-        'removed': len(removed), 'added': len(added), 'edited': edited,
-        'performers_before': len(old['performers']),
-        'performers_after':  len(new['performers']),
-        'recordings_before': len(old['recordings']),
-        'recordings_after':  len(new['recordings']),
-    }
-
-
-def run(branch='main', message=None):
-    """Rebuild, compare, and publish onto `branch`.
-
-    The commit is assembled with plumbing against a scratch index rather than
-    by committing the checked-out branch: the working tree is usually on some
-    other branch, mid-edit, and may hold unrelated changes. This way publishing
-    never moves the current branch, never touches an unrelated file, and works
-    no matter what state the checkout is in.
+    Written with git's plumbing rather than with add/commit so that the
+    checkout's own branch, and whatever is half-done in it, is left alone.
     """
-    build = subprocess.run([sys.executable, os.path.join(HERE, 'build_catalog.py')],
-                           cwd=UNIT, capture_output=True, text=True,
-                           encoding='utf-8', errors='replace')
-    if build.returncode:
-        return {'ok': False, 'stage': 'build',
-                'error': (build.stderr or build.stdout or '')[-600:]}
+    _git('fetch', REMOTE, BRANCH, '-q')
+    base = '%s/%s' % (REMOTE, BRANCH)
+    changed = []
+    for rel in FEEDS:
+        path = os.path.join(UNIT, rel.replace('/', os.sep))
+        if not os.path.exists(path):
+            continue
+        code, out, _ = _git('show', '%s:%s/%s' % (base, REL, rel))
+        mine = open(path, 'rb').read()
+        if code == 0 and out.replace(b'\r\n', b'\n') == mine.replace(b'\r\n', b'\n'):
+            continue
+        changed.append(rel)
+    if not changed:
+        print('   אין מה לפרסם — הכול כבר על %s' % base)
+        return []
+    print('   %d קבצים לפרסום: %s' % (len(changed), ', '.join(
+        os.path.basename(c) for c in changed)))
+    if check:
+        return changed
 
-    with open(CATALOG, encoding='utf-8') as fh:
-        new = json.load(fh)
-
-    fetch = _git('fetch', 'private', branch)
-    if fetch.returncode:
-        return {'ok': False, 'stage': 'push', 'error': fetch.stderr[-600:],
-                'hint': 'אין חיבור לשרת הגיט'}
-    base = _git('rev-parse', 'FETCH_HEAD').stdout.strip()
-    diff = _summarise(_live_catalog(branch), new)
-
-    idx = os.path.join(REPO, '.git', 'shira-sync-index')
+    idx = os.path.join(os.environ.get('TEMP', '/tmp'), 'shira_publish_index')
+    if os.path.exists(idx):
+        os.remove(idx)
     env = dict(os.environ, GIT_INDEX_FILE=idx)
+    subprocess.run(['git', 'read-tree', base], cwd=REPO, env=env, check=True)
+    for rel in changed:
+        path = os.path.join(UNIT, rel.replace('/', os.sep))
+        blob = subprocess.run(['git', 'hash-object', '-w', path], cwd=REPO,
+                              capture_output=True, text=True,
+                              check=True).stdout.strip()
+        subprocess.run(['git', 'update-index', '--add', '--cacheinfo',
+                        '100644,%s,%s/%s' % (blob, REL, rel)],
+                       cwd=REPO, env=env, check=True)
+    tree = subprocess.run(['git', 'write-tree'], cwd=REPO, env=env,
+                          capture_output=True, text=True,
+                          check=True).stdout.strip()
+    commit = subprocess.run(['git', 'commit-tree', tree, '-p', base],
+                            cwd=REPO, env=env, input=message,
+                            capture_output=True, text=True,
+                            encoding='utf-8', check=True).stdout.strip()
+    code, out, err = _git('push', REMOTE, '%s:refs/heads/%s' % (commit, BRANCH))
+    if code:
+        print('   הדחיפה נכשלה: %s' % err.decode('utf-8', 'replace')[:160])
+        return []
+    print('   נדחף %s' % commit[:9])
+    return changed
 
-    def g(*a):
-        return subprocess.run(['git', '-c', 'core.quotepath=false', *a], cwd=REPO,
-                              capture_output=True, text=True, encoding='utf-8',
-                              errors='replace', env=env)
-    try:
-        if os.path.exists(idx):
-            os.remove(idx)
-        r = g('read-tree', base)                      # start from what is live
-        if r.returncode:
-            return {'ok': False, 'stage': 'add', 'error': r.stderr[-600:]}
 
-        # stage the unit's published files from the working directory
-        files = []
-        for p in PUBLISH:
-            full = os.path.join(UNIT, p.replace('/', os.sep))
-            if os.path.isdir(full):
-                for dp, dn, fn in os.walk(full):
-                    dn[:] = [d for d in dn if d != '__pycache__']
-                    files += [os.path.join(dp, f) for f in fn]
-            elif os.path.isfile(full):
-                files.append(full)
-        rel = [os.path.relpath(f, REPO).replace(os.sep, '/') for f in files]
-        r = g('update-index', '--add', '--', *rel)
-        if r.returncode:
-            return {'ok': False, 'stage': 'add', 'error': r.stderr[-600:]}
+def main():
+    check = '--check' in sys.argv
+    print('סנכרון אוצר השירה השומרונית')
+    print('=' * 46)
 
-        tree = g('write-tree').stdout.strip()
-        base_tree = _git('rev-parse', f'{base}^{{tree}}').stdout.strip()
-        if tree == base_tree:
-            return {'ok': True, 'nothing': True, 'diff': diff, 'files': 0}
+    taken = []
+    if '--no-inbox' not in sys.argv:
+        print('\n1. תיקיית הקליטה')
+        import inbox
+        taken = inbox.run(check=check) or []
 
-        changed = g('diff-tree', '-r', '--name-only', base_tree, tree).stdout
-        n_files = len([l for l in changed.splitlines() if l.strip()])
+    print('\n2. שרת המדיה')
+    if taken and not check:
+        print('   %d קבצים נשלחו בעת הקליטה' % len(taken))
+    else:
+        print('   אין קבצי שמע חדשים לשלוח')
 
-        msg = message or ('אוצר השירה: סנכרון היחידה לאתר החי\n\n'
-                          'נבנה מחדש מן הנתונים המקומיים — מחיקות, עריכות\n'
-                          'ושינויי שמות — ונדחף כפי שהוא.\n\n'
-                          'Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>')
-        r = g('commit-tree', tree, '-p', base, '-m', msg)
-        if r.returncode:
-            return {'ok': False, 'stage': 'commit', 'error': r.stderr[-600:]}
-        commit = r.stdout.strip()
+    print('\n3. פרסום אל האתר')
+    n = len(taken)
+    msg = ('אוצר השירה: סנכרון — %s\n\n%s\n\nCo-Authored-By: Claude Opus 5 '
+           '<noreply@anthropic.com>\n'
+           % (time.strftime('%Y-%m-%d %H:%M'),
+              ('%d הקלטות חדשות מתיקיית הקליטה' % n) if n
+              else 'עדכון קבצי העריכה'))
+    published = publish(msg, check=check)
 
-        push = _git('push', 'private', f'{commit}:refs/heads/{branch}')
-        if push.returncode:
-            return {'ok': False, 'stage': 'push',
-                    'error': (push.stderr or push.stdout)[-600:],
-                    'hint': 'ייתכן שמישהו דחף בינתיים — נסו שוב'}
-        return {'ok': True, 'diff': diff, 'files': n_files,
-                'commit': commit[:7], 'branch': branch}
-    finally:
-        if os.path.exists(idx):
-            os.remove(idx)
+    print('\n4. בדיקה')
+    r = subprocess.run([sys.executable, os.path.join(HERE, 'publish_check.py')],
+                       capture_output=True, text=True, encoding='utf-8',
+                       env=dict(os.environ, PYTHONIOENCODING='utf-8'))
+    for line in (r.stdout or '').strip().splitlines()[-4:]:
+        print('   ' + line)
+
+    print('\n' + '=' * 46)
+    if check:
+        print('בדיקה בלבד — לא נקלט ולא נדחף דבר')
+    else:
+        print('נקלטו %d, פורסמו %d קבצים' % (len(taken), len(published)))
+        if published:
+            print('Render בונה מ-%s ויעלה את השינוי תוך כמה דקות' % BRANCH)
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

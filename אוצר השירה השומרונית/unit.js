@@ -4288,6 +4288,54 @@ async function loadNews(announce) {
   }
 }
 
+/* ---- what the archive holds, said in one line under the title.
+ *
+ * The pictures are counted alongside the recordings because they are part of
+ * the holdings now and not a decoration: the community's own photographs from
+ * its site, and the pictures and films off the archive drive. They are
+ * counted from the same two lists the screen inside the deck reads, so the
+ * number under the title and what actually comes up on that screen can never
+ * drift apart. The count arrives a moment after the rest — the lists are
+ * fetched — so the line is written once without it and again with it.
+ */
+const HOLD = { pix: 0, film: 0 };
+
+function statsLine() {
+  const bits = [
+    `${C.meta.n_rec.toLocaleString('he')} הקלטות`,
+    `${C.meta.n_tracks.toLocaleString('he')} רצועות`,
+    `${Math.round(C.meta.seconds / 3600)} שעות`,
+    `${C.meta.n_perf} מבצעים`,
+    `${C.meta.n_piyyut} פיוטים`,
+    `${C.meta.n_event} חגים ואירועים`,
+  ];
+  if (HOLD.pix) bits.push(`${HOLD.pix.toLocaleString('he')} תמונות`);
+  if (HOLD.film) bits.push(`${HOLD.film} סרטונים`);
+  return bits.join(' · ');
+}
+
+async function countPictures() {
+  const one = async (url, pick) => {
+    try {
+      const j = await fetch(url).then(r => r.ok ? r.json() : null);
+      return j ? pick(j) : null;
+    } catch (e) { return null; }
+  };
+  const site = await one('data/pix_sources.json',
+                         j => Array.isArray(j) ? { pix: j.length, film: 0 } : null);
+  const mine = await one('data/local_media.json', j => {
+    const items = (j && j.items) || [];
+    // only what can actually be shown: without a base they are on a drive
+    // this browser cannot reach, and counting them would be a boast
+    if (!j.base && !(C.meta && C.meta.media_pix)) return { pix: 0, film: 0 };
+    return { pix: items.filter(x => x.kind !== 'video').length,
+             film: items.filter(x => x.kind === 'video').length };
+  });
+  HOLD.pix  = (site ? site.pix : 0) + (mine ? mine.pix : 0);
+  HOLD.film = (site ? site.film : 0) + (mine ? mine.film : 0);
+  if (C && C.meta) $('stats').textContent = statsLine();
+}
+
 /* ------------------------------------------------------------------ boot */
 async function loadCatalog() {
   // /api/catalog folds in uploads; the static file keeps the unit working
@@ -4297,12 +4345,8 @@ async function loadCatalog() {
         ? { headers: { 'X-Admin-Token': ADMIN.token } } : undefined)
         .then(r => r.ok ? r.json() : Promise.reject())
         .catch(() => fetch('data/catalog.json').then(r => r.json()));
-  $('stats').textContent =
-    `${C.meta.n_rec.toLocaleString('he')} הקלטות · ` +
-    `${C.meta.n_tracks.toLocaleString('he')} רצועות · ` +
-    `${Math.round(C.meta.seconds / 3600)} שעות · ` +
-    `${C.meta.n_perf} מבצעים · ${C.meta.n_piyyut} פיוטים · ` +
-    `${C.meta.n_event} חגים ואירועים`;
+  $('stats').textContent = statsLine();
+  countPictures();
   draw();
 }
 
