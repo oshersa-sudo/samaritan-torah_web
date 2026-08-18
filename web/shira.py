@@ -48,7 +48,9 @@ MEDIA = os.environ.get('SHIRA_MEDIA', 'https://shira.onyx-study.com/archive/')
 # server, its build scripts, the raw scan of the archive drive — stays private.
 _OPEN_DIRS  = ('img/', 'fonts/', 'sounds/', 'photos/')
 _OPEN_FILES = ('index.html', 'unit.css', 'unit.js')
-_OPEN_DATA  = ('catalog.json',)
+# the catalogue, and the two lists the picture screen reads: the photographs
+# on the community's own site, and the archive's own pictures and films
+_OPEN_DATA  = ('catalog.json', 'pix_sources.json', 'local_media.json')
 
 shira = Blueprint('shira', __name__)
 

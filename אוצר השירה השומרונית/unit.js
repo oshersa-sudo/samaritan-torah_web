@@ -384,6 +384,7 @@ function playRec(recId, idx, quiet) {
   seekFrom = 0;
   setTimeout(() => { switching = false; }, 400);
   au.src = audioURL(t.f);
+  vuPeak = 0;                            // the meter re-learns this tape's loudness
   if (!quiet && !sameRec) sfx('play');   // the deck's own click
   mixInit();                            // the chain must exist before playback
   if (MIX.ctx && MIX.ctx.state === 'suspended') MIX.ctx.resume();
@@ -1435,10 +1436,11 @@ const LAMPS = 14;
     `<i class="${i < LAMPS * 0.62 ? 'g' : i < LAMPS * 0.85 ? 'y' : 'r'}"></i>`).join('');
 })();
 const vuBuf = new Uint8Array(1024);
+let vuPeak = 0;                  // the loudest this recording has been so far
 
 function vuTick() {
   const lamps = $('vu').children;
-  let lit = 0;
+  let lit = 0, vuRms = 0;
   // while the machine records, the lamps follow the microphone; otherwise
   // they follow what is playing
   const an = REC.an || (MIX.nodes && !au.paused ? MIX.nodes.an : null);
@@ -1449,13 +1451,29 @@ function vuTick() {
       const d = (vuBuf[i] - 128) / 128;
       sum += d * d;
     }
-    const rms = Math.sqrt(sum / vuBuf.length);
-    lit = Math.round(Math.min(1, rms * (REC.an ? 5.5 : 3.2)) * LAMPS);
+    vuRms = Math.sqrt(sum / vuBuf.length);
+    // The lamps on a fixed scale, as they were — but these are old tapes, and
+    // on the quiet ones that scale never lit a single lamp. So the piece's own
+    // loudest moment lights the meter too, and whichever reading is higher
+    // wins: a loud recording behaves exactly as it did, a quiet one now has a
+    // meter that moves instead of one that sits dark.
+    vuPeak = Math.max(vuRms, vuPeak * 0.9995);
+    const fixed = vuRms * (REC.an ? 5.5 : 3.2);
+    const rel = vuPeak > 0.0015 ? (vuRms / vuPeak) * 0.85 : 0;
+    lit = Math.round(Math.min(1, Math.max(fixed, rel)) * LAMPS);
+  } else {
+    vuRms = 0;
   }
   for (let i = 0; i < lamps.length; i++) lamps[i].classList.toggle('on', i < lit);
-  // she dances to this particular piece, not to a metronome — and the same
-  // listening is what tells her when the singing has stopped and started
-  if (DNC.at === 'dance' || DNC.at === 'rest') dncListen(an, lit / LAMPS);
+  // She dances to this particular piece, not to a metronome — and the same
+  // listening is what tells her when the singing has stopped and started.
+  //
+  // What she is given is the loudness itself and not the number of lamps
+  // alight. The lamps are a rounded count from nought to fourteen, and these
+  // recordings are quiet enough that the count is nought most of the time —
+  // which she read as silence, stood still, and never started again, because
+  // starting again wanted a level ten times what the tape was giving.
+  if (DNC.at === 'dance' || DNC.at === 'rest') dncListen(an, vuRms);
   levelTick();                        // the gate and the matcher ride this loop
   requestAnimationFrame(vuTick);
 }
@@ -2169,6 +2187,7 @@ function dancerIn() {
         if (au.paused) return dancerOut('right');
         // this piece's own pulse and metre, not the last one's
         DNCM.gaps = []; DNCM.onsets = []; DNCM.meter = 0; DNCM.bpm = 0;
+        DNCM.peak = 0; DNCM.hush = 0;      // this tape's own loudness, not the last one's
         dncDance();
       });
     });
@@ -2444,7 +2463,7 @@ function dncFigure() {
  */
 const DNCM = {
   spec: null, prev: null, mean: 0, up: false, last: 0, gaps: [], beat: 0, bpm: 0,
-  lift: 1, amp: 1, hush: 0,
+  lift: 1, amp: 1, hush: 0, peak: 0,
   onsets: [], meter: 0, flux: 0, cen: 0, wob: 0, effort: 'glide',
 };
 
@@ -2471,24 +2490,37 @@ function meterOf(onsets) {
   return score > 0.17 ? best : 0;
 }
 
-function dncListen(an, level) {
+function dncListen(an, rms) {
   const d = $('dancer'), now = performance.now();
 
-  /* Silence is not something to dance through. A passage counts as quiet
-   * only after it has stayed quiet for a good second — a breath between two
-   * verses must not stop her — and she takes it up again the moment the
-   * singing comes back, without leaving the strip in between. */
-  DNCM.hush = level < 0.075 ? DNCM.hush + 1 : 0;
+  /* How loud this recording is at all. These are tapes of unaccompanied
+   * singing, half of them copied from cassette, and what counts as loud on
+   * one is near silence on another — so loudness is judged against the
+   * piece's own peak rather than against a fixed number. The peak falls
+   * slowly, so a quiet passage lowers the bar with it instead of being
+   * mistaken for the end of the singing. */
+  DNCM.peak = Math.max(rms, DNCM.peak * 0.9995);
+  const loud = DNCM.peak > 0.0015;          // have we heard anything at all?
+  const rel = DNCM.peak > 0 ? Math.min(1, rms / DNCM.peak) : 0;
+
+  /* Silence is not something to dance through — but neither is a reading of
+   * nothing, which is what a browser gives when it will not hand the sound
+   * to the graph at all. She only stands still for a silence that can
+   * actually be measured; where there is no signal to measure she goes on
+   * dancing, which is the right way round for a fault to fall. */
+  DNCM.hush = (loud && rel < 0.14) ? DNCM.hush + 1 : 0;
   if (DNC.at === 'dance' && DNCM.hush > 62) return dancerRest();
   if (DNC.at === 'rest') {
-    if (level > 0.16) dancerResume();
+    // back at the first real sound, or after a spell with nothing to hear
+    if (rel > 0.3 || !loud) dancerResume();
     return;
   }
 
   // how big: the level itself, smoothed so she does not twitch on every frame
-  DNCM.amp += (0.55 + Math.min(1, level) * 0.8 - DNCM.amp) * 0.12;
+  DNCM.amp += (0.55 + rel * 0.8 - DNCM.amp) * 0.12;
   d.style.setProperty('--amp', DNCM.amp.toFixed(2));
   if (!an) return;
+  const level = rel;                        // the beat is read off the same scale
 
   // how high: where the weight of the spectrum sits, which for a voice runs
   // from about 300 Hz in the chest to some 2.5 kHz at the top of the register
