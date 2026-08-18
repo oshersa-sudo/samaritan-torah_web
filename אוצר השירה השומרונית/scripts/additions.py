@@ -103,7 +103,7 @@ def merge(catalog, rows):
         if r.get('note'):
             piy['note'] = r['note']
 
-        cat['recordings'].append({
+        row = {
             'id':   r['id'], 'p': perf['id'], 'e': ev['id'], 'y': piy['id'],
             'ttl':  r.get('title') or r['piyyut'],
             'dir':  r.get('dir', 'הוספות'),
@@ -113,7 +113,14 @@ def merge(catalog, rows):
             'added': r.get('added', ''),
             'tr':   [{'f': t['f'], 's': t.get('s') or 0, 'n': t['n']}
                      for t in r['tracks']],
-        })
+        }
+        # captured in the app and not yet filed: the sorting screen looks for
+        # this, and the indexes leave it alone until it clears
+        if r.get('pending'):
+            row['pending'] = 1
+        if r.get('recorded'):
+            row['recorded'] = 1
+        cat['recordings'].append(row)
 
     m = cat['meta']
     m['n_rec']    = len(cat['recordings'])

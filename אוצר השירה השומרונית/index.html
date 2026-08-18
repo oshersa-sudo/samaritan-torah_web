@@ -50,6 +50,8 @@
         <button id="addBtn"   class="tbtn hidden" title="הוספת הקלטה">＋ הוספה</button>
         <button id="perfBtn" class="tbtn hidden" title="ניהול רשימת המבצעים — מנהל בלבד">🎤 מבצעים</button>
         <button id="syncBtn" class="tbtn hidden" title="פרסום היחידה לאתר החי">⇧ סנכרן יחידה</button>
+        <button id="pendBtn" class="tbtn hidden" title="הקלטות שנקלטו במכשיר וממתינות למיון">
+          ● למיון <span id="pendN" class="pill hidden">0</span></button>
         <button id="trashBtn" class="tbtn hidden" title="סל המחזור — מנהל בלבד">
           🗑 סל מחזור<span id="trashN" class="badge hidden">0</span>
         </button>
@@ -92,6 +94,25 @@
 </div>
 
 <!-- סל המחזור — נגיש רק בתצוגת מנהל -->
+<!-- הקלטות שנקלטו במכשיר עצמו וממתינות שיתויקו -->
+<div id="pendModal" class="modal hidden">
+  <div class="sheet">
+    <div class="sheet-h">
+      <h2>הקלטות למיון</h2>
+      <button class="x" data-close="pendModal">✕</button>
+    </div>
+    <div class="sheet-b">
+      <p class="hint">הקלטות שנקלטו במכשיר דרך כפתור ההקלטה. הן שמורות
+        באוצר ומסומנות כממתינות למיון, ואינן מופיעות באינדקסים עד שיתויקו.
+        אפשר להאזין לכל אחת, לתקן את פרטיה, ואז לתייק או להסיר.</p>
+      <div id="pendBody"></div>
+    </div>
+    <div class="sheet-f">
+      <button class="btn ghost" data-close="pendModal">סגור</button>
+    </div>
+  </div>
+</div>
+
 <div id="trashModal" class="modal hidden">
   <div class="sheet">
     <div class="sheet-h">
@@ -224,15 +245,21 @@
   </div>
 </div>
 
-<!-- הוספת הקלטה -->
+<!-- הוספת הקלטה. אותו טופס משמש בשני מצבים: העלאת קבצים קיימים,
+     ופתיחת הקלטה חיה מן המיקרופון של המכשיר. -->
 <div id="addModal" class="modal hidden">
   <div class="sheet">
     <div class="sheet-h">
-      <h2>הוספת הקלטה לאוצר</h2>
+      <h2 id="addTitle">הוספת הקלטה לאוצר</h2>
       <button class="x" data-close="addModal">✕</button>
     </div>
     <div class="sheet-b">
-      <label>קובצי שמע <span class="opt">(אפשר לבחור כמה — הם ייכנסו כרצועות של הקלטה אחת)</span>
+      <p id="recIntro" class="recintro hidden">
+        הפרטים שתמלא כאן יופיעו על הקלטת בזמן ההקלטה. בלחיצה על
+        «התחל הקלטה» ייפתח המיקרופון של המכשיר, ולחיצה על STOP במקלט
+        תסיים את ההקלטה ותעלה אותה אל <b>ההקלטות למיון</b>.
+      </p>
+      <label id="upFilesRow">קובצי שמע <span class="opt">(אפשר לבחור כמה — הם ייכנסו כרצועות של הקלטה אחת)</span>
         <input id="upFiles" type="file" accept="audio/*" multiple></label>
       <div id="upList" class="uplist"></div>
       <label>פיוט <span class="req">*</span>
@@ -253,6 +280,7 @@
     <div class="sheet-f">
       <button class="btn ghost" data-close="addModal">ביטול</button>
       <button class="btn" id="upGo">הוסף לאוצר</button>
+      <button class="btn hidden" id="recGo">● התחל הקלטה</button>
     </div>
   </div>
 </div>
@@ -372,16 +400,15 @@
 <!-- חלון נגן הקלטות: נפתח בלחיצה על הקלטה, וניתן למזער אותו -->
 <section class="deckwin hidden" id="deckWin" aria-label="נגן הקלטות">
   <header class="dw-bar" id="dwBar">
-    <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר -->
-    <span class="dw-handle" aria-hidden="true"><i></i></span>
     <span class="dw-name" id="dwName">נגן הקלטות</span>
+    <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר ונושאת את שם היצרן -->
+    <span class="dw-handle" aria-hidden="true"><i><b>Panasonic</b></i></span>
     <button class="dw-btn" id="dwMin" title="מזער">─</button>
     <button class="dw-btn" id="dwClose" title="סגור">✕</button>
   </header>
   <div class="dw-body">
-    <!-- לוח המכשיר: רמקול מנוקב משמאל, וחלון הקלטת מימין -->
+    <!-- לוח המכשיר: חלון הקלטת תופס אותו לכל רוחבו -->
     <div class="deck-face">
-      <div class="grille" aria-hidden="true"></div>
       <!-- תא הקלטת: המסילות שעליהן היא מונחת, ונחשפות כשהיא נפלטת -->
       <div class="well">
       <span class="rails" aria-hidden="true"></span>
@@ -436,7 +463,11 @@
            כדי שייקרא באותו הגודל שנקרא בו קודם -->
       <text x="898" y="66" text-anchor="end" class="che" font-size="23" fill="#f6efdd" id="cRec">אוצר השירה השומרונית</text>
       <text x="102" y="66" class="cmono" font-size="21" letter-spacing="3" fill="#f6efdd" id="cParts">C-90</text>
-      <text x="898" y="288" text-anchor="end" class="che" font-size="24" fill="#7d7263" id="cEvent">—</text>
+      <!-- סוג הקלטת, במרכז הפס האדום, כנהוג על קלטות מן הסוג הזה -->
+      <text x="500" y="66" text-anchor="middle" class="cmono" font-size="21"
+            letter-spacing="3" fill="#f6efdd" opacity=".92">D60</text>
+      <!-- השיוך לחג הורם מעט, כדי לפנות את קו הבסיס לסימון הצד שמתחתיו -->
+      <text x="898" y="268" text-anchor="end" class="che" font-size="24" fill="#7d7263" id="cEvent">—</text>
     </g>
     <rect x="70" y="42" width="860" height="352" rx="10" fill="none" stroke="#0f0d0b" stroke-width="2" opacity=".5"/>
 
@@ -496,14 +527,17 @@
            stroke="#0d0b09" stroke-width="3" opacity=".9"/>
       <use href="#cTrap" stroke="#6d655b" stroke-width="2" opacity=".5"/>
     </g>
-    <!-- החורים הנקובים בתוך הטרפז, משני צידי הבורג המרכזי -->
+    <!-- החורים הנקובים בתוך הטרפז: זוג בכל צד, האחד מתחת לאחר באלכסון
+         היורד כלפי חוץ, בדומה לשיפוע צלעות הטרפז -->
     <g>
-      <circle cx="318" cy="588" r="13" fill="#0d0b0a"/>
-      <circle cx="682" cy="588" r="13" fill="#0d0b0a"/>
-      <circle cx="318" cy="588" r="13" fill="none" stroke="#7d7468"
-              stroke-width="1.4" opacity=".45"/>
-      <circle cx="682" cy="588" r="13" fill="none" stroke="#7d7468"
-              stroke-width="1.4" opacity=".45"/>
+      <g fill="#0d0b0a">
+        <circle cx="366" cy="587" r="13"/><circle cx="306" cy="608" r="13"/>
+        <circle cx="634" cy="587" r="13"/><circle cx="694" cy="608" r="13"/>
+      </g>
+      <g fill="none" stroke="#7d7468" stroke-width="1.4" opacity=".45">
+        <circle cx="366" cy="587" r="13"/><circle cx="306" cy="608" r="13"/>
+        <circle cx="634" cy="587" r="13"/><circle cx="694" cy="608" r="13"/>
+      </g>
     </g>
     <g fill="none" stroke="#0d0b09" stroke-width="2">
       <rect x="330" y="486" width="46" height="64" rx="6"/>
@@ -555,7 +589,8 @@
     <g fill="#4b443d">
       <circle cx="60" cy="60" r="11"/><circle cx="940" cy="60" r="11"/>
       <circle cx="60" cy="580" r="11"/><circle cx="940" cy="580" r="11"/>
-      <circle cx="500" cy="596" r="11"/>
+      <!-- הבורג המרכזי, מוצמד לגבולו התחתון של פתח הראש (566) -->
+      <circle cx="500" cy="578" r="11"/>
     </g>
 
     <!-- פרטי ההקלטה, נכתבים על התווית -->
@@ -568,11 +603,35 @@
       <!-- שם היצרן מוטבע על המדבקה, משמאל לחלון הסלילים, כמו בקלטת שבתמונה.
            העותק הבהיר שמתחת נותן את תחושת ההטבעה בנייר. -->
       <g class="cbrand">
-        <text x="171" y="299.5" text-anchor="middle" font-size="54" font-weight="800"
+        <!-- הסמליל, בגוונים שקופים על המדבקה עצמה -->
+        <g transform="translate(104 288)" opacity=".42">
+          <path d="M0 -30 L26 -15 L26 15 L0 30 L-26 15 L-26 -15 Z"
+                fill="#2f2a24" opacity=".55"/>
+          <path d="M0 -30 L26 -15 L26 15 L0 30 L-26 15 L-26 -15 Z"
+                fill="none" stroke="#f3ead4" stroke-width="1.6" opacity=".7"/>
+          <g fill="#f3ead4" opacity=".85">
+            <ellipse cx="0"    cy="-11" rx="6.4" ry="10"/>
+            <ellipse cx="9.5"  cy="-5.5" rx="6.4" ry="10" transform="rotate(60 9.5 -5.5)"/>
+            <ellipse cx="9.5"  cy="5.5"  rx="6.4" ry="10" transform="rotate(120 9.5 5.5)"/>
+            <ellipse cx="0"    cy="11"  rx="6.4" ry="10"/>
+            <ellipse cx="-9.5" cy="5.5"  rx="6.4" ry="10" transform="rotate(60 -9.5 5.5)"/>
+            <ellipse cx="-9.5" cy="-5.5" rx="6.4" ry="10" transform="rotate(120 -9.5 -5.5)"/>
+          </g>
+          <circle cx="0" cy="0" r="4.6" fill="#2f2a24" opacity=".65"/>
+        </g>
+        <text x="186" y="299.5" text-anchor="middle" font-size="42" font-weight="800"
               letter-spacing="1" fill="#f6efdd" opacity=".85">TDK</text>
-        <text x="171" y="298" text-anchor="middle" font-size="54" font-weight="800"
+        <text x="186" y="298" text-anchor="middle" font-size="42" font-weight="800"
               letter-spacing="1" fill="#c0392b">TDK</text>
-        <rect x="104" y="311" width="134" height="4" rx="2" fill="#c0392b" opacity=".8"/>
+        <rect x="140" y="311" width="92" height="4" rx="2" fill="#c0392b" opacity=".8"/>
+        <!-- סימון הצד, ברצועה שבין קצה חלון הסלילים (745) לקצה המדבקה (930),
+             ולשמאלו הכיתוב "Side:" בקו דק -->
+        <text x="812" y="326" text-anchor="end" font-size="19" font-weight="300"
+              letter-spacing="1" fill="#8a7f6b" class="cbrand-thin">Side:</text>
+        <text x="846" y="327.5" text-anchor="middle" font-size="50" font-weight="800"
+              fill="#f6efdd" opacity=".85">A</text>
+        <text x="846" y="326" text-anchor="middle" font-size="50" font-weight="800"
+              fill="#c0392b">A</text>
       </g>
       <text x="110" y="382" class="cmono" font-size="26" font-weight="700" letter-spacing="3" fill="#b8452e" id="cRate">1.0×</text>
       <text x="890" y="382" text-anchor="end" class="cmono" font-size="24" letter-spacing="2" fill="#7d7263" id="cTime">0:00 / 0:00</text>
@@ -590,6 +649,11 @@
         <div class="pmeta-txt">
           <div class="ptitle" id="ptitle"></div>
           <div class="psub"   id="psub"></div>
+          <!-- שורת התצוגה הספרתית: רצה מתחת לתוכן החלון, מימין לשמאל,
+               מעבר אחד בכל לחיצה -->
+          <div class="pticker" id="pticker" aria-live="polite">
+            <span id="ptickerTxt" dir="auto"></span>
+          </div>
         </div>
         <!-- לוח המיקסר, מצויר ולא סמליל של המערכת, כדי שייראה אותו הדבר בכל
              מכשיר. לחיצה עליו פותחת ומקפלת את המיקסר. -->
@@ -612,7 +676,7 @@
               <circle cx="51.6" cy="12" r="3"/><circle cx="61.8" cy="12" r="3"/>
               <circle cx="72"   cy="12" r="3"/><circle cx="82.2" cy="12" r="3"/>
             </g>
-            <g class="mx-sw">
+            <g class="mx-plate-sw">
               <rect x="8.3"  y="18" width="5" height="2.6" rx=".6"/>
               <rect x="18.5" y="18" width="5" height="2.6" rx=".6"/>
               <rect x="28.7" y="18" width="5" height="2.6" rx=".6"/>
@@ -661,6 +725,10 @@
       <!-- מקשי הפסנתר של המכשיר. אייקוני SVG ולא אמוג'י, שאחרת הם מוצגים
            בצבע המערכת ובגדלים שונים -->
       <div class="transport">
+        <button id="prec" class="tbtn2 recbtn" title="הקלטה" aria-label="הקלטה">
+          <span class="key"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/></svg></span>
+          <i class="reclamp" id="recLamp" aria-hidden="true"></i>
+          <b>REC</b></button>
         <button id="pprev" class="tbtn2" title="הרצועה הקודמת" aria-label="הרצועה הקודמת">
           <span class="key"><svg viewBox="0 0 24 24"><path d="M20 5 9 12l11 7z"/><rect x="4" y="5" width="2.8" height="14" rx="1"/></svg></span>
           <b>PREV</b></button>
@@ -682,15 +750,19 @@
       </div>
 
       <div class="knobs">
-        <label class="prate" title="מהירות ההשמעה">מהירות
+        <!-- על מסך צר אין מקום לשני הסרגלים בשורה אחת, ולכן המהירות מתקפלת
+             לכפתור שפותח את הסרגל אנכית. הווליום נשאר גלוי תמיד. -->
+        <div class="prate" id="prateBox" title="מהירות ההשמעה">
+          <button type="button" class="prate-tap" id="prateTap"
+                  aria-expanded="false" aria-controls="prate">מהירות</button>
           <input id="prate" type="range" min="0.5" max="2" step="0.5" value="1"
-                 list="rateTicks">
+                 list="rateTicks" aria-label="מהירות ההשמעה">
           <datalist id="rateTicks">
             <option value="0.5"></option><option value="1"></option>
             <option value="1.5"></option><option value="2"></option>
           </datalist>
           <span id="prateN">1.0×</span>
-        </label>
+        </div>
         <!-- מחוון עוצמה נגרר, עם סרגל מדידה מעליו כמו במכשירים הישנים.
              לחיצה על הידית עצמה, בלי לגרור, משתיקה ומחזירה. -->
         <div class="pvol">
@@ -708,27 +780,109 @@
         </div>
       </div>
 
-      <!-- מיקסר: שרשרת עיבוד על האודיו החי. נפתח מלוח המיקסר שבשורת השם. -->
+      <!-- מיקסר: שרשרת עיבוד על האודיו החי. הלוח הקטן שבשורת השם נפתח
+           אל כל שטח התצוגה ועד הפס שמתחת למקשים, ומציג מחווני החלקה
+           אנכיים אמיתיים ושורת כפתורי בחירה, כל אחד עם סרגל משלו. -->
       <div class="mixer hidden" id="mixer">
-        <div class="mix-row">
-          <label>באס<input type="range" id="mBass" min="-15" max="15" step="1" value="0"><span id="mBassN">0</span></label>
-          <label>אמצע<input type="range" id="mMid" min="-15" max="15" step="1" value="0"><span id="mMidN">0</span></label>
-          <label>טרבל<input type="range" id="mTreb" min="-15" max="15" step="1" value="0"><span id="mTrebN">0</span></label>
+        <div class="mx-bar">
+          <button class="mx-min" id="mixMin" title="החזר לגודלו" aria-label="מזער">─</button>
         </div>
-        <div class="mix-row">
-          <label>סינון רעש עמוק<input type="range" id="mHP" min="0" max="300" step="10" value="0"><span id="mHPN">כבוי</span></label>
-          <label>ריכוך שריקות<input type="range" id="mLP" min="3000" max="20000" step="500" value="20000"><span id="mLPN">כבוי</span></label>
+
+        <!-- לוח הידיות. יושב על רקע משלו, נבדל משאר המיקסר: שלוש ידיות
+             סיבוב — מצב, הד וגובה — ומתג הרמה למטה־למעלה לניקוי הרעש.
+             השנתות סביב כל ידית נבנות מן הקוד לפי מספר מצביה. -->
+        <div class="mx-panel">
+          <div class="mx-kn" id="knMode" data-fx="mode" tabindex="0"
+               role="slider" aria-label="מצב">
+            <span class="mx-kn-ring"><span class="mx-kn-ticks"></span>
+              <span class="mx-kn-body"><i></i></span></span>
+            <b>מצב</b><span class="mx-kn-val">שטוח</span>
+          </div>
+          <div class="mx-kn" id="knEcho" data-fx="echo" tabindex="0"
+               role="slider" aria-label="הד">
+            <span class="mx-kn-ring"><span class="mx-kn-ticks"></span>
+              <span class="mx-kn-body"><i></i></span></span>
+            <b>הד</b><span class="mx-kn-val">כבוי</span>
+          </div>
+          <div class="mx-kn" id="knPitch" data-fx="pitch" tabindex="0"
+               role="slider" aria-label="גובה">
+            <span class="mx-kn-ring"><span class="mx-kn-ticks"></span>
+              <span class="mx-kn-body"><i></i></span></span>
+            <b>גובה</b><span class="mx-kn-val">רגיל</span>
+          </div>
+          <div class="mx-sw" id="knNoise">
+            <button class="mx-swb" role="switch" aria-checked="false"
+                    aria-label="ניקוי רעש"><i></i></button>
+            <b>רעש</b><span class="mx-kn-val">כבוי</span>
+          </div>
+          <div class="mx-sw" id="knLimit">
+            <button class="mx-swb" role="switch" aria-checked="false"
+                    aria-label="לימיטר — תקרה קשיחה"><i></i></button>
+            <b>תקרה</b><span class="mx-kn-val">כבוי</span>
+          </div>
+          <div class="mx-sw" id="knMatch">
+            <button class="mx-swb" role="switch" aria-checked="false"
+                    aria-label="השוואת עוצמה בין הקלטות"><i></i></button>
+            <b>השוואה</b><span class="mx-kn-val">כבוי</span>
+          </div>
+          <!-- מנוף מקפיץ: עולה בלחיצה וחוזר מיד מטה מכוח קפיץ -->
+          <div class="mx-sw" id="knReset">
+            <button class="mx-swb spring" id="mixReset"
+                    title="החזר את כל העיבודים למצבם הנקי"
+                    aria-label="אפס הכול"><i></i></button>
+            <b>אפס</b><span class="mx-kn-val">הכול</span>
+          </div>
         </div>
-        <div class="mix-row">
-          <label>איזון עוצמה<input type="range" id="mComp" min="0" max="40" step="2" value="0"><span id="mCompN">כבוי</span></label>
-          <label>הגברה<input type="range" id="mGain" min="0" max="300" step="5" value="100"><span id="mGainN">100%</span></label>
+
+        <!-- מחווני ההחלקה. הסרגל של כל אחד מודפס לצידו -->
+        <div class="mx-strips">
+          <label class="mx-strip"><span class="mx-lab">באס</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mBass" min="-15" max="15" step="1" value="0"
+                     aria-label="באס"></span>
+            <span class="mx-val" id="mBassN">0</span></label>
+          <label class="mx-strip"><span class="mx-lab">אמצע</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mMid" min="-15" max="15" step="1" value="0"
+                     aria-label="אמצע"></span>
+            <span class="mx-val" id="mMidN">0</span></label>
+          <label class="mx-strip"><span class="mx-lab">תדר אמצע</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mMidF" min="300" max="4000" step="50" value="1100"
+                     aria-label="תדר האמצע"></span>
+            <span class="mx-val" id="mMidFN">1.1k</span></label>
+          <label class="mx-strip"><span class="mx-lab">טרבל</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mTreb" min="-15" max="15" step="1" value="0"
+                     aria-label="טרבל"></span>
+            <span class="mx-val" id="mTrebN">0</span></label>
+          <label class="mx-strip"><span class="mx-lab">רעש עמוק</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mHP" min="0" max="300" step="10" value="0"
+                     aria-label="סינון רעש עמוק"></span>
+            <span class="mx-val" id="mHPN">כבוי</span></label>
+          <label class="mx-strip"><span class="mx-lab">שריקות</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mLP" min="3000" max="20000" step="500" value="20000"
+                     aria-label="ריכוך שריקות"></span>
+            <span class="mx-val" id="mLPN">כבוי</span></label>
+          <label class="mx-strip"><span class="mx-lab">איזון</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mComp" min="0" max="40" step="2" value="0"
+                     aria-label="איזון עוצמה"></span>
+            <span class="mx-val" id="mCompN">כבוי</span></label>
+          <label class="mx-strip"><span class="mx-lab">שער רעש</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mGate" min="0" max="60" step="2" value="0"
+                     aria-label="שער רעש"></span>
+            <span class="mx-val" id="mGateN">כבוי</span></label>
+          <label class="mx-strip"><span class="mx-lab">הגברה</span>
+            <span class="mx-track"><i class="mx-sc" aria-hidden="true"></i>
+              <input type="range" id="mGain" min="0" max="300" step="5" value="100"
+                     aria-label="הגברה"></span>
+            <span class="mx-val" id="mGainN">100%</span></label>
         </div>
-        <div class="mix-foot">
-          <button class="btn ghost" id="mFlat">איפוס</button>
-          <button class="btn ghost" id="mVoice">קול ברור</button>
-          <button class="btn ghost" id="mTape">שיקום קלטת</button>
-          <span class="mix-note" id="mixNote"></span>
-        </div>
+        <span class="mix-note" id="mixNote"></span>
       </div>
     </div>
   </div>

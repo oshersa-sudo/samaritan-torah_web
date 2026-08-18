@@ -268,7 +268,7 @@ function card_grid(items) {
 /* ------------------------------------------------------------------- draw */
 function draw() {
   drawChips();
-  drawSort();
+  drawSort();                     // the sort dropdown for whichever index is up
   const html = tab === 'piyyut' ? viewPiyyut()
              : tab === 'perf'   ? viewPerf()
              : tab === 'event'  ? viewEvent()
@@ -458,6 +458,8 @@ $('pbtn').onclick = () => {
  * back to the start rather than jumping there. */
 let rewinding = 0;
 $('pstop').onclick = () => {
+  // recording first: STOP is what ends it and sends it up
+  if (REC.rec) { sfx('stop'); stopRecording(); return; }
   if (!au.src) return;
   au.pause();
   headIn(false);
@@ -542,6 +544,228 @@ for (const [id, dir] of [['prew', -1], ['pff', 1]]) {
   b.addEventListener('keyup', () => spoolStop());
 }
 
+/* -------------------------------------------------------------- record
+ * The red key. Recording itself belongs to the admin side of the unit — it
+ * is how new material gets into the archive — so outside admin mode the key
+ * is present and pressable but says so, on the little segment display under
+ * the panel text. Each press sends the message across once.
+ */
+const REC_DENIED = 'Not Available in this mode · כפתור זה זמין במצב מנהל בלבד';
+
+function ticker(msg) {
+  const box = $('pticker'), txt = $('ptickerTxt');
+  txt.textContent = msg;
+  box.classList.add('on');
+  box.classList.remove('run');
+  void box.offsetWidth;                 // restart the pass on a repeat press
+  box.classList.add('run');
+}
+$('ptickerTxt').addEventListener('animationend', () => {
+  $('pticker').classList.remove('on', 'run');
+  $('ptickerTxt').textContent = '';
+});
+
+/* The machine records. The whole thing hangs off one object: the microphone
+ * stream, the encoder writing into it, the analyser the lamps read, and the
+ * details typed into the form, which are what the cassette shows while it
+ * runs and what the upload is filed under.
+ */
+const REC = { stream: null, rec: null, chunks: [], meta: null,
+              ctx: null, an: null, t0: 0, tick: 0,
+              user: '', pass: '' };   // live site only: the media server's own
+
+function recArmed(on) {
+  $('prec').classList.toggle('armed', on);
+  $('recLamp').classList.toggle('on', on);
+}
+
+/* REC asks for the details first: without a piyyut name the archive cannot
+ * file what comes back. Outside admin mode it asks to sign in. */
+$('prec').onclick = () => {
+  if (REC.rec) return;                          // already running — STOP ends it
+  const online = !!(C && C.meta && C.meta.readonly);
+  if (online) {
+    // on the live site the media server keeps its own credentials, so the key
+    // asks for those rather than for the archive-drive admin
+    if (C.meta.can_record === false) return ticker(REC_DENIED);
+    if (REC.pass) return openRecordForm();
+    pendingAfterLogin = 'record';
+    return $('adminBtn').click();
+  }
+  if (!ADMIN.token) { pendingAfterLogin = 'record'; return $('adminBtn').click(); }
+  openRecordForm();
+};
+
+/* the add sheet, in its recording guise */
+function openRecordForm() {
+  $('addBtn').click();                          // fills the datalists for us
+  $('addTitle').textContent = 'הקלטה חדשה';
+  $('recIntro').classList.remove('hidden');
+  $('upFilesRow').classList.add('hidden');
+  $('upList').innerHTML = '';
+  $('upGo').classList.add('hidden');
+  $('recGo').classList.remove('hidden');
+}
+
+/* and back to the shape it has for plain uploads */
+function resetAddForm() {
+  $('addTitle').textContent = 'הוספת הקלטה לאוצר';
+  $('recIntro').classList.add('hidden');
+  $('upFilesRow').classList.remove('hidden');
+  $('upGo').classList.remove('hidden');
+  $('recGo').classList.add('hidden');
+}
+
+$('recGo').onclick = async () => {
+  const err = m => { $('upErr').textContent = m; $('upErr').classList.remove('hidden'); };
+  const piyyut = $('upPiyyut').value.trim();
+  if (!piyyut) return err('שם הפיוט הוא שדה חובה — הוא מה שההקלטה תתויק תחתיו.');
+  if (!navigator.mediaDevices || !window.MediaRecorder)
+    return err('המכשיר הזה אינו תומך בהקלטה מן הדפדפן.');
+
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false,
+               autoGainControl: false, channelCount: 1 },
+    });
+  } catch (e) {
+    return err(e && e.name === 'NotAllowedError'
+      ? 'הגישה למיקרופון נדחתה. אשר אותה בהגדרות הדפדפן ונסה שוב.'
+      : 'לא נמצא מיקרופון זמין במכשיר.');
+  }
+
+  REC.meta = { piyyut,
+               performer: $('upPerf').value.trim() || 'לא ידוע',
+               event:     $('upEvent').value,
+               title:     $('upTitle').value.trim() || piyyut,
+               note:      $('upNote').value.trim() };
+  closeModal('addModal');
+  resetAddForm();
+  startRecording(stream);
+};
+
+function startRecording(stream) {
+  // the deck stops playing: one machine, one head
+  au.pause(); stopAudio(); spoolStop(false);
+  openDeck();
+
+  REC.stream = stream;
+  REC.chunks = [];
+  // whatever this browser will actually encode
+  const type = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg']
+    .find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+  REC.rec = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
+  REC.rec.ondataavailable = e => { if (e.data && e.data.size) REC.chunks.push(e.data); };
+  REC.rec.start(1000);                          // a chunk a second, so nothing is lost
+
+  // the lamps read the microphone now, not the playing file
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    REC.ctx = new AC();
+    const src = REC.ctx.createMediaStreamSource(stream);
+    REC.an = REC.ctx.createAnalyser();
+    REC.an.fftSize = 2048;
+    src.connect(REC.an);                        // analyser only: no echo back out
+  } catch (e) { REC.an = null; }
+
+  recArmed(true);
+  headIn(true);
+  keepAwake(true);
+  writeRecLabels(0);
+  REC.t0 = Date.now();
+  REC.tick = setInterval(() => writeRecLabels((Date.now() - REC.t0) / 1000), 250);
+  toast('מקליט — לחץ STOP לסיום ולשמירה');
+}
+
+/* the cassette carries what was typed into the form, and counts up */
+function writeRecLabels(secs) {
+  const m = REC.meta || {};
+  $('cTitle').textContent = m.title || '—';
+  $('cPerf').textContent  = m.performer || '';
+  $('cRec').textContent   = 'הקלטה חדשה';
+  $('cEvent').textContent = m.event || '';
+  $('cLine2').textContent = new Date().getFullYear();
+  $('cParts').textContent = 'REC';
+  $('cTime').textContent  = `${dur(secs)} / ● REC`;
+  $('ptitle').textContent = m.title || 'הקלטה חדשה';
+  $('psub').textContent   = [m.performer, m.event].filter(Boolean).join(' · ');
+  $('dwName').textContent = 'מקליט…';
+}
+
+async function stopRecording() {
+  if (!REC.rec) return false;
+  clearInterval(REC.tick);
+  const secs = (Date.now() - REC.t0) / 1000;
+  const blob = await new Promise(res => {
+    REC.rec.onstop = () => res(new Blob(REC.chunks,
+      { type: REC.rec.mimeType || 'audio/webm' }));
+    REC.rec.stop();
+  });
+  REC.stream.getTracks().forEach(t => t.stop());
+  if (REC.ctx) { try { REC.ctx.close(); } catch (e) {} }
+  REC.rec = null; REC.stream = null; REC.an = null; REC.ctx = null;
+  recArmed(false);
+  headIn(false);
+  keepAwake(false);
+  if (secs < 1 || !blob.size) { toast('ההקלטה קצרה מדי — לא נשמרה', 1); return true; }
+  await uploadRecording(blob, secs);
+  return true;
+}
+
+/* Up to the archive, into the pile waiting to be sorted.
+ *
+ * Where that is depends on where the app is running. On this machine the
+ * archive drive is here: the clip is written to disk first and copied to the
+ * media server afterwards, so a recording survives a network that is down.
+ * On a phone there is no drive, so it goes straight to the media server.
+ */
+async function uploadRecording(blob, secs) {
+  const m = REC.meta || {};
+  const ext = /mp4/.test(blob.type) ? 'm4a' : /ogg/.test(blob.type) ? 'ogg' : 'webm';
+  const when = new Date().toISOString().slice(0, 16).replace('T', ' ').replace(':', '');
+  const online = !!(C && C.meta && C.meta.readonly);
+  const fd = new FormData();
+  fd.append('file', blob, `${m.piyyut || 'הקלטה'} ${when}.${ext}`);
+  fd.append('piyyut', m.piyyut || '');
+  fd.append('performer', m.performer || '');
+  fd.append('event', m.event || '');
+  fd.append('title', m.title || '');
+  fd.append('note', m.note || '');
+  fd.append('pending', '1');                    // goes to the sorting pile
+  fd.append('seconds', Math.round(secs));
+  if (online) {                                 // the media server checks these
+    fd.append('user', REC.user || '');
+    fd.append('password', REC.pass || '');
+  }
+
+  $('dwName').textContent = 'מעלה…';
+  toast(online ? 'ההקלטה הסתיימה — מעלה לשרת המדיה'
+               : 'ההקלטה הסתיימה — נשמרת ומועלית');
+  let r = {};
+  try {
+    r = await fetch(online ? 'api/record' : 'api/upload', {
+      method: 'POST', body: fd,
+      headers: online ? {} : { 'X-Admin-Token': ADMIN.token },
+    }).then(x => x.json());
+  } catch (e) { r = {}; }
+  if (!r.ok) {
+    // hold the audio so nothing is lost if the archive cannot be reached
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `${m.piyyut || 'הקלטה'} ${when}.${ext}`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 20000);
+    toast(r.message || (r.error === 'recording_disabled'
+      ? 'ההקלטה אינה מופעלת בשרת — ההקלטה ירדה למכשיר כדי שלא תאבד'
+      : 'ההעלאה נכשלה — ההקלטה ירדה למכשיר כדי שלא תאבד'), 1);
+    return;
+  }
+  if (!online) await loadCatalog();
+  toast(`נשמר להקלטות למיון: ${m.title || m.piyyut} · ${dur(secs)}`);
+  markNewsSeen();
+}
+
 function syncBtn() {
   $('icPlay').classList.toggle('hidden', !au.paused);
   $('icPause').classList.toggle('hidden', au.paused);
@@ -563,6 +787,9 @@ au.addEventListener('ended', () => keepAwake(true));
  *           → analyser → speakers
  */
 const MIX = { ctx: null, nodes: null, on: false };
+/* every fader, in the order the ready-made settings list their values */
+const MIX_IDS = ['mBass', 'mMid', 'mMidF', 'mTreb', 'mHP', 'mLP',
+                 'mComp', 'mGate', 'mGain'];
 
 function mixInit() {
   if (MIX.ctx) return MIX.nodes;
@@ -581,13 +808,37 @@ function mixInit() {
     comp.attack.value = .006; comp.release.value = .22;
     const gain = ctx.createGain();
     const an   = ctx.createAnalyser(); an.fftSize = 1024; an.smoothingTimeConstant = .75;
+    // mains hum and its first harmonic, notched out when the noise key is on
+    const hum1 = ctx.createBiquadFilter(); hum1.type = 'notch'; hum1.frequency.value = 50;  hum1.Q.value = 24;
+    const hum2 = ctx.createBiquadFilter(); hum2.type = 'notch'; hum2.frequency.value = 100; hum2.Q.value = 24;
+    hum1.gain.value = hum2.gain.value = 0;      // notch ignores gain; bypass is by Q
+    // the echo send: a short delay fed back on itself, mixed in after the gain
+    const dly = ctx.createDelay(1.0); dly.delayTime.value = .17;
+    const fb  = ctx.createGain(); fb.gain.value = .3;
+    const wet = ctx.createGain(); wet.gain.value = 0;    // silent until asked for
+
+    // the gate listens here, before its own gain, so it hears the signal it
+    // is about to open or close on
+    const pre  = ctx.createAnalyser(); pre.fftSize = 1024; pre.smoothingTimeConstant = .4;
+    const gate = ctx.createGain();     gate.gain.value = 1;
+    const match = ctx.createGain();    match.gain.value = 1;
+    // a hard ceiling: a compressor wound right up, so peaks cannot clip
+    const lim = ctx.createDynamicsCompressor();
+    lim.threshold.value = 0; lim.ratio.value = 1; lim.knee.value = 0;
+    lim.attack.value = .002; lim.release.value = .12;
 
     src.connect(hp); hp.connect(lp); lp.connect(bass); bass.connect(mid);
-    mid.connect(treb); treb.connect(comp); comp.connect(gain);
+    mid.connect(treb); treb.connect(hum1); hum1.connect(hum2);
+    hum2.connect(comp);
+    comp.connect(pre);  comp.connect(gate);
+    gate.connect(match); match.connect(lim); lim.connect(gain);
     gain.connect(an);  an.connect(ctx.destination);
+    gain.connect(dly); dly.connect(fb); fb.connect(dly); dly.connect(wet);
+    wet.connect(an);
 
     MIX.ctx = ctx;
-    MIX.nodes = { src, hp, lp, bass, mid, treb, comp, gain, an };
+    MIX.nodes = { src, hp, lp, bass, mid, treb, comp, gain, an,
+                  hum1, hum2, dly, fb, wet, pre, gate, match, lim };
     return MIX.nodes;
   } catch (e) { return null; }         // already routed, or blocked
 }
@@ -599,6 +850,7 @@ function mixApply() {
   n.bass.gain.value = v('mBass');
   n.mid.gain.value  = v('mMid');
   n.treb.gain.value = v('mTreb');
+  n.mid.frequency.value = v('mMidF');
   n.hp.frequency.value = Math.max(20, v('mHP'));
   n.lp.frequency.value = v('mLP');
   const amt = v('mComp');                     // 0 → off, 40 → firm
@@ -608,31 +860,274 @@ function mixApply() {
   const dB = x => (x > 0 ? '+' : '') + x;
   $('mBassN').textContent = dB(v('mBass'));
   $('mMidN').textContent  = dB(v('mMid'));
+  $('mMidFN').textContent = v('mMidF') >= 1000
+    ? (v('mMidF') / 1000).toFixed(1) + 'k' : v('mMidF') + '';
   $('mTrebN').textContent = dB(v('mTreb'));
   $('mHPN').textContent   = v('mHP') ? v('mHP') + ' הרץ' : 'כבוי';
   $('mLPN').textContent   = v('mLP') >= 20000 ? 'כבוי' : Math.round(v('mLP') / 1000) + ' קילוהרץ';
   $('mCompN').textContent = amt ? amt + '' : 'כבוי';
+  $('mGateN').textContent = v('mGate') ? '−' + v('mGate') + ' דציבל' : 'כבוי';
   $('mGainN').textContent = v('mGain') + '%';
   localStorage.setItem('shira_mix', JSON.stringify(
-    ['mBass','mMid','mTreb','mHP','mLP','mComp','mGain'].map(id => $(id).value)));
+    MIX_IDS.map(id => $(id).value)));
 }
 
 function mixSet(vals) {
-  ['mBass','mMid','mTreb','mHP','mLP','mComp','mGain']
-    .forEach((id, i) => { $(id).value = vals[i]; });
+  MIX_IDS.forEach((id, i) => { if (vals[i] !== undefined) $(id).value = vals[i]; });
   mixApply();
 }
-$('mFlat').onclick  = () => { mixSet([0, 0, 0, 0, 20000, 0, 100]); $('mixNote').textContent = 'ללא עיבוד'; };
-$('mVoice').onclick = () => { mixSet([-3, 4, 2, 90, 20000, 14, 115]); $('mixNote').textContent = 'הדגשת הדיבור והחזנות'; };
-$('mTape').onclick  = () => { mixSet([2, 1, -4, 70, 7000, 20, 125]); $('mixNote').textContent = 'ריכוך רעש סרט והחזרת גוף'; };
-['mBass','mMid','mTreb','mHP','mLP','mComp','mGain'].forEach(id =>
-  $(id).addEventListener('input', () => { mixApply(); $('mixNote').textContent = ''; }));
-
-$('mixToggle').onclick = () => {
-  const open = $('mixer').classList.toggle('hidden');
-  $('mixToggle').classList.toggle('on', !open);
-  if (!open) mixApply();
+/* the three ready-made settings, chosen with the mode knob. The order is
+   MIX_IDS: bass · mid · mid-frequency · treble · rumble · hiss · levelling ·
+   gate · gain */
+const MODES = ['mFlat', 'mVoice', 'mTape'];
+const PRESET = {
+  mFlat:  { v: [0, 0, 1100, 0, 0, 20000, 0, 0, 100],   note: 'ללא עיבוד' },
+  mVoice: { v: [-3, 4, 1600, 2, 90, 20000, 14, 0, 115], note: 'הדגשת הדיבור והחזנות' },
+  mTape:  { v: [2, 1, 900, -4, 70, 7000, 20, 22, 125],  note: 'ריכוך רעש סרט והחזרת גוף' },
 };
+MIX_IDS.forEach(id =>
+  $(id).addEventListener('input', () => {
+    mixApply(); $('mixNote').textContent = '';
+  }));
+
+/* A rotated range has to be told how long to be: its width becomes the slot's
+   height once it is stood upright. offsetHeight, not the bounding rect —
+   the rect would include the opening animation's scale and give a short
+   fader on any frame but the last. */
+function sizeFaders() {
+  document.querySelectorAll('.mx-track').forEach(t => {
+    const input = t.querySelector('input');
+    if (input) input.style.setProperty('--mxh', Math.max(46, t.offsetHeight - 4) + 'px');
+  });
+}
+
+/* ------------------------------------------------ the processing keys
+ * Three small banks in the desk's title strip. Echo is a real delay fed back
+ * on itself. Pitch is a trim on the tape speed — which is exactly the fix an
+ * old cassette needs when it was recorded on a machine running off-speed, and
+ * unlike a pitch shifter it costs the recording nothing. Noise notches out
+ * mains hum and the harmonic above it.
+ */
+const FX = { echo: 0, pitch: 0, denoise: false, limit: false, match: false };
+const ECHO_WET = [0, .18, .34, .5];         // off · רך · בינוני · אולם
+const PITCH_STEP = 0.03;                    // 3% a step — about half a tone
+
+function fxApply() {
+  const n = mixInit();
+  if (n) {
+    n.wet.gain.value = ECHO_WET[FX.echo] || 0;
+    n.fb.gain.value  = FX.echo >= 3 ? .42 : .3;
+    // a notch only bites when its Q is high; widening it to nothing bypasses it
+    n.hum1.Q.value = n.hum2.Q.value = FX.denoise ? 24 : 0.0001;
+    // ratio 1 is a compressor doing nothing; 20 to 1 at −2 dB is a ceiling
+    n.lim.threshold.value = FX.limit ? -2 : 0;
+    n.lim.ratio.value     = FX.limit ? 20 : 1;
+    if (!FX.match) n.match.gain.value = 1;     // hand it straight back
+  }
+  // the pitch trim rides on top of whatever the speed slider is set to
+  setRate($('prate').value);
+
+  paintKnobs();
+
+  // the note reads out everything at once, so a knob never wipes what another
+  // knob just said
+  const bits = [];
+  if (FX.mode && FX.mode !== 'mFlat') bits.push(PRESET[FX.mode].note);
+  if (FX.echo)  bits.push(['', 'הד רך', 'הד בינוני', 'הד אולם'][FX.echo]);
+  if (FX.pitch) bits.push('גובה ' + (FX.pitch > 0 ? '+' : '') +
+                          Math.round(FX.pitch * PITCH_STEP * 100) + '%');
+  if (FX.denoise) bits.push('ניקוי המהום');
+  $('mixNote').textContent = bits.join(' · ');
+  localStorage.setItem('shira_fx', JSON.stringify(FX));
+}
+
+/* --------------------------------------------------------- the knobs
+ * Three rotary knobs and a lever, on their own plate. Each knob has a fixed
+ * set of detents; it sweeps 270° across them, a click steps to the next, and
+ * dragging round it picks the detent nearest the finger.
+ */
+const KNOBS = {
+  mode:  { el: 'knMode',  labels: ['שטוח', 'קול ברור', 'שיקום קלטת'] },
+  echo:  { el: 'knEcho',  labels: ['כבוי', 'רך', 'בינוני', 'אולם'] },
+  pitch: { el: 'knPitch', labels: ['−−', '−', 'רגיל', '+', '++'], base: -2 },
+};
+const SWEEP = 270;                        // degrees from first detent to last
+
+function knobAngle(i, n) {
+  return n < 2 ? 0 : -SWEEP / 2 + (SWEEP * i) / (n - 1);
+}
+
+/* the marks printed round each knob, one per detent */
+Object.values(KNOBS).forEach(k => {
+  const box = $(k.el).querySelector('.mx-kn-ticks');
+  box.innerHTML = k.labels.map((_, i) =>
+    `<i style="transform:rotate(${knobAngle(i, k.labels.length)}deg)"></i>`).join('');
+});
+
+/* which detent each knob is on, derived from the state it controls */
+function knobIndex(fx) {
+  if (fx === 'mode')  return Math.max(0, MODES.indexOf(FX.mode || 'mFlat'));
+  if (fx === 'pitch') return FX.pitch - KNOBS.pitch.base;
+  return FX.echo;
+}
+
+function knobSet(fx, i) {
+  const k = KNOBS[fx];
+  i = Math.max(0, Math.min(k.labels.length - 1, i));
+  if (fx === 'mode') {
+    FX.mode = MODES[i];
+    mixSet(PRESET[FX.mode].v);
+  } else if (fx === 'pitch') {
+    FX.pitch = i + k.base;
+  } else {
+    FX.echo = i;
+  }
+  fxApply();
+}
+
+function paintKnobs() {
+  Object.entries(KNOBS).forEach(([fx, k]) => {
+    const el = $(k.el), i = knobIndex(fx), n = k.labels.length;
+    el.querySelector('.mx-kn-body').style.transform = `rotate(${knobAngle(i, n)}deg)`;
+    el.querySelector('.mx-kn-val').textContent = k.labels[i];
+    el.querySelectorAll('.mx-kn-ticks i')
+      .forEach((t, j) => t.classList.toggle('at', j === i));
+    el.setAttribute('aria-valuenow', i);
+    el.setAttribute('aria-valuetext', k.labels[i]);
+  });
+  const lever = (box, on, yes) => {
+    $(box).querySelector('.mx-swb').setAttribute('aria-checked', on ? 'true' : 'false');
+    $(box).querySelector('.mx-kn-val').textContent = on ? yes : 'כבוי';
+  };
+  lever('knNoise', FX.denoise, 'נקה');
+  lever('knLimit', FX.limit,   'פועל');
+  lever('knMatch', FX.match,   'פועל');
+}
+
+Object.entries(KNOBS).forEach(([fx, k]) => {
+  const el = $(k.el);
+  let drag = null;
+  el.addEventListener('pointerdown', e => {
+    const r = el.querySelector('.mx-kn-ring').getBoundingClientRect();
+    drag = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, moved: false };
+    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  el.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.cx, dy = e.clientY - drag.cy;
+    if (Math.hypot(dx, dy) < 6) return;               // too near the spindle
+    drag.moved = true;
+    // 0° is straight up; the sweep runs symmetrically either side of it
+    let a = Math.atan2(dx, -dy) * 180 / Math.PI;
+    a = Math.max(-SWEEP / 2, Math.min(SWEEP / 2, a));
+    const n = k.labels.length;
+    knobSet(fx, Math.round(((a + SWEEP / 2) / SWEEP) * (n - 1)));
+  });
+  const end = () => {
+    if (drag && !drag.moved) knobSet(fx, (knobIndex(fx) + 1) % k.labels.length);
+    drag = null;
+  };
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', () => { drag = null; });
+  el.addEventListener('keydown', e => {
+    const d = e.key === 'ArrowUp' || e.key === 'ArrowRight' ? 1
+            : e.key === 'ArrowDown' || e.key === 'ArrowLeft' ? -1 : 0;
+    if (d) { e.preventDefault(); knobSet(fx, knobIndex(fx) + d); }
+  });
+});
+
+[['knNoise', 'denoise'], ['knLimit', 'limit'], ['knMatch', 'match']].forEach(
+  ([box, key]) => {
+    $(box).querySelector('.mx-swb').onclick = () => { FX[key] = !FX[key]; fxApply(); };
+  });
+
+/* ------------------------------------------------ the gate and the matcher
+ * Neither exists as a node, so both are driven from the frame loop off the
+ * analyser that sits before them.
+ *
+ * The gate closes when the signal falls under its threshold — the tape hiss
+ * between phrases — and opens fast when singing returns, so nothing is
+ * clipped off the front of a word. The matcher watches the loudest moment it
+ * has heard in this recording and trims the level so every cassette, however
+ * hot or timid it was recorded, arrives at about the same place.
+ */
+const gateBuf = new Uint8Array(1024);
+let gateOpen = 1, matchPeak = 0;
+
+function levelTick() {
+  const n = MIX.nodes;
+  if (!n || au.paused) return;
+  n.pre.getByteTimeDomainData(gateBuf);
+  let sum = 0, peak = 0;
+  for (let i = 0; i < gateBuf.length; i++) {
+    const d = (gateBuf[i] - 128) / 128;
+    sum += d * d;
+    if (Math.abs(d) > peak) peak = Math.abs(d);
+  }
+  const rms = Math.sqrt(sum / gateBuf.length);
+
+  const thrDb = +$('mGate').value;                   // 0 = off
+  if (thrDb > 0) {
+    const thr = Math.pow(10, -thrDb / 20);
+    const want = rms > thr ? 1 : 0;
+    // open almost at once, close gently, so it never chatters on a held note
+    gateOpen += (want - gateOpen) * (want ? 0.55 : 0.06);
+    n.gate.gain.value = gateOpen;
+  } else if (gateOpen !== 1) {
+    gateOpen = 1; n.gate.gain.value = 1;
+  }
+
+  if (FX.match) {
+    matchPeak = Math.max(peak, matchPeak * 0.9995);  // slow decay, so it adapts
+    if (matchPeak > 0.02) {
+      const want = Math.min(3, 0.7 / matchPeak);
+      n.match.gain.value += (want - n.match.gain.value) * 0.05;
+    }
+  }
+}
+// a new recording starts the matcher's memory again
+au.addEventListener('loadstart', () => { matchPeak = 0; });
+
+/* One sprung lever puts everything back: the faders flat and every effect
+ * out. It flies up on the press and drops again on its own, the way a
+ * momentary switch does. */
+$('mixReset').onclick = () => {
+  const sw = $('mixReset');
+  sw.classList.add('fired');
+  setTimeout(() => sw.classList.remove('fired'), 190);
+  FX.echo = 0; FX.pitch = 0; FX.mode = 'mFlat';
+  FX.denoise = FX.limit = FX.match = false;
+  matchPeak = 0;                    // the matcher forgets what it had learnt
+  mixSet(PRESET.mFlat.v);
+  fxApply();
+  $('mixNote').textContent = 'הכול אופס';
+};
+
+try {
+  Object.assign(FX, JSON.parse(localStorage.getItem('shira_fx') || '{}'));
+} catch (e) {}
+
+let mixShut = 0;
+function mixOpen(on) {
+  const m = $('mixer');
+  clearTimeout(mixShut);
+  $('mixToggle').classList.toggle('on', on);
+  if (on) {
+    m.classList.remove('closing', 'hidden');
+    mixApply(); fxApply(); sizeFaders();
+    return;
+  }
+  if (m.classList.contains('hidden')) return;
+  // it folds back into the small plate rather than blinking out
+  m.classList.add('closing');
+  // a timer, not animationend: a tab that is not painting never fires that
+  mixShut = setTimeout(() => m.classList.add('hidden') || m.classList.remove('closing'), 210);
+}
+$('mixToggle').onclick = () => mixOpen($('mixer').classList.contains('hidden'));
+$('mixMin').onclick    = () => mixOpen(false);
+addEventListener('resize', () => {
+  if (!$('mixer').classList.contains('hidden')) sizeFaders();
+});
 
 /* --------------------------------------------------------------- VU lamps */
 const LAMPS = 14;
@@ -645,17 +1140,21 @@ const vuBuf = new Uint8Array(1024);
 function vuTick() {
   const lamps = $('vu').children;
   let lit = 0;
-  if (MIX.nodes && !au.paused) {
-    MIX.nodes.an.getByteTimeDomainData(vuBuf);
+  // while the machine records, the lamps follow the microphone; otherwise
+  // they follow what is playing
+  const an = REC.an || (MIX.nodes && !au.paused ? MIX.nodes.an : null);
+  if (an) {
+    an.getByteTimeDomainData(vuBuf);
     let sum = 0;
     for (let i = 0; i < vuBuf.length; i++) {
       const d = (vuBuf[i] - 128) / 128;
       sum += d * d;
     }
     const rms = Math.sqrt(sum / vuBuf.length);
-    lit = Math.round(Math.min(1, rms * 3.2) * LAMPS);
+    lit = Math.round(Math.min(1, rms * (REC.an ? 5.5 : 3.2)) * LAMPS);
   }
   for (let i = 0; i < lamps.length; i++) lamps[i].classList.toggle('on', i < lit);
+  levelTick();                        // the gate and the matcher ride this loop
   requestAnimationFrame(vuTick);
 }
 requestAnimationFrame(vuTick);
@@ -1101,7 +1600,9 @@ function deckLabel(r, idx) {
   const cut = (s, n) => (s || '').length > n ? s.slice(0, n - 1) + '…' : (s || '');
   $('cTitle').textContent = r ? cut(trackName(r, idx), 30) : '—';
   $('cPerf').textContent  = r ? cut(perfName(r.p), 30) : 'בחר הקלטה כדי לנגן';
-  $('cRec').textContent   = r ? cut(r.ttl, 34) : 'אוצר השירה השומרונית';
+  // shorter than it looks it could be: the type mark sits centred on the same
+  // red band, and the title must stop before reaching it
+  $('cRec').textContent   = r ? cut(r.ttl, 22) : 'אוצר השירה השומרונית';
   $('cLine2').textContent = r && r.year ? r.year : '';
   $('cEvent').textContent = r ? eventName(r.e) : '—';
   $('cParts').textContent = r ? (r.parts ? `${r.parts} חלקים` : `${r.n} רצועות`) : 'C-90';
@@ -1155,8 +1656,12 @@ function setRate(v) {
   // four steps only: 0.5 · 1 · 1.5 · 2 — a value stored by an earlier build
   // (0.85, say) is snapped onto the nearest one
   v = Math.min(2, Math.max(0.5, Math.round((Number(v) || 1) * 2) / 2));
-  au.playbackRate = v;
-  au.preservesPitch = au.mozPreservesPitch = au.webkitPreservesPitch = true;
+  // the pitch trim from the desk rides on top: with pitch preserved the speed
+  // slider changes tempo alone, and with a trim dialled in the tape itself is
+  // run a little fast or slow, which moves the pitch with it
+  const trim = (typeof FX !== 'undefined' && FX.pitch) ? FX.pitch : 0;
+  au.playbackRate = v * (1 + trim * 0.03);
+  au.preservesPitch = au.mozPreservesPitch = au.webkitPreservesPitch = !trim;
   $('prate').value = v;
   const txt = v.toFixed(1) + '×';
   $('prateN').textContent = $('cRate').textContent = txt;
@@ -1220,6 +1725,25 @@ $('prate').addEventListener('input', e => setRate(e.target.value));
 $('prate').addEventListener('dblclick', () => setRate(1));   // snap back to 1×
 setRate(localStorage.getItem('shira_rate') || 1);
 
+/* On a narrow screen the speed slider is folded behind its key — the CSS
+ * stands it upright and hides it, and this opens it. On a wide screen the key
+ * is inert (pointer-events:none) and the slider is simply always there, so
+ * none of this ever runs. */
+const rateBox = $('prateBox');
+function rateOpen(on) {
+  rateBox.classList.toggle('open', on);
+  $('prateTap').setAttribute('aria-expanded', on ? 'true' : 'false');
+}
+$('prateTap').onclick = e => {
+  e.stopPropagation();
+  rateOpen(!rateBox.classList.contains('open'));
+};
+// a touch anywhere else puts it away, but moving the slider must not
+document.addEventListener('pointerdown', e => {
+  if (!rateBox.contains(e.target)) rateOpen(false);
+});
+$('prate').addEventListener('change', () => setTimeout(() => rateOpen(false), 450));
+
 /* A recording that will not play. Where the file sits and why it is unreachable
  * is ours to fix, not the listener's to read, so the message says only what it
  * means for them. */
@@ -1264,15 +1788,22 @@ function toast(msg, warn) {
 }
 
 const openModal  = id => $(id).classList.remove('hidden');
-const closeModal = id => $(id).classList.add('hidden');
+// the add sheet has two guises; leaving it always returns it to the plain one
+const closeModal = id => {
+  $(id).classList.add('hidden');
+  if (id === 'addModal') resetAddForm();
+  if (id === 'loginModal') pendingAfterLogin = '';
+};
 document.querySelectorAll('[data-close]').forEach(b =>
   b.onclick = () => closeModal(b.dataset.close));
 document.querySelectorAll('.modal').forEach(m =>
-  m.onclick = e => { if (e.target === m) m.classList.add('hidden'); });
+  m.onclick = e => { if (e.target === m) closeModal(m.id); });
 
 function showAdminUI(redraw) {
   $('addBtn').classList.toggle('hidden', !ADMIN.token);
   $('trashBtn').classList.toggle('hidden', !ADMIN.token);   // admins only
+  $('pendBtn').classList.toggle('hidden', !ADMIN.token);
+  if (ADMIN.token) drawPending();
   $('perfBtn').classList.toggle('hidden', !ADMIN.token);
   // publishing exists only in the local copy — the cloud has nowhere to push
   $('syncBtn').classList.toggle('hidden', !ADMIN.token || !!(C && C.meta.readonly));
@@ -1332,6 +1863,58 @@ $('trashTabs').addEventListener('click', e => {
   $('trashBin').classList.toggle('hidden', !bin);
   $('trashLog').classList.toggle('hidden', bin);
 });
+
+/* ------------------------------------------- recordings waiting to be sorted
+ * What the record key captures lands in the archive at once, flagged as
+ * pending: it is safe, but it is not yet filed. This is where an admin hears
+ * each one, corrects what was typed in a hurry, and either files it into the
+ * indexes or removes it.
+ */
+function pendingRecs() {
+  return (C && C.recordings ? C.recordings : []).filter(r => r.pending);
+}
+
+function drawPending() {
+  const rows = pendingRecs();
+  $('pendN').textContent = rows.length;
+  $('pendN').classList.toggle('hidden', !rows.length);
+  const body = $('pendBody');
+  if (!body) return;
+  body.innerHTML = rows.length ? rows.map(r => `
+    <div class="qrow">
+      <span class="qt"><b>${esc(r.ttl || 'הקלטה ללא שם')}</b><br>
+        <span class="s">${esc(perfName(r.p))} · ${esc(eventName(r.e))} ·
+          ${dur((r.tr || []).reduce((a, t) => a + (t.s || 0), 0))}
+          ${r.added ? '· נקלטה ב־' + esc(r.added.replace('T', ' ').slice(0, 16)) : ''}</span></span>
+      <button class="btn ghost" data-splay="${r.id}">▶ האזן</button>
+      <button class="btn ghost" data-sedit="${r.id}">✎ פרטים</button>
+      <button class="btn" data-sfile="${r.id}">תייק</button>
+    </div>`).join('')
+    : '<p class="empty">אין הקלטות הממתינות למיון.</p>';
+
+  body.querySelectorAll('[data-splay]').forEach(b =>
+    b.onclick = () => { closeModal('pendModal'); playRec(+b.dataset.splay, 0); });
+  body.querySelectorAll('[data-sedit]').forEach(b =>
+    b.onclick = () => { closeModal('pendModal'); openEdit(+b.dataset.sedit); });
+  body.querySelectorAll('[data-sfile]').forEach(b =>
+    b.onclick = () => fileRecording(+b.dataset.sfile));
+}
+
+async function fileRecording(id) {
+  const rec = (C.recordings || []).find(r => r.id === id);
+  if (!rec) return;
+  const r = await fetch('api/file_pending', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Admin-Token': ADMIN.token },
+    body: JSON.stringify({ key: (rec.tr || [{}])[0].f || '' }),
+  }).then(x => x.json()).catch(() => ({}));
+  if (!r.ok) return toast(r.error || 'התיוק נכשל', 1);
+  await loadCatalog();
+  drawPending();
+  toast(`«${rec.ttl}» תויקה לאוצר`);
+}
+
+$('pendBtn').onclick = () => { drawPending(); openModal('pendModal'); };
 
 function drawTrash() {
   $('trashN').textContent = TRASH.length;
@@ -1393,6 +1976,10 @@ $('adminFlag').onclick = async () => {
   toast('יצאת ממצב מנהל');
 };
 
+/* what to do once the sign-in succeeds — the record key sets this before it
+   sends the user to the login sheet */
+let pendingAfterLogin = '';
+
 $('adminBtn').onclick = () => {
   $('liErr').classList.add('hidden');
   if (!$('liUser').value) $('liUser').value = ADMIN.user || '';
@@ -1405,7 +1992,15 @@ $('liGo').onclick = async () => {
     body: JSON.stringify({ user: $('liUser').value.trim(),
                            password: $('liPass').value.trim() }),
   }).then(r => r.json()).catch(() => ({}));
-  if (r.ok) {
+  if (r.ok && r.record_only) {
+    // the live site: this signs in for recording alone, nothing else opens
+    REC.user = $('liUser').value.trim();
+    REC.pass = $('liPass').value.trim();
+    $('liPass').value = '';
+    closeModal('loginModal');
+    toast('נכנסת — אפשר להקליט');
+    if (pendingAfterLogin === 'record') { pendingAfterLogin = ''; openRecordForm(); }
+  } else if (r.ok) {
     ADMIN.token = r.token;
     sessionStorage.setItem('shira_admin', r.token);
     $('liPass').value = '';
@@ -1413,6 +2008,8 @@ $('liGo').onclick = async () => {
     await loadCatalog();                 // admins also see hidden recordings
     showAdminUI(true);
     toast('נכנסת כמנהל — אפשר להוסיף ולערוך');
+    // signing in was only a step on the way to recording
+    if (pendingAfterLogin === 'record') { pendingAfterLogin = ''; openRecordForm(); }
   } else if (r.error === 'too many attempts') {
     // the counter blocks even a correct password, so say so plainly
     const m = Math.ceil((r.wait || 600) / 60);

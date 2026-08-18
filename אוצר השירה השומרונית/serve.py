@@ -19,6 +19,7 @@ import http.server, socketserver, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, 'scripts'))
 import additions as ADD
+import media_push as PUSH
 import overrides as OVR
 import people as PEOPLE
 import removed as GONE
@@ -33,7 +34,9 @@ CATALOG = os.path.join(HERE, 'data', 'catalog.json')
 
 PHOTOS     = os.path.join(HERE, 'photos')
 MAX_UPLOAD = 600 * 1024 * 1024                 # per request
-AUDIO_EXT  = {'.mp3', '.m4a', '.wav', '.aac', '.wma', '.ogg', '.opus', '.flac'}
+# .webm is what a browser hands back when it records from the microphone
+AUDIO_EXT  = {'.mp3', '.m4a', '.wav', '.aac', '.wma', '.ogg', '.opus', '.flac',
+              '.webm'}
 IMAGE_EXT  = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
 
 mimetypes.add_type('audio/mpeg', '.mp3')
@@ -208,6 +211,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.api_login()
         if p == '/api/upload':
             return self.api_upload()
+        if p == '/api/file_pending':
+            return self.api_file_pending()
         if p == '/api/delete_addition':
             return self.api_delete()
         if p == '/api/override':
@@ -510,6 +515,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                            'n': os.path.splitext(os.path.basename(dest))[0]})
 
         rows = ADD.load()
+        # a recording made in the app arrives before anyone has decided where it
+        # belongs, so it is filed as pending and waits to be sorted
+        pending = (fields.get('pending') or '').strip() in ('1', 'true', 'yes')
         row = {
             'id':        ADD.next_id(rows),
             'performer': performer,
@@ -517,13 +525,45 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             'piyyut':    piyyut,
             'title':     title or piyyut,
             'note':      note,
-            'dir':       'הוספות · ' + performer,
+            'dir':       ('הקלטות למיון' if pending else 'הוספות · ' + performer),
             'added':     time.strftime('%Y-%m-%dT%H:%M:%S'),
             'tracks':    tracks,
         }
+        if pending:
+            row['pending'] = 1
+            row['recorded'] = 1               # captured here, not uploaded
         rows.append(row)
         ADD.save(rows)
+        # saved here first, then sent up — so a recording is never lost to a
+        # network that happened to be down at the moment it was made
+        for t in tracks:
+            PUSH.push(t['f'])
         self.json_out({'ok': True, 'rec': row})
+
+    def api_file_pending(self):
+        """Clear the pending flag: the recording has been checked and filed."""
+        if not self.is_admin():
+            return self.json_out({'ok': False, 'error': 'unauthorized'}, 401)
+        try:
+            d = json.loads(self.read_body() or b'{}')
+        except ValueError:
+            return self.json_out({'ok': False, 'error': 'bad json'}, 400)
+        key = str(d.get('key') or '').strip()
+        if not key:
+            return self.json_out({'ok': False, 'error': 'missing key'}, 400)
+
+        rows = ADD.load()
+        hit = None
+        for row in rows:
+            if any(t.get('f') == key for t in row.get('tracks', [])):
+                hit = row
+                break
+        if hit is None:
+            return self.json_out({'ok': False, 'error': 'not found'}, 404)
+        hit.pop('pending', None)
+        hit['dir'] = 'הוספות · ' + (hit.get('performer') or 'לא ידוע')
+        ADD.save(rows)
+        return self.json_out({'ok': True, 'rec': hit})
 
     def api_delete(self):
         if not self.is_admin():

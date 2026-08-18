@@ -340,19 +340,30 @@ body{
     inset 0 -2px 0 rgba(0,0,0,.5),
     0 14px 40px rgba(0,0,0,.5);
 }
-/* the top of the case, with the carry handle recessed into it */
+/* The top of the case is the speaker: the same staggered perforation the
+   grille used to carry, with the bar's own shading laid over it so the title,
+   the nameplate and the buttons still read. Layers paint first-on-top, so
+   the translucent shading is listed before the two dot grids. */
 .dw-bar{
   position:relative;
   display:flex;align-items:center;gap:8px;padding:9px 10px 9px 12px;
-  background:linear-gradient(180deg,#4a4f57 0,#33373e 55%,#25282e 100%);
+  background:
+    linear-gradient(180deg,rgba(74,79,87,.66) 0,rgba(51,55,62,.7) 55%,
+                    rgba(37,40,46,.74) 100%),
+    radial-gradient(circle at 50% 50%,#090b0e 0 1.5px,transparent 1.9px) 0 0/6px 6px,
+    radial-gradient(circle at 50% 50%,#090b0e 0 1.5px,transparent 1.9px) 3px 3px/6px 6px,
+    linear-gradient(180deg,#31353c,#212429);
   border-bottom:1px solid #0e1116;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 0 rgba(255,255,255,.05);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 -3px 7px rgba(0,0,0,.45),
+             0 1px 0 rgba(255,255,255,.05);
 }
 /* the carry handle, folded flat on the top of the case: a grip bar between
    two hinge posts screwed into the shell */
+/* centred on the bar, whatever else it holds. The title is capped short of
+   the handle (see .dw-name) so the two can never run into each other. */
 .dw-handle{
   position:absolute;top:50%;inset-inline-start:50%;transform:translate(50%,-50%);
-  width:132px;height:17px;pointer-events:none;
+  width:150px;height:18px;pointer-events:none;
 }
 .dw-handle i{                  /* הידית עצמה */
   position:absolute;inset:0 14px;border-radius:9px;
@@ -360,6 +371,15 @@ body{
   border:1px solid #0d1015;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -2px 3px rgba(0,0,0,.55),
              0 2px 4px rgba(0,0,0,.45);
+  display:flex;align-items:center;justify-content:center;
+}
+/* only the lettering is metal: a silver line cut into the black, so the
+   shadow falls above the stroke and the light catches just below it */
+.dw-handle b{
+  direction:ltr;font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:.54rem;font-weight:600;letter-spacing:.08em;line-height:1;
+  color:#d7dde8;
+  text-shadow:0 -1px 1px rgba(0,0,0,.95),0 1px 0 rgba(255,255,255,.16);
 }
 /* both pivots ride above the grip; without the z-index the ::before one would
    be painted under it and only the right-hand pivot would show */
@@ -375,7 +395,14 @@ body{
   flex:1 1 auto;color:#e8ecf4;font-size:.86rem;font-weight:600;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   text-shadow:0 1px 1px rgba(0,0,0,.6);position:relative;z-index:1;
+  /* stops short of the centred handle, so a long title truncates instead of
+     running underneath it */
+  max-width:calc(50% - 86px);
 }
+/* the title is capped short of the handle, so the buttons need an explicit
+   shove to the far edge — otherwise they follow the title into the middle
+   and land on top of it */
+#dwMin{margin-inline-start:auto}
 .dw-btn{
   position:relative;z-index:1;
   border:1px solid #14181e;background:linear-gradient(180deg,#4b515a,#31363d);
@@ -394,26 +421,13 @@ body{
 /* ------------------------------------------- the front panel of the case
    Speaker on one side, cassette door on the other — side by side, so the
    recorder look costs no extra height. */
-/* ltr: the case is laid out like the machine, speaker on the left and the
-   cassette door on the right — not mirrored by the surrounding Hebrew */
+/* the cassette door takes the whole face */
 .deck-face{
-  display:flex;align-items:stretch;gap:9px;margin-bottom:11px;direction:ltr;
+  display:flex;align-items:stretch;margin-bottom:11px;direction:ltr;
   padding:8px;border-radius:11px;
   background:linear-gradient(180deg,#191c22,#14171c);
   box-shadow:inset 0 2px 5px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.07);
 }
-/* Two offset dot grids give the staggered perforation of a real speaker
-   cloth, and because both are plain tiles the pattern runs edge to edge with
-   no seam or half-drilled row at the bottom. */
-.grille{
-  position:relative;flex:0 0 60px;border-radius:8px;overflow:hidden;
-  background:
-    radial-gradient(circle at 50% 50%,#090b0e 0 1.5px,transparent 1.9px) 0 0/6px 6px,
-    radial-gradient(circle at 50% 50%,#090b0e 0 1.5px,transparent 1.9px) 3px 3px/6px 6px,
-    linear-gradient(180deg,#31353c,#212429);
-  box-shadow:inset 0 0 0 1px #0e1116, inset 0 2px 6px rgba(0,0,0,.55);
-}
-
 /* the well the cassette drops into, and the rails it rests on. Both only
    show when the cassette lifts out of it on eject. */
 .well{position:relative;flex:1 1 auto;min-width:0}
@@ -460,6 +474,10 @@ body{
 .deck .chand,.deck .che{direction:ltr;unicode-bidi:isolate}
 .deck .che{font-family:'Heebo','Segoe UI',system-ui,sans-serif}
 /* the maker's mark printed on the label — latin, so it stays left to right */
+/* more specific than the maker's mark below, so the light face wins */
+.deck .cbrand text.cbrand-thin{
+  font-family:'Segoe UI',system-ui,sans-serif;font-weight:300;
+}
 .deck .cbrand text{
   font-family:'Arial Black','Segoe UI',Impact,system-ui,sans-serif;
   direction:ltr;unicode-bidi:isolate;
@@ -535,9 +553,17 @@ body{
 .deckwin.muted .pvolr::-webkit-slider-thumb{background:linear-gradient(180deg,#8e8a84,#65625d);border-top-color:#a9a59d}
 .deckwin.muted .pvolr::-moz-range-thumb{background:linear-gradient(180deg,#8e8a84,#65625d)}
 .deckwin.muted .fader-scale b{opacity:.45}
-.prate{display:flex;align-items:center;gap:7px;flex:0 0 auto;font-size:.76rem;opacity:.9}
+.prate{
+  position:relative;display:flex;align-items:center;gap:7px;flex:0 0 auto;
+  font-size:.76rem;opacity:.9;
+}
 .prate input{width:82px;accent-color:#d98b31}
 .prate span{font-size:.78rem;font-variant-numeric:tabular-nums;min-width:2.9em}
+/* wide enough for both: the word is only a label, and the slider sits inline */
+.prate-tap{
+  border:0;background:none;padding:0;margin:0;color:inherit;font:inherit;
+  cursor:default;pointer-events:none;
+}
 
 /* the tape head rides up into the cassette on play, and back out on stop */
 .deck #head{transition:transform .5s cubic-bezier(.35,1.25,.5,1)}
@@ -550,12 +576,64 @@ body{
 /* on a phone the case narrows, so the speaker gives its width to the door
    and the keys keep their icons but drop the printed labels */
 @media (max-width:430px){
-  .deck-face{gap:7px;padding:6px}
-  .grille{flex:0 0 42px}
-  .grille .brand{font-size:.52rem;inset-inline:2px}
+  .deck-face{padding:6px}
   .transport{gap:2px;padding:4px 4px 5px}
   .tbtn2 b,.pbtn b{font-size:.44rem;letter-spacing:.02em}
   .tbtn2 svg,.pbtn svg{width:14px;height:14px}
+  .dw-handle{width:120px}
+  .dw-handle b{font-size:.46rem;letter-spacing:.04em}
+  .dw-name{max-width:calc(50% - 70px)}
+
+  /* On a phone nine faders will not stand side by side and stay legible, so
+     the desk folds them onto two shelves of five and four. */
+  .mx-strips{flex-wrap:wrap;gap:2px 3px;align-content:stretch}
+  .mx-strip{flex:1 1 17%;min-width:17%}
+  .mx-track{min-height:34px}
+  .mx-strip .mx-lab{font-size:.5rem}
+  .mx-val{font-size:.5rem}
+  .mx-kn-ring{width:30px;height:30px}
+  .mx-kn-ticks i{transform-origin:50% 15px;height:3px}
+  .mx-swb{width:17px;height:30px}
+  .mx-swb>i{height:12px;top:14px}
+  .mx-panel{gap:3px;padding:4px}
+
+  /* The two sliders will not sit on one line here, and wrapping drops the
+     volume to a row of its own. So speed folds into a key that opens its
+     slider upright over the panel, and the volume fader keeps the line. */
+  .knobs{flex-wrap:nowrap;gap:8px}
+  .prate{gap:5px}
+  .prate-tap{
+    pointer-events:auto;cursor:pointer;
+    border:1px solid #14181e;border-radius:5px;padding:3px 8px;
+    background:linear-gradient(180deg,#4a505a,#31363e);color:#e2e7f0;
+    font-size:.72rem;line-height:1.25;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 0 #171a20;
+  }
+  .prate-tap:active{transform:translateY(2px);box-shadow:inset 0 2px 3px rgba(0,0,0,.45)}
+  .prate.open .prate-tap{
+    background:linear-gradient(180deg,#eda044,#c87c25);border-color:#8a5415;color:#2a1a05;
+  }
+  /* the slider itself, stood on end above the key */
+  .prate input{
+    position:absolute;bottom:calc(100% + 12px);inset-inline-start:50%;
+    width:112px;margin:0;transform:translateX(50%) rotate(-90deg);
+    transform-origin:50% 50%;z-index:3;
+    padding:10px 6px;border-radius:8px;
+    background:#20252f;border:1px solid #39414f;
+    box-shadow:0 6px 16px rgba(0,0,0,.5);
+  }
+  .prate:not(.open) input{display:none}
+  .prate span{min-width:2.6em;font-size:.72rem}
+  .pvol{gap:5px}
+  .fader{width:84px}
+}
+/* narrower still: both shrink together rather than one of them giving way */
+@media (max-width:360px){
+  .prate-tap{font-size:.66rem;padding:3px 6px}
+  .prate span,.pvoln{font-size:.66rem;min-width:2.4em}
+  .fader{width:64px}
+  .fader-scale b{font-size:5.5px}
+  .prate input{width:92px}
 }
 
 /* a standing reminder that this session can change things */
@@ -746,7 +824,7 @@ body{
 .mix-ico .mx-face{fill:#2b3039}
 .mix-ico .mx-strip{fill:#333944}          /* channel strips, one shade up */
 .mix-ico .mx-knob{fill:#d98b31;stroke:#12151b;stroke-width:.7}
-.mix-ico .mx-sw{fill:#171b21}
+.mix-ico .mx-plate-sw{fill:#171b21}
 .mix-ico .mx-slot{fill:#0b0e12}
 .mix-ico .mx-cap{fill:#ddd8ce;stroke:#7e7a73;stroke-width:.5}
 .mix-ico .mx-div{fill:#161a20}
@@ -765,22 +843,175 @@ body{
   color:#2a1a05;font-weight:600;
   box-shadow:inset 0 2px 4px rgba(0,0,0,.35);transform:translateY(2px);
 }
+/* ------------------------------------------------------- the mixing desk
+   Opening it does not push a panel under the machine: the little desk on the
+   name strip grows to cover the whole control face, from the name panel down
+   to the row under the keys. Minimising folds it back to its plate. */
+.dw-ctl{position:relative}
+/* it reaches up over the lamp strip as well, so the faders get the room */
 .mixer{
-  margin-top:9px;border:1px solid #0d1015;border-radius:9px;padding:10px;
-  background:linear-gradient(180deg,#15181d,#1c2027);
-  box-shadow:inset 0 2px 6px rgba(0,0,0,.6);
+  position:absolute;left:0;right:0;bottom:0;top:-25px;
+  z-index:6;display:flex;flex-direction:column;
+  border:1px solid #0b0e12;border-radius:10px;padding:6px 8px;
+  background:linear-gradient(180deg,#20242b 0,#15181d 42%,#1b1f26 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 8px 22px rgba(0,0,0,.55);
+  transform-origin:100% 0;                 /* it grows out of its own plate */
+  animation:mxopen .22s cubic-bezier(.2,.8,.3,1);
 }
-.mix-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:9px}
-.mix-row label{
-  flex:1 1 110px;display:flex;flex-direction:column;gap:3px;
-  font-size:.72rem;color:#aab3c4;
+@keyframes mxopen{from{opacity:.2;transform:scale(.34)}to{opacity:1;transform:scale(1)}}
+/* and folds back into the little plate it came out of */
+.mixer.closing{animation:mxshut .2s cubic-bezier(.4,0,.7,.3) forwards;pointer-events:none}
+@keyframes mxshut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.34)}}
+/* nothing but the minimise key, kept as shallow as it can be */
+.mx-bar{display:flex;align-items:center;flex:0 0 auto;margin-bottom:3px}
+.mx-min{
+  border:1px solid #14181e;background:linear-gradient(180deg,#4b515a,#31363d);
+  color:#cfd6e2;font-family:inherit;font-size:.78rem;line-height:1.2;
+  padding:1px 8px;border-radius:5px;cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
 }
-.mix-row input{width:100%;accent-color:#d98b31}
-.mix-row span{font-size:.7rem;color:#e8ecf4;font-variant-numeric:tabular-nums}
-.mix-foot{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.mix-foot .btn{padding:5px 10px;font-size:.76rem;background:#2a303c;color:#e8ecf4}
-.mix-foot .btn:hover{background:#353d4c}
-.mix-note{font-size:.7rem;color:#8b94a5;margin-inline-start:auto}
+.mx-min:hover{background:linear-gradient(180deg,#5a616b,#3b4149);color:#fff}
+
+/* ------------------------------------------------------ the knob panel
+   Its own plate, in a deep red so it reads as a separate section of the
+   desk: three rotary knobs and the noise lever. */
+.mx-panel{
+  flex:0 0 auto;display:flex;align-items:flex-start;justify-content:space-around;
+  flex-wrap:wrap;gap:4px;margin-bottom:5px;padding:5px 6px 4px;border-radius:7px;
+  background:
+    repeating-linear-gradient(180deg,rgba(255,255,255,.03) 0 1px,transparent 1px 3px),
+    linear-gradient(180deg,#5a1a18 0,#3d100f 55%,#2a0a09 100%);
+  border:1px solid #1c0605;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -2px 4px rgba(0,0,0,.5);
+}
+.mx-kn,.mx-sw{
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  min-width:0;cursor:pointer;user-select:none;
+}
+/* no frame round a knob — a box drawn on the plate reads as a mistake. The
+   pointer brightens instead, which is what a lit control actually does. */
+.mx-kn:focus{outline:none}
+.mx-kn:focus .mx-kn-body>i{background:#ffd9a0;box-shadow:0 0 5px #ffb545}
+.mx-kn b,.mx-sw b{
+  font-size:.5rem;font-weight:600;color:#e6bfbb;line-height:1;
+}
+.mx-kn-val{
+  font-size:.5rem;color:#f0d6d3;line-height:1.2;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:56px;
+}
+/* the knob and the marks printed round it */
+.mx-kn-ring{position:relative;width:34px;height:34px;display:block}
+.mx-kn-ticks{position:absolute;inset:0}
+.mx-kn-ticks i{
+  position:absolute;top:0;left:50%;width:1.5px;height:4px;margin-left:-.75px;
+  background:#e8b9b5;transform-origin:50% 17px;border-radius:1px;opacity:.7;
+}
+.mx-kn-ticks i.at{background:#fff;opacity:1;height:5px}
+.mx-kn-body{
+  position:absolute;inset:5px;border-radius:50%;
+  /* the knurl: fine flutes round the rim, over a domed cap */
+  background:
+    repeating-conic-gradient(from 0deg,#3a3a3c 0 4deg,#1b1b1d 4deg 8deg),
+    radial-gradient(circle at 38% 30%,#4a4a4d,#232326 70%,#111113);
+  box-shadow:inset 0 0 0 1px #0a0a0b,0 2px 4px rgba(0,0,0,.6);
+  transition:transform .12s ease-out;
+}
+.mx-kn-body::after{                      /* the domed centre */
+  content:'';position:absolute;inset:4px;border-radius:50%;
+  background:radial-gradient(circle at 36% 28%,#57575b,#2a2a2d 70%,#161618);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.18);
+}
+.mx-kn-body>i{                           /* the pointer */
+  position:absolute;top:2px;left:50%;width:2px;height:9px;margin-left:-1px;
+  background:#f6efe6;border-radius:1px;z-index:1;
+  box-shadow:0 0 2px rgba(0,0,0,.7);
+}
+/* the noise lever: up is on, down is off */
+.mx-swb{
+  position:relative;width:20px;height:34px;border-radius:4px;padding:0;
+  border:1px solid #180504;cursor:pointer;
+  background:linear-gradient(180deg,#180504,#2b0b09);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.85);
+}
+.mx-swb>i{
+  position:absolute;left:2px;right:2px;height:14px;border-radius:3px;
+  top:16px;transition:top .14s cubic-bezier(.3,.8,.4,1);
+  background:linear-gradient(180deg,#5b5f66,#2f3339);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 1px 2px rgba(0,0,0,.6);
+}
+.mx-swb[aria-checked="true"]>i{
+  top:2px;
+  background:linear-gradient(180deg,#ff5a4d,#b8241a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 6px rgba(255,70,55,.6);
+}
+/* the reset lever is sprung: it flies up on the press and drops straight back */
+.mx-swb.spring>i{
+  background:linear-gradient(180deg,#6b5f5e,#3a2f2e);
+  transition:top .09s cubic-bezier(.2,.9,.3,1);
+}
+.mx-swb.spring.fired>i{
+  top:2px;
+  background:linear-gradient(180deg,#ffd08a,#c8801f);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 6px rgba(255,180,70,.65);
+}
+
+/* the faders themselves, standing upright in their slots */
+.mx-strips{flex:1 1 auto;display:flex;gap:3px;min-height:0;overflow:hidden}
+.mx-strip{
+  flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;
+  gap:2px;font-size:.54rem;color:#9aa3b2;text-align:center;
+}
+.mx-lab{
+  flex:0 0 auto;line-height:1.1;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;max-width:100%;
+}
+.mx-track{
+  position:relative;flex:1 1 auto;width:100%;min-height:40px;
+  display:flex;align-items:center;justify-content:center;
+}
+/* the printed scale beside each slot */
+.mx-sc{
+  position:absolute;top:6px;bottom:6px;inset-inline-start:calc(50% + 9px);width:5px;
+  background:repeating-linear-gradient(180deg,
+    #6b7482 0 1px, transparent 1px 20%);
+}
+/* the slot: an upright range, laid on its side and stood up */
+.mx-track input{
+  -webkit-appearance:none;appearance:none;margin:0;padding:0;background:none;
+  width:var(--mxh,64px);height:14px;cursor:pointer;
+  transform:rotate(-90deg);
+}
+.mx-track input::-webkit-slider-runnable-track{
+  height:5px;border-radius:3px;
+  background:linear-gradient(90deg,#0b0e12,#191d23);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.9);
+}
+.mx-track input::-moz-range-track{
+  height:5px;border-radius:3px;background:#0b0e12;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.9);
+}
+/* red caps in dark slots, the way a channel strip is capped */
+.mx-track input::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:11px;height:19px;margin-top:-7px;
+  border-radius:2px;border:1px solid #5d120d;border-top-color:#ff8175;
+  background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px),
+    linear-gradient(180deg,#ff6a5c 0,#d9382c 45%,#a8221a 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 3px rgba(0,0,0,.6);
+}
+.mx-track input::-moz-range-thumb{
+  width:11px;height:19px;border-radius:2px;border:1px solid #5d120d;
+  background:linear-gradient(180deg,#ff6a5c 0,#d9382c 45%,#a8221a 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 3px rgba(0,0,0,.6);
+}
+.mx-val{
+  flex:0 0 auto;font-size:.56rem;color:#e8ecf4;font-variant-numeric:tabular-nums;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;
+}
+.mix-note{
+  flex:0 0 auto;font-size:.6rem;color:#8b94a5;text-align:center;
+  line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 
 /* ------------------------------------------------------------- player */
 .dw-ctl{color:#fff}
@@ -795,6 +1026,30 @@ body{
 .pmeta-txt{flex:1 1 auto;min-width:0}
 .ptitle{font-weight:600;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .psub{font-size:.76rem;opacity:.72;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* The little segment display under the panel text. It is empty and collapsed
+   until something is put on it, then the message crosses it once, right to
+   left, and it folds away again. */
+/* font-size and line-height are zeroed on the strip itself: without that the
+   inherited line box is taller than the strip and the text is clipped away
+   entirely rather than shown. The span brings its own metrics. */
+.pticker{
+  height:0;overflow:hidden;margin-top:0;font-size:0;line-height:0;
+  transition:height .18s ease, margin-top .18s ease;
+}
+.pticker.on{height:14px;margin-top:4px}
+.pticker span{
+  display:inline-block;vertical-align:top;white-space:nowrap;
+  font-family:'DSEG7 Classic','Digital-7','Segment7Standard',
+              'Courier New',ui-monospace,monospace;
+  font-size:.58rem;font-weight:700;letter-spacing:.1em;line-height:14px;
+  color:#ffb545;text-shadow:0 0 6px rgba(255,150,40,.65),0 0 2px rgba(255,190,120,.9);
+}
+/* one pass only: from off the right edge to off the left */
+.pticker.run span{animation:tick 7s linear 1 both}
+@keyframes tick{
+  from{transform:translateX(100%)}
+  to  {transform:translateX(-100%)}
+}
 /* the scrubber runs with time, left to right, matching the counter beside it */
 .seekrow{display:flex;align-items:center;gap:9px;direction:ltr}
 .pseek{flex:1 1 auto;accent-color:#d98b31;min-width:60px;direction:ltr}
@@ -841,6 +1096,38 @@ body{
   transform:translateY(3px);
   box-shadow:inset 0 2px 5px rgba(0,0,0,.4),0 0 0 #4b4741,0 1px 2px rgba(0,0,0,.4);
 }
+/* RECORD: the red key, as it is on every one of these machines */
+.recbtn{
+  background:linear-gradient(180deg,#e2726b 0,#c8352c 44%,#a5241d 78%,#851a14 100%);
+  border-color:#6d1611;border-top-color:#f0aaa4;color:#2c0806;
+}
+.recbtn b{color:#3a0d0a;text-shadow:0 1px 0 rgba(255,255,255,.28)}
+.recbtn svg{fill:#2c0806}
+.recbtn:hover{background:linear-gradient(180deg,#e98079 0,#d13d33 44%,#b02a22 78%,#8f1e17 100%)}
+/* the lamp on the key: dark until the machine is armed, then lit and pulsing
+   for as long as the microphone is running */
+.reclamp{
+  position:absolute;top:3px;inset-inline-end:4px;
+  width:6px;height:6px;border-radius:50%;
+  background:#5e1d18;box-shadow:inset 0 0 2px rgba(0,0,0,.8);
+}
+.recbtn.armed .reclamp{
+  background:#ff3b2f;
+  box-shadow:0 0 6px #ff3b2f,0 0 12px rgba(255,59,47,.7);
+  animation:reclamp 1.15s ease-in-out infinite;
+}
+@keyframes reclamp{0%,100%{opacity:1}50%{opacity:.35}}
+.recbtn{position:relative}
+/* while it records the key stays latched, like PLAY does */
+.recbtn.armed{
+  background:linear-gradient(180deg,#f0908a 0,#d8453a 44%,#b32b23 78%,#8f1e17 100%);
+}
+.recintro{
+  margin:0 0 12px;font-size:.84rem;line-height:1.6;color:var(--muted);
+  background:#fbf6ea;border:1px solid #e6dcc2;border-radius:8px;padding:9px 11px;
+}
+.recintro b{color:#8c2f2c}
+
 /* PLAY is the coloured key, as the record key is on the real machine */
 .pbtn{
   background:linear-gradient(180deg,#f0b063 0,#e09437 44%,#c87c25 78%,#a9661b 100%);
