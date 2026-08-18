@@ -480,7 +480,12 @@ async function scanSilence(track) {
     const res = await fetch(url);
     if (!res.ok) return;
     const len = +(res.headers.get('content-length') || 0);
-    if (len > MAX_SCAN) return;                   // too big to decode politely
+    // a long recording is left alone: decoding it whole would cost more than
+    // the trim is worth. Drop the body rather than letting it stream down.
+    if (!len || len > MAX_SCAN) {
+      if (res.body && res.body.cancel) res.body.cancel().catch(() => {});
+      return;
+    }
     const buf = await res.arrayBuffer();
     if (cur.rec == null || audioURL((byId(C.recordings, cur.rec).tr[cur.idx] || {}).f) !== url)
       return;                                     // the user moved on meanwhile
