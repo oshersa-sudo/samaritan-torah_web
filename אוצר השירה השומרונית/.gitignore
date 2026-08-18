@@ -16,8 +16,20 @@ data/duplicates.json
 data/recordings.json
 data/tracks.json
 
-# local admin state: edits, playlists, deletions, performer details
-data/additions.json
-data/overrides.json
-data/performers.json
-data/removed.json
+# The editor's own work is NOT ignored, and must not be.
+#
+# additions, overrides, performers and removed were once filed here as "local
+# admin state", and that was wrong: they are not state, they are the editing
+# itself — the corrected titles, the descriptions, the singers' names, the
+# recordings taken down. The web edition builds its catalogue out of exactly
+# these four files beside catalog.json, so anything not committed here simply
+# does not exist online.
+#
+# It cost us: overrides.json sat at 39 entries on this machine and {} on the
+# live site, and a singer named there — שלום ששוני — showed up online as
+# "לא ידוע". Nothing reported it, because an ignored file never appears in
+# git status and so never appears in a "what is left to push" check either.
+#
+# They are tracked now. scripts/publish_check.py compares them against what
+# the live site is actually serving.
+data/purge_log.json
