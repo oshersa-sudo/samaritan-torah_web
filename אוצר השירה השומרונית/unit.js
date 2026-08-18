@@ -393,7 +393,8 @@ function playRec(recId, idx, quiet) {
   openDeck();
   headIn(true);
   deckLabel(r, idx);
-  $('dwName').textContent = r.ttl;
+  $('dwName').textContent = '';        // the name is on the label already
+  $('dwShare').disabled = false;
   markPlaying();
   setLine('ptitle', r.ttl + (r.tr.length > 1 ? ` · רצועה ${idx + 1}/${r.tr.length}` : ''));
   setLine('psub', `${perfName(r.p)} · ${eventName(r.e)}`);
@@ -1452,8 +1453,9 @@ function vuTick() {
     lit = Math.round(Math.min(1, rms * (REC.an ? 5.5 : 3.2)) * LAMPS);
   }
   for (let i = 0; i < lamps.length; i++) lamps[i].classList.toggle('on', i < lit);
-  // she dances to this particular piece, not to a metronome
-  if (DNC.at === 'dance') dncListen(an, lit / LAMPS);
+  // she dances to this particular piece, not to a metronome — and the same
+  // listening is what tells her when the singing has stopped and started
+  if (DNC.at === 'dance' || DNC.at === 'rest') dncListen(an, lit / LAMPS);
   levelTick();                        // the gate and the matcher ride this loop
   requestAnimationFrame(vuTick);
 }
@@ -1898,10 +1900,8 @@ function trackName(r, idx) {
 /* Put a line in the panel, and set it travelling if it does not fit.
  * The distance is whatever hangs off the edge, and the time is proportional
  * to it, so a very long name does not race past. */
-function setLine(id, text) {
-  const el = $(id);
+function rollInto(el, text, least) {
   el.classList.remove('roll');
-  el.style.removeProperty('animation-delay');
   el.innerHTML = '';
   const span = document.createElement('span');
   span.textContent = text || '';
@@ -1916,13 +1916,15 @@ function setLine(id, text) {
   // The negative delay starts the first pass where the line naturally sits,
   // so the name is readable the moment it is put up rather than after a lap.
   const dist = w + box;
-  const dur  = Math.max(9, Math.round(dist / 42));
+  const dur  = Math.max(least || 9, Math.round(dist / 42));
   el.style.setProperty('--rfrom', -box + 'px');
   el.style.setProperty('--rto', w + 'px');
   el.style.setProperty('--dur', dur + 's');
   span.style.animationDelay = -(dur * box / dist).toFixed(2) + 's';
   el.classList.add('roll');
 }
+
+const setLine = (id, text) => rollInto($(id), text);
 
 /* The label's own lines. They are no longer cut short: a long one is set
  * travelling inside the label, which is clipped, so the whole name can be
@@ -1984,10 +1986,11 @@ function deckLabel(r, idx) {
  * around her exactly as it was.
  */
 const DNC = {
-  at: 'off', timers: [],
-  y: 634,             // the very lip of the shell, hovering over the lamps
+  at: 'off', timers: [], figT: 0, fig: -1, dx: 0,
+  y: 650,             // below the shell's edge, hovering over the lamps
   inX: 906,           // centre stage for her: beside the far right screw
   startX: 1090, offLeft: -130, offRight: 1130,
+  stage: [-190, 44],  // how far the figures may carry her either way
 };
 
 function dncClear() {
@@ -2010,8 +2013,10 @@ function dncFace(dir) {
 
 function dncSet(cls) {
   const d = $('dancer');
-  d.classList.remove('walking', 'running', 'bowing', 'dancing', 'exiting', 'settling');
-  if (cls) d.classList.add(cls);
+  [...d.classList].forEach(c => {
+    if (c !== 'dancer' && c !== 'show') d.classList.remove(c);
+  });
+  if (cls) cls.split(' ').forEach(c => d.classList.add(c));
 }
 
 /* every joint that the dance drives, in the order they are nested */
@@ -2019,13 +2024,14 @@ const DNC_JOINTS = ['.dnc-step', '.dnc-spin', '.dnc-bob', '.dnc-body',
                     '.dnc-arm-f', '.dnc-arm-b', '.dnc-elbow-f', '.dnc-elbow-b',
                     '.dnc-leg-f', '.dnc-leg-b', '.dnc-knee-f', '.dnc-knee-b'];
 
-/* Pausing the tape — or changing to another recording — does not send her
- * off: she comes to a stand where she is and waits to be played again. The
- * pose she is caught in is written back as an inline transform before the
- * dance is dropped, so that letting it go eases her into standing instead of
- * snapping her there. */
-function dancerHold() {
-  if (DNC.at !== 'dance') return;
+/* Coming to a stand, without leaving the strip. Three things ask for it:
+ * pausing the tape, changing to another recording, and a quiet passage in
+ * the middle of one. The pose she is caught in is written back as an inline
+ * transform before the dance is dropped, so that letting it go eases her
+ * into standing instead of snapping her there. */
+function dncSettle(state) {
+  if (DNC.at !== 'dance' && DNC.at !== 'rest' && DNC.at !== 'still') return;
+  if (DNC.at === state) return;
   const d = $('dancer');
   const held = DNC_JOINTS.map(sel => {
     const el = d.querySelector(sel);
@@ -2036,27 +2042,33 @@ function dancerHold() {
   dncSet('settling');                 // the dance is off; the inline pose holds
   void d.offsetWidth;
   held.forEach(([el]) => { el.style.transform = ''; });   // …and eases to standing
-  DNC.at = 'still';
+  DNC.at = state;
   dncClear();
+  clearTimeout(DNC.figT);
   dncLater(460, () => d.classList.remove('settling'));
 }
 
+const dancerHold = () => dncSettle('still');   // the tape stopped for a moment
+const dancerRest = () => dncSettle('rest');    // …or the singing did
+
 function dancerResume() {
-  if (DNC.at !== 'still') return;
-  DNC.at = 'dance';
-  DNCM.gaps = []; DNCM.set = 0;
-  dncSet('dancing');
+  if (DNC.at !== 'still' && DNC.at !== 'rest') return;
+  DNCM.gaps = []; DNCM.hush = 0; DNC.fig = -1;
+  dncDance();
 }
 
 function dancerIn() {
-  if (DNC.at !== 'off') return;
+  if (DNC.at !== 'off' || !DNC_ON) return;
   const d = $('dancer');
   DNC.at = 'in';
   dncClear();
   // she starts just off the right edge, in profile, facing the way she walks
   d.querySelector('.dnc-x').style.transition = 'none';
   dncPlace(DNC.startX);
-  dncFace(-1, true);
+  dncFace(-1);
+  DNC.dx = 0;
+  d.querySelector('.dnc-step').style.transition = 'none';
+  d.querySelector('.dnc-step').style.transform = '';
   d.classList.add('show');
   void d.offsetWidth;
   d.querySelector('.dnc-x').style.transition = '';
@@ -2065,32 +2077,45 @@ function dancerIn() {
 
   dncLater(1900, () => {                    // arrived: turn to face the front
     dncSet(null);
-    dncFace(1, false);
+    dncFace(1);
     DNC.at = 'turn';
     dncLater(450, () => {                   // and bow to whoever is listening
       DNC.at = 'bow';
       dncSet('bowing');
       dncLater(1350, () => {
         if (au.paused) return dancerOut('right');
-        DNC.at = 'dance';
-        DNCM.gaps = []; DNCM.set = 0;    // this piece's own pulse, not the last one's
-        dncSet('dancing');
+        DNCM.gaps = []; DNC.fig = -1;    // this piece's own pulse, not the last one's
+        dncDance();
       });
     });
   });
 }
 
 /* `side` is which way she goes off: 'left' at the end of a recording, at a
- * walk; 'right' when the tape is stopped or the deck shut, at a run. */
+ * walk; 'right' when the tape is stopped or the deck shut, at a run. Either
+ * way she finishes properly — a last bow to the front, and only then away. */
 function dancerOut(side) {
   const d = $('dancer');
-  if (DNC.at === 'off' || DNC.at === 'out') return;
+  if (DNC.at === 'off' || DNC.at === 'out' || DNC.at === 'bye') return;
+  const onStage = DNC.at === 'dance' || DNC.at === 'rest' || DNC.at === 'still';
+  dncClear();
+  clearTimeout(DNC.figT);
+  if (!onStage) return dncLeave(side);      // caught mid-entrance: just go
+  DNC.at = 'bye';
+  dncFace(1);
+  dncStep(0, 0.4); DNC.dx = 0;              // back to where she came on
+  dncSet('bowing');
+  dncLater(1050, () => dncLeave(side));
+}
+
+function dncLeave(side) {
+  const d = $('dancer');
   DNC.at = 'out';
   dncClear();
   const right = side === 'right';
   dncSet(right ? 'running' : 'walking');
   d.classList.add('exiting');
-  dncFace(right ? 1 : -1, true);
+  dncFace(right ? 1 : -1);
   dncPlace(right ? DNC.offRight : DNC.offLeft);
   dncLater(right ? 1200 : 2350, () => {
     dncSet(null);
@@ -2099,26 +2124,103 @@ function dancerOut(side) {
   });
 }
 
+/* ---- the figures, one after another.
+ * Each is chosen when the one before it ends, and chosen from what the
+ * singing is doing right then: a soft passage gets the small close figures,
+ * a lively one gets turns and leaps, and either may get a few travelling
+ * steps — which are the ones that take her along the strip, facing the way
+ * she is going. Weights rather than a fixed order, and never the same figure
+ * twice running, so no two hearings of a piece look quite alike.
+ */
+const FIGURES = [
+  { k: 'f-port',  beats: 4, calm: 4, mid: 2, live: 1 },
+  { k: 'f-sway',  beats: 4, calm: 5, mid: 1, live: 0 },
+  { k: 'f-passe', beats: 3, calm: 1, mid: 3, live: 2 },
+  { k: 'f-arab',  beats: 4, calm: 1, mid: 3, live: 2 },
+  { k: 'f-turn',  beats: 2, calm: 0, mid: 2, live: 4 },
+  { k: 'f-jete',  beats: 2, calm: 0, mid: 1, live: 4 },
+  { k: 'f-walk',  beats: 4, calm: 2, mid: 3, live: 3, go:  1 },
+  { k: 'f-walk',  beats: 4, calm: 2, mid: 3, live: 3, go: -1 },
+];
+
+/* the travelling is a transition rather than an animation: JS knows where
+ * she should end up, and the figure's own length is how long she has */
+function dncStep(x, sec) {
+  const st = $('dancer').querySelector('.dnc-step');
+  st.style.transition = `transform ${sec.toFixed(2)}s linear`;
+  st.style.transform = `translateX(${Math.round(x)}px)`;
+}
+
+function dncDance() {
+  DNC.at = 'dance';
+  dncFigure();
+}
+
+function dncFigure() {
+  if (DNC.at !== 'dance') return;
+  const d = $('dancer');
+  const mood = DNCM.amp > 1.15 ? 'live' : DNCM.amp > 0.86 ? 'mid' : 'calm';
+  const pool = [];
+  FIGURES.forEach((f, i) => {
+    if (i === DNC.fig) return;                 // not the same figure twice
+    for (let n = 0; n < f[mood]; n++) pool.push(i);
+  });
+  const i = pool.length ? pool[Math.floor(Math.random() * pool.length)] : 0;
+  const f = FIGURES[i];
+  DNC.fig = i;
+
+  const beat = Math.min(1.4, Math.max(0.34, DNCM.beat || 0.62));
+  const dur  = Math.min(6, Math.max(1.1, beat * f.beats));
+  d.style.setProperty('--figdur', dur.toFixed(2) + 's');
+  dncSet('fig ' + f.k);
+
+  if (f.go) {
+    // she turns to the way she is going and covers what room is left that way
+    const room = f.go > 0 ? DNC.stage[1] - DNC.dx : DNC.dx - DNC.stage[0];
+    const span = Math.max(20, Math.min(70, room * 0.6)) * f.go;
+    DNC.dx = Math.max(DNC.stage[0], Math.min(DNC.stage[1], DNC.dx + span));
+    dncFace(f.go);
+    dncStep(DNC.dx, dur);
+  } else {
+    dncFace(1);                                // the set figures face the front
+    dncStep(DNC.dx, 0.3);                      // and hold their ground
+  }
+  clearTimeout(DNC.figT);
+  DNC.figT = setTimeout(dncFigure, dur * 1000);
+}
+
 /* ---- dancing to the piece, not to a metronome.
- * Three things about the singing are worth having: how loud it is at this
- * instant, how quickly the phrases come, and how high the voice is sitting.
- * They become, in order, the size of her movement, the length of her dance
- * phrase, and how far she opens and lifts — so a slow, low recitation gets a
- * grave, close dance and a fast, bright one gets a wide, high one.
+ * Four things about the singing are worth having: whether there is any, how
+ * loud it is at this instant, how quickly the pulses come, and how high the
+ * voice is sitting. They become, in order, whether she dances at all, the
+ * size of her movement, which figure comes next and how long it lasts, and
+ * how far she opens and lifts — so a slow, low recitation gets a grave,
+ * close dance and a fast, bright one gets a wide, high one.
  *
  * The beat is taken from the singing's own envelope rather than from a drum
  * that is not there: a pulse is counted each time the level rises well clear
- * of its running mean. The median of the last few gaps is the beat, and the
- * phrase is four of them. It is re-set sparingly — retiming an animation
- * that is already running jumps it, so it is only worth doing when the piece
- * has genuinely changed pace.
+ * of its running mean, and the median of the last few gaps is the beat. It is
+ * only ever read when a figure ends, so no animation is retimed mid-flight.
  */
 const DNCM = {
-  spec: null, mean: 0, up: false, last: 0, gaps: [], dur: 4.8, lift: 1, amp: 1,
+  spec: null, mean: 0, up: false, last: 0, gaps: [], beat: 0,
+  lift: 1, amp: 1, hush: 0,
 };
 
 function dncListen(an, level) {
   const d = $('dancer'), now = performance.now();
+
+  /* Silence is not something to dance through. A passage counts as quiet
+   * only after it has stayed quiet for a good second — a breath between two
+   * verses must not stop her — and she takes it up again the moment the
+   * singing comes back, without leaving the strip in between. */
+  DNCM.hush = level < 0.075 ? DNCM.hush + 1 : 0;
+  if (DNC.at === 'dance' && DNCM.hush > 62) return dancerRest();
+  if (DNC.at === 'rest') {
+    if (level > 0.16) dancerResume();
+    return;
+  }
+
   // how big: the level itself, smoothed so she does not twitch on every frame
   DNCM.amp += (0.55 + Math.min(1, level) * 0.8 - DNCM.amp) * 0.12;
   d.style.setProperty('--amp', DNCM.amp.toFixed(2));
@@ -2151,14 +2253,9 @@ function dncListen(an, level) {
   } else if (DNCM.up && level < DNCM.mean * 1.1) {
     DNCM.up = false;
   }
-  if (DNCM.gaps.length >= 5 && now - (DNCM.set || 0) > 4200) {
-    const beat = [...DNCM.gaps].sort((a, b) => a - b)[DNCM.gaps.length >> 1];
-    const want = Math.min(7.4, Math.max(2.6, (beat * 4) / 1000));
-    if (Math.abs(want - DNCM.dur) / DNCM.dur > 0.12) {
-      DNCM.dur = want;
-      DNCM.set = now;
-      d.style.setProperty('--dncdur', want.toFixed(2) + 's');
-    }
+  if (DNCM.gaps.length >= 4) {
+    const g = [...DNCM.gaps].sort((a, b) => a - b);
+    DNCM.beat = g[g.length >> 1] / 1000;      // read when the next figure starts
   }
 }
 
@@ -2174,6 +2271,9 @@ function dancerWatch() {
     if (au.paused) return dancerHold();
     if (DNC.at === 'still') return dancerResume();
     if (DNC.at === 'off' && au.currentTime > 4) dancerIn();
+    // no analyser (the mixer graph is not up), so she cannot hear the piece;
+    // the figures still have to follow one another
+    if (DNC.at === 'dance' && !DNC.figT) dncFigure();
   }, 700);
 }
 dancerWatch();
@@ -2316,13 +2416,16 @@ function btMenu(outs) {
     });
   }
   m.innerHTML = '';
+  m.classList.remove('hidden');       // measurable before the names go in
   outs.forEach((d, i) => {
     const b = document.createElement('button');
-    b.textContent = d.label || `יציאת שמע ${i + 1}`;
-    b.onclick = () => { m.classList.add('hidden'); btRoute(d.deviceId, b.textContent); };
+    const name = d.label || `יציאת שמע ${i + 1}`;
     m.appendChild(b);
+    // a speaker's own name is often longer than the list is wide, so it
+    // travels across rather than being cut off where it matters most
+    rollInto(b, name, 7);
+    b.onclick = () => { m.classList.add('hidden'); btRoute(d.deviceId, name); };
   });
-  m.classList.remove('hidden');
 }
 
 /* the sink is a property of the element, so it has to be re-set on each new
@@ -2331,6 +2434,114 @@ au.addEventListener('loadedmetadata', () => {
   if (BT.id && btCan() && au.sinkId !== BT.id) btRoute(BT.id, BT.label, true);
 });
 if (BT.id && btCan()) btRoute(BT.id, BT.label, true); else paintBT();
+
+/* --------------------------------------------- watching it on a television
+ * The Remote Playback API is the part of this the browser really does: it
+ * puts up the device picker the system already knows about — a Chromecast, a
+ * television running Cast — and hands the recording over to it. Safari has
+ * its own door to the same room, for AirPlay. Where neither exists the key
+ * says so rather than pretending.
+ */
+function castCan() {
+  return !!(au.remote && typeof au.remote.prompt === 'function')
+      || typeof au.webkitShowPlaybackTargetPicker === 'function';
+}
+function paintCast(state) {
+  const b = $('dwCast');
+  if (state === 'connected' || state === 'connecting') {
+    b.setAttribute('aria-pressed', 'true');
+    b.title = 'ההקלטה מוצגת במכשיר חיצוני — לחיצה תנתק';
+  } else {
+    b.setAttribute('aria-pressed', 'false');
+    b.title = castCan() ? 'צפייה במכשיר טלוויזיה'
+                        : 'הדפדפן הזה אינו תומך בשידור אל מסך חיצוני';
+  }
+}
+$('dwCast').onclick = async () => {
+  sfx('click');
+  if (au.remote && au.remote.prompt) {
+    try { await au.remote.prompt(); }
+    catch (e) {
+      // the picker being dismissed is not a failure worth a message
+      if (e && e.name !== 'NotAllowedError' && e.name !== 'AbortError')
+        toast('לא נמצא מכשיר לשידור ברשת הזו', true);
+    }
+    return;
+  }
+  if (au.webkitShowPlaybackTargetPicker) return au.webkitShowPlaybackTargetPicker();
+  toast('הדפדפן הזה אינו תומך בשידור אל מסך חיצוני. ' +
+        'אפשר להטיל את המסך כולו מתוך תפריט הדפדפן', true);
+};
+if (au.remote) {
+  au.remote.addEventListener('connect', () => paintCast('connected'));
+  au.remote.addEventListener('connecting', () => paintCast('connecting'));
+  au.remote.addEventListener('disconnect', () => paintCast('disconnected'));
+  // the key dims where the network has nothing to send to
+  try {
+    au.remote.watchAvailability(has => $('dwCast').classList.toggle('away', !has));
+  } catch (e) {}
+}
+paintCast();
+
+/* ------------------------------------------------ sharing this recording
+ * The link carries the recording's own id, and the page opens on it, so what
+ * arrives in WhatsApp is this piece and this track rather than the archive's
+ * front door. WhatsApp is only handed the text — nothing is sent from here;
+ * the message is composed there and sent by whoever shares it.
+ */
+function recLink(recId, idx) {
+  const u = new URL(location.href);
+  u.hash = 'r=' + encodeURIComponent(recId) + (idx ? '.' + idx : '');
+  return u.href;
+}
+$('dwShare').disabled = true;
+$('dwShare').onclick = () => {
+  if (!cur.rec) return;
+  const r = byId(C.recordings, cur.rec);
+  if (!r) return;
+  sfx('click');
+  const txt = `${trackName(r, cur.idx)}\n${perfName(r.p)} · ${eventName(r.e)}\n` +
+              `מתוך אוצר השירה השומרונית\n${recLink(cur.rec, cur.idx)}`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank', 'noopener');
+};
+
+/* a link shared out of here comes back in through this */
+function openFromLink() {
+  const m = /^#r=([^.]+)(?:\.(\d+))?/.exec(location.hash || '');
+  if (!m || !C) return false;
+  // the id came back through a URL, so it is a string now whatever it was
+  const want = decodeURIComponent(m[1]);
+  const r = C.recordings.find(x => String(x.id) === want);
+  if (!r) return false;
+  playRec(r.id, Math.min(Math.max(0, +(m[2] || 0)), r.tr.length - 1));
+  return true;
+}
+
+/* ------------------------------------------------------------ the dancer
+ * She is a pleasure, not a fixture: whoever would rather watch the reels
+ * turn can send her off, and the deck remembers it on that device. */
+let DNC_ON = localStorage.getItem('shira_dancer') !== '0';
+function paintDnc() {
+  const b = $('dwDnc');
+  b.setAttribute('aria-pressed', DNC_ON ? 'true' : 'false');
+  b.title = DNC_ON ? 'הרקדנית על הקלטת — לחיצה תכבה אותה'
+                   : 'הרקדנית כבויה — לחיצה תחזיר אותה';
+}
+$('dwDnc').onclick = () => {
+  DNC_ON = !DNC_ON;
+  localStorage.setItem('shira_dancer', DNC_ON ? '1' : '0');
+  if (!DNC_ON) {
+    dncClear();
+    clearTimeout(DNC.figT); DNC.figT = 0;
+    dncSet(null);
+    $('dancer').classList.remove('show');
+    DNC.at = 'off';
+  }
+  paintDnc();
+  sfx('click');
+  toast(DNC_ON ? 'הרקדנית חוזרת אל הקלטת' : 'הרקדנית כבויה');
+};
+paintDnc();
 
 function sfx(name) {
   const a = SFX[name];
@@ -3212,6 +3423,9 @@ async function loadCatalog() {
     $('empty').classList.remove('hidden');
     return;
   }
+  // a link shared out of the deck opens straight on its own recording
+  openFromLink();
+  addEventListener('hashchange', openFromLink);
   const st = await fetch('api/admin/status').then(r => r.json()).catch(() => ({}));
   ADMIN.enabled = !!st.enabled;
   ADMIN.user    = st.user || '';

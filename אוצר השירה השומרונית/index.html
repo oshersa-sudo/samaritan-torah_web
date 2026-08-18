@@ -403,7 +403,47 @@
 <!-- חלון נגן הקלטות: נפתח בלחיצה על הקלטה, וניתן למזער אותו -->
 <section class="deckwin hidden" id="deckWin" aria-label="נגן הקלטות">
   <header class="dw-bar" id="dwBar">
-    <span class="dw-name" id="dwName">נגן הקלטות</span>
+    <!-- שם הרצועה אינו נכתב כאן: הוא ממילא על מדבקת הקלטת ובחלון התוכן.
+         השורה נשמרת להודעות המכשיר עצמו — מקליט, מעלה — ובמקומה יושבים
+         כפתורי השידור, השיתוף והרקדנית. -->
+    <span class="dw-name" id="dwName"></span>
+    <!-- שידור אל מסך חיצוני: כרומקאסט, וב־Safari אפל־טי־וי -->
+    <button class="dw-btn dw-ico" id="dwCast" title="צפייה במכשיר טלוויזיה">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect class="cs-scr" x="3" y="4.5" width="18" height="13" rx="2"
+              fill="none" stroke-width="1.9"/>
+        <g class="cs-wav" fill="none" stroke-width="1.9" stroke-linecap="round">
+          <path d="M3 14.6a4.9 4.9 0 0 1 4.9 4.9"/>
+          <path d="M3 11a8.5 8.5 0 0 1 8.5 8.5"/>
+        </g>
+        <circle class="cs-dot" cx="3.6" cy="19" r="1.5"/>
+      </svg>
+    </button>
+    <!-- שיתוף ההקלטה הזו בוואטסאפ, עם קישור החוזר אליה ממש -->
+    <button class="dw-btn dw-ico" id="dwShare" title="שיתוף ההקלטה בוואטסאפ">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path class="wa-b" d="M12 2.7A9.2 9.2 0 0 0 4.1 16.6L2.8 21.3l4.8-1.26A9.2 9.2 0 1 0 12 2.7z"
+              fill="none" stroke-width="1.9" stroke-linejoin="round"/>
+        <path class="wa-h" d="M9.1 7.6c.3 0 .5.1.6.4l.7 1.7c.1.3 0 .5-.2.7l-.5.5c-.1.2-.2.3 0 .6a7.4 7.4 0 0 0 3 2.9c.3.1.5.1.6-.1l.6-.7c.2-.2.4-.2.6-.1l1.7.8c.3.1.4.3.4.6 0 .9-.7 1.7-1.6 1.8-2.4.2-6.9-3.5-7.3-6.2-.1-1.2.6-2.5 1.4-2.8z"/>
+      </svg>
+    </button>
+    <!-- מכבה את הרקדנית ומחזיר אותה; הבחירה נשמרת במכשיר -->
+    <button class="dw-btn dw-ico dw-dnc" id="dwDnc" aria-pressed="true"
+            title="הרקדנית על הקלטת">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <g class="dn-fig" fill="none" stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 8.6v5.1"/>
+          <path d="M12 9.4 8.4 6.6M12 9.4l3.6-2.8"/>
+          <path d="M12 13.7 9.2 17l-1.1 3.2M12 13.7l2.6 3.3 1.3 3.2"/>
+        </g>
+        <circle class="dn-fig-h" cx="12" cy="5.1" r="2"/>
+        <path class="dn-fig-t" d="M8.2 13.4h7.6l-1.5 1.9h-4.6z"/>
+        <g class="dn-no">
+          <circle cx="17.9" cy="6.1" r="4.6" fill="none" stroke-width="2"/>
+          <path d="M14.6 6.1h6.6" stroke-width="2" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </button>
     <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר ונושאת את שם היצרן -->
     <span class="dw-handle" aria-hidden="true"><i><b>Panasonic</b></i></span>
     <!-- שולח את ההשמעה אל רמקול הבלוטות' של המכשיר. הצימוד עצמו נעשה
