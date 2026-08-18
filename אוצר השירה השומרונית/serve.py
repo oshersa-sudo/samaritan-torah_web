@@ -13,7 +13,7 @@ password configured, uploading is simply disabled — the index still works.
 Nothing is copied out of the archive, and nothing is ever written into it:
 uploads land in `added/` alongside this file.
 """
-import os, sys, re, json, time, hmac, hashlib, urllib.parse, mimetypes
+import os, sys, re, io, json, time, hmac, hashlib, urllib.parse, mimetypes
 import http.server, socketserver, subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +29,11 @@ _REPO   = os.path.dirname(HERE)
 ARCHIVE = os.environ.get('SHIRA_ARCHIVE',
                          r'G:\שומרונים ומסורת- תיקייה חשובה מאד\שיראן')
 ADDED   = os.environ.get('SHIRA_ADDED', os.path.join(HERE, 'added'))
+# the pictures and films that live beside the recordings on the same drive,
+# indexed by scripts/scan_media.py and served from here while they are still
+# only on this machine
+MEDIA_ROOT = os.environ.get(
+    'SHIRA_PIX', r'G:\שומרונים ומסורת- תיקייה חשובה מאד\תמונות שונות')
 PORT    = int(os.environ.get('SHIRA_PORT', '8802'))
 CATALOG = os.path.join(HERE, 'data', 'catalog.json')
 
@@ -182,6 +187,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         p = self.path.split('?')[0]
         if p.startswith('/audio/'):
             return self.serve_audio()
+        if p.startswith('/local-media/'):
+            return self.serve_local_media()
+        if p == '/data/local_media.json':
+            return self.local_media_list()
         if p == '/api/catalog':
             return self.api_catalog()
         if p == '/api/admin/status':
@@ -580,6 +589,37 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         ADD.save(keep)                       # audio files are left on disk
         self.json_out({'ok': True})
 
+    # ------------------------------------------- the archive's own pictures
+    # scripts/scan_media.py leaves a manifest of the pictures and films kept
+    # on the drive; here they are actually served, so that the screen inside
+    # the deck can show them while they are still only on this machine. The
+    # manifest is answered with the address they are being served from — and
+    # only when the drive is really there, so that on the web, where it is
+    # not, the list stays inert and the screen falls back to what it can find.
+    def local_media_list(self):
+        path = os.path.join(HERE, 'data', 'local_media.json')
+        try:
+            with io.open(path, encoding='utf-8') as fh:
+                man = json.load(fh)
+        except Exception:
+            return self.json_out({'items': []})
+        if MEDIA_ROOT and os.path.isdir(MEDIA_ROOT):
+            man['base'] = '/local-media/'
+        return self.json_out(man)
+
+    def serve_local_media(self):
+        if not MEDIA_ROOT or not os.path.isdir(MEDIA_ROOT):
+            return self.send_error(404, 'no media drive')
+        rel = urllib.parse.unquote(self.path[len('/local-media/'):].split('?')[0])
+        full = os.path.normpath(os.path.join(MEDIA_ROOT, rel.replace('/', os.sep)))
+        if not full.startswith(os.path.normpath(MEDIA_ROOT) + os.sep):
+            return self.send_error(403, 'forbidden')
+        if not os.path.isfile(full):
+            return self.send_error(404, 'not on this drive')
+        # films are long: they have to be seekable, so ranges are honoured
+        self.path = '/local-media/' + rel
+        return self._send_range(full)
+
     # --------------------------------------------------------------- audio
     def serve_audio(self, head=False):
         rel = urllib.parse.unquote(self.path[len('/audio/'):].split('?')[0])
@@ -597,7 +637,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if not os.path.isfile(full):
             self.send_error(404, 'not on this drive')
             return
+        return self._send_range(full, head)
 
+    def _send_range(self, full, head=False):
+        """Serve a file, honouring Range — which is what lets a recording be
+        seeked into and a film be started part of the way through."""
         size  = os.path.getsize(full)
         ctype = mimetypes.guess_type(full)[0] or 'application/octet-stream'
         start, end, partial = 0, size - 1, False

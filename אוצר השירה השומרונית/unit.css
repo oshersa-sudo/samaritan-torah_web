@@ -472,8 +472,13 @@ body{
   55% {clip-path:inset(0 0 0 0);filter:brightness(1.8)}
   100%{clip-path:inset(0 0 0 0);filter:brightness(1)}
 }
+/* Fitted to the screen, not cropped to it. The library is half portrait and
+   half landscape, and filling the frame would cut the top off a standing
+   figure every other picture; letting the whole of it in costs a black edge
+   and shows what was actually photographed. */
 .tv-img{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  background:#07090c;
   opacity:0;transition:opacity .9s ease;
 }
 .tv-img.on{opacity:1}

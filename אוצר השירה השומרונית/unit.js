@@ -2916,6 +2916,18 @@ async function pixSearch(term) {
  * rules allowed. Raise it whenever the filtering changes. */
 const PIX_RULES = 3;
 
+/* Every visit starts clean. A saved list is only worth having inside one
+ * sitting — it saves asking Commons the same question each time the screen is
+ * switched on and off — and keeping it beyond that is how a picture that
+ * should no longer be shown goes on being shown for another half a day. */
+(function pixFresh() {
+  try {
+    Object.keys(localStorage).forEach(k => {
+      if (/^shira_pix\d*_/.test(k)) localStorage.removeItem(k);
+    });
+  } catch (e) {}
+})();
+
 function pixCached(key) {
   try {
     const c = JSON.parse(localStorage.getItem(`shira_pix${PIX_RULES}_${key}`) || 'null');
@@ -3014,6 +3026,7 @@ async function pixGiven() {
     return j.filter(x => x && x.src).map(x => ({
       src: String(x.src), by: String(x.by || ''), lic: String(x.lic || ''),
       ttl: String(x.ttl || ''), src_name: String(x.source || ''),
+      feasts: Array.isArray(x.feasts) ? x.feasts : [], given: true,
     }));
   } catch (e) { return []; }
 }
@@ -3050,11 +3063,14 @@ async function pixLocal() {
   return man.items.map(x => {
     const path = `${x.folder || ''}/${x.f}`;
     const feasts = PIX_FEAST.filter(([re]) => re.test(path)).flatMap(([, ids]) => ids);
+    // his own cameras, and his name is on the files: ORI_… and OOH_…
+    const his = /\b(?:ORI|OOH)[_ ]?\d/i.test(x.f);
     return {
       src: base + x.f.split('/').map(encodeURIComponent).join('/'),
       kind: x.kind === 'video' ? 'video' : 'image',
       secs: x.secs || 0,
-      by: x.by || credit, lic: x.lic || 'מארכיון הקהילה',
+      by: x.by || (his ? 'אורי אורהוף' : credit),
+      lic: x.lic || (his ? 'באישור הצלם' : 'מארכיון הקהילה'),
       ttl: x.f.split('/').pop().replace(/\.[a-z0-9]+$/i, ''),
       feasts, local: true,
     };
@@ -3075,12 +3091,13 @@ async function pixLoad() {
   const take = (got, rank) => got.forEach(x => {
     if (!seen.has(x.src)) { seen.add(x.src); out.push(Object.assign(x, { rank })); }
   });
-  take(await pixGiven(), 0);
-  // the archive's own: those that suit this feast first, then the rest of it
-  const mine = await pixLocal();
+  // The community's own, and closest to home: the pictures on the archive's
+  // own site and the films off its own drive. Those filed under this feast
+  // come first, then the rest of them, and only then anything from outside.
   const ev = (r && r.e) || 0;
-  take(mine.filter(x => x.feasts.includes(ev)), 0);
-  take(mine.filter(x => !x.feasts.length), 1);
+  const mine = (await pixGiven()).concat(await pixLocal());
+  take(mine.filter(x => (x.feasts || []).includes(ev)), 0);
+  take(mine.filter(x => !(x.feasts || []).length), 1);
   if (!PIX.on) return false;
 
   const own = PIX_Q[r && r.e] || [];
@@ -3111,6 +3128,9 @@ async function pixLoad() {
   const stem = p => p.ttl.replace(/[\s_-]*\(?\d[\d\s.]*\)?$/, '').trim().toLowerCase();
   const perBy = new Map(), perStem = new Map();
   pool = pool.filter(p => {
+    // the archive's own holdings are not what the cap is for: they are all
+    // filed under one name and they are the whole point of the screen
+    if (p.local || p.given) return true;
     const b = p.by || '?', s = stem(p);
     const nb = (perBy.get(b) || 0) + 1, ns = (perStem.get(s) || 0) + 1;
     if (nb > 5 || ns > 6) return false;
@@ -3219,11 +3239,15 @@ function pixFilm(p, vid) {
   PIX.timer = setTimeout(() => { if (PIX.on && !vid.classList.contains('on')) pixNext(); }, 9000);
 }
 
+/* Who took it, under what terms, and where it came from — and that last is
+ * named for what it actually is: the community's own site, the archive's own
+ * drive, or Wikimedia, and never one standing in for another. */
 function pixCredit(p) {
-  const bits = [];
-  bits.push(p.by ? `צילום: ${p.by}` : 'צילום: לא צוין שם הצלם');
+  const bits = [p.by ? `צילום: ${p.by}` : 'צילום: לא צוין שם הצלם'];
   if (p.lic) bits.push(p.lic);
-  bits.push('ויקישיתוף');
+  const where = p.src_name || (p.local ? 'ארכיון הקהילה' : 'ויקישיתוף');
+  // …unless the licence line already says where it came from
+  if (!bits.some(b => b.indexOf(where) >= 0)) bits.push(where);
   return bits.join(' · ');
 }
 
