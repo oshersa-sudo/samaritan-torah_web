@@ -2858,7 +2858,7 @@ const PIX_ANY = ['Samaritans Israel', 'Samaritan high priest',
  * browser can look at a picture and say who is in it, but Commons says a good
  * deal in what it calls a file and what it files it under, and that is enough
  * to sort the ones with somebody in them to the front. */
-const PIX_WHO = /priest|people|men\b|women|family|families|pilgrim|worship|pray|congregation|crowd|ceremon|celebrat|dance|dancing|singer|choir|children|boy|girl|elder|rabbi|portrait|group|sacrific|slaughter|feast|festival|wedding|reading|blessing|procession/i;
+const PIX_WHO = /priest|people|men\b|women|family|families|pilgrim|worship|pray|congregation|crowd|ceremon|celebrat|dance|dancing|singer|choir|children|boy|girl|elder|group|sacrific|slaughter|feast|festival|wedding|reading|blessing|procession/i;
 const PIX_NOBODY = /manuscript|scroll|codex|inscription|map\b|plan\b|diagram|chart|coin|stamp|seal\b|tomb|grave|ruins?\b|archaeolog|excavat|panorama|landscape|aerial|view of|skyline|mountain\b|hill\b|building|architecture|facade|interior of|exterior|street|road|sign\b|book|page\b|folio|text\b|font|alphabet|script\b|letter/i;
 
 function pixPeople(p) {
@@ -2910,17 +2910,29 @@ async function pixSearch(term) {
   }).filter(Boolean);
 }
 
-/* the same search need not be made twice in a day */
+/* The same search need not be made twice in a day. The number in the key is
+ * the version of the rules below: change what is let through and every list
+ * saved under the old rules is abandoned rather than kept showing what those
+ * rules allowed. Raise it whenever the filtering changes. */
+const PIX_RULES = 3;
+
 function pixCached(key) {
   try {
-    const c = JSON.parse(localStorage.getItem('shira_pix_' + key) || 'null');
+    const c = JSON.parse(localStorage.getItem(`shira_pix${PIX_RULES}_${key}`) || 'null');
     if (c && Date.now() - c.t < 432e5) return c.v;          // half a day
   } catch (e) {}
   return null;
 }
 function pixKeep(key, v) {
-  try { localStorage.setItem('shira_pix_' + key, JSON.stringify({ t: Date.now(), v })); }
-  catch (e) {}
+  try {
+    localStorage.setItem(`shira_pix${PIX_RULES}_${key}`,
+                         JSON.stringify({ t: Date.now(), v }));
+    // and clear out what earlier rules had saved
+    Object.keys(localStorage).forEach(k => {
+      if (/^shira_pix\d*_/.test(k) && k.indexOf(`shira_pix${PIX_RULES}_`) !== 0)
+        localStorage.removeItem(k);
+    });
+  } catch (e) {}
 }
 
 /* The pictures illustrating the Hebrew Wikipedia article on the Samaritans —
@@ -2949,14 +2961,26 @@ const PIX_FAIR = /fair.?use|שימוש הוגן|non.?free/i;
  * a picture of the Samaritans. */
 const PIX_SUBJ = /samarit|samaritain|samariter|shomron|shumron|schomron|gerizim|garizim|kiryat.?luza|\bluza\b/i;
 
+/* The word "Samaritan" belongs to two quite separate things, and only one of
+ * them is this community. The other is the parable, and everything named for
+ * it — the inn on the Jericho road, the hospitals, the charities — none of
+ * which has anything to do with the people who sing these recordings. The
+ * same goes for anything Christian that a search for "Samaritan prayer"
+ * drags in, and for paintings: what is wanted on that screen is photographs
+ * of a living community, not somebody's picture of a congregation. */
+const PIX_WRONG = /good.?samaritan|parable|\binn\b|hospital|charit|church|jesus|christ|gospel|new testament|apostle|отче наш|lord'?s prayer|missionar|crusad/i;
+const PIX_ART = /painting|oil on canvas|watercolou?r|\bdrawing\b|sketch|etching|\bicon\b|fresco|mosaic|museum|gallery|gottlieb|\bart of\b|illustration/i;
+
 function pixUsable(p, w, h, anchored) {
   if (!p.src || !/\.(jpe?g|png)$/i.test(p.src.split('?')[0])) return false;
   if (PIX_NOT.test(p.ttl) || PIX_BOOK.test(p.ttl)) return false;
   const cats = (p.cats || []).join(' ');
+  const hay = `${p.ttl} ${cats}`;
   if (PIX_FAIR.test(`${p.lic} ${cats}`)) return false;
+  if (PIX_WRONG.test(hay) || PIX_ART.test(hay)) return false;
   // A free search has to prove the picture is of this community; the
   // article's own images do not — being in it is the proof.
-  if (anchored && !PIX_SUBJ.test(`${p.ttl} ${cats}`)) return false;
+  if (anchored && !PIX_SUBJ.test(hay)) return false;
   if (w && w < 620) return false;                 // an icon, not a photograph
   if (w && h && (w / h > 3.2 || h / w > 2.6)) return false;   // a banner or a strip
   return true;
