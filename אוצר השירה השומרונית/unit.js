@@ -1886,15 +1886,34 @@ function deckPaint() {
 }
 paintTape();                              // laced before anything plays, too
 
-/* Most track names in the archive are bare numbering ("AudioTrack 04"); those
- * say nothing, so the position within the recording is shown instead. */
-const BARE_TRACK = /^(?:\d{1,3}|(?:audio)?track\s*\d+|\d+\s*[-_. ]\s*(?:audio)?track\s*\d+|\d+\s*רצועה\s*\d+|temp\d*)$/i;
+/* Most track names in the archive are the file's and say nothing: bare
+ * numbering ("AudioTrack 04"), or the side the tape was copied off ("A",
+ * "B", "צד ב"). Those are dropped in favour of the recording's own name and
+ * the position within it. */
+const BARE_TRACK = /^(?:\d{1,3}|(?:audio)?track\s*\d+|\d+\s*[-_. ]\s*(?:audio)?track\s*\d+|\d+\s*רצועה\s*\d+|temp\d*|(?:side\s*)?[ab]|(?:צד\s*)?[אב]|צד\s*[ab])$/i;
 
 function trackName(r, idx) {
   const t = r.tr[idx] || {};
   const raw = (t.n || '').trim();
   if (raw && !BARE_TRACK.test(raw)) return raw;
   return r.tr.length > 1 ? `${r.ttl} · ${idx + 1}/${r.tr.length}` : r.ttl;
+}
+
+/* What goes on the cassette's own label.
+ *
+ * Not the file's name. A track called "A.mp3" says nothing, and the ones that
+ * look like they say something mostly do not either — "JSPEC265.DW_H264",
+ * "fetah kal mamlal nael - ratson tsedaka", "מרחיב חפץ + הכהן פינחס - - חתנה
+ * של שחר וגאולה2" are all names a file happened to be saved under. What the
+ * archive actually knows about the recording is its description where one has
+ * been written, and otherwise the title it was catalogued under, which is the
+ * cleaned-up form of all that. The track's position within the recording is
+ * added when there is more than one, so it is still clear which is playing. */
+function recLabel(r, idx) {
+  if (!r) return '—';
+  const d = (r.desc && !r.from_desc ? String(r.desc) : '').trim();
+  const base = d || r.ttl;
+  return r.tr.length > 1 ? `${base} · ${idx + 1}/${r.tr.length}` : base;
 }
 
 /* Put a line in the panel, and set it travelling if it does not fit.
@@ -1956,7 +1975,7 @@ function labelRoll(textId, groupId) {
 /* the cassette's label carries the track and the performer */
 function deckLabel(r, idx) {
   const cut = (s, n) => (s || '').length > n ? s.slice(0, n - 1) + '…' : (s || '');
-  $('cTitle').textContent = r ? trackName(r, idx) : '—';
+  $('cTitle').textContent = recLabel(r, idx);
   $('cPerf').textContent  = r ? perfName(r.p) : 'בחר הקלטה כדי לנגן';
   labelRoll('cTitle', 'cTitleRoll');
   labelRoll('cPerf',  'cPerfRoll');
@@ -2517,7 +2536,8 @@ $('dwShare').onclick = () => {
   const r = byId(C.recordings, cur.rec);
   if (!r) return;
   sfx('click');
-  const txt = `${trackName(r, cur.idx)}\n${perfName(r.p)} · ${eventName(r.e)}\n` +
+  // what is written on the cassette, not what the file was saved under
+  const txt = `${recLabel(r, cur.idx)}\n${perfName(r.p)} · ${eventName(r.e)}\n` +
               `מתוך אוצר השירה השומרונית\n${recLink(cur.rec, cur.idx)}`;
   window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank', 'noopener');
 };
