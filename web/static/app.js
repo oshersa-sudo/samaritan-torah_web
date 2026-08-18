@@ -1182,7 +1182,7 @@ async function showBooks(){
 // reads as the table it is on the page — without any of the rules drawn.
 // Set in the face the Torah's text is read in, marks and all.
 const BOOKS_POEM = [
-  ['סיחון סיחוניך עדן:',      'משקה החיים מגן עדן.'],
+  ['סיחוניך סיחון עדן:',      'משקה החיים מגן עדן.'],
   ['הן הוה הים מלא מן מים:',  'כן כתבה מלא רחמים:'],
   ['המאור הגדול יתכסה:',      'ונהר כתבה לא יתכסה:'],
   ['מן הוה בכתבה דביק:',      'יהי אנש טב וצדיק:'],
