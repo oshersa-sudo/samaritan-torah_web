@@ -511,6 +511,24 @@
            מצויר פעמיים — הקו עצמו בגוון הקווים הבהירים של הקלטת, וצל דק
            ממש מתחתיו — וכך הוא נקרא כצלע מובלטת ולא כקו מצויר. -->
       <path id="cTrap" d="M206.3 630 L288 460 L712 460 L793.7 630"/>
+      <!-- הפיון: ציר ההנעה של המכשיר עצמו, שנעוץ מלמטה אל תוך פקע הקלטת
+           והוא המסובב אותו. אדום עמוק, כמו הפיונים בטייפים הישנים, וחרוץ
+           בשמונה חריצים היושבים בדיוק על שמונה שיני הפקע — ומשום כך הוא
+           תופס בו ומוליך אותו ואינו מחליק. -->
+      <radialGradient id="cSpin" cx=".38" cy=".30" r=".82">
+        <stop offset="0" stop-color="#ad2820"/>
+        <stop offset=".55" stop-color="#7d1512"/>
+        <stop offset="1" stop-color="#460a08"/>
+      </radialGradient>
+      <g id="cSpindle">
+        <circle r="16" fill="#140a08" opacity=".85"/>
+        <circle r="14.5" fill="url(#cSpin)"/>
+        <path d="M0 -13V-6.5 M9.19 -9.19L4.6 -4.6 M13 0H6.5 M9.19 9.19L4.6 4.6
+                 M0 13V6.5 M-9.19 9.19L-4.6 4.6 M-13 0H-6.5 M-9.19 -9.19L-4.6 -4.6"
+              stroke="#490b09" stroke-width="4.4" stroke-linecap="round"/>
+        <circle r="14.5" fill="none" stroke="#c8483c" stroke-width="1.2" opacity=".5"/>
+        <circle r="4.4" fill="#280706"/>
+      </g>
       <!-- הסרט אינו נראה מבעד למדבקה: מותר לו רק מתחתיה, ובחלון הסלילים -->
       <clipPath id="cNoLabel">
         <rect x="8" y="394" width="984" height="238"/>
@@ -553,6 +571,7 @@
       <g id="reelL" class="reel" style="transform-origin:360px 330px">
         <circle cx="360" cy="330" r="34" fill="#ded6cb"/>
         <circle cx="360" cy="330" r="17" fill="#2a2521"/>
+        <use href="#cSpindle" transform="translate(360 330)"/>
         <g stroke="#8f887f" stroke-width="4" stroke-linecap="round" transform="translate(360 330)">
           <path d="M0 -30 v-10 M0 30 v10 M-30 0 h-10 M30 0 h10"/>
           <path d="M21 -21 l7 -7 M-21 21 l-7 7 M-21 -21 l-7 -7 M21 21 l7 7"/>
@@ -561,6 +580,7 @@
       <g id="reelR" class="reel" style="transform-origin:640px 330px">
         <circle cx="640" cy="330" r="34" fill="#ded6cb"/>
         <circle cx="640" cy="330" r="17" fill="#2a2521"/>
+        <use href="#cSpindle" transform="translate(640 330)"/>
         <g stroke="#8f887f" stroke-width="4" stroke-linecap="round" transform="translate(640 330)">
           <path d="M0 -30 v-10 M0 30 v10 M-30 0 h-10 M30 0 h10"/>
           <path d="M21 -21 l7 -7 M-21 21 l-7 7 M-21 -21 l-7 -7 M21 21 l7 7"/>
