@@ -607,6 +607,8 @@ body{
 }
 /* each joint turns about itself, so the origins follow the offsets above */
 .dnc-body{transform-origin:0px -50px}
+.dnc-chest{transform-origin:0px -50px}      /* the chest turns over the hips */
+.dnc-headg{transform-origin:0px -88px}      /* and the head over the chest */
 .dnc-leg-b{transform-origin:-6px -50px}
 .dnc-leg-f{transform-origin:6px -50px}
 .dnc-knee-b{transform-origin:-6px -27px}
@@ -676,59 +678,72 @@ body{
 @keyframes dncBowElbF{0%{transform:rotate(-16deg)}42%,62%{transform:rotate(-30deg)}100%{transform:rotate(-16deg)}}
 @keyframes dncBowElbB{0%{transform:rotate(16deg)}42%,62%{transform:rotate(32deg)}100%{transform:rotate(16deg)}}
 
-/* ---- the dance itself, built out of figures rather than one loop.
-   A real dance is a succession of steps, so hers is too: each figure below is
-   a class of its own, and JS chooses the next one from what the singing is
-   doing at that moment — quiet passages get small, close figures, lively ones
-   get turns, leaps and travel. Two of them carry her along the strip, and she
-   turns to face the way she is going, which is what stops the whole thing
-   reading as a loop.
+/* ---- the step vocabulary.
+   Every figure below is one step of the dance, and the choreography in
+   unit.js orders them. They are grouped the way movement itself divides: the
+   axial ones, which happen on the spot with no transfer of weight, and the
+   locomotor ones, of which there are only five physically possible kinds —
+   step, hop, leap, jump, and the mixed take-off — everything else being a
+   combination of those.
 
-   Two things about the recording reach every figure: --amp is how loud the
-   singing is at this instant, so the movement grows and settles with it, and
-   --lift is where the voice is sitting in its register, so a high bright
-   passage opens her arms and takes her leg higher than a low one does. The
-   length of a figure, --figdur, is set from the piece's own pulse. */
+   Four variables reach every figure, and they are what make it this
+   recording's dance rather than a general one:
+     --sz    how big the movement may be. Falls as the tempo rises, because a
+             large movement at a fast tempo simply arrives late; and carries
+             the effort quality's own size with it.
+     --amp   how loud the singing is at this instant.
+     --lift  where the voice sits in its register: high and bright opens her
+             out, low keeps her close.
+     --ease  the effort quality as a curve — sustained efforts ease, sudden
+             ones strike and settle.
+   Their values, and which figure comes when, are worked out in unit.js. */
 .dancer.fig .dnc-spin,.dancer.fig .dnc-bob,.dancer.fig .dnc-body,
+.dancer.fig .dnc-chest,.dancer.fig .dnc-headg,
 .dancer.fig .dnc-arm,.dancer.fig .dnc-elbow,
 .dancer.fig .dnc-leg,.dancer.fig .dnc-knee{
   animation-duration:var(--figdur,2.4s);
-  animation-timing-function:ease-in-out;
+  animation-timing-function:var(--ease,ease-in-out);
   animation-iteration-count:infinite;
 }
+/* Breath rides under every figure that does not need the chest for something
+   else: out on the effort, in on the lengthening. Without it the dance reads
+   as a series of held shapes rather than as movement. */
+.dancer.fig .dnc-chest{animation-name:dBreath}
+@keyframes dBreath{
+  0%,100%{transform:scaleY(1)}
+  45%    {transform:scaleY(calc(1 - .05 * var(--amp,1)))}
+}
 
-/* port de bras — the arms rise from bas through second to fifth and open
-   again, over one long breath. The figure she does most, and the calmest. */
-.dancer.f-port .dnc-arm-f{animation-name:pArmF}
-.dancer.f-port .dnc-arm-b{animation-name:pArmB}
-.dancer.f-port .dnc-elbow-f{animation-name:pElbF}
-.dancer.f-port .dnc-elbow-b{animation-name:pElbB}
-.dancer.f-port .dnc-bob{animation-name:pBob}
-.dancer.f-port .dnc-body{animation-name:pBody}
-@keyframes pArmF{
+/* ============================================================ axial
+   On the spot, no weight transferred. */
+
+/* gesture — a port de bras: the arms travel bas, second, fifth and back,
+   carrying nothing. The figure for slow and for free rhythm. */
+.dancer.f-gesture .dnc-arm-f{animation-name:gArmF}
+.dancer.f-gesture .dnc-arm-b{animation-name:gArmB}
+.dancer.f-gesture .dnc-elbow-f{animation-name:gElbF}
+.dancer.f-gesture .dnc-elbow-b{animation-name:gElbB}
+.dancer.f-gesture .dnc-bob{animation-name:gBob}
+.dancer.f-gesture .dnc-headg{animation-name:gHead}
+@keyframes gArmF{
   0%,100%{transform:rotate(calc(-14deg * var(--lift,1)))}
-  35%    {transform:rotate(calc(-96deg * var(--lift,1)))}
-  68%    {transform:rotate(calc(-166deg * var(--lift,1)))}
+  36%    {transform:rotate(calc(-98deg * var(--lift,1)))}
+  70%    {transform:rotate(calc(-166deg * var(--lift,1)))}
 }
-@keyframes pArmB{
+@keyframes gArmB{
   0%,100%{transform:rotate(calc(14deg * var(--lift,1)))}
-  35%    {transform:rotate(calc(94deg * var(--lift,1)))}
-  68%    {transform:rotate(calc(162deg * var(--lift,1)))}
+  36%    {transform:rotate(calc(96deg * var(--lift,1)))}
+  70%    {transform:rotate(calc(162deg * var(--lift,1)))}
 }
-@keyframes pElbF{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(-38deg)}}
-@keyframes pElbB{0%,100%{transform:rotate(18deg)}50%{transform:rotate(38deg)}}
-@keyframes pBob{
-  0%,100%{transform:translateY(calc(2px * var(--amp,1)))}
-  68%    {transform:translateY(calc(-8px * var(--amp,1)))}
+@keyframes gElbF{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(-40deg)}}
+@keyframes gElbB{0%,100%{transform:rotate(18deg)}50%{transform:rotate(40deg)}}
+@keyframes gBob{
+  0%,100%{transform:translateY(calc(2px * var(--sz,1)))}
+  70%    {transform:translateY(calc(-8px * var(--sz,1) * var(--amp,1)))}
 }
-@keyframes pBody{
-  0%,100%{transform:rotate(0)}
-  35%    {transform:rotate(calc(-4deg * var(--amp,1)))}
-  70%    {transform:rotate(calc(3deg * var(--amp,1)))}
-}
+@keyframes gHead{0%,100%{transform:rotate(0)}36%{transform:rotate(-7deg)}70%{transform:rotate(5deg)}}
 
-/* a slow swaying of the weight from foot to foot, arms low — what she does
-   when the singing has gone soft but has not stopped */
+/* sway — the weight shifts from foot to foot without a step being taken */
 .dancer.f-sway .dnc-bob{animation-name:sBob}
 .dancer.f-sway .dnc-body{animation-name:sBody}
 .dancer.f-sway .dnc-arm-f{animation-name:sArmF}
@@ -736,16 +751,153 @@ body{
 .dancer.f-sway .dnc-knee-f{animation-name:sKneeF}
 .dancer.f-sway .dnc-knee-b{animation-name:sKneeB}
 @keyframes sBob{
-  0%,100%{transform:translate(-5px,0)}
-  50%    {transform:translate(5px,calc(-2px * var(--amp,1)))}
+  0%,100%{transform:translate(calc(-6px * var(--sz,1)),0)}
+  50%    {transform:translate(calc(6px * var(--sz,1)),calc(-2px * var(--amp,1)))}
 }
-@keyframes sBody{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-4deg)}}
-@keyframes sArmF{0%,100%{transform:rotate(-26deg)}50%{transform:rotate(-60deg)}}
-@keyframes sArmB{0%,100%{transform:rotate(54deg)}50%{transform:rotate(22deg)}}
+@keyframes sBody{
+  0%,100%{transform:rotate(calc(5deg * var(--sz,1)))}
+  50%    {transform:rotate(calc(-5deg * var(--sz,1)))}
+}
+@keyframes sArmF{0%,100%{transform:rotate(-26deg)}50%{transform:rotate(-62deg)}}
+@keyframes sArmB{0%,100%{transform:rotate(56deg)}50%{transform:rotate(22deg)}}
 @keyframes sKneeF{0%,100%{transform:rotate(14deg)}50%{transform:rotate(0)}}
 @keyframes sKneeB{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
 
-/* relevé into passé: up onto one leg, the other folded to the knee */
+/* swing — gravity does the work. The arm falls, the momentum carries it up
+   the far side, and it is held a moment at the top before it falls back.
+   The suspension is the whole point, and it is why a swing wants three or
+   six to the bar and never sits comfortably in four. */
+.dancer.f-swing .dnc-arm-f{animation-name:wgArmF}
+.dancer.f-swing .dnc-arm-b{animation-name:wgArmB}
+.dancer.f-swing .dnc-body{animation-name:wgBody}
+.dancer.f-swing .dnc-bob{animation-name:wgBob}
+.dancer.f-swing .dnc-knee-f{animation-name:wgKnee}
+@keyframes wgArmF{
+  0%     {transform:rotate(calc(-150deg * var(--sz,1)))}
+  26%    {transform:rotate(calc(-10deg * var(--sz,1)))}     /* through the bottom */
+  46%,58%{transform:rotate(calc(112deg * var(--sz,1)))}     /* held at the top */
+  84%    {transform:rotate(calc(-20deg * var(--sz,1)))}
+  100%   {transform:rotate(calc(-150deg * var(--sz,1)))}
+}
+@keyframes wgArmB{
+  0%     {transform:rotate(calc(140deg * var(--sz,1)))}
+  26%    {transform:rotate(calc(14deg * var(--sz,1)))}
+  46%,58%{transform:rotate(calc(-104deg * var(--sz,1)))}
+  84%    {transform:rotate(calc(24deg * var(--sz,1)))}
+  100%   {transform:rotate(calc(140deg * var(--sz,1)))}
+}
+@keyframes wgBody{
+  0%,100%{transform:rotate(calc(-9deg * var(--sz,1)))}
+  46%,58%{transform:rotate(calc(9deg * var(--sz,1)))}
+}
+@keyframes wgBob{
+  0%,100%{transform:translateY(calc(-4px * var(--sz,1)))}
+  26%,84%{transform:translateY(calc(5px * var(--sz,1)))}    /* lowest through the fall */
+}
+@keyframes wgKnee{0%,100%{transform:rotate(2deg)}26%,84%{transform:rotate(22deg)}}
+
+/* contraction and release — the spine curls back off the pelvis and opens
+   again. Everything here is the core; the limbs only follow. */
+.dancer.f-contract .dnc-body{animation-name:ctBody}
+.dancer.f-contract .dnc-chest{animation-name:ctChest}
+.dancer.f-contract .dnc-bob{animation-name:ctBob}
+.dancer.f-contract .dnc-arm-f{animation-name:ctArmF}
+.dancer.f-contract .dnc-arm-b{animation-name:ctArmB}
+.dancer.f-contract .dnc-elbow-f{animation-name:ctElbF}
+.dancer.f-contract .dnc-elbow-b{animation-name:ctElbB}
+.dancer.f-contract .dnc-headg{animation-name:ctHead}
+.dancer.f-contract .dnc-knee-f{animation-name:ctKnee}
+.dancer.f-contract .dnc-knee-b{animation-name:ctKnee}
+@keyframes ctBody{
+  0%,100%{transform:rotate(0)}
+  42%    {transform:rotate(calc(15deg * var(--sz,1)))}
+  78%    {transform:rotate(calc(-7deg * var(--sz,1)))}      /* the release opens past straight */
+}
+@keyframes ctChest{
+  0%,100%{transform:scaleY(1)}
+  42%    {transform:scaleY(calc(1 - .17 * var(--sz,1)))}
+  78%    {transform:scaleY(calc(1 + .04 * var(--sz,1)))}
+}
+@keyframes ctBob{
+  0%,100%{transform:translateY(0)}
+  42%    {transform:translateY(calc(7px * var(--sz,1)))}
+  78%    {transform:translateY(calc(-5px * var(--sz,1)))}
+}
+@keyframes ctArmF{0%,100%{transform:rotate(-18deg)}42%{transform:rotate(-58deg)}78%{transform:rotate(-150deg)}}
+@keyframes ctArmB{0%,100%{transform:rotate(18deg)}42%{transform:rotate(58deg)}78%{transform:rotate(148deg)}}
+@keyframes ctElbF{0%,100%{transform:rotate(-16deg)}42%{transform:rotate(-64deg)}78%{transform:rotate(-20deg)}}
+@keyframes ctElbB{0%,100%{transform:rotate(16deg)}42%{transform:rotate(64deg)}78%{transform:rotate(20deg)}}
+@keyframes ctHead{0%,100%{transform:rotate(0)}42%{transform:rotate(16deg)}78%{transform:rotate(-10deg)}}
+@keyframes ctKnee{0%,100%{transform:rotate(4deg)}42%{transform:rotate(26deg)}}
+
+/* fall and recovery — she gives her weight away off the vertical and takes
+   it back through it. The arc through the upright is the recovery. */
+.dancer.f-fall .dnc-body{animation-name:flBody}
+.dancer.f-fall .dnc-bob{animation-name:flBob}
+.dancer.f-fall .dnc-knee-f{animation-name:flKneeF}
+.dancer.f-fall .dnc-leg-b{animation-name:flLegB}
+.dancer.f-fall .dnc-arm-f{animation-name:flArmF}
+.dancer.f-fall .dnc-arm-b{animation-name:flArmB}
+@keyframes flBody{
+  0%,100%{transform:rotate(0)}
+  40%    {transform:rotate(calc(24deg * var(--sz,1)))}
+  72%    {transform:rotate(calc(-11deg * var(--sz,1)))}
+}
+@keyframes flBob{
+  0%,100%{transform:translateY(0)}
+  40%    {transform:translateY(calc(11px * var(--sz,1)))}
+  72%    {transform:translateY(calc(-6px * var(--sz,1) * var(--amp,1)))}
+}
+@keyframes flKneeF{0%,100%{transform:rotate(4deg)}40%{transform:rotate(34deg)}}
+@keyframes flLegB{0%,100%{transform:rotate(-6deg)}40%{transform:rotate(30deg)}72%{transform:rotate(-16deg)}}
+@keyframes flArmF{0%,100%{transform:rotate(-16deg)}40%{transform:rotate(-96deg)}72%{transform:rotate(-158deg)}}
+@keyframes flArmB{0%,100%{transform:rotate(16deg)}40%{transform:rotate(40deg)}72%{transform:rotate(150deg)}}
+
+/* twist — a spiral about the vertical axis. The hips hold, the chest turns
+   over them, and the head arrives after the chest rather than with it. */
+.dancer.f-twist .dnc-chest{animation-name:twChest}
+.dancer.f-twist .dnc-headg{animation-name:twHead}
+.dancer.f-twist .dnc-arm-f{animation-name:twArmF}
+.dancer.f-twist .dnc-arm-b{animation-name:twArmB}
+@keyframes twChest{
+  0%,100%{transform:scaleX(1)}
+  30%    {transform:scaleX(calc(1 - .55 * var(--sz,1)))}
+  50%    {transform:scaleX(calc(-1 + .3 * (1 - var(--sz,1))))}
+  70%    {transform:scaleX(calc(-1 + .55 * var(--sz,1)))}
+}
+@keyframes twHead{0%,100%{transform:rotate(0)}38%{transform:rotate(14deg)}62%{transform:rotate(-14deg)}}
+@keyframes twArmF{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(-118deg)}}
+@keyframes twArmB{0%,100%{transform:rotate(30deg)}50%{transform:rotate(112deg)}}
+
+/* isolation — one part moves and the rest genuinely does not. The ribs
+   travel over a pelvis that stays where it is; the head answers them. This
+   is the figure that still reads at a tempo where nothing else does. */
+.dancer.f-iso .dnc-chest{animation-name:isChest}
+.dancer.f-iso .dnc-headg{animation-name:isHead}
+.dancer.f-iso .dnc-elbow-f{animation-name:isElbF}
+.dancer.f-iso .dnc-elbow-b{animation-name:isElbB}
+@keyframes isChest{
+  0%,100%{transform:translateX(calc(-5px * var(--sz,1)))}
+  50%    {transform:translateX(calc(5px * var(--sz,1)))}
+}
+@keyframes isHead{
+  0%,100%{transform:translateX(calc(3px * var(--sz,1)))}
+  50%    {transform:translateX(calc(-3px * var(--sz,1)))}
+}
+@keyframes isElbF{0%,100%{transform:rotate(-40deg)}50%{transform:rotate(-24deg)}}
+@keyframes isElbB{0%,100%{transform:rotate(40deg)}50%{transform:rotate(24deg)}}
+
+/* shimmy — high frequency, low amplitude. Eight to the figure, and small. */
+.dancer.f-shimmy .dnc-chest{animation-name:shChest;animation-duration:calc(var(--figdur,2.4s) / 8)}
+.dancer.f-shimmy .dnc-bob{animation-name:shBob;animation-duration:calc(var(--figdur,2.4s) / 8)}
+.dancer.f-shimmy .dnc-arm-f{animation-name:shArmF}
+.dancer.f-shimmy .dnc-arm-b{animation-name:shArmB}
+@keyframes shChest{0%,100%{transform:translateX(-2.2px)}50%{transform:translateX(2.2px)}}
+@keyframes shBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.2px)}}
+@keyframes shArmF{0%,100%{transform:rotate(-96deg)}50%{transform:rotate(-104deg)}}
+@keyframes shArmB{0%,100%{transform:rotate(94deg)}50%{transform:rotate(102deg)}}
+
+/* relevé into passé — a ballet shape, and a high centre of gravity */
 .dancer.f-passe .dnc-bob{animation-name:qBob}
 .dancer.f-passe .dnc-leg-b{animation-name:qLegB}
 .dancer.f-passe .dnc-knee-b{animation-name:qKneeB}
@@ -754,8 +906,8 @@ body{
 .dancer.f-passe .dnc-elbow-f{animation-name:qElbF}
 .dancer.f-passe .dnc-elbow-b{animation-name:qElbB}
 @keyframes qBob{
-  0%,100%{transform:translateY(calc(3px * var(--amp,1)))}
-  45%    {transform:translateY(calc(-10px * var(--amp,1)))}
+  0%,100%{transform:translateY(calc(3px * var(--sz,1)))}
+  45%    {transform:translateY(calc(-11px * var(--sz,1) * var(--amp,1)))}
 }
 @keyframes qLegB{0%,100%{transform:rotate(-6deg)}45%{transform:rotate(-22deg)}}
 @keyframes qKneeB{0%,100%{transform:rotate(4deg)}45%{transform:rotate(126deg)}}
@@ -770,7 +922,7 @@ body{
 @keyframes qElbF{0%,100%{transform:rotate(-16deg)}45%{transform:rotate(-30deg)}}
 @keyframes qElbB{0%,100%{transform:rotate(16deg)}45%{transform:rotate(30deg)}}
 
-/* arabesque: the working leg goes back and up, the body tips over it */
+/* arabesque — the working leg goes back and up, the body tips over it */
 .dancer.f-arab .dnc-bob{animation-name:aBob}
 .dancer.f-arab .dnc-body{animation-name:aBody}
 .dancer.f-arab .dnc-leg-b{animation-name:aLegB}
@@ -778,20 +930,193 @@ body{
 .dancer.f-arab .dnc-leg-f{animation-name:aLegF}
 .dancer.f-arab .dnc-arm-f{animation-name:aArmF}
 .dancer.f-arab .dnc-arm-b{animation-name:aArmB}
-@keyframes aBob{
-  0%,100%{transform:translateY(0)}
-  50%    {transform:translateY(calc(-6px * var(--amp,1)))}
-}
-@keyframes aBody{0%,100%{transform:rotate(0)}50%{transform:rotate(calc(26deg * var(--amp,1)))}}
+@keyframes aBob{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(-7px * var(--sz,1) * var(--amp,1)))}}
+@keyframes aBody{0%,100%{transform:rotate(0)}50%{transform:rotate(calc(26deg * var(--sz,1)))}}
 @keyframes aLegB{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(calc(120deg * var(--lift,1)))}}
 @keyframes aKneeB{0%,100%{transform:rotate(30deg)}50%{transform:rotate(2deg)}}
 @keyframes aLegF{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-12deg)}}
 @keyframes aArmF{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(calc(-150deg * var(--lift,1)))}}
 @keyframes aArmB{0%,100%{transform:rotate(20deg)}50%{transform:rotate(46deg)}}
 
-/* the pirouette, done by squeezing her flat and out the other side: two
-   half-turns to a revolution, which is what a turn looks like head-on */
+/* ======================================================== locomotor
+   Weight actually travels. Four steps to the figure unless said otherwise,
+   so a four-beat figure is four steps at the tempo being sung. */
+.dancer.f-walk .dnc-leg,.dancer.f-walk .dnc-knee,.dancer.f-walk .dnc-arm,
+.dancer.f-walk .dnc-chest{animation-duration:calc(var(--figdur,2.4s) / 4)}
+.dancer.f-walk .dnc-bob{animation-duration:calc(var(--figdur,2.4s) / 8)}
+.dancer.f-walk .dnc-leg-f{animation-name:wLegF}
+.dancer.f-walk .dnc-leg-b{animation-name:wLegB}
+.dancer.f-walk .dnc-knee-f{animation-name:wKneeF}
+.dancer.f-walk .dnc-knee-b{animation-name:wKneeB}
+.dancer.f-walk .dnc-arm-f{animation-name:wArmF}
+.dancer.f-walk .dnc-arm-b{animation-name:wArmB}
+.dancer.f-walk .dnc-bob{animation-name:wBob}
+/* counter body movement: the right leg goes forward and the left shoulder
+   goes with it. Natural in walking, and its absence is what makes a figure
+   look wooden. */
+.dancer.f-walk .dnc-chest{animation-name:wCbm}
+@keyframes wLegF{0%,100%{transform:rotate(calc(26deg * var(--sz,1)))}50%{transform:rotate(calc(-24deg * var(--sz,1)))}}
+@keyframes wLegB{0%,100%{transform:rotate(calc(-24deg * var(--sz,1)))}50%{transform:rotate(calc(26deg * var(--sz,1)))}}
+@keyframes wKneeF{0%,100%{transform:rotate(6deg)}30%{transform:rotate(32deg)}}
+@keyframes wKneeB{0%,100%{transform:rotate(30deg)}35%{transform:rotate(4deg)}}
+@keyframes wArmF{0%,100%{transform:rotate(-42deg)}50%{transform:rotate(-74deg)}}
+@keyframes wArmB{0%,100%{transform:rotate(68deg)}50%{transform:rotate(36deg)}}
+@keyframes wBob{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(-4px * var(--amp,1)))}}
+@keyframes wCbm{
+  0%,100%{transform:scaleX(.93) scaleY(1)}
+  50%    {transform:scaleX(1) scaleY(1)}
+}
+
+/* grapevine — side, behind, side, in front. Four transfers of weight, and
+   the body deliberately stays frontal through all of them: in the folk
+   dances this step belongs to, the counter body movement is suppressed on
+   purpose and everyone faces the centre of the circle. */
+.dancer.f-grapevine .dnc-leg,.dancer.f-grapevine .dnc-knee{
+  animation-duration:calc(var(--figdur,2.4s) / 4)}
+.dancer.f-grapevine .dnc-bob{animation-duration:calc(var(--figdur,2.4s) / 4)}
+.dancer.f-grapevine .dnc-leg-f{animation-name:gvLegF}
+.dancer.f-grapevine .dnc-leg-b{animation-name:gvLegB}
+.dancer.f-grapevine .dnc-knee-f{animation-name:gvKneeF}
+.dancer.f-grapevine .dnc-knee-b{animation-name:gvKneeB}
+.dancer.f-grapevine .dnc-bob{animation-name:gvBob}
+.dancer.f-grapevine .dnc-arm-f{animation-name:gvArmF}
+.dancer.f-grapevine .dnc-arm-b{animation-name:gvArmB}
+@keyframes gvLegF{
+  0%,100%{transform:rotate(calc(16deg * var(--sz,1)))}
+  25%    {transform:rotate(calc(-6deg * var(--sz,1)))}
+  50%    {transform:rotate(calc(28deg * var(--sz,1)))}
+  75%    {transform:rotate(calc(4deg * var(--sz,1)))}
+}
+@keyframes gvLegB{
+  0%,100%{transform:rotate(calc(-18deg * var(--sz,1)))}
+  25%    {transform:rotate(calc(-30deg * var(--sz,1)))}
+  50%    {transform:rotate(calc(-8deg * var(--sz,1)))}
+  75%    {transform:rotate(calc(-26deg * var(--sz,1)))}
+}
+@keyframes gvKneeF{0%,100%{transform:rotate(8deg)}25%,75%{transform:rotate(26deg)}}
+@keyframes gvKneeB{0%,100%{transform:rotate(24deg)}25%,75%{transform:rotate(6deg)}}
+@keyframes gvBob{0%,100%{transform:translateY(calc(2px * var(--sz,1)))}50%{transform:translateY(calc(-3px * var(--sz,1)))}}
+@keyframes gvArmF{0%,100%{transform:rotate(-88deg)}50%{transform:rotate(-96deg)}}   /* hands joined, held */
+@keyframes gvArmB{0%,100%{transform:rotate(88deg)}50%{transform:rotate(96deg)}}
+
+/* chassé — step, close, step, sideways: one foot chasing the other */
+.dancer.f-chasse .dnc-leg,.dancer.f-chasse .dnc-knee,
+.dancer.f-chasse .dnc-bob{animation-duration:calc(var(--figdur,2.4s) / 3)}
+.dancer.f-chasse .dnc-leg-f{animation-name:chLegF}
+.dancer.f-chasse .dnc-leg-b{animation-name:chLegB}
+.dancer.f-chasse .dnc-knee-f{animation-name:chKnee}
+.dancer.f-chasse .dnc-bob{animation-name:chBob}
+.dancer.f-chasse .dnc-arm-f{animation-name:chArmF}
+.dancer.f-chasse .dnc-arm-b{animation-name:chArmB}
+@keyframes chLegF{
+  0%     {transform:rotate(calc(30deg * var(--sz,1)))}
+  40%    {transform:rotate(calc(6deg * var(--sz,1)))}       /* the close */
+  100%   {transform:rotate(calc(30deg * var(--sz,1)))}
+}
+@keyframes chLegB{
+  0%     {transform:rotate(calc(-10deg * var(--sz,1)))}
+  40%    {transform:rotate(calc(4deg * var(--sz,1)))}
+  100%   {transform:rotate(calc(-10deg * var(--sz,1)))}
+}
+@keyframes chKnee{0%,100%{transform:rotate(6deg)}55%{transform:rotate(24deg)}}
+@keyframes chBob{
+  0%,100%{transform:translateY(calc(3px * var(--sz,1)))}
+  55%    {transform:translateY(calc(-6px * var(--sz,1)))}
+}
+@keyframes chArmF{0%,100%{transform:rotate(-96deg)}55%{transform:rotate(-116deg)}}
+@keyframes chArmB{0%,100%{transform:rotate(92deg)}55%{transform:rotate(70deg)}}
+
+/* triplet — low, high, high. Three steps to the bar, and the step that
+   modern dance is built on when the music is in three. */
+.dancer.f-triplet .dnc-leg,.dancer.f-triplet .dnc-knee,
+.dancer.f-triplet .dnc-bob,.dancer.f-triplet .dnc-arm{
+  animation-duration:calc(var(--figdur,2.4s) / 3)}
+.dancer.f-triplet .dnc-leg-f{animation-name:trLegF}
+.dancer.f-triplet .dnc-leg-b{animation-name:trLegB}
+.dancer.f-triplet .dnc-knee-f{animation-name:trKnee}
+.dancer.f-triplet .dnc-bob{animation-name:trBob}
+.dancer.f-triplet .dnc-arm-f{animation-name:trArmF}
+.dancer.f-triplet .dnc-arm-b{animation-name:trArmB}
+/* one low and two high, inside every single step-group of three */
+@keyframes trBob{
+  0%     {transform:translateY(calc(7px * var(--sz,1)))}       /* the low one */
+  33%    {transform:translateY(calc(-8px * var(--sz,1)))}
+  66%    {transform:translateY(calc(-9px * var(--sz,1)))}
+  100%   {transform:translateY(calc(7px * var(--sz,1)))}
+}
+@keyframes trLegF{0%,100%{transform:rotate(calc(24deg * var(--sz,1)))}50%{transform:rotate(calc(-18deg * var(--sz,1)))}}
+@keyframes trLegB{0%,100%{transform:rotate(calc(-18deg * var(--sz,1)))}50%{transform:rotate(calc(24deg * var(--sz,1)))}}
+@keyframes trKnee{0%,100%{transform:rotate(28deg)}40%{transform:rotate(2deg)}}
+@keyframes trArmF{0%,100%{transform:rotate(-58deg)}50%{transform:rotate(-128deg)}}
+@keyframes trArmB{0%,100%{transform:rotate(58deg)}50%{transform:rotate(124deg)}}
+
+/* skip — a step and a hop off the same foot, in the dotted rhythm that
+   makes it a skip and not a run: long, then short */
+.dancer.f-skip .dnc-leg,.dancer.f-skip .dnc-knee,.dancer.f-skip .dnc-arm,
+.dancer.f-skip .dnc-bob{animation-duration:calc(var(--figdur,2.4s) / 4)}
+.dancer.f-skip .dnc-leg-f{animation-name:skLegF}
+.dancer.f-skip .dnc-leg-b{animation-name:skLegB}
+.dancer.f-skip .dnc-knee-b{animation-name:skKneeB}
+.dancer.f-skip .dnc-bob{animation-name:skBob}
+.dancer.f-skip .dnc-arm-f{animation-name:skArmF}
+.dancer.f-skip .dnc-arm-b{animation-name:skArmB}
+@keyframes skBob{                            /* the hop sits on the short half */
+  0%     {transform:translateY(calc(4px * var(--sz,1)))}
+  66%    {transform:translateY(calc(4px * var(--sz,1)))}
+  84%    {transform:translateY(calc(-15px * var(--sz,1) * var(--amp,1)))}
+  100%   {transform:translateY(calc(4px * var(--sz,1)))}
+}
+@keyframes skLegF{0%,66%{transform:rotate(calc(26deg * var(--sz,1)))}84%{transform:rotate(calc(-8deg * var(--sz,1)))}100%{transform:rotate(calc(26deg * var(--sz,1)))}}
+@keyframes skLegB{0%,66%{transform:rotate(calc(-22deg * var(--sz,1)))}84%{transform:rotate(calc(-40deg * var(--sz,1)))}100%{transform:rotate(calc(-22deg * var(--sz,1)))}}
+@keyframes skKneeB{0%,66%{transform:rotate(20deg)}84%{transform:rotate(74deg)}100%{transform:rotate(20deg)}}
+@keyframes skArmF{0%,100%{transform:rotate(-48deg)}66%{transform:rotate(-96deg)}}
+@keyframes skArmB{0%,100%{transform:rotate(72deg)}66%{transform:rotate(30deg)}}
+
+/* the waltz box — and with it the rise and fall that separates a waltz from
+   a tango: low on one, rising on two, at the top on three, down again */
+.dancer.f-waltz .dnc-leg,.dancer.f-waltz .dnc-knee,
+.dancer.f-waltz .dnc-bob{animation-duration:calc(var(--figdur,2.4s) / 3)}
+.dancer.f-waltz .dnc-leg-f{animation-name:wzLegF}
+.dancer.f-waltz .dnc-leg-b{animation-name:wzLegB}
+.dancer.f-waltz .dnc-knee-f{animation-name:wzKnee}
+.dancer.f-waltz .dnc-bob{animation-name:wzBob}
+.dancer.f-waltz .dnc-arm-f{animation-name:wzArmF}
+.dancer.f-waltz .dnc-arm-b{animation-name:wzArmB}
+.dancer.f-waltz .dnc-headg{animation-name:wzHead}
+@keyframes wzBob{
+  0%     {transform:translateY(calc(8px * var(--sz,1)))}       /* one: lowest */
+  33%    {transform:translateY(calc(-3px * var(--sz,1)))}      /* two: rising */
+  66%    {transform:translateY(calc(-11px * var(--sz,1)))}     /* three: the top */
+  100%   {transform:translateY(calc(8px * var(--sz,1)))}
+}
+@keyframes wzLegF{0%,100%{transform:rotate(calc(22deg * var(--sz,1)))}45%{transform:rotate(calc(-16deg * var(--sz,1)))}}
+@keyframes wzLegB{0%,100%{transform:rotate(calc(-16deg * var(--sz,1)))}45%{transform:rotate(calc(22deg * var(--sz,1)))}}
+@keyframes wzKnee{0%,100%{transform:rotate(26deg)}55%{transform:rotate(2deg)}}
+@keyframes wzArmF{0%,100%{transform:rotate(-84deg)}50%{transform:rotate(-104deg)}}
+@keyframes wzArmB{0%,100%{transform:rotate(84deg)}50%{transform:rotate(64deg)}}
+@keyframes wzHead{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+
+/* pas de bourrée — three quick transfers of weight, taken under the beat */
+.dancer.f-bourree .dnc-leg,.dancer.f-bourree .dnc-knee,
+.dancer.f-bourree .dnc-bob{animation-duration:calc(var(--figdur,2.4s) / 3)}
+.dancer.f-bourree .dnc-leg-f{animation-name:buLegF}
+.dancer.f-bourree .dnc-leg-b{animation-name:buLegB}
+.dancer.f-bourree .dnc-knee-f{animation-name:buKnee}
+.dancer.f-bourree .dnc-bob{animation-name:buBob}
+.dancer.f-bourree .dnc-arm-f{animation-name:buArmF}
+.dancer.f-bourree .dnc-arm-b{animation-name:buArmB}
+@keyframes buLegF{0%,100%{transform:rotate(calc(11deg * var(--sz,1)))}50%{transform:rotate(calc(-9deg * var(--sz,1)))}}
+@keyframes buLegB{0%,100%{transform:rotate(calc(-9deg * var(--sz,1)))}50%{transform:rotate(calc(11deg * var(--sz,1)))}}
+@keyframes buKnee{0%,100%{transform:rotate(3deg)}50%{transform:rotate(11deg)}}
+@keyframes buBob{0%,100%{transform:translateY(calc(-8px * var(--sz,1)))}50%{transform:translateY(calc(-10px * var(--sz,1)))}}
+@keyframes buArmF{0%,100%{transform:rotate(-108deg)}50%{transform:rotate(-118deg)}}
+@keyframes buArmB{0%,100%{transform:rotate(104deg)}50%{transform:rotate(114deg)}}
+
+/* chaînés — turns on transfers of weight, and the head spots them: it stays
+   behind while the body goes round, then whips and arrives first. Without
+   the spot a turn reads as a spin, and the dancer would be dizzy. */
 .dancer.f-turn .dnc-spin{animation-name:tSpin;animation-timing-function:linear}
+.dancer.f-turn .dnc-headg{animation-name:tHead;animation-timing-function:cubic-bezier(.9,0,.1,1)}
 .dancer.f-turn .dnc-bob{animation-name:tBob}
 .dancer.f-turn .dnc-arm-f{animation-name:tArmF}
 .dancer.f-turn .dnc-arm-b{animation-name:tArmB}
@@ -802,16 +1127,21 @@ body{
   50% {transform:scaleX(-1)}  75%{transform:scaleX(-.15)}
   100%{transform:scaleX(1)}
 }
+@keyframes tHead{        /* holds, then whips round and is there before her */
+  0%,34%  {transform:translateX(6px) rotate(0deg)}
+  50%     {transform:translateX(-6px) rotate(-16deg)}
+  60%,100%{transform:translateX(0) rotate(0deg)}
+}
 @keyframes tBob{
   0%,100% {transform:translateY(0)}
-  22%,78% {transform:translateY(calc(-10px * var(--amp,1)))}
+  22%,78% {transform:translateY(calc(-11px * var(--sz,1) * var(--amp,1)))}
 }
 @keyframes tArmF{0%,100%{transform:rotate(-20deg)}25%,75%{transform:rotate(-158deg)}}
 @keyframes tArmB{0%,100%{transform:rotate(20deg)}25%,75%{transform:rotate(-146deg)}}
 @keyframes tLegB{0%,100%{transform:rotate(-6deg)}25%,75%{transform:rotate(-20deg)}}
 @keyframes tKneeB{0%,100%{transform:rotate(4deg)}25%,75%{transform:rotate(120deg)}}
 
-/* a small jeté — she leaves the strip for a moment, legs split, arms open */
+/* jeté — a leap from one foot to the other, through the air */
 .dancer.f-jete .dnc-bob{animation-name:jBob}
 .dancer.f-jete .dnc-leg-f{animation-name:jLegF}
 .dancer.f-jete .dnc-leg-b{animation-name:jLegB}
@@ -820,39 +1150,58 @@ body{
 .dancer.f-jete .dnc-arm-f{animation-name:jArmF}
 .dancer.f-jete .dnc-arm-b{animation-name:jArmB}
 @keyframes jBob{
-  0%,100%{transform:translateY(calc(4px * var(--amp,1)))}
+  0%,100%{transform:translateY(calc(6px * var(--sz,1)))}      /* the plié under it */
   18%    {transform:translateY(0)}
-  46%    {transform:translateY(calc(-22px * var(--amp,1)))}
+  46%    {transform:translateY(calc(-24px * var(--sz,1) * var(--amp,1)))}
   74%    {transform:translateY(0)}
 }
-@keyframes jLegF{0%,100%{transform:rotate(8deg)}46%{transform:rotate(-42deg)}}
-@keyframes jLegB{0%,100%{transform:rotate(-8deg)}46%{transform:rotate(46deg)}}
-@keyframes jKneeF{0%,100%{transform:rotate(20deg)}46%{transform:rotate(0)}}
-@keyframes jKneeB{0%,100%{transform:rotate(20deg)}46%{transform:rotate(0)}}
-@keyframes jArmF{0%,100%{transform:rotate(-16deg)}46%{transform:rotate(-138deg)}}
-@keyframes jArmB{0%,100%{transform:rotate(16deg)}46%{transform:rotate(122deg)}}
+@keyframes jLegF{0%,100%{transform:rotate(calc(10deg * var(--sz,1)))}46%{transform:rotate(calc(-46deg * var(--sz,1)))}}
+@keyframes jLegB{0%,100%{transform:rotate(calc(-10deg * var(--sz,1)))}46%{transform:rotate(calc(50deg * var(--sz,1)))}}
+@keyframes jKneeF{0%,100%{transform:rotate(24deg)}46%{transform:rotate(0)}}
+@keyframes jKneeB{0%,100%{transform:rotate(24deg)}46%{transform:rotate(0)}}
+@keyframes jArmF{0%,100%{transform:rotate(-16deg)}46%{transform:rotate(calc(-140deg * var(--lift,1)))}}
+@keyframes jArmB{0%,100%{transform:rotate(16deg)}46%{transform:rotate(calc(124deg * var(--lift,1)))}}
 
-/* Travelling steps, on demi-pointe with the arms held open. The stride is a
-   quarter of the figure and the lift half of that, so a four-beat figure is
-   four steps at the tempo being sung rather than one slow stretch. The
-   translation itself is set from JS, along with which way she faces. */
-.dancer.f-walk .dnc-leg,.dancer.f-walk .dnc-knee,
-.dancer.f-walk .dnc-arm{animation-duration:calc(var(--figdur,2.4s) / 4)}
-.dancer.f-walk .dnc-bob{animation-duration:calc(var(--figdur,2.4s) / 8)}
-.dancer.f-walk .dnc-leg-f{animation-name:wLegF}
-.dancer.f-walk .dnc-leg-b{animation-name:wLegB}
-.dancer.f-walk .dnc-knee-f{animation-name:wKneeF}
-.dancer.f-walk .dnc-knee-b{animation-name:wKneeB}
-.dancer.f-walk .dnc-arm-f{animation-name:wArmF}
-.dancer.f-walk .dnc-arm-b{animation-name:wArmB}
-.dancer.f-walk .dnc-bob{animation-name:wBob}
-@keyframes wLegF{0%,100%{transform:rotate(26deg)}50%{transform:rotate(-24deg)}}
-@keyframes wLegB{0%,100%{transform:rotate(-24deg)}50%{transform:rotate(26deg)}}
-@keyframes wKneeF{0%,100%{transform:rotate(6deg)}30%{transform:rotate(32deg)}}
-@keyframes wKneeB{0%,100%{transform:rotate(30deg)}35%{transform:rotate(4deg)}}
-@keyframes wArmF{0%,100%{transform:rotate(-42deg)}50%{transform:rotate(-74deg)}}
-@keyframes wArmB{0%,100%{transform:rotate(68deg)}50%{transform:rotate(36deg)}}
-@keyframes wBob{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(-4px * var(--amp,1)))}}
+/* sauté — off two feet and onto two. A deep plié goes under it and a deep
+   plié catches it: without the preparation there is no height. */
+.dancer.f-saute .dnc-bob{animation-name:suBob}
+.dancer.f-saute .dnc-knee-f{animation-name:suKnee}
+.dancer.f-saute .dnc-knee-b{animation-name:suKnee}
+.dancer.f-saute .dnc-leg-f{animation-name:suLegF}
+.dancer.f-saute .dnc-leg-b{animation-name:suLegB}
+.dancer.f-saute .dnc-arm-f{animation-name:suArmF}
+.dancer.f-saute .dnc-arm-b{animation-name:suArmB}
+@keyframes suBob{
+  0%     {transform:translateY(0)}
+  22%    {transform:translateY(calc(10px * var(--sz,1)))}     /* down before up */
+  52%    {transform:translateY(calc(-20px * var(--sz,1) * var(--amp,1)))}
+  78%    {transform:translateY(calc(8px * var(--sz,1)))}      /* and caught */
+  100%   {transform:translateY(0)}
+}
+@keyframes suKnee{0%,100%{transform:rotate(6deg)}22%,78%{transform:rotate(36deg)}52%{transform:rotate(0)}}
+@keyframes suLegF{0%,100%{transform:rotate(calc(9deg * var(--sz,1)))}52%{transform:rotate(calc(4deg * var(--sz,1)))}}
+@keyframes suLegB{0%,100%{transform:rotate(calc(-9deg * var(--sz,1)))}52%{transform:rotate(calc(-4deg * var(--sz,1)))}}
+@keyframes suArmF{0%,100%{transform:rotate(-22deg)}52%{transform:rotate(calc(-150deg * var(--lift,1)))}}
+@keyframes suArmB{0%,100%{transform:rotate(22deg)}52%{transform:rotate(calc(148deg * var(--lift,1)))}}
+
+/* The eighth beat of a phrase is not a movement. It is the breath before the
+   next one, and where the next one is a leap or a turn it is the plié that
+   makes the leap possible. She sinks, gathers, and is still for an instant. */
+.dancer.f-prep .dnc-bob{animation-name:prBob;animation-iteration-count:1;
+                        animation-fill-mode:both}
+.dancer.f-prep .dnc-knee-f,.dancer.f-prep .dnc-knee-b{
+  animation-name:prKnee;animation-iteration-count:1;animation-fill-mode:both}
+.dancer.f-prep .dnc-arm-f{animation-name:prArmF;animation-iteration-count:1;
+                          animation-fill-mode:both}
+.dancer.f-prep .dnc-arm-b{animation-name:prArmB;animation-iteration-count:1;
+                          animation-fill-mode:both}
+.dancer.f-prep .dnc-chest{animation-name:prChest;animation-iteration-count:1;
+                          animation-fill-mode:both}
+@keyframes prBob{0%{transform:translateY(0)}70%,100%{transform:translateY(calc(9px * var(--sz,1)))}}
+@keyframes prKnee{0%{transform:rotate(4deg)}70%,100%{transform:rotate(30deg)}}
+@keyframes prArmF{0%{transform:rotate(-40deg)}70%,100%{transform:rotate(-16deg)}}
+@keyframes prArmB{0%{transform:rotate(40deg)}70%,100%{transform:rotate(16deg)}}
+@keyframes prChest{0%{transform:scaleY(1)}70%,100%{transform:scaleY(1.03)}}
 
 /* the laced tape: a stroked run rather than a filled band, so the bends at
    the guides round off on their own */

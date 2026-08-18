@@ -516,18 +516,18 @@
            בשמונה חריצים היושבים בדיוק על שמונה שיני הפקע — ומשום כך הוא
            תופס בו ומוליך אותו ואינו מחליק. -->
       <radialGradient id="cSpin" cx=".38" cy=".30" r=".82">
-        <stop offset="0" stop-color="#ad2820"/>
-        <stop offset=".55" stop-color="#7d1512"/>
-        <stop offset="1" stop-color="#460a08"/>
+        <stop offset="0" stop-color="#e3e0da"/>
+        <stop offset=".55" stop-color="#b6b1a8"/>
+        <stop offset="1" stop-color="#7e7972"/>
       </radialGradient>
       <g id="cSpindle">
-        <circle r="16" fill="#140a08" opacity=".85"/>
+        <circle r="16" fill="#14120f" opacity=".85"/>
         <circle r="14.5" fill="url(#cSpin)"/>
         <path d="M0 -13V-6.5 M9.19 -9.19L4.6 -4.6 M13 0H6.5 M9.19 9.19L4.6 4.6
                  M0 13V6.5 M-9.19 9.19L-4.6 4.6 M-13 0H-6.5 M-9.19 -9.19L-4.6 -4.6"
-              stroke="#490b09" stroke-width="4.4" stroke-linecap="round"/>
-        <circle r="14.5" fill="none" stroke="#c8483c" stroke-width="1.2" opacity=".5"/>
-        <circle r="4.4" fill="#280706"/>
+              stroke="#6d685f" stroke-width="4.4" stroke-linecap="round"/>
+        <circle r="14.5" fill="none" stroke="#f2efe8" stroke-width="1.2" opacity=".55"/>
+        <circle r="4.4" fill="#3a3630"/>
       </g>
       <!-- הסרט אינו נראה מבעד למדבקה: מותר לו רק מתחתיה, ובחלון הסלילים -->
       <clipPath id="cNoLabel">
@@ -712,22 +712,31 @@
                   <line class="dnc-foot" x1="6" y1="-5" x2="15" y2="0"/>
                 </g>
               </g>
-              <!-- פלג הגוף העליון לבדו מתקפל בקידה, והרגליים נשארות על הבמה -->
+              <!-- Body, in the sense the four axes of movement analysis use
+                   it: the pelvis bends and falls, the chest twists over it,
+                   breathes, and carries the counter-body movement, and the
+                   head turns on its own so that it can spot a turn — stay
+                   last and arrive first. Each is its own group because each
+                   has to be able to move while the others do not. -->
               <g class="dnc-body">
                 <path class="dnc-tutu" d="M-26 -48 Q0 -62 26 -48 Q0 -39 -26 -48 Z"/>
-                <line class="dnc-spine" x1="0" y1="-50" x2="0" y2="-88"/>
-                <line class="dnc-shoulder" x1="-8" y1="-88" x2="8" y2="-88"/>
-                <g class="dnc-arm dnc-arm-b">
-                  <line x1="-8" y1="-88" x2="-8" y2="-68"/>
-                  <g class="dnc-elbow dnc-elbow-b"><line x1="-8" y1="-68" x2="-8" y2="-49"/></g>
+                <g class="dnc-chest">
+                  <line class="dnc-spine" x1="0" y1="-50" x2="0" y2="-88"/>
+                  <line class="dnc-shoulder" x1="-8" y1="-88" x2="8" y2="-88"/>
+                  <g class="dnc-arm dnc-arm-b">
+                    <line x1="-8" y1="-88" x2="-8" y2="-68"/>
+                    <g class="dnc-elbow dnc-elbow-b"><line x1="-8" y1="-68" x2="-8" y2="-49"/></g>
+                  </g>
+                  <g class="dnc-arm dnc-arm-f">
+                    <line x1="8" y1="-88" x2="8" y2="-68"/>
+                    <g class="dnc-elbow dnc-elbow-f"><line x1="8" y1="-68" x2="8" y2="-49"/></g>
+                  </g>
+                  <g class="dnc-headg">
+                    <line class="dnc-neck" x1="0" y1="-88" x2="0" y2="-95"/>
+                    <circle class="dnc-head" cx="0" cy="-105" r="9.5"/>
+                    <circle class="dnc-bun" cx="0" cy="-116.5" r="5"/>
+                  </g>
                 </g>
-                <g class="dnc-arm dnc-arm-f">
-                  <line x1="8" y1="-88" x2="8" y2="-68"/>
-                  <g class="dnc-elbow dnc-elbow-f"><line x1="8" y1="-68" x2="8" y2="-49"/></g>
-                </g>
-                <line class="dnc-neck" x1="0" y1="-88" x2="0" y2="-95"/>
-                <circle class="dnc-head" cx="0" cy="-105" r="9.5"/>
-                <circle class="dnc-bun" cx="0" cy="-116.5" r="5"/>
               </g>
             </g>
           </g>

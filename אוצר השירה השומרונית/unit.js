@@ -2049,9 +2049,13 @@ function dncSet(cls) {
   if (cls) cls.split(' ').forEach(c => d.classList.add(c));
 }
 
-/* every joint that the dance drives, in the order they are nested */
-const DNC_JOINTS = ['.dnc-step', '.dnc-spin', '.dnc-bob', '.dnc-body',
-                    '.dnc-arm-f', '.dnc-arm-b', '.dnc-elbow-f', '.dnc-elbow-b',
+/* Every joint the dance drives, in the order they are nested — and not
+ * `.dnc-step`, which is where on the strip she is standing rather than
+ * anything about her posture. She comes to rest where the music left her,
+ * not back on her mark. */
+const DNC_JOINTS = ['.dnc-spin', '.dnc-bob', '.dnc-body', '.dnc-chest',
+                    '.dnc-headg', '.dnc-arm-f', '.dnc-arm-b',
+                    '.dnc-elbow-f', '.dnc-elbow-b',
                     '.dnc-leg-f', '.dnc-leg-b', '.dnc-knee-f', '.dnc-knee-b'];
 
 /* Coming to a stand, without leaving the strip. Three things ask for it:
@@ -2072,19 +2076,25 @@ function dncSettle(state) {
   dncSet('settling');                 // the dance is off; the inline pose holds
   dncFlush();
   held.forEach(([el]) => { el.style.transform = ''; });   // …and eases to standing
+  dncFace(1);                         // upright, and facing whoever is there
+  dncStep(DNC.dx, 0.34);              // but on the spot she had reached
   DNC.at = state;
   dncClear();
-  clearTimeout(DNC.figT);
+  clearTimeout(DNC.figT); DNC.figT = 0;
   dncLater(460, () => d.classList.remove('settling'));
 }
 
 const dancerHold = () => dncSettle('still');   // the tape stopped for a moment
 const dancerRest = () => dncSettle('rest');    // …or the singing did
 
+/* She picks the dance up where she left it — the same choreography, the same
+ * place on the strip — rather than starting the piece over. */
 function dancerResume() {
   if (DNC.at !== 'still' && DNC.at !== 'rest') return;
-  DNCM.gaps = []; DNCM.hush = 0; DNC.fig = -1;
-  dncDance();
+  DNCM.hush = 0;
+  DNC.at = 'dance';
+  if (!DNC.plan || !DNC.plan.length) return dncDance();
+  dncFigure();
 }
 
 function dancerIn() {
@@ -2118,7 +2128,8 @@ function dancerIn() {
       dncSet('bowing');
       dncLater(1350, () => {
         if (au.paused) return dancerOut('right');
-        DNCM.gaps = []; DNC.fig = -1;    // this piece's own pulse, not the last one's
+        // this piece's own pulse and metre, not the last one's
+        DNCM.gaps = []; DNCM.onsets = []; DNCM.meter = 0; DNCM.bpm = 0;
         dncDance();
       });
     });
@@ -2158,24 +2169,159 @@ function dncLeave(side) {
   });
 }
 
-/* ---- the figures, one after another.
- * Each is chosen when the one before it ends, and chosen from what the
- * singing is doing right then: a soft passage gets the small close figures,
- * a lively one gets turns and leaps, and either may get a few travelling
- * steps — which are the ones that take her along the strip, facing the way
- * she is going. Weights rather than a fixed order, and never the same figure
- * twice running, so no two hearings of a piece look quite alike.
+/* ---- the vocabulary, and how a dance is built out of it.
+ *
+ * A movement is described along four axes: what moves, how it moves, where it
+ * goes, and what shape it makes. Two of those are settled by the figure
+ * itself, in the stylesheet. The other two — how, and how far — are settled
+ * here, from the recording.
+ *
+ * `kind` divides the vocabulary the way movement itself divides. Axial
+ * figures happen on the spot and transfer no weight; locomotor ones do, and
+ * there are only five physically possible ways to transfer it — one foot to
+ * the other, one foot to the same, one to the other through the air, two to
+ * two, and the mixed take-off. Every named step in every tradition is a
+ * combination of those five, which is why the list below is short and still
+ * covers the ground.
+ *
+ * `m` is the metres a figure will sit in, 0 standing for free rhythm — most
+ * of this archive, which is unmeasured liturgical singing. A step whose shape
+ * is asymmetrical needs an asymmetrical metre and cannot be forced into a
+ * symmetrical one without deforming: a grapevine is four transfers of weight
+ * and belongs in two or four, a triplet is three and belongs in three or six.
+ *
+ * `hi` is the fastest tempo at which the figure still reads. The rule behind
+ * it is that as the tempo rises the range of movement must fall, or the
+ * dancer arrives after the beat; past about 180 to the minute only the small
+ * figures — the isolations, the shuffles — survive at all.
+ *
+ * `b` is the figure's length in beats of the piece, so that a movement phrase
+ * and a musical phrase begin together.
  */
-const FIGURES = [
-  { k: 'f-port',  beats: 4, calm: 4, mid: 2, live: 1 },
-  { k: 'f-sway',  beats: 4, calm: 5, mid: 1, live: 0 },
-  { k: 'f-passe', beats: 3, calm: 1, mid: 3, live: 2 },
-  { k: 'f-arab',  beats: 4, calm: 1, mid: 3, live: 2 },
-  { k: 'f-turn',  beats: 2, calm: 0, mid: 2, live: 4 },
-  { k: 'f-jete',  beats: 2, calm: 0, mid: 1, live: 4 },
-  { k: 'f-walk',  beats: 4, calm: 2, mid: 3, live: 3, go:  1 },
-  { k: 'f-walk',  beats: 4, calm: 2, mid: 3, live: 3, go: -1 },
+const STEPS = [
+  // key            kind    b  metres        hi   calm mid live
+  { k:'f-gesture',  a:1, b:4, m:[0,2,3,4,6], hi:135, w:[6,2,1] },
+  { k:'f-sway',     a:1, b:4, m:[0,2,3,4,6], hi:150, w:[6,3,1] },
+  { k:'f-swing',    a:1, b:6, m:[0,3,6],     hi:140, w:[4,4,2] },
+  { k:'f-contract', a:1, b:4, m:[0,3,4],     hi:110, w:[4,2,1] },
+  { k:'f-fall',     a:1, b:4, m:[0,3,4],     hi:120, w:[3,3,2] },
+  { k:'f-twist',    a:1, b:4, m:[0,2,3,4],   hi:150, w:[2,3,2] },
+  { k:'f-iso',      a:1, b:2, m:[0,2,4],     hi:999, w:[1,3,4] },
+  { k:'f-shimmy',   a:1, b:2, m:[2,4],       hi:999, w:[0,2,4] },
+  { k:'f-passe',    a:1, b:3, m:[0,2,3,4,6], hi:150, w:[2,3,2] },
+  { k:'f-arab',     a:1, b:4, m:[0,3,4,6],   hi:130, w:[3,3,2] },
+  { k:'f-walk',     a:0, b:4, m:[0,2,4],     hi:170, w:[3,4,3], go:1 },
+  { k:'f-grapevine',a:0, b:4, m:[2,4],       hi:165, w:[2,5,4], go:1 },
+  { k:'f-chasse',   a:0, b:3, m:[2,3,4],     hi:170, w:[2,4,4], go:1 },
+  { k:'f-triplet',  a:0, b:3, m:[3,6],       hi:160, w:[2,4,3], go:1 },
+  { k:'f-skip',     a:0, b:4, m:[2,6],       hi:160, w:[1,3,4], go:1 },
+  { k:'f-waltz',    a:0, b:3, m:[3],         hi:150, w:[3,4,2], go:1 },
+  { k:'f-bourree',  a:0, b:3, m:[0,2,3,4],   hi:190, w:[2,3,3], go:1 },
+  { k:'f-turn',     a:0, b:2, m:[0,2,3,4,6], hi:170, w:[0,2,4], peak:1 },
+  { k:'f-jete',     a:0, b:2, m:[0,2,4,6],   hi:150, w:[0,1,4], peak:1, go:1 },
+  { k:'f-saute',    a:0, b:2, m:[2,4],       hi:150, w:[0,1,3], peak:1 },
 ];
+
+/* The eight actions that the three qualities of effort — how the weight is
+ * used, how the time is used, how the space is used — combine into. They are
+ * the most exact way there is of saying what a movement is like rather than
+ * what shape it makes, and here each becomes a curve and a size: a sustained
+ * effort eases in and out, a sudden one strikes and settles. */
+const EFFORTS = {
+  float: { ease:'cubic-bezier(.35,0,.55,1)',  sz:1.12 },  // light  sustained indirect
+  glide: { ease:'cubic-bezier(.45,0,.55,1)',  sz:1.00 },  // light  sustained direct
+  flick: { ease:'cubic-bezier(.2,.85,.35,1)', sz:0.74 },  // light  sudden    indirect
+  dab:   { ease:'cubic-bezier(.15,.9,.3,1)',  sz:0.64 },  // light  sudden    direct
+  wring: { ease:'cubic-bezier(.55,0,.45,1)',  sz:1.06 },  // strong sustained indirect
+  press: { ease:'cubic-bezier(.6,0,.4,1)',    sz:0.96 },  // strong sustained direct
+  slash: { ease:'cubic-bezier(.12,.85,.25,1)',sz:1.14 },  // strong sudden    indirect
+  punch: { ease:'cubic-bezier(.1,.9,.2,1)',   sz:1.02 },  // strong sudden    direct
+};
+function effortName(strong, sudden, indirect) {
+  return strong ? (sudden ? (indirect ? 'slash' : 'punch')
+                          : (indirect ? 'wring' : 'press'))
+                : (sudden ? (indirect ? 'flick' : 'dab')
+                          : (indirect ? 'float' : 'glide'));
+}
+
+/* As the tempo rises the range must come down, or she is always late. This is
+ * the commonest fault in a dancer who has just learnt the steps. */
+function rangeFor(bpm) {
+  if (!bpm)        return 1.12;      // free rhythm: sustained, and full
+  if (bpm < 90)    return 1.14;
+  if (bpm < 120)   return 1.00;
+  if (bpm < 140)   return 0.88;
+  if (bpm < 180)   return 0.72;
+  return 0.50;                       // up here only the small figures survive
+}
+
+/* the same recording is to be danced the same way every time it is played,
+ * and differently from the next one — so the ordering is drawn from a stream
+ * seeded on the recording's own id rather than from chance */
+function dncSeed(id) {
+  let h = 2166136261;
+  for (const ch of String(id)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return () => {
+    h |= 0; h = h + 0x6D2B79F5 | 0;
+    let t = Math.imul(h ^ h >>> 15, 1 | h);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+/* ---- composing this recording's dance.
+ *
+ * Music of this kind is built in phrases of eight beats and in sections of
+ * four phrases, and a dance has to agree with that: a movement phrase begins
+ * where a musical phrase begins and closes where it closes, never in the
+ * middle. So each phrase here is filled to seven beats of movement and the
+ * eighth is left as a breath — and where the next phrase opens with a leap or
+ * a turn, that eighth beat is the plié that makes it possible. Nothing rises
+ * without a preparation under it.
+ *
+ * Within that, axial and locomotor alternate, so that she is not travelling
+ * for eight bars together nor rooted for eight; and the peak figures — the
+ * turns and the leaps — are saved for the end of a section, where the music
+ * is closing too.
+ */
+function choreograph(recId, meter, bpm) {
+  const rnd = dncSeed(recId);
+  const pool = STEPS.filter(s => s.m.includes(meter) && bpm <= s.hi);
+  if (!pool.length) return [{ k: 'f-sway', b: 4 }, { k: 'f-prep', b: 4 }];
+  const pick = (want, mood, notK) => {
+    const bag = [];
+    pool.forEach(s => {
+      if (s.k === notK) return;
+      if (want === 'peak' ? !s.peak : (s.peak || s.a !== want)) return;
+      for (let n = 0; n < s.w[mood]; n++) bag.push(s);
+    });
+    if (!bag.length) return null;
+    return bag[Math.floor(rnd() * bag.length)];
+  };
+
+  const dance = [];
+  for (let ph = 0; ph < 16; ph++) {
+    const closing = ph % 4 === 3;             // the last phrase of a section
+    const mood = ph % 4 === 0 ? 0 : closing ? 2 : 1;
+    let left = 7, axial = (ph % 2 === 0);     // phrases alternate their footing
+    const last = dance.length ? dance[dance.length - 1].k : '';
+    while (left >= 2) {
+      const s = (closing && left <= 3 && rnd() < 0.7)
+        ? pick('peak', mood, last) || pick(axial ? 1 : 0, mood, last)
+        : pick(axial ? 1 : 0, mood, dance.length ? dance[dance.length - 1].k : '');
+      if (!s) break;
+      const b = Math.min(s.b, left);
+      dance.push({ k: s.k, b, go: s.go ? (rnd() < 0.5 ? 1 : -1) : 0, peak: !!s.peak });
+      left -= b;
+      axial = !axial;
+    }
+    // The breath, and the preparation for whatever opens the next phrase. It
+    // takes whatever the movement did not, so the phrase always comes to
+    // eight and the next one starts where the music does.
+    dance.push({ k: 'f-prep', b: left + 1, breath: true });
+  }
+  return dance;
+}
 
 /* the travelling is a transition rather than an animation: JS knows where
  * she should end up, and the figure's own length is how long she has */
@@ -2185,26 +2331,45 @@ function dncStep(x, sec) {
   st.style.transform = `translateX(${Math.round(x)}px)`;
 }
 
+/* the dance is set out once, when a recording starts, and again if the piece
+ * turns out to be in a different metre or at a different pace than the first
+ * few seconds suggested — but never in the middle of a phrase */
 function dncDance() {
   DNC.at = 'dance';
+  DNC.plan = choreograph(cur.rec || 0, DNCM.meter, DNCM.bpm);
+  DNC.step = 0;
+  DNC.planFor = DNCM.meter + '/' + Math.round(DNCM.bpm / 12);
   dncFigure();
 }
 
 function dncFigure() {
   if (DNC.at !== 'dance') return;
   const d = $('dancer');
-  const mood = DNCM.amp > 1.15 ? 'live' : DNCM.amp > 0.86 ? 'mid' : 'calm';
-  const pool = [];
-  FIGURES.forEach((f, i) => {
-    if (i === DNC.fig) return;                 // not the same figure twice
-    for (let n = 0; n < f[mood]; n++) pool.push(i);
-  });
-  const i = pool.length ? pool[Math.floor(Math.random() * pool.length)] : 0;
-  const f = FIGURES[i];
-  DNC.fig = i;
+  if (!DNC.plan || !DNC.plan.length) return dncDance();
 
-  const beat = Math.min(1.4, Math.max(0.34, DNCM.beat || 0.62));
-  const dur  = Math.min(6, Math.max(1.1, beat * f.beats));
+  // At the top of a section, take account of what the piece has turned out to
+  // be. The metre and the pace are far better known after twenty seconds of
+  // singing than after four, and this is the one place a new reading may be
+  // acted on without cutting a phrase in half.
+  if (DNC.step % 8 === 0) {
+    const now = DNCM.meter + '/' + Math.round(DNCM.bpm / 12);
+    if (now !== DNC.planFor && DNCM.gaps.length >= 5) {
+      DNC.planFor = now;
+      DNC.plan = choreograph(cur.rec || 0, DNCM.meter, DNCM.bpm);
+      DNC.step = 0;
+    }
+  }
+
+  const f = DNC.plan[DNC.step % DNC.plan.length];
+  DNC.step++;
+
+  // how the movement is to be done, and how big it may be
+  const eff = EFFORTS[DNCM.effort] || EFFORTS.glide;
+  d.style.setProperty('--ease', eff.ease);
+  d.style.setProperty('--sz', (rangeFor(DNCM.bpm) * eff.sz).toFixed(2));
+
+  const beat = Math.min(1.5, Math.max(0.3, DNCM.beat || 0.62));
+  const dur  = Math.min(7, Math.max(0.75, beat * f.b));
   d.style.setProperty('--figdur', dur.toFixed(2) + 's');
   dncSet('fig ' + f.k);
 
@@ -2239,9 +2404,33 @@ function dncFigure() {
  * only ever read when a figure ends, so no animation is retimed mid-flight.
  */
 const DNCM = {
-  spec: null, mean: 0, up: false, last: 0, gaps: [], beat: 0,
+  spec: null, prev: null, mean: 0, up: false, last: 0, gaps: [], beat: 0, bpm: 0,
   lift: 1, amp: 1, hush: 0,
+  onsets: [], meter: 0, flux: 0, cen: 0, wob: 0, effort: 'glide',
 };
+
+/* ---- what metre the piece is in, taken from where its accents fall.
+ * Group the onsets by two, by three and by four in turn, and see which
+ * grouping puts the strong ones consistently in the same place. The best
+ * spread wins; if none of them is convincing the piece has no metre worth
+ * the name, which for most of this archive — unmeasured liturgical singing —
+ * is the true answer, and the free-rhythm figures are then the right ones. */
+function meterOf(onsets) {
+  if (onsets.length < 10) return 0;
+  const v = onsets.map(o => o.v);
+  let best = 0, score = 0;
+  for (const k of [2, 3, 4]) {
+    const sum = new Array(k).fill(0), n = new Array(k).fill(0);
+    v.forEach((x, i) => { sum[i % k] += x; n[i % k]++; });
+    const mean = sum.map((s, i) => s / (n[i] || 1));
+    const hi = Math.max(...mean), lo = Math.min(...mean);
+    const s = hi > 0 ? (hi - lo) / hi : 0;
+    if (s > score) { score = s; best = k; }
+  }
+  // six is three grouped in twos, and is what a swing or a skip wants
+  if (best === 3 && score > 0.34) return 6;
+  return score > 0.17 ? best : 0;
+}
 
 function dncListen(an, level) {
   const d = $('dancer'), now = performance.now();
@@ -2266,15 +2455,32 @@ function dncListen(an, level) {
   // from about 300 Hz in the chest to some 2.5 kHz at the top of the register
   if (!DNCM.spec || DNCM.spec.length !== an.frequencyBinCount)
     DNCM.spec = new Uint8Array(an.frequencyBinCount);
+  if (!DNCM.prev || DNCM.prev.length !== DNCM.spec.length)
+    DNCM.prev = new Uint8Array(DNCM.spec.length);
   an.getByteFrequencyData(DNCM.spec);
-  let num = 0, den = 0;
-  for (let i = 1; i < DNCM.spec.length; i++) { num += i * DNCM.spec[i]; den += DNCM.spec[i]; }
+  let num = 0, den = 0, rise = 0;
+  for (let i = 1; i < DNCM.spec.length; i++) {
+    const x = DNCM.spec[i];
+    num += i * x; den += x;
+    const up = x - DNCM.prev[i];               // only what grew: an attack
+    if (up > 0) rise += up;
+    DNCM.prev[i] = x;
+  }
+  // how sudden: how sharply the sound rises, which is the difference between
+  // an effort that strikes and one that is drawn out
+  DNCM.flux += (Math.min(1, rise / (DNCM.spec.length * 6)) - DNCM.flux) * 0.1;
+
   if (den > 40) {
     const hz = (num / den) * ((an.context.sampleRate / 2) / DNCM.spec.length);
     const want = 0.72 + Math.min(1, Math.max(0, (hz - 300) / 2200)) * 0.55;
     DNCM.lift += (want - DNCM.lift) * 0.05;
     d.style.setProperty('--lift', DNCM.lift.toFixed(2));
+    // how direct: a voice that holds its place in the spectrum is going
+    // straight at the note; one that wavers around it is going by way of
+    DNCM.wob += (Math.abs(hz - DNCM.cen) / 900 - DNCM.wob) * 0.08;
+    DNCM.cen += (hz - DNCM.cen) * 0.12;
   }
+  DNCM.effort = effortName(DNCM.amp > 1.12, DNCM.flux > 0.2, DNCM.wob > 0.055);
 
   // how fast: a pulse every time the level clears its own running mean
   DNCM.mean += (level - DNCM.mean) * 0.045;
@@ -2282,6 +2488,8 @@ function dncListen(an, level) {
     DNCM.up = true;
     const gap = now - DNCM.last;
     DNCM.last = now;
+    DNCM.onsets.push({ t: now, v: level });    // kept for the metre
+    if (DNCM.onsets.length > 32) DNCM.onsets.shift();
     if (gap > 240 && gap < 1900) {
       DNCM.gaps.push(gap);
       if (DNCM.gaps.length > 9) DNCM.gaps.shift();
@@ -2292,6 +2500,8 @@ function dncListen(an, level) {
   if (DNCM.gaps.length >= 4) {
     const g = [...DNCM.gaps].sort((a, b) => a - b);
     DNCM.beat = g[g.length >> 1] / 1000;      // read when the next figure starts
+    DNCM.bpm  = 60 / DNCM.beat;
+    DNCM.meter = meterOf(DNCM.onsets);
   }
 }
 
