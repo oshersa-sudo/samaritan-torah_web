@@ -690,6 +690,10 @@ body.div-collapsed .div-handle.hint-on .tb-hint{ display:block; bottom:5px; anim
   cursor:pointer; font-size:22px; line-height:1; display:grid; place-items:center; }
 .pwa-x:hover{ background:#F4EEDF; color:#1F3864; }
 .pwa-body{ padding:14px 18px 16px; }
+/* the install clip, above the written steps. 9:16, so it is capped by height on
+   a phone in landscape rather than pushing the steps off the card */
+.pwa-vid{ display:block; width:100%; max-height:44vh; margin:0 0 14px; border-radius:12px;
+  background:#0d1b3a; border:1px solid #E4D9BE; object-fit:contain; }
 .pwa-btn{ width:100%; border:none; cursor:pointer; font-family:inherit; font-size:17px; font-weight:700;
   color:#FBF8F0; background:#1F3864; padding:14px 16px; border-radius:12px; display:flex; align-items:center;
   justify-content:center; gap:10px; box-shadow:0 6px 16px -6px rgba(20,33,61,.55); }

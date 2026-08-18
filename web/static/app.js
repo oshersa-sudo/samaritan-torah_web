@@ -5980,6 +5980,16 @@ function instBody(plat, L, U){
   if(deferredInstall) return btn+'<p class="pwa-hint">'+U.hint_desk+'</p>';      // desktop
   return '<ul class="pwa-steps">'+instStep('',L.desktop[0])+instStep('',L.desktop[1])+'</ul>';
 }
+// The clip sits at the top of the card, above the written steps, and follows the
+// card's own language switcher rather than the page's — someone who switches to
+// Arabic to read the instructions wants to hear them in Arabic too. Shown to
+// installed users as well: by then it is no longer their own guide, it is what
+// they forward to whoever asked them how.
+function guideVideo(){
+  const lang = ['he','en','ar'].includes(LANG) ? LANG : 'he';
+  return '<video class="pwa-vid" src="/guide/'+lang+'.mp4" preload="metadata" '+
+         'controls playsinline controlsList="nodownload"></video>';
+}
 function renderInstallCard(){
   const L = INSTALL_TXT[LANG] || INSTALL_TXT.he, U = INSTALL_UI[LANG] || INSTALL_UI.he, I = INSTALL_ICONS;
   const plat = installPlatform();
@@ -5992,7 +6002,7 @@ function renderInstallCard(){
       '<div class="pwa-titles"><p class="pwa-title">'+U.title+'</p><p class="pwa-sub">'+U.sub+'</p></div>'+
       '<button class="pwa-x" id="pwaCardClose" type="button" aria-label="'+U.close+'">×</button>'+
     '</div>'+
-    '<div class="pwa-body">'+ instBody(plat, L, U) +'</div>'+
+    '<div class="pwa-body">'+ guideVideo() + instBody(plat, L, U) +'</div>'+
     '<div class="pwa-foot"><div class="pwa-langs">'+lbtn('he','עב')+lbtn('en','EN')+lbtn('ar','ع')+'</div>'+
       '<button class="pwa-snooze" id="pwaCardClose2" type="button">'+U.close+'</button></div>';
   $('pwaCardClose').onclick = $('pwaCardClose2').onclick = ()=>$('installModal').classList.add('hidden');

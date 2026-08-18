@@ -1738,6 +1738,26 @@ def download_apk():
                                mimetype='application/vnd.android.package-archive')
 
 
+# The install guide, one rendering per interface language. Kept out of static/
+# for the same reason the APK is: the service worker caches everything under
+# /static/, and three 600 KB videos have no business sitting in the page cache
+# of someone who already installed. conditional=True keeps range requests
+# working, without which a phone cannot seek inside the clip.
+_GUIDE_DIR = os.path.join(_WEB_DIR, 'media')
+_GUIDE_LANGS = ('he', 'en', 'ar')
+
+
+@app.route('/guide/<lang>.mp4')
+def install_guide(lang):
+    if lang not in _GUIDE_LANGS:
+        lang = 'he'
+    name = 'install-guide-%s.mp4' % lang
+    if not os.path.exists(os.path.join(_GUIDE_DIR, name)):
+        return jsonify({'error': 'guide not published'}), 404
+    return send_from_directory(_GUIDE_DIR, name, mimetype='video/mp4',
+                               conditional=True)
+
+
 # ── navigation API ─────────────────────────────────────────────────────────
 # Render waits for this to answer before it sends anyone to a new instance. It
 # deliberately does real work — opens the database and reads from it — so that
