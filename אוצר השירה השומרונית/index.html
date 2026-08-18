@@ -539,6 +539,23 @@
         <circle r="14.5" fill="none" stroke="#f2efe8" stroke-width="1.2" opacity=".55"/>
         <circle r="4.4" fill="#3a3630"/>
       </g>
+      <!-- קו מתאר לבן סביב הרקדנית. היא שחורה אטומה, ועל מסך של טלפון
+           מוחזק ביד — קטן, ולעיתים קרובות מעומעם — שחור על גבי הפלסטיק
+           הכהה של הקלטת פשוט נעלם. ההרחבה מכינה עותק מעובה של צללית
+           הדמות, צובעת אותו בלבן, ומניחה את הדמות עצמה עליו: מה שנשאר
+           גלוי הוא קו מתאר. עוביו נקבע ב-JS לפי גודל המסך והעדפותיו,
+           ומתעבה ככל שהתנאים גרועים יותר. -->
+      <filter id="dncRim" x="-45%" y="-45%" width="190%" height="190%"
+              color-interpolation-filters="sRGB">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="2.6" result="fat"/>
+        <feFlood flood-color="#ffffff" flood-opacity="1" result="lit"/>
+        <feComposite in="lit" in2="fat" operator="in" result="rim"/>
+        <feGaussianBlur in="rim" stdDeviation=".5" result="soft"/>
+        <feMerge>
+          <feMergeNode in="soft"/><feMergeNode in="rim"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
       <!-- הסרט אינו נראה מבעד למדבקה: מותר לו רק מתחתיה, ובחלון הסלילים -->
       <clipPath id="cNoLabel">
         <rect x="8" y="394" width="984" height="238"/>

@@ -643,10 +643,13 @@ body{
    cassette shows through around her exactly as it is. The pale rim is the
    one concession: without it a black figure would disappear into the black
    shell she walks along. She is hidden until there is music. */
+/* The white outline comes from the SVG filter, whose thickness JS sets; the
+   glow on top of it is what carries her on a screen turned right down. */
 .dancer{
   visibility:hidden;
-  filter:drop-shadow(0 0 1.7px rgba(228,234,246,.75))
-         drop-shadow(0 1.5px 2px rgba(0,0,0,.55));
+  filter:url(#dncRim)
+         drop-shadow(0 0 var(--rim,2px) rgba(255,255,255,var(--rimop,.5)))
+         drop-shadow(0 1.5px 2px rgba(0,0,0,.5));
 }
 .dancer.show{visibility:visible}
 .dancer line{stroke:#080706;stroke-width:6.4;stroke-linecap:round;fill:none}

@@ -2033,6 +2033,46 @@ function dncFace(dir) {
   $('dancer').querySelector('.dnc-turn').style.transform = `scaleX(${dir})`;
 }
 
+/* ---- how brightly she has to be outlined.
+ *
+ * On a phone she was hard to make out: she is small there, and she is black,
+ * and she stands on the dark plastic at the foot of a cassette. The answer is
+ * a white outline, and the worse the conditions the thicker and brighter it
+ * has to be.
+ *
+ * No browser will say how bright the screen is turned up — there is no such
+ * API, and the ambient light sensor that might have stood in for one is not
+ * available in practice. So the outline is set from what can actually be
+ * known, each of which makes her harder to see: how small she is being drawn,
+ * whether the reader has asked for a dark presentation, and whether they have
+ * asked for more contrast — that last being the nearest thing there is to
+ * someone saying the screen is not doing them any favours.
+ */
+function dncRim() {
+  const deck = document.querySelector('.deck');
+  const w = deck ? deck.getBoundingClientRect().width : 400;
+  // the drawing is 1000 units across, so this is how many screen pixels one
+  // unit of outline is actually worth
+  const perUnit = w / 1000;
+  let px = 1.5;                                   // the outline, in real pixels
+  if (w < 330) px = 2.3;
+  else if (w < 420) px = 2.0;
+  if (matchMedia('(prefers-color-scheme: dark)').matches) px += 0.35;
+  if (matchMedia('(prefers-contrast: more)').matches) px += 0.7;
+  const r = Math.max(1.6, Math.min(6, px / (perUnit || 0.4)));
+  const f = document.querySelector('#dncRim feMorphology');
+  if (f) f.setAttribute('radius', r.toFixed(2));
+  const d = $('dancer');
+  d.style.setProperty('--rim', (px * 1.5).toFixed(2) + 'px');
+  d.style.setProperty('--rimop', (w < 420 ? 0.75 : 0.5).toFixed(2));
+}
+dncRim();
+addEventListener('resize', dncRim);
+['(prefers-color-scheme: dark)', '(prefers-contrast: more)'].forEach(q => {
+  const m = matchMedia(q);
+  (m.addEventListener ? m.addEventListener.bind(m, 'change') : m.addListener.bind(m))(dncRim);
+});
+
 /* An SVG element has no offsetWidth — reading it returns undefined and forces
  * nothing — so the usual `void el.offsetWidth` does not flush the style here.
  * Without a flush the browser coalesces "put her off the right edge" and
