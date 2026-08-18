@@ -374,6 +374,7 @@ function playRec(recId, idx, quiet) {
   if (!quiet && !sameRec) sfx('play');   // the deck's own click
   mixInit();                            // the chain must exist before playback
   if (MIX.ctx && MIX.ctx.state === 'suspended') MIX.ctx.resume();
+  beginLoad(t);                          // watch it arrive, and hold the scrubber
   au.play().catch(() => {});
   setRate($('prate').value);            // a new source resets playbackRate
   openDeck();
@@ -387,6 +388,135 @@ function playRec(recId, idx, quiet) {
   clearErr();
   markPlaying();
 }
+
+/* ------------------------------------------------- loading a recording
+ * These are files off a media server, and some are long. Reaching for the
+ * scrubber a second after pressing play used to strand the player on a part
+ * of the file that had not arrived. So the strip under the title now says
+ * what is happening: it blinks red while the recording comes down, carries
+ * the percentage, says when there is enough to start, and finishes green.
+ * The scrubber stays out of reach until seeking is safe.
+ */
+const LOAD = { on: false, started: false, done: 0, timer: 0, greenAt: 0 };
+const PLAY_AT = 0.12;                 // enough of it down to start on
+
+function loadPct() {
+  if (!au.duration || !isFinite(au.duration)) return 0;
+  let end = 0;
+  for (let i = 0; i < au.buffered.length; i++) end = Math.max(end, au.buffered.end(i));
+  return Math.min(1, end / au.duration);
+}
+
+function loadSay(cls, text) {
+  const box = $('pticker');
+  box.className = 'pticker on ' + cls;
+  $('ptickerTxt').textContent = text;
+}
+
+function loadHide() {
+  $('pticker').className = 'pticker';
+  $('ptickerTxt').textContent = '';
+}
+
+function seekable(on) {
+  $('pseek').disabled = !on;
+  $('pseek').classList.toggle('waiting', !on);
+}
+
+function beginLoad(track) {
+  clearInterval(LOAD.timer);
+  LOAD.on = true; LOAD.started = false; LOAD.done = 0; LOAD.greenAt = 0;
+  TRIM.start = 0; TRIM.end = 0;
+  seekable(false);
+  loadSay('load', 'טוען הקלטה… 0%');
+  LOAD.timer = setInterval(loadTick, 250);
+  loadTick();
+  scanSilence(track);                 // in parallel: where the music starts
+}
+
+function loadTick() {
+  if (!LOAD.on) return;
+  const p = loadPct();
+  const pct = Math.round(p * 100);
+
+  // enough of it is down to start, and the scrubber can be trusted
+  if (!LOAD.started && (p >= PLAY_AT || au.readyState >= 4)) {
+    LOAD.started = true;
+    seekable(true);
+    au.play().catch(() => {});
+  }
+  if (p >= 0.999 || au.readyState >= 4 && p === 0) {
+    // fully down (or a source that reports no ranges): green, then away
+    if (!LOAD.greenAt) {
+      LOAD.greenAt = Date.now();
+      seekable(true);
+      loadSay('done', 'האזנה נעימה');
+    } else if (Date.now() - LOAD.greenAt > 3000) {
+      LOAD.on = false; clearInterval(LOAD.timer); loadHide();
+    }
+    return;
+  }
+  loadSay('load', LOAD.started
+    ? `טוען הקלטה… ${pct}% · מתחיל בהשמעה`
+    : `טוען הקלטה… ${pct}%`);
+}
+
+/* ---------------------------------------------------- trimming the silence
+ * Cassettes were left running before the singing began and after it ended,
+ * so many of these start and finish with nothing at all. The quiet at the
+ * two ends is skipped on playback — never the quiet in the middle, which is
+ * a breath or a pause and belongs to the piece — and nothing is written: the
+ * file on the archive is untouched, only where this playback starts and
+ * stops.
+ */
+const TRIM = { start: 0, end: 0 };
+const SILENCE = 0.012;                // below this counts as nothing
+const MAX_SCAN = 40 * 1024 * 1024;    // a long recording is left alone
+
+async function scanSilence(track) {
+  if (!window.AudioContext && !window.webkitAudioContext) return;
+  const url = audioURL(track.f);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return;
+    const len = +(res.headers.get('content-length') || 0);
+    if (len > MAX_SCAN) return;                   // too big to decode politely
+    const buf = await res.arrayBuffer();
+    if (cur.rec == null || audioURL((byId(C.recordings, cur.rec).tr[cur.idx] || {}).f) !== url)
+      return;                                     // the user moved on meanwhile
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    const audio = await ctx.decodeAudioData(buf);
+    ctx.close();
+    const ch = audio.getChannelData(0);
+    const rate = audio.sampleRate;
+    const win = Math.floor(rate * 0.05);          // judge in 50 ms windows
+    const loud = i => {
+      let peak = 0;
+      for (let j = i; j < Math.min(i + win, ch.length); j++) {
+        const v = Math.abs(ch[j]);
+        if (v > peak) peak = v;
+      }
+      return peak > SILENCE;
+    };
+    let a = 0, b = ch.length - win;
+    while (a < ch.length && !loud(a)) a += win;
+    while (b > a && !loud(b)) b -= win;
+    const start = Math.max(0, a / rate - 0.15);   // leave a breath either side
+    const end   = Math.min(audio.duration, (b + win) / rate + 0.25);
+    if (end - start < 1) return;                  // nothing but silence: leave it
+    TRIM.start = start > 0.4 ? start : 0;
+    TRIM.end   = end < audio.duration - 0.4 ? end : 0;
+    if (TRIM.start && au.currentTime < TRIM.start) au.currentTime = TRIM.start;
+  } catch (e) { /* CORS, an odd codec, a slow line — play it as it comes */ }
+}
+
+// the tail: stop where the singing stopped, and move on as if it had ended
+au.addEventListener('timeupdate', () => {
+  if (TRIM.end && au.currentTime >= TRIM.end && !au.paused) {
+    au.currentTime = au.duration || TRIM.end;     // let `ended` do the rest
+  }
+});
 
 function step(d, quiet) {
   const r = byId(C.recordings, cur.rec);
@@ -555,13 +685,15 @@ const REC_DENIED = 'Not Available in this mode · כפתור זה זמין במ�
 function ticker(msg) {
   const box = $('pticker'), txt = $('ptickerTxt');
   txt.textContent = msg;
-  box.classList.add('on');
-  box.classList.remove('run');
+  box.className = 'pticker on';         // never inherit a loading state
   void box.offsetWidth;                 // restart the pass on a repeat press
   box.classList.add('run');
 }
 $('ptickerTxt').addEventListener('animationend', () => {
-  $('pticker').classList.remove('on', 'run');
+  // only the travelling message clears itself; the loading states are held
+  // by their own timer and must not be wiped from under it
+  if (!$('pticker').classList.contains('run')) return;
+  $('pticker').className = 'pticker';
   $('ptickerTxt').textContent = '';
 });
 
@@ -1725,24 +1857,9 @@ $('prate').addEventListener('input', e => setRate(e.target.value));
 $('prate').addEventListener('dblclick', () => setRate(1));   // snap back to 1×
 setRate(localStorage.getItem('shira_rate') || 1);
 
-/* On a narrow screen the speed slider is folded behind its key — the CSS
- * stands it upright and hides it, and this opens it. On a wide screen the key
- * is inert (pointer-events:none) and the slider is simply always there, so
- * none of this ever runs. */
-const rateBox = $('prateBox');
-function rateOpen(on) {
-  rateBox.classList.toggle('open', on);
-  $('prateTap').setAttribute('aria-expanded', on ? 'true' : 'false');
-}
-$('prateTap').onclick = e => {
-  e.stopPropagation();
-  rateOpen(!rateBox.classList.contains('open'));
-};
-// a touch anywhere else puts it away, but moving the slider must not
-document.addEventListener('pointerdown', e => {
-  if (!rateBox.contains(e.target)) rateOpen(false);
-});
-$('prate').addEventListener('change', () => setTimeout(() => rateOpen(false), 450));
+/* The word before the speed slider is a label, nothing more — it is never a
+ * button. Both sliders lie flat side by side at every width. */
+$('prateTap').setAttribute('aria-hidden', 'true');
 
 /* A recording that will not play. Where the file sits and why it is unreachable
  * is ours to fix, not the listener's to read, so the message says only what it

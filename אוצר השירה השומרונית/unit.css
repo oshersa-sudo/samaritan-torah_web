@@ -412,9 +412,16 @@ body{
 }
 .dw-btn:hover{background:linear-gradient(180deg,#5a616b,#3b4149);color:#fff}
 .dw-btn:active{box-shadow:inset 0 2px 3px rgba(0,0,0,.55)}
+/* Nothing inside the deck may drag the page behind it: a finger on a slider
+   is adjusting that slider, not scrolling the archive underneath. */
+.deckwin input[type=range],
+.deckwin .mx-kn,
+.deckwin .mx-swb{touch-action:none}
+.deckwin{overscroll-behavior:contain}
 /* the window never grows past the screen — opening the mixer scrolls the
    body instead of pushing the title bar off the top */
-.dw-body{padding:12px;overflow-y:auto;max-height:calc(100vh - 120px)}
+.dw-body{padding:12px;overflow-y:auto;overscroll-behavior:contain;
+         max-height:calc(100vh - 120px)}
 .deckwin.min .dw-body{display:none}
 .deckwin.min{width:min(300px,calc(100vw - 36px))}
 
@@ -597,43 +604,26 @@ body{
   .mx-swb>i{height:12px;top:14px}
   .mx-panel{gap:3px;padding:4px}
 
-  /* The two sliders will not sit on one line here, and wrapping drops the
-     volume to a row of its own. So speed folds into a key that opens its
-     slider upright over the panel, and the volume fader keeps the line. */
-  .knobs{flex-wrap:nowrap;gap:8px}
-  .prate{gap:5px}
-  .prate-tap{
-    pointer-events:auto;cursor:pointer;
-    border:1px solid #14181e;border-radius:5px;padding:3px 8px;
-    background:linear-gradient(180deg,#4a505a,#31363e);color:#e2e7f0;
-    font-size:.72rem;line-height:1.25;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 0 #171a20;
-  }
-  .prate-tap:active{transform:translateY(2px);box-shadow:inset 0 2px 3px rgba(0,0,0,.45)}
-  .prate.open .prate-tap{
-    background:linear-gradient(180deg,#eda044,#c87c25);border-color:#8a5415;color:#2a1a05;
-  }
-  /* the slider itself, stood on end above the key */
-  .prate input{
-    position:absolute;bottom:calc(100% + 12px);inset-inline-start:50%;
-    width:112px;margin:0;transform:translateX(50%) rotate(-90deg);
-    transform-origin:50% 50%;z-index:3;
-    padding:10px 6px;border-radius:8px;
-    background:#20252f;border:1px solid #39414f;
-    box-shadow:0 6px 16px rgba(0,0,0,.5);
-  }
-  .prate:not(.open) input{display:none}
-  .prate span{min-width:2.6em;font-size:.72rem}
-  .pvol{gap:5px}
-  .fader{width:84px}
+  /* Both sliders stay flat and side by side, whatever the width — nothing
+     stands up over the panel and nothing drops to a line of its own. They
+     simply give up width together. */
+  .knobs{flex-wrap:nowrap;gap:6px}
+  .prate{gap:4px;font-size:.7rem}
+  .prate input{width:52px}
+  .prate span{min-width:2.5em;font-size:.7rem}
+  .pvol{gap:4px}
+  .pvol-ico{font-size:.82rem}
+  .fader{width:72px}
+  .pvoln{font-size:.7rem;min-width:2.8em}
 }
 /* narrower still: both shrink together rather than one of them giving way */
 @media (max-width:360px){
-  .prate-tap{font-size:.66rem;padding:3px 6px}
-  .prate span,.pvoln{font-size:.66rem;min-width:2.4em}
-  .fader{width:64px}
+  .knobs{gap:4px;padding:5px 6px}
+  .prate{font-size:.64rem;gap:3px}
+  .prate input{width:42px}
+  .prate span,.pvoln{font-size:.64rem;min-width:2.3em}
+  .fader{width:58px}
   .fader-scale b{font-size:5.5px}
-  .prate input{width:92px}
 }
 
 /* a standing reminder that this session can change things */
@@ -1050,9 +1040,22 @@ body{
   from{transform:translateX(100%)}
   to  {transform:translateX(-100%)}
 }
+/* Loading a recording. It sits still and blinks rather than travelling —
+   this is a state, not a message passing through. */
+.pticker.load span{
+  animation:blink 1s ease-in-out infinite;
+  color:#ff4a3d;text-shadow:0 0 6px rgba(255,74,61,.6);
+}
+.pticker.done span{
+  animation:blink .8s ease-in-out infinite;
+  color:#46d67a;text-shadow:0 0 6px rgba(70,214,122,.6);
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 /* the scrubber runs with time, left to right, matching the counter beside it */
 .seekrow{display:flex;align-items:center;gap:9px;direction:ltr}
 .pseek{flex:1 1 auto;accent-color:#d98b31;min-width:60px;direction:ltr}
+/* held back until enough of the recording is down to seek into it */
+.pseek.waiting{opacity:.45;cursor:progress}
 /* ltr: in an rtl box "1:24 / 3:47" would otherwise be read out reversed */
 .ptime{
   font-size:.78rem;font-variant-numeric:tabular-nums;opacity:.85;
