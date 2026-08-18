@@ -622,6 +622,7 @@ $('dwMin').onclick = () => {
  * out of the well — held out, the way a deck offers it to be taken. */
 $('dwClose').onclick = () => {
   au.pause(); stopAudio(); spoolStop(false);
+  dancerOut('right');            // she is off the stage before the lid shuts
   headIn(false);
   syncBtn();
   const win = $('deckWin');
@@ -669,6 +670,7 @@ $('pstop').onclick = () => {
   if (REC.rec) { sfx('stop'); stopRecording(); return; }
   if (!au.src) return;
   au.pause();
+  dancerOut('right');                // she runs off the way she came in
   headIn(false);
   syncBtn();
   sfx('stop');                       // the button first…
@@ -1450,6 +1452,8 @@ function vuTick() {
     lit = Math.round(Math.min(1, rms * (REC.an ? 5.5 : 3.2)) * LAMPS);
   }
   for (let i = 0; i < lamps.length; i++) lamps[i].classList.toggle('on', i < lit);
+  // she dances to this particular piece, not to a metronome
+  if (DNC.at === 'dance') dncListen(an, lit / LAMPS);
   levelTick();                        // the gate and the matcher ride this loop
   requestAnimationFrame(vuTick);
 }
@@ -1897,6 +1901,7 @@ function trackName(r, idx) {
 function setLine(id, text) {
   const el = $(id);
   el.classList.remove('roll');
+  el.style.removeProperty('animation-delay');
   el.innerHTML = '';
   const span = document.createElement('span');
   span.textContent = text || '';
@@ -1904,18 +1909,55 @@ function setLine(id, text) {
   // measured straight away: reading scrollWidth forces the layout, so the
   // figure is right here. A frame callback would be cleaner but never fires
   // in a tab that is not painting, and the line would then sit truncated.
-  const over = span.scrollWidth - el.clientWidth;
-  if (over <= 4) return;
-  el.style.setProperty('--shift', over + 'px');
-  el.style.setProperty('--dur', Math.max(9, Math.round(over / 14) + 7) + 's');
+  const w = span.scrollWidth, box = el.clientWidth;
+  if (w - box <= 4) return;
+  // A marquee, always rightwards: the line sets out from beyond the left
+  // edge, crosses the window and leaves by the right, and comes round again.
+  // The negative delay starts the first pass where the line naturally sits,
+  // so the name is readable the moment it is put up rather than after a lap.
+  const dist = w + box;
+  const dur  = Math.max(9, Math.round(dist / 42));
+  el.style.setProperty('--rfrom', -box + 'px');
+  el.style.setProperty('--rto', w + 'px');
+  el.style.setProperty('--dur', dur + 's');
+  span.style.animationDelay = -(dur * box / dist).toFixed(2) + 's';
   el.classList.add('roll');
+}
+
+/* The label's own lines. They are no longer cut short: a long one is set
+ * travelling inside the label, which is clipped, so the whole name can be
+ * read without the cassette growing. The label runs from x=110 to x=890. */
+const LABEL_LEFT   = 200;               // where the roll's own clip begins
+const LABEL_RIGHT  = 896;               // and where it ends
+const LABEL_ANCHOR = 890;               // the right edge the lines are set from
+
+function labelRoll(textId, groupId) {
+  const t = $(textId), g = $(groupId);
+  g.classList.remove('roll');
+  g.style.removeProperty('animation-delay');
+  let w = 0;
+  try { w = t.getComputedTextLength(); } catch (e) { return; }
+  if (w - (LABEL_ANCHOR - LABEL_LEFT) <= 6) return;
+  // the same marquee as the panel's: in from the left, out at the right, and
+  // round again, starting where the line would have sat had it fitted
+  const from = LABEL_LEFT - LABEL_ANCHOR;
+  const to   = LABEL_RIGHT - LABEL_ANCHOR + w;
+  const dist = to - from;
+  const dur  = Math.max(12, Math.round(dist / 80));
+  g.style.setProperty('--lfrom', from + 'px');
+  g.style.setProperty('--lto', Math.round(to) + 'px');
+  g.style.setProperty('--ldur', dur + 's');
+  g.style.animationDelay = -(dur * -from / dist).toFixed(2) + 's';
+  g.classList.add('roll');
 }
 
 /* the cassette's label carries the track and the performer */
 function deckLabel(r, idx) {
   const cut = (s, n) => (s || '').length > n ? s.slice(0, n - 1) + '…' : (s || '');
-  $('cTitle').textContent = r ? cut(trackName(r, idx), 30) : '—';
-  $('cPerf').textContent  = r ? cut(perfName(r.p), 30) : 'בחר הקלטה כדי לנגן';
+  $('cTitle').textContent = r ? trackName(r, idx) : '—';
+  $('cPerf').textContent  = r ? perfName(r.p) : 'בחר הקלטה כדי לנגן';
+  labelRoll('cTitle', 'cTitleRoll');
+  labelRoll('cPerf',  'cPerfRoll');
   // shorter than it looks it could be: the type mark sits centred on the same
   // red band, and the title must stop before reaching it
   $('cRec').textContent   = r ? cut(r.ttl, 22) : 'אוצר השירה השומרונית';
@@ -1923,6 +1965,224 @@ function deckLabel(r, idx) {
   $('cEvent').textContent = r ? eventName(r.e) : '—';
   $('cParts').textContent = r ? (r.parts ? `${r.parts} חלקים` : `${r.n} רצועות`) : 'C-90';
 }
+
+/* ---------------------------------------------------------- the dancer
+ * She belongs to the music, so she waits until a recording has been playing
+ * a few seconds and then comes on from the right — walking the thin strip
+ * along the bottom of the cassette, just above the indicator lamps, the way
+ * a dancer walks on from the wings. She turns to whoever is listening, bows,
+ * and dances for as long as the singing lasts.
+ *
+ * How she leaves says why. A recording that plays itself out lets her walk
+ * off to the left, unhurried. Stopping the tape or shutting the deck turns
+ * her round and she runs off the way she came in. Pausing — and the gap
+ * between one recording and the next — is not a departure at all: she comes
+ * to a stand and waits there for the music to start again.
+ *
+ * Everything is a transform on a group inside the cassette's own drawing —
+ * she has no ground, no shadow and no backdrop, so the cassette is seen
+ * around her exactly as it was.
+ */
+const DNC = {
+  at: 'off', timers: [],
+  y: 634,             // the very lip of the shell, hovering over the lamps
+  inX: 906,           // centre stage for her: beside the far right screw
+  startX: 1090, offLeft: -130, offRight: 1130,
+};
+
+function dncClear() {
+  DNC.timers.forEach(clearTimeout);
+  DNC.timers = [];
+}
+function dncLater(ms, fn) { DNC.timers.push(setTimeout(fn, ms)); }
+
+function dncPlace(x) {
+  $('dancer').querySelector('.dnc-x').style.transform = `translate(${x}px, ${DNC.y}px)`;
+}
+
+/* Which way she is facing. She is drawn facing right, so dir = -1 turns her
+ * about. The transition carries scaleX through zero on the way, so she
+ * narrows to a line and opens out the other way — which is what turning
+ * looks like on a figure this flat, and needs no second drawing of her. */
+function dncFace(dir) {
+  $('dancer').querySelector('.dnc-turn').style.transform = `scaleX(${dir})`;
+}
+
+function dncSet(cls) {
+  const d = $('dancer');
+  d.classList.remove('walking', 'running', 'bowing', 'dancing', 'exiting', 'settling');
+  if (cls) d.classList.add(cls);
+}
+
+/* every joint that the dance drives, in the order they are nested */
+const DNC_JOINTS = ['.dnc-step', '.dnc-spin', '.dnc-bob', '.dnc-body',
+                    '.dnc-arm-f', '.dnc-arm-b', '.dnc-elbow-f', '.dnc-elbow-b',
+                    '.dnc-leg-f', '.dnc-leg-b', '.dnc-knee-f', '.dnc-knee-b'];
+
+/* Pausing the tape — or changing to another recording — does not send her
+ * off: she comes to a stand where she is and waits to be played again. The
+ * pose she is caught in is written back as an inline transform before the
+ * dance is dropped, so that letting it go eases her into standing instead of
+ * snapping her there. */
+function dancerHold() {
+  if (DNC.at !== 'dance') return;
+  const d = $('dancer');
+  const held = DNC_JOINTS.map(sel => {
+    const el = d.querySelector(sel);
+    return [el, getComputedStyle(el).transform];
+  });
+  held.forEach(([el, t]) => { if (t && t !== 'none') el.style.transform = t; });
+  void d.offsetWidth;
+  dncSet('settling');                 // the dance is off; the inline pose holds
+  void d.offsetWidth;
+  held.forEach(([el]) => { el.style.transform = ''; });   // …and eases to standing
+  DNC.at = 'still';
+  dncClear();
+  dncLater(460, () => d.classList.remove('settling'));
+}
+
+function dancerResume() {
+  if (DNC.at !== 'still') return;
+  DNC.at = 'dance';
+  DNCM.gaps = []; DNCM.set = 0;
+  dncSet('dancing');
+}
+
+function dancerIn() {
+  if (DNC.at !== 'off') return;
+  const d = $('dancer');
+  DNC.at = 'in';
+  dncClear();
+  // she starts just off the right edge, in profile, facing the way she walks
+  d.querySelector('.dnc-x').style.transition = 'none';
+  dncPlace(DNC.startX);
+  dncFace(-1, true);
+  d.classList.add('show');
+  void d.offsetWidth;
+  d.querySelector('.dnc-x').style.transition = '';
+  dncSet('walking');
+  dncPlace(DNC.inX);
+
+  dncLater(1900, () => {                    // arrived: turn to face the front
+    dncSet(null);
+    dncFace(1, false);
+    DNC.at = 'turn';
+    dncLater(450, () => {                   // and bow to whoever is listening
+      DNC.at = 'bow';
+      dncSet('bowing');
+      dncLater(1350, () => {
+        if (au.paused) return dancerOut('right');
+        DNC.at = 'dance';
+        DNCM.gaps = []; DNCM.set = 0;    // this piece's own pulse, not the last one's
+        dncSet('dancing');
+      });
+    });
+  });
+}
+
+/* `side` is which way she goes off: 'left' at the end of a recording, at a
+ * walk; 'right' when the tape is stopped or the deck shut, at a run. */
+function dancerOut(side) {
+  const d = $('dancer');
+  if (DNC.at === 'off' || DNC.at === 'out') return;
+  DNC.at = 'out';
+  dncClear();
+  const right = side === 'right';
+  dncSet(right ? 'running' : 'walking');
+  d.classList.add('exiting');
+  dncFace(right ? 1 : -1, true);
+  dncPlace(right ? DNC.offRight : DNC.offLeft);
+  dncLater(right ? 1200 : 2350, () => {
+    dncSet(null);
+    d.classList.remove('show', 'exiting');
+    DNC.at = 'off';
+  });
+}
+
+/* ---- dancing to the piece, not to a metronome.
+ * Three things about the singing are worth having: how loud it is at this
+ * instant, how quickly the phrases come, and how high the voice is sitting.
+ * They become, in order, the size of her movement, the length of her dance
+ * phrase, and how far she opens and lifts — so a slow, low recitation gets a
+ * grave, close dance and a fast, bright one gets a wide, high one.
+ *
+ * The beat is taken from the singing's own envelope rather than from a drum
+ * that is not there: a pulse is counted each time the level rises well clear
+ * of its running mean. The median of the last few gaps is the beat, and the
+ * phrase is four of them. It is re-set sparingly — retiming an animation
+ * that is already running jumps it, so it is only worth doing when the piece
+ * has genuinely changed pace.
+ */
+const DNCM = {
+  spec: null, mean: 0, up: false, last: 0, gaps: [], dur: 4.8, lift: 1, amp: 1,
+};
+
+function dncListen(an, level) {
+  const d = $('dancer'), now = performance.now();
+  // how big: the level itself, smoothed so she does not twitch on every frame
+  DNCM.amp += (0.55 + Math.min(1, level) * 0.8 - DNCM.amp) * 0.12;
+  d.style.setProperty('--amp', DNCM.amp.toFixed(2));
+  if (!an) return;
+
+  // how high: where the weight of the spectrum sits, which for a voice runs
+  // from about 300 Hz in the chest to some 2.5 kHz at the top of the register
+  if (!DNCM.spec || DNCM.spec.length !== an.frequencyBinCount)
+    DNCM.spec = new Uint8Array(an.frequencyBinCount);
+  an.getByteFrequencyData(DNCM.spec);
+  let num = 0, den = 0;
+  for (let i = 1; i < DNCM.spec.length; i++) { num += i * DNCM.spec[i]; den += DNCM.spec[i]; }
+  if (den > 40) {
+    const hz = (num / den) * ((an.context.sampleRate / 2) / DNCM.spec.length);
+    const want = 0.72 + Math.min(1, Math.max(0, (hz - 300) / 2200)) * 0.55;
+    DNCM.lift += (want - DNCM.lift) * 0.05;
+    d.style.setProperty('--lift', DNCM.lift.toFixed(2));
+  }
+
+  // how fast: a pulse every time the level clears its own running mean
+  DNCM.mean += (level - DNCM.mean) * 0.045;
+  if (!DNCM.up && level > DNCM.mean * 1.42 && level > 0.14) {
+    DNCM.up = true;
+    const gap = now - DNCM.last;
+    DNCM.last = now;
+    if (gap > 240 && gap < 1900) {
+      DNCM.gaps.push(gap);
+      if (DNCM.gaps.length > 9) DNCM.gaps.shift();
+    }
+  } else if (DNCM.up && level < DNCM.mean * 1.1) {
+    DNCM.up = false;
+  }
+  if (DNCM.gaps.length >= 5 && now - (DNCM.set || 0) > 4200) {
+    const beat = [...DNCM.gaps].sort((a, b) => a - b)[DNCM.gaps.length >> 1];
+    const want = Math.min(7.4, Math.max(2.6, (beat * 4) / 1000));
+    if (Math.abs(want - DNCM.dur) / DNCM.dur > 0.12) {
+      DNCM.dur = want;
+      DNCM.set = now;
+      d.style.setProperty('--dncdur', want.toFixed(2) + 's');
+    }
+  }
+}
+
+/* she comes on a few seconds in, once the recording is properly under way */
+let dncWatch = 0;
+function dancerWatch() {
+  clearInterval(dncWatch);
+  dncWatch = setInterval(() => {
+    if (!au.src) {
+      if (DNC.at !== 'off' && DNC.at !== 'out') dancerOut('right');
+      return;
+    }
+    if (au.paused) return dancerHold();
+    if (DNC.at === 'still') return dancerResume();
+    if (DNC.at === 'off' && au.currentTime > 4) dancerIn();
+  }, 700);
+}
+dancerWatch();
+/* the tape running out is the one exit she takes at a walk, to the left */
+au.addEventListener('ended', () => dancerOut('left'));
+/* pause, and the gap between one recording and the next, only halt her. STOP
+ * and closing the deck have already sent her off by the time these fire. */
+au.addEventListener('pause', dancerHold);
+au.addEventListener('play', dancerResume);
 
 function deckTick() { deckPaint(); requestAnimationFrame(deckTick); }
 requestAnimationFrame(deckTick);
@@ -1971,6 +2231,106 @@ $('dwQuiet').onclick = () => {
   toast(QUIET ? 'נקישות המקשים מושתקות' : 'נקישות המקשים חזרו');
 };
 paintQuiet();
+
+/* ------------------------------------------------- sending the sound out
+ * A page cannot pair a Bluetooth speaker itself. Pairing belongs to the
+ * device's own settings, and the web's Bluetooth API reaches data services,
+ * never the audio profile — so no browser can make this button do that part.
+ *
+ * What it can do is the part that matters once the speaker is paired: choose
+ * which of the outputs the device already has the singing comes out of. Pair
+ * the speaker once in the phone's or the computer's settings, press this,
+ * pick it from the list, and the recording plays there instead of out of the
+ * machine in your hand. The choice is remembered per device, and re-made on
+ * the next recording; if the speaker has gone, playback quietly falls back.
+ */
+const BT = { id: localStorage.getItem('shira_sink') || '', label: '' };
+const btCan = () => typeof au.setSinkId === 'function';
+
+function paintBT() {
+  const b = $('dwBT'), on = !!BT.id && BT.id !== 'default';
+  b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  b.classList.toggle('unsupported', !btCan());
+  b.title = !btCan() ? 'הדפדפן הזה אינו מאפשר לבחור את יעד ההשמעה — הבחירה נעשית בהגדרות המכשיר'
+          : on ? `ההשמעה יוצאת אל ${BT.label || 'רמקול חיצוני'} — לחיצה תחזיר אותה למכשיר`
+               : "השמעה ברמקול בלוטות'";
+}
+
+/* setSinkId rejects if the device has gone; then the sound simply stays where
+ * it is, and the button goes back to showing the machine's own speaker. */
+async function btRoute(id, label, quiet) {
+  try {
+    await au.setSinkId(id || '');
+    BT.id = id || ''; BT.label = label || '';
+    localStorage.setItem('shira_sink', BT.id);
+    if (!quiet) toast(BT.id ? `ההשמעה יוצאת אל ${BT.label || 'הרמקול שנבחר'}`
+                            : 'ההשמעה חזרה אל המכשיר');
+  } catch (e) {
+    BT.id = ''; localStorage.removeItem('shira_sink');
+    if (!quiet) toast('לא ניתן היה לשלוח את ההשמעה אל הרמקול שנבחר', true);
+  }
+  paintBT();
+}
+
+$('dwBT').onclick = async () => {
+  sfx('click');
+  if (!btCan()) {
+    toast("בדפדפן זה יעד ההשמעה נקבע בהגדרות המכשיר: צמדו את רמקול הבלוטות' " +
+          'והקול יעבור אליו מאליו', true);
+    return;
+  }
+  if (BT.id) return btRoute('', '');            // pressing again brings it home
+  // the browser's own chooser where there is one: it needs no permission and
+  // names the outputs properly
+  if (navigator.mediaDevices && navigator.mediaDevices.selectAudioOutput) {
+    try {
+      const dev = await navigator.mediaDevices.selectAudioOutput();
+      if (dev && dev.deviceId) return btRoute(dev.deviceId, dev.label);
+      return;
+    } catch (e) { if (e && e.name === 'NotAllowedError') return; }
+  }
+  // otherwise, whatever enumerateDevices will admit to
+  let outs = [];
+  try {
+    outs = (await navigator.mediaDevices.enumerateDevices())
+             .filter(d => d.kind === 'audiooutput');
+  } catch (e) {}
+  outs = outs.filter(d => d.deviceId && d.deviceId !== 'default');
+  if (!outs.length) {
+    toast("לא נמצא רמקול בלוטות' מצומד. צמדו אותו בהגדרות המכשיר ונסו שוב", true);
+    return;
+  }
+  if (outs.length === 1) return btRoute(outs[0].deviceId, outs[0].label);
+  btMenu(outs);
+};
+
+/* a small list under the button, only when there is more than one output */
+function btMenu(outs) {
+  let m = $('btMenu');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'btMenu'; m.className = 'bt-menu';
+    $('dwBar').appendChild(m);
+    addEventListener('pointerdown', e => {
+      if (!m.contains(e.target) && e.target !== $('dwBT')) m.classList.add('hidden');
+    });
+  }
+  m.innerHTML = '';
+  outs.forEach((d, i) => {
+    const b = document.createElement('button');
+    b.textContent = d.label || `יציאת שמע ${i + 1}`;
+    b.onclick = () => { m.classList.add('hidden'); btRoute(d.deviceId, b.textContent); };
+    m.appendChild(b);
+  });
+  m.classList.remove('hidden');
+}
+
+/* the sink is a property of the element, so it has to be re-set on each new
+ * recording — but silently: the listener chose it once and meant it */
+au.addEventListener('loadedmetadata', () => {
+  if (BT.id && btCan() && au.sinkId !== BT.id) btRoute(BT.id, BT.label, true);
+});
+if (BT.id && btCan()) btRoute(BT.id, BT.label, true); else paintBT();
 
 function sfx(name) {
   const a = SFX[name];

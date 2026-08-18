@@ -406,6 +406,18 @@
     <span class="dw-name" id="dwName">נגן הקלטות</span>
     <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר ונושאת את שם היצרן -->
     <span class="dw-handle" aria-hidden="true"><i><b>Panasonic</b></i></span>
+    <!-- שולח את ההשמעה אל רמקול הבלוטות' של המכשיר. הצימוד עצמו נעשה
+         בהגדרות המכשיר; כאן בוחרים לאן הקול יוצא. -->
+    <button class="dw-btn dw-bt" id="dwBT" aria-pressed="false"
+            title="השמעה ברמקול בלוטות'">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path class="bt-rune" d="M7 8.5 17 15.5 12 20.5V3.5L17 8.5 7 15.5"/>
+        <g class="bt-no">
+          <circle cx="17.8" cy="6.2" r="4.6" fill="none" stroke-width="2"/>
+          <path d="M14.5 6.2h6.6" stroke-width="2" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </button>
     <!-- משתיק את נקישות המקשים בלבד; ההקלטה עצמה אינה מושפעת -->
     <button class="dw-btn dw-quiet" id="dwQuiet" aria-pressed="false"
             title="השתקת נקישות המקשים">
@@ -453,6 +465,8 @@
       </linearGradient>
       <clipPath id="cLabelClip"><rect x="70" y="42" width="860" height="352" rx="10"/></clipPath>
       <clipPath id="cSlotClip"><rect x="300" y="470" width="400" height="96" rx="10"/></clipPath>
+      <!-- השורה הנעה נעלמת מתחת לכותרות השורות, ובמרווח מהן -->
+      <clipPath id="cRollClip"><rect x="200" y="104" width="696" height="112"/></clipPath>
       <!-- קו הטרפז: פתוח בתחתיתו, ושתי צלעותיו נמתחות עד לקצה הקלטת.
            מצויר פעמיים — הקו עצמו בגוון הקווים הבהירים של הקלטת, וצל דק
            ממש מתחתיו — וכך הוא נקרא כצלע מובלטת ולא כקו מצויר. -->
@@ -609,12 +623,75 @@
       <circle cx="500" cy="578" r="11"/>
     </g>
 
+    <!-- רקדנית בסגנון stick figure: קווים שחורים אטומים, בלי פנים ובלי רקע
+         משלה. היא צועדת על הפס הדק שבתחתית הקלטת, ממש מעל נורות החיווי:
+         נכנסת מימין כמי שעולה אל הבמה, פונה אל הקהל, קדה קידה, ורוקדת מחול
+         לצלילי ההקלטה. בתום ההקלטה היא יוצאת שמאלה בהליכה; עצירה או סגירת
+         המכשיר מוציאות אותה ימינה בריצה.
+         כל אבר בנוי משני פרקים — ירך ושוק, זרוע ואמה — ולכן אפשר לכופף ברך
+         ולעגל זרוע, וזה מה שהופך את התנועה למחול ולא לנדנוד. -->
+    <g id="dancer" class="dancer" aria-hidden="true">
+      <g class="dnc-x">
+        <g class="dnc-step">
+        <g class="dnc-turn">
+          <g class="dnc-spin">
+            <g class="dnc-bob">
+              <!-- הירכיים והכתפיים מרוחקות מן הקו המרכזי, אחרת הזרועות
+                   והרגליים היו נופלות בדיוק על קו הגוף ונעלמות בו -->
+              <g class="dnc-leg dnc-leg-b">
+                <line x1="-6" y1="-50" x2="-6" y2="-27"/>
+                <g class="dnc-knee dnc-knee-b">
+                  <line x1="-6" y1="-27" x2="-6" y2="-5"/>
+                  <line class="dnc-foot" x1="-6" y1="-5" x2="-15" y2="0"/>
+                </g>
+              </g>
+              <g class="dnc-leg dnc-leg-f">
+                <line x1="6" y1="-50" x2="6" y2="-27"/>
+                <g class="dnc-knee dnc-knee-f">
+                  <line x1="6" y1="-27" x2="6" y2="-5"/>
+                  <line class="dnc-foot" x1="6" y1="-5" x2="15" y2="0"/>
+                </g>
+              </g>
+              <!-- פלג הגוף העליון לבדו מתקפל בקידה, והרגליים נשארות על הבמה -->
+              <g class="dnc-body">
+                <path class="dnc-tutu" d="M-26 -48 Q0 -62 26 -48 Q0 -39 -26 -48 Z"/>
+                <line class="dnc-spine" x1="0" y1="-50" x2="0" y2="-88"/>
+                <line class="dnc-shoulder" x1="-8" y1="-88" x2="8" y2="-88"/>
+                <g class="dnc-arm dnc-arm-b">
+                  <line x1="-8" y1="-88" x2="-8" y2="-68"/>
+                  <g class="dnc-elbow dnc-elbow-b"><line x1="-8" y1="-68" x2="-8" y2="-49"/></g>
+                </g>
+                <g class="dnc-arm dnc-arm-f">
+                  <line x1="8" y1="-88" x2="8" y2="-68"/>
+                  <g class="dnc-elbow dnc-elbow-f"><line x1="8" y1="-68" x2="8" y2="-49"/></g>
+                </g>
+                <line class="dnc-neck" x1="0" y1="-88" x2="0" y2="-95"/>
+                <circle class="dnc-head" cx="0" cy="-105" r="9.5"/>
+                <circle class="dnc-bun" cx="0" cy="-116.5" r="5"/>
+              </g>
+            </g>
+          </g>
+        </g>
+        </g>
+      </g>
+    </g>
+
     <!-- פרטי ההקלטה, נכתבים על התווית -->
     <g clip-path="url(#cLabelClip)">
+      <!-- שם ארוך מדי לתווית נע בתוכה ימינה כדי להראות את כולו, וחוזר
+           חלילה. הוא חתוך לפני כותרות השורות, ולכן נעלם מתחתיהן ואינו
+           מסתיר אותן לעולם. -->
+      <g clip-path="url(#cRollClip)">
+        <g class="lroll" id="cTitleRoll">
+          <text x="890" y="152" text-anchor="end" class="chand" font-size="46" fill="#2f2a24" id="cTitle">—</text>
+        </g>
+        <g class="lroll" id="cPerfRoll">
+          <text x="890" y="198" text-anchor="end" class="chand" font-size="40" fill="#4a4034" id="cPerf">בחר הקלטה כדי לנגן</text>
+        </g>
+      </g>
+      <!-- הכותרות מצוירות אחרי השורות הנעות, כך שהן תמיד למעלה -->
       <text x="110" y="150" class="che" font-size="26" fill="#8a7f6b">רצועה</text>
-      <text x="890" y="152" text-anchor="end" class="chand" font-size="46" fill="#2f2a24" id="cTitle">—</text>
       <text x="110" y="196" class="che" font-size="26" fill="#8a7f6b">מבצע</text>
-      <text x="890" y="198" text-anchor="end" class="chand" font-size="40" fill="#4a4034" id="cPerf">בחר הקלטה כדי לנגן</text>
       <text x="890" y="237" text-anchor="end" class="chand" font-size="30" fill="#6b6153" id="cLine2"></text>
       <!-- שם היצרן מוטבע על המדבקה, משמאל לחלון הסלילים, כמו בקלטת שבתמונה.
            העותק הבהיר שמתחת נותן את תחושת ההטבעה בנייר. -->
