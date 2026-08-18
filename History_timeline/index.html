@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ציר הזמן ההיסטורי — הישראלים השומרונים</title>
+<link rel="stylesheet" href="css/style.css?v=1.0.11">
+</head>
+<body>
+
+<header id="topbar">
+  <a class="brand" id="brandHome" href="https://www.the-samaritans.net/" target="_self">
+    <span class="mark" data-i18n="brand">אבני שהם — פרויקט האב</span>
+    <h1 data-i18n="title">ציר הזמן ההיסטורי</h1>
+    <span class="sub" data-i18n="subtitle">הישראלים השומרונים — מבריאת העולם ועד ימינו</span>
+  </a>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <input id="search" type="search" data-i18n-ph="searchPlaceholder" placeholder="חיפוש אירוע, אישיות או שנה…" autocomplete="off">
+      <div id="results" class="results" hidden></div>
+    </div>
+
+    <div class="zoom">
+      <button id="zoomOut" title="התרחקות (-)">−</button>
+      <input id="zoomRange" type="range" min="0" max="1000" value="0">
+      <button id="zoomIn" title="התקרבות (+)">+</button>
+      <button id="zoomFit" class="txt" title="להציג את כל הציר">הכל</button>
+    </div>
+
+    <button id="playBtn" class="txt" data-i18n-title="playTitle" title="מסע אוטומטי על הציר">
+      <span data-i18n="play">▶ מסע</span></button>
+    <button id="muteBtn" data-i18n-title="muteTitle" title="השתקת מוסיקת הרקע">🔊</button>
+    <div class="langs" id="langs">
+      <button data-lang="he" class="txt">עב</button>
+      <button data-lang="en" class="txt">EN</button>
+      <button data-lang="ar" class="txt">ع</button>
+    </div>
+    <a class="txt btn backlink" id="backSite" href="https://www.the-samaritans.net/"
+       data-i18n="backToSite" title="חזרה לאתר">↩ לאתר</a>
+    <button id="helpBtn" class="txt" data-i18n-title="helpTitle" title="הסבר">?</button>
+  </div>
+</header>
+
+<div id="filters">
+  <span class="flabel">שכבות:</span>
+  <label class="chip" data-track="samaritan"><input type="checkbox" checked> תולדות השומרונים</label>
+  <label class="chip" data-track="israel"><input type="checkbox" checked> עם ישראל ויהודה</label>
+  <label class="chip" data-track="torah"><input type="checkbox" checked> ימי המקרא</label>
+  <label class="chip" data-track="world"><input type="checkbox" checked> העולם והשלטונות</label>
+  <label class="chip" data-track="people"><input type="checkbox"> אישים וחוקרים</label>
+  <span class="flabel sep">רצועות:</span>
+  <label class="chip" data-roster="priests"><input type="checkbox" checked> כהנים גדולים</label>
+  <label class="chip" data-roster="pm"><input type="checkbox" checked> ראשי ממשלה</label>
+  <label class="chip" data-roster="pres"><input type="checkbox" checked> נשיאים</label>
+  <label class="chip" data-chart="pop"><input type="checkbox" checked> גרף האוכלוסייה</label>
+</div>
+
+<main id="main">
+
+  <!-- הסרגל האנכי: מציג את החלק היחסי של הציר כולו -->
+  <aside id="rail" title="גרירה כאן מזיזה את ציר הזמן">
+    <div id="railTrack">
+      <div id="railFill"></div>
+      <div id="railWindow"></div>
+    </div>
+  </aside>
+
+  <section id="viewport">
+    <div id="stage">
+      <div id="bands"></div>      <!-- רצועות רקע: תקופות שלטון -->
+      <div id="popChart"></div>   <!-- עקומת האוכלוסייה השומרונית -->
+      <div id="ruler"></div>      <!-- סרגל השנים -->
+      <div id="rosters"></div>    <!-- רצועות נושאי המשרה -->
+      <div id="lanes"></div>      <!-- האירועים -->
+      <div id="gridlines"></div>
+    </div>
+  </section>
+
+  <!-- הסרגל האנכי הימני: כמה שומרונים היו בעולם באותה עת -->
+  <aside id="popAxis"><div class="pa-title" data-i18n="popAxis">אוכלוסייה</div></aside>
+
+  <!-- נקודת ה-0: קו קבוע שאינו זז, ציר הזמן חולף מתחתיו -->
+  <div id="playhead">
+    <div class="ph-line"></div>
+    <div class="ph-readout">
+      <b id="phGreg">—</b>
+      <span id="phCreation">—</span>
+      <span id="phCanaan">—</span>
+      <em id="phPriest"></em>
+    </div>
+  </div>
+</main>
+
+<!-- מוסיקת הרקע של המסע -->
+<audio id="bgm" src="assets/audio/journey.mp3" preload="none" loop></audio>
+
+<footer id="foot">
+  <span class="copy">© כל הזכויות שמורות ל־Osher Sassoni</span>
+  <a href="https://www.the-samaritans.net" target="_blank" rel="noopener">www.the-samaritans.net</a>
+  <a href="https://www.onyx-apps.com" target="_blank" rel="noopener">www.onyx-apps.com</a>
+  <span class="foot-brand" data-i18n="brand">אבני שהם — פרויקט האב</span>
+</footer>
+
+<!-- כרטיס פרטי אירוע -->
+<div id="card" hidden>
+  <button class="close" id="cardClose">×</button>
+  <div class="card-year" id="cardYear"></div>
+  <h2 id="cardTitle"></h2>
+  <div class="card-eras" id="cardEras"></div>
+  <p id="cardBody"></p>
+  <div class="card-priest" id="cardPriest"></div>
+  <div class="card-src" id="cardSrc"></div>
+</div>
+
+<!-- חלון עזרה -->
+<div id="help" hidden>
+  <div class="help-inner">
+    <button class="close" id="helpClose">×</button>
+    <h2 data-i18n="helpH">איך משתמשים בציר</h2>
+    <ul>
+      <li data-i18n="help1"><b>הסרגל האנכי שמשמאל</b> מציג את החלק היחסי שאתם רואים מתוך הציר כולו. גרירה שלו כלפי מטה מסיעה את ציר הזמן שמאלה, קדימה אל ימינו. הציר עצמו רץ משמאל לימין: הבריאה בקצה השמאלי, ימינו בקצה הימני.</li>
+      <li data-i18n="help2"><b>נקודת ה־0</b> היא הקו הזהוב הקבוע בקצה השמאלי: הוא אינו זז, וציר הזמן חולף תחתיו. לידו מוצגות השנה הגרגוריאנית, השנה לבריאת העולם, השנה לכניסה לארץ כנען ושמות נושאי המשרה שכיהנו אז — הכהן הגדול, ומשנת 1948 גם ראש הממשלה ונשיא המדינה.</li>
+      <li data-i18n="help3">גלילה עם העכבר, גרירה של הציר, או מקשי החיצים — מזיזים את הזמן. <b>Ctrl+גלגלת</b> או כפתורי + / − משנים את קנה המידה.</li>
+      <li data-i18n="help5">הסרגל האנכי שמימין מודד את מספר השומרונים בעולם באותה עת.</li>
+      <li data-i18n="help4">לחיצה על אירוע פותחת את פרטיו ואת המקור שממנו נלקח.</li>
+    </ul>
+    <h3 data-i18n="helpH2">מניני השנים</h3>
+    <p data-i18n="helpEras">
+      <b>לכניסה לארץ כנען</b> = השנה הגרגוריאנית + 1638, על פי מנוע לוח השנה השומרוני.
+      <b>לבריאת העולם</b> = מניין כנען + 2800, כפי שנדפס בלוחות השומרוניים.
+      חשבון התורה עצמו (נוסח שומרון) נותן 1307 שנה מהבריאה למבול, 942 עד לידת אברהם,
+      430 שנות מגורים בכנען ובמצרים ו־40 שנות מדבר.
+    </p>
+    <div class="credits" id="credits"></div>
+  </div>
+</div>
+
+<script src="js/i18n.js?v=1.0.11"></script>
+<script src="js/chrono.js?v=1.0.11"></script>
+<script src="data/credits.js?v=1.0.11"></script>
+<script src="data/periods.js?v=1.0.11"></script>
+<script src="data/rosters.js?v=1.0.11"></script>
+<script src="data/events.js?v=1.0.11"></script>
+<script src="data/population.js?v=1.0.11"></script>
+<script src="data/i18n_data.js?v=1.0.11"></script>
+<script src="js/app.js?v=1.0.11"></script>
+</body>
+</html>
