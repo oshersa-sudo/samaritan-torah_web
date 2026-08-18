@@ -3137,7 +3137,10 @@ async function pixLoad() {
   // Somebody in the picture first, and the feast's own before the general.
   // Pictures that plainly have nobody in them are dropped outright, so long
   // as enough are left without them.
-  const scored = pool.map(p => ({ p, s: pixPeople(p) }))
+  // shuffled first, so that pictures of equal standing — same rank, same
+  // score — come up in a different order every time; the sort below is
+  // stable, so it settles the tiers without undoing the shuffle inside them
+  const scored = pixShuffle(pool.map(p => ({ p, s: pixPeople(p) })))
     .sort((a, b) => (b.s - a.s) || (a.p.rank - b.p.rank));
   const kept = scored.filter(x => x.s >= 0).map(x => x.p);
   const rest = scored.filter(x => x.s < 0).map(x => x.p);
@@ -3147,9 +3150,25 @@ async function pixLoad() {
   return true;
 }
 
+function pixShuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 /* A search comes back in the order the files were uploaded, which means one
- * photographer's whole afternoon in a row. Dealt round by photographer
- * instead, so that the pictures — and the name under them — keep changing. */
+ * photographer's whole afternoon in a row, and the same run every time. So
+ * the pictures are both shuffled and dealt round by photographer: shuffled,
+ * so that no two hearings show the same sequence; dealt round, so that the
+ * name under the picture keeps changing rather than one hand holding the
+ * screen for a dozen frames together.
+ *
+ * The shuffling happens inside each photographer's own pile and again over
+ * the order the piles are dealt in, which keeps both properties at once —
+ * and the pictures that suit this recording still lead, because they were
+ * already sorted to the front before any of this. */
 function pixSpread(list) {
   const by = new Map();
   list.forEach(p => {
@@ -3157,8 +3176,12 @@ function pixSpread(list) {
     if (!by.has(k)) by.set(k, []);
     by.get(k).push(p);
   });
-  // the photographers whose pictures came closest to this recording deal first
-  const hands = [...by.values()].sort((a, b) => (a[0].rank || 0) - (b[0].rank || 0));
+  const hands = [...by.values()];
+  hands.forEach(pixShuffle);
+  pixShuffle(hands);
+  // …but a hand whose pictures came closest to this recording still deals
+  // first, so the feast is not shuffled away altogether
+  hands.sort((a, b) => (a[0].rank || 0) - (b[0].rank || 0));
   const out = [];
   for (let n = 0; out.length < list.length; n++) {
     let any = false;
