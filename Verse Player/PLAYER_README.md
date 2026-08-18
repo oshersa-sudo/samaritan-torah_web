@@ -3,7 +3,26 @@
 כלי מקומי לבדיקה וכוונון של חלוקת ההקלטות (מאיר + עדי קריאה) לפרקים שומרוניים,
 עם sync דו-כיווני מול האתר החי.
 
-## הרצה
+## הרצה — האפליקציה הארוזה (VersePlayer.exe)
+
+`Verse Player/VersePlayer.exe` הוא הכלי כולו בקובץ אחד: אין צורך ב-Python,
+בטרמינל או בזכירת כתובת. לחיצה כפולה מפעילה את השרת ופותחת את הדפדפן.
+סוגרים את החלון השחור כדי לכבות.
+
+**איפה הוא מחפש את ההקלטות** (לפי הסדר): משתנה הסביבה `TORAH_ROOT` ← קובץ
+`verse-player.ini` לצד ה-exe (שורה אחת: `root=C:\נתיב\לפרויקט`) ← שתי רמות
+מעל ה-exe ← מיקומים מוכרים. אם לא נמצא — מוצגת הודעה מסבירה, לא קריסה.
+
+**בדיקה עצמית**: `VersePlayer.exe --selftest` מוודא שהוא מוצא את הפרויקט,
+טוען את השרת, ומצליח לבנות מחדש את דף הנגן — שימושי כשמשהו לא עולה.
+
+ה-exe אינו נשמר ב-git (32MB, ניתן לבנייה מחדש). לבנייה:
+
+```
+py -3 -m PyInstaller --noconfirm --onefile --name VersePlayer --paths "Verse Player" --hidden-import player_server --hidden-import build_player --hidden-import audio_analysis --hidden-import numpy --collect-submodules yt_dlp "Verse Player/verse_player_app.py"
+```
+
+## הרצה — מתוך הקוד
 
 **קיצור-דרך**: הרץ (או צור קיצור-דרך אליו בשולחן העבודה) את
 `Verse Player/run_player.bat` — פותח את הדפדפן וגם מפעיל את השרת

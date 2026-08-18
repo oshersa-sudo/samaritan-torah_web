@@ -65,7 +65,25 @@ import audio_analysis
 # (main clone + a `git worktree` for web-deploy), and a hardcoded path made the
 # tool silently read the OTHER checkout - wrong branch, no audio files.
 # Override with the TORAH_ROOT env var if you ever need to point elsewhere.
-TORAH = Path(os.environ.get("TORAH_ROOT") or Path(__file__).resolve().parent.parent)
+def _project_root():
+    """<root>/Verse Player/<this file>  ->  <root>.
+
+    In a PyInstaller build __file__ points inside the unpacked temp directory,
+    so the location that means anything is the .exe itself. TORAH_ROOT wins
+    over both, which is how the packaged app is pointed at the recordings when
+    it is not sitting inside the project."""
+    env = os.environ.get("TORAH_ROOT")
+    if env:
+        return Path(env)
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent.parent
+    return Path(__file__).resolve().parent.parent
+
+
+TORAH = _project_root()
+# build_player reads the same variable, and in a frozen build it cannot work
+# the root out for itself either.
+os.environ["TORAH_ROOT"] = str(TORAH)
 WEB = TORAH / "web"
 READINGS = WEB / "static" / "audio" / "readings"
 READINGS_JSON = READINGS / "readings.json"
@@ -588,6 +606,22 @@ def run_in(cwd, cmd):
     return p.stdout
 
 
+def rebuild_player():
+    """Regenerate web/player-all.html after the manifest changed.
+
+    This used to shell out to `python build_player.py`. A packaged build has
+    neither a python on PATH nor a .py file on disk to hand it, so the build
+    runs in-process instead: build_player does all its work at import time, so
+    re-importing it is the rebuild. It is also faster than spawning a process.
+    """
+    import importlib
+    mod = sys.modules.get("build_player")
+    if mod is None:
+        import build_player          # the import itself is the build
+    else:
+        importlib.reload(mod)        # every later call re-runs it
+
+
 def cleanup_orphan_staging():
     """Delete any _redl* staging file left in READINGS that isn't referenced
     by the current readings.json - leftovers from an abandoned/superseded
@@ -808,7 +842,7 @@ class Handler(BaseHTTPRequestHandler):
                 else:
                     raise RuntimeError("unknown kind")
                 # rebuild the player so it reflects the new state on next open
-                subprocess.run(["python", str(Path(__file__).parent / "build_player.py")], check=False)
+                rebuild_player()
                 self._send_json({"ok": True, "result": result})
             except Exception as e:
                 self._send_json({"ok": False, "error": str(e)}, 500)

@@ -51,3 +51,10 @@ data/dict_expand/proposals.tsv
 data/dict_expand/phrase_candidates.tsv
 data/dict_expand/*.pkl
 data/dict_expand/dictionary_backup_pre_expand.sql
+
+# Verse Player packaging: the .exe is a 32MB build artifact, rebuildable from
+# verse_player_app.py, and this repo is already very large.
+/Verse Player/dist/
+/Verse Player/VersePlayer.exe
+/Verse Player/VersePlayer.spec
+/Verse Player/verse-player.ini
