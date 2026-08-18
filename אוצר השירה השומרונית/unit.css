@@ -567,6 +567,31 @@ body{
 .deckwin .mx-kn,
 .deckwin .mx-swb{touch-action:none}
 .deckwin{overscroll-behavior:contain}
+
+/* ---- the mixer is a control panel, not a page.
+ *
+ * Two things followed from its being built out of ordinary HTML. Each fader
+ * sits in a <label>, and pressing a label selects its text — so setting a
+ * level left the word beside it highlighted in blue, which is not something
+ * a machine does. And a drag on the panel was a drag on the document, so
+ * pushing a fader scrolled the archive along behind the deck.
+ *
+ * Both are told here that this is a panel: nothing on it is text to be
+ * selected, and a gesture on it belongs to the control under the finger and
+ * goes no further. */
+.mixer, .mixer *{
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.mixer{
+  touch-action:none;
+  overscroll-behavior:contain;
+}
+/* the ring is for whoever is on the keyboard; it has no business appearing
+   under a mouse or a finger */
+.mixer :focus{outline:none}
+.mixer :focus-visible{outline:2px solid #6ab6ff;outline-offset:1px}
 /* the window never grows past the screen — opening the mixer scrolls the
    body instead of pushing the title bar off the top */
 .dw-body{padding:12px;overflow-y:auto;overscroll-behavior:contain;
