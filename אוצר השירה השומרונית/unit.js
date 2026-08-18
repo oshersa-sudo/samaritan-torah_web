@@ -99,7 +99,20 @@ function drawChips() {
   $('chips').querySelectorAll('button').forEach(b => {
     b.onclick = () => { F[b.dataset.k] = 0; draw(); };
   });
+  // the one key that puts everything back — only worth showing when there is
+  // something to clear
+  $('clearAll').classList.toggle('hidden', !(F.q || F.perf || F.event || F.piyyut));
 }
+
+/* back to the whole archive, ready for a fresh search */
+function clearFilters() {
+  F.q = ''; F.perf = 0; F.event = 0; F.piyyut = 0;
+  $('q').value = '';
+  $('qclear').classList.add('hidden');
+  draw();
+  $('q').focus();
+}
+$('clearAll').onclick = clearFilters;
 const chip = (label, val, key) =>
   `<span class="chip"><b>${esc(label)}:</b> ${esc(val)}` +
   `<button data-k="${key}" title="הסר">✕</button></span>`;
@@ -382,8 +395,8 @@ function playRec(recId, idx, quiet) {
   deckLabel(r, idx);
   $('dwName').textContent = r.ttl;
   markPlaying();
-  $('ptitle').textContent = r.ttl + (r.tr.length > 1 ? ` · רצועה ${idx + 1}/${r.tr.length}` : '');
-  $('psub').textContent   = `${perfName(r.p)} · ${eventName(r.e)}`;
+  setLine('ptitle', r.ttl + (r.tr.length > 1 ? ` · רצועה ${idx + 1}/${r.tr.length}` : ''));
+  setLine('psub', `${perfName(r.p)} · ${eventName(r.e)}`);
   syncBtn();                 // never write into #pbtn — it holds the two icons
   clearErr();
   markPlaying();
@@ -884,8 +897,10 @@ function writeRecLabels(secs) {
   $('cLine2').textContent = new Date().getFullYear();
   $('cParts').textContent = 'REC';
   $('cTime').textContent  = `${dur(secs)} / ● REC`;
-  $('ptitle').textContent = m.title || 'הקלטה חדשה';
-  $('psub').textContent   = [m.performer, m.event].filter(Boolean).join(' · ');
+  if ($('ptitle').textContent !== (m.title || 'הקלטה חדשה')) {
+    setLine('ptitle', m.title || 'הקלטה חדשה');       // only on a real change:
+    setLine('psub', [m.performer, m.event].filter(Boolean).join(' · '));
+  }                                                    // the counter ticks 4×/s
   $('dwName').textContent = 'מקליט…';
 }
 
@@ -1124,9 +1139,14 @@ let RESTORE = localStorage.getItem('shira_restore') !== 'off';
 function restoreApply() {
   const n = MIX.nodes;
   if (n) {
-    // stepping past it is a matter of making each filter transparent
+    // Stepping past it means making each filter transparent. A notch is
+    // bypassed by narrowing it to nothing and moving it out of the way —
+    // NOT by dropping its Q, which widens the notch until it swallows
+    // everything and the recording falls silent.
     n.rHP.frequency.value = RESTORE ? 62 : 10;
-    n.rN1.Q.value = n.rN2.Q.value = RESTORE ? 18 : 0.0001;
+    n.rN1.frequency.value = RESTORE ? 50 : 21000;
+    n.rN2.frequency.value = RESTORE ? 100 : 21000;
+    n.rN1.Q.value = n.rN2.Q.value = RESTORE ? 18 : 1000;
     n.rHS.gain.value = RESTORE ? -5 : 0;
     n.rLim.threshold.value = RESTORE ? -6 : 0;
     n.rLim.ratio.value     = RESTORE ? 12 : 1;
@@ -1186,8 +1206,11 @@ function fxApply() {
   if (n) {
     n.wet.gain.value = ECHO_WET[FX.echo] || 0;
     n.fb.gain.value  = FX.echo >= 3 ? .42 : .3;
-    // a notch only bites when its Q is high; widening it to nothing bypasses it
-    n.hum1.Q.value = n.hum2.Q.value = FX.denoise ? 24 : 0.0001;
+    // bypassed the same way as the restoration notches: narrowed to nothing
+    // and parked above hearing, never by lowering Q
+    n.hum1.frequency.value = FX.denoise ? 50  : 21000;
+    n.hum2.frequency.value = FX.denoise ? 100 : 21000;
+    n.hum1.Q.value = n.hum2.Q.value = FX.denoise ? 24 : 1000;
     // ratio 1 is a compressor doing nothing; 20 to 1 at −2 dB is a ceiling
     n.lim.threshold.value = FX.limit ? -2 : 0;
     n.lim.ratio.value     = FX.limit ? 20 : 1;
@@ -1868,6 +1891,26 @@ function trackName(r, idx) {
   return r.tr.length > 1 ? `${r.ttl} · ${idx + 1}/${r.tr.length}` : r.ttl;
 }
 
+/* Put a line in the panel, and set it travelling if it does not fit.
+ * The distance is whatever hangs off the edge, and the time is proportional
+ * to it, so a very long name does not race past. */
+function setLine(id, text) {
+  const el = $(id);
+  el.classList.remove('roll');
+  el.innerHTML = '';
+  const span = document.createElement('span');
+  span.textContent = text || '';
+  el.appendChild(span);
+  // measured straight away: reading scrollWidth forces the layout, so the
+  // figure is right here. A frame callback would be cleaner but never fires
+  // in a tab that is not painting, and the line would then sit truncated.
+  const over = span.scrollWidth - el.clientWidth;
+  if (over <= 4) return;
+  el.style.setProperty('--shift', over + 'px');
+  el.style.setProperty('--dur', Math.max(9, Math.round(over / 14) + 7) + 's');
+  el.classList.add('roll');
+}
+
 /* the cassette's label carries the track and the performer */
 function deckLabel(r, idx) {
   const cut = (s, n) => (s || '').length > n ? s.slice(0, n - 1) + '…' : (s || '');
@@ -1910,9 +1953,28 @@ for (const [k, src] of Object.entries(SOUNDS)) {
   SFX[k].preload = 'auto';
 }
 
+/* The transport's own noises can be switched off without touching the
+ * recording. The choice is the listener's and stays on their device. */
+let QUIET = localStorage.getItem('shira_quiet') === '1';
+
+function paintQuiet() {
+  const b = $('dwQuiet');
+  b.setAttribute('aria-pressed', QUIET ? 'true' : 'false');
+  b.title = QUIET ? 'נקישות המקשים מושתקות — לחיצה תחזיר אותן'
+                  : 'השתקת נקישות המקשים';
+}
+$('dwQuiet').onclick = () => {
+  QUIET = !QUIET;
+  if (QUIET) Object.keys(SFX).forEach(sfxStop);   // cut anything sounding now
+  localStorage.setItem('shira_quiet', QUIET ? '1' : '');
+  paintQuiet();
+  toast(QUIET ? 'נקישות המקשים מושתקות' : 'נקישות המקשים חזרו');
+};
+paintQuiet();
+
 function sfx(name) {
   const a = SFX[name];
-  if (!a || au.muted) return;
+  if (!a || au.muted || QUIET) return;
   // the cues are normalised to about -16 LUFS, so they sit just under the
   // recording rather than needing to be attenuated away to nothing
   a.volume = Math.min(1, Math.max(0.25, (au.volume || 0) * 0.9));

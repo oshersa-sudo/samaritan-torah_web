@@ -296,6 +296,9 @@
       <select id="sort"></select>
     </label>
     <div id="chips" class="chips"></div>
+    <!-- מרוקן את החיפוש ואת כל הסינונים בבת אחת, לקראת חיפוש חדש -->
+    <button id="clearAll" class="clear-all hidden"
+            title="ניקוי החיפוש וכל הסינונים">✕ נקה סינון</button>
   </div>
 </div>
 
@@ -403,6 +406,19 @@
     <span class="dw-name" id="dwName">נגן הקלטות</span>
     <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר ונושאת את שם היצרן -->
     <span class="dw-handle" aria-hidden="true"><i><b>Panasonic</b></i></span>
+    <!-- משתיק את נקישות המקשים בלבד; ההקלטה עצמה אינה מושפעת -->
+    <button class="dw-btn dw-quiet" id="dwQuiet" aria-pressed="false"
+            title="השתקת נקישות המקשים">
+      <!-- אצבע הלוחצת על מקש; כשהנקישות מושתקות מתווסף סימן אין־כניסה -->
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path class="q-hand" d="M13.4 9.9V4.7a1.75 1.75 0 0 0-3.5 0v7.9L8.4 11a1.55 1.55 0 0 0-2.3 2.1l3.1 3.6a4.5 4.5 0 0 0 3.4 1.5h1.9a3.9 3.9 0 0 0 3.9-3.9v-2.6a1.5 1.5 0 0 0-3 0v-.5a1.5 1.5 0 0 0-3 0z"/>
+        <rect class="q-key" x="4.4" y="19.9" width="15.2" height="2.5" rx="1.25"/>
+        <g class="q-no">
+          <circle cx="17.6" cy="6.4" r="5" fill="none" stroke-width="2"/>
+          <path d="M14.1 6.4h7" stroke-width="2" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </button>
     <button class="dw-btn" id="dwMin" title="מזער">─</button>
     <button class="dw-btn" id="dwClose" title="סגור">✕</button>
   </header>

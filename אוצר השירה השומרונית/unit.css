@@ -401,8 +401,9 @@ body{
 }
 /* the title is capped short of the handle, so the buttons need an explicit
    shove to the far edge — otherwise they follow the title into the middle
-   and land on top of it */
-#dwMin{margin-inline-start:auto}
+   and land on top of it. The shove goes on the FIRST of the group, so all
+   three travel together and none is left stranded by the title. */
+#dwQuiet{margin-inline-start:auto}
 .dw-btn{
   position:relative;z-index:1;
   border:1px solid #14181e;background:linear-gradient(180deg,#4b515a,#31363d);
@@ -412,6 +413,17 @@ body{
 }
 .dw-btn:hover{background:linear-gradient(180deg,#5a616b,#3b4149);color:#fff}
 .dw-btn:active{box-shadow:inset 0 2px 3px rgba(0,0,0,.55)}
+/* the key that silences the transport's own clicks */
+.dw-quiet{padding:3px 6px;line-height:0}
+.dw-quiet svg{width:15px;height:15px;display:block}
+.dw-quiet .q-hand{fill:#cfd6e2}
+.dw-quiet .q-key{fill:#8b94a5}
+.dw-quiet .q-no{display:none;stroke:#ff4a3d}
+/* silenced: the finger dims and the sign appears over it */
+.dw-quiet[aria-pressed="true"] .q-hand{fill:#7c8496}
+.dw-quiet[aria-pressed="true"] .q-key{fill:#5a626f}
+.dw-quiet[aria-pressed="true"] .q-no{display:block}
+.dw-quiet[aria-pressed="true"]{background:linear-gradient(180deg,#3a2f2e,#241c1b)}
 /* Nothing inside the deck may drag the page behind it: a finger on a slider
    is adjusting that slider, not scrolling the archive underneath. */
 .deckwin input[type=range],
@@ -663,6 +675,15 @@ body{
   padding:4px 7px;border-radius:6px;
 }
 .qclear:hover{background:#eceef4;color:var(--dark)}
+/* clears the search box and every chip at once, back to the whole archive */
+.clear-all{
+  flex:0 0 auto;margin-inline-start:auto;
+  border:1px solid #d8c9c7;border-radius:999px;padding:5px 12px;cursor:pointer;
+  background:#fbf1f0;color:#8c2f2c;font-family:inherit;font-size:.8rem;
+  font-weight:600;white-space:nowrap;
+}
+.clear-all:hover{background:#f5e2e0;border-color:#c9a9a6}
+.clear-all:active{transform:translateY(1px)}
 .barrow{
   max-width:1080px;margin:0 auto;padding:9px 0 11px;
   display:flex;align-items:center;gap:12px;flex-wrap:wrap;
@@ -1034,8 +1055,20 @@ body{
   box-shadow:inset 0 2px 5px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.07);
 }
 .pmeta-txt{flex:1 1 auto;min-width:0}
-.ptitle{font-weight:600;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.psub{font-size:.76rem;opacity:.72;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ptitle{font-weight:600;font-size:.9rem;overflow:hidden;white-space:nowrap}
+.psub{font-size:.76rem;opacity:.72;overflow:hidden;white-space:nowrap}
+.ptitle>span,.psub>span{display:inline-block;will-change:transform}
+/* A name too long for the panel is not cut off: it travels far enough to
+   show its whole length, waits at each end, and comes back — over and over,
+   so the reader can catch it whenever they look up. */
+.ptitle.roll>span,.psub.roll>span{
+  animation:rollname var(--dur,12s) ease-in-out infinite;
+}
+@keyframes rollname{
+  0%,10%   {transform:translateX(0)}
+  48%,60%  {transform:translateX(var(--shift,0px))}
+  98%,100% {transform:translateX(0)}
+}
 /* The little segment display under the panel text. It is empty and collapsed
    until something is put on it, then the message crosses it once, right to
    left, and it folds away again. */
