@@ -220,29 +220,40 @@ body.div-collapsed .div-handle{ height:26px; }
    is measured and scaled to the width available; see fitBookPoem(). */
 .bkpoem{ display:flex; justify-content:center; overflow:hidden; padding:10px 14px 6px; }
 /* the quill rule above the poem and, turned about, below it */
-.ornframe{ width:100%; max-width:100%; box-sizing:border-box;
-           display:flex; flex-direction:column; align-items:center; gap:9px;
-           position:relative; isolation:isolate; border-radius:10px; padding:16px 12px 14px; }
-/* ── the open codex the poem is set upon ────────────────────────────────────
+.ornframe{ width:100%; max-width:min(100%, 620px); box-sizing:border-box;
+           display:flex; flex-direction:column; align-items:center; justify-content:center;
+           gap:9px; position:relative; isolation:isolate; border-radius:10px; padding:12px 14px;
+           aspect-ratio:1.7202; }          /* the plate's own proportion — see below */
+/* ── the open codex the poem is written upon ────────────────────────────────
    The photograph of the manuscript is the frame's own background, not a picture
-   of its own: it covers the frame's box, is clipped by the frame's rounded
-   corners, and the frame is only ever as wide as the book list itself — so
-   however wide the page grows, the codex cannot spill past the menu. The file
-   (poem_manuscript.jpg) is already lightened: the photograph is dark and the
-   poem is written in gold, so the plate was blended toward the app's parchment
-   until the writing sits plainly upon it and the manuscript still shows through. */
+   of its own. The frame is given the plate's exact proportion (578×336 after the
+   left margin, which is not part of the book, was cut away), so the background
+   fills it corner to corner with the WHOLE book in view — nothing cropped, and
+   nothing stretched. Its width is the book list's, capped, so the codex can
+   never spill past the menu; fitBookPoem() then takes the type down to whatever
+   room is left inside, in height as well as in width. */
 .ornframe::before{
   content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit;
-  background:url('/static/img/poem_manuscript.jpg') center/cover no-repeat #f7f4ea;
-  box-shadow:inset 0 0 0 1px rgba(138,106,31,.16);
+  background:url('/static/img/poem_manuscript.jpg') center/100% 100% no-repeat #efe9dc;
+  box-shadow:inset 0 0 0 1px rgba(90,60,20,.22);
 }
+/* on a narrow telephone the page is small, so give its margins back to the poem */
+@media (max-width:420px){ .ornframe{ padding:8px 10px; gap:6px; } }
 .orn-rule{ width:100%; line-height:0; }
 .orn-rule svg{ display:block; width:100%; height:auto; }
 .orn-rule.bot{ transform:rotate(180deg); }
 .bkpoem-grid{ flex:0 0 auto; display:grid; grid-template-columns:max-content max-content;
               column-gap:1.1em; row-gap:.3em; direction:rtl; white-space:nowrap;
               font-family:'Hebrew',serif; font-size:23px; line-height:1.45;
-              color:#8a6a1f; text-shadow:0 1px 0 rgba(255,255,255,.6); }
+              /* letters burnt into the page: a charred core, a rim of live ember
+                 around it, and the scorch spreading out into the parchment */
+              color:#1e0a02;
+              text-shadow:0 0 1px rgba(255,222,158,.85),   /* the live rim */
+                          0 0 3px rgba(255,148,46,.72),
+                          0 0 6px rgba(198,68,8,.62),
+                          0 0 12px rgba(116,38,5,.52),
+                          0 0 24px rgba(58,24,5,.44),      /* smoke into the page */
+                          0 1px 1px rgba(18,7,1,.85); }
 /* nowrap keeps the half on one line; justifying the last line (which is also the
    only line) spreads its words across the whole column, so the colons line up */
 .bkpoem-cell{ text-align:justify; text-align-last:justify; }

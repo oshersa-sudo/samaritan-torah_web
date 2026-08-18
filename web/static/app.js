@@ -1230,10 +1230,11 @@ function bookPoem(){
 const POEM_MAX = 23, POEM_MIN = 7;
 function fitBookPoem(){
   const wrap = document.querySelector('.bkpoem'); if(!wrap) return;
-  const grid = wrap.querySelector('.bkpoem-grid'), cs = getComputedStyle(wrap);
-  if(!grid) return;
-  // the room is the wrapper's CONTENT box: clientWidth still carries its padding
-  const avail = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 1;
+  const frame = wrap.querySelector('.ornframe'), grid = wrap.querySelector('.bkpoem-grid');
+  if(!grid || !frame) return;
+  const cs = getComputedStyle(frame);
+  // the room is the frame's CONTENT box: clientWidth still carries its padding
+  const avail = frame.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 1;
   if(avail <= 0) return;                       // not on screen yet
   grid.style.fontSize = POEM_MAX + 'px';
   const nat = grid.getBoundingClientRect().width;    // never shrinks: flex 0 0 auto
@@ -1241,7 +1242,20 @@ function fitBookPoem(){
   let px = Math.max(POEM_MIN, Math.min(POEM_MAX, POEM_MAX * avail / nat));
   grid.style.fontSize = px.toFixed(2) + 'px';
   const got = grid.getBoundingClientRect().width;    // one pass for the rounding
-  if(got > avail) grid.style.fontSize = Math.max(POEM_MIN, px * avail / got).toFixed(2) + 'px';
+  if(got > avail){
+    px = Math.max(POEM_MIN, px * avail / got);
+    grid.style.fontSize = px.toFixed(2) + 'px';
+  }
+  // The frame now holds the whole codex, so its height is fixed by the picture's
+  // proportion rather than by the poem. Take the type down again if the five
+  // couplets and the two rules would stand taller than the page they are on.
+  let room = frame.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  const gap = parseFloat(cs.rowGap) || 0;
+  for(const kid of frame.children)
+    if(kid !== grid) room -= kid.getBoundingClientRect().height + gap;
+  const tall = grid.getBoundingClientRect().height;
+  if(room > 0 && tall > room)
+    grid.style.fontSize = Math.max(POEM_MIN, px * room / tall).toFixed(2) + 'px';
 }
 
 // ── the books as the Samaritan tradition names them ──────────────────────────
