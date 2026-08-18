@@ -20,7 +20,9 @@ editing stays where the archive drive is.
 """
 import json
 import os
+import re
 import sys
+import time
 import urllib.parse
 
 from flask import Blueprint, jsonify, redirect, request, send_from_directory
@@ -101,8 +103,123 @@ def api_whatsnew():
 
 @shira.route('/shira/api/admin/status')
 def api_admin_status():
-    """No admin online: editing the archive happens where the archive drive is."""
-    return jsonify({'enabled': False, 'user': '', 'readonly': True})
+    """Editing the catalog still happens where the archive drive is; recording
+    from a phone does not, so the sign-in is offered when it can be honoured."""
+    return jsonify({'enabled': bool(REC_PASSWORD), 'user': REC_USER,
+                    'readonly': True, 'can_record': bool(REC_PASSWORD)})
+
+
+# ------------------------------------------------------------ recording
+# A phone has no archive drive to write to, so a recording made in the app is
+# handed to this endpoint and passed straight on to the media server, into a
+# folder of its own for material that still has to be sorted. Nothing is kept
+# on Render: its disk resets with every deploy.
+REC_USER     = os.environ.get('SHIRA_REC_USER', '')
+REC_PASSWORD = os.environ.get('SHIRA_REC_PASSWORD', '')
+MEDIA_HOST   = os.environ.get('SHIRA_MEDIA_HOST', '')
+MEDIA_USER   = os.environ.get('SHIRA_MEDIA_USER', 'root')
+MEDIA_KEY    = os.environ.get('SHIRA_MEDIA_KEY', '')       # private key, PEM text
+MEDIA_PASS   = os.environ.get('SHIRA_MEDIA_PASSWORD', '')
+MEDIA_ROOT   = os.environ.get('SHIRA_MEDIA_ROOT', '/srv/shira/archive')
+PENDING_DIR  = 'pending'          # under MEDIA_ROOT, alongside the archive
+
+_AUDIO_EXT = ('.webm', '.m4a', '.mp4', '.ogg', '.opus', '.mp3', '.wav')
+
+
+def _safe(name, fallback):
+    """A file name safe for any filesystem, with the Hebrew left intact."""
+    name = re.sub(r'[\\/:*?"<>|\x00-\x1f]', ' ', (name or '')).strip()
+    name = re.sub(r'\s+', ' ', name)
+    return name[:110] or fallback
+
+
+def _sftp_put(data, remote_path):
+    """Write `data` to the media server. Returns (ok, error)."""
+    if not MEDIA_HOST or not (MEDIA_KEY or MEDIA_PASS):
+        return False, 'no_media_credentials'
+    try:
+        import io as _io
+        import paramiko
+    except ImportError:
+        return False, 'paramiko_missing'
+    try:
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        kw = {'username': MEDIA_USER, 'timeout': 20}
+        if MEDIA_KEY:
+            kw['pkey'] = paramiko.RSAKey.from_private_key(_io.StringIO(MEDIA_KEY))
+        else:
+            kw['password'] = MEDIA_PASS
+        client.connect(MEDIA_HOST, **kw)
+        sftp = client.open_sftp()
+        # make the folder chain, ignoring the parts that already exist
+        parts, path = remote_path.strip('/').split('/')[:-1], ''
+        for p in parts:
+            path += '/' + p
+            try:
+                sftp.stat(path)
+            except IOError:
+                sftp.mkdir(path)
+        with sftp.open(remote_path, 'wb') as fh:
+            fh.write(data)
+        sftp.close()
+        client.close()
+        return True, None
+    except Exception as e:                       # noqa: BLE001 — report, don't raise
+        return False, str(e)[:200]
+
+
+@shira.route('/shira/api/admin/login', methods=['POST'])
+def api_admin_login():
+    """The only thing that can be signed in for out here is recording."""
+    if not REC_PASSWORD:
+        return jsonify({'ok': False, 'disabled': True,
+                        'message': 'ההקלטה אינה מופעלת בשרת זה'}), 403
+    d = request.get_json(silent=True) or {}
+    user = (d.get('user') or '').strip()
+    pwd  = (d.get('password') or '').strip()
+    if user != REC_USER:
+        return jsonify({'ok': False, 'bad_user': True}), 401
+    if pwd != REC_PASSWORD:
+        return jsonify({'ok': False}), 401
+    # no token: the archive stays read-only here. The credentials come back so
+    # the page can present them with the recording it uploads, and nothing
+    # else on the site opens up.
+    return jsonify({'ok': True, 'record_only': True, 'user': user})
+
+
+@shira.route('/shira/api/record', methods=['POST'])
+def api_record():
+    """Take a recording made on the phone and put it on the media server."""
+    if not REC_PASSWORD:
+        return jsonify({'ok': False, 'error': 'recording_disabled',
+                        'message': 'ההקלטה אינה מופעלת בשרת זה'}), 403
+    if (request.form.get('user', '') != REC_USER
+            or request.form.get('password', '') != REC_PASSWORD):
+        return jsonify({'ok': False, 'error': 'unauthorized',
+                        'message': 'שם המשתמש או הסיסמה שגויים'}), 401
+
+    f = request.files.get('file')
+    if not f or not f.filename:
+        return jsonify({'ok': False, 'error': 'לא צורף קובץ שמע'}), 400
+    ext = os.path.splitext(f.filename)[1].lower()
+    if ext not in _AUDIO_EXT:
+        return jsonify({'ok': False, 'error': 'סוג קובץ לא נתמך'}), 400
+    data = f.read()
+    if not data:
+        return jsonify({'ok': False, 'error': 'הקובץ ריק'}), 400
+
+    piyyut = _safe(request.form.get('piyyut'), 'הקלטה')
+    perf   = _safe(request.form.get('performer'), 'לא ידוע')
+    stamp  = time.strftime('%Y-%m-%d %H%M%S')
+    rel    = '%s/%s/%s %s%s' % (PENDING_DIR, perf, piyyut, stamp, ext)
+    ok, err = _sftp_put(data, MEDIA_ROOT.rstrip('/') + '/' + rel)
+    if not ok:
+        return jsonify({'ok': False, 'error': err,
+                        'message': 'ההעלאה לשרת המדיה נכשלה'}), 502
+    return jsonify({'ok': True, 'stored': rel, 'bytes': len(data),
+                    'pending': True,
+                    'message': 'ההקלטה נשמרה בשרת המדיה וממתינה למיון'})
 
 
 @shira.route('/shira/api/<path:_sub>', methods=['POST'])
