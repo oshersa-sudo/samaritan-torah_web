@@ -1336,6 +1336,10 @@ function startPoemFire(){
       if(y + 4 < H && !fuel[i+2*W] && !fuel[i+3*W] && !fuel[i+4*W]) seats.push(i*4 + 3);
     }
   if(!seats.length) for(let i = 0; i < fuel.length; i++) if(fuel[i]) seats.push(i*4 + 2);
+  // the seats that face downward, kept apart: the underside of a line, and above
+  // all the underside of the last line, must throw its flames down as freely as
+  // the top of the poem throws them up
+  const downSeats = seats.filter(v => (v & 3) === 3);
   const SEAT_ANGLE = [Math.PI, 0, -Math.PI/2, Math.PI/2];   // left · right · up · down
   // a cell alight in the other column, on about the same line — the far end of a
   // flame that will span the gap between the two columns of the poem
@@ -1408,10 +1412,10 @@ function startPoemFire(){
   // returns to itself. What is left of the scar fades last of all.
   // the outline is drawn through the midpoints between one radius and the next,
   // so the burn has the soft, eaten edge of paper and not the points of a star
-  function scarPath(h, r, mul){
-    const n = h.pts.length, px = [], py = [];
+  function scarPath(h, r, mul, turn){
+    const n = h.pts.length, px = [], py = [], t = turn || 0;
     for(let k = 0; k < n; k++){
-      const a = k / n * Math.PI * 2, rr = r * mul * h.pts[k];
+      const a = k / n * Math.PI * 2, rr = r * mul * h.pts[(k + t) % n];
       px.push(h.cx + Math.cos(a)*rr*h.ax); py.push(h.cy + Math.sin(a)*rr*h.ay);
     }
     sx.beginPath();
@@ -1436,7 +1440,15 @@ function startPoemFire(){
       cx, cy, rmax: big, pts, side,
       ax: side === 1 || side === 2 ? 1.3 + Math.random()*.8 : 1,
       ay: side === 3 || side === 4 ? 1.3 + Math.random()*.8 : 1,
-      age: 0, burn: 14 + ((Math.random()*10)|0),
+      age: 0,
+      // paper does not go in a moment: the margin is eaten slowly, over some two
+      // to five seconds, and a hole in the body of the page a little faster
+      burn: edge ? 70 + ((Math.random()*80)|0) : 34 + ((Math.random()*46)|0),
+      // sometimes it is not one leaf that goes but two or three, one upon the
+      // other: the upper blackens and peels away, and the leaf beneath shows in
+      // a step within the step, scorched at its own edge
+      steps: 1 + ((Math.random()*3)|0),
+      peeled: false,
       // now and then the hole itself keeps a flame alight before it may close
       flame: Math.random() < .55 ? 40 + ((Math.random()*70)|0) : 0,
       glow: 18 + ((Math.random()*22)|0),
@@ -1482,16 +1494,29 @@ function startPoemFire(){
       if(r < .4) continue;
       live.push({ h, r, ember, fade });
     }
-    // the scorch first, wide and soft, then the char — the broad rim of the burn
+    // the scorch first, wide and soft; then the leaves, one within the other,
+    // each darker than the one above it and each with its own eaten edge — the
+    // steps of a burn that went through more than a single page
+    const STEP = .17;
     for(const o of live){
-      sx.globalAlpha = .22 * o.fade; sx.fillStyle = '#5c3816'; scarPath(o.h, o.r, 1.8);  sx.fill();
-      sx.globalAlpha = .62 * o.fade; sx.fillStyle = '#33200e'; scarPath(o.h, o.r, 1.34); sx.fill();
-      sx.globalAlpha = .88 * o.fade; sx.fillStyle = '#150c05'; scarPath(o.h, o.r, 1.06); sx.fill();
+      sx.globalAlpha = .22 * o.fade; sx.fillStyle = '#5c3816'; scarPath(o.h, o.r, 1.8); sx.fill();
+      const n = o.h.steps;
+      for(let s2 = 0; s2 < n; s2++){
+        const mul = 1.34 - s2*STEP, u2 = n > 1 ? s2/(n-1) : 1;
+        const c = [Math.round(74 - 60*u2), Math.round(48 - 40*u2), Math.round(24 - 20*u2)];
+        sx.globalAlpha = (.5 + .4*u2) * o.fade;
+        sx.fillStyle = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+        scarPath(o.h, o.r, mul, s2*5); sx.fill();
+      }
     }
     // and then the middle is taken clean away
     if(pierce){
       sx.globalCompositeOperation = 'destination-out';
-      for(const o of live){ sx.globalAlpha = 1; scarPath(o.h, o.r, .62); sx.fill(); }
+      for(const o of live){
+        sx.globalAlpha = 1;
+        scarPath(o.h, o.r, Math.max(.36, 1.34 - o.h.steps*STEP - .1), o.h.steps*5);
+        sx.fill();
+      }
       sx.globalCompositeOperation = 'source-over';
     }
     // a little fire lives on the charred rim — not a flame, but embers waking and
@@ -1531,15 +1556,24 @@ function startPoemFire(){
     scraps.push(s);
     return s;
   }
-  function throwScrap(){
+  // Scraps leave from the place that is burning: the leaf that blackened at the
+  // rim of a hole is the piece that peels off and flies. cx/cy are given in the
+  // page's own coordinates; if none are given the burn is somewhere unnamed and
+  // a point on the book's edge will do.
+  function throwScrap(cx, cy, howMany){
     if(!wind || scraps.length >= SCRAP_MAX) return;
     const b = frameEl.getBoundingClientRect();
     if(!b.width) return;
-    const side = (Math.random()*4)|0;
-    const px = side === 3 ? b.left : side === 2 ? b.right : b.left + Math.random()*b.width;
-    const py = side === 0 ? b.top  : side === 1 ? b.bottom : b.top + Math.random()*b.height;
+    let px, py;
+    if(cx === undefined){
+      const side = (Math.random()*4)|0;
+      px = side === 3 ? b.left : side === 2 ? b.right : b.left + Math.random()*b.width;
+      py = side === 0 ? b.top  : side === 1 ? b.bottom : b.top + Math.random()*b.height;
+    } else {
+      px = b.left + cx; py = b.top + cy;
+    }
     const out = px < innerWidth/2 ? -1 : 1;               // away, toward the nearer margin
-    const n = 1 + ((Math.random()*3)|0);                  // they leave in twos and threes
+    const n = howMany || (1 + ((Math.random()*3)|0));     // they leave in twos and threes
     for(let k = 0; k < n; k++)
       makeScrap(px + (Math.random()-.5)*14, py + (Math.random()-.5)*14,
                 4 + Math.random()*7,
@@ -1608,6 +1642,22 @@ function startPoemFire(){
       hot[x] = h;                                      // and how fiercely it burns
       dec[x] = FIRE_DECAY * (1.32 - .46*h);            // the fierce burn the taller
     }
+    // The rising comes FIRST and everything that is set alight comes after, so
+    // that what a flame touches this moment is still burning when the picture is
+    // taken. Before, the rising wiped a tongue's own mark in the same breath, and
+    // a flame thrown downward — with nothing hot beneath it — hardly showed.
+    for(let y = 0; y < H-1; y++){
+      const row = y*W, below = (y+1)*W;
+      for(let x = 0; x < W; x++){
+        const v = heat[below + x];
+        if(!v){ if(!fuel[row+x]) heat[row+x] = 0; continue; }
+        const nv = v - ((Math.random()*dec[x])|0);
+        let nx = x;
+        if(Math.random() < .62) nx += Math.random() < .5 + lean[x]*.42 ? 1 : -1;
+        if(nx < 0) nx = 0; else if(nx >= W) nx = W-1;
+        heat[row + nx] = nv > 0 ? nv : 0;
+      }
+    }
     // Now and then a tongue breaks out of a letter. Nothing about it is fixed:
     // the seat is drawn at random and so is its direction — roughly the way its
     // bare side faces, but wide of it by as much as a right angle, so tongues go
@@ -1616,8 +1666,9 @@ function startPoemFire(){
     // into a long lock falling and rising as it goes.
     if(frame >= nextFlare){
       nextFlare = frame + 16 + ((Math.random()*30)|0);
-      if(flares.length < 4){
-        const v = seats[(Math.random()*seats.length)|0];
+      if(flares.length < 5){
+        const pool = (downSeats.length && Math.random() < .42) ? downSeats : seats;
+        const v = pool[(Math.random()*pool.length)|0];
         const i = v >> 2, x0 = i % W, y0 = (i / W)|0;
         const target = Math.random() < .28 ? nearbyEmber(i) : -1;
         if(target >= 0){
@@ -1634,11 +1685,11 @@ function startPoemFire(){
           const down = Math.sin(ang) > .3;               // this one is aimed downward
           const sp = 1.15 + Math.random()*1.5;
           const fl = { x: x0, y: y0,
-                       vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp + (down ? .45 : -.25),
+                       vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp + (down ? .8 : -.25),
                        life: 34 + ((Math.random()*34)|0),
                        // a flame that goes down keeps going down a while before the
                        // heat in it turns it back up again
-                       lift: down ? .004 + Math.random()*.012 : .022 + Math.random()*.038,
+                       lift: down ? .0015 + Math.random()*.007 : .022 + Math.random()*.038,
                        curl: Math.random() < .45, ph: Math.random()*6.28,
                        amp: .10 + Math.random()*.30, rate: .07 + Math.random()*.22 };
           fl.max = fl.life;
@@ -1659,16 +1710,27 @@ function startPoemFire(){
                          sag: -(2 + Math.random()*7), ph: Math.random()*6.28 });
       }
     }
-    // and the page, burning, throws pieces of itself into the air
+    // The page throws pieces of itself into the air — but only from where it is
+    // actually burning. Each open burn sheds from its own rim while it is being
+    // eaten, and when the eating is done the blackened leaf peels away at once.
     if(frame >= nextScrap){
       nextScrap = frame + 34 + ((Math.random()*80)|0);
-      throwScrap();
+      const lit = holes.filter(h => h.age < h.burn + h.flame);
+      if(lit.length){
+        const h = lit[(Math.random()*lit.length)|0], a = Math.random()*6.283;
+        const rr = h.rmax * (.7 + Math.random()*.5);
+        throwScrap(h.cx + Math.cos(a)*rr*h.ax, h.cy + Math.sin(a)*rr*h.ay, 1);
+      }
     }
+    for(const h of holes)
+      if(!h.peeled && h.age >= h.burn){                   // the leaf comes away
+        h.peeled = true;
+        throwScrap(h.cx, h.cy, h.steps + 1);
+      }
     // a burn of its own now and then, so that in time every margin is eaten
     if(frame >= nextEdge){
       nextEdge = frame + 430 + ((Math.random()*470)|0);
       openBurn(0, 0, 1 + ((Math.random()*4)|0));
-      if(Math.random() < .35) throwScrap();
     }
     // a letter does not burn evenly: each stroke takes and gives up the flame
     for(let i = 0; i < fuel.length; i++)
@@ -1706,7 +1768,9 @@ function startPoemFire(){
     }
     for(let f = flares.length - 1; f >= 0; f--){
       const fl = flares[f];
-      const r = .6 + 1.15 * (fl.life / fl.max);         // it thins as it goes out
+      // a flame going downward is drawn fatter: the rising carries its mark up
+      // and away from it, so without that it would leave almost nothing behind
+      const r = .6 + 1.15 * (fl.life / fl.max) + (fl.vy > .2 ? .7 : 0);
       scorch(Math.round(fl.x), Math.round(fl.y), r, 236);
       // a thrown flame that reaches the letter it was aimed at bursts upon it
       if(fl.tx !== undefined &&
@@ -1730,23 +1794,10 @@ function startPoemFire(){
         openBurn(fl.x / sc, fl.y / sc, 0);
         // and while one place burns, another often catches at the same moment
         if(Math.random() < .3) openBurn(0, 0, 1 + ((Math.random()*4)|0));
-        if(Math.random() < .5) throwScrap();
         fl.life = 1;
       }
       if(--fl.life <= 0 || fl.y < -3 || fl.y > H + 3 || fl.x < -3 || fl.x > W + 3)
         flares.splice(f, 1);
-    }
-    for(let y = 0; y < H-1; y++){
-      const row = y*W, below = (y+1)*W;
-      for(let x = 0; x < W; x++){
-        const v = heat[below + x];
-        if(!v){ if(!fuel[row+x]) heat[row+x] = 0; continue; }
-        const nv = v - ((Math.random()*dec[x])|0);
-        let nx = x;
-        if(Math.random() < .62) nx += Math.random() < .5 + lean[x]*.42 ? 1 : -1;
-        if(nx < 0) nx = 0; else if(nx >= W) nx = W-1;
-        heat[row + nx] = nv > 0 ? nv : 0;
-      }
     }
     for(let i = 0, j = 0; i < heat.length; i++, j += 4){
       const k = heat[i] << 2;
