@@ -182,8 +182,9 @@ const PICTURES = [
 ];
 
 // ─── Constants ────────────────────────────────────────────
-const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5};
+const QUOTA = {vocab:10,cloze:25,reading:6,pics:10,match:6,balloons:5,listen:15,say:8};
 const TIME   = {vocab:300,cloze:600,reading:600,pics:600,match:210,balloons:180,
+                p7:600,p8:420,
                 hv:240,hb:210,hw:240,hs:240,wg:210,hr:600,
                 ma1:240,ma2:300,ma5:360,ma6:360,ma3:360,ma4:240,
                 sv:240,sw:240,sq:300,sr:600,
@@ -199,7 +200,7 @@ const LEVEL_NAME = Object.fromEntries(Object.entries(GRADE_LETTER).map(([k,v])=>
 // The maths part names shift with the grade (see MATH_HI_LABEL) — use partName()
 // anywhere the child or parent reads it, not the raw table.
 const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הבנת הנקרא",p4:"תיאור תמונה",
-                    p5:"התאמת מילים",p6:"בלונים",
+                    p5:"התאמת מילים",p6:"בלונים",p7:"הבנת הנשמע",p8:"הגייה ודיבור",
                     hv:"אוצר מילים",hb:"התאמת מילים",hw:"פירוש מילים",hs:"נרדפות והפכים",wg:"מילה או קשקוש",hr:"הבנת הנקרא",
                     ma1:"חיבור וחיסור",ma2:"כפל וחילוק",ma5:"שברים",ma6:"הנדסה וגיאומטריה",ma3:"בעיות מילוליות",ma4:"המספר החסר",
                     sv:"אוצר מילים במדע",sw:"פירוש מושגים",sq:"חידון טבע ומדע",sr:"הבנת הנקרא",
@@ -208,7 +209,7 @@ const PART_NAME  = {p1:"אוצר מילים",p2:"השלמת מילים",p3:"הב
                     gv:"מושגי גיאוגרפיה",gw:"פירוש מושגים",gq:"חידון מולדת וסביבה",gr:"הבנת הנקרא",
                     iv:"מושגי היסטוריה",iw:"פירוש מושגים",iq:"חידון היסטוריה",ir:"הבנת הנקרא"};
 // answers per part → used to normalise the score to /100
-const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,
+const PART_QUOTA = {p1:10,p2:25,p3:6,p4:10,p5:6,p6:5,p7:15,p8:8,
                     hv:10,hb:8,hw:10,hs:10,wg:10,hr:6,
                     ma1:10,ma2:10,ma5:10,ma6:8,ma3:6,ma4:8,
                     sv:10,sw:10,sq:10,sr:6,
@@ -295,6 +296,14 @@ function curSubject(){ return SUBJECTS[S.subject] || SUBJECTS.english; }
 // offered, and the score scales to the parts that are.
 function subjOrder(key,g){
   const s=SUBJECTS[key]; if(!s)return [];
+  if(key==="english"){
+    if(g<5)return s.order;
+    const add=[];
+    if(ttsOK())add.push("p7");        // listening needs a speech voice
+    if(micOK())add.push("p8");        // speaking needs speech recognition
+    if(!add.length)return s.order;
+    return ["p1","p2",...add,"p3","p4","p5","p6"];
+  }
   if(key!=="math")return s.order;
   if(g<=1)return ["ma1","ma4","ma3","ma6"];
   if(g<=2)return ["ma1","ma2","ma4","ma5","ma3","ma6"];
@@ -343,12 +352,23 @@ function seenSet(kind,arr,cap){ if(S.phone)sSet(`seen:${S.phone}:${kind}`,arr.sl
 function pickFresh(pool,kind,n,idFn){
   idFn=idFn||_idOf;
   const seen=new Set(seenGet(kind));
-  let fresh=pool.filter(x=>!seen.has(idFn(x)));
-  if(fresh.length<n){ fresh=pool.slice(); seen.clear(); }   // pool exhausted → new cycle
-  const chosen=shuffle(fresh).slice(0,Math.min(n,pool.length));
-  chosen.forEach(x=>seen.add(idFn(x)));
+  const fresh=shuffle(pool.filter(x=>!seen.has(idFn(x))));
+  const want=Math.min(n,pool.length);
+  // Take every unseen item first, and only then top up from what was seen
+  // before. Wiping the memory the moment the pool ran short used to throw away
+  // the freshness that was still there — a second sitting on a 25-question
+  // bank repeated nine of the fifteen instead of the five it had to.
+  let chosen=fresh.slice(0,want);
+  if(chosen.length<want){
+    const old=shuffle(pool.filter(x=>seen.has(idFn(x))));
+    chosen=chosen.concat(old.slice(0,want-chosen.length));
+    seen.clear();                                   // a new cycle starts here
+    chosen.forEach(x=>seen.add(idFn(x)));
+  }else{
+    chosen.forEach(x=>seen.add(idFn(x)));
+  }
   seenSet(kind,[...seen],pool.length);
-  return chosen;
+  return shuffle(chosen);
 }
 const pickFreshOne=(pool,kind,idFn)=>pickFresh(pool,kind,1,idFn)[0];
 // Grade denominator = the number of questions ACTUALLY served in this test
@@ -1332,7 +1352,7 @@ function resumeHTML(){
 }
 
 const PART_DESC = {p1:"מילים · 5 דק׳",p2:"השלמות · 10 דק׳",p3:"שאלות · 10 דק׳",p4:"תמונות · 10 דק׳",
-                   p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",
+                   p5:"התאמות · 3.5 דק׳",p6:"בלונים · 3 דק׳",p7:"סיפור · 10 דק׳",p8:"מילים · 7 דק׳",
                    hv:"מילים · 4 דק׳",hb:"התאמות · 3.5 דק׳",hw:"פירושים · 4 דק׳",hs:"מילים · 4 דק׳",wg:"משחק · 3.5 דק׳",hr:"שאלות · 10 דק׳",
                    ma1:"תרגילים · 4 דק׳",ma2:"תרגילים · 5 דק׳",ma5:"שברים · 6 דק׳",ma6:"צורות · 6 דק׳",ma3:"בעיות · 6 דק׳",ma4:"תרגילים · 4 דק׳",
                    sv:"מילים · 4 דק׳",sw:"מושגים · 4 דק׳",sq:"חידון · 5 דק׳",sr:"שאלות · 10 דק׳",
@@ -2304,6 +2324,7 @@ function doneHTML(){
 // ─── Core Render ──────────────────────────────────────────
 const SCR_HTML={login:loginHTML,subject:subjectHTML,resume:resumeHTML,menu:menuHTML,
   p1:vocabHTML,p2:clozeHTML,p3:readingHTML,p4:describeHTML,p5:matchHTML,p6:balloonsHTML,
+  p7:listenHTML,p8:sayHTML,
   hv:mcHTML,hb:matchHTML,hw:mcHTML,hs:hlHTML,wg:wgHTML,hr:readingHTML,
   ma1:mathHTML,ma2:mathHTML,ma5:mathHTML,ma6:mathHTML,ma3:mathHTML,ma4:mathHTML,
   sv:mcHTML,sw:mcHTML,sq:sqHTML,sr:readingHTML,
@@ -2325,7 +2346,7 @@ function gotoNext(cur){
 
 // screens whose answers are 4 tappable options → show the "keys 1–4" tip and
 // wire number-key answering. (p4 = free-text describe, so it is excluded.)
-const OPTION_SCREENS=new Set(["p1","p3","hv","hw","hs","hr","ma1","ma2","ma5","ma6","ma3","ma4","sv","sw","sq","sr","tv","tw","tq","tr","lp","lf","ln","gv","gw","gq","gr"]);
+const OPTION_SCREENS=new Set(["p1","p3","p7","hv","hw","hs","hr","ma1","ma2","ma5","ma6","ma3","ma4","sv","sw","sq","sr","tv","tw","tq","tr","lp","lf","ln","gv","gw","gq","gr"]);
 const ENCOURAGE=["אני איתך! נסה/י לחשוב רגע 💭","קדימה, את/ה יכול/ה! 💪","קרא/י בעיון ובחר/י ✨","כל תשובה מקרבת אותך 🌟","אין לחץ — קח/י את הזמן 😊"];
 function gameMascotFrame(){
   const m=curSubject().mascot||"🦉";
@@ -2557,6 +2578,8 @@ function initPart(){
   else if(S.screen==="p4")initDescribe();
   else if(S.screen==="p5")initMatch();
   else if(S.screen==="p6")initBalloons();
+  else if(S.screen==="p7")initListen();
+  else if(S.screen==="p8")initSay();
   else if(S.screen==="hv"||S.screen==="hw"||S.screen==="sv"||S.screen==="sw"||S.screen==="tv"||S.screen==="tw"||S.screen==="gv"||S.screen==="gw"||S.screen==="iv"||S.screen==="iw")initHebMC();
   else if(S.screen==="hb")initHebMatch();
   else if(S.screen==="wg")initWordGame();
@@ -4221,6 +4244,352 @@ function handleMA(val){
     MA.picked=false;MA.i++;
     if(MA.i>=MA.qs.length)gotoNext(scr);else renderMathQ();
   },1200);
+}
+
+// ─── Listening comprehension (הבנת הנשמע) — English, כיתה ה׳ ומעלה ──────────
+// The child is briefed, hears a story read aloud with full transport control,
+// and only then answers. The story text is never shown: this is a listening
+// exercise, and a visible transcript would turn it into a reading one.
+const ttsOK = () => { try{ return "speechSynthesis" in window
+  && typeof window.SpeechSynthesisUtterance==="function"; }catch(e){ return false; } };
+const _SR = () => { try{ return window.SpeechRecognition||window.webkitSpeechRecognition||null; }
+                    catch(e){ return null; } };
+const micOK = () => !!_SR();
+
+const LS_BRIEF_EN = "In the next part you will hear a short story in English. "
+  + "Listen carefully. You can pause the story, go back, and play it again as many "
+  + "times as you like. When you are ready, press Continue to questions, and answer "
+  + "fifteen questions about what you heard.";
+const LS_BRIEF_HE = "בקטע הבא תשמעו סיפור קצרצר באנגלית. הקשיבו בתשומת לב. "
+  + "אפשר לעצור את הסיפור, לחזור אחורה ולהאזין שוב כמה פעמים שתרצו. "
+  + "כשתהיו מוכנים, לחצו על „קדימה לשאלות” וענו על 15 שאלות על מה ששמעתם.";
+
+const LS={story:null,sent:[],idx:0,playing:false,gen:0,phase:"brief",qs:[],qi:0,picked:false};
+
+function listenHTML(){
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">אנגלית · הבנת הנשמע</span><p class="lead" id="ls-lead">הקשיבו לסיפור</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.p7?.left??TIME.p7,TIME.p7)}</span></div>
+  </div>
+  <div id="ls-body"></div>
+</section>`;
+}
+
+// split into sentences so ⏪/⏩ have somewhere to jump to; speechSynthesis
+// itself cannot seek, so the sentence is the unit of navigation.
+function lsSplit(t){
+  return String(t||"").split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean);
+}
+function lsStop(){
+  LS.playing=false; LS.gen++;
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+}
+function lsSpeakFrom(i){
+  if(i>=LS.sent.length){ LS.playing=false; LS.idx=LS.sent.length; lsPaint(); return; }
+  LS.idx=i;
+  const g=++LS.gen;
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(LS.sent[i]);
+    u.lang="en-US"; u.rate=0.9;
+    const v=pickVoice("en-US"); if(v)u.voice=v;
+    u.onend=()=>{ if(g!==LS.gen||!LS.playing)return; lsSpeakFrom(i+1); };
+    u.onerror=()=>{ if(g!==LS.gen)return; LS.playing=false; lsPaint(); };
+    try{ window.speechSynthesis.resume(); }catch(e){}
+    window.speechSynthesis.speak(u);
+  }catch(e){ LS.playing=false; }
+  lsPaint();
+}
+function lsPlay(){ LS.playing=true; lsSpeakFrom(Math.min(LS.idx,LS.sent.length-1)); }
+function lsPause(){ lsStop(); lsPaint(); }
+function lsSeek(d){
+  const was=LS.playing; lsStop();
+  LS.idx=Math.max(0,Math.min(LS.sent.length-1,LS.idx+d));
+  if(was)lsPlay(); else lsPaint();
+}
+function lsPaint(){
+  const btn=document.getElementById("ls-play"); if(!btn)return;
+  btn.innerHTML=LS.playing?"⏸️ <span>עצור · Pause</span>":"▶️ <span>נגן · Play</span>";
+  btn.classList.toggle("on",LS.playing);
+  const done=Math.min(LS.idx+(LS.playing?1:0),LS.sent.length);
+  const pos=document.getElementById("ls-pos");
+  if(pos)pos.textContent=`משפט ${Math.min(LS.idx+1,LS.sent.length)} מתוך ${LS.sent.length}`;
+  const bar=document.getElementById("ls-bar");
+  if(bar)bar.style.width=`${(done/Math.max(1,LS.sent.length))*100}%`;
+}
+
+function lsBriefHTML(){
+  return `<div class="ls-brief">
+    <div class="ls-icon" aria-hidden="true">🎧</div>
+    <h2 class="ls-h">הבנת הנשמע · Listening</h2>
+    <p class="ls-he" dir="rtl">${esc(LS_BRIEF_HE)}</p>
+    <p class="ls-en" dir="ltr" lang="en">${esc(LS_BRIEF_EN)}</p>
+    <div class="ls-brief-btns">
+      <button class="ghost sm" id="ls-again">🔊 <bdi>להשמיע שוב</bdi> · <bdi dir="ltr">Play again</bdi></button>
+      <button class="primary bi" id="ls-ready"><b>אני מוכן/ה</b><i dir="ltr" lang="en">I'm ready</i></button>
+    </div>
+  </div>`;
+}
+function lsPlayerHTML(){
+  return `<div class="ls-player">
+    <div class="ls-icon" aria-hidden="true">🎧</div>
+    <p class="ls-title" dir="ltr" lang="en">${esc(LS.story.title)}</p>
+    <p class="ls-sub" dir="rtl">הקשיבו לסיפור. אפשר לעצור, לחזור אחורה ולהאזין שוב.</p>
+    <div class="ls-track"><span id="ls-bar"></span></div>
+    <p class="ls-pos" id="ls-pos"></p>
+    <div class="ls-transport">
+      <button class="ls-nav" id="ls-back" aria-label="אחורה">⏪</button>
+      <button class="ls-play" id="ls-play">▶️ <span>נגן · Play</span></button>
+      <button class="ls-nav" id="ls-fwd" aria-label="קדימה">⏩</button>
+    </div>
+    <button class="ghost sm ls-restart" id="ls-restart">🔁 <bdi>מהתחלה</bdi> · <bdi dir="ltr">Restart</bdi></button>
+    <button class="primary bi ls-go" id="ls-go"><b>קדימה לשאלות</b><i dir="ltr" lang="en">Continue to questions</i></button>
+  </div>`;
+}
+function lsQuizHTML(){
+  return `<div class="ls-quiz">
+    <p class="q-text" id="ls-q" dir="ltr" lang="en"></p>
+    <div class="opts" id="q-opts"></div>
+    <button class="ghost sm ls-relisten" id="ls-relisten">🎧 <bdi>להאזין שוב</bdi> · <bdi dir="ltr">Listen again</bdi></button>
+  </div>`;
+}
+
+function initListen(){
+  const saved=S.prog.p7, lvl=curLevel();
+  const bank=(window.LISTEN_EN||[]);
+  if(!bank.length){ gotoNext("p7"); return; }
+  if(saved&&saved.id&&saved.qs){
+    LS.story=bank.find(x=>x.id===saved.id)||nearLevel(bank,lvl,3)[0];
+    LS.qs=saved.qs; LS.qi=saved.i||0; LS.phase="quiz";
+  }else{
+    LS.story=pickFresh(nearLevel(bank,lvl,3),"listen",1)[0]||bank[0];
+    // a bank far larger than one sitting, and the questions already asked for
+    // this story are skipped — so listening to it again is a different test
+    const pool=LS.story.q.map((row,i)=>({i,row}));
+    const chosen=pickFresh(pool,"lq:"+LS.story.id,QUOTA.listen,x=>String(x.i));
+    LS.qs=chosen.map(x=>({t:x.row[0],ans:x.row[1],opts:shuffle(x.row.slice(1))}));
+    LS.qi=0; LS.phase="brief";
+  }
+  LS.sent=lsSplit(LS.story.text); LS.idx=0; LS.playing=false; LS.picked=false;
+  setPartCount(LS.qs.length);
+  lsRender();
+  if(LS.phase==="quiz")TM.start(saved?.left??TIME.p7,TIME.p7,()=>gotoNext("p7"));
+}
+function lsRender(){
+  const body=document.getElementById("ls-body"); if(!body)return;
+  const lead=document.getElementById("ls-lead");
+  const ctr=document.getElementById("q-ctr");
+  // the "answer with keys 1–4" tip belongs to the question phase only
+  const tip=document.querySelector(".game-tip");
+  if(tip)tip.style.display=(LS.phase==="quiz")?"":"none";
+  if(LS.phase==="brief"){
+    body.innerHTML=lsBriefHTML();
+    if(lead)lead.textContent="לפני שמתחילים";
+    if(ctr)ctr.textContent="";
+    const sayBrief=()=>{ primeTTS(); _say(LS_BRIEF_EN,"en-US",0.88); };
+    document.getElementById("ls-again").onclick=sayBrief;
+    document.getElementById("ls-ready").onclick=()=>{ lsStop(); LS.phase="play"; lsRender(); };
+    setTimeout(sayBrief,350);      // the brief is spoken in English, as asked
+  }else if(LS.phase==="play"){
+    body.innerHTML=lsPlayerHTML();
+    if(lead)lead.textContent="הקשיבו לסיפור";
+    if(ctr)ctr.textContent="";
+    document.getElementById("ls-play").onclick=()=>{ primeTTS(); LS.playing?lsPause():lsPlay(); };
+    document.getElementById("ls-back").onclick=()=>lsSeek(-1);
+    document.getElementById("ls-fwd").onclick=()=>lsSeek(1);
+    document.getElementById("ls-restart").onclick=()=>{ lsStop(); LS.idx=0; lsPlay(); };
+    document.getElementById("ls-go").onclick=()=>{
+      lsStop(); LS.phase="quiz"; lsRender();
+      TM.start(TIME.p7,TIME.p7,()=>gotoNext("p7"));
+    };
+    lsPaint();
+  }else{
+    body.innerHTML=lsQuizHTML();
+    if(lead)lead.textContent="ענו על השאלות";
+    document.getElementById("ls-relisten").onclick=()=>{ LS.phase="play"; TM.stop(); lsRender(); };
+    lsRenderQ();
+  }
+}
+function lsRenderQ(){
+  const q=LS.qs[LS.qi]; if(!q)return;
+  document.getElementById("q-ctr").textContent=`${LS.qi+1}/${LS.qs.length}`;
+  document.getElementById("ls-q").textContent=q.t;
+  document.getElementById("q-opts").innerHTML=q.opts.map(o=>
+    `<button class="opt" data-val="${esc(o)}" dir="ltr" lang="en"><span>${esc(o)}</span><span class="mark" style="display:none"></span></button>`).join("");
+  LS.picked=false;
+  document.getElementById("q-opts").onclick=e=>{
+    const b=e.target.closest(".opt"); if(!b||b.disabled||LS.picked)return;
+    lsAnswer(b.dataset.val);
+  };
+}
+function lsAnswer(val){
+  if(LS.picked)return; LS.picked=true;
+  const q=LS.qs[LS.qi], correct=(val===q.ans);
+  logAns("listen",q.t,val,q.ans,correct);
+  if(correct){addScore(1);SFX.good();}else SFX.bad();
+  document.querySelectorAll("#q-opts .opt").forEach(b=>{
+    const bv=b.dataset.val,mk=b.querySelector(".mark");
+    if(bv===q.ans){b.classList.add("opt-good");mk.textContent="✓";mk.className="mark good";mk.style.display="";}
+    else if(bv===val&&!correct){b.classList.add("opt-bad");mk.textContent="✗";mk.className="mark bad";mk.style.display="";}
+    else b.classList.add("opt-dim");
+    b.disabled=true;
+  });
+  commitProg({p7:{id:LS.story.id,qs:LS.qs,i:LS.qi,left:TM.left}});
+  setTimeout(()=>{
+    if(S.screen!=="p7")return;
+    LS.picked=false; LS.qi++;
+    if(LS.qi>=LS.qs.length)gotoNext("p7"); else lsRenderQ();
+  },1200);
+}
+
+// ─── Pronunciation (הגייה ודיבור) — English, כיתה ה׳ ומעלה ──────────────────
+// The word is shown and can be heard; the child answers by saying it aloud.
+// Five attempts in all, because speech recognition is not perfect and a child
+// should not lose a question to a passing bus.
+const SAY_TRIES=5;
+const SP={round:[],i:0,tries:0,busy:false,done:false,heard:""};
+
+const _sayNorm = s => String(s||"").toLowerCase().replace(/[^a-z' ]/g," ").replace(/\s+/g," ").trim();
+function _lev(a,b){
+  const m=a.length,n=b.length; if(!m)return n; if(!n)return m;
+  let prev=Array.from({length:n+1},(_,j)=>j),cur=new Array(n+1);
+  for(let i=1;i<=m;i++){
+    cur[0]=i;
+    for(let j=1;j<=n;j++)
+      cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    [prev,cur]=[cur,prev];
+  }
+  return prev[n];
+}
+// accept any of the engine's alternatives: it often hears the right word but
+// ranks a homophone first, and a child who said it correctly deserves the mark
+function sayMatch(heardList,target){
+  const t=_sayNorm(target); if(!t)return false;
+  for(const h of heardList||[]){
+    const n=_sayNorm(h); if(!n)continue;
+    if(n===t)return true;
+    if(n.split(" ").includes(t))return true;
+    if(t.length>=6&&_lev(n,t)<=1)return true;
+  }
+  return false;
+}
+
+function sayHTML(){
+  return `<section class="card">
+  <div class="part-bar">
+    <div><span class="eyebrow">אנגלית · הגייה ודיבור</span><p class="lead">אמרו את המילה בקול</p></div>
+    <div class="bar-side"><span class="counter" id="q-ctr"></span><span id="hg-wrap">${hgHTML(S.prog.p8?.left??TIME.p8,TIME.p8)}</span></div>
+  </div>
+  <div class="sp-wrap">
+    <p class="sp-word" id="sp-word" dir="ltr" lang="en"></p>
+    <p class="sp-he" id="sp-he" dir="rtl"></p>
+    <button class="ghost sm sp-hear" id="sp-hear">🔊 <bdi>להאזין</bdi> · <bdi dir="ltr">Listen</bdi></button>
+    <button class="sp-mic" id="sp-mic"><span class="sp-mic-ico">🎤</span><span id="sp-mic-txt"></span></button>
+    <p class="sp-status" id="sp-status"></p>
+    <p class="sp-tries" id="sp-tries"></p>
+    <button class="ghost sm sp-skip" id="sp-skip"><bdi>לדלג על המילה</bdi> · <bdi dir="ltr">Skip</bdi></button>
+  </div>
+</section>`;
+}
+function initSay(){
+  const saved=S.prog.p8, lvl=curLevel();
+  const pool=nearLevel((window.VOCAB_EN||VOCAB||[]).filter(x=>x.w&&/^[a-z][a-z' -]*$/i.test(x.w)),lvl,QUOTA.say+4);
+  if(!pool.length){ gotoNext("p8"); return; }
+  if(saved&&saved.round&&saved.round.length){ SP.round=saved.round; SP.i=saved.i||0; }
+  else{ SP.round=pickFresh(pool,"say",QUOTA.say).map(x=>({w:x.w,h:x.h||""})); SP.i=0; }
+  SP.tries=0; SP.busy=false; SP.done=false; SP.heard="";
+  setPartCount(SP.round.length);
+  spRender();
+  TM.start(saved?.left??TIME.p8,TIME.p8,()=>gotoNext("p8"));
+}
+function spRender(){
+  const it=SP.round[SP.i]; if(!it)return;
+  document.getElementById("q-ctr").textContent=`${SP.i+1}/${SP.round.length}`;
+  document.getElementById("sp-word").textContent=it.w;
+  document.getElementById("sp-he").textContent=it.h||"";
+  document.getElementById("sp-status").textContent="";
+  document.getElementById("sp-status").className="sp-status";
+  spTries();
+  const mic=document.getElementById("sp-mic");
+  mic.disabled=false; mic.classList.remove("rec");
+  document.getElementById("sp-mic-txt").innerHTML=micLabel("לחצו ואמרו","Tap and say it");
+  document.getElementById("sp-hear").onclick=()=>{ primeTTS(); speak(it.w); };
+  mic.onclick=()=>spListen();
+  document.getElementById("sp-skip").onclick=()=>spFinish(false,"דילגתם על המילה");
+  setTimeout(()=>{ primeTTS(); speak(it.w); },250);   // hear it once before trying
+}
+function spTries(){
+  const el=document.getElementById("sp-tries"); if(!el)return;
+  const left=SAY_TRIES-SP.tries;
+  el.textContent=SP.tries?`נותרו ${left} ${left===1?"ניסיון":"ניסיונות"}`:`${SAY_TRIES} ניסיונות לכל מילה`;
+}
+function spSet(msg,kind){
+  const el=document.getElementById("sp-status"); if(!el)return;
+  el.innerHTML=msg; el.className="sp-status"+(kind?" "+kind:"");
+}
+// what the engine heard is English inside a Hebrew sentence — isolate it or the
+// quotation marks end up on the wrong side of the word
+const heardHTML = w => `„<bdi dir="ltr" lang="en">${esc(w)}</bdi>”`;
+const micLabel = (he,en) => `<bdi>${he}</bdi> · <bdi dir="ltr" lang="en">${en}</bdi>`;
+function spListen(){
+  if(SP.busy||SP.done)return;
+  const C=_SR(); if(!C){ spSet("המכשיר הזה לא תומך בזיהוי דיבור","bad"); return; }
+  const it=SP.round[SP.i];
+  let rec; try{ rec=new C(); }catch(e){ spSet("לא ניתן להפעיל את המיקרופון","bad"); return; }
+  rec.lang="en-US"; rec.interimResults=false; rec.maxAlternatives=5; rec.continuous=false;
+  SP.busy=true;
+  const mic=document.getElementById("sp-mic");
+  mic.classList.add("rec");
+  document.getElementById("sp-mic-txt").innerHTML=micLabel("מקשיב…","Listening…");
+  spSet("אמרו עכשיו את המילה בקול ברור","");
+  const stopUI=()=>{ SP.busy=false; if(!mic)return;
+    mic.classList.remove("rec");
+    const t=document.getElementById("sp-mic-txt"); if(t)t.innerHTML=micLabel("לחצו ואמרו שוב","Tap and say it");
+  };
+  rec.onresult=e=>{
+    stopUI();
+    const alts=[]; try{ const r=e.results[0];
+      for(let i=0;i<r.length;i++)alts.push(r[i].transcript); }catch(_){}
+    SP.heard=alts[0]||"";
+    if(sayMatch(alts,it.w)){
+      spSet(`נכון! שמעתי ${heardHTML(SP.heard)}`,"good");
+      spFinish(true);
+    }else{
+      SP.tries++; spTries();
+      if(SP.tries>=SAY_TRIES){
+        spSet(`המילה הייתה ${heardHTML(it.w)}`,"bad");
+        spFinish(false);
+      }else{
+        spSet(SP.heard?`שמעתי ${heardHTML(SP.heard)} — נסו שוב`:"לא הצלחתי לשמוע — נסו שוב","bad");
+        SFX.bad();
+      }
+    }
+  };
+  rec.onerror=e=>{
+    stopUI();
+    const err=(e&&e.error)||"";
+    if(err==="not-allowed"||err==="service-not-allowed")
+      spSet("אין הרשאה למיקרופון. אשרו אותה בדפדפן ונסו שוב","bad");
+    else if(err==="no-speech") spSet("לא נשמע כלום — נסו שוב, קרוב יותר למיקרופון","bad");
+    else if(err==="audio-capture") spSet("לא נמצא מיקרופון במכשיר","bad");
+    else spSet("משהו השתבש בהאזנה — נסו שוב","bad");
+  };
+  rec.onend=()=>stopUI();
+  try{ rec.start(); }catch(e){ stopUI(); spSet("לא ניתן להפעיל את המיקרופון","bad"); }
+}
+function spFinish(ok,msg){
+  if(SP.done)return; SP.done=true;
+  const it=SP.round[SP.i];
+  logAns("say",it.w,SP.heard||"—",it.w,ok);
+  if(ok){ addScore(1); SFX.good(); } else { SFX.bad(); if(msg)spSet(msg,"bad"); }
+  const mic=document.getElementById("sp-mic"); if(mic)mic.disabled=true;
+  commitProg({p8:{round:SP.round,i:SP.i,left:TM.left}});
+  setTimeout(()=>{
+    if(S.screen!=="p8")return;
+    SP.i++; SP.tries=0; SP.done=false; SP.heard="";
+    if(SP.i>=SP.round.length)gotoNext("p8"); else spRender();
+  },1400);
 }
 
 // ─── Review my mistakes (bonus practice, not part of the graded flow) ────────

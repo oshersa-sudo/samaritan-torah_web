@@ -1,11 +1,11 @@
 /* Service worker for the learning trainer (OnyxApps).
    NETWORK-FIRST so the newest code loads when online, falling back to the
    cache offline. /api/* always hits the network (live sync). */
-const CACHE = 'learn-app-v44';
+const CACHE = 'learn-app-v45';
 const SHELL = [
   '/exam',
   '/static/exam.css', '/static/exam.js',
-  '/static/vocab_en.js', '/static/hebrew_data.js', '/static/hebrew_niqqud.js',
+  '/static/vocab_en.js', '/static/listen_en.js', '/static/hebrew_data.js', '/static/hebrew_niqqud.js',
   '/static/heb_lex.js', '/static/torah_data.js', '/static/lashon_data.js',
   '/static/science_data.js', '/static/geo_data.js', '/static/hist_data.js', '/static/curriculum.js', '/static/games_library.js',
   '/static/learn.webmanifest',

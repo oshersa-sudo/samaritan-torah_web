@@ -1207,3 +1207,105 @@ body::after { bottom:-140px; inset-inline-start:-90px; width:360px; height:360px
 }
 .cur-grade b { display: block; margin-bottom: 4px; }
 .cur-grade.cur-now b { color: var(--violet); }
+
+/* ── Listening comprehension (p7) ────────────────────────────────────────── */
+.ls-brief, .ls-player { text-align: center; padding: 6px 2px 2px; }
+.ls-icon { font-size: 44px; line-height: 1; margin-bottom: 6px; }
+.ls-h { font-family: 'Fredoka', sans-serif; font-size: 20px; color: var(--ink); margin: 0 0 10px; }
+.ls-he, .ls-en {
+  margin: 0 auto 10px; max-width: 34em; font-size: 14.5px; line-height: 1.65;
+  color: var(--ink); background: #fbf9ff; border: 2px solid #ece4ff;
+  border-radius: 14px; padding: 11px 14px;
+}
+.ls-en { color: var(--ink-soft); font-size: 13.5px; unicode-bidi: isolate; }
+.ls-brief-btns { display: flex; flex-direction: column; gap: 9px; align-items: center; margin-top: 4px; }
+.ls-brief-btns .primary { width: 100%; max-width: 340px; }
+
+.ls-title {
+  font-family: 'Fredoka', sans-serif; font-size: 22px; color: var(--ink);
+  margin: 0 0 4px; unicode-bidi: isolate;
+}
+.ls-sub { margin: 0 0 14px; font-size: 13px; color: var(--ink-soft); }
+.ls-track {
+  height: 8px; background: #ece4ff; border-radius: 999px; overflow: hidden;
+  margin: 0 auto 7px; max-width: 340px;
+}
+.ls-track span { display: block; height: 100%; width: 0; border-radius: 999px;
+  background: linear-gradient(90deg, #a78bfa, #6C5CE7); transition: width .25s; }
+.ls-pos { margin: 0 0 14px; font-size: 12.5px; color: var(--ink-soft); font-weight: 600; }
+.ls-transport { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.ls-nav {
+  width: 54px; height: 54px; border-radius: 50%; border: 2px solid #ece4ff;
+  background: #fff; font-size: 21px; cursor: pointer; color: var(--ink);
+  box-shadow: 0 4px 0 rgba(139,92,246,.14);
+}
+.ls-nav:hover { background: #faf7ff; }
+.ls-nav:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(139,92,246,.14); }
+.ls-play {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-width: 168px; justify-content: center;
+  padding: 15px 22px; border: 0; border-radius: 18px; cursor: pointer;
+  font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 600; color: #fff;
+  background: linear-gradient(150deg, #a78bfa, #6C5CE7);
+  box-shadow: 0 5px 0 #5b4bd6;
+}
+.ls-play:active { transform: translateY(3px); box-shadow: 0 2px 0 #5b4bd6; }
+.ls-play.on { background: linear-gradient(150deg, #fbbf24, #f59e0b); box-shadow: 0 5px 0 #d97706; }
+.ls-restart { margin-top: 14px; }
+.ls-go { display: block; width: 100%; max-width: 380px; margin: 16px auto 0; }
+.ls-quiz .q-text { unicode-bidi: isolate; }
+.ls-relisten { display: block; margin: 14px auto 0; }
+
+/* ── Pronunciation (p8) ──────────────────────────────────────────────────── */
+.sp-wrap { text-align: center; padding: 10px 2px 2px; }
+.sp-word {
+  font-family: 'Fredoka', sans-serif; font-size: 42px; font-weight: 600;
+  color: var(--ink); margin: 0 0 2px; letter-spacing: .5px; unicode-bidi: isolate;
+}
+.sp-he { margin: 0 0 14px; font-size: 16px; color: var(--ink-soft); font-weight: 600; }
+.sp-hear { margin-bottom: 18px; }
+.sp-mic {
+  display: block; margin: 0 auto; width: 100%; max-width: 320px;
+  padding: 18px 20px; border: 0; border-radius: 20px; cursor: pointer;
+  font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 600; color: #fff;
+  background: linear-gradient(150deg, #f87171, #dc2626);
+  box-shadow: 0 5px 0 #b91c1c;
+}
+.sp-mic:active { transform: translateY(3px); box-shadow: 0 2px 0 #b91c1c; }
+.sp-mic:disabled { opacity: .55; cursor: default; }
+.sp-mic-ico { font-size: 22px; margin-inline-end: 8px; }
+.sp-mic.rec { animation: sp-pulse 1.1s ease-in-out infinite; }
+@keyframes sp-pulse {
+  0%,100% { box-shadow: 0 5px 0 #b91c1c, 0 0 0 0 rgba(220,38,38,.45); }
+  50%     { box-shadow: 0 5px 0 #b91c1c, 0 0 0 14px rgba(220,38,38,0); }
+}
+.sp-status {
+  min-height: 22px; margin: 14px auto 2px; max-width: 32em;
+  font-size: 14.5px; font-weight: 600; color: var(--ink-soft);
+}
+.sp-status.good { color: #15803d; }
+.sp-status.bad  { color: #b91c1c; }
+.sp-tries { margin: 0 0 14px; font-size: 12.5px; color: var(--ink-soft); }
+.sp-skip { margin-top: 2px; }
+
+@media (max-width: 420px) {
+  .sp-word { font-size: 34px; }
+  .ls-nav { width: 48px; height: 48px; font-size: 19px; }
+  .ls-play { min-width: 148px; padding: 13px 18px; font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) { .sp-mic.rec { animation: none; } }
+
+/* Transport controls are physical, not textual: rewind on the left and forward
+   on the right regardless of the page's reading direction. */
+.ls-transport { direction: ltr; }
+/* A bilingual label on one line lets the bidi algorithm split the English
+   phrase around the Hebrew. Stack the two languages instead. */
+.primary.bi, .ls-play { line-height: 1.25; }
+.primary.bi { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.primary.bi b { font-weight: 600; }
+.primary.bi i {
+  font-style: normal; font-size: .82em; opacity: .85;
+  unicode-bidi: isolate; font-family: 'Fredoka', sans-serif;
+}
+.ls-restart, .ls-relisten, .sp-hear, .sp-skip { unicode-bidi: isolate; }
+.sp-status bdi { font-family: 'Fredoka', sans-serif; }
