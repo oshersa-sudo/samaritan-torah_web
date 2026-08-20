@@ -2945,6 +2945,18 @@ def tal_full_lookup(word, torah_limit=16):
                              "AND TRIM(COALESCE(he,''))<>'' LIMIT 1", (word,)).fetchone()
             if r:
                 meaning, src = r['he'], 'torah'
+        if not meaning:
+            # The Torah targum's own word-by-word glossary — 14,544 Aramaic words
+            # with a Hebrew rendering beside them. It is the most direct Aramaic→
+            # Hebrew evidence the project owns and was never consulted here.
+            r = conn.execute("SELECT hebrew FROM verse_dictionary WHERE aramaic=? "
+                             "AND TRIM(COALESCE(hebrew,''))<>'' LIMIT 1", (word,)).fetchone()
+            if not r:
+                r = conn.execute(
+                    "SELECT hebrew FROM verse_dictionary WHERE aramaic=? "
+                    "AND TRIM(COALESCE(hebrew,''))<>'' LIMIT 1", (_tal_bare(word),)).fetchone()
+            if r:
+                meaning, src = r['hebrew'], 'targum'
         if meaning:
             out['meaning'] = {'gloss': meaning, 'source': src}
     # Does the quoted meaning disagree with every sense the root offers? Then the
