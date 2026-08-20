@@ -2815,6 +2815,44 @@ def _gloss_matches_memar(gloss, memar_he):
     return False
 
 
+@functools.lru_cache(maxsize=1)
+def _memar_overused():
+    """Hebrew renderings the aligner attached to so many different Aramaic words
+    that they carry no information — "דברים" stands opposite 36 unrelated forms.
+    A rendering has to be about ONE word to be worth quoting."""
+    conn = get_connection()
+    try:
+        rows = conn.execute(
+            "SELECT memar_he, COUNT(DISTINCT form_norm) n FROM dict_infl "
+            "WHERE rank=0 AND TRIM(COALESCE(memar_he,''))<>'' AND memar_conf>=0.6 "
+            "GROUP BY memar_he HAVING n > 15").fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    conn.close()
+    return frozenset(r['memar_he'] for r in rows)
+
+
+def _memar_rendering(conn, word):
+    """The Hebrew that Memar Marqe's own translation puts opposite this word.
+
+    Reported even when the dictionary DID yield a root, because it is evidence
+    about this word while the root's senses are evidence about the root — and the
+    two part company more often than one would like. תרח occurs 155 times in the
+    piyyutim meaning "gate", and Marqe translates it "שער", but Tal's head-word
+    תרח holds only Terah the proper name; showing the root alone answers a
+    different question than the reader asked."""
+    try:
+        r = conn.execute(
+            "SELECT memar_he, memar_conf FROM dict_infl WHERE form_norm=? "
+            "AND TRIM(COALESCE(memar_he,''))<>'' AND memar_conf>=0.6 "
+            "ORDER BY rank LIMIT 1", (_norm_fin(word),)).fetchone()
+    except sqlite3.OperationalError:
+        return None
+    if not r or r['memar_he'] in _memar_overused():
+        return None
+    return {'gloss': r['memar_he'], 'conf': round(r['memar_conf'], 2)}
+
+
 def tal_full_lookup(word, torah_limit=16):
     """Everything Tal's dictionary holds for an Aramaic word, grounded in the
     authoritative page extraction. Returns {word, roots:[{root, senses, torah,
@@ -2880,19 +2918,20 @@ def tal_full_lookup(word, torah_limit=16):
         out['roots'].append({'root': root, 'senses': senses, 'torah': torah,
                              'torah_count': len(locs), 'forms': forms})
 
-    # A word Tal's dictionary does not contain gets its MEANING and nothing else —
-    # no root, no root's inflections, no root's Torah occurrences. The meaning is
-    # quoted from a text that actually renders the word: Memar Marqe's own Hebrew
-    # translation, or the word-by-word glossary of the Torah targum. Nothing here
-    # is derived; if neither text renders it, the word simply has no answer yet.
-    if not out['roots']:
+    # The word's own meaning, quoted from a text that actually renders it: Memar
+    # Marqe's Hebrew translation, or the word-by-word glossary of the Torah targum.
+    # Nothing here is derived. It is reported WHETHER OR NOT a root was found —
+    # a rendering of this word is never discarded because the root happened to
+    # resolve. תרח is "gate" 155 times in the piyyutim and Marqe says so, while
+    # Tal's head-word תרח is only Terah the man; the reader needs both.
+    if True:
         wn = _norm_fin(word)
         meaning = src = ''
         try:
             r = conn.execute(
                 "SELECT memar_he, memar_conf FROM dict_infl WHERE form_norm=? "
                 "AND TRIM(COALESCE(memar_he,''))<>'' ORDER BY rank LIMIT 1", (wn,)).fetchone()
-            if r:
+            if r and r['memar_he'] not in _memar_overused():
                 meaning, src = r['memar_he'], 'memar'
         except sqlite3.OperationalError:
             pass
@@ -2908,6 +2947,12 @@ def tal_full_lookup(word, torah_limit=16):
                 meaning, src = r['he'], 'torah'
         if meaning:
             out['meaning'] = {'gloss': meaning, 'source': src}
+    # Does the quoted meaning disagree with every sense the root offers? Then the
+    # entry is answering about the root while the text is answering about the word,
+    # and the reader must be told which is which rather than shown only one.
+    if out.get('meaning'):
+        senses = ' '.join(sn['gloss'] for rt in out['roots'] for sn in rt['senses'])
+        out['meaning']['disagrees'] = bool(out['roots']) and             not _gloss_matches_memar(senses, out['meaning']['gloss'])
     conn.close()
     out['phrases'] = dict_phrases_for(word)
     return out
