@@ -444,84 +444,48 @@ def ytdlp(argv):
     download runs here. parse_options rather than main() on purpose: main()
     installs process-level signal handlers, which fails off the main thread,
     and every request is served on one.
+
+    yt-dlp's own error text is captured and re-raised. A bare "code 1" says
+    nothing, and the usual cause - YouTube changing something the bundled
+    version predates - is worth naming, because the fix is to update it.
     """
     import yt_dlp
+
+    errors = []
+
+    class _Collect:
+        def debug(self, msg):
+            pass
+
+        def info(self, msg):
+            pass
+
+        def warning(self, msg):
+            pass
+
+        def error(self, msg):
+            errors.append(str(msg).strip())
+
     parsed = yt_dlp.parse_options(list(argv))
-    opts = parsed.ydl_opts if hasattr(parsed, "ydl_opts") else parsed[-1]
+    opts = dict(parsed.ydl_opts if hasattr(parsed, "ydl_opts") else parsed[-1])
     urls = parsed.urls if hasattr(parsed, "urls") else parsed[-2]
+    opts["logger"] = _Collect()
+    opts["noprogress"] = True
+
     with yt_dlp.YoutubeDL(opts) as ydl:
         code = ydl.download(urls)
-    if code:
-        raise RuntimeError("yt-dlp failed (code {}) for: {}".format(code, urls))
+    if not code:
+        return
 
-
-def move_chapter(payload):
-    """Nudge the boundary between two portions by one chapter.
-
-    Only a portion's FIRST chapter may move back, and only its LAST chapter may
-    move forward: a portion is a contiguous run, so moving anything from the
-    middle would tear a hole in it. The chapter's recording is renamed into the
-    neighbouring portion's series (b{book}-p{portion}-c{n}) and its manifest
-    label is taken from the live site, which is what decides where a chapter
-    belongs.
-    """
-    book_id = int(payload["book_id"])
-    n = int(payload["n"])
-    direction = int(payload["direction"])
-    if direction not in (-1, 1):
-        raise RuntimeError("direction must be -1 (previous portion) or +1 (next)")
-
-    rd = json.loads(READINGS_JSON.read_text(encoding="utf-8"))
-    book = next((x for x in rd["books"] if x["book_id"] == book_id), None)
-    if book is None:
-        raise RuntimeError("book {} is not in the manifest".format(book_id))
-    entry = next((c for c in book["chapters"] if c.get("n") == n), None)
-    if entry is None:
-        raise RuntimeError("chapter {} is not in {}".format(n, BOOK_NAMES.get(book_id, book_id)))
-    if "file" not in entry:
-        raise RuntimeError(
-            "פרק {} מורכב מכמה קטעי מקור (segs) ואין לו קובץ יחיד להעביר - "
-            "טפל בו ידנית".format(n))
-
-    cur = (entry.get("portion") or {}).get("order")
-    if not cur:
-        raise RuntimeError("chapter {} has no portion order in the manifest".format(n))
-    siblings = sorted(c["n"] for c in book["chapters"]
-                      if (c.get("portion") or {}).get("order") == cur)
-    edge, word = (siblings[0], "הראשון") if direction == -1 else (siblings[-1], "האחרון")
-    if n != edge:
-        raise RuntimeError(
-            "רק הפרק {} בפרשה יכול לזוז לכיוון הזה. בפרשה {} זה פרק {}, לא {}."
-            .format(word, cur, edge, n))
-    if len(siblings) == 1:
-        raise RuntimeError("פרשה {} מכילה רק את פרק {} - העברתו תרוקן אותה".format(cur, n))
-
-    target = cur + direction
-    div = cloud_divisions(book_id)
-    plist = sorted(div["portions"], key=lambda p: p.get("start_ch", p["id"]))
-    if target < 1 or target > len(plist):
-        raise RuntimeError("אין פרשה מספר {} ב{}".format(target, BOOK_NAMES.get(book_id, book_id)))
-    tp = plist[target - 1]
-
-    old_path = READINGS / Path(entry["file"]).name
-    new_name = "b{}-p{:02d}-c{:03d}.mp3".format(book_id, target, n)
-    new_path = READINGS / new_name
-    if new_path.exists() and new_path.resolve() != old_path.resolve():
-        raise RuntimeError("כבר קיים קובץ בשם {} - לא דורס".format(new_name))
-    if not old_path.exists():
-        raise RuntimeError("קובץ האודיו {} חסר".format(old_path.name))
-
-    stamp = time.strftime("%Y%m%d_%H%M%S")
-    shutil.copy2(READINGS_JSON, READINGS_JSON.with_suffix(".json.bak_" + stamp))
-    if new_path.resolve() != old_path.resolve():
-        old_path.rename(new_path)
-
-    entry["file"] = "/static/audio/readings/" + new_name
-    entry["portion"] = {"order": target, "id": tp["id"], "name": tp["name"]}
-    READINGS_JSON.write_text(json.dumps(rd, ensure_ascii=False, indent=1), encoding="utf-8")
-    rebuild_player()
-    return {"n": n, "from_order": cur, "to_order": target,
-            "to_name": tp["name"], "file": new_name, "backup": stamp}
+    ver = getattr(getattr(yt_dlp, "version", None), "__version__", "?")
+    detail = " | ".join(errors[-3:]) or "exit code {}".format(code)
+    stale = ("403", "Forbidden", "format is not available", "needs to be reloaded",
+             "Sign in to confirm", "not a bot", "unable to download video data")
+    hint = ""
+    if any(k.lower() in detail.lower() for k in stale):
+        hint = ("\nכנראה ש-YouTube שינה משהו שגרסת yt-dlp הנוכחית ({}) לא מכירה. "
+                "עדכן אותה (pip install -U yt-dlp) ובנה מחדש את האפליקציה.".format(ver))
+    raise RuntimeError("yt-dlp נכשל: {}{}".format(detail, hint))
 
 
 def redownload_split(payload):
