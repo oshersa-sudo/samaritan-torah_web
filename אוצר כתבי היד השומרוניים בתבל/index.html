@@ -1,0 +1,2813 @@
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Cousine:wght@400;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>אוצר כתבי היד השומרוניים בספריות תבל</title>
+<style>
+  :root{
+    --ground:#f6f6f4; --surface:#ffffff; --surface-2:#eeeeeb; --surface-3:#e4e4e0;
+    --stage:#3a3d45;
+    --ink:#15171d; --ink-2:#3d424e; --ink-3:#6b7280;
+    --rule:#d9d9d4; --rule-2:#c3c3bd;
+    --accent:#2f4f86; --accent-soft:#e7ecf5; --accent-ink:#ffffff;
+    --ok:#2c6a4a; --warn:#8a6520; --bad:#8f3b3b; --bad-bg:#f6e5e5;
+    --font-display:"Narkisim","David Libre","Frank Ruehl CLM",Georgia,serif;
+    --font-body:"Segoe UI","Noto Sans Hebrew","Arial Hebrew",system-ui,sans-serif;
+    --font-mono:ui-monospace,"Cascadia Mono","Consolas","Courier New",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ground:#0f1116; --surface:#171a21; --surface-2:#1e222b; --surface-3:#272c37;
+      --stage:#0a0b0e;
+      --ink:#e8e9ec; --ink-2:#b3b8c2; --ink-3:#848b98;
+      --rule:#2a2f39; --rule-2:#3a4150;
+      --accent:#8bafe0; --accent-soft:#1c2634; --accent-ink:#0f1116;
+      --ok:#7cc7a0; --warn:#dcb262; --bad:#e59595; --bad-bg:#2b1a1a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1116; --surface:#171a21; --surface-2:#1e222b; --surface-3:#272c37;
+    --stage:#0a0b0e;
+    --ink:#e8e9ec; --ink-2:#b3b8c2; --ink-3:#848b98;
+    --rule:#2a2f39; --rule-2:#3a4150;
+    --accent:#8bafe0; --accent-soft:#1c2634; --accent-ink:#0f1116;
+    --ok:#7cc7a0; --warn:#dcb262; --bad:#e59595; --bad-bg:#2b1a1a;
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f6f4; --surface:#ffffff; --surface-2:#eeeeeb; --surface-3:#e4e4e0;
+    --stage:#3a3d45;
+    --ink:#15171d; --ink-2:#3d424e; --ink-3:#6b7280;
+    --rule:#d9d9d4; --rule-2:#c3c3bd;
+    --accent:#2f4f86; --accent-soft:#e7ecf5; --accent-ink:#ffffff;
+    --ok:#2c6a4a; --warn:#8a6520; --bad:#8f3b3b; --bad-bg:#f6e5e5;
+  }
+
+  *{box-sizing:border-box;}
+  /* A class selector beats the UA stylesheet's [hidden] rule, so any element
+     styled with an explicit display (.stage-msg is display:flex) stayed on
+     screen after setting .hidden = true. The placeholder then covered the
+     page at z-index 5: the image was loaded, positioned and correct, and
+     simply underneath it. Make [hidden] win everywhere. */
+  [hidden]{display:none !important;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--ground); color:var(--ink); direction:rtl;
+    font-family:var(--font-body); font-size:15px; line-height:1.55;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  button{font:inherit; color:inherit; cursor:pointer;}
+  button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .mono{font-family:var(--font-mono); direction:ltr; display:inline-block; unicode-bidi:isolate;}
+
+  /* ============ top bar ============ */
+  .topbar{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:8px 14px; background:var(--surface); border-bottom:1px solid var(--rule);
+    flex:0 0 auto; min-height:52px;
+  }
+  .brand{font-family:var(--font-display); font-size:19px; letter-spacing:-.01em; margin-inline-end:6px; white-space:nowrap;}
+  .ms-title{
+    font-weight:600; font-size:14.5px; white-space:nowrap; overflow:hidden;
+    text-overflow:ellipsis; max-width:36ch; color:var(--ink);
+  }
+  .ms-shelf{font-family:var(--font-mono); font-size:11px; color:var(--ink-3); direction:ltr;}
+  .spacer{flex:1 1 auto;}
+
+  .btn{
+    background:var(--surface-2); border:1px solid var(--rule-2); border-radius:3px;
+    padding:5px 11px; font-size:13.5px; line-height:1.4; white-space:nowrap;
+    transition:background .12s,border-color .12s;
+  }
+  .btn:hover{background:var(--surface-3); border-color:var(--ink-3);}
+  .btn[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:600;}
+  .btn-primary:hover{background:var(--accent); filter:brightness(1.12);}
+  .btn-icon{padding:5px 9px; font-family:var(--font-mono); font-size:14px; min-width:32px;}
+  .btn-danger{color:var(--bad); border-color:color-mix(in srgb,var(--bad) 40%,transparent);}
+  .btn-danger:hover{background:var(--bad-bg);}
+
+  .group{display:flex; align-items:center; gap:4px; background:var(--surface-2);
+    border:1px solid var(--rule-2); border-radius:3px; padding:2px;}
+  .group .btn{border:none; background:transparent; padding:4px 8px;}
+  .group .btn:hover{background:var(--surface-3);}
+  .group .sep{width:1px; align-self:stretch; background:var(--rule-2); margin:2px 1px;}
+
+  .pageinput{
+    width:56px; text-align:center; font-family:var(--font-mono); font-size:13px;
+    background:var(--surface); border:1px solid var(--rule-2); border-radius:3px;
+    padding:4px 2px; color:var(--ink); font-variant-numeric:tabular-nums;
+  }
+  .pagecount{font-family:var(--font-mono); font-size:12px; color:var(--ink-3);
+    font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .zoomlevel{font-family:var(--font-mono); font-size:12px; color:var(--ink-3);
+    min-width:46px; text-align:center; font-variant-numeric:tabular-nums;}
+
+  /* ============ main ============ */
+  .main{flex:1 1 auto; display:flex; min-height:0; position:relative;}
+
+  /* stage */
+  .stage{
+    flex:1 1 auto; background:var(--stage); position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    cursor:grab; touch-action:none;
+  }
+  .stage.grabbing{cursor:grabbing;}
+  .stage.loading::after{content:"";position:absolute;inset-block-start:0;inset-inline:0;height:2px;z-index:6;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:40% 100%;background-repeat:no-repeat;animation:sweep 1s linear infinite;}
+  @keyframes sweep{0%{background-position:-40% 0}100%{background-position:140% 0}}
+  @media (prefers-reduced-motion:reduce){.stage.loading::after{animation:none;}}
+  .stage img{
+    /* Positioned absolutely, not flex-centred: the stage also centres its
+       children, and combining that with the pan/zoom transform centred the
+       page twice and pushed it off the left edge (x = -96px at 768w). All
+       positioning now comes from the transform alone. */
+    /* Physical left/top on purpose: the page is RTL, where
+       inset-inline-start resolves to the RIGHT edge, while the pan/zoom
+       transform below is computed in physical pixels from the top-left. */
+    position:absolute; top:0; left:0;
+    max-width:none; transform-origin:0 0; user-select:none; -webkit-user-drag:none;
+    display:block; box-shadow:0 4px 28px rgba(0,0,0,.45); background:#fff;
+  }
+  .stage-msg{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:14px; padding:32px; text-align:center; color:#d8dae0;
+    background:var(--stage); z-index:5;
+  }
+  .stage-msg h3{font-family:var(--font-display); font-weight:400; font-size:22px; margin:0;}
+  .stage-msg p{margin:0; max-width:52ch; font-size:14px; color:#a9adb8; line-height:1.6;}
+  .stage-msg .row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center;}
+  .spinner{
+    width:30px; height:30px; border:2.5px solid rgba(255,255,255,.18);
+    border-top-color:#fff; border-radius:50%; animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion:reduce){ .spinner{animation-duration:2.4s;} }
+
+  /* ============ side panel ============ */
+  .side{
+    flex:0 0 320px; background:var(--surface); border-inline-start:1px solid var(--rule);
+    display:flex; flex-direction:column; min-height:0;
+  }
+  .side[hidden]{display:none;}
+  .side-head{
+    display:flex; align-items:center; gap:8px; padding:9px 12px;
+    border-bottom:1px solid var(--rule); background:var(--surface-2); flex:0 0 auto;
+  }
+  .side-head h2{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--ink-2); margin:0; font-weight:600;
+  }
+  .side-body{overflow-y:auto; padding:12px; flex:1 1 auto;}
+
+  /* thumbnails */
+  .thumbs{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .thumb{
+    border:1px solid var(--rule); border-radius:2px; background:var(--surface-2);
+    padding:0; overflow:hidden; aspect-ratio:3/4; position:relative; display:block;
+  }
+  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .thumb .n{
+    position:absolute; inset-block-end:0; inset-inline-start:0; background:rgba(0,0,0,.72);
+    color:#fff; font-family:var(--font-mono); font-size:9.5px; padding:1px 4px;
+    font-variant-numeric:tabular-nums;
+  }
+  .thumb[aria-current="true"]{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent);}
+  .thumb:hover{border-color:var(--ink-3);}
+
+  /* TOC ranges */
+  .toc{list-style:none; margin:0; padding:0; font-size:13.5px;}
+  .toc li{margin:0 0 2px;}
+  .toc button{
+    display:block; width:100%; text-align:right; background:transparent; border:none;
+    padding:5px 8px; border-radius:2px; line-height:1.4;
+  }
+  .toc button:hover{background:var(--surface-2);}
+  .toc .depth-1{padding-inline-start:18px; font-size:12.5px; color:var(--ink-2);}
+
+  /* metadata */
+  dl.meta{display:grid; grid-template-columns:auto 1fr; gap:6px 12px; margin:0; font-size:13px;}
+  dl.meta dt{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-3); padding-top:3px; white-space:nowrap; max-width:13ch; overflow:hidden; text-overflow:ellipsis;
+  }
+  dl.meta dd{margin:0; color:var(--ink-2); overflow-wrap:anywhere;}
+  .meta-sect{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--ink-3); margin:18px 0 8px; padding-bottom:5px; border-bottom:1px solid var(--rule);
+  }
+  .meta-sect:first-child{margin-top:0;}
+
+  /* ============ library ============ */
+  .lib-overlay{
+    position:fixed; inset:0; background:rgba(10,11,14,.55); z-index:40;
+    display:flex; align-items:flex-start; justify-content:center; padding:28px 16px; overflow-y:auto;
+  }
+  .lib-overlay[hidden]{display:none;}
+  .lib{
+    background:var(--ground); border:1px solid var(--rule-2); border-radius:3px;
+    width:min(880px,100%); box-shadow:0 20px 60px rgba(0,0,0,.4);
+  }
+  .lib-head{
+    display:flex; align-items:center; gap:12px; padding:16px 20px;
+    border-bottom:1px solid var(--rule); background:var(--surface);
+  }
+  .lib-head h2{font-family:var(--font-display); font-weight:400; font-size:23px; margin:0;}
+  .lib-body{padding:18px 20px 22px;}
+  .lib-note{font-size:13.5px; color:var(--ink-3); margin:0 0 16px; max-width:70ch;}
+
+  .ms-list{display:flex; flex-direction:column; gap:8px; margin:0 0 8px;}
+  .ms-row{
+    display:flex; align-items:flex-start; gap:12px; padding:11px 13px;
+    background:var(--surface); border:1px solid var(--rule); border-radius:2px;
+  }
+  .ms-row.is-open{border-color:var(--accent); box-shadow:inset 2px 0 0 var(--accent);}
+  .ms-info{flex:1 1 auto; min-width:0;}
+  .ms-info .t{font-weight:600; font-size:14px; margin:0 0 2px;}
+  .ms-info .s{font-size:12.5px; color:var(--ink-3); margin:0;}
+  .ms-info .u{font-family:var(--font-mono); font-size:10.5px; color:var(--ink-3);
+    direction:ltr; display:block; margin-top:4px; overflow-wrap:anywhere; opacity:.75;}
+  .ms-acts{display:flex; gap:6px; flex:0 0 auto;}
+  .badge{
+    display:inline-block; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.05em;
+    padding:1.5px 6px; border-radius:2px; background:var(--surface-2);
+    border:1px solid var(--rule-2); color:var(--ink-3); margin-inline-start:6px;
+  }
+  .badge-local{background:var(--ok-bg,#e4f0e9);color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent);}
+  .badge-own{background:var(--accent-soft); color:var(--accent); border-color:color-mix(in srgb,var(--accent) 35%,transparent);}
+
+  details.addbox{
+    margin-top:16px; border:1px solid var(--rule); border-radius:2px;
+    background:var(--surface); overflow:hidden;
+  }
+  details.addbox summary{
+    padding:11px 14px; cursor:pointer; font-weight:600; font-size:13.5px;
+    background:var(--surface-2); list-style:none;
+  }
+  details.addbox summary::-webkit-details-marker{display:none;}
+  details.addbox summary::before{content:"+ "; font-family:var(--font-mono); color:var(--accent);}
+  details.addbox[open] summary::before{content:"− ";}
+  .addform{padding:14px; display:grid; gap:10px;}
+  .fld{display:grid; gap:4px;}
+  .fld label{font-family:var(--font-mono); font-size:10px; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--ink-3);}
+  .fld input{
+    background:var(--ground); border:1px solid var(--rule-2); border-radius:2px;
+    padding:7px 9px; font:inherit; font-size:13.5px; color:var(--ink); width:100%;
+  }
+  .fld input.ltr{font-family:var(--font-mono); font-size:12px; direction:ltr;}
+  .fld .hint{font-size:11.5px; color:var(--ink-3);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media (max-width:560px){ .grid2{grid-template-columns:1fr;} }
+  .formmsg{font-size:12.5px; padding:7px 10px; border-radius:2px; display:none;}
+  .formmsg.err{display:block; background:var(--bad-bg); color:var(--bad);}
+  .formmsg.ok{display:block; background:var(--accent-soft); color:var(--accent);}
+  .restore{margin-top:14px; font-size:12.5px; color:var(--ink-3);}
+
+  /* ============ credit bar ============ */
+
+  /* Page controls sit under the page they act on, so the eye travels
+     image -> controls -> credit instead of jumping back to the header. */
+  .toolbar{
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    gap:10px; flex-wrap:wrap; padding:7px 14px;
+    background:var(--surface); border-top:1px solid var(--rule); min-height:46px;
+  }
+  .toolbar .group{background:var(--surface-2);}
+  @media (max-width:560px){
+    .toolbar{gap:6px; padding:6px 8px;}
+    .toolbar .btn{padding:4px 7px;}
+  }
+
+  /* translation, lexicon, rights */
+  .tr{margin-top:4px; padding-inline-start:8px; border-inline-start:2px solid var(--rule-2);
+      font-size:12.5px; color:var(--ink-2); line-height:1.5;}
+  .tr-tag{display:inline-block; font-family:var(--font-mono); font-size:9px; letter-spacing:.08em;
+      padding:1px 5px; border-radius:2px; background:var(--surface-2); color:var(--ink-3);
+      margin-inline-end:6px; vertical-align:1px;}
+  .tr-note{font-size:11.5px; color:var(--ink-3); line-height:1.55; margin:10px 0 0;
+      padding-top:8px; border-top:1px dashed var(--rule);}
+  .ar-inline{color:var(--ink-3); font-size:12.5px;}
+
+  .person{border:1px solid var(--rule); border-radius:2px; padding:10px 12px;
+      margin-bottom:8px; background:var(--surface-2);}
+  .person-name{font-family:var(--font-display); font-size:16px; line-height:1.3;}
+  .person-alt{font-size:12px; color:var(--ink-3); margin-top:1px;}
+  .person-period{font-size:11.5px; color:var(--accent); margin-top:3px;}
+  .person-desc{font-size:12.5px; color:var(--ink-2); margin:6px 0 0; line-height:1.55;}
+  .person-src{font-family:var(--font-mono); font-size:9.5px; color:var(--ink-3); margin-top:6px;}
+
+  .rights-box{border:1px solid var(--rule-2); border-radius:2px; padding:11px 12px;
+      background:var(--surface-2); font-size:12.5px; line-height:1.6;}
+  .rights-holder{font-weight:650; margin-bottom:4px;}
+  .rights-terms{color:var(--ink-2);}
+  .rights-caveat{margin-top:6px; padding:6px 8px; border-radius:2px;
+      background:var(--warn-bg); color:var(--warn); font-size:12px;}
+  .rights-credit{margin-top:8px;}
+  .rights-credit code{display:block; margin-top:3px; font-size:11px; direction:ltr;
+      text-align:left; background:var(--ground); padding:5px 7px; border-radius:2px;
+      border:1px solid var(--rule);}
+
+  /* index dialog */
+  .idx-group{border:1px solid var(--rule); border-radius:2px; margin-bottom:6px;
+      background:var(--surface);}
+  .idx-group summary{padding:9px 12px; cursor:pointer; font-weight:600; font-size:13.5px;
+      list-style:none; display:flex; align-items:center; gap:8px;}
+  .idx-group summary::-webkit-details-marker{display:none;}
+  .idx-count{margin-inline-start:auto; font-family:var(--font-mono); font-size:11px;
+      color:var(--ink-3); background:var(--surface-2); padding:1px 7px; border-radius:2px;}
+  .idx-list{list-style:none; margin:0; padding:0 0 6px;}
+  .idx-list button{display:flex; align-items:baseline; gap:8px; width:100%; text-align:right;
+      background:transparent; border:none; padding:5px 14px; font-size:13px; line-height:1.4;}
+  .idx-list button:hover{background:var(--surface-2);}
+  .idx-shelf{font-size:11px; color:var(--accent); min-width:11ch;}
+  .idx-pages{margin-inline-start:auto; font-family:var(--font-mono); font-size:10.5px;
+      color:var(--ink-3); white-space:nowrap;}
+
+  .rights-line{display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:5px;
+      font-size:11px; line-height:1.5;}
+  .rl-holder{color:var(--ink-2); font-weight:600;}
+  .rl-ok{color:var(--ok);}
+  .rl-no{color:var(--bad);}
+
+  .perm{margin-top:8px; border-radius:2px; padding:7px 10px; font-size:12px;}
+  .perm-ok{background:var(--ok-bg); border:1px solid color-mix(in srgb,var(--ok) 35%,transparent);}
+  .perm-no{background:var(--bad-bg); border:1px solid color-mix(in srgb,var(--bad) 35%,transparent);}
+  .perm-h{display:block; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.1em;
+      margin-bottom:3px;}
+  .perm-ok .perm-h{color:var(--ok);} .perm-no .perm-h{color:var(--bad);}
+  .perm ul{margin:0; padding-inline-start:16px;}
+  .perm li{margin:1px 0; color:var(--ink-2);}
+
+  .sum{background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);
+      border-radius:2px; padding:11px 13px; margin-bottom:12px;}
+  .sum-compact{margin:0 12px 8px; padding:8px 10px; background:var(--surface-2);
+      border-color:var(--rule);}
+  .sum-top{font-size:13px; color:var(--ink-2); display:flex; align-items:baseline;
+      flex-wrap:wrap; gap:6px;}
+  .sum-big{font-family:var(--font-display); font-size:22px; color:var(--ink); line-height:1;}
+  .sum-sep{color:var(--ink-3);}
+  .sum-digital{margin-inline-start:auto; font-family:var(--font-mono); font-size:11px;
+      color:var(--ok); background:var(--ok-bg); padding:2px 8px; border-radius:2px;
+      border:1px solid color-mix(in srgb,var(--ok) 30%,transparent); white-space:nowrap;}
+  .sum-kinds{display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;}
+  .sum-kind{font-size:11.5px; background:var(--surface); border:1px solid var(--rule);
+      border-radius:2px; padding:2px 8px; color:var(--ink-2);}
+  .sum-kind b{color:var(--accent); margin-inline-start:3px;}
+
+  /* --- navigation arrows: large, solid, unambiguous --- */
+  .nav-group{gap:2px;}
+  .btn-nav{
+    display:inline-flex; align-items:center; gap:6px; padding:6px 12px;
+    background:var(--surface-2); border:1px solid var(--rule-2); color:var(--ink);
+    font-weight:600; font-size:13.5px; border-radius:3px;
+  }
+  .btn-nav:hover:not(:disabled){background:var(--surface-3); border-color:var(--ink-3);}
+  .btn-nav:hover:not(:disabled){filter:brightness(1.12);}
+  .btn-nav:disabled{opacity:.35;}
+  .nav-ico{
+    width:22px; height:22px; flex:0 0 auto;
+    fill:none; stroke:currentColor; stroke-width:2.4;
+    stroke-linecap:round; stroke-linejoin:round;
+  }
+  .nav-lbl{white-space:nowrap;}
+  #btnRotate .nav-ico{width:19px; height:19px; stroke-width:2;}
+  #btnRotate[data-deg="90"],#btnRotate[data-deg="180"],#btnRotate[data-deg="270"]{
+    background:var(--accent); border-color:var(--accent); color:var(--accent-ink);
+  }
+
+  /* --- responsive --- */
+  @media (max-width:900px){
+    .toolbar{gap:6px; padding:6px 8px;}
+    .nav-lbl{display:none;}
+    .btn-nav{padding:6px 10px;}
+  }
+  @media (max-width:700px){
+    .topbar{padding:6px 10px; min-height:44px;}
+    .ms-title{max-width:14ch; font-size:13px;}
+    .ms-shelf{display:none;}
+    .toolbar .btn{font-size:12.5px;}
+    .zoomlevel{min-width:38px; font-size:11px;}
+    .pageinput{width:46px;}
+    .side{flex-basis:min(88vw,320px);}
+    .lib{width:100%;}
+    .lib-body{padding:14px 12px 18px;}
+    .thumbs{grid-template-columns:repeat(4,1fr);}
+  
+  }
+
+  .langbar{display:flex; gap:3px; margin-bottom:14px; padding:3px;
+      background:var(--surface-2); border:1px solid var(--rule-2); border-radius:3px;}
+  .lang-btn{flex:1 1 0; padding:5px 4px; font-size:12px; border:none;
+      background:transparent; border-radius:2px; white-space:nowrap;}
+  .lang-btn:hover{background:var(--surface-3);}
+  .lang-btn[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink); font-weight:600;}
+  .tr-orig{opacity:.65;}
+
+  .idx-away{opacity:.82;}
+  .idx-away .idx-shelf{color:var(--ink-3);}
+  .idx-status{margin-inline-start:auto; font-size:10.5px; white-space:nowrap;
+      color:var(--warn); background:var(--warn-bg); padding:1px 7px; border-radius:2px;
+      border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);}
+
+  #msList > .sum{margin-bottom:14px;}
+
+  /* The forward arrow sits on the right and points right; the back arrow sits
+     on the left and points left. In an RTL flow that means the nav group is
+     laid out left-to-right on purpose - direction of travel beats reading
+     order for a control that means "that way". */
+  .nav-group{direction:ltr;}
+  .btn-nav{padding:7px 14px;}
+  .nav-back .nav-ico{transform:rotate(180deg);}
+  .btn-nav .nav-ico{width:30px; height:22px; fill:currentColor; stroke:none;}
+  .stroke-ico .nav-ico{fill:none; stroke:currentColor; stroke-width:1.9;
+      stroke-linecap:round; stroke-linejoin:round; width:19px; height:19px;}
+
+  .pv-overlay{align-items:center;}
+  .pv{background:var(--ground); border:1px solid var(--rule-2); border-radius:3px;
+      width:min(960px,96vw); max-height:94vh; display:flex; flex-direction:column;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);}
+  .pv-body{flex:1 1 auto; overflow:auto; background:var(--stage); padding:14px;
+      display:flex; align-items:center; justify-content:center;}
+  .pv-body img{max-width:100%; max-height:72vh; display:block; background:#fff;
+      box-shadow:0 4px 22px rgba(0,0,0,.4);}
+  .pv-credit{flex:0 0 auto; padding:10px 16px; font-size:12px; color:var(--ink-2);
+      border-top:1px solid var(--rule); background:var(--surface); line-height:1.6;}
+
+  .searchwrap{display:flex; gap:6px; margin-bottom:12px;}
+  .searchbox{flex:1 1 auto; background:var(--surface); border:1px solid var(--rule-2);
+      border-radius:3px; padding:9px 12px; font:inherit; font-size:14px; color:var(--ink);}
+  .searchbox::placeholder{color:var(--ink-3); font-size:13px;}
+  .searchbox:focus{outline:2px solid var(--accent); outline-offset:1px;}
+
+  button.sum-kind{cursor:pointer; font-family:inherit;}
+  button.sum-kind:hover{border-color:var(--accent); color:var(--ink);}
+  button.sum-kind[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink);
+      border-color:var(--accent);}
+  button.sum-kind[aria-pressed="true"] b{color:var(--accent-ink);}
+
+  .idxlinks{display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .idxlinks-lbl{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em;
+      color:var(--ink-3); margin-inline-end:2px;}
+  .idxlink{padding:4px 10px; font-size:12.5px;}
+
+  .lib-intro{font-size:13.5px; line-height:1.7; color:var(--ink-2); margin:0 0 16px;
+      max-width:74ch;}
+  .lib-intro p{margin:0 0 8px;}
+  .lib-intro p:last-child{margin-bottom:0;}
+  .lib-intro strong{color:var(--bad);}
+
+  .drill{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .drill-item{display:inline-flex; align-items:baseline; gap:7px; cursor:pointer;
+      background:var(--surface); border:1px solid var(--rule); border-radius:2px;
+      padding:6px 11px; font:inherit; font-size:13px; color:var(--ink-2);}
+  .drill-item:hover{border-color:var(--accent); color:var(--ink);}
+  .drill-item[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink);
+      border-color:var(--accent);}
+  .drill-name{font-weight:600;}
+  .drill-n{font-family:var(--font-mono); font-size:11px; opacity:.8;}
+  .drill-d{font-family:var(--font-mono); font-size:10.5px; color:var(--ok);
+      background:var(--ok-bg); padding:0 5px; border-radius:2px;
+      border:1px solid color-mix(in srgb,var(--ok) 30%,transparent);}
+  .drill-item[aria-pressed="true"] .drill-d{background:transparent; color:var(--accent-ink);
+      border-color:color-mix(in srgb,var(--accent-ink) 40%,transparent);}
+  .drill-clear{margin-bottom:12px;}
+
+  .admin-only{border:1px dashed var(--rule-2); border-radius:2px; padding:10px 12px;
+      margin-bottom:12px; background:var(--surface-2);}
+
+  .drill-d{white-space:nowrap;}
+  .sum-big{min-width:2ch; display:inline-block;}
+
+  /* ===== parchment design for the manuscript library (per the proposal) ===== */
+  :root{
+    --pl-bg:#f4f1ea; --pl-surface:#fffdf8; --pl-surface2:#eee9de; --pl-sunk:#e7e1d4;
+    --pl-line:#ddd5c6; --pl-line2:#cec3ae;
+    --pl-ink:#1c1a17; --pl-ink2:#5d574c; --pl-ink3:#8f8778;
+    --pl-accent:#0f5c7a; --pl-accent-ink:#ffffff; --pl-accent-soft:#e0edf2;
+    --pl-accent-line:#b6d3de;
+    --pl-gold:#9c6f1c; --pl-gold-soft:#f2e7cd;
+    --pl-ok:#2c6a4c; --pl-ok-soft:#e2efe6; --pl-warn:#8a1f2e;
+    --pl-shadow:0 1px 2px rgba(28,26,23,.06),0 8px 24px -12px rgba(28,26,23,.18);
+    --pl-paper1:#efe6d2; --pl-paper2:#e3d7bd; --pl-rule:rgba(120,96,58,.22);
+    --pl-serif:'Frank Ruhl Libre',"Frank Ruehl CLM",Georgia,serif;
+    --pl-sans:Rubik,"Segoe UI",system-ui,sans-serif;
+    --pl-mono:Cousine,ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --pl-bg:#131110; --pl-surface:#1c1917; --pl-surface2:#241f1c; --pl-sunk:#171413;
+      --pl-line:#332d28; --pl-line2:#463e37;
+      --pl-ink:#f2ede3; --pl-ink2:#b2a998; --pl-ink3:#867c6d;
+      --pl-accent:#5fb3d1; --pl-accent-ink:#08222c; --pl-accent-soft:#16323d;
+      --pl-accent-line:#27505f;
+      --pl-gold:#d3a556; --pl-gold-soft:#33291a;
+      --pl-ok:#74bd96; --pl-ok-soft:#1a2c22; --pl-warn:#e5949b;
+      --pl-shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+      --pl-paper1:#cfc2a4; --pl-paper2:#b8a884; --pl-rule:rgba(60,44,20,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --pl-bg:#131110; --pl-surface:#1c1917; --pl-surface2:#241f1c; --pl-sunk:#171413;
+    --pl-line:#332d28; --pl-line2:#463e37;
+    --pl-ink:#f2ede3; --pl-ink2:#b2a998; --pl-ink3:#867c6d;
+    --pl-accent:#5fb3d1; --pl-accent-ink:#08222c; --pl-accent-soft:#16323d;
+    --pl-accent-line:#27505f;
+    --pl-gold:#d3a556; --pl-gold-soft:#33291a;
+    --pl-ok:#74bd96; --pl-ok-soft:#1a2c22; --pl-warn:#e5949b;
+    --pl-shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+    --pl-paper1:#cfc2a4; --pl-paper2:#b8a884; --pl-rule:rgba(60,44,20,.3);
+  }
+
+  /* the library page itself */
+  #libOverlay .lib{
+    background:var(--pl-bg); color:var(--pl-ink); font-family:var(--pl-sans);
+    border:1px solid var(--pl-line); border-radius:16px;
+  }
+  #libOverlay .lib-head{
+    background:var(--pl-surface); border-bottom:1px solid var(--pl-line);
+    border-radius:16px 16px 0 0;
+  }
+  #libOverlay .lib-head h2{
+    font-family:var(--pl-serif); font-weight:700; font-size:26px; letter-spacing:-.01em;
+    color:var(--pl-ink);
+  }
+  #libOverlay .lib-intro{color:var(--pl-ink2);}
+  #libOverlay .lib-intro strong{color:var(--pl-warn);}
+
+  /* search + chips in the design's rounded language */
+  #libOverlay .searchbox{
+    height:46px; border-radius:12px; border:1px solid var(--pl-line2);
+    background:var(--pl-surface); color:var(--pl-ink); box-shadow:var(--pl-shadow);
+    font-family:var(--pl-sans);
+  }
+  #libOverlay .searchbox:focus{outline:2px solid var(--pl-accent);}
+  #libOverlay button.sum-kind{
+    border-radius:999px; border:1px solid var(--pl-line); background:var(--pl-surface);
+    color:var(--pl-ink2); padding:7px 13px; font-family:var(--pl-sans);
+  }
+  #libOverlay button.sum-kind:hover{border-color:var(--pl-accent-line); color:var(--pl-ink);}
+  #libOverlay button.sum-kind[aria-pressed="true"]{
+    background:var(--pl-accent-soft); color:var(--pl-accent);
+    border-color:var(--pl-accent-line);
+  }
+  #libOverlay button.sum-kind b, #libOverlay button.sum-kind .tnum{
+    font-family:var(--pl-mono); font-size:11px; opacity:.75; color:inherit;
+  }
+  #libOverlay .idxlink{
+    border-radius:8px; border:1px solid var(--pl-line); background:var(--pl-surface);
+    color:var(--pl-ink2); font-family:var(--pl-sans);
+  }
+  #libOverlay .idxlink[aria-pressed="true"]{
+    background:var(--pl-accent-soft); color:var(--pl-accent); border-color:var(--pl-accent-line);
+    font-weight:600;
+  }
+  #libOverlay .drill-item{
+    border-radius:8px; border:1px solid var(--pl-line); background:var(--pl-surface);
+    color:var(--pl-ink2);
+  }
+  #libOverlay .drill-item[aria-pressed="true"]{
+    background:var(--pl-accent-soft); color:var(--pl-accent); border-color:var(--pl-accent-line);
+  }
+  #libOverlay .drill-d{color:var(--pl-ok); background:var(--pl-ok-soft);
+    border-color:transparent;}
+
+  /* the catalogue-in-numbers panel */
+  #libOverlay .sum{
+    background:var(--pl-sunk); border:1px solid var(--pl-line); border-radius:14px;
+  }
+  #libOverlay .sum-big{
+    font-family:var(--pl-serif); font-weight:700; font-size:26px; color:var(--pl-ink);
+  }
+  #libOverlay .sum-digital{
+    color:var(--pl-ok); background:var(--pl-ok-soft); border-color:transparent;
+    font-family:var(--pl-mono);
+  }
+
+  /* ===== the manuscript card itself ===== */
+  #libOverlay .ms-row{
+    border:1px solid var(--pl-line); border-radius:14px; background:var(--pl-surface);
+    box-shadow:var(--pl-shadow); padding:14px; gap:14px; align-items:stretch;
+    transition:border-color .12s;
+  }
+  #libOverlay .ms-row:hover{border-color:var(--pl-line2);}
+  #libOverlay .ms-row.is-open{border-color:var(--pl-accent); box-shadow:var(--pl-shadow),
+    inset 2px 0 0 var(--pl-accent);}
+
+  /* the leaf: a real first page where we hold it, ruled paper where we don't */
+  .ms-thumb{
+    flex:none; width:66px; height:88px; border:1px solid var(--pl-line);
+    border-radius:8px; overflow:hidden; position:relative; padding:0; cursor:pointer;
+    background:linear-gradient(160deg,var(--pl-paper1),var(--pl-paper2));
+  }
+  .ms-thumb::before{
+    content:""; position:absolute; inset:7px;
+    background:repeating-linear-gradient(to bottom,transparent 0 6px,var(--pl-rule) 6px 7px);
+  }
+  .ms-thumb img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .ms-thumb .pgs{
+    position:absolute; inset-block-end:5px; inset-inline-start:5px; z-index:2;
+    padding:2px 6px; border-radius:6px; background:rgba(20,16,10,.62); color:#f6efe0;
+    font-family:var(--pl-mono); font-size:9.5px;
+  }
+
+  #libOverlay .ms-info .t{
+    font-family:var(--pl-serif); font-size:16.5px; font-weight:700; line-height:1.3;
+    color:var(--pl-ink);
+  }
+  #libOverlay .ms-info .s{color:var(--pl-ink2); font-size:12.5px;}
+  #libOverlay .ms-info .u{
+    font-family:var(--pl-mono); font-size:11px; color:var(--pl-ink3); opacity:1;
+  }
+  #libOverlay .rights-line{font-size:11.5px; gap:4px 14px;}
+  #libOverlay .rl-holder{color:var(--pl-ink2);}
+  #libOverlay .rl-ok{color:var(--pl-ok);}
+  #libOverlay .rl-no{color:var(--pl-warn);}
+
+  #libOverlay .badge{
+    border-radius:6px; font-family:var(--pl-sans); font-size:10.5px; font-weight:600;
+    letter-spacing:0; padding:2px 8px;
+  }
+  #libOverlay .badge-local{background:var(--pl-ok-soft); color:var(--pl-ok); border:none;}
+  #libOverlay .badge-own{background:var(--pl-gold-soft); color:var(--pl-gold); border:none;}
+
+  /* action column */
+  #libOverlay .ms-acts{flex-direction:column; gap:7px; justify-content:flex-start;}
+  #libOverlay .ms-acts .btn-primary{
+    border-radius:9px; padding:9px 18px; background:var(--pl-accent);
+    border-color:var(--pl-accent); color:var(--pl-accent-ink); font-weight:600;
+    font-family:var(--pl-sans); box-shadow:var(--pl-shadow);
+  }
+  #libOverlay .ms-acts .btn-primary:hover{filter:brightness(1.08);}
+  #libOverlay .ms-acts .btn-danger{
+    border-radius:9px; padding:7px 18px; background:none; border:1px solid var(--pl-line);
+    color:var(--pl-ink3); font-family:var(--pl-sans);
+  }
+  #libOverlay .ms-acts .btn-danger:hover{color:var(--pl-warn); border-color:var(--pl-warn);
+    background:none;}
+
+  #libOverlay .addbox, #libOverlay .addbox summary{
+    border-radius:14px; font-family:var(--pl-sans);
+  }
+  @media (max-width:560px){
+    #libOverlay .ms-row{flex-direction:row; flex-wrap:wrap;}
+    .ms-thumb{width:56px; height:74px;}
+  }
+
+  /* The catalogue is the application, not a dialog over one: full viewport,
+     no dim backdrop, no card frame. */
+  #libOverlay{padding:0; background:var(--pl-bg); overflow-y:auto;}
+  #libOverlay .lib{
+    width:100%; max-width:none; min-height:100vh;
+    border:none; border-radius:0; box-shadow:none;
+  }
+  #libOverlay .lib-head{
+    border-radius:0; position:sticky; top:0; z-index:5;
+    padding:14px 26px; gap:16px;
+  }
+  #libOverlay .lib-body{padding:22px 26px 60px; max-width:1180px; margin:0 auto;}
+  @media (max-width:700px){
+    #libOverlay .lib-head{padding:10px 14px;}
+    #libOverlay .lib-body{padding:14px 12px 40px;}
+    #libOverlay .lib-head h2{font-size:19px;}
+  }
+
+  /* ---- the old codex, turning its leaves ----
+     Spine on the right, as a Hebrew book binds; each leaf starts lying on the
+     left board and sweeps over to the right, one after another, slowly. */
+  .tbook{
+    flex:none; width:74px; height:52px; position:relative;
+    perspective:340px; align-self:center;
+  }
+  .tbook .board{
+    position:absolute; inset:0; border-radius:4px 6px 6px 4px;
+    background:linear-gradient(200deg,#8a5a2b,#5d3a17);
+    box-shadow:0 2px 6px rgba(28,26,23,.35);
+  }
+  .tbook .block{
+    position:absolute; inset:4px 6px 4px 4px; border-radius:2px 4px 4px 2px;
+    background:
+      repeating-linear-gradient(to bottom,transparent 0 5px,var(--pl-rule) 5px 6px),
+      linear-gradient(160deg,var(--pl-paper1),var(--pl-paper2));
+  }
+  .tbook .leaf{
+    position:absolute; inset-block:4px; inset-inline-start:4px; width:32px;
+    transform-origin:right center;
+    border-radius:2px 0 0 2px;
+    background:
+      repeating-linear-gradient(to bottom,transparent 0 5px,var(--pl-rule) 5px 6px),
+      linear-gradient(160deg,var(--pl-paper1),var(--pl-paper2));
+    box-shadow:-1px 0 2px rgba(28,26,23,.15);
+    backface-visibility:visible;
+    animation:leafturn 9s cubic-bezier(.45,.05,.55,.95) infinite;
+  }
+  .tbook .leaf:nth-child(3){animation-delay:3s;}
+  .tbook .leaf:nth-child(4){animation-delay:6s;}
+  @keyframes leafturn{
+    0%   {transform:rotateY(0deg);   z-index:3;}
+    45%  {transform:rotateY(-178deg); z-index:3;}
+    50%  {transform:rotateY(-178deg); z-index:0;}
+    100% {transform:rotateY(-178deg); z-index:0;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .tbook .leaf{animation:none; transform:rotateY(-40deg);}
+    .tbook .leaf:nth-child(3){transform:rotateY(-100deg);}
+    .tbook .leaf:nth-child(4){transform:rotateY(-160deg);}
+  }
+
+  .crown-box{border:1px solid var(--pl-line,#ddd5c6); border-inline-start:3px solid var(--pl-gold,#9c6f1c);
+      border-radius:2px; padding:10px 12px; background:var(--surface-2); font-size:12.5px;}
+  .crown-quote{margin:0 0 6px; line-height:1.6; color:var(--ink-2);}
+  .crown-note{margin:0 0 6px; color:var(--accent); font-size:12px;}
+  .crown-cite{margin:0; font-family:var(--font-mono); font-size:10px; color:var(--ink-3);
+      direction:ltr; text-align:left;}
+
+  .lib-intro .colophon{
+    font-family:var(--pl-serif); font-weight:700; font-size:15px;
+    color:var(--pl-gold,#9c6f1c); white-space:nowrap;
+  }
+  .credit{font-size:11.5px; padding:6px 10px;}
+  @media (max-width:520px){
+    .brand{display:none;}
+    .toolbar{justify-content:space-between;}
+    .toolbar .group{flex:0 0 auto;}
+    #btnFit{display:none;}
+    .thumbs{grid-template-columns:repeat(3,1fr);}
+    .ms-row{flex-direction:column; align-items:stretch; gap:8px;}
+    .ms-acts{justify-content:flex-start;}
+    .sum-digital{margin-inline-start:0;}
+    .grid2{grid-template-columns:1fr;}
+    dl.meta{grid-template-columns:1fr; gap:2px 0;}
+    dl.meta dt{padding-top:8px; max-width:none;}
+  }
+  @media (pointer:coarse){
+    .btn{min-height:36px;}
+    .btn-nav{min-height:40px; padding:8px 14px;}
+    .thumb{min-height:72px;}
+  }
+  .credit{
+    flex:0 0 auto; display:flex; align-items:center; gap:8px 18px; flex-wrap:wrap;
+    padding:8px 16px; background:var(--surface); border-top:1px solid var(--rule);
+    font-size:12.5px; color:var(--ink-2); min-height:40px;
+  }
+  .credit .lbl{
+    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.13em; text-transform:uppercase;
+    color:var(--ink-3);
+  }
+  .credit .inst{font-weight:650; color:var(--ink);}
+  .credit .sm{font-family:var(--font-mono); font-size:11.5px; direction:ltr;}
+  .credit a{color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent);}
+  .credit a:hover{border-bottom-color:var(--accent);}
+  .credit .logo{height:20px; width:auto; opacity:.85; border-radius:1px; background:#fff; padding:1px 3px;}
+  .credit .rights{color:var(--ink-3);}
+
+  @media (max-width:840px){
+    .side{position:absolute; inset-block:0; inset-inline-end:0; z-index:20; flex-basis:290px;
+      box-shadow:-6px 0 24px rgba(0,0,0,.28);}
+    .ms-title{max-width:18ch;}
+    .brand{display:none;}
+  }
+  .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+</style>
+
+<div class="topbar">
+  <span class="brand">צופה כתבי יד</span>
+  <button class="btn btn-primary" id="btnLib">הספרייה</button>
+
+  <span class="ms-title" id="msTitle">לא נטען כתב יד</span>
+  <span class="ms-shelf" id="msShelf"></span>
+
+  <span class="spacer"></span>
+</div>
+
+<div class="main">
+  <div class="stage" id="stage">
+    <img id="pageImg" alt="" hidden>
+    <div class="stage-msg" id="stageMsg">
+      <h3>בחר כתב יד מהספרייה</h3>
+      <p>הצופה טוען תמונות ישירות משרתי המוסדות דרך תקן IIIF. שום דימוי אינו מועתק או מאוחסן כאן.</p>
+      <div class="row"><button class="btn btn-primary" id="btnLib2">פתח את הספרייה</button></div>
+    </div>
+  </div>
+
+  <aside class="side" id="side" hidden>
+    <div class="side-head">
+      <h2 id="sideTitle">אינדקס</h2>
+      <span class="spacer"></span>
+      <button class="btn btn-icon" id="btnSideClose" title="סגירה">×</button>
+    </div>
+    <div class="side-body" id="sideBody"></div>
+  </aside>
+</div>
+
+
+<div class="toolbar" id="toolbar">
+  <div class="group nav-group" role="group" aria-label="ניווט בין עמודים">
+    <button class="btn btn-nav nav-back" id="btnPrev" title="עמוד אחורה"
+            aria-label="עמוד אחורה" disabled><svg class="nav-ico" viewBox="0 0 32 24" aria-hidden="true"><path d="M2 9.2h16.4V3.4L30 12l-11.6 8.6v-5.8H2z"/></svg></button>
+    <input class="pageinput" id="pageIn" type="text" inputmode="numeric" value="—"
+           aria-label="מספר עמוד" disabled>
+    <span class="pagecount" id="pageCount">—</span>
+    <button class="btn btn-nav nav-fwd" id="btnNext" title="עמוד קדימה"
+            aria-label="עמוד קדימה" disabled><svg class="nav-ico" viewBox="0 0 32 24" aria-hidden="true"><path d="M2 9.2h16.4V3.4L30 12l-11.6 8.6v-5.8H2z"/></svg></button>
+  </div>
+
+  <div class="group" role="group" aria-label="הגדלה">
+    <button class="btn btn-icon" id="btnOut" title="הקטנה (−)" disabled>−</button>
+    <span class="zoomlevel" id="zoomLvl">100%</span>
+    <button class="btn btn-icon" id="btnIn" title="הגדלה (+)" disabled>+</button>
+    <span class="sep"></span>
+    <button class="btn" id="btnFit" title="התאמה למסך (0)" disabled>התאם</button>
+    <span class="sep"></span>
+    <button class="btn btn-icon" id="btnRotate" data-deg="0" title="סובב 90° — לקריאת הערות בשוליים" aria-label="סובב 90 מעלות" disabled><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 1-2.6-5.9" /><path d="M20 4.2V10h-5.6" /></svg></button>
+    <span class="sep"></span>
+    <button class="btn btn-icon stroke-ico" id="btnPreview" title="תצוגה מקדימה של העמוד" aria-label="תצוגה מקדימה" disabled><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.8 12S5.5 5.5 12 5.5 22.2 12 22.2 12 18.5 18.5 12 18.5 1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
+    <button class="btn btn-icon stroke-ico" id="btnPrint" title="הדפסת העמוד" aria-label="הדפסה" disabled><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 19H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></button>
+  </div>
+
+  <button class="btn" id="btnIndex" aria-pressed="false" disabled>אינדקס</button>
+  <button class="btn" id="btnMeta" aria-pressed="false" disabled>פרטים</button>
+  <button class="btn" id="btnBrowse" title="חזרה לקטלוג">קטלוג כתבי היד</button>
+</div>
+
+<div class="credit" id="credit">
+  <span class="lbl">מקור</span>
+  <span class="inst" id="crInst">—</span>
+  <span class="sm" id="crShelf"></span>
+  <span class="rights" id="crRights"></span>
+  <span class="spacer"></span>
+  <img class="logo" id="crLogo" alt="" hidden>
+  <a id="crLink" href="#" target="_blank" rel="noopener noreferrer" hidden>צפייה באתר המקור ↗</a>
+</div>
+
+<div class="lib-overlay pv-overlay" id="pvOverlay" hidden>
+  <div class="pv" role="dialog" aria-modal="true" aria-label="תצוגה מקדימה">
+    <div class="lib-head">
+      <h2>תצוגה מקדימה</h2>
+      <span class="spacer"></span>
+      <button class="btn" id="btnPvPrint">הדפס</button>
+      <button class="btn btn-icon" id="btnPvClose" title="סגירה">&times;</button>
+    </div>
+    <div class="pv-body"><img id="pvImg" alt="תצוגה מקדימה של העמוד"></div>
+    <div class="pv-credit" id="pvCredit"></div>
+  </div>
+</div>
+
+<div class="lib-overlay" id="browseOverlay" hidden>
+  <div class="lib" role="dialog" aria-modal="true" aria-labelledby="brH">
+    <div class="lib-head">
+      <h2 id="brH">אינדקסים</h2>
+      <span class="spacer"></span>
+      <button class="btn btn-icon" id="btnBrowseClose" title="סגירה">&times;</button>
+    </div>
+    <div class="lib-body">
+      <div class="group" id="brTabs" role="group" aria-label="חתך"
+           style="display:inline-flex;margin-bottom:14px;">
+        <button class="btn" data-idx="inst" aria-pressed="true">לפי ספרייה</button>
+        <span class="sep"></span>
+        <button class="btn" data-idx="type" aria-pressed="false">לפי סוג</button>
+        <span class="sep"></span>
+        <button class="btn" data-idx="century" aria-pressed="false">לפי מאה</button>
+        <span class="sep"></span>
+        <button class="btn" data-idx="person" aria-pressed="false">לפי מחבר</button>
+      </div>
+      <div id="brBody"></div>
+    </div>
+  </div>
+</div>
+
+<div class="lib-overlay" id="libOverlay" hidden>
+  <div class="lib" role="dialog" aria-modal="true" aria-labelledby="libH">
+    <div class="lib-head">
+      <h2 id="libH">אוצר כתבי היד השומרוניים בספריות תבל</h2>
+      <span class="spacer"></span>
+      <button class="btn" id="btnLibClose" hidden>חזרה לכתב היד</button>
+      <div class="tbook" aria-hidden="true">
+        <span class="board"></span><span class="block"></span>
+        <span class="leaf"></span><span class="leaf"></span><span class="leaf"></span>
+      </div>
+    </div>
+    <div class="lib-body">
+      <div class="lib-intro">
+        <p>אינדקס זה הוא הגדול מסוגו — ריכוז אוסף כתבי היד השומרוניים
+           מכלל הספריות הדיגיטליות בארץ ובעולם.</p>
+        <p>הרעיון שבבסיס הקטלוג הוא לכנס את כל כתבי היד במקום אחד, נגיש וזמין,
+           ולחסוך מן המתעניין — בן הקהילה השומרונית או חוקר מתעניין מן החוץ —
+           את החיפוש והנבירה בספריות השונות אחר אותם אוספים דיגיטליים.</p>
+        <p>אין קטלוג זה מתיימר להחליף את מקומם של גופי המחקר או של הספריות
+           החשובות בעולם, אלא אך להנגיש את כתב היד אל כף היד,
+           במקום מרוכז אחד.</p>
+        <p>חלק קטן מכתבי היד שמצאו את דרכם לספריות תבל, כמו גם לאוספים פרטיים,
+           ניתן כאן לצפייה מלאה. אנא שימו לב לתנאי הרישיון החלים על כל אחד
+           מכתבי היד שבקטלוג, והקפידו לכבדם.
+           <strong>שימוש מסחרי בכתבי היד אסור בהחלט, בכל המקרים.</strong>
+           במקומות שבהם הרישיון מחמיר בשימוש בכתב היד, הוא מובא כקישור
+           לאתר המקור בלבד.</p>
+        <p>כל כתב יד באוסף נושא את פרטיו מתוך קטלוגי הספריות השונות; ניתן
+           לעיין בהם בתרגומם לשפות שונות, ואף לקבל הרחבות על אודות המעתיק.</p>
+        <p>מטבע הדברים, וכדרכו של כל ארכיון, ייתכן שנפלו כאן הקשרים או סיווגים
+           שאינם נכונים — לעיתים הטעות ברשומת המקור עצמה, ולעיתים בהקשר שנוצר
+           בעת בניית האינדקס. תקוותנו שברבות הימים יתוקנו גם טעויות אלו,
+           וכדרך שנוהגים מעתיקים רבים לכתוב —
+           <span class="colophon">יהוה הוא הידעיו</span>.</p>
+        <p>ולסיום — תקוותנו שתמצאו עניין בקטלוג זה, ושעיניהם של בני העדה,
+           בראש ובראשונה, יוכלו לשוב ולשזוף עיניהם, בחלק מבניהם האבודים,
+           שמצאו את דרכם אל גלות עולם.</p>
+      </div>
+
+      <div class="idxlinks" id="idxBar">
+        <span class="idxlinks-lbl">אינדקסים:</span>
+        <button class="btn idxlink" data-goidx="all" aria-pressed="true">הכל</button>
+        <button class="btn idxlink" data-goidx="inst">לפי ספרייה</button>
+        <button class="btn idxlink" data-goidx="type">לפי סוג</button>
+        <button class="btn idxlink" data-goidx="century">לפי מאה</button>
+        <button class="btn idxlink" data-goidx="person">לפי מחבר</button>
+      </div>
+
+      <div id="idxDrill" hidden></div>
+
+      <div class="searchwrap">
+        <input type="search" id="msSearch" class="searchbox"
+               placeholder="חיפוש בכל השדות — כותר, מדף, מוסד, מחבר, תיאור, שפה…"
+               aria-label="חיפוש בכל השדות" autocomplete="off">
+        <button class="btn" id="btnSearchClear" title="נקה חיפוש" hidden>&times;</button>
+      </div>
+
+      <div class="admin-only" id="adminBox" hidden>
+        <div class="group" id="grpFilter" role="group" aria-label="סינון לפי אוסף"
+             style="display:inline-flex;margin-bottom:10px;">
+          <button class="btn" data-grp="samaritan" aria-pressed="true">שומרוני</button>
+          <span class="sep"></span>
+          <button class="btn" data-grp="local" aria-pressed="false">שמור מקומית</button>
+          <span class="sep"></span>
+          <button class="btn" data-grp="frame" aria-pressed="false">במסגרת</button>
+          <span class="sep"></span>
+          <button class="btn" data-grp="uncertain" aria-pressed="false">לבדיקה</button>
+          <span class="sep"></span>
+          <button class="btn" data-grp="all" aria-pressed="false">הכל</button>
+        </div>
+        <p id="localNote" style="font-size:12px;color:var(--ok);margin:0 0 4px;
+           font-family:var(--font-mono);font-weight:600;"></p>
+        <p id="harvestNote" style="font-size:12px;color:var(--ink-3);margin:0 0 12px;
+           font-family:var(--font-mono);"></p>
+      </div>
+
+      <div class="ms-list" id="msList"></div>
+
+      <details class="addbox">
+        <summary>הוספת כתב יד</summary>
+        <form class="addform" id="addForm">
+          <div class="fld">
+            <label for="fUrl">כתובת — manifest של IIIF או דף צפייה</label>
+            <input class="ltr" id="fUrl" type="text" required
+                   placeholder="https://digi.vatlib.it/view/MSS_Vat.ebr.14">
+            <span class="hint">נתמכת גזירה אוטומטית מ־Gallica, הוותיקן, בודליאן, קיימברידג׳, מינכן ו־NLI.</span>
+          </div>
+          <div class="grid2">
+            <div class="fld"><label for="fTitle">שם כתב היד</label>
+              <input id="fTitle" type="text" placeholder="יילקח מה־manifest אם יישאר ריק"></div>
+            <div class="fld"><label for="fInst">המוסד המחזיק</label>
+              <input id="fInst" type="text" placeholder="יילקח מה־manifest אם יישאר ריק"></div>
+          </div>
+          <div class="grid2">
+            <div class="fld"><label for="fShelf">מספר מדף</label>
+              <input class="ltr" id="fShelf" type="text" placeholder="Vat.ebr.14"></div>
+            <div class="fld"><label for="fNote">הערה</label>
+              <input id="fNote" type="text" placeholder="תיארוך, תוכן, ייחוד"></div>
+          </div>
+          <div class="formmsg" id="formMsg"></div>
+          <div><button class="btn btn-primary" type="submit">הוסף לספרייה</button></div>
+        </form>
+      </details>
+
+      <div class="restore" id="restoreWrap" hidden>
+        הוסרו <span id="remCount">0</span> פריטים מהרשימה המקורית.
+        <button class="btn" id="btnRestore" style="padding:2px 8px;font-size:12px;">שחזר</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1. SEED LIBRARY — every manifest below was fetched and
+      verified before shipping (August 2026).
+   ============================================================ */
+function ryl(n, title, note, cv){
+  var id = "MS-SAMARITAN-" + ("0000" + n).slice(-5);
+  return { id:"ryl-sam-" + n, group:"samaritan", title:title,
+           inst:"ספריית ג׳ון ריילנדס, אוניברסיטת מנצ׳סטר",
+           shelf:"Samaritan MS " + n, note:note + " · " + cv + " עמודים",
+           manifest:"https://www.digitalcollections.manchester.ac.uk/iiif/" + id,
+           home:"https://www.digitalcollections.manchester.ac.uk/view/" + id + "/1" };
+}
+function gal(ark, title, shelfNote, note, cv){
+  return { id:"bnf-" + ark, group:"samaritan", title:title,
+           inst:"הספרייה הלאומית של צרפת", shelf:shelfNote,
+           note:note + " · " + cv + " עמודים",
+           manifest:"https://gallica.bnf.fr/iiif/ark:/12148/" + ark + "/manifest.json",
+           home:"https://gallica.bnf.fr/ark:/12148/" + ark };
+}
+
+var SEED = [
+  /* ---- Samaritan: John Rylands, Manchester (Gaster collection) ---- */
+  ryl(1,  "חומש שומרוני",                "כתב שומרוני", 620),
+  ryl(2,  "חומש שומרוני",                "כתב שומרוני", 460),
+  ryl(4,  "חומש שומרוני — קטע",          "קטע", 92),
+  ryl(6,  "מקרא שומרוני — בראשית",       "ספר בראשית", 82),
+  ryl(11, "דפתר (Daftar)",               "סידור התפילה השומרוני", 336),
+  ryl(14, "פיוטים שומרוניים",            "הימנונים ליטורגיים", 206),
+  ryl(8,  "ארבע מסות תיאולוגיות",        "כתיבה שומרונית עיונית", 72),
+
+  /* ---- Samaritan: Bibliothèque nationale de France ---- */
+  gal("btv1b10092455z", "חומש שומרוני", "Samaritain 4",
+      "כתב שומרוני", 346),
+  gal("btv1b100927966", "חומש שומרוני — עזה", "Samaritain 15",
+      "כתב שומרוני · ממוצא עזה", 259),
+  gal("btv1b525172626", "חומש שומרוני", "Samaritain 56",
+      "כתב שומרוני", 507),
+  gal("btv1b11004409t", "חומש שומרוני בערבית", "Arabe 5",
+      "כתב ערבי — תרגום לשימוש השומרונים, לא כתב שומרוני", 236),
+
+  /* ---- Sources that block programmatic access but permit embedding ----
+     These have no usable IIIF for us, yet their viewer pages send no
+     X-Frame-Options, so they can be shown in place inside a frame with our
+     credit bar underneath. Verified Aug 2026; a host may add a block at any
+     time, so the frame degrades to a link if it fails to load. ---- */
+  { id:"frame-msu-samaritan", group:"frame", mode:"frame",
+    title:"אוסף צ׳מברלין־וורן — 18 חומשים שומרוניים",
+    inst:"Michigan State University Libraries", shelf:"MSS 287",
+    note:"אין IIIF · נפתח מתוך אתר המקור",
+    home:"https://findingaids.lib.msu.edu/repositories/2/resources/1104",
+    frame:"https://findingaids.lib.msu.edu/repositories/2/resources/1104" },
+
+  { id:"frame-leon-levy", group:"frame", mode:"frame",
+    title:"מגילות ים המלח — ספריית ליאון לוי",
+    inst:"רשות העתיקות", shelf:"IAA",
+    note:"צילום רב־ספקטרלי · נפתח מתוך אתר המקור",
+    home:"https://www.deadseascrolls.org.il/explore-the-archive",
+    frame:"https://www.deadseascrolls.org.il/explore-the-archive" },
+
+  { id:"frame-imj-dss", group:"frame", mode:"frame",
+    title:"מגילות ים המלח הדיגיטליות — מוזיאון ישראל",
+    inst:"מוזיאון ישראל, ירושלים", shelf:"IMJ",
+    note:"נפתח מתוך אתר המקור",
+    home:"https://www.imj.org.il/en/wings/shrine-book/dead-sea-scrolls",
+    frame:"https://www.imj.org.il/en/wings/shrine-book/dead-sea-scrolls" }
+
+];
+
+/* ============================================================
+   2. STATE + PERSISTENCE
+   ============================================================ */
+var LS_ADDED = "torahviewer.added.v1";
+var LS_REMOVED = "torahviewer.removed.v1";
+
+function load(key, fallback){
+  try{ var r = localStorage.getItem(key); return r ? JSON.parse(r) : fallback; }
+  catch(e){ return fallback; }
+}
+function save(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+}
+
+var added   = load(LS_ADDED, []);
+var removed = load(LS_REMOVED, []);
+
+function library(){
+  // Suppress remote duplicates of anything already downloaded.
+  var haveLocal = {};
+  localLib.forEach(function(x){ if(x.manifest) haveLocal[x.manifest] = true; });
+  var remote = SEED.concat(harvested).filter(function(m){
+    return !(m.manifest && haveLocal[m.manifest]);
+  });
+  var all = localLib.concat(remote);
+  var out = all.filter(function(m){ return removed.indexOf(m.id) === -1; });
+  return out.concat(added);
+}
+
+var cur = null;      // active library entry
+var doc = null;      // normalized manifest
+var pageIdx = 0;
+var zoom = 1, panX = 0, panY = 0, fitScale = 1;
+var loadToken = 0;
+var baseW = 1600;    // requested IIIF width for the main image
+
+/* ============================================================
+   3. IIIF NORMALIZATION — handles Presentation API v2 and v3
+   ============================================================ */
+
+var LANG_PREF = ["he","heb","iw","en","eng","none","@none"];
+
+// Extract a plain string from a IIIF value: string, language-tagged array,
+// or v3 language map. Institutions differ wildly here — BSB ships
+// [{"@language":"en","@value":"Title"},{"@language":"de",...}] in v2,
+// so a naive join would produce "Title · Titel".
+function lv(v){
+  if(v == null) return "";
+  if(typeof v === "string") return v;
+
+  if(Array.isArray(v)){
+    var tagged = v.filter(function(x){ return x && typeof x === "object" && x["@language"]; });
+    if(tagged.length){
+      for(var i = 0; i < LANG_PREF.length; i++){
+        var hit = tagged.filter(function(x){ return String(x["@language"]).toLowerCase() === LANG_PREF[i]; })[0];
+        if(hit) return String(hit["@value"]);
+      }
+      return String(tagged[0]["@value"]);
+    }
+    return v.map(lv).filter(Boolean).join(" · ");
+  }
+
+  if(typeof v === "object"){
+    if(v["@value"]) return String(v["@value"]);
+    if(v.id && v.label) return lv(v.label);
+    var keys = Object.keys(v);
+    var pick = LANG_PREF.filter(function(k){ return keys.indexOf(k) !== -1; })[0];
+    if(pick) return lv(v[pick]);
+    if(keys.length) return lv(v[keys[0]]);
+  }
+  return "";
+}
+
+// Several institutions (Bodleian, Cambridge) put the rights statement inside
+// `attribution` as raw HTML and omit `license` entirely. Render as text.
+function stripHtml(s){
+  if(!s) return "";
+  var d = document.createElement("div");
+  d.innerHTML = String(s);
+  return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+function licenseFromText(s){
+  if(!s) return "";
+  var m = String(s).match(/https?:\/\/(?:creativecommons\.org|rightsstatements\.org)\/[^\s"'<>)]+/i);
+  return m ? m[0].replace(/[.,]$/, "") : "";
+}
+
+// Label vocabularies differ per institution and per language.
+var FIELD_MAP = {
+  shelf:  ["shelfmark","classmark","call number","cote","signatur","signature"],
+  inst:   ["holding institution","repository","physical location","institution",
+           "bibliothèque","besitzende bibliothek","owning institution"],
+  date:   ["date statement","date","published","datierung","date de production"],
+  origin: ["place of origin","origin","entstehungsort","lieu de production"],
+  lang:   ["language(s)","language","langue","sprache"],
+  desc:   ["catalogue description","abstract","description","note(s)","note"]
+};
+function pickField(pairs, keys){
+  for(var i = 0; i < keys.length; i++){
+    for(var j = 0; j < pairs.length; j++){
+      if(String(pairs[j][0]).toLowerCase().trim() === keys[i]) return pairs[j][1];
+    }
+  }
+  return "";
+}
+
+function firstId(x){
+  if(!x) return "";
+  if(typeof x === "string") return x;
+  if(Array.isArray(x)) return firstId(x[0]);
+  return x.id || x["@id"] || "";
+}
+
+function normalize(raw){
+  var ctx = JSON.stringify(raw["@context"] || "");
+  var v3  = ctx.indexOf("presentation/3") !== -1;
+  var d = { v3:v3, label:lv(raw.label), pages:[], meta:[], ranges:[],
+            attribution:"", rights:"", logo:"", home:"", provider:"",
+            desc:lv(raw.description) || "",
+            dShelf:"", dInst:"", dDate:"", dOrigin:"", dLang:"", dDesc:"" };
+
+  // --- metadata (same shape both versions, values differ) ---
+  (raw.metadata || []).forEach(function(m){
+    var k = lv(m.label), val = lv(m.value);
+    if(k || val) d.meta.push([k, val]);
+  });
+
+  // --- credit fields ---
+  if(v3){
+    if(raw.requiredStatement){
+      d.attribution = lv(raw.requiredStatement.value);
+      var rl = lv(raw.requiredStatement.label);
+      if(rl && rl.toLowerCase().indexOf("attribution") === -1) d.attribution = rl + ": " + d.attribution;
+    }
+    d.rights = raw.rights || "";
+    d.home   = firstId(raw.homepage);
+    if(raw.provider && raw.provider.length){
+      d.provider = lv(raw.provider[0].label);
+      d.logo = firstId(raw.provider[0].logo);
+    }
+    d.pages = (raw.items || []).map(function(c, i){
+      var body = null;
+      try{ body = c.items[0].items[0].body; }catch(e){}
+      var svc = body ? firstId(body.service) : "";
+      return { label: lv(c.label) || String(i+1), service: svc,
+               direct: body ? (body.id || "") : "", cid: c.id || "",
+               w:c.width||0, h:c.height||0 };
+    });
+  } else {
+    d.attribution = stripHtml(lv(raw.attribution));
+    d.rights = firstId(raw.license) || lv(raw.license);
+    d.logo   = firstId(raw.logo);
+    d.home   = raw.related ? firstId(raw.related) : "";
+    var canv = [];
+    try{ canv = raw.sequences[0].canvases || []; }catch(e){}
+    d.pages = canv.map(function(c, i){
+      var res = null;
+      try{ res = c.images[0].resource; }catch(e){}
+      var svc = res ? firstId(res.service) : "";
+      return { label: lv(c.label) || String(i+1), service: svc,
+               direct: res ? (res["@id"] || "") : "", cid: c["@id"] || "",
+               w:c.width||0, h:c.height||0 };
+    });
+  }
+
+  // --- derive citation fields from whatever vocabulary this host uses ---
+  d.attribution = stripHtml(d.attribution);
+  if(!d.rights){
+    // v2 hides the licence URL in the attribution HTML; v3 in requiredStatement.
+    var creditRaw = (typeof raw.attribution === "string" ? raw.attribution : JSON.stringify(raw.attribution || "")) +
+                    " " + JSON.stringify(raw.requiredStatement || "");
+    d.rights = licenseFromText(creditRaw);
+  }
+  // Gallica prefixes every shelfmark with the full institution name; drop it
+  // so the credit bar shows "Samaritain 15", not a 70-character sentence.
+  d.dShelf  = stripHtml(pickField(d.meta, FIELD_MAP.shelf))
+                .replace(/^.*D[ée]partement des Manuscrits\.\s*/i, "")
+                .replace(/^Biblioth[èe]que nationale de France\.\s*/i, "");
+  d.dInst   = stripHtml(pickField(d.meta, FIELD_MAP.inst));
+  d.dDate   = stripHtml(pickField(d.meta, FIELD_MAP.date));
+  d.dOrigin = stripHtml(pickField(d.meta, FIELD_MAP.origin));
+  d.dLang   = stripHtml(pickField(d.meta, FIELD_MAP.lang));
+  d.dDesc   = stripHtml(pickField(d.meta, FIELD_MAP.desc)) || stripHtml(d.desc);
+  d.meta = d.meta.map(function(kv){ return [stripHtml(kv[0]), stripHtml(kv[1])]; });
+
+  // --- ranges → table of contents (books / sections) ---
+  // Ranges reference CANVAS ids, which live in a different namespace from the
+  // image ids (Vatican: /canvas/p0005 vs /res/img0001). Index by canvas id.
+  var canvasIndex = {};
+  d.pages.forEach(function(p, i){ if(p.cid) canvasIndex[p.cid] = i; });
+
+  (raw.structures || []).forEach(function(r){
+    var lab = lv(r.label);
+    if(!lab) return;
+    var target = -1;
+    var cands = v3 ? (r.items || []) : (r.canvases || []);
+    for(var j = 0; j < cands.length && target < 0; j++){
+      var cid = String(firstId(cands[j])).split("#")[0];   // drop #xywh fragments
+      if(cid && (cid in canvasIndex)) target = canvasIndex[cid];
+    }
+    d.ranges.push({ label:lab, page: target < 0 ? null : target,
+                    depth: r.within ? 1 : 0 });
+  });
+
+  return d;
+}
+
+/* ============================================================
+   4. URL DERIVATION — turn a viewer page URL into a manifest
+   ============================================================ */
+function deriveManifest(url){
+  url = (url || "").trim();
+  if(!url) return null;
+  if(/manifest/i.test(url)) return url;          // already a manifest
+  var m;
+
+  // Gallica: /ark:/12148/xxxx  →  /iiif/ark:/12148/xxxx/manifest.json
+  m = url.match(/gallica\.bnf\.fr\/(?:iiif\/)?(ark:\/\d+\/[a-z0-9]+)/i);
+  if(m) return "https://gallica.bnf.fr/iiif/" + m[1] + "/manifest.json";
+
+  // Vatican: /view/MSS_Vat.ebr.14  →  /iiif/MSS_Vat.ebr.14/manifest.json
+  m = url.match(/digi\.vatlib\.it\/view\/([^/?#]+)/i);
+  if(m) return "https://digi.vatlib.it/iiif/" + m[1] + "/manifest.json";
+
+  // Bodleian: /objects/<uuid>/  →  /iiif/manifest/<uuid>.json
+  m = url.match(/digital\.bodleian\.ox\.ac\.uk\/objects\/([0-9a-f-]{36})/i);
+  if(m) return "https://iiif.bodleian.ox.ac.uk/iiif/manifest/" + m[1] + ".json";
+
+  // Cambridge: /view/MS-XXX/1  →  /iiif/MS-XXX
+  m = url.match(/cudl\.lib\.cam\.ac\.uk\/view\/([^/?#]+)/i);
+  if(m) return "https://cudl.lib.cam.ac.uk/iiif/" + m[1];
+
+  // Munich MDZ: /view/bsb000  →  api.digitale-sammlungen.de/iiif/presentation/v2/<id>/manifest
+  m = url.match(/digitale-sammlungen\.de\/(?:en\/)?view\/(bsb[0-9]+)/i);
+  if(m) return "https://api.digitale-sammlungen.de/iiif/presentation/v2/" + m[1] + "/manifest";
+
+  // National Library of Israel: docId=PNX_...
+  m = url.match(/[?&]docId=([A-Za-z0-9_]+)/);
+  if(m) return "https://iiif.nli.org.il/IIIFv21/DOCID/" + m[1] + "/manifest";
+
+  return url; // fall through — let the fetch decide
+}
+
+/* ============================================================
+   5. IMAGE URL BUILDING
+   ============================================================ */
+// Ask for roughly what the screen can show. Requesting a fixed 1600px wastes
+// bandwidth on small screens and is a large part of why loading felt slow.
+function pickWidth(){
+  // Start modest so the first page appears fast; maybeUpgrade() fetches a
+  // sharper copy only once the reader actually zooms in.
+  var w = stage.clientWidth || 900;
+  if(w > 1100) return 1400;
+  if(w > 700)  return 1000;
+  return 800;
+}
+function imgUrl(page, width){
+  if(page.service) return page.service.replace(/\/$/,"") + "/full/" + width + ",/0/default.jpg";
+  return page.direct || "";
+}
+function thumbUrl(page){
+  if(page.service) return page.service.replace(/\/$/,"") + "/full/90,/0/default.jpg";
+  return page.direct || "";
+}
+
+/* Institutional servers rate-limit: Gallica returns HTTP 429 when hit with
+   many parallel requests. Fetch thumbnails through a small queue instead of
+   firing every visible one at once. */
+var THUMB_MAX = 3, thumbActive = 0, thumbQueue = [], thumbFails = 0;
+function enqueueThumb(el){ thumbQueue.push(el); pumpThumbs(); }
+function pumpThumbs(){
+  while(thumbActive < THUMB_MAX && thumbQueue.length){
+    var el = thumbQueue.shift();
+    var src = el.getAttribute("data-src");
+    if(!src) continue;
+    el.removeAttribute("data-src");
+    thumbActive++;
+    el.onload = function(){ thumbActive--; pumpThumbs(); };
+    el.onerror = function(){
+      thumbActive--;
+      // Repeated failures mean we are being throttled: slow down rather than
+      // hammering the host and getting the whole manuscript blocked.
+      if(++thumbFails === 3 && THUMB_MAX > 1) THUMB_MAX = 1;
+      setTimeout(pumpThumbs, thumbFails > 2 ? 1500 : 0);
+    };
+    el.src = src;
+  }
+}
+function resetThumbQueue(){ thumbQueue.length = 0; thumbActive = 0; thumbFails = 0; THUMB_MAX = 3; }
+
+// Parsed manifests are reused, so re-opening a manuscript is instant.
+var manifestCache = {};
+
+/* ============================================================
+   6. DOM
+   ============================================================ */
+var $ = function(id){ return document.getElementById(id); };
+var stage=$("stage"), img=$("pageImg"), stageMsg=$("stageMsg");
+var side=$("side"), sideBody=$("sideBody"), sideTitle=$("sideTitle");
+
+function showMsg(html){ stageMsg.innerHTML = html; stageMsg.hidden = false; img.hidden = true; }
+function hideMsg(){ stageMsg.hidden = true; }
+
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+/* ---------- library panel ---------- */
+
+/* One compact line stating who must be credited and what the licence allows
+   or forbids. Shown on every manuscript, because a reader deciding whether to
+   reuse a page should not have to open a panel to find out. */
+function rightsFor(m){
+  var e = m && m.manifest ? enriched[m.manifest] : null;
+  return e ? e.rights : null;
+}
+
+function rightsLine(m){
+  var R = rightsFor(m);
+  if(!R) return '';
+  var bits = '';
+  if(R.holder_he || R.holder){
+    bits += '<span class="rl-holder">' + esc(R.holder_he || R.holder) + '</span>';
+  }
+  if(R.allowed && R.allowed.length){
+    bits += '<span class="rl-ok">מותר: ' + esc(R.allowed[0]) + '</span>';
+  }
+  if(R.forbidden && R.forbidden.length){
+    bits += '<span class="rl-no">אסור: ' + esc(R.forbidden[0]) + '</span>';
+  } else if(R.host === "openn.library.upenn.edu"){
+    bits += '<span class="rl-ok">נחלת הכלל — ללא הגבלה</span>';
+  }
+  return bits ? '<div class="rights-line">' + bits + '</div>' : '';
+}
+
+
+/* ---------- search ----------
+   Runs over everything the record carries: the catalogue fields in all four
+   languages, the people linked from the lexicon, the rights holder, the
+   shelfmark and the type. A reader looking for "Nablus" or "קלף" or "Gaster"
+   should not have to know which field it lives in. */
+var searchQuery = "";
+var typeFilter = "";
+
+function searchBlob(m){
+  if(m._blob) return m._blob;
+  var parts = [m.title, m.shelf, m.inst, m.note, m.manifest];
+  var e = m.manifest ? enriched[m.manifest] : null;
+  if(e){
+    parts.push(e.title, e.shelf, e.inst);
+    if(e.type) parts.push(e.type.he, e.type.en, e.type.ar);
+    if(e.year) parts.push(String(e.year));
+    (e.fields || []).forEach(function(f){
+      parts.push(f.value, f.value_he, f.value_en, f.value_ar,
+                 f.label, f.label_he, f.label_en, f.label_ar);
+    });
+    (e.people || []).forEach(function(pp){
+      parts.push(pp.name_he, pp.name_en, pp.name_ar, pp.matched_on);
+    });
+    if(e.rights) parts.push(e.rights.holder, e.rights.holder_he, e.rights.holder_ar);
+    if(e.vongall) parts.push("von Gall", e.vongall.siglum);
+  }
+  m._blob = parts.filter(Boolean).join(" \u00b7 ").toLowerCase();
+  return m._blob;
+}
+
+function matchesSearch(m){
+  if(!searchQuery) return true;
+  var blob = searchBlob(m);
+  // every word must appear somewhere, in any field
+  return searchQuery.split(/\s+/).every(function(w){ return blob.indexOf(w) !== -1; });
+}
+
+function matchesType(m){
+  if(!typeFilter) return true;
+  var e = m.manifest ? enriched[m.manifest] : null;
+  var t = e && e.type ? e.type.he : "\u05dc\u05d0 \u05e1\u05d5\u05d5\u05d2";
+  return t === typeFilter;
+}
+
+
+/* Collection filters and load counters are development tools: they describe how
+   the archive was assembled, not what it holds. Shown only when running locally
+   AND explicitly asked for, so a reader never meets them. */
+var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ||
+              location.protocol === "file:";
+var adminMode = isLocal && (/[?&]admin=1/.test(location.search) ||
+                            localStorage.getItem("mssAdmin") === "1");
+if(/[?&]admin=1/.test(location.search) && isLocal) localStorage.setItem("mssAdmin", "1");
+
+var groupFilter = "samaritan";
+
+/* Can this page reach other origins at all?
+
+   A sandboxed page (a published artifact, a strict CSP, a file:// document)
+   blocks cross-origin fetch outright. Without this probe every manuscript
+   fails identically to a rate limit, and the viewer would blame the
+   institution for something the host page did. Probe once, up front. */
+var envBlocked = false;
+(function probeEnvironment(){
+  fetch("https://www.digitalcollections.manchester.ac.uk/iiif/MS-SAMARITAN-00004",
+        { method:"GET", mode:"cors" })
+    .then(function(){ envBlocked = false; })
+    .catch(function(){
+      // A same-origin failure would not throw here; a CSP/sandbox block does.
+      if(location.protocol === "file:" || !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)){
+        envBlocked = true;
+        showEnvWarning();
+      }
+    });
+})();
+
+function showEnvWarning(){
+  if(doc) return;                       // something already loaded; not blocked
+  showMsg(
+    '<h3>הדף הזה חסום מגישה לשרתי המוסדות</h3>' +
+    '<p>הצופה טוען כתבי יד ישירות משרתי הספריות. בסביבה הנוכחית ' +
+    '(<span class="mono">' + esc(location.protocol + "//" + (location.hostname || "file")) + '</span>) ' +
+    'הדפדפן חוסם בקשות לשרתים חיצוניים, ולכן שום כתב יד לא ייטען — זו מגבלה של הדף המארח, ' +
+    'לא של הספריות ולא של הקוד.</p>' +
+    '<p>הרץ את הצופה מקומית וזה יעבוד:<br>' +
+    '<span class="mono" style="display:inline-block;margin-top:6px;padding:6px 10px;' +
+    'background:var(--surface-2);border-radius:2px">py harvest.py serve</span></p>' +
+    '<p style="font-size:13px;color:#8a90a0">או הפעל את הקובץ «פתח-צופה.bat» בתיקיית הפרויקט.</p>'
+  );
+}
+
+/* If harvest.py has produced viewer-library.json alongside this file, use it:
+   it holds everything the crawl found, not just the hand-seeded starters. */
+var harvested = [];
+
+/* Manuscripts we know of but do not hold. They belong in the index for the
+   same reason a library catalogues a book that is out on loan: the question a
+   reader asks is "what exists and where", not "what happens to be on this
+   disk". Each carries the reason it is absent, so a licence wall reads
+   differently from a server that is simply down. */
+var worldIndex = [];
+(function loadWorld(){
+  if(window.__OFFLINE_WORLD__){
+    worldIndex = window.__OFFLINE_WORLD__;
+    return;
+  }
+  fetch("world-index.json?t=" + Date.now(), {cache:"no-store"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      if(!list || !list.length) return;
+      worldIndex = list;
+      rebuildIndexes();
+    })
+    .catch(function(){ /* not generated yet */ });
+})();
+
+function rebuildIndexes(){
+  // keep the open drill-down in step with newly loaded data
+  var held = [];
+  for(var k in enriched){ if(enriched.hasOwnProperty(k)) held.push(enriched[k]); }
+  buildIndexes(held.concat(worldIndex));
+  if(typeof renderDrill === "function") renderDrill();
+}
+
+/* Enrichment produced by enrich.py: per-source rights, Hebrew/Arabic
+   translations of the catalogue metadata, type/century classification, and
+   links into the Torah app's people lexicon. */
+var enriched = {};
+(function loadEnriched(){
+  fetch("enriched-library.json?t=" + Date.now(), {cache:"no-store"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      if(!list) return;
+      list.forEach(function(e){ if(e.manifest) enriched[e.manifest] = e; });
+      rebuildIndexes();
+    })
+    .catch(function(){ /* not generated yet */ });
+})();
+
+/* Pages already downloaded to disk. Reading them locally is instant, works
+   offline, and cannot be throttled — so a downloaded manuscript should never
+   be re-fetched from the institution just to be looked at. */
+var localLib = [];
+(function loadLocal(){
+  fetch("local-library.json?t=" + Date.now(), {cache:"no-store"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      if(!list || !list.length) return;
+      localLib = list;
+      var el = document.getElementById("localNote");
+      if(el){
+        var pages = list.reduce(function(n,x){ return n + (x.files ? x.files.length : 0); }, 0);
+        el.textContent = "‏" + list.length + " כתבי יד שמורים מקומית · " + pages + " עמודים";
+      }
+      renderLibrary();
+    })
+    .catch(function(){ /* nothing downloaded yet */ });
+})();
+
+(function loadHarvest(){
+  fetch("viewer-library.json?t=" + Date.now(), {cache:"no-store"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(list){
+      if(!list || !list.length) return;
+      var known = {};
+      SEED.forEach(function(s){ known[s.manifest] = true; });
+      harvested = list.filter(function(e){ return e.manifest && !known[e.manifest]; });
+      log_harvest(list.length);
+      renderLibrary();
+    })
+    .catch(function(){ /* file absent — hand-seeded library is fine */ });
+})();
+
+function log_harvest(n){
+  var el = document.getElementById("harvestNote");
+  if(el) el.textContent = "נטענו " + n + " כתבי יד מהסריקה (catalog.json)";
+}
+
+function renderLibrary(){
+  var all = library();
+  var lib = (groupFilter === "all" ? all : all.filter(function(m){
+    if(groupFilter === "local") return m.mode === "local";
+    // user-added entries have no group, so keep them visible everywhere
+    return !m.group || m.group === groupFilter;
+  })).filter(matchesSearch).filter(matchesType).filter(matchesDrill);
+  // Summarise the rows actually on screen, so the figures follow the filter.
+  var summaryItems = lib.map(function(m){
+    var e = m.manifest ? enriched[m.manifest] : null;
+    return e || {type:null, folder:(m.mode === "local" ? (m.folder || "x") : ""),
+                 pages:(m.files ? m.files.length : 0), inst:m.inst || ""};
+  });
+  if(groupFilter === "all" || groupFilter === "samaritan"){
+    summaryItems = summaryItems.concat(worldIndex);   // known of, not held
+  }
+
+  var html = summaryBar(summaryItems, 0);
+  if(!lib.length){
+    html += '<p style="color:var(--ink-3);font-size:13.5px;margin:0;">אין פריטים באוסף זה. הוסף כתב יד למטה.</p>';
+  }
+  lib.forEach(function(m){
+    var isAdded = added.some(function(a){ return a.id === m.id; });
+    // The leaf: page one of the manuscript itself when it is on disk; the
+    // proposal's ruled-paper placeholder when it is not.
+    var thumb;
+    if(m.mode === "local" && m.files && m.files.length){
+      thumb = '<button class="ms-thumb" data-open="' + esc(m.id) + '" tabindex="-1">' +
+              '<img src="' + esc(m.thumb || (m.folder + "/" + m.files[0])) + '" alt="">' +
+              '<span class="pgs tnum">' + m.files.length + ' עמ׳</span></button>';
+    } else {
+      thumb = '<button class="ms-thumb" data-open="' + esc(m.id) + '" tabindex="-1">' +
+              '<span class="pgs tnum">' + ((m.files && m.files.length) || m.pages || "") +
+              '</span></button>';
+    }
+    html += '<div class="ms-row' + (cur && cur.id === m.id ? ' is-open' : '') + '">' +
+      thumb +
+      '<div class="ms-info">' +
+        '<p class="t">' + esc(m.title) +
+          (isAdded ? '<span class="badge badge-own">נוסף ידנית</span>' : '') +
+          (m.mode === 'local' ? '<span class="badge badge-local">שמור מקומית</span>' : '') + '</p>' +
+        '<p class="s">' + esc(m.inst) + (m.shelf ? ' · <span class="mono">' + esc(m.shelf) + '</span>' : '') +
+          (m.note ? ' · ' + esc(m.note) : '') + '</p>' +
+        '<span class="u">' + esc(m.manifest) + '</span>' +
+        rightsLine(m) +
+      '</div>' +
+      '<div class="ms-acts">' +
+        '<button class="btn btn-primary" data-open="' + esc(m.id) + '">פתח</button>' +
+        '<button class="btn btn-danger" data-remove="' + esc(m.id) + '" title="הסרה מהרשימה">הסר</button>' +
+      '</div></div>';
+  });
+  $("msList").innerHTML = html;
+  runCounters($("msList"));
+
+  $("restoreWrap").hidden = removed.length === 0;
+  $("remCount").textContent = removed.length;
+}
+
+$("msList").addEventListener("click", function(e){
+  var o = e.target.closest("[data-open]"), r = e.target.closest("[data-remove]");
+  if(o){
+    var m = library().filter(function(x){ return x.id === o.getAttribute("data-open"); })[0];
+    if(m){ closeLib(); openManuscript(m); }
+  }
+  if(r){
+    var id = r.getAttribute("data-remove");
+    if(added.some(function(a){ return a.id === id; })){
+      added = added.filter(function(a){ return a.id !== id; });
+      save(LS_ADDED, added);
+    } else {
+      if(removed.indexOf(id) === -1){ removed.push(id); save(LS_REMOVED, removed); }
+    }
+    if(cur && cur.id === id){ cur = null; doc = null; resetViewerChrome(); }
+    renderLibrary();
+  }
+});
+
+/* ---------- index drill-down ----------
+   Choosing a cut lists its groups right here; choosing a group narrows the
+   manuscript list below. The separate index dialog still exists for the wide
+   browse, but nothing forces a reader to leave this page to use an index. */
+var drillMode = "all";
+var drillPick = "";
+
+function drillGroups(){
+  var src = IDX[drillMode] || {};
+  var keys = Object.keys(src);
+  if(drillMode === "century"){
+    keys.sort(function(a, b){
+      var na = parseInt((a.match(/\d+/) || ["9999"])[0], 10);
+      var nb = parseInt((b.match(/\d+/) || ["9999"])[0], 10);
+      return na - nb;
+    });
+  } else {
+    keys.sort(function(a, b){ return src[b].length - src[a].length; });
+  }
+  return keys.map(function(k){ return {key: k, items: src[k]}; });
+}
+
+function renderDrill(){
+  var box = document.getElementById("idxDrill");
+  if(drillMode === "all"){ box.hidden = true; box.innerHTML = ""; return; }
+  var groups = drillGroups();
+  if(!groups.length){ box.hidden = true; box.innerHTML = ""; return; }
+  var h = '<div class="drill">';
+  groups.forEach(function(g){
+    var digital = g.items.filter(function(e){ return e.folder; }).length;
+    var on = (drillPick === g.key);
+    h += '<button type="button" class="drill-item" data-pick="' + esc(g.key) + '"' +
+         (on ? ' aria-pressed="true"' : '') + '>' +
+         '<span class="drill-name">' + esc(g.key) + '</span>' +
+         '<span class="drill-n tnum">' + g.items.length + '</span>' +
+         '<span class="drill-d tnum" title="זמינים לצפייה דיגיטלית">' +
+         digital + ' לצפייה</span>' +
+         '</button>';
+  });
+  h += '</div>';
+  if(drillPick){
+    h += '<div class="drill-clear"><button class="btn" id="btnDrillClear">' +
+         'הצג את כל כתבי היד</button></div>';
+  }
+  box.innerHTML = h;
+  box.hidden = false;
+}
+
+function matchesDrill(m){
+  if(!drillPick) return true;
+  var e = m.manifest ? enriched[m.manifest] : null;
+  if(!e) return false;
+  if(drillMode === "inst")   return (e.inst || "לא צוין") === drillPick;
+  if(drillMode === "type")   return (e.type ? e.type.he : "לא סווג") === drillPick;
+  if(drillMode === "century") return (e.century ? ("המאה ה-" + e.century) : "לא מתוארך") === drillPick;
+  if(drillMode === "person"){
+    if(!(e.people || []).length) return drillPick === "לא זוהה מחבר";
+    return e.people.some(function(p){ return (p.name_he || p.name_en) === drillPick; });
+  }
+  return true;
+}
+
+document.getElementById("idxBar").addEventListener("click", function(e){
+  var b = e.target.closest("[data-goidx]");
+  if(!b) return;
+  drillMode = b.getAttribute("data-goidx");
+  drillPick = "";
+  Array.prototype.forEach.call(this.querySelectorAll("[data-goidx]"), function(x){
+    x.setAttribute("aria-pressed", x === b ? "true" : "false");
+  });
+  renderDrill();
+  renderLibrary();
+});
+
+document.getElementById("idxDrill").addEventListener("click", function(e){
+  if(e.target.closest("#btnDrillClear")){
+    drillPick = ""; renderDrill(); renderLibrary(); return;
+  }
+  var b = e.target.closest("[data-pick]");
+  if(!b) return;
+  var k = b.getAttribute("data-pick");
+  drillPick = (drillPick === k) ? "" : k;
+  renderDrill();
+  renderLibrary();
+});
+
+document.getElementById("msSearch").addEventListener("input", function(){
+  searchQuery = this.value.trim().toLowerCase();
+  document.getElementById("btnSearchClear").hidden = !this.value;
+  renderLibrary();
+});
+document.getElementById("btnSearchClear").addEventListener("click", function(){
+  var box = document.getElementById("msSearch");
+  box.value = ""; searchQuery = ""; this.hidden = true;
+  renderLibrary(); box.focus();
+});
+
+/* Chips in the summary are filters, not decoration: clicking "חומש וספרי תורה"
+   narrows the list to those, clicking again clears it. */
+document.getElementById("msList").addEventListener("click", function(e){
+  var chip = e.target.closest("[data-kind]");
+  if(!chip) return;
+  var k = chip.getAttribute("data-kind");
+  typeFilter = (typeFilter === k) ? "" : k;
+  renderLibrary();
+});
+
+$("grpFilter").addEventListener("click", function(e){
+  var b = e.target.closest("[data-grp]");
+  if(!b) return;
+  groupFilter = b.getAttribute("data-grp");
+  typeFilter = "";
+  Array.prototype.forEach.call(this.querySelectorAll("[data-grp]"), function(x){
+    x.setAttribute("aria-pressed", x === b ? "true" : "false");
+  });
+  renderLibrary();
+});
+
+$("btnRestore").addEventListener("click", function(){
+  removed = []; save(LS_REMOVED, removed); renderLibrary();
+});
+
+/* ---------- add form ---------- */
+$("addForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  var msg = $("formMsg");
+  var raw = $("fUrl").value.trim();
+  if(!raw){ msg.className = "formmsg err"; msg.textContent = "נדרשת כתובת."; return; }
+
+  var manifest = deriveManifest(raw);
+  var entry = {
+    id: "u" + Date.now().toString(36),
+    title: $("fTitle").value.trim() || "(ייקבע מה־manifest)",
+    inst:  $("fInst").value.trim()  || "",
+    shelf: $("fShelf").value.trim() || "",
+    note:  $("fNote").value.trim()  || "",
+    manifest: manifest,
+    home: /manifest/i.test(raw) ? "" : raw,
+    userAdded: true
+  };
+  added.push(entry); save(LS_ADDED, added);
+  msg.className = "formmsg ok";
+  msg.textContent = manifest !== raw
+    ? "נוסף. נגזר manifest: " + manifest
+    : "נוסף לספרייה.";
+  ["fUrl","fTitle","fInst","fShelf","fNote"].forEach(function(i){ $(i).value = ""; });
+  renderLibrary();
+});
+
+/* ---------- open a manuscript ---------- */
+/* Sources with no usable IIIF but no framing block either: show the
+   institution's own viewer in place, with our credit bar underneath. The
+   reader stays in the app; the pages are still served by the institution. */
+function openFramed(m){
+  cur = m; doc = null;
+  enableChrome(false);
+  $("msTitle").textContent = m.title;
+  $("msShelf").textContent = m.shelf || "";
+  side.hidden = true;
+
+  var f = document.getElementById("msFrame");
+  if(!f){
+    f = document.createElement("iframe");
+    f.id = "msFrame";
+    f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-forms");
+    f.style.cssText = "width:100%;height:100%;border:0;background:#fff;display:block";
+    stage.appendChild(f);
+  }
+  img.hidden = true;
+  hideMsg();
+  f.hidden = false;
+  f.title = m.title + " — " + (m.inst || "");
+  f.src = m.frame || m.home;
+
+  // If the host quietly refuses to render, fall back to a plain link.
+  var settled = false;
+  f.onload = function(){ settled = true; };
+  setTimeout(function(){
+    if(settled || cur !== m) return;
+    f.hidden = true;
+    showMsg('<h3>המקור אינו מתיר הצגה בתוך מסגרת</h3>' +
+            '<p>' + esc(hostOf(m.frame || m.home)) + ' חסם את ההטמעה. אפשר לפתוח אותו בלשונית חדשה.</p>' +
+            '<div class="row"><a class="btn btn-primary" href="' + esc(m.frame || m.home) +
+            '" target="_blank" rel="noopener">פתח באתר המקור ↗</a></div>');
+  }, 6000);
+
+  updateCredit();
+}
+
+function hideFrame(){
+  var f = document.getElementById("msFrame");
+  if(f){ f.hidden = true; f.removeAttribute("src"); }
+}
+
+function openLocal(m){
+  hideFrame();
+  cur = m; pageIdx = 0; upgraded = true;   // already full quality on disk
+  rotation = 0;
+  $("msTitle").textContent = m.title;
+  $("msShelf").textContent = m.shelf || "";
+  doc = {
+    v3:false, label:m.title, meta:[], ranges:[],
+    attribution:m.credit_line || "", rights:m.rights || "", logo:"",
+    home:m.home || "", provider:"", desc:"",
+    dShelf:m.shelf || "", dInst:m.inst || "", dDate:"", dOrigin:"", dLang:"",
+    dDesc:m.caveat || "",
+    pages:(m.files || []).map(function(f, i){
+      var u = m.folder + "/" + f;
+      return { label:String(i+1), service:"", direct:u, cid:u, w:0, h:0 };
+    })
+  };
+  doc.page_count = doc.pages.length;
+  hideMsg();
+  enableChrome(true);
+  showPage(0, true);
+  updateCredit();
+  // Thumbnails are the slow part; let the first page paint first.
+  setTimeout(refreshSide, 0);
+}
+
+/* A manuscript that is already on disk should open from disk, whichever row
+   the reader happened to click. Without this the same manuscript appears twice
+   — once local, once remote — and clicking the remote one silently goes back
+   to the institution's server and waits on the network for no reason. */
+function localTwin(m){
+  if(!m || m.mode === "local" || !m.manifest) return null;
+  for(var i = 0; i < localLib.length; i++){
+    if(localLib[i].manifest === m.manifest) return localLib[i];
+  }
+  return null;
+}
+
+function openManuscript(m){
+  if(m.mode === "frame"){ return openFramed(m); }
+  if(m.mode === "local"){ return openLocal(m); }
+  var twin = localTwin(m);
+  if(twin){ return openLocal(twin); }
+  hideFrame();
+  cur = m; doc = null; pageIdx = 0;
+  $("msTitle").textContent = m.title;
+  $("msShelf").textContent = m.shelf || "";
+  resetThumbQueue();
+  showMsg('<div class="spinner"></div><p>טוען את ה־manifest מ־' + esc(hostOf(m.manifest)) + '…</p>');
+  updateCredit();
+
+  /* Institutions throttle. Gallica in particular rejects bursts, and the
+     browser surfaces that as a bare "Failed to fetch" with no readable status
+     — indistinguishable from a CORS block unless you retry. So: retry with
+     backoff before ever blaming CORS. */
+  function attempt(n){
+    return fetch(m.manifest, { mode:"cors" })
+      .then(function(r){
+        if(r.status === 429 || r.status === 503){
+          var e = new Error("throttled"); e.transient = true; throw e;
+        }
+        if(!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .catch(function(err){
+        // TypeError from fetch = network/CORS rejection; treat as retryable
+        var retryable = err.transient || err instanceof TypeError;
+        if(retryable && n < 3){
+          var delay = n === 1 ? 1200 : 3500;
+          showMsg('<div class="spinner"></div><p>' + esc(hostOf(m.manifest)) +
+                  ' מגביל כרגע את קצב הבקשות. מנסה שוב… (' + n + '/3)</p>');
+          return new Promise(function(res){ setTimeout(res, delay); }).then(function(){ return attempt(n+1); });
+        }
+        if(retryable) err.transient = true;
+        throw err;
+      });
+  }
+
+  var cached = manifestCache[m.manifest];
+  var pending = cached
+    ? Promise.resolve(cached)
+    : attempt(1).then(function(raw){ manifestCache[m.manifest] = raw; return raw; });
+
+  pending
+    .then(function(raw){
+      if(cur !== m) return;           // reader switched away mid-load
+      doc = normalize(raw);
+      if(!doc.pages.length){
+        showMsg(
+          '<h3>ה־manifest נטען — אך אין בו תמונות</h3>' +
+          '<p>המוסד חושף את המטא־דאטה אך לא את הדימויים דרך IIIF. זה קורה בעיקר ב״כתיב״ של ' +
+          'הספרייה הלאומית עבור כתבי יד בבעלות מוסדות זרים.</p>' +
+          (cur.home ? '<div class="row"><a class="btn btn-primary" href="' + esc(cur.home) +
+                      '" target="_blank" rel="noopener">פתח באתר המקור ↗</a></div>' : '')
+        );
+        renderMeta(); updateCredit(); return;
+      }
+      // fill in blanks the user left empty
+      if(cur.title === "(ייקבע מה־manifest)" && doc.label){
+        cur.title = doc.label;
+        if(cur.userAdded){
+          added = added.map(function(a){ return a.id === cur.id ? cur : a; });
+          save(LS_ADDED, added);
+        }
+        $("msTitle").textContent = cur.title;
+      }
+      hideMsg();
+      enableChrome(true);
+      showPage(0, true);
+      updateCredit();
+      // Thumbnails are the slow part; let the first page paint first.
+      setTimeout(refreshSide, 0);
+    })
+    .catch(function(err){
+      if(cur !== m) return;
+      enableChrome(false);
+      if(envBlocked){ showEnvWarning(); updateCredit(); return; }
+      var host = esc(hostOf(m.manifest));
+      var body = err.transient
+        ? '<h3>המוסד מגביל כרגע את קצב הבקשות</h3>' +
+          '<p>' + host + ' דחה שלוש בקשות רצופות. זו הגבלה זמנית ולא חסימה — ' +
+          'המתן כחצי דקה ונסה שוב. אם פתחת כמה כתבי יד ברצף, זו הסיבה.</p>'
+        : '<h3>לא ניתן לטעון את כתב היד</h3>' +
+          '<p>' + host + ' החזיר <span class="mono">' + esc(err.message) + '</span>. ' +
+          'ייתכן שהמוסד אינו מאפשר CORS, או שהכתובת שגויה.</p>';
+      showMsg(body +
+        '<div class="row">' +
+          '<button class="btn btn-primary" id="btnRetry">נסה שוב</button>' +
+          (m.home ? '<a class="btn" href="' + esc(m.home) +
+                    '" target="_blank" rel="noopener">פתח באתר המקור ↗</a>' : '') +
+        '</div>');
+      var rb = document.getElementById("btnRetry");
+      if(rb) rb.addEventListener("click", function(){ openManuscript(m); });
+      updateCredit();
+    });
+}
+
+function hostOf(u){ try{ return new URL(u).hostname; }catch(e){ return u; } }
+
+/* ---------- paging ---------- */
+function showPage(i, refit){
+  if(!doc || !doc.pages.length) return;
+  pageIdx = Math.max(0, Math.min(i, doc.pages.length - 1));
+  var p = doc.pages[pageIdx];
+
+  img.hidden = false;
+  hideMsg();
+  img.alt = "עמוד " + (pageIdx + 1) + " — " + (cur ? cur.title : "");
+
+  var url = imgUrl(p, pickWidth());
+  // Decode off-screen and swap in only when ready, so the page already on
+  // screen stays put instead of blanking while the next one loads.
+  stage.classList.add("loading");
+  var mine = ++loadToken;
+  var probe = new Image();
+  probe.onload = function(){
+    if(mine !== loadToken) return;               // reader already moved on
+    img.src = probe.src;
+    img.hidden = false;
+    stage.classList.remove("loading");
+    if(refit) fit(); else applyTransform();
+  };
+  probe.onerror = function(){
+    if(mine !== loadToken) return;
+    if(p.direct && probe.src !== p.direct){ probe.src = p.direct; return; }
+    stage.classList.remove("loading");
+  };
+  probe.src = url;
+
+  $("pageIn").value = String(pageIdx + 1);
+  $("pageCount").textContent = "/ " + doc.pages.length;
+  $("btnPrev").disabled = pageIdx === 0;
+  $("btnNext").disabled = pageIdx === doc.pages.length - 1;
+  markThumb();
+}
+
+/* ---------- zoom + pan ---------- */
+/* If the stage has no size yet — the tab loaded in the background, the window
+   was minimised, layout had not settled — then fitScale computes to 0 and the
+   page is drawn at zero magnification: loaded, correct, and completely
+   invisible. Every DOM assertion still passes, which is exactly what made this
+   hard to see. Wait for real dimensions instead of fitting to nothing. */
+var pendingFit = false;
+function rotSwapped(){ return rotation === 90 || rotation === 270; }
+function fit(){
+  if(!img.naturalWidth) return;
+  var cw = stage.clientWidth, ch = stage.clientHeight;
+  if(cw < 40 || ch < 40){
+    if(!pendingFit){
+      pendingFit = true;
+      var tries = 0;
+      (function retry(){
+        tries++;
+        var w = stage.clientWidth, h = stage.clientHeight;
+        if(w >= 40 && h >= 40){ pendingFit = false; fit(); return; }
+        if(tries > 120){ pendingFit = false; return; }   // ~2s, then give up
+        requestAnimationFrame(retry);
+      })();
+    }
+    return;
+  }
+  // A quarter-turned page is as wide as the original is tall, so fit against
+  // the rotated bounding box or the leaf overflows the stage.
+  // A quarter-turned leaf is as wide as the page is tall, so both the scale
+  // and the centring must use the rotated box.
+  var iw = rotSwapped() ? img.naturalHeight : img.naturalWidth;
+  var ih = rotSwapped() ? img.naturalWidth  : img.naturalHeight;
+  var scale = Math.min((cw - 40) / iw, (ch - 40) / ih);
+  if(!isFinite(scale) || scale <= 0) return;             // never zoom to nothing
+  fitScale = scale;
+  zoom = fitScale;
+  panX = (cw - iw * zoom) / 2;
+  panY = (ch - ih * zoom) / 2;
+  applyTransform();
+}
+function applyTransform(){
+  /* Compose as: translate(place + rotationOffset) rotate() scale(), with the
+     origin left at 0 0.
+
+     Rotating about the element's own centre and then translating looked right
+     in isolation but drifted out of the stage, because panX/panY are computed
+     for the un-rotated box. Instead, keep the origin at the top-left and add
+     the offset that brings the rotated quadrant back into view: a 90-degree
+     turn about 0 0 pushes the image into negative x, so it must be shifted
+     right by its own (scaled) height. */
+  var w = img.naturalWidth * zoom, h = img.naturalHeight * zoom;
+  var offX = 0, offY = 0;
+  if(rotation === 90){ offX = h; }
+  else if(rotation === 180){ offX = w; offY = h; }
+  else if(rotation === 270){ offY = w; }
+
+  img.style.transformOrigin = "0 0";
+  img.style.transform =
+    "translate(" + (panX + offX) + "px," + (panY + offY) + "px)" +
+    (rotation ? " rotate(" + rotation + "deg)" : "") +
+    " scale(" + zoom + ")";
+
+  $("zoomLvl").textContent = fitScale ? Math.round(zoom / fitScale * 100) + "%" : "100%";
+}
+
+function zoomAt(factor, cx, cy){
+  if(!img.naturalWidth) return;
+  var next = Math.max(fitScale * 0.5, Math.min(zoom * factor, fitScale * 14));
+  if(next === zoom) return;
+  // keep the point under the cursor stationary
+  panX = cx - (cx - panX) * (next / zoom);
+  panY = cy - (cy - panY) * (next / zoom);
+  zoom = next;
+  applyTransform();
+  maybeUpgrade();
+}
+// Request a sharper image once the user zooms past the base resolution.
+var upgraded = false;
+function maybeUpgrade(){
+  if(!doc || upgraded) return;
+  if(zoom / fitScale < 2.2) return;
+  var p = doc.pages[pageIdx];
+  if(!p.service) return;
+  upgraded = true;
+  var hi = new Image();
+  hi.onload = function(){ img.src = hi.src; };
+  hi.src = p.service.replace(/\/$/,"") + "/full/3200,/0/default.jpg";
+}
+
+stage.addEventListener("wheel", function(e){
+  if(!doc) return;
+  e.preventDefault();
+  var r = stage.getBoundingClientRect();
+  zoomAt(e.deltaY < 0 ? 1.16 : 1/1.16, e.clientX - r.left, e.clientY - r.top);
+}, { passive:false });
+
+var dragging = false, lastX = 0, lastY = 0;
+stage.addEventListener("pointerdown", function(e){
+  if(!doc || img.hidden) return;
+  dragging = true; lastX = e.clientX; lastY = e.clientY;
+  stage.classList.add("grabbing"); stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener("pointermove", function(e){
+  if(!dragging) return;
+  panX += e.clientX - lastX; panY += e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  applyTransform();
+});
+["pointerup","pointercancel"].forEach(function(ev){
+  stage.addEventListener(ev, function(){ dragging = false; stage.classList.remove("grabbing"); });
+});
+
+/* ---------- index / TOC ---------- */
+// Keep whichever panel the reader already had open when switching manuscripts.
+function refreshSide(){
+  if(side.hidden) return;
+  if((sideTitle.getAttribute("data-mode") || "index") === "index") renderIndex();
+  else renderMeta();
+}
+
+function renderIndex(){
+  if(!doc) return;
+  var html = "";
+  if(doc.ranges.length){
+    html += '<ul class="toc">';
+    doc.ranges.forEach(function(r, i){
+      html += '<li><button class="' + (r.depth ? 'depth-1' : '') + '" data-goto="' +
+              (r.page == null ? "" : r.page) + '"' +
+              (r.page == null ? ' disabled style="opacity:.45"' : '') + '>' +
+              esc(r.label) +
+              (r.page == null ? '' : ' <span style="color:var(--ink-3);font-family:var(--font-mono);font-size:10.5px">' + (r.page+1) + '</span>') +
+              '</button></li>';
+    });
+    html += '</ul><div class="meta-sect">כל העמודים</div>';
+  }
+  html += '<div class="thumbs" id="thumbs"></div>' +
+          '<div id="moreWrap" style="margin-top:12px;text-align:center"></div>';
+  sideBody.innerHTML = html;
+  resetThumbQueue();
+  thumbShown = 0;
+  // Start near the page being read rather than always at folio 1.
+  thumbStart = Math.max(0, pageIdx - (pageIdx % THUMB_CHUNK));
+  addThumbs();
+  markThumb();
+}
+
+/* Render thumbnails in chunks. A 950-page manuscript previously created 950
+   DOM nodes and 950 observers up front, which is what made the index crawl. */
+var THUMB_CHUNK = 48, thumbShown = 0, thumbStart = 0;
+function addThumbs(){
+  var grid = document.getElementById("thumbs");
+  if(!grid || !doc) return;
+  var from = thumbStart + thumbShown;
+  var to = Math.min(from + THUMB_CHUNK, doc.pages.length);
+  var frag = "";
+  for(var i = from; i < to; i++){
+    var p = doc.pages[i];
+    frag += '<button class="thumb" data-goto="' + i + '" title="' + esc(p.label) + '">' +
+            '<img data-src="' + esc(thumbUrl(p)) + '" alt="">' +
+            '<span class="n">' + (i+1) + '</span></button>';
+  }
+  grid.insertAdjacentHTML("beforeend", frag);
+  thumbShown += (to - from);
+  // Chunks are small, so queue the whole chunk; the 4-at-a-time queue is the
+  // throttle. (An IntersectionObserver here proved unreliable and added nothing.)
+  Array.prototype.forEach.call(sideBody.querySelectorAll("img[data-src]"), enqueueThumb);
+
+  var wrap = document.getElementById("moreWrap");
+  if(wrap){
+    var remaining = doc.pages.length - (thumbStart + thumbShown);
+    wrap.innerHTML = remaining > 0
+      ? '<button class="btn" id="btnMore">עוד ' + Math.min(THUMB_CHUNK, remaining) +
+        ' (נותרו ' + remaining + ')</button>'
+      : '';
+  }
+  markThumb();
+}
+
+
+function markThumb(){
+  var all = sideBody.querySelectorAll(".thumb");
+  Array.prototype.forEach.call(all, function(t){
+    t.setAttribute("aria-current", t.getAttribute("data-goto") === String(pageIdx) ? "true" : "false");
+  });
+}
+
+sideBody.addEventListener("click", function(e){
+  if(e.target.closest("#btnMore")){ addThumbs(); return; }
+  var b = e.target.closest("[data-goto]");
+  if(!b) return;
+  var v = b.getAttribute("data-goto");
+  if(v === "") return;
+  upgraded = false;
+  showPage(parseInt(v, 10), true);
+  closeSideIfOverlay();
+});
+
+/* Below ~840px the index panel floats over the stage rather than sitting
+   beside it. Picking a page then changed the page *behind* the panel — the
+   click worked, but nothing was visible. Dismiss the panel when it overlays;
+   on wide screens it stays open, which is the useful behaviour there. */
+function closeSideIfOverlay(){
+  if(side.hidden) return;
+  if(getComputedStyle(side).position !== "absolute") return;
+  side.hidden = true;
+  $("btnIndex").setAttribute("aria-pressed", "false");
+  $("btnMeta").setAttribute("aria-pressed", "false");
+}
+
+/* ---------- metadata panel ---------- */
+function enrichedFor(){
+  if(!cur) return null;
+  return enriched[cur.manifest] || null;
+}
+
+// Translations are shown next to the original, never instead of it, and are
+// always labelled — a reader must be able to tell a translated catalogue note
+// from the manuscript's own words.
+var metaLang = "he";   // source | he | en | ar
+
+/* One field, rendered in the chosen language.
+
+   "Source" shows exactly what the institution wrote. The other three show a
+   translation where one exists and fall back to the original where it does
+   not - marked, so a reader always knows which they are looking at rather
+   than being handed a silent mixture. */
+function fieldRow(f){
+  var label = f.label, value = f.value, tag = "", dir = "";
+  if(metaLang === "he"){
+    label = f.label_he || f.label;
+    if(f.value_he){ value = f.value_he; tag = "תרגום"; }
+  } else if(metaLang === "en"){
+    label = f.label_en || f.label;
+    if(f.value_en){ value = f.value_en; tag = "translated"; }
+  } else if(metaLang === "ar"){
+    label = f.label_ar || f.label;
+    if(f.value_ar){ value = f.value_ar; tag = "ترجمة"; dir = ' dir="rtl" lang="ar"'; }
+  }
+  var untranslated = (metaLang !== "source" && !tag);
+  var h = '<dt' + dir + '>' + esc(label) + '</dt><dd' + dir + '>' + esc(value);
+  if(tag) h += ' <span class="tr-tag">' + esc(tag) + '</span>';
+  if(untranslated) h += ' <span class="tr-tag tr-orig">מקור</span>';
+  return h + '</dd>';
+}
+
+function langBar(){
+  var opts = [["source","מקור"],["he","עברית"],["en","English"],["ar","العربية"]];
+  var h = '<div class="langbar" id="langBar" role="group" aria-label="שפת התצוגה">';
+  opts.forEach(function(o){
+    h += '<button class="btn lang-btn" data-lang="' + o[0] + '" aria-pressed="' +
+         (metaLang === o[0] ? "true" : "false") + '">' + o[1] + '</button>';
+  });
+  return h + '</div>';
+}
+
+function renderMeta(){
+  if(!doc){ sideBody.innerHTML = ""; return; }
+  var inst  = doc.dInst || doc.provider || cur.inst;
+  var shelf = doc.dShelf || cur.shelf;
+  var h = langBar() + '<div class="meta-sect">כתב היד</div><dl class="meta">';
+  if(doc.label)      h += '<dt>כותר</dt><dd>' + esc(doc.label) + '</dd>';
+  if(inst)           h += '<dt>מוסד</dt><dd>' + esc(inst) + '</dd>';
+  if(shelf)          h += '<dt>מדף</dt><dd><span class="mono">' + esc(shelf) + '</span></dd>';
+  if(doc.dDate)      h += '<dt>תיארוך</dt><dd>' + esc(doc.dDate) + '</dd>';
+  if(doc.dOrigin)    h += '<dt>מקום</dt><dd>' + esc(doc.dOrigin) + '</dd>';
+  if(doc.dLang)      h += '<dt>שפה</dt><dd>' + esc(doc.dLang) + '</dd>';
+  if(cur.note)       h += '<dt>הערה</dt><dd>' + esc(cur.note) + '</dd>';
+  if(doc.pages.length) h += '<dt>עמודים</dt><dd>' + doc.pages.length + '</dd>';
+  h += '</dl>';
+  if(doc.dDesc){
+    h += '<div class="meta-sect">תיאור</div>' +
+         '<p style="font-size:13px;color:var(--ink-2);margin:0;">' + esc(doc.dDesc) + '</p>';
+  }
+
+  if(doc.meta.length){
+    h += '<div class="meta-sect">מן ה־manifest</div><dl class="meta">';
+    doc.meta.forEach(function(kv){
+      h += '<dt>' + esc(kv[0]) + '</dt><dd>' + esc(kv[1]) + '</dd>';
+    });
+    h += '</dl>';
+  }
+
+  h += '<div class="meta-sect">זכויות וייחוס</div><dl class="meta">';
+  h += '<dt>ייחוס</dt><dd>' + (doc.attribution ? esc(doc.attribution) : '<span style="color:var(--ink-3)">לא צוין ב־manifest</span>') + '</dd>';
+  if(doc.provider) h += '<dt>ספק</dt><dd>' + esc(doc.provider) + '</dd>';
+  if(doc.rights)   h += '<dt>רישיון</dt><dd><a href="' + esc(doc.rights) + '" target="_blank" rel="noopener" class="mono">' + esc(doc.rights) + '</a></dd>';
+  h += '<dt>manifest</dt><dd><span class="mono" style="font-size:10.5px">' + esc(cur.manifest) + '</span></dd>';
+  if(doc.home || cur.home) h += '<dt>מקור</dt><dd><a href="' + esc(doc.home || cur.home) + '" target="_blank" rel="noopener">פתח באתר המוסד ↗</a></dd>';
+  h += '</dl>';
+
+  var E = enrichedFor();
+  if(E){
+    if(E.type || E.year){
+      h += '<div class="meta-sect">סיווג</div><dl class="meta">';
+      if(E.type){
+        var tv = metaLang === "ar" ? E.type.ar
+               : metaLang === "en" || metaLang === "source" ? (E.type.en || E.type.he)
+               : E.type.he;
+        h += '<dt>סוג</dt><dd>' + esc(tv) + '</dd>';
+      }
+      if(E.year) h += '<dt>שנה</dt><dd class="tnum">' + E.year +
+                      (E.century ? ' · המאה ה-' + E.century : '') + '</dd>';
+      h += '</dl>';
+    }
+
+    if(E.people && E.people.length){
+      h += '<div class="meta-sect">אישים — מתוך לקסיקון האישים</div>';
+      E.people.forEach(function(p){
+        var pn = metaLang === "ar" ? (p.name_ar || p.name_en)
+               : metaLang === "en" ? (p.name_en || p.name_he)
+               : (p.name_he || p.name_en);
+        var pp = metaLang === "ar" ? p.period_ar : metaLang === "en" ? p.period : p.period_he;
+        var pd = metaLang === "ar" ? p.description_ar
+               : metaLang === "en" ? p.description_en : p.description_he;
+        h += '<div class="person"' + (metaLang === "ar" ? ' lang="ar"' : '') + '>' +
+             '<div class="person-name">' + esc(pn) + '</div>' +
+             '<div class="person-alt">' + esc(p.name_en) +
+             ' · <span lang="ar">' + esc(p.name_ar) + '</span></div>' +
+             (pp ? '<div class="person-period">' + esc(pp) + '</div>' : '') +
+             (pd ? '<p class="person-desc">' + esc(pd) + '</p>' : '') +
+             '<div class="person-src">זוהה מתוך: ' + esc(p.matched_on) +
+             (p.source ? ' · ' + esc(p.source) : '') + '</div>' +
+             '</div>';
+      });
+    }
+
+    if(E.crown){
+      var C = E.crown;
+      var q = metaLang === "he" ? C.he : metaLang === "ar" ? (C.ar || C.he) : C.en;
+      var n = metaLang === "he" ? C.note_he : metaLang === "ar" ? (C.note_ar || C.note_he)
+            : (C.note_en || C.note_he);
+      h += '<div class="meta-sect">אצל קראון (Crown, 1994)</div>' +
+           '<div class="crown-box"' + (metaLang === "ar" ? ' lang="ar"' : '') + '>' +
+           '<p class="crown-quote">' + esc(q || C.en) +
+           (metaLang !== "source" && metaLang !== "en" && q ?
+             ' <span class="tr-tag">תרגום</span>' : '') + '</p>' +
+           (n ? '<p class="crown-note">' + esc(n) + '</p>' : '') +
+           '<p class="crown-cite">A. D. Crown, "Samaritan Literature and its Manuscripts", ' +
+           'BJRL 76/1 (1994), p. ' + esc(String(C.page || "")) + '</p>' +
+           '</div>';
+    }
+
+    if(E.vongall){
+      h += '<div class="meta-sect">אפרט פון גאל</div><dl class="meta">' +
+           '<dt>סיגלה</dt><dd><strong>' + esc(E.vongall.siglum) + '</strong></dd>' +
+           '<dt>תיארוך</dt><dd>' + esc(E.vongall.date_ad || '') + '</dd>' +
+           (E.vongall.note ? '<dt>הערה</dt><dd>' + esc(E.vongall.note) + '</dd>' : '') +
+           '</dl>';
+    }
+
+    if(E.fields && E.fields.length){
+      h += '<div class="meta-sect">רשומת הקטלוג · עם תרגום</div><dl class="meta">';
+      E.fields.forEach(function(f){
+        if(/^(source images|metadata source|relation|data source)/i.test(f.label)) return;
+        h += fieldRow(f);
+      });
+      h += '</dl>';
+      h += '<p class="tr-note">התרגום לעברית ולערבית נעשה על מונחים מבוקרים ותבניות מזוהות בלבד. ' +
+           'שדות שאין להם תבנית מוכרת נותרו בשפת המקור. תיאורי הקטלוג תורגמו — לא טקסט כתב היד עצמו.</p>';
+    }
+
+    // Rights last, as the closing statement about the item.
+    var R = E.rights || {};
+    h += '<div class="meta-sect">זכויות ותנאי שימוש</div><div class="rights-box">';
+    var rHolder = metaLang === "ar" ? (R.holder_ar || R.holder)
+                : metaLang === "en" || metaLang === "source" ? (R.holder || R.holder_he)
+                : (R.holder_he || R.holder);
+    var rTerms = metaLang === "ar" ? R.terms_ar : R.terms_he;
+    if(rHolder) h += '<div class="rights-holder">' + esc(rHolder) + '</div>';
+    if(rTerms) h += '<div class="rights-terms"' +
+                    (metaLang === "ar" ? ' lang="ar"' : '') + '>' + esc(rTerms) + '</div>';
+    if(metaLang !== "ar" && R.terms_ar && metaLang === "source")
+      h += '<div class="rights-terms" lang="ar">' + esc(R.terms_ar) + '</div>';
+    if(R.caveat_he) h += '<div class="rights-caveat">' +
+      esc(metaLang === "ar" ? (R.caveat_ar || R.caveat_he) : R.caveat_he) + '</div>';
+    if(R.allowed && R.allowed.length){
+      h += '<div class="perm perm-ok"><span class="perm-h">מותר</span><ul>';
+      R.allowed.forEach(function(a){ h += '<li>' + esc(a) + '</li>'; });
+      h += '</ul></div>';
+    }
+    if(R.forbidden && R.forbidden.length){
+      h += '<div class="perm perm-no"><span class="perm-h">אסור</span><ul>';
+      R.forbidden.forEach(function(a){ h += '<li>' + esc(a) + '</li>'; });
+      h += '</ul></div>';
+    }
+    if(R.credit_required){
+      h += '<div class="rights-credit"><span class="tr-tag">נוסח ייחוס מחייב</span>' +
+           '<code>' + esc(R.credit_required) + '</code></div>';
+    }
+    if(R.url) h += '<div><a href="' + esc(R.url) + '" target="_blank" rel="noopener">תנאי השימוש המלאים ↗</a></div>';
+    h += '</div>';
+  }
+
+  sideBody.innerHTML = h;
+}
+
+/* ---------- credit bar ---------- */
+function updateCredit(){
+  // Prefer what the institution itself states in the manifest; fall back to
+  // the catalogue entry, so manually-added manuscripts still get real credit.
+  var inst = (doc && (doc.dInst || doc.provider)) || (cur && cur.inst) ||
+             (doc && doc.attribution) || "";
+  var shelf = (doc && doc.dShelf) || (cur && cur.shelf) || "";
+  $("crInst").textContent  = inst || "—";
+  $("crShelf").textContent = shelf;
+
+  var rights = doc && doc.rights ? doc.rights : "";
+  var rTxt = "";
+  if(/creativecommons\.org\/licenses\/by-nc/i.test(rights)) rTxt = "CC BY-NC";
+  else if(/creativecommons\.org\/publicdomain/i.test(rights)) rTxt = "נחלת הכלל";
+  else if(/creativecommons\.org\/licenses\/by/i.test(rights)) rTxt = "CC BY";
+  else if(/copying-prohibited/i.test(rights)) rTxt = "העתקה אסורה";
+  else if(rights) rTxt = "תנאי שימוש";
+  // Never leave credit bare: if the host states no licence URL, show its own
+  // rights sentence instead (the Vatican, for one, supplies only prose).
+  if(!rTxt && doc && doc.attribution && doc.attribution !== inst){
+    rTxt = doc.attribution.length > 76 ? doc.attribution.slice(0, 76) + "…" : doc.attribution;
+  }
+  $("crRights").textContent = rTxt ? "· " + rTxt : "";
+  var cr = $("crRights");
+  if(rights){ cr.title = rights; } else { cr.removeAttribute("title"); }
+
+  var lg = $("crLogo");
+  if(doc && doc.logo){ lg.src = doc.logo; lg.hidden = false; lg.alt = inst; }
+  else { lg.hidden = true; lg.removeAttribute("src"); }
+
+  var link = (doc && doc.home) || (cur && cur.home) || "";
+  var a = $("crLink");
+  if(link){ a.href = link; a.hidden = false; } else { a.hidden = true; }
+}
+
+/* ---------- chrome enable/disable ---------- */
+function enableChrome(on){
+  ["btnPrev","btnNext","btnIn","btnOut","btnFit","btnRotate","btnPreview","btnPrint","btnIndex","btnMeta","pageIn"]
+    .forEach(function(id){ $(id).disabled = !on; });
+}
+function resetViewerChrome(){
+  enableChrome(false);
+  $("msTitle").textContent = "לא נטען כתב יד";
+  $("msShelf").textContent = "";
+  $("pageIn").value = "—"; $("pageCount").textContent = "—";
+  img.hidden = true; side.hidden = true;
+  $("btnIndex").setAttribute("aria-pressed","false");
+  $("btnMeta").setAttribute("aria-pressed","false");
+  showMsg('<h3>בחר כתב יד מהספרייה</h3><p>הצופה טוען תמונות ישירות משרתי המוסדות דרך תקן IIIF.</p>' +
+          '<div class="row"><button class="btn btn-primary" onclick="document.getElementById(\'btnLib\').click()">פתח את הספרייה</button></div>');
+  updateCredit();
+}
+
+/* ---------- indexes: by library, by type, by century ---------- */
+var IDX = {inst:{}, type:{}, century:{}, person:{}};
+var idxMode = "inst";
+
+function buildIndexes(list){
+  IDX = {inst:{}, type:{}, century:{}, person:{}};
+  list.forEach(function(e){
+    // One manuscript can carry several names - a scribe and a former owner -
+    // so it appears under each of them rather than only the first.
+    (e.people || []).forEach(function(p){
+      var nm = p.name_he || p.name_en;
+      (IDX.person[nm] = IDX.person[nm] || []).push(e);
+    });
+    if(!(e.people || []).length){
+      var k = "לא זוהה מחבר";
+      (IDX.person[k] = IDX.person[k] || []).push(e);
+    }
+    var inst = e.inst || "\u05dc\u05d0 \u05e6\u05d5\u05d9\u05df";
+    var typ  = e.type ? e.type.he : "\u05dc\u05d0 \u05e1\u05d5\u05d5\u05d2";
+    var cen  = e.century ? ("\u05d4\u05de\u05d0\u05d4 \u05d4-" + e.century)
+                         : "\u05dc\u05d0 \u05de\u05ea\u05d5\u05d0\u05e8\u05da";
+    [["inst",inst],["type",typ],["century",cen]].forEach(function(pair){
+      (IDX[pair[0]][pair[1]] = IDX[pair[0]][pair[1]] || []).push(e);
+    });
+  });
+}
+
+
+/* A reader opening any cut of the collection should see at once what is in it:
+   how many manuscripts, how they break down by kind, and - the question that
+   actually matters - how many can be read on screen right now. */
+
+/* Run the summary figures up to their value. Respects reduced-motion: anyone
+   who has asked for less movement gets the final number immediately. */
+function runCounters(root){
+  var els = (root || document).querySelectorAll("[data-count]");
+  var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  Array.prototype.forEach.call(els, function(el){
+    var target = parseInt(el.getAttribute("data-count"), 10) || 0;
+    el.removeAttribute("data-count");
+    if(still || target <= 0){ el.textContent = String(target); return; }
+    var dur = 620, t0 = null;
+    function step(ts){
+      if(t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur);
+      // ease-out so it decelerates onto the final figure
+      var v = Math.round(target * (1 - Math.pow(1 - k, 3)));
+      el.textContent = String(v);
+      if(k < 1) requestAnimationFrame(step);
+      else el.textContent = String(target);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+function summaryBar(items, groupCount, compact){
+  if(!items || !items.length) return '';
+  var byType = {}, digital = 0, pages = 0;
+  items.forEach(function(e){
+    var t = e.type ? e.type.he : 'לא סווג';
+    byType[t] = (byType[t] || 0) + 1;
+    if(e.folder) digital++;                 // held here, readable now
+    pages += (e.pages || 0);
+  });
+  var kinds = Object.keys(byType).sort(function(a,b){ return byType[b] - byType[a]; });
+  var h = '<div class="sum' + (compact ? ' sum-compact' : '') + '">';
+  h += '<div class="sum-top">';
+  h += '<span class="sum-big tnum" data-count="' + items.length + '">0</span> כתבי יד';
+  if(groupCount) h += ' <span class="sum-sep">·</span> ' + groupCount + ' קבוצות';
+  h += ' <span class="sum-sep">·</span> <span class="tnum" data-count="' + pages + '">0</span> עמודים';
+  h += '<span class="sum-digital"><span class="tnum" data-count="' + digital + '">0</span>' +
+       ' מתוך ' + items.length + ' זמינים לצפייה דיגיטלית</span>';
+  h += '</div><div class="sum-kinds">';
+  kinds.forEach(function(k){
+    var on = (typeof typeFilter !== "undefined" && typeFilter === k);
+    h += '<button type="button" class="sum-kind" data-kind="' + esc(k) + '"' +
+         (on ? ' aria-pressed="true"' : '') + '>' + esc(k) +
+         ' <b class="tnum">' + byType[k] + '</b></button>';
+  });
+  h += '</div></div>';
+  return h;
+}
+
+function renderBrowse(){
+  var groups = IDX[idxMode] || {};
+  var keys = Object.keys(groups);
+  // Centuries read chronologically; the other cuts read largest-first.
+  if(idxMode === "century"){
+    keys.sort(function(a,b){
+      var na = parseInt((a.match(/\d+/) || ["9999"])[0], 10);
+      var nb = parseInt((b.match(/\d+/) || ["9999"])[0], 10);
+      return na - nb;
+    });
+  } else {
+    keys.sort(function(a,b){ return groups[b].length - groups[a].length; });
+  }
+  var body = document.getElementById("brBody");
+  if(!keys.length){
+    body.innerHTML = '<p style="color:var(--ink-3);font-size:13.5px">'
+      + '\u05d4\u05d0\u05d9\u05e0\u05d3\u05e7\u05e1\u05d9\u05dd \u05e0\u05d1\u05e0\u05d9\u05dd \u05de\u05e7\u05d5\u05d1\u05e5 enriched-library.json \u00b7 '
+      + '<span class="mono">py enrich.py</span></p>';
+    return;
+  }
+  var all = [];
+  keys.forEach(function(k){ all = all.concat(groups[k]); });
+  var h = summaryBar(all, keys.length);
+  keys.forEach(function(k){
+    var items = groups[k].slice().sort(function(a,b){
+      return String(a.shelf || "").localeCompare(String(b.shelf || ""));
+    });
+    h += '<details class="idx-group"><summary>' + esc(k)
+       + ' <span class="idx-count tnum">' + items.length + '</span></summary>'
+       + summaryBar(items, 0, true) + '<ul class="idx-list">';
+    items.forEach(function(e){
+      var away = !e.folder && e.status;      // known of, but not held here
+      h += '<li><button data-open-ms="' + esc(e.manifest || "") + '"'
+         + (away ? ' data-away="' + esc(e.url || "") + '" class="idx-away"' : '') + '>'
+         + '<span class="idx-shelf mono">' + esc(e.shelf || "") + '</span> '
+         + esc(String(e.title || "").slice(0, 64))
+         + (away ? '<span class="idx-status">' + esc(e.status_he || "") + '</span>'
+                 : '<span class="idx-pages tnum">' + (e.pages || 0) + '</span>')
+         + '</button></li>';
+    });
+    h += '</ul></details>';
+  });
+  body.innerHTML = h;
+}
+
+sideBody.addEventListener("click", function(e){
+  var b = e.target.closest("[data-lang]");
+  if(!b) return;
+  metaLang = b.getAttribute("data-lang");
+  renderMeta();
+});
+
+document.getElementById("btnBrowse").addEventListener("click", function(){
+  openLib();
+});
+document.getElementById("btnBrowseClose").addEventListener("click", function(){
+  document.getElementById("browseOverlay").hidden = true;
+});
+document.getElementById("browseOverlay").addEventListener("click", function(e){
+  if(e.target === this) this.hidden = true;
+});
+document.getElementById("brTabs").addEventListener("click", function(e){
+  var b = e.target.closest("[data-idx]");
+  if(!b) return;
+  idxMode = b.getAttribute("data-idx");
+  Array.prototype.forEach.call(this.querySelectorAll("[data-idx]"), function(x){
+    x.setAttribute("aria-pressed", x === b ? "true" : "false");
+  });
+  renderBrowse();
+});
+document.getElementById("brBody").addEventListener("click", function(e){
+  var b = e.target.closest("[data-open-ms]");
+  if(!b) return;
+  var away = b.getAttribute("data-away");
+  if(away !== null){
+    // Not ours to show. Send the reader to the institution that holds it.
+    if(away) window.open(away, "_blank", "noopener");
+    return;
+  }
+  var mf = b.getAttribute("data-open-ms");
+  var hit = library().filter(function(m){ return m.manifest === mf; })[0];
+  if(hit){
+    document.getElementById("browseOverlay").hidden = true;
+    openManuscript(hit);
+  }
+});
+
+/* ---------- wiring ---------- */
+function openLib(){
+  renderLibrary();
+  $("btnLibClose").hidden = !doc;   // nothing to return to before a manuscript is open
+  $("libOverlay").hidden = false;
+}
+function closeLib(){ $("libOverlay").hidden = true; }
+$("btnLib").addEventListener("click", openLib);
+$("btnLib2").addEventListener("click", openLib);
+$("btnLibClose").addEventListener("click", function(){
+  if(doc) closeLib();               // back to the open manuscript
+});
+/* the library is the home screen; a stray click outside a card must not close it */
+
+$("btnPrev").addEventListener("click", function(){ upgraded=false; showPage(pageIdx-1, true); });
+$("btnNext").addEventListener("click", function(){ upgraded=false; showPage(pageIdx+1, true); });
+
+/* ---------- rotation ----------
+   Bound notes and marginalia are often written sideways, so a reader needs to
+   turn the leaf rather than tilt their head. Rotation composes with pan/zoom
+   by being applied inside the same transform. */
+var rotation = 0;
+function rotate(deg){
+  rotation = (rotation + deg + 360) % 360;
+  fit();
+  var b = $("btnRotate");
+  if(b) b.setAttribute("data-deg", rotation);
+}
+$("btnRotate").addEventListener("click", function(){ rotate(90); });
+
+/* ---------- preview and print ----------
+   Both work from the page on screen and carry the credit line with them: a
+   printed sheet that leaves this app without its attribution is exactly what
+   the institutions' terms forbid. */
+function currentPageUrl(full){
+  if(!doc || !doc.pages.length) return "";
+  var p = doc.pages[pageIdx];
+  if(p.service) return p.service.replace(/\/$/, "") + "/full/" + (full ? "max" : "1400") + ",/0/default.jpg";
+  return p.direct || "";
+}
+
+function creditLineText(){
+  var E = enrichedFor();
+  var bits = [];
+  if(cur && cur.title) bits.push(cur.title);
+  if(cur && cur.shelf) bits.push(cur.shelf);
+  if(E && E.rights){
+    if(E.rights.credit_required) bits.push(E.rights.credit_required);
+    else if(E.rights.holder) bits.push(E.rights.holder);
+  } else if(cur && cur.inst){ bits.push(cur.inst); }
+  bits.push("עמוד " + (pageIdx + 1) + " מתוך " + doc.pages.length);
+  return bits.join("  ·  ");
+}
+
+$("btnPreview").addEventListener("click", function(){
+  if(!doc) return;
+  $("pvImg").src = currentPageUrl(false);
+  $("pvCredit").textContent = creditLineText();
+  $("pvOverlay").hidden = false;
+});
+$("btnPvClose").addEventListener("click", function(){ $("pvOverlay").hidden = true; });
+$("pvOverlay").addEventListener("click", function(e){ if(e.target === this) this.hidden = true; });
+
+function printPage(){
+  if(!doc) return;
+  var url = currentPageUrl(true);
+  var w = window.open("", "_blank");
+  if(!w){ alert("הדפדפן חסם את חלון ההדפסה. אפשר חלונות קופצים לאתר זה."); return; }
+  var rot = rotation ? " transform:rotate(" + rotation + "deg);" : "";
+  w.document.write(
+    '<!doctype html><html dir="rtl"><head><meta charset="utf-8">' +
+    '<title>' + (cur ? cur.title : "") + '</title><style>' +
+    '@page{margin:12mm}' +
+    'body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;}' +
+    'img{max-width:100%;max-height:88vh;display:block;margin:0 auto;' + rot + '}' +
+    '.c{margin-top:8mm;font-size:10pt;color:#333;text-align:center;line-height:1.5;' +
+    'border-top:1px solid #bbb;padding-top:4mm}' +
+    '</style></head><body>' +
+    '<img src="' + url + '" alt="">' +
+    '<div class="c">' + creditLineText().replace(/</g, "&lt;") + '</div>' +
+    '</body></html>');
+  w.document.close();
+  // Wait for the scan to arrive; printing an empty frame helps nobody.
+  var img = w.document.images[0];
+  if(img && !img.complete){
+    img.onload = function(){ w.focus(); w.print(); };
+    img.onerror = function(){ w.focus(); w.print(); };
+  } else {
+    w.focus(); w.print();
+  }
+}
+$("btnPrint").addEventListener("click", printPage);
+$("btnPvPrint").addEventListener("click", printPage);
+$("pageIn").addEventListener("change", function(){
+  var n = parseInt(this.value, 10);
+  if(!isNaN(n)){ upgraded=false; showPage(n-1, true); } else { this.value = pageIdx+1; }
+});
+$("btnIn").addEventListener("click", function(){ zoomAt(1.35, stage.clientWidth/2, stage.clientHeight/2); });
+$("btnOut").addEventListener("click", function(){ zoomAt(1/1.35, stage.clientWidth/2, stage.clientHeight/2); });
+$("btnFit").addEventListener("click", function(){ upgraded=false; fit(); });
+
+function toggleSide(which){
+  var btnI = $("btnIndex"), btnM = $("btnMeta");
+  var openNow = !side.hidden && sideTitle.getAttribute("data-mode") === which;
+  if(openNow){ side.hidden = true; btnI.setAttribute("aria-pressed","false"); btnM.setAttribute("aria-pressed","false"); return; }
+  side.hidden = false;
+  sideTitle.setAttribute("data-mode", which);
+  sideTitle.textContent = which === "index" ? "אינדקס" : "פרטי כתב היד";
+  btnI.setAttribute("aria-pressed", which === "index" ? "true" : "false");
+  btnM.setAttribute("aria-pressed", which === "meta"  ? "true" : "false");
+  if(which === "index") renderIndex(); else renderMeta();
+}
+$("btnIndex").addEventListener("click", function(){ toggleSide("index"); });
+$("btnMeta").addEventListener("click", function(){ toggleSide("meta"); });
+$("btnSideClose").addEventListener("click", function(){
+  side.hidden = true;
+  $("btnIndex").setAttribute("aria-pressed","false");
+  $("btnMeta").setAttribute("aria-pressed","false");
+});
+
+// Keyboard — RTL aware: ArrowLeft advances, ArrowRight goes back.
+document.addEventListener("keydown", function(e){
+  if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+  if(!$("libOverlay").hidden){ if(e.key === "Escape") closeLib(); return; }
+  if(!doc) return;
+  switch(e.key){
+    case "ArrowLeft":  upgraded=false; showPage(pageIdx+1, true); break;
+    case "ArrowRight": upgraded=false; showPage(pageIdx-1, true); break;
+    case "Home":       upgraded=false; showPage(0, true); break;
+    case "End":        upgraded=false; showPage(doc.pages.length-1, true); break;
+    case "+": case "=": zoomAt(1.35, stage.clientWidth/2, stage.clientHeight/2); break;
+    case "-":           zoomAt(1/1.35, stage.clientWidth/2, stage.clientHeight/2); break;
+    case "0":           upgraded=false; fit(); break;
+  }
+});
+
+/* A background tab reports 0x0 until it is shown. Refit the moment the stage
+   is given real dimensions, so switching to the tab reveals the page. */
+if(typeof ResizeObserver !== "undefined"){
+  var lastW = 0, lastH = 0;
+  new ResizeObserver(function(){
+    var w = stage.clientWidth, h = stage.clientHeight;
+    if(w === lastW && h === lastH) return;
+    lastW = w; lastH = h;
+    if(w >= 40 && h >= 40 && doc && !img.hidden && img.naturalWidth){
+      if(!fitScale || zoom <= 0) fit();
+    }
+  }).observe(stage);
+}
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden && doc && !img.hidden && img.naturalWidth && (!fitScale || zoom <= 0)) fit();
+});
+
+var rt;
+window.addEventListener("resize", function(){
+  clearTimeout(rt);
+  rt = setTimeout(function(){ if(doc && !img.hidden) fit(); }, 140);
+});
+
+if(adminMode){ var ab = document.getElementById("adminBox"); if(ab) ab.hidden = false; }
+renderLibrary();
+updateCredit();
+
+// Land on the collection, not on an empty viewer.
+setTimeout(function(){ if(!doc) openLib(); }, 250);
+})();
+</script>

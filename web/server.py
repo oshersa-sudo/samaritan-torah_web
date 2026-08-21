@@ -1761,6 +1761,12 @@ def timeline_page(sub='index.html'):
 from shira import shira as _shira_bp                                # noqa: E402
 app.register_blueprint(_shira_bp)
 
+# אוצר כתבי היד השומרוניים בתבל — the manuscript treasury, a unit of its own
+# (see manuscripts.py). Registered the same way; its scans live on the Contabo
+# media host and never pass through this server.
+from manuscripts import manuscripts as _mss_unit                    # noqa: E402
+app.register_blueprint(_mss_unit)
+
 
 @app.route('/favicon.ico')
 def favicon():

@@ -301,6 +301,7 @@
   <button class="menu-item" data-act="timeline"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="12" x2="22" y2="12"/><line x1="8" y1="10" x2="8" y2="5"/><circle cx="8" cy="12" r="2"/><line x1="16" y1="14" x2="16" y2="19"/><circle cx="16" cy="12" r="2"/></svg><span class="mi-label" data-i18n="m_timeline">ציר הזמן ההיסטורי השומרוני</span></button>
   <!-- the mark is what the unit holds: two notes on one beam, sung together -->
   <button class="menu-item" data-act="shira"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M9 18V5l12-2v13"/><path d="M9 9l12-2"/></svg><span class="mi-label" data-i18n="m_shira">אוצר השירה השומרונית</span></button>
+  <button class="menu-item" data-act="mss" id="mssMenuItem"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 5h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg><span class="mi-label" data-i18n="m_mss">אוצר כתבי היד השומרוניים בתבל</span></button>
   <button class="menu-item" data-act="library" id="libraryHead"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="mi-label" data-i18n="m_library">הספרייה השומרונית</span></button>
   <button class="menu-item bm-item hidden" id="bmMenuItem" data-act="bookmarks"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span class="mi-label" data-i18n="bm_my">הסימניות שלי</span></button>
   <button class="menu-item" data-act="install"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="mi-label" data-i18n="m_install">התקנת אפליקציה</span></button>
@@ -898,6 +899,34 @@
         .then(reg => reg.update()).catch(()=>{});
     });
   }
+</script>
+
+<!-- אוצר כתבי היד: opens the unit full-screen, exactly as the recordings archive does -->
+<div id="mssFrameWrap" style="display:none;position:fixed;inset:0;z-index:4000;background:#f4f1ea">
+  <button id="mssFrameClose" aria-label="סגירה"
+          style="position:absolute;top:10px;left:12px;z-index:4001;width:38px;height:38px;
+                 border:1px solid #cec3ae;border-radius:9px;background:#fffdf8;color:#1c1a17;
+                 font-size:17px;cursor:pointer">&times;</button>
+  <iframe id="mssFrame" title="אוצר כתבי היד השומרוניים בתבל"
+          style="width:100%;height:100%;border:0;display:block"></iframe>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('mssMenuItem');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    var w = document.getElementById('mssFrameWrap');
+    var f = document.getElementById('mssFrame');
+    if(!f.src) f.src = '/manuscripts/';
+    w.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    if (typeof closeMenu === 'function') closeMenu();   // the app's own drawer
+  });
+  document.getElementById('mssFrameClose').addEventListener('click', function(){
+    document.getElementById('mssFrameWrap').style.display = 'none';
+    document.body.style.overflow = '';
+  });
+})();
 </script>
 </body>
 </html>
