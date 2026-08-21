@@ -11,7 +11,14 @@ import os, re, sys, io, json, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from notes import NOTES
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+# Ask for UTF-8 out, but never insist on it. There is not always a console
+# underneath: packaged there is none at all, and when the build is run from
+# inside the program its output is being collected into a buffer that has no
+# .buffer to wrap. Either way the catalogue still has to be built.
+try:
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+except (AttributeError, ValueError):
+    pass
 HERE = os.path.dirname(os.path.abspath(__file__))
 D    = lambda *p: os.path.join(HERE, '..', 'data', *p)
 

@@ -86,6 +86,45 @@ def _summarise(old, new):
     }
 
 
+def build_catalog():
+    """Rebuild the catalogue, in the way that suits how we are running.
+
+    As a script there is a Python to hand and the build is given its own
+    process, which keeps its imports and its globals out of the server's.
+
+    Packaged, there is no Python to hand: sys.executable is the application
+    itself. Spawning it would start a second copy of the whole program — a
+    second window, a second browser session, a second server — which is
+    exactly what pressing sync used to do. So packaged, the build is run
+    inside this process instead.
+    """
+    script = os.path.join(HERE, 'build_catalog.py')
+    if not getattr(sys, 'frozen', False):
+        r = subprocess.run([sys.executable, script], cwd=UNIT,
+                           capture_output=True, text=True,
+                           encoding='utf-8', errors='replace')
+        return (r.returncode == 0), (r.stderr or r.stdout or '')
+
+    import contextlib
+    import runpy
+    buf = io.StringIO()
+    argv, cwd = sys.argv, os.getcwd()
+    try:
+        sys.argv = [script]
+        os.chdir(UNIT)
+        with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+            runpy.run_path(script, run_name='__main__')
+        return True, buf.getvalue()
+    except SystemExit as e:                             # a clean early finish
+        return (not e.code), buf.getvalue()
+    except Exception:                                   # noqa: BLE001
+        import traceback
+        return False, buf.getvalue() + traceback.format_exc()
+    finally:
+        sys.argv = argv
+        os.chdir(cwd)
+
+
 def run(branch='main', message=None):
     """Rebuild, compare, and publish onto `branch`.
 
@@ -95,12 +134,9 @@ def run(branch='main', message=None):
     never moves the current branch, never touches an unrelated file, and works
     no matter what state the checkout is in.
     """
-    build = subprocess.run([sys.executable, os.path.join(HERE, 'build_catalog.py')],
-                           cwd=UNIT, capture_output=True, text=True,
-                           encoding='utf-8', errors='replace')
-    if build.returncode:
-        return {'ok': False, 'stage': 'build',
-                'error': (build.stderr or build.stdout or '')[-600:]}
+    ok, err = build_catalog()
+    if not ok:
+        return {'ok': False, 'stage': 'build', 'error': err[-600:]}
 
     with open(CATALOG, encoding='utf-8') as fh:
         new = json.load(fh)

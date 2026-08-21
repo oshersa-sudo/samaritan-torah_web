@@ -61,6 +61,10 @@ def key_of(rec):
     return (rec.get('tr') or [{}])[0].get('f', '') or rec.get('dir', '')
 
 
+# what the build calls a tape it knows nothing about
+UNIDENTIFIED = 'קלטות לא מזוהות'
+
+
 def apply(catalog, ovr, include_hidden=False):
     """Fold admin edits into a catalog, re-deriving the affected indexes.
 
@@ -105,6 +109,7 @@ def apply(catalog, ovr, include_hidden=False):
     perf_by  = {p['name']: p for p in cat['performers']}
     event_by = {e['name']: e for e in cat['events']}
     piy_by   = {p['id']: p for p in cat['piyyutim']}
+    piy_name = {p['name']: p for p in cat['piyyutim']}
 
     def ensure(seq, by_name, name, extra):
         if name in by_name:
@@ -150,7 +155,27 @@ def apply(catalog, ovr, include_hidden=False):
             r['p'] = ensure(cat['performers'], perf_by, o['performer'], 'events')['id']
         if o.get('event'):
             r['e'] = ensure(cat['events'], event_by, o['event'], 'performers')['id']
+        # A cassette that has been given a name is no longer an unnamed one.
+        #
+        # The build files every folder named with a bare number under the one
+        # heading "קלטות לא מזוהות", because at that point nobody knows what is
+        # on the tape. Identifying it afterwards used to restore its title, its
+        # singer and its feast and leave it sitting in that bin all the same:
+        # the edit was applied to everything about the recording except where
+        # it is filed. Naming it moves it out.
+        if o.get('piyyut'):
+            r['y'] = ensure(cat['piyyutim'], piy_name, o['piyyut'], 'events')['id']
+        elif ((o.get('title') or o.get('desc'))
+                and (piy_by.get(rec['y']) or {}).get('name') == UNIDENTIFIED):
+            r['y'] = ensure(cat['piyyutim'], piy_name, r['ttl'], 'events')['id']
         cat['recordings'].append(r)
+
+    # A piyyut created a moment ago by ensure() is in the list but not in this
+    # map, which was taken before the loop ran. The roll-up below counts through
+    # the map, so without this the new row would be left at nought and then
+    # dropped as empty — and the recordings pointing at it would be left
+    # pointing at nothing.
+    piy_by = {p['id']: p for p in cat['piyyutim']}
 
     # recompute the roll-ups so the menus match what is actually listed
     for seq in (cat['performers'], cat['events'], cat['piyyutim']):
