@@ -599,7 +599,7 @@ function initSelectors() {
     var o = document.createElement('option');
     o.value = b; o.textContent = BOOK_NAMES[b]; $('bookSel').appendChild(o);
   }
-  $('bookSel').onchange = function () { book = parseInt(this.value); G = null; stopAll(); renderAll(); fetchSyncStatus(); };
+  $('bookSel').onchange = function () { book = parseInt(this.value); G = null; stopAll(); renderAll(); saveView(); fetchSyncStatus(); syncDivisionsFromCloud(true); };
   var o0 = document.createElement('option');
   o0.value = 'meir'; o0.textContent = MEIR + ' — הקורא הראשי';
   $('readerSel').appendChild(o0);
@@ -608,7 +608,7 @@ function initSelectors() {
     o.value = r.name; o.textContent = r.name + (r.years ? ' (' + r.years + ')' : '');
     $('readerSel').appendChild(o);
   });
-  $('readerSel').onchange = function () { reader = this.value; G = null; stopAll(); renderAll(); fetchSyncStatus(); };
+  $('readerSel').onchange = function () { reader = this.value; G = null; stopAll(); renderAll(); saveView(); fetchSyncStatus(); };
 }
 
 /* ================= sync-status lights (local vs live, per chapter) ================= */
@@ -676,12 +676,13 @@ function openChapter(n) {
   else { G = buildWitGroup(witChapterFile(n)); playPos = 0;
          G.pieces.forEach(function (p) { if (p.n === n) playPos = p.t0; }); }
   renderGrid(); renderEditor();
+  saveView();
   $('editor').scrollIntoView({ behavior: 'smooth' });
 }
 
 /* ================= cloud sync: divisions (cloud -> player, display only) ================= */
-function syncDivisionsFromCloud() {
-  setStatus('מושך חלוקות מהענן…');
+function syncDivisionsFromCloud(quiet) {
+  if (!quiet) setStatus('מושך חלוקות מהענן…');
   fetch(SERVER + '/api/cloud_divisions?book_id=' + book + '&retries=3').then(function (r) {
     if (!r.ok) throw new Error('http ' + r.status);
     return r.json();
@@ -691,17 +692,23 @@ function syncDivisionsFromCloud() {
     cs.forEach(function (c) {
       var info = data.chapters[c.n];
       if (!info) return;
-      if (c.pn !== info.portion_name || c.po !== info.portion_id) n_updated++;
-      c.po = info.portion_id; c.pn = info.portion_name;
+      /* portion_order is the portion's place WITHIN this book, which is what
+         the grid groups by. portion_id is a global row id - equal to the order
+         only in Genesis, so using it regrouped every other book under numbers
+         that do not exist here. */
+      if (c.pn !== info.portion_name || c.po !== info.portion_order) n_updated++;
+      c.po = info.portion_order; c.pn = info.portion_name;
       if (info.opening) c.incipit = info.opening;
     });
-    setStatus('סונכרן מהענן: ' + n_updated + ' פרקים עודכנו (שיוך פרשה/פתיח בלבד — לא נגעתי בעריכות שלך). רענן תצוגה בלחיצה על פרק.');
+    if (!quiet || n_updated) setStatus('סונכרן מהענן: ' + n_updated + ' פרקים עודכנו (שיוך פרשה/פתיח בלבד — לא נגעתי בעריכות שלך).');
     renderGrid(); if (G) renderEditor();
   }).catch(function (e) {
+    /* on boot this is a background refresh - do not shout over the screen */
+    if (quiet) return;
     setStatus('שגיאה בסנכרון מהענן: ' + e.message + ' (ודא שהרצת player_server.py)');
   });
 }
-$('cloudDivBtn').onclick = syncDivisionsFromCloud;
+$('cloudDivBtn').onclick = function () { syncDivisionsFromCloud(false); };
 
 /* ================= redownload + auto-split (player -> cloud algorithm, staged for review) ================= */
 function padPo(po) { return (po < 10 ? '0' : '') + po; }
@@ -785,6 +792,7 @@ function syncGroupToCloud() {
       delete edits[G.key]; saveEdits();
       setStatus('✓ הוחל מקומית: פרקים ' + JSON.stringify(res.result.new_chapters) + w +
                  '\\nטוען מחדש את הנתונים העדכניים… (כדי שקבוצות נוספות יראו את הקבצים החדשים)');
+      saveView();
       setTimeout(function () { location.reload(); }, 1800);
     })
     .catch(function (e) { setStatus('שגיאה בהחלה: ' + e.message); });
@@ -995,12 +1003,54 @@ $('clearBtn').onclick = function () {
   edits = {}; saveEdits(); G = null; renderAll();
 };
 
+/* ================= where the user was =================
+   Applying a change reloads the page on purpose, so every open group picks up
+   the renamed files. That reload used to drop the user back on Genesis with
+   nothing open, losing their place after every single edit. Remember the view
+   and put it back. */
+var VIEW_KEY = 'torah-view-v1';
+function saveView() {
+  try {
+    var n = null;
+    if (G) {
+      var i = currentPieceIndex(); if (i < 0) i = 0;
+      n = (G.kind === 'meir') ? G.chs[i] : (G.pieces[i] && G.pieces[i].n);
+    }
+    localStorage.setItem(VIEW_KEY, JSON.stringify(
+      { book: book, reader: reader, n: n, pos: playPos }));
+  } catch (e) {}
+}
+function restoreView() {
+  var v = null;
+  try { v = JSON.parse(localStorage.getItem(VIEW_KEY) || 'null'); } catch (e) {}
+  if (!v) return false;
+  if (v.book && D.books[String(v.book)]) { book = v.book; $('bookSel').value = String(book); }
+  if (v.reader && (v.reader === 'meir' ||
+      D.readers.some(function (r) { return r.name === v.reader; }))) {
+    reader = v.reader; $('readerSel').value = reader;
+  }
+  renderAll();
+  if (v.n != null) {
+    var have = (reader === 'meir') ? !!chMeta(v.n) : !!witChapterFile(v.n);
+    if (have) {
+      openChapter(v.n);
+      if (typeof v.pos === 'number' && G && v.pos >= 0 && v.pos <= G.total) {
+        playPos = v.pos; refreshTransport(); renderSeekMarks();
+      }
+    }
+  }
+  return true;
+}
+
 /* ================= boot ================= */
 function renderAll() { renderGrid(); renderEditor(); }
 initSelectors();
-renderAll();
+if (!restoreView()) renderAll();
 pingServer();
 fetchSyncStatus();
+/* the live site owns the portion divisions - refresh them on every start, not
+   only when someone remembers to press the button */
+syncDivisionsFromCloud(true);
 setInterval(pingServer, 15000);
 </script>
 </body>

@@ -426,6 +426,29 @@ def apply_meir(entry):
 
 
 # ───────────────────────── redownload + auto-split ─────────────────────────
+def ytdlp(argv):
+    """Run yt-dlp with the usual command-line flags, in this process.
+
+    It used to be `sys.executable -m yt_dlp`. In the packaged build
+    sys.executable is VersePlayer.exe, so that did not start a downloader at
+    all - it started a SECOND COPY OF THE APP. That is what "pressing
+    redownload opens a new session" was.
+
+    yt_dlp is bundled, so its own option parser is handed the same argv and the
+    download runs here. parse_options rather than main() on purpose: main()
+    installs process-level signal handlers, which fails off the main thread,
+    and every request is served on one.
+    """
+    import yt_dlp
+    parsed = yt_dlp.parse_options(list(argv))
+    opts = parsed.ydl_opts if hasattr(parsed, "ydl_opts") else parsed[-1]
+    urls = parsed.urls if hasattr(parsed, "urls") else parsed[-2]
+    with yt_dlp.YoutubeDL(opts) as ydl:
+        code = ydl.download(urls)
+    if code:
+        raise RuntimeError("yt-dlp failed (code {}) for: {}".format(code, urls))
+
+
 def redownload_split(payload):
     """Re-fetch a source recording (YouTube URL or local file path) and
     re-run the ORIGINAL auto-split algorithm against it, for whichever
@@ -441,8 +464,9 @@ def redownload_split(payload):
         tmp = Path(tmp)
 
         if re.match(r"^https?://", source, re.I):
-            run([sys.executable, "-m", "yt_dlp", "--no-playlist", "--js-runtimes", "node",
-                 "-x", "--audio-format", "mp3", "-o", str(tmp / "src.%(ext)s"), source])
+            ytdlp(["--no-playlist", "--js-runtimes", "node",
+                   "-x", "--audio-format", "mp3",
+                   "-o", str(tmp / "src.%(ext)s"), source])
             found = list(tmp.glob("src.*"))
             if not found:
                 raise RuntimeError("yt-dlp produced no output file for: {}".format(source))
