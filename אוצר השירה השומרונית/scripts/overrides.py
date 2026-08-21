@@ -111,12 +111,26 @@ def apply(catalog, ovr, include_hidden=False):
     piy_by   = {p['id']: p for p in cat['piyyutim']}
     piy_name = {p['name']: p for p in cat['piyyutim']}
 
-    def ensure(seq, by_name, name, extra):
+    # The rows the build writes are not all the same shape, and a row added
+    # here has to match the kind it is joining exactly. A piyyut carries
+    # variants, a note and a description besides its counts; the page reads
+    # them without asking whether they are there, and one missing list is
+    # enough to throw while the index is being drawn and leave the whole of
+    # it blank. So each kind is given its full shape, not a common subset.
+    SHAPE = {
+        'piyyutim':   {'variants': [], 'events': [], 'performers': [],
+                       'note': '', 'desc': ''},
+        'performers': {'events': [], 'n_piyyut': 0},
+        'events':     {'performers': [], 'n_piyyut': 0},
+    }
+
+    def ensure(seq, by_name, name, kind):
         if name in by_name:
             return by_name[name]
         row = {'id': max([x['id'] for x in seq], default=0) + 1, 'name': name,
-               'n_rec': 0, 'n_tracks': 0, 'seconds': 0, 'n_piyyut': 0}
-        row[extra] = []
+               'n_rec': 0, 'n_tracks': 0, 'seconds': 0}
+        for k, v in SHAPE[kind].items():
+            row[k] = list(v) if isinstance(v, list) else v
         seq.append(row)
         by_name[name] = row
         return row
@@ -152,9 +166,9 @@ def apply(catalog, ovr, include_hidden=False):
         if o.get('hidden'):
             r['hidden'] = 1
         if o.get('performer'):
-            r['p'] = ensure(cat['performers'], perf_by, o['performer'], 'events')['id']
+            r['p'] = ensure(cat['performers'], perf_by, o['performer'], 'performers')['id']
         if o.get('event'):
-            r['e'] = ensure(cat['events'], event_by, o['event'], 'performers')['id']
+            r['e'] = ensure(cat['events'], event_by, o['event'], 'events')['id']
         # A cassette that has been given a name is no longer an unnamed one.
         #
         # The build files every folder named with a bare number under the one
@@ -164,10 +178,10 @@ def apply(catalog, ovr, include_hidden=False):
         # the edit was applied to everything about the recording except where
         # it is filed. Naming it moves it out.
         if o.get('piyyut'):
-            r['y'] = ensure(cat['piyyutim'], piy_name, o['piyyut'], 'events')['id']
+            r['y'] = ensure(cat['piyyutim'], piy_name, o['piyyut'], 'piyyutim')['id']
         elif ((o.get('title') or o.get('desc'))
                 and (piy_by.get(rec['y']) or {}).get('name') == UNIDENTIFIED):
-            r['y'] = ensure(cat['piyyutim'], piy_name, r['ttl'], 'events')['id']
+            r['y'] = ensure(cat['piyyutim'], piy_name, r['ttl'], 'piyyutim')['id']
         cat['recordings'].append(r)
 
     # A piyyut created a moment ago by ensure() is in the list but not in this

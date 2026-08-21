@@ -186,9 +186,11 @@ function viewPiyyut() {
 
   return card_grid(list.map(p => ({
     title: p.name,
+    // an index must not go blank because one row lacks an optional list
     meta:  `${count[p.id] || p.n_rec} הקלטות · ${hours(p.seconds)}` +
-           (p.variants.length ? `<br><span dir="auto">גם: ${esc(p.variants.slice(0, 3).join(' · '))}</span>` : ''),
-    tags:  named(p.events).slice(0, 2).map(e => ({ t: e, cls: 'ev' }))
+           ((p.variants || []).length
+             ? `<br><span dir="auto">גם: ${esc(p.variants.slice(0, 3).join(' · '))}</span>` : ''),
+    tags:  named(p.events || []).slice(0, 2).map(e => ({ t: e, cls: 'ev' }))
              .concat(p.note ? [{ t: 'הערת עורך', cls: '' }] : []),
     click: () => { F.piyyut = p.id; go('rec'); },
   })));
