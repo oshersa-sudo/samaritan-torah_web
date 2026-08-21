@@ -239,8 +239,14 @@ def ffprobe_dur(path):
     return float(out.strip())
 
 
+# A windowed build has no console of its own, so every ffmpeg/git call would
+# otherwise flash up a black console window of its own. CREATE_NO_WINDOW keeps
+# them invisible; it does not exist off Windows, hence the getattr.
+_NO_WINDOW = {"creationflags": getattr(subprocess, "CREATE_NO_WINDOW", 0)}     if os.name == "nt" else {}
+
+
 def run(cmd):
-    p = subprocess.run(cmd, capture_output=True, text=True)
+    p = subprocess.run(cmd, capture_output=True, text=True, **_NO_WINDOW)
     if p.returncode != 0:
         raise RuntimeError("cmd failed: {}\n{}\n{}".format(cmd, p.stdout, p.stderr))
     return p.stdout
@@ -693,7 +699,7 @@ def apply_witness(entry):
 
 # ───────────────────────── git push ─────────────────────────
 def run_in(cwd, cmd):
-    p = subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True)
+    p = subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True, **_NO_WINDOW)
     if p.returncode != 0:
         raise RuntimeError("{}\n{}\n{}".format(cmd, p.stdout, p.stderr))
     return p.stdout

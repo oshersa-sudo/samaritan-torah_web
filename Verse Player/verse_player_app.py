@@ -24,6 +24,17 @@ import time
 import webbrowser
 from pathlib import Path
 
+
+def log(*parts):
+    """A windowed build has no console: PyInstaller leaves sys.stdout as None
+    there, and a bare print() would raise. Anything the user must actually see
+    goes through a dialog (_die / _report), not through this."""
+    try:
+        if sys.stdout:
+            print(*parts)
+    except Exception:
+        pass
+
 APP_NAME = "עורך חלוקת הפרקים — Verse Player"
 MANIFEST_REL = Path("web") / "static" / "audio" / "readings" / "readings.json"
 
@@ -90,7 +101,7 @@ def _die(title, body):
         ctypes.windll.user32.MessageBoxW(None, text, APP_NAME, 0x10)
     except Exception:
         pass
-    print(text)
+    log(text)
     sys.exit(1)
 
 
@@ -102,16 +113,23 @@ def _port_busy(port):
 
 def selftest():
     """--selftest: prove the packaged build can do the things that only break
-    once it is frozen — find the project, import the server, and regenerate the
-    player page (which in a normal build shells out to a python that an .exe
-    does not have). Prints a pass/fail line per check and sets the exit code."""
-    ok = True
+    once it is frozen - find the project, import the server, and regenerate the
+    player page (which unfrozen shells out to a python an .exe does not have).
+
+    The build is windowed, so there is no console to print a report into: the
+    lines are collected and shown in a dialog as well."""
+    out, ok = [], True
+
+    def say(line):
+        out.append(line)
+        log(line)
 
     root, tried = find_root()
-    print("[%s] project root      %s" % ("ok" if root else "FAIL", root or "not found"))
+    say("[%s] project root      %s" % ("ok" if root else "FAIL", root or "not found"))
     if not root:
-        for w, p in tried:
-            print("        looked in %-18s %s" % (w, p))
+        for w, pth in tried:
+            say("        looked in %-18s %s" % (w, pth))
+        _report("SELFTEST FAILED", out)
         return 1
     os.environ["TORAH_ROOT"] = str(root)
     sys.path.insert(0, str(_here()))
@@ -120,15 +138,16 @@ def selftest():
 
     try:
         import player_server as ps
-        print("[ok] server module    port %d, reads %s" % (ps.PORT, ps.READINGS_JSON.name))
+        say("[ok] server module    port %d, reads %s" % (ps.PORT, ps.READINGS_JSON.name))
     except Exception as e:
-        print("[FAIL] server module  %s: %s" % (type(e).__name__, e))
+        say("[FAIL] server module  %s: %s" % (type(e).__name__, e))
+        _report("SELFTEST FAILED", out)
         return 1
 
     for label, path in (("manifest", ps.READINGS_JSON), ("database", ps.DB)):
         good = Path(path).is_file()
         ok &= good
-        print("[%s] %-16s %s" % ("ok" if good else "FAIL", label, path))
+        say("[%s] %-16s %s" % ("ok" if good else "FAIL", label, path))
 
     page = Path(ps.WEB) / "player-all.html"
     before = page.stat().st_mtime if page.is_file() else 0
@@ -136,33 +155,102 @@ def selftest():
         ps.rebuild_player()
         grew = page.is_file() and page.stat().st_mtime >= before
         ok &= grew
-        print("[%s] rebuild page     %s (%d KB)"
-              % ("ok" if grew else "FAIL", page.name,
-                 page.stat().st_size // 1024 if page.is_file() else 0))
+        say("[%s] rebuild page     %s (%d KB)"
+            % ("ok" if grew else "FAIL", page.name,
+               page.stat().st_size // 1024 if page.is_file() else 0))
     except Exception as e:
         ok = False
-        print("[FAIL] rebuild page   %s: %s" % (type(e).__name__, e))
+        say("[FAIL] rebuild page   %s: %s" % (type(e).__name__, e))
+
+    try:
+        import webview  # noqa: F401
+        say("[ok] native window    pywebview + WebView2 available")
+    except Exception as e:
+        say("[-- ] native window    unavailable (%s) - will open in the browser"
+            % type(e).__name__)
 
     for tool in ("ffmpeg", "ffprobe", "git"):
         found = shutil.which(tool)
-        # not fatal: playing and editing work without them, only cutting/pushing needs them
-        print("[%s] %-16s %s" % ("ok" if found else "-- ", tool,
-                                 found or "not on PATH (needed to cut audio / push)"))
+        # not fatal: playing and editing work without them; cutting/pushing needs them
+        say("[%s] %-16s %s" % ("ok" if found else "-- ", tool,
+                               found or "not on PATH (needed to cut audio / push)"))
 
-    print("\n%s" % ("SELFTEST PASSED" if ok else "SELFTEST FAILED"))
+    _report("SELFTEST PASSED" if ok else "SELFTEST FAILED", out)
     return 0 if ok else 1
+
+
+def _report(title, lines):
+    """Windowed builds have nowhere to print, so the report is written next to
+    the app AND shown in a dialog. --quiet skips the dialog: it waits for a
+    click, which is right for someone who double-clicked and wrong for anything
+    running the check unattended."""
+    log("")
+    log(title)
+    text = title + "\n\n" + "\n".join(lines)
+    try:
+        (_here() / "selftest.txt").write_text(text, encoding="utf-8")
+    except Exception:
+        pass
+    if "--quiet" in sys.argv:
+        return
+    try:
+        import ctypes
+        ctypes.windll.user32.MessageBoxW(None, text, APP_NAME, 0x40)
+    except Exception:
+        pass
+
+
+def serve(ps):
+    """Start the local server on a background thread and wait until it answers.
+
+    The window is what the user closes to quit, so the server must not own the
+    main thread: it runs as a daemon and dies with the process."""
+    from http.server import ThreadingHTTPServer
+    srv = ThreadingHTTPServer(("localhost", ps.PORT), ps.Handler)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    for _ in range(60):
+        if _port_busy(ps.PORT):
+            return srv
+        time.sleep(0.1)
+    return srv
+
+
+def open_window(url, title):
+    """A real application window rather than a browser tab.
+
+    pywebview drives the Edge WebView2 runtime that ships with Windows, so the
+    page is the app: its own window, its own taskbar entry, no address bar and
+    no separate browser. If that runtime is missing on some machine the app
+    still has to work, so it falls back to the browser rather than refusing to
+    start."""
+    try:
+        import webview
+    except Exception as e:
+        log("native window unavailable (%s) - falling back to the browser" % e)
+        webbrowser.open(url)
+        threading.Event().wait()
+        return
+    try:
+        webview.create_window(title, url, width=1360, height=900,
+                              min_size=(940, 620), text_select=True)
+        webview.start()                      # returns when the user closes it
+    except Exception as e:
+        log("native window failed to open (%s) - falling back to the browser" % e)
+        webbrowser.open(url)
+        threading.Event().wait()
 
 
 def main():
     if "--selftest" in sys.argv:
         sys.exit(selftest())
+
     root, tried = find_root()
     if root is None:
         looked = "\n".join("    %-18s %s" % (w, p) for w, p in tried) or "    (nowhere)"
         _die("לא מצאתי את ההקלטות.",
              "חיפשתי את %s תחת:\n%s\n\n"
              "אם הפרויקט הועבר, צור לצד הקובץ הזה קובץ בשם verse-player.ini "
-             "ובתוכו שורה אחת:\n\n    root=C:\\הנתיב\\לפרויקט\n\n"
+             "ובתוכו שורה אחת:\n\n    root=C:\הנתיב\לפרויקט\n\n"
              "אם הנתיב קיים אבל ריק — ייתכן שגיט נמצא על ענף שאין בו את "
              "ההקלטות (הן יושבות על web-deploy)." % (MANIFEST_REL, looked))
 
@@ -176,32 +264,20 @@ def main():
     except Exception as e:
         _die("התוכנה לא הצליחה לעלות.", "%s: %s" % (type(e).__name__, e))
 
-    if _port_busy(ps.PORT):
-        # Already running (often an earlier window that is still open) — just
-        # show it rather than dying on "address already in use".
-        webbrowser.open("http://localhost:%d/" % ps.PORT)
-        _die("הנגן כבר פועל.",
-             "יש כבר חלון פתוח של התוכנה (פורט %d), ופתחתי אותו בדפדפן.\n\n"
-             "אם הוא תקוע — סגור את חלון התוכנה הקודם והפעל שוב." % ps.PORT)
-
-    try:
-        stale = ps.cleanup_orphan_staging()
-        if stale:
-            print("ניקיתי %d קבצי ביניים משימוש קודם" % len(stale))
-    except Exception as e:
-        print("דילגתי על ניקוי קבצי ביניים: %s" % e)
+    # An instance already serving is not an error: show its window rather than
+    # dying on "address already in use", and leave its server alone.
+    if not _port_busy(ps.PORT):
+        try:
+            stale = ps.cleanup_orphan_staging()
+            if stale:
+                log("ניקיתי %d קבצי ביניים משימוש קודם" % len(stale))
+        except Exception as e:
+            log("דילגתי על ניקוי קבצי ביניים: %s" % e)
+        serve(ps)
 
     url = "http://localhost:%d/" % ps.PORT
-    print("%s\nההקלטות: %s\nכתובת:    %s\n\nהשאר חלון זה פתוח כל עוד אתה עובד.\n"
-          % (APP_NAME, root, url))
-    threading.Thread(target=lambda: (time.sleep(1.0), webbrowser.open(url)),
-                     daemon=True).start()
-
-    from http.server import ThreadingHTTPServer
-    try:
-        ThreadingHTTPServer(("localhost", ps.PORT), ps.Handler).serve_forever()
-    except KeyboardInterrupt:
-        print("\nהתוכנה נסגרה.")
+    log("%s | %s | %s" % (APP_NAME, root, url))
+    open_window(url, APP_NAME)
 
 
 if __name__ == "__main__":
