@@ -449,6 +449,75 @@ def ytdlp(argv):
         raise RuntimeError("yt-dlp failed (code {}) for: {}".format(code, urls))
 
 
+def move_chapter(payload):
+    """Nudge the boundary between two portions by one chapter.
+
+    Only a portion's FIRST chapter may move back, and only its LAST chapter may
+    move forward: a portion is a contiguous run, so moving anything from the
+    middle would tear a hole in it. The chapter's recording is renamed into the
+    neighbouring portion's series (b{book}-p{portion}-c{n}) and its manifest
+    label is taken from the live site, which is what decides where a chapter
+    belongs.
+    """
+    book_id = int(payload["book_id"])
+    n = int(payload["n"])
+    direction = int(payload["direction"])
+    if direction not in (-1, 1):
+        raise RuntimeError("direction must be -1 (previous portion) or +1 (next)")
+
+    rd = json.loads(READINGS_JSON.read_text(encoding="utf-8"))
+    book = next((x for x in rd["books"] if x["book_id"] == book_id), None)
+    if book is None:
+        raise RuntimeError("book {} is not in the manifest".format(book_id))
+    entry = next((c for c in book["chapters"] if c.get("n") == n), None)
+    if entry is None:
+        raise RuntimeError("chapter {} is not in {}".format(n, BOOK_NAMES.get(book_id, book_id)))
+    if "file" not in entry:
+        raise RuntimeError(
+            "פרק {} מורכב מכמה קטעי מקור (segs) ואין לו קובץ יחיד להעביר - "
+            "טפל בו ידנית".format(n))
+
+    cur = (entry.get("portion") or {}).get("order")
+    if not cur:
+        raise RuntimeError("chapter {} has no portion order in the manifest".format(n))
+    siblings = sorted(c["n"] for c in book["chapters"]
+                      if (c.get("portion") or {}).get("order") == cur)
+    edge, word = (siblings[0], "הראשון") if direction == -1 else (siblings[-1], "האחרון")
+    if n != edge:
+        raise RuntimeError(
+            "רק הפרק {} בפרשה יכול לזוז לכיוון הזה. בפרשה {} זה פרק {}, לא {}."
+            .format(word, cur, edge, n))
+    if len(siblings) == 1:
+        raise RuntimeError("פרשה {} מכילה רק את פרק {} - העברתו תרוקן אותה".format(cur, n))
+
+    target = cur + direction
+    div = cloud_divisions(book_id)
+    plist = sorted(div["portions"], key=lambda p: p.get("start_ch", p["id"]))
+    if target < 1 or target > len(plist):
+        raise RuntimeError("אין פרשה מספר {} ב{}".format(target, BOOK_NAMES.get(book_id, book_id)))
+    tp = plist[target - 1]
+
+    old_path = READINGS / Path(entry["file"]).name
+    new_name = "b{}-p{:02d}-c{:03d}.mp3".format(book_id, target, n)
+    new_path = READINGS / new_name
+    if new_path.exists() and new_path.resolve() != old_path.resolve():
+        raise RuntimeError("כבר קיים קובץ בשם {} - לא דורס".format(new_name))
+    if not old_path.exists():
+        raise RuntimeError("קובץ האודיו {} חסר".format(old_path.name))
+
+    stamp = time.strftime("%Y%m%d_%H%M%S")
+    shutil.copy2(READINGS_JSON, READINGS_JSON.with_suffix(".json.bak_" + stamp))
+    if new_path.resolve() != old_path.resolve():
+        old_path.rename(new_path)
+
+    entry["file"] = "/static/audio/readings/" + new_name
+    entry["portion"] = {"order": target, "id": tp["id"], "name": tp["name"]}
+    READINGS_JSON.write_text(json.dumps(rd, ensure_ascii=False, indent=1), encoding="utf-8")
+    rebuild_player()
+    return {"n": n, "from_order": cur, "to_order": target,
+            "to_name": tp["name"], "file": new_name, "backup": stamp}
+
+
 def redownload_split(payload):
     """Re-fetch a source recording (YouTube URL or local file path) and
     re-run the ORIGINAL auto-split algorithm against it, for whichever
@@ -868,6 +937,13 @@ class Handler(BaseHTTPRequestHandler):
                 # rebuild the player so it reflects the new state on next open
                 rebuild_player()
                 self._send_json({"ok": True, "result": result})
+            except Exception as e:
+                self._send_json({"ok": False, "error": str(e)}, 500)
+            return
+
+        if self.path == "/api/move_chapter":
+            try:
+                self._send_json({"ok": True, "result": move_chapter(payload)})
             except Exception as e:
                 self._send_json({"ok": False, "error": str(e)}, 500)
             return

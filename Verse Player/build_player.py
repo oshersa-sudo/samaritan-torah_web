@@ -942,6 +942,49 @@ function renderEditor() {
   renderSeekMarks();
   refreshTransport();
 }
+/* ================= move a chapter to the neighbouring portion =================
+   Only the edges: a portion is a contiguous run of chapters, so the first one
+   may move back and the last one may move forward - that is nudging the
+   boundary between two portions. Anything from the middle would tear a hole. */
+function moveBtn(i, n, isMeir) {
+  if (!isMeir || !G || G.redownloaded) return '';   /* staged download has no manifest entry yet */
+  var last = G.chs.length - 1;
+  if (G.chs.length < 2) return '';                  /* would empty the portion */
+  if (i === 0)
+    return '<button class="blu" onclick="moveChapter(' + n + ',-1)" ' +
+           'title="הפרק הראשון בפרשה — העבר אותו לסוף הפרשה הקודמת">⇤ לפרשה הקודמת</button>';
+  if (i === last)
+    return '<button class="blu" onclick="moveChapter(' + n + ',1)" ' +
+           'title="הפרק האחרון בפרשה — העבר אותו לתחילת הפרשה הבאה">לפרשה הבאה ⇥</button>';
+  return '';
+}
+function moveChapter(n, dir) {
+  if (!G) return;
+  if (edits[G.key]) {
+    setStatus('יש בקבוצה הזו עריכות שטרם הוחלו. הפעל "☁️ החל שינויים" (או "↺ אפס קבוצה") לפני העברת פרק.');
+    return;
+  }
+  var where = dir < 0 ? 'הקודמת' : 'הבאה';
+  if (!confirm('להעביר את פרק ' + n + ' לפרשה ' + where + ' ?\\n' +
+               'קובץ האודיו ישונה לשם של אותה פרשה והמניפסט יעודכן. הפעולה מקומית — ' +
+               'הדחיפה לענן היא שלב נפרד.')) return;
+  setStatus('מעביר את פרק ' + n + '…');
+  fetch(SERVER + '/api/move_chapter', { method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ book_id: book, n: n, direction: dir }) })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res.ok) throw new Error(res.error || 'move failed');
+      var m = res.result;
+      /* come back to this chapter in its NEW portion, not to Genesis */
+      try { localStorage.setItem(VIEW_KEY, JSON.stringify(
+        { book: book, reader: reader, n: m.n, pos: 0 })); } catch (e) {}
+      setStatus('✓ פרק ' + m.n + ' עבר לפרשה ' + m.to_order + ' (' + m.to_name + ')' +
+                ' · הקובץ: ' + m.file + '\\nטוען מחדש…');
+      setTimeout(function () { location.reload(); }, 1400);
+    })
+    .catch(function (e) { setStatus('שגיאה בהעברת הפרק: ' + e.message); });
+}
+
 function pieceRow(i, n, a, b, isMeir, canEditStart, canEditEnd) {
   var startFn = isMeir ? ('nudgeBound(' + i + ',%D)') : ('nudgeSeg(' + i + ',\\'t0\\',%D)');
   var endFn   = isMeir ? ('nudgeBound(' + (i + 1) + ',%D)') : ('nudgeSeg(' + i + ',\\'t1\\',%D)');
@@ -961,6 +1004,7 @@ function pieceRow(i, n, a, b, isMeir, canEditStart, canEditEnd) {
     '<span class="inc">' + incipitOf(n) + '</span>' +
     '<span class="tm">' + fmt(a) + ' → ' + fmt(b) + ' (' + fmt(b - a) + ')</span>' +
     (i > 0 ? '<button class="org" onclick="mergeIntoPrev(' + i + ')" title="פרק זה ייעלם ויתאחד עם הפרק שמעליו">⤵ צרף לפרק הקודם</button>' : '') +
+    moveBtn(i, n, isMeir) +
     '</div>';
   h += '<div class="edge"><span class="bt">התחלה ' + fmt(a) + '</span>' +
        (canEditStart ? nudges(startFn) : '<i style="font-size:11px;color:#999">(תחילת הקובץ, קבוע)</i>') +
