@@ -167,7 +167,14 @@ def apply(catalog, ovr, include_hidden=False):
         if o.get('hidden'):
             r['hidden'] = 1
         if o.get('performer'):
-            r['p'] = ensure(cat['performers'], perf_by, o['performer'], 'performers')['id']
+            # A rename has to reach the per-recording edits too. Three of these
+            # name their singer outright, and looking that name up after the
+            # merge would not find it — ensure() would helpfully build the very
+            # row the merge had just folded away, and the old performer would
+            # reappear holding exactly those recordings.
+            r['p'] = ensure(cat['performers'], perf_by,
+                            ren.get(o['performer'], o['performer']),
+                            'performers')['id']
         if o.get('event'):
             r['e'] = ensure(cat['events'], event_by, o['event'], 'events')['id']
         # A cassette that has been given a name is no longer an unnamed one.

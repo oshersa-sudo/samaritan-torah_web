@@ -717,11 +717,16 @@ body{
 /* coming to rest when the tape is paused, or between one recording and the
    next: every joint eases back to standing instead of snapping there */
 .dancer.settling .dnc-step,.dancer.settling .dnc-spin,.dancer.settling .dnc-bob,
+.dancer.settling .dnc-air,
 .dancer.settling .dnc-body,.dancer.settling .dnc-arm,.dancer.settling .dnc-elbow,
 .dancer.settling .dnc-leg,.dancer.settling .dnc-knee{
   transition:transform .42s cubic-bezier(.3,0,.3,1);
 }
 /* each joint turns about itself, so the origins follow the offsets above */
+/* the acrobatic group turns the whole figure about her waist, which is where
+   a body actually rotates — not about the middle of whatever box it happens
+   to occupy at that instant */
+.dnc-air{transform-origin:0px -50px}
 .dnc-body{transform-origin:0px -50px}
 .dnc-chest{transform-origin:0px -50px}      /* the chest turns over the hips */
 .dnc-headg{transform-origin:0px -88px}      /* and the head over the chest */
@@ -813,7 +818,7 @@ body{
      --ease  the effort quality as a curve — sustained efforts ease, sudden
              ones strike and settle.
    Their values, and which figure comes when, are worked out in unit.js. */
-.dancer.fig .dnc-spin,.dancer.fig .dnc-bob,.dancer.fig .dnc-body,
+.dancer.fig .dnc-spin,.dancer.fig .dnc-air,.dancer.fig .dnc-bob,.dancer.fig .dnc-body,
 .dancer.fig .dnc-chest,.dancer.fig .dnc-headg,
 .dancer.fig .dnc-arm,.dancer.fig .dnc-elbow,
 .dancer.fig .dnc-leg,.dancer.fig .dnc-knee{
@@ -1299,6 +1304,126 @@ body{
 @keyframes suLegB{0%,100%{transform:rotate(calc(-9deg * var(--sz,1)))}52%{transform:rotate(calc(-4deg * var(--sz,1)))}}
 @keyframes suArmF{0%,100%{transform:rotate(-22deg)}52%{transform:rotate(calc(-150deg * var(--lift,1)))}}
 @keyframes suArmB{0%,100%{transform:rotate(22deg)}52%{transform:rotate(calc(148deg * var(--lift,1)))}}
+
+/* ---- גלגלון — the cartwheel.
+   A wheel is not a jump: the weight passes hand, hand, foot, foot along a
+   line, and the body stays a straight star the whole way round so that it
+   has a diameter to roll on. Two things make it read. The turn is even —
+   an accelerating cartwheel is a fall — so this one alone ignores the
+   effort curve and goes round linearly. And she rises as she inverts,
+   because a body pivoting about its own waist would put its head a good
+   twenty-five below the floor at the top; the lift is what her arms would
+   be doing if she had hands to stand on. Both are fixed lengths, not
+   scaled ones: the geometry of an inversion does not care how loud the
+   singing is. */
+.dancer.f-cart .dnc-air{animation-name:cwAir;animation-timing-function:linear}
+.dancer.f-cart .dnc-leg-f{animation-name:cwLegF}
+.dancer.f-cart .dnc-leg-b{animation-name:cwLegB}
+.dancer.f-cart .dnc-knee-f,.dancer.f-cart .dnc-knee-b{animation-name:cwKnee}
+.dancer.f-cart .dnc-arm-f{animation-name:cwArmF}
+.dancer.f-cart .dnc-arm-b{animation-name:cwArmB}
+.dancer.f-cart .dnc-elbow-f,.dancer.f-cart .dnc-elbow-b{animation-name:cwElbow}
+.dancer.f-cart .dnc-chest{animation-name:cwChest}
+.dancer.f-cart .dnc-headg{animation-name:cwHead}
+.dancer.f-cart .dnc-bob{animation-name:cwBob}
+@keyframes cwAir{
+  0%      {transform:translateY(0) rotate(0deg)}
+  12%     {transform:translateY(0) rotate(0deg)}
+  21.5%   {transform:translateY(-10px) rotate(45deg)}
+  31%     {transform:translateY(-22px) rotate(90deg)}
+  40.5%   {transform:translateY(-32px) rotate(135deg)}
+  50%     {transform:translateY(-33px) rotate(180deg)}
+  59.5%   {transform:translateY(-32px) rotate(225deg)}
+  69%     {transform:translateY(-22px) rotate(270deg)}
+  78.5%   {transform:translateY(-10px) rotate(315deg)}
+  88%,100%{transform:translateY(0) rotate(360deg)}
+}
+@keyframes cwBob{        /* the reach that starts it, and the landing that ends it */
+  0%      {transform:translateY(4px)}
+  12%,88% {transform:translateY(0)}
+  100%    {transform:translateY(4px)}
+}
+/* wide open and straight from 12% to 88% — that is the wheel itself */
+@keyframes cwLegF{0%,100%{transform:rotate(8deg)}12%,88%{transform:rotate(-46deg)}}
+@keyframes cwLegB{0%,100%{transform:rotate(-8deg)}12%,88%{transform:rotate(46deg)}}
+@keyframes cwKnee{0%,100%{transform:rotate(18deg)}12%,88%{transform:rotate(0deg)}}
+@keyframes cwArmF{0%,100%{transform:rotate(-24deg)}12%,88%{transform:rotate(-166deg)}}
+@keyframes cwArmB{0%,100%{transform:rotate(24deg)}12%,88%{transform:rotate(166deg)}}
+@keyframes cwElbow{0%,100%{transform:rotate(0deg)}12%,88%{transform:rotate(0deg)}}
+@keyframes cwChest{0%,100%{transform:scaleY(1)}12%,88%{transform:scaleY(1.03)}}
+@keyframes cwHead{       /* she looks along the line she is travelling */
+  0%,100%{transform:rotate(0deg)}
+  12%,88%{transform:rotate(-10deg)}
+}
+
+/* ---- סלטה — the back tuck.
+   The opposite kind of acrobatic, and put in for the contrast: the wheel
+   travels and stays open, this one stays where it is and shuts. Everything
+   depends on the two pliés — one to leave the floor with and one to arrive
+   on. Between them the knees come to the chest, because a tucked body has a
+   short radius and a short radius is what lets a turn finish in the time a
+   jump lasts. The rotation runs backwards, against her facing, which is what
+   makes it a back tuck rather than a second cartwheel. */
+.dancer.f-flip .dnc-air{animation-name:flipAir}
+.dancer.f-flip .dnc-leg-f{animation-name:flipLegF}
+.dancer.f-flip .dnc-leg-b{animation-name:flipLegB}
+.dancer.f-flip .dnc-knee-f,.dancer.f-flip .dnc-knee-b{animation-name:flipKnee}
+.dancer.f-flip .dnc-arm-f{animation-name:flipArmF}
+.dancer.f-flip .dnc-arm-b{animation-name:flipArmB}
+.dancer.f-flip .dnc-elbow-f{animation-name:flipElbowF}
+.dancer.f-flip .dnc-elbow-b{animation-name:flipElbowB}
+.dancer.f-flip .dnc-chest{animation-name:flipChest}
+.dancer.f-flip .dnc-headg{animation-name:flipHead}
+@keyframes flipAir{
+  0%      {transform:translateY(0) rotate(0deg)}
+  10%     {transform:translateY(9px) rotate(0deg)}      /* down, to have something to push off */
+  18%     {transform:translateY(0) rotate(0deg)}
+  34%     {transform:translateY(-34px) rotate(-90deg)}
+  50%     {transform:translateY(-44px) rotate(-180deg)}
+  66%     {transform:translateY(-36px) rotate(-270deg)}
+  76%     {transform:translateY(-21px) rotate(-326deg)}
+  82%     {transform:translateY(0) rotate(-360deg)}
+  90%     {transform:translateY(9px) rotate(-360deg)}   /* and caught in a plié */
+  100%    {transform:translateY(0) rotate(-360deg)}
+}
+@keyframes flipLegF{
+  0%,100%{transform:rotate(6deg)} 10%{transform:rotate(4deg)}
+  24%,74%{transform:rotate(-100deg)} 82%,90%{transform:rotate(6deg)}
+}
+@keyframes flipLegB{
+  0%,100%{transform:rotate(-6deg)} 10%{transform:rotate(-4deg)}
+  24%,74%{transform:rotate(-88deg)} 82%,90%{transform:rotate(-6deg)}
+}
+@keyframes flipKnee{
+  0%,100%{transform:rotate(6deg)} 10%{transform:rotate(42deg)}
+  24%,74%{transform:rotate(126deg)} 82%{transform:rotate(10deg)}
+  90%{transform:rotate(42deg)}
+}
+/* Both arms do the same thing, and they reach rather than wrap. An arm that
+   folds across the body puts two more lines over the torso, and at this size
+   the whole shape stops reading as a ball and starts reading as a scribble. */
+@keyframes flipArmF{
+  0%,100%{transform:rotate(-20deg)} 16%{transform:rotate(-150deg)}
+  24%,70%{transform:rotate(-72deg)} 86%{transform:rotate(-28deg)}
+}
+@keyframes flipArmB{
+  0%,100%{transform:rotate(20deg)} 16%{transform:rotate(150deg)}
+  24%,70%{transform:rotate(-62deg)} 86%{transform:rotate(28deg)}
+}
+@keyframes flipElbowF{0%,100%{transform:rotate(0deg)}24%,70%{transform:rotate(-26deg)}}
+@keyframes flipElbowB{0%,100%{transform:rotate(0deg)}24%,70%{transform:rotate(-20deg)}}
+@keyframes flipChest{    /* opens to launch, shuts round the knees, opens to land */
+  0%,100%{transform:rotate(0deg) scaleY(1)}
+  16%    {transform:rotate(-10deg) scaleY(1.03)}
+  24%,70%{transform:rotate(30deg) scaleY(.95)}
+  84%    {transform:rotate(0deg) scaleY(1)}
+}
+@keyframes flipHead{     /* chin to the chest — it is what shortens the radius */
+  0%,100%{transform:rotate(0deg)}
+  16%    {transform:rotate(-14deg)}
+  24%,70%{transform:rotate(22deg)}
+  84%    {transform:rotate(0deg)}
+}
 
 /* The eighth beat of a phrase is not a movement. It is the breath before the
    next one, and where the next one is a leap or a turn it is the plié that

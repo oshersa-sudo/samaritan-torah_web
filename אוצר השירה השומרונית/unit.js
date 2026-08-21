@@ -2098,10 +2098,10 @@ const DNC = {
   y: 650,             // below the shell's edge, hovering over the lamps
   inX: 906,           // centre stage for her: beside the far right screw
   startX: 1090, offLeft: -130, offRight: 1130,
-  // How far the figures may carry her. Leftwards she goes as far as the first
-  // of the punched holes inside the trapezoid — its edge is at x=707 — and
-  // rightwards to just short of the shell's own corner.
-  stage: [707 - 906, 968 - 906],
+  // How far the figures may carry her: from just short of the shell's own
+  // corner on the right, all the way to the middle of the strip — the centre
+  // screw at x=500 — which is half the width of the cassette to cross.
+  stage: [500 - 906, 968 - 906],
 };
 
 function dncClear() {
@@ -2349,6 +2349,18 @@ const STEPS = [
   { k:'f-turn',     a:0, b:2, m:[0,2,3,4,6], hi:170, w:[0,2,4], peak:1 },
   { k:'f-jete',     a:0, b:2, m:[0,2,4,6],   hi:150, w:[0,1,4], peak:1, go:1 },
   { k:'f-saute',    a:0, b:2, m:[2,4],       hi:150, w:[0,1,3], peak:1 },
+  // The two acrobatic figures. They are peaks like the leaps, so they can
+  // only fall at the close of a section and only after the breath that
+  // prepares them, and their weights are the lowest in the table — between
+  // them they take about a quarter of the peaks, which puts one somewhere
+  // around every half-minute of singing. Any oftener and they stop being
+  // the thing that the rest of the dance was leading up to. Both are given
+  // a length of their own as well as a number of beats: a cartwheel taken
+  // over four and a half seconds is not a cartwheel.
+  { k:'f-cart',     a:0, b:3, m:[0,2,3,4,6], hi:175, w:[0,1,2], peak:1, go:1,
+                    wide:1, mind:1.15, maxd:2.4 },
+  { k:'f-flip',     a:0, b:2, m:[0,2,3,4,6], hi:180, w:[0,0,2], peak:1,
+                    mind:1.00, maxd:2.0 },
 ];
 
 /* The eight actions that the three qualities of effort — how the weight is
@@ -2440,7 +2452,8 @@ function choreograph(recId, meter, bpm) {
         : pick(axial ? 1 : 0, mood, dance.length ? dance[dance.length - 1].k : '');
       if (!s) break;
       const b = Math.min(s.b, left);
-      dance.push({ k: s.k, b, go: s.go ? (rnd() < 0.5 ? 1 : -1) : 0, peak: !!s.peak });
+      dance.push({ k: s.k, b, go: s.go ? (rnd() < 0.5 ? 1 : -1) : 0, peak: !!s.peak,
+                   wide: !!s.wide, mind: s.mind || 0, maxd: s.maxd || 0 });
       left -= b;
       axial = !axial;
     }
@@ -2448,6 +2461,36 @@ function choreograph(recId, meter, bpm) {
     // takes whatever the movement did not, so the phrase always comes to
     // eight and the next one starts where the music does.
     dance.push({ k: 'f-prep', b: left + 1, breath: true });
+  }
+
+  // Every recording is to show at least one of the two acrobatic figures.
+  //
+  // The plan is drawn once per recording and then repeated for as long as the
+  // piece runs, so a plan that happens to come out without an acrobatic is not
+  // a recording that shows one rarely — it is a recording that never shows one
+  // at all, however long it lasts. Left to the weights alone that was three
+  // recordings in four. Raising the weights instead would have crowded out the
+  // turns and the leaps everywhere else, so where a plan came up with none,
+  // one peak is exchanged for one acrobatic: the dance keeps its shape and the
+  // count of eight is untouched, because the exchange keeps the same beats.
+  const acro = pool.filter(s => s.k === 'f-cart' || s.k === 'f-flip');
+  if (acro.length && !dance.some(f => f.k === 'f-cart' || f.k === 'f-flip')) {
+    // A peak is the natural place to put one. Two plans in five contain no
+    // peak at all, though, so where there is none the exchange falls on the
+    // last movement of a phrase — the one the breath comes after, which is
+    // the same position in the music even if the plan did not mark it.
+    let peaks = dance.map((f, i) => (f.peak ? i : -1)).filter(i => i >= 0);
+    if (!peaks.length)
+      peaks = dance.map((f, i) => (f.k !== 'f-prep' && f.b >= 2 &&
+                                   dance[i - 1] && dance[i - 1].k === 'f-prep' ? i : -1))
+                   .filter(i => i >= 0);
+    if (peaks.length) {
+      const at = peaks[Math.floor(rnd() * peaks.length)];
+      const s  = acro[Math.floor(rnd() * acro.length)];
+      dance[at] = { k: s.k, b: dance[at].b, peak: true,
+                    go: s.go ? (rnd() < 0.5 ? 1 : -1) : 0,
+                    wide: !!s.wide, mind: s.mind || 0, maxd: s.maxd || 0 };
+    }
   }
   return dance;
 }
@@ -2498,18 +2541,31 @@ function dncFigure() {
   d.style.setProperty('--sz', (rangeFor(DNCM.bpm) * eff.sz).toFixed(2));
 
   const beat = Math.min(1.5, Math.max(0.3, DNCM.beat || 0.62));
-  const dur  = Math.min(7, Math.max(0.75, beat * f.b));
+  let   dur  = Math.min(7, Math.max(0.75, beat * f.b));
+  // An acrobatic has one speed at which it reads. Too slow and it floats,
+  // too fast and it is a smear, and neither is a fault the music can excuse.
+  if (f.maxd) dur = Math.min(f.maxd, Math.max(f.mind, dur));
   d.style.setProperty('--figdur', dur.toFixed(2) + 's');
   dncSet('fig ' + f.k);
 
   if (f.go) {
+    let dir = f.go;
+    // A wheel has a width, and a wheel turned against a wall is a fall. If
+    // the way this one was set to go has been used up, and the other way has
+    // not, it goes the other way instead — the only place in the dance where
+    // the room she has left overrules the plan.
+    if (f.wide) {
+      const ahead = dir > 0 ? DNC.stage[1] - DNC.dx : DNC.dx - DNC.stage[0];
+      const back  = dir > 0 ? DNC.dx - DNC.stage[0] : DNC.stage[1] - DNC.dx;
+      if (ahead < 96 && back > ahead) dir = -dir;
+    }
     // She turns to the way she is going and covers most of what room is left
     // that way — most, not a fraction of it, or she would creep towards the
     // ends of the strip and never actually arrive at either.
-    const room = f.go > 0 ? DNC.stage[1] - DNC.dx : DNC.dx - DNC.stage[0];
-    const span = Math.max(24, Math.min(112, room * 0.8)) * f.go;
+    const room = dir > 0 ? DNC.stage[1] - DNC.dx : DNC.dx - DNC.stage[0];
+    const span = Math.max(f.wide ? 64 : 24, Math.min(112, room * 0.8)) * dir;
     DNC.dx = Math.max(DNC.stage[0], Math.min(DNC.stage[1], DNC.dx + span));
-    dncFace(f.go);
+    dncFace(dir);
     dncStep(DNC.dx, dur);
   } else {
     dncFace(1);                                // the set figures face the front
