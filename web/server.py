@@ -476,6 +476,190 @@ def admin_reseed_db():
     return jsonify({'ok': True})
 
 
+# ── putting back a DB from a copy on the administrator's own device ──────
+# The sister of download_db. When the live site turns out to hold newer work than
+# the copy on the machine — or when a sync has just written an older DB over it —
+# the administrator opens the admin panel on that same phone or computer, picks
+# the torah.db that was downloaded earlier, and puts it back. No deploy, no git.
+#
+# The file runs to some hundred and twenty megabytes, far too much for one
+# request from a telephone, so it arrives in pieces: begin clears the staging
+# file (and refuses if the disk has no room for it), chunk appends to it — each
+# piece naming the offset it belongs at, so two tabs can never interleave — and
+# commit opens the finished file and satisfies itself that it really is the Torah
+# database before anything at all is replaced. Only then is the live DB backed up
+# and the new one moved into its place, in one step.
+_UPLOAD_SUFFIX = '.upload_admin'
+
+
+def _upload_path():
+    src = getattr(db, 'DB_PATH', None)
+    return (src + _UPLOAD_SUFFIX) if src else None
+
+
+def _db_counts(path):
+    """The few numbers that tell a Torah database from any other file.
+
+    Raises ValueError with a plain reason when the file is not one."""
+    import sqlite3
+    try:
+        conn = sqlite3.connect(path)
+    except Exception:
+        raise ValueError('not a database file')
+    try:
+        try:
+            names = {r[0] for r in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'")}
+        except Exception:
+            raise ValueError('not a database file')
+        missing = {'books', 'chapters', 'verses', 'portions'} - names
+        if missing:
+            raise ValueError('missing tables: ' + ', '.join(sorted(missing)))
+        if conn.execute('PRAGMA quick_check').fetchone()[0] != 'ok':
+            raise ValueError('the file is damaged')
+        out = {}
+        for t in ('books', 'chapters', 'verses', 'portions', 'sam_chapters'):
+            if t in names:
+                out[t] = conn.execute('SELECT COUNT(*) FROM %s' % t).fetchone()[0]
+        return out
+    finally:
+        conn.close()
+
+
+def _counts_or_empty(path):
+    try:
+        return _db_counts(path)
+    except Exception:
+        return {}
+
+
+@app.route('/api/admin/restore_db/begin', methods=['POST'])
+def admin_restore_begin():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    up = _upload_path()
+    if not up:
+        return jsonify({'ok': False, 'error': 'no db path'}), 400
+    try:
+        want = int(d.get('size') or 0)
+    except (TypeError, ValueError):
+        want = 0
+    if want < 100000:
+        return jsonify({'ok': False, 'error': 'file too small to be the database'}), 400
+    live = os.path.getsize(db.DB_PATH) if os.path.exists(db.DB_PATH) else 0
+    try:
+        os.remove(up)
+    except OSError:
+        pass
+    # room for the upload itself AND for the backup taken just before the swap
+    free = shutil.disk_usage(os.path.dirname(up) or '.').free
+    if free < want + live + 20 * 1024 * 1024:
+        return jsonify({'ok': False, 'free': free, 'needed': want + live,
+                        'error': 'not enough room on the disk — clean the old backups first'}), 400
+    try:
+        with open(up, 'wb'):
+            pass
+    except OSError as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    return jsonify({'ok': True, 'offset': 0, 'current': _counts_or_empty(db.DB_PATH)})
+
+
+@app.route('/api/admin/restore_db/chunk', methods=['POST'])
+def admin_restore_chunk():
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    up = _upload_path()
+    if not up or not os.path.exists(up):
+        return jsonify({'ok': False, 'error': 'call begin first'}), 400
+    try:
+        offset = int(request.args.get('offset', '-1'))
+    except ValueError:
+        offset = -1
+    have = os.path.getsize(up)
+    if offset != have:                       # a piece out of turn, or a second tab
+        return jsonify({'ok': False, 'error': 'chunk out of order', 'offset': have}), 409
+    data = request.get_data(cache=False)
+    if not data:
+        return jsonify({'ok': False, 'error': 'empty chunk'}), 400
+    try:
+        with open(up, 'ab') as f:
+            f.write(data)
+    except OSError as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    return jsonify({'ok': True, 'offset': os.path.getsize(up)})
+
+
+@app.route('/api/admin/restore_db/commit', methods=['POST'])
+def admin_restore_commit():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    if d.get('confirm') != 'RESTORE':
+        return jsonify({'ok': False, 'error': "send confirm:'RESTORE'"}), 400
+    up = _upload_path()
+    if not up or not os.path.exists(up):
+        return jsonify({'ok': False, 'error': 'nothing was uploaded'}), 400
+    size = os.path.getsize(up)
+    try:
+        want = int(d.get('size') or 0)
+    except (TypeError, ValueError):
+        want = 0
+    if want and want != size:
+        return jsonify({'ok': False,
+                        'error': 'the upload is incomplete (%d of %d bytes)' % (size, want)}), 400
+    try:
+        after = _db_counts(up)
+    except Exception as e:
+        try:
+            os.remove(up)
+        except OSError:
+            pass
+        return jsonify({'ok': False, 'error': str(e)}), 400
+    if after.get('books', 0) != 5 or after.get('verses', 0) < 5000:
+        try:
+            os.remove(up)
+        except OSError:
+            pass
+        return jsonify({'ok': False, 'error': 'this is not the Torah database'}), 400
+    before = _counts_or_empty(db.DB_PATH)
+    try:
+        _backup_db()
+        try:
+            os.replace(up, db.DB_PATH)       # one step: the site never sees half a file
+        except OSError:
+            # Windows will not rename over a file that something still has open;
+            # write through the existing one instead. Not a single step, but the
+            # backup taken a moment ago is the way back if it is interrupted.
+            shutil.copyfile(up, db.DB_PATH)
+            try:
+                os.remove(up)
+            except OSError:
+                pass
+        for sfx in ('-wal', '-shm'):         # stale journals of the file just replaced
+            try:
+                os.remove(db.DB_PATH + sfx)
+            except OSError:
+                pass
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+    return jsonify({'ok': True, 'bytes': size, 'before': before, 'after': after})
+
+
+@app.route('/api/admin/restore_db/abort', methods=['POST'])
+def admin_restore_abort():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    up = _upload_path()
+    try:
+        if up:
+            os.remove(up)
+    except OSError:
+        pass
+    return jsonify({'ok': True})
+
+
 @app.route('/api/admin/edit', methods=['POST'])
 def admin_edit():
     d = request.get_json(silent=True) or {}

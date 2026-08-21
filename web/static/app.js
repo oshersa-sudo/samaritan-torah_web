@@ -322,6 +322,11 @@ const I18N = {
     wa_setup:'🔒 הפעל כניסה בטביעת אצבע', wa_login:'כניסה בטביעת אצבע', wa_ok:'הכניסה בטביעת אצבע הופעלה בהצלחה.',
     wa_err:'לא ניתן להפעיל כניסה בטביעת אצבע במכשיר זה.', wa_login_err:'האימות נכשל. נסה שוב או השתמש בסיסמה.',
     admin_dl_db:'⬇ הורד את ה-DB (לסנכרון חזרה)', admin_reseed:'טען DB מהמאגר',
+    admin_restore:'⬆ שחזר DB מקובץ במכשיר',
+    admin_restore_q:'ה-DB החי יוחלף בקובץ שבחרת (%s). הקובץ ייבדק תחילה, ועותק של ה-DB הנוכחי יישמר בשרת. להמשיך?',
+    admin_restore_up:'מעלה את הקובץ…', admin_restore_check:'בודק את הקובץ ומחליף…',
+    admin_restore_ok:'ה-DB שוחזר מן הקובץ.', admin_restore_fail:'השחזור נכשל — ה-DB החי לא שונה.',
+    admin_restore_reload:'האתר ייטען מחדש…',
     admin_reseed_q:'פעולה זו תדרוס את ה-DB החי בעותק מהמאגר (git). עריכות שלא הורדו יאבדו. להמשיך?',
     reseed_report_title:'דוח השוואה לפני טעינה', reseed_approve:'אשר וטען',
     reseed_no_diff:'לא נמצאו הבדלים בין ה-DB החי לגרסה מהמאגר. בטוח להמשיך.',
@@ -564,6 +569,11 @@ const I18N = {
     wa_setup:'🔒 Enable fingerprint sign-in', wa_login:'Sign in with fingerprint', wa_ok:'Fingerprint sign-in enabled successfully.',
     wa_err:'Fingerprint sign-in isn\'t available on this device.', wa_login_err:'Authentication failed. Try again or use the password.',
     admin_dl_db:'⬇ Download the DB (to sync back)', admin_reseed:'Load DB from repo',
+    admin_restore:'⬆ Restore the DB from a file on this device',
+    admin_restore_q:'The live DB will be replaced by the file you chose (%s). It is checked first, and a copy of the current DB is kept on the server. Continue?',
+    admin_restore_up:'Uploading…', admin_restore_check:'Checking the file and replacing…',
+    admin_restore_ok:'The DB was restored from the file.', admin_restore_fail:'Restore failed — the live DB was not touched.',
+    admin_restore_reload:'Reloading the site…',
     admin_reseed_q:'This overwrites the live DB with the repo (git) copy. Un-downloaded edits will be lost. Continue?',
     reseed_report_title:'Diff report before loading', reseed_approve:'Approve and load',
     reseed_no_diff:'No differences found between the live DB and the repo copy. Safe to proceed.',
@@ -806,6 +816,11 @@ const I18N = {
     wa_setup:'🔒 تفعيل الدخول ببصمة الإصبع', wa_login:'الدخول ببصمة الإصبع', wa_ok:'تم تفعيل الدخول ببصمة الإصبع بنجاح.',
     wa_err:'الدخول ببصمة الإصبع غير متاح على هذا الجهاز.', wa_login_err:'فشل التحقق. حاول مجددًا أو استخدم كلمة المرور.',
     admin_dl_db:'⬇ تنزيل قاعدة البيانات (للمزامنة)', admin_reseed:'تحميل DB من المستودع',
+    admin_restore:'⬆ استعادة قاعدة البيانات من ملف على هذا الجهاز',
+    admin_restore_q:'سيتم استبدال قاعدة البيانات الحيّة بالملف الذي اخترته (%s). يُفحص الملف أولًا، وتُحفظ نسخة من القاعدة الحالية على الخادم. متابعة؟',
+    admin_restore_up:'جارٍ الرفع…', admin_restore_check:'جارٍ فحص الملف والاستبدال…',
+    admin_restore_ok:'تمت استعادة قاعدة البيانات من الملف.', admin_restore_fail:'فشلت الاستعادة — لم تتغيّر القاعدة الحيّة.',
+    admin_restore_reload:'سيُعاد تحميل الموقع…',
     admin_reseed_q:'سيؤدي هذا إلى استبدال قاعدة البيانات الحيّة بنسخة المستودع (git). ستُفقد التعديلات غير المنزَّلة. متابعة؟',
     reseed_report_title:'تقرير مقارنة قبل التحميل', reseed_approve:'الموافقة والتحميل',
     reseed_no_diff:'لم يتم العثور على فروقات بين قاعدة البيانات الحيّة ونسخة المستودع. يمكن المتابعة بأمان.',
@@ -7166,6 +7181,7 @@ function adminDbControls(){
     + `<button class="admin-btn" onclick="openDiskUsage()">${esc(t('adm_disk'))}</button>`
     + `<a class="admin-btn" style="text-decoration:none;text-align:center" `
     + `href="/api/admin/download_db?token=${encodeURIComponent(ADMIN.token)}">${esc(t('admin_dl_db'))}</a>`
+    + `<button class="admin-btn" onclick="adminRestoreDb()">${esc(t('admin_restore'))}</button>`
     + `<button class="admin-btn cancel" onclick="adminReseed()">${esc(t('admin_reseed'))}</button></div>`;
 }
 // the system's own documentation (web/SYSTEM_DOC.txt) — what the system is, what
@@ -7340,6 +7356,67 @@ function _reseedReportHtml(rep){
     }
   }
   return h;
+}
+// Putting the live DB back from a copy kept on this very device — the undoing
+// of "⬇ הורד את ה-DB". It is wanted after a sync in the wrong direction: the
+// site held the newer work, the machine wrote an older DB over it, and the file
+// downloaded earlier is the only copy of what was lost.
+//
+// The file is some hundred and twenty megabytes, which no telephone will send in
+// one request, so it goes up in pieces of four with a count of how far it has
+// got. Nothing on the site changes until the last piece has arrived and the
+// server has opened the file and found the Torah in it; only then is the live DB
+// backed up and replaced, and the page reloaded onto the restored text.
+const RESTORE_CHUNK = 4 * 1024 * 1024;
+async function adminRestoreDb(){
+  if(!ADMIN.token) return;
+  const inp = el('input');
+  inp.type = 'file';
+  inp.accept = '.db,.sqlite,.sqlite3,application/octet-stream';
+  inp.style.display = 'none';
+  document.body.appendChild(inp);
+  inp.onchange = async () => {
+    const file = inp.files && inp.files[0];
+    inp.remove();
+    if(!file) return;
+    const what = file.name + ' · ' + fmtBytes(file.size);
+    if(!await askConfirm(t('admin_restore'), t('admin_restore_q').replace('%s', what),
+                         t('confirm_yes'), t('c_cancel'))) return;
+    showInfo(t('admin_restore'), `<div class="note" id="rstMsg">${esc(t('admin_restore_up'))} 0%</div>`);
+    const say = html => { const n = $('rstMsg'); if(n) n.innerHTML = html; };
+    let r;
+    try{
+      r = await apiPost('admin/restore_db/begin', {token: ADMIN.token, size: file.size});
+      if(!r || !r.ok) throw new Error((r && r.error) || 'begin failed');
+      let sent = 0;
+      while(sent < file.size){
+        const piece = file.slice(sent, Math.min(sent + RESTORE_CHUNK, file.size));
+        const res = await fetch('/api/admin/restore_db/chunk?token='
+                                + encodeURIComponent(ADMIN.token) + '&offset=' + sent,
+                                {method: 'POST', headers: {'Content-Type': 'application/octet-stream'},
+                                 body: piece});
+        const j = await res.json().catch(() => null);
+        if(!j || !j.ok) throw new Error((j && j.error) || ('HTTP ' + res.status));
+        sent = j.offset;
+        say(esc(t('admin_restore_up')) + ' ' + Math.round(sent / file.size * 100) + '%'
+            + ' <span dir="ltr">(' + fmtBytes(sent) + ' / ' + fmtBytes(file.size) + ')</span>');
+      }
+      say(esc(t('admin_restore_check')));
+      r = await apiPost('admin/restore_db/commit',
+                        {token: ADMIN.token, confirm: 'RESTORE', size: file.size});
+      if(!r || !r.ok) throw new Error((r && r.error) || 'restore failed');
+    }catch(e){
+      try{ await apiPost('admin/restore_db/abort', {token: ADMIN.token}); }catch(_){}
+      say('<b>' + esc(t('admin_restore_fail')) + '</b><br>' + esc(String((e && e.message) || e)));
+      return;
+    }
+    const line = k => `${esc(k)}: ${(r.before && r.before[k]) || 0} → <b>${(r.after && r.after[k]) || 0}</b>`;
+    say('<b>✓ ' + esc(t('admin_restore_ok')) + '</b><br><span dir="ltr">'
+        + ['books', 'chapters', 'verses', 'portions'].map(line).join('<br>')
+        + '</span><br><br>' + esc(t('admin_restore_reload')));
+    setTimeout(() => location.reload(), 2600);
+  };
+  inp.click();
 }
 async function adminReseed(){
   if(!ADMIN.token) return;
