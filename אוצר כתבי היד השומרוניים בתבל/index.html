@@ -101,8 +101,20 @@
   }
   .pagecount{font-family:var(--font-mono); font-size:12px; color:var(--ink-3);
     font-variant-numeric:tabular-nums; white-space:nowrap;}
-  .zoomlevel{font-family:var(--font-mono); font-size:12px; color:var(--ink-3);
-    min-width:46px; text-align:center; font-variant-numeric:tabular-nums;}
+  .zoomlevel{font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--accent);
+    min-width:52px; text-align:center; font-variant-numeric:tabular-nums;}
+
+  /* The magnification controls are the most-used touch targets on a phone,
+     so they get the accent treatment the primary buttons have. */
+  .group .btn#btnIn, .group .btn#btnOut{
+    background:var(--accent); color:var(--accent-ink);
+    font-size:20px; font-weight:700; line-height:1;
+    min-width:40px; min-height:36px; border-radius:3px;
+  }
+  .group .btn#btnIn:hover:not(:disabled), .group .btn#btnOut:hover:not(:disabled){
+    background:var(--accent); filter:brightness(1.14);
+  }
+  #btnIn:disabled,#btnOut:disabled{opacity:.35;}
 
   /* ============ main ============ */
   .main{flex:1 1 auto; display:flex; min-height:0; position:relative;}
@@ -729,6 +741,25 @@
     color:var(--pl-gold,#9c6f1c); white-space:nowrap;
   }
   .credit{font-size:11.5px; padding:6px 10px;}
+  /* Small phones: every saved row is another centimetre of manuscript.
+     The toolbar tightens into (at most) two slim rows, printing moves into
+     the preview dialog, and the credit bar keeps only the required
+     attribution — the full rights text stays in the details panel. */
+  .lbl-s{display:none;}
+  @media (max-width:560px){
+    .topbar{padding:4px 8px; min-height:38px;}
+    .toolbar{gap:4px 4px; padding:4px 5px; min-height:40px;}
+    .toolbar .btn{padding:4px 6px; font-size:11.5px;}
+    .btn-nav{padding:5px 8px; min-height:34px;}
+    .group{padding:1px; gap:1px;}
+    .group .sep{display:none;}
+    #btnPrint{display:none;}
+    .pageinput{width:38px; padding:3px 2px;}
+    .pagecount{font-size:11px;}
+    .zoomlevel{min-width:42px; font-size:12.5px;}
+    .lbl-l{display:none;}
+    .lbl-s{display:inline;}
+  }
   @media (max-width:520px){
     .brand{display:none;}
     .toolbar{justify-content:space-between;}
@@ -747,6 +778,12 @@
     .btn-nav{min-height:40px; padding:8px 14px;}
     .thumb{min-height:72px;}
   }
+  /* ...but on a narrow phone the generous touch padding costs a whole row,
+     so trade a little width for it while keeping tappable heights. */
+  @media (pointer:coarse) and (max-width:560px){
+    .btn{min-height:34px;}
+    .btn-nav{min-height:36px; padding:5px 9px;}
+  }
   .credit{
     flex:0 0 auto; display:flex; align-items:center; gap:8px 18px; flex-wrap:wrap;
     padding:8px 16px; background:var(--surface); border-top:1px solid var(--rule);
@@ -762,6 +799,13 @@
   .credit a:hover{border-bottom-color:var(--accent);}
   .credit .logo{height:20px; width:auto; opacity:.85; border-radius:1px; background:#fff; padding:1px 3px;}
   .credit .rights{color:var(--ink-3);}
+  /* Placed after the base .credit rules on purpose: an equal-specificity media
+     rule earlier in the sheet loses to them. On a phone the bar keeps only the
+     required attribution; the full rights text lives in the details panel. */
+  @media (max-width:560px){
+    .credit{padding:3px 10px; min-height:24px; gap:3px 10px; font-size:10.5px;}
+    .credit .lbl,.credit .rights,.credit .logo{display:none;}
+  }
 
   @media (max-width:840px){
     .side{position:absolute; inset-block:0; inset-inline-end:0; z-index:20; flex-basis:290px;
@@ -829,7 +873,7 @@
 
   <button class="btn" id="btnIndex" aria-pressed="false" disabled>אינדקס</button>
   <button class="btn" id="btnMeta" aria-pressed="false" disabled>פרטים</button>
-  <button class="btn" id="btnBrowse" title="חזרה לקטלוג">קטלוג כתבי היד</button>
+  <button class="btn" id="btnBrowse" title="חזרה לקטלוג"><span class="lbl-l">קטלוג כתבי היד</span><span class="lbl-s">קטלוג</span></button>
 </div>
 
 <div class="credit" id="credit">
@@ -2121,20 +2165,80 @@ stage.addEventListener("wheel", function(e){
   zoomAt(e.deltaY < 0 ? 1.16 : 1/1.16, e.clientX - r.left, e.clientY - r.top);
 }, { passive:false });
 
-var dragging = false, lastX = 0, lastY = 0;
+/* One finger drags, two fingers pinch-zoom about their midpoint (and pan as
+   the midpoint travels), a quick double-tap jumps in and a second one returns
+   to fit — the vocabulary phones taught everyone. Pointer events cover mouse,
+   touch and pen alike, and the stage already declares touch-action:none, so
+   the browser never hijacks the pinch for page zoom. */
+var pointers = new Map();          // pointerId -> last client position
+var dragging = false, lastX = 0, lastY = 0, pinchDist = 0;
+var lastTapT = 0, lastTapX = 0, lastTapY = 0, tapMoved = false;
+
+function pinchState(){
+  var pts = Array.from(pointers.values());
+  return { dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+           midX: (pts[0].x + pts[1].x) / 2,
+           midY: (pts[0].y + pts[1].y) / 2 };
+}
+
 stage.addEventListener("pointerdown", function(e){
   if(!doc || img.hidden) return;
-  dragging = true; lastX = e.clientX; lastY = e.clientY;
-  stage.classList.add("grabbing"); stage.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  try { stage.setPointerCapture(e.pointerId); } catch(_) {}
+  tapMoved = false;
+  if(pointers.size === 2){
+    dragging = false;                       // the second finger begins a pinch
+    var s = pinchState();
+    pinchDist = s.dist; lastX = s.midX; lastY = s.midY;
+  } else if(pointers.size === 1){
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+    stage.classList.add("grabbing");
+  }
 });
+
 stage.addEventListener("pointermove", function(e){
-  if(!dragging) return;
-  panX += e.clientX - lastX; panY += e.clientY - lastY;
-  lastX = e.clientX; lastY = e.clientY;
-  applyTransform();
+  if(!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if(pointers.size === 2){
+    var s = pinchState();
+    if(pinchDist > 0 && s.dist > 0){
+      var r = stage.getBoundingClientRect();
+      zoomAt(s.dist / pinchDist, s.midX - r.left, s.midY - r.top);
+      panX += s.midX - lastX; panY += s.midY - lastY;
+      applyTransform();
+    }
+    pinchDist = s.dist; lastX = s.midX; lastY = s.midY;
+    tapMoved = true;
+  } else if(dragging){
+    var dx = e.clientX - lastX, dy = e.clientY - lastY;
+    if(Math.abs(dx) + Math.abs(dy) > 2) tapMoved = true;
+    panX += dx; panY += dy;
+    lastX = e.clientX; lastY = e.clientY;
+    applyTransform();
+  }
 });
+
 ["pointerup","pointercancel"].forEach(function(ev){
-  stage.addEventListener(ev, function(){ dragging = false; stage.classList.remove("grabbing"); });
+  stage.addEventListener(ev, function(e){
+    if(ev === "pointerup" && pointers.size === 1 && !tapMoved && e.pointerType !== "mouse"){
+      var now = Date.now();
+      if(now - lastTapT < 320 &&
+         Math.hypot(e.clientX - lastTapX, e.clientY - lastTapY) < 40){
+        var r = stage.getBoundingClientRect();
+        if(zoom > fitScale * 1.4){ upgraded = false; fit(); }
+        else zoomAt(2.4, e.clientX - r.left, e.clientY - r.top);
+        lastTapT = 0;
+      } else { lastTapT = now; lastTapX = e.clientX; lastTapY = e.clientY; }
+    }
+    pointers.delete(e.pointerId);
+    if(pointers.size === 1){
+      // Pinch over, one finger still down - carry on as a drag.
+      var p = pointers.values().next().value;
+      dragging = true; lastX = p.x; lastY = p.y; pinchDist = 0;
+    } else if(pointers.size === 0){
+      dragging = false; pinchDist = 0; stage.classList.remove("grabbing");
+    }
+  });
 });
 
 /* ---------- index / TOC ---------- */
