@@ -136,6 +136,7 @@ def apply(catalog, ovr, include_hidden=False):
         return row
 
     hidden = 0
+    renamed = []                # recordings the editor gave a name of their own
     for rec in catalog['recordings']:
         o = ovr.get(key_of(rec))
         # an override decides publication; otherwise the build's own flag does
@@ -177,12 +178,41 @@ def apply(catalog, ovr, include_hidden=False):
         # singer and its feast and leave it sitting in that bin all the same:
         # the edit was applied to everything about the recording except where
         # it is filed. Naming it moves it out.
+        renamed.append(r)
         if o.get('piyyut'):
             r['y'] = ensure(cat['piyyutim'], piy_name, o['piyyut'], 'piyyutim')['id']
         elif ((o.get('title') or o.get('desc'))
                 and (piy_by.get(rec['y']) or {}).get('name') == UNIDENTIFIED):
             r['y'] = ensure(cat['piyyutim'], piy_name, r['ttl'], 'piyyutim')['id']
         cat['recordings'].append(r)
+
+    # ---- a heading that is only a file name follows the name it was given.
+    #
+    # Most recordings are filed under a heading taken from the folder they were
+    # found in, which is often the file name and nothing more —
+    # "fetah kal mamlal nael — ratson tsedaka". Naming the recording used to
+    # correct the row and leave that heading standing above it.
+    #
+    # It is corrected only where the recording is the sole one under that
+    # heading. Where others share it, the heading belongs to them too: some are
+    # a real piyyut name that this one recording states differently
+    # ("אור הבקר" above "אור הבקר - הקלטה ישנה"), and renaming on one
+    # recording's say-so would rename the group out from under the rest.
+    # Those are left alone deliberately.
+    alone = {}
+    for r in cat['recordings']:
+        alone[r['y']] = alone.get(r['y'], 0) + 1
+    for r in renamed:
+        row = piy_by.get(r['y'])
+        if not row or alone.get(r['y'], 0) != 1 or row['name'] == r['ttl']:
+            continue
+        existing = piy_name.get(r['ttl'])
+        if existing and existing['id'] != row['id']:
+            r['y'] = existing['id']         # a heading of that name already exists
+        else:
+            piy_name.pop(row['name'], None)
+            row['name'] = r['ttl']
+            piy_name[r['ttl']] = row
 
     # A piyyut created a moment ago by ensure() is in the list but not in this
     # map, which was taken before the loop ran. The roll-up below counts through
