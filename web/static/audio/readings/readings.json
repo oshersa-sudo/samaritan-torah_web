@@ -9714,292 +9714,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - ובקצירכם - 85",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1602,
-     "n": 85,
-     "verses": "כא:א-כא:ט",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 85,
-     "file": "/static/audio/readings/b3-p06-c085.mp3",
-     "duration": 80.44,
-     "src_start": 786.56,
-     "src_end": 867.0,
-     "verses_num": "21:1-21:9"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - ובקצירכם - 86",
-     "incipit": "והכהן הגדול מאחיו אשר",
-     "sam_ch_id": 1603,
-     "n": 86,
-     "verses": "כא:י-כא:טו",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 86,
-     "file": "/static/audio/readings/b3-p06-c086.mp3",
-     "duration": 48.76,
-     "src_start": 867.0,
-     "src_end": 915.76,
-     "verses_num": "21:10-21:15"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - ובקצירכם - 87",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1604,
-     "n": 87,
-     "verses": "כא:טז-כא:כד",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 87,
-     "file": "/static/audio/readings/b3-p06-c087.mp3",
-     "duration": 67.54,
-     "src_start": 915.76,
-     "src_end": 983.3,
-     "verses_num": "21:16-21:24"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 10,
-     "name": "ויקרא - ובקצירכם - 88",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1605,
-     "n": 88,
-     "verses": "כב:א-כב:י",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 88,
-     "file": "/static/audio/readings/b3-p06-c088.mp3",
-     "duration": 109.75,
-     "src_start": 983.3,
-     "src_end": 1093.05,
-     "verses_num": "22:1-22:10"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - ובקצירכם - 89",
-     "incipit": "וכהן כי יקנה נפש",
-     "sam_ch_id": 1606,
-     "n": 89,
-     "verses": "כב:יא-כב:טז",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 89,
-     "file": "/static/audio/readings/b3-p06-c089.mp3",
-     "duration": 59.38,
-     "src_start": 1093.05,
-     "src_end": 1152.43,
-     "verses_num": "22:11-22:16"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - ובקצירכם - 90",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1607,
-     "n": 90,
-     "verses": "כב:יז-כב:כה",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 90,
-     "file": "/static/audio/readings/b3-p06-c090.mp3",
-     "duration": 61.78,
-     "src_start": 1152.43,
-     "src_end": 1214.21,
-     "verses_num": "22:17-22:25"
-    },
-    {
-     "src": {
-      "youtube_id": "kyRmh5B0guA"
-     },
-     "verse_count": 8,
-     "name": "ויקרא - ובקצירכם - 91",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1608,
-     "n": 91,
-     "verses": "כב:כו-כב:לג",
-     "portion": {
-      "order": 6,
-      "name": "ובקצירכם",
-      "id": 35
-     },
-     "sam_ch_number": 91,
-     "file": "/static/audio/readings/b3-p06-c091.mp3",
-     "duration": 5.46,
-     "src_start": 1214.21,
-     "src_end": 1219.67,
-     "verses_num": "22:26-22:33"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 8,
-     "name": "ויקרא - מועדי - 92",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1609,
-     "n": 92,
-     "verses": "כג:א-כג:ח",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 92,
-     "file": "/static/audio/readings/b3-p07-c092.mp3",
-     "duration": 82.41,
-     "src_start": 0.0,
-     "src_end": 82.41,
-     "verses_num": "23:1-23:8"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - מועדי - 93",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1610,
-     "n": 93,
-     "verses": "כג:ט-כג:יד",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 93,
-     "file": "/static/audio/readings/b3-p07-c093.mp3",
-     "duration": 70.82,
-     "src_start": 82.41,
-     "src_end": 153.23,
-     "verses_num": "23:9-23:14"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 8,
-     "name": "ויקרא - מועדי - 94",
-     "incipit": "וספרתם לכם ממחרת השבת",
-     "sam_ch_id": 1611,
-     "n": 94,
-     "verses": "כג:טו-כג:כב",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 94,
-     "file": "/static/audio/readings/b3-p07-c094.mp3",
-     "duration": 117.83,
-     "src_start": 153.23,
-     "src_end": 271.06,
-     "verses_num": "23:15-23:22"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 3,
-     "name": "ויקרא - מועדי - 95",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1612,
-     "n": 95,
-     "verses": "כג:כג-כג:כה",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 95,
-     "file": "/static/audio/readings/b3-p07-c095.mp3",
-     "duration": 26.39,
-     "src_start": 271.06,
-     "src_end": 297.45,
-     "verses_num": "23:23-23:25"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 7,
-     "name": "ויקרא - מועדי - 96",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1613,
-     "n": 96,
-     "verses": "כג:כו-כג:לב",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 96,
-     "file": "/static/audio/readings/b3-p07-c096.mp3",
-     "duration": 76.04,
-     "src_start": 297.45,
-     "src_end": 373.49,
-     "verses_num": "23:26-23:32"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - מועדי - 97",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1614,
-     "n": 97,
-     "verses": "כג:לג-כג:לח",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 97,
-     "file": "/static/audio/readings/b3-p07-c097.mp3",
-     "duration": 70.96,
-     "src_start": 373.49,
-     "src_end": 444.45,
-     "verses_num": "23:33-23:38"
-    },
-    {
-     "src": {
       "youtube_id": "K7LGpyW-EQg"
      },
      "verse_count": 6,
@@ -12221,28 +11935,6 @@
      "name": "ויקרא - ואיש או אשה - 71"
     },
     {
-     "n": 84,
-     "sam_ch_number": 84,
-     "file": "/static/audio/readings/b3-p05-c084.mp3",
-     "duration": 67.47,
-     "src_start": 0,
-     "src_end": 67.47,
-     "portion": {
-      "order": 6,
-      "id": 35,
-      "name": "ובקצירכם"
-     },
-     "src": {
-      "youtube_id": null
-     },
-     "sam_ch_id": 1601,
-     "verses": "כ:כב-כ:כז",
-     "verses_num": "20:22-20:27",
-     "verse_count": 6,
-     "incipit": "ושמרתם את כל חקותי",
-     "name": "ויקרא - ובקצירכם - 84"
-    },
-    {
      "n": 72,
      "sam_ch_number": 72,
      "file": "/static/audio/readings/b3-p05-c072.mp3",
@@ -12483,6 +12175,314 @@
      "verse_count": 8,
      "incipit": "וידבר יהוה אל משה",
      "name": "ויקרא - אחרי מות - 82"
+    },
+    {
+     "n": 83,
+     "sam_ch_number": 83,
+     "file": "/static/audio/readings/b3-p06-c083.mp3",
+     "duration": 67.47,
+     "src_start": 0,
+     "src_end": 67.47,
+     "portion": {
+      "order": 5,
+      "id": 34,
+      "name": "אחרי מות"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1600,
+     "verses": "כ:ט-כ:כא",
+     "verses_num": "20:9-20:21",
+     "verse_count": 13,
+     "incipit": "כי איש איש: אשר",
+     "name": "ויקרא - אחרי מות - 83"
+    },
+    {
+     "n": 85,
+     "sam_ch_number": 85,
+     "file": "/static/audio/readings/b3-p06-c085.mp3",
+     "duration": 80.44,
+     "src_start": 0,
+     "src_end": 80.44,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1602,
+     "verses": "כא:א-כא:ט",
+     "verses_num": "21:1-21:9",
+     "verse_count": 9,
+     "incipit": "ויאמר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 85"
+    },
+    {
+     "n": 86,
+     "sam_ch_number": 86,
+     "file": "/static/audio/readings/b3-p06-c086.mp3",
+     "duration": 48.76,
+     "src_start": 0,
+     "src_end": 48.76,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1603,
+     "verses": "כא:י-כא:טו",
+     "verses_num": "21:10-21:15",
+     "verse_count": 6,
+     "incipit": "והכהן הגדול מאחיו: אשר",
+     "name": "ויקרא - ובקצירכם - 86"
+    },
+    {
+     "n": 87,
+     "sam_ch_number": 87,
+     "file": "/static/audio/readings/b3-p06-c087.mp3",
+     "duration": 67.54,
+     "src_start": 0,
+     "src_end": 67.54,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1604,
+     "verses": "כא:טז-כא:כד",
+     "verses_num": "21:16-21:24",
+     "verse_count": 9,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 87"
+    },
+    {
+     "n": 88,
+     "sam_ch_number": 88,
+     "file": "/static/audio/readings/b3-p06-c088.mp3",
+     "duration": 109.75,
+     "src_start": 0,
+     "src_end": 109.75,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1605,
+     "verses": "כב:א-כב:י",
+     "verses_num": "22:1-22:10",
+     "verse_count": 10,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 88"
+    },
+    {
+     "n": 89,
+     "sam_ch_number": 89,
+     "file": "/static/audio/readings/b3-p06-c089.mp3",
+     "duration": 59.38,
+     "src_start": 0,
+     "src_end": 59.38,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1606,
+     "verses": "כב:יא-כב:טז",
+     "verses_num": "22:11-22:16",
+     "verse_count": 6,
+     "incipit": "וכהן כי יקנה נפש",
+     "name": "ויקרא - ובקצירכם - 89"
+    },
+    {
+     "n": 90,
+     "sam_ch_number": 90,
+     "file": "/static/audio/readings/b3-p06-c090.mp3",
+     "duration": 61.78,
+     "src_start": 0,
+     "src_end": 61.78,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1607,
+     "verses": "כב:יז-כב:כה",
+     "verses_num": "22:17-22:25",
+     "verse_count": 9,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 90"
+    },
+    {
+     "n": 91,
+     "sam_ch_number": 91,
+     "file": "/static/audio/readings/b3-p06-c091.mp3",
+     "duration": 5.46,
+     "src_start": 0,
+     "src_end": 5.46,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1608,
+     "verses": "כב:כו-כב:לג",
+     "verses_num": "22:26-22:33",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 91"
+    },
+    {
+     "n": 92,
+     "sam_ch_number": 92,
+     "file": "/static/audio/readings/b3-p06-c092.mp3",
+     "duration": 82.41,
+     "src_start": 0,
+     "src_end": 82.41,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1609,
+     "verses": "כג:א-כג:ח",
+     "verses_num": "23:1-23:8",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 92"
+    },
+    {
+     "n": 93,
+     "sam_ch_number": 93,
+     "file": "/static/audio/readings/b3-p06-c093.mp3",
+     "duration": 70.82,
+     "src_start": 0,
+     "src_end": 70.82,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1610,
+     "verses": "כג:ט-כג:יד",
+     "verses_num": "23:9-23:14",
+     "verse_count": 6,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 93"
+    },
+    {
+     "n": 94,
+     "sam_ch_number": 94,
+     "file": "/static/audio/readings/b3-p06-c094.mp3",
+     "duration": 117.83,
+     "src_start": 0,
+     "src_end": 117.83,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1611,
+     "verses": "כג:טו-כג:כב",
+     "verses_num": "23:15-23:22",
+     "verse_count": 8,
+     "incipit": "וספרתם לכם ממחרת השבת:",
+     "name": "ויקרא - ובקצירכם - 94"
+    },
+    {
+     "n": 95,
+     "sam_ch_number": 95,
+     "file": "/static/audio/readings/b3-p06-c095.mp3",
+     "duration": 26.39,
+     "src_start": 0,
+     "src_end": 26.39,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1612,
+     "verses": "כג:כג-כג:כה",
+     "verses_num": "23:23-23:25",
+     "verse_count": 3,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 95"
+    },
+    {
+     "n": 96,
+     "sam_ch_number": 96,
+     "file": "/static/audio/readings/b3-p06-c096.mp3",
+     "duration": 76.04,
+     "src_start": 0,
+     "src_end": 76.04,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1613,
+     "verses": "כג:כו-כג:לב",
+     "verses_num": "23:26-23:32",
+     "verse_count": 7,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 96"
+    },
+    {
+     "n": 97,
+     "sam_ch_number": 97,
+     "file": "/static/audio/readings/b3-p06-c097.mp3",
+     "duration": 70.96,
+     "src_start": 0,
+     "src_end": 70.96,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": "kyRmh5B0guA"
+     },
+     "sam_ch_id": 1614,
+     "verses": "כג:לג-כג:לח",
+     "verses_num": "23:33-23:38",
+     "verse_count": 6,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - ובקצירכם - 97"
     }
    ],
    "playlist": "PLl-48IEqLtluI0oPyh0rmC0-iKVCEMvt_",
