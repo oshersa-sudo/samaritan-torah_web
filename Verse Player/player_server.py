@@ -305,6 +305,25 @@ def run(cmd):
 
 
 # ───────────────────────── apply: meir group ─────────────────────────
+def entry_filenames(c):
+    """Every recording filename a manifest entry refers to.
+
+    An entry normally has one "file", but a chapter split across two source
+    recordings has "segs" and NO "file" at all (book 2 chapter 137 is one).
+    Reaching for c["file"] unguarded raised KeyError over the whole book, and
+    it did so AFTER the audio had been rewritten - so the mp3s held the new
+    cuts while readings.json still described the old ones."""
+    names = set()
+    f = c.get("file")
+    if f:
+        names.add(Path(f).name)
+    for seg in (c.get("segs") or []):
+        sf = seg.get("file")
+        if sf:
+            names.add(Path(sf).name)
+    return names
+
+
 def apply_meir(entry):
     """entry = {book_id, portion_order, files:[{file,duration}], pieces:[{n,v0,v1}]}
     files/v0/v1 are in the SAME virtual timeline (files concatenated in order,
@@ -349,6 +368,35 @@ def apply_meir(entry):
         if abs(gap) > 0.06:
             raise RuntimeError("refusing: gap/overlap of {:.2f}s between piece {} and {}".format(
                 gap, pieces[i]["n"], pieces[i + 1]["n"]))
+
+    # ---- pre-flight -----------------------------------------------------
+    # Everything that can fail on a LOOKUP has to fail HERE, while the
+    # recordings are still untouched. This all used to run after the new cuts
+    # had been copied over the originals and the leftovers deleted, so any
+    # manifest the lookup could not handle left the audio and readings.json
+    # permanently describing different things.
+    rd = json.loads(READINGS_JSON.read_text(encoding="utf-8"))
+    b1 = next(b for b in rd["books"] if b["book_id"] == book_id)
+    old_names = set(Path(f["file"]).name for f in files)
+    old_ns = set(c["n"] for c in b1["chapters"] if old_names & entry_filenames(c))
+    new_ns = set(p["n"] for p in pieces)
+    touched_ns = old_ns | new_ns
+
+    con = sqlite3.connect(str(DB))
+    cur = con.cursor()
+    # A chapter with no row here used to be skipped with a warning - but it had
+    # already been dropped from `kept`, so it vanished from readings.json while
+    # its mp3 stayed on disk, and the reload wiped the warning off the screen.
+    absent = [n for n in sorted(new_ns) if chapter_meta(cur, book_id, n) is None]
+    if absent:
+        raise RuntimeError(
+            "לא נמצאו במסד הנתונים המקומי פרקים: {}. לא נגעתי בכלום - "
+            "סנכרן את מסד הנתונים או תקן את מספרי הפרקים ונסה שוב."
+            .format(", ".join(str(n) for n in absent)))
+    div = cloud_divisions(book_id)
+
+    stamp = time.strftime("%Y%m%d_%H%M%S")
+    shutil.copy2(READINGS_JSON, READINGS_JSON.with_suffix(".json.bak_" + stamp))
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
@@ -418,21 +466,8 @@ def apply_meir(entry):
             if p.exists():
                 p.unlink()
 
-    # update readings.json
-    rd = json.loads(READINGS_JSON.read_text(encoding="utf-8"))
-    b1 = next(b for b in rd["books"] if b["book_id"] == book_id)
-    old_ns = set()
-    for f in files:
-        # any CURRENT entry whose file matches one of the original files
-        for c in b1["chapters"]:
-            if Path(c["file"]).name in old_names:
-                old_ns.add(c["n"])
-    new_ns = set(placed.keys())
-    touched_ns = old_ns | new_ns
-
-    con = sqlite3.connect(str(DB))
-    cur = con.cursor()
-    div = cloud_divisions(book_id)  # portion labels straight from live site
+    # update readings.json - every value below was resolved in the pre-flight,
+    # so nothing here can fail on a lookup now that the audio is written.
 
     kept = [c for c in b1["chapters"] if c["n"] not in touched_ns]
     ref_entry = next((c for c in b1["chapters"] if c["n"] in old_ns), None)
@@ -443,9 +478,8 @@ def apply_meir(entry):
     for n in sorted(placed.keys()):
         dest, dur = placed[n]
         meta = chapter_meta(cur, book_id, n)
-        if meta is None:
-            warnings.append("chapter {} not found in local DB - skipped metadata refresh".format(n))
-            continue
+        if meta is None:                      # pre-flight already refused this
+            raise RuntimeError("chapter {} vanished from the DB mid-apply".format(n))
         pinfo = div["chapters"].get(n)
         if pinfo:
             portion = {"order": pinfo["portion_order"], "id": pinfo["portion_id"], "name": pinfo["portion_name"]}
