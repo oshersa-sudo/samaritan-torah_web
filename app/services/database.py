@@ -12,6 +12,18 @@ import unicodedata
 _BUNDLED_DB = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'torah.db')
 DB_PATH = os.environ.get('DB_PATH') or _BUNDLED_DB
 
+# The Aramaic dictionary lives in its own file. It holds nothing keyed to a verse
+# and nothing the admin panel edits, so it can be replaced wholesale on every
+# deploy instead of being threaded past the live text. Attached read-only, and
+# skipped without complaint when absent — unqualified queries then simply fail
+# per-feature rather than taking the app down.
+# While both files still carry the tables, SQLite resolves an unqualified name to
+# `main` first, so torah.db keeps answering until its copies are dropped.
+_LEXICON_DB = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'lexicon.db')
+LEXICON_PATH = os.environ.get('LEXICON_PATH') or _LEXICON_DB
+if not os.path.exists(LEXICON_PATH):
+    LEXICON_PATH = None
+
 
 def _seed_db():
     """When DB_PATH points at a persistent disk and is still empty (first boot or a
@@ -113,9 +125,38 @@ def _ensure_mas_chapter_column(conn):
     _MAS_CHAPTER_COL_READY = True
 
 
+def _without_lexicon(empty):
+    """Return `empty` instead of raising when the dictionary file is absent.
+
+    The Aramaic dictionary is a separate, optional database (see LEXICON_PATH).
+    If it is missing, the app must lose the dictionary and nothing else — the
+    Torah, the commentaries and the readers all live in torah.db and keep
+    working. Only a genuinely missing table is swallowed; every other SQL error
+    still surfaces, because those are bugs, not absent files."""
+    def wrap(fn):
+        @functools.wraps(fn)
+        def inner(*a, **kw):
+            try:
+                return fn(*a, **kw)
+            except sqlite3.OperationalError as e:
+                if 'no such table' not in str(e).lower():
+                    raise
+                return empty() if callable(empty) else empty
+        return inner
+    return wrap
+
+
 def get_connection():
-    conn = sqlite3.connect(DB_PATH)
+    # uri=True is required for the read-only ATTACH below: without it SQLite reads
+    # "file:...?mode=ro" as a literal filename, silently creates an empty database
+    # under that name, and every dictionary table quietly disappears.
+    conn = sqlite3.connect(DB_PATH, uri=True)
     conn.row_factory = sqlite3.Row
+    if LEXICON_PATH:
+        try:
+            conn.execute("ATTACH DATABASE ? AS lex", (f'file:{LEXICON_PATH}?mode=ro',))
+        except sqlite3.Error:
+            pass          # the dictionary is unavailable; the Torah still works
     _ensure_mas_chapter_column(conn)
     return conn
 
@@ -421,6 +462,7 @@ def _auth_root_gloss(root_norm, conn):
     return ''
 
 
+@_without_lexicon("")
 def tal_concise(word, conn=None):
     """A SHORT meaning for an Aramaic word. Prefers the AUTHORITATIVE gloss read off
     Tal's dictionary pages (word → root → page entry); falls back to the distilled
@@ -481,6 +523,7 @@ def tal_concise(word, conn=None):
     return res
 
 
+@_without_lexicon("")
 def tal_context_gloss(aramaic, verse_id, conn):
     """The Tal-dictionary gloss CLOSEST to how the word is used in THIS verse. When
     the word's root carries several senses and the verse was sense-tagged (Phase 2),
@@ -989,6 +1032,7 @@ def locate_verse(verse_id):
             'portion_id': p['id'] if p else None, 'portion_name': p['name'] if p else ''}
 
 
+@_without_lexicon([])
 def get_tm_words(book):
     """A per-chapter glossary: the distinct Aramaic words of a TM book that have a
     gloss in A. Tal's dictionary (word · root · Hebrew meaning), in order of first
@@ -1492,6 +1536,7 @@ def search_piyutim(q, limit=200):
     return [dict(r) for r in rows]
 
 
+@_without_lexicon({})
 def get_piyutim_dict():
     """The whole shared glossary (~300 entries) — small enough to fetch once and
     cache client-side, used for the inline word-tap popup while reading."""
@@ -2563,6 +2608,7 @@ def _tal_skel(w):
     return _tal_bare(w).translate(_WEAK_TAL)
 
 
+@_without_lexicon([])
 def _tal_entries():
     """Cached [{id,lemma,gloss_en,pos,page,notes,_bare,_skel}, ...]."""
     global _TAL_CACHE
@@ -2584,6 +2630,7 @@ def _tal_entries():
     return _TAL_CACHE
 
 
+@_without_lexicon([])
 def lookup_tal_dictionary(word, limit=6):
     """Entries for an Aramaic word from Tal's dictionary, best-effort.
     Match tiers: exact (niqqud-stripped) lemma, then the word appearing verbatim
@@ -2678,6 +2725,7 @@ def _tal_variants(base):
     return full, prefixed
 
 
+@_without_lexicon([])
 def _tal_roots(word, conn):
     """Resolve an Aramaic surface word to its Tal root(s), most authoritative first:
     the dictionary's own head-word (lemma), the word as a root, Tal's forms index,
@@ -2853,6 +2901,7 @@ def _memar_rendering(conn, word):
     return {'gloss': r['memar_he'], 'conf': round(r['memar_conf'], 2)}
 
 
+@_without_lexicon(lambda: {'word': '', 'roots': [], 'phrases': []})
 def tal_full_lookup(word, torah_limit=16):
     """Everything Tal's dictionary holds for an Aramaic word, grounded in the
     authoritative page extraction. Returns {word, roots:[{root, senses, torah,
@@ -2971,6 +3020,7 @@ def tal_full_lookup(word, torah_limit=16):
 
 
 # ── dictionary app: page-browse, index-browse, direct word search, form locations ──
+@_without_lexicon({'page': 0, 'entries': [], 'prev': None, 'next': None})
 def get_dict_page(printed):
     """One printed page of Tal's dictionary (its head-words), with prev/next nav."""
     try:
@@ -2998,6 +3048,7 @@ def get_dict_page(printed):
                          'pos': r['pos'] or '', 'gloss': (r['gloss_he'] or '').strip()} for r in rows]}
 
 
+@_without_lexicon({'start': 0, 'limit': 0, 'total': 0, 'items': []})
 def get_dict_index(start=0, limit=80, prefix=''):
     """A window of the alphabetical index of dictionary head-words (for flipping
     through the index). `prefix` jumps to the first head-word from that letter on."""
@@ -3019,6 +3070,7 @@ def get_dict_index(start=0, limit=80, prefix=''):
             'items': [{'lemma': r['lemma'] or '', 'root': r['root'] or '', 'page': r['printed']} for r in rows]}
 
 
+@_without_lexicon([])
 def dict_word_search(word, limit=40):
     """Dictionary entries that contain the word DIRECTLY as a head-word, regardless
     of whether the word is itself a root (so a plain inflected form still hits, as
@@ -3042,6 +3094,7 @@ def dict_word_search(word, limit=40):
     return out
 
 
+@_without_lexicon({'form': '', 'count': 0, 'locations': []})
 def dict_form_locations(word, limit=80):
     """Every place a surface form is cited inside Tal's dictionary — the location
     reference (source_ref) plus the citation quote — for the "tap a form to see all
@@ -3061,6 +3114,7 @@ def dict_form_locations(word, limit=80):
 
 
 # ── comprehensive word index: browse every dictionary word, then drill into one ──
+@_without_lexicon({'start': 0, 'limit': 0, 'total': 0, 'items': []})
 def dict_words_browse(start=0, limit=60, prefix=''):
     """A page of the comprehensive word index (dict_word_index) — every Aramaic
     word the dictionary knows, collapsed to one row per word with its meaning count
@@ -3089,6 +3143,7 @@ def dict_words_browse(start=0, limit=60, prefix=''):
 
 # ── Hebrew → Aramaic side: a Hebrew index that leads to the Aramaic entry, and a
 #    Hebrew search that finds words IN THE RESULTS (not by jumping in the index) ──
+@_without_lexicon({'start': 0, 'limit': 0, 'total': 0, 'items': []})
 def dict_he_browse(start=0, limit=60, prefix=''):
     """A page of the Hebrew word index (dict_he_index) — Hebrew words that lead to
     their Aramaic root(s). One row per Hebrew word with its root count."""
@@ -3135,6 +3190,7 @@ def _he_stems(base):
     return {x for x in cands if len(x) >= 2 and x != base}
 
 
+@_without_lexicon({'word': '', 'results': []})
 def dict_he_search(word, limit=60):
     """Search a Hebrew word among the RESULTS, with a fallback cascade so inflected /
     affixed forms still find their Aramaic interpretation:

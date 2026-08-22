@@ -60,3 +60,6 @@ data/dict_expand/dictionary_backup_pre_expand.sql
 /Verse Player/verse-player.ini
 /Verse Player/app.ico
 /Verse Player/selftest.txt
+
+# staging artefact of the lexicon split
+data/_dropped_test.db
