@@ -1785,6 +1785,17 @@ body{
 /* switched off: the recording is being played exactly as it is held */
 .tape-state.off{color:#8b94a5;text-shadow:none}
 
+/* the players. Amber while it is listening to the piece and working out what
+   key it is in — that is the one moment the tape is stopped, and the colour
+   is there to say why. */
+.band-state{color:#e2b04a;text-shadow:0 0 5px rgba(226,176,74,.45)}
+.band-state.off{color:#8b94a5;text-shadow:none}
+.band-state.busy{
+  color:#e2b04a;text-shadow:0 0 6px rgba(226,176,74,.6);
+  border-color:#5a4a24;animation:bandWait 1.1s ease-in-out infinite;
+}
+@keyframes bandWait{0%,100%{opacity:1}50%{opacity:.45}}
+
 /* the mixing desk itself, sitting on the panel beside the track name */
 .mix-toggle{
   flex:0 0 auto;border:0;background:none;padding:0;cursor:pointer;

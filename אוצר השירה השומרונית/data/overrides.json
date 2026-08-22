@@ -457,5 +457,23 @@
   "title": "הקלטת קרבן 1968",
   "event": "חג הפסח",
   "performer": "מקהלה"
+ },
+ "אושר ששוני/עמידות  השבת בבקר/ayol uo eile.mp3": {
+  "title": "איול הוא אילה",
+  "hidden": true,
+  "event": "שבת",
+  "performer": "אושר בן שוהם ששוני"
+ },
+ "אושר ששוני/עמידות  השבת בבקר/ketef shelishi - shabat boker.mp3": {
+  "title": "כתף שלישי — שבת בוקר",
+  "hidden": true,
+  "event": "שבת",
+  "performer": "אושר בן שוהם ששוני"
+ },
+ "אושר ששוני/עמידות  השבת בבקר/ayol u eila takifa.mp3": {
+  "title": "איול ואילה תקיפה",
+  "hidden": true,
+  "event": "שבת",
+  "performer": "אושר בן שוהם ששוני"
  }
 }

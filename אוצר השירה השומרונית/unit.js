@@ -431,6 +431,7 @@ function playRec(recId, idx, quiet) {
   setTimeout(() => { switching = false; }, 400);
   au.src = audioURL(t.f);
   vuPeak = 0;                            // the meter re-learns this tape's loudness
+  bandDrop();          // another file: another key, another mode, another tuning
   if (!quiet && !sameRec) sfx('play');   // the deck's own click
   mixInit();                            // the chain must exist before playback
   if (MIX.ctx && MIX.ctx.state === 'suspended') MIX.ctx.resume();
@@ -443,6 +444,7 @@ function playRec(recId, idx, quiet) {
   $('dwName').textContent = '';        // the name is on the label already
   $('dwShare').disabled = false;
   markPlaying();
+  mediaSay(r, idx);                    // the notification, for when the app is left
   setLine('ptitle', r.ttl + (r.tr.length > 1 ? ` · רצועה ${idx + 1}/${r.tr.length}` : ''));
   setLine('psub', `${perfName(r.p)} · ${eventName(r.e)}`);
   syncBtn();                 // never write into #pbtn — it holds the two icons
@@ -1028,6 +1030,9 @@ async function uploadRecording(blob, secs) {
 }
 
 function syncBtn() {
+  if (navigator.mediaSession)
+    navigator.mediaSession.playbackState = !au.src ? 'none'
+      : au.paused ? 'paused' : 'playing';
   $('icPlay').classList.toggle('hidden', !au.paused);
   $('icPause').classList.toggle('hidden', au.paused);
   $('pbtn').title = au.paused ? 'נגן' : 'השהה';
@@ -1215,6 +1220,677 @@ $('tapeState').onclick = () => {
   restoreApply();
   toast(RESTORE ? 'עיבוד קלטת פועל' : 'מושמע מן המקור, ללא עיבוד');
 };
+/* ================================================================== נגנים
+ * A composed accompaniment for the piyyut that is playing.
+ *
+ * The one thing that decides whether this is music or noise is the tuning.
+ * These are cassettes: some were recorded on a machine running slow, some
+ * were copied twice, and almost none of them sit at A=440. An accompaniment
+ * a quarter-tone away from the singing is worse than no accompaniment at
+ * all — so the pitch of the recording is measured first, in cents, and every
+ * instrument is tuned to the recording rather than to the piano.
+ *
+ * What is measured, and why each of it is needed:
+ *   the tuning   — so the players are in tune with the singer, not with A=440
+ *   the tonic    — so the drone sits under the melody instead of beside it
+ *   the mode     — so the notes chosen are the ones the piyyut already uses
+ *   the pulse    — so the plucking falls with the singing and not across it
+ *   the silences — so the players rest where the singing rests
+ *
+ * The harmony is deliberately still. This is monophonic, largely unmeasured
+ * liturgical singing, and a chord progression walking about underneath it
+ * fights it. So the organ holds a drone on the tonic for the whole piece and
+ * never leaves; only the guitar and the violin move, and they move inside the
+ * mode that was measured. A drone cannot quarrel with a melody in its own
+ * mode, which is why this repertoire has been sung over one for a very long
+ * time.
+ */
+const BAND = {
+  on: false, busy: false, an: null, forKey: '',
+  nodes: null, timer: 0, next: 0, step: 0, cache: {},
+};
+
+/* The modes tried against the recording, written as semitones above the
+   tonic. The last two are what much of this archive actually sings in —
+   hijaz above all, whose flat second over a major third is the sound of the
+   thing — and they are why a plain major/minor test would not do. */
+const BAND_MODES = [
+  { k: 'major',    n: "מז'ור",   s: [0, 2, 4, 5, 7, 9, 11], p: [0, 3, 4, 3] },
+  { k: 'minor',    n: 'מינור',   s: [0, 2, 3, 5, 7, 8, 10], p: [0, 5, 3, 4] },
+  { k: 'dorian',   n: 'דוריאני', s: [0, 2, 3, 5, 7, 9, 10], p: [0, 3, 0, 5] },
+  { k: 'phrygian', n: 'פריגי',   s: [0, 1, 3, 5, 7, 8, 10], p: [0, 1, 0, 3] },
+  { k: 'hijaz',    n: "חיג'אז",  s: [0, 1, 4, 5, 7, 8, 11], p: [0, 1, 0, 3] },
+];
+
+const PC_NAME = ['דו', 'דו#', 'רה', 'מי♭', 'מי', 'פה',
+                 'פה#', 'סול', 'לה♭', 'לה', 'סי♭', 'סי'];
+
+/* ---- an FFT, because there is no other way to have one here.
+ * AnalyserNode only works while sound is actually passing through it, and
+ * this measurement is made on the file with nothing playing. Iterative
+ * radix-2, in place. */
+function bandFFT(re, im) {
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) {
+      let t = re[i]; re[i] = re[j]; re[j] = t;
+      t = im[i]; im[i] = im[j]; im[j] = t;
+    }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = -2 * Math.PI / len;
+    const wr = Math.cos(ang), wi = Math.sin(ang);
+    for (let i = 0; i < n; i += len) {
+      let cr = 1, ci = 0;
+      for (let k = 0; k < len / 2; k++) {
+        const ar = re[i + k], ai = im[i + k];
+        const br = re[i + k + len / 2], bi = im[i + k + len / 2];
+        const tr = br * cr - bi * ci, ti = br * ci + bi * cr;
+        re[i + k] = ar + tr; im[i + k] = ai + ti;
+        re[i + k + len / 2] = ar - tr; im[i + k + len / 2] = ai - ti;
+        const ncr = cr * wr - ci * wi;
+        ci = cr * wi + ci * wr; cr = ncr;
+      }
+    }
+  }
+}
+
+/* ---- listening to the recording, once, before a note is played */
+async function bandAnalyse(bytes) {
+  const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  // 8 kHz. Nothing sung reaches 4 kHz, and the harmonics that matter are all
+  // well under it; decoding to less means a shorter window can still resolve
+  // what it has to.
+  const RATE = 8000;
+  const oc = new OAC(1, 1, RATE);
+  const audio = await (oc.decodeAudioData.length > 1
+    ? new Promise((ok, no) => oc.decodeAudioData(bytes, ok, no))
+    : oc.decodeAudioData(bytes));
+  const ch = audio.getChannelData(0);
+  // A quarter of a second, and it must not be longer than a note. At half a
+  // second — which is what this was — a window laid over singing that moves
+  // at all covers two notes at once and reports neither: measured on a
+  // melody of known content, three of its six notes came back at nought.
+  // The frequency lost by shortening it is bought back below, by reading the
+  // harmonics rather than the fundamental.
+  const N = 2048, HOP = 1024;
+  const last = Math.min(ch.length, Math.floor(RATE * 300));  // five minutes is plenty
+  const win = new Float32Array(N);
+  for (let i = 0; i < N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / N);
+
+  // The loudness is read on its own, and far more finely than the pitch. The
+  // pitch window has to be long to tell one semitone from the next; the beat
+  // has to be read short or a half-second pulse falls inside a single frame
+  // and cannot be seen at all.
+  const EHOP = 1024;                                   // an eighth of a second
+  const energy = [];
+  for (let off = 0; off + EHOP <= ch.length; off += EHOP) {
+    let r = 0;
+    for (let i = 0; i < EHOP; i++) { const v = ch[off + i]; r += v * v; }
+    energy.push(Math.sqrt(r / EHOP));
+  }
+
+  const chroma = new Float64Array(12);
+  let tx = 0, ty = 0;                  // the tuning, summed as a direction
+  let lastMidi = -999;                 // what the frame before this one read
+  const held = [];                     // every note actually sustained, in order
+  const sung = [];                     // {pitch, weight} of each held frame
+
+  const BIN = RATE / N;
+  const TOP = Math.min(N / 2 - 2, Math.floor(3800 / BIN));
+  const re = new Float32Array(N), im = new Float32Array(N);
+  const mag = new Float32Array(N / 2);
+
+  /* The pitch is not looked for among the peaks of the spectrum.
+   *
+   * A sung note's own fundamental is often the weakest thing in it — at the
+   * bottom of a man's voice it can be barely present at all, and on a cassette
+   * played through a telephone-grade capsule it frequently is not there. Hunt
+   * for peaks near it and the answer comes back wrong or missing: measured on
+   * a melody built to order, a note sung five times over came back at nought
+   * per cent, and the key with it.
+   *
+   * So instead every pitch it could be is proposed in turn — a third of a
+   * semitone apart, over the range a voice occupies — and each is asked how
+   * much of its own harmonic series is present. The note that answers loudest
+   * wins. A pitch with no energy at its fundamental still wins on its second,
+   * third and fourth, which is exactly the case that was failing.
+   */
+  const GRID = [], GBIN = [];
+  const STEP = Math.pow(2, 1 / 36);                    // a third of a semitone
+  for (let f = 70; f <= 700; f *= STEP) {
+    GRID.push(f);
+    const bs = [];
+    for (let h = 1; h <= 5; h++) {
+      const x = f * h / BIN;
+      if (x + 1 >= TOP) break;
+      bs.push(x);
+    }
+    GBIN.push(bs);
+  }
+  const at = x => {                                    // the magnitude between bins
+    const i = x | 0, t = x - i;
+    return mag[i] * (1 - t) + mag[i + 1] * t;
+  };
+
+  for (let off = 0; off + N < last; off += HOP) {
+    let rms = 0;
+    for (let i = 0; i < N; i++) {
+      const v = ch[off + i];
+      rms += v * v;
+      re[i] = v * win[i]; im[i] = 0;
+    }
+    rms = Math.sqrt(rms / N);
+    if (rms < 1e-4) { lastMidi = -999; continue; }
+    bandFFT(re, im);
+    for (let i = 1; i <= TOP; i++) mag[i] = Math.hypot(re[i], im[i]);
+
+    let bi = -1, bs = -1;
+    for (let g = 0; g < GRID.length; g++) {
+      const bins = GBIN[g];
+      let sal = 0;
+      for (let h = 0; h < bins.length; h++) sal += at(bins[h]) / (h + 1);
+      // the octave above borrows its whole series from the note below, so
+      // without a hand on the scale it wins every time
+      sal /= 1 + 0.22 * Math.log2(GRID[g] / 70);
+      if (sal > bs) { bs = sal; bi = g; }
+    }
+    if (bi < 1 || bi >= GRID.length - 1) { lastMidi = -999; continue; }
+
+    // the true pitch lies between two of the proposals; a parabola over the
+    // three around the winner places it, and the grid being logarithmic, the
+    // correction is in semitones straight away
+    let s0 = 0, s1 = bs, s2 = 0;
+    for (const [k, tgt] of [[bi - 1, 0], [bi + 1, 2]]) {
+      let sal = 0;
+      const bins = GBIN[k];
+      for (let h = 0; h < bins.length; h++) sal += at(bins[h]) / (h + 1);
+      sal /= 1 + 0.22 * Math.log2(GRID[k] / 70);
+      if (tgt === 0) s0 = sal; else s2 = sal;
+    }
+    const d = 0.5 * (s0 - s2) / ((s0 - 2 * s1 + s2) || 1e-9);
+    const midi = 69 + 12 * Math.log2(GRID[bi] / 440) + (isFinite(d) ? d / 3 : 0);
+
+    const frac = midi - Math.round(midi);            // −.5 … +.5 of a semitone
+    tx += rms * Math.cos(2 * Math.PI * frac);        // circular, so ±.5 meets
+    ty += rms * Math.sin(2 * Math.PI * frac);
+
+    // Only a note that is still there next time is counted. Every window that
+    // straddles the join between two notes reads something that is neither of
+    // them, and there are enough of those to sway a profile. A note being held
+    // reads within a fifth of a tone of itself one frame later.
+    if (Math.abs(midi - lastMidi) < 0.4) sung.push(midi, rms);
+    lastMidi = midi;
+  }
+
+  const cents = Math.round(Math.atan2(ty, tx) / (2 * Math.PI) * 100);
+
+  // Only now can the notes be named, and the order matters.
+  //
+  // Naming a note means rounding it to the nearest semitone, and a recording
+  // that sits half a semitone off the piano rounds every note in it to the
+  // one above. A tape running a little fast — which is most of them — was
+  // therefore transcribed a semitone sharp throughout, and the drone with it.
+  // The tuning has to be taken out of the reading before the reading is
+  // rounded, which is why it is measured over the whole file first and the
+  // profile built afterwards.
+  const off = cents / 100;
+  for (let i = 0; i < sung.length; i += 2) {
+    const pc = ((Math.round(sung[i] - off) % 12) + 12) % 12;
+    chroma[pc] += sung[i + 1];
+    held.push(pc);
+  }
+  let tot = 0;
+  for (let i = 0; i < 12; i++) tot += chroma[i];
+  if (!tot) throw new Error('silence');
+  for (let i = 0; i < 12; i++) chroma[i] /= tot;
+
+  // What the players are given to play.
+  //
+  // Not a key signature. Naming the key of unaccompanied liturgical singing
+  // off a cassette is a harder problem than it sounds, and it came out wrong
+  // here in more than half of a set of test melodies whose keys were known
+  // for certain: C major and D dorian hold the same seven notes, B-flat minor
+  // and C phrygian likewise, and no weighting reliably tells one rotation of
+  // a scale from another. A drone on the wrong note is worse than no drone.
+  //
+  // So no key is named and nothing theoretical is imposed. What comes out of
+  // the measurement is the set of notes this recording actually dwells on,
+  // with the weight of each, and the players are given nothing else. They
+  // cannot then sound a note the singer did not sing — which is the only
+  // guarantee that matters here, and it holds whether or not a musicologist
+  // would agree about what the mode ought to be called.
+  //
+  // The note held longest becomes the drone, preferring one whose own fifth
+  // or fourth is also sung: a drone with its fifth under it sits still, and
+  // one without it wanders.
+  const rank = Array.from(chroma)
+    .map((w, pc) => ({ pc, w }))
+    .sort((a, b) => b.w - a.w);
+  let root = rank[0].pc, bestS = -1;
+  for (const c of rank.slice(0, 4)) {
+    const sc = c.w + 0.45 * chroma[(c.pc + 7) % 12] + 0.2 * chroma[(c.pc + 5) % 12];
+    if (sc > bestS) { bestS = sc; root = c.pc; }
+  }
+
+  // every note worth playing, as semitones above the drone
+  const notes = rank.filter(c => c.w >= 0.04)
+                    .map(c => ({ s: (c.pc - root + 12) % 12, w: c.w }))
+                    .sort((a, b) => b.w - a.w);
+  const has = x => notes.some(n => n.s === x);
+
+  // and a name for it, offered as a description and used for nothing else
+  let named = null;
+  for (const m of BAND_MODES) {
+    let hit = 0;
+    for (const n of notes) if (m.s.includes(n.s)) hit += n.w;
+    if (!named || hit > named.hit) named = { hit, mode: m };
+  }
+
+  // The pulse, taken from where the loudness rises: the median gap between
+  // the rises is the beat. Where the rises are not regular the piece has no
+  // metre worth the name — which for most of this archive is the true answer
+  // — and the players then move by the breath, as the singing does.
+  const gaps = [];
+  let mean = 0, lastAt = -1, quietUntil = -9;
+  for (let i = 1; i < energy.length; i++) {
+    const rise = Math.max(0, energy[i] - energy[i - 1]);
+    mean = mean * 0.9 + rise * 0.1;
+    // an onset is where the loudness CLIMBS, not where it is high: a note
+    // held for two seconds sits above any mean for its whole length and
+    // would otherwise be counted once and then never again
+    if (rise > mean * 2.2 && rise > 0.003 && i > quietUntil) {
+      if (lastAt >= 0) gaps.push((i - lastAt) * EHOP / RATE);
+      lastAt = i; quietUntil = i + 1;
+    }
+  }
+  gaps.sort((a, b) => a - b);
+  const med = gaps.length >= 8 ? gaps[gaps.length >> 1] : 0;
+
+  let mean2 = 0;
+  for (let i = 0; i < energy.length; i++) mean2 += energy[i];
+  mean2 = energy.length ? mean2 / energy.length : 0;
+
+  return {
+    cents, root, notes, mode: named.mode,
+    // the drone: the note itself, with its fifth under it where the singing
+    // has one, and its fourth where it has that instead
+    drone: has(7) ? [0, 7] : has(5) ? [0, 5] : [0],
+    chroma: Array.from(chroma),
+    beat: (med > 0.28 && med < 1.6) ? med : 0,
+    dur: audio.duration,
+    hz: RATE / EHOP,                             // energy readings per second
+    energy: Float32Array.from(energy),
+    quiet: mean2 * 0.22,                         // under this, nobody is singing
+  };
+}
+
+/* ---- the instruments.
+ * Four of them, and each is a shape rather than a sample: at this level,
+ * behind a voice, the attack and the decay carry far more of what an ear
+ * calls "a violin" than the exact spectrum does. Every frequency is worked
+ * out from the recording's own tuning, never from A=440.
+ */
+function bandHz(A, semis) {                 // the note in the octave above middle C
+  return 440 * Math.pow(2, (A.root + semis - 9) / 12 + A.cents / 1200);
+}
+
+function bandVoice(kind, hz, at, len, vol) {
+  const ctx = MIX.ctx, n = BAND.nodes;
+  if (!ctx || !n || !isFinite(hz) || hz <= 0) return;
+  const g = ctx.createGain();
+  g.gain.value = 0;
+  g.connect(n.bus);
+  const parts = [];
+
+  if (kind === 'organ') {
+    // drawbars: the fundamental, its octave, its twelfth. Nothing sharper, or
+    // the drone starts competing with the words.
+    [[1, 1], [2, 0.42], [3, 0.17], [4, 0.07]].forEach(([mul, amp]) => {
+      const o = ctx.createOscillator(); o.type = 'sine';
+      o.frequency.value = hz * mul;
+      const og = ctx.createGain(); og.gain.value = amp;
+      o.connect(og); og.connect(g); parts.push(o);
+    });
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(vol, at + 1.4);          // it breathes in
+    g.gain.setValueAtTime(vol, at + Math.max(1.5, len - 1.3));
+    g.gain.linearRampToValueAtTime(0, at + len);
+  } else if (kind === 'violin') {
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 2400; lp.Q.value = 0.6;
+    lp.connect(g);
+    [-6, 6].forEach(det => {
+      const o = ctx.createOscillator(); o.type = 'sawtooth';
+      o.frequency.value = hz; o.detune.value = det;
+      const og = ctx.createGain(); og.gain.value = 0.5;
+      o.connect(og); og.connect(lp); parts.push(o);
+    });
+    // vibrato, and late: a player does not start one on the attack
+    const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 5.4;
+    const lg = ctx.createGain();
+    lg.gain.setValueAtTime(0, at);
+    lg.gain.linearRampToValueAtTime(7, at + Math.min(0.6, len * 0.5));
+    lfo.connect(lg);
+    parts.slice().forEach(o => lg.connect(o.detune));
+    parts.push(lfo);
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(vol, at + 0.3);          // drawn, not struck
+    g.gain.setValueAtTime(vol, at + Math.max(0.35, len - 0.5));
+    g.gain.linearRampToValueAtTime(0, at + len);
+  } else if (kind === 'guitar') {
+    // a plucked string: bright for an instant, then only the fundamental left
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(Math.min(7000, hz * 7), at);
+    lp.frequency.exponentialRampToValueAtTime(Math.max(160, hz * 1.6), at + 0.5);
+    lp.connect(g);
+    [['triangle', 0.7, 0], ['sawtooth', 0.3, 4]].forEach(([t, amp, det]) => {
+      const o = ctx.createOscillator(); o.type = t;
+      o.frequency.value = hz; o.detune.value = det;
+      const og = ctx.createGain(); og.gain.value = amp;
+      o.connect(og); og.connect(lp); parts.push(o);
+    });
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(vol, at + 0.006);        // struck
+    g.gain.exponentialRampToValueAtTime(Math.max(1e-4, vol * 0.02), at + len);
+    g.gain.linearRampToValueAtTime(0, at + len + 0.05);
+  } else {                                                  // flute
+    [[1, 0.85], [2, 0.1]].forEach(([mul, amp]) => {
+      const o = ctx.createOscillator(); o.type = 'sine';
+      o.frequency.value = hz * mul;
+      const og = ctx.createGain(); og.gain.value = amp;
+      o.connect(og); og.connect(g); parts.push(o);
+    });
+    // the breath across the mouthpiece, without which it is only a sine
+    const nz = ctx.createBufferSource();
+    nz.buffer = n.noise; nz.loop = true;
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.frequency.value = hz * 2.2; bp.Q.value = 1.4;
+    const ng = ctx.createGain(); ng.gain.value = 0.05;
+    nz.connect(bp); bp.connect(ng); ng.connect(g); parts.push(nz);
+    g.gain.setValueAtTime(0, at);
+    g.gain.linearRampToValueAtTime(vol, at + 0.14);
+    g.gain.setValueAtTime(vol, at + Math.max(0.2, len - 0.3));
+    g.gain.linearRampToValueAtTime(0, at + len);
+  }
+
+  const end = at + len + 0.4;
+  parts.forEach(o => { try { o.start(at); o.stop(end); } catch (e) {} });
+  setTimeout(() => { try { g.disconnect(); } catch (e) {} },
+             Math.max(0, (end - ctx.currentTime) * 1000) + 500);
+}
+
+/* ---- where the players stand.
+ * One bus for all four, and two things are done to it and nothing else: it
+ * is rolled off above two kilohertz, and it is sent into a room. Both are
+ * for the same purpose — to put the players behind the singer rather than
+ * beside them. A bright, dry accompaniment at this volume still pulls the
+ * ear forward; a dull, distant one at the same volume does not.
+ */
+function bandBuild() {
+  const ctx = MIX.ctx;
+  if (!ctx) return null;
+  const bus = ctx.createGain(); bus.gain.value = 0;
+
+  const lp = ctx.createBiquadFilter();
+  lp.type = 'lowpass'; lp.frequency.value = 2000; lp.Q.value = 0.5;
+  const hp = ctx.createBiquadFilter();       // keep out of the singer's chest
+  hp.type = 'highpass'; hp.frequency.value = 55;
+
+  // a room, made rather than recorded: noise decaying over two and a half
+  // seconds, which is what a stone hall does to a held note
+  const len = Math.floor(ctx.sampleRate * 2.5);
+  const imp = ctx.createBuffer(2, len, ctx.sampleRate);
+  for (let c = 0; c < 2; c++) {
+    const d = imp.getChannelData(c);
+    for (let i = 0; i < len; i++)
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6);
+  }
+  const verb = ctx.createConvolver(); verb.buffer = imp;
+  const wet = ctx.createGain(); wet.gain.value = 0.5;
+  const dry = ctx.createGain(); dry.gain.value = 0.75;
+
+  // one second of noise, borrowed by the flute for its breath
+  const nlen = Math.floor(ctx.sampleRate);
+  const noise = ctx.createBuffer(1, nlen, ctx.sampleRate);
+  const nd = noise.getChannelData(0);
+  for (let i = 0; i < nlen; i++) nd[i] = Math.random() * 2 - 1;
+
+  bus.connect(hp); hp.connect(lp);
+  lp.connect(dry); dry.connect(ctx.destination);
+  lp.connect(verb); verb.connect(wet); wet.connect(ctx.destination);
+  return { bus, lp, hp, verb, wet, dry, noise };
+}
+
+/* The notes the guitar may hold together.
+ *
+ * A drone is safe with anything in its own mode; a chord is not. So the chord
+ * is not built by stacking thirds up a scale — there is no scale here — but by
+ * taking the notes the singing itself leans on and keeping only those that
+ * are consonant with the drone. A second or a tritone is a fine thing to sing
+ * over a drone in passing and a poor thing to hold underneath one, and that
+ * distinction is the whole of this function.
+ */
+const BAND_CONSONANT = [3, 4, 5, 7, 8, 9, 12];
+
+function bandVoicing(A) {
+  const out = [0];
+  for (const n of A.notes) {
+    if (out.length >= 3) break;
+    if (n.s && BAND_CONSONANT.includes(n.s) && !out.includes(n.s)) out.push(n.s);
+  }
+  // Nothing consonant to hold? Then hold nothing. The guitar takes the drone
+  // note an octave up instead of a fifth nobody sang. Several recordings in
+  // this archive lean on four notes only — a second, a seventh and the note
+  // itself — and supplying them a fifth because chords usually have one is
+  // exactly the invention this design exists to prevent. Checked: three of
+  // six recordings tested had no fifth in them at all.
+  if (out.length < 2) out.push(12);
+  return out.sort((a, b) => a - b);
+}
+
+/* ---- the scheduler.
+ * Web Audio is told about a note before it is due and plays it exactly on
+ * time; a timer that tried to play notes at the moment they fall would
+ * stutter every time the page did anything else. So a bar at a time is
+ * written a little ahead of the needle, and the needle is the recording's
+ * own clock — which is what makes the players stop when it is paused and
+ * pick the piece up again where it was left.
+ */
+const BAND_AHEAD = 0.7;
+
+function bandTick() {
+  const ctx = MIX.ctx, A = BAND.an, n = BAND.nodes;
+  if (!BAND.on || !ctx || !A || !n) return;
+
+  // the players wait while the tape does
+  if (au.paused) { BAND.next = Math.max(BAND.next, ctx.currentTime); return; }
+
+  // and they drop back while the voice is up, so the words stay in front
+  const lev = vuLevel();
+  n.bus.gain.setTargetAtTime(BAND.vol * (1 - 0.5 * Math.min(1, lev * 2.2)),
+                             ctx.currentTime, 0.25);
+
+  const beat = A.beat || 0.9;
+  const bar  = beat * 4;
+  if (BAND.next < ctx.currentTime) BAND.next = ctx.currentTime + 0.06;
+
+  while (BAND.next < ctx.currentTime + BAND_AHEAD) {
+    const at = BAND.next;
+    const step = BAND.step++;
+    // where the recording will be when this bar sounds, and whether anyone
+    // is singing there — the players rest through the silences
+    const when = au.currentTime + (at - ctx.currentTime);
+    const e = A.energy[Math.floor(when * A.hz)];
+    const resting = e !== undefined && e < A.quiet;
+
+    if (!resting) {
+      const f = x => bandHz(A, x);
+      const ch = BAND.voicing;
+
+      // the organ holds the drone and never leaves it, in four-bar lengths
+      // that overlap so it is one unbroken sound and not a pulse
+      if (step % 4 === 0) {
+        A.drone.forEach((sm, i) =>
+          bandVoice('organ', f(sm) / 4, at, bar * 4 + 1.3, i ? 0.17 : 0.30));
+        bandVoice('organ', f(A.drone[0]) / 2, at, bar * 4 + 1.3, 0.13);
+      }
+
+      // the guitar picks the chord out, four to the bar, and off the beat on
+      // the third of them so that it does not march
+      [[0, 0], [1.5, 1], [2.5, 2 % ch.length], [3.5, 1]].forEach(([b, i]) => {
+        bandVoice('guitar', f(ch[i % ch.length]) / 2, at + b * beat,
+                  Math.max(0.7, beat * 1.6), 0.20);
+      });
+
+      // The violin takes one of the notes the singing leans on and holds it,
+      // moving by the smallest step it can find from the note it held before.
+      // Which note is drawn from the recording's own weights, so the line
+      // dwells where the singing dwells.
+      const pool = A.notes.slice(0, 5).map(n => n.s);
+      let pick = pool[0], near = 99;
+      for (const c of pool) {
+        const d = Math.abs(c - BAND.lastV) + (BAND.rnd() < 0.35 ? 3 : 0);
+        if (d < near && c !== BAND.lastV) { near = d; pick = c; }
+      }
+      BAND.lastV = pick;
+      bandVoice('violin', f(pick), at + beat * 0.25, bar * 0.8, 0.115);
+
+      // and the flute answers at the close of every fourth bar, falling to
+      // the drone — the one place anything here is allowed to be a phrase
+      if (step % 4 === 3) {
+        const above = A.notes.map(n => n.s).filter(x => x > 2).sort((a, b) => a - b);
+        const fall = [above[Math.min(2, above.length - 1)], above[0], 0]
+          .filter(x => x !== undefined);
+        fall.forEach((sm, i) =>
+          bandVoice('flute', f(sm) * 2, at + beat * (2.2 + i * 0.55),
+                    beat * 0.6, 0.085));
+      }
+    }
+    BAND.next += bar;
+  }
+}
+
+/* the loudness of the singing at this instant, read from the meter the
+   player already keeps — the band ducks under it */
+function vuLevel() {
+  const n = MIX.nodes;
+  if (!n || !n.an) return 0;
+  const buf = new Uint8Array(n.an.fftSize);
+  n.an.getByteTimeDomainData(buf);
+  let sum = 0;
+  for (let i = 0; i < buf.length; i++) {
+    const v = (buf[i] - 128) / 128;
+    sum += v * v;
+  }
+  return Math.sqrt(sum / buf.length);
+}
+
+/* ---- the button */
+function bandKey() { return cur.rec + ':' + cur.idx; }
+
+function bandPaint(state) {
+  const b = $('bandState');
+  if (!b) return;
+  b.classList.toggle('off', state === 'off');
+  b.classList.toggle('busy', state === 'busy');
+  b.textContent = state === 'busy' ? 'מלחין…'
+                : state === 'on'   ? 'נגנים'
+                : 'הוסף נגנים';
+  b.title = state === 'on' && BAND.an
+    ? `ליווי על ${PC_NAME[BAND.an.root]}, מן הצלילים שההקלטה עצמה נשענת עליהם` +
+      (BAND.an.cents
+        ? `, מכוון ${BAND.an.cents > 0 ? '+' : ''}${BAND.an.cents} סנט אל ההקלטה`
+        : '') +
+      ' — לחיצה משתיקה את הנגנים'
+    : 'הלחנת ליווי לפיוט המושמע — כינור, גיטרה, אורגנית וחליל, עמומים ברקע';
+}
+
+function bandStop(quiet) {
+  BAND.on = false;
+  clearInterval(BAND.timer); BAND.timer = 0;
+  if (BAND.nodes && MIX.ctx) {
+    // let the held notes die away rather than cutting them off
+    BAND.nodes.bus.gain.setTargetAtTime(0, MIX.ctx.currentTime, 0.35);
+  }
+  bandPaint('off');
+  if (!quiet) toast('הנגנים הושתקו');
+}
+
+/* a different recording is a different key, a different mode and a different
+   tuning, so the players are dismissed and must be asked for again */
+function bandDrop() {
+  if (BAND.on) bandStop(true);
+  BAND.an = null; BAND.forKey = '';
+  bandPaint('off');
+}
+
+async function bandGo() {
+  if (BAND.busy) return;
+  if (BAND.on) return bandStop();
+  if (!cur.rec) return toast('אין הקלטה מושמעת', 1);
+  if (!mixInit()) return toast('הדפדפן אינו מאפשר עיבוד קול', 1);
+  if (MIX.ctx.state === 'suspended') await MIX.ctx.resume();
+
+  // already listened to this one: the players can start at once
+  if (BAND.an && BAND.forKey === bandKey()) return bandPlay();
+  const cached = BAND.cache[bandKey()];
+  if (cached) { BAND.an = cached; BAND.forKey = bandKey(); return bandPlay(); }
+
+  // Otherwise it has to be listened to first, and that cannot be done while
+  // it is playing: the measurement runs over the whole file at once. So the
+  // tape stops, as the user asked for, and starts again with the players.
+  const wasPlaying = !au.paused;
+  au.pause();
+  BAND.busy = true;
+  bandPaint('busy');
+  loadSay('load', 'מאזין לפיוט ומלחין ליווי…', 0);
+  try {
+    const src = LOAD.blob || audioURL(byId(C.recordings, cur.rec).tr[cur.idx].f);
+    const bytes = await (await fetch(src)).arrayBuffer();
+    // let the browser paint "מלחין…" before the analysis blocks the thread
+    await new Promise(r => setTimeout(r, 30));
+    const A = await bandAnalyse(bytes);
+    BAND.an = A; BAND.forKey = bandKey(); BAND.cache[bandKey()] = A;
+    BAND.busy = false;
+    loadHide();
+    toast(`ליווי על ${PC_NAME[A.root]} · ${A.notes.length} צלילים מן ההקלטה` +
+          (A.cents ? ` · מכוון ${A.cents > 0 ? '+' : ''}${A.cents} סנט` : ''));
+    if (wasPlaying) au.play().catch(() => {});
+    bandPlay();
+  } catch (e) {
+    BAND.busy = false;
+    bandPaint('off');
+    loadHide();
+    if (wasPlaying) au.play().catch(() => {});
+    toast('לא הצלחתי להאזין להקלטה כדי להלחין לה ליווי', 1);
+  }
+}
+
+function bandPlay() {
+  if (!BAND.an || !MIX.ctx) return;
+  if (!BAND.nodes) BAND.nodes = bandBuild();
+  if (!BAND.nodes) return;
+  BAND.on = true;
+  BAND.vol = 0.13;
+  BAND.step = 0;
+  BAND.voicing = bandVoicing(BAND.an);
+  BAND.lastV = BAND.voicing[BAND.voicing.length - 1];
+  // the same recording is accompanied the same way every time it is played,
+  // as the dancer dances it the same way, and for the same reason
+  BAND.rnd = dncSeed('band' + bandKey());
+  BAND.next = MIX.ctx.currentTime + 0.12;
+  BAND.nodes.bus.gain.setTargetAtTime(BAND.vol, MIX.ctx.currentTime, 0.6);
+  clearInterval(BAND.timer);
+  BAND.timer = setInterval(bandTick, 120);
+  bandPaint('on');
+}
+
+$('bandState').onclick = bandGo;
+
 /* the three ready-made settings, chosen with the mode knob. The order is
    MIX_IDS: bass · mid · mid-frequency · treble · rumble · hiss · levelling ·
    gate · gain */
@@ -1572,6 +2248,105 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && !au.paused) keepAwake(true);
 });
 
+/* ------------------------------------------- the player, once the app is left
+ *
+ * Leaving the app is not leaving the recording. The tape goes on playing, and
+ * the system's own media controls carry it from there: what is playing, who
+ * is singing, how far in it is — and, the part that was asked for, a way to
+ * stop it from the notification without opening the app again and having to
+ * find one's place a second time.
+ *
+ * Two things are needed for that and neither is the obvious one. The controls
+ * have to be registered before they can appear at all, which is the media
+ * session below. And the sound has to survive being in the background: the
+ * recording is routed through Web Audio for the mixer, and a suspended audio
+ * context silences it while the element itself goes on reporting that it is
+ * playing perfectly happily. So the context is woken whenever it drops.
+ */
+function mediaSay(r, idx) {
+  if (!('mediaSession' in navigator) || typeof MediaMetadata === 'undefined') return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:  r.ttl + (r.tr.length > 1 ? ` · רצועה ${idx + 1}/${r.tr.length}` : ''),
+      artist: perfName(r.p) || 'לא ידוע',
+      album:  eventName(r.e) || 'אוצר השירה השומרונית',
+      artwork: [96, 192, 256, 512].map(s => ({
+        src: 'img/gramophone.png', sizes: `${s}x${s}`, type: 'image/png' })),
+    });
+  } catch (e) { /* an older engine: the controls simply stay plain */ }
+}
+
+/* how far in it is, so the notification can show a scrubber that means
+   something rather than a bar that never moves */
+function mediaPos() {
+  const ms = navigator.mediaSession;
+  if (!ms || !ms.setPositionState) return;
+  if (!isFinite(au.duration) || au.duration <= 0) return;
+  try {
+    ms.setPositionState({
+      duration: au.duration,
+      playbackRate: au.playbackRate > 0 ? au.playbackRate : 1,
+      position: Math.max(0, Math.min(au.currentTime, au.duration)),
+    });
+  } catch (e) {}
+}
+
+function mediaWire() {
+  const ms = navigator.mediaSession;
+  if (!ms || !ms.setActionHandler) return;
+  const on = (a, fn) => { try { ms.setActionHandler(a, fn); } catch (e) {} };
+  on('play',  () => { au.play().catch(() => {}); syncBtn(); });
+  on('pause', () => { au.pause(); syncBtn(); });
+  on('previoustrack', () => step(-1));
+  on('nexttrack',     () => step(1));
+  // the one the request was really about: it ends the whole thing from
+  // outside, players and all, and leaves nothing running behind the app
+  on('stop', () => {
+    au.pause();
+    bandStop(true);
+    stopAudio();
+    spoolStop(false);
+    syncBtn();
+    ms.playbackState = 'none';
+    try { ms.metadata = null; } catch (e) {}
+  });
+  on('seekbackward', d => {
+    au.currentTime = Math.max(0, au.currentTime - ((d && d.seekOffset) || 10));
+  });
+  on('seekforward', d => {
+    au.currentTime = Math.min(au.duration || 1e9,
+                              au.currentTime + ((d && d.seekOffset) || 10));
+  });
+  on('seekto', d => {
+    if (!d || !isFinite(d.seekTime)) return;
+    if (d.fastSeek && au.fastSeek) au.fastSeek(d.seekTime);
+    else au.currentTime = d.seekTime;
+    mediaPos();
+  });
+}
+mediaWire();
+
+/* The audio context is what actually carries the sound, and a backgrounded
+   page is allowed to suspend it. When that happens the element goes on
+   saying it is playing and nothing comes out — so it is woken again, both
+   when it drops and when the app is returned to. */
+function mixWake() {
+  if (MIX.ctx && MIX.ctx.state === 'suspended' && !au.paused)
+    MIX.ctx.resume().catch(() => {});
+}
+au.addEventListener('play', () => {
+  mixWake();
+  if (navigator.mediaSession) navigator.mediaSession.playbackState = 'playing';
+  mediaPos();
+});
+au.addEventListener('pause', () => {
+  if (navigator.mediaSession) navigator.mediaSession.playbackState = 'paused';
+});
+au.addEventListener('durationchange', mediaPos);
+au.addEventListener('ratechange', mediaPos);
+document.addEventListener('visibilitychange', mixWake);
+setInterval(mixWake, 4000);
+
 /* A seek plays the matching tape noise: which way the tape ran decides it. */
 let seekFrom = 0, switching = false;
 au.addEventListener('seeking', () => {
@@ -1581,7 +2356,12 @@ au.addEventListener('seeking', () => {
   sfxStop(d < 0 ? 'forward' : 'rewind');
   sfx(d < 0 ? 'rewind' : 'forward');
 });
-au.addEventListener('timeupdate', () => { seekFrom = au.currentTime; });
+let mediaAt = 0;
+au.addEventListener('timeupdate', () => {
+  seekFrom = au.currentTime;
+  // the notification only needs this about once a second, not four times
+  if (Date.now() - mediaAt > 1000) { mediaAt = Date.now(); mediaPos(); }
+});
 $('pnext').onclick  = () => step(1);
 $('pprev').onclick  = () => step(-1);
 /* When a track ends, continue seamlessly inside the recording. Only when the
