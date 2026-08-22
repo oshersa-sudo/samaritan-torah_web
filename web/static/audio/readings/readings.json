@@ -9714,424 +9714,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - מועדי - 98",
-     "incipit": "אך בחמשה עשר יום",
-     "sam_ch_id": 1615,
-     "n": 98,
-     "verses": "כג:לט-כג:מד",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 98,
-     "file": "/static/audio/readings/b3-p07-c098.mp3",
-     "duration": 76.14,
-     "src_start": 444.45,
-     "src_end": 520.59,
-     "verses_num": "23:39-23:44"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - מועדי - 99",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1616,
-     "n": 99,
-     "verses": "כד:א-כד:ט",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 99,
-     "file": "/static/audio/readings/b3-p07-c099.mp3",
-     "duration": 90.43,
-     "src_start": 520.59,
-     "src_end": 611.02,
-     "verses_num": "24:1-24:9"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 3,
-     "name": "ויקרא - מועדי - 100",
-     "incipit": "ויצא בן אשה ישראלית",
-     "sam_ch_id": 1617,
-     "n": 100,
-     "verses": "כד:י-כד:יב",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 100,
-     "file": "/static/audio/readings/b3-p07-c100.mp3",
-     "duration": 134.4,
-     "src_start": 611.02,
-     "src_end": 745.42,
-     "verses_num": "24:10-24:12"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 11,
-     "name": "ויקרא - מועדי - 101",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1618,
-     "n": 101,
-     "verses": "כד:יג-כד:כג",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 101,
-     "file": "/static/audio/readings/b3-p07-c101.mp3",
-     "duration": 68.96,
-     "src_start": 745.42,
-     "src_end": 814.38,
-     "verses_num": "24:13-24:23"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 7,
-     "name": "ויקרא - מועדי - 102",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1619,
-     "n": 102,
-     "verses": "כה:א-כה:ז",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 102,
-     "file": "/static/audio/readings/b3-p07-c102.mp3",
-     "duration": 70.28,
-     "src_start": 814.38,
-     "src_end": 884.66,
-     "verses_num": "25:1-25:7"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - מועדי - 103",
-     "incipit": "וספרת לך שבע שבתות",
-     "sam_ch_id": 1620,
-     "n": 103,
-     "verses": "כה:ח-כה:יג",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 103,
-     "file": "/static/audio/readings/b3-p07-c103.mp3",
-     "duration": 64.72,
-     "src_start": 884.66,
-     "src_end": 949.38,
-     "verses_num": "25:8-25:13"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - מועדי - 104",
-     "incipit": "וכי תמכר ממכר לעמיתך",
-     "sam_ch_id": 1621,
-     "n": 104,
-     "verses": "כה:יד-כה:יט",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 104,
-     "file": "/static/audio/readings/b3-p07-c104.mp3",
-     "duration": 59.09,
-     "src_start": 949.38,
-     "src_end": 1008.47,
-     "verses_num": "25:14-25:19"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 5,
-     "name": "ויקרא - מועדי - 105",
-     "incipit": "וכי תאמרו מה נאכל",
-     "sam_ch_id": 1622,
-     "n": 105,
-     "verses": "כה:כ-כה:כד",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 105,
-     "file": "/static/audio/readings/b3-p07-c105.mp3",
-     "duration": 40.34,
-     "src_start": 1008.47,
-     "src_end": 1048.81,
-     "verses_num": "25:20-25:24"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - מועדי - 106",
-     "incipit": "וכי ימך אחיך ומכר",
-     "sam_ch_id": 1623,
-     "n": 106,
-     "verses": "כה:כה-כה:כח",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 106,
-     "file": "/static/audio/readings/b3-p07-c106.mp3",
-     "duration": 37.41,
-     "src_start": 1048.81,
-     "src_end": 1086.22,
-     "verses_num": "25:25-25:28"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - מועדי - 107",
-     "incipit": "ואיש כי ימכר בית",
-     "sam_ch_id": 1624,
-     "n": 107,
-     "verses": "כה:כט-כה:לד",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 107,
-     "file": "/static/audio/readings/b3-p07-c107.mp3",
-     "duration": 69.17,
-     "src_start": 1086.22,
-     "src_end": 1155.39,
-     "verses_num": "25:29-25:34"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - מועדי - 108",
-     "incipit": "וכי ימך אחיך ומטה",
-     "sam_ch_id": 1625,
-     "n": 108,
-     "verses": "כה:לה-כה:לח",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 108,
-     "file": "/static/audio/readings/b3-p07-c108.mp3",
-     "duration": 87.7,
-     "src_start": 1155.39,
-     "src_end": 1243.09,
-     "verses_num": "25:35-25:38"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 8,
-     "name": "ויקרא - מועדי - 109",
-     "incipit": "וכי ימך אחיך עמך:",
-     "sam_ch_id": 1626,
-     "n": 109,
-     "verses": "כה:לט-כה:מו",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 109,
-     "file": "/static/audio/readings/b3-p07-c109.mp3",
-     "duration": 113.83,
-     "src_start": 1243.09,
-     "src_end": 1356.92,
-     "verses_num": "25:39-25:46"
-    },
-    {
-     "src": {
-      "youtube_id": "K7LGpyW-EQg"
-     },
-     "verse_count": 11,
-     "name": "ויקרא - מועדי - 110",
-     "incipit": "וכי תשיג יד גר",
-     "sam_ch_id": 1627,
-     "n": 110,
-     "verses": "כה:מז-כו:ב",
-     "portion": {
-      "order": 7,
-      "name": "מועדי",
-      "id": 36
-     },
-     "sam_ch_number": 110,
-     "file": "/static/audio/readings/b3-p07-c110.mp3",
-     "duration": 5.46,
-     "src_start": 1356.92,
-     "src_end": 1362.38,
-     "verses_num": "25:47-26:2"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 11,
-     "name": "ויקרא - אם בחקתי - 111",
-     "incipit": "אם בחקתי תלכו ואת",
-     "sam_ch_id": 1628,
-     "n": 111,
-     "verses": "כו:ג-כו:יג",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 111,
-     "file": "/static/audio/readings/b3-p08-c111.mp3",
-     "duration": 121.76,
-     "src_start": 0.0,
-     "src_end": 121.76,
-     "verses_num": "26:3-26:13"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - אם בחקתי - 112",
-     "incipit": "ואם לא תשמעו לי:",
-     "sam_ch_id": 1629,
-     "n": 112,
-     "verses": "כו:יד-כו:יז",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 112,
-     "file": "/static/audio/readings/b3-p08-c112.mp3",
-     "duration": 76.4,
-     "src_start": 121.76,
-     "src_end": 198.16,
-     "verses_num": "26:14-26:17"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 5,
-     "name": "ויקרא - אם בחקתי - 113",
-     "incipit": "ואם עד אלה לא",
-     "sam_ch_id": 1630,
-     "n": 113,
-     "verses": "כו:יח-כו:כב",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 113,
-     "file": "/static/audio/readings/b3-p08-c113.mp3",
-     "duration": 70.45,
-     "src_start": 198.16,
-     "src_end": 268.61,
-     "verses_num": "26:18-26:22"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - אם בחקתי - 114",
-     "incipit": "ואם באלה לא תוסרו",
-     "sam_ch_id": 1631,
-     "n": 114,
-     "verses": "כו:כג-כו:כו",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 114,
-     "file": "/static/audio/readings/b3-p08-c114.mp3",
-     "duration": 64.36,
-     "src_start": 268.61,
-     "src_end": 332.97,
-     "verses_num": "26:23-26:26"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 9,
-     "name": "ויקרא - אם בחקתי - 115",
-     "incipit": "ואם בזאת לא תשמעו",
-     "sam_ch_id": 1632,
-     "n": 115,
-     "verses": "כו:כז-כו:לה",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 115,
-     "file": "/static/audio/readings/b3-p08-c115.mp3",
-     "duration": 110.95,
-     "src_start": 332.97,
-     "src_end": 443.92,
-     "verses_num": "26:27-26:35"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 3,
-     "name": "ויקרא - אם בחקתי - 116",
-     "incipit": "והנשארים בכם והבאתי מרך",
-     "sam_ch_id": 1633,
-     "n": 116,
-     "verses": "כו:לו-כו:לח",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 116,
-     "file": "/static/audio/readings/b3-p08-c116.mp3",
-     "duration": 55.61,
-     "src_start": 443.92,
-     "src_end": 499.53,
-     "verses_num": "26:36-26:38"
-    },
-    {
-     "src": {
       "youtube_id": "XjsdbiNaZW4"
      },
      "verse_count": 3,
@@ -12505,6 +12087,424 @@
      "verse_count": 6,
      "incipit": "וידבר יהוה אל משה",
      "name": "ויקרא - ובקצירכם - 97"
+    },
+    {
+     "n": 98,
+     "sam_ch_number": 98,
+     "file": "/static/audio/readings/b3-p07-c098.mp3",
+     "duration": 82.37,
+     "src_start": 0,
+     "src_end": 82.37,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1615,
+     "verses": "כג:לט-כג:מד",
+     "verses_num": "23:39-23:44",
+     "verse_count": 6,
+     "incipit": "אך בחמשה עשר יום",
+     "name": "ויקרא - מועדי - 98"
+    },
+    {
+     "n": 99,
+     "sam_ch_number": 99,
+     "file": "/static/audio/readings/b3-p07-c099.mp3",
+     "duration": 70.82,
+     "src_start": 0,
+     "src_end": 70.82,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1616,
+     "verses": "כד:א-כד:ט",
+     "verses_num": "24:1-24:9",
+     "verse_count": 9,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - מועדי - 99"
+    },
+    {
+     "n": 100,
+     "sam_ch_number": 100,
+     "file": "/static/audio/readings/b3-p07-c100.mp3",
+     "duration": 117.83,
+     "src_start": 0,
+     "src_end": 117.83,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1617,
+     "verses": "כד:י-כד:יב",
+     "verses_num": "24:10-24:12",
+     "verse_count": 3,
+     "incipit": "ויצא בן אשה ישראלית:",
+     "name": "ויקרא - מועדי - 100"
+    },
+    {
+     "n": 101,
+     "sam_ch_number": 101,
+     "file": "/static/audio/readings/b3-p07-c101.mp3",
+     "duration": 26.4,
+     "src_start": 0,
+     "src_end": 26.4,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1618,
+     "verses": "כד:יג-כד:כג",
+     "verses_num": "24:13-24:23",
+     "verse_count": 11,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - מועדי - 101"
+    },
+    {
+     "n": 102,
+     "sam_ch_number": 102,
+     "file": "/static/audio/readings/b3-p07-c102.mp3",
+     "duration": 76.05,
+     "src_start": 0,
+     "src_end": 76.05,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1619,
+     "verses": "כה:א-כה:ז",
+     "verses_num": "25:1-25:7",
+     "verse_count": 7,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - מועדי - 102"
+    },
+    {
+     "n": 103,
+     "sam_ch_number": 103,
+     "file": "/static/audio/readings/b3-p07-c103.mp3",
+     "duration": 70.94,
+     "src_start": 0,
+     "src_end": 70.94,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1620,
+     "verses": "כה:ח-כה:יג",
+     "verses_num": "25:8-25:13",
+     "verse_count": 6,
+     "incipit": "וספרת לך שבע שבתות",
+     "name": "ויקרא - מועדי - 103"
+    },
+    {
+     "n": 104,
+     "sam_ch_number": 104,
+     "file": "/static/audio/readings/b3-p07-c104.mp3",
+     "duration": 76.15,
+     "src_start": 0,
+     "src_end": 76.15,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1621,
+     "verses": "כה:יד-כה:יט",
+     "verses_num": "25:14-25:19",
+     "verse_count": 6,
+     "incipit": "וכי תמכר ממכר לעמיתך:",
+     "name": "ויקרא - מועדי - 104"
+    },
+    {
+     "n": 105,
+     "sam_ch_number": 105,
+     "file": "/static/audio/readings/b3-p07-c105.mp3",
+     "duration": 90.42,
+     "src_start": 0,
+     "src_end": 90.42,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1622,
+     "verses": "כה:כ-כה:כד",
+     "verses_num": "25:20-25:24",
+     "verse_count": 5,
+     "incipit": "וכי תאמרו: מה נאכל",
+     "name": "ויקרא - מועדי - 105"
+    },
+    {
+     "n": 106,
+     "sam_ch_number": 106,
+     "file": "/static/audio/readings/b3-p07-c106.mp3",
+     "duration": 31.36,
+     "src_start": 0,
+     "src_end": 31.36,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1623,
+     "verses": "כה:כה-כה:כח",
+     "verses_num": "25:25-25:28",
+     "verse_count": 4,
+     "incipit": "וכי ימך אחיך ומכר",
+     "name": "ויקרא - מועדי - 106"
+    },
+    {
+     "n": 107,
+     "sam_ch_number": 107,
+     "file": "/static/audio/readings/b3-p07-c107.mp3",
+     "duration": 103.05,
+     "src_start": 0,
+     "src_end": 103.05,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1624,
+     "verses": "כה:כט-כה:לד",
+     "verses_num": "25:29-25:34",
+     "verse_count": 6,
+     "incipit": "ואיש כי ימכר בית",
+     "name": "ויקרא - מועדי - 107"
+    },
+    {
+     "n": 108,
+     "sam_ch_number": 108,
+     "file": "/static/audio/readings/b3-p07-c108.mp3",
+     "duration": 68.95,
+     "src_start": 0,
+     "src_end": 68.95,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1625,
+     "verses": "כה:לה-כה:לח",
+     "verses_num": "25:35-25:38",
+     "verse_count": 4,
+     "incipit": "וכי ימך אחיך ומטה",
+     "name": "ויקרא - מועדי - 108"
+    },
+    {
+     "n": 109,
+     "sam_ch_number": 109,
+     "file": "/static/audio/readings/b3-p07-c109.mp3",
+     "duration": 72.9,
+     "src_start": 0,
+     "src_end": 72.9,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1626,
+     "verses": "כה:לט-כה:מו",
+     "verses_num": "25:39-25:46",
+     "verse_count": 8,
+     "incipit": "וכי ימך אחיך עמך:",
+     "name": "ויקרא - מועדי - 109"
+    },
+    {
+     "n": 110,
+     "sam_ch_number": 110,
+     "file": "/static/audio/readings/b3-p07-c110.mp3",
+     "duration": 62.1,
+     "src_start": 0,
+     "src_end": 62.1,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1627,
+     "verses": "כה:מז-כו:ב",
+     "verses_num": "25:47-26:2",
+     "verse_count": 11,
+     "incipit": "וכי תשיג יד גר",
+     "name": "ויקרא - מועדי - 110"
+    },
+    {
+     "n": 111,
+     "sam_ch_number": 111,
+     "file": "/static/audio/readings/b3-p07-c111.mp3",
+     "duration": 52.03,
+     "src_start": 0,
+     "src_end": 52.03,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1628,
+     "verses": "כו:ג-כו:יג",
+     "verses_num": "26:3-26:13",
+     "verse_count": 11,
+     "incipit": "אם בחקתי תלכו: ואת",
+     "name": "ויקרא - מועדי - 111"
+    },
+    {
+     "n": 112,
+     "sam_ch_number": 112,
+     "file": "/static/audio/readings/b3-p07-c112.mp3",
+     "duration": 46.94,
+     "src_start": 0,
+     "src_end": 46.94,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1629,
+     "verses": "כו:יד-כו:יז",
+     "verses_num": "26:14-26:17",
+     "verse_count": 4,
+     "incipit": "ואם לא תשמעו לי:",
+     "name": "ויקרא - מועדי - 112"
+    },
+    {
+     "n": 113,
+     "sam_ch_number": 113,
+     "file": "/static/audio/readings/b3-p07-c113.mp3",
+     "duration": 68.7,
+     "src_start": 0,
+     "src_end": 68.7,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1630,
+     "verses": "כו:יח-כו:כב",
+     "verses_num": "26:18-26:22",
+     "verse_count": 5,
+     "incipit": "ואם עד אלה לא",
+     "name": "ויקרא - מועדי - 113"
+    },
+    {
+     "n": 114,
+     "sam_ch_number": 114,
+     "file": "/static/audio/readings/b3-p07-c114.mp3",
+     "duration": 38.34,
+     "src_start": 0,
+     "src_end": 38.34,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1631,
+     "verses": "כו:כג-כו:כו",
+     "verses_num": "26:23-26:26",
+     "verse_count": 4,
+     "incipit": "ואם באלה לא תוסרו",
+     "name": "ויקרא - מועדי - 114"
+    },
+    {
+     "n": 115,
+     "sam_ch_number": 115,
+     "file": "/static/audio/readings/b3-p07-c115.mp3",
+     "duration": 87.71,
+     "src_start": 0,
+     "src_end": 87.71,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1632,
+     "verses": "כו:כז-כו:לה",
+     "verses_num": "26:27-26:35",
+     "verse_count": 9,
+     "incipit": "ואם בזאת לא תשמעו",
+     "name": "ויקרא - מועדי - 115"
+    },
+    {
+     "n": 116,
+     "sam_ch_number": 116,
+     "file": "/static/audio/readings/b3-p07-c116.mp3",
+     "duration": 119.27,
+     "src_start": 0,
+     "src_end": 119.27,
+     "portion": {
+      "order": 7,
+      "id": 36,
+      "name": "מועדי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1633,
+     "verses": "כו:לו-כו:לח",
+     "verses_num": "26:36-26:38",
+     "verse_count": 3,
+     "incipit": "והנשארים בכם: והבאתי מרך",
+     "name": "ויקרא - מועדי - 116"
     }
    ],
    "playlist": "PLl-48IEqLtluI0oPyh0rmC0-iKVCEMvt_",
