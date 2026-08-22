@@ -12648,622 +12648,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 19,
-     "name": "במדבר - במדבר סיני - 1",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1647,
-     "n": 1,
-     "verses": "א:א-א:יט",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 1,
-     "file": "/static/audio/readings/b4-p01-c001.mp3",
-     "duration": 106.95,
-     "src_start": 0.0,
-     "src_end": 106.95,
-     "verses_num": "1:1-1:19"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 2",
-     "incipit": "ויהיו בני ראובן בכור",
-     "sam_ch_id": 1648,
-     "n": 2,
-     "verses": "א:כ-א:כא",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 2,
-     "file": "/static/audio/readings/b4-p01-c002.mp3",
-     "duration": 23.7,
-     "src_start": 106.95,
-     "src_end": 130.65,
-     "verses_num": "1:20-1:21"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 3",
-     "incipit": "לבני שמעון תולדתם למשפחותם",
-     "sam_ch_id": 1649,
-     "n": 3,
-     "verses": "א:כב-א:כג",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 3,
-     "file": "/static/audio/readings/b4-p01-c003.mp3",
-     "duration": 49.91,
-     "src_start": 130.65,
-     "src_end": 180.56,
-     "verses_num": "1:22-1:23"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 4",
-     "incipit": "לבני גד תולדתם למשפחותם",
-     "sam_ch_id": 1650,
-     "n": 4,
-     "verses": "א:כד-א:כה",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 4,
-     "file": "/static/audio/readings/b4-p01-c004.mp3",
-     "duration": 20.62,
-     "src_start": 180.56,
-     "src_end": 201.18,
-     "verses_num": "1:24-1:25"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 5",
-     "incipit": "לבני יהודה תולדתם למשפחותם",
-     "sam_ch_id": 1651,
-     "n": 5,
-     "verses": "א:כו-א:כז",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 5,
-     "file": "/static/audio/readings/b4-p01-c005.mp3",
-     "duration": 17.58,
-     "src_start": 201.18,
-     "src_end": 218.76,
-     "verses_num": "1:26-1:27"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 6",
-     "incipit": "לבני יששכר תולדתם למשפחותם",
-     "sam_ch_id": 1652,
-     "n": 6,
-     "verses": "א:כח-א:כט",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 6,
-     "file": "/static/audio/readings/b4-p01-c006.mp3",
-     "duration": 25.25,
-     "src_start": 218.76,
-     "src_end": 244.01,
-     "verses_num": "1:28-1:29"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 7",
-     "incipit": "לבני זבולן תולדתם למשפחותם",
-     "sam_ch_id": 1653,
-     "n": 7,
-     "verses": "א:ל-א:לא",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 7,
-     "file": "/static/audio/readings/b4-p01-c007.mp3",
-     "duration": 20.78,
-     "src_start": 244.01,
-     "src_end": 264.79,
-     "verses_num": "1:30-1:31"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 8",
-     "incipit": "לבני יוסף לבני אפרים",
-     "sam_ch_id": 1654,
-     "n": 8,
-     "verses": "א:לב-א:לג",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 8,
-     "file": "/static/audio/readings/b4-p01-c008.mp3",
-     "duration": 21.65,
-     "src_start": 264.79,
-     "src_end": 286.44,
-     "verses_num": "1:32-1:33"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 9",
-     "incipit": "לבני מנשה תולדתם למשפחותם",
-     "sam_ch_id": 1655,
-     "n": 9,
-     "verses": "א:לד-א:לה",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 9,
-     "file": "/static/audio/readings/b4-p01-c009.mp3",
-     "duration": 20.53,
-     "src_start": 286.44,
-     "src_end": 306.97,
-     "verses_num": "1:34-1:35"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 10",
-     "incipit": "לבני בנימים תולדתם למשפחותם",
-     "sam_ch_id": 1656,
-     "n": 10,
-     "verses": "א:לו-א:לז",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 10,
-     "file": "/static/audio/readings/b4-p01-c010.mp3",
-     "duration": 21.66,
-     "src_start": 306.97,
-     "src_end": 328.63,
-     "verses_num": "1:36-1:37"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 11",
-     "incipit": "לבני דן תולדתם למשפחותם",
-     "sam_ch_id": 1657,
-     "n": 11,
-     "verses": "א:לח-א:לט",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 11,
-     "file": "/static/audio/readings/b4-p01-c011.mp3",
-     "duration": 19.01,
-     "src_start": 328.63,
-     "src_end": 347.64,
-     "verses_num": "1:38-1:39"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 12",
-     "incipit": "לבני אשר תולדתם למשפחותם",
-     "sam_ch_id": 1658,
-     "n": 12,
-     "verses": "א:מ-א:מא",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 12,
-     "file": "/static/audio/readings/b4-p01-c012.mp3",
-     "duration": 5.85,
-     "src_start": 347.64,
-     "src_end": 353.49,
-     "verses_num": "1:40-1:41"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 2,
-     "name": "במדבר - במדבר סיני - 13",
-     "incipit": "לבני נפתלי תולדתם למשפחותם",
-     "sam_ch_id": 1659,
-     "n": 13,
-     "verses": "א:מב-א:מג",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 13,
-     "file": "/static/audio/readings/b4-p01-c013.mp3",
-     "duration": 14.68,
-     "src_start": 353.49,
-     "src_end": 368.17,
-     "verses_num": "1:42-1:43"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 4,
-     "name": "במדבר - במדבר סיני - 14",
-     "incipit": "אלה הפקדים אשר פקד",
-     "sam_ch_id": 1660,
-     "n": 14,
-     "verses": "א:מד-א:מז",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 14,
-     "file": "/static/audio/readings/b4-p01-c014.mp3",
-     "duration": 61.18,
-     "src_start": 368.17,
-     "src_end": 429.35,
-     "verses_num": "1:44-1:47"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 7,
-     "name": "במדבר - במדבר סיני - 15",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1661,
-     "n": 15,
-     "verses": "א:מח-א:נד",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 15,
-     "file": "/static/audio/readings/b4-p01-c015.mp3",
-     "duration": 64.53,
-     "src_start": 429.35,
-     "src_end": 493.88,
-     "verses_num": "1:48-1:54"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 9,
-     "name": "במדבר - במדבר סיני - 16",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1662,
-     "n": 16,
-     "verses": "ב:א-ב:ט",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 16,
-     "file": "/static/audio/readings/b4-p01-c016.mp3",
-     "duration": 68.45,
-     "src_start": 493.88,
-     "src_end": 562.33,
-     "verses_num": "2:1-2:9"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 8,
-     "name": "במדבר - במדבר סיני - 17",
-     "incipit": "דגל מחנה ראובן תימנה",
-     "sam_ch_id": 1663,
-     "n": 17,
-     "verses": "ב:י-ב:יז",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 17,
-     "file": "/static/audio/readings/b4-p01-c017.mp3",
-     "duration": 71.76,
-     "src_start": 562.33,
-     "src_end": 634.09,
-     "verses_num": "2:10-2:17"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 7,
-     "name": "במדבר - במדבר סיני - 18",
-     "incipit": "דגל מחנה אפרים לצבאתם",
-     "sam_ch_id": 1664,
-     "n": 18,
-     "verses": "ב:יח-ב:כד",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 18,
-     "file": "/static/audio/readings/b4-p01-c018.mp3",
-     "duration": 53.34,
-     "src_start": 634.09,
-     "src_end": 687.43,
-     "verses_num": "2:18-2:24"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 7,
-     "name": "במדבר - במדבר סיני - 19",
-     "incipit": "דגל מחנה דן צפונה",
-     "sam_ch_id": 1665,
-     "n": 19,
-     "verses": "ב:כה-ב:לא",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 19,
-     "file": "/static/audio/readings/b4-p01-c019.mp3",
-     "duration": 46.89,
-     "src_start": 687.43,
-     "src_end": 734.32,
-     "verses_num": "2:25-2:31"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 3,
-     "name": "במדבר - במדבר סיני - 20",
-     "incipit": "אלה פקדי בני ישראל",
-     "sam_ch_id": 1666,
-     "n": 20,
-     "verses": "ב:לב-ב:לד",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 20,
-     "file": "/static/audio/readings/b4-p01-c020.mp3",
-     "duration": 34.89,
-     "src_start": 734.32,
-     "src_end": 769.21,
-     "verses_num": "2:32-2:34"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 4,
-     "name": "במדבר - במדבר סיני - 21",
-     "incipit": "ואלה תולדת אהרן ומשה:",
-     "sam_ch_id": 1667,
-     "n": 21,
-     "verses": "ג:א-ג:ד",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 21,
-     "file": "/static/audio/readings/b4-p01-c021.mp3",
-     "duration": 43.33,
-     "src_start": 769.21,
-     "src_end": 812.54,
-     "verses_num": "3:1-3:4"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 6,
-     "name": "במדבר - במדבר סיני - 22",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1668,
-     "n": 22,
-     "verses": "ג:ה-ג:י",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 22,
-     "file": "/static/audio/readings/b4-p01-c022.mp3",
-     "duration": 51.54,
-     "src_start": 812.54,
-     "src_end": 864.08,
-     "verses_num": "3:5-3:10"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 3,
-     "name": "במדבר - במדבר סיני - 23",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1669,
-     "n": 23,
-     "verses": "ג:יא-ג:יג",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 23,
-     "file": "/static/audio/readings/b4-p01-c023.mp3",
-     "duration": 33.57,
-     "src_start": 864.08,
-     "src_end": 897.65,
-     "verses_num": "3:11-3:13"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 13,
-     "name": "במדבר - במדבר סיני - 24",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1670,
-     "n": 24,
-     "verses": "ג:יד-ג:כו",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 24,
-     "file": "/static/audio/readings/b4-p01-c024.mp3",
-     "duration": 161.12,
-     "src_start": 897.65,
-     "src_end": 1058.77,
-     "verses_num": "3:14-3:26"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 6,
-     "name": "במדבר - במדבר סיני - 25",
-     "incipit": "ולקהת משפחת העמרמי ומשפחת",
-     "sam_ch_id": 1671,
-     "n": 25,
-     "verses": "ג:כז-ג:לב",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 25,
-     "file": "/static/audio/readings/b4-p01-c025.mp3",
-     "duration": 74.65,
-     "src_start": 1058.77,
-     "src_end": 1133.42,
-     "verses_num": "3:27-3:32"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 7,
-     "name": "במדבר - במדבר סיני - 26",
-     "incipit": "למררי משפחת המחלי: ומשפחת",
-     "sam_ch_id": 1672,
-     "n": 26,
-     "verses": "ג:לג-ג:לט",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 26,
-     "file": "/static/audio/readings/b4-p01-c026.mp3",
-     "duration": 11.09,
-     "src_start": 1133.42,
-     "src_end": 1144.51,
-     "verses_num": "3:33-3:39"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 4,
-     "name": "במדבר - במדבר סיני - 27",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1673,
-     "n": 27,
-     "verses": "ג:מ-ג:מג",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 27,
-     "file": "/static/audio/readings/b4-p01-c027.mp3",
-     "duration": 37.59,
-     "src_start": 1144.51,
-     "src_end": 1182.1,
-     "verses_num": "3:40-3:43"
-    },
-    {
-     "src": {
-      "youtube_id": "2aZzfzQlHK0"
-     },
-     "verse_count": 8,
-     "name": "במדבר - במדבר סיני - 28",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1674,
-     "n": 28,
-     "verses": "ג:מד-ג:נא",
-     "portion": {
-      "order": 1,
-      "name": "במדבר סיני",
-      "id": 38
-     },
-     "sam_ch_number": 28,
-     "file": "/static/audio/readings/b4-p01-c028.mp3",
-     "duration": 78.91,
-     "src_start": 1182.1,
-     "src_end": 1261.01,
-     "verses_num": "3:44-3:51"
-    },
-    {
-     "src": {
       "youtube_id": "yH7rF7DmCtw"
      },
      "verse_count": 12,
@@ -17309,6 +16693,622 @@
      "src_start": 1750.57,
      "src_end": 1773.1,
      "verses_num": "36:13-36:13"
+    },
+    {
+     "n": 1,
+     "sam_ch_number": 1,
+     "file": "/static/audio/readings/b4-p01-c001.mp3",
+     "duration": 130.65,
+     "src_start": 0,
+     "src_end": 130.65,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1647,
+     "verses": "א:א-א:יט",
+     "verses_num": "1:1-1:19",
+     "verse_count": 19,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - במדבר סיני - 1"
+    },
+    {
+     "n": 2,
+     "sam_ch_number": 2,
+     "file": "/static/audio/readings/b4-p01-c002.mp3",
+     "duration": 24.77,
+     "src_start": 0,
+     "src_end": 24.77,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1648,
+     "verses": "א:כ-א:כא",
+     "verses_num": "1:20-1:21",
+     "verse_count": 2,
+     "incipit": "ויהיו בני ראובן בכור",
+     "name": "במדבר - במדבר סיני - 2"
+    },
+    {
+     "n": 3,
+     "sam_ch_number": 3,
+     "file": "/static/audio/readings/b4-p01-c003.mp3",
+     "duration": 25.14,
+     "src_start": 0,
+     "src_end": 25.14,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1649,
+     "verses": "א:כב-א:כג",
+     "verses_num": "1:22-1:23",
+     "verse_count": 2,
+     "incipit": "לבני שמעון: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 3"
+    },
+    {
+     "n": 4,
+     "sam_ch_number": 4,
+     "file": "/static/audio/readings/b4-p01-c004.mp3",
+     "duration": 20.62,
+     "src_start": 0,
+     "src_end": 20.62,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1650,
+     "verses": "א:כד-א:כה",
+     "verses_num": "1:24-1:25",
+     "verse_count": 2,
+     "incipit": "לבני גד: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 4"
+    },
+    {
+     "n": 5,
+     "sam_ch_number": 5,
+     "file": "/static/audio/readings/b4-p01-c005.mp3",
+     "duration": 20.18,
+     "src_start": 0,
+     "src_end": 20.18,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1651,
+     "verses": "א:כו-א:כז",
+     "verses_num": "1:26-1:27",
+     "verse_count": 2,
+     "incipit": "לבני יהודה: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 5"
+    },
+    {
+     "n": 6,
+     "sam_ch_number": 6,
+     "file": "/static/audio/readings/b4-p01-c006.mp3",
+     "duration": 22.65,
+     "src_start": 0,
+     "src_end": 22.65,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1652,
+     "verses": "א:כח-א:כט",
+     "verses_num": "1:28-1:29",
+     "verse_count": 2,
+     "incipit": "לבני יששכר: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 6"
+    },
+    {
+     "n": 7,
+     "sam_ch_number": 7,
+     "file": "/static/audio/readings/b4-p01-c007.mp3",
+     "duration": 20.78,
+     "src_start": 0,
+     "src_end": 20.78,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1653,
+     "verses": "א:ל-א:לא",
+     "verses_num": "1:30-1:31",
+     "verse_count": 2,
+     "incipit": "לבני זבולן: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 7"
+    },
+    {
+     "n": 8,
+     "sam_ch_number": 8,
+     "file": "/static/audio/readings/b4-p01-c008.mp3",
+     "duration": 21.65,
+     "src_start": 0,
+     "src_end": 21.65,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1654,
+     "verses": "א:לב-א:לג",
+     "verses_num": "1:32-1:33",
+     "verse_count": 2,
+     "incipit": "לבני יוסף לבני אפרים:",
+     "name": "במדבר - במדבר סיני - 8"
+    },
+    {
+     "n": 9,
+     "sam_ch_number": 9,
+     "file": "/static/audio/readings/b4-p01-c009.mp3",
+     "duration": 20.53,
+     "src_start": 0,
+     "src_end": 20.53,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1655,
+     "verses": "א:לד-א:לה",
+     "verses_num": "1:34-1:35",
+     "verse_count": 2,
+     "incipit": "לבני מנשה: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 9"
+    },
+    {
+     "n": 10,
+     "sam_ch_number": 10,
+     "file": "/static/audio/readings/b4-p01-c010.mp3",
+     "duration": 21.66,
+     "src_start": 0,
+     "src_end": 21.66,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1656,
+     "verses": "א:לו-א:לז",
+     "verses_num": "1:36-1:37",
+     "verse_count": 2,
+     "incipit": "לבני בנימים: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 10"
+    },
+    {
+     "n": 11,
+     "sam_ch_number": 11,
+     "file": "/static/audio/readings/b4-p01-c011.mp3",
+     "duration": 19.01,
+     "src_start": 0,
+     "src_end": 19.01,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1657,
+     "verses": "א:לח-א:לט",
+     "verses_num": "1:38-1:39",
+     "verse_count": 2,
+     "incipit": "לבני דן: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 11"
+    },
+    {
+     "n": 12,
+     "sam_ch_number": 12,
+     "file": "/static/audio/readings/b4-p01-c012.mp3",
+     "duration": 20.53,
+     "src_start": 0,
+     "src_end": 20.53,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1658,
+     "verses": "א:מ-א:מא",
+     "verses_num": "1:40-1:41",
+     "verse_count": 2,
+     "incipit": "לבני אשר: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 12"
+    },
+    {
+     "n": 13,
+     "sam_ch_number": 13,
+     "file": "/static/audio/readings/b4-p01-c013.mp3",
+     "duration": 19.36,
+     "src_start": 0,
+     "src_end": 19.36,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1659,
+     "verses": "א:מב-א:מג",
+     "verses_num": "1:42-1:43",
+     "verse_count": 2,
+     "incipit": "לבני נפתלי: תולדתם למשפחותם",
+     "name": "במדבר - במדבר סיני - 13"
+    },
+    {
+     "n": 14,
+     "sam_ch_number": 14,
+     "file": "/static/audio/readings/b4-p01-c014.mp3",
+     "duration": 41.82,
+     "src_start": 0,
+     "src_end": 41.82,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1660,
+     "verses": "א:מד-א:מז",
+     "verses_num": "1:44-1:47",
+     "verse_count": 4,
+     "incipit": "אלה הפקדים אשר פקד",
+     "name": "במדבר - במדבר סיני - 14"
+    },
+    {
+     "n": 15,
+     "sam_ch_number": 15,
+     "file": "/static/audio/readings/b4-p01-c015.mp3",
+     "duration": 64.53,
+     "src_start": 0,
+     "src_end": 64.53,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1661,
+     "verses": "א:מח-א:נד",
+     "verses_num": "1:48-1:54",
+     "verse_count": 7,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - במדבר סיני - 15"
+    },
+    {
+     "n": 16,
+     "sam_ch_number": 16,
+     "file": "/static/audio/readings/b4-p01-c016.mp3",
+     "duration": 72.15,
+     "src_start": 0,
+     "src_end": 72.15,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1662,
+     "verses": "ב:א-ב:ט",
+     "verses_num": "2:1-2:9",
+     "verse_count": 9,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - במדבר סיני - 16"
+    },
+    {
+     "n": 17,
+     "sam_ch_number": 17,
+     "file": "/static/audio/readings/b4-p01-c017.mp3",
+     "duration": 68.06,
+     "src_start": 0,
+     "src_end": 68.06,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1663,
+     "verses": "ב:י-ב:יז",
+     "verses_num": "2:10-2:17",
+     "verse_count": 8,
+     "incipit": "דגל מחנה ראובן תימנה",
+     "name": "במדבר - במדבר סיני - 17"
+    },
+    {
+     "n": 18,
+     "sam_ch_number": 18,
+     "file": "/static/audio/readings/b4-p01-c018.mp3",
+     "duration": 53.34,
+     "src_start": 0,
+     "src_end": 53.34,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1664,
+     "verses": "ב:יח-ב:כד",
+     "verses_num": "2:18-2:24",
+     "verse_count": 7,
+     "incipit": "דגל מחנה אפרים לצבאתם",
+     "name": "במדבר - במדבר סיני - 18"
+    },
+    {
+     "n": 19,
+     "sam_ch_number": 19,
+     "file": "/static/audio/readings/b4-p01-c019.mp3",
+     "duration": 46.89,
+     "src_start": 0,
+     "src_end": 46.89,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1665,
+     "verses": "ב:כה-ב:לא",
+     "verses_num": "2:25-2:31",
+     "verse_count": 7,
+     "incipit": "דגל מחנה דן צפונה",
+     "name": "במדבר - במדבר סיני - 19"
+    },
+    {
+     "n": 20,
+     "sam_ch_number": 20,
+     "file": "/static/audio/readings/b4-p01-c020.mp3",
+     "duration": 37.23,
+     "src_start": 0,
+     "src_end": 37.23,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1666,
+     "verses": "ב:לב-ב:לד",
+     "verses_num": "2:32-2:34",
+     "verse_count": 3,
+     "incipit": "אלה פקדי בני ישראל",
+     "name": "במדבר - במדבר סיני - 20"
+    },
+    {
+     "n": 21,
+     "sam_ch_number": 21,
+     "file": "/static/audio/readings/b4-p01-c021.mp3",
+     "duration": 40.99,
+     "src_start": 0,
+     "src_end": 40.99,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1667,
+     "verses": "ג:א-ג:ד",
+     "verses_num": "3:1-3:4",
+     "verse_count": 4,
+     "incipit": "ואלה תולדת אהרן ומשה:",
+     "name": "במדבר - במדבר סיני - 21"
+    },
+    {
+     "n": 22,
+     "sam_ch_number": 22,
+     "file": "/static/audio/readings/b4-p01-c022.mp3",
+     "duration": 51.54,
+     "src_start": 0,
+     "src_end": 51.54,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1668,
+     "verses": "ג:ה-ג:י",
+     "verses_num": "3:5-3:10",
+     "verse_count": 6,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - במדבר סיני - 22"
+    },
+    {
+     "n": 23,
+     "sam_ch_number": 23,
+     "file": "/static/audio/readings/b4-p01-c023.mp3",
+     "duration": 33.57,
+     "src_start": 0,
+     "src_end": 33.57,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1669,
+     "verses": "ג:יא-ג:יג",
+     "verses_num": "3:11-3:13",
+     "verse_count": 3,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - במדבר סיני - 23"
+    },
+    {
+     "n": 24,
+     "sam_ch_number": 24,
+     "file": "/static/audio/readings/b4-p01-c024.mp3",
+     "duration": 100.9,
+     "src_start": 0,
+     "src_end": 100.9,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1670,
+     "verses": "ג:יד-ג:כו",
+     "verses_num": "3:14-3:26",
+     "verse_count": 13,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - במדבר סיני - 24"
+    },
+    {
+     "n": 25,
+     "sam_ch_number": 25,
+     "file": "/static/audio/readings/b4-p01-c025.mp3",
+     "duration": 60.22,
+     "src_start": 0,
+     "src_end": 60.22,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1671,
+     "verses": "ג:כז-ג:לב",
+     "verses_num": "3:27-3:32",
+     "verse_count": 6,
+     "incipit": "ולקהת: משפחת העמרמי ומשפחת",
+     "name": "במדבר - במדבר סיני - 25"
+    },
+    {
+     "n": 26,
+     "sam_ch_number": 26,
+     "file": "/static/audio/readings/b4-p01-c026.mp3",
+     "duration": 74.65,
+     "src_start": 0,
+     "src_end": 74.65,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1672,
+     "verses": "ג:לג-ג:לט",
+     "verses_num": "3:33-3:39",
+     "verse_count": 7,
+     "incipit": "למררי: משפחת המחלי: ומשפחת",
+     "name": "במדבר - במדבר סיני - 26"
+    },
+    {
+     "n": 27,
+     "sam_ch_number": 27,
+     "file": "/static/audio/readings/b4-p01-c027.mp3",
+     "duration": 48.68,
+     "src_start": 0,
+     "src_end": 48.68,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1673,
+     "verses": "ג:מ-ג:מג",
+     "verses_num": "3:40-3:43",
+     "verse_count": 4,
+     "incipit": "ויאמר יהוה אל משה:",
+     "name": "במדבר - במדבר סיני - 27"
+    },
+    {
+     "n": 28,
+     "sam_ch_number": 28,
+     "file": "/static/audio/readings/b4-p01-c028.mp3",
+     "duration": 78.91,
+     "src_start": 0,
+     "src_end": 78.91,
+     "portion": {
+      "order": 1,
+      "id": 38,
+      "name": "במדבר סיני"
+     },
+     "src": {
+      "youtube_id": "2aZzfzQlHK0"
+     },
+     "sam_ch_id": 1674,
+     "verses": "ג:מד-ג:נא",
+     "verses_num": "3:44-3:51",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - במדבר סיני - 28"
     }
    ],
    "playlist": "PLl-48IEqLtlv9CtBH3gbflWttJAP9LCna",
