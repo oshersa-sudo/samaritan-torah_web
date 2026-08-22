@@ -1457,7 +1457,7 @@ function searchBlob(m){
   var parts = [m.title, m.shelf, m.inst, m.note, m.manifest];
   var e = m.manifest ? enriched[m.manifest] : null;
   if(e){
-    parts.push(e.title, e.shelf, e.inst);
+    parts.push(e.title, e.title_he, e.title_en, e.title_ar, e.shelf, e.inst);
     if(e.type) parts.push(e.type.he, e.type.en, e.type.ar);
     if(e.year) parts.push(String(e.year));
     (e.fields || []).forEach(function(f){
@@ -1622,6 +1622,15 @@ function log_harvest(n){
   if(el) el.textContent = "נטענו " + n + " כתבי יד מהסריקה (catalog.json)";
 }
 
+/* The catalogue speaks Hebrew first: every record's title has a curated
+   Hebrew rendering in the enrichment layer, and the library, the viewer
+   header and the details panel all prefer it. The original stays a language
+   away — the details panel's מקור button. */
+function heTitle(m){
+  var e = m && m.manifest && enriched[m.manifest];
+  return (e && e.title_he) || (m && m.title) || "";
+}
+
 function renderLibrary(){
   var all = library();
   var lib = (groupFilter === "all" ? all : all.filter(function(m){
@@ -1660,7 +1669,7 @@ function renderLibrary(){
     html += '<div class="ms-row' + (cur && cur.id === m.id ? ' is-open' : '') + '">' +
       thumb +
       '<div class="ms-info">' +
-        '<p class="t">' + esc(m.title) +
+        '<p class="t">' + esc(heTitle(m)) +
           (isAdded ? '<span class="badge badge-own">נוסף ידנית</span>' : '') +
           (m.mode === 'local' ? '<span class="badge badge-local">שמור מקומית</span>' : '') + '</p>' +
         '<p class="s">' + esc(m.inst) + (m.shelf ? ' · <span class="mono">' + esc(m.shelf) + '</span>' : '') +
@@ -1670,13 +1679,13 @@ function renderLibrary(){
       '</div>' +
       '<div class="ms-acts">' +
         '<button class="btn btn-primary" data-open="' + esc(m.id) + '">פתח</button>' +
-        '<button class="btn btn-danger" data-remove="' + esc(m.id) + '" title="הסרה מהרשימה">הסר</button>' +
+        (adminMode ? '<button class="btn btn-danger" data-remove="' + esc(m.id) + '" title="הסרה מהרשימה">הסר</button>' : '') +
       '</div></div>';
   });
   $("msList").innerHTML = html;
   runCounters($("msList"));
 
-  $("restoreWrap").hidden = removed.length === 0;
+  $("restoreWrap").hidden = !adminMode || removed.length === 0;
   $("remCount").textContent = removed.length;
 }
 
@@ -1855,7 +1864,7 @@ $("addForm").addEventListener("submit", function(e){
 function openFramed(m){
   cur = m; doc = null;
   enableChrome(false);
-  $("msTitle").textContent = m.title;
+  $("msTitle").textContent = heTitle(m);
   $("msShelf").textContent = m.shelf || "";
   side.hidden = true;
 
@@ -1898,7 +1907,7 @@ function openLocal(m){
   hideFrame();
   cur = m; pageIdx = 0; upgraded = true;   // already full quality on disk
   rotation = 0;
-  $("msTitle").textContent = m.title;
+  $("msTitle").textContent = heTitle(m);
   $("msShelf").textContent = m.shelf || "";
   doc = {
     v3:false, label:m.title, meta:[], ranges:[],
@@ -1939,7 +1948,7 @@ function openManuscript(m){
   if(twin){ return openLocal(twin); }
   hideFrame();
   cur = m; doc = null; pageIdx = 0;
-  $("msTitle").textContent = m.title;
+  $("msTitle").textContent = heTitle(m);
   $("msShelf").textContent = m.shelf || "";
   resetThumbQueue();
   showMsg('<div class="spinner"></div><p>טוען את ה־manifest מ־' + esc(hostOf(m.manifest)) + '…</p>');
@@ -2386,10 +2395,19 @@ function langBar(){
 
 function renderMeta(){
   if(!doc){ sideBody.innerHTML = ""; return; }
+  var E0 = enrichedFor();
   var inst  = doc.dInst || doc.provider || cur.inst;
   var shelf = doc.dShelf || cur.shelf;
+  // The title follows the language buttons like every other field; מקור
+  // shows the institution's own wording.
+  var title = doc.label || cur.title || "";
+  if(E0){
+    if(metaLang === "he")      title = E0.title_he || title;
+    else if(metaLang === "en") title = E0.title_en || title;
+    else if(metaLang === "ar") title = E0.title_ar || title;
+  }
   var h = langBar() + '<div class="meta-sect">כתב היד</div><dl class="meta">';
-  if(doc.label)      h += '<dt>כותר</dt><dd>' + esc(doc.label) + '</dd>';
+  if(title)          h += '<dt>כותר</dt><dd>' + esc(title) + '</dd>';
   if(inst)           h += '<dt>מוסד</dt><dd>' + esc(inst) + '</dd>';
   if(shelf)          h += '<dt>מדף</dt><dd><span class="mono">' + esc(shelf) + '</span></dd>';
   if(doc.dDate)      h += '<dt>תיארוך</dt><dd>' + esc(doc.dDate) + '</dd>';
@@ -2399,8 +2417,22 @@ function renderMeta(){
   if(doc.pages.length) h += '<dt>עמודים</dt><dd>' + doc.pages.length + '</dd>';
   h += '</dl>';
   if(doc.dDesc){
+    // The manifest description is also carried, translated, in the enriched
+    // fields - reuse that work so the prose follows the language buttons too.
+    var desc = doc.dDesc;
+    if(E0){
+      var df = (E0.fields || []).filter(function(f){
+        return String(f.value || "").trim() === String(doc.dDesc).trim();
+      })[0];
+      if(df){
+        if(metaLang === "he")      desc = df.value_he || desc;
+        else if(metaLang === "en") desc = df.value_en || desc;
+        else if(metaLang === "ar") desc = df.value_ar || desc;
+      }
+    }
     h += '<div class="meta-sect">תיאור</div>' +
-         '<p style="font-size:13px;color:var(--ink-2);margin:0;">' + esc(doc.dDesc) + '</p>';
+         '<p style="font-size:13px;color:var(--ink-2);margin:0;"' +
+         (metaLang === "ar" ? ' lang="ar"' : '') + '>' + esc(desc) + '</p>';
   }
 
   if(doc.meta.length){
@@ -2696,7 +2728,7 @@ function renderBrowse(){
       h += '<li><button data-open-ms="' + esc(e.manifest || "") + '"'
          + (away ? ' data-away="' + esc(e.url || "") + '" class="idx-away"' : '') + '>'
          + '<span class="idx-shelf mono">' + esc(e.shelf || "") + '</span> '
-         + esc(String(e.title || "").slice(0, 64))
+         + esc(String(e.title_he || heTitle(e) || e.title || "").slice(0, 64))
          + (away ? '<span class="idx-status">' + esc(e.status_he || "") + '</span>'
                  : '<span class="idx-pages tnum">' + (e.pages || 0) + '</span>')
          + '</button></li>';
