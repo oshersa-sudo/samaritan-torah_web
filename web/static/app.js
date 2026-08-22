@@ -5267,7 +5267,32 @@ $('shToTorah').onclick = () => $('shiraModal').classList.add('hidden');
     if(f && f.contentWindow)
       f.contentWindow.postMessage(Object.assign({shiraAct:act}, extra||{}), location.origin);
   };
-  let wired = false;
+  let wired = false, playing = false, wasOpen = false;
+
+  /* Coming back to a recording that never stopped.
+   *
+   * Tapping the system's media notification brings the app forward, and the
+   * page is given no event that says so — there is none. What there is, is
+   * the app becoming visible again while a recording is still playing. If the
+   * archive was what the listener was looking at when they left, that is
+   * where they are put back, on the piyyut that is playing rather than at the
+   * top of everything.
+   *
+   * The test is deliberately narrow. Someone who closed the archive to read
+   * the Torah with the singing behind them has said what they want, and
+   * returning to the app must not overrule it — so the archive is only
+   * brought back if it was on screen when the app was left. */
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'hidden'){
+      const m = $('shiraModal');
+      wasOpen = !!m && !m.classList.contains('hidden');
+      return;
+    }
+    if(!playing || !wasOpen) return;
+    openShira();
+    tell('resume');
+  });
+
   const wire = () => {
     if(wired) return;
     wired = true;
@@ -5291,6 +5316,7 @@ $('shToTorah').onclick = () => $('shiraModal').classList.add('hidden');
                                             album:d.album, artwork:d.artwork}); }catch(err){}
     } else if(d.type === 'state'){
       try{ ms.playbackState = d.state; }catch(err){}
+      playing = d.state === 'playing';
       if(d.state === 'none'){ try{ ms.metadata = null; }catch(err){} }
     } else if(d.type === 'pos' && ms.setPositionState){
       try{ ms.setPositionState({duration:d.duration, position:d.position,

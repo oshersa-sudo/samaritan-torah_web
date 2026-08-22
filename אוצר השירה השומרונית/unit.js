@@ -663,10 +663,56 @@ function openDeck() {
   $('deckWin').classList.remove('hidden', 'min');
   $('dwMin').textContent = '─';
 }
+/* Minimising is how the player is handed to the system.
+ *
+ * The window folds to its title bar and the recording goes on, but the point
+ * of the gesture is what happens outside: from here on the recording is meant
+ * to be carried by the system's own media controls, so they are told again
+ * what is playing and how far in it is. Nothing is torn down — the deck is
+ * still here, folded — which is what lets it be opened again on the same
+ * recording rather than at the beginning of everything.
+ */
 $('dwMin').onclick = () => {
   const min = $('deckWin').classList.toggle('min');
   $('dwMin').textContent = min ? '▢' : '─';   // playback continues either way
+  if (min && au.getAttribute('src')) {
+    const r = byId(C.recordings, cur.rec);
+    if (r) mediaSay(r, cur.idx);              // the notification, freshly stated
+    mediaPos();
+    syncBtn();
+  }
 };
+
+/* Coming back to it — from the notification, or from anywhere else.
+ *
+ * The deck is unfolded and shown again on the recording that never stopped
+ * playing, and the track it is on is marked in the list behind it, so what
+ * the listener is returned to is the piyyut they left rather than the top of
+ * the archive. If nothing is loaded there is nothing to come back to, and
+ * this does nothing at all.
+ */
+function deckResume() {
+  if (!au.getAttribute('src') || !cur.rec) return false;
+  const win = $('deckWin');
+  win.classList.remove('hidden', 'min');
+  $('dwMin').textContent = '─';
+  markPlaying();
+  const r = byId(C.recordings, cur.rec);
+  if (r) deckLabel(r, cur.idx);
+
+  // If the recording happens to be in the list behind the deck, open it and
+  // bring it into view; if it is not — another tab, or a search narrowed to
+  // something else — the list is left exactly as it was. Coming back to a
+  // piyyut is no reason to throw away what someone was in the middle of
+  // looking for.
+  const row = $('pane').querySelector(`.row[data-rec="${cur.rec}"]`);
+  if (row) {
+    if (!row.querySelector('.tracks')) toggleTracks(cur.rec);
+    markPlaying();
+    try { row.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+  }
+  return true;
+}
 /* Closing the player ejects the cassette rather than just blinking the window
  * away: the lid swings up, and the cassette tips back on its rails and rises
  * out of the well — held out, the way a deck offers it to be taken. */
@@ -2319,6 +2365,7 @@ addEventListener('message', e => {
     case 'seekto':
       if (isFinite(d.to)) { au.currentTime = d.to; mediaPos(); }
       break;
+    case 'resume':        deckResume(); break;
   }
 });
 
@@ -2412,7 +2459,13 @@ au.addEventListener('pause', () => {
 });
 au.addEventListener('durationchange', mediaPos);
 au.addEventListener('ratechange', mediaPos);
-document.addEventListener('visibilitychange', mixWake);
+document.addEventListener('visibilitychange', () => {
+  mixWake();
+  // opened as a page of its own, this side is the one that has to put the
+  // deck back; inside the Torah app the page above says when
+  if (!IN_FRAME && document.visibilityState === 'visible' && !au.paused)
+    deckResume();
+});
 setInterval(mixWake, 4000);
 
 /* A seek plays the matching tape noise: which way the tape ran decides it. */
