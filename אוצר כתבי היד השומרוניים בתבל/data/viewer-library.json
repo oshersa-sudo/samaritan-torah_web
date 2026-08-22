@@ -1,5 +1,60 @@
 [
  {
+  "id": "eb811341dd9d",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "חומש שומרוני",
+  "inst": "Biblioteca Apostolica Vaticana",
+  "shelf": "Vat.sam.2",
+  "note": "282 עמודים",
+  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.2/manifest.json",
+  "home": ""
+ },
+ {
+  "id": "38727b662b7a",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "קטע שומרוני",
+  "inst": "Biblioteca Apostolica Vaticana",
+  "shelf": "Vat.sam.4",
+  "note": "4 עמודים",
+  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.4/manifest.json",
+  "home": ""
+ },
+ {
+  "id": "d176b2ae7566",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "כתב יד שומרוני",
+  "inst": "Biblioteca Apostolica Vaticana",
+  "shelf": "Vat.sam.5",
+  "note": "102 עמודים",
+  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.5/manifest.json",
+  "home": ""
+ },
+ {
+  "id": "f3adf85502ed",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "כתב יד שומרוני",
+  "inst": "Biblioteca Apostolica Vaticana",
+  "shelf": "Vat.sam.7",
+  "note": "378 עמודים",
+  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.7/manifest.json",
+  "home": ""
+ },
+ {
+  "id": "5cc021bbf08a",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "חומש שומרוני דו-לשוני",
+  "inst": "Biblioteca Apostolica Vaticana",
+  "shelf": "Vat.sam.8",
+  "note": "901 עמודים",
+  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.8/manifest.json",
+  "home": ""
+ },
+ {
   "id": "f838d36bb486",
   "group": "samaritan",
   "confidence": "high",
@@ -11,6 +66,17 @@
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b11004916s"
  },
  {
+  "id": "08557bfa16c8",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "BnF. Département des Manuscrits. Arabe 3",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Arabe 3",
+  "note": "1685 · 481 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10884363p/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10884363p"
+ },
+ {
   "id": "09909a83ca77",
   "group": "samaritan",
   "confidence": "high",
@@ -20,6 +86,17 @@
   "note": "6 עמודים",
   "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10030608f/manifest.json",
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b10030608f"
+ },
+ {
+  "id": "2b62c06f3b35",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "Collection des papiers et des livres imprimés annotés de Silvestre de Sacy, comprenant 62 volumes de toute dimension, reliés ou cartonnés, qui formaient autrefois la « Collection de Sacy ». Lettres originales adressées par les Samaritains à Silvestre de Sacy, transcription et traduction, suivies de mémoires relatifs aux Samaritains de Naplouse.",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Arabe 5212",
+  "note": "435 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10030829g/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10030829g"
  },
  {
   "id": "4f90e169fc63",
@@ -42,6 +119,17 @@
   "note": "1524 · 494 עמודים",
   "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10538492v/manifest.json",
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b10538492v"
+ },
+ {
+  "id": "706139c91eda",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "Chronique d'Abū al-Fatḥ ibn Abū al-Ḥasan et Abrégé de la loi de Moïse par Abal-Farağ ibn Isḥāq ibn Kenar.",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Samaritain 10",
+  "note": "1524 · 251 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091751z/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091751z"
  },
  {
   "id": "5f729535c1e0",
@@ -141,6 +229,17 @@
   "note": "265 עמודים",
   "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091750h/manifest.json",
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091750h"
+ },
+ {
+  "id": "d05759fb9ce8",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "BnF. Département des Manuscrits. Samaritain 2",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Samaritain 2",
+  "note": "534 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b52518357r/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b52518357r"
  },
  {
   "id": "03c09e91487d",
@@ -484,6 +583,17 @@
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b100873014"
  },
  {
+  "id": "e82f94546bf6",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "BnF. Département des Manuscrits. Samaritain 49",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Samaritain 49",
+  "note": "1894 · 59 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091779c/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091779c"
+ },
+ {
   "id": "49089c363d1b",
   "group": "samaritan",
   "confidence": "high",
@@ -493,6 +603,39 @@
   "note": "42 עמודים",
   "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10087302k/manifest.json",
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b10087302k"
+ },
+ {
+  "id": "9a2b0a96c081",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "BnF. Département des Manuscrits. Samaritain 51",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Samaritain 51",
+  "note": "1866-1878 · 43 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091780r/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091780r"
+ },
+ {
+  "id": "a0e4bb930cc8",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "BnF. Département des Manuscrits. Samaritain 52",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Samaritain 52",
+  "note": "1884-1886 · 99 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b100917816/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b100917816"
+ },
+ {
+  "id": "978ad411583a",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "BnF. Département des Manuscrits. Samaritain 53",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Samaritain 53",
+  "note": "54 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091782n/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091782n"
  },
  {
   "id": "c56dd2f72922",
@@ -548,6 +691,17 @@
   "note": "97 עמודים",
   "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10087304g/manifest.json",
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b10087304g"
+ },
+ {
+  "id": "147f522fec80",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "BnF. Département des Manuscrits. Samaritain 59",
+  "inst": "Bibliothèque nationale de France",
+  "shelf": "Samaritain 59",
+  "note": "14 עמודים",
+  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b100917833/manifest.json",
+  "home": "https://gallica.bnf.fr/ark:/12148/btv1b100917833"
  },
  {
   "id": "28454d848e11",
@@ -616,17 +770,6 @@
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b10087309q"
  },
  {
-  "id": "291b43b57799",
-  "group": "uncertain",
-  "confidence": "low",
-  "title": "Bodleian Library MS. Bodley Or. 512",
-  "inst": "Bodleian Libraries, University of Oxford",
-  "shelf": "Bodleian Library MS. Bodley Or. 512",
-  "note": "1201–1700 · 216 עמודים",
-  "manifest": "https://iiif.bodleian.ox.ac.uk/iiif/manifest/1f26bdee-cfd1-4e71-b4d8-10550d70b1e6.json",
-  "home": ""
- },
- {
   "id": "f98ed2381f8d",
   "group": "samaritan",
   "confidence": "high",
@@ -646,6 +789,50 @@
   "shelf": "Bodleian Library MS. Bodley Or. 699",
   "note": "1189 · [Coastal diaspora] · 124 עמודים",
   "manifest": "https://iiif.bodleian.ox.ac.uk/iiif/manifest/37c7097c-c6d9-42bc-ab84-17a1608c5282.json",
+  "home": ""
+ },
+ {
+  "id": "01f82b076222",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "Samaritan Pentateuch (MS Add.1846)",
+  "inst": "Cambridge University Library",
+  "shelf": "MS Add.1846",
+  "note": "467 עמודים",
+  "manifest": "https://cudl.lib.cam.ac.uk/iiif/MS-ADD-01846",
+  "home": ""
+ },
+ {
+  "id": "fe35688ccefa",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "קטע חומש שומרוני — שמות ח׳:ב׳–ט׳:י״ז",
+  "inst": "Chester Beatty, Dublin",
+  "shelf": "CBL Heb 754",
+  "note": "2 עמודים",
+  "manifest": "https://viewer.cbl.ie/viewer/api/v1/records/Heb_754/manifest/",
+  "home": ""
+ },
+ {
+  "id": "01812c223bde",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "חומש שומרוני — צ׳סטר ביטי 751",
+  "inst": "Chester Beatty, Dublin",
+  "shelf": "CBL Heb 751",
+  "note": "624 עמודים",
+  "manifest": "https://viewer.cbl.ie/viewer/api/v1/records/Heb_751/manifest/",
+  "home": ""
+ },
+ {
+  "id": "fa3df237a493",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "חומש שומרוני — צ׳סטר ביטי 752",
+  "inst": "Chester Beatty, Dublin",
+  "shelf": "CBL Heb 752",
+  "note": "584 עמודים",
+  "manifest": "https://viewer.cbl.ie/viewer/api/v1/records/Heb_752/manifest/",
   "home": ""
  },
  {
@@ -968,201 +1155,47 @@
   "home": ""
  },
  {
-  "id": "01f82b076222",
+  "id": "othek-berlin-de-dc-ppn859618048-manifest",
   "group": "samaritan",
   "confidence": "high",
-  "title": "Samaritan Pentateuch (MS Add.1846)",
-  "inst": "Cambridge University Library",
-  "shelf": "MS Add.1846",
-  "note": "467 עמודים",
-  "manifest": "https://cudl.lib.cam.ac.uk/iiif/MS-ADD-01846",
+  "title": "Samaritanischer Pentateuch : Fragment",
+  "inst": "",
+  "shelf": "Ms. or. fol. 534",
+  "note": "556 עמודים",
+  "manifest": "https://content.staatsbibliothek-berlin.de/dc/PPN859618048/manifest",
   "home": ""
  },
  {
-  "id": "eb811341dd9d",
+  "id": "othek-berlin-de-dc-ppn86048808x-manifest",
   "group": "samaritan",
   "confidence": "high",
-  "title": "חומש שומרוני",
+  "title": "Samaritanische Sammelhandschrift",
+  "inst": "",
+  "shelf": "Ms. or. quart. 1353",
+  "note": "114 עמודים",
+  "manifest": "https://content.staatsbibliothek-berlin.de/dc/PPN86048808X/manifest",
+  "home": ""
+ },
+ {
+  "id": "291b43b57799",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "Transcript of the Samaritan letter of Marhib ben Jacob (MS. Bodley Or. 512, ff. 95r-96v)",
+  "inst": "Bodleian Libraries, University of Oxford",
+  "shelf": "Bodleian Library MS. Bodley Or. 512",
+  "note": "1201–1700 · 4 עמודים",
+  "manifest": "https://iiif.bodleian.ox.ac.uk/iiif/manifest/1f26bdee-cfd1-4e71-b4d8-10550d70b1e6.json",
+  "home": ""
+ },
+ {
+  "id": "vat-barb-or-1",
+  "group": "samaritan",
+  "confidence": "high",
+  "title": "החומש השומרוני התלת-לשוני — הטריגלוטה הברבריניאנית",
   "inst": "Biblioteca Apostolica Vaticana",
-  "shelf": "Vat.sam.2",
-  "note": "282 עמודים",
-  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.2/manifest.json",
-  "home": ""
- },
- {
-  "id": "38727b662b7a",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "קטע שומרוני",
-  "inst": "Biblioteca Apostolica Vaticana",
-  "shelf": "Vat.sam.4",
-  "note": "4 עמודים",
-  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.4/manifest.json",
-  "home": ""
- },
- {
-  "id": "d176b2ae7566",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "כתב יד שומרוני",
-  "inst": "Biblioteca Apostolica Vaticana",
-  "shelf": "Vat.sam.5",
-  "note": "102 עמודים",
-  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.5/manifest.json",
-  "home": ""
- },
- {
-  "id": "f3adf85502ed",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "כתב יד שומרוני",
-  "inst": "Biblioteca Apostolica Vaticana",
-  "shelf": "Vat.sam.7",
-  "note": "378 עמודים",
-  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.7/manifest.json",
-  "home": ""
- },
- {
-  "id": "5cc021bbf08a",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "חומש שומרוני דו-לשוני",
-  "inst": "Biblioteca Apostolica Vaticana",
-  "shelf": "Vat.sam.8",
-  "note": "901 עמודים",
-  "manifest": "https://digi.vatlib.it/iiif/MSS_Vat.sam.8/manifest.json",
-  "home": ""
- },
- {
-  "id": "01812c223bde",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "חומש שומרוני — צ׳סטר ביטי 751",
-  "inst": "Chester Beatty, Dublin",
-  "shelf": "CBL Heb 751",
-  "note": "624 עמודים",
-  "manifest": "https://viewer.cbl.ie/viewer/api/v1/records/Heb_751/manifest/",
-  "home": ""
- },
- {
-  "id": "fa3df237a493",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "חומש שומרוני — צ׳סטר ביטי 752",
-  "inst": "Chester Beatty, Dublin",
-  "shelf": "CBL Heb 752",
-  "note": "584 עמודים",
-  "manifest": "https://viewer.cbl.ie/viewer/api/v1/records/Heb_752/manifest/",
-  "home": ""
- },
- {
-  "id": "fe35688ccefa",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "קטע חומש שומרוני — שמות ח׳:ב׳–ט׳:י״ז",
-  "inst": "Chester Beatty, Dublin",
-  "shelf": "CBL Heb 754",
-  "note": "2 עמודים",
-  "manifest": "https://viewer.cbl.ie/viewer/api/v1/records/Heb_754/manifest/",
-  "home": ""
- },
- {
-  "id": "2b62c06f3b35",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "Collection des papiers et des livres imprimés annotés de Silvestre de Sacy, comprenant 62 volumes de toute dimension, reliés ou cartonnés, qui formaient autrefois la « Collection de Sacy ». Lettres originales adressées par les Samaritains à Silvestre de Sacy, transcription et traduction, suivies de mémoires relatifs aux Samaritains de Naplouse.",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Arabe 5212",
-  "note": "435 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10030829g/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10030829g"
- },
- {
-  "id": "706139c91eda",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "Chronique d'Abū al-Fatḥ ibn Abū al-Ḥasan et Abrégé de la loi de Moïse par Abal-Farağ ibn Isḥāq ibn Kenar.",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 10",
-  "note": "1524 · 251 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091751z/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091751z"
- },
- {
-  "id": "e82f94546bf6",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Samaritain 49",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 49",
-  "note": "1894 · 59 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091779c/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091779c"
- },
- {
-  "id": "9a2b0a96c081",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Samaritain 51",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 51",
-  "note": "1866-1878 · 43 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091780r/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091780r"
- },
- {
-  "id": "a0e4bb930cc8",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Samaritain 52",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 52",
-  "note": "1884-1886 · 99 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b100917816/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b100917816"
- },
- {
-  "id": "978ad411583a",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Samaritain 53",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 53",
-  "note": "54 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091782n/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091782n"
- },
- {
-  "id": "147f522fec80",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Samaritain 59",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 59",
-  "note": "14 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b100917833/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b100917833"
- },
- {
-  "id": "08557bfa16c8",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Arabe 3",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Arabe 3",
-  "note": "1685 · 481 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10884363p/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10884363p"
- },
- {
-  "id": "d05759fb9ce8",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Samaritain 2",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 2",
-  "note": "534 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b52518357r/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b52518357r"
+  "shelf": "Barb.or.1",
+  "note": "AH 624 (1226/7 CE); end of Deuteronomy supplied 1482 · Damascus / Nablus · 586 עמודים",
+  "manifest": "https://digi.vatlib.it/iiif/MSS_Barb.or.1/manifest.json",
+  "home": "https://digi.vatlib.it/view/MSS_Barb.or.1"
  }
 ]
