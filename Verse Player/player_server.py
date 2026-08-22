@@ -113,6 +113,9 @@ def _find_tool(name):
         Path(os.environ.get("LOCALAPPDATA", "")) / "Microsoft" / "WinGet" / "Packages",
         Path(os.environ.get("ProgramFiles", "")) / "ffmpeg" / "bin",
         Path("C:/ffmpeg/bin"),
+        Path(os.environ.get("ProgramFiles", "")) / "Git" / "cmd",
+        Path(os.environ.get("ProgramFiles", "")) / "Git" / "bin",
+        Path(os.environ.get("ProgramFiles(x86)", "")) / "Git" / "cmd",
     ]
     for root in roots:
         try:
@@ -130,9 +133,13 @@ def _find_tool(name):
 
 FFMPEG = _find_tool("ffmpeg") or "ffmpeg"
 FFPROBE = _find_tool("ffprobe") or "ffprobe"
+# git is resolved the same way and for the same reason: pushing died with a
+# bare "The system cannot find the file specified" whenever the app was
+# launched from somewhere whose PATH lacked it.
+GIT = _find_tool("git") or "git"
 # yt-dlp looks the tools up itself; put their folder in front of PATH so it and
 # anything else launched from here finds them too.
-for _t in (FFMPEG, FFPROBE):
+for _t in (FFMPEG, FFPROBE, GIT):
     _d = os.path.dirname(_t)
     if _d and _d not in os.environ.get("PATH", "").split(os.pathsep):
         os.environ["PATH"] = _d + os.pathsep + os.environ.get("PATH", "")
@@ -716,7 +723,14 @@ def apply_witness(entry):
 
 # ───────────────────────── git push ─────────────────────────
 def run_in(cwd, cmd):
-    p = subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True, **_NO_WINDOW)
+    try:
+        p = subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True, **_NO_WINDOW)
+    except FileNotFoundError:
+        # "[WinError 2] The system cannot find the file specified" names nothing
+        raise RuntimeError(
+            "לא נמצאה התוכנה '{}' במחשב. ודא שהיא מותקנת; אם היא הותקנה "
+            "לאחרונה, סגור את האפליקציה ופתח אותה מחדש כדי שתראה אותה."
+            .format(cmd[0]))
     if p.returncode != 0:
         raise RuntimeError("{}\n{}\n{}".format(cmd, p.stdout, p.stderr))
     return p.stdout
@@ -761,23 +775,28 @@ def cleanup_orphan_staging():
 
 def push_to_cloud(message):
     cleanup_orphan_staging()
-    run_in(TORAH, ["git", "add", "-A", "--", "web/static/audio/readings/", "web/static/audio/witnesses.json"])
-    status = run_in(TORAH, ["git", "status", "--short", "web/static/audio/readings/", "web/static/audio/witnesses.json"])
+    # player-all.html is regenerated from the manifest by every apply, so it
+    # belongs in the same commit. Leaving it out also left the tree permanently
+    # dirty, which is what made the rebase below refuse to run.
+    paths = ["web/static/audio/readings/", "web/static/audio/witnesses.json",
+             "web/player-all.html"]
+    run_in(TORAH, [GIT, "add", "-A", "--"] + paths)
+    status = run_in(TORAH, [GIT, "status", "--short"] + paths)
     if not status.strip():
         return {"pushed": False, "reason": "no changes staged"}
-    run_in(TORAH, ["git", "commit", "-m", message])
+    run_in(TORAH, [GIT, "commit", "-m", message])
 
     # The repo is worked on from more than one place, so the remote often has
     # commits we don't - git then rejects the push as non-fast-forward and the
     # button just fails with a wall of git hint text. Catch up first.
     rebased_onto = None
-    run_in(TORAH, ["git", "fetch", "private"])
-    behind = run_in(TORAH, ["git", "rev-list", "--count", "web-deploy..private/main"]).strip()
+    run_in(TORAH, [GIT, "fetch", "private"])
+    behind = run_in(TORAH, [GIT, "rev-list", "--count", "web-deploy..private/main"]).strip()
     if behind and behind != "0":
         # Refuse to rebase if the incoming commits touch the same files we do -
         # that needs a human, not an automatic replay of audio edits.
-        ours = set(run_in(TORAH, ["git", "diff", "--name-only", "private/main...web-deploy"]).split("\n"))
-        theirs = set(run_in(TORAH, ["git", "diff", "--name-only", "web-deploy...private/main"]).split("\n"))
+        ours = set(run_in(TORAH, [GIT, "diff", "--name-only", "private/main...web-deploy"]).split("\n"))
+        theirs = set(run_in(TORAH, [GIT, "diff", "--name-only", "web-deploy...private/main"]).split("\n"))
         clash = sorted(f for f in (ours & theirs) if f.strip())
         if clash:
             raise RuntimeError(
@@ -786,12 +805,14 @@ def push_to_cloud(message):
                 "safe; this needs to be merged by hand.".format(
                     behind, ", ".join(clash[:3]), " and more" if len(clash) > 3 else ""))
         try:
-            run_in(TORAH, ["git", "rebase", "private/main"])
+            # --autostash: anything else the working tree happens to be carrying
+            # is set aside and put back, instead of refusing outright.
+            run_in(TORAH, [GIT, "rebase", "--autostash", "private/main"])
         except Exception as e:
             # --abort itself throws if no rebase actually started; don't let
             # that mask the real error.
             try:
-                run_in(TORAH, ["git", "rebase", "--abort"])
+                run_in(TORAH, [GIT, "rebase", "--abort"])
             except Exception:
                 pass
             raise RuntimeError(
@@ -799,7 +820,7 @@ def push_to_cloud(message):
                 "Your work is committed locally and safe.".format(behind, e))
         rebased_onto = behind
 
-    push_out = run_in(TORAH, ["git", "push", "private", "web-deploy:main"])
+    push_out = run_in(TORAH, [GIT, "push", "private", "web-deploy:main"])
     return {"pushed": True, "output": push_out, "status": status, "rebased_onto": rebased_onto}
 
 
