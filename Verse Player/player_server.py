@@ -145,6 +145,34 @@ for _t in (FFMPEG, FFPROBE, GIT):
         os.environ["PATH"] = _d + os.pathsep + os.environ.get("PATH", "")
 
 
+# ── is the running build older than the code? ─────────────────────
+# The single most expensive habit in this tool's history: a fix lands in the
+# source, the packaged .exe is not rebuilt, and the user keeps hitting a bug
+# that "was already fixed" - three separate times. Nothing ever said so.
+SOURCES = ("player_server.py", "build_player.py", "audio_analysis.py",
+           "verse_player_app.py")
+
+
+def stale_build():
+    """{stale, newer:[names]} - only meaningful for the packaged app."""
+    if not getattr(sys, "frozen", False):
+        return {"stale": False, "newer": []}
+    try:
+        exe_at = Path(sys.executable).stat().st_mtime
+    except OSError:
+        return {"stale": False, "newer": []}
+    here = Path(sys.executable).resolve().parent
+    newer = []
+    for name in SOURCES:
+        f = here / name
+        try:
+            if f.is_file() and f.stat().st_mtime > exe_at + 1:
+                newer.append(name)
+        except OSError:
+            pass
+    return {"stale": bool(newer), "newer": newer}
+
+
 # ───────────────────────── cloud helpers ─────────────────────────
 def cloud_get(path, retries=3, backoff=5, timeout=12):
     """The live site is on Render's free tier and spins down when idle -
@@ -284,6 +312,38 @@ def chapter_meta(cur, book_id, sam_num):
     }
 
 
+def chapter_meta_live(sam_ch_id):
+    """Chapter metadata straight from the deployed site.
+
+    Chapters are created on the live site's own admin screen, so the local
+    data/torah.db is routinely BEHIND it — Leviticus stops at 129 locally
+    while the site already has 135. Apply looked only locally, found nothing
+    for the new chapters, and dropped them from the manifest while their
+    freshly cut audio sat on disk. The site knows them, so ask the site."""
+    rows = cloud_get("/api/sam_verses?sam_ch_id={}".format(int(sam_ch_id)))
+    if not rows:
+        return None
+
+    def loc(r):
+        try:
+            return (int(r.get("jchapter") or 0), int(r.get("number") or 0))
+        except (TypeError, ValueError):
+            return (0, 0)
+
+    ordered = sorted(rows, key=loc)
+    (fc, fv), (lc, lv) = loc(ordered[0]), loc(ordered[-1])
+    if not fc:
+        return None
+    return {
+        "sam_ch_id": int(sam_ch_id),
+        "verses": "{}:{}-{}:{}".format(gematria(fc), gematria(fv),
+                                       gematria(lc), gematria(lv)),
+        "verses_num": "{}:{}-{}:{}".format(fc, fv, lc, lv),
+        "verse_count": len(ordered),
+        "incipit": " ".join((ordered[0].get("text") or "").split()[:4]),
+    }
+
+
 def ffprobe_dur(path):
     out = subprocess.check_output(
         [FFPROBE, "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)]
@@ -384,16 +444,34 @@ def apply_meir(entry):
 
     con = sqlite3.connect(str(DB))
     cur = con.cursor()
-    # A chapter with no row here used to be skipped with a warning - but it had
-    # already been dropped from `kept`, so it vanished from readings.json while
-    # its mp3 stayed on disk, and the reload wiped the warning off the screen.
-    absent = [n for n in sorted(new_ns) if chapter_meta(cur, book_id, n) is None]
+    div = cloud_divisions(book_id)
+
+    # Resolve every chapter's metadata up front, local DB first and the live
+    # site second. A chapter the local DB has never heard of used to be skipped
+    # with a warning while ALREADY removed from the kept set, so it vanished
+    # from readings.json with its audio still on disk - and the page reload
+    # wiped the warning off the screen 1.8s later.
+    metas, absent, from_cloud = {}, [], []
+    for n in sorted(new_ns):
+        m = chapter_meta(cur, book_id, n)
+        if m is None:
+            info = div["chapters"].get(n) or {}
+            if info.get("sam_ch_id"):
+                try:
+                    m = chapter_meta_live(info["sam_ch_id"])
+                    if m:
+                        from_cloud.append(n)
+                except Exception:
+                    m = None
+        if m is None:
+            absent.append(n)
+        else:
+            metas[n] = m
     if absent:
         raise RuntimeError(
-            "לא נמצאו במסד הנתונים המקומי פרקים: {}. לא נגעתי בכלום - "
-            "סנכרן את מסד הנתונים או תקן את מספרי הפרקים ונסה שוב."
-            .format(", ".join(str(n) for n in absent)))
-    div = cloud_divisions(book_id)
+            "לא הצלחתי לזהות את הפרקים {} - הם אינם במסד הנתונים המקומי "
+            "וגם לא באתר החי. לא נגעתי בכלום.".format(
+                ", ".join(str(n) for n in absent)))
 
     stamp = time.strftime("%Y%m%d_%H%M%S")
     shutil.copy2(READINGS_JSON, READINGS_JSON.with_suffix(".json.bak_" + stamp))
@@ -477,9 +555,7 @@ def apply_meir(entry):
     warnings = []
     for n in sorted(placed.keys()):
         dest, dur = placed[n]
-        meta = chapter_meta(cur, book_id, n)
-        if meta is None:                      # pre-flight already refused this
-            raise RuntimeError("chapter {} vanished from the DB mid-apply".format(n))
+        meta = metas[n]                       # resolved in the pre-flight
         pinfo = div["chapters"].get(n)
         if pinfo:
             portion = {"order": pinfo["portion_order"], "id": pinfo["portion_id"], "name": pinfo["portion_name"]}
@@ -509,6 +585,10 @@ def apply_meir(entry):
     b1["chapters"] = kept
     READINGS_JSON.write_text(json.dumps(rd, ensure_ascii=False, indent=1), encoding="utf-8")
 
+    if from_cloud:
+        warnings.append(
+            "פרקים {} אינם במסד הנתונים המקומי - הנתונים שלהם נלקחו מהאתר החי"
+            .format(", ".join(str(n) for n in from_cloud)))
     return {
         "touched": sorted(touched_ns),
         "new_chapters": sorted(new_ns),
@@ -913,7 +993,7 @@ class Handler(BaseHTTPRequestHandler):
         # deployed site was asleep the player reported "local server not
         # available" even though it was running fine.
         if parsed.path == "/api/ping":
-            self._send_json({"ok": True})
+            self._send_json({"ok": True, "build": stale_build()})
             return
 
         if parsed.path == "/api/cloud_divisions":

@@ -208,7 +208,20 @@ function pingServer() {
      though the local server (the thing this light is about) was fine. */
   fetch(SERVER + '/api/ping', { method: 'GET' }).then(function (r) {
     var el = $('serverStat');
-    if (r.ok) { el.textContent = '🟢 שרת מקומי מחובר'; el.className = 'up'; }
+    if (r.ok) {
+      el.textContent = '🟢 שרת מקומי מחובר'; el.className = 'up';
+      /* A fix that landed in the source but never made it into the packaged
+         app has cost this project three rounds of "but I already fixed that".
+         Say so instead of letting it be discovered by hitting the old bug. */
+      r.json().then(function (d) {
+        var b = d && d.build;
+        if (b && b.stale) {
+          el.textContent = '🟠 התוכנה ישנה מהקוד — בנה מחדש (' + b.newer.join(', ') + ')';
+          el.className = 'down';
+          el.title = 'קבצי מקור חדשים מהבינרי שרץ: ' + b.newer.join(', ');
+        }
+      }).catch(function () {});
+    }
     else { el.textContent = '🔴 שרת מקומי לא זמין'; el.className = 'down'; }
   }).catch(function () {
     var el = $('serverStat'); el.textContent = '🔴 שרת מקומי לא זמין (הרץ player_server.py)'; el.className = 'down';
