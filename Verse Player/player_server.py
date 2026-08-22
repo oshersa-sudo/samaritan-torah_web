@@ -782,9 +782,19 @@ def push_to_cloud(message):
              "web/player-all.html"]
     run_in(TORAH, [GIT, "add", "-A", "--"] + paths)
     status = run_in(TORAH, [GIT, "status", "--short"] + paths)
-    if not status.strip():
-        return {"pushed": False, "reason": "no changes staged"}
-    run_in(TORAH, [GIT, "commit", "-m", message])
+    if status.strip():
+        run_in(TORAH, [GIT, "commit", "-m", message])
+    else:
+        # Nothing NEW to record is not the same as nothing to push. A commit
+        # from an earlier attempt whose push failed is still sitting here, and
+        # answering "no changes to push" left it stranded for good - the button
+        # could never see it again, because there was nothing left to stage.
+        run_in(TORAH, [GIT, "fetch", "private"])
+        ahead = run_in(TORAH, [GIT, "rev-list", "--count",
+                               "private/main..web-deploy"]).strip()
+        if ahead in ("", "0"):
+            return {"pushed": False, "reason": "no changes staged"}
+        status = "(%s commit(s) already recorded, not yet on the cloud)" % ahead
 
     # The repo is worked on from more than one place, so the remote often has
     # commits we don't - git then rejects the push as non-fast-forward and the
