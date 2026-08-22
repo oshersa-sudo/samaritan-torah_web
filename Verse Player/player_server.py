@@ -95,6 +95,49 @@ PORT = 8934
 BOOK_NAMES = {1: "בראשית", 2: "שמות", 3: "ויקרא", 4: "במדבר", 5: "דברים"}
 
 
+# ── external tools ────────────────────────────────────────────────
+# Never call these by bare name. PATH is whatever the process that launched the
+# app happened to have, and a change to PATH does not reach processes that are
+# already running - including explorer.exe, which is what starts the app from a
+# shortcut. ffmpeg was on the system PATH and the app still could not see it,
+# and yt-dlp failed at the very end with "ffprobe and ffmpeg not found" after
+# the whole download had already succeeded.
+def _find_tool(name):
+    """Absolute path to an external tool, PATH or not."""
+    found = shutil.which(name)
+    if found:
+        return found
+    exe = name + (".exe" if os.name == "nt" else "")
+    roots = [
+        Path(os.environ.get("LOCALAPPDATA", "")) / "Microsoft" / "WinGet" / "Links",
+        Path(os.environ.get("LOCALAPPDATA", "")) / "Microsoft" / "WinGet" / "Packages",
+        Path(os.environ.get("ProgramFiles", "")) / "ffmpeg" / "bin",
+        Path("C:/ffmpeg/bin"),
+    ]
+    for root in roots:
+        try:
+            if not root.is_dir():
+                continue
+            direct = root / exe
+            if direct.is_file():
+                return str(direct)
+            for hit in root.glob("**/" + exe):      # WinGet nests under a version dir
+                return str(hit)
+        except Exception:
+            continue
+    return None
+
+
+FFMPEG = _find_tool("ffmpeg") or "ffmpeg"
+FFPROBE = _find_tool("ffprobe") or "ffprobe"
+# yt-dlp looks the tools up itself; put their folder in front of PATH so it and
+# anything else launched from here finds them too.
+for _t in (FFMPEG, FFPROBE):
+    _d = os.path.dirname(_t)
+    if _d and _d not in os.environ.get("PATH", "").split(os.pathsep):
+        os.environ["PATH"] = _d + os.pathsep + os.environ.get("PATH", "")
+
+
 # ───────────────────────── cloud helpers ─────────────────────────
 def cloud_get(path, retries=3, backoff=5, timeout=12):
     """The live site is on Render's free tier and spins down when idle -
@@ -142,7 +185,9 @@ def cloud_divisions(book_id, retries=3):
                 "opening": c.get("opening", ""),
                 "sam_ch_id": c["id"],
             }
-    return {"portions": portions, "chapters": chapters}
+    # the caller must be able to prove a late response belongs to the book it
+    # is about to be applied to - see the client's book guard
+    return {"book_id": book_id, "portions": portions, "chapters": chapters}
 
 
 def _same_segment(a, b):
@@ -234,7 +279,7 @@ def chapter_meta(cur, book_id, sam_num):
 
 def ffprobe_dur(path):
     out = subprocess.check_output(
-        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)]
+        [FFPROBE, "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)]
     )
     return float(out.strip())
 
@@ -324,11 +369,11 @@ def apply_meir(entry):
                         src = (READINGS / Path(sf["file"]).name).as_posix()
                         f.write("file '{}'\n".format(src))
                 span_wav = tmp / "span_{}.wav".format(p["n"])
-                run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0",
+                run([FFMPEG, "-y", "-v", "error", "-f", "concat", "-safe", "0",
                      "-i", str(concat_list), "-ac", "2", "-ar", "44100", str(span_wav)])
                 local_v0 = v0 - cum[lo_i]
                 local_v1 = v1 - cum[lo_i]
-                cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(span_wav), "-ss", str(local_v0)]
+                cmd = [FFMPEG, "-y", "-v", "error", "-i", str(span_wav), "-ss", str(local_v0)]
                 if hi_i < len(files) - 1 or v1 < total - 0.01:
                     cmd += ["-to", str(local_v1)]
                 cmd += ["-c:a", "libmp3lame", "-q:a", "4", str(out_path)]
@@ -466,7 +511,15 @@ def ytdlp(argv):
         def error(self, msg):
             errors.append(str(msg).strip())
 
-    parsed = yt_dlp.parse_options(list(argv))
+    argv = list(argv)
+    # Tell it outright where the tools are. yt-dlp searches PATH on its own and
+    # failed at the postprocessing step - after downloading the whole file -
+    # with "ffprobe and ffmpeg not found", because the app had inherited a PATH
+    # from before ffmpeg was installed.
+    if os.path.isabs(FFMPEG) and "--ffmpeg-location" not in argv:
+        argv = ["--ffmpeg-location", os.path.dirname(FFMPEG)] + argv
+
+    parsed = yt_dlp.parse_options(argv)
     opts = dict(parsed.ydl_opts if hasattr(parsed, "ydl_opts") else parsed[-1])
     urls = parsed.urls if hasattr(parsed, "urls") else parsed[-2]
     opts["logger"] = _Collect()
@@ -516,7 +569,7 @@ def redownload_split(payload):
                 raise RuntimeError("local file not found: {}".format(source))
 
         wav_path = tmp / "analysis.wav"
-        run(["ffmpeg", "-y", "-v", "error", "-i", str(audio_path), "-ac", "1", "-ar", "16000", str(wav_path)])
+        run([FFMPEG, "-y", "-v", "error", "-i", str(audio_path), "-ac", "1", "-ar", "16000", str(wav_path)])
         dur, cands, med = audio_analysis.analyze(str(wav_path))
         cands = [c for c in cands if 2 < c["start"] < dur - 2]
 
@@ -561,7 +614,7 @@ def redownload_split(payload):
             a, b = bounds[i], bounds[i + 1]
             out_name = "_redl{}_c{:03d}.mp3".format(stamp, m["number"])
             out_path = READINGS / out_name
-            cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(audio_path), "-ss", str(a)]
+            cmd = [FFMPEG, "-y", "-v", "error", "-i", str(audio_path), "-ss", str(a)]
             if i < len(metas) - 1:
                 cmd += ["-to", str(b)]
             cmd += ["-c:a", "libmp3lame", "-q:a", "4", str(out_path)]

@@ -169,11 +169,18 @@ def selftest():
         say("[-- ] native window    unavailable (%s) - will open in the browser"
             % type(e).__name__)
 
-    for tool in ("ffmpeg", "ffprobe", "git"):
-        found = shutil.which(tool)
-        # not fatal: playing and editing work without them; cutting/pushing needs them
-        say("[%s] %-16s %s" % ("ok" if found else "-- ", tool,
-                               found or "not on PATH (needed to cut audio / push)"))
+    # Report what the server actually resolved, not what is on PATH: the app
+    # inherits PATH from whatever launched it, so "not on PATH" was a misleading
+    # answer to "why did the download fail".
+    for tool, resolved in (("ffmpeg", getattr(ps, "FFMPEG", None)),
+                           ("ffprobe", getattr(ps, "FFPROBE", None))):
+        good = bool(resolved) and os.path.isabs(resolved) and Path(resolved).is_file()
+        ok_mark = "ok" if good else "-- "
+        say("[%s] %-16s %s" % (ok_mark, tool,
+                               resolved if good else "not found (needed to cut audio)"))
+    git = shutil.which("git")
+    say("[%s] %-16s %s" % ("ok" if git else "-- ", "git",
+                           git or "not on PATH (needed to push)"))
 
     _report("SELFTEST PASSED" if ok else "SELFTEST FAILED", out)
     return 0 if ok else 1

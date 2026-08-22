@@ -615,12 +615,13 @@ function initSelectors() {
 var syncStatus = {};        /* n -> true(green)/false(red); absent = unknown (grey) */
 var syncFetchSeq = 0;
 function fetchSyncStatus() {
-  var seq = ++syncFetchSeq;
+  var seq = ++syncFetchSeq, reqBook = book, reqReader = reader;
   var el = $('syncLegend'); if (el) el.textContent = 'בודק סנכרון מול הענן…';
   fetch(SERVER + '/api/sync_status?book_id=' + book + '&reader=' + encodeURIComponent(reader))
     .then(function (r) { return r.json(); })
     .then(function (res) {
       if (seq !== syncFetchSeq) return;   /* a newer request superseded this one */
+      if (reqBook !== book || reqReader !== reader) return;   /* lights belong to another view */
       if (res.error) throw new Error(res.error);
       syncStatus = res.synced || {};
       renderGrid();
@@ -681,13 +682,31 @@ function openChapter(n) {
 }
 
 /* ================= cloud sync: divisions (cloud -> player, display only) ================= */
+/* The live site can take the best part of a minute to answer (Render wakes on
+   demand, and the server retries through that). The book can therefore change
+   several times while a request is in flight, and the reply must never be
+   applied to whatever book happens to be showing when it lands: chapter numbers
+   repeat across books, so Genesis data poured onto Leviticus silently regroups
+   every chapter under a portion it does not belong to. That is exactly what
+   "all the books are divided like Genesis" was.
+
+   Three guards: the book is captured when the request goes out and rechecked
+   when it returns, the response has to name that same book, and a newer request
+   for a book retires older ones. */
+var divSeq = 0;
 function syncDivisionsFromCloud(quiet) {
+  var reqBook = book, seq = ++divSeq;
   if (!quiet) setStatus('מושך חלוקות מהענן…');
-  fetch(SERVER + '/api/cloud_divisions?book_id=' + book + '&retries=3').then(function (r) {
+  fetch(SERVER + '/api/cloud_divisions?book_id=' + reqBook + '&retries=3').then(function (r) {
     if (!r.ok) throw new Error('http ' + r.status);
     return r.json();
   }).then(function (data) {
     if (data.error) throw new Error(data.error);
+    if (seq !== divSeq) return;                       /* a newer request replaced this one */
+    if (reqBook !== book) return;                     /* the user moved on while we waited */
+    if (data.book_id != null && data.book_id !== reqBook) {
+      throw new Error('התקבלו חלוקות של ספר ' + data.book_id + ' עבור ספר ' + reqBook);
+    }
     var cs = chapters(), n_updated = 0;
     cs.forEach(function (c) {
       var info = data.chapters[c.n];
@@ -730,14 +749,22 @@ function redownloadAndSplit() {
   var source = prompt('כתובת YouTube או נתיב לקובץ מקומי:\\nיוריד/יקרא את ההקלטה המלאה ויחלק אותה מחדש לפי האלגוריתם המקורי (הפסקות + ירידת מנגינה + עוגן אורך-טקסט) עבור כל פרקי הפרשה הנוכחית.');
   if (!source) return;
   if (!confirm('לחלק מחדש את "' + G.title + '" מהמקור: ' + source + ' ?\\nזה עשוי לקחת דקה-שתיים. שום דבר לא ייכתב למניפסט עד שתלחץ "☁️ החל שינויים".')) return;
-  var po = G.po;
+  var po = G.po, reqBook = book;
   setStatus('מוריד ומנתח… זה יכול לקחת דקה-שתיים (הורדה + זיהוי הפסקות/מנגינה).');
   fetch(SERVER + '/api/redownload_split', { method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ source: source, book_id: book, portion_order: po }) })
+      body: JSON.stringify({ source: source, book_id: reqBook, portion_order: po }) })
     .then(function (r) { return r.json(); })
     .then(function (res) {
       if (!res.ok) throw new Error(res.error || 'redownload failed');
       var r = res.result;
+      /* This takes minutes. Loading a result cut for another book as the
+         current group would let Apply write that audio into THIS book's
+         files - so refuse rather than guess. */
+      if (reqBook !== book) {
+        setStatus('ההורדה הסתיימה עבור ' + BOOK_NAMES[reqBook] + ', אבל בינתיים עברת ל' +
+                  BOOK_NAMES[book] + '. לא טענתי אותה. חזור ל' + BOOK_NAMES[reqBook] + ' והרץ שוב.');
+        return;
+      }
       loadRedownloadedGroup(r, po);
       setStatus('✓ חולק מחדש: ' + r.n_chapters + ' פרקים' +
                 (r.weak_boundaries ? ' · ' + r.weak_boundaries + ' גבולות ללא ירידת מנגינה ברורה (כדאי להאזין ולכוון)' : '') +
@@ -755,13 +782,19 @@ function addNewPortion() {
   if (!source) return;
   if (!confirm('ליצור/להשלים את פרשה ' + po + ' ב' + BOOK_NAMES[book] + ' מהמקור: ' + source + ' ?\\nרשימת פרקי הפרשה תישלף מהענן החי; ההקלטה תוריד ותתחלק לפי האלגוריתם המקורי. שום דבר לא ייכתב עד "☁️ החל שינויים".')) return;
   stopAll(); G = null; renderEditor();
+  var reqBook = book;
   setStatus('מוריד ומנתח פרשה ' + po + '… זה יכול לקחת דקה-שתיים.');
   fetch(SERVER + '/api/redownload_split', { method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ source: source, book_id: book, portion_order: po }) })
+      body: JSON.stringify({ source: source, book_id: reqBook, portion_order: po }) })
     .then(function (r) { return r.json(); })
     .then(function (res) {
       if (!res.ok) throw new Error(res.error || 'redownload failed');
       var r = res.result;
+      if (reqBook !== book) {
+        setStatus('ההורדה הסתיימה עבור ' + BOOK_NAMES[reqBook] + ', אבל בינתיים עברת ל' +
+                  BOOK_NAMES[book] + '. לא טענתי אותה. חזור ל' + BOOK_NAMES[reqBook] + ' והרץ שוב.');
+        return;
+      }
       loadRedownloadedGroup(r, po);
       setStatus('✓ פרשה ' + po + ' (' + (r.portion_name || '') + '): ' + r.n_chapters + ' פרקים' +
                 (r.weak_boundaries ? ' · ' + r.weak_boundaries + ' גבולות ללא ירידת מנגינה ברורה (כדאי להאזין ולכוון)' : '') +
