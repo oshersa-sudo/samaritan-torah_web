@@ -9713,292 +9713,6 @@
   {
    "chapters": [
     {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 3,
-     "name": "ויקרא - אם בחקתי - 117",
-     "incipit": "והנשארים בכם ימקו בעונם",
-     "sam_ch_id": 1634,
-     "n": 117,
-     "verses": "כו:לט-כו:מא",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 117,
-     "file": "/static/audio/readings/b3-p08-c117.mp3",
-     "duration": 37.56,
-     "src_start": 499.53,
-     "src_end": 537.09,
-     "verses_num": "26:39-26:41"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 5,
-     "name": "ויקרא - אם בחקתי - 118",
-     "incipit": "וזכרתי את בריתי יעקב:",
-     "sam_ch_id": 1635,
-     "n": 118,
-     "verses": "כו:מב-כו:מו",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 118,
-     "file": "/static/audio/readings/b3-p08-c118.mp3",
-     "duration": 79.11,
-     "src_start": 537.09,
-     "src_end": 616.2,
-     "verses_num": "26:42-26:46"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 8,
-     "name": "ויקרא - אם בחקתי - 119",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1636,
-     "n": 119,
-     "verses": "כז:א-כז:ח",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 119,
-     "file": "/static/audio/readings/b3-p08-c119.mp3",
-     "duration": 76.82,
-     "src_start": 616.2,
-     "src_end": 693.02,
-     "verses_num": "27:1-27:8"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 2,
-     "name": "ויקרא - אם בחקתי - 120",
-     "incipit": "ואם בהמה אשר יקריב",
-     "sam_ch_id": 1637,
-     "n": 120,
-     "verses": "כז:ט-כז:י",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 120,
-     "file": "/static/audio/readings/b3-p08-c120.mp3",
-     "duration": 25.39,
-     "src_start": 693.02,
-     "src_end": 718.41,
-     "verses_num": "27:9-27:10"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 3,
-     "name": "ויקרא - אם בחקתי - 121",
-     "incipit": "ואם כל בהמה טמאה",
-     "sam_ch_id": 1638,
-     "n": 121,
-     "verses": "כז:יא-כז:יג",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 121,
-     "file": "/static/audio/readings/b3-p08-c121.mp3",
-     "duration": 23.83,
-     "src_start": 718.41,
-     "src_end": 742.24,
-     "verses_num": "27:11-27:13"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 2,
-     "name": "ויקרא - אם בחקתי - 122",
-     "incipit": "ואיש כי יקדיש את",
-     "sam_ch_id": 1639,
-     "n": 122,
-     "verses": "כז:יד-כז:טו",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 122,
-     "file": "/static/audio/readings/b3-p08-c122.mp3",
-     "duration": 21.5,
-     "src_start": 742.24,
-     "src_end": 763.74,
-     "verses_num": "27:14-27:15"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 6,
-     "name": "ויקרא - אם בחקתי - 123",
-     "incipit": "ואם משדה אחזתו יקדיש",
-     "sam_ch_id": 1640,
-     "n": 123,
-     "verses": "כז:טז-כז:כא",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 123,
-     "file": "/static/audio/readings/b3-p08-c123.mp3",
-     "duration": 72.67,
-     "src_start": 763.74,
-     "src_end": 836.41,
-     "verses_num": "27:16-27:21"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 4,
-     "name": "ויקרא - אם בחקתי - 124",
-     "incipit": "ואם את שדה מקנתו",
-     "sam_ch_id": 1641,
-     "n": 124,
-     "verses": "כז:כב-כז:כה",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 124,
-     "file": "/static/audio/readings/b3-p08-c124.mp3",
-     "duration": 43.37,
-     "src_start": 836.41,
-     "src_end": 879.78,
-     "verses_num": "27:22-27:25"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 2,
-     "name": "ויקרא - אם בחקתי - 125",
-     "incipit": "אך כל בכור אשר",
-     "sam_ch_id": 1642,
-     "n": 125,
-     "verses": "כז:כו-כז:כז",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 125,
-     "file": "/static/audio/readings/b3-p08-c125.mp3",
-     "duration": 23.71,
-     "src_start": 879.78,
-     "src_end": 903.49,
-     "verses_num": "27:26-27:27"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 2,
-     "name": "ויקרא - אם בחקתי - 126",
-     "incipit": "אך כל חרם אשר",
-     "sam_ch_id": 1643,
-     "n": 126,
-     "verses": "כז:כח-כז:כט",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 126,
-     "file": "/static/audio/readings/b3-p08-c126.mp3",
-     "duration": 15.54,
-     "src_start": 903.49,
-     "src_end": 919.03,
-     "verses_num": "27:28-27:29"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 2,
-     "name": "ויקרא - אם בחקתי - 127",
-     "incipit": "וכל מעשר הארץ מזרע",
-     "sam_ch_id": 1644,
-     "n": 127,
-     "verses": "כז:ל-כז:לא",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 127,
-     "file": "/static/audio/readings/b3-p08-c127.mp3",
-     "duration": 21.63,
-     "src_start": 919.03,
-     "src_end": 940.66,
-     "verses_num": "27:30-27:31"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 2,
-     "name": "ויקרא - אם בחקתי - 128",
-     "incipit": "וכל מעשר בקר וצאן",
-     "sam_ch_id": 1645,
-     "n": 128,
-     "verses": "כז:לב-כז:לג",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 128,
-     "file": "/static/audio/readings/b3-p08-c128.mp3",
-     "duration": 12.08,
-     "src_start": 940.66,
-     "src_end": 952.74,
-     "verses_num": "27:32-27:33"
-    },
-    {
-     "src": {
-      "youtube_id": "XjsdbiNaZW4"
-     },
-     "verse_count": 1,
-     "name": "ויקרא - אם בחקתי - 129",
-     "incipit": "אלה המצות אשר צוה",
-     "sam_ch_id": 1646,
-     "n": 129,
-     "verses": "כז:לד-כז:לד",
-     "portion": {
-      "order": 8,
-      "name": "אם בחקתי",
-      "id": 37
-     },
-     "sam_ch_number": 129,
-     "file": "/static/audio/readings/b3-p08-c129.mp3",
-     "duration": 6.45,
-     "src_start": 952.74,
-     "src_end": 959.19,
-     "verses_num": "27:34-27:34"
-    },
-    {
      "n": 1,
      "sam_ch_number": 1,
      "file": "/static/audio/readings/b3-p30-c001.mp3",
@@ -12505,6 +12219,292 @@
      "verse_count": 3,
      "incipit": "והנשארים בכם: והבאתי מרך",
      "name": "ויקרא - מועדי - 116"
+    },
+    {
+     "n": 117,
+     "sam_ch_number": 117,
+     "file": "/static/audio/readings/b3-p08-c117.mp3",
+     "duration": 121.72,
+     "src_start": 0,
+     "src_end": 121.72,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1634,
+     "verses": "כו:לט-כו:מא",
+     "verses_num": "26:39-26:41",
+     "verse_count": 3,
+     "incipit": "והנשארים בכם ימקו בעונם",
+     "name": "ויקרא - אם בחקתי - 117"
+    },
+    {
+     "n": 118,
+     "sam_ch_number": 118,
+     "file": "/static/audio/readings/b3-p08-c118.mp3",
+     "duration": 73.26,
+     "src_start": 0,
+     "src_end": 73.26,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1635,
+     "verses": "כו:מב-כו:מו",
+     "verses_num": "26:42-26:46",
+     "verse_count": 5,
+     "incipit": "וזכרתי את בריתי יעקב:",
+     "name": "ויקרא - אם בחקתי - 118"
+    },
+    {
+     "n": 119,
+     "sam_ch_number": 119,
+     "file": "/static/audio/readings/b3-p08-c119.mp3",
+     "duration": 73.6,
+     "src_start": 0,
+     "src_end": 73.6,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1636,
+     "verses": "כז:א-כז:ח",
+     "verses_num": "27:1-27:8",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "ויקרא - אם בחקתי - 119"
+    },
+    {
+     "n": 120,
+     "sam_ch_number": 120,
+     "file": "/static/audio/readings/b3-p08-c120.mp3",
+     "duration": 64.35,
+     "src_start": 0,
+     "src_end": 64.35,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1637,
+     "verses": "כז:ט-כז:י",
+     "verses_num": "27:9-27:10",
+     "verse_count": 2,
+     "incipit": "ואם בהמה אשר יקריב",
+     "name": "ויקרא - אם בחקתי - 120"
+    },
+    {
+     "n": 121,
+     "sam_ch_number": 121,
+     "file": "/static/audio/readings/b3-p08-c121.mp3",
+     "duration": 110.95,
+     "src_start": 0,
+     "src_end": 110.95,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1638,
+     "verses": "כז:יא-כז:יג",
+     "verses_num": "27:11-27:13",
+     "verse_count": 3,
+     "incipit": "ואם כל בהמה טמאה:",
+     "name": "ויקרא - אם בחקתי - 121"
+    },
+    {
+     "n": 122,
+     "sam_ch_number": 122,
+     "file": "/static/audio/readings/b3-p08-c122.mp3",
+     "duration": 55.61,
+     "src_start": 0,
+     "src_end": 55.61,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1639,
+     "verses": "כז:יד-כז:טו",
+     "verses_num": "27:14-27:15",
+     "verse_count": 2,
+     "incipit": "ואיש כי יקדיש את",
+     "name": "ויקרא - אם בחקתי - 122"
+    },
+    {
+     "n": 123,
+     "sam_ch_number": 123,
+     "file": "/static/audio/readings/b3-p08-c123.mp3",
+     "duration": 37.57,
+     "src_start": 0,
+     "src_end": 37.57,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1640,
+     "verses": "כז:טז-כז:כא",
+     "verses_num": "27:16-27:21",
+     "verse_count": 6,
+     "incipit": "ואם משדה אחזתו יקדיש",
+     "name": "ויקרא - אם בחקתי - 123"
+    },
+    {
+     "n": 124,
+     "sam_ch_number": 124,
+     "file": "/static/audio/readings/b3-p08-c124.mp3",
+     "duration": 78.02,
+     "src_start": 0,
+     "src_end": 78.02,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1641,
+     "verses": "כז:כב-כז:כה",
+     "verses_num": "27:22-27:25",
+     "verse_count": 4,
+     "incipit": "ואם את שדה מקנתו",
+     "name": "ויקרא - אם בחקתי - 124"
+    },
+    {
+     "n": 125,
+     "sam_ch_number": 125,
+     "file": "/static/audio/readings/b3-p08-c125.mp3",
+     "duration": 77.9,
+     "src_start": 0,
+     "src_end": 77.9,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1642,
+     "verses": "כז:כו-כז:כז",
+     "verses_num": "27:26-27:27",
+     "verse_count": 2,
+     "incipit": "אך כל בכור אשר",
+     "name": "ויקרא - אם בחקתי - 125"
+    },
+    {
+     "n": 126,
+     "sam_ch_number": 126,
+     "file": "/static/audio/readings/b3-p08-c126.mp3",
+     "duration": 24.87,
+     "src_start": 0,
+     "src_end": 24.87,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1643,
+     "verses": "כז:כח-כז:כט",
+     "verses_num": "27:28-27:29",
+     "verse_count": 2,
+     "incipit": "אך כל חרם אשר",
+     "name": "ויקרא - אם בחקתי - 126"
+    },
+    {
+     "n": 127,
+     "sam_ch_number": 127,
+     "file": "/static/audio/readings/b3-p08-c127.mp3",
+     "duration": 24.36,
+     "src_start": 0,
+     "src_end": 24.36,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1644,
+     "verses": "כז:ל-כז:לא",
+     "verses_num": "27:30-27:31",
+     "verse_count": 2,
+     "incipit": "וכל מעשר הארץ: מזרע",
+     "name": "ויקרא - אם בחקתי - 127"
+    },
+    {
+     "n": 128,
+     "sam_ch_number": 128,
+     "file": "/static/audio/readings/b3-p08-c128.mp3",
+     "duration": 21.5,
+     "src_start": 0,
+     "src_end": 21.5,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1645,
+     "verses": "כז:לב-כז:לג",
+     "verses_num": "27:32-27:33",
+     "verse_count": 2,
+     "incipit": "וכל מעשר בקר וצאן:",
+     "name": "ויקרא - אם בחקתי - 128"
+    },
+    {
+     "n": 129,
+     "sam_ch_number": 129,
+     "file": "/static/audio/readings/b3-p08-c129.mp3",
+     "duration": 60.2,
+     "src_start": 0,
+     "src_end": 60.2,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1646,
+     "verses": "כז:לד-כז:לד",
+     "verses_num": "27:34-27:34",
+     "verse_count": 1,
+     "incipit": "אלה המצות אשר צוה",
+     "name": "ויקרא - אם בחקתי - 129"
     }
    ],
    "playlist": "PLl-48IEqLtluI0oPyh0rmC0-iKVCEMvt_",
