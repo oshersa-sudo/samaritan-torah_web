@@ -5253,6 +5253,52 @@ function openShira(){
 }
 $('shToTorah').onclick = () => $('shiraModal').classList.add('hidden');
 
+/* The archive plays inside that frame, and the system's media controls belong
+ * to the page rather than to a frame within it. Anything the frame sets on its
+ * own mediaSession reaches nobody: leaving the app left the recording playing
+ * with no notification to see and nothing to press. So the frame reports what
+ * it is playing, the page carries that to the system, and whatever the system
+ * offers — play, pause, the next recitation, stop — is handed back down. */
+(function shiraMediaBridge(){
+  if(!('mediaSession' in navigator)) return;
+  const ms = navigator.mediaSession;
+  const tell = (act, extra) => {
+    const f = $('shFrame');
+    if(f && f.contentWindow)
+      f.contentWindow.postMessage(Object.assign({shiraAct:act}, extra||{}), location.origin);
+  };
+  let wired = false;
+  const wire = () => {
+    if(wired) return;
+    wired = true;
+    const on = (a, fn) => { try{ ms.setActionHandler(a, fn); }catch(e){} };
+    on('play',          ()  => tell('play'));
+    on('pause',         ()  => tell('pause'));
+    on('previoustrack', ()  => tell('previoustrack'));
+    on('nexttrack',     ()  => tell('nexttrack'));
+    on('stop',          ()  => tell('stop'));
+    on('seekbackward',  d   => tell('seekbackward', {by: d && d.seekOffset}));
+    on('seekforward',   d   => tell('seekforward',  {by: d && d.seekOffset}));
+    on('seekto',        d   => tell('seekto',       {to: d && d.seekTime}));
+  };
+  addEventListener('message', e => {
+    if(e.origin !== location.origin) return;
+    const d = e.data;
+    if(!d || d.shira !== 1) return;
+    if(d.type === 'meta'){
+      wire();
+      try{ ms.metadata = new MediaMetadata({title:d.title, artist:d.artist,
+                                            album:d.album, artwork:d.artwork}); }catch(err){}
+    } else if(d.type === 'state'){
+      try{ ms.playbackState = d.state; }catch(err){}
+      if(d.state === 'none'){ try{ ms.metadata = null; }catch(err){} }
+    } else if(d.type === 'pos' && ms.setPositionState){
+      try{ ms.setPositionState({duration:d.duration, position:d.position,
+                                playbackRate:d.rate || 1}); }catch(err){}
+    }
+  });
+})();
+
 function openLibrary(){
   $('libraryModal').classList.remove('hidden');
   $('libGallerySearch').value='';
