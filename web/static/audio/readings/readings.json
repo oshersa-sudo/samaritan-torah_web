@@ -12505,6 +12505,138 @@
      "verse_count": 1,
      "incipit": "אלה המצות אשר צוה",
      "name": "ויקרא - אם בחקתי - 129"
+    },
+    {
+     "n": 130,
+     "sam_ch_number": 130,
+     "file": "/static/audio/readings/b3-p08-c130.mp3",
+     "duration": 32.26,
+     "src_start": 0,
+     "src_end": 32.26,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1641,
+     "verses": "כז:כב-כז:כה",
+     "verses_num": "27:22-27:25",
+     "verse_count": 4,
+     "incipit": "ואם את שדה מקנתו",
+     "name": "ויקרא - אם בחקתי - 130"
+    },
+    {
+     "n": 131,
+     "sam_ch_number": 131,
+     "file": "/static/audio/readings/b3-p08-c131.mp3",
+     "duration": 23.57,
+     "src_start": 0,
+     "src_end": 23.57,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1642,
+     "verses": "כז:כו-כז:כז",
+     "verses_num": "27:26-27:27",
+     "verse_count": 2,
+     "incipit": "אך כל בכור אשר",
+     "name": "ויקרא - אם בחקתי - 131"
+    },
+    {
+     "n": 132,
+     "sam_ch_number": 132,
+     "file": "/static/audio/readings/b3-p08-c132.mp3",
+     "duration": 23.71,
+     "src_start": 0,
+     "src_end": 23.71,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1643,
+     "verses": "כז:כח-כז:כט",
+     "verses_num": "27:28-27:29",
+     "verse_count": 2,
+     "incipit": "אך כל חרם אשר",
+     "name": "ויקרא - אם בחקתי - 132"
+    },
+    {
+     "n": 133,
+     "sam_ch_number": 133,
+     "file": "/static/audio/readings/b3-p08-c133.mp3",
+     "duration": 15.54,
+     "src_start": 0,
+     "src_end": 15.54,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1644,
+     "verses": "כז:ל-כז:לא",
+     "verses_num": "27:30-27:31",
+     "verse_count": 2,
+     "incipit": "וכל מעשר הארץ: מזרע",
+     "name": "ויקרא - אם בחקתי - 133"
+    },
+    {
+     "n": 134,
+     "sam_ch_number": 134,
+     "file": "/static/audio/readings/b3-p08-c134.mp3",
+     "duration": 23.56,
+     "src_start": 0,
+     "src_end": 23.56,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1645,
+     "verses": "כז:לב-כז:לג",
+     "verses_num": "27:32-27:33",
+     "verse_count": 2,
+     "incipit": "וכל מעשר בקר וצאן:",
+     "name": "ויקרא - אם בחקתי - 134"
+    },
+    {
+     "n": 135,
+     "sam_ch_number": 135,
+     "file": "/static/audio/readings/b3-p08-c135.mp3",
+     "duration": 16.59,
+     "src_start": 0,
+     "src_end": 16.59,
+     "portion": {
+      "order": 8,
+      "id": 37,
+      "name": "אם בחקתי"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1646,
+     "verses": "כז:לד-כז:לד",
+     "verses_num": "27:34-27:34",
+     "verse_count": 1,
+     "incipit": "אלה המצות אשר צוה",
+     "name": "ויקרא - אם בחקתי - 135"
     }
    ],
    "playlist": "PLl-48IEqLtluI0oPyh0rmC0-iKVCEMvt_",
