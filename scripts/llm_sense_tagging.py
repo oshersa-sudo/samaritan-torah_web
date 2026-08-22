@@ -25,6 +25,15 @@ Model: claude-opus-4-8 (adaptive thinking).  Usage:
 """
 import argparse, json, os, re, sqlite3, sys, time
 
+# This script fills tables on BOTH sides: verse/section-keyed ones that stay in
+# torah.db, and dictionary ones that live in data/lexicon.db. connect_dual()
+# keeps torah.db as `main` and attaches the lexicon writable as `lex`, so the
+# dictionary writes below are qualified lex.<table> — unqualified, SQLite would
+# create a shadow copy inside torah.db that silently masks the real dictionary.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '.'))
+import lexdb
+
 DB = os.path.join(os.path.dirname(__file__), '..', 'data', 'torah.db')
 MODEL = os.environ.get('SENSE_MODEL', 'claude-opus-4-8')
 FIN = {'ם': 'מ', 'ן': 'נ', 'ץ': 'צ', 'ף': 'פ', 'ך': 'כ'}
@@ -47,10 +56,10 @@ def get_api_key():
 
 def ensure_tables(conn):
     conn.executescript("""
-      CREATE TABLE IF NOT EXISTS dict_sense(
+      CREATE TABLE IF NOT EXISTS lex.dict_sense(
         root_norm TEXT, sense_id INTEGER, label TEXT,
         PRIMARY KEY(root_norm, sense_id));
-      CREATE TABLE IF NOT EXISTS dict_word_sense(
+      CREATE TABLE IF NOT EXISTS lex.dict_word_sense(
         word_norm TEXT, root_norm TEXT, sense_id INTEGER,
         PRIMARY KEY(word_norm, root_norm));
       CREATE TABLE IF NOT EXISTS dict_memar_sense(
@@ -111,7 +120,7 @@ SYS_A = ("You are a lexicographer of Samaritan Aramaic, working from A. Tal's "
 
 def stage_a(conn, client, sample=0, batch=10):
     roots = [r for r in multi_sense_roots(conn)
-             if not conn.execute("SELECT 1 FROM dict_sense WHERE root_norm=? LIMIT 1", (r,)).fetchone()]
+             if not conn.execute("SELECT 1 FROM lex.dict_sense WHERE root_norm=? LIMIT 1", (r,)).fetchone()]
     if sample:
         roots = roots[:sample]
     print(f"Stage A: {len(roots)} roots to tag")
@@ -141,16 +150,16 @@ def stage_a(conn, client, sample=0, batch=10):
                     sid = int(s.get('id'))
                 except (TypeError, ValueError):
                     continue
-                conn.execute("INSERT OR REPLACE INTO dict_sense VALUES (?,?,?)",
+                conn.execute("INSERT OR REPLACE INTO lex.dict_sense VALUES (?,?,?)",
                              (rn, sid, (s.get('label') or '').strip()))
             # every form of the root defaults to sense 1; the model lists only the
             # exceptions (sense >= 2), which we override on top of the default.
             for (wnf,) in conn.execute(
                     "SELECT DISTINCT word_norm FROM dict_word_index WHERE root_norm=?", (rn,)):
-                conn.execute("INSERT OR REPLACE INTO dict_word_sense VALUES (?,?,?)", (wnf, rn, 1))
+                conn.execute("INSERT OR REPLACE INTO lex.dict_word_sense VALUES (?,?,?)", (wnf, rn, 1))
             for form, sid in (d.get('forms') or {}).items():
                 try:
-                    conn.execute("INSERT OR REPLACE INTO dict_word_sense VALUES (?,?,?)",
+                    conn.execute("INSERT OR REPLACE INTO lex.dict_word_sense VALUES (?,?,?)",
                                  (norm(form), rn, int(sid)))
                 except (TypeError, ValueError):
                     pass
@@ -158,8 +167,8 @@ def stage_a(conn, client, sample=0, batch=10):
         done += len(chunk)
         if sample:
             for rn in chunk:
-                ss = conn.execute("SELECT sense_id,label FROM dict_sense WHERE root_norm=? ORDER BY sense_id", (rn,)).fetchall()
-                ws = conn.execute("SELECT word_norm,sense_id FROM dict_word_sense WHERE root_norm=? ORDER BY sense_id", (rn,)).fetchall()
+                ss = conn.execute("SELECT sense_id,label FROM lex.dict_sense WHERE root_norm=? ORDER BY sense_id", (rn,)).fetchall()
+                ws = conn.execute("SELECT word_norm,sense_id FROM lex.dict_word_sense WHERE root_norm=? ORDER BY sense_id", (rn,)).fetchall()
                 print(f"\n  ROOT {rn}: senses={[(s[0],s[1]) for s in ss]}")
                 print(f"    forms->sense: {[(w[0],w[1]) for w in ws][:12]}")
         print("  tagged %d/%d roots" % (done, len(roots)))
@@ -182,7 +191,7 @@ def stage_b(conn, client, sample=0):
         rows = rows[:sample]
     # roots that have a sense inventory with >1 sense
     multi = set(r[0] for r in conn.execute(
-        "SELECT root_norm FROM dict_sense GROUP BY root_norm HAVING COUNT(*)>1"))
+        "SELECT root_norm FROM lex.dict_sense GROUP BY root_norm HAVING COUNT(*)>1"))
     # word_norm -> set(root_norm) limited to multi-sense roots
     w2r = {}
     for wn, rn in conn.execute("SELECT word_norm, root_norm FROM dict_word_index WHERE root_norm<>''"):
@@ -201,7 +210,7 @@ def stage_b(conn, client, sample=0):
             conn.commit(); continue
         rlines = []
         for rn in sorted(present):
-            ss = conn.execute("SELECT sense_id,label FROM dict_sense WHERE root_norm=? ORDER BY sense_id", (rn,)).fetchall()
+            ss = conn.execute("SELECT sense_id,label FROM lex.dict_sense WHERE root_norm=? ORDER BY sense_id", (rn,)).fetchall()
             rlines.append("%s: %s" % (rn, '  '.join("%d=%s" % (s[0], s[1]) for s in ss)))
         user = "ARAMAIC: %s\nHEBREW: %s\nROOTS:\n%s" % ((aram or '')[:1600], (heb or '')[:1600], '\n'.join(rlines))
         data, msg = call_json(client, SYS_B, user, 1200)
@@ -227,14 +236,14 @@ def stage_c(conn):
     """Per Torah verse occurrence of a multi-sense root, inherit the sense of the
     verse's Aramaic word for that root (from dict_word_sense). No API calls."""
     multi = set(r[0] for r in conn.execute(
-        "SELECT root_norm FROM dict_sense GROUP BY root_norm HAVING COUNT(*)>1"))
+        "SELECT root_norm FROM lex.dict_sense GROUP BY root_norm HAVING COUNT(*)>1"))
     # word_norm -> root_norm (restricted to multi) for resolving a verse's words
     w2r = {}
     for wn, rn in conn.execute("SELECT word_norm, root_norm FROM dict_word_index WHERE root_norm<>''"):
         if rn in multi:
             w2r.setdefault(wn, set()).add(rn)
     wsense = {}
-    for wn, rn, sid in conn.execute("SELECT word_norm, root_norm, sense_id FROM dict_word_sense"):
+    for wn, rn, sid in conn.execute("SELECT word_norm, root_norm, sense_id FROM lex.dict_word_sense"):
         wsense[(wn, rn)] = sid
     # verse_id -> its Aramaic words
     vwords = {}
@@ -265,7 +274,7 @@ def main():
     ap.add_argument('--stage', choices=['A', 'B', 'C'], required=True)
     ap.add_argument('--sample', type=int, default=0)
     args = ap.parse_args()
-    conn = sqlite3.connect(DB, timeout=60)
+    conn = lexdb.connect_dual(row_factory=False)
     conn.execute('PRAGMA busy_timeout=60000')
     ensure_tables(conn)
     if args.stage == 'C':

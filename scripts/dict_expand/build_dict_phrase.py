@@ -27,6 +27,13 @@ import morph              # noqa: E402
 import align_memar as am  # noqa: E402
 import phrases as P       # noqa: E402
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+import lexdb
+
 DB = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'torah.db')
 PKL = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'dict_expand',
                    'memar_align.pkl')
@@ -95,7 +102,7 @@ def hebrew_rendering(windows, n_words=2, he_freq=None):
 
 
 def main():
-    conn = sqlite3.connect(DB)
+    conn = lexdb.connect()
     conn.row_factory = sqlite3.Row
     align = pickle.load(open(PKL, 'rb'))['align'] if os.path.exists(PKL) else {}
 

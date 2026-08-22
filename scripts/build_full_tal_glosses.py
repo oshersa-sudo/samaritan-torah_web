@@ -16,6 +16,13 @@ Usage:  py -3 scripts/build_full_tal_glosses.py [--book בראשית]   # defaul
 import sqlite3, sys, io, os, re, json, time, shutil
 from collections import defaultdict
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '.'))
+import lexdb
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 DB = 'data/torah.db'
 PROG = 'data/_full_tal_progress.json'
@@ -111,7 +118,7 @@ def run_batch(cl, batch):
 def main():
     import anthropic
     cl = anthropic.Anthropic(api_key=api_key())
-    conn = sqlite3.connect(DB, timeout=120); conn.row_factory = sqlite3.Row
+    conn = lexdb.connect()
     if not os.path.exists(DB + '.bak_fulltal'):
         shutil.copy2(DB, DB + '.bak_fulltal'); print('backup ->', DB + '.bak_fulltal', flush=True)
     conn.execute('CREATE TABLE IF NOT EXISTS tal_word_gloss '

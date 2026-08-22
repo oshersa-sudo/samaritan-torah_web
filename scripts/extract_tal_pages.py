@@ -22,6 +22,13 @@ Usage:
 import sqlite3, sys, io, os, re, json, time, base64, argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '.'))
+import lexdb
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 DB = 'data/torah.db'
 PDF = 'data/המילון של אברהם טל ארמית שומרונית.pdf'
@@ -125,7 +132,7 @@ def main():
     ap.add_argument('--workers', type=int, default=8, help='concurrent API calls')
     args = ap.parse_args()
 
-    db = sqlite3.connect(DB, timeout=60); db.row_factory = sqlite3.Row
+    db = lexdb.connect()
     ensure_schema(db)
     done = set(r['pdf'] for r in db.execute("SELECT pdf FROM tal_pages_done"))
     if args.pages:

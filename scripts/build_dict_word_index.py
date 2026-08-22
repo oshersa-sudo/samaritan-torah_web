@@ -12,6 +12,13 @@ Run:  py -3 scripts/build_dict_word_index.py
 """
 import os, re, sqlite3, sys
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '.'))
+import lexdb
+
 DB = os.path.join(os.path.dirname(__file__), '..', 'data', 'torah.db')
 
 _FINALS = {'ם': 'מ', 'ן': 'נ', 'ץ': 'צ', 'ף': 'פ', 'ך': 'כ'}
@@ -28,7 +35,7 @@ def norm(w):
 
 
 def main():
-    conn = sqlite3.connect(DB)
+    conn = lexdb.connect()
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
 

@@ -21,6 +21,15 @@ import os
 import sqlite3
 import sys
 
+# This script fills tables on BOTH sides: verse/section-keyed ones that stay in
+# torah.db, and dictionary ones that live in data/lexicon.db. connect_dual()
+# keeps torah.db as `main` and attaches the lexicon writable as `lex`, so the
+# dictionary writes below are qualified lex.<table> — unqualified, SQLite would
+# create a shadow copy inside torah.db that silently masks the real dictionary.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+import lexdb
+
 SRC_DIR = os.path.join(os.path.expanduser('~'), 'OneDrive', 'Documents', 'Piyutim', 'app_unit')
 DB = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'torah.db')
 
@@ -49,15 +58,15 @@ def main(apply):
         print('DRY-RUN (pass --apply to write)')
         return
 
-    conn = sqlite3.connect(DB)
+    conn = lexdb.connect_dual(row_factory=False)
     conn.execute('DROP TABLE IF EXISTS piyutim')
-    conn.execute('DROP TABLE IF EXISTS piyutim_dict')
+    conn.execute('DROP TABLE IF EXISTS lex.piyutim_dict')
     conn.execute('DROP TABLE IF EXISTS piyutim_words')
     conn.execute('''CREATE TABLE piyutim(
         id INTEGER PRIMARY KEY, title TEXT, incipit3 TEXT, author TEXT,
         festival TEXT, genre TEXT, type TEXT, source TEXT, source_ref TEXT,
         quality TEXT, text TEXT, translation_he TEXT, translation_en TEXT, notes TEXT)''')
-    conn.execute('CREATE TABLE piyutim_dict(word TEXT PRIMARY KEY, gloss TEXT)')
+    conn.execute('CREATE TABLE lex.piyutim_dict(word TEXT PRIMARY KEY, gloss TEXT)')
     conn.execute('''CREATE TABLE piyutim_words(
         word TEXT PRIMARY KEY, freq INTEGER, freq_clean INTEGER,
         last2 TEXT, last3 TEXT, phon2 TEXT, phon3 TEXT,
@@ -77,7 +86,7 @@ def main(apply):
           p.get('text'), p.get('translation_he') or None, p.get('translation_en') or None,
           p.get('notes')) for p in piyutim])
 
-    conn.executemany('INSERT INTO piyutim_dict(word, gloss) VALUES(?,?)', list(merged_dict.items()))
+    conn.executemany('INSERT INTO lex.piyutim_dict(word, gloss) VALUES(?,?)', list(merged_dict.items()))
 
     conn.executemany(
         '''INSERT INTO piyutim_words(word, freq, freq_clean, last2, last3, phon2, phon3,

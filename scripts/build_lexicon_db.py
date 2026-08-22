@@ -25,7 +25,7 @@ TABLES = [
     'dict_root_index', 'dict_root_entries', 'dict_he_index',
     'dict_sense', 'dict_word_sense',
     'tal_auth_entries', 'tal_forms', 'tal_word_gloss', 'tal_pages',
-    'piyutim_dict',
+    'piyutim_dict', 'tal_pages_done',
 ]
 # Deliberately NOT moved, and why:
 #   verse_dictionary, word_gloss, word_align, word_jewish, word_samaritan,

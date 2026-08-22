@@ -19,6 +19,13 @@ Usage:  py -3 scripts/build_tal_root_index.py            # dry run + stats
 import sqlite3, sys, io, os, re, shutil
 from collections import defaultdict
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '.'))
+import lexdb
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 APPLY = '--apply' in sys.argv
 MD = 'data/tal index/tal_index.md'
@@ -132,7 +139,7 @@ def main():
     pairs = parse_index()
     words = set(p[0] for p in pairs)
     roots = sorted(set(p[1] for p in pairs))
-    conn = sqlite3.connect(DB, timeout=60)
+    conn = lexdb.connect(row_factory=False)
     rmap = match_roots_to_entries(conn, roots)
     matched = len(rmap)
     print('index rows: %d   distinct words: %d   distinct roots: %d'

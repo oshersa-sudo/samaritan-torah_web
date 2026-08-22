@@ -20,6 +20,13 @@ exists in torah.db (the Torah project tables are left completely untouched).
 import os
 import sqlite3
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '.'))
+import lexdb
+
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'torah.db')
 
 SCHEMA = """
@@ -63,7 +70,7 @@ CREATE INDEX IF NOT EXISTS idx_dict_citations_form ON dict_citations(form_id);
 
 
 def main():
-    conn = sqlite3.connect(DB_PATH)
+    conn = lexdb.connect()
     conn.executescript(SCHEMA)
     conn.commit()
     created = [r[0] for r in conn.execute(

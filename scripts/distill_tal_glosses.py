@@ -14,6 +14,13 @@ Usage:  py -3 scripts/distill_tal_glosses.py --count    # how many words / cost
 """
 import sqlite3, sys, io, os, re, json, time, shutil
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '.'))
+import lexdb
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 DB = 'data/torah.db'
 PROG = 'data/_tal_distill_progress.json'
@@ -102,7 +109,7 @@ def distil(cl, batch):
 
 
 def main():
-    conn = sqlite3.connect(DB, timeout=120); conn.row_factory = sqlite3.Row
+    conn = lexdb.connect()
     words = collect(conn)
     print('distinct Gen 1-6 Targum words resolving to a Tal entry: %d' % len(words), flush=True)
     if COUNT:

@@ -27,6 +27,13 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 import morph  # noqa: E402
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+import lexdb
+
 DB = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'torah.db')
 
 
@@ -50,7 +57,7 @@ def says_same(gloss, hebrew):
 
 
 def main():
-    conn = sqlite3.connect(DB)
+    conn = lexdb.connect()
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
     if 'verified' not in [r[1] for r in c.execute("PRAGMA table_info(dict_infl)")]:

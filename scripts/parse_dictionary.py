@@ -28,6 +28,13 @@ import os
 import re
 import sqlite3
 
+# The dictionary lives in data/lexicon.db. lexdb.connect() makes it `main` so a
+# rebuilt table is created THERE, and attaches torah.db read-only as `torah` so
+# reads of verses/tm_sections still resolve unqualified. See scripts/lexdb.py.
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '.'))
+import lexdb
+
 ROOT    = os.path.join(os.path.dirname(__file__), '..')
 DB_PATH = os.path.join(ROOT, 'data', 'torah.db')
 TXT_DIR = os.path.join(ROOT, 'data', 'dict_ocr', 'txt')
@@ -157,7 +164,7 @@ def main():
     ap.add_argument('--reset', action='store_true', help='clear dict_* first')
     args = ap.parse_args()
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = lexdb.connect()
     c = conn.cursor()
     if args.reset:
         c.executescript('DELETE FROM dict_citations; DELETE FROM dict_forms; '
