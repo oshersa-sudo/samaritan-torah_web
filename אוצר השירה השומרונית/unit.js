@@ -1030,9 +1030,9 @@ async function uploadRecording(blob, secs) {
 }
 
 function syncBtn() {
-  if (navigator.mediaSession)
-    navigator.mediaSession.playbackState = !au.src ? 'none'
-      : au.paused ? 'paused' : 'playing';
+  const st = !au.src ? 'none' : au.paused ? 'paused' : 'playing';
+  if (navigator.mediaSession) navigator.mediaSession.playbackState = st;
+  upward({ type: 'state', state: st });
   $('icPlay').classList.toggle('hidden', !au.paused);
   $('icPause').classList.toggle('hidden', au.paused);
   $('pbtn').title = au.paused ? 'נגן' : 'השהה';
@@ -2263,32 +2263,98 @@ document.addEventListener('visibilitychange', () => {
  * context silences it while the element itself goes on reporting that it is
  * playing perfectly happily. So the context is woken whenever it drops.
  */
-function mediaSay(r, idx) {
-  if (!('mediaSession' in navigator) || typeof MediaMetadata === 'undefined') return;
-  try {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title:  r.ttl + (r.tr.length > 1 ? ` · רצועה ${idx + 1}/${r.tr.length}` : ''),
-      artist: perfName(r.p) || 'לא ידוע',
-      album:  eventName(r.e) || 'אוצר השירה השומרונית',
-      artwork: [96, 192, 256, 512].map(s => ({
-        src: 'img/gramophone.png', sizes: `${s}x${s}`, type: 'image/png' })),
-    });
-  } catch (e) { /* an older engine: the controls simply stay plain */ }
+/* Inside the Torah app this page is a frame, and that changes everything
+ * about the media controls: the system's notification belongs to the PAGE,
+ * not to a frame within it. Metadata set here reaches nobody, and no button
+ * appears — which is exactly what happened. The recording went on playing
+ * with nothing to look at and nothing to press.
+ *
+ * So it is reported upward as well, and the presses come back down. It is
+ * still set here directly too, because /shira/ opened on its own is a page
+ * in its own right, and then this side is the one that counts.
+ */
+const IN_FRAME = (() => {
+  try { return !!window.parent && window.parent !== window; } catch (e) { return true; }
+})();
+
+function upward(msg) {
+  if (!IN_FRAME) return;
+  try { window.parent.postMessage(Object.assign({ shira: 1 }, msg), location.origin); }
+  catch (e) {}
 }
+
+function mediaSay(r, idx) {
+  const art = new URL('img/gramophone.png', location.href).href;
+  const meta = {
+    title:  r.ttl + (r.tr.length > 1 ? ` · רצועה ${idx + 1}/${r.tr.length}` : ''),
+    artist: perfName(r.p) || 'לא ידוע',
+    album:  eventName(r.e) || 'אוצר השירה השומרונית',
+    artwork: [96, 192, 256, 512].map(x => ({
+      src: art, sizes: `${x}x${x}`, type: 'image/png' })),
+  };
+  upward(Object.assign({ type: 'meta' }, meta));
+  if (!('mediaSession' in navigator) || typeof MediaMetadata === 'undefined') return;
+  try { navigator.mediaSession.metadata = new MediaMetadata(meta); }
+  catch (e) { /* an older engine: the controls simply stay plain */ }
+}
+
+/* what the page above is allowed to ask of this one */
+addEventListener('message', e => {
+  if (e.origin !== location.origin) return;
+  const d = e.data;
+  if (!d || !d.shiraAct) return;
+  switch (d.shiraAct) {
+    case 'play':          au.play().catch(() => {}); syncBtn(); break;
+    case 'pause':         au.pause(); syncBtn(); break;
+    case 'nexttrack':     mediaStep(1); break;
+    case 'previoustrack': mediaStep(-1); break;
+    case 'stop':
+      au.pause(); bandStop(true); stopAudio(); spoolStop(false); syncBtn();
+      upward({ type: 'state', state: 'none' });
+      break;
+    case 'seekbackward':
+      au.currentTime = Math.max(0, au.currentTime - (d.by || 10)); break;
+    case 'seekforward':
+      au.currentTime = Math.min(au.duration || 1e9, au.currentTime + (d.by || 10)); break;
+    case 'seekto':
+      if (isFinite(d.to)) { au.currentTime = d.to; mediaPos(); }
+      break;
+  }
+});
 
 /* how far in it is, so the notification can show a scrubber that means
    something rather than a bar that never moves */
 function mediaPos() {
+  if (!isFinite(au.duration) || au.duration <= 0) return;
+  const st = {
+    duration: au.duration,
+    playbackRate: au.playbackRate > 0 ? au.playbackRate : 1,
+    position: Math.max(0, Math.min(au.currentTime, au.duration)),
+  };
+  upward(Object.assign({ type: 'pos' }, st));
   const ms = navigator.mediaSession;
   if (!ms || !ms.setPositionState) return;
-  if (!isFinite(au.duration) || au.duration <= 0) return;
-  try {
-    ms.setPositionState({
-      duration: au.duration,
-      playbackRate: au.playbackRate > 0 ? au.playbackRate : 1,
-      position: Math.max(0, Math.min(au.currentTime, au.duration)),
-    });
-  } catch (e) {}
+  try { ms.setPositionState(st); } catch (e) {}
+}
+
+/* Forward, from outside the app.
+ *
+ * The player's own next button walks the tracks inside one recording, and
+ * almost every recording here is a single track — so from the notification it
+ * did nothing at all, which is the whole of the complaint. What is wanted
+ * there is the next RECORDING. So: another track if there is one, then
+ * whatever order the listener has actually chosen — a playlist, or the random
+ * run — and failing both, simply the next recording as the archive lists
+ * them, which is the order they are looking at anyway.
+ */
+function mediaStep(d) {
+  if (step(d, true)) return;                    // another track of this recording
+  if (PL.playing && d > 0) return queueNext();
+  if (SHUFFLE.on && d > 0) return shuffleNext();
+  const pool = C.recordings.filter(r => !r.hidden);
+  const i = pool.findIndex(r => r.id === cur.rec);
+  const j = i + d;
+  if (i >= 0 && j >= 0 && j < pool.length) playRec(pool[j].id, 0);
 }
 
 function mediaWire() {
@@ -2297,8 +2363,8 @@ function mediaWire() {
   const on = (a, fn) => { try { ms.setActionHandler(a, fn); } catch (e) {} };
   on('play',  () => { au.play().catch(() => {}); syncBtn(); });
   on('pause', () => { au.pause(); syncBtn(); });
-  on('previoustrack', () => step(-1));
-  on('nexttrack',     () => step(1));
+  on('previoustrack', () => mediaStep(-1));
+  on('nexttrack',     () => mediaStep(1));
   // the one the request was really about: it ends the whole thing from
   // outside, players and all, and leaves nothing running behind the app
   on('stop', () => {
@@ -2337,10 +2403,12 @@ function mixWake() {
 au.addEventListener('play', () => {
   mixWake();
   if (navigator.mediaSession) navigator.mediaSession.playbackState = 'playing';
+  upward({ type: 'state', state: 'playing' });
   mediaPos();
 });
 au.addEventListener('pause', () => {
   if (navigator.mediaSession) navigator.mediaSession.playbackState = 'paused';
+  upward({ type: 'state', state: 'paused' });
 });
 au.addEventListener('durationchange', mediaPos);
 au.addEventListener('ratechange', mediaPos);
