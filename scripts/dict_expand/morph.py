@@ -9,8 +9,10 @@ human can audit each proposal before it is written into the dictionary.
 Nothing here calls out to a network or a model: it is a rule-based stripper over
 the lexicon tables that are already in torah.db.
 """
+import os
 import re
 import sqlite3
+import sys
 import collections
 
 _FINALS = {'ם': 'מ', 'ן': 'נ', 'ץ': 'צ', 'ף': 'פ', 'ך': 'כ'}
@@ -96,9 +98,17 @@ SUFFIXES_N.sort(key=lambda t: -len(t[0]))
 class Lexicon:
     """Every word→root / root→meaning table already in torah.db, loaded once."""
 
-    def __init__(self, db):
-        conn = sqlite3.connect(db)
-        conn.row_factory = sqlite3.Row
+    def __init__(self, db=None):
+        # The lexicon reads from both files: the dictionary tables that live in
+        # lexicon.db, and root_index / word_gloss / people, which are keyed to the
+        # Torah and stay in torah.db. lexdb.connect() puts both in one connection.
+        if db is None:
+            sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+            import lexdb
+            conn = lexdb.connect()
+        else:
+            conn = sqlite3.connect(db)
+            conn.row_factory = sqlite3.Row
         c = conn.cursor()
 
         self.lemma = {}         # word_norm -> [root_norm]  Tal head-words
@@ -299,6 +309,31 @@ class Lexicon:
         return None, ''
 
 
+# ── the ת-infix of אתפעל / אשתפעל ──────────────────────────────────────────────
+# In the reflexive stems the pattern's ת swaps places with an initial sibilant and
+# takes its voicing: זכי → מזדכי, צמת → אצטמתו, שנק → משתנק, סקף → אסתקף. The
+# surface word no longer begins with its own root letter, so no amount of prefix
+# peeling reaches it — the swap has to be undone explicitly.
+# Only the four attested outcomes. סט / צת / זת were tried and measured: they
+# fired on words that were already right — יעזתן (עזז) became זן, ומסטין (סטי)
+# became סאן — so a pair that is not a real reflex of the pattern is not kept.
+METATHESIS = [('זד', 'ז'), ('צט', 'צ'), ('סת', 'ס'), ('שת', 'ש')]
+_RPRE = 'אהמינות'
+
+
+def _unmetathesise(w):
+    """Roots a form could have if its ת-infix were put back in order."""
+    out = set()
+    for cut in (0, 1, 2):
+        if cut and (len(w) <= cut or w[0] not in _RPRE):
+            continue
+        s = w[cut:]
+        for pair, sib in METATHESIS:
+            if s.startswith(pair) and len(s) - len(pair) >= 1:
+                out.add(sib + s[len(pair):])
+    return {r for r in out if len(r) >= 2}
+
+
 def candidates(word, deep=True):
     """Every (stem, ops, cost) the stripper can reach: up to two proclitics, one
     stem-prefix and up to two suffixes, ordered by how little was removed.
@@ -345,6 +380,12 @@ def candidates(word, deep=True):
                 # "saddle" instead of מר "lord" + ־ן).
                 push(s[len(vp):], ops + [('vpre', vp)], len(ops) + (2 if rest <= 2 else 1))
 
+    # undoing the ת-infix is a real morphological claim, so it costs the same as a
+    # second affix — a plainer reading still wins when one exists
+    for stem, ops, cost in list(out):
+        for r in _unmetathesise(stem):
+            push(r, ops + [('meta', 'ת')], cost + 2)
+
     out.sort(key=lambda t: (t[2], -len(t[0])))
     return out
 
@@ -353,6 +394,9 @@ def describe(ops):
     parts = []
     for kind, a in ops:
         lab = AFFIX_HE.get(a, a)
+        if kind == 'meta':
+            parts.append('שחזור ת׳ של בניין אתפעל (מטתזה)')
+            continue
         if kind == 'pro':
             parts.append(f'הסרת תחילית {a}׳ ({lab})')
         elif kind == 'vpre':

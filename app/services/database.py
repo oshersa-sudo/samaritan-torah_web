@@ -2745,6 +2745,22 @@ def _tal_roots(word, conn):
 
     def resolve(cands):
         cnorms = [_norm_fin(c) for c in cands]
+        # 0) the word is the same as a head-word bar its closing vowel letter.
+        # Only this one case, and only on the surface form. The tiers below work on
+        # stripped variants, so peeling the emphatic ־ה off קמאה reaches the
+        # unrelated head-word קמא "בוז, ביזיון" before anything can look further —
+        # while Tal's own קמאי / קמאו place the word under קדם, "ראשון, קדום".
+        # Nothing else from dict_form_root is consulted here: its 'entry' and
+        # 'index' rows carry extraction noise (משה listed under רבה, ארעה under
+        # רעל) that the ordinary tiers already step around.
+        try:
+            rs = [r['root_norm'] for r in conn.execute(
+                "SELECT root_norm FROM dict_form_root WHERE form_norm=? "
+                "AND sources = 'vowel'", (cnorms[0],))]
+        except sqlite3.OperationalError:
+            rs = []
+        if rs:
+            return dedup(rs)
         for cn in cnorms:                       # 1) dictionary head-word (lemma → root)
             rs = [r['root'] for r in conn.execute(
                 "SELECT DISTINCT root FROM tal_auth_entries "

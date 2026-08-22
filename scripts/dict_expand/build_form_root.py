@@ -89,6 +89,38 @@ def main():
     for r in c.execute("SELECT word, root FROM dict_root_index"):
         add(r['word'], r['root'], 'index')
 
+    # Same word, different final vowel letter. Tal spells the ordinal קמאי and
+    # קמאו under קדם/קדמה — "ראשון, קדום" — but never קמאה, the form the piyyutim
+    # actually use, and the emphatic strip then lands it on the unrelated קמא
+    # "בוז, ביזיון".
+    #
+    # Generated blind this produced 11,567 pairs and made a mess: משה came back
+    # with five roots, ארעה with three. So it is held to words we actually have to
+    # answer — forms attested in the piyyutim or Memar — and only where the source
+    # head-word points at a single root, so nothing ambiguous is widened.
+    corpus = {r['form_norm'] for r in c.execute(
+        "SELECT DISTINCT form_norm FROM dict_infl")} if 'dict_infl' in {
+        r[0] for r in c.execute("SELECT name FROM sqlite_master WHERE type='table'")} else set()
+    by_stem = {}
+    for f, r in list(rows):
+        if f and f[-1] in 'אהיו':
+            by_stem.setdefault(f[:-1], set()).add(r)
+    added = 0
+    def rfam(r):
+        # קדם and קדמה are one root in two spellings; count families, not strings
+        return r[:-1] if len(r) > 2 and r[-1] in 'אהיו' else r
+
+    for stem, roots in by_stem.items():
+        if len({rfam(r) for r in roots}) != 1:  # genuinely ambiguous, leave it alone
+            continue
+        root = sorted(roots, key=len)[0]
+        for end in 'אהיו':
+            cand = stem + end
+            if cand in corpus and (cand, root) not in rows:
+                rows[(cand, root)].add('vowel')
+                added += 1
+    print(f'final-vowel variants added: {added}')
+
     kept = dropped = 0
     for r in c.execute("SELECT ci.quote, dre.root FROM dict_citations ci "
                        "JOIN dict_forms f ON f.id=ci.form_id "

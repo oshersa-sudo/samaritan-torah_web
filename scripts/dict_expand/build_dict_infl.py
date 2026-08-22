@@ -75,9 +75,19 @@ def agrees(he, gloss):
 def main():
     conn = lexdb.connect()
     conn.row_factory = sqlite3.Row
-    lex = morph.Lexicon(DB)
-    pk = pickle.load(open(PKL, 'rb')) if os.path.exists(PKL) else {}
+    lex = morph.Lexicon()
+    # memar_align.pkl is a build artefact and is not in git. Running without it
+    # used to succeed quietly and empty every Marqe rendering out of dict_infl -
+    # 8,239 of them, and the 498 sense corrections that rest on them. A rebuild
+    # that silently drops data is worse than one that stops.
+    if not os.path.exists(PKL):
+        print('missing ' + PKL)
+        print('Run:  py -3 scripts/dict_expand/align_memar.py')
+        sys.exit('without it every memar_he would be emptied')
+    pk = pickle.load(open(PKL, 'rb'))
     align, surface = pk.get('align', {}), pk.get('surface', {})
+    if not align:
+        sys.exit('the alignment is empty - refusing to blank the Marqe renderings')
     W = corpus(conn)
     print(f"corpus: {len(W)} distinct forms")
 
