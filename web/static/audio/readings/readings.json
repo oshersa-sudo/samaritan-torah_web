@@ -12199,19 +12199,41 @@
      "name": "ויקרא - אחרי מות - 83"
     },
     {
-     "n": 85,
-     "sam_ch_number": 85,
-     "file": "/static/audio/readings/b3-p06-c085.mp3",
-     "duration": 80.44,
+     "n": 84,
+     "sam_ch_number": 84,
+     "file": "/static/audio/readings/b3-p06-c084.mp3",
+     "duration": 114.34,
      "src_start": 0,
-     "src_end": 80.44,
+     "src_end": 114.34,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
+     },
+     "sam_ch_id": 1601,
+     "verses": "כ:כב-כ:כז",
+     "verses_num": "20:22-20:27",
+     "verse_count": 6,
+     "incipit": "ושמרתם את כל חקותי",
+     "name": "ויקרא - ובקצירכם - 84"
+    },
+    {
+     "n": 85,
+     "sam_ch_number": 85,
+     "file": "/static/audio/readings/b3-p06-c085.mp3",
+     "duration": 38.07,
+     "src_start": 0,
+     "src_end": 38.07,
+     "portion": {
+      "order": 6,
+      "id": 35,
+      "name": "ובקצירכם"
+     },
+     "src": {
+      "youtube_id": null
      },
      "sam_ch_id": 1602,
      "verses": "כא:א-כא:ט",
@@ -12224,16 +12246,16 @@
      "n": 86,
      "sam_ch_number": 86,
      "file": "/static/audio/readings/b3-p06-c086.mp3",
-     "duration": 48.76,
+     "duration": 98.37,
      "src_start": 0,
-     "src_end": 48.76,
+     "src_end": 98.37,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1603,
      "verses": "כא:י-כא:טו",
@@ -12246,16 +12268,16 @@
      "n": 87,
      "sam_ch_number": 87,
      "file": "/static/audio/readings/b3-p06-c087.mp3",
-     "duration": 67.54,
+     "duration": 58.47,
      "src_start": 0,
-     "src_end": 67.54,
+     "src_end": 58.47,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1604,
      "verses": "כא:טז-כא:כד",
@@ -12268,16 +12290,16 @@
      "n": 88,
      "sam_ch_number": 88,
      "file": "/static/audio/readings/b3-p06-c088.mp3",
-     "duration": 109.75,
+     "duration": 93.68,
      "src_start": 0,
-     "src_end": 109.75,
+     "src_end": 93.68,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1605,
      "verses": "כב:א-כב:י",
@@ -12290,16 +12312,16 @@
      "n": 89,
      "sam_ch_number": 89,
      "file": "/static/audio/readings/b3-p06-c089.mp3",
-     "duration": 59.38,
+     "duration": 143.57,
      "src_start": 0,
-     "src_end": 59.38,
+     "src_end": 143.57,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1606,
      "verses": "כב:יא-כב:טז",
@@ -12312,16 +12334,16 @@
      "n": 90,
      "sam_ch_number": 90,
      "file": "/static/audio/readings/b3-p06-c090.mp3",
-     "duration": 61.78,
+     "duration": 88.4,
      "src_start": 0,
-     "src_end": 61.78,
+     "src_end": 88.4,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1607,
      "verses": "כב:יז-כב:כה",
@@ -12334,16 +12356,16 @@
      "n": 91,
      "sam_ch_number": 91,
      "file": "/static/audio/readings/b3-p06-c091.mp3",
-     "duration": 5.46,
+     "duration": 92.01,
      "src_start": 0,
-     "src_end": 5.46,
+     "src_end": 92.01,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1608,
      "verses": "כב:כו-כב:לג",
@@ -12356,16 +12378,16 @@
      "n": 92,
      "sam_ch_number": 92,
      "file": "/static/audio/readings/b3-p06-c092.mp3",
-     "duration": 82.41,
+     "duration": 59.61,
      "src_start": 0,
-     "src_end": 82.41,
+     "src_end": 59.61,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1609,
      "verses": "כג:א-כג:ח",
@@ -12378,16 +12400,16 @@
      "n": 93,
      "sam_ch_number": 93,
      "file": "/static/audio/readings/b3-p06-c093.mp3",
-     "duration": 70.82,
+     "duration": 80.44,
      "src_start": 0,
-     "src_end": 70.82,
+     "src_end": 80.44,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1610,
      "verses": "כג:ט-כג:יד",
@@ -12400,16 +12422,16 @@
      "n": 94,
      "sam_ch_number": 94,
      "file": "/static/audio/readings/b3-p06-c094.mp3",
-     "duration": 117.83,
+     "duration": 116.32,
      "src_start": 0,
-     "src_end": 117.83,
+     "src_end": 116.32,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1611,
      "verses": "כג:טו-כג:כב",
@@ -12422,16 +12444,16 @@
      "n": 95,
      "sam_ch_number": 95,
      "file": "/static/audio/readings/b3-p06-c095.mp3",
-     "duration": 26.39,
+     "duration": 67.37,
      "src_start": 0,
-     "src_end": 26.39,
+     "src_end": 67.37,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1612,
      "verses": "כג:כג-כג:כה",
@@ -12444,16 +12466,16 @@
      "n": 96,
      "sam_ch_number": 96,
      "file": "/static/audio/readings/b3-p06-c096.mp3",
-     "duration": 76.04,
+     "duration": 101.75,
      "src_start": 0,
-     "src_end": 76.04,
+     "src_end": 101.75,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1613,
      "verses": "כג:כו-כג:לב",
@@ -12466,16 +12488,16 @@
      "n": 97,
      "sam_ch_number": 97,
      "file": "/static/audio/readings/b3-p06-c097.mp3",
-     "duration": 70.96,
+     "duration": 67.22,
      "src_start": 0,
-     "src_end": 70.96,
+     "src_end": 67.22,
      "portion": {
       "order": 6,
       "id": 35,
       "name": "ובקצירכם"
      },
      "src": {
-      "youtube_id": "kyRmh5B0guA"
+      "youtube_id": null
      },
      "sam_ch_id": 1614,
      "verses": "כג:לג-כג:לח",
