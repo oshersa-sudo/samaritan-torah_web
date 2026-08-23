@@ -12648,402 +12648,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 8,
-     "name": "במדבר - שלח לך - 80",
-     "incipit": "ויאמר אליהם עלו זה",
-     "sam_ch_id": 2233,
-     "n": 80,
-     "verses": "יג:יח-יג:כה",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 80,
-     "file": "/static/audio/readings/b4-p04-c080.mp3",
-     "duration": 66.53,
-     "src_start": 94.67,
-     "src_end": 161.2,
-     "verses_num": "13:18-13:25"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 4,
-     "name": "במדבר - שלח לך - 81",
-     "incipit": "וילכו ויבאו אל משה",
-     "sam_ch_id": 1725,
-     "n": 81,
-     "verses": "יג:כו-יג:כט",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 81,
-     "file": "/static/audio/readings/b4-p04-c081.mp3",
-     "duration": 29.97,
-     "src_start": 161.2,
-     "src_end": 191.17,
-     "verses_num": "13:26-13:29"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 4,
-     "name": "במדבר - שלח לך - 82",
-     "incipit": "ויהס כלב את העם",
-     "sam_ch_id": 1726,
-     "n": 82,
-     "verses": "יג:ל-יג:לג",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 82,
-     "file": "/static/audio/readings/b4-p04-c082.mp3",
-     "duration": 55.41,
-     "src_start": 191.17,
-     "src_end": 246.58,
-     "verses_num": "13:30-13:33"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 1,
-     "name": "במדבר - שלח לך - 83",
-     "incipit": "וירגנו בני ישראל באהליהם:",
-     "sam_ch_id": 2234,
-     "n": 83,
-     "verses": "יג:לג-יג:לג",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 83,
-     "file": "/static/audio/readings/b4-p04-c083.mp3",
-     "duration": 34.56,
-     "src_start": 246.58,
-     "src_end": 281.14,
-     "verses_num": "13:33-13:33"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 1,
-     "name": "במדבר - שלח לך - 84",
-     "incipit": "ויאמר משה לבני ישראל",
-     "sam_ch_id": 2235,
-     "n": 84,
-     "verses": "יג:לג-יג:לג",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 84,
-     "file": "/static/audio/readings/b4-p04-c084.mp3",
-     "duration": 53.86,
-     "src_start": 281.14,
-     "src_end": 335.0,
-     "verses_num": "13:33-13:33"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 10,
-     "name": "במדבר - שלח לך - 85",
-     "incipit": "ותשא כל העדה ויתנו",
-     "sam_ch_id": 1727,
-     "n": 85,
-     "verses": "יד:א-יד:י",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 85,
-     "file": "/static/audio/readings/b4-p04-c085.mp3",
-     "duration": 58.14,
-     "src_start": 335.0,
-     "src_end": 393.14,
-     "verses_num": "14:1-14:10"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 9,
-     "name": "במדבר - שלח לך - 86",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1728,
-     "n": 86,
-     "verses": "יד:יא-יד:יט",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 86,
-     "file": "/static/audio/readings/b4-p04-c086.mp3",
-     "duration": 105.47,
-     "src_start": 393.14,
-     "src_end": 498.61,
-     "verses_num": "14:11-14:19"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 6,
-     "name": "במדבר - שלח לך - 87",
-     "incipit": "ויאמר יהוה סלחתי כדבריך",
-     "sam_ch_id": 1729,
-     "n": 87,
-     "verses": "יד:כ-יד:כה",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 87,
-     "file": "/static/audio/readings/b4-p04-c087.mp3",
-     "duration": 57.26,
-     "src_start": 498.61,
-     "src_end": 555.87,
-     "verses_num": "14:20-14:25"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 10,
-     "name": "במדבר - שלח לך - 88",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1730,
-     "n": 88,
-     "verses": "יד:כו-יד:לה",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 88,
-     "file": "/static/audio/readings/b4-p04-c088.mp3",
-     "duration": 110.36,
-     "src_start": 555.87,
-     "src_end": 666.23,
-     "verses_num": "14:26-14:35"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 5,
-     "name": "במדבר - שלח לך - 89",
-     "incipit": "והאנשים אשר שלח משה",
-     "sam_ch_id": 1731,
-     "n": 89,
-     "verses": "יד:לו-יד:מ",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 89,
-     "file": "/static/audio/readings/b4-p04-c089.mp3",
-     "duration": 107.88,
-     "src_start": 666.23,
-     "src_end": 774.11,
-     "verses_num": "14:36-14:40"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 5,
-     "name": "במדבר - שלח לך - 90",
-     "incipit": "ויאמר משה למה זה",
-     "sam_ch_id": 1732,
-     "n": 90,
-     "verses": "יד:מא-יד:מה",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 90,
-     "file": "/static/audio/readings/b4-p04-c090.mp3",
-     "duration": 50.26,
-     "src_start": 774.11,
-     "src_end": 824.37,
-     "verses_num": "14:41-14:45"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 7,
-     "name": "במדבר - שלח לך - 91",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1733,
-     "n": 91,
-     "verses": "טו:א-טו:ז",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 91,
-     "file": "/static/audio/readings/b4-p04-c091.mp3",
-     "duration": 77.01,
-     "src_start": 824.37,
-     "src_end": 901.38,
-     "verses_num": "15:1-15:7"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 9,
-     "name": "במדבר - שלח לך - 92",
-     "incipit": "וכי תעשה בן בקר",
-     "sam_ch_id": 1734,
-     "n": 92,
-     "verses": "טו:ח-טו:טז",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 92,
-     "file": "/static/audio/readings/b4-p04-c092.mp3",
-     "duration": 60.47,
-     "src_start": 901.38,
-     "src_end": 961.85,
-     "verses_num": "15:8-15:16"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 10,
-     "name": "במדבר - שלח לך - 93",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1735,
-     "n": 93,
-     "verses": "טו:יז-טו:כו",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 93,
-     "file": "/static/audio/readings/b4-p04-c093.mp3",
-     "duration": 81.09,
-     "src_start": 961.85,
-     "src_end": 1042.94,
-     "verses_num": "15:17-15:26"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 5,
-     "name": "במדבר - שלח לך - 94",
-     "incipit": "ואם נפש אחת תחטא",
-     "sam_ch_id": 1736,
-     "n": 94,
-     "verses": "טו:כז-טו:לא",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 94,
-     "file": "/static/audio/readings/b4-p04-c094.mp3",
-     "duration": 100.0,
-     "src_start": 1042.94,
-     "src_end": 1142.94,
-     "verses_num": "15:27-15:31"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 5,
-     "name": "במדבר - שלח לך - 95",
-     "incipit": "ויהיו בני ישראל במדבר:",
-     "sam_ch_id": 1737,
-     "n": 95,
-     "verses": "טו:לב-טו:לו",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 95,
-     "file": "/static/audio/readings/b4-p04-c095.mp3",
-     "duration": 54.58,
-     "src_start": 1142.94,
-     "src_end": 1197.52,
-     "verses_num": "15:32-15:36"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 5,
-     "name": "במדבר - שלח לך - 96",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1738,
-     "n": 96,
-     "verses": "טו:לז-טו:מא",
-     "portion": {
-      "order": 4,
-      "name": "שלח לך",
-      "id": 41
-     },
-     "sam_ch_number": 96,
-     "file": "/static/audio/readings/b4-p04-c096.mp3",
-     "duration": 128.92,
-     "src_start": 1197.52,
-     "src_end": 1326.44,
-     "verses_num": "15:37-15:41"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 7,
-     "name": "במדבר - ויקח קרח - 97",
-     "incipit": "ויקח קרח בן יצהר",
-     "sam_ch_id": 1739,
-     "n": 97,
-     "verses": "טז:א-טז:ז",
-     "portion": {
-      "order": 4,
-      "id": 41,
-      "name": "שלח לך"
-     },
-     "sam_ch_number": 97,
-     "file": "/static/audio/readings/b4-p05-c097.mp3",
-     "duration": 87.4,
-     "src_start": 0.0,
-     "src_end": 87.4,
-     "verses_num": "16:1-16:7"
-    },
-    {
-     "src": {
       "youtube_id": "QmvWmuj_1PY"
      },
      "verse_count": 8,
@@ -17309,6 +16913,402 @@
      "verse_count": 17,
      "incipit": "וידבר יהוה אל משה",
      "name": "במדבר - דבר אל אהרן - 79"
+    },
+    {
+     "n": 80,
+     "sam_ch_number": 80,
+     "file": "/static/audio/readings/b4-p04-c080.mp3",
+     "duration": 94.63,
+     "src_start": 0,
+     "src_end": 94.63,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2233,
+     "verses": "יג:יח-יג:כה",
+     "verses_num": "13:18-13:25",
+     "verse_count": 8,
+     "incipit": "ויאמר אליהם: עלו זה",
+     "name": "במדבר - שלח לך - 80"
+    },
+    {
+     "n": 81,
+     "sam_ch_number": 81,
+     "file": "/static/audio/readings/b4-p04-c081.mp3",
+     "duration": 96.5,
+     "src_start": 0,
+     "src_end": 96.5,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1725,
+     "verses": "יג:כו-יג:כט",
+     "verses_num": "13:26-13:29",
+     "verse_count": 4,
+     "incipit": "וילכו ויבאו אל משה",
+     "name": "במדבר - שלח לך - 81"
+    },
+    {
+     "n": 82,
+     "sam_ch_number": 82,
+     "file": "/static/audio/readings/b4-p04-c082.mp3",
+     "duration": 55.4,
+     "src_start": 0,
+     "src_end": 55.4,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1726,
+     "verses": "יג:ל-יג:לג",
+     "verses_num": "13:30-13:33",
+     "verse_count": 4,
+     "incipit": "ויהס כלב את העם",
+     "name": "במדבר - שלח לך - 82"
+    },
+    {
+     "n": 83,
+     "sam_ch_number": 83,
+     "file": "/static/audio/readings/b4-p04-c083.mp3",
+     "duration": 52.52,
+     "src_start": 0,
+     "src_end": 52.52,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2234,
+     "verses": "יג:לג-יג:לג",
+     "verses_num": "13:33-13:33",
+     "verse_count": 1,
+     "incipit": "וירגנו בני ישראל באהליהם:",
+     "name": "במדבר - שלח לך - 83"
+    },
+    {
+     "n": 84,
+     "sam_ch_number": 84,
+     "file": "/static/audio/readings/b4-p04-c084.mp3",
+     "duration": 35.91,
+     "src_start": 0,
+     "src_end": 35.91,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2235,
+     "verses": "יג:לג-יג:לג",
+     "verses_num": "13:33-13:33",
+     "verse_count": 1,
+     "incipit": "ויאמר משה לבני ישראל:",
+     "name": "במדבר - שלח לך - 84"
+    },
+    {
+     "n": 85,
+     "sam_ch_number": 85,
+     "file": "/static/audio/readings/b4-p04-c085.mp3",
+     "duration": 58.14,
+     "src_start": 0,
+     "src_end": 58.14,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1727,
+     "verses": "יד:א-יד:י",
+     "verses_num": "14:1-14:10",
+     "verse_count": 10,
+     "incipit": "ותשא כל העדה ויתנו",
+     "name": "במדבר - שלח לך - 85"
+    },
+    {
+     "n": 86,
+     "sam_ch_number": 86,
+     "file": "/static/audio/readings/b4-p04-c086.mp3",
+     "duration": 105.46,
+     "src_start": 0,
+     "src_end": 105.46,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1728,
+     "verses": "יד:יא-יד:יט",
+     "verses_num": "14:11-14:19",
+     "verse_count": 9,
+     "incipit": "ויאמר יהוה אל משה:",
+     "name": "במדבר - שלח לך - 86"
+    },
+    {
+     "n": 87,
+     "sam_ch_number": 87,
+     "file": "/static/audio/readings/b4-p04-c087.mp3",
+     "duration": 108.12,
+     "src_start": 0,
+     "src_end": 108.12,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1729,
+     "verses": "יד:כ-יד:כה",
+     "verses_num": "14:20-14:25",
+     "verse_count": 6,
+     "incipit": "ויאמר יהוה סלחתי כדבריך",
+     "name": "במדבר - שלח לך - 87"
+    },
+    {
+     "n": 88,
+     "sam_ch_number": 88,
+     "file": "/static/audio/readings/b4-p04-c088.mp3",
+     "duration": 59.51,
+     "src_start": 0,
+     "src_end": 59.51,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1730,
+     "verses": "יד:כו-יד:לה",
+     "verses_num": "14:26-14:35",
+     "verse_count": 10,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - שלח לך - 88"
+    },
+    {
+     "n": 89,
+     "sam_ch_number": 89,
+     "file": "/static/audio/readings/b4-p04-c089.mp3",
+     "duration": 107.89,
+     "src_start": 0,
+     "src_end": 107.89,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1731,
+     "verses": "יד:לו-יד:מ",
+     "verses_num": "14:36-14:40",
+     "verse_count": 5,
+     "incipit": "והאנשים אשר שלח משה",
+     "name": "במדבר - שלח לך - 89"
+    },
+    {
+     "n": 90,
+     "sam_ch_number": 90,
+     "file": "/static/audio/readings/b4-p04-c090.mp3",
+     "duration": 50.25,
+     "src_start": 0,
+     "src_end": 50.25,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1732,
+     "verses": "יד:מא-יד:מה",
+     "verses_num": "14:41-14:45",
+     "verse_count": 5,
+     "incipit": "ויאמר משה: למה זה",
+     "name": "במדבר - שלח לך - 90"
+    },
+    {
+     "n": 91,
+     "sam_ch_number": 91,
+     "file": "/static/audio/readings/b4-p04-c091.mp3",
+     "duration": 77.01,
+     "src_start": 0,
+     "src_end": 77.01,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1733,
+     "verses": "טו:א-טו:ז",
+     "verses_num": "15:1-15:7",
+     "verse_count": 7,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - שלח לך - 91"
+    },
+    {
+     "n": 92,
+     "sam_ch_number": 92,
+     "file": "/static/audio/readings/b4-p04-c092.mp3",
+     "duration": 62.56,
+     "src_start": 0,
+     "src_end": 62.56,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1734,
+     "verses": "טו:ח-טו:טז",
+     "verses_num": "15:8-15:16",
+     "verse_count": 9,
+     "incipit": "וכי תעשה בן בקר",
+     "name": "במדבר - שלח לך - 92"
+    },
+    {
+     "n": 93,
+     "sam_ch_number": 93,
+     "file": "/static/audio/readings/b4-p04-c093.mp3",
+     "duration": 79.0,
+     "src_start": 0,
+     "src_end": 79.0,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1735,
+     "verses": "טו:יז-טו:כו",
+     "verses_num": "15:17-15:26",
+     "verse_count": 10,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - שלח לך - 93"
+    },
+    {
+     "n": 94,
+     "sam_ch_number": 94,
+     "file": "/static/audio/readings/b4-p04-c094.mp3",
+     "duration": 100.01,
+     "src_start": 0,
+     "src_end": 100.01,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1736,
+     "verses": "טו:כז-טו:לא",
+     "verses_num": "15:27-15:31",
+     "verse_count": 5,
+     "incipit": "ואם נפש אחת תחטא",
+     "name": "במדבר - שלח לך - 94"
+    },
+    {
+     "n": 95,
+     "sam_ch_number": 95,
+     "file": "/static/audio/readings/b4-p04-c095.mp3",
+     "duration": 54.57,
+     "src_start": 0,
+     "src_end": 54.57,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1737,
+     "verses": "טו:לב-טו:לו",
+     "verses_num": "15:32-15:36",
+     "verse_count": 5,
+     "incipit": "ויהיו בני ישראל במדבר:",
+     "name": "במדבר - שלח לך - 95"
+    },
+    {
+     "n": 96,
+     "sam_ch_number": 96,
+     "file": "/static/audio/readings/b4-p04-c096.mp3",
+     "duration": 54.13,
+     "src_start": 0,
+     "src_end": 54.13,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1738,
+     "verses": "טו:לז-טו:מא",
+     "verses_num": "15:37-15:41",
+     "verse_count": 5,
+     "incipit": "ויאמר יהוה אל משה",
+     "name": "במדבר - שלח לך - 96"
+    },
+    {
+     "n": 97,
+     "sam_ch_number": 97,
+     "file": "/static/audio/readings/b4-p04-c097.mp3",
+     "duration": 74.77,
+     "src_start": 0,
+     "src_end": 74.77,
+     "portion": {
+      "order": 4,
+      "id": 41,
+      "name": "שלח לך"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1739,
+     "verses": "טז:א-טז:ז",
+     "verses_num": "16:1-16:7",
+     "verse_count": 7,
+     "incipit": "ויקח קרח בן יצהר",
+     "name": "במדבר - שלח לך - 97"
     }
    ],
    "playlist": "PLl-48IEqLtlv9CtBH3gbflWttJAP9LCna",
