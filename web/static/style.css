@@ -164,19 +164,26 @@ body.div-collapsed .div-handle{ height:26px; }
 /* main content */
 #content{ flex:1 1 auto; overflow-y:auto; padding:6px 8px; -webkit-overflow-scrolling:touch; }
 /* page-turn animation: a clone of the outgoing chapter rotates away like a leaf */
+/* ── the turning leaf ────────────────────────────────────────────────────────
+   A page does not pivot as a board, it bends — so the leaf is not one plane but
+   a row of narrow vertical strips, each carrying the whole page behind its own
+   window and each placed on a computed curve (runFlipGhost). The container only
+   holds the perspective they are seen through; every strip is a 3D child of it,
+   which is why preserve-3d must run all the way down. */
 .flip-ghost{ position:fixed; overflow:hidden; z-index:60; pointer-events:none;
-  background-color:var(--cream); transform-style:preserve-3d; backface-visibility:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,.18); will-change:transform; }
+  perspective:1600px; perspective-origin:50% 45%;
+  transform-style:preserve-3d; will-change:transform; }
+.flip-strip{ position:absolute; top:0; height:100%; overflow:hidden;
+  backface-visibility:hidden; transform-style:preserve-3d;
+  will-change:transform, filter; }
+/* the whole page, inside one strip's window: JS pushes it back by that strip's own
+   offset, so the strips reassemble into a single continuous page */
+.flip-leaf{ position:absolute; top:0; background-color:var(--cream);
+  box-shadow:0 10px 30px rgba(0,0,0,.18); }
 /* parchment layer inside the leaf: JS sizes/positions it to the app box so it lines up
    pixel-for-pixel with the background behind — the turn no longer wipes the texture flat */
 .flip-ghost-bg{ position:absolute; background-repeat:no-repeat; }
 .flip-ghost-inner{ position:absolute; left:0; right:0; padding:6px 8px; }
-/* corrugated self-shadow ON the leaf: alternating dark troughs (multiply) + light crests
-   (soft-light) that ripple across the width, so the page looks curved/sunken, not flat */
-.flip-ghost-shade{ position:absolute; inset:0; opacity:0; pointer-events:none;
-  mix-blend-mode:multiply; background-repeat:no-repeat; }
-.flip-ghost-gloss{ position:absolute; inset:0; opacity:0; pointer-events:none;
-  mix-blend-mode:soft-light; background-repeat:no-repeat; }
 /* a special slow-dissolving blessing floated over a particular verse (Samaritan division) */
 .verse-bless{ position:fixed; z-index:55; pointer-events:none; display:flex;
   align-items:center; justify-content:center; text-align:center; padding:0 5vw;

@@ -4058,20 +4058,46 @@ function makeFlipGhost(){
   const ghost=el('div','flip-ghost');
   Object.assign(ghost.style,{left:rect.left+'px', top:rect.top+'px',
     width:rect.width+'px', height:rect.height+'px'});
-  // parchment layer, sized/positioned to the app box and clipped by the ghost's overflow,
-  // so it matches the background image behind the leaf exactly (no flat-cream wipe)
+
+  // ── the leaf, built once ──
+  // parchment layer, sized/positioned to the app box so it matches the background
+  // image behind the leaf exactly (no flat-cream wipe), and the page's own text.
   const app=$('app'), ar=app.getBoundingClientRect(), cs=getComputedStyle(app);
+  const leaf=el('div','flip-leaf');
+  leaf.style.width = rect.width+'px'; leaf.style.height = rect.height+'px';
   const bg=el('div','flip-ghost-bg');
   Object.assign(bg.style,{ left:(ar.left-rect.left)+'px', top:(ar.top-rect.top)+'px',
     width:ar.width+'px', height:ar.height+'px', backgroundImage:cs.backgroundImage,
     backgroundSize:cs.backgroundSize, backgroundPosition:cs.backgroundPosition,
     backgroundColor:cs.backgroundColor });
-  ghost.appendChild(bg);
+  leaf.appendChild(bg);
   const inner=el('div','flip-ghost-inner'); inner.style.top=(-c.scrollTop)+'px';
   for(const ch of c.children) inner.appendChild(ch.cloneNode(true));
-  ghost.appendChild(inner);
-  ghost.appendChild(el('div','flip-ghost-shade'));
-  ghost.appendChild(el('div','flip-ghost-gloss'));
+  leaf.appendChild(inner);
+
+  // ── and cut into strips ──
+  // A page does not pivot as a board: it BENDS. So the leaf is sliced into narrow
+  // vertical strips, each of which carries the whole page behind its own window
+  // (overflow:hidden, the copy pushed back by the strip's own offset) and is then
+  // placed on a computed curve. Nothing is drawn twice as far as the reader is
+  // concerned — the strips reassemble into one page — but each may now sit at its
+  // own depth and its own angle, which is what a sheet of paper actually does.
+  // about a strip every 17px — the density the curve was designed at. Each strip
+  // carries a copy of the page, so this is also the cost: capped at 24 so a wide
+  // screen does not clone the chapter forty times over.
+  const N = Math.max(12, Math.min(24, Math.round(rect.width / 17)));
+  const sw = rect.width / N;
+  for(let i=0;i<N;i++){
+    const st=el('div','flip-strip');
+    st.style.left  = (i*sw).toFixed(2)+'px';
+    st.style.width = (sw+0.8).toFixed(2)+'px';
+    const copy = leaf.cloneNode(true);
+    copy.style.left = (-i*sw).toFixed(2)+'px';
+    st.appendChild(copy);
+    ghost.appendChild(st);
+  }
+  ghost._strips = [...ghost.querySelectorAll('.flip-strip')];
+  ghost._sw = sw; ghost._w = rect.width;
   document.body.appendChild(ghost);
   return ghost;
 }
@@ -4080,73 +4106,67 @@ function runFlipGhost(ghost, delta){
   // Hebrew: NEXT chapter turns the page to the right, PREV to the left; the English
   // translation (LTR reading) reverses it.
   const exitLeft = (delta<0) !== !!S.english;
-  const s = exitLeft ? -1 : 1;                   // sign of the rotation
-  ghost.style.transformOrigin = (exitLeft?'left':'right')+' center';
-  // a real page doesn't pivot rigidly — it FLEXES and ripples as it lifts. We flutter the
-  // leaf with a skew that oscillates sign several times (the "wave"), bow it out of plane
-  // with an alternating rotateX, and add a touch of rotateZ wobble; amplitude is randomised
-  // a little so each turn looks a bit different.
-  // The leaf flexes as it turns: its free edge PEELS up first (revealing a sliver of the next
-  // page already sitting underneath), then it flutters over with an oscillating skew ("wave"),
-  // an out-of-plane bow (rotateX) and a touch of rotateZ wobble.
-  const w  = 2.2 + Math.random()*1.6;
-  const bx = 2.0 + Math.random()*1.2;
-  const dur = 680;
-  const P = 'perspective(1400px)';
-  const fr = (offset, ry, skew, rx, rz, sc) =>
-    ({ offset, transform:`${P} rotateY(${s*ry}deg) rotateX(${rx}deg) rotateZ(${s*rz}deg) skewY(${skew}deg) scale(${sc})` });
-  const a=ghost.animate([
-    fr(0,     0,   0,          0,      0,    1),
-    fr(.12,  16,  s*w*0.6,     bx*0.6, 0.2,  1.006),   // free edge peels up → next page peeks beneath
-    fr(.30,  38,  s*w,        -bx*0.5, 0.5,  1.014),
-    fr(.48,  62, -s*w,         bx,     0.2,  1.016),
-    fr(.66,  84,  s*w*0.7,    -bx*0.6,-0.2,  1.009),
-    fr(.85, 106, -s*w*0.35,    bx*0.3, 0,    1.003),
-    fr(1,   122,  0,           0,      0,    1),
-  ], {duration:dur, easing:'cubic-bezier(.36,.02,.24,1)'});
-  $('content').animate([{opacity:.5, transform:'scale(.99)'},{opacity:1, transform:'none'}],
-                       {duration:420, easing:'ease-out'});
-  // several soft shadow LINES run along the page (dark troughs, multiply) with light crests
-  // (soft-light) between them, and travel sideways — the corrugated look of a flexing page.
-  const ang = exitLeft ? 90 : 270;
-  const from = exitLeft ? '100%' : '0%';
-  const to   = exitLeft ? '0%'   : '100%';
-  const shade=ghost.querySelector('.flip-ghost-shade');
-  if(shade){
-    shade.style.background = `linear-gradient(${ang}deg,`
-      + ' rgba(0,0,0,.34) 0%, rgba(0,0,0,0) 15%, rgba(0,0,0,.26) 34%, rgba(0,0,0,0) 50%,'
-      + ' rgba(0,0,0,.24) 66%, rgba(0,0,0,0) 82%, rgba(0,0,0,.4) 100%)';
-    shade.style.backgroundSize = '210% 100%';
-    shade.animate([
-      {opacity:.15, backgroundPositionX:from},
-      {opacity:.85, offset:.5},
-      {opacity:.2,  backgroundPositionX:to},
-    ], {duration:dur, easing:'ease-in-out'});
-  }
-  const gloss=ghost.querySelector('.flip-ghost-gloss');
-  if(gloss){
-    gloss.style.background = `linear-gradient(${ang}deg,`
-      + ' rgba(255,255,255,0) 6%, rgba(255,255,255,.55) 24%, rgba(255,255,255,0) 42%,'
-      + ' rgba(255,255,255,.5) 58%, rgba(255,255,255,0) 74%, rgba(255,255,255,.4) 92%)';
-    gloss.style.backgroundSize = '210% 100%';
-    gloss.animate([
-      {opacity:0, backgroundPositionX:from},
-      {opacity:.95, offset:.5},
-      {opacity:0, backgroundPositionX:to},
-    ], {duration:dur, easing:'ease-in-out'});
-  }
-  // remove the ghost when the turn ends — plus a hard fallback in case the page
-  // is backgrounded (a frozen animation timeline would otherwise never fire onfinish)
+  const dir = exitLeft ? -1 : 1;          // which edge the leaf hinges on
+  const spineLeft = dir < 0;
+  const sgn = spineLeft ? 1 : -1;
+  const W = ghost._w, strips = ghost._strips || [], N = strips.length;
+  const sw = ghost._sw;
+  const dur = 800;
+
+  // The leaf is caught at its free edge and lifts: a wave forms across it with its
+  // crest at the middle of the page. Through the turn about the spine that wave
+  // becomes a parabolic arch, and it only flattens again as the page lands on the
+  // other side — bendAmp rises and falls with sin(pi*g), so the page is flat at both
+  // ends of the motion and most curved halfway through.
+  const BEND = 130;                       // depth of the curve, in px
+  const SWEEP = 174;                      // degrees of rotation about the spine
+  const frame = g => {
+    const ease = g < .5 ? 2*g*g : 1 - Math.pow(-2*g + 2, 2)/2;
+    const theta = dir * ease * SWEEP * Math.PI/180;
+    const bend  = BEND * Math.sin(Math.PI * g);
+    const cosT = Math.cos(theta), sinT = Math.sin(theta);
+    const fade = Math.max(0, Math.min(1, (1-g)/0.08));   // gone only at the very end
+    for(let i=0;i<N;i++){
+      const cx = (i + .5) * sw;
+      const d  = spineLeft ? cx : W - cx;                // distance from the spine
+      const arc = Math.sin(Math.PI * d / W);
+      const X = sgn * d, Z = bend * arc;
+      const Xr =  X*cosT + Z*sinT;
+      const Zr = -X*sinT + Z*cosT;
+      // the sheet's local tilt where this strip stands — without it the strips read
+      // as separate plates rather than as one bending surface
+      const slope = bend * (Math.PI / W) * Math.cos(Math.PI * d / W) * sgn;
+      const face = theta*180/Math.PI + Math.atan(slope)*180/Math.PI;
+      const tx = (spineLeft ? 0 : W) + Xr - cx;
+      const lit = 1 - .34*Math.abs(Math.sin(face*Math.PI/180)) - .1*arc*Math.sin(Math.PI*g);
+      const st = strips[i];
+      st.style.transform = 'translate3d('+tx.toFixed(2)+'px,0,'+Zr.toFixed(2)+'px) rotateY('
+                         + face.toFixed(2)+'deg) scaleX(1.04)';
+      st.style.filter = 'brightness('+lit.toFixed(3)+')';
+      st.style.opacity = fade;
+    }
+  };
   // The leaf turns over the whole page, the floating nav bar included, and a bar
-  // sitting on top of a page in mid-turn breaks the illusion at once. So it steps
-  // aside for the turn and no longer: it goes as the leaf lifts and is back the
-  // moment the leaf has landed — not left to the idle timer, which would keep it
-  // away for another three seconds and make the reader ask for it again.
+  // sitting on top of a page in mid-turn breaks the illusion at once. It steps
+  // aside for the turn and is back the moment the leaf lands.
   document.body.classList.add('nav-flip');
+  frame(0);
+  const t0 = performance.now();
+  let raf = 0;
+  const tick = () => {
+    const g = Math.min(1, (performance.now() - t0) / dur);
+    frame(g);
+    if(g < 1) raf = requestAnimationFrame(tick); else done();
+  };
+  raf = requestAnimationFrame(tick);
+  ghost._stop = () => cancelAnimationFrame(raf);
+
   let gone=false;
-  const done=()=>{ if(gone) return; gone=true; ghost.remove();
-                   document.body.classList.remove('nav-flip'); navShow(); };
-  a.onfinish=done; a.oncancel=done; setTimeout(done, 1000);
+  function done(){ if(gone) return; gone=true;
+                   if(ghost._stop) ghost._stop();
+                   ghost.remove();
+                   document.body.classList.remove('nav-flip'); navShow(); }
+  setTimeout(done, dur + 320);          // a backstop, should a frame never arrive
 }
 async function crossPortion(delta){
   const ids=S.portions.map(p=>p.id); const pidx=ids.indexOf(S.curPid);
