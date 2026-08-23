@@ -12648,380 +12648,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 12,
-     "name": "במדבר - נשא את ראש - 29",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1675,
-     "n": 29,
-     "verses": "ד:א-ד:יב",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 29,
-     "file": "/static/audio/readings/b4-p02-c029.mp3",
-     "duration": 28.63,
-     "src_start": 0.0,
-     "src_end": 28.63,
-     "verses_num": "4:1-4:12"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 4,
-     "name": "במדבר - נשא את ראש - 30",
-     "incipit": "ודשנו את המזבח ופרשו",
-     "sam_ch_id": 1676,
-     "n": 30,
-     "verses": "ד:יג-ד:טז",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 30,
-     "file": "/static/audio/readings/b4-p02-c030.mp3",
-     "duration": 97.72,
-     "src_start": 28.63,
-     "src_end": 126.35,
-     "verses_num": "4:13-4:16"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 4,
-     "name": "במדבר - נשא את ראש - 31",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1677,
-     "n": 31,
-     "verses": "ד:יז-ד:כ",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 31,
-     "file": "/static/audio/readings/b4-p02-c031.mp3",
-     "duration": 24.8,
-     "src_start": 126.35,
-     "src_end": 151.15,
-     "verses_num": "4:17-4:20"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 8,
-     "name": "במדבר - נשא את ראש - 32",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1678,
-     "n": 32,
-     "verses": "ד:כא-ד:כח",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 32,
-     "file": "/static/audio/readings/b4-p02-c032.mp3",
-     "duration": 83.59,
-     "src_start": 151.15,
-     "src_end": 234.74,
-     "verses_num": "4:21-4:28"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 5,
-     "name": "במדבר - נשא את ראש - 33",
-     "incipit": "בני מררי למשפחותם: לבית",
-     "sam_ch_id": 1679,
-     "n": 33,
-     "verses": "ד:כט-ד:לג",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 33,
-     "file": "/static/audio/readings/b4-p02-c033.mp3",
-     "duration": 86.93,
-     "src_start": 234.74,
-     "src_end": 321.67,
-     "verses_num": "4:29-4:33"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 4,
-     "name": "במדבר - נשא את ראש - 34",
-     "incipit": "ויפקד משה ואהרן ונשיאי",
-     "sam_ch_id": 1680,
-     "n": 34,
-     "verses": "ד:לד-ד:לז",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 34,
-     "file": "/static/audio/readings/b4-p02-c034.mp3",
-     "duration": 59.56,
-     "src_start": 321.67,
-     "src_end": 381.23,
-     "verses_num": "4:34-4:37"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 12,
-     "name": "במדבר - נשא את ראש - 35",
-     "incipit": "ופקדי בני גרשון: למשפחותם",
-     "sam_ch_id": 1681,
-     "n": 35,
-     "verses": "ד:לח-ד:מט",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 35,
-     "file": "/static/audio/readings/b4-p02-c035.mp3",
-     "duration": 133.13,
-     "src_start": 381.23,
-     "src_end": 514.36,
-     "verses_num": "4:38-4:49"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 4,
-     "name": "במדבר - נשא את ראש - 36",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1682,
-     "n": 36,
-     "verses": "ה:א-ה:ד",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 36,
-     "file": "/static/audio/readings/b4-p02-c036.mp3",
-     "duration": 67.36,
-     "src_start": 514.36,
-     "src_end": 581.72,
-     "verses_num": "5:1-5:4"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 6,
-     "name": "במדבר - נשא את ראש - 37",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1683,
-     "n": 37,
-     "verses": "ה:ה-ה:י",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 37,
-     "file": "/static/audio/readings/b4-p02-c037.mp3",
-     "duration": 61.35,
-     "src_start": 581.72,
-     "src_end": 643.07,
-     "verses_num": "5:5-5:10"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 8,
-     "name": "במדבר - נשא את ראש - 38",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1684,
-     "n": 38,
-     "verses": "ה:יא-ה:יח",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 38,
-     "file": "/static/audio/readings/b4-p02-c038.mp3",
-     "duration": 95.63,
-     "src_start": 643.07,
-     "src_end": 738.7,
-     "verses_num": "5:11-5:18"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 4,
-     "name": "במדבר - נשא את ראש - 39",
-     "incipit": "והשביע אתה הכהן ואמר",
-     "sam_ch_id": 1685,
-     "n": 39,
-     "verses": "ה:יט-ה:כב",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 39,
-     "file": "/static/audio/readings/b4-p02-c039.mp3",
-     "duration": 54.83,
-     "src_start": 738.7,
-     "src_end": 793.53,
-     "verses_num": "5:19-5:22"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 9,
-     "name": "במדבר - נשא את ראש - 40",
-     "incipit": "וכתב את האלות האלה",
-     "sam_ch_id": 1686,
-     "n": 40,
-     "verses": "ה:כג-ה:לא",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 40,
-     "file": "/static/audio/readings/b4-p02-c040.mp3",
-     "duration": 89.73,
-     "src_start": 793.53,
-     "src_end": 883.26,
-     "verses_num": "5:23-5:31"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 8,
-     "name": "במדבר - נשא את ראש - 41",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1687,
-     "n": 41,
-     "verses": "ו:א-ו:ח",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 41,
-     "file": "/static/audio/readings/b4-p02-c041.mp3",
-     "duration": 75.08,
-     "src_start": 883.26,
-     "src_end": 958.34,
-     "verses_num": "6:1-6:8"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 4,
-     "name": "במדבר - נשא את ראש - 42",
-     "incipit": "וכי ימות מת עליו",
-     "sam_ch_id": 1688,
-     "n": 42,
-     "verses": "ו:ט-ו:יב",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 42,
-     "file": "/static/audio/readings/b4-p02-c042.mp3",
-     "duration": 46.36,
-     "src_start": 958.34,
-     "src_end": 1004.7,
-     "verses_num": "6:9-6:12"
-    },
-    {
-     "src": {
-      "youtube_id": "yH7rF7DmCtw"
-     },
-     "verse_count": 9,
-     "name": "במדבר - נשא את ראש - 43",
-     "incipit": "וזאת תורת הנזיר: ביום",
-     "sam_ch_id": 1689,
-     "n": 43,
-     "verses": "ו:יג-ו:כא",
-     "portion": {
-      "order": 2,
-      "name": "נשא את ראש",
-      "id": 39
-     },
-     "sam_ch_number": 43,
-     "file": "/static/audio/readings/b4-p02-c043.mp3",
-     "duration": 110.02,
-     "src_start": 1004.7,
-     "src_end": 1114.72,
-     "verses_num": "6:13-6:21"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 44",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1690,
-     "n": 44,
-     "verses": "ו:כב-ו:כז",
-     "portion": {
-      "order": 2,
-      "id": 39,
-      "name": "נשא את ראש"
-     },
-     "sam_ch_number": 44,
-     "file": "/static/audio/readings/b4-p03-c044.mp3",
-     "duration": 36.26,
-     "src_start": 0.0,
-     "src_end": 36.26,
-     "verses_num": "6:22-6:27"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 3,
-     "name": "במדבר - דבר אל אהרן - 45",
-     "incipit": "ויהי ביום כלות משה",
-     "sam_ch_id": 1691,
-     "n": 45,
-     "verses": "ז:א-ז:ג",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 45,
-     "file": "/static/audio/readings/b4-p03-c045.mp3",
-     "duration": 43.04,
-     "src_start": 36.26,
-     "src_end": 79.3,
-     "verses_num": "7:1-7:3"
-    },
-    {
-     "src": {
       "youtube_id": "MHPEePHJ-AE"
      },
      "verse_count": 8,
@@ -17309,6 +16935,380 @@
      "verse_count": 8,
      "incipit": "וידבר יהוה אל משה",
      "name": "במדבר - במדבר סיני - 28"
+    },
+    {
+     "n": 29,
+     "sam_ch_number": 29,
+     "file": "/static/audio/readings/b4-p02-c029.mp3",
+     "duration": 126.35,
+     "src_start": 0,
+     "src_end": 126.35,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1675,
+     "verses": "ד:א-ד:יב",
+     "verses_num": "4:1-4:12",
+     "verse_count": 12,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - נשא את ראש - 29"
+    },
+    {
+     "n": 30,
+     "sam_ch_number": 30,
+     "file": "/static/audio/readings/b4-p02-c030.mp3",
+     "duration": 74.03,
+     "src_start": 0,
+     "src_end": 74.03,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1676,
+     "verses": "ד:יג-ד:טז",
+     "verses_num": "4:13-4:16",
+     "verse_count": 4,
+     "incipit": "ודשנו את המזבח: ופרשו",
+     "name": "במדבר - נשא את ראש - 30"
+    },
+    {
+     "n": 31,
+     "sam_ch_number": 31,
+     "file": "/static/audio/readings/b4-p02-c031.mp3",
+     "duration": 34.36,
+     "src_start": 0,
+     "src_end": 34.36,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1677,
+     "verses": "ד:יז-ד:כ",
+     "verses_num": "4:17-4:20",
+     "verse_count": 4,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - נשא את ראש - 31"
+    },
+    {
+     "n": 32,
+     "sam_ch_number": 32,
+     "file": "/static/audio/readings/b4-p02-c032.mp3",
+     "duration": 86.93,
+     "src_start": 0,
+     "src_end": 86.93,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1678,
+     "verses": "ד:כא-ד:כח",
+     "verses_num": "4:21-4:28",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - נשא את ראש - 32"
+    },
+    {
+     "n": 33,
+     "sam_ch_number": 33,
+     "file": "/static/audio/readings/b4-p02-c033.mp3",
+     "duration": 59.56,
+     "src_start": 0,
+     "src_end": 59.56,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1679,
+     "verses": "ד:כט-ד:לג",
+     "verses_num": "4:29-4:33",
+     "verse_count": 5,
+     "incipit": "בני מררי למשפחותם: לבית",
+     "name": "במדבר - נשא את ראש - 33"
+    },
+    {
+     "n": 34,
+     "sam_ch_number": 34,
+     "file": "/static/audio/readings/b4-p02-c034.mp3",
+     "duration": 38.38,
+     "src_start": 0,
+     "src_end": 38.38,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1680,
+     "verses": "ד:לד-ד:לז",
+     "verses_num": "4:34-4:37",
+     "verse_count": 4,
+     "incipit": "ויפקד משה ואהרן ונשיאי",
+     "name": "במדבר - נשא את ראש - 34"
+    },
+    {
+     "n": 35,
+     "sam_ch_number": 35,
+     "file": "/static/audio/readings/b4-p02-c035.mp3",
+     "duration": 37.26,
+     "src_start": 0,
+     "src_end": 37.26,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1681,
+     "verses": "ד:לח-ד:מט",
+     "verses_num": "4:38-4:49",
+     "verse_count": 12,
+     "incipit": "ופקדי בני גרשון: למשפחותם",
+     "name": "במדבר - נשא את ראש - 35"
+    },
+    {
+     "n": 36,
+     "sam_ch_number": 36,
+     "file": "/static/audio/readings/b4-p02-c036.mp3",
+     "duration": 86.28,
+     "src_start": 0,
+     "src_end": 86.28,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1682,
+     "verses": "ה:א-ה:ד",
+     "verses_num": "5:1-5:4",
+     "verse_count": 4,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - נשא את ראש - 36"
+    },
+    {
+     "n": 37,
+     "sam_ch_number": 37,
+     "file": "/static/audio/readings/b4-p02-c037.mp3",
+     "duration": 38.57,
+     "src_start": 0,
+     "src_end": 38.57,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1683,
+     "verses": "ה:ה-ה:י",
+     "verses_num": "5:5-5:10",
+     "verse_count": 6,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - נשא את ראש - 37"
+    },
+    {
+     "n": 38,
+     "sam_ch_number": 38,
+     "file": "/static/audio/readings/b4-p02-c038.mp3",
+     "duration": 61.35,
+     "src_start": 0,
+     "src_end": 61.35,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1684,
+     "verses": "ה:יא-ה:יח",
+     "verses_num": "5:11-5:18",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - נשא את ראש - 38"
+    },
+    {
+     "n": 39,
+     "sam_ch_number": 39,
+     "file": "/static/audio/readings/b4-p02-c039.mp3",
+     "duration": 95.63,
+     "src_start": 0,
+     "src_end": 95.63,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1685,
+     "verses": "ה:יט-ה:כב",
+     "verses_num": "5:19-5:22",
+     "verse_count": 4,
+     "incipit": "והשביע אתה הכהן ואמר",
+     "name": "במדבר - נשא את ראש - 39"
+    },
+    {
+     "n": 40,
+     "sam_ch_number": 40,
+     "file": "/static/audio/readings/b4-p02-c040.mp3",
+     "duration": 54.83,
+     "src_start": 0,
+     "src_end": 54.83,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1686,
+     "verses": "ה:כג-ה:לא",
+     "verses_num": "5:23-5:31",
+     "verse_count": 9,
+     "incipit": "וכתב את האלות האלה",
+     "name": "במדבר - נשא את ראש - 40"
+    },
+    {
+     "n": 41,
+     "sam_ch_number": 41,
+     "file": "/static/audio/readings/b4-p02-c041.mp3",
+     "duration": 89.73,
+     "src_start": 0,
+     "src_end": 89.73,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1687,
+     "verses": "ו:א-ו:ח",
+     "verses_num": "6:1-6:8",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - נשא את ראש - 41"
+    },
+    {
+     "n": 42,
+     "sam_ch_number": 42,
+     "file": "/static/audio/readings/b4-p02-c042.mp3",
+     "duration": 75.08,
+     "src_start": 0,
+     "src_end": 75.08,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1688,
+     "verses": "ו:ט-ו:יב",
+     "verses_num": "6:9-6:12",
+     "verse_count": 4,
+     "incipit": "וכי ימות מת עליו",
+     "name": "במדבר - נשא את ראש - 42"
+    },
+    {
+     "n": 43,
+     "sam_ch_number": 43,
+     "file": "/static/audio/readings/b4-p02-c043.mp3",
+     "duration": 46.36,
+     "src_start": 0,
+     "src_end": 46.36,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1689,
+     "verses": "ו:יג-ו:כא",
+     "verses_num": "6:13-6:21",
+     "verse_count": 9,
+     "incipit": "וזאת תורת הנזיר: ביום",
+     "name": "במדבר - נשא את ראש - 43"
+    },
+    {
+     "n": 44,
+     "sam_ch_number": 44,
+     "file": "/static/audio/readings/b4-p02-c044.mp3",
+     "duration": 110.02,
+     "src_start": 0,
+     "src_end": 110.02,
+     "portion": {
+      "order": 2,
+      "id": 39,
+      "name": "נשא את ראש"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1690,
+     "verses": "ו:כב-ו:כז",
+     "verses_num": "6:22-6:27",
+     "verse_count": 6,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - נשא את ראש - 44"
+    },
+    {
+     "n": 45,
+     "sam_ch_number": 45,
+     "file": "/static/audio/readings/b4-p02-c045.mp3",
+     "duration": 36.26,
+     "src_start": 0,
+     "src_end": 36.26,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": "yH7rF7DmCtw"
+     },
+     "sam_ch_id": 1691,
+     "verses": "ז:א-ז:ג",
+     "verses_num": "7:1-7:3",
+     "verse_count": 3,
+     "incipit": "ויהי ביום כלות משה",
+     "name": "במדבר - דבר אל אהרן - 45"
     }
    ],
    "playlist": "PLl-48IEqLtlv9CtBH3gbflWttJAP9LCna",
