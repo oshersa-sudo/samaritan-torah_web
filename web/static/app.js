@@ -5051,7 +5051,7 @@ async function collectPrintGroups(){
 // when they are laid out again — the measurement is of the real thing, not a
 // model of it.
 const BOOK_PAGE_MM = 267;      // A4 (297mm) less the 15mm margins @page sets
-const BOOK_GAP_MM  = 4;        // the rule between the halves, and the thin space under it
+const BOOK_GAP_MM  = 9;        // the rule between the halves, with a clear line each side of it
 
 // Every character the Samaritan faces cannot draw, mapped to one they can —
 // checked against the fonts' own cmaps over the whole commentary corpus, not
@@ -5143,8 +5143,35 @@ function bookFit(tokens, widthMm, cls, heightMm){
 // the reader has to decode. It is a plain middle dot, sitting on the middle of
 // the line, tight against the word before it (.pr-bk-band .wsep).
 function bookTok(word, sep){
-  return '<span class="bkw">' + esc(word) + '</span>'
+  return '<span class="bkw">' + bookGlyphs(word) + '</span>'
        + (sep ? '<span class="wsep">·</span>' : '');
+}
+// The Samaritan faces are lettering faces: their punctuation is not merely ugly,
+// it is unusable, and it was ruining both halves of the page.
+//
+//   Samaritan  ':'  advance 0      — 11,797 of them in the Torah, every one
+//                                    printed on top of the letter beside it,
+//                                    which is what those marks over the letters
+//                                    were.
+//   SamComment '"'  advance 4      — the same, 20,958 times in the commentary.
+//   SamComment "'"  advance 65468  — thirty-two ems. Every apostrophe tore a
+//                                    hand's width of white out of the line, and
+//                                    that is where the commentary's "lots of
+//                                    spaces" came from.
+//
+// So the faces get the letters, and nothing else. Everything that is not a
+// Hebrew letter — marks, digits, Latin — is set in a face with sane metrics,
+// the same one the word divider already used.
+function bookGlyphs(word){
+  let html = '', last = 0, m;
+  const re = /[א-ת]+/g;
+  while((m = re.exec(word)) !== null){
+    if(m.index > last) html += '<span class="bkpunc">' + esc(word.slice(last, m.index)) + '</span>';
+    html += esc(m[0]);
+    last = re.lastIndex;
+  }
+  if(last < word.length) html += '<span class="bkpunc">' + esc(word.slice(last)) + '</span>';
+  return html;
 }
 // A run of words cut into tokens, with the dot between them — and NOT after a
 // word that ends a sentence or carries a mark of its own, nor before one.
