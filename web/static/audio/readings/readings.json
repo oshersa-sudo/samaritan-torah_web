@@ -12648,754 +12648,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 8,
-     "name": "במדבר - דבר אל אהרן - 46",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1692,
-     "n": 46,
-     "verses": "ז:ד-ז:יא",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 46,
-     "file": "/static/audio/readings/b4-p03-c046.mp3",
-     "duration": 72.75,
-     "src_start": 79.3,
-     "src_end": 152.05,
-     "verses_num": "7:4-7:11"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 47",
-     "incipit": "ויהי המקריב ביום הראישון",
-     "sam_ch_id": 1693,
-     "n": 47,
-     "verses": "ז:יב-ז:יז",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 47,
-     "file": "/static/audio/readings/b4-p03-c047.mp3",
-     "duration": 55.28,
-     "src_start": 152.05,
-     "src_end": 207.33,
-     "verses_num": "7:12-7:17"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 48",
-     "incipit": "ביום השני הקריב נתנאל",
-     "sam_ch_id": 1694,
-     "n": 48,
-     "verses": "ז:יח-ז:כג",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 48,
-     "file": "/static/audio/readings/b4-p03-c048.mp3",
-     "duration": 53.12,
-     "src_start": 207.33,
-     "src_end": 260.45,
-     "verses_num": "7:18-7:23"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 49",
-     "incipit": "ביום השלישי נשיא לבני",
-     "sam_ch_id": 1695,
-     "n": 49,
-     "verses": "ז:כד-ז:כט",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 49,
-     "file": "/static/audio/readings/b4-p03-c049.mp3",
-     "duration": 51.05,
-     "src_start": 260.45,
-     "src_end": 311.5,
-     "verses_num": "7:24-7:29"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 50",
-     "incipit": "ביום הרביעי נשיא לבני",
-     "sam_ch_id": 1696,
-     "n": 50,
-     "verses": "ז:ל-ז:לה",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 50,
-     "file": "/static/audio/readings/b4-p03-c050.mp3",
-     "duration": 49.88,
-     "src_start": 311.5,
-     "src_end": 361.38,
-     "verses_num": "7:30-7:35"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 51",
-     "incipit": "ביום החמישי נשיא לבני",
-     "sam_ch_id": 1697,
-     "n": 51,
-     "verses": "ז:לו-ז:מא",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 51,
-     "file": "/static/audio/readings/b4-p03-c051.mp3",
-     "duration": 54.98,
-     "src_start": 361.38,
-     "src_end": 416.36,
-     "verses_num": "7:36-7:41"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 52",
-     "incipit": "ביום הששי נשיא לבני",
-     "sam_ch_id": 1698,
-     "n": 52,
-     "verses": "ז:מב-ז:מז",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 52,
-     "file": "/static/audio/readings/b4-p03-c052.mp3",
-     "duration": 50.6,
-     "src_start": 416.36,
-     "src_end": 466.96,
-     "verses_num": "7:42-7:47"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 53",
-     "incipit": "ביום השביעי נשיא לבני",
-     "sam_ch_id": 1699,
-     "n": 53,
-     "verses": "ז:מח-ז:נג",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 53,
-     "file": "/static/audio/readings/b4-p03-c053.mp3",
-     "duration": 52.86,
-     "src_start": 466.96,
-     "src_end": 519.82,
-     "verses_num": "7:48-7:53"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 54",
-     "incipit": "ביום השמיני נשיא לבני",
-     "sam_ch_id": 1700,
-     "n": 54,
-     "verses": "ז:נד-ז:נט",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 54,
-     "file": "/static/audio/readings/b4-p03-c054.mp3",
-     "duration": 52.43,
-     "src_start": 519.82,
-     "src_end": 572.25,
-     "verses_num": "7:54-7:59"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 55",
-     "incipit": "ביום התשעי נשיא לבני",
-     "sam_ch_id": 1701,
-     "n": 55,
-     "verses": "ז:ס-ז:סה",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 55,
-     "file": "/static/audio/readings/b4-p03-c055.mp3",
-     "duration": 53.54,
-     "src_start": 572.25,
-     "src_end": 625.79,
-     "verses_num": "7:60-7:65"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 56",
-     "incipit": "ביום העשירי נשיא לבני",
-     "sam_ch_id": 1702,
-     "n": 56,
-     "verses": "ז:סו-ז:עא",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 56,
-     "file": "/static/audio/readings/b4-p03-c056.mp3",
-     "duration": 54.93,
-     "src_start": 625.79,
-     "src_end": 680.72,
-     "verses_num": "7:66-7:71"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 57",
-     "incipit": "ביום עשתי עשר יום",
-     "sam_ch_id": 1703,
-     "n": 57,
-     "verses": "ז:עב-ז:עז",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 57,
-     "file": "/static/audio/readings/b4-p03-c057.mp3",
-     "duration": 53.92,
-     "src_start": 680.72,
-     "src_end": 734.64,
-     "verses_num": "7:72-7:77"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 58",
-     "incipit": "ביום שנים עשר יום",
-     "sam_ch_id": 1704,
-     "n": 58,
-     "verses": "ז:עח-ז:פג",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 58,
-     "file": "/static/audio/readings/b4-p03-c058.mp3",
-     "duration": 54.4,
-     "src_start": 734.64,
-     "src_end": 789.04,
-     "verses_num": "7:78-7:83"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 59",
-     "incipit": "זאת חנכת המזבח ביום",
-     "sam_ch_id": 1705,
-     "n": 59,
-     "verses": "ז:פד-ז:פט",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 59,
-     "file": "/static/audio/readings/b4-p03-c059.mp3",
-     "duration": 89.6,
-     "src_start": 789.04,
-     "src_end": 878.64,
-     "verses_num": "7:84-7:89"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 4,
-     "name": "במדבר - דבר אל אהרן - 60",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1706,
-     "n": 60,
-     "verses": "ח:א-ח:ד",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 60,
-     "file": "/static/audio/readings/b4-p03-c060.mp3",
-     "duration": 46.8,
-     "src_start": 878.64,
-     "src_end": 925.44,
-     "verses_num": "8:1-8:4"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 13,
-     "name": "במדבר - דבר אל אהרן - 61",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1707,
-     "n": 61,
-     "verses": "ח:ה-ח:יז",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 61,
-     "file": "/static/audio/readings/b4-p03-c061.mp3",
-     "duration": 125.61,
-     "src_start": 925.44,
-     "src_end": 1051.05,
-     "verses_num": "8:5-8:17"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 5,
-     "name": "במדבר - דבר אל אהרן - 62",
-     "incipit": "ואקח את הלוים תחת",
-     "sam_ch_id": 1708,
-     "n": 62,
-     "verses": "ח:יח-ח:כב",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 62,
-     "file": "/static/audio/readings/b4-p03-c062.mp3",
-     "duration": 70.02,
-     "src_start": 1051.05,
-     "src_end": 1121.07,
-     "verses_num": "8:18-8:22"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 4,
-     "name": "במדבר - דבר אל אהרן - 63",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1709,
-     "n": 63,
-     "verses": "ח:כג-ח:כו",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 63,
-     "file": "/static/audio/readings/b4-p03-c063.mp3",
-     "duration": 125.8,
-     "src_start": 1121.07,
-     "src_end": 1246.87,
-     "verses_num": "8:23-8:26"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 8,
-     "name": "במדבר - דבר אל אהרן - 64",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1710,
-     "n": 64,
-     "verses": "ט:א-ט:ח",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 64,
-     "file": "/static/audio/readings/b4-p03-c064.mp3",
-     "duration": 70.41,
-     "src_start": 1246.87,
-     "src_end": 1317.28,
-     "verses_num": "9:1-9:8"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 65",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1711,
-     "n": 65,
-     "verses": "ט:ט-ט:יד",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 65,
-     "file": "/static/audio/readings/b4-p03-c065.mp3",
-     "duration": 54.18,
-     "src_start": 1317.28,
-     "src_end": 1371.46,
-     "verses_num": "9:9-9:14"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 9,
-     "name": "במדבר - דבר אל אהרן - 66",
-     "incipit": "וביום הוקם את המשכן",
-     "sam_ch_id": 1712,
-     "n": 66,
-     "verses": "ט:טו-ט:כג",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 66,
-     "file": "/static/audio/readings/b4-p03-c066.mp3",
-     "duration": 44.79,
-     "src_start": 1371.46,
-     "src_end": 1416.25,
-     "verses_num": "9:15-9:23"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 10,
-     "name": "במדבר - דבר אל אהרן - 67",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1713,
-     "n": 67,
-     "verses": "י:א-י:י",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 67,
-     "file": "/static/audio/readings/b4-p03-c067.mp3",
-     "duration": 104.79,
-     "src_start": 1416.25,
-     "src_end": 1521.04,
-     "verses_num": "10:1-10:10"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 1,
-     "name": "במדבר - דבר אל אהרן - 68",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 2231,
-     "n": 68,
-     "verses": "י:י-י:י",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 68,
-     "file": "/static/audio/readings/b4-p03-c068.mp3",
-     "duration": 45.11,
-     "src_start": 1521.04,
-     "src_end": 1566.15,
-     "verses_num": "10:10-10:10"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 18,
-     "name": "במדבר - דבר אל אהרן - 69",
-     "incipit": "ויהי בשנה השנית: בחדש",
-     "sam_ch_id": 1714,
-     "n": 69,
-     "verses": "י:יא-י:כח",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 69,
-     "file": "/static/audio/readings/b4-p03-c069.mp3",
-     "duration": 125.2,
-     "src_start": 1566.15,
-     "src_end": 1691.35,
-     "verses_num": "10:11-10:28"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 8,
-     "name": "במדבר - דבר אל אהרן - 70",
-     "incipit": "ויאמר משה לחובב בן",
-     "sam_ch_id": 1715,
-     "n": 70,
-     "verses": "י:כט-י:לו",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 70,
-     "file": "/static/audio/readings/b4-p03-c070.mp3",
-     "duration": 88.29,
-     "src_start": 1691.35,
-     "src_end": 1779.64,
-     "verses_num": "10:29-10:36"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 10,
-     "name": "במדבר - דבר אל אהרן - 71",
-     "incipit": "ויהי העם כמתאננים רע",
-     "sam_ch_id": 1716,
-     "n": 71,
-     "verses": "יא:א-יא:י",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 71,
-     "file": "/static/audio/readings/b4-p03-c071.mp3",
-     "duration": 95.9,
-     "src_start": 1779.64,
-     "src_end": 1875.54,
-     "verses_num": "11:1-11:10"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 5,
-     "name": "במדבר - דבר אל אהרן - 72",
-     "incipit": "ויאמר משה אל יהוה",
-     "sam_ch_id": 1717,
-     "n": 72,
-     "verses": "יא:יא-יא:טו",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 72,
-     "file": "/static/audio/readings/b4-p03-c072.mp3",
-     "duration": 62.14,
-     "src_start": 1875.54,
-     "src_end": 1937.68,
-     "verses_num": "11:11-11:15"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 7,
-     "name": "במדבר - דבר אל אהרן - 73",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1718,
-     "n": 73,
-     "verses": "יא:טז-יא:כב",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 73,
-     "file": "/static/audio/readings/b4-p03-c073.mp3",
-     "duration": 111.64,
-     "src_start": 1937.68,
-     "src_end": 2049.32,
-     "verses_num": "11:16-11:22"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 7,
-     "name": "במדבר - דבר אל אהרן - 74",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1719,
-     "n": 74,
-     "verses": "יא:כג-יא:כט",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 74,
-     "file": "/static/audio/readings/b4-p03-c074.mp3",
-     "duration": 84.59,
-     "src_start": 2049.32,
-     "src_end": 2133.91,
-     "verses_num": "11:23-11:29"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 6,
-     "name": "במדבר - דבר אל אהרן - 75",
-     "incipit": "ויאסף משה אל המחנה:",
-     "sam_ch_id": 1720,
-     "n": 75,
-     "verses": "יא:ל-יא:לה",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 75,
-     "file": "/static/audio/readings/b4-p03-c075.mp3",
-     "duration": 73.22,
-     "src_start": 2133.91,
-     "src_end": 2207.13,
-     "verses_num": "11:30-11:35"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 13,
-     "name": "במדבר - דבר אל אהרן - 76",
-     "incipit": "ותדבר מרים ואהרן במשה",
-     "sam_ch_id": 1721,
-     "n": 76,
-     "verses": "יב:א-יב:יג",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 76,
-     "file": "/static/audio/readings/b4-p03-c076.mp3",
-     "duration": 120.41,
-     "src_start": 2207.13,
-     "src_end": 2327.54,
-     "verses_num": "12:1-12:13"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 3,
-     "name": "במדבר - דבר אל אהרן - 77",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1723,
-     "n": 77,
-     "verses": "יב:יד-יב:טז",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 77,
-     "file": "/static/audio/readings/b4-p03-c077.mp3",
-     "duration": 31.66,
-     "src_start": 2327.54,
-     "src_end": 2359.2,
-     "verses_num": "12:14-12:16"
-    },
-    {
-     "src": {
-      "youtube_id": "MHPEePHJ-AE"
-     },
-     "verse_count": 1,
-     "name": "במדבר - דבר אל אהרן - 78",
-     "incipit": "ויאמר משה לבני ישראל:",
-     "sam_ch_id": 2232,
-     "n": 78,
-     "verses": "יב:טז-יב:טז",
-     "portion": {
-      "order": 3,
-      "name": "דבר אל אהרן",
-      "id": 40
-     },
-     "sam_ch_number": 78,
-     "file": "/static/audio/readings/b4-p03-c078.mp3",
-     "duration": 47.85,
-     "src_start": 2359.2,
-     "src_end": 2407.05,
-     "verses_num": "12:16-12:16"
-    },
-    {
-     "src": {
-      "youtube_id": "JmJhmFXyBj4"
-     },
-     "verse_count": 17,
-     "name": "במדבר - שלח לך - 79",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1724,
-     "n": 79,
-     "verses": "יג:א-יג:יז",
-     "portion": {
-      "order": 3,
-      "id": 40,
-      "name": "דבר אל אהרן"
-     },
-     "sam_ch_number": 79,
-     "file": "/static/audio/readings/b4-p04-c079.mp3",
-     "duration": 94.67,
-     "src_start": 0.0,
-     "src_end": 94.67,
-     "verses_num": "13:1-13:17"
-    },
-    {
-     "src": {
       "youtube_id": "JmJhmFXyBj4"
      },
      "verse_count": 8,
@@ -17291,17 +16543,17 @@
     {
      "n": 45,
      "sam_ch_number": 45,
-     "file": "/static/audio/readings/b4-p02-c045.mp3",
-     "duration": 36.26,
+     "file": "/static/audio/readings/b4-p03-c045.mp3",
+     "duration": 36.23,
      "src_start": 0,
-     "src_end": 36.26,
+     "src_end": 36.23,
      "portion": {
       "order": 3,
       "id": 40,
       "name": "דבר אל אהרן"
      },
      "src": {
-      "youtube_id": "yH7rF7DmCtw"
+      "youtube_id": null
      },
      "sam_ch_id": 1691,
      "verses": "ז:א-ז:ג",
@@ -17309,6 +16561,754 @@
      "verse_count": 3,
      "incipit": "ויהי ביום כלות משה",
      "name": "במדבר - דבר אל אהרן - 45"
+    },
+    {
+     "n": 46,
+     "sam_ch_number": 46,
+     "file": "/static/audio/readings/b4-p03-c046.mp3",
+     "duration": 43.04,
+     "src_start": 0,
+     "src_end": 43.04,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1692,
+     "verses": "ז:ד-ז:יא",
+     "verses_num": "7:4-7:11",
+     "verse_count": 8,
+     "incipit": "ויאמר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 46"
+    },
+    {
+     "n": 47,
+     "sam_ch_number": 47,
+     "file": "/static/audio/readings/b4-p03-c047.mp3",
+     "duration": 72.75,
+     "src_start": 0,
+     "src_end": 72.75,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1693,
+     "verses": "ז:יב-ז:יז",
+     "verses_num": "7:12-7:17",
+     "verse_count": 6,
+     "incipit": "ויהי המקריב ביום הראישון",
+     "name": "במדבר - דבר אל אהרן - 47"
+    },
+    {
+     "n": 48,
+     "sam_ch_number": 48,
+     "file": "/static/audio/readings/b4-p03-c048.mp3",
+     "duration": 55.26,
+     "src_start": 0,
+     "src_end": 55.26,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1694,
+     "verses": "ז:יח-ז:כג",
+     "verses_num": "7:18-7:23",
+     "verse_count": 6,
+     "incipit": "ביום השני הקריב נתנאל",
+     "name": "במדבר - דבר אל אהרן - 48"
+    },
+    {
+     "n": 49,
+     "sam_ch_number": 49,
+     "file": "/static/audio/readings/b4-p03-c049.mp3",
+     "duration": 53.13,
+     "src_start": 0,
+     "src_end": 53.13,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1695,
+     "verses": "ז:כד-ז:כט",
+     "verses_num": "7:24-7:29",
+     "verse_count": 6,
+     "incipit": "ביום השלישי נשיא לבני",
+     "name": "במדבר - דבר אל אהרן - 49"
+    },
+    {
+     "n": 50,
+     "sam_ch_number": 50,
+     "file": "/static/audio/readings/b4-p03-c050.mp3",
+     "duration": 51.05,
+     "src_start": 0,
+     "src_end": 51.05,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1696,
+     "verses": "ז:ל-ז:לה",
+     "verses_num": "7:30-7:35",
+     "verse_count": 6,
+     "incipit": "ביום הרביעי נשיא לבני",
+     "name": "במדבר - דבר אל אהרן - 50"
+    },
+    {
+     "n": 51,
+     "sam_ch_number": 51,
+     "file": "/static/audio/readings/b4-p03-c051.mp3",
+     "duration": 49.9,
+     "src_start": 0,
+     "src_end": 49.9,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1697,
+     "verses": "ז:לו-ז:מא",
+     "verses_num": "7:36-7:41",
+     "verse_count": 6,
+     "incipit": "ביום החמישי נשיא לבני",
+     "name": "במדבר - דבר אל אהרן - 51"
+    },
+    {
+     "n": 52,
+     "sam_ch_number": 52,
+     "file": "/static/audio/readings/b4-p03-c052.mp3",
+     "duration": 54.96,
+     "src_start": 0,
+     "src_end": 54.96,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1698,
+     "verses": "ז:מב-ז:מז",
+     "verses_num": "7:42-7:47",
+     "verse_count": 6,
+     "incipit": "ביום הששי נשיא לבני",
+     "name": "במדבר - דבר אל אהרן - 52"
+    },
+    {
+     "n": 53,
+     "sam_ch_number": 53,
+     "file": "/static/audio/readings/b4-p03-c053.mp3",
+     "duration": 50.6,
+     "src_start": 0,
+     "src_end": 50.6,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1699,
+     "verses": "ז:מח-ז:נג",
+     "verses_num": "7:48-7:53",
+     "verse_count": 6,
+     "incipit": "ביום השביעי נשיא לבני",
+     "name": "במדבר - דבר אל אהרן - 53"
+    },
+    {
+     "n": 54,
+     "sam_ch_number": 54,
+     "file": "/static/audio/readings/b4-p03-c054.mp3",
+     "duration": 52.86,
+     "src_start": 0,
+     "src_end": 52.86,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1700,
+     "verses": "ז:נד-ז:נט",
+     "verses_num": "7:54-7:59",
+     "verse_count": 6,
+     "incipit": "ביום השמיני נשיא לבני",
+     "name": "במדבר - דבר אל אהרן - 54"
+    },
+    {
+     "n": 55,
+     "sam_ch_number": 55,
+     "file": "/static/audio/readings/b4-p03-c055.mp3",
+     "duration": 52.43,
+     "src_start": 0,
+     "src_end": 52.43,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1701,
+     "verses": "ז:ס-ז:סה",
+     "verses_num": "7:60-7:65",
+     "verse_count": 6,
+     "incipit": "ביום התשעי נשיא לבני",
+     "name": "במדבר - דבר אל אהרן - 55"
+    },
+    {
+     "n": 56,
+     "sam_ch_number": 56,
+     "file": "/static/audio/readings/b4-p03-c056.mp3",
+     "duration": 53.54,
+     "src_start": 0,
+     "src_end": 53.54,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1702,
+     "verses": "ז:סו-ז:עא",
+     "verses_num": "7:66-7:71",
+     "verse_count": 6,
+     "incipit": "ביום העשירי נשיא לבני",
+     "name": "במדבר - דבר אל אהרן - 56"
+    },
+    {
+     "n": 57,
+     "sam_ch_number": 57,
+     "file": "/static/audio/readings/b4-p03-c057.mp3",
+     "duration": 54.93,
+     "src_start": 0,
+     "src_end": 54.93,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1703,
+     "verses": "ז:עב-ז:עז",
+     "verses_num": "7:72-7:77",
+     "verse_count": 6,
+     "incipit": "ביום עשתי עשר יום",
+     "name": "במדבר - דבר אל אהרן - 57"
+    },
+    {
+     "n": 58,
+     "sam_ch_number": 58,
+     "file": "/static/audio/readings/b4-p03-c058.mp3",
+     "duration": 53.92,
+     "src_start": 0,
+     "src_end": 53.92,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1704,
+     "verses": "ז:עח-ז:פג",
+     "verses_num": "7:78-7:83",
+     "verse_count": 6,
+     "incipit": "ביום שנים עשר יום",
+     "name": "במדבר - דבר אל אהרן - 58"
+    },
+    {
+     "n": 59,
+     "sam_ch_number": 59,
+     "file": "/static/audio/readings/b4-p03-c059.mp3",
+     "duration": 54.4,
+     "src_start": 0,
+     "src_end": 54.4,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1705,
+     "verses": "ז:פד-ז:פט",
+     "verses_num": "7:84-7:89",
+     "verse_count": 6,
+     "incipit": "זאת חנכת המזבח: ביום",
+     "name": "במדבר - דבר אל אהרן - 59"
+    },
+    {
+     "n": 60,
+     "sam_ch_number": 60,
+     "file": "/static/audio/readings/b4-p03-c060.mp3",
+     "duration": 91.95,
+     "src_start": 0,
+     "src_end": 91.95,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1706,
+     "verses": "ח:א-ח:ד",
+     "verses_num": "8:1-8:4",
+     "verse_count": 4,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 60"
+    },
+    {
+     "n": 61,
+     "sam_ch_number": 61,
+     "file": "/static/audio/readings/b4-p03-c061.mp3",
+     "duration": 44.45,
+     "src_start": 0,
+     "src_end": 44.45,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1707,
+     "verses": "ח:ה-ח:יז",
+     "verses_num": "8:5-8:17",
+     "verse_count": 13,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 61"
+    },
+    {
+     "n": 62,
+     "sam_ch_number": 62,
+     "file": "/static/audio/readings/b4-p03-c062.mp3",
+     "duration": 125.61,
+     "src_start": 0,
+     "src_end": 125.61,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1708,
+     "verses": "ח:יח-ח:כב",
+     "verses_num": "8:18-8:22",
+     "verse_count": 5,
+     "incipit": "ואקח את הלוים תחת",
+     "name": "במדבר - דבר אל אהרן - 62"
+    },
+    {
+     "n": 63,
+     "sam_ch_number": 63,
+     "file": "/static/audio/readings/b4-p03-c063.mp3",
+     "duration": 72.92,
+     "src_start": 0,
+     "src_end": 72.92,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1709,
+     "verses": "ח:כג-ח:כו",
+     "verses_num": "8:23-8:26",
+     "verse_count": 4,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 63"
+    },
+    {
+     "n": 64,
+     "sam_ch_number": 64,
+     "file": "/static/audio/readings/b4-p03-c064.mp3",
+     "duration": 33.67,
+     "src_start": 0,
+     "src_end": 33.67,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1710,
+     "verses": "ט:א-ט:ח",
+     "verses_num": "9:1-9:8",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 64"
+    },
+    {
+     "n": 65,
+     "sam_ch_number": 65,
+     "file": "/static/audio/readings/b4-p03-c065.mp3",
+     "duration": 89.23,
+     "src_start": 0,
+     "src_end": 89.23,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1711,
+     "verses": "ט:ט-ט:יד",
+     "verses_num": "9:9-9:14",
+     "verse_count": 6,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 65"
+    },
+    {
+     "n": 66,
+     "sam_ch_number": 66,
+     "file": "/static/audio/readings/b4-p03-c066.mp3",
+     "duration": 70.41,
+     "src_start": 0,
+     "src_end": 70.41,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1712,
+     "verses": "ט:טו-ט:כג",
+     "verses_num": "9:15-9:23",
+     "verse_count": 9,
+     "incipit": "וביום הוקם את המשכן:",
+     "name": "במדבר - דבר אל אהרן - 66"
+    },
+    {
+     "n": 67,
+     "sam_ch_number": 67,
+     "file": "/static/audio/readings/b4-p03-c067.mp3",
+     "duration": 98.98,
+     "src_start": 0,
+     "src_end": 98.98,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1713,
+     "verses": "י:א-י:י",
+     "verses_num": "10:1-10:10",
+     "verse_count": 10,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 67"
+    },
+    {
+     "n": 68,
+     "sam_ch_number": 68,
+     "file": "/static/audio/readings/b4-p03-c068.mp3",
+     "duration": 104.78,
+     "src_start": 0,
+     "src_end": 104.78,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2231,
+     "verses": "י:י-י:י",
+     "verses_num": "10:10-10:10",
+     "verse_count": 1,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 68"
+    },
+    {
+     "n": 69,
+     "sam_ch_number": 69,
+     "file": "/static/audio/readings/b4-p03-c069.mp3",
+     "duration": 45.11,
+     "src_start": 0,
+     "src_end": 45.11,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1714,
+     "verses": "י:יא-י:כח",
+     "verses_num": "10:11-10:28",
+     "verse_count": 18,
+     "incipit": "ויהי בשנה השנית: בחדש",
+     "name": "במדבר - דבר אל אהרן - 69"
+    },
+    {
+     "n": 70,
+     "sam_ch_number": 70,
+     "file": "/static/audio/readings/b4-p03-c070.mp3",
+     "duration": 125.22,
+     "src_start": 0,
+     "src_end": 125.22,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1715,
+     "verses": "י:כט-י:לו",
+     "verses_num": "10:29-10:36",
+     "verse_count": 8,
+     "incipit": "ויאמר משה לחובב בן",
+     "name": "במדבר - דבר אל אהרן - 70"
+    },
+    {
+     "n": 71,
+     "sam_ch_number": 71,
+     "file": "/static/audio/readings/b4-p03-c071.mp3",
+     "duration": 88.28,
+     "src_start": 0,
+     "src_end": 88.28,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1716,
+     "verses": "יא:א-יא:י",
+     "verses_num": "11:1-11:10",
+     "verse_count": 10,
+     "incipit": "ויהי העם כמתאננים רע",
+     "name": "במדבר - דבר אל אהרן - 71"
+    },
+    {
+     "n": 72,
+     "sam_ch_number": 72,
+     "file": "/static/audio/readings/b4-p03-c072.mp3",
+     "duration": 95.89,
+     "src_start": 0,
+     "src_end": 95.89,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1717,
+     "verses": "יא:יא-יא:טו",
+     "verses_num": "11:11-11:15",
+     "verse_count": 5,
+     "incipit": "ויאמר משה אל יהוה:",
+     "name": "במדבר - דבר אל אהרן - 72"
+    },
+    {
+     "n": 73,
+     "sam_ch_number": 73,
+     "file": "/static/audio/readings/b4-p03-c073.mp3",
+     "duration": 62.14,
+     "src_start": 0,
+     "src_end": 62.14,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1718,
+     "verses": "יא:טז-יא:כב",
+     "verses_num": "11:16-11:22",
+     "verse_count": 7,
+     "incipit": "ויאמר יהוה אל משה:",
+     "name": "במדבר - דבר אל אהרן - 73"
+    },
+    {
+     "n": 74,
+     "sam_ch_number": 74,
+     "file": "/static/audio/readings/b4-p03-c074.mp3",
+     "duration": 111.64,
+     "src_start": 0,
+     "src_end": 111.64,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1719,
+     "verses": "יא:כג-יא:כט",
+     "verses_num": "11:23-11:29",
+     "verse_count": 7,
+     "incipit": "ויאמר יהוה אל משה:",
+     "name": "במדבר - דבר אל אהרן - 74"
+    },
+    {
+     "n": 75,
+     "sam_ch_number": 75,
+     "file": "/static/audio/readings/b4-p03-c075.mp3",
+     "duration": 84.59,
+     "src_start": 0,
+     "src_end": 84.59,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1720,
+     "verses": "יא:ל-יא:לה",
+     "verses_num": "11:30-11:35",
+     "verse_count": 6,
+     "incipit": "ויאסף משה אל המחנה:",
+     "name": "במדבר - דבר אל אהרן - 75"
+    },
+    {
+     "n": 76,
+     "sam_ch_number": 76,
+     "file": "/static/audio/readings/b4-p03-c076.mp3",
+     "duration": 73.24,
+     "src_start": 0,
+     "src_end": 73.24,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1721,
+     "verses": "יב:א-יב:יג",
+     "verses_num": "12:1-12:13",
+     "verse_count": 13,
+     "incipit": "ותדבר מרים ואהרן במשה:",
+     "name": "במדבר - דבר אל אהרן - 76"
+    },
+    {
+     "n": 77,
+     "sam_ch_number": 77,
+     "file": "/static/audio/readings/b4-p03-c077.mp3",
+     "duration": 120.4,
+     "src_start": 0,
+     "src_end": 120.4,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1723,
+     "verses": "יב:יד-יב:טז",
+     "verses_num": "12:14-12:16",
+     "verse_count": 3,
+     "incipit": "ויאמר יהוה אל משה:",
+     "name": "במדבר - דבר אל אהרן - 77"
+    },
+    {
+     "n": 78,
+     "sam_ch_number": 78,
+     "file": "/static/audio/readings/b4-p03-c078.mp3",
+     "duration": 31.65,
+     "src_start": 0,
+     "src_end": 31.65,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 2232,
+     "verses": "יב:טז-יב:טז",
+     "verses_num": "12:16-12:16",
+     "verse_count": 1,
+     "incipit": "ויאמר משה לבני ישראל:",
+     "name": "במדבר - דבר אל אהרן - 78"
+    },
+    {
+     "n": 79,
+     "sam_ch_number": 79,
+     "file": "/static/audio/readings/b4-p03-c079.mp3",
+     "duration": 47.83,
+     "src_start": 0,
+     "src_end": 47.83,
+     "portion": {
+      "order": 3,
+      "id": 40,
+      "name": "דבר אל אהרן"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1724,
+     "verses": "יג:א-יג:יז",
+     "verses_num": "13:1-13:17",
+     "verse_count": 17,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - דבר אל אהרן - 79"
     }
    ],
    "playlist": "PLl-48IEqLtlv9CtBH3gbflWttJAP9LCna",
