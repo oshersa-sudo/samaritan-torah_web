@@ -282,9 +282,21 @@
      image -> controls -> credit instead of jumping back to the header. */
   .toolbar{
     flex:0 0 auto; display:flex; align-items:center; justify-content:center;
-    gap:10px; flex-wrap:wrap; padding:7px 14px;
+    gap:10px; flex-wrap:wrap; padding:7px 14px; position:relative;
     background:var(--surface); border-top:1px solid var(--rule); min-height:46px;
   }
+  .print-menu{
+    position:absolute; bottom:calc(100% + 6px); z-index:30;
+    display:flex; flex-direction:column; min-width:220px; padding:4px;
+    background:var(--surface); border:1px solid var(--rule-2); border-radius:4px;
+    box-shadow:0 4px 18px rgba(0,0,0,.18);
+  }
+  .print-menu button{
+    display:block; width:100%; text-align:start; padding:9px 12px; font-size:13px;
+    background:transparent; border:none; border-radius:3px; color:var(--ink);
+  }
+  .print-menu button:hover{background:var(--surface-2);}
+  .print-menu .pm-sub{display:block; font-size:11px; color:var(--ink-3); margin-top:1px;}
   .toolbar .group{background:var(--surface-2);}
   @media (max-width:560px){
     .toolbar{gap:6px; padding:6px 8px;}
@@ -871,7 +883,11 @@
     <button class="btn btn-icon" id="btnRotate" data-deg="0" title="סובב 90° — לקריאת הערות בשוליים" aria-label="סובב 90 מעלות" disabled><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 1-2.6-5.9" /><path d="M20 4.2V10h-5.6" /></svg></button>
     <span class="sep"></span>
     <button class="btn btn-icon stroke-ico" id="btnPreview" title="תצוגה מקדימה של העמוד" aria-label="תצוגה מקדימה" disabled><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.8 12S5.5 5.5 12 5.5 22.2 12 22.2 12 18.5 18.5 12 18.5 1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
-    <button class="btn btn-icon stroke-ico" id="btnPrint" title="הדפסת העמוד" aria-label="הדפסה" disabled><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 19H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></button>
+    <button class="btn btn-icon stroke-ico" id="btnPrint" title="הדפסה" aria-label="הדפסה" aria-haspopup="true" aria-expanded="false" disabled><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 19H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></button>
+    <div class="print-menu" id="printMenu" hidden>
+      <button type="button" id="pmPage">הדפסת עמוד זה</button>
+      <button type="button" id="pmAll">הדפסת כתב היד השלם<span class="pm-sub" id="pmAllSub"></span></button>
+    </div>
   </div>
 
   <button class="btn" id="btnIndex" aria-pressed="false" disabled>אינדקס</button>
@@ -1043,72 +1059,17 @@
 "use strict";
 
 /* ============================================================
-   1. SEED LIBRARY — every manifest below was fetched and
-      verified before shipping (August 2026).
+   1. SEED LIBRARY — retired 2026-08-23.
+      This hand-written list predates harvest.py/enrich.py: every
+      Rylands and Gallica manuscript it named is now in
+      local-library.json under the same manifest, and its three
+      "frame" placeholders were legacy prototype entries - two of
+      them (Leon Levy, IMJ) are Dead Sea Scrolls collections, not
+      Samaritan at all, and the third (MSU Chamberlain-Warren) is
+      already a proper entry in world-index.json. Kept as an empty
+      array so `library()` below needs no further changes.
    ============================================================ */
-function ryl(n, title, note, cv){
-  var id = "MS-SAMARITAN-" + ("0000" + n).slice(-5);
-  return { id:"ryl-sam-" + n, group:"samaritan", title:title,
-           inst:"ספריית ג׳ון ריילנדס, אוניברסיטת מנצ׳סטר",
-           shelf:"Samaritan MS " + n, note:note + " · " + cv + " עמודים",
-           manifest:"https://www.digitalcollections.manchester.ac.uk/iiif/" + id,
-           home:"https://www.digitalcollections.manchester.ac.uk/view/" + id + "/1" };
-}
-function gal(ark, title, shelfNote, note, cv){
-  return { id:"bnf-" + ark, group:"samaritan", title:title,
-           inst:"הספרייה הלאומית של צרפת", shelf:shelfNote,
-           note:note + " · " + cv + " עמודים",
-           manifest:"https://gallica.bnf.fr/iiif/ark:/12148/" + ark + "/manifest.json",
-           home:"https://gallica.bnf.fr/ark:/12148/" + ark };
-}
-
-var SEED = [
-  /* ---- Samaritan: John Rylands, Manchester (Gaster collection) ---- */
-  ryl(1,  "חומש שומרוני",                "כתב שומרוני", 620),
-  ryl(2,  "חומש שומרוני",                "כתב שומרוני", 460),
-  ryl(4,  "חומש שומרוני — קטע",          "קטע", 92),
-  ryl(6,  "מקרא שומרוני — בראשית",       "ספר בראשית", 82),
-  ryl(11, "דפתר (Daftar)",               "סידור התפילה השומרוני", 336),
-  ryl(14, "פיוטים שומרוניים",            "הימנונים ליטורגיים", 206),
-  ryl(8,  "ארבע מסות תיאולוגיות",        "כתיבה שומרונית עיונית", 72),
-
-  /* ---- Samaritan: Bibliothèque nationale de France ---- */
-  gal("btv1b10092455z", "חומש שומרוני", "Samaritain 4",
-      "כתב שומרוני", 346),
-  gal("btv1b100927966", "חומש שומרוני — עזה", "Samaritain 15",
-      "כתב שומרוני · ממוצא עזה", 259),
-  gal("btv1b525172626", "חומש שומרוני", "Samaritain 56",
-      "כתב שומרוני", 507),
-  gal("btv1b11004409t", "חומש שומרוני בערבית", "Arabe 5",
-      "כתב ערבי — תרגום לשימוש השומרונים, לא כתב שומרוני", 236),
-
-  /* ---- Sources that block programmatic access but permit embedding ----
-     These have no usable IIIF for us, yet their viewer pages send no
-     X-Frame-Options, so they can be shown in place inside a frame with our
-     credit bar underneath. Verified Aug 2026; a host may add a block at any
-     time, so the frame degrades to a link if it fails to load. ---- */
-  { id:"frame-msu-samaritan", group:"frame", mode:"frame",
-    title:"אוסף צ׳מברלין־וורן — 18 חומשים שומרוניים",
-    inst:"Michigan State University Libraries", shelf:"MSS 287",
-    note:"אין IIIF · נפתח מתוך אתר המקור",
-    home:"https://findingaids.lib.msu.edu/repositories/2/resources/1104",
-    frame:"https://findingaids.lib.msu.edu/repositories/2/resources/1104" },
-
-  { id:"frame-leon-levy", group:"frame", mode:"frame",
-    title:"מגילות ים המלח — ספריית ליאון לוי",
-    inst:"רשות העתיקות", shelf:"IAA",
-    note:"צילום רב־ספקטרלי · נפתח מתוך אתר המקור",
-    home:"https://www.deadseascrolls.org.il/explore-the-archive",
-    frame:"https://www.deadseascrolls.org.il/explore-the-archive" },
-
-  { id:"frame-imj-dss", group:"frame", mode:"frame",
-    title:"מגילות ים המלח הדיגיטליות — מוזיאון ישראל",
-    inst:"מוזיאון ישראל, ירושלים", shelf:"IMJ",
-    note:"נפתח מתוך אתר המקור",
-    home:"https://www.imj.org.il/en/wings/shrine-book/dead-sea-scrolls",
-    frame:"https://www.imj.org.il/en/wings/shrine-book/dead-sea-scrolls" }
-
-];
+var SEED = [];
 
 /* ============================================================
    2. STATE + PERSISTENCE
@@ -2875,7 +2836,111 @@ function printPage(){
     w.focus(); w.print();
   }
 }
-$("btnPrint").addEventListener("click", printPage);
+
+/* Whole-manuscript printing: every page laid out as its own print page, one
+   continuous document handed to the browser's native print dialog - that
+   dialog is where "both sides" / duplex lives, since it's a printer-driver
+   setting no web page can set on its own. We only need to avoid fighting it:
+   one <img> per printed page via break-after, nothing that forces blank
+   fillers. Resolution is capped well below "max": at normal paper size a
+   IIIF full-res scan is far more pixels than any printer will resolve, and
+   for a 500-page codex that difference is the whole memory budget. */
+function pageUrlAt(i, width){
+  var p = doc.pages[i];
+  if(!p) return "";
+  if(p.service) return p.service.replace(/\/$/, "") + "/full/" + width + ",/0/default.jpg";
+  return p.direct || "";
+}
+function docCreditLine(){
+  var E = enrichedFor();
+  var bits = [];
+  if(cur && cur.title) bits.push(cur.title);
+  if(cur && cur.shelf) bits.push(cur.shelf);
+  if(E && E.rights){
+    if(E.rights.credit_required) bits.push(E.rights.credit_required);
+    else if(E.rights.holder) bits.push(E.rights.holder);
+  } else if(cur && cur.inst){ bits.push(cur.inst); }
+  return bits.join("  ·  ");
+}
+function printWholeManuscript(){
+  if(!doc || !doc.pages.length) return;
+  var n = doc.pages.length;
+  if(n > 40){
+    var ok = confirm("כתב היד כולל " + n + " עמודים. הדפסתו עשויה לקחת זמן ולצרוך " +
+                      "כמות ניכרת של נייר ודיו. להמשיך?");
+    if(!ok) return;
+  }
+  var w = window.open("", "_blank");
+  if(!w){ alert("הדפדפן חסם את חלון ההדפסה. אפשר חלונות קופצים לאתר זה."); return; }
+  var rot = rotation ? " transform:rotate(" + rotation + "deg);" : "";
+  var credit = docCreditLine().replace(/</g, "&lt;");
+  var title = cur ? cur.title : "";
+
+  var pages = "";
+  for(var i = 0; i < n; i++){
+    pages += '<div class="pg"' + (i < n - 1 ? ' style="break-after:page;page-break-after:always;"' : '') + '>' +
+             '<img src="' + pageUrlAt(i, 1800) + '" alt="" data-i="' + i + '">' +
+             '<div class="pn">' + (i + 1) + " / " + n + '</div></div>';
+  }
+  w.document.write(
+    '<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>' + title.replace(/</g, "&lt;") +
+    '</title><style>' +
+    '@page{margin:10mm}' +
+    'body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;}' +
+    '.cover{padding:18mm 10mm;text-align:center;break-after:page;page-break-after:always;}' +
+    '.cover h1{font-size:18pt;margin:0 0 6mm;}' +
+    '.cover p{font-size:11pt;color:#444;margin:2mm 0;}' +
+    '.pg{position:relative;}' +
+    '.pg img{max-width:100%;max-height:92vh;display:block;margin:0 auto;' + rot + '}' +
+    '.pn{text-align:center;font-size:9pt;color:#666;margin-top:3mm;}' +
+    '#pmLoading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;' +
+    'background:#fff;font:14px system-ui,sans-serif;color:#333;z-index:9;}' +
+    '</style></head><body>' +
+    '<div id="pmLoading">טוען עמודים… 0 / ' + n + '</div>' +
+    '<div class="cover"><h1>' + title.replace(/</g, "&lt;") + '</h1><p>' + credit + '</p>' +
+    '<p>' + n + ' עמודים</p></div>' +
+    pages + '</body></html>');
+  w.document.close();
+
+  var imgs = Array.prototype.slice.call(w.document.images);
+  var loaded = 0;
+  var status = w.document.getElementById("pmLoading");
+  function settle(){
+    loaded++;
+    if(status) status.textContent = "טוען עמודים… " + loaded + " / " + n;
+    if(loaded >= imgs.length){
+      if(status) status.remove();
+      w.focus();
+      w.print();
+    }
+  }
+  if(!imgs.length){ w.focus(); w.print(); return; }
+  imgs.forEach(function(img){
+    if(img.complete) settle();
+    else { img.onload = settle; img.onerror = settle; }
+  });
+}
+
+function closePrintMenu(){
+  $("printMenu").hidden = true;
+  $("btnPrint").setAttribute("aria-expanded", "false");
+}
+$("btnPrint").addEventListener("click", function(e){
+  if(!doc) return;
+  e.stopPropagation();
+  var open = !$("printMenu").hidden;
+  if(open){ closePrintMenu(); return; }
+  $("pmAllSub").textContent = doc.pages.length + " עמודים";
+  $("printMenu").hidden = false;
+  $("btnPrint").setAttribute("aria-expanded", "true");
+});
+document.addEventListener("click", function(e){
+  if(!$("printMenu").hidden && !e.target.closest("#printMenu") && e.target !== $("btnPrint")){
+    closePrintMenu();
+  }
+});
+$("pmPage").addEventListener("click", function(){ closePrintMenu(); printPage(); });
+$("pmAll").addEventListener("click", function(){ closePrintMenu(); printWholeManuscript(); });
 $("btnPvPrint").addEventListener("click", printPage);
 $("pageIn").addEventListener("change", function(){
   var n = parseInt(this.value, 10);
