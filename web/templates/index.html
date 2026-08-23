@@ -86,7 +86,7 @@
   </header>
 
   <!-- breadcrumb (with the bookmark sign pinned to its left corner) -->
-  <nav id="crumbs"><span class="bm-navs"><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button><button id="printBtn" class="bm-nav print-nav hidden" data-i18n-title="print_ch" title="הדפסת פרק" aria-label="הדפסת פרק">🖨️</button><button id="pronBtn" class="bm-nav pron-nav hidden" data-i18n-title="show_pron" title="הצג הגייה (תצוגה מקדימה)" aria-label="הצג הגייה">אָ</button></span></nav>
+  <nav id="crumbs"><span class="bm-navs"><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button><button id="navPin" class="bm-nav pin-nav" type="button" data-i18n-title="nav_pin" title="קיבוע שורת הנתיב וחלון ההשמעה" aria-label="קיבוע שורת הנתיב" aria-pressed="false">📌</button><button id="printBtn" class="bm-nav print-nav hidden" data-i18n-title="print_ch" title="הדפסת פרק" aria-label="הדפסת פרק">🖨️</button><button id="pronBtn" class="bm-nav pron-nav hidden" data-i18n-title="show_pron" title="הצג הגייה (תצוגה מקדימה)" aria-label="הצג הגייה">אָ</button></span></nav>
 
   <!-- main scrolling content -->
   <main id="content"></main>
@@ -114,9 +114,6 @@
     <button id="plusBtn" class="round" aria-label="הגדל טקסט" title="הגדל טקסט"><svg class="zoomi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.8" y2="15.8"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"/></svg></button>
     </div>
     <button id="prevBtn" class="nav-arrow" data-i18n="prev_portion">פרשה קודמת ›</button>
-    <!-- the pin: pressed, the bar (and the play strip with it) stays put; released,
-         both keep out of the way of the text and come back at a touch -->
-    <button id="navPin" class="nav-pin" type="button" data-i18n-title="nav_pin" title="קיבוע הסרגל" aria-label="קיבוע הסרגל" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6l-1 6 4 3v2H6v-2l4-3z"/><line x1="12" y1="15" x2="12" y2="21"/></svg></button>
   </div>
 
   <!-- bottom toolbar -->

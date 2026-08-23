@@ -632,28 +632,30 @@ body.nav-hidden #navbar{ opacity:0; pointer-events:none;
    the thing being avoided (runFlipGhost puts it back the moment the leaf lands) */
 body.nav-flip #navbar{ opacity:0; pointer-events:none; transition:none; }
 
-/* the pin, at the end of the row: an outline while the bar is free to go, filled
-   while it is held. It is a control of the bar itself, so it is a shade quieter
-   than the controls the bar exists to carry. */
-.nav-pin{ flex:0 0 auto; width:38px; height:38px; margin-inline-start:2px; padding:0; border:0;
-          border-radius:999px; background:transparent; color:#8b8271; cursor:pointer;
-          display:inline-flex; align-items:center; justify-content:center;
-          transition:background .15s, color .15s; }
-.nav-pin svg{ width:19px; height:19px; }
-.nav-pin.on{ background:#2b2519; color:#f4f1e8; }
-@media (hover:hover){ .nav-pin:hover{ background:#efe9da; color:#2b2519; }
-                      .nav-pin.on:hover{ background:#3d3524; color:#f4f1e8; } }
+/* ── the pin ─────────────────────────────────────────────────────────────────
+   It stands among the chapter's own signs, beside the bookmark, because what it
+   holds is that row: the path line at the top of the chapter, and the play
+   window. Pressed, those two stay put while the reader reads; released, they
+   keep out of the way and come back at a touch, the same touch that calls back
+   the nav bar. It is faint while it is holding nothing and lit while it holds. */
+.pin-nav{ opacity:.42; transition:opacity .15s, filter .15s; }
+.pin-nav.on{ opacity:1; filter:drop-shadow(0 0 5px rgba(224,181,60,.9)); }
+@media (hover:hover){ .pin-nav:hover{ opacity:.8; } .pin-nav.on:hover{ opacity:1; } }
 
-/* The play strip goes with the bar: released, it draws itself away with the nav
-   bar and comes back on the same touch; pinned, it simply stays. It sits in the
-   column rather than over it, so it gives its band back to the text instead of
-   fading in place and leaving a blank stripe behind. */
-#audioBar{ overflow:hidden;
-           transition:max-height .28s ease, opacity .22s ease, padding .28s ease;
-           max-height:80px; }
-body.nav-hidden #audioBar{ max-height:0; opacity:0; padding-top:0; padding-bottom:0;
-                           border-top-width:0; }   /* the rule too, or a hairline stays */
-body.nav-flip #audioBar{ opacity:0; transition:none; }
+/* The path line and the play window answer to the pin. Both sit in the column
+   rather than over it, so they give their band back to the text instead of
+   fading in place and leaving a blank stripe behind. The nav bar is not among
+   them — it floats, and takes no room to give back. */
+#crumbs, #audioBar{ overflow:hidden;
+                    transition:max-height .28s ease, opacity .22s ease, padding .28s ease; }
+#crumbs{ max-height:120px; }
+#audioBar{ max-height:80px; }
+body.nav-hidden:not(.nav-pinned) #crumbs,
+body.nav-hidden:not(.nav-pinned) #audioBar{
+  max-height:0; min-height:0; opacity:0; padding-top:0; padding-bottom:0;
+  border-top-width:0; }              /* the rule too, or a hairline stays behind */
+body.nav-flip:not(.nav-pinned) #crumbs,
+body.nav-flip:not(.nav-pinned) #audioBar{ opacity:0; transition:none; }
 /* transparent arrows: just a glyph while paging chapters; a parasha/book label
    appears inside only at a crossing (set in JS) */
 /* ── the nav arrows ──────────────────────────────────────────────────────────
