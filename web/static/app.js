@@ -1662,6 +1662,10 @@ function startPoemFire(){
       return;
     }
     raf = requestAnimationFrame(step);
+    // something is over the poem (a library unit, the app in the background):
+    // keep the loop alive but do no work, so the page comes back mid-burn rather
+    // than freshly lit — see watchPoemCover
+    if(_poemCovered) return;
     if((tick++ & 1) || document.hidden) return;        // some thirty times a second
     const t = frame++ / 30;
     if(holeWait > 0) holeWait--;
@@ -1860,6 +1864,54 @@ function startPoemFire(){
 //
 // Both lettered layers turn on the same tick — the charred letters that are
 // read and the ember filling them — or the two would part company mid-turn.
+// ── the fire stops when nobody is looking ────────────────────────────────────
+// The bookshelf stays where it is when a library unit opens over it — the
+// recordings archive, the manuscripts, the timeline — and the burning page went
+// on burning behind them, simulating a flame nobody could see and spending a
+// telephone's battery on it.
+//
+// What decides is not a list of every unit that can open (a list is a thing to
+// forget to add to) but the page itself: ask what is actually drawn at the
+// poem's own centre, and if the answer is not the poem, something is over it.
+// That catches every overlay there is and every one anyone adds later. The
+// hidden document — the app in the background, the screen off — counts too.
+//
+// The burn is not re-laid on the way back: the loop simply stops doing its work
+// and starts again, so the page comes back with the same holes it had.
+let _poemCovered = false, _poemWatch = null;
+function poemHidden(){
+  if(document.hidden) return true;
+  const frame = document.querySelector('.ornframe');
+  if(!frame) return true;
+  const r = frame.getBoundingClientRect();
+  if(!r.width || !r.height) return true;
+  if(r.bottom < 0 || r.top > innerHeight) return true;          // scrolled clean away
+  // What is asked is not "can the poem's own pixels be reached" — on a telephone
+  // the poem legitimately runs on beneath the toolbar, and probing it there would
+  // put the fire out while the reader is looking straight at the shelf. What is
+  // asked is whether something has been laid OVER THE APP: the units all open
+  // full-screen, above everything, so if the middle of the window no longer
+  // belongs to #app, the shelf is behind a unit and nobody can see it burn.
+  const app = $('app'); if(!app) return true;
+  const pts = [[innerWidth / 2, innerHeight * 0.18],
+               [innerWidth / 2, innerHeight * 0.5],
+               [innerWidth * 0.25, innerHeight * 0.5]];
+  for(const [x, y] of pts){
+    const el = document.elementFromPoint(Math.round(x), Math.round(y));
+    if(el && (el === app || app.contains(el))) return false;
+  }
+  return true;
+}
+function watchPoemCover(){
+  clearInterval(_poemWatch);
+  _poemWatch = setInterval(() => {
+    if(!document.querySelector('.ornframe')){ clearInterval(_poemWatch); _poemWatch = null; return; }
+    const cov = poemHidden();
+    if(cov === _poemCovered) return;
+    _poemCovered = cov;
+    document.body.classList.toggle('poem-off', cov);   // stops the CSS flame and sparks too
+  }, 500);
+}
 const FACE_TURN = 3200;                    // how long one hand is held, in ms
 let _faceStop = null;
 // The Samaritan hand is the wider one — about two and a half times the square
@@ -1901,6 +1953,7 @@ function startPoemFaces(){
   const id = setInterval(() => {
     // the poem may go while the fire is still counting; it takes itself off
     if(!document.body.contains(stack)){ clearInterval(id); _faceStop = null; return; }
+    if(_poemCovered) return;              // nothing to see; hold the hand it is on
     sam = !sam;
     for(const g of grids) g.classList.toggle('samface', sam);
   }, FACE_TURN);
@@ -1958,6 +2011,7 @@ function bookPoem(){
   // and once it is lettered and alight, the hands begin to turn. Kept apart from
   // fitBookPoem: a resize re-lays the flame, but must not restart the turning.
   setTimeout(startPoemFaces, 0);
+  setTimeout(watchPoemCover, 0);
   return wrap;
 }
 // It may never break a line and never be cut off, at any width: measure the poem
@@ -3830,6 +3884,8 @@ const NAV_HIDE_MS = 3000;
 function syncNavPin(){
   const b = $('navPin'); if(!b) return;
   b.classList.toggle('on', navPinned);
+  // the sign itself says which way it is: a pin lying ready, or one pressed home
+  b.textContent = navPinned ? '📍' : '📌';
   b.setAttribute('aria-pressed', navPinned ? 'true' : 'false');
   document.body.classList.toggle('nav-pinned', navPinned);
 }
@@ -3853,9 +3909,34 @@ function armNavHide(){
   // not fade out from under the second tap. While it is hidden it takes no
   // pointer events at all, so a touch where it lies reaches the text beneath —
   // which is what wakes it.
-  const wake = () => navShow();
-  for(const ev of ['pointerdown','touchstart','wheel','keydown','scroll'])
-    document.addEventListener(ev, wake, {passive:true, capture:true});
+  // Only what a HAND does calls the bar back, and only when that hand was ASKING
+  // for it. A finger put down and dragged is a reader scrolling the page, and
+  // they want the text, not the furniture — so nothing appears while the finger
+  // is down, and what decides is where it lands when it lifts: a tap brings the
+  // bar back, a drag does not.
+  //
+  // ('scroll' used to be in this list, and it was why the play window never went
+  // away during a reading: a chapter read aloud scrolls each verse into view as
+  // it is spoken, and every one of those woke the bar faster than it could fade.
+  // It was redundant too — a scroll a reader really makes starts with a touch or
+  // a wheel, and both are still here.)
+  const TAP_SLOP = 10;                       // px of travel still counted as a tap
+  let downX = 0, downY = 0, dragging = false;
+  document.addEventListener('pointerdown', e => {
+    downX = e.clientX; downY = e.clientY; dragging = false;
+  }, {passive:true, capture:true});
+  document.addEventListener('pointermove', e => {
+    if(!dragging && (Math.abs(e.clientX - downX) > TAP_SLOP
+                  || Math.abs(e.clientY - downY) > TAP_SLOP)) dragging = true;
+  }, {passive:true, capture:true});
+  document.addEventListener('pointerup', e => {
+    const moved = Math.abs(e.clientX - downX) > TAP_SLOP
+               || Math.abs(e.clientY - downY) > TAP_SLOP;
+    if(!dragging && !moved) navShow();        // a tap, and the finger is off
+  }, {passive:true, capture:true});
+  document.addEventListener('pointercancel', () => { dragging = false; }, {passive:true, capture:true});
+  for(const ev of ['wheel','keydown'])
+    document.addEventListener(ev, () => navShow(), {passive:true, capture:true});
   window.addEventListener('resize', placeNavbar);
   const pin = $('navPin');
   if(pin) pin.onclick = () => {

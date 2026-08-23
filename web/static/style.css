@@ -324,6 +324,11 @@ body.div-collapsed .div-handle{ height:26px; }
   70%{ opacity:.5; }
   100%{ opacity:0; transform:translate(-6px,-38px) scale(.2); } }
 .fire-defs{ position:absolute; width:0; height:0; overflow:hidden; }
+/* Covered by a library unit, or the app put in the background: the flame and the
+   sparks are CSS animations and would go on running behind whatever is over
+   them, so they stop too (the simulated fire stops in its own loop — see
+   watchPoemCover). The page keeps its burn and takes it up again on the way back. */
+body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
 /* a reader who asks for stillness gets the burn without the burning */
 @media (prefers-reduced-motion:reduce){
   .pfire, .psparks i{ animation:none; }
@@ -638,6 +643,10 @@ body.nav-flip #navbar{ opacity:0; pointer-events:none; transition:none; }
    the list scrolls clear of it. (The text screens need none: the bar goes by
    itself the moment the reader settles.) */
 body.nav-reserve #content{ padding-bottom:var(--nav-space, 78px); }
+/* "פריסת פרקים" is not inside #content — it is a sibling of it, pinned below the
+   list — so the padding above never reached it and the floating bar sat right on
+   top of it. It needs the clearance in its own right. */
+body.nav-reserve #spreadBtn{ margin-bottom:var(--nav-space, 78px); }
 
 /* ── the cradle ──────────────────────────────────────────────────────────────
    Where the toolbar is open beneath it, the bar does not hover over the toolbar
@@ -669,9 +678,13 @@ body.nav-hidden #toolbar::before, body.nav-flip #toolbar::before{ opacity:0; }
    window. Pressed, those two stay put while the reader reads; released, they
    keep out of the way and come back at a touch, the same touch that calls back
    the nav bar. It is faint while it is holding nothing and lit while it holds. */
-.pin-nav{ opacity:.42; transition:opacity .15s, filter .15s; }
+.pin-nav{ opacity:.45; transition:opacity .15s, filter .15s; }
 .pin-nav.on{ opacity:1; filter:drop-shadow(0 0 5px rgba(224,181,60,.9)); }
 @media (hover:hover){ .pin-nav:hover{ opacity:.8; } .pin-nav.on:hover{ opacity:1; } }
+/* the pin and the bookmark are set smaller than the printer and the
+   pronunciation sign beside them: those two are actions on the chapter, while
+   these two only mark a state, and read better as the quieter pair */
+#navPin, #bmAddBtn{ font-size:17px; padding:0 3px; }
 
 /* The path line and the play window answer to the pin. Both sit in the column
    rather than over it, so they give their band back to the text instead of
