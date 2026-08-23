@@ -3786,11 +3786,34 @@ function navState(mode){
 // be told where the bottom is. The toolbar's height is the only moving part —
 // it folds and unfolds — so the bar is placed from the toolbar's own measured
 // box rather than from a number written down somewhere and left to rot.
+// It also publishes its own measurements, which two other things need and
+// neither can work out for itself: the room to leave at the foot of a browse
+// list so the bar covers nothing (--nav-space), and the width of the cradle the
+// toolbar scoops out for it (--nav-w), which follows the bar as it grows a label.
 function placeNavbar(){
-  const tb = $('toolbar');
-  const h = tb && !tb.classList.contains('hidden') ? tb.getBoundingClientRect().height : 0;
-  document.documentElement.style.setProperty('--nav-bottom', Math.round(h + 10) + 'px');
+  const app = $('app'), tb = $('toolbar'), nb = $('navbar');
+  if(!app || !nb) return;
+  const a = app.getBoundingClientRect();
+  // Measure to the toolbar's TOP EDGE, not from its height: the toolbar is not
+  // flush with the foot of the app (there is room below it), so height alone put
+  // the bar tens of pixels out and buried it in the toolbar.
+  const tr = tb && !tb.classList.contains('hidden') ? tb.getBoundingClientRect() : null;
+  const open = !!(tr && tr.height > 0) && !tb.classList.contains('folded');
+  const edge = tr && tr.height > 0 ? Math.round(a.bottom - tr.top) : 10;
+  const r = nb.getBoundingClientRect();
+  const nh = r.height || 57;
+  // Toolbar open: the bar settles INTO its top edge, its foot a little below the
+  // line, with the bay drawn behind it. Folded or gone: nothing to settle into,
+  // so it stands clear above whatever is there.
+  const dip = open ? Math.round(nh * NAV_DIP) : 0;
+  const st = document.documentElement.style;
+  st.setProperty('--nav-bottom', Math.max(8, edge - dip + (open ? 0 : 10)) + 'px');
+  st.setProperty('--nav-dip', (dip + 8) + 'px');
+  st.setProperty('--nav-space', Math.round(nh + 20) + 'px');
+  if(r.width) st.setProperty('--nav-w', Math.round(r.width) + 'px');
+  document.body.classList.toggle('nav-docked', open);
 }
+const NAV_DIP = 0.34;      // how deep the bar sits in the toolbar's edge
 // And it goes away. A few seconds after the reader settles on a text screen the
 // bar fades out; the next touch anywhere on the app brings it back and starts
 // the count again. Only on the text screens: on the browse screens the bar is
@@ -4306,6 +4329,16 @@ function setView(){
   $('navbar').classList.remove('hidden');
   ['nextBtn','prevBtn','minusBtn','plusBtn'].forEach(id=>$(id).classList.toggle('hidden', browse));
   $('navbar').classList.toggle('nav-backonly', browse);
+  // The bar floats, so it no longer takes a band of the screen — and on the
+  // browse screens, where it never fades, it would sit on top of the last row of
+  // books, parashot or chapters and hide it. There it is given its footprint back
+  // as room at the foot of the list (--nav-space, measured in placeNavbar), so the
+  // list can be scrolled clear of it. On the text screens it steps aside by itself
+  // and the text needs no such allowance.
+  // every screen but the text one: `browse` is too narrow here — the chapter
+  // lists of a parasha carry the full bar and, like the book and parasha lists,
+  // never fade it, so their last row needs the same clearance.
+  document.body.classList.toggle('nav-reserve', !isVerse);
   $('spreadBtn').classList.toggle('hidden', !(S.view==='portions'));
   $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
   { const pb=$('playBtn'); if(pb) pb.classList.toggle('hidden', !isVerse); }   // (removed from UI)
@@ -4315,6 +4348,9 @@ function setView(){
   syncToolbar(isVerse);
   updateToolbarFold(isVerse);
   updateZoomButtons();
+  // the toolbar has just changed shape (and with it the bar's seat and the room
+  // a browse list must leave); measure once now and once when it has settled
+  placeNavbar(); setTimeout(placeNavbar, 320);
 }
 
 // ── collapsible bottom toolbar (text / comparison screens) ─────────────────────

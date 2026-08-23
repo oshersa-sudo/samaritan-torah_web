@@ -632,6 +632,37 @@ body.nav-hidden #navbar{ opacity:0; pointer-events:none;
    the thing being avoided (runFlipGhost puts it back the moment the leaf lands) */
 body.nav-flip #navbar{ opacity:0; pointer-events:none; transition:none; }
 
+/* On the browse screens — books, parashot, the chapters of a parasha — the bar
+   never fades, so a floating bar would sit on the last row of the list and hide
+   it. There it is given its footprint back as room at the foot of the list, and
+   the list scrolls clear of it. (The text screens need none: the bar goes by
+   itself the moment the reader settles.) */
+body.nav-reserve #content{ padding-bottom:var(--nav-space, 78px); }
+
+/* ── the cradle ──────────────────────────────────────────────────────────────
+   Where the toolbar is open beneath it, the bar does not hover over the toolbar
+   but settles INTO its top edge: the toolbar scoops a half-round bay out of
+   itself, exactly the bar's width, and the bar sits down in it. The bay is one
+   pseudo-element in the page's own colour laid over the toolbar's ground — the
+   toolbar's top strip is its drag handle, so the scoop takes no button with it.
+   Fold the toolbar away and there is nothing to settle into: the bay goes, and
+   the bar stands clear again (placeNavbar drops the dip to zero at the same
+   moment, so the two move together). */
+#toolbar{ position:relative; }
+#toolbar::before{ content:''; position:absolute; z-index:0; pointer-events:none;
+  left:50%; transform:translateX(-50%);
+  top:0; height:var(--nav-dip, 27px);
+  width:calc(var(--nav-w, 240px) + 14px);
+  border-radius:0 0 999px 999px;
+  background:var(--cream);
+  box-shadow:0 3px 8px -4px rgba(43,37,25,.4) inset;
+  opacity:0; transition:opacity .2s ease; }
+body.nav-docked #toolbar::before{ opacity:1; }
+/* while the bar is away there is nothing to cradle */
+body.nav-hidden #toolbar::before, body.nav-flip #toolbar::before{ opacity:0; }
+/* the toolbar's own contents stay above the bay */
+#toolbar > *{ position:relative; z-index:1; }
+
 /* ── the pin ─────────────────────────────────────────────────────────────────
    It stands among the chapter's own signs, beside the bookmark, because what it
    holds is that row: the path line at the top of the chapter, and the play
