@@ -2348,6 +2348,19 @@ function mediaSay(r, idx) {
 addEventListener('message', e => {
   if (e.origin !== location.origin) return;
   const d = e.data;
+  /* One admin for the whole app. Signing in to the Torah opens admin here too,
+   * rather than asking for a second password at the door of every unit: the
+   * frame is same-origin, the message is checked to have come from this very
+   * origin, and what arrives is the session token the Torah itself was given.
+   * Every write still proves that token to the server — this opens the panel,
+   * it does not grant anything. */
+  if (d && d.torahAdmin !== undefined) {
+    ADMIN.token = d.torahAdmin || '';
+    if (ADMIN.token) sessionStorage.setItem('shira_admin', ADMIN.token);
+    else sessionStorage.removeItem('shira_admin');
+    try { showAdminUI(true); } catch (err) {}
+    return;
+  }
   if (!d || !d.shiraAct) return;
   switch (d.shiraAct) {
     case 'play':          au.play().catch(() => {}); syncBtn(); break;

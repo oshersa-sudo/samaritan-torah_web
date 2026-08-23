@@ -5798,6 +5798,8 @@ $('tlToTorah').onclick = () => $('timelineModal').classList.add('hidden');
 function openShira(){
   const f = $('shFrame');
   if(!f.src) f.src = '/shira/';
+  f.addEventListener('load', tellUnitsAdmin, {once:true});
+  setTimeout(tellUnitsAdmin, 400);          // already loaded: tell it again anyway
   $('shiraModal').classList.remove('hidden');
   trackNav(t('m_shira'));
 }
@@ -7712,6 +7714,25 @@ document.querySelectorAll('#langModal .lang-opt, #langModal .close').forEach(b=>
 
 // ── admin editing (login + floating-pencil edit; gated entirely server-side) ──
 const ADMIN = { token:null, webauthn:false, reset:false };
+
+// ── one admin for the whole app ──────────────────────────────────────────────
+// The library units that live inside this app — the recordings archive and the
+// manuscript treasury — used to ask for a password of their own at the door.
+// Signing in here now opens them too: each frame is told, on the same origin,
+// what session this app holds. It is told again whenever that changes, and
+// again when a frame is opened, since a frame loaded later has heard nothing.
+//
+// This reveals a unit's own panel; it grants nothing. Every write still proves
+// the token to the server, which is where the decision actually belongs.
+function tellUnitsAdmin(){
+  for(const id of ['shFrame','mssFrame']){
+    const f = $(id);
+    if(f && f.contentWindow)
+      try{ f.contentWindow.postMessage({torahAdmin: ADMIN.token || ''}, location.origin); }
+      catch(e){}
+  }
+}
+
 // reveal "כניסת מנהל" only where admin is enabled (the local server has a password)
 loadSamCalendar();          // the date under the title, and the portion of the week
 
@@ -7724,7 +7745,7 @@ function waSupported(){
 }
 function openAdminLogin(){
   if(ADMIN.token){ ADMIN.token=null; $('adminMenuItem').textContent=t('m_admin');
-                   adminBadge(false); paintVerses(); return; }   // logout
+                   adminBadge(false); tellUnitsAdmin(); paintVerses(); return; }   // logout
   $('admErr').textContent=''; $('admUser').value=''; $('admPass').value='';
   $('admWebauthnBtn').classList.toggle('hidden', !(ADMIN.webauthn && waSupported()));
   // the way back in is only offered where the server actually has an address
@@ -7800,6 +7821,7 @@ $('admCancel').onclick=()=>{ $('adminModal').classList.add('hidden'); admPassRes
         ADMIN.token = r.token;
         close();
         adminBadge(true);
+        tellUnitsAdmin();
         $('adminMenuItem').textContent = t('m_admin_out');
         showInfo(t('adm_reset_title'), '<div class="note">' + esc(t('adm_reset_done')) + '</div>');
       } else err(t(r.error === 'too_short' ? 'adm_reset_short'
@@ -7849,6 +7871,7 @@ $('adminBadge').onclick = async () => {
   S.splitMode = S.vsplitMode = S.renumMode = false; S.vmergeMode = null;
   $('adminMenuItem').textContent = t('m_admin');
   adminBadge(false);
+  tellUnitsAdmin();
   paintVerses();
   showInfo(t('m_admin'), `<div class="note">${esc(t('admin_off'))}</div>`);
 };
@@ -7856,6 +7879,7 @@ function adminLoggedIn(token){
   ADMIN.token=token; $('adminModal').classList.add('hidden');
   $('adminMenuItem').textContent='✓ '+t('m_admin');
   adminBadge(true);
+  tellUnitsAdmin();
   APK_INFO = null;                     // re-ask, so the download tally comes with it
   let extra = '';
   if(!ADMIN.webauthn && waSupported())

@@ -1462,6 +1462,18 @@ var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ||
 var adminMode = isLocal && (/[?&]admin=1/.test(location.search) ||
                             localStorage.getItem("mssAdmin") === "1");
 if(/[?&]admin=1/.test(location.search) && isLocal) localStorage.setItem("mssAdmin", "1");
+/* One admin for the whole app: signing in to the Torah opens the panel here too.
+   The frame is same-origin and the message is checked to have come from this very
+   origin. Nothing here writes to the server — the unit is read-only online — so
+   this only reveals the unit's own controls. */
+addEventListener("message", function(e){
+  if(e.origin !== location.origin) return;
+  var d = e.data;
+  if(!d || d.torahAdmin === undefined) return;
+  adminMode = !!d.torahAdmin;
+  var ab = document.getElementById("adminBox"); if(ab) ab.hidden = !adminMode;
+  try { render(); } catch(err) {}
+});
 
 var groupFilter = "samaritan";
 

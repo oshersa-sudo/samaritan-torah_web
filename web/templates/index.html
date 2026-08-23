@@ -969,6 +969,11 @@
     var w = document.getElementById('mssFrameWrap');
     var f = document.getElementById('mssFrame');
     if(!f.src) f.src = '/manuscripts/';
+    // tell it what session this app holds, once it is there to hear it
+    if (typeof tellUnitsAdmin === 'function') {
+      f.addEventListener('load', tellUnitsAdmin, {once:true});
+      setTimeout(tellUnitsAdmin, 400);
+    }
     w.style.display = 'block';
     document.body.style.overflow = 'hidden';
     if (typeof closeMenu === 'function') closeMenu();   // the app's own drawer
