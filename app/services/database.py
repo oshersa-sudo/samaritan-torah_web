@@ -43,6 +43,46 @@ def _seed_db():
 _seed_db()
 
 
+# ── corrections to portion names ─────────────────────────────────────────────
+# A parasha is named for the words its first verse opens with, and two of them
+# were named for the wrong words. They are corrected here, in place, rather than
+# by shipping a new database: online the DB lives on the persistent disk and
+# carries the maintainer's own edits, so replacing the file would throw those
+# away. This runs at boot, matches on the exact wrong value, and is therefore
+# safe to run again and again — once corrected it matches nothing and does
+# nothing.
+#
+#   Genesis, opens at 8:21 'ויאמר יהוה אל לבו'      — was 'אל ליבו'
+#   Deuteronomy, opens at 30:1 'והיה כי יבאו עליך'  — was 'והיה כי יביאך'
+#
+# Both were checked against the verse each portion begins at, which is the only
+# authority that settles it; the spreadsheet of portion names disagrees with the
+# text on both, and the text wins.
+_NAME_FIXES = [
+    (1, 'samaritan', 'אל ליבו', 'אל לבו'),
+    (5, 'samaritan', 'והיה כי יביאך', 'והיה כי יבאו'),
+]
+
+
+def _fix_portion_names():
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        n = 0
+        for book_id, mode, wrong, right in _NAME_FIXES:
+            cur = conn.execute(
+                'UPDATE portions SET name=? WHERE book_id=? AND mode=? AND name=?',
+                (right, book_id, mode, wrong))
+            n += cur.rowcount
+        if n:
+            conn.commit()
+        conn.close()
+    except Exception:
+        pass        # a correction is never worth failing a boot over
+
+
+_fix_portion_names()
+
+
 def _apply_startup_migrations():
     """Small, idempotent, surgical corrections applied to whatever DB is already on
     disk (bundled OR the live persistent-disk copy) — NOT a reseed: this never
