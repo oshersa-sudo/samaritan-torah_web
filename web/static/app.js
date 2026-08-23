@@ -5061,6 +5061,7 @@ const BOOK_GAP_MM  = 9;        // the rule between the halves, with a clear line
 // an absence reads better than a box.
 const BOOK_CHAR_FIX = [
   [/[—–‑→]/g, '-'],          // em/en dash, non-breaking hyphen, arrow
+  [/׃/g, ':'],               // sof pasuq → a plain colon (see BOOK_TORAH_FIX)
   [/\s*\n\s*/g, ' '],
   [/ī/g, 'i'], [/ṭ/g, 't'], [/ḥ/g, 'h'], [/ṣ/g, 's'],
   [/[؀-ۿ]+\s?/g, ''],                  // stray Arabic words — no glyphs at all
@@ -5077,6 +5078,12 @@ function bookProse(txt){
 // format is that there is no editor's voice on it. What was inside them stays;
 // only the marks go, and the spaces they leave behind close up.
 const BOOK_BRACKETS = /[()\[\]{}<>‹›«»〈-】（）]/g;
+// The verse-pause mark is written two ways in the text — the plain colon and
+// the sof pasuq ׃ , which is a different character that merely looks like one.
+// Both are wanted as two ordinary dots, set in an ordinary face, so they are
+// made the same character here; bookGlyphs then keeps them out of the Samaritan
+// face, where the colon has no width at all and prints on top of its neighbour.
+function bookMarks(s){ return (s || '').replace(/׃/g, ':'); }
 function bookNoBrackets(s){
   return (s || '').replace(BOOK_BRACKETS, ' ')
                   .replace(/\s+([,.;:!?])/g, '$1')   // a space the bracket left before a mark
@@ -5206,7 +5213,7 @@ async function buildBookDoc(area){
   const torah = [], torahVerse = [];
   for(const g of groups){
     for(const v of (g.verses || [])){
-      const txt = bookNoBrackets((v.text || '').trim());
+      const txt = bookNoBrackets(bookMarks((v.text || '').trim()));
       if(!txt) continue;
       for(const tok of bookWords(txt)){ torah.push(tok); torahVerse.push(v.id); }
     }
