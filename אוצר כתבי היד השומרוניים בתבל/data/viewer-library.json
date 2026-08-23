@@ -55,17 +55,6 @@
   "home": ""
  },
  {
-  "id": "f838d36bb486",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Arabe 3",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Arabe 3",
-  "note": "1685 · 484 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b11004916s/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b11004916s"
- },
- {
   "id": "08557bfa16c8",
   "group": "samaritan",
   "confidence": "high",
@@ -108,17 +97,6 @@
   "note": "1 עמודים",
   "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b525105497/manifest.json",
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b525105497"
- },
- {
-  "id": "7ce39b8f7deb",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "Chronique d'Abū al-Fatḥ ibn Abū al-Ḥasan et Abrégé de la loi de Moïse par Abal-Farağ ibn Isḥāq ibn Kenar.",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 10",
-  "note": "1524 · 494 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10538492v/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10538492v"
  },
  {
   "id": "706139c91eda",
@@ -218,17 +196,6 @@
   "note": "117 עמודים",
   "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10087291g/manifest.json",
   "home": "https://gallica.bnf.fr/ark:/12148/btv1b10087291g"
- },
- {
-  "id": "e8ba0bdf7fba",
-  "group": "samaritan",
-  "confidence": "high",
-  "title": "BnF. Département des Manuscrits. Samaritain 2",
-  "inst": "Bibliothèque nationale de France",
-  "shelf": "Samaritain 2",
-  "note": "265 עמודים",
-  "manifest": "https://gallica.bnf.fr/iiif/ark:/12148/btv1b10091750h/manifest.json",
-  "home": "https://gallica.bnf.fr/ark:/12148/btv1b10091750h"
  },
  {
   "id": "d05759fb9ce8",

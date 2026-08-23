@@ -1059,72 +1059,17 @@
 "use strict";
 
 /* ============================================================
-   1. SEED LIBRARY — every manifest below was fetched and
-      verified before shipping (August 2026).
+   1. SEED LIBRARY — retired 2026-08-23.
+      This hand-written list predates harvest.py/enrich.py: every
+      Rylands and Gallica manuscript it named is now in
+      local-library.json under the same manifest, and its three
+      "frame" placeholders were legacy prototype entries - two of
+      them (Leon Levy, IMJ) are Dead Sea Scrolls collections, not
+      Samaritan at all, and the third (MSU Chamberlain-Warren) is
+      already a proper entry in world-index.json. Kept as an empty
+      array so `library()` below needs no further changes.
    ============================================================ */
-function ryl(n, title, note, cv){
-  var id = "MS-SAMARITAN-" + ("0000" + n).slice(-5);
-  return { id:"ryl-sam-" + n, group:"samaritan", title:title,
-           inst:"ספריית ג׳ון ריילנדס, אוניברסיטת מנצ׳סטר",
-           shelf:"Samaritan MS " + n, note:note + " · " + cv + " עמודים",
-           manifest:"https://www.digitalcollections.manchester.ac.uk/iiif/" + id,
-           home:"https://www.digitalcollections.manchester.ac.uk/view/" + id + "/1" };
-}
-function gal(ark, title, shelfNote, note, cv){
-  return { id:"bnf-" + ark, group:"samaritan", title:title,
-           inst:"הספרייה הלאומית של צרפת", shelf:shelfNote,
-           note:note + " · " + cv + " עמודים",
-           manifest:"https://gallica.bnf.fr/iiif/ark:/12148/" + ark + "/manifest.json",
-           home:"https://gallica.bnf.fr/ark:/12148/" + ark };
-}
-
-var SEED = [
-  /* ---- Samaritan: John Rylands, Manchester (Gaster collection) ---- */
-  ryl(1,  "חומש שומרוני",                "כתב שומרוני", 620),
-  ryl(2,  "חומש שומרוני",                "כתב שומרוני", 460),
-  ryl(4,  "חומש שומרוני — קטע",          "קטע", 92),
-  ryl(6,  "מקרא שומרוני — בראשית",       "ספר בראשית", 82),
-  ryl(11, "דפתר (Daftar)",               "סידור התפילה השומרוני", 336),
-  ryl(14, "פיוטים שומרוניים",            "הימנונים ליטורגיים", 206),
-  ryl(8,  "ארבע מסות תיאולוגיות",        "כתיבה שומרונית עיונית", 72),
-
-  /* ---- Samaritan: Bibliothèque nationale de France ---- */
-  gal("btv1b10092455z", "חומש שומרוני", "Samaritain 4",
-      "כתב שומרוני", 346),
-  gal("btv1b100927966", "חומש שומרוני — עזה", "Samaritain 15",
-      "כתב שומרוני · ממוצא עזה", 259),
-  gal("btv1b525172626", "חומש שומרוני", "Samaritain 56",
-      "כתב שומרוני", 507),
-  gal("btv1b11004409t", "חומש שומרוני בערבית", "Arabe 5",
-      "כתב ערבי — תרגום לשימוש השומרונים, לא כתב שומרוני", 236),
-
-  /* ---- Sources that block programmatic access but permit embedding ----
-     These have no usable IIIF for us, yet their viewer pages send no
-     X-Frame-Options, so they can be shown in place inside a frame with our
-     credit bar underneath. Verified Aug 2026; a host may add a block at any
-     time, so the frame degrades to a link if it fails to load. ---- */
-  { id:"frame-msu-samaritan", group:"frame", mode:"frame",
-    title:"אוסף צ׳מברלין־וורן — 18 חומשים שומרוניים",
-    inst:"Michigan State University Libraries", shelf:"MSS 287",
-    note:"אין IIIF · נפתח מתוך אתר המקור",
-    home:"https://findingaids.lib.msu.edu/repositories/2/resources/1104",
-    frame:"https://findingaids.lib.msu.edu/repositories/2/resources/1104" },
-
-  { id:"frame-leon-levy", group:"frame", mode:"frame",
-    title:"מגילות ים המלח — ספריית ליאון לוי",
-    inst:"רשות העתיקות", shelf:"IAA",
-    note:"צילום רב־ספקטרלי · נפתח מתוך אתר המקור",
-    home:"https://www.deadseascrolls.org.il/explore-the-archive",
-    frame:"https://www.deadseascrolls.org.il/explore-the-archive" },
-
-  { id:"frame-imj-dss", group:"frame", mode:"frame",
-    title:"מגילות ים המלח הדיגיטליות — מוזיאון ישראל",
-    inst:"מוזיאון ישראל, ירושלים", shelf:"IMJ",
-    note:"נפתח מתוך אתר המקור",
-    home:"https://www.imj.org.il/en/wings/shrine-book/dead-sea-scrolls",
-    frame:"https://www.imj.org.il/en/wings/shrine-book/dead-sea-scrolls" }
-
-];
+var SEED = [];
 
 /* ============================================================
    2. STATE + PERSISTENCE
