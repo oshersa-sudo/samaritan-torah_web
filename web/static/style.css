@@ -50,8 +50,11 @@ body{
   #app{ max-width:none; width:100%; box-shadow:none; }
 
   /* chrome spans the viewport; its contents stay on the wide measure */
+  /* #navbar is deliberately NOT in this list any more: it no longer spans the
+     chrome but floats over the page as a pill of its own, and stretching it to
+     the wide measure would blow it back out into a full-width band. */
   #hdr .brand-top, #hdr .title-row, #hdr .sam-date, #hdr .toggle-row,
-  #crumbs, #navbar, #toolbar .tb-rows, #toolbar .tb-handle, #hdr .div-handle{
+  #crumbs, #toolbar .tb-rows, #toolbar .tb-handle, #hdr .div-handle{
     max-width:var(--measure-wide); margin-inline:auto; width:100%; }
 
   #content{ padding:10px 16px; }
@@ -110,6 +113,20 @@ body{
 /* when the bottom toolbar folds, collapse the division-toggle bar upward too (more text) */
 body.div-collapsed .toggle-row{ max-height:0 !important; min-height:0 !important; opacity:0 !important;
                                 padding-top:0 !important; padding-bottom:0 !important; }
+/* ── folded all the way ──────────────────────────────────────────────────────
+   Folded, the header keeps ONE line — the app's name — and gives everything
+   else back to the text: 'אבני שהם' above it goes, the date goes, the division
+   buttons go, and the title row itself draws in. The handle stays exactly what
+   it was, so the blind is pulled back down the same way as before. */
+.brand-top{ overflow:hidden; transition:max-height .25s ease, opacity .2s ease, padding .25s ease;
+            max-height:40px; }
+body.div-collapsed .brand-top{ max-height:0; opacity:0; padding-top:0; padding-bottom:0; }
+.title-row, .title-row h1, .scroll-ico{ transition:padding .25s ease, font-size .25s ease,
+                                                   width .25s ease, height .25s ease; }
+body.div-collapsed .title-row{ padding:2px 10px 0; }
+body.div-collapsed .title-row h1{ font-size:16px; }
+body.div-collapsed .scroll-ico{ width:24px; height:24px; }
+body.div-collapsed .ver{ display:none; }
 .divbtn{ flex:1; padding:8px; border:0; border-radius:6px; background:#4d4d80; color:#fff;
          font-family:inherit; font-size:14px; cursor:pointer; }
 .divbtn.active{ background:var(--active); }
@@ -312,6 +329,30 @@ body.div-collapsed .div-handle{ height:26px; }
   .pfire, .psparks i{ animation:none; }
   .psparks, .pfirecv, .pscar, .pscraps{ display:none; }
 }
+/* ── the writing turns from one hand into the other ─────────────────────────
+   While the page burns, the same words are seen now in the square Hebrew face
+   and now in the Samaritan one, turn and turn about (startPoemFaces).
+   It is a change of FACE and nothing else: the same characters, in the same
+   cells, at the same font-size — so the page is neither re-measured nor
+   re-lit, and keeps its size and its burn right through the change. Both
+   lettered layers carry the class together — the charred letters that are read
+   and the ember within them — or the two would part company.
+
+   The Samaritan face is the wider hand by far — some two and a half times the
+   square Hebrew, word for word — so it is not simply put on: the two columns
+   are first frozen at the width the Hebrew gave them (the grid's own
+   grid-template-columns, pinned in px), and the Samaritan is then set at the
+   size that refills exactly that width (--samk, measured on the poem itself
+   rather than guessed — see measurePoemFace). Every line therefore begins and
+   ends where it began and ended, and the words spread across the same span,
+   because the cell justifies them either way. The line-height is divided back
+   out by the same factor, so a row keeps its height too and nothing below it
+   moves. The upshot: the block the fire was laid from does not move a pixel. */
+.bkpoem-grid.samface .bkpoem-cell{
+  font-family:'Samaritan','Hebrew',serif;
+  font-size:calc(1em * var(--samk,.5));
+  line-height:calc(1.45 / var(--samk,.5)); }
+
 /* nowrap keeps the half on one line; justifying the last line (which is also the
    only line) spreads its words across the whole column, so the colons line up */
 .bkpoem-cell{ text-align:justify; text-align-last:justify; }
@@ -388,9 +429,12 @@ body.div-collapsed .div-handle{ height:26px; }
 .samfull .cbody, .samfull .pbody{ text-align:justify; text-align-last:right;
                    overflow-wrap:break-word; word-break:break-word; line-height:1.75; }
 
-.numstrip{ display:flex; flex-wrap:wrap; gap:5px; padding:5px 2px; justify-content:flex-end; direction:ltr; }
-.numstrip .num{ min-width:36px; height:34px; border:0; border-radius:6px; background:#c2cbef;
-                color:var(--navy); font-family:inherit; font-size:14px; cursor:pointer; }
+/* the verse buttons are an index, not a keyboard: small enough to stay out of
+   the way of the chapter they belong to, still big enough to hit on a phone */
+.numstrip{ display:flex; flex-wrap:wrap; gap:3px; padding:4px 2px; justify-content:flex-end; direction:ltr; }
+.numstrip .num{ min-width:26px; height:25px; border:0; border-radius:5px; background:#c2cbef;
+                color:var(--navy); font-family:inherit; font-size:11.5px; cursor:pointer;
+                padding:0 4px; }
 .numstrip .num.active{ background:var(--accent); color:#fff; }
 .numstrip .clear{ background:#bf3930; color:#fff; padding:0 10px; font-weight:600; }
 
@@ -555,18 +599,66 @@ body.div-collapsed .div-handle{ height:26px; }
 /* spread + navbar */
 .wide-btn{ flex:0 0 auto; margin:2px 6px; padding:13px; border:0; border-radius:6px;
            background:var(--navy); color:#fff; font-family:inherit; font-size:16px; cursor:pointer; }
-#navbar{ flex:0 0 auto; display:flex; gap:6px; padding:4px 6px; align-items:center; }
+/* ── the nav bar floats ──────────────────────────────────────────────────────
+   It is lifted out of the column and hung over the page instead: one tight
+   group of controls, centred, riding above the text rather than taking a band
+   of the screen away from it. --nav-bottom is written by JS from the toolbar's
+   measured height, so the bar sits just clear of it whether it is folded or
+   open.
+
+   It also goes away. On a text screen the bar fades out a few seconds after
+   the reader settles, and any touch of the screen brings it back
+   (see armNavHide) — so nothing stands between the reader and the Torah until
+   the moment they reach for it. */
+#navbar{ position:absolute; z-index:5; left:50%; transform:translateX(-50%);
+         bottom:var(--nav-bottom, 62px);
+         display:flex; gap:2px; padding:5px; align-items:center; justify-content:center;
+         border-radius:999px; background:#fffdf7ee; border:1px solid #ded7c5;
+         box-shadow:0 8px 24px rgba(43,37,25,.22), 0 2px 6px rgba(43,37,25,.12);
+         backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+         max-width:calc(100% - 20px);
+         transition:opacity .28s ease, transform .28s ease;
+         /* a tap on any of these must leave no mark — not on the button, not on
+            the row: no text selection, no lingering focus ring, and (below) no
+            hover state on devices that only pretend to have one */
+         user-select:none; -webkit-user-select:none; }
+#navbar button:focus{ outline:none; }
+#navbar button:focus-visible{ outline:2px solid var(--active); outline-offset:2px; }  /* keyboard only */
+/* the bar is out of sight until the screen is touched */
+body.nav-hidden #navbar{ opacity:0; pointer-events:none;
+                         transform:translateX(-50%) translateY(14px); }
 /* transparent arrows: just a glyph while paging chapters; a parasha/book label
    appears inside only at a crossing (set in JS) */
-.nav-arrow{ flex:1; padding:6px 4px; border:0; border-radius:6px; background:transparent;
-            color:rgba(23,169,196,.45); font-family:inherit; font-size:15px; font-weight:700; cursor:pointer;
-            display:inline-flex; align-items:center; justify-content:center; }
-.nav-arrow .nav-chevron{ width:30px; height:30px; }   /* outline arrow, translucent (no fill) */
-.nav-arrow:hover{ background:rgba(0,0,0,.05); }
-.nav-arrow:disabled{ opacity:.35; cursor:default; }
-/* at a parasha/book crossing the arrow carries a label → show it as a clear button */
-.nav-arrow.nav-haslabel{ background:var(--navy); color:#fff; font-size:13px; padding:10px 6px; }
-.nav-arrow.nav-haslabel:hover{ background:var(--accent); }
+/* ── the nav arrows ──────────────────────────────────────────────────────────
+   Three faces, matching what the step actually costs the reader:
+     · inside a parasha — a solid teal disc carrying nothing but a chevron
+     · into another parasha — the disc stretches into a pill and takes a label,
+       set in two lines: what the step is, above the name it leads to
+     · out of the book — the same pill, in ink rather than teal, so the largest
+       step on the screen is never mistaken for one of the small ones
+   flex:0 on the labelled state and flex:1 on the bare one keep the middle pill
+   centred either way. */
+.nav-arrow{ flex:0 0 auto; width:48px; height:48px; padding:0; border:0; border-radius:999px;
+            background:#1a7fa8; color:#fff; font-family:inherit; font-size:15px; font-weight:700;
+            cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            transition:background .15s; }
+.nav-arrow .nav-chevron{ width:22px; height:22px; flex:0 0 auto; }
+@media (hover:hover){ .nav-arrow:hover{ background:#1f93c1; } }
+.nav-arrow:active{ background:#166a8c; }
+.nav-arrow:disabled{ opacity:.35; cursor:default; box-shadow:none; }
+@media (hover:hover){ .nav-arrow:disabled:hover{ background:#1a7fa8; } }
+/* at a crossing the disc becomes a labelled pill */
+.nav-arrow.nav-haslabel{ width:auto; max-width:40%; height:48px; padding:0 14px; }
+.nav-lab{ display:flex; flex-direction:column; align-items:flex-start; line-height:1.15;
+          min-width:0; text-align:start; }
+.nav-lab-cap{ font-size:11px; font-weight:600; opacity:.82; }
+.nav-lab-name{ font-size:15px; font-weight:700; overflow:hidden; text-overflow:ellipsis;
+               white-space:nowrap; max-width:100%; }
+/* a step out of the book: ink, not teal */
+.nav-arrow.nav-book{ background:#2b2519; color:#f4f1e8; }
+@media (hover:hover){ .nav-arrow.nav-book:hover{ background:#3d3524; } }
+.nav-arrow.nav-book:active{ background:#1e1a11; }
+@media (hover:hover){ .nav-arrow.nav-book:disabled:hover{ background:#2b2519; } }
 /* "כולל פירושים?" — a compact toggle chip, not a stretching nav arrow (flex:0),
    sitting at the row's far end (rightmost in the LTR #navbar). Only shown while
    the Samaritan-font mode itself is on. */
@@ -575,15 +667,27 @@ body.div-collapsed .div-handle{ height:26px; }
              font-weight:600; cursor:pointer; white-space:nowrap; }
 #samFullBtn.on{ background:var(--active); border-color:var(--active); color:#fff; }
 #samFullBtn.hidden{ display:none; }
-.round{ flex:0 0 auto; width:50px; padding:8px 0; border:0; border-radius:8px; background:transparent;
-        color:#17a9c4; font-size:24px; font-weight:700; cursor:pointer; }   /* gray magnifiers/back */
-.round:hover{ background:rgba(0,0,0,.06); }
+/* the three middle controls ride together on one raised pill (see index.html);
+   the pill is the group, the discs inside it are the buttons */
+/* the middle three sit shoulder to shoulder with the arrows now: the bar itself
+   is the pill, so this is a plain group and carries no ground of its own */
+.nav-pill{ flex:0 0 auto; display:flex; align-items:center; gap:2px; }
+.round{ flex:0 0 auto; width:48px; height:48px; padding:0; border:0; border-radius:999px;
+        background:transparent; color:#2b2519; font-size:24px; font-weight:700; cursor:pointer;
+        display:inline-flex; align-items:center; justify-content:center; transition:background .15s; }
+@media (hover:hover){ .round:hover{ background:#efe9da; } }
+.round:active{ background:#e3dcc9; }
 /* magnifier shown as unavailable (no text to zoom / no search results) */
 .round:disabled{ opacity:.3; cursor:default; pointer-events:none; }
 .round:disabled:hover{ background:transparent; }
-/* back button relocated into the navbar (between the two magnifiers); its original (navy) color */
-.nav-back{ color:var(--navy); }
-.nav-back .tbi{ width:25px; height:25px; }
+/* back sits at the middle of the pill and is the one filled disc in it, the way
+   the centre of a row of controls carries its principal action */
+.nav-back{ background:#2b2519; color:#f4f1e8; }
+@media (hover:hover){ .nav-back:hover{ background:#3d3524; } }
+.nav-back:active{ background:#1e1a11; }
+.nav-back:disabled{ background:transparent; color:#2b2519; }
+.nav-back .tbi{ width:22px; height:22px; }
+.round .zoomi{ width:22px; height:22px; }
 /* on the plain browse screens (books / portions / spread) only the back button shows */
 #navbar.nav-backonly{ justify-content:center; }
 
@@ -1060,6 +1164,8 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 .pr-check input{ width:18px; height:18px; flex:0 0 auto; }
 .pr-check.pr-sub{ margin-inline-start:22px; font-size:13.5px; color:var(--muted,#777); }
 .pr-check.pr-disabled{ opacity:.4; cursor:default; }   /* Samaritan-only option, Hebrew font selected */
+/* and the font choice itself, while פורמט ספר overrules it (updatePrintBookState) */
+.pr-opt.pr-disabled{ opacity:.4; cursor:default; }
 .pr-trans-chosen{ font-size:13px; color:var(--accent); text-align:center; }
 
 /* #printArea is normally invisible on screen; it only becomes the whole page
@@ -1104,6 +1210,37 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
    so each section is set off by a rule above it and is otherwise free to flow. */
 .pr-sec{ margin-top:8pt; padding-top:6pt; border-top:.75pt solid #000; page-break-inside:auto; }
 .pr-sec-title{ font-weight:700; font-size:11pt; margin-bottom:5pt; }
+
+/* ── פורמט ספר ───────────────────────────────────────────────────────────────
+   A frame rather than a flow: the upper half is the Torah and nothing else, the
+   lower half is commentary, and the two are separated by a rule and a thin
+   space — the only furniture on the page. No header, no verse numbers, no
+   heading in any script, because the commentary names its verse by quoting the
+   words it opens and closes on instead.
+
+   Both halves are set WHOLE in a Samaritan face — the face is on the band, not
+   on spans within it, so that a comma or a bracket cannot quietly fall back to
+   the Hebrew font. buildBookDoc() maps away the characters these faces have no
+   glyph for before a word ever reaches here.
+
+   The band heights are written by the paginator, which measured the type to
+   decide how many lines stand in each; overflow is hidden as a guard only —
+   nothing should ever reach it. */
+.pr-bk-page{ page-break-after:always; }
+.pr-bk-page:last-child{ page-break-after:auto; }
+.pr-bk-band{ overflow:hidden; text-align:justify; text-justify:inter-word;
+             text-align-last:justify; direction:rtl; }
+/* where the stream genuinely ends, the final line stops being stretched */
+.pr-bk-band.pr-bk-last{ text-align-last:right; }
+.pr-bk-torah{ font-family:'Samaritan', serif; font-size:var(--pr-text); line-height:1.85; }
+.pr-bk-comm { font-family:'SamComment', serif; font-size:var(--pr-interp); line-height:1.7; }
+.pr-bk-comm b{ font-weight:700; }
+.pr-bk-rule{ border-top:.75pt solid #000; height:var(--pr-bk-gap, 4mm); }
+/* the off-screen box the paginator lays the type out in to find its lines. It
+   must match the band in every way that affects line breaking — width is set
+   per call, the rest comes from the same .pr-bk-torah/.pr-bk-comm rules above. */
+.pr-bk-measure{ position:absolute; left:-10000px; top:0; visibility:hidden;
+                text-align:justify; text-justify:inter-word; direction:rtl; }
 .pr-sec .pr-vrow{ font-size:var(--pr-interp); line-height:1.55;
                   text-align:justify; text-justify:inter-word; }
 /* a source quoted under a verse's commentary (ספר האסאטיר, פירוש אם בחקותי) —
@@ -1707,10 +1844,19 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   .tb-row{ gap:2px; }
   .tb{ font-size:12.5px; padding:11px 2px; }
   .tb.green{ min-width:46px; }
-  .nav-arrow{ font-size:13px; padding:12px 3px; }
-  #navbar{ gap:5px; }
+  /* on a phone the row is tightened, but the shapes stay the shapes: discs stay
+     round, the pill stays a pill, and only their measures come down */
+  .nav-arrow{ width:48px; height:48px; }
+  .nav-arrow.nav-haslabel{ width:auto; height:48px; padding:0 12px; max-width:40%; }
+  .nav-arrow .nav-chevron{ width:22px; height:22px; }
+  .nav-lab-cap{ font-size:10px; }
+  .nav-lab-name{ font-size:13.5px; }
+  #navbar{ gap:2px; padding:4px; }
+  .nav-pill{ gap:2px; padding:0; }
   #samFullBtn{ font-size:11px; padding:5px 6px; }
-  .round{ width:50px; font-size:24px; padding:10px 0; }
+  .round{ width:42px; height:42px; font-size:24px; padding:0; }
+  .round .zoomi{ width:20px; height:20px; }
+  .nav-back .tbi{ width:20px; height:20px; }
   .divbtn{ font-size:14px; padding:10px; }
   .title-row h1{ font-size:18px; }
   .ver{ font-size:10px; }

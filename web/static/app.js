@@ -372,7 +372,11 @@ const I18N = {
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
     bm_add:'הוסף סימניה לפרק זה', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
-    print_ch:'הדפסת פרק', print_title:'הדפסת פרק', print_font:'גופן להדפסה', print_font_sam:'שומרוני', print_font_heb:'עברי',
+    print_ch:'הדפסת פרק', print_title:'הדפסת פרק',
+    nav_portion_next:'הפרשה הבאה', nav_portion_prev:'הפרשה הקודמת',
+    nav_book_next:'הספר הבא', nav_book_prev:'הספר הקודם',
+    print_scope:'מה להדפיס', print_scope_ch:'הפרק הנוכחי', print_scope_pt:'הפרשה כולה',
+    print_book:'פורמט ספר — תורה למעלה, פירוש למטה, כתב שומרוני בלבד', print_font:'גופן להדפסה', print_font_sam:'שומרוני', print_font_heb:'עברי',
     print_nonums:'הסר מספרי פסוק (רצף, כתב שומרוני בלבד)',
     print_interp:'כולל פירוש הפסוק', print_dict:'כולל מילון מילים', print_trans:'כולל תרגום',
     print_preview:'תצוגה מקדימה', print_go:'הדפס / שמור PDF',
@@ -619,7 +623,11 @@ const I18N = {
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
     bm_add:'Bookmark this chapter', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
-    print_ch:'Print chapter', print_title:'Print chapter', print_font:'Print font', print_font_sam:'Samaritan', print_font_heb:'Hebrew',
+    print_ch:'Print chapter', print_title:'Print chapter',
+    nav_portion_next:'Next parasha', nav_portion_prev:'Previous parasha',
+    nav_book_next:'Next book', nav_book_prev:'Previous book',
+    print_scope:'What to print', print_scope_ch:'This chapter', print_scope_pt:'The whole parasha',
+    print_book:'Book format — Torah above, commentary below, Samaritan script only', print_font:'Print font', print_font_sam:'Samaritan', print_font_heb:'Hebrew',
     print_nonums:'Remove verse numbers (continuous, Samaritan script only)',
     print_interp:'Include verse commentary', print_dict:'Include word dictionary', print_trans:'Include translation',
     print_preview:'Preview', print_go:'Print / Save as PDF',
@@ -866,7 +874,11 @@ const I18N = {
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
     bm_add:'إضافة إشارة لهذا الأصحاح', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
-    print_ch:'طباعة الأصحاح', print_title:'طباعة الأصحاح', print_font:'خط الطباعة', print_font_sam:'سامري', print_font_heb:'عبري',
+    print_ch:'طباعة الأصحاح', print_title:'طباعة الأصحاح',
+    nav_portion_next:'المقطع التالي', nav_portion_prev:'المقطع السابق',
+    nav_book_next:'السفر التالي', nav_book_prev:'السفر السابق',
+    print_scope:'ما الذي يُطبع', print_scope_ch:'هذا الأصحاح', print_scope_pt:'المقطع كاملاً',
+    print_book:'تنسيق الكتاب — التوراة أعلى والتفسير أسفل، بالخطّ السامري فقط', print_font:'خط الطباعة', print_font_sam:'سامري', print_font_heb:'عبري',
     print_nonums:'إزالة أرقام الآيات (نصّ متّصل، بالخط السامري فقط)',
     print_interp:'تضمين تفسير الآية', print_dict:'تضمين قاموس الكلمات', print_trans:'تضمين الترجمة',
     print_preview:'معاينة', print_go:'طباعة / حفظ كملف PDF',
@@ -1829,6 +1841,71 @@ function startPoemFire(){
     if(wind) wx.clearRect(0, 0, wind.width, wind.height);
   };
 }
+// ── the writing turns from one hand into the other ──────────────────────────
+// While the page burns, the same words are seen now in the square Hebrew face
+// and now in the Samaritan one — the hand the poem is set in, and the hand a
+// Samaritan scribe would have set it in — one showing through the other in the
+// fire.
+//
+// It is a change of FACE and nothing else. The characters are not touched, the
+// cells are not touched, the font-size is not touched; fitBookPoem() is not
+// called, so the page is never re-measured, and startPoemFire() is not called,
+// so the flame is never re-laid. The burn therefore goes on exactly where it
+// was — the same holes, at the same age, with the same embers on their rims.
+// The fire keeps rising from where the words stand, because that is what it was
+// laid from: whole words, not single letters, and a word stands where it stood.
+//
+// Both lettered layers turn on the same tick — the charred letters that are
+// read and the ember filling them — or the two would part company mid-turn.
+const FACE_TURN = 3200;                    // how long one hand is held, in ms
+let _faceStop = null;
+// The Samaritan hand is the wider one — about two and a half times the square
+// Hebrew, and not by a constant: 'מגן' swells threefold where 'משקה' swells by
+// under two. So the size it must be set at is measured rather than assumed, and
+// measured on the poem itself: put the hand on, read the width, take it off.
+// Nothing is painted in between — it is all one task — so the page does not
+// so much as blink, and the fire, which is not touched at all, burns on.
+// The columns are then pinned at the width the Hebrew gave them, so that
+// neither hand can widen the poem afterwards.
+function measurePoemFace(grid){
+  const cells = grid.querySelectorAll('.bkpoem-cell');
+  if(!cells.length) return;
+  const colOf = n => { let w = 0;                       // widest cell in a column
+    for(let i = n; i < cells.length; i += 2) w = Math.max(w, cells[i].getBoundingClientRect().width);
+    return w; };
+  grid.style.gridTemplateColumns = '';                  // measure unpinned
+  grid.classList.remove('samface');
+  const he = grid.getBoundingClientRect().width, c1 = colOf(0), c2 = colOf(1);
+  grid.classList.add('samface');
+  grid.style.setProperty('--samk', '1');                // at its own full size
+  const sam = grid.getBoundingClientRect().width;
+  grid.classList.remove('samface');
+  grid.style.removeProperty('--samk');
+  if(!he || !sam) return;
+  // a shade under the exact ratio: rounding must never leave the hand too wide
+  grid.style.setProperty('--samk', (he / sam * .995).toFixed(4));
+  grid.style.gridTemplateColumns = c1.toFixed(2) + 'px ' + c2.toFixed(2) + 'px';
+}
+function startPoemFaces(){
+  if(_faceStop){ _faceStop(); _faceStop = null; }
+  // a reader who asked for stillness is not shown the writing changing under them
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const stack = document.querySelector('.ornframe .bkpoem-stack');
+  const grids = stack && stack.querySelectorAll('.bkpoem-grid');
+  if(!grids || !grids.length) return;
+  for(const g of grids) measurePoemFace(g);
+  let sam = false;
+  const id = setInterval(() => {
+    // the poem may go while the fire is still counting; it takes itself off
+    if(!document.body.contains(stack)){ clearInterval(id); _faceStop = null; return; }
+    sam = !sam;
+    for(const g of grids) g.classList.toggle('samface', sam);
+  }, FACE_TURN);
+  _faceStop = () => {
+    clearInterval(id);
+    for(const g of grids) g.classList.remove('samface');
+  };
+}
 // the wringing itself: fractal noise driving a displacement map, its frequency
 // and seed always on the move, which is what keeps the flame alive
 function fireDefs(){
@@ -1875,6 +1952,9 @@ function bookPoem(){
   // compositing; and again once the Torah face is in, since it is measured.
   setTimeout(fitBookPoem, 0);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitBookPoem);
+  // and once it is lettered and alight, the hands begin to turn. Kept apart from
+  // fitBookPoem: a resize re-lays the flame, but must not restart the turning.
+  setTimeout(startPoemFaces, 0);
   return wrap;
 }
 // It may never break a line and never be cut off, at any width: measure the poem
@@ -1888,30 +1968,47 @@ function fitBookPoem(){
   // the flame and the plume are drawn from the same words and must be lettered
   // to the same size, or the fire would part from what is burning
   const size = v => { for(const g of wrap.querySelectorAll('.bkpoem-grid')) g.style.fontSize = v; };
-  // the room is the frame's CONTENT box: clientWidth still carries its padding
-  const avail = frame.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 1;
-  if(avail <= 0) return;                       // not on screen yet
-  size(POEM_MAX + 'px');
-  const nat = grid.getBoundingClientRect().width;    // never shrinks: flex 0 0 auto
-  if(!nat) return;
-  let px = Math.max(POEM_MIN, Math.min(POEM_MAX, POEM_MAX * avail / nat));
-  size(px.toFixed(2) + 'px');
-  const got = grid.getBoundingClientRect().width;    // one pass for the rounding
-  if(got > avail){
-    px = Math.max(POEM_MIN, px * avail / got);
+  // The poem turns into the Samaritan hand while it burns (startPoemFaces), and
+  // the two hands do not measure alike. Always measure in the face the poem is
+  // set in: a size taken off the Samaritan hand would shift the poem under the
+  // reader the moment it turned back. The hand is put back before we leave,
+  // whichever way we leave — so the turning itself never notices.
+  const turned = [...wrap.querySelectorAll('.bkpoem-grid.samface')];
+  for(const g of turned) g.classList.remove('samface');
+  // and the columns come off their pins, or the poem would be measured at the
+  // width it was last pinned to instead of the width it actually wants
+  for(const g of wrap.querySelectorAll('.bkpoem-grid')) g.style.gridTemplateColumns = '';
+  try{ fitInBaseFace(); } finally { for(const g of turned) g.classList.add('samface'); }
+
+  function fitInBaseFace(){
+    // the room is the frame's CONTENT box: clientWidth still carries its padding
+    const avail = frame.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 1;
+    if(avail <= 0) return;                       // not on screen yet
+    size(POEM_MAX + 'px');
+    const nat = grid.getBoundingClientRect().width;    // never shrinks: flex 0 0 auto
+    if(!nat) return;
+    let px = Math.max(POEM_MIN, Math.min(POEM_MAX, POEM_MAX * avail / nat));
     size(px.toFixed(2) + 'px');
+    const got = grid.getBoundingClientRect().width;    // one pass for the rounding
+    if(got > avail){
+      px = Math.max(POEM_MIN, px * avail / got);
+      size(px.toFixed(2) + 'px');
+    }
+    // The frame now holds the whole codex, so its height is fixed by the picture's
+    // proportion rather than by the poem. Take the type down again if the five
+    // couplets and the two rules would stand taller than the page they are on.
+    let room = frame.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const gap = parseFloat(cs.rowGap) || 0;
+    const rules = frame.querySelectorAll('.orn-rule');
+    for(const r of rules) room -= r.getBoundingClientRect().height + gap;
+    const tall = grid.getBoundingClientRect().height;
+    if(room > 0 && tall > room)
+      size(Math.max(POEM_MIN, px * room / tall).toFixed(2) + 'px');
+    // the type has a new size, so the Samaritan hand needs a new one too, and
+    // the columns new pins. This re-measures; it does not restart the turning.
+    for(const g of wrap.querySelectorAll('.bkpoem-grid')) measurePoemFace(g);
+    startPoemFire();        // the letters have moved; the flame must be re-laid
   }
-  // The frame now holds the whole codex, so its height is fixed by the picture's
-  // proportion rather than by the poem. Take the type down again if the five
-  // couplets and the two rules would stand taller than the page they are on.
-  let room = frame.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-  const gap = parseFloat(cs.rowGap) || 0;
-  const rules = frame.querySelectorAll('.orn-rule');
-  for(const r of rules) room -= r.getBoundingClientRect().height + gap;
-  const tall = grid.getBoundingClientRect().height;
-  if(room > 0 && tall > room)
-    size(Math.max(POEM_MIN, px * room / tall).toFixed(2) + 'px');
-  startPoemFire();          // the letters have moved; the flame must be re-laid
 }
 
 // ── the books as the Samaritan tradition names them ──────────────────────────
@@ -3678,7 +3775,47 @@ function navState(mode){
   S.navMode = mode;
   $('navbar').classList.remove('hidden');
   updateNavDisabled();
+  placeNavbar();
+  armNavHide();
 }
+// ── the floating bar: where it sits, and when it is there at all ─────────────
+// The bar hangs over the page rather than standing in the column, so it has to
+// be told where the bottom is. The toolbar's height is the only moving part —
+// it folds and unfolds — so the bar is placed from the toolbar's own measured
+// box rather than from a number written down somewhere and left to rot.
+function placeNavbar(){
+  const tb = $('toolbar');
+  const h = tb && !tb.classList.contains('hidden') ? tb.getBoundingClientRect().height : 0;
+  document.documentElement.style.setProperty('--nav-bottom', Math.round(h + 10) + 'px');
+}
+// And it goes away. A few seconds after the reader settles on a text screen the
+// bar fades out; the next touch anywhere on the app brings it back and starts
+// the count again. Only on the text screens: on the browse screens the bar is
+// how you get about, and a control you cannot see is no use there.
+let navHideTimer = null;
+const NAV_HIDE_MS = 3000;
+function navShow(){
+  document.body.classList.remove('nav-hidden');
+  armNavHide();
+}
+function armNavHide(){
+  clearTimeout(navHideTimer);
+  if(S.view !== 'verses'){ document.body.classList.remove('nav-hidden'); return; }
+  navHideTimer = setTimeout(() => {
+    if(S.view === 'verses') document.body.classList.add('nav-hidden');
+  }, NAV_HIDE_MS);
+}
+(function(){
+  // Any touch of the screen calls it back, the bar's own buttons included: a
+  // reader stepping the type size up twice is still using the bar, and it must
+  // not fade out from under the second tap. While it is hidden it takes no
+  // pointer events at all, so a touch where it lies reaches the text beneath —
+  // which is what wakes it.
+  const wake = () => navShow();
+  for(const ev of ['pointerdown','touchstart','wheel','keydown','scroll'])
+    document.addEventListener(ev, wake, {passive:true, capture:true});
+  window.addEventListener('resize', placeNavbar);
+})();
 // the prev/next arrows are TRANSPARENT and show only an arrow glyph by default; a
 // label appears inside them only when the step crosses into another PARASHA or BOOK.
 function navArrow(isNext){
@@ -3692,15 +3829,25 @@ function navArrowSvg(isNext){
     : '<line x1="4" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>';
   return `<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
 }
-function setNavBtn(btn, isNext, label){     // label → prominent text button; else faint arrow icon
-  if(label){ btn.textContent = label; btn.classList.add('nav-haslabel'); }
-  else { btn.innerHTML = navArrowSvg(isNext); btn.classList.remove('nav-haslabel'); }
+// The arrow has three faces, and they say three different things:
+//   no name  — paging chapters inside one parasha: a bare chevron on a disc
+//   'portion'— the step enters another parasha: the chevron gains a label, in
+//              two lines — what the step is, and the name it leads to
+//   'book'   — the step leaves the book entirely: the same label, set dark, so
+//              that the largest step on the screen never looks like the others
+// The chevron stays on the leading side in every case, and the label reads in
+// the interface language's own direction inside it.
+function setNavBtn(btn, isNext, name, kind){
+  btn.classList.remove('nav-haslabel', 'nav-book');
+  if(!name){ btn.innerHTML = navArrowSvg(isNext); return; }
+  const cap = kind === 'book' ? t(isNext ? 'nav_book_next' : 'nav_book_prev')
+                              : t(isNext ? 'nav_portion_next' : 'nav_portion_prev');
+  btn.classList.add('nav-haslabel');
+  if(kind === 'book') btn.classList.add('nav-book');
+  btn.innerHTML = navArrowSvg(isNext)
+    + '<span class="nav-lab"><span class="nav-lab-cap">' + esc(cap) + '</span>'
+    + '<span class="nav-lab-name">' + esc(name) + '</span></span>';
 }
-function navLabel(name, isNext){     // name + arrow, side per language
-  if(LANG==='en' || LANG==='ar') return isNext ? (name+' ›') : ('‹ '+name);
-  return isNext ? ('‹ '+name) : (name+' ›');                  // Hebrew
-}
-function gotoBookLabel(name, isNext){ return navLabel(t('goto_book')+name, isNext); }
 function updateNavDisabled(){
   const ids = S.portions.map(p=>p.id); const pidx = ids.indexOf(S.curPid);
   const nb=$('nextBtn'), pb=$('prevBtn');
@@ -3714,12 +3861,12 @@ function updateNavDisabled(){
     const prevBook = bIdx>0 ? books[bIdx-1] : null;
     const nextBook = (bIdx>=0 && bIdx<books.length-1) ? books[bIdx+1] : null;
     // PREV
-    if(atBookStart && prevBook){ setNavBtn(pb,false,gotoBookLabel(prevBook.name,false)); pb.disabled=false; }
-    else if(S.chIdx<=0 && pidx>0){ setNavBtn(pb,false,navLabel((S.portions[pidx-1]||{}).name||'', false)); pb.disabled=false; }
+    if(atBookStart && prevBook){ setNavBtn(pb,false,prevBook.name,'book'); pb.disabled=false; }
+    else if(S.chIdx<=0 && pidx>0){ setNavBtn(pb,false,(S.portions[pidx-1]||{}).name||'','portion'); pb.disabled=false; }
     else { setNavBtn(pb,false,''); pb.disabled = atBookStart; }
     // NEXT
-    if(atBookEnd && nextBook){ setNavBtn(nb,true,gotoBookLabel(nextBook.name,true)); nb.disabled=false; }
-    else if(S.chIdx>=S.chList.length-1 && pidx<ids.length-1){ setNavBtn(nb,true,navLabel((S.portions[pidx+1]||{}).name||'', true)); nb.disabled=false; }
+    if(atBookEnd && nextBook){ setNavBtn(nb,true,nextBook.name,'book'); nb.disabled=false; }
+    else if(S.chIdx>=S.chList.length-1 && pidx<ids.length-1){ setNavBtn(nb,true,(S.portions[pidx+1]||{}).name||'','portion'); nb.disabled=false; }
     else { setNavBtn(nb,true,''); nb.disabled = atBookEnd; }
   } else {
     // chapter-list (portion) paging: each step is a parasha; at the first/last parasha
@@ -3727,11 +3874,11 @@ function updateNavDisabled(){
     const books=S.books||[]; const bIdx=books.findIndex(b=>b.id===S.book);
     const prevBook = bIdx>0 ? books[bIdx-1] : null;
     const nextBook = (bIdx>=0 && bIdx<books.length-1) ? books[bIdx+1] : null;
-    if(pidx>0){ setNavBtn(pb,false,navLabel((S.portions[pidx-1]||{}).name||'', false)); pb.disabled=false; }
-    else if(prevBook){ setNavBtn(pb,false,gotoBookLabel(prevBook.name,false)); pb.disabled=false; }
+    if(pidx>0){ setNavBtn(pb,false,(S.portions[pidx-1]||{}).name||'','portion'); pb.disabled=false; }
+    else if(prevBook){ setNavBtn(pb,false,prevBook.name,'book'); pb.disabled=false; }
     else { setNavBtn(pb,false,''); pb.disabled=true; }
-    if(pidx<ids.length-1){ setNavBtn(nb,true,navLabel((S.portions[pidx+1]||{}).name||'', true)); nb.disabled=false; }
-    else if(nextBook){ setNavBtn(nb,true,gotoBookLabel(nextBook.name,true)); nb.disabled=false; }
+    if(pidx<ids.length-1){ setNavBtn(nb,true,(S.portions[pidx+1]||{}).name||'','portion'); nb.disabled=false; }
+    else if(nextBook){ setNavBtn(nb,true,nextBook.name,'book'); nb.disabled=false; }
     else { setNavBtn(nb,true,''); nb.disabled=true; }
   }
 }
@@ -4158,6 +4305,9 @@ function setToolbarFolded(folded, withArrow, linkDiv){
   tbFolded=folded;
   const tb=$('toolbar'); tb.classList.toggle('folded', folded);
   tb.classList.remove('show-arrow'); tb.classList.remove('show-down');
+  // the floating nav bar rides above the toolbar, so it moves with it — now for
+  // the fold's start, and again at its end, when the height has actually settled
+  if(typeof placeNavbar === 'function'){ placeNavbar(); setTimeout(placeNavbar, 320); }
   if(folded && withArrow){
     void tb.offsetWidth; tb.classList.add('show-arrow');             // up-arrow ~3s after folding
     setTimeout(()=>tb.classList.remove('show-arrow'), TB_ARROW_MS);
@@ -4412,26 +4562,59 @@ $('variantsBtn').onclick=()=>togglePanel('variants');
 const PRINT_TR_FIELD  = {aramaic:'sam_aramaic', arabic:'arabic_trans', english:'english'};
 const PRINT_TR_LABEL  = {aramaic:'תרגום ארמי',  arabic:'תרגום ערבי',  english:'תרגום אנגלי'};
 const S_print = {font:'samaritan', fontTouched:false, noNums:false, interp:false,
-                 dict:false, trans:false, trChoice:null};
+                 dict:false, trans:false, trChoice:null,
+                 scope:'chapter',        // 'chapter' | 'portion' — one chapter or the whole parasha
+                 book:false};            // פורמט ספר — see buildBookDoc()
 
 $('printBtn').onclick = () => {
   // open on the script the reader is actually looking at, so printing follows
   // what is on the screen — until the reader picks a font themselves, after
   // which their choice stands and is not overwritten on the next open.
   if(!S_print.fontTouched) S_print.font = S.samFont ? 'samaritan' : 'hebrew';
-  document.querySelectorAll('#printModal .pr-opt').forEach(b=>b.classList.toggle('sel', b.dataset.font===S_print.font));
+  document.querySelectorAll('#printModal .pr-opt[data-font]').forEach(b=>b.classList.toggle('sel', b.dataset.font===S_print.font));
   $('prNoNums').checked = S_print.noNums;
   $('prInterp').checked = S_print.interp;
   $('prDict').checked = S_print.dict;
   $('prTrans').checked = S_print.trans;
+  $('prBook').checked = S_print.book;
+  // a chapter that is not inside a portion (the spread, a search result) has no
+  // whole-parasha to offer, so the choice is simply not shown
+  const canPortion = !!(S.curPid && (S.chList || []).length);
+  $('prScopeField').classList.toggle('hidden', !canPortion);
+  if(!canPortion) S_print.scope = 'chapter';
+  document.querySelectorAll('#printModal .pr-opt[data-scope]')
+    .forEach(b => b.classList.toggle('sel', b.dataset.scope === S_print.scope));
   updatePrintNoNumsState();
+  updatePrintBookState();
   updatePrintTransLabel();
   $('printModal').classList.remove('hidden');
 };
+document.querySelectorAll('#printModal .pr-opt[data-scope]').forEach(b=>{
+  b.onclick = () => { S_print.scope = b.dataset.scope;
+    document.querySelectorAll('#printModal .pr-opt[data-scope]').forEach(x=>x.classList.toggle('sel', x===b)); };
+});
+$('prBook').onchange = e => { S_print.book = e.target.checked; updatePrintBookState(); };
+// פורמט ספר is a whole rendering of its own, not another option laid over the
+// ordinary sheet: the script is Samaritan by definition, there are no headings
+// and no verse numbers, and the commentary is not an optional section but one
+// of the page's two halves. So while it is ticked the options it overrules are
+// shown greyed rather than silently ignored — and unticking gives them back
+// exactly as they were, since nothing here writes to them.
+function updatePrintBookState(){
+  const on = S_print.book;
+  for(const id of ['prNoNumsRow','prInterpRow','prDictRow','prTransRow']){
+    const row = $(id); if(!row) continue;
+    row.classList.toggle('pr-disabled', on);
+    const cb = row.querySelector('input'); if(cb) cb.disabled = on;
+  }
+  document.querySelectorAll('#printModal .pr-opt[data-font]')
+    .forEach(b => { b.disabled = on; b.classList.toggle('pr-disabled', on); });
+  if(!on) updatePrintNoNumsState();
+}
 $('prCancel').onclick = () => $('printModal').classList.add('hidden');
-document.querySelectorAll('#printModal .pr-opt').forEach(b=>{
+document.querySelectorAll('#printModal .pr-opt[data-font]').forEach(b=>{
   b.onclick = () => { S_print.font = b.dataset.font; S_print.fontTouched = true;
-    document.querySelectorAll('#printModal .pr-opt').forEach(x=>x.classList.toggle('sel', x===b));
+    document.querySelectorAll('#printModal .pr-opt[data-font]').forEach(x=>x.classList.toggle('sel', x===b));
     updatePrintNoNumsState(); };
 });
 // "הסר מספרי פסוק" (continuous scroll-style flow) applies only to a
@@ -4565,15 +4748,18 @@ const prSection = title => {
   return s;
 };
 
-function printSkeleton(){
-  const verses = S.verses || [];
+function printSkeleton(verses, chNum){
+  // defaults to the chapter on screen; the whole-parasha printout passes each
+  // chapter in turn, so one sheet-builder serves both scopes
+  verses = verses || S.verses || [];
+  if(chNum == null) chNum = S.curChNum;
   const useSam = S_print.font === 'samaritan';
   const page = el('div','pr-page');
 
   const hdr = el('div','pr-header');
   hdr.appendChild(el('div','pr-book', esc(S.bookName||'')));
   hdr.appendChild(el('div','pr-portion', esc(S.portionName||'')));
-  let chLabel = S.chMode==='samaritan' ? ('פרק שומרוני '+S.curChNum) : ('פרק '+S.curChNum);
+  let chLabel = S.chMode==='samaritan' ? ('פרק שומרוני '+chNum) : ('פרק '+chNum);
   const opening = ((verses[0]||{}).text||'').trim().split(/\s+/).filter(Boolean).slice(0,4).join(' ');
   if(opening) chLabel += ' (' + opening + ')';
   hdr.appendChild(el('div','pr-chapter', esc(chLabel)));
@@ -4614,16 +4800,223 @@ function printSkeleton(){
   return page;
 }
 
+// ── כתיב חסר ────────────────────────────────────────────────────────────────
+// The commentary is stored the way it was written — modern full spelling
+// (עניינה, מצווה, תיאור). The book format asks for the defective spelling, so
+// it is derived here rather than kept as a second copy of every commentary in
+// the database.
+//
+// Only the two transformations that full spelling actually introduced are
+// undone, because only those are reliably reversible: the doubled yod that
+// marks a consonantal /y/ between vowels (עניין → ענין) and the doubled vav
+// that marks a consonantal /v/ (מצווה → מצוה). Both are *additions* of the
+// modern convention; removing them gives back the traditional form. The other
+// direction — deciding which single ו or י is a mater lectionis that defective
+// spelling would drop (כול → כל but אור stays אור) — is not mechanical, needs
+// the vocalisation, and is left alone: a word spelt a little full is right
+// Hebrew, a word with a root letter eaten is not.
+//
+// A doubled letter at the very start of a word is never the doubling of this
+// convention (ויו as a name, וו as the letter) and is kept, as are the words
+// in KH_KEEP, where the pair is two separate root/prefix letters rather than
+// one consonant written twice.
+const KH_KEEP = new Set([
+  'וו', 'ווים', 'ויו', 'וויכוח',            // the letter vav itself, and its plural
+  'הייתי', 'הייתה', 'היית', 'הייתם', 'הייתן', 'היינו',   // ה־י־ה, not a doubled yod
+  'לוויתן', 'ציווי',
+]);
+function ktivHaser(text){
+  if(!text) return text;
+  return text.replace(/[א-ת]{2,}/g, w => {
+    if(KH_KEEP.has(w)) return w;
+    // a doubled letter that opens the word is not this convention's doubling
+    const head = w.slice(0, 1), rest = w.slice(1);
+    return head + rest.replace(/וו/g, 'ו').replace(/יי/g, 'י');
+  });
+}
+
+// ── what the sheet covers: this chapter, or the whole parasha ────────────────
+// Returns the chapters to print, each with its verses, in reading order. For a
+// single chapter that is what is already on screen — no round trip. For the
+// whole parasha the chapters are fetched one by one from the same endpoints the
+// reader's own navigation uses, so a printed parasha is by construction the
+// same text as reading through it chapter by chapter.
+async function collectPrintGroups(){
+  const here = { num: S.curChNum, verses: S.verses || [] };
+  if(S_print.scope !== 'portion' || !(S.chList || []).length) return [here];
+  const isSam = S.chMode === 'samaritan';
+  const out = [];
+  for(const ch of S.chList){
+    if(ch.id === S.curChId){ out.push(here); continue; }   // already in hand
+    try{
+      const vs = isSam ? await api('sam_verses?sam_ch_id=' + ch.id)
+                       : await api('verses?chapter_id=' + ch.id
+                                   + (S.curPid ? '&portion_id=' + S.curPid : ''));
+      out.push({ num: ch.number, verses: vs || [] });
+    }catch(e){ /* a chapter that will not load is left out rather than blanked */ }
+  }
+  return out;
+}
+
+// ── פורמט ספר ───────────────────────────────────────────────────────────────
+// A page of the book is not a flowing sheet but a fixed frame: the upper half
+// carries the Torah and nothing else, and the lower half carries commentary.
+// The two are separate streams. The Torah runs on from page to page; the
+// commentary runs on beneath it at its own pace, so a long comment simply
+// continues under the chapters that follow until it is done and the next one
+// begins — which is exactly how a commentary column behaves in a printed book,
+// and why neither half can be laid out by the browser's own pagination.
+//
+// So the pages are set here. Both streams are measured once, at the true width
+// of the band and in the true face, and cut into lines; the lines are then
+// dealt out, a bandful to a page. Because the measuring box and the printed
+// band are the same width and the same type, the lines fall in the same places
+// when they are laid out again — the measurement is of the real thing, not a
+// model of it.
+const BOOK_PAGE_MM = 267;      // A4 (297mm) less the 15mm margins @page sets
+const BOOK_GAP_MM  = 4;        // the rule between the halves, and the thin space under it
+
+// Every character the Samaritan faces cannot draw, mapped to one they can —
+// checked against the fonts' own cmaps over the whole commentary corpus, not
+// guessed. The em dash alone accounts for 5,174 of them; left as it was, every
+// one would print as an empty .notdef box. The handful of Arabic letters and
+// Latin diacritics in a few entries are dropped or folded for the same reason:
+// an absence reads better than a box.
+const BOOK_CHAR_FIX = [
+  [/[—–‑→]/g, '-'],          // em/en dash, non-breaking hyphen, arrow
+  [/\s*\n\s*/g, ' '],
+  [/ī/g, 'i'], [/ṭ/g, 't'], [/ḥ/g, 'h'], [/ṣ/g, 's'],
+  [/[؀-ۿ]+\s?/g, ''],                  // stray Arabic words — no glyphs at all
+];
+function bookProse(txt){
+  let s = stripNiqqud(txt || '');
+  for(const [re, to] of BOOK_CHAR_FIX) s = s.replace(re, to);
+  return ktivHaser(s).replace(/\s{2,}/g, ' ').trim();
+}
+// the two words a verse opens with and the two it closes on, which is how the
+// commentary names its verse — there being no verse numbers on the page
+function bookVerseTag(text){
+  const w = (text || '').replace(/[׃:.־-]+/g, ' ').split(/\s+/).filter(Boolean);
+  if(!w.length) return '';
+  const head = w.slice(0, 2).join(' ');
+  const tail = w.length > 2 ? w.slice(-2).join(' ') : '';
+  return tail ? head + '... ' + tail + ' -' : head + ' -';
+}
+
+// cut a stream of word-tokens into lines, by laying it out for real
+function bookLines(tokens, widthMm, cls){
+  if(!tokens.length) return [];
+  const box = el('div', 'pr-bk-measure ' + cls);
+  box.style.width = widthMm + 'mm';
+  box.innerHTML = tokens.map((t, i) => '<span class="pr-bk-w" data-i="' + i + '">' + t + '</span>').join(' ');
+  document.body.appendChild(box);
+  const lines = [];
+  let top = null;
+  for(const sp of box.querySelectorAll('.pr-bk-w')){
+    const y = sp.offsetTop;
+    if(top === null || y > top + 1){ lines.push([]); top = y; }
+    lines[lines.length - 1].push(+sp.dataset.i);
+  }
+  box.remove();
+  return lines;
+}
+// how many of those lines stand in a band of the given height
+function bookLinesPerBand(cls, heightMm){
+  const box = el('div', 'pr-bk-measure ' + cls);
+  box.style.width = '100mm';
+  box.innerHTML = '<span>א</span>';
+  document.body.appendChild(box);
+  const lh = box.firstChild.getBoundingClientRect().height
+             || parseFloat(getComputedStyle(box).lineHeight) || 16;
+  box.remove();
+  const mmPx = 96 / 25.4;
+  return Math.max(1, Math.floor((heightMm * mmPx) / lh));
+}
+
+async function buildBookDoc(area){
+  const groups = await collectPrintGroups();
+  const all = groups.flatMap(g => g.verses || []);
+  if(!all.length) return;
+
+  // ── the Torah stream ──
+  // the dots are computed over each chapter whole, so a chapter's last word and
+  // the next chapter's first are treated exactly as they are when read
+  const torah = [];
+  for(const g of groups){
+    const joined = (g.verses || []).map(v => (v.text || '').trim()).filter(Boolean).join(' ');
+    if(!joined) continue;
+    for(const tok of addWordDots(joined).split(' ').filter(Boolean))
+      torah.push(samMarkup(tok));
+  }
+
+  // ── the commentary stream ──
+  // one continuous column, each verse's comment opening with the verse's own
+  // first and last words in bold — the whole of it Samaritan, defective spelling
+  const interp = {};
+  for(let i = 0; i < all.length; i += 120){
+    const slice = all.slice(i, i + 120);
+    try{ Object.assign(interp, await api('interpretations?verse_ids=' + slice.map(v => v.id).join(','))); }
+    catch(e){ /* a batch that fails leaves its verses without a comment */ }
+  }
+  const comm = [];
+  for(const v of all){
+    const txt = bookProse(interp[v.id] || '');
+    if(!txt) continue;
+    const tag = bookProse(bookVerseTag(v.text || ''));
+    if(tag) for(const tok of tag.split(' ').filter(Boolean))
+      comm.push('<b>' + esc(tok) + '</b>');
+    for(const tok of txt.split(' ').filter(Boolean)) comm.push(esc(tok));
+  }
+
+  // ── deal the lines out ──
+  const contentMm = 180;                                   // A4 less its margins
+  const topMm = BOOK_PAGE_MM / 2;
+  const botMm = BOOK_PAGE_MM - topMm - BOOK_GAP_MM;
+  const tLines = bookLines(torah, contentMm, 'pr-bk-torah');
+  const cLines = bookLines(comm,  contentMm, 'pr-bk-comm');
+  const tPer = bookLinesPerBand('pr-bk-torah', topMm);
+  const cPer = bookLinesPerBand('pr-bk-comm',  botMm);
+  const pages = Math.max(Math.ceil(tLines.length / tPer), Math.ceil(cLines.length / cPer), 1);
+
+  for(let p = 0; p < pages; p++){
+    const page = el('div', 'pr-page pr-bk-page');
+    const band = (cls, lines, from, to, mm) => {
+      const d = el('div', 'pr-bk-band ' + cls);
+      d.style.height = mm + 'mm';
+      const toks = lines.slice(from, to).flat();
+      // the band's last line is justified like any other while the stream goes
+      // on, and only falls back to its natural width where the text truly ends
+      if(to >= lines.length) d.classList.add('pr-bk-last');
+      d.innerHTML = toks.map(i => (cls === 'pr-bk-torah' ? torah : comm)[i]).join(' ');
+      return d;
+    };
+    page.appendChild(band('pr-bk-torah', tLines, p * tPer, (p + 1) * tPer, topMm));
+    page.appendChild(el('div', 'pr-bk-rule'));
+    page.appendChild(band('pr-bk-comm', cLines, p * cPer, (p + 1) * cPer, botMm));
+    area.appendChild(page);
+  }
+}
+
 async function buildPrintPage(){
   const verses = S.verses || [];
   if(!verses.length) return;
   const area = $('printArea'); area.innerHTML = '';
-  const page = printSkeleton();
-  area.appendChild(page);
-  // the commentary belongs to the chapter above it and so follows it directly;
-  // the dictionary — a reference table rather than a reading — comes after both.
-  if(S_print.interp) await addPrintInterp(page, verses);
-  if(S_print.dict)   await addPrintDict(page, verses);
+  // פורמט ספר is its own sheet from the ground up — no header, no verse numbers,
+  // no optional sections — so it is built instead of the ordinary page, not on it
+  if(S_print.book){ await buildBookDoc(area); return; }
+  // one sheet per chapter: for a single chapter that is the one on screen, and
+  // for a whole parasha it is each of its chapters, each with its own header and
+  // its own commentary and dictionary beneath it — a printed parasha reads as
+  // the chapters do, rather than as one undivided run of text.
+  for(const g of await collectPrintGroups()){
+    if(!(g.verses || []).length) continue;
+    const page = printSkeleton(g.verses, g.num);
+    area.appendChild(page);
+    // the commentary belongs to the chapter above it and so follows it directly;
+    // the dictionary — a reference table rather than a reading — comes after both.
+    if(S_print.interp) await addPrintInterp(page, g.verses);
+    if(S_print.dict)   await addPrintDict(page, g.verses);
+  }
 }
 
 async function addPrintInterp(page, verses){

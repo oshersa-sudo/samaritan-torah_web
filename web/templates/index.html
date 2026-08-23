@@ -105,9 +105,14 @@
   <!-- chapter nav + font size (verse pages only) -->
   <div id="navbar" class="hidden">
     <button id="nextBtn" class="nav-arrow" data-i18n="next_portion">‹ פרשה הבאה</button>
+    <!-- the three middle controls ride together on one raised pill; the buttons
+         themselves keep their ids and .round class, so every handler, every
+         disabled-state and the guided tour all go on addressing them as before -->
+    <div class="nav-pill">
     <button id="minusBtn" class="round" aria-label="הקטן טקסט" title="הקטן טקסט"><svg class="zoomi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.8" y2="15.8"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/></svg></button>
     <button id="backBtn" class="round nav-back" disabled data-i18n-title="back_t" title="חזור" aria-label="חזור"><svg class="tbi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
     <button id="plusBtn" class="round" aria-label="הגדל טקסט" title="הגדל טקסט"><svg class="zoomi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.8" y2="15.8"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"/></svg></button>
+    </div>
     <button id="prevBtn" class="nav-arrow" data-i18n="prev_portion">פרשה קודמת ›</button>
     <button id="samFullBtn" class="hidden" type="button">כולל פירושים? לא</button>
   </div>
@@ -225,6 +230,14 @@
 <div id="printModal" class="modal hidden">
   <div class="modal-box pr-opts">
     <div class="modal-title" data-i18n="print_title">הדפסת פרק</div>
+    <!-- what to print: this chapter, or the whole portion it belongs to -->
+    <div class="pr-field" id="prScopeField">
+      <div class="pr-label" data-i18n="print_scope">מה להדפיס</div>
+      <div class="pr-choice">
+        <button class="pr-opt sel" data-scope="chapter" type="button" data-i18n="print_scope_ch">הפרק הנוכחי</button>
+        <button class="pr-opt" data-scope="portion" type="button" data-i18n="print_scope_pt">הפרשה כולה</button>
+      </div>
+    </div>
     <div class="pr-field">
       <div class="pr-label" data-i18n="print_font">גופן להדפסה</div>
       <div class="pr-choice">
@@ -232,10 +245,11 @@
         <button class="pr-opt" data-font="hebrew" type="button" data-i18n="print_font_heb">עברי</button>
       </div>
     </div>
+    <label class="pr-check" id="prBookRow"><input type="checkbox" id="prBook"><span data-i18n="print_book">פורמט ספר — תורה למעלה, פירוש למטה, כתב שומרוני בלבד</span></label>
     <label class="pr-check" id="prNoNumsRow"><input type="checkbox" id="prNoNums"><span data-i18n="print_nonums">הסר מספרי פסוק (רצף, כתב שומרוני בלבד)</span></label>
-    <label class="pr-check"><input type="checkbox" id="prInterp"><span data-i18n="print_interp">כולל פירוש הפסוק</span></label>
-    <label class="pr-check"><input type="checkbox" id="prDict"><span data-i18n="print_dict">כולל מילון מילים</span></label>
-    <label class="pr-check"><input type="checkbox" id="prTrans"><span data-i18n="print_trans">כולל תרגום</span></label>
+    <label class="pr-check" id="prInterpRow"><input type="checkbox" id="prInterp"><span data-i18n="print_interp">כולל פירוש הפסוק</span></label>
+    <label class="pr-check" id="prDictRow"><input type="checkbox" id="prDict"><span data-i18n="print_dict">כולל מילון מילים</span></label>
+    <label class="pr-check" id="prTransRow"><input type="checkbox" id="prTrans"><span data-i18n="print_trans">כולל תרגום</span></label>
     <div id="prTransChosen" class="pr-trans-chosen hidden"></div>
     <button id="prPreview" class="share-opt" style="background:#3a6b34" data-i18n="print_preview">תצוגה מקדימה</button>
     <button id="prGo" class="share-opt" style="background:var(--navy)" data-i18n="print_go">הדפס / שמור PDF</button>
