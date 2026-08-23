@@ -12648,534 +12648,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 8,
-     "name": "במדבר - ויקח קרח - 98",
-     "incipit": "ויאמר משה אל קרח",
-     "sam_ch_id": 1740,
-     "n": 98,
-     "verses": "טז:ח-טז:טו",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 98,
-     "file": "/static/audio/readings/b4-p05-c098.mp3",
-     "duration": 92.0,
-     "src_start": 87.4,
-     "src_end": 179.4,
-     "verses_num": "16:8-16:15"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 4,
-     "name": "במדבר - ויקח קרח - 99",
-     "incipit": "ויאמר משה אל קרח",
-     "sam_ch_id": 1741,
-     "n": 99,
-     "verses": "טז:טז-טז:יט",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 99,
-     "file": "/static/audio/readings/b4-p05-c099.mp3",
-     "duration": 50.96,
-     "src_start": 179.4,
-     "src_end": 230.36,
-     "verses_num": "16:16-16:19"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 3,
-     "name": "במדבר - ויקח קרח - 100",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1742,
-     "n": 100,
-     "verses": "טז:כ-טז:כב",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 100,
-     "file": "/static/audio/readings/b4-p05-c100.mp3",
-     "duration": 26.85,
-     "src_start": 230.36,
-     "src_end": 257.21,
-     "verses_num": "16:20-16:22"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 5,
-     "name": "במדבר - ויקח קרח - 101",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1743,
-     "n": 101,
-     "verses": "טז:כג-טז:כז",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 101,
-     "file": "/static/audio/readings/b4-p05-c101.mp3",
-     "duration": 55.62,
-     "src_start": 257.21,
-     "src_end": 312.83,
-     "verses_num": "16:23-16:27"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 8,
-     "name": "במדבר - ויקח קרח - 102",
-     "incipit": "ויאמר משה בזאת תדעון",
-     "sam_ch_id": 1744,
-     "n": 102,
-     "verses": "טז:כח-טז:לה",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 102,
-     "file": "/static/audio/readings/b4-p05-c102.mp3",
-     "duration": 91.48,
-     "src_start": 312.83,
-     "src_end": 404.31,
-     "verses_num": "16:28-16:35"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 5,
-     "name": "במדבר - ויקח קרח - 103",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1745,
-     "n": 103,
-     "verses": "יז:א-יז:ה",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 103,
-     "file": "/static/audio/readings/b4-p05-c103.mp3",
-     "duration": 68.47,
-     "src_start": 404.31,
-     "src_end": 472.78,
-     "verses_num": "17:1-17:5"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 3,
-     "name": "במדבר - ויקח קרח - 104",
-     "incipit": "וילנו כל עדת בני",
-     "sam_ch_id": 1746,
-     "n": 104,
-     "verses": "יז:ו-יז:ח",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 104,
-     "file": "/static/audio/readings/b4-p05-c104.mp3",
-     "duration": 28.89,
-     "src_start": 472.78,
-     "src_end": 501.67,
-     "verses_num": "17:6-17:8"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 7,
-     "name": "במדבר - ויקח קרח - 105",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1747,
-     "n": 105,
-     "verses": "יז:ט-יז:טו",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 105,
-     "file": "/static/audio/readings/b4-p05-c105.mp3",
-     "duration": 67.51,
-     "src_start": 501.67,
-     "src_end": 569.18,
-     "verses_num": "17:9-17:15"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 9,
-     "name": "במדבר - ויקח קרח - 106",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1748,
-     "n": 106,
-     "verses": "יז:טז-יז:כד",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 106,
-     "file": "/static/audio/readings/b4-p05-c106.mp3",
-     "duration": 143.32,
-     "src_start": 569.18,
-     "src_end": 712.5,
-     "verses_num": "17:16-17:24"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 4,
-     "name": "במדבר - ויקח קרח - 107",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1749,
-     "n": 107,
-     "verses": "יז:כה-יז:כח",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 107,
-     "file": "/static/audio/readings/b4-p05-c107.mp3",
-     "duration": 91.52,
-     "src_start": 712.5,
-     "src_end": 804.02,
-     "verses_num": "17:25-17:28"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 7,
-     "name": "במדבר - ויקח קרח - 108",
-     "incipit": "ויאמר יהוה אל אהרן",
-     "sam_ch_id": 1750,
-     "n": 108,
-     "verses": "יח:א-יח:ז",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 108,
-     "file": "/static/audio/readings/b4-p05-c108.mp3",
-     "duration": 77.97,
-     "src_start": 804.02,
-     "src_end": 881.99,
-     "verses_num": "18:1-18:7"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 5,
-     "name": "במדבר - ויקח קרח - 109",
-     "incipit": "וידבר יהוה אל אהרן",
-     "sam_ch_id": 1751,
-     "n": 109,
-     "verses": "יח:ח-יח:יב",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 109,
-     "file": "/static/audio/readings/b4-p05-c109.mp3",
-     "duration": 89.97,
-     "src_start": 881.99,
-     "src_end": 971.96,
-     "verses_num": "18:8-18:12"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 7,
-     "name": "במדבר - ויקח קרח - 110",
-     "incipit": "בכורי כל אשר בארצם",
-     "sam_ch_id": 1752,
-     "n": 110,
-     "verses": "יח:יג-יח:יט",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 110,
-     "file": "/static/audio/readings/b4-p05-c110.mp3",
-     "duration": 64.66,
-     "src_start": 971.96,
-     "src_end": 1036.62,
-     "verses_num": "18:13-18:19"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 5,
-     "name": "במדבר - ויקח קרח - 111",
-     "incipit": "ויאמר יהוה אל אהרן",
-     "sam_ch_id": 1753,
-     "n": 111,
-     "verses": "יח:כ-יח:כד",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 111,
-     "file": "/static/audio/readings/b4-p05-c111.mp3",
-     "duration": 108.64,
-     "src_start": 1036.62,
-     "src_end": 1145.26,
-     "verses_num": "18:20-18:24"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 8,
-     "name": "במדבר - ויקח קרח - 112",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1754,
-     "n": 112,
-     "verses": "יח:כה-יח:לב",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 112,
-     "file": "/static/audio/readings/b4-p05-c112.mp3",
-     "duration": 83.59,
-     "src_start": 1145.26,
-     "src_end": 1228.85,
-     "verses_num": "18:25-18:32"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 8,
-     "name": "במדבר - ויקח קרח - 113",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1755,
-     "n": 113,
-     "verses": "יט:א-יט:ח",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 113,
-     "file": "/static/audio/readings/b4-p05-c113.mp3",
-     "duration": 68.22,
-     "src_start": 1228.85,
-     "src_end": 1297.07,
-     "verses_num": "19:1-19:8"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 5,
-     "name": "במדבר - ויקח קרח - 114",
-     "incipit": "ואסף איש טהור את",
-     "sam_ch_id": 1756,
-     "n": 114,
-     "verses": "יט:ט-יט:יג",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 114,
-     "file": "/static/audio/readings/b4-p05-c114.mp3",
-     "duration": 96.37,
-     "src_start": 1297.07,
-     "src_end": 1393.44,
-     "verses_num": "19:9-19:13"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 9,
-     "name": "במדבר - ויקח קרח - 115",
-     "incipit": "וזאת התורה אדם כי",
-     "sam_ch_id": 1757,
-     "n": 115,
-     "verses": "יט:יד-יט:כב",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 115,
-     "file": "/static/audio/readings/b4-p05-c115.mp3",
-     "duration": 134.3,
-     "src_start": 1393.44,
-     "src_end": 1527.74,
-     "verses_num": "19:14-19:22"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 6,
-     "name": "במדבר - ויקח קרח - 116",
-     "incipit": "ויבאו בני ישראל כל",
-     "sam_ch_id": 1758,
-     "n": 116,
-     "verses": "כ:א-כ:ו",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 116,
-     "file": "/static/audio/readings/b4-p05-c116.mp3",
-     "duration": 54.89,
-     "src_start": 1527.74,
-     "src_end": 1582.63,
-     "verses_num": "20:1-20:6"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 5,
-     "name": "במדבר - ויקח קרח - 117",
-     "incipit": "וידבר יהוה אל משה",
-     "sam_ch_id": 1759,
-     "n": 117,
-     "verses": "כ:ז-כ:יא",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 117,
-     "file": "/static/audio/readings/b4-p05-c117.mp3",
-     "duration": 33.76,
-     "src_start": 1582.63,
-     "src_end": 1616.39,
-     "verses_num": "20:7-20:11"
-    },
-    {
-     "src": {
-      "youtube_id": "QmvWmuj_1PY"
-     },
-     "verse_count": 4,
-     "name": "במדבר - ויקח קרח - 118",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1760,
-     "n": 118,
-     "verses": "כ:יב-כ:יג",
-     "portion": {
-      "order": 5,
-      "name": "ויקח קרח",
-      "id": 42
-     },
-     "sam_ch_number": 118,
-     "file": "/static/audio/readings/b4-p05-c118.mp3",
-     "duration": 50.13,
-     "src_start": 1616.39,
-     "src_end": 1666.52,
-     "verses_num": "20:12-20:13"
-    },
-    {
-     "src": {
-      "youtube_id": "0Iz0521K60s"
-     },
-     "verse_count": 9,
-     "name": "במדבר - וישלח משה - 119",
-     "incipit": "וישלח משה מלאכים מקדש",
-     "sam_ch_id": 1761,
-     "n": 119,
-     "verses": "כ:יד-כ:כב",
-     "portion": {
-      "order": 5,
-      "id": 42,
-      "name": "ויקח קרח"
-     },
-     "sam_ch_number": 119,
-     "file": "/static/audio/readings/b4-p06-c119.mp3",
-     "duration": 101.26,
-     "src_start": 0.0,
-     "src_end": 101.26,
-     "verses_num": "20:14-20:22"
-    },
-    {
-     "src": {
-      "youtube_id": "0Iz0521K60s"
-     },
-     "verse_count": 7,
-     "name": "במדבר - וישלח משה - 120",
-     "incipit": "ויאמר יהוה אל משה",
-     "sam_ch_id": 1762,
-     "n": 120,
-     "verses": "כ:כג-כ:כט",
-     "portion": {
-      "order": 5,
-      "id": 42,
-      "name": "ויקח קרח"
-     },
-     "sam_ch_number": 120,
-     "file": "/static/audio/readings/b4-p06-c120.mp3",
-     "duration": 69.38,
-     "src_start": 101.26,
-     "src_end": 170.64,
-     "verses_num": "20:23-20:29"
-    },
-    {
-     "src": {
-      "youtube_id": "0Iz0521K60s"
-     },
-     "verse_count": 3,
-     "name": "במדבר - וישלח משה - 121",
-     "incipit": "וישמע הכנעני מלך ערד",
-     "sam_ch_id": 1763,
-     "n": 121,
-     "verses": "כא:א-כא:ג",
-     "portion": {
-      "order": 5,
-      "id": 42,
-      "name": "ויקח קרח"
-     },
-     "sam_ch_number": 121,
-     "file": "/static/audio/readings/b4-p06-c121.mp3",
-     "duration": 37.24,
-     "src_start": 170.64,
-     "src_end": 207.88,
-     "verses_num": "21:1-21:3"
-    },
-    {
-     "src": {
       "youtube_id": "0Iz0521K60s"
      },
      "verse_count": 4,
@@ -17309,6 +16781,534 @@
      "verse_count": 7,
      "incipit": "ויקח קרח בן יצהר",
      "name": "במדבר - שלח לך - 97"
+    },
+    {
+     "n": 98,
+     "sam_ch_number": 98,
+     "file": "/static/audio/readings/b4-p05-c098.mp3",
+     "duration": 87.36,
+     "src_start": 0,
+     "src_end": 87.36,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1740,
+     "verses": "טז:ח-טז:טו",
+     "verses_num": "16:8-16:15",
+     "verse_count": 8,
+     "incipit": "ויאמר משה אל קרח:",
+     "name": "במדבר - ויקח קרח - 98"
+    },
+    {
+     "n": 99,
+     "sam_ch_number": 99,
+     "file": "/static/audio/readings/b4-p05-c099.mp3",
+     "duration": 92.01,
+     "src_start": 0,
+     "src_end": 92.01,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1741,
+     "verses": "טז:טז-טז:יט",
+     "verses_num": "16:16-16:19",
+     "verse_count": 4,
+     "incipit": "ויאמר משה אל קרח:",
+     "name": "במדבר - ויקח קרח - 99"
+    },
+    {
+     "n": 100,
+     "sam_ch_number": 100,
+     "file": "/static/audio/readings/b4-p05-c100.mp3",
+     "duration": 50.95,
+     "src_start": 0,
+     "src_end": 50.95,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1742,
+     "verses": "טז:כ-טז:כב",
+     "verses_num": "16:20-16:22",
+     "verse_count": 3,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 100"
+    },
+    {
+     "n": 101,
+     "sam_ch_number": 101,
+     "file": "/static/audio/readings/b4-p05-c101.mp3",
+     "duration": 26.85,
+     "src_start": 0,
+     "src_end": 26.85,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1743,
+     "verses": "טז:כג-טז:כז",
+     "verses_num": "16:23-16:27",
+     "verse_count": 5,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 101"
+    },
+    {
+     "n": 102,
+     "sam_ch_number": 102,
+     "file": "/static/audio/readings/b4-p05-c102.mp3",
+     "duration": 55.63,
+     "src_start": 0,
+     "src_end": 55.63,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1744,
+     "verses": "טז:כח-טז:לה",
+     "verses_num": "16:28-16:35",
+     "verse_count": 8,
+     "incipit": "ויאמר משה: בזאת תדעון",
+     "name": "במדבר - ויקח קרח - 102"
+    },
+    {
+     "n": 103,
+     "sam_ch_number": 103,
+     "file": "/static/audio/readings/b4-p05-c103.mp3",
+     "duration": 91.48,
+     "src_start": 0,
+     "src_end": 91.48,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1745,
+     "verses": "יז:א-יז:ה",
+     "verses_num": "17:1-17:5",
+     "verse_count": 5,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 103"
+    },
+    {
+     "n": 104,
+     "sam_ch_number": 104,
+     "file": "/static/audio/readings/b4-p05-c104.mp3",
+     "duration": 68.47,
+     "src_start": 0,
+     "src_end": 68.47,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1746,
+     "verses": "יז:ו-יז:ח",
+     "verses_num": "17:6-17:8",
+     "verse_count": 3,
+     "incipit": "וילנו כל עדת בני",
+     "name": "במדבר - ויקח קרח - 104"
+    },
+    {
+     "n": 105,
+     "sam_ch_number": 105,
+     "file": "/static/audio/readings/b4-p05-c105.mp3",
+     "duration": 28.88,
+     "src_start": 0,
+     "src_end": 28.88,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1747,
+     "verses": "יז:ט-יז:טו",
+     "verses_num": "17:9-17:15",
+     "verse_count": 7,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 105"
+    },
+    {
+     "n": 106,
+     "sam_ch_number": 106,
+     "file": "/static/audio/readings/b4-p05-c106.mp3",
+     "duration": 67.51,
+     "src_start": 0,
+     "src_end": 67.51,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1748,
+     "verses": "יז:טז-יז:כד",
+     "verses_num": "17:16-17:24",
+     "verse_count": 9,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 106"
+    },
+    {
+     "n": 107,
+     "sam_ch_number": 107,
+     "file": "/static/audio/readings/b4-p05-c107.mp3",
+     "duration": 101.87,
+     "src_start": 0,
+     "src_end": 101.87,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1749,
+     "verses": "יז:כה-יז:כח",
+     "verses_num": "17:25-17:28",
+     "verse_count": 4,
+     "incipit": "ויאמר יהוה אל משה:",
+     "name": "במדבר - ויקח קרח - 107"
+    },
+    {
+     "n": 108,
+     "sam_ch_number": 108,
+     "file": "/static/audio/readings/b4-p05-c108.mp3",
+     "duration": 41.46,
+     "src_start": 0,
+     "src_end": 41.46,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1750,
+     "verses": "יח:א-יח:ז",
+     "verses_num": "18:1-18:7",
+     "verse_count": 7,
+     "incipit": "ויאמר יהוה אל אהרן:",
+     "name": "במדבר - ויקח קרח - 108"
+    },
+    {
+     "n": 109,
+     "sam_ch_number": 109,
+     "file": "/static/audio/readings/b4-p05-c109.mp3",
+     "duration": 91.51,
+     "src_start": 0,
+     "src_end": 91.51,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1751,
+     "verses": "יח:ח-יח:יב",
+     "verses_num": "18:8-18:12",
+     "verse_count": 5,
+     "incipit": "וידבר יהוה אל אהרן:",
+     "name": "במדבר - ויקח קרח - 109"
+    },
+    {
+     "n": 110,
+     "sam_ch_number": 110,
+     "file": "/static/audio/readings/b4-p05-c110.mp3",
+     "duration": 77.97,
+     "src_start": 0,
+     "src_end": 77.97,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1752,
+     "verses": "יח:יג-יח:יט",
+     "verses_num": "18:13-18:19",
+     "verse_count": 7,
+     "incipit": "בכורי כל אשר בארצם:",
+     "name": "במדבר - ויקח קרח - 110"
+    },
+    {
+     "n": 111,
+     "sam_ch_number": 111,
+     "file": "/static/audio/readings/b4-p05-c111.mp3",
+     "duration": 89.97,
+     "src_start": 0,
+     "src_end": 89.97,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1753,
+     "verses": "יח:כ-יח:כד",
+     "verses_num": "18:20-18:24",
+     "verse_count": 5,
+     "incipit": "ויאמר יהוה אל אהרן:",
+     "name": "במדבר - ויקח קרח - 111"
+    },
+    {
+     "n": 112,
+     "sam_ch_number": 112,
+     "file": "/static/audio/readings/b4-p05-c112.mp3",
+     "duration": 67.56,
+     "src_start": 0,
+     "src_end": 67.56,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1754,
+     "verses": "יח:כה-יח:לב",
+     "verses_num": "18:25-18:32",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 112"
+    },
+    {
+     "n": 113,
+     "sam_ch_number": 113,
+     "file": "/static/audio/readings/b4-p05-c113.mp3",
+     "duration": 105.74,
+     "src_start": 0,
+     "src_end": 105.74,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1755,
+     "verses": "יט:א-יט:ח",
+     "verses_num": "19:1-19:8",
+     "verse_count": 8,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 113"
+    },
+    {
+     "n": 114,
+     "sam_ch_number": 114,
+     "file": "/static/audio/readings/b4-p05-c114.mp3",
+     "duration": 83.6,
+     "src_start": 0,
+     "src_end": 83.6,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1756,
+     "verses": "יט:ט-יט:יג",
+     "verses_num": "19:9-19:13",
+     "verse_count": 5,
+     "incipit": "ואסף איש טהור את",
+     "name": "במדבר - ויקח קרח - 114"
+    },
+    {
+     "n": 115,
+     "sam_ch_number": 115,
+     "file": "/static/audio/readings/b4-p05-c115.mp3",
+     "duration": 68.22,
+     "src_start": 0,
+     "src_end": 68.22,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1757,
+     "verses": "יט:יד-יט:כב",
+     "verses_num": "19:14-19:22",
+     "verse_count": 9,
+     "incipit": "וזאת התורה: אדם כי",
+     "name": "במדבר - ויקח קרח - 115"
+    },
+    {
+     "n": 116,
+     "sam_ch_number": 116,
+     "file": "/static/audio/readings/b4-p05-c116.mp3",
+     "duration": 102.03,
+     "src_start": 0,
+     "src_end": 102.03,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1758,
+     "verses": "כ:א-כ:ו",
+     "verses_num": "20:1-20:6",
+     "verse_count": 6,
+     "incipit": "ויבאו בני ישראל כל",
+     "name": "במדבר - ויקח קרח - 116"
+    },
+    {
+     "n": 117,
+     "sam_ch_number": 117,
+     "file": "/static/audio/readings/b4-p05-c117.mp3",
+     "duration": 67.04,
+     "src_start": 0,
+     "src_end": 67.04,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1759,
+     "verses": "כ:ז-כ:יא",
+     "verses_num": "20:7-20:11",
+     "verse_count": 5,
+     "incipit": "וידבר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 117"
+    },
+    {
+     "n": 118,
+     "sam_ch_number": 118,
+     "file": "/static/audio/readings/b4-p05-c118.mp3",
+     "duration": 61.59,
+     "src_start": 0,
+     "src_end": 61.59,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1760,
+     "verses": "כ:יב-כ:יג",
+     "verses_num": "20:12-20:13",
+     "verse_count": 4,
+     "incipit": "ויאמר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 118"
+    },
+    {
+     "n": 119,
+     "sam_ch_number": 119,
+     "file": "/static/audio/readings/b4-p05-c119.mp3",
+     "duration": 54.9,
+     "src_start": 0,
+     "src_end": 54.9,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1761,
+     "verses": "כ:יד-כ:כב",
+     "verses_num": "20:14-20:22",
+     "verse_count": 9,
+     "incipit": "וישלח משה מלאכים מקדש",
+     "name": "במדבר - ויקח קרח - 119"
+    },
+    {
+     "n": 120,
+     "sam_ch_number": 120,
+     "file": "/static/audio/readings/b4-p05-c120.mp3",
+     "duration": 33.75,
+     "src_start": 0,
+     "src_end": 33.75,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1762,
+     "verses": "כ:כג-כ:כט",
+     "verses_num": "20:23-20:29",
+     "verse_count": 7,
+     "incipit": "ויאמר יהוה אל משה",
+     "name": "במדבר - ויקח קרח - 120"
+    },
+    {
+     "n": 121,
+     "sam_ch_number": 121,
+     "file": "/static/audio/readings/b4-p05-c121.mp3",
+     "duration": 50.11,
+     "src_start": 0,
+     "src_end": 50.11,
+     "portion": {
+      "order": 5,
+      "id": 42,
+      "name": "ויקח קרח"
+     },
+     "src": {
+      "youtube_id": null
+     },
+     "sam_ch_id": 1763,
+     "verses": "כא:א-כא:ג",
+     "verses_num": "21:1-21:3",
+     "verse_count": 3,
+     "incipit": "וישמע הכנעני מלך ערד",
+     "name": "במדבר - ויקח קרח - 121"
     }
    ],
    "playlist": "PLl-48IEqLtlv9CtBH3gbflWttJAP9LCna",
