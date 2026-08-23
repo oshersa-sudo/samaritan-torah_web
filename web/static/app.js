@@ -313,7 +313,7 @@ const I18N = {
     interp_more:'להרחבה פנה אל:', interp_asatir_lead:'ומספר ספר האסאטיר',
     interp_bhuq_lead:'ומדברי אבו אלפרג׳ איבן אל-כתאר בפירוש אם בחקותי',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
-    m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_pass:'סיסמה', adm_login:'כניסה',
+    m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_show_pass:'הצג סיסמה', adm_hide_pass:'הסתר סיסמה', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
     adm_sysdoc:'📘 תיעוד המערכת', adm_loading:'טוען…', adm_version_word:'גרסה',
     adm_no_log:'אין עדיין יומן גרסאות להצגה.',
@@ -565,7 +565,7 @@ const I18N = {
     interp_more:'Read further in:', interp_asatir_lead:'And the Book of Asatir recounts',
     interp_bhuq_lead:'And Abū l-Faraj ibn al-Kathār says, in his commentary on Im Beḥuqotay',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
-    m_admin:'Admin login', adm_user:'Username', adm_pass:'Password', adm_login:'Sign in',
+    m_admin:'Admin login', adm_user:'Username', adm_show_pass:'Show the password', adm_hide_pass:'Hide the password', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
     adm_sysdoc:'📘 System documentation', adm_loading:'Loading…', adm_version_word:'version',
     adm_no_log:'No changelog to show yet.',
@@ -817,7 +817,7 @@ const I18N = {
     interp_more:'للتوسّع راجِع:', interp_asatir_lead:'ويروي كتاب الأساطير',
     interp_bhuq_lead:'ويقول أبو الفرج ابن الكثار في تفسير «إن سلكتم في فرائضي»',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
-    m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_pass:'كلمة المرور', adm_login:'دخول',
+    m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_show_pass:'إظهار كلمة المرور', adm_hide_pass:'إخفاء كلمة المرور', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
     adm_sysdoc:'📘 توثيق النظام', adm_loading:'جارٍ التحميل…', adm_version_word:'إصدار',
     adm_no_log:'لا يوجد سجلّ إصدارات لعرضه بعد.',
@@ -4579,14 +4579,6 @@ function syncToolbar(isVerse){
   else    _ab.innerHTML = '<span class="sam-let">ࠀ</span>.<span class="sam-let">ࠁ</span>';
   $('fontBtn').title = sam ? t('font_heb') : t('font_sam');
   $('fontBtn').setAttribute('aria-label', sam ? t('font_heb') : t('font_sam'));
-  // "כולל פירושים?" — only visible while the Samaritan font itself is on
-  { const fb=$('samFullBtn');
-    fb.classList.toggle('hidden', !(isVerse && sam));
-    fb.classList.toggle('on', S.samFontFull);
-    // the short form: in the toolbar it shares a 52px cell with six others, and
-    // the full question wrapped to a third line and pushed the whole row taller
-    fb.textContent = t('sam_full_short') + ' ' + (S.samFontFull ? t('sf_yes') : t('sf_no'));
-    fb.title = t('sam_full_q') + (S.samFontFull ? t('sf_yes') : t('sf_no')); }
   setBtn('dictBtn',       isVerse, S.dict);
   setBtn('interpBtn',     isVerse, S.panel==='interpret');
   setBtn('compareBtn',    isVerse, S.panel==='compare');
@@ -4628,7 +4620,6 @@ $('fontBtn').onclick=()=>{ const was=S.samFont; clearModes(); S.samFont=!was; sy
 // "כולל פירושים?" — only meaningful while samFont is on; syncToolbar() shows/hides
 // and labels this button on every relevant state change, so this handler only
 // needs to flip the flag itself.
-$('samFullBtn').onclick=()=>{ S.samFontFull=!S.samFontFull; syncToolbar(true); paintVerses(); };
 // "תרגומי התורה" — opens a small picker (ארמי / ערבי / אנגלי), marking the active one
 $('translateBtn').onclick=()=>{
   // if a translation is already showing, this button turns it OFF → back to the text
@@ -7735,7 +7726,25 @@ function openAdminLogin(){
   $('admWebauthnBtn').classList.toggle('hidden', !(ADMIN.webauthn && waSupported()));
   $('adminModal').classList.remove('hidden'); $('admUser').focus();
 }
-$('admCancel').onclick=()=>$('adminModal').classList.add('hidden');
+$('admCancel').onclick=()=>{ $('adminModal').classList.add('hidden'); admPassReset(); };
+// show the password: a long one typed on a telephone keyboard is otherwise typed
+// blind, and a single wrong character reads exactly like a forgotten password.
+// It reverts to hidden whenever the window is closed, so a screen left open
+// never keeps it in the clear.
+$('admPassEye').onclick=()=>{
+  const inp=$('admPass'), eye=$('admPassEye'), show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  eye.classList.toggle('on', show);
+  eye.setAttribute('aria-pressed', show ? 'true' : 'false');
+  eye.title = t(show ? 'adm_hide_pass' : 'adm_show_pass');
+  inp.focus();
+};
+function admPassReset(){
+  const inp=$('admPass'), eye=$('admPassEye');
+  if(!inp || !eye) return;
+  inp.type='password'; eye.classList.remove('on'); eye.setAttribute('aria-pressed','false');
+  eye.title = t('adm_show_pass');
+}
 $('admLogin').onclick=async ()=>{
   const user=$('admUser').value.trim(), password=$('admPass').value;
   $('admErr').textContent='';

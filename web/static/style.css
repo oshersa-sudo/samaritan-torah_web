@@ -443,6 +443,15 @@ body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
 .numstrip .num.active{ background:var(--accent); color:#fff; }
 .numstrip .clear{ background:#bf3930; color:#fff; padding:0 10px; font-weight:600; }
 
+/* the password field, with the eye that uncovers it */
+.pass-wrap{ position:relative; display:block; }
+.pass-wrap input{ width:100%; padding-inline-end:38px; }
+.pass-eye{ position:absolute; inset-inline-end:4px; top:50%; transform:translateY(-50%);
+           border:0; background:transparent; font-size:17px; line-height:1; cursor:pointer;
+           padding:4px 6px; opacity:.45; transition:opacity .15s; }
+.pass-eye.on{ opacity:1; filter:drop-shadow(0 0 4px rgba(46,97,184,.6)); }
+@media (hover:hover){ .pass-eye:hover{ opacity:.8; } }
+
 /* Samaritan glyphs */
 .samchar{ font-family:'Samaritan'; }
 /* NOTE: the word-separator middot (.wsep) deliberately does NOT get the
@@ -746,12 +755,6 @@ body.nav-flip:not(.nav-pinned) .reading-bar{ opacity:0; transition:none; }
 @media (hover:hover){ .nav-arrow.nav-book:hover{ background:#3d3524; } }
 .nav-arrow.nav-book:active{ background:#1e1a11; }
 @media (hover:hover){ .nav-arrow.nav-book:disabled:hover{ background:#2b2519; } }
-/* "כולל פירושים?" — it used to ride on the nav bar; it now stands in the toolbar
-   beside the button that turns the Samaritan font on, which is the only state in
-   which it appears at all and the thing it qualifies. It takes the toolbar's own
-   shape (.tb) and only marks itself when it is on. */
-#samFullBtn.on{ background:var(--active); }
-#samFullBtn.hidden{ display:none; }
 /* the three middle controls ride together on one raised pill (see index.html);
    the pill is the group, the discs inside it are the buttons */
 /* the middle three sit shoulder to shoulder with the arrows now: the bar itself
@@ -1938,7 +1941,6 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   .nav-lab-name{ font-size:13.5px; }
   #navbar{ gap:2px; padding:4px; }
   .nav-pill{ gap:2px; padding:0; }
-  /* (samFullBtn now takes .tb's own phone sizing, with the rest of the toolbar) */
   .round{ width:42px; height:42px; font-size:24px; padding:0; }
   .round .zoomi{ width:20px; height:20px; }
   .nav-back .tbi{ width:20px; height:20px; }

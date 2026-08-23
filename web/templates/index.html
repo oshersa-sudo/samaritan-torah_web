@@ -131,7 +131,6 @@
       <button id="searchBtn" class="tb navy" data-i18n="search">חיפוש</button>
       <button id="dictBtn" class="tb" disabled data-i18n="dict">מילון מילים</button>
       <button id="fontBtn" class="tb font-btn" disabled title="כתב שומרוני" aria-label="כתב שומרוני"><span class="font-ab sam-script">ࠀࠁ</span></button>
-      <button id="samFullBtn" class="tb hidden" type="button">כולל פירושים? לא</button>
       <button id="interpBtn" class="tb" disabled><span class="tb-label" data-i18n="interp">פירוש הפסוק</span></button>
     </div>
     <div class="tb-row">
@@ -676,7 +675,8 @@
     <div class="modal-title" data-i18n="m_admin">כניסת מנהל</div>
     <button id="admWebauthnBtn" class="admin-btn hidden" style="margin-bottom:8px" data-i18n="wa_login">כניסה בטביעת אצבע</button>
     <div class="form-row"><label for="admUser" data-i18n="adm_user">שם משתמש</label><input id="admUser" type="text" dir="ltr" autocomplete="off"></div>
-    <div class="form-row"><label for="admPass" data-i18n="adm_pass">סיסמה</label><input id="admPass" type="password" dir="ltr" autocomplete="off"></div>
+    <div class="form-row"><label for="admPass" data-i18n="adm_pass">סיסמה</label>
+      <span class="pass-wrap"><input id="admPass" type="password" dir="ltr" autocomplete="off"><button id="admPassEye" class="pass-eye" type="button" data-i18n-title="adm_show_pass" title="הצג סיסמה" aria-label="הצג סיסמה" aria-pressed="false">👁</button></span></div>
     <div id="admErr" class="form-err"></div>
     <div class="form-btns">
       <button id="admLogin" class="form-send" data-i18n="adm_login">כניסה</button>
