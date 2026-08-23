@@ -1095,7 +1095,14 @@ function library(){
   var remote = SEED.concat(harvested).filter(function(m){
     return !(m.manifest && haveLocal[m.manifest]);
   });
-  var all = localLib.concat(remote);
+  // world-index entries carry no manifest — they're catalogued, not held —
+  // but the whole point of mapping them is that the reader can still find
+  // and read the record, not just see them vanish from every list. They're
+  // all Samaritan by definition, so tag them into that tab explicitly.
+  var world = worldIndex.map(function(m){
+    return m.group ? m : Object.assign({group:"samaritan"}, m);
+  });
+  var all = localLib.concat(remote).concat(world);
   var out = all.filter(function(m){ return removed.indexOf(m.id) === -1; });
   return out.concat(added);
 }
@@ -1449,7 +1456,8 @@ function matchesSearch(m){
 function matchesType(m){
   if(!typeFilter) return true;
   var e = m.manifest ? enriched[m.manifest] : null;
-  var t = e && e.type ? e.type.he : "\u05dc\u05d0 \u05e1\u05d5\u05d5\u05d2";
+  var src = e || m;   // world-index entries carry their own .type directly
+  var t = src && src.type ? src.type.he : "\u05dc\u05d0 \u05e1\u05d5\u05d5\u05d2";
   return t === typeFilter;
 }
 
@@ -1462,18 +1470,6 @@ var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ||
 var adminMode = isLocal && (/[?&]admin=1/.test(location.search) ||
                             localStorage.getItem("mssAdmin") === "1");
 if(/[?&]admin=1/.test(location.search) && isLocal) localStorage.setItem("mssAdmin", "1");
-/* One admin for the whole app: signing in to the Torah opens the panel here too.
-   The frame is same-origin and the message is checked to have come from this very
-   origin. Nothing here writes to the server — the unit is read-only online — so
-   this only reveals the unit's own controls. */
-addEventListener("message", function(e){
-  if(e.origin !== location.origin) return;
-  var d = e.data;
-  if(!d || d.torahAdmin === undefined) return;
-  adminMode = !!d.torahAdmin;
-  var ab = document.getElementById("adminBox"); if(ab) ab.hidden = !adminMode;
-  try { render(); } catch(err) {}
-});
 
 var groupFilter = "samaritan";
 
@@ -1616,14 +1612,14 @@ function renderLibrary(){
     return !m.group || m.group === groupFilter;
   })).filter(matchesSearch).filter(matchesType).filter(matchesDrill);
   // Summarise the rows actually on screen, so the figures follow the filter.
+  // `lib` already carries worldIndex entries (via library()) when the active
+  // tab/filters admit them, so no separate concat is needed here any more.
   var summaryItems = lib.map(function(m){
     var e = m.manifest ? enriched[m.manifest] : null;
-    return e || {type:null, folder:(m.mode === "local" ? (m.folder || "x") : ""),
-                 pages:(m.files ? m.files.length : 0), inst:m.inst || ""};
+    if(e) return e;
+    return {type:m.type || null, folder:(m.mode === "local" ? (m.folder || "x") : ""),
+            pages:(m.files ? m.files.length : (m.pages || 0)), inst:m.inst || ""};
   });
-  if(groupFilter === "all" || groupFilter === "samaritan"){
-    summaryItems = summaryItems.concat(worldIndex);   // known of, not held
-  }
 
   var html = summaryBar(summaryItems, 0);
   if(!lib.length){
@@ -1670,7 +1666,11 @@ $("msList").addEventListener("click", function(e){
   var o = e.target.closest("[data-open]"), r = e.target.closest("[data-remove]");
   if(o){
     var m = library().filter(function(x){ return x.id === o.getAttribute("data-open"); })[0];
-    if(m){ closeLib(); openManuscript(m); }
+    if(m){
+      closeLib();
+      if(!m.manifest && !m.mode) openWorldEntry(m);   // catalogued, not held
+      else openManuscript(m);
+    }
   }
   if(r){
     var id = r.getAttribute("data-remove");
@@ -1736,7 +1736,15 @@ function renderDrill(){
 function matchesDrill(m){
   if(!drillPick) return true;
   var e = m.manifest ? enriched[m.manifest] : null;
-  if(!e) return false;
+  if(!e){
+    // world-index entries have no enriched record but do carry their own
+    // inst/type directly (buildIndexes groups them the same way — see
+    // rebuildIndexes()), so the drill-down must fall back to those instead
+    // of just dropping every uncatalogued-elsewhere manuscript.
+    if(drillMode === "inst") return (m.inst || "לא צוין") === drillPick;
+    if(drillMode === "type") return (m.type ? m.type.he : "לא סווג") === drillPick;
+    return false;
+  }
   if(drillMode === "inst")   return (e.inst || "לא צוין") === drillPick;
   if(drillMode === "type")   return (e.type ? e.type.he : "לא סווג") === drillPick;
   if(drillMode === "century") return (e.century ? ("המאה ה-" + e.century) : "לא מתוארך") === drillPick;
@@ -1878,6 +1886,42 @@ function openFramed(m){
 function hideFrame(){
   var f = document.getElementById("msFrame");
   if(f){ f.hidden = true; f.removeAttribute("src"); }
+}
+
+/* A world-index entry we don't hold and can't even frame (no digitised copy
+   at all). The point of mapping it was the catalogue record itself — show
+   what we gathered about it before sending the reader off to the source. */
+function openWorldEntry(m){
+  hideFrame();
+  cur = m; doc = null; pageIdx = 0;
+  enableChrome(false);
+  $("msTitle").textContent = heTitle(m);
+  $("msShelf").textContent = m.shelf || "";
+  side.hidden = true;
+
+  var lang = metaLang || "he";
+  var title = lang === "ar" ? (m.title_ar || m.title) : lang === "en" ? (m.title_en || m.title) : (m.title || m.title_he);
+  var inst  = lang === "ar" ? (m.inst_ar || m.inst)   : lang === "en" ? (m.inst_en || m.inst)   : m.inst;
+  var note  = lang === "ar" ? (m.note_ar || m.note_he) : lang === "en" ? (m.note_en || m.note_he) : m.note_he;
+  var status = lang === "ar" ? m.status_ar : lang === "en" ? m.status_en : m.status_he;
+  var type  = m.type ? (lang === "ar" ? m.type.ar : lang === "en" ? m.type.en : m.type.he) : "";
+
+  var h = '<div style="max-width:560px;margin:0 auto;text-align:right;padding:24px"' +
+          (lang === "ar" ? ' lang="ar"' : '') + '>' +
+    '<h3 style="margin:0 0 4px">' + esc(title || "") + '</h3>' +
+    '<p style="color:var(--ink-2);margin:0 0 14px">' + esc(inst || "") +
+      (m.shelf ? ' · <span class="mono">' + esc(m.shelf) + '</span>' : '') + '</p>' +
+    '<dl class="meta">' +
+      (type ? '<dt>סוג</dt><dd>' + esc(type) + '</dd>' : '') +
+      (m.date ? '<dt>תאריך</dt><dd>' + esc(m.date) + '</dd>' : '') +
+      (status ? '<dt>סטטוס</dt><dd>' + esc(status) + '</dd>' : '') +
+    '</dl>' +
+    (note ? '<p style="font-size:13px;color:var(--ink-2);margin:14px 0 18px">' + esc(note) + '</p>' : '') +
+    (m.url ? '<div class="row"><a class="btn btn-primary" href="' + esc(m.url) +
+             '" target="_blank" rel="noopener">פתח באתר המקור ↗</a></div>' : '') +
+  '</div>';
+  showMsg(h);
+  updateCredit();
 }
 
 function openLocal(m){
@@ -2703,7 +2747,7 @@ function renderBrowse(){
     items.forEach(function(e){
       var away = !e.folder && e.status;      // known of, but not held here
       h += '<li><button data-open-ms="' + esc(e.manifest || "") + '"'
-         + (away ? ' data-away="' + esc(e.url || "") + '" class="idx-away"' : '') + '>'
+         + (away ? ' data-away="' + esc(e.url || "") + '" data-away-id="' + esc(e.id || "") + '" class="idx-away"' : '') + '>'
          + '<span class="idx-shelf mono">' + esc(e.shelf || "") + '</span> '
          + esc(String(e.title_he || heTitle(e) || e.title || "").slice(0, 64))
          + (away ? '<span class="idx-status">' + esc(e.status_he || "") + '</span>'
@@ -2745,8 +2789,14 @@ document.getElementById("brBody").addEventListener("click", function(e){
   if(!b) return;
   var away = b.getAttribute("data-away");
   if(away !== null){
-    // Not ours to show. Send the reader to the institution that holds it.
-    if(away) window.open(away, "_blank", "noopener");
+    // Not held here (and often not digitised anywhere) — show the catalogue
+    // record we mapped for it first, rather than bouncing straight out.
+    var awayId = b.getAttribute("data-away-id");
+    var entry = worldIndex.filter(function(w){ return w.id === awayId; })[0];
+    document.getElementById("browseOverlay").hidden = true;
+    closeLib();
+    if(entry) openWorldEntry(entry);
+    else if(away) window.open(away, "_blank", "noopener");
     return;
   }
   var mf = b.getAttribute("data-open-ms");
