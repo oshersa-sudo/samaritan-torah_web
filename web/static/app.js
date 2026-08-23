@@ -141,7 +141,7 @@ const I18N = {
     share:'שתף', export_excel:'ייצוא לאקסל', no_results_xls:'אין תוצאות לייצוא',
     back:'‹ חזור', back_t:'חזור', browse:'עיון', search:'חיפוש', dict:'מילון מילים',
     font_sam:'כתב שומרוני', font_heb:'כתב עברי', interp:'פירוש הפסוק', commentary:'פרשנות יהודית',
-    sam_full_q:'כולל פירושים? ', sf_yes:'כן', sf_no:'לא',
+    sam_full_q:'כולל פירושים? ', sam_full_short:'פירושים?', sf_yes:'כן', sf_no:'לא',
     compare:'השוואת נוסחים', variants:'חילופי נוסח', samsrc:'ממקור שומרון', translate:'תרגומי התורה',
     t_aramaic:'תרגום: ארמי', t_arabic:'תרגום: ערבי', t_english:'תרגום: אנגלית',
     search_ph:'חפש מילה', adv_search:'⚙ חיפוש מתקדם', search_help_btn:'❔ עזרה לחיפוש',
@@ -373,7 +373,7 @@ const I18N = {
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
     bm_add:'הוסף סימניה לפרק זה', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
     print_ch:'הדפסת פרק', print_title:'הדפסת פרק',
-    nav_portion_next:'הפרשה הבאה', nav_portion_prev:'הפרשה הקודמת',
+    nav_pin:'קיבוע הסרגל (והשמעה) על המסך', nav_portion_next:'הפרשה הבאה', nav_portion_prev:'הפרשה הקודמת',
     nav_book_next:'הספר הבא', nav_book_prev:'הספר הקודם',
     print_scope:'מה להדפיס', print_scope_ch:'הפרק הנוכחי', print_scope_pt:'הפרשה כולה',
     print_book:'פורמט ספר — תורה למעלה, פירוש למטה, כתב שומרוני בלבד', print_font:'גופן להדפסה', print_font_sam:'שומרוני', print_font_heb:'עברי',
@@ -392,7 +392,7 @@ const I18N = {
     share:'Share', export_excel:'Export to Excel', no_results_xls:'No results to export',
     back:'‹ Back', back_t:'Back', browse:'Browse', search:'Search', dict:'Word dictionary',
     font_sam:'Samaritan script', font_heb:'Hebrew script', interp:'Verse commentary', commentary:'Jewish commentary',
-    sam_full_q:'Include commentaries? ', sf_yes:'Yes', sf_no:'No',
+    sam_full_q:'Include commentaries? ', sam_full_short:'Commentaries?', sf_yes:'Yes', sf_no:'No',
     compare:'Compare versions', variants:'Textual variants', samsrc:'Samaritan sources', translate:'Torah translations',
     t_aramaic:'Translation: Aramaic', t_arabic:'Translation: Arabic', t_english:'Translation: English',
     search_ph:'Search a word', adv_search:'⚙ Advanced search', search_help_btn:'❔ Search help',
@@ -624,7 +624,7 @@ const I18N = {
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
     bm_add:'Bookmark this chapter', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
     print_ch:'Print chapter', print_title:'Print chapter',
-    nav_portion_next:'Next parasha', nav_portion_prev:'Previous parasha',
+    nav_pin:'Keep the bar (and the play strip) on screen', nav_portion_next:'Next parasha', nav_portion_prev:'Previous parasha',
     nav_book_next:'Next book', nav_book_prev:'Previous book',
     print_scope:'What to print', print_scope_ch:'This chapter', print_scope_pt:'The whole parasha',
     print_book:'Book format — Torah above, commentary below, Samaritan script only', print_font:'Print font', print_font_sam:'Samaritan', print_font_heb:'Hebrew',
@@ -643,7 +643,7 @@ const I18N = {
     share:'مشاركة', export_excel:'تصدير إلى إكسل', no_results_xls:'لا توجد نتائج للتصدير',
     back:'‹ رجوع', back_t:'رجوع', browse:'تصفّح', search:'بحث', dict:'معجم الكلمات',
     font_sam:'الخط السامري', font_heb:'الخط العبري', interp:'تفسير الآية', commentary:'تفسير يهودي',
-    sam_full_q:'يشمل التفاسير؟ ', sf_yes:'نعم', sf_no:'لا',
+    sam_full_q:'يشمل التفاسير؟ ', sam_full_short:'التفاسير؟', sf_yes:'نعم', sf_no:'لا',
     compare:'مقارنة النصوص', variants:'اختلافات النصّ', samsrc:'مصادر سامرية', translate:'ترجمات التوراة',
     t_aramaic:'ترجمة: آرامية', t_arabic:'ترجمة: عربية', t_english:'ترجمة: إنجليزية',
     search_ph:'ابحث عن كلمة', adv_search:'⚙ بحث متقدم', search_help_btn:'❔ مساعدة البحث',
@@ -875,7 +875,7 @@ const I18N = {
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
     bm_add:'إضافة إشارة لهذا الأصحاح', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
     print_ch:'طباعة الأصحاح', print_title:'طباعة الأصحاح',
-    nav_portion_next:'المقطع التالي', nav_portion_prev:'المقطع السابق',
+    nav_pin:'تثبيت الشريط (وشريط التشغيل) على الشاشة', nav_portion_next:'المقطع التالي', nav_portion_prev:'المقطع السابق',
     nav_book_next:'السفر التالي', nav_book_prev:'السفر السابق',
     print_scope:'ما الذي يُطبع', print_scope_ch:'هذا الأصحاح', print_scope_pt:'المقطع كاملاً',
     print_book:'تنسيق الكتاب — التوراة أعلى والتفسير أسفل، بالخطّ السامري فقط', print_font:'خط الطباعة', print_font_sam:'سامري', print_font_heb:'عبري',
@@ -3792,17 +3792,31 @@ function placeNavbar(){
 // bar fades out; the next touch anywhere on the app brings it back and starts
 // the count again. Only on the text screens: on the browse screens the bar is
 // how you get about, and a control you cannot see is no use there.
+// The pin decides which of the two it is. Pressed, the bar stays where it is and
+// so does the play strip beneath it — the way they behaved before any of this.
+// Released, both keep out of the reader's way and come back at a touch. The two
+// go together deliberately: they are one cluster of controls at the foot of the
+// page, and a play strip left behind by a departed nav bar looks like a fault.
+// The choice is the reader's and is remembered between visits.
+let navPinned = localStorage.getItem('as_nav_pin') === '1';
 let navHideTimer = null;
 const NAV_HIDE_MS = 3000;
+function syncNavPin(){
+  const b = $('navPin'); if(!b) return;
+  b.classList.toggle('on', navPinned);
+  b.setAttribute('aria-pressed', navPinned ? 'true' : 'false');
+  document.body.classList.toggle('nav-pinned', navPinned);
+}
 function navShow(){
   document.body.classList.remove('nav-hidden');
   armNavHide();
 }
 function armNavHide(){
   clearTimeout(navHideTimer);
-  if(S.view !== 'verses'){ document.body.classList.remove('nav-hidden'); return; }
+  // pinned, or off the text screens: nothing hides
+  if(navPinned || S.view !== 'verses'){ document.body.classList.remove('nav-hidden'); return; }
   navHideTimer = setTimeout(() => {
-    if(S.view === 'verses') document.body.classList.add('nav-hidden');
+    if(!navPinned && S.view === 'verses') document.body.classList.add('nav-hidden');
   }, NAV_HIDE_MS);
 }
 (function(){
@@ -3815,6 +3829,15 @@ function armNavHide(){
   for(const ev of ['pointerdown','touchstart','wheel','keydown','scroll'])
     document.addEventListener(ev, wake, {passive:true, capture:true});
   window.addEventListener('resize', placeNavbar);
+  const pin = $('navPin');
+  if(pin) pin.onclick = () => {
+    navPinned = !navPinned;
+    localStorage.setItem('as_nav_pin', navPinned ? '1' : '0');
+    syncNavPin();
+    navShow();                       // pinning shows at once; releasing restarts the count
+    placeNavbar();
+  };
+  syncNavPin();
 })();
 // the prev/next arrows are TRANSPARENT and show only an arrow glyph by default; a
 // label appears inside them only when the step crosses into another PARASHA or BOOK.
@@ -3997,7 +4020,15 @@ function runFlipGhost(ghost, delta){
   }
   // remove the ghost when the turn ends — plus a hard fallback in case the page
   // is backgrounded (a frozen animation timeline would otherwise never fire onfinish)
-  let gone=false; const done=()=>{ if(gone) return; gone=true; ghost.remove(); };
+  // The leaf turns over the whole page, the floating nav bar included, and a bar
+  // sitting on top of a page in mid-turn breaks the illusion at once. So it steps
+  // aside for the turn and no longer: it goes as the leaf lifts and is back the
+  // moment the leaf has landed — not left to the idle timer, which would keep it
+  // away for another three seconds and make the reader ask for it again.
+  document.body.classList.add('nav-flip');
+  let gone=false;
+  const done=()=>{ if(gone) return; gone=true; ghost.remove();
+                   document.body.classList.remove('nav-flip'); navShow(); };
   a.onfinish=done; a.oncancel=done; setTimeout(done, 1000);
 }
 async function crossPortion(delta){
@@ -4423,7 +4454,10 @@ function syncToolbar(isVerse){
   { const fb=$('samFullBtn');
     fb.classList.toggle('hidden', !(isVerse && sam));
     fb.classList.toggle('on', S.samFontFull);
-    fb.textContent = t('sam_full_q') + (S.samFontFull ? t('sf_yes') : t('sf_no')); }
+    // the short form: in the toolbar it shares a 52px cell with six others, and
+    // the full question wrapped to a third line and pushed the whole row taller
+    fb.textContent = t('sam_full_short') + ' ' + (S.samFontFull ? t('sf_yes') : t('sf_no'));
+    fb.title = t('sam_full_q') + (S.samFontFull ? t('sf_yes') : t('sf_no')); }
   setBtn('dictBtn',       isVerse, S.dict);
   setBtn('interpBtn',     isVerse, S.panel==='interpret');
   setBtn('compareBtn',    isVerse, S.panel==='compare');

@@ -114,7 +114,9 @@
     <button id="plusBtn" class="round" aria-label="הגדל טקסט" title="הגדל טקסט"><svg class="zoomi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.8" y2="15.8"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"/></svg></button>
     </div>
     <button id="prevBtn" class="nav-arrow" data-i18n="prev_portion">פרשה קודמת ›</button>
-    <button id="samFullBtn" class="hidden" type="button">כולל פירושים? לא</button>
+    <!-- the pin: pressed, the bar (and the play strip with it) stays put; released,
+         both keep out of the way of the text and come back at a touch -->
+    <button id="navPin" class="nav-pin" type="button" data-i18n-title="nav_pin" title="קיבוע הסרגל" aria-label="קיבוע הסרגל" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6l-1 6 4 3v2H6v-2l4-3z"/><line x1="12" y1="15" x2="12" y2="21"/></svg></button>
   </div>
 
   <!-- bottom toolbar -->
@@ -132,6 +134,7 @@
       <button id="searchBtn" class="tb navy" data-i18n="search">חיפוש</button>
       <button id="dictBtn" class="tb" disabled data-i18n="dict">מילון מילים</button>
       <button id="fontBtn" class="tb font-btn" disabled title="כתב שומרוני" aria-label="כתב שומרוני"><span class="font-ab sam-script">ࠀࠁ</span></button>
+      <button id="samFullBtn" class="tb hidden" type="button">כולל פירושים? לא</button>
       <button id="interpBtn" class="tb" disabled><span class="tb-label" data-i18n="interp">פירוש הפסוק</span></button>
     </div>
     <div class="tb-row">

@@ -627,6 +627,33 @@ body.div-collapsed .div-handle{ height:26px; }
 /* the bar is out of sight until the screen is touched */
 body.nav-hidden #navbar{ opacity:0; pointer-events:none;
                          transform:translateX(-50%) translateY(14px); }
+/* and it steps out of the way of a turning page entirely — at once, with no
+   fade either way, because a bar dissolving over a leaf in mid-turn is exactly
+   the thing being avoided (runFlipGhost puts it back the moment the leaf lands) */
+body.nav-flip #navbar{ opacity:0; pointer-events:none; transition:none; }
+
+/* the pin, at the end of the row: an outline while the bar is free to go, filled
+   while it is held. It is a control of the bar itself, so it is a shade quieter
+   than the controls the bar exists to carry. */
+.nav-pin{ flex:0 0 auto; width:38px; height:38px; margin-inline-start:2px; padding:0; border:0;
+          border-radius:999px; background:transparent; color:#8b8271; cursor:pointer;
+          display:inline-flex; align-items:center; justify-content:center;
+          transition:background .15s, color .15s; }
+.nav-pin svg{ width:19px; height:19px; }
+.nav-pin.on{ background:#2b2519; color:#f4f1e8; }
+@media (hover:hover){ .nav-pin:hover{ background:#efe9da; color:#2b2519; }
+                      .nav-pin.on:hover{ background:#3d3524; color:#f4f1e8; } }
+
+/* The play strip goes with the bar: released, it draws itself away with the nav
+   bar and comes back on the same touch; pinned, it simply stays. It sits in the
+   column rather than over it, so it gives its band back to the text instead of
+   fading in place and leaving a blank stripe behind. */
+#audioBar{ overflow:hidden;
+           transition:max-height .28s ease, opacity .22s ease, padding .28s ease;
+           max-height:80px; }
+body.nav-hidden #audioBar{ max-height:0; opacity:0; padding-top:0; padding-bottom:0;
+                           border-top-width:0; }   /* the rule too, or a hairline stays */
+body.nav-flip #audioBar{ opacity:0; transition:none; }
 /* transparent arrows: just a glyph while paging chapters; a parasha/book label
    appears inside only at a crossing (set in JS) */
 /* ── the nav arrows ──────────────────────────────────────────────────────────
@@ -659,13 +686,11 @@ body.nav-hidden #navbar{ opacity:0; pointer-events:none;
 @media (hover:hover){ .nav-arrow.nav-book:hover{ background:#3d3524; } }
 .nav-arrow.nav-book:active{ background:#1e1a11; }
 @media (hover:hover){ .nav-arrow.nav-book:disabled:hover{ background:#2b2519; } }
-/* "כולל פירושים?" — a compact toggle chip, not a stretching nav arrow (flex:0),
-   sitting at the row's far end (rightmost in the LTR #navbar). Only shown while
-   the Samaritan-font mode itself is on. */
-#samFullBtn{ flex:0 0 auto; padding:6px 9px; border:1px solid rgba(23,169,196,.4); border-radius:14px;
-             background:transparent; color:var(--navy); font-family:inherit; font-size:12.5px;
-             font-weight:600; cursor:pointer; white-space:nowrap; }
-#samFullBtn.on{ background:var(--active); border-color:var(--active); color:#fff; }
+/* "כולל פירושים?" — it used to ride on the nav bar; it now stands in the toolbar
+   beside the button that turns the Samaritan font on, which is the only state in
+   which it appears at all and the thing it qualifies. It takes the toolbar's own
+   shape (.tb) and only marks itself when it is on. */
+#samFullBtn.on{ background:var(--active); }
 #samFullBtn.hidden{ display:none; }
 /* the three middle controls ride together on one raised pill (see index.html);
    the pill is the group, the discs inside it are the buttons */
@@ -1853,7 +1878,7 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   .nav-lab-name{ font-size:13.5px; }
   #navbar{ gap:2px; padding:4px; }
   .nav-pill{ gap:2px; padding:0; }
-  #samFullBtn{ font-size:11px; padding:5px 6px; }
+  /* (samFullBtn now takes .tb's own phone sizing, with the rest of the toolbar) */
   .round{ width:42px; height:42px; font-size:24px; padding:0; }
   .round .zoomi{ width:20px; height:20px; }
   .nav-back .tbi{ width:20px; height:20px; }
