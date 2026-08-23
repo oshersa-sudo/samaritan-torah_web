@@ -17826,424 +17826,6 @@
     },
     {
      "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 6,
-     "name": "דברים - שופטים ושוטרים - 83",
-     "incipit": "שפטים ושוטרים תתן לך",
-     "sam_ch_id": 1932,
-     "n": 83,
-     "verses": "טז:יח-יז:א",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 83,
-     "file": "/static/audio/readings/b5-p06-c083.mp3",
-     "duration": 64.93,
-     "src_start": 0.0,
-     "src_end": 64.93,
-     "verses_num": "16:18-17:1"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 6,
-     "name": "דברים - שופטים ושוטרים - 84",
-     "incipit": "כי ימצא בקרבך באחת",
-     "sam_ch_id": 1933,
-     "n": 84,
-     "verses": "יז:ב-יז:ז",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 84,
-     "file": "/static/audio/readings/b5-p06-c084.mp3",
-     "duration": 77.0,
-     "src_start": 64.93,
-     "src_end": 141.93,
-     "verses_num": "17:2-17:7"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 6,
-     "name": "דברים - שופטים ושוטרים - 85",
-     "incipit": "כי יפלא ממך דבר",
-     "sam_ch_id": 1934,
-     "n": 85,
-     "verses": "יז:ח-יז:יג",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 85,
-     "file": "/static/audio/readings/b5-p06-c085.mp3",
-     "duration": 77.67,
-     "src_start": 141.93,
-     "src_end": 219.6,
-     "verses_num": "17:8-17:13"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 7,
-     "name": "דברים - שופטים ושוטרים - 86",
-     "incipit": "כי תבוא אל הארץ",
-     "sam_ch_id": 1935,
-     "n": 86,
-     "verses": "יז:יד-יז:כ",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 86,
-     "file": "/static/audio/readings/b5-p06-c086.mp3",
-     "duration": 97.31,
-     "src_start": 219.6,
-     "src_end": 316.91,
-     "verses_num": "17:14-17:20"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 8,
-     "name": "דברים - שופטים ושוטרים - 87",
-     "incipit": "לא יהיה לכהנים הלוים",
-     "sam_ch_id": 1936,
-     "n": 87,
-     "verses": "יח:א-יח:ח",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 87,
-     "file": "/static/audio/readings/b5-p06-c087.mp3",
-     "duration": 82.36,
-     "src_start": 316.91,
-     "src_end": 399.27,
-     "verses_num": "18:1-18:8"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 8,
-     "name": "דברים - שופטים ושוטרים - 88",
-     "incipit": "כי אתה בא אל",
-     "sam_ch_id": 2246,
-     "n": 88,
-     "verses": "יח:ט-יח:טז",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 88,
-     "file": "/static/audio/readings/b5-p06-c088.mp3",
-     "duration": 80.98,
-     "src_start": 399.27,
-     "src_end": 480.25,
-     "verses_num": "18:9-18:16"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 6,
-     "name": "דברים - שופטים ושוטרים - 89",
-     "incipit": "ויאמר יהוה אלי הטיבו",
-     "sam_ch_id": 1937,
-     "n": 89,
-     "verses": "יח:יז-יח:כב",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 89,
-     "file": "/static/audio/readings/b5-p06-c089.mp3",
-     "duration": 68.89,
-     "src_start": 480.25,
-     "src_end": 549.14,
-     "verses_num": "18:17-18:22"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 7,
-     "name": "דברים - שופטים ושוטרים - 90",
-     "incipit": "כי יכרית יהוה אלהיך",
-     "sam_ch_id": 1938,
-     "n": 90,
-     "verses": "יט:א-יט:ז",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 90,
-     "file": "/static/audio/readings/b5-p06-c090.mp3",
-     "duration": 93.84,
-     "src_start": 549.14,
-     "src_end": 642.98,
-     "verses_num": "19:1-19:7"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 6,
-     "name": "דברים - שופטים ושוטרים - 91",
-     "incipit": "ואם ירחיב יהוה אלהיך",
-     "sam_ch_id": 1939,
-     "n": 91,
-     "verses": "יט:ח-יט:יג",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 91,
-     "file": "/static/audio/readings/b5-p06-c091.mp3",
-     "duration": 72.26,
-     "src_start": 642.98,
-     "src_end": 715.24,
-     "verses_num": "19:8-19:13"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 8,
-     "name": "דברים - שופטים ושוטרים - 92",
-     "incipit": "לא תסיג גבול רעך",
-     "sam_ch_id": 1940,
-     "n": 92,
-     "verses": "יט:יד-יט:כא",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 92,
-     "file": "/static/audio/readings/b5-p06-c092.mp3",
-     "duration": 83.48,
-     "src_start": 715.24,
-     "src_end": 798.72,
-     "verses_num": "19:14-19:21"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 9,
-     "name": "דברים - שופטים ושוטרים - 93",
-     "incipit": "כי תצא למלחמה על",
-     "sam_ch_id": 1941,
-     "n": 93,
-     "verses": "כ:א-כ:ט",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 93,
-     "file": "/static/audio/readings/b5-p06-c093.mp3",
-     "duration": 69.02,
-     "src_start": 798.72,
-     "src_end": 867.74,
-     "verses_num": "20:1-20:9"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 9,
-     "name": "דברים - שופטים ושוטרים - 94",
-     "incipit": "כי תקרב על עיר",
-     "sam_ch_id": 1942,
-     "n": 94,
-     "verses": "כ:י-כ:יח",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 94,
-     "file": "/static/audio/readings/b5-p06-c094.mp3",
-     "duration": 98.59,
-     "src_start": 867.74,
-     "src_end": 966.33,
-     "verses_num": "20:10-20:18"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 2,
-     "name": "דברים - שופטים ושוטרים - 95",
-     "incipit": "כי תצור על עיר",
-     "sam_ch_id": 1943,
-     "n": 95,
-     "verses": "כ:יט-כ:כ",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 95,
-     "file": "/static/audio/readings/b5-p06-c095.mp3",
-     "duration": 45.89,
-     "src_start": 966.33,
-     "src_end": 1012.22,
-     "verses_num": "20:19-20:20"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 9,
-     "name": "דברים - שופטים ושוטרים - 96",
-     "incipit": "כי ימצא חלל באדמה",
-     "sam_ch_id": 1944,
-     "n": 96,
-     "verses": "כא:א-כא:ט",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 96,
-     "file": "/static/audio/readings/b5-p06-c096.mp3",
-     "duration": 121.95,
-     "src_start": 1012.22,
-     "src_end": 1134.17,
-     "verses_num": "21:1-21:9"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 5,
-     "name": "דברים - שופטים ושוטרים - 97",
-     "incipit": "כי תצא למלחמה על",
-     "sam_ch_id": 1945,
-     "n": 97,
-     "verses": "כא:י-כא:יד",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 97,
-     "file": "/static/audio/readings/b5-p06-c097.mp3",
-     "duration": 74.58,
-     "src_start": 1134.17,
-     "src_end": 1208.75,
-     "verses_num": "21:10-21:14"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 3,
-     "name": "דברים - שופטים ושוטרים - 98",
-     "incipit": "כי תהיינה לאיש שתי",
-     "sam_ch_id": 1946,
-     "n": 98,
-     "verses": "כא:טו-כא:יז",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 98,
-     "file": "/static/audio/readings/b5-p06-c098.mp3",
-     "duration": 41.47,
-     "src_start": 1208.75,
-     "src_end": 1250.22,
-     "verses_num": "21:15-21:17"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 4,
-     "name": "דברים - שופטים ושוטרים - 99",
-     "incipit": "כי יהיה לאיש בן",
-     "sam_ch_id": 1947,
-     "n": 99,
-     "verses": "כא:יח-כא:כא",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 99,
-     "file": "/static/audio/readings/b5-p06-c099.mp3",
-     "duration": 44.77,
-     "src_start": 1250.22,
-     "src_end": 1294.99,
-     "verses_num": "21:18-21:21"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 7,
-     "name": "דברים - שופטים ושוטרים - 100",
-     "incipit": "כי יהיה באיש חטא",
-     "sam_ch_id": 1948,
-     "n": 100,
-     "verses": "כא:כב-כב:ה",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 100,
-     "file": "/static/audio/readings/b5-p06-c100.mp3",
-     "duration": 89.3,
-     "src_start": 1294.99,
-     "src_end": 1384.29,
-     "verses_num": "21:22-22:5"
-    },
-    {
-     "src": {
-      "youtube_id": "gO5SdUGInrE"
-     },
-     "verse_count": 7,
-     "name": "דברים - שופטים ושוטרים - 101",
-     "incipit": "כי יקרא קן צפור",
-     "sam_ch_id": 1949,
-     "n": 101,
-     "verses": "כב:ו-כב:יב",
-     "portion": {
-      "order": 6,
-      "name": "שופטים ושוטרים",
-      "id": 51
-     },
-     "sam_ch_number": 101,
-     "file": "/static/audio/readings/b5-p06-c101.mp3",
-     "duration": 65.01,
-     "src_start": 1384.29,
-     "src_end": 1449.3,
-     "verses_num": "22:6-22:12"
-    },
-    {
-     "src": {
       "youtube_id": "_RXTkmmx3T0"
      },
      "verse_count": 10,
@@ -20925,6 +20507,424 @@
      "verse_count": 5,
      "incipit": "חג הסכות תעשה לך",
      "name": "דברים - בנים אתם - 82"
+    },
+    {
+     "n": 83,
+     "sam_ch_number": 83,
+     "file": "/static/audio/readings/b5-p06-c083.mp3",
+     "duration": 64.93,
+     "src_start": 0,
+     "src_end": 64.93,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1932,
+     "verses": "טז:יח-יז:א",
+     "verses_num": "16:18-17:1",
+     "verse_count": 6,
+     "incipit": "שפטים ושוטרים תתן לך",
+     "name": "דברים - שופטים ושוטרים - 83"
+    },
+    {
+     "n": 84,
+     "sam_ch_number": 84,
+     "file": "/static/audio/readings/b5-p06-c084.mp3",
+     "duration": 77.0,
+     "src_start": 0,
+     "src_end": 77.0,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1933,
+     "verses": "יז:ב-יז:ז",
+     "verses_num": "17:2-17:7",
+     "verse_count": 6,
+     "incipit": "כי ימצא בקרבך באחת",
+     "name": "דברים - שופטים ושוטרים - 84"
+    },
+    {
+     "n": 85,
+     "sam_ch_number": 85,
+     "file": "/static/audio/readings/b5-p06-c085.mp3",
+     "duration": 77.67,
+     "src_start": 0,
+     "src_end": 77.67,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1934,
+     "verses": "יז:ח-יז:יג",
+     "verses_num": "17:8-17:13",
+     "verse_count": 6,
+     "incipit": "כי יפלא ממך דבר",
+     "name": "דברים - שופטים ושוטרים - 85"
+    },
+    {
+     "n": 86,
+     "sam_ch_number": 86,
+     "file": "/static/audio/readings/b5-p06-c086.mp3",
+     "duration": 97.31,
+     "src_start": 0,
+     "src_end": 97.31,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1935,
+     "verses": "יז:יד-יז:כ",
+     "verses_num": "17:14-17:20",
+     "verse_count": 7,
+     "incipit": "כי תבוא אל הארץ",
+     "name": "דברים - שופטים ושוטרים - 86"
+    },
+    {
+     "n": 87,
+     "sam_ch_number": 87,
+     "file": "/static/audio/readings/b5-p06-c087.mp3",
+     "duration": 82.36,
+     "src_start": 0,
+     "src_end": 82.36,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1936,
+     "verses": "יח:א-יח:ח",
+     "verses_num": "18:1-18:8",
+     "verse_count": 8,
+     "incipit": "לא יהיה לכהנים הלוים",
+     "name": "דברים - שופטים ושוטרים - 87"
+    },
+    {
+     "n": 88,
+     "sam_ch_number": 88,
+     "file": "/static/audio/readings/b5-p06-c088.mp3",
+     "duration": 80.98,
+     "src_start": 0,
+     "src_end": 80.98,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 2246,
+     "verses": "יח:ט-יח:טז",
+     "verses_num": "18:9-18:16",
+     "verse_count": 8,
+     "incipit": "כי אתה בא אל",
+     "name": "דברים - שופטים ושוטרים - 88"
+    },
+    {
+     "n": 89,
+     "sam_ch_number": 89,
+     "file": "/static/audio/readings/b5-p06-c089.mp3",
+     "duration": 68.89,
+     "src_start": 0,
+     "src_end": 68.89,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1937,
+     "verses": "יח:יז-יח:כב",
+     "verses_num": "18:17-18:22",
+     "verse_count": 6,
+     "incipit": "ויאמר יהוה אלי הטיבו",
+     "name": "דברים - שופטים ושוטרים - 89"
+    },
+    {
+     "n": 90,
+     "sam_ch_number": 90,
+     "file": "/static/audio/readings/b5-p06-c090.mp3",
+     "duration": 93.84,
+     "src_start": 0,
+     "src_end": 93.84,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1938,
+     "verses": "יט:א-יט:ז",
+     "verses_num": "19:1-19:7",
+     "verse_count": 7,
+     "incipit": "כי יכרית יהוה אלהיך",
+     "name": "דברים - שופטים ושוטרים - 90"
+    },
+    {
+     "n": 91,
+     "sam_ch_number": 91,
+     "file": "/static/audio/readings/b5-p06-c091.mp3",
+     "duration": 72.26,
+     "src_start": 0,
+     "src_end": 72.26,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1939,
+     "verses": "יט:ח-יט:יג",
+     "verses_num": "19:8-19:13",
+     "verse_count": 6,
+     "incipit": "ואם ירחיב יהוה אלהיך",
+     "name": "דברים - שופטים ושוטרים - 91"
+    },
+    {
+     "n": 92,
+     "sam_ch_number": 92,
+     "file": "/static/audio/readings/b5-p06-c092.mp3",
+     "duration": 83.48,
+     "src_start": 0,
+     "src_end": 83.48,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1940,
+     "verses": "יט:יד-יט:כא",
+     "verses_num": "19:14-19:21",
+     "verse_count": 8,
+     "incipit": "לא תסיג גבול רעך",
+     "name": "דברים - שופטים ושוטרים - 92"
+    },
+    {
+     "n": 93,
+     "sam_ch_number": 93,
+     "file": "/static/audio/readings/b5-p06-c093.mp3",
+     "duration": 112.84,
+     "src_start": 0,
+     "src_end": 112.84,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1941,
+     "verses": "כ:א-כ:ט",
+     "verses_num": "20:1-20:9",
+     "verse_count": 9,
+     "incipit": "כי תצא למלחמה על",
+     "name": "דברים - שופטים ושוטרים - 93"
+    },
+    {
+     "n": 94,
+     "sam_ch_number": 94,
+     "file": "/static/audio/readings/b5-p06-c094.mp3",
+     "duration": 100.66,
+     "src_start": 0,
+     "src_end": 100.66,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1942,
+     "verses": "כ:י-כ:יח",
+     "verses_num": "20:10-20:18",
+     "verse_count": 9,
+     "incipit": "כי תקרב על עיר",
+     "name": "דברים - שופטים ושוטרים - 94"
+    },
+    {
+     "n": 95,
+     "sam_ch_number": 95,
+     "file": "/static/audio/readings/b5-p06-c095.mp3",
+     "duration": 38.31,
+     "src_start": 0,
+     "src_end": 38.31,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1943,
+     "verses": "כ:יט-כ:כ",
+     "verses_num": "20:19-20:20",
+     "verse_count": 2,
+     "incipit": "כי תצור על עיר",
+     "name": "דברים - שופטים ושוטרים - 95"
+    },
+    {
+     "n": 96,
+     "sam_ch_number": 96,
+     "file": "/static/audio/readings/b5-p06-c096.mp3",
+     "duration": 100.61,
+     "src_start": 0,
+     "src_end": 100.61,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1944,
+     "verses": "כא:א-כא:ט",
+     "verses_num": "21:1-21:9",
+     "verse_count": 9,
+     "incipit": "כי ימצא חלל באדמה",
+     "name": "דברים - שופטים ושוטרים - 96"
+    },
+    {
+     "n": 97,
+     "sam_ch_number": 97,
+     "file": "/static/audio/readings/b5-p06-c097.mp3",
+     "duration": 57.61,
+     "src_start": 0,
+     "src_end": 57.61,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1945,
+     "verses": "כא:י-כא:יד",
+     "verses_num": "21:10-21:14",
+     "verse_count": 5,
+     "incipit": "כי תצא למלחמה על",
+     "name": "דברים - שופטים ושוטרים - 97"
+    },
+    {
+     "n": 98,
+     "sam_ch_number": 98,
+     "file": "/static/audio/readings/b5-p06-c098.mp3",
+     "duration": 41.47,
+     "src_start": 0,
+     "src_end": 41.47,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1946,
+     "verses": "כא:טו-כא:יז",
+     "verses_num": "21:15-21:17",
+     "verse_count": 3,
+     "incipit": "כי תהיינה לאיש שתי",
+     "name": "דברים - שופטים ושוטרים - 98"
+    },
+    {
+     "n": 99,
+     "sam_ch_number": 99,
+     "file": "/static/audio/readings/b5-p06-c099.mp3",
+     "duration": 44.77,
+     "src_start": 0,
+     "src_end": 44.77,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1947,
+     "verses": "כא:יח-כא:כא",
+     "verses_num": "21:18-21:21",
+     "verse_count": 4,
+     "incipit": "כי יהיה לאיש בן",
+     "name": "דברים - שופטים ושוטרים - 99"
+    },
+    {
+     "n": 100,
+     "sam_ch_number": 100,
+     "file": "/static/audio/readings/b5-p06-c100.mp3",
+     "duration": 89.3,
+     "src_start": 0,
+     "src_end": 89.3,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1948,
+     "verses": "כא:כב-כב:ה",
+     "verses_num": "21:22-22:5",
+     "verse_count": 7,
+     "incipit": "כי יהיה באיש חטא",
+     "name": "דברים - שופטים ושוטרים - 100"
+    },
+    {
+     "n": 101,
+     "sam_ch_number": 101,
+     "file": "/static/audio/readings/b5-p06-c101.mp3",
+     "duration": 65.01,
+     "src_start": 0,
+     "src_end": 65.01,
+     "portion": {
+      "order": 6,
+      "id": 51,
+      "name": "שופטים ושוטרים"
+     },
+     "src": {
+      "youtube_id": "gO5SdUGInrE"
+     },
+     "sam_ch_id": 1949,
+     "verses": "כב:ו-כב:יב",
+     "verses_num": "22:6-22:12",
+     "verse_count": 7,
+     "incipit": "כי יקרא קן צפור",
+     "name": "דברים - שופטים ושוטרים - 101"
     }
    ],
    "playlist": "PLl-48IEqLtltLwSZByh4fA9I40z5o3-Do",
