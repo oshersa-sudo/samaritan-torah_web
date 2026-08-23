@@ -17826,226 +17826,6 @@
     },
     {
      "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 9,
-     "name": "דברים - כי אתם - 62",
-     "incipit": "כי אתם עברים את",
-     "sam_ch_id": 1911,
-     "n": 62,
-     "verses": "יא:לא-יב:ז",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 62,
-     "file": "/static/audio/readings/b5-p04-c062.mp3",
-     "duration": 162.08,
-     "src_start": 0.0,
-     "src_end": 162.08,
-     "verses_num": "11:31-12:7"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי אתם - 63",
-     "incipit": "לא תעשו ככל אשר",
-     "sam_ch_id": 1912,
-     "n": 63,
-     "verses": "יב:ח-יב:יב",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 63,
-     "file": "/static/audio/readings/b5-p04-c063.mp3",
-     "duration": 114.89,
-     "src_start": 162.08,
-     "src_end": 276.97,
-     "verses_num": "12:8-12:12"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי אתם - 64",
-     "incipit": "השמר לך פן תעלה",
-     "sam_ch_id": 1913,
-     "n": 64,
-     "verses": "יב:יג-יב:טז",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 64,
-     "file": "/static/audio/readings/b5-p04-c064.mp3",
-     "duration": 49.6,
-     "src_start": 276.97,
-     "src_end": 326.57,
-     "verses_num": "12:13-12:16"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 3,
-     "name": "דברים - כי אתם - 65",
-     "incipit": "לא תוכל לאכל בשעריך",
-     "sam_ch_id": 1914,
-     "n": 65,
-     "verses": "יב:יז-יב:יט",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 65,
-     "file": "/static/audio/readings/b5-p04-c065.mp3",
-     "duration": 50.52,
-     "src_start": 326.57,
-     "src_end": 377.09,
-     "verses_num": "12:17-12:19"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 6,
-     "name": "דברים - כי אתם - 66",
-     "incipit": "כי ירחיב יהוה אלהיך",
-     "sam_ch_id": 1915,
-     "n": 66,
-     "verses": "יב:כ-יב:כה",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 66,
-     "file": "/static/audio/readings/b5-p04-c066.mp3",
-     "duration": 81.05,
-     "src_start": 377.09,
-     "src_end": 458.14,
-     "verses_num": "12:20-12:25"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 3,
-     "name": "דברים - כי אתם - 67",
-     "incipit": "רק קדשיך אשר יהיו",
-     "sam_ch_id": 1916,
-     "n": 67,
-     "verses": "יב:כו-יב:כח",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 67,
-     "file": "/static/audio/readings/b5-p04-c067.mp3",
-     "duration": 56.33,
-     "src_start": 458.14,
-     "src_end": 514.47,
-     "verses_num": "12:26-12:28"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי אתם - 68",
-     "incipit": "כי יכרית יהוה אלהיך",
-     "sam_ch_id": 1917,
-     "n": 68,
-     "verses": "יב:כט-יג:א",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 68,
-     "file": "/static/audio/readings/b5-p04-c068.mp3",
-     "duration": 82.55,
-     "src_start": 514.47,
-     "src_end": 597.02,
-     "verses_num": "12:29-13:1"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי אתם - 69",
-     "incipit": "כי יקום בקרבך נביא",
-     "sam_ch_id": 1918,
-     "n": 69,
-     "verses": "יג:ב-יג:ו",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 69,
-     "file": "/static/audio/readings/b5-p04-c069.mp3",
-     "duration": 85.58,
-     "src_start": 597.02,
-     "src_end": 682.6,
-     "verses_num": "13:2-13:6"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 6,
-     "name": "דברים - כי אתם - 70",
-     "incipit": "כי יסיתך אחיך בן",
-     "sam_ch_id": 1919,
-     "n": 70,
-     "verses": "יג:ז-יג:יב",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 70,
-     "file": "/static/audio/readings/b5-p04-c070.mp3",
-     "duration": 77.02,
-     "src_start": 682.6,
-     "src_end": 759.62,
-     "verses_num": "13:7-13:12"
-    },
-    {
-     "src": {
-      "youtube_id": "-e5pgHn-aD4"
-     },
-     "verse_count": 7,
-     "name": "דברים - כי אתם - 71",
-     "incipit": "כי תשמע באחת עריך",
-     "sam_ch_id": 1920,
-     "n": 71,
-     "verses": "יג:יג-יג:יט",
-     "portion": {
-      "order": 4,
-      "name": "כי אתם",
-      "id": 49
-     },
-     "sam_ch_number": 71,
-     "file": "/static/audio/readings/b5-p04-c071.mp3",
-     "duration": 25.33,
-     "src_start": 759.62,
-     "src_end": 784.95,
-     "verses_num": "13:13-13:19"
-    },
-    {
-     "src": {
       "youtube_id": "3U7TpzJ9hmQ"
      },
      "verse_count": 8,
@@ -20925,6 +20705,226 @@
      "verse_count": 5,
      "incipit": "ראה: אנכי נתן לפניכם",
      "name": "דברים - כי יביאך - 61"
+    },
+    {
+     "n": 62,
+     "sam_ch_number": 62,
+     "file": "/static/audio/readings/b5-p04-c062.mp3",
+     "duration": 141.93,
+     "src_start": 0,
+     "src_end": 141.93,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1911,
+     "verses": "יא:לא-יב:ז",
+     "verses_num": "11:31-12:7",
+     "verse_count": 9,
+     "incipit": "כי אתם עברים את",
+     "name": "דברים - כי אתם - 62"
+    },
+    {
+     "n": 63,
+     "sam_ch_number": 63,
+     "file": "/static/audio/readings/b5-p04-c063.mp3",
+     "duration": 91.75,
+     "src_start": 0,
+     "src_end": 91.75,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1912,
+     "verses": "יב:ח-יב:יב",
+     "verses_num": "12:8-12:12",
+     "verse_count": 5,
+     "incipit": "לא תעשו ככל אשר",
+     "name": "דברים - כי אתם - 63"
+    },
+    {
+     "n": 64,
+     "sam_ch_number": 64,
+     "file": "/static/audio/readings/b5-p04-c064.mp3",
+     "duration": 45.92,
+     "src_start": 0,
+     "src_end": 45.92,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1913,
+     "verses": "יב:יג-יב:טז",
+     "verses_num": "12:13-12:16",
+     "verse_count": 4,
+     "incipit": "השמר לך פן תעלה",
+     "name": "דברים - כי אתם - 64"
+    },
+    {
+     "n": 65,
+     "sam_ch_number": 65,
+     "file": "/static/audio/readings/b5-p04-c065.mp3",
+     "duration": 49.33,
+     "src_start": 0,
+     "src_end": 49.33,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1914,
+     "verses": "יב:יז-יב:יט",
+     "verses_num": "12:17-12:19",
+     "verse_count": 3,
+     "incipit": "לא תוכל לאכל בשעריך",
+     "name": "דברים - כי אתם - 65"
+    },
+    {
+     "n": 66,
+     "sam_ch_number": 66,
+     "file": "/static/audio/readings/b5-p04-c066.mp3",
+     "duration": 77.12,
+     "src_start": 0,
+     "src_end": 77.12,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1915,
+     "verses": "יב:כ-יב:כה",
+     "verses_num": "12:20-12:25",
+     "verse_count": 6,
+     "incipit": "כי ירחיב יהוה אלהיך",
+     "name": "דברים - כי אתם - 66"
+    },
+    {
+     "n": 67,
+     "sam_ch_number": 67,
+     "file": "/static/audio/readings/b5-p04-c067.mp3",
+     "duration": 44.59,
+     "src_start": 0,
+     "src_end": 44.59,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1916,
+     "verses": "יב:כו-יב:כח",
+     "verses_num": "12:26-12:28",
+     "verse_count": 3,
+     "incipit": "רק קדשיך אשר יהיו",
+     "name": "דברים - כי אתם - 67"
+    },
+    {
+     "n": 68,
+     "sam_ch_number": 68,
+     "file": "/static/audio/readings/b5-p04-c068.mp3",
+     "duration": 63.83,
+     "src_start": 0,
+     "src_end": 63.83,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1917,
+     "verses": "יב:כט-יג:א",
+     "verses_num": "12:29-13:1",
+     "verse_count": 4,
+     "incipit": "כי יכרית יהוה אלהיך",
+     "name": "דברים - כי אתם - 68"
+    },
+    {
+     "n": 69,
+     "sam_ch_number": 69,
+     "file": "/static/audio/readings/b5-p04-c069.mp3",
+     "duration": 82.55,
+     "src_start": 0,
+     "src_end": 82.55,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1918,
+     "verses": "יג:ב-יג:ו",
+     "verses_num": "13:2-13:6",
+     "verse_count": 5,
+     "incipit": "כי יקום בקרבך נביא",
+     "name": "דברים - כי אתם - 69"
+    },
+    {
+     "n": 70,
+     "sam_ch_number": 70,
+     "file": "/static/audio/readings/b5-p04-c070.mp3",
+     "duration": 85.58,
+     "src_start": 0,
+     "src_end": 85.58,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1919,
+     "verses": "יג:ז-יג:יב",
+     "verses_num": "13:7-13:12",
+     "verse_count": 6,
+     "incipit": "כי יסיתך אחיך בן",
+     "name": "דברים - כי אתם - 70"
+    },
+    {
+     "n": 71,
+     "sam_ch_number": 71,
+     "file": "/static/audio/readings/b5-p04-c071.mp3",
+     "duration": 102.35,
+     "src_start": 0,
+     "src_end": 102.35,
+     "portion": {
+      "order": 4,
+      "id": 49,
+      "name": "כי אתם"
+     },
+     "src": {
+      "youtube_id": "-e5pgHn-aD4"
+     },
+     "sam_ch_id": 1920,
+     "verses": "יג:יג-יג:יט",
+     "verses_num": "13:13-13:19",
+     "verse_count": 7,
+     "incipit": "כי תשמע באחת עריך",
+     "name": "דברים - כי אתם - 71"
     }
    ],
    "playlist": "PLl-48IEqLtltLwSZByh4fA9I40z5o3-Do",
