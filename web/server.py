@@ -79,51 +79,230 @@ _EDITABLE = {'verses': {'text', 'masoretic_text', 'interpretation', 'sam_aramaic
              'private_composition_lines': {'text'}}
 
 
+# ── the password, and the maintainer's own copy of it ────────────────────────
+# ADMIN_PASSWORD from the environment is the standing password. A password the
+# maintainer sets from inside the app (after a reset) overrides it, and is kept
+# — hashed, never in the clear — in the analytics store, which is on the
+# persistent disk and is never downloaded or reseeded (see analytics.py).
+_PBKDF_ROUNDS = 200_000
+
+
+def _hash_password(pw, salt=None):
+    salt = salt or secrets.token_hex(16)
+    dk = hashlib.pbkdf2_hmac('sha256', pw.encode(), salt.encode(), _PBKDF_ROUNDS)
+    return dk.hex(), salt
+
+
+def _stored_password():
+    """(hash, salt) of the overriding password, or (None, None)."""
+    h, salt, _ = analytics.secret_get('admin_password')
+    return (h, salt) if h and salt else (None, None)
+
+
+def _password_ok(pw):
+    """True if pw is the password in force — the stored one if there is one,
+    otherwise the environment's."""
+    h, salt = _stored_password()
+    if h:
+        cand, _ = _hash_password(pw or '', salt)
+        return hmac.compare_digest(cand, h)
+    return bool(ADMIN_PASSWORD) and hmac.compare_digest(pw or '', ADMIN_PASSWORD)
+
+
+def _admin_enabled():
+    return bool(ADMIN_PASSWORD) or bool(_stored_password()[0])
+
+
+def _signing_key():
+    """What the session token is signed with. The stored hash when a password has
+    been set from inside the app, the environment password otherwise — either way
+    a secret the client never sees, and one that changes with the password, so
+    every old token dies the moment the password does."""
+    h, _ = _stored_password()
+    return (h or ADMIN_PASSWORD).encode()
+
+
 def _make_token():
     """Stateless signed token (works across gunicorn workers; carries its own expiry).
-    Signature is keyed by the secret password, so it can't be forged without it."""
+    Signature is keyed by the secret, so it can't be forged without it."""
     ts = str(int(time.time()))
-    sig = hmac.new(ADMIN_PASSWORD.encode(), ts.encode(), hashlib.sha256).hexdigest()
+    sig = hmac.new(_signing_key(), ts.encode(), hashlib.sha256).hexdigest()
     return ts + '.' + sig
 
 
 def _valid_token(tok):
-    if not ADMIN_PASSWORD or not tok or '.' not in str(tok):
+    if not _admin_enabled() or not tok or '.' not in str(tok):
         return False
     ts, _, sig = str(tok).partition('.')
     if not ts.isdigit() or time.time() - int(ts) > _TOKEN_TTL:
         return False
-    good = hmac.new(ADMIN_PASSWORD.encode(), ts.encode(), hashlib.sha256).hexdigest()
+    good = hmac.new(_signing_key(), ts.encode(), hashlib.sha256).hexdigest()
     return hmac.compare_digest(sig, good)
 
 
-def _throttled(ip):
-    """True if this IP has too many recent failed logins (speed-bump against guessing)."""
+def _throttled(ip, store=None, limit=8, window=600):
+    """True if this IP has too many recent failures (speed-bump against guessing).
+    The reset flow passes its own store and a longer window: a code that is mailed
+    out should be rationed by the hour, not by the ten minutes a login is."""
+    store = _LOGIN_FAILS if store is None else store
     now = time.time()
-    fails = [t for t in _LOGIN_FAILS.get(ip, []) if now - t < 600]   # 10-min window
-    _LOGIN_FAILS[ip] = fails
-    return len(fails) >= 8
+    fails = [t for t in store.get(ip, []) if now - t < window]
+    store[ip] = fails
+    return len(fails) >= limit
 
 
 @app.route('/api/admin/status')
 def admin_status():
-    return jsonify({'enabled': bool(ADMIN_PASSWORD),
-                     'webauthn': bool(ADMIN_PASSWORD) and analytics.wa_has_credential()})
+    return jsonify({'enabled': _admin_enabled(),
+                     'webauthn': _admin_enabled() and analytics.wa_has_credential(),
+                     'reset': _admin_enabled() and bool(_reset_target())})
 
 
 @app.route('/api/admin/login', methods=['POST'])
 def admin_login():
-    if not ADMIN_PASSWORD:
+    if not _admin_enabled():
         return jsonify({'ok': False, 'disabled': True})
     ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
     if _throttled(ip):
         return jsonify({'ok': False, 'error': 'too many attempts'}), 429
     d = request.get_json(silent=True) or {}
     u, p = str(d.get('user', '')), str(d.get('password', ''))
-    if hmac.compare_digest(u, ADMIN_USER) and hmac.compare_digest(p, ADMIN_PASSWORD):
+    if hmac.compare_digest(u, ADMIN_USER) and _password_ok(p):
         return jsonify({'ok': True, 'token': _make_token()})
     _LOGIN_FAILS.setdefault(ip, []).append(time.time())
     return jsonify({'ok': False})
+
+
+# ── forgotten password ───────────────────────────────────────────────────────
+# A code is sent to the maintainer's own address, typed back, and only then may a
+# new password be set. The three steps are separate calls so that each can be
+# throttled and so that the code is never a password in its own right: proving it
+# yields a short-lived ticket, and only the ticket can set a password.
+#
+# What is stored is a HASH of the code with its expiry beside it, in the same
+# place as the password (analytics.py) — a stolen store yields neither. The code
+# is single-use: it is destroyed the moment it is proved, whether or not a new
+# password follows.
+_RESET_TTL = 10 * 60           # a code is good for ten minutes
+_TICKET_TTL = 10 * 60          # and the ticket it buys, for ten more
+_RESET_FAILS = {}              # ip -> [failure timestamps]
+
+
+def _reset_target():
+    """Where a reset code may be sent. Deliberately NOT taken from the request:
+    the address is configuration, so no visitor can redirect a code to itself."""
+    return os.environ.get('ADMIN_EMAIL', '').strip()
+
+
+def _mail(to, subject, body):
+    """Send through the configured SMTP relay. Returns True only if it left."""
+    host = os.environ.get('SMTP_HOST', '').strip()
+    if not host or not to:
+        return False
+    import smtplib
+    from email.message import EmailMessage
+    port = int(os.environ.get('SMTP_PORT', '587'))
+    user = os.environ.get('SMTP_USER', '').strip()
+    pw = os.environ.get('SMTP_PASSWORD', '')
+    msg = EmailMessage()
+    msg['From'] = os.environ.get('SMTP_FROM', user or ('no-reply@' + host))
+    msg['To'] = to
+    msg['Subject'] = subject
+    msg.set_content(body)
+    try:
+        if port == 465:
+            with smtplib.SMTP_SSL(host, port, timeout=20) as sm:
+                if user:
+                    sm.login(user, pw)
+                sm.send_message(msg)
+        else:
+            with smtplib.SMTP(host, port, timeout=20) as sm:
+                sm.starttls()
+                if user:
+                    sm.login(user, pw)
+                sm.send_message(msg)
+        return True
+    except Exception:
+        return False
+
+
+def _mask(addr):
+    """me@example.com → m…e@example.com, so the reader can tell which address it
+    went to without the page showing the address to anyone who opens it."""
+    name, _, dom = addr.partition('@')
+    if not dom:
+        return '…'
+    head = name[0] if name else ''
+    tail = name[-1] if len(name) > 2 else ''
+    return head + '…' + tail + '@' + dom
+
+
+@app.route('/api/admin/reset/request', methods=['POST'])
+def admin_reset_request():
+    if not _admin_enabled():
+        return jsonify({'ok': False, 'disabled': True})
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+    if _throttled(ip, _RESET_FAILS, limit=5, window=3600):
+        return jsonify({'ok': False, 'error': 'too many attempts'}), 429
+    to = _reset_target()
+    if not to:
+        return jsonify({'ok': False, 'error': 'no_target'})
+    code = '%06d' % secrets.randbelow(1_000_000)
+    h, salt = _hash_password(code)
+    analytics.secret_set('admin_reset', h, salt + '|' + str(int(time.time()) + _RESET_TTL))
+    _RESET_FAILS.setdefault(ip, []).append(time.time())     # the request itself is rationed
+    sent = _mail(to, 'קוד לאיפוס סיסמת המנהל — התורה השומרונית',
+                 'הקוד שלך הוא %s\nהוא תקף לעשר דקות.\n\n'
+                 'אם לא ביקשת לאפס סיסמה, אפשר להתעלם מהודעה זו.' % code)
+    if not sent:
+        analytics.secret_clear('admin_reset')
+        return jsonify({'ok': False, 'error': 'send_failed'})
+    return jsonify({'ok': True, 'to': _mask(to)})
+
+
+@app.route('/api/admin/reset/verify', methods=['POST'])
+def admin_reset_verify():
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+    if _throttled(ip, _RESET_FAILS, limit=8, window=3600):
+        return jsonify({'ok': False, 'error': 'too many attempts'}), 429
+    d = request.get_json(silent=True) or {}
+    code = str(d.get('code', '')).strip()
+    h, extra, _ = analytics.secret_get('admin_reset')
+    if not h or not extra or '|' not in extra:
+        return jsonify({'ok': False, 'error': 'no_code'})
+    salt, _, exp = extra.partition('|')
+    if not exp.isdigit() or time.time() > int(exp):
+        analytics.secret_clear('admin_reset')
+        return jsonify({'ok': False, 'error': 'expired'})
+    cand, _ = _hash_password(code, salt)
+    if not hmac.compare_digest(cand, h):
+        _RESET_FAILS.setdefault(ip, []).append(time.time())
+        return jsonify({'ok': False})
+    analytics.secret_clear('admin_reset')            # proved once, and only once
+    exp2 = str(int(time.time()) + _TICKET_TTL)
+    sig = hmac.new(_signing_key(), ('reset.' + exp2).encode(), hashlib.sha256).hexdigest()
+    return jsonify({'ok': True, 'ticket': exp2 + '.' + sig})
+
+
+@app.route('/api/admin/reset/apply', methods=['POST'])
+def admin_reset_apply():
+    d = request.get_json(silent=True) or {}
+    ticket = str(d.get('ticket', ''))
+    new = str(d.get('password', ''))
+    exp, _, sig = ticket.partition('.')
+    if not exp.isdigit() or time.time() > int(exp):
+        return jsonify({'ok': False, 'error': 'expired'})
+    good = hmac.new(_signing_key(), ('reset.' + exp).encode(), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(sig, good):
+        return jsonify({'ok': False})
+    if len(new) < 8:
+        return jsonify({'ok': False, 'error': 'too_short'})
+    h, salt = _hash_password(new)
+    if not analytics.secret_set('admin_password', h, salt):
+        return jsonify({'ok': False, 'error': 'store_failed'})
+    # the signing key has just changed with the password, so every token issued
+    # under the old one is already dead — including the ticket that got us here
+    return jsonify({'ok': True, 'token': _make_token()})
 
 
 # ── WebAuthn (phone fingerprint / Face ID) as a second factor for the admin
@@ -152,7 +331,7 @@ def _wa_origin():
 def _wa_state(challenge):
     b64 = bytes_to_base64url(challenge)
     exp = str(int(time.time()) + 300)
-    sig = hmac.new(ADMIN_PASSWORD.encode(), (b64 + '.' + exp).encode(), hashlib.sha256).hexdigest()
+    sig = hmac.new(_signing_key(), (b64 + '.' + exp).encode(), hashlib.sha256).hexdigest()
     return b64 + '.' + exp + '.' + sig
 
 
@@ -163,7 +342,7 @@ def _wa_challenge(state):
         return None
     if not exp.isdigit() or time.time() > int(exp):
         return None
-    good = hmac.new(ADMIN_PASSWORD.encode(), (b64 + '.' + exp).encode(), hashlib.sha256).hexdigest()
+    good = hmac.new(_signing_key(), (b64 + '.' + exp).encode(), hashlib.sha256).hexdigest()
     if not hmac.compare_digest(sig, good):
         return None
     return base64url_to_bytes(b64)
@@ -213,7 +392,7 @@ def wa_register_verify():
 
 @app.route('/api/admin/webauthn/login_options')
 def wa_login_options():
-    if not ADMIN_PASSWORD or not analytics.wa_has_credential():
+    if not _admin_enabled() or not analytics.wa_has_credential():
         return jsonify({'ok': False, 'error': 'not available'}), 400
     challenge = secrets.token_bytes(32)
     opts = webauthn.generate_authentication_options(
@@ -224,7 +403,7 @@ def wa_login_options():
 
 @app.route('/api/admin/webauthn/login_verify', methods=['POST'])
 def wa_login_verify():
-    if not ADMIN_PASSWORD:
+    if not _admin_enabled():
         return jsonify({'ok': False}), 400
     d = request.get_json(silent=True) or {}
     challenge = _wa_challenge(d.get('state'))

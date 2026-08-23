@@ -682,6 +682,43 @@
       <button id="admLogin" class="form-send" data-i18n="adm_login">כניסה</button>
       <button id="admCancel" class="popup-close" data-i18n="c_cancel">ביטול</button>
     </div>
+    <button id="admForgot" class="link-btn hidden" type="button" data-i18n="adm_forgot">שכחתי סיסמה</button>
+  </div>
+</div>
+
+<!-- forgotten password: a code to the maintainer's own address, then a new password -->
+<div id="admResetModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title" data-i18n="adm_reset_title">שחזור סיסמה</div>
+
+    <div id="admRs1">
+      <div class="note" id="admRsIntro" data-i18n="adm_reset_intro">יישלח קוד בן שש ספרות לכתובת הדוא״ל של המנהל.</div>
+      <div class="form-btns">
+        <button id="admRsSend" class="form-send" data-i18n="adm_reset_send">שלח קוד</button>
+        <button class="popup-close adm-rs-close" data-i18n="c_cancel">ביטול</button>
+      </div>
+    </div>
+
+    <div id="admRs2" class="hidden">
+      <div class="note" id="admRsSentTo"></div>
+      <div class="form-row"><label for="admRsCode" data-i18n="adm_reset_code">הקוד שהתקבל</label><input id="admRsCode" type="text" inputmode="numeric" maxlength="6" dir="ltr" autocomplete="off"></div>
+      <div class="form-btns">
+        <button id="admRsVerify" class="form-send" data-i18n="adm_reset_verify">אישור הקוד</button>
+        <button class="popup-close adm-rs-close" data-i18n="c_cancel">ביטול</button>
+      </div>
+    </div>
+
+    <div id="admRs3" class="hidden">
+      <div class="form-row"><label for="admRsNew" data-i18n="adm_reset_new">סיסמה חדשה</label>
+        <span class="pass-wrap"><input id="admRsNew" type="password" dir="ltr" autocomplete="new-password"><button id="admRsEye" class="pass-eye" type="button" data-i18n-title="adm_show_pass" title="הצג סיסמה" aria-pressed="false">👁</button></span></div>
+      <div class="note" data-i18n="adm_reset_rule">לפחות שמונה תווים.</div>
+      <div class="form-btns">
+        <button id="admRsApply" class="form-send" data-i18n="adm_reset_apply">קבע סיסמה</button>
+        <button class="popup-close adm-rs-close" data-i18n="c_cancel">ביטול</button>
+      </div>
+    </div>
+
+    <div id="admRsErr" class="form-err"></div>
   </div>
 </div>
 

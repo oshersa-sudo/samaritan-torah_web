@@ -235,3 +235,53 @@ def counter(name):
         return (r[0], r[1]) if r else (0, None)
     except Exception:
         return (0, None)
+
+
+# ── the admin's own secrets ──────────────────────────────────────────────────
+# The password normally comes from the environment (ADMIN_PASSWORD, a Render
+# secret). A password the maintainer changes from inside the app has to live
+# somewhere the server can write, and this is the right somewhere: it is on the
+# persistent disk, it already keeps the WebAuthn credential, and — unlike
+# torah.db — it is never downloaded or reseeded, so the secret cannot travel out
+# in a copy of the database.
+#
+# What is kept is a PBKDF2 hash and its salt, never the password. The reset code
+# is kept the same way, with an expiry beside it, so a stolen store yields
+# neither.
+def _kv_table(conn):
+    conn.execute('''CREATE TABLE IF NOT EXISTS admin_secrets(
+        name TEXT PRIMARY KEY, value TEXT, extra TEXT, ts INTEGER)''')
+
+
+def secret_set(name, value, extra=None):
+    try:
+        conn = _connect(); _kv_table(conn)
+        conn.execute('INSERT INTO admin_secrets(name, value, extra, ts) VALUES(?,?,?,?) '
+                     'ON CONFLICT(name) DO UPDATE SET value=excluded.value, '
+                     'extra=excluded.extra, ts=excluded.ts',
+                     (name, value, extra, int(time.time())))
+        conn.commit(); conn.close()
+        return True
+    except Exception:
+        return False
+
+
+def secret_get(name):
+    """(value, extra, ts) or (None, None, None)."""
+    try:
+        conn = _connect(); _kv_table(conn)
+        r = conn.execute('SELECT value, extra, ts FROM admin_secrets WHERE name=?',
+                         (name,)).fetchone()
+        conn.close()
+        return (r[0], r[1], r[2]) if r else (None, None, None)
+    except Exception:
+        return (None, None, None)
+
+
+def secret_clear(name):
+    try:
+        conn = _connect(); _kv_table(conn)
+        conn.execute('DELETE FROM admin_secrets WHERE name=?', (name,))
+        conn.commit(); conn.close()
+    except Exception:
+        pass

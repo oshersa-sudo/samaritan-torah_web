@@ -443,6 +443,13 @@ body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
 .numstrip .num.active{ background:var(--accent); color:#fff; }
 .numstrip .clear{ background:#bf3930; color:#fff; padding:0 10px; font-weight:600; }
 
+/* a quiet way out of the login box — a line of text, not a third button
+   competing with "כניסה" and "ביטול" */
+.link-btn{ display:block; margin:8px auto 0; border:0; background:transparent;
+           color:var(--accent); font-family:inherit; font-size:13.5px;
+           text-decoration:underline; cursor:pointer; padding:4px; }
+.link-btn.hidden{ display:none; }
+
 /* the password field, with the eye that uncovers it */
 .pass-wrap{ position:relative; display:block; }
 .pass-wrap input{ width:100%; padding-inline-end:38px; }

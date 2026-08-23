@@ -313,7 +313,8 @@ const I18N = {
     interp_more:'להרחבה פנה אל:', interp_asatir_lead:'ומספר ספר האסאטיר',
     interp_bhuq_lead:'ומדברי אבו אלפרג׳ איבן אל-כתאר בפירוש אם בחקותי',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
-    m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_show_pass:'הצג סיסמה', adm_hide_pass:'הסתר סיסמה', adm_pass:'סיסמה', adm_login:'כניסה',
+    m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_show_pass:'הצג סיסמה',
+    adm_forgot:'שכחתי סיסמה', adm_reset_title:'שחזור סיסמה', adm_reset_intro:'יישלח קוד בן שש ספרות לכתובת הדוא״ל של המנהל.', adm_reset_send:'שלח קוד', adm_reset_code:'הקוד שהתקבל', adm_reset_verify:'אישור הקוד', adm_reset_new:'סיסמה חדשה', adm_reset_rule:'לפחות שמונה תווים.', adm_reset_apply:'קבע סיסמה', adm_reset_sent:'קוד נשלח אל', adm_reset_bad:'הקוד שגוי או שאינו בן שש ספרות.', adm_reset_expired:'הקוד פג. בקש קוד חדש.', adm_reset_short:'הסיסמה קצרה מדי — לפחות שמונה תווים.', adm_reset_failed:'השליחה נכשלה. נסה שוב מאוחר יותר.', adm_reset_notarget:'לא הוגדרה כתובת דוא״ל למנהל בשרת.', adm_reset_busy:'יותר מדי בקשות. נסה שוב בעוד שעה.', adm_reset_done:'הסיסמה הוחלפה, ואתה מחובר.', adm_hide_pass:'הסתר סיסמה', adm_pass:'סיסמה', adm_login:'כניסה',
     adm_bad:'שם המשתמש או הסיסמה אינם נכונים.', admin_on:'מצב עריכה פעיל — לחץ על העיפרון שליד הטקסט.',
     adm_sysdoc:'📘 תיעוד המערכת', adm_loading:'טוען…', adm_version_word:'גרסה',
     adm_no_log:'אין עדיין יומן גרסאות להצגה.',
@@ -565,7 +566,8 @@ const I18N = {
     interp_more:'Read further in:', interp_asatir_lead:'And the Book of Asatir recounts',
     interp_bhuq_lead:'And Abū l-Faraj ibn al-Kathār says, in his commentary on Im Beḥuqotay',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
-    m_admin:'Admin login', adm_user:'Username', adm_show_pass:'Show the password', adm_hide_pass:'Hide the password', adm_pass:'Password', adm_login:'Sign in',
+    m_admin:'Admin login', adm_user:'Username', adm_show_pass:'Show the password',
+    adm_forgot:'Forgotten password', adm_reset_title:'Password recovery', adm_reset_intro:'A six-digit code will be sent to the maintainer’s email address.', adm_reset_send:'Send the code', adm_reset_code:'The code you received', adm_reset_verify:'Confirm the code', adm_reset_new:'New password', adm_reset_rule:'At least eight characters.', adm_reset_apply:'Set the password', adm_reset_sent:'A code was sent to', adm_reset_bad:'The code is wrong, or not six digits.', adm_reset_expired:'The code has expired. Ask for a new one.', adm_reset_short:'That password is too short — at least eight characters.', adm_reset_failed:'Sending failed. Try again later.', adm_reset_notarget:'No maintainer email address is configured on the server.', adm_reset_busy:'Too many requests. Try again in an hour.', adm_reset_done:'The password has been changed, and you are signed in.', adm_hide_pass:'Hide the password', adm_pass:'Password', adm_login:'Sign in',
     adm_bad:'The username or password is incorrect.', admin_on:'Edit mode is on — click the pencil next to a text.',
     adm_sysdoc:'📘 System documentation', adm_loading:'Loading…', adm_version_word:'version',
     adm_no_log:'No changelog to show yet.',
@@ -817,7 +819,8 @@ const I18N = {
     interp_more:'للتوسّع راجِع:', interp_asatir_lead:'ويروي كتاب الأساطير',
     interp_bhuq_lead:'ويقول أبو الفرج ابن الكثار في تفسير «إن سلكتم في فرائضي»',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
-    m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_show_pass:'إظهار كلمة المرور', adm_hide_pass:'إخفاء كلمة المرور', adm_pass:'كلمة المرور', adm_login:'دخول',
+    m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_show_pass:'إظهار كلمة المرور',
+    adm_forgot:'نسيت كلمة المرور', adm_reset_title:'استعادة كلمة المرور', adm_reset_intro:'سيُرسَل رمز من ستّ خانات إلى بريد المشرف.', adm_reset_send:'إرسال الرمز', adm_reset_code:'الرمز الذي وصلك', adm_reset_verify:'تأكيد الرمز', adm_reset_new:'كلمة مرور جديدة', adm_reset_rule:'ثمانية محارف على الأقلّ.', adm_reset_apply:'تعيين كلمة المرور', adm_reset_sent:'أُرسل رمز إلى', adm_reset_bad:'الرمز خاطئ أو ليس من ستّ خانات.', adm_reset_expired:'انتهت صلاحيّة الرمز. اطلب رمزاً جديداً.', adm_reset_short:'كلمة المرور قصيرة — ثمانية محارف على الأقلّ.', adm_reset_failed:'فشل الإرسال. حاول لاحقاً.', adm_reset_notarget:'لم يُضبط بريد للمشرف على الخادم.', adm_reset_busy:'طلبات كثيرة. حاول بعد ساعة.', adm_reset_done:'تغيّرت كلمة المرور، وأنت الآن داخل.', adm_hide_pass:'إخفاء كلمة المرور', adm_pass:'كلمة المرور', adm_login:'دخول',
     adm_bad:'اسم المستخدم أو كلمة المرور غير صحيحة.', admin_on:'وضع التحرير مُفعَّل — اضغط على القلم بجانب النصّ.',
     adm_sysdoc:'📘 توثيق النظام', adm_loading:'جارٍ التحميل…', adm_version_word:'إصدار',
     adm_no_log:'لا يوجد سجلّ إصدارات لعرضه بعد.',
@@ -7708,12 +7711,12 @@ document.querySelectorAll('#langModal .lang-opt, #langModal .close').forEach(b=>
 });
 
 // ── admin editing (login + floating-pencil edit; gated entirely server-side) ──
-const ADMIN = { token:null, webauthn:false };
+const ADMIN = { token:null, webauthn:false, reset:false };
 // reveal "כניסת מנהל" only where admin is enabled (the local server has a password)
 loadSamCalendar();          // the date under the title, and the portion of the week
 
 api('admin/status').then(s=>{ if(s && s.enabled){
-  $('adminSep').classList.remove('hidden'); $('adminMenuItem').classList.remove('hidden'); ADMIN.webauthn=!!s.webauthn;
+  $('adminSep').classList.remove('hidden'); $('adminMenuItem').classList.remove('hidden'); ADMIN.webauthn=!!s.webauthn; ADMIN.reset=!!s.reset;
 } }).catch(()=>{});
 function waSupported(){
   return !!(window.PublicKeyCredential && PublicKeyCredential.parseCreationOptionsFromJSON
@@ -7724,9 +7727,87 @@ function openAdminLogin(){
                    adminBadge(false); paintVerses(); return; }   // logout
   $('admErr').textContent=''; $('admUser').value=''; $('admPass').value='';
   $('admWebauthnBtn').classList.toggle('hidden', !(ADMIN.webauthn && waSupported()));
+  // the way back in is only offered where the server actually has an address
+  // to send a code to; otherwise the link would lead to a dead end
+  $('admForgot').classList.toggle('hidden', !ADMIN.reset);
+  admPassReset();
   $('adminModal').classList.remove('hidden'); $('admUser').focus();
 }
 $('admCancel').onclick=()=>{ $('adminModal').classList.add('hidden'); admPassReset(); };
+
+// ── שחזור סיסמה ──────────────────────────────────────────────────────────────
+// Three steps, three calls: ask for a code, prove it, set a password. The code
+// buys a short-lived ticket and nothing else, so knowing it is not the same as
+// being logged in — and the server destroys it the moment it is proved.
+(function(){
+  const M = () => $('admResetModal');
+  const step = n => { for(const i of [1,2,3]) $('admRs'+i).classList.toggle('hidden', i !== n); };
+  const err = m => { $('admRsErr').textContent = m || ''; };
+  let ticket = '';
+
+  function close(){ M().classList.add('hidden'); err(''); ticket='';
+                    $('admRsCode').value=''; $('admRsNew').value='';
+                    $('admRsNew').type='password'; $('admRsEye').classList.remove('on'); }
+  document.querySelectorAll('#admResetModal .adm-rs-close').forEach(b => b.onclick = close);
+
+  $('admForgot').onclick = () => {
+    $('adminModal').classList.add('hidden');
+    step(1); err(''); ticket='';
+    M().classList.remove('hidden');
+  };
+
+  $('admRsEye').onclick = () => {
+    const i=$('admRsNew'), e=$('admRsEye'), show = i.type==='password';
+    i.type = show ? 'text' : 'password';
+    e.classList.toggle('on', show); e.setAttribute('aria-pressed', show?'true':'false');
+    i.focus();
+  };
+
+  $('admRsSend').onclick = async () => {
+    err(''); $('admRsSend').disabled = true;
+    try{
+      const r = await fetch('/api/admin/reset/request', {method:'POST'}).then(x=>x.json());
+      if(r.ok){ $('admRsSentTo').textContent = t('adm_reset_sent') + ' ' + (r.to||'');
+                step(2); $('admRsCode').focus(); }
+      else err(t(r.error === 'no_target' ? 'adm_reset_notarget'
+              : r.error === 'send_failed' ? 'adm_reset_failed' : 'adm_reset_busy'));
+    }catch(e){ err(t('adm_reset_failed')); }
+    $('admRsSend').disabled = false;
+  };
+
+  $('admRsVerify').onclick = async () => {
+    err('');
+    const code = $('admRsCode').value.trim();
+    if(code.length !== 6){ err(t('adm_reset_bad')); return; }
+    try{
+      const r = await fetch('/api/admin/reset/verify', {method:'POST',
+        headers:{'Content-Type':'application/json'}, body:JSON.stringify({code})}).then(x=>x.json());
+      if(r.ok){ ticket = r.ticket; step(3); $('admRsNew').focus(); }
+      else err(t(r.error === 'expired' ? 'adm_reset_expired' : 'adm_reset_bad'));
+    }catch(e){ err(t('adm_reset_failed')); }
+  };
+
+  $('admRsApply').onclick = async () => {
+    err('');
+    const password = $('admRsNew').value;
+    if(password.length < 8){ err(t('adm_reset_short')); return; }
+    try{
+      const r = await fetch('/api/admin/reset/apply', {method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ticket, password})}).then(x=>x.json());
+      if(r.ok){
+        // the new password logs us straight in — the server hands back a session
+        ADMIN.token = r.token;
+        close();
+        adminBadge(true);
+        $('adminMenuItem').textContent = t('m_admin_out');
+        showInfo(t('adm_reset_title'), '<div class="note">' + esc(t('adm_reset_done')) + '</div>');
+      } else err(t(r.error === 'too_short' ? 'adm_reset_short'
+                : r.error === 'expired' ? 'adm_reset_expired' : 'adm_reset_failed'));
+    }catch(e){ err(t('adm_reset_failed')); }
+  };
+})();
+
 // show the password: a long one typed on a telephone keyboard is otherwise typed
 // blind, and a single wrong character reads exactly like a forgotten password.
 // It reverts to hidden whenever the window is closed, so a screen left open
