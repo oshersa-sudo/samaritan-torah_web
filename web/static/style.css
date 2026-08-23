@@ -641,12 +641,17 @@ body.nav-flip #navbar{ opacity:0; pointer-events:none; transition:none; }
    never fades, so a floating bar would sit on the last row of the list and hide
    it. There it is given its footprint back as room at the foot of the list, and
    the list scrolls clear of it. (The text screens need none: the bar goes by
-   itself the moment the reader settles.) */
-body.nav-reserve #content{ padding-bottom:var(--nav-space, 78px); }
-/* "פריסת פרקים" is not inside #content — it is a sibling of it, pinned below the
-   list — so the padding above never reached it and the floating bar sat right on
-   top of it. It needs the clearance in its own right. */
-body.nav-reserve #spreadBtn{ margin-bottom:var(--nav-space, 78px); }
+   itself the moment the reader settles.)
+
+   The clearance is --nav-clear: how far the bar actually rises above the
+   toolbar, not its whole height — a third of it sits down inside the toolbar and
+   reserving for that was room nobody needed.
+   It goes to ONE element. "פריסת פרקים" is a sibling of #content rather than a
+   child, so when it is on screen it is the thing that must clear the bar and
+   #content must not also pad itself, or the column carries two gaps and scrolls
+   for nothing. */
+body.nav-reserve:not(.has-spread) #content{ padding-bottom:var(--nav-clear, 46px); }
+body.nav-reserve.has-spread #spreadBtn{ margin-bottom:var(--nav-clear, 46px); }
 
 /* ── the cradle ──────────────────────────────────────────────────────────────
    Where the toolbar is open beneath it, the bar does not hover over the toolbar
@@ -689,17 +694,26 @@ body.nav-hidden #toolbar::before, body.nav-flip #toolbar::before{ opacity:0; }
 /* The path line and the play window answer to the pin. Both sit in the column
    rather than over it, so they give their band back to the text instead of
    fading in place and leaving a blank stripe behind. The nav bar is not among
-   them — it floats, and takes no room to give back. */
-#crumbs, #audioBar{ overflow:hidden;
-                    transition:max-height .28s ease, opacity .22s ease, padding .28s ease; }
+   them — it floats, and takes no room to give back.
+
+   .reading-bar is the chanted-reading player — the panel that carries the
+   witness, the play button and the seek bar at the head of a chapter. It is the
+   one the reader means by "the play panel"; #audioBar is the smaller read-aloud
+   strip. Both answer to the pin, and both go with the path line. */
+#crumbs, #audioBar, .reading-bar{ overflow:hidden;
+                    transition:max-height .28s ease, opacity .22s ease,
+                               padding .28s ease, margin .28s ease; }
 #crumbs{ max-height:120px; }
 #audioBar{ max-height:80px; }
+.reading-bar{ max-height:200px; }
 body.nav-hidden:not(.nav-pinned) #crumbs,
-body.nav-hidden:not(.nav-pinned) #audioBar{
+body.nav-hidden:not(.nav-pinned) #audioBar,
+body.nav-hidden:not(.nav-pinned) .reading-bar{
   max-height:0; min-height:0; opacity:0; padding-top:0; padding-bottom:0;
-  border-top-width:0; }              /* the rule too, or a hairline stays behind */
+  margin-top:0; margin-bottom:0; border-width:0; }   /* the rules too, or hairlines stay */
 body.nav-flip:not(.nav-pinned) #crumbs,
-body.nav-flip:not(.nav-pinned) #audioBar{ opacity:0; transition:none; }
+body.nav-flip:not(.nav-pinned) #audioBar,
+body.nav-flip:not(.nav-pinned) .reading-bar{ opacity:0; transition:none; }
 /* transparent arrows: just a glyph while paging chapters; a parasha/book label
    appears inside only at a crossing (set in JS) */
 /* ── the nav arrows ──────────────────────────────────────────────────────────

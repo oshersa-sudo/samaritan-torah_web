@@ -3863,6 +3863,11 @@ function placeNavbar(){
   const st = document.documentElement.style;
   st.setProperty('--nav-bottom', Math.max(8, edge - dip + (open ? 0 : 10)) + 'px');
   st.setProperty('--nav-dip', (dip + 8) + 'px');
+  // How far the bar actually rises above the toolbar's top edge — which is all
+  // the clearance anything sitting there needs. The old figure was the bar's
+  // whole height plus a margin, and it reserved room the bar does not occupy:
+  // a third of it is down inside the toolbar.
+  st.setProperty('--nav-clear', Math.round(Math.max(10, nh - dip + (open ? 6 : 16))) + 'px');
   st.setProperty('--nav-space', Math.round(nh + 20) + 'px');
   if(r.width) st.setProperty('--nav-w', Math.round(r.width) + 'px');
   document.body.classList.toggle('nav-docked', open);
@@ -4410,16 +4415,18 @@ function setView(){
   $('navbar').classList.remove('hidden');
   ['nextBtn','prevBtn','minusBtn','plusBtn'].forEach(id=>$(id).classList.toggle('hidden', browse));
   $('navbar').classList.toggle('nav-backonly', browse);
-  // The bar floats, so it no longer takes a band of the screen — and on the
-  // browse screens, where it never fades, it would sit on top of the last row of
-  // books, parashot or chapters and hide it. There it is given its footprint back
-  // as room at the foot of the list (--nav-space, measured in placeNavbar), so the
-  // list can be scrolled clear of it. On the text screens it steps aside by itself
-  // and the text needs no such allowance.
-  // every screen but the text one: `browse` is too narrow here — the chapter
-  // lists of a parasha carry the full bar and, like the book and parasha lists,
-  // never fade it, so their last row needs the same clearance.
-  document.body.classList.toggle('nav-reserve', !isVerse);
+  // On the book list the bar would carry nothing but a Back that has nowhere to
+  // go — it is the first screen — so the whole bar stands down there, and the
+  // shelf gets the room instead.
+  const bare = S.view === 'books';
+  $('navbar').classList.toggle('hidden', bare);
+  // The bar floats and no longer takes a band of the screen, so on the screens
+  // where it never fades it would sit on top of the last row of the list. There
+  // the clearance is given back — but to ONE element only: "פריסת פרקים" is a
+  // sibling of #content, not a child, so reserving in both put two gaps in the
+  // column and made the screen scroll for nothing.
+  document.body.classList.toggle('nav-reserve', !isVerse && !bare);
+  document.body.classList.toggle('has-spread', S.view === 'portions');
   $('spreadBtn').classList.toggle('hidden', !(S.view==='portions'));
   $('bmAddBtn').classList.toggle('hidden', !isVerse);   // floating "add bookmark"
   { const pb=$('playBtn'); if(pb) pb.classList.toggle('hidden', !isVerse); }   // (removed from UI)
