@@ -17826,490 +17826,6 @@
     },
     {
      "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 6,
-     "name": "דברים - כי יביאך - 40",
-     "incipit": "כי יביאך יהוה אלהיך",
-     "sam_ch_id": 1889,
-     "n": 40,
-     "verses": "ז:א-ז:ו",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 40,
-     "file": "/static/audio/readings/b5-p03-c040.mp3",
-     "duration": 75.95,
-     "src_start": 0.0,
-     "src_end": 75.95,
-     "verses_num": "7:1-7:6"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יביאך - 41",
-     "incipit": "לא מרבכם מכל העמים",
-     "sam_ch_id": 1890,
-     "n": 41,
-     "verses": "ז:ז-ז:יא",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 41,
-     "file": "/static/audio/readings/b5-p03-c041.mp3",
-     "duration": 59.88,
-     "src_start": 75.95,
-     "src_end": 135.83,
-     "verses_num": "7:7-7:11"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יביאך - 42",
-     "incipit": "והיה עקב תשמעון את",
-     "sam_ch_id": 1891,
-     "n": 42,
-     "verses": "ז:יב-ז:טז",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 42,
-     "file": "/static/audio/readings/b5-p03-c042.mp3",
-     "duration": 72.76,
-     "src_start": 135.83,
-     "src_end": 208.59,
-     "verses_num": "7:12-7:16"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 10,
-     "name": "דברים - כי יביאך - 43",
-     "incipit": "כי תאמר בלבבך רבים",
-     "sam_ch_id": 1892,
-     "n": 43,
-     "verses": "ז:יז-ז:כו",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 43,
-     "file": "/static/audio/readings/b5-p03-c043.mp3",
-     "duration": 113.8,
-     "src_start": 208.59,
-     "src_end": 322.39,
-     "verses_num": "7:17-7:26"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי יביאך - 44",
-     "incipit": "כל המצוה אשר אנכי",
-     "sam_ch_id": 1893,
-     "n": 44,
-     "verses": "ח:א-ח:ד",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 44,
-     "file": "/static/audio/readings/b5-p03-c044.mp3",
-     "duration": 59.75,
-     "src_start": 322.39,
-     "src_end": 382.14,
-     "verses_num": "8:1-8:4"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 6,
-     "name": "דברים - כי יביאך - 45",
-     "incipit": "וידעת עם לבבך: כי",
-     "sam_ch_id": 1894,
-     "n": 45,
-     "verses": "ח:ה-ח:י",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 45,
-     "file": "/static/audio/readings/b5-p03-c045.mp3",
-     "duration": 162.89,
-     "src_start": 382.14,
-     "src_end": 545.03,
-     "verses_num": "8:5-8:10"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 10,
-     "name": "דברים - כי יביאך - 46",
-     "incipit": "השמר לך פן תשכח",
-     "sam_ch_id": 1895,
-     "n": 46,
-     "verses": "ח:יא-ח:כ",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 46,
-     "file": "/static/audio/readings/b5-p03-c046.mp3",
-     "duration": 81.61,
-     "src_start": 545.03,
-     "src_end": 626.64,
-     "verses_num": "8:11-8:20"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יביאך - 47",
-     "incipit": "שמע ישראל אתה עבר",
-     "sam_ch_id": 1896,
-     "n": 47,
-     "verses": "ט:א-ט:ה",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 47,
-     "file": "/static/audio/readings/b5-p03-c047.mp3",
-     "duration": 69.33,
-     "src_start": 626.64,
-     "src_end": 695.97,
-     "verses_num": "9:1-9:5"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 3,
-     "name": "דברים - כי יביאך - 48",
-     "incipit": "וידעת כי לא בצדקתך",
-     "sam_ch_id": 1897,
-     "n": 48,
-     "verses": "ט:ו-ט:ח",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 48,
-     "file": "/static/audio/readings/b5-p03-c048.mp3",
-     "duration": 27.42,
-     "src_start": 695.97,
-     "src_end": 723.39,
-     "verses_num": "9:6-9:8"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי יביאך - 49",
-     "incipit": "בעלותי ההרה לקחת לוחות",
-     "sam_ch_id": 1898,
-     "n": 49,
-     "verses": "ט:ט-ט:יב",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 49,
-     "file": "/static/audio/readings/b5-p03-c049.mp3",
-     "duration": 48.4,
-     "src_start": 723.39,
-     "src_end": 771.79,
-     "verses_num": "9:9-9:12"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יביאך - 50",
-     "incipit": "ויאמר יהוה אלי לאמר:",
-     "sam_ch_id": 1899,
-     "n": 50,
-     "verses": "ט:יג-ט:יז",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 50,
-     "file": "/static/audio/readings/b5-p03-c050.mp3",
-     "duration": 55.95,
-     "src_start": 771.79,
-     "src_end": 827.74,
-     "verses_num": "9:13-9:17"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 7,
-     "name": "דברים - כי יביאך - 51",
-     "incipit": "ואתנפלה לפני יהוה כראישונה",
-     "sam_ch_id": 1900,
-     "n": 51,
-     "verses": "ט:יח-ט:כד",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 51,
-     "file": "/static/audio/readings/b5-p03-c051.mp3",
-     "duration": 35.35,
-     "src_start": 827.74,
-     "src_end": 863.09,
-     "verses_num": "9:18-9:24"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יביאך - 52",
-     "incipit": "ואתנפלה לפני יהוה את",
-     "sam_ch_id": 1901,
-     "n": 52,
-     "verses": "ט:כה-ט:כט",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 52,
-     "file": "/static/audio/readings/b5-p03-c052.mp3",
-     "duration": 65.77,
-     "src_start": 863.09,
-     "src_end": 928.86,
-     "verses_num": "9:25-9:29"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יביאך - 53",
-     "incipit": "בעת ההיא אמר יהוה",
-     "sam_ch_id": 1902,
-     "n": 53,
-     "verses": "י:א-י:ה",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 53,
-     "file": "/static/audio/readings/b5-p03-c053.mp3",
-     "duration": 65.97,
-     "src_start": 928.86,
-     "src_end": 994.83,
-     "verses_num": "10:1-10:5"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 2,
-     "name": "דברים - כי יביאך - 54",
-     "incipit": "ובני ישראל נסעו ממסרות:",
-     "sam_ch_id": 1903,
-     "n": 54,
-     "verses": "י:ו-י:ז",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 54,
-     "file": "/static/audio/readings/b5-p03-c054.mp3",
-     "duration": 47.25,
-     "src_start": 994.83,
-     "src_end": 1042.08,
-     "verses_num": "10:6-10:7"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי יביאך - 55",
-     "incipit": "בעת ההיא הבדיל יהוה",
-     "sam_ch_id": 1904,
-     "n": 55,
-     "verses": "י:ח-י:יא",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 55,
-     "file": "/static/audio/readings/b5-p03-c055.mp3",
-     "duration": 83.53,
-     "src_start": 1042.08,
-     "src_end": 1125.61,
-     "verses_num": "10:8-10:11"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 12,
-     "name": "דברים - כי יביאך - 56",
-     "incipit": "ועתה ישראל מה יהוה",
-     "sam_ch_id": 1905,
-     "n": 56,
-     "verses": "י:יב-יא:א",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 56,
-     "file": "/static/audio/readings/b5-p03-c056.mp3",
-     "duration": 143.67,
-     "src_start": 1125.61,
-     "src_end": 1269.28,
-     "verses_num": "10:12-11:1"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 8,
-     "name": "דברים - כי יביאך - 57",
-     "incipit": "וידעתם היום כי לא",
-     "sam_ch_id": 1906,
-     "n": 57,
-     "verses": "יא:ב-יא:ט",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 57,
-     "file": "/static/audio/readings/b5-p03-c057.mp3",
-     "duration": 97.92,
-     "src_start": 1269.28,
-     "src_end": 1367.2,
-     "verses_num": "11:2-11:9"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 3,
-     "name": "דברים - כי יביאך - 58",
-     "incipit": "כי הארץ אשר אתם",
-     "sam_ch_id": 1907,
-     "n": 58,
-     "verses": "יא:י-יא:יב",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 58,
-     "file": "/static/audio/readings/b5-p03-c058.mp3",
-     "duration": 36.43,
-     "src_start": 1367.2,
-     "src_end": 1403.63,
-     "verses_num": "11:10-11:12"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 9,
-     "name": "דברים - כי יביאך - 59",
-     "incipit": "והיה אם שמע תשמעו",
-     "sam_ch_id": 1908,
-     "n": 59,
-     "verses": "יא:יג-יא:כא",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 59,
-     "file": "/static/audio/readings/b5-p03-c059.mp3",
-     "duration": 48.21,
-     "src_start": 1403.63,
-     "src_end": 1451.84,
-     "verses_num": "11:13-11:21"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי יביאך - 60",
-     "incipit": "כי אם שמר תשמרון",
-     "sam_ch_id": 1909,
-     "n": 60,
-     "verses": "יא:כב-יא:כה",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 60,
-     "file": "/static/audio/readings/b5-p03-c060.mp3",
-     "duration": 59.46,
-     "src_start": 1451.84,
-     "src_end": 1511.3,
-     "verses_num": "11:22-11:25"
-    },
-    {
-     "src": {
-      "youtube_id": "yYEB3GfP8cQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יביאך - 61",
-     "incipit": "ראה: אנכי נתן לפניכם",
-     "sam_ch_id": 1910,
-     "n": 61,
-     "verses": "יא:כו-יא:ל",
-     "portion": {
-      "order": 3,
-      "name": "כי יביאך",
-      "id": 48
-     },
-     "sam_ch_number": 61,
-     "file": "/static/audio/readings/b5-p03-c061.mp3",
-     "duration": 59.92,
-     "src_start": 1511.3,
-     "src_end": 1571.22,
-     "verses_num": "11:26-11:30"
-    },
-    {
-     "src": {
       "youtube_id": "-e5pgHn-aD4"
      },
      "verse_count": 9,
@@ -20925,6 +20441,490 @@
      "verse_count": 4,
      "incipit": "ועתה ישראל שמע אל",
      "name": "דברים - אלה הדברים - 20"
+    },
+    {
+     "n": 40,
+     "sam_ch_number": 40,
+     "file": "/static/audio/readings/b5-p03-c040.mp3",
+     "duration": 77.5,
+     "src_start": 0,
+     "src_end": 77.5,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1889,
+     "verses": "ז:א-ז:ו",
+     "verses_num": "7:1-7:6",
+     "verse_count": 6,
+     "incipit": "כי יביאך יהוה אלהיך",
+     "name": "דברים - כי יביאך - 40"
+    },
+    {
+     "n": 41,
+     "sam_ch_number": 41,
+     "file": "/static/audio/readings/b5-p03-c041.mp3",
+     "duration": 61.47,
+     "src_start": 0,
+     "src_end": 61.47,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1890,
+     "verses": "ז:ז-ז:יא",
+     "verses_num": "7:7-7:11",
+     "verse_count": 5,
+     "incipit": "לא מרבכם מכל העמים",
+     "name": "דברים - כי יביאך - 41"
+    },
+    {
+     "n": 42,
+     "sam_ch_number": 42,
+     "file": "/static/audio/readings/b5-p03-c042.mp3",
+     "duration": 69.62,
+     "src_start": 0,
+     "src_end": 69.62,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1891,
+     "verses": "ז:יב-ז:טז",
+     "verses_num": "7:12-7:16",
+     "verse_count": 5,
+     "incipit": "והיה עקב תשמעון את",
+     "name": "דברים - כי יביאך - 42"
+    },
+    {
+     "n": 43,
+     "sam_ch_number": 43,
+     "file": "/static/audio/readings/b5-p03-c043.mp3",
+     "duration": 113.8,
+     "src_start": 0,
+     "src_end": 113.8,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1892,
+     "verses": "ז:יז-ז:כו",
+     "verses_num": "7:17-7:26",
+     "verse_count": 10,
+     "incipit": "כי תאמר בלבבך רבים",
+     "name": "דברים - כי יביאך - 43"
+    },
+    {
+     "n": 44,
+     "sam_ch_number": 44,
+     "file": "/static/audio/readings/b5-p03-c044.mp3",
+     "duration": 59.75,
+     "src_start": 0,
+     "src_end": 59.75,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1893,
+     "verses": "ח:א-ח:ד",
+     "verses_num": "8:1-8:4",
+     "verse_count": 4,
+     "incipit": "כל המצוה אשר אנכי",
+     "name": "דברים - כי יביאך - 44"
+    },
+    {
+     "n": 45,
+     "sam_ch_number": 45,
+     "file": "/static/audio/readings/b5-p03-c045.mp3",
+     "duration": 55.18,
+     "src_start": 0,
+     "src_end": 55.18,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1894,
+     "verses": "ח:ה-ח:י",
+     "verses_num": "8:5-8:10",
+     "verse_count": 6,
+     "incipit": "וידעת עם לבבך: כי",
+     "name": "דברים - כי יביאך - 45"
+    },
+    {
+     "n": 46,
+     "sam_ch_number": 46,
+     "file": "/static/audio/readings/b5-p03-c046.mp3",
+     "duration": 107.71,
+     "src_start": 0,
+     "src_end": 107.71,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1895,
+     "verses": "ח:יא-ח:כ",
+     "verses_num": "8:11-8:20",
+     "verse_count": 10,
+     "incipit": "השמר לך פן תשכח",
+     "name": "דברים - כי יביאך - 46"
+    },
+    {
+     "n": 47,
+     "sam_ch_number": 47,
+     "file": "/static/audio/readings/b5-p03-c047.mp3",
+     "duration": 81.61,
+     "src_start": 0,
+     "src_end": 81.61,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1896,
+     "verses": "ט:א-ט:ה",
+     "verses_num": "9:1-9:5",
+     "verse_count": 5,
+     "incipit": "שמע ישראל אתה עבר",
+     "name": "דברים - כי יביאך - 47"
+    },
+    {
+     "n": 48,
+     "sam_ch_number": 48,
+     "file": "/static/audio/readings/b5-p03-c048.mp3",
+     "duration": 36.16,
+     "src_start": 0,
+     "src_end": 36.16,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1897,
+     "verses": "ט:ו-ט:ח",
+     "verses_num": "9:6-9:8",
+     "verse_count": 3,
+     "incipit": "וידעת כי לא בצדקתך",
+     "name": "דברים - כי יביאך - 48"
+    },
+    {
+     "n": 49,
+     "sam_ch_number": 49,
+     "file": "/static/audio/readings/b5-p03-c049.mp3",
+     "duration": 60.59,
+     "src_start": 0,
+     "src_end": 60.59,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1898,
+     "verses": "ט:ט-ט:יב",
+     "verses_num": "9:9-9:12",
+     "verse_count": 4,
+     "incipit": "בעלותי ההרה לקחת לוחות",
+     "name": "דברים - כי יביאך - 49"
+    },
+    {
+     "n": 50,
+     "sam_ch_number": 50,
+     "file": "/static/audio/readings/b5-p03-c050.mp3",
+     "duration": 49.69,
+     "src_start": 0,
+     "src_end": 49.69,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1899,
+     "verses": "ט:יג-ט:יז",
+     "verses_num": "9:13-9:17",
+     "verse_count": 5,
+     "incipit": "ויאמר יהוה אלי לאמר:",
+     "name": "דברים - כי יביאך - 50"
+    },
+    {
+     "n": 51,
+     "sam_ch_number": 51,
+     "file": "/static/audio/readings/b5-p03-c051.mp3",
+     "duration": 90.01,
+     "src_start": 0,
+     "src_end": 90.01,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1900,
+     "verses": "ט:יח-ט:כד",
+     "verses_num": "9:18-9:24",
+     "verse_count": 7,
+     "incipit": "ואתנפלה לפני יהוה כראישונה",
+     "name": "דברים - כי יביאך - 51"
+    },
+    {
+     "n": 52,
+     "sam_ch_number": 52,
+     "file": "/static/audio/readings/b5-p03-c052.mp3",
+     "duration": 65.77,
+     "src_start": 0,
+     "src_end": 65.77,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1901,
+     "verses": "ט:כה-ט:כט",
+     "verses_num": "9:25-9:29",
+     "verse_count": 5,
+     "incipit": "ואתנפלה לפני יהוה את",
+     "name": "דברים - כי יביאך - 52"
+    },
+    {
+     "n": 53,
+     "sam_ch_number": 53,
+     "file": "/static/audio/readings/b5-p03-c053.mp3",
+     "duration": 69.11,
+     "src_start": 0,
+     "src_end": 69.11,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1902,
+     "verses": "י:א-י:ה",
+     "verses_num": "10:1-10:5",
+     "verse_count": 5,
+     "incipit": "בעת ההיא אמר יהוה",
+     "name": "דברים - כי יביאך - 53"
+    },
+    {
+     "n": 54,
+     "sam_ch_number": 54,
+     "file": "/static/audio/readings/b5-p03-c054.mp3",
+     "duration": 44.11,
+     "src_start": 0,
+     "src_end": 44.11,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1903,
+     "verses": "י:ו-י:ז",
+     "verses_num": "10:6-10:7",
+     "verse_count": 2,
+     "incipit": "ובני ישראל נסעו ממסרות:",
+     "name": "דברים - כי יביאך - 54"
+    },
+    {
+     "n": 55,
+     "sam_ch_number": 55,
+     "file": "/static/audio/readings/b5-p03-c055.mp3",
+     "duration": 51.86,
+     "src_start": 0,
+     "src_end": 51.86,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1904,
+     "verses": "י:ח-י:יא",
+     "verses_num": "10:8-10:11",
+     "verse_count": 4,
+     "incipit": "בעת ההיא הבדיל יהוה",
+     "name": "דברים - כי יביאך - 55"
+    },
+    {
+     "n": 56,
+     "sam_ch_number": 56,
+     "file": "/static/audio/readings/b5-p03-c056.mp3",
+     "duration": 113.55,
+     "src_start": 0,
+     "src_end": 113.55,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1905,
+     "verses": "י:יב-יא:א",
+     "verses_num": "10:12-11:1",
+     "verse_count": 12,
+     "incipit": "ועתה ישראל מה יהוה",
+     "name": "דברים - כי יביאך - 56"
+    },
+    {
+     "n": 57,
+     "sam_ch_number": 57,
+     "file": "/static/audio/readings/b5-p03-c057.mp3",
+     "duration": 102.08,
+     "src_start": 0,
+     "src_end": 102.08,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1906,
+     "verses": "יא:ב-יא:ט",
+     "verses_num": "11:2-11:9",
+     "verse_count": 8,
+     "incipit": "וידעתם היום כי לא",
+     "name": "דברים - כי יביאך - 57"
+    },
+    {
+     "n": 58,
+     "sam_ch_number": 58,
+     "file": "/static/audio/readings/b5-p03-c058.mp3",
+     "duration": 38.28,
+     "src_start": 0,
+     "src_end": 38.28,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1907,
+     "verses": "יא:י-יא:יב",
+     "verses_num": "11:10-11:12",
+     "verse_count": 3,
+     "incipit": "כי הארץ אשר אתם",
+     "name": "דברים - כי יביאך - 58"
+    },
+    {
+     "n": 59,
+     "sam_ch_number": 59,
+     "file": "/static/audio/readings/b5-p03-c059.mp3",
+     "duration": 103.99,
+     "src_start": 0,
+     "src_end": 103.99,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1908,
+     "verses": "יא:יג-יא:כא",
+     "verses_num": "11:13-11:21",
+     "verse_count": 9,
+     "incipit": "והיה אם שמע תשמעו",
+     "name": "דברים - כי יביאך - 59"
+    },
+    {
+     "n": 60,
+     "sam_ch_number": 60,
+     "file": "/static/audio/readings/b5-p03-c060.mp3",
+     "duration": 59.46,
+     "src_start": 0,
+     "src_end": 59.46,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1909,
+     "verses": "יא:כב-יא:כה",
+     "verses_num": "11:22-11:25",
+     "verse_count": 4,
+     "incipit": "כי אם שמר תשמרון",
+     "name": "דברים - כי יביאך - 60"
+    },
+    {
+     "n": 61,
+     "sam_ch_number": 61,
+     "file": "/static/audio/readings/b5-p03-c061.mp3",
+     "duration": 59.92,
+     "src_start": 0,
+     "src_end": 59.92,
+     "portion": {
+      "order": 3,
+      "id": 48,
+      "name": "כי יביאך"
+     },
+     "src": {
+      "youtube_id": "yYEB3GfP8cQ"
+     },
+     "sam_ch_id": 1910,
+     "verses": "יא:כו-יא:ל",
+     "verses_num": "11:26-11:30",
+     "verse_count": 5,
+     "incipit": "ראה: אנכי נתן לפניכם",
+     "name": "דברים - כי יביאך - 61"
     }
    ],
    "playlist": "PLl-48IEqLtltLwSZByh4fA9I40z5o3-Do",
