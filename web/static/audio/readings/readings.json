@@ -17826,402 +17826,6 @@
     },
     {
      "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 4,
-     "name": "דברים - היום הזה - 118",
-     "incipit": "היום הזה יהוה אלהיך",
-     "sam_ch_id": 1966,
-     "n": 118,
-     "verses": "כו:טז-כו:יט",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 118,
-     "file": "/static/audio/readings/b5-p08-c118.mp3",
-     "duration": 52.65,
-     "src_start": 0.0,
-     "src_end": 52.65,
-     "verses_num": "26:16-26:19"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 8,
-     "name": "דברים - היום הזה - 119",
-     "incipit": "ויצו משה וזקני ישראל",
-     "sam_ch_id": 1967,
-     "n": 119,
-     "verses": "כז:א-כז:ח",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 119,
-     "file": "/static/audio/readings/b5-p08-c119.mp3",
-     "duration": 97.47,
-     "src_start": 52.65,
-     "src_end": 150.12,
-     "verses_num": "27:1-27:8"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 18,
-     "name": "דברים - היום הזה - 120",
-     "incipit": "וידבר משה והכהנים הלוים",
-     "sam_ch_id": 1968,
-     "n": 120,
-     "verses": "כז:ט-כז:כו",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 120,
-     "file": "/static/audio/readings/b5-p08-c120.mp3",
-     "duration": 137.62,
-     "src_start": 150.12,
-     "src_end": 287.74,
-     "verses_num": "27:9-27:26"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 11,
-     "name": "דברים - היום הזה - 121",
-     "incipit": "והיה אם שמע תשמע",
-     "sam_ch_id": 1969,
-     "n": 121,
-     "verses": "כח:א-כח:יא",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 121,
-     "file": "/static/audio/readings/b5-p08-c121.mp3",
-     "duration": 105.99,
-     "src_start": 287.74,
-     "src_end": 393.73,
-     "verses_num": "28:1-28:11"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 3,
-     "name": "דברים - היום הזה - 122",
-     "incipit": "יפתח יהוה לך את",
-     "sam_ch_id": 1970,
-     "n": 122,
-     "verses": "כח:יב-כח:יד",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 122,
-     "file": "/static/audio/readings/b5-p08-c122.mp3",
-     "duration": 136.36,
-     "src_start": 393.73,
-     "src_end": 530.09,
-     "verses_num": "28:12-28:14"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 7,
-     "name": "דברים - היום הזה - 123",
-     "incipit": "והיה אם לא תשמע",
-     "sam_ch_id": 1971,
-     "n": 123,
-     "verses": "כח:טו-כח:כא",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 123,
-     "file": "/static/audio/readings/b5-p08-c123.mp3",
-     "duration": 76.04,
-     "src_start": 530.09,
-     "src_end": 606.13,
-     "verses_num": "28:15-28:21"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 5,
-     "name": "דברים - היום הזה - 124",
-     "incipit": "יכך יהוה בשחפת ובקדחת",
-     "sam_ch_id": 1972,
-     "n": 124,
-     "verses": "כח:כב-כח:כו",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 124,
-     "file": "/static/audio/readings/b5-p08-c124.mp3",
-     "duration": 110.67,
-     "src_start": 606.13,
-     "src_end": 716.8,
-     "verses_num": "28:22-28:26"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 9,
-     "name": "דברים - היום הזה - 125",
-     "incipit": "יכך יהוה בשחין מצרים",
-     "sam_ch_id": 1973,
-     "n": 125,
-     "verses": "כח:כז-כח:לה",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 125,
-     "file": "/static/audio/readings/b5-p08-c125.mp3",
-     "duration": 117.99,
-     "src_start": 716.8,
-     "src_end": 834.79,
-     "verses_num": "28:27-28:35"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 13,
-     "name": "דברים - היום הזה - 126",
-     "incipit": "יוליך יהוה אתך ואת",
-     "sam_ch_id": 1974,
-     "n": 126,
-     "verses": "כח:לו-כח:מח",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 126,
-     "file": "/static/audio/readings/b5-p08-c126.mp3",
-     "duration": 27.2,
-     "src_start": 834.79,
-     "src_end": 861.99,
-     "verses_num": "28:36-28:48"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 5,
-     "name": "דברים - היום הזה - 127",
-     "incipit": "ישא יהוה עליך גוי",
-     "sam_ch_id": 1975,
-     "n": 127,
-     "verses": "כח:מט-כח:נג",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 127,
-     "file": "/static/audio/readings/b5-p08-c127.mp3",
-     "duration": 65.48,
-     "src_start": 861.99,
-     "src_end": 927.47,
-     "verses_num": "28:49-28:53"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 2,
-     "name": "דברים - היום הזה - 128",
-     "incipit": "האיש הרך בך והענג",
-     "sam_ch_id": 1976,
-     "n": 128,
-     "verses": "כח:נד-כח:נה",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 128,
-     "file": "/static/audio/readings/b5-p08-c128.mp3",
-     "duration": 77.96,
-     "src_start": 927.47,
-     "src_end": 1005.43,
-     "verses_num": "28:54-28:55"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 2,
-     "name": "דברים - היום הזה - 129",
-     "incipit": "הרכה בך וענגה אשר",
-     "sam_ch_id": 1977,
-     "n": 129,
-     "verses": "כח:נו-כח:נז",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 129,
-     "file": "/static/audio/readings/b5-p08-c129.mp3",
-     "duration": 58.59,
-     "src_start": 1005.43,
-     "src_end": 1064.02,
-     "verses_num": "28:56-28:57"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 6,
-     "name": "דברים - היום הזה - 130",
-     "incipit": "אם לא תשמר לעשות",
-     "sam_ch_id": 1978,
-     "n": 130,
-     "verses": "כח:נח-כח:סג",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 130,
-     "file": "/static/audio/readings/b5-p08-c130.mp3",
-     "duration": 98.41,
-     "src_start": 1064.02,
-     "src_end": 1162.43,
-     "verses_num": "28:58-28:63"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 6,
-     "name": "דברים - היום הזה - 131",
-     "incipit": "והפיצך יהוה בכל העמים",
-     "sam_ch_id": 1979,
-     "n": 131,
-     "verses": "כח:סד-כח:סט",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 131,
-     "file": "/static/audio/readings/b5-p08-c131.mp3",
-     "duration": 82.4,
-     "src_start": 1162.43,
-     "src_end": 1244.83,
-     "verses_num": "28:64-28:69"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 8,
-     "name": "דברים - היום הזה - 132",
-     "incipit": "ויקרא משה אל כל",
-     "sam_ch_id": 1980,
-     "n": 132,
-     "verses": "כט:א-כט:ח",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 132,
-     "file": "/static/audio/readings/b5-p08-c132.mp3",
-     "duration": 86.44,
-     "src_start": 1244.83,
-     "src_end": 1331.27,
-     "verses_num": "29:1-29:8"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 4,
-     "name": "דברים - היום הזה - 133",
-     "incipit": "אתם נצבים היום כלכם",
-     "sam_ch_id": 1981,
-     "n": 133,
-     "verses": "כט:ט-כט:יב",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 133,
-     "file": "/static/audio/readings/b5-p08-c133.mp3",
-     "duration": 53.78,
-     "src_start": 1331.27,
-     "src_end": 1385.05,
-     "verses_num": "29:9-29:12"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 8,
-     "name": "דברים - היום הזה - 134",
-     "incipit": "ולא אתכם לבדכם אנכי",
-     "sam_ch_id": 1982,
-     "n": 134,
-     "verses": "כט:יג-כט:כ",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 134,
-     "file": "/static/audio/readings/b5-p08-c134.mp3",
-     "duration": 105.17,
-     "src_start": 1385.05,
-     "src_end": 1490.22,
-     "verses_num": "29:13-29:20"
-    },
-    {
-     "src": {
-      "youtube_id": "0LgEAFzyY2g"
-     },
-     "verse_count": 8,
-     "name": "דברים - היום הזה - 135",
-     "incipit": "ואמר הדור האחרון: בניכם",
-     "sam_ch_id": 1983,
-     "n": 135,
-     "verses": "כט:כא-כט:כח",
-     "portion": {
-      "order": 8,
-      "name": "היום הזה",
-      "id": 53
-     },
-     "sam_ch_number": 135,
-     "file": "/static/audio/readings/b5-p08-c135.mp3",
-     "duration": 103.71,
-     "src_start": 1490.22,
-     "src_end": 1593.93,
-     "verses_num": "29:21-29:28"
-    },
-    {
-     "src": {
       "youtube_id": "RxwuATc2mzQ"
      },
      "verse_count": 14,
@@ -20925,6 +20529,402 @@
      "verse_count": 4,
      "incipit": "כי תכלה לעשר את",
      "name": "דברים - כי יקח איש אשה - 117"
+    },
+    {
+     "n": 118,
+     "sam_ch_number": 118,
+     "file": "/static/audio/readings/b5-p08-c118.mp3",
+     "duration": 52.65,
+     "src_start": 0,
+     "src_end": 52.65,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1966,
+     "verses": "כו:טז-כו:יט",
+     "verses_num": "26:16-26:19",
+     "verse_count": 4,
+     "incipit": "היום הזה יהוה אלהיך",
+     "name": "דברים - היום הזה - 118"
+    },
+    {
+     "n": 119,
+     "sam_ch_number": 119,
+     "file": "/static/audio/readings/b5-p08-c119.mp3",
+     "duration": 97.47,
+     "src_start": 0,
+     "src_end": 97.47,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1967,
+     "verses": "כז:א-כז:ח",
+     "verses_num": "27:1-27:8",
+     "verse_count": 8,
+     "incipit": "ויצו משה וזקני ישראל",
+     "name": "דברים - היום הזה - 119"
+    },
+    {
+     "n": 120,
+     "sam_ch_number": 120,
+     "file": "/static/audio/readings/b5-p08-c120.mp3",
+     "duration": 137.62,
+     "src_start": 0,
+     "src_end": 137.62,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1968,
+     "verses": "כז:ט-כז:כו",
+     "verses_num": "27:9-27:26",
+     "verse_count": 18,
+     "incipit": "וידבר משה והכהנים הלוים",
+     "name": "דברים - היום הזה - 120"
+    },
+    {
+     "n": 121,
+     "sam_ch_number": 121,
+     "file": "/static/audio/readings/b5-p08-c121.mp3",
+     "duration": 105.99,
+     "src_start": 0,
+     "src_end": 105.99,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1969,
+     "verses": "כח:א-כח:יא",
+     "verses_num": "28:1-28:11",
+     "verse_count": 11,
+     "incipit": "והיה אם שמע תשמע",
+     "name": "דברים - היום הזה - 121"
+    },
+    {
+     "n": 122,
+     "sam_ch_number": 122,
+     "file": "/static/audio/readings/b5-p08-c122.mp3",
+     "duration": 136.36,
+     "src_start": 0,
+     "src_end": 136.36,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1970,
+     "verses": "כח:יב-כח:יד",
+     "verses_num": "28:12-28:14",
+     "verse_count": 3,
+     "incipit": "יפתח יהוה לך את",
+     "name": "דברים - היום הזה - 122"
+    },
+    {
+     "n": 123,
+     "sam_ch_number": 123,
+     "file": "/static/audio/readings/b5-p08-c123.mp3",
+     "duration": 76.04,
+     "src_start": 0,
+     "src_end": 76.04,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1971,
+     "verses": "כח:טו-כח:כא",
+     "verses_num": "28:15-28:21",
+     "verse_count": 7,
+     "incipit": "והיה אם לא תשמע",
+     "name": "דברים - היום הזה - 123"
+    },
+    {
+     "n": 124,
+     "sam_ch_number": 124,
+     "file": "/static/audio/readings/b5-p08-c124.mp3",
+     "duration": 110.67,
+     "src_start": 0,
+     "src_end": 110.67,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1972,
+     "verses": "כח:כב-כח:כו",
+     "verses_num": "28:22-28:26",
+     "verse_count": 5,
+     "incipit": "יכך יהוה בשחפת ובקדחת",
+     "name": "דברים - היום הזה - 124"
+    },
+    {
+     "n": 125,
+     "sam_ch_number": 125,
+     "file": "/static/audio/readings/b5-p08-c125.mp3",
+     "duration": 117.99,
+     "src_start": 0,
+     "src_end": 117.99,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1973,
+     "verses": "כח:כז-כח:לה",
+     "verses_num": "28:27-28:35",
+     "verse_count": 9,
+     "incipit": "יכך יהוה בשחין מצרים",
+     "name": "דברים - היום הזה - 125"
+    },
+    {
+     "n": 126,
+     "sam_ch_number": 126,
+     "file": "/static/audio/readings/b5-p08-c126.mp3",
+     "duration": 27.2,
+     "src_start": 0,
+     "src_end": 27.2,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1974,
+     "verses": "כח:לו-כח:מח",
+     "verses_num": "28:36-28:48",
+     "verse_count": 13,
+     "incipit": "יוליך יהוה אתך ואת",
+     "name": "דברים - היום הזה - 126"
+    },
+    {
+     "n": 127,
+     "sam_ch_number": 127,
+     "file": "/static/audio/readings/b5-p08-c127.mp3",
+     "duration": 65.48,
+     "src_start": 0,
+     "src_end": 65.48,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1975,
+     "verses": "כח:מט-כח:נג",
+     "verses_num": "28:49-28:53",
+     "verse_count": 5,
+     "incipit": "ישא יהוה עליך גוי",
+     "name": "דברים - היום הזה - 127"
+    },
+    {
+     "n": 128,
+     "sam_ch_number": 128,
+     "file": "/static/audio/readings/b5-p08-c128.mp3",
+     "duration": 77.96,
+     "src_start": 0,
+     "src_end": 77.96,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1976,
+     "verses": "כח:נד-כח:נה",
+     "verses_num": "28:54-28:55",
+     "verse_count": 2,
+     "incipit": "האיש הרך בך והענג",
+     "name": "דברים - היום הזה - 128"
+    },
+    {
+     "n": 129,
+     "sam_ch_number": 129,
+     "file": "/static/audio/readings/b5-p08-c129.mp3",
+     "duration": 58.59,
+     "src_start": 0,
+     "src_end": 58.59,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1977,
+     "verses": "כח:נו-כח:נז",
+     "verses_num": "28:56-28:57",
+     "verse_count": 2,
+     "incipit": "הרכה בך וענגה אשר",
+     "name": "דברים - היום הזה - 129"
+    },
+    {
+     "n": 130,
+     "sam_ch_number": 130,
+     "file": "/static/audio/readings/b5-p08-c130.mp3",
+     "duration": 98.41,
+     "src_start": 0,
+     "src_end": 98.41,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1978,
+     "verses": "כח:נח-כח:סג",
+     "verses_num": "28:58-28:63",
+     "verse_count": 6,
+     "incipit": "אם לא תשמר לעשות",
+     "name": "דברים - היום הזה - 130"
+    },
+    {
+     "n": 131,
+     "sam_ch_number": 131,
+     "file": "/static/audio/readings/b5-p08-c131.mp3",
+     "duration": 82.4,
+     "src_start": 0,
+     "src_end": 82.4,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1979,
+     "verses": "כח:סד-כח:סט",
+     "verses_num": "28:64-28:69",
+     "verse_count": 6,
+     "incipit": "והפיצך יהוה בכל העמים",
+     "name": "דברים - היום הזה - 131"
+    },
+    {
+     "n": 132,
+     "sam_ch_number": 132,
+     "file": "/static/audio/readings/b5-p08-c132.mp3",
+     "duration": 86.44,
+     "src_start": 0,
+     "src_end": 86.44,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1980,
+     "verses": "כט:א-כט:ח",
+     "verses_num": "29:1-29:8",
+     "verse_count": 8,
+     "incipit": "ויקרא משה אל כל",
+     "name": "דברים - היום הזה - 132"
+    },
+    {
+     "n": 133,
+     "sam_ch_number": 133,
+     "file": "/static/audio/readings/b5-p08-c133.mp3",
+     "duration": 53.78,
+     "src_start": 0,
+     "src_end": 53.78,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1981,
+     "verses": "כט:ט-כט:יב",
+     "verses_num": "29:9-29:12",
+     "verse_count": 4,
+     "incipit": "אתם נצבים היום כלכם",
+     "name": "דברים - היום הזה - 133"
+    },
+    {
+     "n": 134,
+     "sam_ch_number": 134,
+     "file": "/static/audio/readings/b5-p08-c134.mp3",
+     "duration": 105.17,
+     "src_start": 0,
+     "src_end": 105.17,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1982,
+     "verses": "כט:יג-כט:כ",
+     "verses_num": "29:13-29:20",
+     "verse_count": 8,
+     "incipit": "ולא אתכם לבדכם אנכי",
+     "name": "דברים - היום הזה - 134"
+    },
+    {
+     "n": 135,
+     "sam_ch_number": 135,
+     "file": "/static/audio/readings/b5-p08-c135.mp3",
+     "duration": 103.71,
+     "src_start": 0,
+     "src_end": 103.71,
+     "portion": {
+      "order": 8,
+      "id": 53,
+      "name": "היום הזה"
+     },
+     "src": {
+      "youtube_id": "0LgEAFzyY2g"
+     },
+     "sam_ch_id": 1983,
+     "verses": "כט:כא-כט:כח",
+     "verses_num": "29:21-29:28",
+     "verse_count": 8,
+     "incipit": "ואמר הדור האחרון: בניכם",
+     "name": "דברים - היום הזה - 135"
     }
    ],
    "playlist": "PLl-48IEqLtltLwSZByh4fA9I40z5o3-Do",
