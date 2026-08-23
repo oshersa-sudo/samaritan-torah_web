@@ -17826,358 +17826,6 @@
     },
     {
      "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 10,
-     "name": "דברים - כי יקח איש אשה - 102",
-     "incipit": "כי יקח איש אשה",
-     "sam_ch_id": 1950,
-     "n": 102,
-     "verses": "כב:יג-כב:כב",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 102,
-     "file": "/static/audio/readings/b5-p07-c102.mp3",
-     "duration": 118.41,
-     "src_start": 0.0,
-     "src_end": 118.41,
-     "verses_num": "22:13-22:22"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יקח איש אשה - 103",
-     "incipit": "כי יהיה נערה בתולה",
-     "sam_ch_id": 1951,
-     "n": 103,
-     "verses": "כב:כג-כב:כז",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 103,
-     "file": "/static/audio/readings/b5-p07-c103.mp3",
-     "duration": 67.33,
-     "src_start": 118.41,
-     "src_end": 185.74,
-     "verses_num": "22:23-22:27"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 11,
-     "name": "דברים - כי יקח איש אשה - 104",
-     "incipit": "כי ימצא איש נערה",
-     "sam_ch_id": 1952,
-     "n": 104,
-     "verses": "כב:כח-כג:ט",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 104,
-     "file": "/static/audio/readings/b5-p07-c104.mp3",
-     "duration": 110.18,
-     "src_start": 185.74,
-     "src_end": 295.92,
-     "verses_num": "22:28-23:9"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 6,
-     "name": "דברים - כי יקח איש אשה - 105",
-     "incipit": "כי תצא מחנה על",
-     "sam_ch_id": 1953,
-     "n": 105,
-     "verses": "כג:י-כג:טו",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 105,
-     "file": "/static/audio/readings/b5-p07-c105.mp3",
-     "duration": 60.9,
-     "src_start": 295.92,
-     "src_end": 356.82,
-     "verses_num": "23:10-23:15"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 6,
-     "name": "דברים - כי יקח איש אשה - 106",
-     "incipit": "לא תסגיר עבד אל",
-     "sam_ch_id": 1954,
-     "n": 106,
-     "verses": "כג:טז-כג:כא",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 106,
-     "file": "/static/audio/readings/b5-p07-c106.mp3",
-     "duration": 61.66,
-     "src_start": 356.82,
-     "src_end": 418.48,
-     "verses_num": "23:16-23:21"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יקח איש אשה - 107",
-     "incipit": "כי תדר נדר ליהוה",
-     "sam_ch_id": 1955,
-     "n": 107,
-     "verses": "כג:כב-כג:כו",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 107,
-     "file": "/static/audio/readings/b5-p07-c107.mp3",
-     "duration": 48.52,
-     "src_start": 418.48,
-     "src_end": 467.0,
-     "verses_num": "23:22-23:26"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 6,
-     "name": "דברים - כי יקח איש אשה - 108",
-     "incipit": "כי יקח איש אשה:",
-     "sam_ch_id": 1956,
-     "n": 108,
-     "verses": "כד:א-כד:ו",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 108,
-     "file": "/static/audio/readings/b5-p07-c108.mp3",
-     "duration": 80.18,
-     "src_start": 467.0,
-     "src_end": 547.18,
-     "verses_num": "24:1-24:6"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 3,
-     "name": "דברים - כי יקח איש אשה - 109",
-     "incipit": "כי ימצא איש גנב",
-     "sam_ch_id": 1957,
-     "n": 109,
-     "verses": "כד:ז-כד:ט",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 109,
-     "file": "/static/audio/readings/b5-p07-c109.mp3",
-     "duration": 37.57,
-     "src_start": 547.18,
-     "src_end": 584.75,
-     "verses_num": "24:7-24:9"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי יקח איש אשה - 110",
-     "incipit": "כי תשא ברעך משאת",
-     "sam_ch_id": 1958,
-     "n": 110,
-     "verses": "כד:י-כד:יג",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 110,
-     "file": "/static/audio/readings/b5-p07-c110.mp3",
-     "duration": 35.48,
-     "src_start": 584.75,
-     "src_end": 620.23,
-     "verses_num": "24:10-24:13"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 5,
-     "name": "דברים - כי יקח איש אשה - 111",
-     "incipit": "לא תעשק שכיר עני",
-     "sam_ch_id": 1959,
-     "n": 111,
-     "verses": "כד:יד-כד:יח",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 111,
-     "file": "/static/audio/readings/b5-p07-c111.mp3",
-     "duration": 52.91,
-     "src_start": 620.23,
-     "src_end": 673.14,
-     "verses_num": "24:14-24:18"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי יקח איש אשה - 112",
-     "incipit": "כי תקצר קצירך בשדך",
-     "sam_ch_id": 1960,
-     "n": 112,
-     "verses": "כד:יט-כד:כב",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 112,
-     "file": "/static/audio/readings/b5-p07-c112.mp3",
-     "duration": 45.71,
-     "src_start": 673.14,
-     "src_end": 718.85,
-     "verses_num": "24:19-24:22"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי יקח איש אשה - 113",
-     "incipit": "כי יהיה ריב בין",
-     "sam_ch_id": 1961,
-     "n": 113,
-     "verses": "כה:א-כה:ד",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 113,
-     "file": "/static/audio/readings/b5-p07-c113.mp3",
-     "duration": 37.66,
-     "src_start": 718.85,
-     "src_end": 756.51,
-     "verses_num": "25:1-25:4"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 6,
-     "name": "דברים - כי יקח איש אשה - 114",
-     "incipit": "כי ישבו אחים יחדו",
-     "sam_ch_id": 1962,
-     "n": 114,
-     "verses": "כה:ה-כה:י",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 114,
-     "file": "/static/audio/readings/b5-p07-c114.mp3",
-     "duration": 78.68,
-     "src_start": 756.51,
-     "src_end": 835.19,
-     "verses_num": "25:5-25:10"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 9,
-     "name": "דברים - כי יקח איש אשה - 115",
-     "incipit": "וכי ינצו אנשים יחדו:",
-     "sam_ch_id": 1963,
-     "n": 115,
-     "verses": "כה:יא-כה:יט",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 115,
-     "file": "/static/audio/readings/b5-p07-c115.mp3",
-     "duration": 91.1,
-     "src_start": 835.19,
-     "src_end": 926.29,
-     "verses_num": "25:11-25:19"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 11,
-     "name": "דברים - כי יקח איש אשה - 116",
-     "incipit": "והיה כי תבוא אל",
-     "sam_ch_id": 1964,
-     "n": 116,
-     "verses": "כו:א-כו:יא",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 116,
-     "file": "/static/audio/readings/b5-p07-c116.mp3",
-     "duration": 143.51,
-     "src_start": 926.29,
-     "src_end": 1069.8,
-     "verses_num": "26:1-26:11"
-    },
-    {
-     "src": {
-      "youtube_id": "_RXTkmmx3T0"
-     },
-     "verse_count": 4,
-     "name": "דברים - כי יקח איש אשה - 117",
-     "incipit": "כי תכלה לעשר את",
-     "sam_ch_id": 1965,
-     "n": 117,
-     "verses": "כו:יב-כו:טו",
-     "portion": {
-      "order": 7,
-      "name": "כי יקח איש אשה",
-      "id": 52
-     },
-     "sam_ch_number": 117,
-     "file": "/static/audio/readings/b5-p07-c117.mp3",
-     "duration": 82.72,
-     "src_start": 1069.8,
-     "src_end": 1152.52,
-     "verses_num": "26:12-26:15"
-    },
-    {
-     "src": {
       "youtube_id": "0LgEAFzyY2g"
      },
      "verse_count": 4,
@@ -20925,6 +20573,358 @@
      "verse_count": 7,
      "incipit": "כי יקרא קן צפור",
      "name": "דברים - שופטים ושוטרים - 101"
+    },
+    {
+     "n": 102,
+     "sam_ch_number": 102,
+     "file": "/static/audio/readings/b5-p07-c102.mp3",
+     "duration": 118.41,
+     "src_start": 0,
+     "src_end": 118.41,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1950,
+     "verses": "כב:יג-כב:כב",
+     "verses_num": "22:13-22:22",
+     "verse_count": 10,
+     "incipit": "כי יקח איש אשה",
+     "name": "דברים - כי יקח איש אשה - 102"
+    },
+    {
+     "n": 103,
+     "sam_ch_number": 103,
+     "file": "/static/audio/readings/b5-p07-c103.mp3",
+     "duration": 67.33,
+     "src_start": 0,
+     "src_end": 67.33,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1951,
+     "verses": "כב:כג-כב:כז",
+     "verses_num": "22:23-22:27",
+     "verse_count": 5,
+     "incipit": "כי יהיה נערה בתולה",
+     "name": "דברים - כי יקח איש אשה - 103"
+    },
+    {
+     "n": 104,
+     "sam_ch_number": 104,
+     "file": "/static/audio/readings/b5-p07-c104.mp3",
+     "duration": 110.18,
+     "src_start": 0,
+     "src_end": 110.18,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1952,
+     "verses": "כב:כח-כג:ט",
+     "verses_num": "22:28-23:9",
+     "verse_count": 11,
+     "incipit": "כי ימצא איש נערה",
+     "name": "דברים - כי יקח איש אשה - 104"
+    },
+    {
+     "n": 105,
+     "sam_ch_number": 105,
+     "file": "/static/audio/readings/b5-p07-c105.mp3",
+     "duration": 60.9,
+     "src_start": 0,
+     "src_end": 60.9,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1953,
+     "verses": "כג:י-כג:טו",
+     "verses_num": "23:10-23:15",
+     "verse_count": 6,
+     "incipit": "כי תצא מחנה על",
+     "name": "דברים - כי יקח איש אשה - 105"
+    },
+    {
+     "n": 106,
+     "sam_ch_number": 106,
+     "file": "/static/audio/readings/b5-p07-c106.mp3",
+     "duration": 61.66,
+     "src_start": 0,
+     "src_end": 61.66,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1954,
+     "verses": "כג:טז-כג:כא",
+     "verses_num": "23:16-23:21",
+     "verse_count": 6,
+     "incipit": "לא תסגיר עבד אל",
+     "name": "דברים - כי יקח איש אשה - 106"
+    },
+    {
+     "n": 107,
+     "sam_ch_number": 107,
+     "file": "/static/audio/readings/b5-p07-c107.mp3",
+     "duration": 48.52,
+     "src_start": 0,
+     "src_end": 48.52,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1955,
+     "verses": "כג:כב-כג:כו",
+     "verses_num": "23:22-23:26",
+     "verse_count": 5,
+     "incipit": "כי תדר נדר ליהוה",
+     "name": "דברים - כי יקח איש אשה - 107"
+    },
+    {
+     "n": 108,
+     "sam_ch_number": 108,
+     "file": "/static/audio/readings/b5-p07-c108.mp3",
+     "duration": 80.18,
+     "src_start": 0,
+     "src_end": 80.18,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1956,
+     "verses": "כד:א-כד:ו",
+     "verses_num": "24:1-24:6",
+     "verse_count": 6,
+     "incipit": "כי יקח איש אשה:",
+     "name": "דברים - כי יקח איש אשה - 108"
+    },
+    {
+     "n": 109,
+     "sam_ch_number": 109,
+     "file": "/static/audio/readings/b5-p07-c109.mp3",
+     "duration": 37.57,
+     "src_start": 0,
+     "src_end": 37.57,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1957,
+     "verses": "כד:ז-כד:ט",
+     "verses_num": "24:7-24:9",
+     "verse_count": 3,
+     "incipit": "כי ימצא איש גנב",
+     "name": "דברים - כי יקח איש אשה - 109"
+    },
+    {
+     "n": 110,
+     "sam_ch_number": 110,
+     "file": "/static/audio/readings/b5-p07-c110.mp3",
+     "duration": 35.48,
+     "src_start": 0,
+     "src_end": 35.48,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1958,
+     "verses": "כד:י-כד:יג",
+     "verses_num": "24:10-24:13",
+     "verse_count": 4,
+     "incipit": "כי תשא ברעך משאת",
+     "name": "דברים - כי יקח איש אשה - 110"
+    },
+    {
+     "n": 111,
+     "sam_ch_number": 111,
+     "file": "/static/audio/readings/b5-p07-c111.mp3",
+     "duration": 52.91,
+     "src_start": 0,
+     "src_end": 52.91,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1959,
+     "verses": "כד:יד-כד:יח",
+     "verses_num": "24:14-24:18",
+     "verse_count": 5,
+     "incipit": "לא תעשק שכיר עני",
+     "name": "דברים - כי יקח איש אשה - 111"
+    },
+    {
+     "n": 112,
+     "sam_ch_number": 112,
+     "file": "/static/audio/readings/b5-p07-c112.mp3",
+     "duration": 45.71,
+     "src_start": 0,
+     "src_end": 45.71,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1960,
+     "verses": "כד:יט-כד:כב",
+     "verses_num": "24:19-24:22",
+     "verse_count": 4,
+     "incipit": "כי תקצר קצירך בשדך",
+     "name": "דברים - כי יקח איש אשה - 112"
+    },
+    {
+     "n": 113,
+     "sam_ch_number": 113,
+     "file": "/static/audio/readings/b5-p07-c113.mp3",
+     "duration": 37.66,
+     "src_start": 0,
+     "src_end": 37.66,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1961,
+     "verses": "כה:א-כה:ד",
+     "verses_num": "25:1-25:4",
+     "verse_count": 4,
+     "incipit": "כי יהיה ריב בין",
+     "name": "דברים - כי יקח איש אשה - 113"
+    },
+    {
+     "n": 114,
+     "sam_ch_number": 114,
+     "file": "/static/audio/readings/b5-p07-c114.mp3",
+     "duration": 78.68,
+     "src_start": 0,
+     "src_end": 78.68,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1962,
+     "verses": "כה:ה-כה:י",
+     "verses_num": "25:5-25:10",
+     "verse_count": 6,
+     "incipit": "כי ישבו אחים יחדו",
+     "name": "דברים - כי יקח איש אשה - 114"
+    },
+    {
+     "n": 115,
+     "sam_ch_number": 115,
+     "file": "/static/audio/readings/b5-p07-c115.mp3",
+     "duration": 91.1,
+     "src_start": 0,
+     "src_end": 91.1,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1963,
+     "verses": "כה:יא-כה:יט",
+     "verses_num": "25:11-25:19",
+     "verse_count": 9,
+     "incipit": "וכי ינצו אנשים יחדו:",
+     "name": "דברים - כי יקח איש אשה - 115"
+    },
+    {
+     "n": 116,
+     "sam_ch_number": 116,
+     "file": "/static/audio/readings/b5-p07-c116.mp3",
+     "duration": 143.51,
+     "src_start": 0,
+     "src_end": 143.51,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1964,
+     "verses": "כו:א-כו:יא",
+     "verses_num": "26:1-26:11",
+     "verse_count": 11,
+     "incipit": "והיה כי תבוא אל",
+     "name": "דברים - כי יקח איש אשה - 116"
+    },
+    {
+     "n": 117,
+     "sam_ch_number": 117,
+     "file": "/static/audio/readings/b5-p07-c117.mp3",
+     "duration": 82.72,
+     "src_start": 0,
+     "src_end": 82.72,
+     "portion": {
+      "order": 7,
+      "id": 52,
+      "name": "כי יקח איש אשה"
+     },
+     "src": {
+      "youtube_id": "_RXTkmmx3T0"
+     },
+     "sam_ch_id": 1965,
+     "verses": "כו:יב-כו:טו",
+     "verses_num": "26:12-26:15",
+     "verse_count": 4,
+     "incipit": "כי תכלה לעשר את",
+     "name": "דברים - כי יקח איש אשה - 117"
     }
    ],
    "playlist": "PLl-48IEqLtltLwSZByh4fA9I40z5o3-Do",
