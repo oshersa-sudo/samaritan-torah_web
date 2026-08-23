@@ -5068,7 +5068,19 @@ const BOOK_CHAR_FIX = [
 function bookProse(txt){
   let s = stripNiqqud(txt || '');
   for(const [re, to] of BOOK_CHAR_FIX) s = s.replace(re, to);
+  s = bookNoBrackets(s);
   return ktivHaser(s).replace(/\s{2,}/g, ' ').trim();
+}
+// No brackets of any kind reach the page — not round, square, curly, angled or
+// the quotation marks that behave like them. A bracket in a printed book of the
+// Torah reads as an editor's voice inside the text, and the whole point of this
+// format is that there is no editor's voice on it. What was inside them stays;
+// only the marks go, and the spaces they leave behind close up.
+const BOOK_BRACKETS = /[()\[\]{}<>‹›«»〈-】（）]/g;
+function bookNoBrackets(s){
+  return (s || '').replace(BOOK_BRACKETS, ' ')
+                  .replace(/\s+([,.;:!?])/g, '$1')   // a space the bracket left before a mark
+                  .replace(/\s{2,}/g, ' ').trim();
 }
 // the two words a verse opens with and the two it closes on, which is how the
 // commentary names its verse — there being no verse numbers on the page
@@ -5077,10 +5089,14 @@ function bookVerseTag(text){
   if(!w.length) return '';
   const head = w.slice(0, 2).join(' ');
   const tail = w.length > 2 ? w.slice(-2).join(' ') : '';
-  return tail ? head + '... ' + tail + ' -' : head + ' -';
+  return { head, tail };
 }
 
-// cut a stream of word-tokens into lines, by laying it out for real
+// cut a stream of word-tokens into lines, by laying it out for real. Each line
+// carries the offset it was found at, because counting lines is not enough: a
+// line with a bold quotation or a mark set in another face stands taller than a
+// plain one, so a band holds fewer of them than a single-letter probe suggests —
+// which is how the commentary came to overflow its half of the page.
 function bookLines(tokens, widthMm, cls){
   if(!tokens.length) return [];
   const box = el('div', 'pr-bk-measure ' + cls);
@@ -5091,23 +5107,57 @@ function bookLines(tokens, widthMm, cls){
   let top = null;
   for(const sp of box.querySelectorAll('.pr-bk-w')){
     const y = sp.offsetTop;
-    if(top === null || y > top + 1){ lines.push([]); top = y; }
-    lines[lines.length - 1].push(+sp.dataset.i);
+    if(top === null || y > top + 1){ lines.push({ top: y, idx: [] }); top = y; }
+    lines[lines.length - 1].idx.push(+sp.dataset.i);
   }
+  const total = box.scrollHeight;
   box.remove();
+  for(let i = 0; i < lines.length; i++)
+    lines[i].bottom = (i + 1 < lines.length) ? lines[i + 1].top : total;
   return lines;
 }
+// how many of those tokens stand in a band of the given height — measured, not
+// counted, so a taller line takes the room it actually needs
+function bookFit(tokens, widthMm, cls, heightMm){
+  const lines = bookLines(tokens, widthMm, cls);
+  if(!lines.length) return 0;
+  // One line of slack. The box this is measured in is not the box it will be
+  // printed in — it hangs off the body rather than inside the sheet — and the
+  // two disagree by a little; measured flush to the limit, the last line of every
+  // band fell past the rule. Better a hair of white at the foot of a band than a
+  // line of commentary sliced in half by it.
+  const lh = lines.length > 1 ? (lines[1].top - lines[0].top) : (lines[0].bottom - lines[0].top);
+  const limit = heightMm * 96 / 25.4 - Math.max(4, lh);
+  let n = 0;
+  for(const ln of lines){
+    if(ln.bottom > limit) break;
+    n += ln.idx.length;
+  }
+  return Math.max(n, lines[0].idx.length);   // never fewer than one line
+}
 // how many of those lines stand in a band of the given height
-function bookLinesPerBand(cls, heightMm){
-  const box = el('div', 'pr-bk-measure ' + cls);
-  box.style.width = '100mm';
-  box.innerHTML = '<span>א</span>';
-  document.body.appendChild(box);
-  const lh = box.firstChild.getBoundingClientRect().height
-             || parseFloat(getComputedStyle(box).lineHeight) || 16;
-  box.remove();
-  const mmPx = 96 / 25.4;
-  return Math.max(1, Math.floor((heightMm * mmPx) / lh));
+
+// One word-token, ready to be laid out: the word, and the separating dot glued
+// to its end. The dot is NOT in the Samaritan face — it is the scribe's word
+// divider, not a letter, and set in the Samaritan font it comes out as a glyph
+// the reader has to decode. It is a plain middle dot, sitting on the middle of
+// the line, tight against the word before it (.pr-bk-band .wsep).
+function bookTok(word, sep){
+  return '<span class="bkw">' + esc(word) + '</span>'
+       + (sep ? '<span class="wsep">·</span>' : '');
+}
+// A run of words cut into tokens, with the dot between them — and NOT after a
+// word that ends a sentence or carries a mark of its own, nor before one.
+function bookWords(text){
+  const raw = (text || '').split(/\s+/).filter(Boolean);
+  const out = [];
+  for(let i = 0; i < raw.length; i++){
+    const w = raw[i], nx = raw[i+1];
+    const closes = /[.:;,!?׃—-]$/.test(w);      // this word already ends in a mark
+    const opens  = nx && /^[.:;,!?׃—-]/.test(nx);  // the next one starts with one
+    out.push(bookTok(w, !!nx && !closes && !opens));
+  }
+  return out;
 }
 
 async function buildBookDoc(area){
@@ -5115,63 +5165,111 @@ async function buildBookDoc(area){
   const all = groups.flatMap(g => g.verses || []);
   if(!all.length) return;
 
-  // ── the Torah stream ──
-  // the dots are computed over each chapter whole, so a chapter's last word and
-  // the next chapter's first are treated exactly as they are when read
-  const torah = [];
-  for(const g of groups){
-    const joined = (g.verses || []).map(v => (v.text || '').trim()).filter(Boolean).join(' ');
-    if(!joined) continue;
-    for(const tok of addWordDots(joined).split(' ').filter(Boolean))
-      torah.push(samMarkup(tok));
+  // The page is set in two faces the browser may not have loaded yet, and the
+  // whole layout is decided by measuring them. Measured against a fallback face
+  // the lines come out a different length, and the bands are then filled to the
+  // wrong depth — which is exactly the half-empty page this format had.
+  if(document.fonts && document.fonts.ready){
+    try{ await document.fonts.load("12pt 'Samaritan'"); }catch(e){}
+    try{ await document.fonts.load("10pt 'SamComment'"); }catch(e){}
+    try{ await document.fonts.ready; }catch(e){}
   }
 
-  // ── the commentary stream ──
-  // one continuous column, each verse's comment opening with the verse's own
-  // first and last words in bold — the whole of it Samaritan, defective spelling
+  // ── the Torah stream, and which verse each token belongs to ──
+  const torah = [], torahVerse = [];
+  for(const g of groups){
+    for(const v of (g.verses || [])){
+      const txt = bookNoBrackets((v.text || '').trim());
+      if(!txt) continue;
+      for(const tok of bookWords(txt)){ torah.push(tok); torahVerse.push(v.id); }
+    }
+  }
+
+  // ── the commentary, one block to a verse ──
   const interp = {};
   for(let i = 0; i < all.length; i += 120){
     const slice = all.slice(i, i + 120);
     try{ Object.assign(interp, await api('interpretations?verse_ids=' + slice.map(v => v.id).join(','))); }
     catch(e){ /* a batch that fails leaves its verses without a comment */ }
   }
-  const comm = [];
+  const block = {};                       // verse id -> its tokens
   for(const v of all){
     const txt = bookProse(interp[v.id] || '');
     if(!txt) continue;
-    const tag = bookProse(bookVerseTag(v.text || ''));
-    if(tag) for(const tok of tag.split(' ').filter(Boolean))
-      comm.push('<b>' + esc(tok) + '</b>');
-    for(const tok of txt.split(' ').filter(Boolean)) comm.push(esc(tok));
+    const toks = [];
+    const tag = bookVerseTag(v.text || '');
+    if(tag.head){
+      // the quotation that names the verse: its opening words, three PLAIN dots,
+      // its closing words, a dash — all bold, and the dots and dash kept out of
+      // the Samaritan face so they read as the punctuation they are
+      for(const t of bookWords(bookProse(tag.head))) toks.push('<b>' + t + '</b>');
+      if(tag.tail){
+        toks.push('<b><span class="bkpunc">...</span></b>');
+        for(const t of bookWords(bookProse(tag.tail))) toks.push('<b>' + t + '</b>');
+      }
+      toks.push('<b><span class="bkpunc">–</span></b>');
+    }
+    for(const t of bookWords(txt)) toks.push(t);
+    block[v.id] = toks;
   }
 
   // ── deal the lines out ──
   const contentMm = 180;                                   // A4 less its margins
   const topMm = BOOK_PAGE_MM / 2;
   const botMm = BOOK_PAGE_MM - topMm - BOOK_GAP_MM;
-  const tLines = bookLines(torah, contentMm, 'pr-bk-torah');
-  const cLines = bookLines(comm,  contentMm, 'pr-bk-comm');
-  const tPer = bookLinesPerBand('pr-bk-torah', topMm);
-  const cPer = bookLinesPerBand('pr-bk-comm',  botMm);
-  const pages = Math.max(Math.ceil(tLines.length / tPer), Math.ceil(cLines.length / cPer), 1);
+  // The Torah is paged by measured height, exactly as the commentary is. It used
+  // to be paged by a line COUNT taken from a one-letter probe — and that probe
+  // returned the Samaritan glyph's own box, which in this face is far taller than
+  // the line it sits on. The count came out a third of the truth, and two thirds
+  // of every upper half stood empty. Measure the lines themselves and the text
+  // fills its half down to the rule.
 
-  for(let p = 0; p < pages; p++){
+  // A verse's comment belongs under the verse. So the commentary is not one
+  // stream dealt out beside the Torah — it is filled page by page: whatever is
+  // still owed from earlier pages first, then the comments of the verses that
+  // appear in THIS page's Torah band. A long comment therefore runs on under the
+  // chapters that follow, which is right, and a page never sits empty while
+  // there is still commentary to come, which is what it did before.
+  const pending = [];                                      // tokens still owed
+  const seen = new Set();
+  const pages = [];
+  let at = 0;                                              // next Torah token
+  while(at < torah.length){
+    const take = bookFit(torah.slice(at), contentMm, 'pr-bk-torah', topMm);
+    const idx = [];
+    for(let k = 0; k < take && at + k < torah.length; k++) idx.push(at + k);
+    at += Math.max(1, take);
+    for(const i of idx){                                   // verses new to this page
+      const vid = torahVerse[i];
+      if(vid == null || seen.has(vid)) continue;
+      seen.add(vid);
+      if(block[vid]) pending.push(...block[vid]);
+    }
+    // how much of what is owed fits in the lower band
+    const fit = bookFit(pending, contentMm, 'pr-bk-comm', botMm);
+    pages.push({ torah: idx, comm: pending.splice(0, fit) });
+  }
+  // the Torah has ended but the commentary has not: it goes on, on pages of its
+  // own, rather than being cut off
+  while(pending.length){
+    const fit = bookFit(pending, contentMm, 'pr-bk-comm', botMm);
+    pages.push({ torah: [], comm: pending.splice(0, Math.max(1, fit)) });
+  }
+
+  pages.forEach((pg, i) => {
     const page = el('div', 'pr-page pr-bk-page');
-    const band = (cls, lines, from, to, mm) => {
+    const band = (cls, toks, src, mm, last) => {
       const d = el('div', 'pr-bk-band ' + cls);
       d.style.height = mm + 'mm';
-      const toks = lines.slice(from, to).flat();
-      // the band's last line is justified like any other while the stream goes
-      // on, and only falls back to its natural width where the text truly ends
-      if(to >= lines.length) d.classList.add('pr-bk-last');
-      d.innerHTML = toks.map(i => (cls === 'pr-bk-torah' ? torah : comm)[i]).join(' ');
+      if(last) d.classList.add('pr-bk-last');
+      d.innerHTML = toks.map(x => typeof x === 'number' ? src[x] : x).join(' ');
       return d;
     };
-    page.appendChild(band('pr-bk-torah', tLines, p * tPer, (p + 1) * tPer, topMm));
+    page.appendChild(band('pr-bk-torah', pg.torah, torah, topMm, i === pages.length - 1));
     page.appendChild(el('div', 'pr-bk-rule'));
-    page.appendChild(band('pr-bk-comm', cLines, p * cPer, (p + 1) * cPer, botMm));
+    page.appendChild(band('pr-bk-comm', pg.comm, null, botMm, i === pages.length - 1));
     area.appendChild(page);
-  }
+  });
 }
 
 async function buildPrintPage(){

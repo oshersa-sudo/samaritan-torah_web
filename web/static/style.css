@@ -1337,6 +1337,16 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 .pr-bk-torah{ font-family:'Samaritan', serif; font-size:var(--pr-text); line-height:1.85; }
 .pr-bk-comm { font-family:'SamComment', serif; font-size:var(--pr-interp); line-height:1.7; }
 .pr-bk-comm b{ font-weight:700; }
+/* The word divider is not a letter. Set in the Samaritan face it comes out as a
+   glyph the reader has to decode; it is a plain middle dot, on the middle of the
+   line, tight against the word it follows — which is why the space between two
+   words falls AFTER the dot and never before it. */
+.pr-bk-band .wsep{ font-family:'Hebrew', serif; vertical-align:middle;
+                   margin:0; letter-spacing:0; }
+/* and the same for the punctuation that names a verse: three plain dots and a
+   plain dash, not three Samaritan glyphs */
+.pr-bk-band .bkpunc{ font-family:'Hebrew', serif; letter-spacing:.06em; }
+.pr-bk-band .bkw{ font-family:inherit; }
 .pr-bk-rule{ border-top:.75pt solid #000; height:var(--pr-bk-gap, 4mm); }
 /* the off-screen box the paginator lays the type out in to find its lines. It
    must match the band in every way that affects line breaking — width is set
