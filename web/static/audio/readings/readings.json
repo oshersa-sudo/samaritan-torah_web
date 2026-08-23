@@ -17408,446 +17408,6 @@
    "chapters": [
     {
      "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 8,
-     "name": "דברים - אלה הדברים - 1",
-     "incipit": "אלה הדברים אשר דבר",
-     "sam_ch_id": 1850,
-     "n": 1,
-     "verses": "א:א-א:ח",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 1,
-     "file": "/static/audio/readings/b5-p01-c001.mp3",
-     "duration": 102.96,
-     "src_start": 0.0,
-     "src_end": 102.96,
-     "verses_num": "1:1-1:8"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 10,
-     "name": "דברים - אלה הדברים - 2",
-     "incipit": "ואמר אליכם בעת ההיא",
-     "sam_ch_id": 1851,
-     "n": 2,
-     "verses": "א:ט-א:יח",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 2,
-     "file": "/static/audio/readings/b5-p01-c002.mp3",
-     "duration": 98.91,
-     "src_start": 102.96,
-     "src_end": 201.87,
-     "verses_num": "1:9-1:18"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 5,
-     "name": "דברים - אלה הדברים - 3",
-     "incipit": "ונסעה מחורב ונלכה את",
-     "sam_ch_id": 1852,
-     "n": 3,
-     "verses": "א:יט-א:כג",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 3,
-     "file": "/static/audio/readings/b5-p01-c003.mp3",
-     "duration": 21.64,
-     "src_start": 201.87,
-     "src_end": 223.51,
-     "verses_num": "1:19-1:23"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 6,
-     "name": "דברים - אלה הדברים - 4",
-     "incipit": "ואקח מכם שנים עשר",
-     "sam_ch_id": 2243,
-     "n": 4,
-     "verses": "א:כג-א:כח",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 4,
-     "file": "/static/audio/readings/b5-p01-c004.mp3",
-     "duration": 65.97,
-     "src_start": 223.51,
-     "src_end": 289.48,
-     "verses_num": "1:23-1:28"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 5,
-     "name": "דברים - אלה הדברים - 5",
-     "incipit": "ואמר אליכם לא תערצון",
-     "sam_ch_id": 1854,
-     "n": 5,
-     "verses": "א:כט-א:לג",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 5,
-     "file": "/static/audio/readings/b5-p01-c005.mp3",
-     "duration": 66.48,
-     "src_start": 289.48,
-     "src_end": 355.96,
-     "verses_num": "1:29-1:33"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 8,
-     "name": "דברים - אלה הדברים - 6",
-     "incipit": "וישמע יהוה את קול",
-     "sam_ch_id": 1855,
-     "n": 6,
-     "verses": "א:לד-א:מא",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 6,
-     "file": "/static/audio/readings/b5-p01-c006.mp3",
-     "duration": 145.6,
-     "src_start": 355.96,
-     "src_end": 501.56,
-     "verses_num": "1:34-1:41"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 6,
-     "name": "דברים - אלה הדברים - 7",
-     "incipit": "ויאמר יהוה אלי אמר",
-     "sam_ch_id": 1856,
-     "n": 7,
-     "verses": "א:מב-ב:א",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 7,
-     "file": "/static/audio/readings/b5-p01-c007.mp3",
-     "duration": 70.96,
-     "src_start": 501.56,
-     "src_end": 572.52,
-     "verses_num": "1:42-2:1"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 6,
-     "name": "דברים - אלה הדברים - 8",
-     "incipit": "ויאמר יהוה אלי לאמר",
-     "sam_ch_id": 1857,
-     "n": 8,
-     "verses": "ב:ב-ב:ז",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 8,
-     "file": "/static/audio/readings/b5-p01-c008.mp3",
-     "duration": 67.16,
-     "src_start": 572.52,
-     "src_end": 639.68,
-     "verses_num": "2:2-2:7"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 2,
-     "name": "דברים - אלה הדברים - 9",
-     "incipit": "ואשלחה מלאכים אל מלך",
-     "sam_ch_id": 2244,
-     "n": 9,
-     "verses": "ב:ז-ב:ח",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 9,
-     "file": "/static/audio/readings/b5-p01-c009.mp3",
-     "duration": 41.4,
-     "src_start": 639.68,
-     "src_end": 681.08,
-     "verses_num": "2:7-2:8"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 8,
-     "name": "דברים - אלה הדברים - 10",
-     "incipit": "ויאמר יהוה אלי אל",
-     "sam_ch_id": 1859,
-     "n": 10,
-     "verses": "ב:ט-ב:טז",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 10,
-     "file": "/static/audio/readings/b5-p01-c010.mp3",
-     "duration": 94.51,
-     "src_start": 681.08,
-     "src_end": 775.59,
-     "verses_num": "2:9-2:16"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 9,
-     "name": "דברים - אלה הדברים - 11",
-     "incipit": "ויאמר יהוה אלי לאמר",
-     "sam_ch_id": 1860,
-     "n": 11,
-     "verses": "ב:יז-ב:כה",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 11,
-     "file": "/static/audio/readings/b5-p01-c011.mp3",
-     "duration": 109.94,
-     "src_start": 775.59,
-     "src_end": 885.53,
-     "verses_num": "2:17-2:25"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 5,
-     "name": "דברים - אלה הדברים - 12",
-     "incipit": "ואשלחה מלאכים ממדבר קדמות:",
-     "sam_ch_id": 1861,
-     "n": 12,
-     "verses": "ב:כו-ב:ל",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 12,
-     "file": "/static/audio/readings/b5-p01-c012.mp3",
-     "duration": 70.44,
-     "src_start": 885.53,
-     "src_end": 955.97,
-     "verses_num": "2:26-2:30"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 8,
-     "name": "דברים - אלה הדברים - 13",
-     "incipit": "ויאמר יהוה אלי ראה",
-     "sam_ch_id": 1862,
-     "n": 13,
-     "verses": "ב:לא-ג:א",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 13,
-     "file": "/static/audio/readings/b5-p01-c013.mp3",
-     "duration": 72.54,
-     "src_start": 955.97,
-     "src_end": 1028.51,
-     "verses_num": "2:31-3:1"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 6,
-     "name": "דברים - אלה הדברים - 14",
-     "incipit": "ויאמר יהוה אלי אל",
-     "sam_ch_id": 1863,
-     "n": 14,
-     "verses": "ג:ב-ג:ז",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 14,
-     "file": "/static/audio/readings/b5-p01-c014.mp3",
-     "duration": 71.52,
-     "src_start": 1028.51,
-     "src_end": 1100.03,
-     "verses_num": "3:2-3:7"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 4,
-     "name": "דברים - אלה הדברים - 15",
-     "incipit": "ונקח בעת ההיא את",
-     "sam_ch_id": 1864,
-     "n": 15,
-     "verses": "ג:ח-ג:יא",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 15,
-     "file": "/static/audio/readings/b5-p01-c015.mp3",
-     "duration": 48.58,
-     "src_start": 1100.03,
-     "src_end": 1148.61,
-     "verses_num": "3:8-3:11"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 6,
-     "name": "דברים - אלה הדברים - 16",
-     "incipit": "ואת הארץ הזאת ירשנו",
-     "sam_ch_id": 1865,
-     "n": 16,
-     "verses": "ג:יב-ג:יז",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 16,
-     "file": "/static/audio/readings/b5-p01-c016.mp3",
-     "duration": 75.46,
-     "src_start": 1148.61,
-     "src_end": 1224.07,
-     "verses_num": "3:12-3:17"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 5,
-     "name": "דברים - אלה הדברים - 17",
-     "incipit": "ואצוה אתכם בעת ההיא",
-     "sam_ch_id": 1866,
-     "n": 17,
-     "verses": "ג:יח-ג:כב",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 17,
-     "file": "/static/audio/readings/b5-p01-c017.mp3",
-     "duration": 72.06,
-     "src_start": 1224.07,
-     "src_end": 1296.13,
-     "verses_num": "3:18-3:22"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 4,
-     "name": "דברים - אלה הדברים - 18",
-     "incipit": "ואתחננה אל יהוה בעת",
-     "sam_ch_id": 1867,
-     "n": 18,
-     "verses": "ג:כג-ג:כו",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 18,
-     "file": "/static/audio/readings/b5-p01-c018.mp3",
-     "duration": 40.8,
-     "src_start": 1296.13,
-     "src_end": 1336.93,
-     "verses_num": "3:23-3:26"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 3,
-     "name": "דברים - אלה הדברים - 19",
-     "incipit": "ויאמר יהוה אלי רב",
-     "sam_ch_id": 1868,
-     "n": 19,
-     "verses": "ג:כז-ג:כט",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 19,
-     "file": "/static/audio/readings/b5-p01-c019.mp3",
-     "duration": 34.7,
-     "src_start": 1336.93,
-     "src_end": 1371.63,
-     "verses_num": "3:27-3:29"
-    },
-    {
-     "src": {
-      "youtube_id": "IR29k97rOes"
-     },
-     "verse_count": 4,
-     "name": "דברים - אלה הדברים - 20",
-     "incipit": "ועתה ישראל שמע אל",
-     "sam_ch_id": 1869,
-     "n": 20,
-     "verses": "ד:א-ד:ד",
-     "portion": {
-      "order": 1,
-      "name": "אלה הדברים",
-      "id": 46
-     },
-     "sam_ch_number": 20,
-     "file": "/static/audio/readings/b5-p01-c020.mp3",
-     "duration": 58.51,
-     "src_start": 1371.63,
-     "src_end": 1430.14,
-     "verses_num": "4:1-4:4"
-    },
-    {
-     "src": {
       "youtube_id": "eqNfxbicK8Q"
      },
      "verse_count": 4,
@@ -20925,6 +20485,446 @@
      "src_start": 1501.8,
      "src_end": 1542.36,
      "verses_num": "34:10-34:12"
+    },
+    {
+     "n": 1,
+     "sam_ch_number": 1,
+     "file": "/static/audio/readings/b5-p01-c001.mp3",
+     "duration": 102.96,
+     "src_start": 0,
+     "src_end": 102.96,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1850,
+     "verses": "א:א-א:ח",
+     "verses_num": "1:1-1:8",
+     "verse_count": 8,
+     "incipit": "אלה הדברים אשר דבר",
+     "name": "דברים - אלה הדברים - 1"
+    },
+    {
+     "n": 2,
+     "sam_ch_number": 2,
+     "file": "/static/audio/readings/b5-p01-c002.mp3",
+     "duration": 120.55,
+     "src_start": 0,
+     "src_end": 120.55,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1851,
+     "verses": "א:ט-א:יח",
+     "verses_num": "1:9-1:18",
+     "verse_count": 10,
+     "incipit": "ואמר אליכם בעת ההיא",
+     "name": "דברים - אלה הדברים - 2"
+    },
+    {
+     "n": 3,
+     "sam_ch_number": 3,
+     "file": "/static/audio/readings/b5-p01-c003.mp3",
+     "duration": 65.97,
+     "src_start": 0,
+     "src_end": 65.97,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1852,
+     "verses": "א:יט-א:כג",
+     "verses_num": "1:19-1:23",
+     "verse_count": 5,
+     "incipit": "ונסעה מחורב ונלכה את",
+     "name": "דברים - אלה הדברים - 3"
+    },
+    {
+     "n": 4,
+     "sam_ch_number": 4,
+     "file": "/static/audio/readings/b5-p01-c004.mp3",
+     "duration": 66.48,
+     "src_start": 0,
+     "src_end": 66.48,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 2243,
+     "verses": "א:כג-א:כח",
+     "verses_num": "1:23-1:28",
+     "verse_count": 6,
+     "incipit": "ואקח מכם שנים עשר",
+     "name": "דברים - אלה הדברים - 4"
+    },
+    {
+     "n": 5,
+     "sam_ch_number": 5,
+     "file": "/static/audio/readings/b5-p01-c005.mp3",
+     "duration": 58.15,
+     "src_start": 0,
+     "src_end": 58.15,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1854,
+     "verses": "א:כט-א:לג",
+     "verses_num": "1:29-1:33",
+     "verse_count": 5,
+     "incipit": "ואמר אליכם לא תערצון",
+     "name": "דברים - אלה הדברים - 5"
+    },
+    {
+     "n": 6,
+     "sam_ch_number": 6,
+     "file": "/static/audio/readings/b5-p01-c006.mp3",
+     "duration": 87.45,
+     "src_start": 0,
+     "src_end": 87.45,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1855,
+     "verses": "א:לד-א:מא",
+     "verses_num": "1:34-1:41",
+     "verse_count": 8,
+     "incipit": "וישמע יהוה את קול",
+     "name": "דברים - אלה הדברים - 6"
+    },
+    {
+     "n": 7,
+     "sam_ch_number": 7,
+     "file": "/static/audio/readings/b5-p01-c007.mp3",
+     "duration": 70.96,
+     "src_start": 0,
+     "src_end": 70.96,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1856,
+     "verses": "א:מב-ב:א",
+     "verses_num": "1:42-2:1",
+     "verse_count": 6,
+     "incipit": "ויאמר יהוה אלי אמר",
+     "name": "דברים - אלה הדברים - 7"
+    },
+    {
+     "n": 8,
+     "sam_ch_number": 8,
+     "file": "/static/audio/readings/b5-p01-c008.mp3",
+     "duration": 67.16,
+     "src_start": 0,
+     "src_end": 67.16,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1857,
+     "verses": "ב:ב-ב:ז",
+     "verses_num": "2:2-2:7",
+     "verse_count": 6,
+     "incipit": "ויאמר יהוה אלי לאמר",
+     "name": "דברים - אלה הדברים - 8"
+    },
+    {
+     "n": 9,
+     "sam_ch_number": 9,
+     "file": "/static/audio/readings/b5-p01-c009.mp3",
+     "duration": 41.4,
+     "src_start": 0,
+     "src_end": 41.4,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 2244,
+     "verses": "ב:ז-ב:ח",
+     "verses_num": "2:7-2:8",
+     "verse_count": 2,
+     "incipit": "ואשלחה מלאכים אל מלך",
+     "name": "דברים - אלה הדברים - 9"
+    },
+    {
+     "n": 10,
+     "sam_ch_number": 10,
+     "file": "/static/audio/readings/b5-p01-c010.mp3",
+     "duration": 94.51,
+     "src_start": 0,
+     "src_end": 94.51,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1859,
+     "verses": "ב:ט-ב:טז",
+     "verses_num": "2:9-2:16",
+     "verse_count": 8,
+     "incipit": "ויאמר יהוה אלי אל",
+     "name": "דברים - אלה הדברים - 10"
+    },
+    {
+     "n": 11,
+     "sam_ch_number": 11,
+     "file": "/static/audio/readings/b5-p01-c011.mp3",
+     "duration": 99.92,
+     "src_start": 0,
+     "src_end": 99.92,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1860,
+     "verses": "ב:יז-ב:כה",
+     "verses_num": "2:17-2:25",
+     "verse_count": 9,
+     "incipit": "ויאמר יהוה אלי לאמר",
+     "name": "דברים - אלה הדברים - 11"
+    },
+    {
+     "n": 12,
+     "sam_ch_number": 12,
+     "file": "/static/audio/readings/b5-p01-c012.mp3",
+     "duration": 60.12,
+     "src_start": 0,
+     "src_end": 60.12,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1861,
+     "verses": "ב:כו-ב:ל",
+     "verses_num": "2:26-2:30",
+     "verse_count": 5,
+     "incipit": "ואשלחה מלאכים ממדבר קדמות:",
+     "name": "דברים - אלה הדברים - 12"
+    },
+    {
+     "n": 13,
+     "sam_ch_number": 13,
+     "file": "/static/audio/readings/b5-p01-c013.mp3",
+     "duration": 92.88,
+     "src_start": 0,
+     "src_end": 92.88,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1862,
+     "verses": "ב:לא-ג:א",
+     "verses_num": "2:31-3:1",
+     "verse_count": 8,
+     "incipit": "ויאמר יהוה אלי ראה",
+     "name": "דברים - אלה הדברים - 13"
+    },
+    {
+     "n": 14,
+     "sam_ch_number": 14,
+     "file": "/static/audio/readings/b5-p01-c014.mp3",
+     "duration": 71.52,
+     "src_start": 0,
+     "src_end": 71.52,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1863,
+     "verses": "ג:ב-ג:ז",
+     "verses_num": "3:2-3:7",
+     "verse_count": 6,
+     "incipit": "ויאמר יהוה אלי אל",
+     "name": "דברים - אלה הדברים - 14"
+    },
+    {
+     "n": 15,
+     "sam_ch_number": 15,
+     "file": "/static/audio/readings/b5-p01-c015.mp3",
+     "duration": 48.58,
+     "src_start": 0,
+     "src_end": 48.58,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1864,
+     "verses": "ג:ח-ג:יא",
+     "verses_num": "3:8-3:11",
+     "verse_count": 4,
+     "incipit": "ונקח בעת ההיא את",
+     "name": "דברים - אלה הדברים - 15"
+    },
+    {
+     "n": 16,
+     "sam_ch_number": 16,
+     "file": "/static/audio/readings/b5-p01-c016.mp3",
+     "duration": 75.46,
+     "src_start": 0,
+     "src_end": 75.46,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1865,
+     "verses": "ג:יב-ג:יז",
+     "verses_num": "3:12-3:17",
+     "verse_count": 6,
+     "incipit": "ואת הארץ הזאת ירשנו",
+     "name": "דברים - אלה הדברים - 16"
+    },
+    {
+     "n": 17,
+     "sam_ch_number": 17,
+     "file": "/static/audio/readings/b5-p01-c017.mp3",
+     "duration": 73.61,
+     "src_start": 0,
+     "src_end": 73.61,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1866,
+     "verses": "ג:יח-ג:כב",
+     "verses_num": "3:18-3:22",
+     "verse_count": 5,
+     "incipit": "ואצוה אתכם בעת ההיא",
+     "name": "דברים - אלה הדברים - 17"
+    },
+    {
+     "n": 18,
+     "sam_ch_number": 18,
+     "file": "/static/audio/readings/b5-p01-c018.mp3",
+     "duration": 39.25,
+     "src_start": 0,
+     "src_end": 39.25,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1867,
+     "verses": "ג:כג-ג:כו",
+     "verses_num": "3:23-3:26",
+     "verse_count": 4,
+     "incipit": "ואתחננה אל יהוה בעת",
+     "name": "דברים - אלה הדברים - 18"
+    },
+    {
+     "n": 19,
+     "sam_ch_number": 19,
+     "file": "/static/audio/readings/b5-p01-c019.mp3",
+     "duration": 34.7,
+     "src_start": 0,
+     "src_end": 34.7,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1868,
+     "verses": "ג:כז-ג:כט",
+     "verses_num": "3:27-3:29",
+     "verse_count": 3,
+     "incipit": "ויאמר יהוה אלי רב",
+     "name": "דברים - אלה הדברים - 19"
+    },
+    {
+     "n": 20,
+     "sam_ch_number": 20,
+     "file": "/static/audio/readings/b5-p01-c020.mp3",
+     "duration": 58.51,
+     "src_start": 0,
+     "src_end": 58.51,
+     "portion": {
+      "order": 1,
+      "id": 46,
+      "name": "אלה הדברים"
+     },
+     "src": {
+      "youtube_id": "IR29k97rOes"
+     },
+     "sam_ch_id": 1869,
+     "verses": "ד:א-ד:ד",
+     "verses_num": "4:1-4:4",
+     "verse_count": 4,
+     "incipit": "ועתה ישראל שמע אל",
+     "name": "דברים - אלה הדברים - 20"
     }
    ],
    "playlist": "PLl-48IEqLtltLwSZByh4fA9I40z5o3-Do",
