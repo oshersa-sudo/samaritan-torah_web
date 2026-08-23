@@ -17826,248 +17826,6 @@
     },
     {
      "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 8,
-     "name": "דברים - בנים אתם - 72",
-     "incipit": "בנים אתם ליהוה אלהיכם:",
-     "sam_ch_id": 1921,
-     "n": 72,
-     "verses": "יד:א-יד:ח",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 72,
-     "file": "/static/audio/readings/b5-p05-c072.mp3",
-     "duration": 92.47,
-     "src_start": 0.0,
-     "src_end": 92.47,
-     "verses_num": "14:1-14:8"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 13,
-     "name": "דברים - בנים אתם - 73",
-     "incipit": "ואת זה תאכלו מכל",
-     "sam_ch_id": 1922,
-     "n": 73,
-     "verses": "יד:ט-יד:כא",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 73,
-     "file": "/static/audio/readings/b5-p05-c073.mp3",
-     "duration": 93.61,
-     "src_start": 92.47,
-     "src_end": 186.08,
-     "verses_num": "14:9-14:21"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 6,
-     "name": "דברים - בנים אתם - 74",
-     "incipit": "עשר תעשר את כל",
-     "sam_ch_id": 1923,
-     "n": 74,
-     "verses": "יד:כב-יד:כז",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 74,
-     "file": "/static/audio/readings/b5-p05-c074.mp3",
-     "duration": 92.55,
-     "src_start": 186.08,
-     "src_end": 278.63,
-     "verses_num": "14:22-14:27"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 2,
-     "name": "דברים - בנים אתם - 75",
-     "incipit": "מקץ שלש שנים תוצא",
-     "sam_ch_id": 1924,
-     "n": 75,
-     "verses": "יד:כח-יד:כט",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 75,
-     "file": "/static/audio/readings/b5-p05-c075.mp3",
-     "duration": 23.57,
-     "src_start": 278.63,
-     "src_end": 302.2,
-     "verses_num": "14:28-14:29"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 6,
-     "name": "דברים - בנים אתם - 76",
-     "incipit": "מקץ שבע שנים תעשה",
-     "sam_ch_id": 1925,
-     "n": 76,
-     "verses": "טו:א-טו:ו",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 76,
-     "file": "/static/audio/readings/b5-p05-c076.mp3",
-     "duration": 70.0,
-     "src_start": 302.2,
-     "src_end": 372.2,
-     "verses_num": "15:1-15:6"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - בנים אתם - 77",
-     "incipit": "כי יהיה בך אביון",
-     "sam_ch_id": 1926,
-     "n": 77,
-     "verses": "טו:ז-טו:יא",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 77,
-     "file": "/static/audio/readings/b5-p05-c077.mp3",
-     "duration": 80.44,
-     "src_start": 372.2,
-     "src_end": 452.64,
-     "verses_num": "15:7-15:11"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 7,
-     "name": "דברים - בנים אתם - 78",
-     "incipit": "כי ימכר לך אחיך",
-     "sam_ch_id": 1927,
-     "n": 78,
-     "verses": "טו:יב-טו:יח",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 78,
-     "file": "/static/audio/readings/b5-p05-c078.mp3",
-     "duration": 80.33,
-     "src_start": 452.64,
-     "src_end": 532.97,
-     "verses_num": "15:12-15:18"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - בנים אתם - 79",
-     "incipit": "כל הבכור אשר יולד",
-     "sam_ch_id": 1928,
-     "n": 79,
-     "verses": "טו:יט-טו:כג",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 79,
-     "file": "/static/audio/readings/b5-p05-c079.mp3",
-     "duration": 52.9,
-     "src_start": 532.97,
-     "src_end": 585.87,
-     "verses_num": "15:19-15:23"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 8,
-     "name": "דברים - בנים אתם - 80",
-     "incipit": "שמור את חדש האביב",
-     "sam_ch_id": 1929,
-     "n": 80,
-     "verses": "טז:א-טז:ח",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 80,
-     "file": "/static/audio/readings/b5-p05-c080.mp3",
-     "duration": 107.64,
-     "src_start": 585.87,
-     "src_end": 693.51,
-     "verses_num": "16:1-16:8"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 4,
-     "name": "דברים - בנים אתם - 81",
-     "incipit": "שבעה שבעות תספר לך:",
-     "sam_ch_id": 1930,
-     "n": 81,
-     "verses": "טז:ט-טז:יב",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 81,
-     "file": "/static/audio/readings/b5-p05-c081.mp3",
-     "duration": 56.54,
-     "src_start": 693.51,
-     "src_end": 750.05,
-     "verses_num": "16:9-16:12"
-    },
-    {
-     "src": {
-      "youtube_id": "3U7TpzJ9hmQ"
-     },
-     "verse_count": 5,
-     "name": "דברים - בנים אתם - 82",
-     "incipit": "חג הסכות תעשה לך",
-     "sam_ch_id": 1931,
-     "n": 82,
-     "verses": "טז:יג-טז:יז",
-     "portion": {
-      "order": 5,
-      "name": "בנים אתם",
-      "id": 50
-     },
-     "sam_ch_number": 82,
-     "file": "/static/audio/readings/b5-p05-c082.mp3",
-     "duration": 66.99,
-     "src_start": 750.05,
-     "src_end": 817.04,
-     "verses_num": "16:13-16:17"
-    },
-    {
-     "src": {
       "youtube_id": "gO5SdUGInrE"
      },
      "verse_count": 6,
@@ -20925,6 +20683,248 @@
      "verse_count": 7,
      "incipit": "כי תשמע באחת עריך",
      "name": "דברים - כי אתם - 71"
+    },
+    {
+     "n": 72,
+     "sam_ch_number": 72,
+     "file": "/static/audio/readings/b5-p05-c072.mp3",
+     "duration": 92.47,
+     "src_start": 0,
+     "src_end": 92.47,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1921,
+     "verses": "יד:א-יד:ח",
+     "verses_num": "14:1-14:8",
+     "verse_count": 8,
+     "incipit": "בנים אתם ליהוה אלהיכם:",
+     "name": "דברים - בנים אתם - 72"
+    },
+    {
+     "n": 73,
+     "sam_ch_number": 73,
+     "file": "/static/audio/readings/b5-p05-c073.mp3",
+     "duration": 85.86,
+     "src_start": 0,
+     "src_end": 85.86,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1922,
+     "verses": "יד:ט-יד:כא",
+     "verses_num": "14:9-14:21",
+     "verse_count": 13,
+     "incipit": "ואת זה תאכלו מכל",
+     "name": "דברים - בנים אתם - 73"
+    },
+    {
+     "n": 74,
+     "sam_ch_number": 74,
+     "file": "/static/audio/readings/b5-p05-c074.mp3",
+     "duration": 91.64,
+     "src_start": 0,
+     "src_end": 91.64,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1923,
+     "verses": "יד:כב-יד:כז",
+     "verses_num": "14:22-14:27",
+     "verse_count": 6,
+     "incipit": "עשר תעשר את כל",
+     "name": "דברים - בנים אתם - 74"
+    },
+    {
+     "n": 75,
+     "sam_ch_number": 75,
+     "file": "/static/audio/readings/b5-p05-c075.mp3",
+     "duration": 32.23,
+     "src_start": 0,
+     "src_end": 32.23,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1924,
+     "verses": "יד:כח-יד:כט",
+     "verses_num": "14:28-14:29",
+     "verse_count": 2,
+     "incipit": "מקץ שלש שנים תוצא",
+     "name": "דברים - בנים אתם - 75"
+    },
+    {
+     "n": 76,
+     "sam_ch_number": 76,
+     "file": "/static/audio/readings/b5-p05-c076.mp3",
+     "duration": 70.0,
+     "src_start": 0,
+     "src_end": 70.0,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1925,
+     "verses": "טו:א-טו:ו",
+     "verses_num": "15:1-15:6",
+     "verse_count": 6,
+     "incipit": "מקץ שבע שנים תעשה",
+     "name": "דברים - בנים אתם - 76"
+    },
+    {
+     "n": 77,
+     "sam_ch_number": 77,
+     "file": "/static/audio/readings/b5-p05-c077.mp3",
+     "duration": 80.44,
+     "src_start": 0,
+     "src_end": 80.44,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1926,
+     "verses": "טו:ז-טו:יא",
+     "verses_num": "15:7-15:11",
+     "verse_count": 5,
+     "incipit": "כי יהיה בך אביון",
+     "name": "דברים - בנים אתם - 77"
+    },
+    {
+     "n": 78,
+     "sam_ch_number": 78,
+     "file": "/static/audio/readings/b5-p05-c078.mp3",
+     "duration": 80.33,
+     "src_start": 0,
+     "src_end": 80.33,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1927,
+     "verses": "טו:יב-טו:יח",
+     "verses_num": "15:12-15:18",
+     "verse_count": 7,
+     "incipit": "כי ימכר לך אחיך",
+     "name": "דברים - בנים אתם - 78"
+    },
+    {
+     "n": 79,
+     "sam_ch_number": 79,
+     "file": "/static/audio/readings/b5-p05-c079.mp3",
+     "duration": 52.9,
+     "src_start": 0,
+     "src_end": 52.9,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1928,
+     "verses": "טו:יט-טו:כג",
+     "verses_num": "15:19-15:23",
+     "verse_count": 5,
+     "incipit": "כל הבכור אשר יולד",
+     "name": "דברים - בנים אתם - 79"
+    },
+    {
+     "n": 80,
+     "sam_ch_number": 80,
+     "file": "/static/audio/readings/b5-p05-c080.mp3",
+     "duration": 107.64,
+     "src_start": 0,
+     "src_end": 107.64,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1929,
+     "verses": "טז:א-טז:ח",
+     "verses_num": "16:1-16:8",
+     "verse_count": 8,
+     "incipit": "שמור את חדש האביב",
+     "name": "דברים - בנים אתם - 80"
+    },
+    {
+     "n": 81,
+     "sam_ch_number": 81,
+     "file": "/static/audio/readings/b5-p05-c081.mp3",
+     "duration": 56.54,
+     "src_start": 0,
+     "src_end": 56.54,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1930,
+     "verses": "טז:ט-טז:יב",
+     "verses_num": "16:9-16:12",
+     "verse_count": 4,
+     "incipit": "שבעה שבעות תספר לך:",
+     "name": "דברים - בנים אתם - 81"
+    },
+    {
+     "n": 82,
+     "sam_ch_number": 82,
+     "file": "/static/audio/readings/b5-p05-c082.mp3",
+     "duration": 66.99,
+     "src_start": 0,
+     "src_end": 66.99,
+     "portion": {
+      "order": 5,
+      "id": 50,
+      "name": "בנים אתם"
+     },
+     "src": {
+      "youtube_id": "3U7TpzJ9hmQ"
+     },
+     "sam_ch_id": 1931,
+     "verses": "טז:יג-טז:יז",
+     "verses_num": "16:13-16:17",
+     "verse_count": 5,
+     "incipit": "חג הסכות תעשה לך",
+     "name": "דברים - בנים אתם - 82"
     }
    ],
    "playlist": "PLl-48IEqLtltLwSZByh4fA9I40z5o3-Do",
