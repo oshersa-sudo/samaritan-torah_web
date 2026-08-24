@@ -6888,5 +6888,34 @@
   "note_en": "Complete bilingual Samaritan Pentateuch (Samaritan Hebrew and Arabic, two columns), vellum, 308 leaves, purchased in Jerusalem summer 1900 and presented to Westminster College by Agnes Smith Lewis and Margaret Dunlop Gibson (the \"Sinai Twins\"). Described in J. Skinner, Jewish Quarterly Review 14 (1901), pp. 26-36. A CUDL (Cambridge Digital Library) search found no matching record - possibly it remained at Westminster College rather than joining the 2013 Cambridge/Bodleian Lewis-Gibson acquisition (which was mainly Genizah fragments, not a complete codex like this). Needs direct inquiry with the library.",
   "note_ar": "توراة سامرية ثنائية اللغة كاملة (عبرية سامرية وعربية)، رق، 308 ورقة، اشتريت في القدس صيف 1900.",
   "folder": ""
+ },
+ {
+  "id": "forbes-library-passover-ms",
+  "inst": "ספריית פורבס, נורת׳המפטון, מסצ׳וסטס",
+  "inst_en": "Forbes Library, Northampton, Massachusetts",
+  "inst_ar": "مكتبة فوربس، نورثهامبتون، ماساتشوستس",
+  "shelf": "",
+  "title_src": "Samaritan Passover liturgical manuscript, 1735 (Wood, 1921)",
+  "src_lang": "en",
+  "title": "כתב יד ליטורגי שומרוני לפסח, 1735",
+  "title_en": "Samaritan Passover liturgical manuscript, 1735",
+  "title_ar": "مخطوطة طقسية سامرية لعيد الفصح، 1735",
+  "type": {
+   "key": "liturgy",
+   "he": "סידור ותפילה",
+   "en": "Prayer book and liturgy",
+   "ar": "كتاب صلوات وطقوس"
+  },
+  "url": "https://archive.org/details/jstor-3259294",
+  "pages": null,
+  "date": "1735",
+  "status": "not_digitised",
+  "status_he": "לא אותר בקטלוג דיגיטלי — טעון בירור ישיר",
+  "status_en": "Not found in any digital catalogue - needs direct inquiry",
+  "status_ar": "لم يتم العثور عليه في أي فهرس رقمي",
+  "note_he": "סידור טקס פסח שומרוני שלם, 123 דפי נייר כבד, בכריכת עור מוטבעת. נרכש ב-1905 (ככל הנראה כחלק מאוסף ספרים, ללא תיעוד רכישה). כתוב על ידי הסופר יהוד אבן ישאפי, תאריך 29 צפר 1151 ה׳ (=1735 לספירה). קישוטים בדיו אדום, ירוק וחום. תואר במאמרו של Irving P. Wood, Journal of Biblical Literature 40 (1921), עמ׳ 159-. חיפוש ב-Digital Commonwealth (אגרגטור הדיגיטציה של ספריות מסצ׳וסטס) לא העלה תוצאה.",
+  "note_en": "Complete Samaritan Passover liturgy manuscript, 123 leaves of heavy paper, embossed leather binding. Purchased in 1905 (likely as part of a book collection, no purchase record). Written by the scribe Yahud Ibn Ishafe, dated 29 Safar 1151 AH (1735 CE). Decorated in red, green and brown ink. Described in Irving P. Wood, Journal of Biblical Literature 40 (1921), pp. 159-. A Digital Commonwealth (Massachusetts libraries digitization aggregator) search found no record.",
+  "note_ar": "مخطوطة طقسية سامرية كاملة لعيد الفصح، 123 ورقة، من عام 1735.",
+  "folder": ""
  }
 ]
