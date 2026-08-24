@@ -45,6 +45,9 @@
    "sam_ch_number": 1,
    "chapter": 1,
    "verses": "1-8",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12314.mp3",
@@ -60,6 +63,9 @@
    "sam_ch_number": 2,
    "chapter": 1,
    "verses": "9-18",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12314.mp3",
@@ -75,6 +81,9 @@
    "sam_ch_number": 3,
    "chapter": 1,
    "verses": "19-23",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12314.mp3",
@@ -95,6 +104,9 @@
    "sam_ch_number": 5,
    "chapter": 1,
    "verses": "29-33",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12314.mp3",
@@ -110,14 +122,41 @@
    "sam_ch_number": 6,
    "chapter": 1,
    "verses": "34-41",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12314.mp3",
      "t0": 541.54,
-     "t1": 726.88
+     "t1": 664.07
     }
    ],
-   "duration": 185.34
+   "duration": 122.53
+  },
+  {
+   "reader": "אברהם בן יששכר המרחיב",
+   "book_id": 5,
+   "sam_ch_number": 7,
+   "chapter": 1,
+   "verses": "1:42-2:1",
+   "spans": [
+    1,
+    2
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12314.mp3",
+     "t0": 664.07,
+     "t1": 726.88
+    },
+    {
+     "file": "/static/audio/masorot/m12315.mp3",
+     "t0": 0.0,
+     "t1": 3.48
+    }
+   ],
+   "duration": 66.29
   },
   {
    "reader": "אברהם בן יששכר המרחיב",
@@ -125,6 +164,9 @@
    "sam_ch_number": 8,
    "chapter": 2,
    "verses": "2-7",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12315.mp3",
@@ -145,6 +187,9 @@
    "sam_ch_number": 10,
    "chapter": 2,
    "verses": "9-16",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12315.mp3",
@@ -160,6 +205,9 @@
    "sam_ch_number": 11,
    "chapter": 2,
    "verses": "17-25",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12315.mp3",
@@ -175,14 +223,41 @@
    "sam_ch_number": 12,
    "chapter": 2,
    "verses": "26-30",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12315.mp3",
      "t0": 406.17,
-     "t1": 580.29
+     "t1": 483.63
     }
    ],
-   "duration": 174.12
+   "duration": 77.46
+  },
+  {
+   "reader": "אברהם בן יששכר המרחיב",
+   "book_id": 5,
+   "sam_ch_number": 13,
+   "chapter": 2,
+   "verses": "2:31-3:1",
+   "spans": [
+    2,
+    3
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12315.mp3",
+     "t0": 483.63,
+     "t1": 580.29
+    },
+    {
+     "file": "/static/audio/masorot/m12316.mp3",
+     "t0": 0.0,
+     "t1": 20.44
+    }
+   ],
+   "duration": 117.1
   },
   {
    "reader": "אברהם בן יששכר המרחיב",
@@ -190,6 +265,9 @@
    "sam_ch_number": 14,
    "chapter": 3,
    "verses": "2-7",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12316.mp3",
@@ -205,6 +283,9 @@
    "sam_ch_number": 15,
    "chapter": 3,
    "verses": "8-11",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12316.mp3",
@@ -220,6 +301,9 @@
    "sam_ch_number": 16,
    "chapter": 3,
    "verses": "12-17",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12316.mp3",
@@ -235,6 +319,9 @@
    "sam_ch_number": 17,
    "chapter": 3,
    "verses": "18-22",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12316.mp3",
@@ -250,6 +337,9 @@
    "sam_ch_number": 18,
    "chapter": 3,
    "verses": "23-26",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12316.mp3",
@@ -265,6 +355,9 @@
    "sam_ch_number": 19,
    "chapter": 3,
    "verses": "27-29",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12316.mp3",
@@ -280,6 +373,9 @@
    "sam_ch_number": 20,
    "chapter": 4,
    "verses": "1-4",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -295,6 +391,9 @@
    "sam_ch_number": 21,
    "chapter": 4,
    "verses": "5-8",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -310,6 +409,9 @@
    "sam_ch_number": 22,
    "chapter": 4,
    "verses": "9-11",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -325,6 +427,9 @@
    "sam_ch_number": 23,
    "chapter": 4,
    "verses": "12-20",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -340,6 +445,9 @@
    "sam_ch_number": 24,
    "chapter": 4,
    "verses": "21-24",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -355,6 +463,9 @@
    "sam_ch_number": 25,
    "chapter": 4,
    "verses": "25-31",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -370,6 +481,9 @@
    "sam_ch_number": 26,
    "chapter": 4,
    "verses": "32-34",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -385,6 +499,9 @@
    "sam_ch_number": 27,
    "chapter": 4,
    "verses": "35-40",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -400,6 +517,9 @@
    "sam_ch_number": 28,
    "chapter": 4,
    "verses": "41-49",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12317.mp3",
@@ -415,6 +535,9 @@
    "sam_ch_number": 29,
    "chapter": 5,
    "verses": "1-5",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12318.mp3",
@@ -430,6 +553,9 @@
    "sam_ch_number": 30,
    "chapter": 5,
    "verses": "6-10",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12318.mp3",
@@ -445,6 +571,9 @@
    "sam_ch_number": 31,
    "chapter": 5,
    "verses": "11-14",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12318.mp3",
@@ -460,6 +589,9 @@
    "sam_ch_number": 32,
    "chapter": 5,
    "verses": "15-17",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12318.mp3",
@@ -480,6 +612,9 @@
    "sam_ch_number": 34,
    "chapter": 5,
    "verses": "18-25",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12318.mp3",
@@ -495,6 +630,9 @@
    "sam_ch_number": 35,
    "chapter": 5,
    "verses": "26-30",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12318.mp3",
@@ -510,6 +648,9 @@
    "sam_ch_number": 36,
    "chapter": 6,
    "verses": "1-3",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12319.mp3",
@@ -525,6 +666,9 @@
    "sam_ch_number": 37,
    "chapter": 6,
    "verses": "4-9",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12319.mp3",
@@ -540,6 +684,9 @@
    "sam_ch_number": 38,
    "chapter": 6,
    "verses": "10-19",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12319.mp3",
@@ -555,6 +702,9 @@
    "sam_ch_number": 39,
    "chapter": 6,
    "verses": "20-25",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12319.mp3",
@@ -570,6 +720,9 @@
    "sam_ch_number": 40,
    "chapter": 7,
    "verses": "1-6",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12320.mp3",
@@ -585,6 +738,9 @@
    "sam_ch_number": 41,
    "chapter": 7,
    "verses": "7-11",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12320.mp3",
@@ -600,6 +756,9 @@
    "sam_ch_number": 42,
    "chapter": 7,
    "verses": "12-16",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12320.mp3",
@@ -615,6 +774,9 @@
    "sam_ch_number": 43,
    "chapter": 7,
    "verses": "17-26",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12320.mp3",
@@ -630,6 +792,9 @@
    "sam_ch_number": 44,
    "chapter": 8,
    "verses": "1-4",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12321.mp3",
@@ -645,6 +810,9 @@
    "sam_ch_number": 45,
    "chapter": 8,
    "verses": "5-10",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12321.mp3",
@@ -665,6 +833,9 @@
    "sam_ch_number": 46,
    "chapter": 8,
    "verses": "11-20",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12322.mp3",
@@ -680,6 +851,9 @@
    "sam_ch_number": 47,
    "chapter": 9,
    "verses": "1-5",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12323.mp3",
@@ -695,6 +869,9 @@
    "sam_ch_number": 48,
    "chapter": 9,
    "verses": "6-8",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12323.mp3",
@@ -710,6 +887,9 @@
    "sam_ch_number": 49,
    "chapter": 9,
    "verses": "9-12",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12323.mp3",
@@ -725,6 +905,9 @@
    "sam_ch_number": 50,
    "chapter": 9,
    "verses": "13-17",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12323.mp3",
@@ -740,6 +923,9 @@
    "sam_ch_number": 51,
    "chapter": 9,
    "verses": "18-24",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12323.mp3",
@@ -755,6 +941,9 @@
    "sam_ch_number": 52,
    "chapter": 9,
    "verses": "25-29",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12323.mp3",
@@ -770,6 +959,9 @@
    "sam_ch_number": 53,
    "chapter": 10,
    "verses": "1-5",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12324.mp3",
@@ -785,6 +977,9 @@
    "sam_ch_number": 54,
    "chapter": 10,
    "verses": "6-7",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12324.mp3",
@@ -800,14 +995,41 @@
    "sam_ch_number": 55,
    "chapter": 10,
    "verses": "8-11",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12324.mp3",
      "t0": 141.95,
-     "t1": 345.97
+     "t1": 210.24
     }
    ],
-   "duration": 204.02
+   "duration": 68.29
+  },
+  {
+   "reader": "אברהם בן יששכר המרחיב",
+   "book_id": 5,
+   "sam_ch_number": 56,
+   "chapter": 10,
+   "verses": "10:12-11:1",
+   "spans": [
+    10,
+    11
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12324.mp3",
+     "t0": 210.24,
+     "t1": 345.97
+    },
+    {
+     "file": "/static/audio/masorot/m12325.mp3",
+     "t0": 0.0,
+     "t1": 18.88
+    }
+   ],
+   "duration": 154.61
   },
   {
    "reader": "אברהם בן יששכר המרחיב",
@@ -815,6 +1037,9 @@
    "sam_ch_number": 57,
    "chapter": 11,
    "verses": "2-9",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12325.mp3",
@@ -830,6 +1055,9 @@
    "sam_ch_number": 58,
    "chapter": 11,
    "verses": "10-12",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12325.mp3",
@@ -845,6 +1073,9 @@
    "sam_ch_number": 59,
    "chapter": 11,
    "verses": "13-21",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12325.mp3",
@@ -860,6 +1091,9 @@
    "sam_ch_number": 60,
    "chapter": 11,
    "verses": "22-25",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12325.mp3",
@@ -875,14 +1109,41 @@
    "sam_ch_number": 61,
    "chapter": 11,
    "verses": "26-30",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12325.mp3",
      "t0": 412.51,
-     "t1": 529.4
+     "t1": 497.98
     }
    ],
-   "duration": 116.89
+   "duration": 85.47
+  },
+  {
+   "reader": "אברהם בן יששכר המרחיב",
+   "book_id": 5,
+   "sam_ch_number": 62,
+   "chapter": 11,
+   "verses": "11:31-12:7",
+   "spans": [
+    11,
+    12
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12325.mp3",
+     "t0": 497.98,
+     "t1": 529.4
+    },
+    {
+     "file": "/static/audio/masorot/m12326.mp3",
+     "t0": 0.0,
+     "t1": 132.25
+    }
+   ],
+   "duration": 163.67
   },
   {
    "reader": "אברהם בן יששכר המרחיב",
@@ -890,6 +1151,9 @@
    "sam_ch_number": 63,
    "chapter": 12,
    "verses": "8-12",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12326.mp3",
@@ -905,6 +1169,9 @@
    "sam_ch_number": 64,
    "chapter": 12,
    "verses": "13-16",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12326.mp3",
@@ -920,6 +1187,9 @@
    "sam_ch_number": 65,
    "chapter": 12,
    "verses": "17-19",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12326.mp3",
@@ -935,6 +1205,9 @@
    "sam_ch_number": 66,
    "chapter": 12,
    "verses": "20-25",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12326.mp3",
@@ -950,14 +1223,41 @@
    "sam_ch_number": 67,
    "chapter": 12,
    "verses": "26-28",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12326.mp3",
      "t0": 468.59,
-     "t1": 565.78
+     "t1": 477.37
     }
    ],
-   "duration": 97.19
+   "duration": 8.78
+  },
+  {
+   "reader": "אברהם בן יששכר המרחיב",
+   "book_id": 5,
+   "sam_ch_number": 68,
+   "chapter": 12,
+   "verses": "12:29-13:1",
+   "spans": [
+    12,
+    13
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12326.mp3",
+     "t0": 477.37,
+     "t1": 565.78
+    },
+    {
+     "file": "/static/audio/masorot/m12327.mp3",
+     "t0": 0.0,
+     "t1": 18.87
+    }
+   ],
+   "duration": 107.28
   },
   {
    "reader": "אברהם בן יששכר המרחיב",
@@ -965,6 +1265,9 @@
    "sam_ch_number": 69,
    "chapter": 13,
    "verses": "2-6",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12327.mp3",
@@ -980,6 +1283,9 @@
    "sam_ch_number": 70,
    "chapter": 13,
    "verses": "7-12",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12327.mp3",
@@ -995,6 +1301,9 @@
    "sam_ch_number": 71,
    "chapter": 13,
    "verses": "13-19",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12327.mp3",
@@ -1010,6 +1319,9 @@
    "sam_ch_number": 72,
    "chapter": 14,
    "verses": "1-8",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12328.mp3",
@@ -1025,6 +1337,9 @@
    "sam_ch_number": 73,
    "chapter": 14,
    "verses": "9-21",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12328.mp3",
@@ -1040,6 +1355,9 @@
    "sam_ch_number": 74,
    "chapter": 14,
    "verses": "22-27",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12328.mp3",
@@ -1055,6 +1373,9 @@
    "sam_ch_number": 75,
    "chapter": 14,
    "verses": "28-29",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12328.mp3",
@@ -1070,6 +1391,9 @@
    "sam_ch_number": 76,
    "chapter": 15,
    "verses": "1-6",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12329.mp3",
@@ -1085,6 +1409,9 @@
    "sam_ch_number": 77,
    "chapter": 15,
    "verses": "7-11",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12329.mp3",
@@ -1100,6 +1427,9 @@
    "sam_ch_number": 78,
    "chapter": 15,
    "verses": "12-18",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12329.mp3",
@@ -1115,6 +1445,9 @@
    "sam_ch_number": 79,
    "chapter": 15,
    "verses": "19-23",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12329.mp3",
@@ -1130,6 +1463,9 @@
    "sam_ch_number": 80,
    "chapter": 16,
    "verses": "1-8",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12330.mp3",
@@ -1145,6 +1481,9 @@
    "sam_ch_number": 81,
    "chapter": 16,
    "verses": "9-12",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12330.mp3",
@@ -1160,14 +1499,41 @@
    "sam_ch_number": 82,
    "chapter": 16,
    "verses": "13-17",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12330.mp3",
      "t0": 186.78,
-     "t1": 319.41
+     "t1": 261.73
     }
    ],
-   "duration": 132.63
+   "duration": 74.95
+  },
+  {
+   "reader": "אברהם בן יששכר המרחיב",
+   "book_id": 5,
+   "sam_ch_number": 83,
+   "chapter": 16,
+   "verses": "16:18-17:1",
+   "spans": [
+    16,
+    17
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12330.mp3",
+     "t0": 261.73,
+     "t1": 319.41
+    },
+    {
+     "file": "/static/audio/masorot/m12331.mp3",
+     "t0": 0.0,
+     "t1": 18.36
+    }
+   ],
+   "duration": 76.04
   },
   {
    "reader": "אברהם בן יששכר המרחיב",
@@ -1175,6 +1541,9 @@
    "sam_ch_number": 84,
    "chapter": 17,
    "verses": "2-7",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12331.mp3",
@@ -1190,6 +1559,9 @@
    "sam_ch_number": 85,
    "chapter": 17,
    "verses": "8-13",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12331.mp3",
@@ -1205,6 +1577,9 @@
    "sam_ch_number": 86,
    "chapter": 17,
    "verses": "14-20",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12331.mp3",
@@ -1220,6 +1595,9 @@
    "sam_ch_number": 87,
    "chapter": 18,
    "verses": "1-8",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12332.mp3",
@@ -1235,6 +1613,9 @@
    "sam_ch_number": 88,
    "chapter": 18,
    "verses": "9-16",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12332.mp3",
@@ -1250,6 +1631,9 @@
    "sam_ch_number": 89,
    "chapter": 18,
    "verses": "17-22",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12332.mp3",
@@ -1265,6 +1649,9 @@
    "sam_ch_number": 90,
    "chapter": 19,
    "verses": "1-7",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12333.mp3",
@@ -1280,6 +1667,9 @@
    "sam_ch_number": 91,
    "chapter": 19,
    "verses": "8-13",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12333.mp3",
@@ -1295,6 +1685,9 @@
    "sam_ch_number": 92,
    "chapter": 19,
    "verses": "14-21",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12333.mp3",
@@ -1310,6 +1703,9 @@
    "sam_ch_number": 93,
    "chapter": 20,
    "verses": "1-9",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12334.mp3",
@@ -1325,6 +1721,9 @@
    "sam_ch_number": 94,
    "chapter": 20,
    "verses": "10-18",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12334.mp3",
@@ -1340,6 +1739,9 @@
    "sam_ch_number": 95,
    "chapter": 20,
    "verses": "19-20",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12334.mp3",
@@ -1355,6 +1757,9 @@
    "sam_ch_number": 96,
    "chapter": 21,
    "verses": "1-9",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12335.mp3",
@@ -1370,6 +1775,9 @@
    "sam_ch_number": 97,
    "chapter": 21,
    "verses": "10-14",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12335.mp3",
@@ -1385,6 +1793,9 @@
    "sam_ch_number": 98,
    "chapter": 21,
    "verses": "15-17",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12335.mp3",
@@ -1400,14 +1811,41 @@
    "sam_ch_number": 99,
    "chapter": 21,
    "verses": "18-21",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12335.mp3",
      "t0": 229.98,
-     "t1": 311.94
+     "t1": 283.75
     }
    ],
-   "duration": 81.96
+   "duration": 53.77
+  },
+  {
+   "reader": "אברהם בן יששכר המרחיב",
+   "book_id": 5,
+   "sam_ch_number": 100,
+   "chapter": 21,
+   "verses": "21:22-22:5",
+   "spans": [
+    21,
+    22
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12335.mp3",
+     "t0": 283.75,
+     "t1": 311.94
+    },
+    {
+     "file": "/static/audio/masorot/m12336.mp3",
+     "t0": 0.0,
+     "t1": 74.64
+    }
+   ],
+   "duration": 102.83
   },
   {
    "reader": "אברהם בן יששכר המרחיב",
@@ -1415,6 +1853,9 @@
    "sam_ch_number": 101,
    "chapter": 22,
    "verses": "6-12",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12336.mp3",
@@ -1430,6 +1871,9 @@
    "sam_ch_number": 102,
    "chapter": 22,
    "verses": "13-22",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12336.mp3",
@@ -1445,14 +1889,41 @@
    "sam_ch_number": 103,
    "chapter": 22,
    "verses": "23-27",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12336.mp3",
      "t0": 281.83,
-     "t1": 380.67
+     "t1": 355.84
     }
    ],
-   "duration": 98.84
+   "duration": 74.01
+  },
+  {
+   "reader": "אברהם בן יששכר המרחיב",
+   "book_id": 5,
+   "sam_ch_number": 104,
+   "chapter": 22,
+   "verses": "22:28-23:9",
+   "spans": [
+    22,
+    23
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12336.mp3",
+     "t0": 355.84,
+     "t1": 380.67
+    },
+    {
+     "file": "/static/audio/masorot/m12337.mp3",
+     "t0": 0.0,
+     "t1": 98.02
+    }
+   ],
+   "duration": 122.85
   },
   {
    "reader": "אברהם בן יששכר המרחיב",
@@ -1460,6 +1931,9 @@
    "sam_ch_number": 105,
    "chapter": 23,
    "verses": "10-15",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12337.mp3",
@@ -1475,6 +1949,9 @@
    "sam_ch_number": 106,
    "chapter": 23,
    "verses": "16-21",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12337.mp3",
@@ -1490,6 +1967,9 @@
    "sam_ch_number": 107,
    "chapter": 23,
    "verses": "22-26",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12337.mp3",
@@ -1505,6 +1985,9 @@
    "sam_ch_number": 108,
    "chapter": 24,
    "verses": "1-6",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12338.mp3",
@@ -1520,6 +2003,9 @@
    "sam_ch_number": 109,
    "chapter": 24,
    "verses": "7-9",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12338.mp3",
@@ -1535,6 +2021,9 @@
    "sam_ch_number": 110,
    "chapter": 24,
    "verses": "10-13",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12338.mp3",
@@ -1550,6 +2039,9 @@
    "sam_ch_number": 111,
    "chapter": 24,
    "verses": "14-18",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12338.mp3",
@@ -1565,6 +2057,9 @@
    "sam_ch_number": 112,
    "chapter": 24,
    "verses": "19-22",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12338.mp3",
@@ -1580,6 +2075,9 @@
    "sam_ch_number": 113,
    "chapter": 25,
    "verses": "1-4",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12339.mp3",
@@ -1595,6 +2093,9 @@
    "sam_ch_number": 114,
    "chapter": 25,
    "verses": "5-10",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12339.mp3",
@@ -1610,6 +2111,9 @@
    "sam_ch_number": 115,
    "chapter": 25,
    "verses": "11-19",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12339.mp3",
@@ -1625,6 +2129,9 @@
    "sam_ch_number": 116,
    "chapter": 26,
    "verses": "1-11",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12340.mp3",
@@ -1640,6 +2147,9 @@
    "sam_ch_number": 117,
    "chapter": 26,
    "verses": "12-15",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12340.mp3",
@@ -1655,6 +2165,9 @@
    "sam_ch_number": 118,
    "chapter": 26,
    "verses": "16-19",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12340.mp3",
@@ -1670,6 +2183,9 @@
    "sam_ch_number": 119,
    "chapter": 27,
    "verses": "1-8",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12341.mp3",
@@ -1685,6 +2201,9 @@
    "sam_ch_number": 120,
    "chapter": 27,
    "verses": "9-26",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12341.mp3",
@@ -1700,6 +2219,9 @@
    "sam_ch_number": 121,
    "chapter": 28,
    "verses": "1-11",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1715,6 +2237,9 @@
    "sam_ch_number": 122,
    "chapter": 28,
    "verses": "12-14",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1730,6 +2255,9 @@
    "sam_ch_number": 123,
    "chapter": 28,
    "verses": "15-21",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1745,6 +2273,9 @@
    "sam_ch_number": 124,
    "chapter": 28,
    "verses": "22-26",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1760,6 +2291,9 @@
    "sam_ch_number": 125,
    "chapter": 28,
    "verses": "27-35",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1775,6 +2309,9 @@
    "sam_ch_number": 126,
    "chapter": 28,
    "verses": "36-48",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1790,6 +2327,9 @@
    "sam_ch_number": 127,
    "chapter": 28,
    "verses": "49-53",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1805,6 +2345,9 @@
    "sam_ch_number": 128,
    "chapter": 28,
    "verses": "54-55",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1820,6 +2363,9 @@
    "sam_ch_number": 129,
    "chapter": 28,
    "verses": "56-57",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1835,6 +2381,9 @@
    "sam_ch_number": 130,
    "chapter": 28,
    "verses": "58-63",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1850,6 +2399,9 @@
    "sam_ch_number": 131,
    "chapter": 28,
    "verses": "64-69",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12342.mp3",
@@ -1865,6 +2417,9 @@
    "sam_ch_number": 132,
    "chapter": 29,
    "verses": "1-8",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12343.mp3",
@@ -1880,6 +2435,9 @@
    "sam_ch_number": 133,
    "chapter": 29,
    "verses": "9-12",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12343.mp3",
@@ -1895,6 +2453,9 @@
    "sam_ch_number": 151,
    "chapter": 33,
    "verses": "12-17",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12344.mp3",
@@ -1910,6 +2471,9 @@
    "sam_ch_number": 152,
    "chapter": 33,
    "verses": "18-19",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12344.mp3",
@@ -1925,6 +2489,9 @@
    "sam_ch_number": 153,
    "chapter": 33,
    "verses": "20-21",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12344.mp3",
@@ -1940,6 +2507,9 @@
    "sam_ch_number": 154,
    "chapter": 33,
    "verses": "22-23",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12344.mp3",
@@ -1955,6 +2525,9 @@
    "sam_ch_number": 155,
    "chapter": 33,
    "verses": "24-27",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12344.mp3",
@@ -1970,6 +2543,9 @@
    "sam_ch_number": 156,
    "chapter": 33,
    "verses": "28-29",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12344.mp3",
@@ -1985,6 +2561,9 @@
    "sam_ch_number": 157,
    "chapter": 34,
    "verses": "1-4",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12345.mp3",
@@ -2000,6 +2579,9 @@
    "sam_ch_number": 158,
    "chapter": 34,
    "verses": "5-7",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12345.mp3",
@@ -2015,6 +2597,9 @@
    "sam_ch_number": 159,
    "chapter": 34,
    "verses": "8-9",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12345.mp3",
@@ -2030,6 +2615,9 @@
    "sam_ch_number": 160,
    "chapter": 34,
    "verses": "10-12",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12345.mp3",
@@ -2045,6 +2633,9 @@
    "sam_ch_number": 135,
    "chapter": 29,
    "verses": "21-28",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3594.mp3",
@@ -2060,6 +2651,9 @@
    "sam_ch_number": 136,
    "chapter": 30,
    "verses": "1-14",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3596.mp3",
@@ -2075,6 +2669,9 @@
    "sam_ch_number": 137,
    "chapter": 30,
    "verses": "15-20",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3596.mp3",
@@ -2090,6 +2687,9 @@
    "sam_ch_number": 138,
    "chapter": 31,
    "verses": "1-6",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3597.mp3",
@@ -2105,6 +2705,9 @@
    "sam_ch_number": 139,
    "chapter": 31,
    "verses": "7-13",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3597.mp3",
@@ -2120,6 +2723,9 @@
    "sam_ch_number": 140,
    "chapter": 31,
    "verses": "14-15",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3597.mp3",
@@ -2135,6 +2741,9 @@
    "sam_ch_number": 141,
    "chapter": 31,
    "verses": "16-18",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3597.mp3",
@@ -2150,6 +2759,9 @@
    "sam_ch_number": 142,
    "chapter": 31,
    "verses": "19-21",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3597.mp3",
@@ -2165,6 +2777,9 @@
    "sam_ch_number": 143,
    "chapter": 31,
    "verses": "22-24",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3597.mp3",
@@ -2180,6 +2795,9 @@
    "sam_ch_number": 144,
    "chapter": 31,
    "verses": "25-29",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3597.mp3",
@@ -2195,6 +2813,9 @@
    "sam_ch_number": 145,
    "chapter": 31,
    "verses": "30-30",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3597.mp3",
@@ -2210,6 +2831,9 @@
    "sam_ch_number": 146,
    "chapter": 32,
    "verses": "1-43",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3600.mp3",
@@ -2225,6 +2849,9 @@
    "sam_ch_number": 147,
    "chapter": 32,
    "verses": "44-47",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3600.mp3",
@@ -2240,6 +2867,9 @@
    "sam_ch_number": 148,
    "chapter": 32,
    "verses": "48-52",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3600.mp3",
@@ -2255,6 +2885,9 @@
    "sam_ch_number": 149,
    "chapter": 33,
    "verses": "1-7",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3602.mp3",
@@ -2270,6 +2903,9 @@
    "sam_ch_number": 150,
    "chapter": 33,
    "verses": "8-11",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3602.mp3",
@@ -2285,6 +2921,9 @@
    "sam_ch_number": 151,
    "chapter": 33,
    "verses": "12-17",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3602.mp3",
@@ -2300,6 +2939,9 @@
    "sam_ch_number": 152,
    "chapter": 33,
    "verses": "18-19",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3602.mp3",
@@ -2315,6 +2957,9 @@
    "sam_ch_number": 153,
    "chapter": 33,
    "verses": "20-21",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3602.mp3",
@@ -2330,6 +2975,9 @@
    "sam_ch_number": 154,
    "chapter": 33,
    "verses": "22-23",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3602.mp3",
@@ -2345,6 +2993,9 @@
    "sam_ch_number": 155,
    "chapter": 33,
    "verses": "24-27",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3602.mp3",
@@ -2360,6 +3011,9 @@
    "sam_ch_number": 156,
    "chapter": 33,
    "verses": "28-29",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3602.mp3",
@@ -2375,6 +3029,9 @@
    "sam_ch_number": 157,
    "chapter": 34,
    "verses": "1-4",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3604.mp3",
@@ -2390,6 +3047,9 @@
    "sam_ch_number": 158,
    "chapter": 34,
    "verses": "5-7",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3604.mp3",
@@ -2405,6 +3065,9 @@
    "sam_ch_number": 159,
    "chapter": 34,
    "verses": "8-9",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3604.mp3",
@@ -2420,6 +3083,9 @@
    "sam_ch_number": 160,
    "chapter": 34,
    "verses": "10-12",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m3604.mp3",
@@ -2432,9 +3098,36 @@
   {
    "reader": "אלעזר צדקה כהן",
    "book_id": 2,
+   "sam_ch_number": 106,
+   "chapter": 22,
+   "verses": "22:24-23:3",
+   "spans": [
+    22,
+    23
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12266.mp3",
+     "t0": 0.0,
+     "t1": 84.36
+    },
+    {
+     "file": "/static/audio/masorot/m12267.mp3",
+     "t0": 0.0,
+     "t1": 30.16
+    }
+   ],
+   "duration": 114.52
+  },
+  {
+   "reader": "אלעזר צדקה כהן",
+   "book_id": 2,
    "sam_ch_number": 107,
    "chapter": 23,
    "verses": "4-9",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12267.mp3",
@@ -2450,6 +3143,9 @@
    "sam_ch_number": 108,
    "chapter": 23,
    "verses": "10-13",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12267.mp3",
@@ -2465,6 +3161,9 @@
    "sam_ch_number": 109,
    "chapter": 23,
    "verses": "14-19",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12267.mp3",
@@ -2480,6 +3179,9 @@
    "sam_ch_number": 110,
    "chapter": 23,
    "verses": "20-27",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12267.mp3",
@@ -2495,6 +3197,9 @@
    "sam_ch_number": 111,
    "chapter": 23,
    "verses": "28-33",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12267.mp3",
@@ -2510,6 +3215,9 @@
    "sam_ch_number": 112,
    "chapter": 24,
    "verses": "1-11",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12268.mp3",
@@ -2525,6 +3233,9 @@
    "sam_ch_number": 113,
    "chapter": 24,
    "verses": "12-18",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12268.mp3",
@@ -2540,6 +3251,9 @@
    "sam_ch_number": 114,
    "chapter": 25,
    "verses": "1-9",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12269.mp3",
@@ -2555,6 +3269,9 @@
    "sam_ch_number": 115,
    "chapter": 25,
    "verses": "10-16",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12269.mp3",
@@ -2570,6 +3287,9 @@
    "sam_ch_number": 116,
    "chapter": 25,
    "verses": "17-22",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12269.mp3",
@@ -2585,6 +3305,9 @@
    "sam_ch_number": 117,
    "chapter": 25,
    "verses": "23-30",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12269.mp3",
@@ -2600,6 +3323,9 @@
    "sam_ch_number": 118,
    "chapter": 25,
    "verses": "31-40",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12269.mp3",
@@ -2615,6 +3341,9 @@
    "sam_ch_number": 119,
    "chapter": 26,
    "verses": "1-6",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12270.mp3",
@@ -2630,6 +3359,9 @@
    "sam_ch_number": 120,
    "chapter": 26,
    "verses": "7-14",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12270.mp3",
@@ -2645,6 +3377,9 @@
    "sam_ch_number": 121,
    "chapter": 26,
    "verses": "15-25",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12270.mp3",
@@ -2660,6 +3395,9 @@
    "sam_ch_number": 122,
    "chapter": 26,
    "verses": "26-30",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12270.mp3",
@@ -2675,6 +3413,9 @@
    "sam_ch_number": 124,
    "chapter": 26,
    "verses": "31-35",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12270.mp3",
@@ -2690,6 +3431,9 @@
    "sam_ch_number": 125,
    "chapter": 26,
    "verses": "36-37",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12270.mp3",
@@ -2705,6 +3449,9 @@
    "sam_ch_number": 126,
    "chapter": 27,
    "verses": "1-8",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12271.mp3",
@@ -2720,10 +3467,18 @@
    "sam_ch_number": 127,
    "chapter": 27,
    "verses": "9-19",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12271.mp3",
      "t0": 79.29,
+     "t1": 197.35
+    },
+    {
+     "file": "/static/audio/masorot/m12271.mp3",
+     "t0": 197.35,
      "t1": 226.58
     }
    ],
@@ -2735,6 +3490,9 @@
    "sam_ch_number": 129,
    "chapter": 28,
    "verses": "6-14",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12272.mp3",
@@ -2750,6 +3508,9 @@
    "sam_ch_number": 130,
    "chapter": 28,
    "verses": "15-21",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12272.mp3",
@@ -2765,6 +3526,9 @@
    "sam_ch_number": 131,
    "chapter": 28,
    "verses": "22-30",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12272.mp3",
@@ -2780,6 +3544,9 @@
    "sam_ch_number": 132,
    "chapter": 28,
    "verses": "31-35",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12272.mp3",
@@ -2795,6 +3562,9 @@
    "sam_ch_number": 133,
    "chapter": 28,
    "verses": "36-43",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12272.mp3",
@@ -2810,6 +3580,9 @@
    "sam_ch_number": 134,
    "chapter": 29,
    "verses": "1-6",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12273.mp3",
@@ -2825,6 +3598,9 @@
    "sam_ch_number": 135,
    "chapter": 29,
    "verses": "7-14",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12273.mp3",
@@ -2840,6 +3616,9 @@
    "sam_ch_number": 136,
    "chapter": 29,
    "verses": "15-18",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12273.mp3",
@@ -2855,6 +3634,9 @@
    "sam_ch_number": 137,
    "chapter": 29,
    "verses": "19-25",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12273.mp3",
@@ -2870,6 +3652,9 @@
    "sam_ch_number": 138,
    "chapter": 29,
    "verses": "26-28",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12273.mp3",
@@ -2885,6 +3670,9 @@
    "sam_ch_number": 139,
    "chapter": 29,
    "verses": "29-37",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12273.mp3",
@@ -2900,6 +3688,9 @@
    "sam_ch_number": 140,
    "chapter": 29,
    "verses": "38-46",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12273.mp3",
@@ -2915,6 +3706,9 @@
    "sam_ch_number": 141,
    "chapter": 30,
    "verses": "11-16",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12274.mp3",
@@ -2930,6 +3724,9 @@
    "sam_ch_number": 142,
    "chapter": 30,
    "verses": "17-21",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12274.mp3",
@@ -2945,6 +3742,9 @@
    "sam_ch_number": 143,
    "chapter": 30,
    "verses": "22-33",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12274.mp3",
@@ -2960,6 +3760,9 @@
    "sam_ch_number": 144,
    "chapter": 30,
    "verses": "34-38",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12274.mp3",
@@ -2975,6 +3778,9 @@
    "sam_ch_number": 145,
    "chapter": 31,
    "verses": "1-11",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12275.mp3",
@@ -2990,14 +3796,41 @@
    "sam_ch_number": 146,
    "chapter": 31,
    "verses": "12-17",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12275.mp3",
      "t0": 105.46,
-     "t1": 195.46
+     "t1": 179.4
     }
    ],
-   "duration": 90.0
+   "duration": 73.94
+  },
+  {
+   "reader": "אלעזר צדקה כהן",
+   "book_id": 2,
+   "sam_ch_number": 147,
+   "chapter": 31,
+   "verses": "31:18-32:6",
+   "spans": [
+    31,
+    32
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12275.mp3",
+     "t0": 179.4,
+     "t1": 195.46
+    },
+    {
+     "file": "/static/audio/masorot/m12276.mp3",
+     "t0": 0.0,
+     "t1": 79.48
+    }
+   ],
+   "duration": 95.54
   },
   {
    "reader": "אלעזר צדקה כהן",
@@ -3005,6 +3838,9 @@
    "sam_ch_number": 148,
    "chapter": 32,
    "verses": "7-8",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12276.mp3",
@@ -3020,6 +3856,9 @@
    "sam_ch_number": 149,
    "chapter": 32,
    "verses": "9-14",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12276.mp3",
@@ -3035,6 +3874,9 @@
    "sam_ch_number": 150,
    "chapter": 32,
    "verses": "15-20",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12276.mp3",
@@ -3050,6 +3892,9 @@
    "sam_ch_number": 151,
    "chapter": 32,
    "verses": "21-29",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12276.mp3",
@@ -3065,6 +3910,9 @@
    "sam_ch_number": 152,
    "chapter": 32,
    "verses": "30-35",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12276.mp3",
@@ -3080,6 +3928,9 @@
    "sam_ch_number": 153,
    "chapter": 33,
    "verses": "1-4",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12277.mp3",
@@ -3095,6 +3946,9 @@
    "sam_ch_number": 154,
    "chapter": 33,
    "verses": "5-11",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12277.mp3",
@@ -3110,6 +3964,9 @@
    "sam_ch_number": 155,
    "chapter": 33,
    "verses": "12-16",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12277.mp3",
@@ -3125,6 +3982,9 @@
    "sam_ch_number": 156,
    "chapter": 33,
    "verses": "17-23",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12277.mp3",
@@ -3140,6 +4000,9 @@
    "sam_ch_number": 157,
    "chapter": 34,
    "verses": "1-9",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12278.mp3",
@@ -3155,6 +4018,9 @@
    "sam_ch_number": 159,
    "chapter": 34,
    "verses": "18-26",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12279.mp3",
@@ -3170,6 +4036,9 @@
    "sam_ch_number": 160,
    "chapter": 34,
    "verses": "27-28",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12279.mp3",
@@ -3185,6 +4054,9 @@
    "sam_ch_number": 161,
    "chapter": 34,
    "verses": "29-35",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12279.mp3",
@@ -3200,6 +4072,9 @@
    "sam_ch_number": 162,
    "chapter": 35,
    "verses": "1-3",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12280.mp3",
@@ -3215,6 +4090,9 @@
    "sam_ch_number": 163,
    "chapter": 35,
    "verses": "4-19",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12280.mp3",
@@ -3230,14 +4108,41 @@
    "sam_ch_number": 164,
    "chapter": 35,
    "verses": "20-29",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12280.mp3",
      "t0": 170.93,
-     "t1": 364.67
+     "t1": 301.09
     }
    ],
-   "duration": 193.74
+   "duration": 130.16
+  },
+  {
+   "reader": "אלעזר צדקה כהן",
+   "book_id": 2,
+   "sam_ch_number": 165,
+   "chapter": 35,
+   "verses": "35:30-36:1",
+   "spans": [
+    35,
+    36
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12280.mp3",
+     "t0": 301.09,
+     "t1": 364.67
+    },
+    {
+     "file": "/static/audio/masorot/m12281.mp3",
+     "t0": 0.0,
+     "t1": 22.11
+    }
+   ],
+   "duration": 85.69
   },
   {
    "reader": "אלעזר צדקה כהן",
@@ -3245,6 +4150,9 @@
    "sam_ch_number": 166,
    "chapter": 36,
    "verses": "2-7",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12281.mp3",
@@ -3260,6 +4168,9 @@
    "sam_ch_number": 167,
    "chapter": 36,
    "verses": "8-13",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12281.mp3",
@@ -3275,6 +4186,9 @@
    "sam_ch_number": 168,
    "chapter": 36,
    "verses": "14-19",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12281.mp3",
@@ -3290,6 +4204,9 @@
    "sam_ch_number": 169,
    "chapter": 36,
    "verses": "20-30",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12281.mp3",
@@ -3305,6 +4222,9 @@
    "sam_ch_number": 170,
    "chapter": 36,
    "verses": "31-34",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12281.mp3",
@@ -3320,6 +4240,9 @@
    "sam_ch_number": 171,
    "chapter": 36,
    "verses": "35-38",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12281.mp3",
@@ -3335,6 +4258,9 @@
    "sam_ch_number": 172,
    "chapter": 37,
    "verses": "1-5",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12282.mp3",
@@ -3350,6 +4276,9 @@
    "sam_ch_number": 173,
    "chapter": 37,
    "verses": "6-9",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12282.mp3",
@@ -3365,6 +4294,9 @@
    "sam_ch_number": 174,
    "chapter": 37,
    "verses": "10-16",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12282.mp3",
@@ -3380,6 +4312,9 @@
    "sam_ch_number": 175,
    "chapter": 37,
    "verses": "17-24",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12282.mp3",
@@ -3395,6 +4330,9 @@
    "sam_ch_number": 176,
    "chapter": 37,
    "verses": "25-29",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12282.mp3",
@@ -3410,6 +4348,9 @@
    "sam_ch_number": 177,
    "chapter": 38,
    "verses": "1-8",
+   "spans": [
+    38
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12283.mp3",
@@ -3425,6 +4366,9 @@
    "sam_ch_number": 178,
    "chapter": 38,
    "verses": "9-20",
+   "spans": [
+    38
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12283.mp3",
@@ -3440,6 +4384,9 @@
    "sam_ch_number": 179,
    "chapter": 38,
    "verses": "21-24",
+   "spans": [
+    38
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12283.mp3",
@@ -3455,14 +4402,41 @@
    "sam_ch_number": 180,
    "chapter": 38,
    "verses": "25-28",
+   "spans": [
+    38
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12283.mp3",
      "t0": 308.39,
-     "t1": 436.36
+     "t1": 393.62
     }
    ],
-   "duration": 127.97
+   "duration": 85.23
+  },
+  {
+   "reader": "אלעזר צדקה כהן",
+   "book_id": 2,
+   "sam_ch_number": 181,
+   "chapter": 38,
+   "verses": "38:29-39:1",
+   "spans": [
+    38,
+    39
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12283.mp3",
+     "t0": 393.62,
+     "t1": 436.36
+    },
+    {
+     "file": "/static/audio/masorot/m12284.mp3",
+     "t0": 0.0,
+     "t1": 23.21
+    }
+   ],
+   "duration": 65.95
   },
   {
    "reader": "אלעזר צדקה כהן",
@@ -3470,6 +4444,9 @@
    "sam_ch_number": 182,
    "chapter": 39,
    "verses": "2-7",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12284.mp3",
@@ -3485,6 +4462,9 @@
    "sam_ch_number": 183,
    "chapter": 39,
    "verses": "8-14",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12284.mp3",
@@ -3500,6 +4480,9 @@
    "sam_ch_number": 184,
    "chapter": 39,
    "verses": "15-21",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12284.mp3",
@@ -3515,6 +4498,9 @@
    "sam_ch_number": 185,
    "chapter": 39,
    "verses": "22-26",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12284.mp3",
@@ -3530,6 +4516,9 @@
    "sam_ch_number": 186,
    "chapter": 39,
    "verses": "27-29",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12284.mp3",
@@ -3545,6 +4534,9 @@
    "sam_ch_number": 187,
    "chapter": 39,
    "verses": "30-31",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12284.mp3",
@@ -3560,6 +4552,9 @@
    "sam_ch_number": 188,
    "chapter": 39,
    "verses": "32-43",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12284.mp3",
@@ -3575,6 +4570,9 @@
    "sam_ch_number": 189,
    "chapter": 40,
    "verses": "1-8",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3590,6 +4588,9 @@
    "sam_ch_number": 190,
    "chapter": 40,
    "verses": "9-16",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3605,6 +4606,9 @@
    "sam_ch_number": 191,
    "chapter": 40,
    "verses": "17-19",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3620,6 +4624,9 @@
    "sam_ch_number": 192,
    "chapter": 40,
    "verses": "20-21",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3635,6 +4642,9 @@
    "sam_ch_number": 193,
    "chapter": 40,
    "verses": "22-23",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3650,6 +4660,9 @@
    "sam_ch_number": 194,
    "chapter": 40,
    "verses": "24-25",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3665,6 +4678,9 @@
    "sam_ch_number": 195,
    "chapter": 40,
    "verses": "26-27",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3680,6 +4696,9 @@
    "sam_ch_number": 196,
    "chapter": 40,
    "verses": "28-29",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3695,6 +4714,9 @@
    "sam_ch_number": 197,
    "chapter": 40,
    "verses": "30-32",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3710,6 +4732,9 @@
    "sam_ch_number": 198,
    "chapter": 40,
    "verses": "33-38",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12285.mp3",
@@ -3725,6 +4750,9 @@
    "sam_ch_number": 68,
    "chapter": 16,
    "verses": "2-4",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12286.mp3",
@@ -3740,6 +4768,9 @@
    "sam_ch_number": 69,
    "chapter": 16,
    "verses": "5-13",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12286.mp3",
@@ -3755,6 +4786,9 @@
    "sam_ch_number": 70,
    "chapter": 16,
    "verses": "14-25",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12286.mp3",
@@ -3770,6 +4804,9 @@
    "sam_ch_number": 71,
    "chapter": 16,
    "verses": "26-34",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12286.mp3",
@@ -3785,6 +4822,9 @@
    "sam_ch_number": 72,
    "chapter": 17,
    "verses": "1-9",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12287.mp3",
@@ -3800,6 +4840,9 @@
    "sam_ch_number": 73,
    "chapter": 17,
    "verses": "10-12",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12287.mp3",
@@ -3815,6 +4858,9 @@
    "sam_ch_number": 74,
    "chapter": 17,
    "verses": "13-16",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12287.mp3",
@@ -3830,6 +4876,9 @@
    "sam_ch_number": 75,
    "chapter": 18,
    "verses": "1-23",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12288.mp3",
@@ -3845,6 +4894,9 @@
    "sam_ch_number": 76,
    "chapter": 18,
    "verses": "24-30",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12288.mp3",
@@ -3860,6 +4912,9 @@
    "sam_ch_number": 77,
    "chapter": 19,
    "verses": "1-8",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12289.mp3",
@@ -3875,6 +4930,9 @@
    "sam_ch_number": 78,
    "chapter": 19,
    "verses": "9-19",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12289.mp3",
@@ -3890,6 +4948,9 @@
    "sam_ch_number": 79,
    "chapter": 19,
    "verses": "20-22",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12289.mp3",
@@ -3905,6 +4966,9 @@
    "sam_ch_number": 80,
    "chapter": 19,
    "verses": "23-32",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12289.mp3",
@@ -3920,6 +4984,9 @@
    "sam_ch_number": 81,
    "chapter": 19,
    "verses": "33-37",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12289.mp3",
@@ -3935,6 +5002,9 @@
    "sam_ch_number": 82,
    "chapter": 20,
    "verses": "1-8",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12290.mp3",
@@ -3950,6 +5020,9 @@
    "sam_ch_number": 83,
    "chapter": 20,
    "verses": "9-21",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12290.mp3",
@@ -3965,6 +5038,9 @@
    "sam_ch_number": 84,
    "chapter": 20,
    "verses": "22-27",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12290.mp3",
@@ -3980,6 +5056,9 @@
    "sam_ch_number": 85,
    "chapter": 21,
    "verses": "1-9",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12291.mp3",
@@ -3995,6 +5074,9 @@
    "sam_ch_number": 86,
    "chapter": 21,
    "verses": "10-15",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12291.mp3",
@@ -4010,6 +5092,9 @@
    "sam_ch_number": 87,
    "chapter": 21,
    "verses": "16-24",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12291.mp3",
@@ -4025,6 +5110,9 @@
    "sam_ch_number": 88,
    "chapter": 22,
    "verses": "1-10",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12292.mp3",
@@ -4040,6 +5128,9 @@
    "sam_ch_number": 89,
    "chapter": 22,
    "verses": "11-16",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12292.mp3",
@@ -4055,6 +5146,9 @@
    "sam_ch_number": 90,
    "chapter": 22,
    "verses": "17-25",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12292.mp3",
@@ -4070,6 +5164,9 @@
    "sam_ch_number": 91,
    "chapter": 22,
    "verses": "26-33",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12292.mp3",
@@ -4085,6 +5182,9 @@
    "sam_ch_number": 92,
    "chapter": 23,
    "verses": "1-8",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12293.mp3",
@@ -4100,6 +5200,9 @@
    "sam_ch_number": 93,
    "chapter": 23,
    "verses": "9-14",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12293.mp3",
@@ -4115,6 +5218,9 @@
    "sam_ch_number": 94,
    "chapter": 23,
    "verses": "15-22",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12293.mp3",
@@ -4130,6 +5236,9 @@
    "sam_ch_number": 95,
    "chapter": 23,
    "verses": "23-25",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12293.mp3",
@@ -4145,6 +5254,9 @@
    "sam_ch_number": 96,
    "chapter": 23,
    "verses": "26-32",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12293.mp3",
@@ -4160,6 +5272,9 @@
    "sam_ch_number": 97,
    "chapter": 23,
    "verses": "33-38",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12293.mp3",
@@ -4175,6 +5290,9 @@
    "sam_ch_number": 98,
    "chapter": 23,
    "verses": "39-44",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12293.mp3",
@@ -4190,6 +5308,9 @@
    "sam_ch_number": 99,
    "chapter": 24,
    "verses": "1-9",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12294.mp3",
@@ -4205,6 +5326,9 @@
    "sam_ch_number": 100,
    "chapter": 24,
    "verses": "10-12",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12294.mp3",
@@ -4220,6 +5344,9 @@
    "sam_ch_number": 101,
    "chapter": 24,
    "verses": "13-23",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12294.mp3",
@@ -4235,6 +5362,9 @@
    "sam_ch_number": 102,
    "chapter": 25,
    "verses": "1-7",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12398.mp3",
@@ -4250,6 +5380,9 @@
    "sam_ch_number": 103,
    "chapter": 25,
    "verses": "8-13",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12398.mp3",
@@ -4265,6 +5398,9 @@
    "sam_ch_number": 104,
    "chapter": 25,
    "verses": "14-19",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12398.mp3",
@@ -4280,6 +5416,9 @@
    "sam_ch_number": 105,
    "chapter": 25,
    "verses": "20-24",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12398.mp3",
@@ -4295,6 +5434,9 @@
    "sam_ch_number": 1,
    "chapter": 1,
    "verses": "1-19",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4310,6 +5452,9 @@
    "sam_ch_number": 2,
    "chapter": 1,
    "verses": "20-21",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4325,6 +5470,9 @@
    "sam_ch_number": 3,
    "chapter": 1,
    "verses": "22-23",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4340,6 +5488,9 @@
    "sam_ch_number": 4,
    "chapter": 1,
    "verses": "24-25",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4355,6 +5506,9 @@
    "sam_ch_number": 5,
    "chapter": 1,
    "verses": "26-27",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4370,6 +5524,9 @@
    "sam_ch_number": 6,
    "chapter": 1,
    "verses": "28-29",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4385,6 +5542,9 @@
    "sam_ch_number": 7,
    "chapter": 1,
    "verses": "30-31",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4400,6 +5560,9 @@
    "sam_ch_number": 8,
    "chapter": 1,
    "verses": "32-33",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4415,6 +5578,9 @@
    "sam_ch_number": 9,
    "chapter": 1,
    "verses": "34-35",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4430,6 +5596,9 @@
    "sam_ch_number": 10,
    "chapter": 1,
    "verses": "36-37",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4445,6 +5614,9 @@
    "sam_ch_number": 11,
    "chapter": 1,
    "verses": "38-39",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4460,6 +5632,9 @@
    "sam_ch_number": 12,
    "chapter": 1,
    "verses": "40-41",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4475,6 +5650,9 @@
    "sam_ch_number": 13,
    "chapter": 1,
    "verses": "42-43",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4490,6 +5668,9 @@
    "sam_ch_number": 14,
    "chapter": 1,
    "verses": "44-47",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4505,6 +5686,9 @@
    "sam_ch_number": 15,
    "chapter": 1,
    "verses": "48-54",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12298.mp3",
@@ -4520,6 +5704,9 @@
    "sam_ch_number": 16,
    "chapter": 2,
    "verses": "1-9",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12300.mp3",
@@ -4535,6 +5722,9 @@
    "sam_ch_number": 17,
    "chapter": 2,
    "verses": "10-17",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12300.mp3",
@@ -4550,6 +5740,9 @@
    "sam_ch_number": 18,
    "chapter": 2,
    "verses": "18-24",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12300.mp3",
@@ -4565,6 +5758,9 @@
    "sam_ch_number": 19,
    "chapter": 2,
    "verses": "25-31",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12300.mp3",
@@ -4580,6 +5776,9 @@
    "sam_ch_number": 20,
    "chapter": 2,
    "verses": "32-34",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12300.mp3",
@@ -4595,6 +5794,9 @@
    "sam_ch_number": 21,
    "chapter": 3,
    "verses": "1-4",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12301.mp3",
@@ -4610,6 +5812,9 @@
    "sam_ch_number": 22,
    "chapter": 3,
    "verses": "5-10",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12301.mp3",
@@ -4625,6 +5830,9 @@
    "sam_ch_number": 23,
    "chapter": 3,
    "verses": "11-13",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12301.mp3",
@@ -4640,6 +5848,9 @@
    "sam_ch_number": 24,
    "chapter": 3,
    "verses": "14-26",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12301.mp3",
@@ -4655,6 +5866,9 @@
    "sam_ch_number": 25,
    "chapter": 3,
    "verses": "27-32",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12301.mp3",
@@ -4670,6 +5884,9 @@
    "sam_ch_number": 26,
    "chapter": 3,
    "verses": "33-39",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12301.mp3",
@@ -4685,6 +5902,9 @@
    "sam_ch_number": 27,
    "chapter": 3,
    "verses": "40-43",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12301.mp3",
@@ -4700,6 +5920,9 @@
    "sam_ch_number": 28,
    "chapter": 3,
    "verses": "44-51",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12301.mp3",
@@ -4715,6 +5938,9 @@
    "sam_ch_number": 29,
    "chapter": 4,
    "verses": "1-12",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12302.mp3",
@@ -4730,6 +5956,9 @@
    "sam_ch_number": 30,
    "chapter": 4,
    "verses": "13-16",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12302.mp3",
@@ -4745,6 +5974,9 @@
    "sam_ch_number": 31,
    "chapter": 4,
    "verses": "17-20",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12302.mp3",
@@ -4760,6 +5992,9 @@
    "sam_ch_number": 32,
    "chapter": 4,
    "verses": "21-28",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12302.mp3",
@@ -4775,6 +6010,9 @@
    "sam_ch_number": 33,
    "chapter": 4,
    "verses": "29-33",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12302.mp3",
@@ -4790,6 +6028,9 @@
    "sam_ch_number": 34,
    "chapter": 4,
    "verses": "34-37",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12302.mp3",
@@ -4805,6 +6046,9 @@
    "sam_ch_number": 35,
    "chapter": 4,
    "verses": "38-49",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12302.mp3",
@@ -4820,6 +6064,9 @@
    "sam_ch_number": 36,
    "chapter": 5,
    "verses": "1-4",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12303.mp3",
@@ -4835,6 +6082,9 @@
    "sam_ch_number": 37,
    "chapter": 5,
    "verses": "5-10",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12303.mp3",
@@ -4850,6 +6100,9 @@
    "sam_ch_number": 38,
    "chapter": 5,
    "verses": "11-18",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12303.mp3",
@@ -4865,6 +6118,9 @@
    "sam_ch_number": 39,
    "chapter": 5,
    "verses": "19-22",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12303.mp3",
@@ -4880,6 +6136,9 @@
    "sam_ch_number": 40,
    "chapter": 5,
    "verses": "23-31",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12303.mp3",
@@ -4895,6 +6154,9 @@
    "sam_ch_number": 41,
    "chapter": 6,
    "verses": "1-8",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12304.mp3",
@@ -4910,6 +6172,9 @@
    "sam_ch_number": 42,
    "chapter": 6,
    "verses": "9-12",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12304.mp3",
@@ -4925,6 +6190,9 @@
    "sam_ch_number": 43,
    "chapter": 6,
    "verses": "13-21",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12304.mp3",
@@ -4940,6 +6208,9 @@
    "sam_ch_number": 44,
    "chapter": 6,
    "verses": "22-27",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12304.mp3",
@@ -4955,6 +6226,9 @@
    "sam_ch_number": 45,
    "chapter": 7,
    "verses": "1-3",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -4970,6 +6244,9 @@
    "sam_ch_number": 46,
    "chapter": 7,
    "verses": "4-11",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -4985,6 +6262,9 @@
    "sam_ch_number": 47,
    "chapter": 7,
    "verses": "12-17",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5000,6 +6280,9 @@
    "sam_ch_number": 48,
    "chapter": 7,
    "verses": "18-23",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5015,6 +6298,9 @@
    "sam_ch_number": 49,
    "chapter": 7,
    "verses": "24-29",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5030,6 +6316,9 @@
    "sam_ch_number": 50,
    "chapter": 7,
    "verses": "30-35",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5045,6 +6334,9 @@
    "sam_ch_number": 51,
    "chapter": 7,
    "verses": "36-41",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5060,6 +6352,9 @@
    "sam_ch_number": 52,
    "chapter": 7,
    "verses": "42-47",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5075,6 +6370,9 @@
    "sam_ch_number": 53,
    "chapter": 7,
    "verses": "48-53",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5090,6 +6388,9 @@
    "sam_ch_number": 54,
    "chapter": 7,
    "verses": "54-59",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5105,6 +6406,9 @@
    "sam_ch_number": 55,
    "chapter": 7,
    "verses": "60-65",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5120,6 +6424,9 @@
    "sam_ch_number": 56,
    "chapter": 7,
    "verses": "66-71",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5135,6 +6442,9 @@
    "sam_ch_number": 57,
    "chapter": 7,
    "verses": "72-77",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5150,6 +6460,9 @@
    "sam_ch_number": 58,
    "chapter": 7,
    "verses": "78-83",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5165,6 +6478,9 @@
    "sam_ch_number": 59,
    "chapter": 7,
    "verses": "84-89",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12305.mp3",
@@ -5180,6 +6496,9 @@
    "sam_ch_number": 60,
    "chapter": 8,
    "verses": "1-4",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12306.mp3",
@@ -5195,6 +6514,9 @@
    "sam_ch_number": 61,
    "chapter": 8,
    "verses": "5-17",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12306.mp3",
@@ -5210,6 +6532,9 @@
    "sam_ch_number": 62,
    "chapter": 8,
    "verses": "18-22",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12306.mp3",
@@ -5225,6 +6550,9 @@
    "sam_ch_number": 63,
    "chapter": 8,
    "verses": "23-26",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12306.mp3",
@@ -5240,6 +6568,9 @@
    "sam_ch_number": 64,
    "chapter": 9,
    "verses": "1-8",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12307.mp3",
@@ -5255,6 +6586,9 @@
    "sam_ch_number": 65,
    "chapter": 9,
    "verses": "9-14",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12307.mp3",
@@ -5270,6 +6604,9 @@
    "sam_ch_number": 66,
    "chapter": 9,
    "verses": "15-23",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12307.mp3",
@@ -5285,6 +6622,9 @@
    "sam_ch_number": 67,
    "chapter": 10,
    "verses": "1-10",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12308.mp3",
@@ -5305,6 +6645,9 @@
    "sam_ch_number": 69,
    "chapter": 10,
    "verses": "11-28",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12308.mp3",
@@ -5320,6 +6663,9 @@
    "sam_ch_number": 70,
    "chapter": 10,
    "verses": "29-36",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12308.mp3",
@@ -5335,6 +6681,9 @@
    "sam_ch_number": 71,
    "chapter": 11,
    "verses": "1-10",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12309.mp3",
@@ -5350,6 +6699,9 @@
    "sam_ch_number": 72,
    "chapter": 11,
    "verses": "11-15",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12309.mp3",
@@ -5365,6 +6717,9 @@
    "sam_ch_number": 73,
    "chapter": 11,
    "verses": "16-22",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12309.mp3",
@@ -5380,6 +6735,9 @@
    "sam_ch_number": 74,
    "chapter": 11,
    "verses": "23-29",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12309.mp3",
@@ -5395,6 +6753,9 @@
    "sam_ch_number": 75,
    "chapter": 11,
    "verses": "30-35",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12309.mp3",
@@ -5410,6 +6771,9 @@
    "sam_ch_number": 76,
    "chapter": 12,
    "verses": "1-13",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12310.mp3",
@@ -5425,6 +6789,9 @@
    "sam_ch_number": 77,
    "chapter": 12,
    "verses": "14-16",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12310.mp3",
@@ -5445,6 +6812,9 @@
    "sam_ch_number": 79,
    "chapter": 13,
    "verses": "1-17",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12311.mp3",
@@ -5460,6 +6830,9 @@
    "sam_ch_number": 80,
    "chapter": 13,
    "verses": "18-25",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12311.mp3",
@@ -5475,6 +6848,9 @@
    "sam_ch_number": 81,
    "chapter": 13,
    "verses": "26-29",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12311.mp3",
@@ -5490,6 +6866,9 @@
    "sam_ch_number": 82,
    "chapter": 13,
    "verses": "30-33",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12311.mp3",
@@ -5515,6 +6894,9 @@
    "sam_ch_number": 85,
    "chapter": 14,
    "verses": "1-10",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12312.mp3",
@@ -5530,6 +6912,9 @@
    "sam_ch_number": 86,
    "chapter": 14,
    "verses": "11-19",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12312.mp3",
@@ -5545,6 +6930,9 @@
    "sam_ch_number": 87,
    "chapter": 14,
    "verses": "20-25",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12312.mp3",
@@ -5560,6 +6948,9 @@
    "sam_ch_number": 88,
    "chapter": 14,
    "verses": "26-35",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12312.mp3",
@@ -5575,6 +6966,9 @@
    "sam_ch_number": 89,
    "chapter": 14,
    "verses": "36-40",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12312.mp3",
@@ -5590,6 +6984,9 @@
    "sam_ch_number": 90,
    "chapter": 14,
    "verses": "41-45",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12312.mp3",
@@ -5605,6 +7002,9 @@
    "sam_ch_number": 91,
    "chapter": 15,
    "verses": "1-7",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12313.mp3",
@@ -5620,6 +7020,9 @@
    "sam_ch_number": 92,
    "chapter": 15,
    "verses": "8-16",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12313.mp3",
@@ -5635,6 +7038,9 @@
    "sam_ch_number": 94,
    "chapter": 15,
    "verses": "27-31",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12633.mp3",
@@ -5650,6 +7056,9 @@
    "sam_ch_number": 95,
    "chapter": 15,
    "verses": "32-36",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12633.mp3",
@@ -5665,6 +7074,9 @@
    "sam_ch_number": 96,
    "chapter": 15,
    "verses": "37-41",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12633.mp3",
@@ -5680,6 +7092,9 @@
    "sam_ch_number": 97,
    "chapter": 16,
    "verses": "1-7",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12393.mp3",
@@ -5695,6 +7110,9 @@
    "sam_ch_number": 98,
    "chapter": 16,
    "verses": "8-15",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12393.mp3",
@@ -5710,6 +7128,9 @@
    "sam_ch_number": 99,
    "chapter": 16,
    "verses": "16-19",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12393.mp3",
@@ -5725,6 +7146,9 @@
    "sam_ch_number": 100,
    "chapter": 16,
    "verses": "20-22",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12393.mp3",
@@ -5740,6 +7164,9 @@
    "sam_ch_number": 101,
    "chapter": 16,
    "verses": "23-27",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12393.mp3",
@@ -5755,6 +7182,9 @@
    "sam_ch_number": 102,
    "chapter": 16,
    "verses": "28-35",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12393.mp3",
@@ -5770,6 +7200,9 @@
    "sam_ch_number": 103,
    "chapter": 17,
    "verses": "1-5",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12394.mp3",
@@ -5785,6 +7218,9 @@
    "sam_ch_number": 104,
    "chapter": 17,
    "verses": "6-8",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12394.mp3",
@@ -5800,6 +7236,9 @@
    "sam_ch_number": 105,
    "chapter": 17,
    "verses": "9-15",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12394.mp3",
@@ -5815,6 +7254,9 @@
    "sam_ch_number": 106,
    "chapter": 17,
    "verses": "16-24",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12394.mp3",
@@ -5830,6 +7272,9 @@
    "sam_ch_number": 107,
    "chapter": 17,
    "verses": "25-28",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12394.mp3",
@@ -5845,6 +7290,9 @@
    "sam_ch_number": 108,
    "chapter": 18,
    "verses": "1-7",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12395.mp3",
@@ -5860,6 +7308,9 @@
    "sam_ch_number": 109,
    "chapter": 18,
    "verses": "8-12",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12395.mp3",
@@ -5875,6 +7326,9 @@
    "sam_ch_number": 110,
    "chapter": 18,
    "verses": "13-19",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12395.mp3",
@@ -5890,6 +7344,9 @@
    "sam_ch_number": 111,
    "chapter": 18,
    "verses": "20-24",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12395.mp3",
@@ -5905,6 +7362,9 @@
    "sam_ch_number": 112,
    "chapter": 18,
    "verses": "25-32",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12395.mp3",
@@ -5920,6 +7380,9 @@
    "sam_ch_number": 113,
    "chapter": 19,
    "verses": "1-8",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12396.mp3",
@@ -5935,6 +7398,9 @@
    "sam_ch_number": 114,
    "chapter": 19,
    "verses": "9-13",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12396.mp3",
@@ -5950,6 +7416,9 @@
    "sam_ch_number": 115,
    "chapter": 19,
    "verses": "14-22",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12396.mp3",
@@ -5965,6 +7434,9 @@
    "sam_ch_number": 116,
    "chapter": 20,
    "verses": "1-6",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12397.mp3",
@@ -5980,6 +7452,9 @@
    "sam_ch_number": 117,
    "chapter": 20,
    "verses": "7-11",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12397.mp3",
@@ -5995,6 +7470,9 @@
    "sam_ch_number": 118,
    "chapter": 20,
    "verses": "12-13",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12634.mp3",
@@ -6010,6 +7488,9 @@
    "sam_ch_number": 119,
    "chapter": 20,
    "verses": "14-22",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12634.mp3",
@@ -6025,6 +7506,9 @@
    "sam_ch_number": 120,
    "chapter": 20,
    "verses": "23-29",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12634.mp3",
@@ -6040,6 +7524,9 @@
    "sam_ch_number": 121,
    "chapter": 21,
    "verses": "1-3",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12635.mp3",
@@ -6055,6 +7542,9 @@
    "sam_ch_number": 122,
    "chapter": 21,
    "verses": "4-7",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12635.mp3",
@@ -6070,6 +7560,9 @@
    "sam_ch_number": 123,
    "chapter": 21,
    "verses": "8-11",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12635.mp3",
@@ -6090,6 +7583,9 @@
    "sam_ch_number": 126,
    "chapter": 21,
    "verses": "17-20",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12635.mp3",
@@ -6105,6 +7601,9 @@
    "sam_ch_number": 127,
    "chapter": 21,
    "verses": "21-23",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12635.mp3",
@@ -6114,10 +7613,34 @@
     {
      "file": "/static/audio/masorot/m12635.mp3",
      "t0": 263.89,
-     "t1": 425.65
+     "t1": 379.61
     }
    ],
-   "duration": 174.29
+   "duration": 128.25
+  },
+  {
+   "reader": "ישראל צדקה",
+   "book_id": 4,
+   "sam_ch_number": 129,
+   "chapter": 21,
+   "verses": "21:31-22:1",
+   "spans": [
+    21,
+    22
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12635.mp3",
+     "t0": 379.61,
+     "t1": 425.65
+    },
+    {
+     "file": "/static/audio/masorot/m12636.mp3",
+     "t0": 0.0,
+     "t1": 7.09
+    }
+   ],
+   "duration": 53.13
   },
   {
    "reader": "ישראל צדקה",
@@ -6125,6 +7648,9 @@
    "sam_ch_number": 130,
    "chapter": 22,
    "verses": "2-6",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12636.mp3",
@@ -6140,6 +7666,9 @@
    "sam_ch_number": 131,
    "chapter": 22,
    "verses": "7-11",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12636.mp3",
@@ -6155,6 +7684,9 @@
    "sam_ch_number": 132,
    "chapter": 22,
    "verses": "12-19",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12636.mp3",
@@ -6170,6 +7702,9 @@
    "sam_ch_number": 133,
    "chapter": 22,
    "verses": "20-27",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12636.mp3",
@@ -6185,6 +7720,9 @@
    "sam_ch_number": 134,
    "chapter": 22,
    "verses": "28-34",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12636.mp3",
@@ -6200,6 +7738,9 @@
    "sam_ch_number": 135,
    "chapter": 22,
    "verses": "35-41",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12636.mp3",
@@ -6215,6 +7756,9 @@
    "sam_ch_number": 136,
    "chapter": 23,
    "verses": "1-6",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12637.mp3",
@@ -6230,6 +7774,9 @@
    "sam_ch_number": 137,
    "chapter": 23,
    "verses": "7-10",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12637.mp3",
@@ -6245,6 +7792,9 @@
    "sam_ch_number": 138,
    "chapter": 23,
    "verses": "11-17",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12637.mp3",
@@ -6260,14 +7810,41 @@
    "sam_ch_number": 139,
    "chapter": 23,
    "verses": "18-24",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12637.mp3",
      "t0": 159.47,
-     "t1": 266.43
+     "t1": 212.67
     }
    ],
-   "duration": 106.96
+   "duration": 53.2
+  },
+  {
+   "reader": "ישראל צדקה",
+   "book_id": 4,
+   "sam_ch_number": 140,
+   "chapter": 23,
+   "verses": "23:25-24:2",
+   "spans": [
+    23,
+    24
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12637.mp3",
+     "t0": 212.67,
+     "t1": 266.43
+    },
+    {
+     "file": "/static/audio/masorot/m12638.mp3",
+     "t0": 0.0,
+     "t1": 25.11
+    }
+   ],
+   "duration": 78.87
   },
   {
    "reader": "ישראל צדקה",
@@ -6275,6 +7852,9 @@
    "sam_ch_number": 141,
    "chapter": 24,
    "verses": "3-10",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12638.mp3",
@@ -6290,6 +7870,9 @@
    "sam_ch_number": 142,
    "chapter": 24,
    "verses": "11-14",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12638.mp3",
@@ -6305,6 +7888,9 @@
    "sam_ch_number": 143,
    "chapter": 24,
    "verses": "15-25",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12638.mp3",
@@ -6320,6 +7906,9 @@
    "sam_ch_number": 144,
    "chapter": 25,
    "verses": "1-9",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12639.mp3",
@@ -6335,6 +7924,9 @@
    "sam_ch_number": 145,
    "chapter": 25,
    "verses": "10-15",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12639.mp3",
@@ -6350,6 +7942,9 @@
    "sam_ch_number": 147,
    "chapter": 26,
    "verses": "1-7",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6365,6 +7960,9 @@
    "sam_ch_number": 148,
    "chapter": 26,
    "verses": "8-11",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6380,6 +7978,9 @@
    "sam_ch_number": 149,
    "chapter": 26,
    "verses": "12-14",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6395,6 +7996,9 @@
    "sam_ch_number": 150,
    "chapter": 26,
    "verses": "15-18",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6410,6 +8014,9 @@
    "sam_ch_number": 151,
    "chapter": 26,
    "verses": "19-22",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6425,6 +8032,9 @@
    "sam_ch_number": 152,
    "chapter": 26,
    "verses": "23-25",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6440,6 +8050,9 @@
    "sam_ch_number": 153,
    "chapter": 26,
    "verses": "26-27",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6455,6 +8068,9 @@
    "sam_ch_number": 154,
    "chapter": 26,
    "verses": "28-34",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6470,6 +8086,9 @@
    "sam_ch_number": 155,
    "chapter": 26,
    "verses": "35-37",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6485,6 +8104,9 @@
    "sam_ch_number": 156,
    "chapter": 26,
    "verses": "38-41",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6500,6 +8122,9 @@
    "sam_ch_number": 157,
    "chapter": 26,
    "verses": "42-43",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6515,6 +8140,9 @@
    "sam_ch_number": 158,
    "chapter": 26,
    "verses": "44-47",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6530,6 +8158,9 @@
    "sam_ch_number": 159,
    "chapter": 26,
    "verses": "48-51",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6545,6 +8176,9 @@
    "sam_ch_number": 160,
    "chapter": 26,
    "verses": "52-56",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6560,6 +8194,9 @@
    "sam_ch_number": 161,
    "chapter": 26,
    "verses": "57-62",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6575,6 +8212,9 @@
    "sam_ch_number": 162,
    "chapter": 26,
    "verses": "63-65",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12640.mp3",
@@ -6590,6 +8230,9 @@
    "sam_ch_number": 163,
    "chapter": 27,
    "verses": "1-5",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12641.mp3",
@@ -6605,6 +8248,9 @@
    "sam_ch_number": 164,
    "chapter": 27,
    "verses": "6-11",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12641.mp3",
@@ -6620,6 +8266,9 @@
    "sam_ch_number": 165,
    "chapter": 27,
    "verses": "12-17",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12641.mp3",
@@ -6635,6 +8284,9 @@
    "sam_ch_number": 166,
    "chapter": 27,
    "verses": "18-23",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12641.mp3",
@@ -6650,6 +8302,9 @@
    "sam_ch_number": 167,
    "chapter": 28,
    "verses": "1-10",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12642.mp3",
@@ -6665,6 +8320,9 @@
    "sam_ch_number": 168,
    "chapter": 28,
    "verses": "11-15",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12642.mp3",
@@ -6680,6 +8338,9 @@
    "sam_ch_number": 148,
    "chapter": 26,
    "verses": "8-11",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6695,6 +8356,9 @@
    "sam_ch_number": 149,
    "chapter": 26,
    "verses": "12-14",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6710,6 +8374,9 @@
    "sam_ch_number": 150,
    "chapter": 26,
    "verses": "15-18",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6725,6 +8392,9 @@
    "sam_ch_number": 151,
    "chapter": 26,
    "verses": "19-22",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6740,6 +8410,9 @@
    "sam_ch_number": 152,
    "chapter": 26,
    "verses": "23-25",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6755,6 +8428,9 @@
    "sam_ch_number": 153,
    "chapter": 26,
    "verses": "26-27",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6770,6 +8446,9 @@
    "sam_ch_number": 154,
    "chapter": 26,
    "verses": "28-34",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6785,6 +8464,9 @@
    "sam_ch_number": 155,
    "chapter": 26,
    "verses": "35-37",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6800,6 +8482,9 @@
    "sam_ch_number": 156,
    "chapter": 26,
    "verses": "38-41",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6815,6 +8500,9 @@
    "sam_ch_number": 157,
    "chapter": 26,
    "verses": "42-43",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6830,6 +8518,9 @@
    "sam_ch_number": 158,
    "chapter": 26,
    "verses": "44-47",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6845,6 +8536,9 @@
    "sam_ch_number": 159,
    "chapter": 26,
    "verses": "48-51",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6860,6 +8554,9 @@
    "sam_ch_number": 160,
    "chapter": 26,
    "verses": "52-56",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6875,6 +8572,9 @@
    "sam_ch_number": 161,
    "chapter": 26,
    "verses": "57-62",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6890,6 +8590,9 @@
    "sam_ch_number": 162,
    "chapter": 26,
    "verses": "63-65",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m122.mp3",
@@ -6905,6 +8608,9 @@
    "sam_ch_number": 169,
    "chapter": 28,
    "verses": "16-25",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m124.mp3",
@@ -6920,6 +8626,9 @@
    "sam_ch_number": 170,
    "chapter": 28,
    "verses": "26-31",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m124.mp3",
@@ -6935,6 +8644,9 @@
    "sam_ch_number": 171,
    "chapter": 29,
    "verses": "1-6",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m125.mp3",
@@ -6950,6 +8662,9 @@
    "sam_ch_number": 172,
    "chapter": 29,
    "verses": "7-11",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m125.mp3",
@@ -6965,6 +8680,9 @@
    "sam_ch_number": 173,
    "chapter": 29,
    "verses": "12-16",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m125.mp3",
@@ -6980,6 +8698,9 @@
    "sam_ch_number": 189,
    "chapter": 31,
    "verses": "32-41",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m126.mp3",
@@ -6995,6 +8716,9 @@
    "sam_ch_number": 190,
    "chapter": 31,
    "verses": "42-47",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m126.mp3",
@@ -7010,6 +8734,9 @@
    "sam_ch_number": 191,
    "chapter": 31,
    "verses": "48-54",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m126.mp3",
@@ -7025,6 +8752,9 @@
    "sam_ch_number": 192,
    "chapter": 32,
    "verses": "1-5",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m127.mp3",
@@ -7040,6 +8770,9 @@
    "sam_ch_number": 193,
    "chapter": 32,
    "verses": "6-15",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m127.mp3",
@@ -7055,6 +8788,9 @@
    "sam_ch_number": 194,
    "chapter": 32,
    "verses": "16-19",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m127.mp3",
@@ -7070,6 +8806,9 @@
    "sam_ch_number": 195,
    "chapter": 32,
    "verses": "20-27",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m127.mp3",
@@ -7085,6 +8824,9 @@
    "sam_ch_number": 196,
    "chapter": 32,
    "verses": "28-32",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m127.mp3",
@@ -7100,6 +8842,9 @@
    "sam_ch_number": 197,
    "chapter": 32,
    "verses": "33-42",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m127.mp3",
@@ -7115,6 +8860,9 @@
    "sam_ch_number": 198,
    "chapter": 33,
    "verses": "1-49",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m128.mp3",
@@ -7130,6 +8878,9 @@
    "sam_ch_number": 199,
    "chapter": 33,
    "verses": "50-56",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m128.mp3",
@@ -7145,6 +8896,9 @@
    "sam_ch_number": 200,
    "chapter": 34,
    "verses": "1-12",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m129.mp3",
@@ -7160,6 +8914,9 @@
    "sam_ch_number": 201,
    "chapter": 34,
    "verses": "13-15",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m129.mp3",
@@ -7175,6 +8932,9 @@
    "sam_ch_number": 202,
    "chapter": 34,
    "verses": "16-29",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m129.mp3",
@@ -7190,6 +8950,9 @@
    "sam_ch_number": 203,
    "chapter": 35,
    "verses": "1-8",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m130.mp3",
@@ -7205,6 +8968,9 @@
    "sam_ch_number": 204,
    "chapter": 35,
    "verses": "9-15",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m130.mp3",
@@ -7220,6 +8986,9 @@
    "sam_ch_number": 205,
    "chapter": 35,
    "verses": "16-23",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m130.mp3",
@@ -7235,6 +9004,9 @@
    "sam_ch_number": 206,
    "chapter": 35,
    "verses": "24-28",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m130.mp3",
@@ -7250,6 +9022,9 @@
    "sam_ch_number": 207,
    "chapter": 35,
    "verses": "29-34",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m130.mp3",
@@ -7265,6 +9040,9 @@
    "sam_ch_number": 1,
    "chapter": 1,
    "verses": "1-5",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12346.mp3",
@@ -7280,6 +9058,9 @@
    "sam_ch_number": 2,
    "chapter": 1,
    "verses": "6-8",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12346.mp3",
@@ -7295,6 +9076,9 @@
    "sam_ch_number": 3,
    "chapter": 1,
    "verses": "9-13",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12346.mp3",
@@ -7310,6 +9094,9 @@
    "sam_ch_number": 4,
    "chapter": 1,
    "verses": "14-19",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12346.mp3",
@@ -7325,6 +9112,9 @@
    "sam_ch_number": 5,
    "chapter": 1,
    "verses": "20-23",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12346.mp3",
@@ -7340,6 +9130,9 @@
    "sam_ch_number": 6,
    "chapter": 1,
    "verses": "24-31",
+   "spans": [
+    1
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12346.mp3",
@@ -7355,6 +9148,9 @@
    "sam_ch_number": 7,
    "chapter": 2,
    "verses": "1-3",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12347.mp3",
@@ -7370,6 +9166,9 @@
    "sam_ch_number": 8,
    "chapter": 2,
    "verses": "4-7",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12347.mp3",
@@ -7385,6 +9184,9 @@
    "sam_ch_number": 9,
    "chapter": 2,
    "verses": "8-14",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12347.mp3",
@@ -7400,6 +9202,9 @@
    "sam_ch_number": 10,
    "chapter": 2,
    "verses": "15-17",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12347.mp3",
@@ -7415,6 +9220,9 @@
    "sam_ch_number": 11,
    "chapter": 2,
    "verses": "18-20",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12347.mp3",
@@ -7430,6 +9238,9 @@
    "sam_ch_number": 12,
    "chapter": 2,
    "verses": "21-25",
+   "spans": [
+    2
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12347.mp3",
@@ -7445,6 +9256,9 @@
    "sam_ch_number": 13,
    "chapter": 3,
    "verses": "1-8",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12348.mp3",
@@ -7460,6 +9274,9 @@
    "sam_ch_number": 14,
    "chapter": 3,
    "verses": "9-13",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12348.mp3",
@@ -7475,6 +9292,9 @@
    "sam_ch_number": 15,
    "chapter": 3,
    "verses": "14-16",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12348.mp3",
@@ -7490,6 +9310,9 @@
    "sam_ch_number": 16,
    "chapter": 3,
    "verses": "17-21",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12348.mp3",
@@ -7505,6 +9328,9 @@
    "sam_ch_number": 17,
    "chapter": 3,
    "verses": "22-24",
+   "spans": [
+    3
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12348.mp3",
@@ -7520,6 +9346,9 @@
    "sam_ch_number": 18,
    "chapter": 4,
    "verses": "1-8",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12349.mp3",
@@ -7535,6 +9364,9 @@
    "sam_ch_number": 19,
    "chapter": 4,
    "verses": "9-16",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12349.mp3",
@@ -7550,14 +9382,41 @@
    "sam_ch_number": 20,
    "chapter": 4,
    "verses": "17-24",
+   "spans": [
+    4
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12349.mp3",
      "t0": 135.84,
-     "t1": 231.85
+     "t1": 208.73
     }
    ],
-   "duration": 96.01
+   "duration": 72.89
+  },
+  {
+   "reader": "פנחס אברהם כהן",
+   "book_id": 1,
+   "sam_ch_number": 21,
+   "chapter": 4,
+   "verses": "4:25-5:2",
+   "spans": [
+    4,
+    5
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12349.mp3",
+     "t0": 208.73,
+     "t1": 231.85
+    },
+    {
+     "file": "/static/audio/masorot/m12350.mp3",
+     "t0": 0.0,
+     "t1": 18.57
+    }
+   ],
+   "duration": 41.69
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -7565,6 +9424,9 @@
    "sam_ch_number": 22,
    "chapter": 5,
    "verses": "3-5",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
@@ -7580,6 +9442,9 @@
    "sam_ch_number": 23,
    "chapter": 5,
    "verses": "6-8",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
@@ -7595,6 +9460,9 @@
    "sam_ch_number": 24,
    "chapter": 5,
    "verses": "9-11",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
@@ -7610,6 +9478,9 @@
    "sam_ch_number": 25,
    "chapter": 5,
    "verses": "12-14",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
@@ -7625,6 +9496,9 @@
    "sam_ch_number": 26,
    "chapter": 5,
    "verses": "15-17",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
@@ -7640,6 +9514,9 @@
    "sam_ch_number": 27,
    "chapter": 5,
    "verses": "18-20",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
@@ -7655,6 +9532,9 @@
    "sam_ch_number": 28,
    "chapter": 5,
    "verses": "21-24",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
@@ -7670,6 +9550,9 @@
    "sam_ch_number": 29,
    "chapter": 5,
    "verses": "25-27",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
@@ -7685,14 +9568,41 @@
    "sam_ch_number": 30,
    "chapter": 5,
    "verses": "28-31",
+   "spans": [
+    5
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12350.mp3",
      "t0": 231.39,
-     "t1": 272.95
+     "t1": 263.54
     }
    ],
-   "duration": 41.56
+   "duration": 32.15
+  },
+  {
+   "reader": "פנחס אברהם כהן",
+   "book_id": 1,
+   "sam_ch_number": 31,
+   "chapter": 5,
+   "verses": "5:32-6:2",
+   "spans": [
+    5,
+    6
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12350.mp3",
+     "t0": 263.54,
+     "t1": 272.95
+    },
+    {
+     "file": "/static/audio/masorot/m12351.mp3",
+     "t0": 0.0,
+     "t1": 18.28
+    }
+   ],
+   "duration": 27.69
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -7700,6 +9610,9 @@
    "sam_ch_number": 32,
    "chapter": 6,
    "verses": "3-6",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12351.mp3",
@@ -7715,6 +9628,9 @@
    "sam_ch_number": 33,
    "chapter": 6,
    "verses": "7-12",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12351.mp3",
@@ -7730,6 +9646,9 @@
    "sam_ch_number": 34,
    "chapter": 6,
    "verses": "13-16",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12351.mp3",
@@ -7745,6 +9664,9 @@
    "sam_ch_number": 35,
    "chapter": 6,
    "verses": "17-22",
+   "spans": [
+    6
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12351.mp3",
@@ -7760,6 +9682,9 @@
    "sam_ch_number": 36,
    "chapter": 7,
    "verses": "1-5",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12352.mp3",
@@ -7775,6 +9700,9 @@
    "sam_ch_number": 37,
    "chapter": 7,
    "verses": "6-9",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12352.mp3",
@@ -7790,6 +9718,9 @@
    "sam_ch_number": 38,
    "chapter": 7,
    "verses": "10-16",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12352.mp3",
@@ -7805,6 +9736,9 @@
    "sam_ch_number": 39,
    "chapter": 7,
    "verses": "17-24",
+   "spans": [
+    7
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12352.mp3",
@@ -7820,6 +9754,9 @@
    "sam_ch_number": 40,
    "chapter": 8,
    "verses": "1-5",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12353.mp3",
@@ -7835,6 +9772,9 @@
    "sam_ch_number": 41,
    "chapter": 8,
    "verses": "6-14",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12353.mp3",
@@ -7850,14 +9790,41 @@
    "sam_ch_number": 42,
    "chapter": 8,
    "verses": "15-20",
+   "spans": [
+    8
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12353.mp3",
      "t0": 128.7,
-     "t1": 196.58
+     "t1": 167.9
     }
    ],
-   "duration": 67.88
+   "duration": 39.2
+  },
+  {
+   "reader": "פנחס אברהם כהן",
+   "book_id": 1,
+   "sam_ch_number": 43,
+   "chapter": 8,
+   "verses": "8:21-9:7",
+   "spans": [
+    8,
+    9
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12353.mp3",
+     "t0": 167.9,
+     "t1": 196.58
+    },
+    {
+     "file": "/static/audio/masorot/m12354.mp3",
+     "t0": 0.0,
+     "t1": 58.88
+    }
+   ],
+   "duration": 87.56
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -7865,6 +9832,9 @@
    "sam_ch_number": 44,
    "chapter": 9,
    "verses": "8-11",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12354.mp3",
@@ -7880,6 +9850,9 @@
    "sam_ch_number": 45,
    "chapter": 9,
    "verses": "12-17",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12354.mp3",
@@ -7895,6 +9868,9 @@
    "sam_ch_number": 46,
    "chapter": 9,
    "verses": "18-29",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12354.mp3",
@@ -7910,6 +9886,9 @@
    "sam_ch_number": 47,
    "chapter": 10,
    "verses": "1-5",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12355.mp3",
@@ -7925,6 +9904,9 @@
    "sam_ch_number": 48,
    "chapter": 10,
    "verses": "6-12",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12355.mp3",
@@ -7940,6 +9922,9 @@
    "sam_ch_number": 49,
    "chapter": 10,
    "verses": "13-20",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12355.mp3",
@@ -7955,6 +9940,9 @@
    "sam_ch_number": 50,
    "chapter": 10,
    "verses": "21-32",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12355.mp3",
@@ -7970,6 +9958,9 @@
    "sam_ch_number": 51,
    "chapter": 11,
    "verses": "1-9",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -7985,6 +9976,9 @@
    "sam_ch_number": 52,
    "chapter": 11,
    "verses": "10-11",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8000,6 +9994,9 @@
    "sam_ch_number": 53,
    "chapter": 11,
    "verses": "12-13",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8015,6 +10012,9 @@
    "sam_ch_number": 54,
    "chapter": 11,
    "verses": "14-15",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8030,6 +10030,9 @@
    "sam_ch_number": 55,
    "chapter": 11,
    "verses": "16-17",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8045,6 +10048,9 @@
    "sam_ch_number": 56,
    "chapter": 11,
    "verses": "18-19",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8060,6 +10066,9 @@
    "sam_ch_number": 57,
    "chapter": 11,
    "verses": "20-21",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8075,6 +10084,9 @@
    "sam_ch_number": 58,
    "chapter": 11,
    "verses": "22-23",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8090,6 +10102,9 @@
    "sam_ch_number": 59,
    "chapter": 11,
    "verses": "24-25",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8105,6 +10120,9 @@
    "sam_ch_number": 60,
    "chapter": 11,
    "verses": "26-32",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12356.mp3",
@@ -8120,6 +10138,9 @@
    "sam_ch_number": 61,
    "chapter": 12,
    "verses": "1-6",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12357.mp3",
@@ -8135,6 +10156,9 @@
    "sam_ch_number": 62,
    "chapter": 12,
    "verses": "7-9",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12357.mp3",
@@ -8150,14 +10174,41 @@
    "sam_ch_number": 63,
    "chapter": 12,
    "verses": "10-17",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12357.mp3",
      "t0": 84.02,
-     "t1": 169.66
+     "t1": 146.56
     }
    ],
-   "duration": 85.64
+   "duration": 62.54
+  },
+  {
+   "reader": "פנחס אברהם כהן",
+   "book_id": 1,
+   "sam_ch_number": 64,
+   "chapter": 12,
+   "verses": "12:18-13:4",
+   "spans": [
+    12,
+    13
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12357.mp3",
+     "t0": 146.56,
+     "t1": 169.66
+    },
+    {
+     "file": "/static/audio/masorot/m12358.mp3",
+     "t0": 0.0,
+     "t1": 25.73
+    }
+   ],
+   "duration": 48.83
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -8165,6 +10216,9 @@
    "sam_ch_number": 65,
    "chapter": 13,
    "verses": "5-13",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12358.mp3",
@@ -8180,6 +10234,9 @@
    "sam_ch_number": 66,
    "chapter": 13,
    "verses": "14-18",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12358.mp3",
@@ -8195,6 +10252,9 @@
    "sam_ch_number": 67,
    "chapter": 14,
    "verses": "1-7",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12359.mp3",
@@ -8210,6 +10270,9 @@
    "sam_ch_number": 68,
    "chapter": 14,
    "verses": "8-12",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12359.mp3",
@@ -8225,6 +10288,9 @@
    "sam_ch_number": 69,
    "chapter": 14,
    "verses": "13-17",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12359.mp3",
@@ -8240,6 +10306,9 @@
    "sam_ch_number": 70,
    "chapter": 14,
    "verses": "18-24",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12359.mp3",
@@ -8255,6 +10324,9 @@
    "sam_ch_number": 71,
    "chapter": 15,
    "verses": "1-11",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12360.mp3",
@@ -8270,6 +10342,9 @@
    "sam_ch_number": 72,
    "chapter": 15,
    "verses": "12-16",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12360.mp3",
@@ -8285,6 +10360,9 @@
    "sam_ch_number": 73,
    "chapter": 15,
    "verses": "17-21",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12360.mp3",
@@ -8300,6 +10378,9 @@
    "sam_ch_number": 74,
    "chapter": 16,
    "verses": "1-6",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12361.mp3",
@@ -8315,6 +10396,9 @@
    "sam_ch_number": 75,
    "chapter": 16,
    "verses": "7-16",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12361.mp3",
@@ -8330,6 +10414,9 @@
    "sam_ch_number": 76,
    "chapter": 17,
    "verses": "1-8",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12362.mp3",
@@ -8345,6 +10432,9 @@
    "sam_ch_number": 77,
    "chapter": 17,
    "verses": "9-14",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12362.mp3",
@@ -8360,6 +10450,9 @@
    "sam_ch_number": 78,
    "chapter": 17,
    "verses": "15-21",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12362.mp3",
@@ -8375,6 +10468,9 @@
    "sam_ch_number": 79,
    "chapter": 17,
    "verses": "22-27",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12362.mp3",
@@ -8390,6 +10486,9 @@
    "sam_ch_number": 80,
    "chapter": 18,
    "verses": "1-12",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12363.mp3",
@@ -8405,6 +10504,9 @@
    "sam_ch_number": 81,
    "chapter": 18,
    "verses": "13-19",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12363.mp3",
@@ -8420,6 +10522,9 @@
    "sam_ch_number": 82,
    "chapter": 18,
    "verses": "20-25",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12363.mp3",
@@ -8435,6 +10540,9 @@
    "sam_ch_number": 83,
    "chapter": 18,
    "verses": "26-33",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12363.mp3",
@@ -8455,6 +10563,9 @@
    "sam_ch_number": 84,
    "chapter": 19,
    "verses": "1-11",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12365.mp3",
@@ -8470,6 +10581,9 @@
    "sam_ch_number": 85,
    "chapter": 19,
    "verses": "12-17",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12365.mp3",
@@ -8485,6 +10599,9 @@
    "sam_ch_number": 86,
    "chapter": 19,
    "verses": "18-23",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12365.mp3",
@@ -8500,6 +10617,9 @@
    "sam_ch_number": 87,
    "chapter": 19,
    "verses": "24-29",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12365.mp3",
@@ -8515,6 +10635,9 @@
    "sam_ch_number": 88,
    "chapter": 19,
    "verses": "30-38",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12365.mp3",
@@ -8530,6 +10653,9 @@
    "sam_ch_number": 89,
    "chapter": 20,
    "verses": "1-7",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12366.mp3",
@@ -8545,6 +10671,9 @@
    "sam_ch_number": 90,
    "chapter": 20,
    "verses": "8-13",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12366.mp3",
@@ -8560,6 +10689,9 @@
    "sam_ch_number": 91,
    "chapter": 20,
    "verses": "14-18",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12366.mp3",
@@ -8575,6 +10707,9 @@
    "sam_ch_number": 92,
    "chapter": 21,
    "verses": "1-11",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12367.mp3",
@@ -8590,6 +10725,9 @@
    "sam_ch_number": 93,
    "chapter": 21,
    "verses": "12-17",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12367.mp3",
@@ -8605,6 +10743,9 @@
    "sam_ch_number": 94,
    "chapter": 21,
    "verses": "18-21",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12367.mp3",
@@ -8620,6 +10761,9 @@
    "sam_ch_number": 95,
    "chapter": 21,
    "verses": "22-26",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12367.mp3",
@@ -8635,6 +10779,9 @@
    "sam_ch_number": 96,
    "chapter": 21,
    "verses": "27-34",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12367.mp3",
@@ -8650,6 +10797,9 @@
    "sam_ch_number": 97,
    "chapter": 22,
    "verses": "1-6",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12368.mp3",
@@ -8665,6 +10815,9 @@
    "sam_ch_number": 98,
    "chapter": 22,
    "verses": "7-10",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12368.mp3",
@@ -8680,6 +10833,9 @@
    "sam_ch_number": 99,
    "chapter": 22,
    "verses": "11-14",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12368.mp3",
@@ -8695,6 +10851,9 @@
    "sam_ch_number": 100,
    "chapter": 22,
    "verses": "15-19",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12368.mp3",
@@ -8710,6 +10869,9 @@
    "sam_ch_number": 101,
    "chapter": 22,
    "verses": "20-24",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12368.mp3",
@@ -8725,6 +10887,9 @@
    "sam_ch_number": 102,
    "chapter": 23,
    "verses": "1-10",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12369.mp3",
@@ -8740,6 +10905,9 @@
    "sam_ch_number": 103,
    "chapter": 23,
    "verses": "11-20",
+   "spans": [
+    23
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12369.mp3",
@@ -8755,6 +10923,9 @@
    "sam_ch_number": 104,
    "chapter": 24,
    "verses": "1-9",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8770,6 +10941,9 @@
    "sam_ch_number": 105,
    "chapter": 24,
    "verses": "10-14",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8785,6 +10959,9 @@
    "sam_ch_number": 106,
    "chapter": 24,
    "verses": "15-21",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8800,6 +10977,9 @@
    "sam_ch_number": 107,
    "chapter": 24,
    "verses": "22-27",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8815,6 +10995,9 @@
    "sam_ch_number": 108,
    "chapter": 24,
    "verses": "28-33",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8830,6 +11013,9 @@
    "sam_ch_number": 109,
    "chapter": 24,
    "verses": "34-41",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8845,6 +11031,9 @@
    "sam_ch_number": 110,
    "chapter": 24,
    "verses": "42-51",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8860,6 +11049,9 @@
    "sam_ch_number": 111,
    "chapter": 24,
    "verses": "52-61",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8875,6 +11067,9 @@
    "sam_ch_number": 112,
    "chapter": 24,
    "verses": "62-67",
+   "spans": [
+    24
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12370.mp3",
@@ -8890,6 +11085,9 @@
    "sam_ch_number": 113,
    "chapter": 25,
    "verses": "1-6",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12371.mp3",
@@ -8905,6 +11103,9 @@
    "sam_ch_number": 114,
    "chapter": 25,
    "verses": "7-11",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12371.mp3",
@@ -8920,6 +11121,9 @@
    "sam_ch_number": 115,
    "chapter": 25,
    "verses": "12-18",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12371.mp3",
@@ -8935,6 +11139,9 @@
    "sam_ch_number": 116,
    "chapter": 25,
    "verses": "19-28",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12371.mp3",
@@ -8950,6 +11157,9 @@
    "sam_ch_number": 117,
    "chapter": 25,
    "verses": "29-34",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12371.mp3",
@@ -8965,6 +11175,9 @@
    "sam_ch_number": 118,
    "chapter": 26,
    "verses": "1-5",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12372.mp3",
@@ -8980,6 +11193,9 @@
    "sam_ch_number": 119,
    "chapter": 26,
    "verses": "6-11",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12372.mp3",
@@ -8995,6 +11211,9 @@
    "sam_ch_number": 120,
    "chapter": 26,
    "verses": "12-23",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12372.mp3",
@@ -9010,6 +11229,9 @@
    "sam_ch_number": 121,
    "chapter": 26,
    "verses": "24-35",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12372.mp3",
@@ -9025,6 +11247,9 @@
    "sam_ch_number": 122,
    "chapter": 27,
    "verses": "1-10",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12373.mp3",
@@ -9040,6 +11265,9 @@
    "sam_ch_number": 123,
    "chapter": 27,
    "verses": "11-20",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12373.mp3",
@@ -9055,6 +11283,9 @@
    "sam_ch_number": 124,
    "chapter": 27,
    "verses": "21-29",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12373.mp3",
@@ -9070,6 +11301,9 @@
    "sam_ch_number": 125,
    "chapter": 27,
    "verses": "30-33",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12373.mp3",
@@ -9085,6 +11319,9 @@
    "sam_ch_number": 126,
    "chapter": 27,
    "verses": "34-41",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12373.mp3",
@@ -9100,6 +11337,9 @@
    "sam_ch_number": 127,
    "chapter": 27,
    "verses": "42-46",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12373.mp3",
@@ -9115,6 +11355,9 @@
    "sam_ch_number": 128,
    "chapter": 28,
    "verses": "1-9",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12374.mp3",
@@ -9130,6 +11373,9 @@
    "sam_ch_number": 129,
    "chapter": 28,
    "verses": "10-15",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12374.mp3",
@@ -9145,6 +11391,9 @@
    "sam_ch_number": 130,
    "chapter": 28,
    "verses": "16-22",
+   "spans": [
+    28
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12374.mp3",
@@ -9160,6 +11409,9 @@
    "sam_ch_number": 131,
    "chapter": 29,
    "verses": "1-9",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12375.mp3",
@@ -9175,6 +11427,9 @@
    "sam_ch_number": 132,
    "chapter": 29,
    "verses": "10-15",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12375.mp3",
@@ -9190,6 +11445,9 @@
    "sam_ch_number": 133,
    "chapter": 29,
    "verses": "16-30",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12375.mp3",
@@ -9205,6 +11463,9 @@
    "sam_ch_number": 134,
    "chapter": 29,
    "verses": "31-35",
+   "spans": [
+    29
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12375.mp3",
@@ -9220,6 +11481,9 @@
    "sam_ch_number": 135,
    "chapter": 30,
    "verses": "1-8",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12376.mp3",
@@ -9235,6 +11499,9 @@
    "sam_ch_number": 136,
    "chapter": 30,
    "verses": "9-13",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12376.mp3",
@@ -9250,6 +11517,9 @@
    "sam_ch_number": 137,
    "chapter": 30,
    "verses": "14-21",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12376.mp3",
@@ -9265,6 +11535,9 @@
    "sam_ch_number": 138,
    "chapter": 30,
    "verses": "22-30",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12376.mp3",
@@ -9280,29 +11553,46 @@
    "sam_ch_number": 139,
    "chapter": 30,
    "verses": "31-36",
+   "spans": [
+    30
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12376.mp3",
      "t0": 197.15,
-     "t1": 324.41
+     "t1": 271.92
     }
    ],
-   "duration": 127.26
+   "duration": 74.77
   },
   {
    "reader": "פנחס אברהם כהן",
    "book_id": 1,
-   "sam_ch_number": 140,
-   "chapter": 31,
-   "verses": "2-2",
+   "sam_ch_number": 141,
+   "chapter": 30,
+   "verses": "30:37-31:2",
+   "spans": [
+    30,
+    31
+   ],
    "segs": [
+    {
+     "file": "/static/audio/masorot/m12376.mp3",
+     "t0": 271.92,
+     "t1": 324.41
+    },
+    {
+     "file": "/static/audio/masorot/m12377.mp3",
+     "t0": 0.0,
+     "t1": 5.21
+    },
     {
      "file": "/static/audio/masorot/m12377.mp3",
      "t0": 5.21,
      "t1": 20.43
     }
    ],
-   "duration": 15.22
+   "duration": 72.92
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -9310,6 +11600,9 @@
    "sam_ch_number": 143,
    "chapter": 31,
    "verses": "11-16",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12378.mp3",
@@ -9325,6 +11618,9 @@
    "sam_ch_number": 144,
    "chapter": 31,
    "verses": "17-23",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12378.mp3",
@@ -9340,6 +11636,9 @@
    "sam_ch_number": 145,
    "chapter": 31,
    "verses": "24-30",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12378.mp3",
@@ -9355,6 +11654,9 @@
    "sam_ch_number": 146,
    "chapter": 31,
    "verses": "31-35",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12378.mp3",
@@ -9370,6 +11672,9 @@
    "sam_ch_number": 147,
    "chapter": 31,
    "verses": "36-37",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12378.mp3",
@@ -9385,6 +11690,9 @@
    "sam_ch_number": 148,
    "chapter": 31,
    "verses": "38-40",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12378.mp3",
@@ -9400,6 +11708,9 @@
    "sam_ch_number": 149,
    "chapter": 31,
    "verses": "41-42",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12378.mp3",
@@ -9415,14 +11726,41 @@
    "sam_ch_number": 150,
    "chapter": 31,
    "verses": "43-50",
+   "spans": [
+    31
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12378.mp3",
      "t0": 360.23,
-     "t1": 439.4
+     "t1": 407.85
     }
    ],
-   "duration": 79.17
+   "duration": 47.62
+  },
+  {
+   "reader": "פנחס אברהם כהן",
+   "book_id": 1,
+   "sam_ch_number": 151,
+   "chapter": 31,
+   "verses": "31:51-32:3",
+   "spans": [
+    31,
+    32
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12378.mp3",
+     "t0": 407.85,
+     "t1": 439.4
+    },
+    {
+     "file": "/static/audio/masorot/m12379.mp3",
+     "t0": 0.0,
+     "t1": 20.21
+    }
+   ],
+   "duration": 51.76
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -9430,6 +11768,9 @@
    "sam_ch_number": 152,
    "chapter": 32,
    "verses": "4-9",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12379.mp3",
@@ -9445,6 +11786,9 @@
    "sam_ch_number": 153,
    "chapter": 32,
    "verses": "10-14",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12379.mp3",
@@ -9460,6 +11804,9 @@
    "sam_ch_number": 154,
    "chapter": 32,
    "verses": "15-22",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12379.mp3",
@@ -9475,6 +11822,9 @@
    "sam_ch_number": 155,
    "chapter": 32,
    "verses": "23-33",
+   "spans": [
+    32
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12379.mp3",
@@ -9490,6 +11840,9 @@
    "sam_ch_number": 156,
    "chapter": 33,
    "verses": "1-11",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12380.mp3",
@@ -9505,6 +11858,9 @@
    "sam_ch_number": 157,
    "chapter": 33,
    "verses": "12-17",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12380.mp3",
@@ -9520,6 +11876,9 @@
    "sam_ch_number": 158,
    "chapter": 33,
    "verses": "18-20",
+   "spans": [
+    33
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12380.mp3",
@@ -9535,6 +11894,9 @@
    "sam_ch_number": 159,
    "chapter": 34,
    "verses": "1-7",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12381.mp3",
@@ -9550,6 +11912,9 @@
    "sam_ch_number": 160,
    "chapter": 34,
    "verses": "8-12",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12381.mp3",
@@ -9565,6 +11930,9 @@
    "sam_ch_number": 161,
    "chapter": 34,
    "verses": "13-19",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12381.mp3",
@@ -9580,6 +11948,9 @@
    "sam_ch_number": 162,
    "chapter": 34,
    "verses": "20-24",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12381.mp3",
@@ -9595,6 +11966,9 @@
    "sam_ch_number": 163,
    "chapter": 34,
    "verses": "25-31",
+   "spans": [
+    34
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12381.mp3",
@@ -9610,6 +11984,9 @@
    "sam_ch_number": 164,
    "chapter": 35,
    "verses": "1-5",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12382.mp3",
@@ -9625,6 +12002,9 @@
    "sam_ch_number": 165,
    "chapter": 35,
    "verses": "6-8",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12382.mp3",
@@ -9640,6 +12020,9 @@
    "sam_ch_number": 166,
    "chapter": 35,
    "verses": "9-20",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12382.mp3",
@@ -9655,6 +12038,9 @@
    "sam_ch_number": 167,
    "chapter": 35,
    "verses": "21-29",
+   "spans": [
+    35
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12382.mp3",
@@ -9670,6 +12056,9 @@
    "sam_ch_number": 168,
    "chapter": 36,
    "verses": "1-8",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12383.mp3",
@@ -9685,6 +12074,9 @@
    "sam_ch_number": 169,
    "chapter": 36,
    "verses": "9-19",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12383.mp3",
@@ -9700,6 +12092,9 @@
    "sam_ch_number": 170,
    "chapter": 36,
    "verses": "20-30",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12383.mp3",
@@ -9715,6 +12110,9 @@
    "sam_ch_number": 171,
    "chapter": 36,
    "verses": "31-43",
+   "spans": [
+    36
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12383.mp3",
@@ -9730,6 +12128,9 @@
    "sam_ch_number": 172,
    "chapter": 37,
    "verses": "1-4",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12384.mp3",
@@ -9745,6 +12146,9 @@
    "sam_ch_number": 173,
    "chapter": 37,
    "verses": "5-8",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12384.mp3",
@@ -9760,6 +12164,9 @@
    "sam_ch_number": 174,
    "chapter": 37,
    "verses": "9-12",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12384.mp3",
@@ -9775,6 +12182,9 @@
    "sam_ch_number": 175,
    "chapter": 37,
    "verses": "13-22",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12384.mp3",
@@ -9790,6 +12200,9 @@
    "sam_ch_number": 176,
    "chapter": 37,
    "verses": "23-28",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12384.mp3",
@@ -9805,6 +12218,9 @@
    "sam_ch_number": 177,
    "chapter": 37,
    "verses": "29-36",
+   "spans": [
+    37
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12384.mp3",
@@ -9820,6 +12236,9 @@
    "sam_ch_number": 178,
    "chapter": 38,
    "verses": "1-10",
+   "spans": [
+    38
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12385.mp3",
@@ -9835,6 +12254,9 @@
    "sam_ch_number": 179,
    "chapter": 38,
    "verses": "11-19",
+   "spans": [
+    38
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12385.mp3",
@@ -9850,6 +12272,9 @@
    "sam_ch_number": 180,
    "chapter": 38,
    "verses": "20-23",
+   "spans": [
+    38
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12385.mp3",
@@ -9865,6 +12290,9 @@
    "sam_ch_number": 181,
    "chapter": 38,
    "verses": "24-30",
+   "spans": [
+    38
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12385.mp3",
@@ -9880,6 +12308,9 @@
    "sam_ch_number": 182,
    "chapter": 39,
    "verses": "1-6",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12386.mp3",
@@ -9895,6 +12326,9 @@
    "sam_ch_number": 183,
    "chapter": 39,
    "verses": "7-9",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12386.mp3",
@@ -9910,6 +12344,9 @@
    "sam_ch_number": 184,
    "chapter": 39,
    "verses": "10-18",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12386.mp3",
@@ -9925,6 +12362,9 @@
    "sam_ch_number": 185,
    "chapter": 39,
    "verses": "19-23",
+   "spans": [
+    39
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12386.mp3",
@@ -9940,6 +12380,9 @@
    "sam_ch_number": 186,
    "chapter": 40,
    "verses": "1-8",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12387.mp3",
@@ -9955,6 +12398,9 @@
    "sam_ch_number": 187,
    "chapter": 40,
    "verses": "9-15",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12387.mp3",
@@ -9970,6 +12416,9 @@
    "sam_ch_number": 188,
    "chapter": 40,
    "verses": "16-23",
+   "spans": [
+    40
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12387.mp3",
@@ -9985,6 +12434,9 @@
    "sam_ch_number": 189,
    "chapter": 41,
    "verses": "1-8",
+   "spans": [
+    41
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12388.mp3",
@@ -10000,6 +12452,9 @@
    "sam_ch_number": 190,
    "chapter": 41,
    "verses": "9-16",
+   "spans": [
+    41
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12388.mp3",
@@ -10015,6 +12470,9 @@
    "sam_ch_number": 191,
    "chapter": 41,
    "verses": "17-24",
+   "spans": [
+    41
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12388.mp3",
@@ -10030,6 +12488,9 @@
    "sam_ch_number": 192,
    "chapter": 41,
    "verses": "25-32",
+   "spans": [
+    41
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12388.mp3",
@@ -10045,6 +12506,9 @@
    "sam_ch_number": 193,
    "chapter": 41,
    "verses": "33-38",
+   "spans": [
+    41
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12388.mp3",
@@ -10060,6 +12524,9 @@
    "sam_ch_number": 194,
    "chapter": 41,
    "verses": "39-45",
+   "spans": [
+    41
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12388.mp3",
@@ -10075,6 +12542,9 @@
    "sam_ch_number": 195,
    "chapter": 41,
    "verses": "46-49",
+   "spans": [
+    41
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12388.mp3",
@@ -10090,6 +12560,9 @@
    "sam_ch_number": 196,
    "chapter": 41,
    "verses": "50-57",
+   "spans": [
+    41
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12388.mp3",
@@ -10105,6 +12578,9 @@
    "sam_ch_number": 197,
    "chapter": 42,
    "verses": "1-6",
+   "spans": [
+    42
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12389.mp3",
@@ -10120,6 +12596,9 @@
    "sam_ch_number": 198,
    "chapter": 42,
    "verses": "7-13",
+   "spans": [
+    42
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12389.mp3",
@@ -10135,6 +12614,9 @@
    "sam_ch_number": 199,
    "chapter": 42,
    "verses": "14-17",
+   "spans": [
+    42
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12389.mp3",
@@ -10150,6 +12632,9 @@
    "sam_ch_number": 200,
    "chapter": 42,
    "verses": "18-24",
+   "spans": [
+    42
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12389.mp3",
@@ -10165,6 +12650,9 @@
    "sam_ch_number": 201,
    "chapter": 42,
    "verses": "25-28",
+   "spans": [
+    42
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12389.mp3",
@@ -10180,14 +12668,41 @@
    "sam_ch_number": 202,
    "chapter": 42,
    "verses": "29-35",
+   "spans": [
+    42
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12389.mp3",
      "t0": 228.11,
-     "t1": 308.83
+     "t1": 262.14
     }
    ],
-   "duration": 80.72
+   "duration": 34.03
+  },
+  {
+   "reader": "פנחס אברהם כהן",
+   "book_id": 1,
+   "sam_ch_number": 203,
+   "chapter": 42,
+   "verses": "42:36-43:5",
+   "spans": [
+    42,
+    43
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12389.mp3",
+     "t0": 262.14,
+     "t1": 308.83
+    },
+    {
+     "file": "/static/audio/masorot/m12390.mp3",
+     "t0": 0.0,
+     "t1": 39.28
+    }
+   ],
+   "duration": 85.97
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -10195,6 +12710,9 @@
    "sam_ch_number": 204,
    "chapter": 43,
    "verses": "6-10",
+   "spans": [
+    43
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12390.mp3",
@@ -10210,6 +12728,9 @@
    "sam_ch_number": 205,
    "chapter": 43,
    "verses": "11-14",
+   "spans": [
+    43
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12390.mp3",
@@ -10225,6 +12746,9 @@
    "sam_ch_number": 206,
    "chapter": 43,
    "verses": "15-18",
+   "spans": [
+    43
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12390.mp3",
@@ -10240,6 +12764,9 @@
    "sam_ch_number": 207,
    "chapter": 43,
    "verses": "19-25",
+   "spans": [
+    43
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12390.mp3",
@@ -10255,6 +12782,9 @@
    "sam_ch_number": 208,
    "chapter": 43,
    "verses": "26-34",
+   "spans": [
+    43
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12390.mp3",
@@ -10270,6 +12800,9 @@
    "sam_ch_number": 209,
    "chapter": 44,
    "verses": "1-13",
+   "spans": [
+    44
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12391.mp3",
@@ -10285,6 +12818,9 @@
    "sam_ch_number": 210,
    "chapter": 44,
    "verses": "14-17",
+   "spans": [
+    44
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12391.mp3",
@@ -10300,6 +12836,9 @@
    "sam_ch_number": 211,
    "chapter": 44,
    "verses": "18-26",
+   "spans": [
+    44
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12391.mp3",
@@ -10315,6 +12854,9 @@
    "sam_ch_number": 212,
    "chapter": 44,
    "verses": "27-34",
+   "spans": [
+    44
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12391.mp3",
@@ -10330,6 +12872,9 @@
    "sam_ch_number": 213,
    "chapter": 45,
    "verses": "1-8",
+   "spans": [
+    45
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12392.mp3",
@@ -10345,6 +12890,9 @@
    "sam_ch_number": 214,
    "chapter": 45,
    "verses": "9-16",
+   "spans": [
+    45
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12392.mp3",
@@ -10360,14 +12908,17 @@
    "sam_ch_number": 215,
    "chapter": 45,
    "verses": "17-24",
+   "spans": [
+    45
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12392.mp3",
      "t0": 133.01,
-     "t1": 205.82
+     "t1": 194.97
     }
    ],
-   "duration": 72.81
+   "duration": 61.96
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -10375,6 +12926,9 @@
    "sam_ch_number": 38,
    "chapter": 9,
    "verses": "1-5",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12252.mp3",
@@ -10395,6 +12949,9 @@
    "sam_ch_number": 40,
    "chapter": 9,
    "verses": "8-12",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12252.mp3",
@@ -10410,6 +12967,9 @@
    "sam_ch_number": 41,
    "chapter": 9,
    "verses": "13-19",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12252.mp3",
@@ -10430,6 +12990,9 @@
    "sam_ch_number": 43,
    "chapter": 9,
    "verses": "22-26",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12252.mp3",
@@ -10445,6 +13008,9 @@
    "sam_ch_number": 44,
    "chapter": 9,
    "verses": "27-35",
+   "spans": [
+    9
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12252.mp3",
@@ -10460,6 +13026,9 @@
    "sam_ch_number": 45,
    "chapter": 10,
    "verses": "1-2",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12253.mp3",
@@ -10475,6 +13044,9 @@
    "sam_ch_number": 46,
    "chapter": 10,
    "verses": "3-6",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12253.mp3",
@@ -10495,6 +13067,9 @@
    "sam_ch_number": 48,
    "chapter": 10,
    "verses": "12-20",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12253.mp3",
@@ -10510,6 +13085,9 @@
    "sam_ch_number": 49,
    "chapter": 10,
    "verses": "21-29",
+   "spans": [
+    10
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12253.mp3",
@@ -10525,6 +13103,9 @@
    "sam_ch_number": 50,
    "chapter": 11,
    "verses": "1-3",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12254.mp3",
@@ -10545,6 +13126,9 @@
    "sam_ch_number": 52,
    "chapter": 11,
    "verses": "9-10",
+   "spans": [
+    11
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12254.mp3",
@@ -10560,6 +13144,9 @@
    "sam_ch_number": 53,
    "chapter": 12,
    "verses": "1-12",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12255.mp3",
@@ -10575,6 +13162,9 @@
    "sam_ch_number": 54,
    "chapter": 12,
    "verses": "13-20",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12255.mp3",
@@ -10590,6 +13180,9 @@
    "sam_ch_number": 55,
    "chapter": 12,
    "verses": "21-28",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12255.mp3",
@@ -10605,6 +13198,9 @@
    "sam_ch_number": 56,
    "chapter": 12,
    "verses": "29-36",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12255.mp3",
@@ -10620,6 +13216,9 @@
    "sam_ch_number": 57,
    "chapter": 12,
    "verses": "37-42",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12255.mp3",
@@ -10635,6 +13234,9 @@
    "sam_ch_number": 58,
    "chapter": 12,
    "verses": "43-51",
+   "spans": [
+    12
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12255.mp3",
@@ -10650,6 +13252,9 @@
    "sam_ch_number": 59,
    "chapter": 13,
    "verses": "1-4",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12256.mp3",
@@ -10665,6 +13270,9 @@
    "sam_ch_number": 60,
    "chapter": 13,
    "verses": "5-10",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12256.mp3",
@@ -10680,6 +13288,9 @@
    "sam_ch_number": 61,
    "chapter": 13,
    "verses": "11-16",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12256.mp3",
@@ -10695,6 +13306,9 @@
    "sam_ch_number": 62,
    "chapter": 13,
    "verses": "17-22",
+   "spans": [
+    13
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12256.mp3",
@@ -10710,6 +13324,9 @@
    "sam_ch_number": 63,
    "chapter": 14,
    "verses": "1-9",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12257.mp3",
@@ -10725,6 +13342,9 @@
    "sam_ch_number": 64,
    "chapter": 14,
    "verses": "10-14",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12257.mp3",
@@ -10740,6 +13360,9 @@
    "sam_ch_number": 65,
    "chapter": 14,
    "verses": "15-18",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12257.mp3",
@@ -10755,6 +13378,9 @@
    "sam_ch_number": 66,
    "chapter": 14,
    "verses": "19-25",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12257.mp3",
@@ -10770,6 +13396,9 @@
    "sam_ch_number": 67,
    "chapter": 14,
    "verses": "26-31",
+   "spans": [
+    14
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12257.mp3",
@@ -10785,6 +13414,9 @@
    "sam_ch_number": 68,
    "chapter": 15,
    "verses": "1-21",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12258.mp3",
@@ -10800,14 +13432,41 @@
    "sam_ch_number": 69,
    "chapter": 15,
    "verses": "22-26",
+   "spans": [
+    15
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12258.mp3",
      "t0": 168.05,
-     "t1": 228.6
+     "t1": 220.78
     }
    ],
-   "duration": 60.55
+   "duration": 52.73
+  },
+  {
+   "reader": "פנחס אברהם כהן",
+   "book_id": 2,
+   "sam_ch_number": 70,
+   "chapter": 15,
+   "verses": "15:27-16:3",
+   "spans": [
+    15,
+    16
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12258.mp3",
+     "t0": 220.78,
+     "t1": 228.6
+    },
+    {
+     "file": "/static/audio/masorot/m12259.mp3",
+     "t0": 0.0,
+     "t1": 17.21
+    }
+   ],
+   "duration": 25.03
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -10815,6 +13474,9 @@
    "sam_ch_number": 71,
    "chapter": 16,
    "verses": "4-10",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12259.mp3",
@@ -10830,6 +13492,9 @@
    "sam_ch_number": 72,
    "chapter": 16,
    "verses": "11-21",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12259.mp3",
@@ -10845,6 +13510,9 @@
    "sam_ch_number": 73,
    "chapter": 16,
    "verses": "22-27",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12259.mp3",
@@ -10860,6 +13528,9 @@
    "sam_ch_number": 74,
    "chapter": 16,
    "verses": "28-36",
+   "spans": [
+    16
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12259.mp3",
@@ -10875,6 +13546,9 @@
    "sam_ch_number": 75,
    "chapter": 17,
    "verses": "1-4",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12260.mp3",
@@ -10890,6 +13564,9 @@
    "sam_ch_number": 76,
    "chapter": 17,
    "verses": "5-7",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12260.mp3",
@@ -10905,6 +13582,9 @@
    "sam_ch_number": 77,
    "chapter": 17,
    "verses": "8-16",
+   "spans": [
+    17
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12260.mp3",
@@ -10920,6 +13600,9 @@
    "sam_ch_number": 78,
    "chapter": 18,
    "verses": "1-7",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12261.mp3",
@@ -10935,6 +13618,9 @@
    "sam_ch_number": 79,
    "chapter": 18,
    "verses": "8-12",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12261.mp3",
@@ -10950,6 +13636,9 @@
    "sam_ch_number": 80,
    "chapter": 18,
    "verses": "13-16",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12261.mp3",
@@ -10965,6 +13654,9 @@
    "sam_ch_number": 81,
    "chapter": 18,
    "verses": "17-24",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12261.mp3",
@@ -10980,6 +13672,9 @@
    "sam_ch_number": 82,
    "chapter": 18,
    "verses": "25-27",
+   "spans": [
+    18
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12261.mp3",
@@ -10995,6 +13690,9 @@
    "sam_ch_number": 83,
    "chapter": 19,
    "verses": "1-9",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12262.mp3",
@@ -11010,6 +13708,9 @@
    "sam_ch_number": 84,
    "chapter": 19,
    "verses": "10-15",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12262.mp3",
@@ -11025,6 +13726,9 @@
    "sam_ch_number": 85,
    "chapter": 19,
    "verses": "16-20",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12262.mp3",
@@ -11040,6 +13744,9 @@
    "sam_ch_number": 86,
    "chapter": 19,
    "verses": "21-25",
+   "spans": [
+    19
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12262.mp3",
@@ -11055,6 +13762,9 @@
    "sam_ch_number": 87,
    "chapter": 20,
    "verses": "1-7",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12263.mp3",
@@ -11070,6 +13780,9 @@
    "sam_ch_number": 88,
    "chapter": 20,
    "verses": "8-11",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12263.mp3",
@@ -11085,6 +13798,9 @@
    "sam_ch_number": 89,
    "chapter": 20,
    "verses": "12-14",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12263.mp3",
@@ -11105,6 +13821,9 @@
    "sam_ch_number": 91,
    "chapter": 20,
    "verses": "15-18",
+   "spans": [
+    20
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12263.mp3",
@@ -11125,6 +13844,9 @@
    "sam_ch_number": 94,
    "chapter": 21,
    "verses": "1-6",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12264.mp3",
@@ -11140,6 +13862,9 @@
    "sam_ch_number": 95,
    "chapter": 21,
    "verses": "7-17",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12264.mp3",
@@ -11155,6 +13880,9 @@
    "sam_ch_number": 96,
    "chapter": 21,
    "verses": "18-21",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12264.mp3",
@@ -11170,6 +13898,9 @@
    "sam_ch_number": 97,
    "chapter": 21,
    "verses": "22-27",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12264.mp3",
@@ -11185,6 +13916,9 @@
    "sam_ch_number": 98,
    "chapter": 21,
    "verses": "28-32",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12264.mp3",
@@ -11200,6 +13934,9 @@
    "sam_ch_number": 99,
    "chapter": 21,
    "verses": "33-34",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12264.mp3",
@@ -11215,14 +13952,41 @@
    "sam_ch_number": 100,
    "chapter": 21,
    "verses": "35-36",
+   "spans": [
+    21
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12264.mp3",
      "t0": 263.46,
-     "t1": 302.72
+     "t1": 291.54
     }
    ],
-   "duration": 39.26
+   "duration": 28.08
+  },
+  {
+   "reader": "פנחס אברהם כהן",
+   "book_id": 2,
+   "sam_ch_number": 101,
+   "chapter": 21,
+   "verses": "21:37-22:3",
+   "spans": [
+    21,
+    22
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12264.mp3",
+     "t0": 291.54,
+     "t1": 302.72
+    },
+    {
+     "file": "/static/audio/masorot/m12265.mp3",
+     "t0": 0.0,
+     "t1": 25.46
+    }
+   ],
+   "duration": 36.64
   },
   {
    "reader": "פנחס אברהם כהן",
@@ -11230,6 +13994,9 @@
    "sam_ch_number": 102,
    "chapter": 22,
    "verses": "4-5",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12265.mp3",
@@ -11245,6 +14012,9 @@
    "sam_ch_number": 103,
    "chapter": 22,
    "verses": "6-8",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12265.mp3",
@@ -11260,6 +14030,9 @@
    "sam_ch_number": 104,
    "chapter": 22,
    "verses": "9-14",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12265.mp3",
@@ -11275,14 +14048,17 @@
    "sam_ch_number": 105,
    "chapter": 22,
    "verses": "15-23",
+   "spans": [
+    22
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12265.mp3",
      "t0": 143.5,
-     "t1": 226.99
+     "t1": 194.13
     }
    ],
-   "duration": 83.49
+   "duration": 50.63
   },
   {
    "reader": "רצון צדקה",
@@ -11290,6 +14066,9 @@
    "sam_ch_number": 107,
    "chapter": 25,
    "verses": "29-34",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12399.mp3",
@@ -11305,6 +14084,9 @@
    "sam_ch_number": 108,
    "chapter": 25,
    "verses": "35-38",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12399.mp3",
@@ -11320,14 +14102,41 @@
    "sam_ch_number": 109,
    "chapter": 25,
    "verses": "39-46",
+   "spans": [
+    25
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12399.mp3",
      "t0": 107.93,
-     "t1": 244.97
+     "t1": 179.48
     }
    ],
-   "duration": 137.04
+   "duration": 71.55
+  },
+  {
+   "reader": "רצון צדקה",
+   "book_id": 3,
+   "sam_ch_number": 110,
+   "chapter": 25,
+   "verses": "25:47-26:2",
+   "spans": [
+    25,
+    26
+   ],
+   "segs": [
+    {
+     "file": "/static/audio/masorot/m12399.mp3",
+     "t0": 179.48,
+     "t1": 244.97
+    },
+    {
+     "file": "/static/audio/masorot/m12296.mp3",
+     "t0": 0.0,
+     "t1": 20.21
+    }
+   ],
+   "duration": 85.7
   },
   {
    "reader": "רצון צדקה",
@@ -11335,6 +14144,9 @@
    "sam_ch_number": 111,
    "chapter": 26,
    "verses": "3-13",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12296.mp3",
@@ -11350,6 +14162,9 @@
    "sam_ch_number": 112,
    "chapter": 26,
    "verses": "14-17",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12296.mp3",
@@ -11365,6 +14180,9 @@
    "sam_ch_number": 113,
    "chapter": 26,
    "verses": "18-22",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12296.mp3",
@@ -11380,6 +14198,9 @@
    "sam_ch_number": 114,
    "chapter": 26,
    "verses": "23-26",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12296.mp3",
@@ -11395,6 +14216,9 @@
    "sam_ch_number": 115,
    "chapter": 26,
    "verses": "27-35",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12296.mp3",
@@ -11410,6 +14234,9 @@
    "sam_ch_number": 116,
    "chapter": 26,
    "verses": "36-38",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12296.mp3",
@@ -11425,6 +14252,9 @@
    "sam_ch_number": 117,
    "chapter": 26,
    "verses": "39-41",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12296.mp3",
@@ -11440,6 +14270,9 @@
    "sam_ch_number": 118,
    "chapter": 26,
    "verses": "42-46",
+   "spans": [
+    26
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12296.mp3",
@@ -11455,6 +14288,9 @@
    "sam_ch_number": 119,
    "chapter": 27,
    "verses": "1-8",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11470,6 +14306,9 @@
    "sam_ch_number": 120,
    "chapter": 27,
    "verses": "9-10",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11485,6 +14324,9 @@
    "sam_ch_number": 121,
    "chapter": 27,
    "verses": "11-13",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11500,6 +14342,9 @@
    "sam_ch_number": 122,
    "chapter": 27,
    "verses": "14-15",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11515,6 +14360,9 @@
    "sam_ch_number": 123,
    "chapter": 27,
    "verses": "16-21",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11530,6 +14378,9 @@
    "sam_ch_number": 124,
    "chapter": 27,
    "verses": "22-25",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11545,6 +14396,9 @@
    "sam_ch_number": 125,
    "chapter": 27,
    "verses": "26-27",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11560,6 +14414,9 @@
    "sam_ch_number": 126,
    "chapter": 27,
    "verses": "28-29",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11575,6 +14432,9 @@
    "sam_ch_number": 127,
    "chapter": 27,
    "verses": "30-31",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11590,6 +14450,9 @@
    "sam_ch_number": 128,
    "chapter": 27,
    "verses": "32-33",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
@@ -11605,6 +14468,9 @@
    "sam_ch_number": 129,
    "chapter": 27,
    "verses": "34-34",
+   "spans": [
+    27
+   ],
    "segs": [
     {
      "file": "/static/audio/masorot/m12297.mp3",
