@@ -1444,13 +1444,21 @@
    "en": "Pentateuch and Torah books",
    "ar": "أسفار التوراة"
   },
-  "url": "https://www.bl.uk/",
+  "url": "https://searcharchives.bl.uk/catalog/032-003429283",
   "pages": null,
   "date": "1339/40",
   "status": "offline",
   "status_he": "צולם — הצופה מושבת זמנית",
   "status_en": "Digitized - viewer temporarily offline",
-  "status_ar": "رقمي - العارض متوقف مؤقتًا"
+  "status_ar": "رقمي - العارض متوقف مؤقتًا",
+  "note_he": [
+   "הועתק ב-1339 בידי הסופר אברהם בן יעקב בן טביה בן סעדה בן אברהם ממשפחת פיג׳מה, בסגנון הכתיבה הדמשקאי. 199 דפים. עשרת הדברות (שמות כ) מסומנים בשוליים בסימון אלפאנומרי."
+  ],
+  "note_en": [
+   "Copied in 1339 by the scribe Abraham ben Jacob ben Tabya ben Sa'adah ben Abraham of the Pijma family, in the Damascene scribal tradition. 199 folios. The Decalogue (Exodus 20) is marked in the margin with an alphanumeric notation."
+  ],
+  "note_ar": "نسخ عام 1339 على يد الكاتب إبراهيم بن يعقوب بن طابيا بن سعادة بن إبراهيم من عائلة بيجما، بالتقليد الدمشقي. 199 ورقة.",
+  "folder": ""
  },
  {
   "id": "bl-or2683",
