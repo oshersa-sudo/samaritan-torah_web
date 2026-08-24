@@ -6917,5 +6917,34 @@
   "note_en": "Complete Samaritan Passover liturgy manuscript, 123 leaves of heavy paper, embossed leather binding. Purchased in 1905 (likely as part of a book collection, no purchase record). Written by the scribe Yahud Ibn Ishafe, dated 29 Safar 1151 AH (1735 CE). Decorated in red, green and brown ink. Described in Irving P. Wood, Journal of Biblical Literature 40 (1921), pp. 159-. A Digital Commonwealth (Massachusetts libraries digitization aggregator) search found no record.",
   "note_ar": "مخطوطة طقسية سامرية كاملة لعيد الفصح، 123 ورقة، من عام 1735.",
   "folder": ""
+ },
+ {
+  "id": "ed-cohn-zaraath-1899",
+  "inst": "Internet Archive (Wellcome Library)",
+  "inst_en": "Internet Archive (Wellcome Library)",
+  "inst_ar": "أرشيف الإنترنت (مكتبة ويلكم)",
+  "shelf": "b30095864",
+  "title_src": "Die Zarâath-Gesetze der Bibel nach dem Kitâb al-kâfi des Jûsuf Ibn Salâmah (N. Cohn, 1899)",
+  "src_lang": "en",
+  "title": "דיני הצרעת שבמקרא לפי כתאב אלכאפי ליוסף בן סלאמה — מהדורת כהן (1899)",
+  "title_en": "Die Zarâath-Gesetze der Bibel nach dem Kitâb al-kâfi des Jûsuf Ibn Salâmah (N. Cohn, 1899)",
+  "title_ar": "أحكام البرص في الكتاب المقدس بحسب كتاب الكافي ليوسف بن سلامة - طبعة كون (1899)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/b30095864",
+  "pages": null,
+  "date": "1899",
+  "status": "viewable",
+  "status_he": "דיגיטלי — לצפייה באתר המקור",
+  "status_en": "Digitized - view at source",
+  "status_ar": "رقمي - للعرض في الموقع الأصلي",
+  "note_he": "מהדורה מדעית מודפסת (לא כתב יד): פרק דיני הצרעת מתוך כתאב אלכאפי, החיבור ההלכתי השומרוני של יוסף בן סלאמה אלעסכרי, בעריכת נפתלי כהן (פרנקפורט, 1899) — טקסט ערבי עם פרשנות גרמנית. סרוק על ידי Wellcome Library. עותק כתב יד של אותו חיבור נמצא בבריטיש ליברי (כבר ממופה אצלנו: \"Kitab al-Kafi by al-ʿAskarī\").",
+  "note_en": "Printed scholarly edition (not a manuscript): the leprosy-laws chapter of Kitab al-Kafi, the Samaritan legal treatise by Yusuf ibn Salama al-ʿAskari, edited by Naphtali Cohn (Frankfurt, 1899) - Arabic text with German commentary. Scanned by the Wellcome Library. A manuscript copy of the same work is held at the British Library (already mapped: \"Kitab al-Kafi by al-ʿAskarī\").",
+  "note_ar": "طبعة علمية مطبوعة (وليست مخطوطة) لفصل أحكام البرص من كتاب الكافي ليوسف بن سلامة العسكري.",
+  "folder": ""
  }
 ]
