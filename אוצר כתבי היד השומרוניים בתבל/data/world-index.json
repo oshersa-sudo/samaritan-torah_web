@@ -1278,31 +1278,6 @@
   "status_ar": "رقمي - للعرض في موقع المصدر"
  },
  {
-  "id": "col-abulfath",
-  "inst": "אוניברסיטת קולומביה (OPenn)",
-  "inst_en": "Columbia University (OPenn)",
-  "inst_ar": "جامعة كولومبيا (OPenn)",
-  "shelf": "X893.7 Ab9",
-  "title_src": "Abu 'l-Fath's Samaritan chronicle (Kitab al-tarikh)",
-  "src_lang": "en",
-  "title": "כרוניקת אבו אל-פתח (כתאב אל-תאריח׳)",
-  "title_en": "Abu 'l-Fath's Samaritan chronicle (Kitab al-tarikh)",
-  "title_ar": "كتاب التاريخ لأبي الفتح السامري",
-  "type": {
-   "key": "chronicle",
-   "he": "כרוניקה והיסטוריה",
-   "en": "Chronicles and history",
-   "ar": "تواريخ"
-  },
-  "url": "https://openn.library.upenn.edu/Data/0032/html/X893_7_Ab9.html",
-  "pages": null,
-  "date": null,
-  "status": "viewable",
-  "status_he": "דיגיטלי — לצפייה באתר המקור",
-  "status_en": "Digitized - view at source",
-  "status_ar": "رقمي - للعرض في موقع المصدر"
- },
- {
   "id": "nypl-heb228",
   "inst": "הספרייה הציבורית של ניו יורק",
   "inst_en": "New York Public Library",
@@ -1322,31 +1297,6 @@
   "url": "https://digitalcollections.nypl.org/items/8082971f-e22c-025c-e040-e00a18065146",
   "pages": null,
   "date": "1232",
-  "status": "viewable",
-  "status_he": "דיגיטלי — לצפייה באתר המקור",
-  "status_en": "Digitized - view at source",
-  "status_ar": "رقمي - للعرض في موقع المصدر"
- },
- {
-  "id": "gtu-liturgy",
-  "inst": "האיחוד התאולוגי לתארים מתקדמים, ברקלי (ארכיון האינטרנט)",
-  "inst_en": "Graduate Theological Union, Berkeley (Internet Archive)",
-  "inst_ar": "الاتحاد اللاهوتي للدراسات العليا، بيركلي",
-  "shelf": "—",
-  "title_src": "Modern Samaritan liturgy (~301 pp.), bought 1930 from a son of the high priest",
-  "src_lang": "en",
-  "title": "סידור שומרוני מודרני (~301 עמ׳), נרכש 1930 מבן הכהן הגדול",
-  "title_en": "Modern Samaritan liturgy (~301 pp.), bought 1930 from a son of the high priest",
-  "title_ar": "ليتورجيا سامرية حديثة (~301 ص)",
-  "type": {
-   "key": "liturgy",
-   "he": "סידור ותפילה",
-   "en": "Liturgy and prayer",
-   "ar": "كتب الصلاة"
-  },
-  "url": "https://archive.org/details/thesamaritanlitu00unse",
-  "pages": 301,
-  "date": null,
   "status": "viewable",
   "status_he": "דיגיטלי — לצפייה באתר המקור",
   "status_en": "Digitized - view at source",
