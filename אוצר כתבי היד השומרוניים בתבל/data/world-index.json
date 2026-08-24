@@ -7004,5 +7004,34 @@
   "note_en": "A comprehensive study of the principles of Samaritan halachah (law), presenting Arabic text (from Samaritan legal treatises such as Kitab al-Kafi) with English commentary, by Iain R. M. Bóid. A modern publication (Brill, 1989) still under copyright - accessible only via time-limited digital lending on Archive.org, not free download.",
   "note_ar": "دراسة شاملة لمبادئ الشريعة السامرية، بويد، بريل 1989.",
   "folder": ""
+ },
+ {
+  "id": "ed-taglicht-kuthaeer-1888",
+  "inst": "Internet Archive",
+  "inst_en": "Internet Archive",
+  "inst_ar": "أرشيف الإنترنت",
+  "shelf": "MN40132ucmf_1",
+  "title_src": "Die Kuthäer als Beobachter des Gesetzes, nach talmudischen Quellen, nebst Berücksichtigung der samaritanischen Correspondenz und Liturgie (I. Taglicht, Berlin: Feiertag, 1888)",
+  "src_lang": "en",
+  "title": "הכותים כשומרי מצוות — לפי מקורות תלמודיים, בצירוף עיון בהתכתבות ובליטורגיה השומרונית (טגליכט, 1888)",
+  "title_en": "Die Kuthäer als Beobachter des Gesetzes (I. Taglicht, 1888)",
+  "title_ar": "الكوثيون كمراعين للشريعة - حسب مصادر تلمودية، مع مراعاة المراسلات والطقوس السامرية (تاغليخت، 1888)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/MN40132ucmf_1",
+  "pages": null,
+  "date": "1888",
+  "status": "viewable",
+  "status_he": "דיגיטלי — לצפייה באתר המקור",
+  "status_en": "Digitized - view at source",
+  "status_ar": "رقمي - للعرض في الموقع الأصلي",
+  "note_he": "מחקר של ישראל טגליכט על יחס חז\"ל לשומרונים (\"כותים\") לפי מקורות תלמודיים, בצירוף דיון בהתכתבות ובליטורגיה השומרונית. פורסם ברלין, 1888. לא כתב יד — מחקר מדעי.",
+  "note_en": "Israel Taglicht's study of the rabbinic sages' attitude toward the Samaritans (\"Cutheans\") per Talmudic sources, including a discussion of Samaritan correspondence and liturgy. Published Berlin, 1888. Not a manuscript - a scholarly study.",
+  "note_ar": "دراسة إسرائيل تاغليخت لموقف الحكماء اليهود من السامريين وفق مصادر تلمودية.",
+  "folder": ""
  }
 ]
