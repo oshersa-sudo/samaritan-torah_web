@@ -7062,5 +7062,34 @@
   "note_en": "Leopold Wreschner's doctoral dissertation (Halle-Wittenberg University, 1888), presenting and examining Samaritan legal traditions from the writings of Munajja ben Sadaqa (related to \"Kitab al-Khalaf\", already mapped as a manuscript copy at the British Library). Mentions a copy made under Petermann's supervision in Nablus in 1868 - the same collector behind the Berlin \"Petermann\" manuscripts already in our catalog. Not a manuscript - a scholarly edition/study.",
   "note_ar": "أطروحة دكتوراه ليوبولد فريشنر (1888) تعرض وتفحص التقاليد الشرعية السامرية من كتابات منجى بن صدقة.",
   "folder": ""
+ },
+ {
+  "id": "ed-merx-messias-taeb-1909",
+  "inst": "Internet Archive",
+  "inst_en": "Internet Archive",
+  "inst_ar": "أرشيف الإنترنت",
+  "shelf": "dermessiasoderta0017merx",
+  "title_src": "Der Messias oder Ta'eb der Samaritaner, nach bisher unbekannten Quellen (A. Merx, Giessen: Töpelmann, 1909)",
+  "src_lang": "en",
+  "title": "המשיח או התאב של השומרונים, לפי מקורות שלא היו ידועים עד כה — מרקס (1909)",
+  "title_en": "Der Messias oder Ta'eb der Samaritaner, nach bisher unbekannten Quellen (A. Merx, 1909)",
+  "title_ar": "المسيح أو التاهب عند السامريين، وفق مصادر لم تكن معروفة من قبل - ميركس (1909)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/dermessiasoderta0017merx",
+  "pages": null,
+  "date": "1909",
+  "status": "viewable",
+  "status_he": "דיגיטלי — לצפייה באתר המקור",
+  "status_en": "Digitized - view at source",
+  "status_ar": "رقمي - للعرض في الموقع الأصلي",
+  "note_he": "חיבורו המקיף של אדלברט מרקס על דמות המשיח השומרוני (\"התאב\"), מבוסס על מקורות שומרוניים שלא פורסמו קודם לכן. פורסם גיסן, 1909. לא כתב יד — מחקר/מהדורה מדעית.",
+  "note_en": "Adalbert Merx's comprehensive study of the Samaritan messianic figure (the \"Taheb\"), based on previously unpublished Samaritan sources. Published Giessen, 1909. Not a manuscript - a scholarly study/edition.",
+  "note_ar": "دراسة أدالبرت ميركس الشاملة للشخصية المسيحانية السامرية (التاهب)، استنادا إلى مصادر سامرية لم تنشر من قبل.",
+  "folder": ""
  }
 ]
