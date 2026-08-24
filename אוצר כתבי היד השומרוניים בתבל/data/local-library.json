@@ -26749,6 +26749,56 @@
   "home": ""
  },
  {
+  "id": "local-Sydney_AddMs390",
+  "group": "samaritan",
+  "mode": "local",
+  "folder": "images/Sydney_AddMs390",
+  "files": [
+   "0001.jpg",
+   "0002.jpg",
+   "0003.jpg",
+   "0004.jpg",
+   "0005.jpg",
+   "0006.jpg",
+   "0007.jpg",
+   "0008.jpg",
+   "0009.jpg",
+   "0010.jpg",
+   "0011.jpg",
+   "0012.jpg",
+   "0013.jpg",
+   "0014.jpg",
+   "0015.jpg",
+   "0016.jpg",
+   "0017.jpg",
+   "0018.jpg",
+   "0019.jpg",
+   "0020.jpg",
+   "0021.jpg",
+   "0022.jpg",
+   "0023.jpg",
+   "0024.jpg",
+   "0025.jpg"
+  ],
+  "thumb": "images/Sydney_AddMs390/_thumb.jpg",
+  "title": "מגילת תורה שומרונית (שכם, 1930) — הכהן יעקב בן עוזי",
+  "inst": "ספריית אוניברסיטת סידני",
+  "shelf": "Add.Ms. 390",
+  "note": "1930 · שכם · 25 עמודים שמורים",
+  "rights": {
+   "holder": "University of Sydney Library",
+   "holder_he": "ספריית אוניברסיטת סידני",
+   "allowed": [
+    "Public domain in Australia"
+   ],
+   "forbidden": []
+  },
+  "credit_line": "From the University of Sydney Library",
+  "caveat": "Public domain in Australia (per the University of Sydney Library); no determination made for other countries.",
+  "manifest": "",
+  "home": "https://digital.library.sydney.edu.au/nodes/view/8349"
+ },
+ {
   "id": "local-Vat.sam.2",
   "group": "samaritan",
   "mode": "local",
