@@ -7091,5 +7091,63 @@
   "note_en": "Adalbert Merx's comprehensive study of the Samaritan messianic figure (the \"Taheb\"), based on previously unpublished Samaritan sources. Published Giessen, 1909. Not a manuscript - a scholarly study/edition.",
   "note_ar": "دراسة أدالبرت ميركس الشاملة للشخصية المسيحانية السامرية (التاهب)، استنادا إلى مصادر سامرية لم تنشر من قبل.",
   "folder": ""
+ },
+ {
+  "id": "ed-broadie-philosophy-1981",
+  "inst": "Internet Archive",
+  "inst_en": "Internet Archive",
+  "inst_ar": "أرشيف الإنترنت",
+  "shelf": "a-samaritan-philosophy",
+  "title_src": "A Samaritan Philosophy: A Study of the Hellenistic Cultural Ethos of the Memar Marqah (A. Broadie, Studia post-biblica v.31, Brill, 1981)",
+  "src_lang": "en",
+  "title": "פילוסופיה שומרונית — עיון באתוס התרבותי ההלניסטי של ממר מרקה, ברודי (בריל, 1981)",
+  "title_en": "A Samaritan Philosophy (A. Broadie, Brill, 1981)",
+  "title_ar": "فلسفة سامرية - دراسة في الطابع الثقافي الهلنستي لممار ماركه، برودي (بريل، 1981)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/a-samaritan-philosophy",
+  "pages": null,
+  "date": "1981",
+  "status": "viewable",
+  "status_he": "דיגיטלי — לצפייה באתר המקור (בזכויות יוצרים)",
+  "status_en": "Digitized - view at source (still in copyright)",
+  "status_ar": "رقمي - للعرض في الموقع الأصلي (لا يزال محميا بحقوق الطبع)",
+  "note_he": "מחקרו של אלכסנדר ברודי על ההשפעה ההלניסטית על ממר מרקה, החיבור התיאולוגי השומרוני הקלאסי. פורסם בסדרת Studia post-biblica של בריל, 1981 — אותה סדרה כמו ספרו של בויד שכבר ממופה אצלנו. הועלה כאן ע\"י משתמש פרטי, לא דרך מנגנון ההשאלה המבוקרת הרשמי; ייתכן שההעלאה עצמה שנויה במחלוקת מבחינת זכויות יוצרים. אנחנו מקשרים אליו כמקור, לא מורידים עותק — ראו ההסבר שניתן לגבי בויד (1989).",
+  "note_en": "Alexander Broadie's study of Hellenistic influence on the Memar Marqah, the classic Samaritan theological work. Published in Brill's Studia post-biblica series, 1981 - the same series as Bóid's book already mapped here. Uploaded by an individual patron, not through Archive.org's official controlled-lending system; the upload's copyright status is uncertain. We link to it as a source, not download a copy - see the explanation given regarding Bóid (1989).",
+  "note_ar": "دراسة ألكسندر برودي للتأثير الهلنستي على ممار ماركه، العمل اللاهوتي السامري الكلاسيكي. لا نقوم بتنزيل نسخة بسبب حقوق الطبع غير المؤكدة.",
+  "folder": ""
+ },
+ {
+  "id": "ed-nutt-samtargum-1874",
+  "inst": "Internet Archive",
+  "inst_en": "Internet Archive",
+  "inst_ar": "أرشيف الإنترنت",
+  "shelf": "bub_gb_8JNhAAAAcAAJ",
+  "title_src": "Fragments of a Samaritan Targum, edited from a Bodleian Ms. with an Introduction (J. W. Nutt, 1874)",
+  "src_lang": "en",
+  "title": "קטעי תרגום שומרוני, מהדורת כתב יד בודליאני — נאט (1874)",
+  "title_en": "Fragments of a Samaritan Targum, edited from a Bodleian Ms. (J. W. Nutt, 1874)",
+  "title_ar": "أجزاء من ترجوم سامري، محررة من مخطوطة بودليان - نَت (1874)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/bub_gb_8JNhAAAAcAAJ",
+  "pages": null,
+  "date": "1874",
+  "status": "viewable",
+  "status_he": "דיגיטלי — לצפייה באתר המקור",
+  "status_en": "Digitized - view at source",
+  "status_ar": "رقمي - للعرض في الموقع الأصلي",
+  "note_he": "מהדורה מדעית של קטעי תרגום שומרוני, ערוכה מתוך כתב יד בודליאני, בצירוף מבוא הכולל סקירת ההיסטוריה, הדוגמה והספרות השומרונית. עורך: ג'ון וויליאם נאט, 1874. לא כתב יד עצמו (וגם לא זוהה כאן שם המדף הבודליאני המדויק) — מהדורה מודפסת.",
+  "note_en": "A scholarly edition of Samaritan Targum fragments, edited from a Bodleian manuscript, with an introduction covering Samaritan history, dogma and literature. Editor: John William Nutt, 1874. Not the manuscript itself (the exact Bodleian shelfmark was not identified here) - a printed edition.",
+  "note_ar": "طبعة علمية لأجزاء من ترجوم سامري، محررة من مخطوطة بودليان، مع مقدمة تغطي التاريخ والعقيدة والأدب السامري.",
+  "folder": ""
  }
 ]
