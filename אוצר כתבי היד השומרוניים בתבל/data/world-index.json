@@ -6859,5 +6859,34 @@
   "note_en": "Printed scholarly edition (not a manuscript): the Arabic text of the Samaritan Book of Joshua with Latin commentary, edited by Juynboll. Scanned by Bibliotheca Alexandrina as part of a public-domain book digitization effort - not evidence of a Samaritan manuscript held in Egypt.",
   "note_ar": "طبعة علمية مطبوعة (وليست مخطوطة) لسفر يشوع السامري بالعربية مع تعليق لاتيني.",
   "folder": ""
+ },
+ {
+  "id": "westminster-college-samaritan-pentateuch",
+  "inst": "ווסטמינסטר קולג׳, קיימברידג׳",
+  "inst_en": "Westminster College, Cambridge",
+  "inst_ar": "كلية وستمنستر، كامبريدج",
+  "shelf": "",
+  "title_src": "Samaritan Pentateuch, 308 leaves, early 16th c. (Skinner, 1901)",
+  "src_lang": "en",
+  "title": "חומש שומרוני, 308 דפים, ראשית המאה ה-16",
+  "title_en": "Samaritan Pentateuch, 308 leaves, early 16th c.",
+  "title_ar": "توراة سامرية، 308 ورقة، أوائل القرن السادس عشر",
+  "type": {
+   "key": "torah",
+   "he": "חומש וספרי תורה",
+   "en": "Pentateuch and Torah books",
+   "ar": "أسفار التوراة"
+  },
+  "url": "https://archive.org/details/jstor-1450526",
+  "pages": null,
+  "date": "ראשית המאה ה-16",
+  "status": "not_digitised",
+  "status_he": "מיקום נוכחי לא ודאי — לא אותר בקטלוג דיגיטלי",
+  "status_en": "Current location uncertain - not found in any digital catalogue",
+  "status_ar": "الموقع الحالي غير مؤكد",
+  "note_he": "חומש שומרוני דו-לשוני שלם (עברית שומרונית וערבית, שתי עמודות), קלף, 308 דפים, נרכש בירושלים בקיץ 1900 ונתרם לווסטמינסטר קולג׳ בידי אגנס סמית לואיס ומרגרט דנלופ גיבסון (\"אחיות סיני\"). תואר במאמר של י. סקינר, Jewish Quarterly Review 14 (1901), עמ׳ 26-36. חיפוש ב-CUDL (קטלוג קיימברידג׳ הדיגיטלי) לא העלה רישום תואם — ייתכן שנותר בווסטמינסטר קולג׳ ולא הצטרף לרכישה המשותפת של קיימברידג׳/בודליאן ב-2013 (שכללה בעיקר קטעי גניזה, לא כרך שלם כזה). טעון בירור ישיר עם הספרייה.",
+  "note_en": "Complete bilingual Samaritan Pentateuch (Samaritan Hebrew and Arabic, two columns), vellum, 308 leaves, purchased in Jerusalem summer 1900 and presented to Westminster College by Agnes Smith Lewis and Margaret Dunlop Gibson (the \"Sinai Twins\"). Described in J. Skinner, Jewish Quarterly Review 14 (1901), pp. 26-36. A CUDL (Cambridge Digital Library) search found no matching record - possibly it remained at Westminster College rather than joining the 2013 Cambridge/Bodleian Lewis-Gibson acquisition (which was mainly Genizah fragments, not a complete codex like this). Needs direct inquiry with the library.",
+  "note_ar": "توراة سامرية ثنائية اللغة كاملة (عبرية سامرية وعربية)، رق، 308 ورقة، اشتريت في القدس صيف 1900.",
+  "folder": ""
  }
 ]
