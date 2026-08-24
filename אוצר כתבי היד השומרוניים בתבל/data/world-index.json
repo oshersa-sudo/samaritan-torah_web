@@ -7033,5 +7033,34 @@
   "note_en": "Israel Taglicht's study of the rabbinic sages' attitude toward the Samaritans (\"Cutheans\") per Talmudic sources, including a discussion of Samaritan correspondence and liturgy. Published Berlin, 1888. Not a manuscript - a scholarly study.",
   "note_ar": "دراسة إسرائيل تاغليخت لموقف الحكماء اليهود من السامريين وفق مصادر تلمودية.",
   "folder": ""
+ },
+ {
+  "id": "ed-wreschner-traditionen-1888",
+  "inst": "Internet Archive",
+  "inst_en": "Internet Archive",
+  "inst_ar": "أرشيف الإنترنت",
+  "shelf": "MN40086ucmf_9",
+  "title_src": "Samaritanische Traditionen, mitgeteilt und nach ihrer geschichtlichen Entwickelung untersucht (L. Wreschner, diss. Halle-Wittenberg, 1888)",
+  "src_lang": "en",
+  "title": "מסורות שומרוניות — לפי כתבי מנג'א בן צדקה, מהדורת ורשנר (1888)",
+  "title_en": "Samaritanische Traditionen (L. Wreschner, diss. Halle-Wittenberg, 1888)",
+  "title_ar": "التقاليد السامرية - بحسب كتابات منجى بن صدقة، طبعة فريشنر (1888)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/MN40086ucmf_9",
+  "pages": null,
+  "date": "1888",
+  "status": "viewable",
+  "status_he": "דיגיטלי — לצפייה באתר המקור",
+  "status_en": "Digitized - view at source",
+  "status_ar": "رقمي - للعرض في الموقع الأصلي",
+  "note_he": "עבודת דוקטורט של לאופולד ורשנר (אוניברסיטת הלה-ויטנברג, 1888), המציגה ובוחנת מסורות הלכתיות שומרוניות מתוך כתביו של מנג'א בן צדקה (הקרוב לחיבור \"כתאב אלח'לאף\", שכבר ממופה אצלנו כעותק כתב יד בבריטיש ליברי). מזכיר עותק שהועתק תחת פיקוחו של פטרמן בשכם ב-1868 — אותו איש אוסף שממנו הגיעו כתבי היד \"פטרמן\" בברלין שכבר בקטלוג שלנו. לא כתב יד — מהדורה/מחקר מדעי.",
+  "note_en": "Leopold Wreschner's doctoral dissertation (Halle-Wittenberg University, 1888), presenting and examining Samaritan legal traditions from the writings of Munajja ben Sadaqa (related to \"Kitab al-Khalaf\", already mapped as a manuscript copy at the British Library). Mentions a copy made under Petermann's supervision in Nablus in 1868 - the same collector behind the Berlin \"Petermann\" manuscripts already in our catalog. Not a manuscript - a scholarly edition/study.",
+  "note_ar": "أطروحة دكتوراه ليوبولد فريشنر (1888) تعرض وتفحص التقاليد الشرعية السامرية من كتابات منجى بن صدقة.",
+  "folder": ""
  }
 ]
