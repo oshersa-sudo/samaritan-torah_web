@@ -6975,5 +6975,34 @@
   "note_en": "Zeev Ben-Hayyim's comprehensive study of the Samaritan Hebrew-Aramaic tradition, written and oral - the foundational scholarly work of Samaritan studies. Not a manuscript, but a linguistic study based on written documents and the community's oral tradition. This volume (2) covers phonetics and orthography.",
   "note_ar": "دراسة زئيف بن-حاييم الشاملة للتقليد العبري-الآرامي السامري، المكتوب والشفهي - العمل العلمي التأسيسي في الدراسات السامرية.",
   "folder": ""
+ },
+ {
+  "id": "ed-boid-halachah-1989",
+  "inst": "Internet Archive (הוצאת בריל)",
+  "inst_en": "Internet Archive (Brill)",
+  "inst_ar": "أرشيف الإنترنت (بريل)",
+  "shelf": "bwb_P8-AGM-172",
+  "title_src": "Principles of Samaritan halachah (I. R. M. Bóid, Leiden/New York: Brill, 1989)",
+  "src_lang": "en",
+  "title": "עקרונות ההלכה השומרונית — בויד (בריל, 1989)",
+  "title_en": "Principles of Samaritan halachah (I. R. M. Bóid, Leiden/New York: Brill, 1989)",
+  "title_ar": "مبادئ الشريعة السامرية - بويد (بريل، 1989)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/bwb_P8-AGM-172",
+  "pages": null,
+  "date": "1989",
+  "status": "registration",
+  "status_he": "השאלה דיגיטלית מוגבלת בזמן (זכויות יוצרים בתוקף)",
+  "status_en": "Restricted digital lending (still in copyright)",
+  "status_ar": "إعارة رقمية مقيدة (لا تزال محمية بحقوق الطبع)",
+  "note_he": "מחקר מקיף על עקרונות ההלכה השומרונית, טקסט ערבי (מתוך חיבורים הלכתיים שומרוניים, כגון כתאב אלכאפי) עם פרשנות אנגלית, מאת איין ר. מ. בויד. פרסום מודרני (בריל, 1989) שעדיין בזכויות יוצרים — נגיש רק להשאלה דיגיטלית מוגבלת בזמן ב-Archive.org, לא להורדה חופשית.",
+  "note_en": "A comprehensive study of the principles of Samaritan halachah (law), presenting Arabic text (from Samaritan legal treatises such as Kitab al-Kafi) with English commentary, by Iain R. M. Bóid. A modern publication (Brill, 1989) still under copyright - accessible only via time-limited digital lending on Archive.org, not free download.",
+  "note_ar": "دراسة شاملة لمبادئ الشريعة السامرية، بويد، بريل 1989.",
+  "folder": ""
  }
 ]
