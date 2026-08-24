@@ -7149,5 +7149,34 @@
   "note_en": "A scholarly edition of Samaritan Targum fragments, edited from a Bodleian manuscript, with an introduction covering Samaritan history, dogma and literature. Editor: John William Nutt, 1874. Not the manuscript itself (the exact Bodleian shelfmark was not identified here) - a printed edition.",
   "note_ar": "طبعة علمية لأجزاء من ترجوم سامري، محررة من مخطوطة بودليان، مع مقدمة تغطي التاريخ والعقيدة والأدب السامري.",
   "folder": ""
+ },
+ {
+  "id": "ed-margoliouth-bmcatalogue-1893",
+  "inst": "Internet Archive",
+  "inst_en": "Internet Archive",
+  "inst_ar": "أرشيف الإنترنت",
+  "shelf": "descriptivelis00brit",
+  "title_src": "Descriptive List of the Hebrew and Samaritan MSS. in the British Museum (G. Margoliouth, London, 1893)",
+  "src_lang": "en",
+  "title": "רשימה תיאורית של כתבי היד העבריים והשומרוניים במוזיאון הבריטי — מרגליות (1893)",
+  "title_en": "Descriptive List of the Hebrew and Samaritan MSS. in the British Museum (G. Margoliouth, 1893)",
+  "title_ar": "قائمة وصفية للمخطوطات العبرية والسامرية في المتحف البريطاني - مارغوليوث (1893)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/descriptivelis00brit",
+  "pages": null,
+  "date": "1893",
+  "status": "viewable",
+  "status_he": "דיגיטלי — לצפייה באתר המקור",
+  "status_en": "Digitized - view at source",
+  "status_ar": "رقمي - للعرض في الموقع الأصلي",
+  "note_he": "הקטלוג המודפס הרשמי של כתבי היד העבריים והשומרוניים במוזיאון הבריטי (קודמתה של הספרייה הבריטית), בעריכת ג'ורג' מרגליות, 1893. זהו המקור המצוטט ברוב רשומות ה-Samaritan Additional MSS שכבר מופו אצלנו (Add MS 7050 ואילך). לא כתב יד — כלי עזר קטלוגי, שימושי לאימות והשוואה מול הרשומות שלנו.",
+  "note_en": "The official printed catalogue of Hebrew and Samaritan manuscripts at the British Museum (predecessor of the British Library), edited by George Margoliouth, 1893. This is the source cited in most of the Samaritan Additional MSS records already mapped here (Add MS 7050 onward). Not a manuscript - a catalogue reference tool, useful for verifying and cross-checking our records.",
+  "note_ar": "الفهرس المطبوع الرسمي للمخطوطات العبرية والسامرية في المتحف البريطاني، بتحرير جورج مارغوليوث، 1893.",
+  "folder": ""
  }
 ]
