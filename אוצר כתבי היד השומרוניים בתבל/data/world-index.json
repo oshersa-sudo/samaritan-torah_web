@@ -6946,5 +6946,34 @@
   "note_en": "Printed scholarly edition (not a manuscript): the leprosy-laws chapter of Kitab al-Kafi, the Samaritan legal treatise by Yusuf ibn Salama al-ʿAskari, edited by Naphtali Cohn (Frankfurt, 1899) - Arabic text with German commentary. Scanned by the Wellcome Library. A manuscript copy of the same work is held at the British Library (already mapped: \"Kitab al-Kafi by al-ʿAskarī\").",
   "note_ar": "طبعة علمية مطبوعة (وليست مخطوطة) لفصل أحكام البرص من كتاب الكافي ليوسف بن سلامة العسكري.",
   "folder": ""
+ },
+ {
+  "id": "ed-benhayyim-ivrit-aramit-1957",
+  "inst": "Internet Archive",
+  "inst_en": "Internet Archive",
+  "inst_ar": "أرشيف الإنترنت",
+  "shelf": "ivritearamitnusa0002bena",
+  "title_src": "'Ivrit ve-Aramit nusah Shomron (Z. Ben-Hayyim, 1957-), vol. 2",
+  "src_lang": "he",
+  "title": "עברית וארמית נוסח שומרון — זאב בן-חיים, כרך ב׳ (1957)",
+  "title_en": "'Ivrit ve-Aramit nusah Shomron: 'al pi te'udot shebi-ketav ve-'edut shebe-'al peh (Z. Ben-Hayyim), vol. 2",
+  "title_ar": "العبرية والآرامية بالنطق السامري - زئيف بن-حاييم، المجلد الثاني (1957)",
+  "type": {
+   "key": "edition",
+   "he": "מהדורה מדעית",
+   "en": "Scholarly edition",
+   "ar": "طبعة علمية"
+  },
+  "url": "https://archive.org/details/ivritearamitnusa0002bena",
+  "pages": null,
+  "date": "1957",
+  "status": "viewable",
+  "status_he": "דיגיטלי — לצפייה באתר המקור",
+  "status_en": "Digitized - view at source",
+  "status_ar": "رقمي - للعرض في الموقع الأصلي",
+  "note_he": "חיבורו המקיף של זאב בן-חיים על המסורת העברית-ארמית השומרונית, הכתובה והמסורת שבעל פה — יצירת המופת המדעית בחקר השומרונות. לא כתב יד, אלא מחקר בלשני מבוסס על תעודות כתובות ועל עדות בעל-פה של בני הקהילה. כרך זה (ב׳) עוסק בפונטיקה ובכתיב.",
+  "note_en": "Zeev Ben-Hayyim's comprehensive study of the Samaritan Hebrew-Aramaic tradition, written and oral - the foundational scholarly work of Samaritan studies. Not a manuscript, but a linguistic study based on written documents and the community's oral tradition. This volume (2) covers phonetics and orthography.",
+  "note_ar": "دراسة زئيف بن-حاييم الشاملة للتقليد العبري-الآرامي السامري، المكتوب والشفهي - العمل العلمي التأسيسي في الدراسات السامرية.",
+  "folder": ""
  }
 ]
