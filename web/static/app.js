@@ -4515,6 +4515,30 @@ function setDivFolded(folded, withArrow){
   }
   if(folded && !tbFolded) setToolbarFolded(true, withArrow);        // fold together
 }
+// ── a bar opened by hand does not stay open for ever ────────────────────────
+// Either bar can be pulled out of its drawer by the reader, and until now it
+// then stayed out until it was pushed back by hand. On a reading screen that is
+// a band of chrome sitting over the text for the rest of the session. So an
+// open bar now closes itself after a few quiet seconds — quiet meaning the
+// screen has not been touched, not merely that time has passed, so a reader who
+// is using the bar is never shut out mid-tap.
+const BAR_IDLE_MS = 4000;
+let barIdleTimer = null;
+function armBarIdleFold(){
+  clearTimeout(barIdleTimer);
+  if(S.view !== 'verses') return;               // only where the bars cover the text
+  if(!tbUserOpened && !divUserOpened) return;   // nothing was opened by hand
+  barIdleTimer = setTimeout(() => {
+    if(S.view !== 'verses') return;
+    if(tbUserOpened && !tbFolded){ tbUserOpened = false; setToolbarFolded(true, true); }
+    if(divUserOpened && !divFolded){ divUserOpened = false; setDivFolded(true, true); }
+  }, BAR_IDLE_MS);
+}
+(function(){
+  const touch = () => armBarIdleFold();
+  for(const ev of ['pointerdown','pointerup','touchstart','touchend','wheel','keydown'])
+    document.addEventListener(ev, touch, {passive:true, capture:true});
+})();
 function armAutoFold(){   // fold (with the arrow animation) after 3s
   clearTimeout(tbFoldTimer);
   tbFoldTimer=setTimeout(()=>{ if(S.view==='verses' && !tbUserOpened) setToolbarFolded(true,true); }, 3000);
@@ -4546,9 +4570,9 @@ function updateToolbarFold(isVerse){
   h.addEventListener('pointerdown', e=>{ downY=e.clientY; });
   const release=(e)=>{
     const dy = downY==null ? 0 : (e.clientY-downY); downY=null;
-    if(dy < -12){ tbUserOpened=true; setToolbarFolded(false,true); }        // drag up → open (down-arrow)
+    if(dy < -12){ tbUserOpened=true; setToolbarFolded(false,true); armBarIdleFold(); }  // drag up → open
     else if(dy > 12){ tbUserOpened=false; setToolbarFolded(true,true); }    // drag down → fold
-    else if(tbFolded){ tbUserOpened=true; setToolbarFolded(false,true); }   // tap → open (down-arrow)
+    else if(tbFolded){ tbUserOpened=true; setToolbarFolded(false,true); armBarIdleFold(); }   // tap → open
     else { tbUserOpened=false; setToolbarFolded(true,true); }               // tap → fold
   };
   h.addEventListener('pointerup', release);
@@ -4562,9 +4586,9 @@ function updateToolbarFold(isVerse){
   h.addEventListener('pointerdown', e=>{ downY=e.clientY; });
   const release=(e)=>{
     const dy = downY==null ? 0 : (e.clientY-downY); downY=null;
-    if(dy > 12){ divUserOpened=true; setDivFolded(false,true); }        // drag down → open
+    if(dy > 12){ divUserOpened=true; setDivFolded(false,true); armBarIdleFold(); }   // drag down → open
     else if(dy < -12){ divUserOpened=false; setDivFolded(true,true); }  // drag up → fold
-    else if(divFolded){ divUserOpened=true; setDivFolded(false,true); } // tap → open
+    else if(divFolded){ divUserOpened=true; setDivFolded(false,true); armBarIdleFold(); } // tap → open
     else { divUserOpened=false; setDivFolded(true,true); }              // tap → fold
   };
   h.addEventListener('pointerup', release);
@@ -9284,6 +9308,7 @@ function rdPlayFrom(vt){
                         if(RDAU.segIdx < segs.length-1) rdPlayFrom(done); else rdFinish(); };
   a.onplay  = ()=>{ RDAU.playing=true;
                     if(a.playbackRate!==RDAU.speed) a.playbackRate=RDAU.speed;   // a fresh src can reset it
+                    rdScrollStart();
                     wakeSync(); readingSync(); };
   a.onpause = ()=>{ RDAU.playing=false; wakeSync(); readingSync(); };
   a.onended = advance;
@@ -9294,6 +9319,72 @@ function rdPlayFrom(vt){
   if(pr && pr.catch) pr.catch(()=>{});   // refusals are reported by whoever asked for the play
   return pr;
 }
+// ── the page reads along with the recording ─────────────────────────────────
+// While a chapter is being read aloud the text carries itself upward, so the
+// reader never has to reach for the screen to follow. The pace is not a chosen
+// speed: the scroll is TIED to the recording, so wherever the reading has got to
+// on its own axis, the text stands at the same fraction of its own length. That
+// makes it right by construction at any playback speed, and it survives seeking,
+// pausing and the reader dragging the seek bar, none of which a timed scroll
+// would survive.
+//
+//   repeat this reading  — the recording starts again at 0, so the text returns
+//                          to the top and travels down again by itself
+//   repeat the parasha,
+//   or no repeat at all  — nothing here fires: the chapter ends, and the page
+//                          turns exactly as it does today (rdFinish/rdContinue)
+//
+// A hand on the screen stops it. Not by cancelling — by remembering how far the
+// reader has taken the text away from where the recording would have put it, and
+// keeping that distance afterwards. Lift the finger and it carries on from where
+// the screen actually is, rather than snapping back.
+const RDSCROLL = { raf:0, held:false, offset:0, last:-1, reanchor:false };
+function rdScrollStop(){
+  if(RDSCROLL.raf) cancelAnimationFrame(RDSCROLL.raf);
+  RDSCROLL.raf = 0; RDSCROLL.offset = 0; RDSCROLL.last = -1; RDSCROLL.reanchor = false;
+}
+function rdScrollStart(){
+  if(RDSCROLL.raf) return;
+  RDSCROLL.offset = 0; RDSCROLL.last = -1;
+  const step = () => {
+    RDSCROLL.raf = requestAnimationFrame(step);
+    const c = $('content');
+    if(!c || S.view !== 'verses' || !RDAU.audio || !RDAU.rec){ rdScrollStop(); return; }
+    const span = c.scrollHeight - c.clientHeight;
+    if(span <= 0) return;                       // nothing to travel
+    const dur = RDAU.rec.duration || 0;
+    if(!dur) return;
+    const g = Math.max(0, Math.min(1, rdVirtual() / dur));
+    // the reader has hold of it: keep still, and re-anchor when they let go
+    if(RDSCROLL.held || !RDAU.playing){
+      RDSCROLL.last = c.scrollTop;
+      RDSCROLL.reanchor = true;
+      return;
+    }
+    // Just released, or moved by a wheel or a flick: take where the screen NOW
+    // stands as the truth, and carry the distance from there on. Without this the
+    // text jumps back to where the recording says it should be, which is exactly
+    // what the reader was trying to get away from.
+    if(RDSCROLL.reanchor){
+      RDSCROLL.offset = c.scrollTop - g * span;
+      RDSCROLL.reanchor = false;
+    } else if(RDSCROLL.last >= 0 && Math.abs(c.scrollTop - RDSCROLL.last) > 2){
+      RDSCROLL.offset += c.scrollTop - RDSCROLL.last;
+    }
+    const want = Math.max(0, Math.min(span, g * span + RDSCROLL.offset));
+    if(Math.abs(want - c.scrollTop) > 0.5) c.scrollTop = want;
+    RDSCROLL.last = c.scrollTop;
+  };
+  RDSCROLL.raf = requestAnimationFrame(step);
+}
+// a finger down holds it; lifting lets it go on from wherever the screen now is
+(function(){
+  const hold = () => { RDSCROLL.held = true; };
+  const free = () => { RDSCROLL.held = false; RDSCROLL.reanchor = true; };
+  for(const ev of ['pointerdown','touchstart']) document.addEventListener(ev, hold, {passive:true, capture:true});
+  for(const ev of ['pointerup','pointercancel','touchend','touchcancel'])
+    document.addEventListener(ev, free, {passive:true, capture:true});
+})();
 function readingToggle(rec, seekTo){
   const key = rdKey(rec);
   if(RDAU.audio && RDAU.key===key && seekTo===undefined){
@@ -9310,12 +9401,15 @@ function readingToggle(rec, seekTo){
 function readingStop(){
   if(RDAU.audio){ try{ RDAU.audio.pause(); }catch(e){} rdDetach(RDAU.audio); }
   RDAU.audio=null; RDAU.key=null; RDAU.rec=null; RDAU.segIdx=0; RDAU.segBase=0; RDAU.playing=false;
+  rdScrollStop();      // and the page stops travelling with it
   wakeSync();          // nothing is reading any more — let the screen sleep
   readingSync();
 }
 // the chapter's recording played out to its end
 function rdFinish(){
-  if(RDR.mode===1 && RDAU.rec){ rdPlayFrom(0); return; }   // 🔂 — the same reading again
+  if(RDR.mode===1 && RDAU.rec){                            // 🔂 — the same reading again,
+    RDSCROLL.offset = 0; RDSCROLL.last = -1;               // and the text from its top
+    rdPlayFrom(0); return; }
   const reader = RDAU.rec && RDAU.rec.reader;
   readingStop();
   // 🔁 carries on through the parasha even when the continuous flag is off: there
