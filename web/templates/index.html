@@ -952,6 +952,27 @@
   }
 </script>
 
+<!-- The two units that live on sites of their own — the calendar and the family
+     tree. They used to be thrown open in a new tab, which took the reader out of
+     the app: the phone's Back then had nothing of ours to return to. They are
+     shown in a frame of the app instead, so Back closes them and the Torah is
+     underneath, the same as every other unit. -->
+<div id="extFrameWrap" style="display:none;position:fixed;inset:0;z-index:4000;background:#f4f1ea">
+  <button id="extFrameClose" aria-label="חזרה לתורה" title="חזרה לתורה"
+          style="position:absolute;top:10px;left:12px;z-index:4001;width:38px;height:38px;
+                 border:1px solid #cec3ae;border-radius:9px;background:#fffdf8;color:#1c1a17;
+                 font-size:17px;cursor:pointer">&times;</button>
+  <iframe id="extFrame" title="" style="width:100%;height:100%;border:0;display:block"></iframe>
+</div>
+<script>
+  // wired here, not in app.js: that script is loaded above this markup and the
+  // button does not exist yet when it runs
+  document.getElementById('extFrameClose').addEventListener('click', function(){
+    document.getElementById('extFrameWrap').style.display = 'none';
+    document.body.style.overflow = '';
+  });
+</script>
+
 <!-- אוצר כתבי היד: opens the unit full-screen, exactly as the recordings archive does -->
 <div id="mssFrameWrap" style="display:none;position:fixed;inset:0;z-index:4000;background:#f4f1ea">
   <button id="mssFrameClose" aria-label="סגירה"

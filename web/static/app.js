@@ -6141,9 +6141,25 @@ $('piyToLib').onclick=()=>{ $('piyModal').classList.add('hidden'); openLibrary()
 $('rhyToLib').onclick=()=>{ $('rhymeModal').classList.add('hidden'); openLibrary(); };
 $('dictToLib').onclick=()=>{ $('dictModal').classList.add('hidden'); openLibrary(); };
 
+// The calendar and the family tree are sites of their own, but they are still
+// units of this app as far as the reader is concerned. Opening them in a new tab
+// took the reader OUT of the app, and the phone's Back then had nothing of ours
+// to come back to — it left the app altogether. Shown in a frame, Back closes
+// them like any other unit and the Torah is underneath where it was.
+// (Both were checked to allow framing: neither sends X-Frame-Options nor a
+// frame-ancestors policy.)
+function openExternalUnit(url, title){
+  const w = $('extFrameWrap'), f = $('extFrame');
+  if(f.getAttribute('data-url') !== url){ f.setAttribute('data-url', url); f.src = url; }
+  f.title = title || '';
+  w.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  if(typeof closeMenu === 'function') closeMenu();
+  trackNav(title || url);
+}
 function menuAction(a){
-  if(a==='calendar')       open(CALENDAR_URL, '_blank', 'noopener');
-  else if(a==='genealogy') open(GENEALOGY_URL, '_blank', 'noopener');
+  if(a==='calendar')       openExternalUnit(CALENDAR_URL, t('m_calendar'));
+  else if(a==='genealogy') openExternalUnit(GENEALOGY_URL, t('m_genealogy'));
   else if(a==='timeline')  openTimeline();
   else if(a==='shira')     openShira();
   else if(a==='library')   openLibrary();
@@ -9606,19 +9622,40 @@ async function openRoute(path, silent){
 // spare not replaced, and the next press leaves the app, which is what a reader
 // at the front page means by it.
 function backSpare(){ try{ history.pushState({app:1, spare:1}, '', location.pathname); }catch(e){}}
-// what is currently laid over the page, closed in the order a reader would expect
+// What is currently laid over the page — closed topmost first.
+//
+// This asks the page rather than carrying a list of window names. The app has
+// twenty-odd overlays and the library units keep arriving; a list is a thing to
+// forget to add to, and forgetting meant the phone's Back fell straight through
+// an open unit and left the app. Anything that is fixed to the screen, visible,
+// and large is a layer, and the one with the highest stacking order is the one
+// the reader sees on top — that is the one a Back press should take away.
 function closeTopLayer(){
   if(document.body.classList.contains('print-preview')){ $('ppCloseBtn').click(); return true; }
-  for(const id of ['mssFrameWrap']){
-    const w = document.getElementById(id);
-    if(w && w.style.display === 'block'){ w.style.display='none'; document.body.style.overflow=''; return true; }
+  const seen = [];
+  for(const el of document.querySelectorAll('body *')){
+    const cs = getComputedStyle(el);
+    if(cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') continue;
+    if(parseFloat(cs.opacity) === 0) continue;
+    const r = el.getBoundingClientRect();
+    if(r.width < innerWidth * 0.5 || r.height < innerHeight * 0.4) continue;   // not a layer
+    seen.push({ el, z: parseInt(cs.zIndex, 10) || 0 });
   }
-  const drawer = document.querySelector('.menu-overlay:not(.hidden)');
-  if(drawer && typeof closeMenu === 'function'){ closeMenu(); return true; }
-  const modal = [...document.querySelectorAll('.modal')]
-                  .reverse().find(m => !m.classList.contains('hidden'));
-  if(modal){ modal.classList.add('hidden'); return true; }
-  return false;
+  if(!seen.length) return false;
+  seen.sort((a, b) => (a.z - b.z) || (a.el.compareDocumentPosition(b.el) & 2 ? 1 : -1));
+  const top = seen[seen.length - 1].el;
+  // the drawer and its overlay are one thing and close together
+  if(top.classList.contains('menu-overlay') || top.classList.contains('menu-drawer')){
+    if(typeof closeMenu === 'function'){ closeMenu(); return true; }
+  }
+  if(top.classList.contains('hidden')) return false;
+  // a layer is dismissed the way it was raised: by its class if it has one, by
+  // its own inline display if that is what put it there
+  if(top.classList.contains('modal') || top.classList.contains('menu-overlay'))
+    top.classList.add('hidden');
+  else if(top.style.display === 'block'){ top.style.display = 'none'; document.body.style.overflow = ''; }
+  else top.classList.add('hidden');
+  return true;
 }
 addEventListener('popstate', (e) => {
   if(closeTopLayer()){ backSpare(); return; }
