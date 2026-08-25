@@ -3911,7 +3911,12 @@ function placeNavbar(){
   document.body.classList.toggle('nav-docked', open);
 }
 const NAV_BOW = 0.22;      // the curve of the bar's foot, as a share of its height
-const NAV_GAP = 8;         // and how much deeper the bay is cut, so the gap is even
+// The socket is cut to the hull, not around it. It used to be 8px deeper and
+// 16px wider on each side, and that surplus showed as a crescent of page
+// standing proud of the bar — which reads as the toolbar bulging UP into the
+// bar rather than the bar sitting down INTO the toolbar. Cut close, nothing of
+// the socket is seen except where the hull is not, and the bar is simply in it.
+const NAV_GAP = 3;         // how much deeper the socket is than the hull
 // And it goes away. A few seconds after the reader settles on a text screen the
 // bar fades out; the next touch anywhere on the app brings it back and starts
 // the count again. Only on the text screens: on the browse screens the bar is

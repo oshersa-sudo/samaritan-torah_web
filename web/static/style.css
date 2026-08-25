@@ -707,9 +707,9 @@ body.nav-reserve.has-spread #spreadBtn{ margin-bottom:var(--nav-clear, 46px); }
    the row rather than on a patch laid over it.
    The ellipse is the bar's own width, so the bay follows it as it grows a label. */
 body.nav-docked #toolbar{
-  -webkit-mask-image:radial-gradient(ellipse calc(var(--nav-w, 240px) / 2 + 16px)
+  -webkit-mask-image:radial-gradient(ellipse calc(var(--nav-w, 240px) / 2 + 2px)
                        var(--nav-dip, 24px) at 50% 0, transparent 98%, #000 100%);
-          mask-image:radial-gradient(ellipse calc(var(--nav-w, 240px) / 2 + 16px)
+          mask-image:radial-gradient(ellipse calc(var(--nav-w, 240px) / 2 + 2px)
                        var(--nav-dip, 24px) at 50% 0, transparent 98%, #000 100%);
   -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;   mask-size:100% 100%;
