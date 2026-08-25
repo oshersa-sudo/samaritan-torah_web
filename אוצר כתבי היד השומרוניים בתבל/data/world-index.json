@@ -7178,5 +7178,34 @@
   "note_en": "The official printed catalogue of Hebrew and Samaritan manuscripts at the British Museum (predecessor of the British Library), edited by George Margoliouth, 1893. This is the source cited in most of the Samaritan Additional MSS records already mapped here (Add MS 7050 onward). Not a manuscript - a catalogue reference tool, useful for verifying and cross-checking our records.",
   "note_ar": "الفهرس المطبوع الرسمي للمخطوطات العبرية والسامرية في المتحف البريطاني، بتحرير جورج مارغوليوث، 1893.",
   "folder": ""
+ },
+ {
+  "id": "bnf-arabe-samaritain-7-abulfath",
+  "inst": "Bibliothèque nationale de France (BnF), Paris",
+  "inst_en": "Bibliothèque nationale de France (BnF), Paris",
+  "inst_ar": "المكتبة الوطنية الفرنسية (BnF)، باريس",
+  "shelf": "olim Arabe 839 / Samaritain (arabe) no. VII",
+  "title_src": "Abulfathi Annales Samaritani + [Ibn al-Kattar] dogmatica legis Mosaicae adumbratio",
+  "src_lang": "he",
+  "title": "כתב יד פריז: כרוניקת אבו אלפתח (1528) + חיבור הלכתי מיוחס לאבן אלכתאר",
+  "title_en": "Paris MS: Abu'l-Fath Chronicle (1528 CE) + a legal/dogmatic treatise attributed to Ibn al-Kattar",
+  "title_ar": "مخطوطة باريس: حوليات أبي الفتح (1528) + رسالة فقهية منسوبة لابن الكتار",
+  "type": {
+   "key": "manuscript",
+   "he": "כתב יד",
+   "en": "Manuscript",
+   "ar": "مخطوطة"
+  },
+  "url": "https://archivesetmanuscrits.bnf.fr/",
+  "pages": null,
+  "date": "930 AH / 1528 CE",
+  "status": "not_digitised",
+  "status_he": "לא אומת סטטוס דיגיטציה — נדרש בירור מול קטלוג ה-BnF",
+  "status_en": "Digitisation status unverified - needs checking against the BnF catalogue",
+  "status_ar": "حالة الرقمنة غير مؤكدة",
+  "note_he": "זוהה מתוך תיאור כתבי היד במבוא הלטיני (Prolegomena) של אדוארד וילמר למהדורתו של אבו אלפתח (גותה, 1865; archive.org: abulfathiannales00abal). כתב היד העתיק ביותר מבין עותקי הכרוניקה שהגיעו לאירופה, הועתק ב-930 AH (1528) על ידי הסופר מסלם בן יוסף. וילמר מציין שהוא כולל, בעמ' 200-462 (אחרי סיום הכרוניקה עצמה), חיבור נפרד — \"תיאור דוגמטי של תורת משה\" — המיוחס למחבר שכתיב שמו הערבי (כפי שתועתק ב-OCR) הוא קרוב ל'אבן כתאר' — סביר שמדובר באבו אלפרג' אבן אלכתאר (נפיס א-דין), מחבר פירוש 'אם בחקותי' שנחקר בעבודות עלי ותד (2020, 2022). שם ומיקום כתב היד לא אומתו מול קטלוג ה-BnF העדכני; יש לבדוק זאת בנפרד.",
+  "note_en": "Identified from the manuscript descriptions in Eduard Vilmar's Latin Prolegomena to his 1865 edition of Abu'l-Fath's chronicle (Gotha; archive.org: abulfathiannales00abal). The oldest of the Abu'l-Fath codices to reach Europe, copied 930 AH (1528 CE) by the scribe Meslem ben Yusuf. Vilmar notes it contains, on pp. 200-462 (after the chronicle proper), a separate work - a 'dogmatic outline of the law of Moses' - attributed to an author whose Arabic name (as OCR'd) resembles 'Ibn Kattar', plausibly Abu'l-Faraj Ibn al-Kattar (Nafis al-Din), author of the 'Im Bechukotai' commentary studied in Ali Watad's 2020/2022 publications. Shelfmark and current holding not yet verified against the live BnF catalogue.",
+  "note_ar": "تم التعرف عليها من وصف فيلمار للمخطوطات (1865). تحتوي على نص فقهي منسوب لابن الكتار.",
+  "folder": ""
  }
 ]
