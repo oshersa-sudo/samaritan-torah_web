@@ -468,6 +468,10 @@ body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
 
 /* Samaritan glyphs */
 .samchar{ font-family:'Samaritan'; }
+/* A stop mark closes the word before it and belongs against it. Left to the two
+   faces' own side bearings it drifted a visible gap away, so it is pulled back
+   and forbidden to be separated from its word by a line break. */
+.samstop{ margin-inline-start:-.10em; white-space:nowrap; }
 /* NOTE: the word-separator middot (.wsep) deliberately does NOT get the
    Samaritan font — that font's glyph coverage doesn't include a proper
    middle-dot (U+00B7), so forcing it there renders the dot invisible

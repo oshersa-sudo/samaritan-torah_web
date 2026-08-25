@@ -1053,16 +1053,27 @@ function addWordDots(text){
     }
     out.push(nt.join(' '));
   }
-  return out.join('\n').replace(/ ?\./g, ' .');
+  // A stop mark belongs to the word it closes. It used to be pushed off it —
+  // every period was given a space in front of it — which left the mark adrift
+  // in the middle of the line. It is glued back on here, and the word-divider
+  // that would otherwise stand between a word and its own stop mark goes with
+  // it: a word is not divided from its own punctuation.
+  return out.join('\n')
+            .replace(/·?[ \t]+([.:׃])/g, '$1')     // pull a loose mark onto its word
+            .replace(/·([.:׃])/g, '$1');           // and drop a divider before one
 }
 function samMarkup(text){
   // Hebrew letter runs and the verse-pause period render in the Samaritan font; the
   // word-separating middot is wrapped in its own .wsep span so trimEdgeDots() can
   // drop the ones that land at a line break.
-  let html=''; const re=/([א-ת]+|\.|·)/g; let last=0, m;
+  // Stop marks get a span of their own (.samstop) so they can be set tight
+  // against the word they close, rather than drifting away from it on the
+  // strength of two faces' differing side bearings.
+  let html=''; const re=/([א-ת]+|[.:׃]|·)/g; let last=0, m;
   while((m=re.exec(text))!==null){
     if(m.index>last) html += esc(text.slice(last,m.index));
     html += (m[0]==='·') ? '<span class="wsep">·</span>'
+          : /^[.:׃]$/.test(m[0]) ? '<span class="samchar samstop">'+esc(m[0])+'</span>'
                          : '<span class="samchar">'+esc(m[0])+'</span>';
     last = re.lastIndex;
   }
@@ -1135,7 +1146,16 @@ function trimEdgeDots(vtext){
     while(n && !n.classList.contains('samchar')) n=n.nextElementSibling;
     let p=s.previousElementSibling;
     while(p && !p.classList.contains('samchar')) p=p.previousElementSibling;
-    if(!n || !p || n.getBoundingClientRect().top > p.getBoundingClientRect().top + 1) toHide.push(s);
+    // Half a line's tolerance, not one pixel. Two words on the SAME line can
+    // still differ by a pixel or two once the text is justified and the type is
+    // enlarged — sub-pixel positions, mixed faces — and at one pixel that read
+    // as a line break, so dividers vanished from the middle of a line as the
+    // reader zoomed. Half a line-height cannot be crossed by anything but a
+    // real wrap.
+    if(!n || !p){ toHide.push(s); continue; }
+    const pr = p.getBoundingClientRect(), nr = n.getBoundingClientRect();
+    const tol = Math.max(2, (pr.height || 16) * 0.5);
+    if(nr.top > pr.top + tol) toHide.push(s);
   }
   toHide.forEach(s=>{ s.style.display='none'; });
 }
@@ -1143,12 +1163,17 @@ function trimAllEdgeDots(){
   if(!(S.samFont && !S.english)) return;
   document.querySelectorAll('#content .vrow .vtext').forEach(trimEdgeDots);
 }
+let _dotTimer=null;
 function scheduleDotTrim(){
   if(!(S.samFont && !S.english)) return;
-  const run=()=>requestAnimationFrame(trimAllEdgeDots);
+  // Two frames, not one. Justification lands after the first, and a trim judged
+  // on the frame before it reads line breaks that are about to move — which is
+  // how a divider came to sit at the left edge of a line, where there should
+  // never be one. The timer is a belt to the braces for a slow webfont.
+  const run=()=>requestAnimationFrame(()=>requestAnimationFrame(trimAllEdgeDots));
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(run); else run();
+  clearTimeout(_dotTimer); _dotTimer=setTimeout(trimAllEdgeDots, 220);
 }
-let _dotTimer=null;
 window.addEventListener('resize', ()=>{ clearTimeout(_dotTimer); _dotTimer=setTimeout(trimAllEdgeDots,160); });
 function verseHTML(v){
   if(S.english){ const e=v.english||('[verse '+v.number+']'); return {html:esc(e), cls:'vtext eng'}; }
@@ -3899,6 +3924,13 @@ function syncNavPin(){
 }
 function navShow(){
   document.body.classList.remove('nav-hidden');
+  // The button bar comes up with it. The two are one gesture as far as the
+  // reader is concerned — a touch asks for the controls, and the controls are
+  // both of these — so they arrive together and leave together. Pulling the
+  // bottom blind by hand still opens the button bar on its own; that is a
+  // deliberate act and keeps its own, longer, idle count (armBarIdleFold).
+  if(S.view === 'verses' && typeof setToolbarFolded === 'function' && tbFolded && !tbUserOpened)
+    setToolbarFolded(false, false);
   armNavHide();
 }
 function armNavHide(){
@@ -3908,7 +3940,11 @@ function armNavHide(){
   // line and the play window step back with it.
   if(S.view !== 'verses'){ document.body.classList.remove('nav-hidden'); return; }
   navHideTimer = setTimeout(() => {
-    if(S.view === 'verses') document.body.classList.add('nav-hidden');
+    if(S.view !== 'verses') return;
+    document.body.classList.add('nav-hidden');
+    // and the button bar folds away with it, unless the reader opened it
+    // themselves by the blind — that one is theirs to keep for a while
+    if(!tbUserOpened && !tbFolded) setToolbarFolded(true, false);
   }, NAV_HIDE_MS);
 }
 (function(){
@@ -4071,7 +4107,13 @@ function makeFlipGhost(){
     backgroundSize:cs.backgroundSize, backgroundPosition:cs.backgroundPosition,
     backgroundColor:cs.backgroundColor });
   leaf.appendChild(bg);
-  const inner=el('div','flip-ghost-inner'); inner.style.top=(-c.scrollTop)+'px';
+  // The leaf must carry #content's OWN classes, not just its children. The
+  // Samaritan justification is written as `.sam .vrow .vtext` — it hangs off a
+  // class on #content itself — so a copy of the children alone lost the
+  // ancestor, and every justified line in the turning page snapped back to a
+  // ragged right edge for the length of the turn. Copying the classes onto the
+  // holder keeps the leaf looking exactly like the page it was lifted from.
+  const inner=el('div','flip-ghost-inner ' + c.className); inner.style.top=(-c.scrollTop)+'px';
   for(const ch of c.children) inner.appendChild(ch.cloneNode(true));
   leaf.appendChild(inner);
 
@@ -9539,8 +9581,42 @@ async function openRoute(path, silent){
     return true;
   } finally { _routeSilent = false; }
 }
-// the phone's Back button, and the browser's, walk the app
-addEventListener('popstate', () => { openRoute(location.pathname, true); });
+// ── the phone's own Back button ──────────────────────────────────────────────
+// On Android that arrow left the app outright from almost everywhere, because
+// only the four browse steps ever pushed an address — an open menu, a library
+// unit, a modal, a chapter reached sideways, none of them did, so there was
+// nothing on the stack to pop and the press fell through to the system.
+//
+// It now does what the app's own Back does. One spare entry is kept on the
+// stack at all times; a press consumes it, we answer the press, and we put the
+// spare back. What "answer" means is asked in the order the reader would
+// expect: whatever is laid OVER the page closes first, then the page steps up
+// a level. Only at the book list — nothing open, nowhere further up — is the
+// spare not replaced, and the next press leaves the app, which is what a reader
+// at the front page means by it.
+function backSpare(){ try{ history.pushState({app:1, spare:1}, '', location.pathname); }catch(e){}}
+// what is currently laid over the page, closed in the order a reader would expect
+function closeTopLayer(){
+  if(document.body.classList.contains('print-preview')){ $('ppCloseBtn').click(); return true; }
+  for(const id of ['mssFrameWrap']){
+    const w = document.getElementById(id);
+    if(w && w.style.display === 'block'){ w.style.display='none'; document.body.style.overflow=''; return true; }
+  }
+  const drawer = document.querySelector('.menu-overlay:not(.hidden)');
+  if(drawer && typeof closeMenu === 'function'){ closeMenu(); return true; }
+  const modal = [...document.querySelectorAll('.modal')]
+                  .reverse().find(m => !m.classList.contains('hidden'));
+  if(modal){ modal.classList.add('hidden'); return true; }
+  return false;
+}
+addEventListener('popstate', (e) => {
+  if(closeTopLayer()){ backSpare(); return; }
+  // a real address step (a shared link, a route the app pushed) is honoured
+  if(e.state && e.state.spare === undefined){ openRoute(location.pathname, true); backSpare(); return; }
+  if(S.view !== 'books'){ goBack(); backSpare(); return; }
+  // at the front page: let the press go where it was always going
+});
+addEventListener('load', backSpare);
 
 // ── start ────────────────────────────────────────────────────────────────────
 // open whatever the address asks for; a plain '/' is the book list as before
