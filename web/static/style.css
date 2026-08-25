@@ -683,24 +683,40 @@ body.nav-reserve.has-spread #spreadBtn{ margin-bottom:var(--nav-clear, 46px); }
 /* ── the cradle ──────────────────────────────────────────────────────────────
    Where the toolbar is open beneath it, the bar does not hover over the toolbar
    but settles INTO its top edge: the toolbar scoops a half-round bay out of
-   itself, exactly the bar's width, and the bar sits down in it. The bay is one
-   pseudo-element in the page's own colour laid over the toolbar's ground — the
-   toolbar's top strip is its drag handle, so the scoop takes no button with it.
-   Fold the toolbar away and there is nothing to settle into: the bay goes, and
-   the bar stands clear again (placeNavbar drops the dip to zero at the same
-   moment, so the two move together). */
-#toolbar{ position:relative; }
-#toolbar::before{ content:''; position:absolute; z-index:0; pointer-events:none;
-  left:50%; transform:translateX(-50%);
-  top:0; height:var(--nav-dip, 27px);
-  width:calc(var(--nav-w, 240px) + 14px);
-  border-radius:0 0 999px 999px;
-  background:var(--cream);
-  box-shadow:0 3px 8px -4px rgba(43,37,25,.4) inset;
-  opacity:0; transition:opacity .2s ease; }
-body.nav-docked #toolbar::before{ opacity:1; }
-/* while the bar is away there is nothing to cradle */
-body.nav-hidden #toolbar::before, body.nav-flip #toolbar::before{ opacity:0; }
+   itself, exactly the bar's width, and the bar sits down in it.
+
+   The bay is CUT, not painted. It used to be a cream-coloured pseudo-element
+   laid over the toolbar's ground, and that only ever pretended: it matched the
+   page where the page happened to be flat cream, it stopped dead at the drag
+   handle, and the row of buttons underneath went on running straight across, so
+   the bar sat on the toolbar rather than in it. Now the toolbar is masked, and
+   the bay is a hole through the whole of it — the ground, the handle strip and
+   the tops of the buttons beneath alike — with the page itself, texture and all,
+   showing through. The bar drops into a socket that is really there.
+
+   The hole is a half-ellipse: as wide as the bar (--nav-w, published by
+   placeNavbar and following the bar as it grows a label) and as deep as the bar
+   sits (--nav-dip). Being elliptical it bites deepest at the centre and tapers
+   to nothing at the ends, and the centre of the toolbar falls in the gap between
+   the third and fourth buttons — so the deepest part of the cut lands where
+   there is no button at all, and no label is ever touched.
+
+   Fold the toolbar away, or let the bar fade, and there is nothing to settle
+   into: the depth animates back to nothing and the toolbar's edge is straight
+   again. (--bay-d is registered with @property below purely so that it CAN be
+   animated; an unregistered custom property is a string as far as transitions
+   are concerned, and the bay would snap shut.) */
+@property --bay-d{ syntax:'<length>'; inherits:false; initial-value:0px; }
+#toolbar{ position:relative;
+  --bay-d:0px;
+  --bay-w:calc(var(--nav-w, 240px) + 16px);
+  transition:--bay-d .22s ease;
+  -webkit-mask-image:radial-gradient(ellipse calc(var(--bay-w) / 2) calc(var(--bay-d) + .01px) at 50% 0,
+                     transparent 98.5%, #000 100%);
+          mask-image:radial-gradient(ellipse calc(var(--bay-w) / 2) calc(var(--bay-d) + .01px) at 50% 0,
+                     transparent 98.5%, #000 100%);
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
+body.nav-docked:not(.nav-hidden):not(.nav-flip) #toolbar{ --bay-d:var(--nav-dip, 27px); }
 /* the toolbar's own contents stay above the bay */
 #toolbar > *{ position:relative; z-index:1; }
 
@@ -741,6 +757,33 @@ body.nav-hidden:not(.nav-pinned) .reading-bar{
 body.nav-flip:not(.nav-pinned) #crumbs,
 body.nav-flip:not(.nav-pinned) #audioBar,
 body.nav-flip:not(.nav-pinned) .reading-bar{ opacity:0; transition:none; }
+
+/* ── and pinned, the play window HOLDS ───────────────────────────────────────
+   Released, the pin only decides whether the play window steps out of the way
+   when the furniture fades; it still belonged to the chapter, and scrolled off
+   the top with the first verses. Pressed, it stops travelling: it sticks to the
+   head of the reading and the chapter runs underneath it, so the witness, the
+   play button and the seek bar are still there to reach at verse forty.
+
+   #content is the scroller, and sticky offsets are measured from its scrollport
+   — its PADDING box — so top:0 puts the window flush with the very top of the
+   view and no line of Torah can appear above it. Its own top margin has to go
+   with the same rule, or the margin is honoured as sticky margin and leaves a
+   three-pixel slot for text to show through. It rides just under the nav bar's
+   layer (5), never over it. */
+body.nav-pinned #content > .reading-bar{
+  position:sticky; top:0; z-index:4; margin-top:0;
+  box-shadow:0 -10px 0 var(--cream),                        /* see the note below */
+             0 1px 4px rgba(0,0,0,.07), 0 12px 16px -12px rgba(43,37,25,.5); }
+/* A sticky box is held inside its containing block, and for a child of #content
+   that is #content's CONTENT box — six pixels down from the scrollport, because
+   the scroller pads itself. So the window stops six pixels short of the top and
+   the verses go on showing through the slot above it. The scroller gives that
+   padding up while the window is holding it: the head of the chapter needs no
+   gap above it when something opaque is sitting there. The cream shadow above is
+   only for browsers without :has() — where the padding stays, it fills the slot;
+   where it goes, it is clipped away at the scrollport and paints nothing. */
+body.nav-pinned #content:has(> .reading-bar){ padding-top:0; }
 /* transparent arrows: just a glyph while paging chapters; a parasha/book label
    appears inside only at a crossing (set in JS) */
 /* ── the nav arrows ──────────────────────────────────────────────────────────
