@@ -645,7 +645,16 @@ body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
 #navbar{ position:absolute; z-index:5; left:50%; transform:translateX(-50%);
          bottom:var(--nav-bottom, 62px);
          display:flex; gap:2px; padding:4px; align-items:center; justify-content:center;
-         border-radius:999px; background:#fffdf7ee; border:1px solid #ded7c5;
+         /* The foot of the bar answers the bay it sits in. The bay is an
+            elliptical arc; a stadium's flat bottom sat across it and the two
+            shapes disagreed. Giving the two bottom corners a horizontal radius
+            of half the width each makes them meet in the middle, so the whole
+            bottom edge becomes ONE arc — and it is struck with the same vertical
+            radius as the bay (--nav-dip), which makes the two curves parallel.
+            The bar's own foot is set 8px shy of the bay's deepest point (see
+            placeNavbar), so the gap between them is even the whole way across. */
+         border-radius:999px 999px 50% 50% / 999px 999px var(--nav-bow, 10px) var(--nav-bow, 10px);
+         background:#fffdf7ee; border:1px solid #ded7c5;
          box-shadow:0 8px 24px rgba(43,37,25,.22), 0 2px 6px rgba(43,37,25,.12);
          backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
          max-width:calc(100% - 20px);
@@ -698,9 +707,9 @@ body.nav-reserve.has-spread #spreadBtn{ margin-bottom:var(--nav-clear, 46px); }
    the row rather than on a patch laid over it.
    The ellipse is the bar's own width, so the bay follows it as it grows a label. */
 body.nav-docked #toolbar{
-  -webkit-mask-image:radial-gradient(ellipse calc(var(--nav-w, 240px) / 2 + 9px)
+  -webkit-mask-image:radial-gradient(ellipse calc(var(--nav-w, 240px) / 2 + 16px)
                        var(--nav-dip, 24px) at 50% 0, transparent 98%, #000 100%);
-          mask-image:radial-gradient(ellipse calc(var(--nav-w, 240px) / 2 + 9px)
+          mask-image:radial-gradient(ellipse calc(var(--nav-w, 240px) / 2 + 16px)
                        var(--nav-dip, 24px) at 50% 0, transparent 98%, #000 100%);
   -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
   -webkit-mask-size:100% 100%;   mask-size:100% 100%;
@@ -757,17 +766,17 @@ body.nav-flip:not(.nav-pinned) .reading-bar{ opacity:0; transition:none; }
        step on the screen is never mistaken for one of the small ones
    flex:0 on the labelled state and flex:1 on the bare one keep the middle pill
    centred either way. */
-.nav-arrow{ flex:0 0 auto; width:42px; height:42px; padding:0; border:0; border-radius:999px;
+.nav-arrow{ flex:0 0 auto; width:38px; height:38px; padding:0; border:0; border-radius:999px;
             background:#1a7fa8; color:#fff; font-family:inherit; font-size:15px; font-weight:700;
             cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px;
             transition:background .15s; }
-.nav-arrow .nav-chevron{ width:20px; height:20px; flex:0 0 auto; }
+.nav-arrow .nav-chevron{ width:18px; height:18px; flex:0 0 auto; }
 @media (hover:hover){ .nav-arrow:hover{ background:#1f93c1; } }
 .nav-arrow:active{ background:#166a8c; }
 .nav-arrow:disabled{ opacity:.35; cursor:default; box-shadow:none; }
 @media (hover:hover){ .nav-arrow:disabled:hover{ background:#1a7fa8; } }
 /* at a crossing the disc becomes a labelled pill */
-.nav-arrow.nav-haslabel{ width:auto; max-width:40%; height:42px; padding:0 12px; }
+.nav-arrow.nav-haslabel{ width:auto; max-width:40%; height:38px; padding:0 11px; }
 .nav-lab{ display:flex; flex-direction:column; align-items:flex-start; line-height:1.15;
           min-width:0; text-align:start; }
 .nav-lab-cap{ font-size:10.5px; font-weight:600; opacity:.82; }
@@ -783,7 +792,7 @@ body.nav-flip:not(.nav-pinned) .reading-bar{ opacity:0; transition:none; }
 /* the middle three sit shoulder to shoulder with the arrows now: the bar itself
    is the pill, so this is a plain group and carries no ground of its own */
 .nav-pill{ flex:0 0 auto; display:flex; align-items:center; gap:2px; }
-.round{ flex:0 0 auto; width:42px; height:42px; padding:0; border:0; border-radius:999px;
+.round{ flex:0 0 auto; width:38px; height:38px; padding:0; border:0; border-radius:999px;
         background:transparent; color:#2b2519; font-size:24px; font-weight:700; cursor:pointer;
         display:inline-flex; align-items:center; justify-content:center; transition:background .15s; }
 @media (hover:hover){ .round:hover{ background:#efe9da; } }
@@ -797,8 +806,8 @@ body.nav-flip:not(.nav-pinned) .reading-bar{ opacity:0; transition:none; }
 @media (hover:hover){ .nav-back:hover{ background:#3d3524; } }
 .nav-back:active{ background:#1e1a11; }
 .nav-back:disabled{ background:transparent; color:#2b2519; }
-.nav-back .tbi{ width:20px; height:20px; }
-.round .zoomi{ width:20px; height:20px; }
+.nav-back .tbi{ width:18px; height:18px; }
+.round .zoomi{ width:18px; height:18px; }
 /* on the plain browse screens (books / portions / spread) only the back button shows */
 #navbar.nav-backonly{ justify-content:center; }
 
@@ -1975,14 +1984,14 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   .tb.green{ min-width:46px; }
   /* on a phone the row is tightened, but the shapes stay the shapes: discs stay
      round, the pill stays a pill, and only their measures come down */
-  .nav-arrow{ width:38px; height:38px; }
-  .nav-arrow.nav-haslabel{ width:auto; height:38px; padding:0 10px; max-width:40%; }
+  .nav-arrow{ width:34px; height:34px; }
+  .nav-arrow.nav-haslabel{ width:auto; height:34px; padding:0 9px; max-width:40%; }
   .nav-arrow .nav-chevron{ width:22px; height:22px; }
   .nav-lab-cap{ font-size:10px; }
   .nav-lab-name{ font-size:13.5px; }
   #navbar{ gap:2px; padding:4px; }
   .nav-pill{ gap:2px; padding:0; }
-  .round{ width:38px; height:38px; font-size:24px; padding:0; }
+  .round{ width:34px; height:34px; font-size:24px; padding:0; }
   .round .zoomi{ width:20px; height:20px; }
   .nav-back .tbi{ width:20px; height:20px; }
   .divbtn{ font-size:14px; padding:10px; }
