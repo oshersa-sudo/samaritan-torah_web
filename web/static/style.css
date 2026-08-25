@@ -653,7 +653,18 @@ body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
             radius as the bay (--nav-dip), which makes the two curves parallel.
             The bar's own foot is set 8px shy of the bay's deepest point (see
             placeNavbar), so the gap between them is even the whole way across. */
-         border-radius:999px 999px 50% 50% / 999px 999px var(--nav-bow, 10px) var(--nav-bow, 10px);
+         /* A LENS, as in the sketch: the top edge one arc bowing up, the
+            bottom edge one arc bowing down into the bay. Both are made by giving
+            every corner a horizontal radius of half the width, so the two corners
+            of an edge meet in its middle and become a single curve.
+            The vertical radii are small ON PURPOSE. Written as 999px — the usual
+            way to ask for a stadium — the browser found the left edge could not
+            hold 999+10 and scaled EVERY radius by 0.047 to make them fit, which
+            left the bow 0.47px: flat. Nothing in the computed style shows this;
+            it reports what was asked for, not what was drawn. Kept under the
+            height, no scaling happens and the curve is the curve. */
+         border-radius:50% / var(--nav-topbow, 13px) var(--nav-topbow, 13px)
+                             var(--nav-bow, 10px) var(--nav-bow, 10px);
          background:#fffdf7ee; border:1px solid #ded7c5;
          box-shadow:0 8px 24px rgba(43,37,25,.22), 0 2px 6px rgba(43,37,25,.12);
          backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);

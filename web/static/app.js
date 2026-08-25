@@ -3900,6 +3900,9 @@ function placeNavbar(){
   const st = document.documentElement.style;
   st.setProperty('--nav-bottom', Math.max(8, edge - bow + (open ? 0 : 10)) + 'px');
   st.setProperty('--nav-bow', bow + 'px');          // the bar's own foot
+  // the crown, kept together with the foot under the bar's height so that the
+  // browser never has to scale the radii down (see the note in the stylesheet)
+  st.setProperty('--nav-topbow', Math.max(8, Math.min(Math.round(nh / 3), Math.round(nh - bow - 6))) + 'px');
   st.setProperty('--nav-dip', (bow + NAV_GAP) + 'px');   // the bay, 8px deeper
   // How far the bar actually rises above the toolbar's top edge — which is all
   // the clearance anything sitting there needs. The old figure was the bar's
