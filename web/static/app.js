@@ -3891,35 +3891,20 @@ function placeNavbar(){
   // Toolbar open: the bar settles INTO its top edge, its foot a little below the
   // line, with the bay drawn behind it. Folded or gone: nothing to settle into,
   // so it stands clear above whatever is there.
-  // The bar's foot and the bay are struck as two arcs of the SAME curvature, one
-  // 8px inside the other, so the gap between them is even the whole way across.
-  // The arc is kept gentle — a fifth of the bar's height — because at the bay's
-  // full depth the bar's ground curved away from under the discs at its ends and
-  // left them hanging outside it.
-  const bow = open ? Math.max(6, Math.round(nh * NAV_BOW)) : 0;
+  const dip = open ? Math.round(nh * NAV_DIP) : 0;
   const st = document.documentElement.style;
-  st.setProperty('--nav-bottom', Math.max(8, edge - bow + (open ? 0 : 10)) + 'px');
-  st.setProperty('--nav-bow', bow + 'px');          // the bar's own foot
-  // the crown, kept together with the foot under the bar's height so that the
-  // browser never has to scale the radii down (see the note in the stylesheet)
-  st.setProperty('--nav-topbow', Math.max(8, Math.min(Math.round(nh / 3), Math.round(nh - bow - 6))) + 'px');
-  st.setProperty('--nav-dip', (bow + NAV_GAP) + 'px');   // the bay, 8px deeper
+  st.setProperty('--nav-bottom', Math.max(8, edge - dip + (open ? 0 : 10)) + 'px');
+  st.setProperty('--nav-dip', (dip + 8) + 'px');
   // How far the bar actually rises above the toolbar's top edge — which is all
   // the clearance anything sitting there needs. The old figure was the bar's
   // whole height plus a margin, and it reserved room the bar does not occupy:
   // a third of it is down inside the toolbar.
-  st.setProperty('--nav-clear', Math.round(Math.max(10, nh - bow + (open ? 6 : 16))) + 'px');
+  st.setProperty('--nav-clear', Math.round(Math.max(10, nh - dip + (open ? 6 : 16))) + 'px');
   st.setProperty('--nav-space', Math.round(nh + 20) + 'px');
   if(r.width) st.setProperty('--nav-w', Math.round(r.width) + 'px');
   document.body.classList.toggle('nav-docked', open);
 }
-const NAV_BOW = 0.22;      // the curve of the bar's foot, as a share of its height
-// The socket is cut to the hull, not around it. It used to be 8px deeper and
-// 16px wider on each side, and that surplus showed as a crescent of page
-// standing proud of the bar — which reads as the toolbar bulging UP into the
-// bar rather than the bar sitting down INTO the toolbar. Cut close, nothing of
-// the socket is seen except where the hull is not, and the bar is simply in it.
-const NAV_GAP = 3;         // how much deeper the socket is than the hull
+const NAV_DIP = 0.34;      // how deep the bar sits in the toolbar's edge
 // And it goes away. A few seconds after the reader settles on a text screen the
 // bar fades out; the next touch anywhere on the app brings it back and starts
 // the count again. Only on the text screens: on the browse screens the bar is
