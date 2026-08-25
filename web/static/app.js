@@ -1066,14 +1066,18 @@ function samMarkup(text){
   // Hebrew letter runs and the verse-pause period render in the Samaritan font; the
   // word-separating middot is wrapped in its own .wsep span so trimEdgeDots() can
   // drop the ones that land at a line break.
-  // Stop marks get a span of their own (.samstop) so they can be set tight
-  // against the word they close, rather than drifting away from it on the
-  // strength of two faces' differing side bearings.
+  // The colon and the sof pasuq are NOT given the Samaritan face. In that face
+  // the colon has no advance width at all, so setting it there drew it on top of
+  // the letter beside it instead of after it. They keep the face they always
+  // had — the reader's own two dots — and are only pulled tight against the word
+  // they close (.samstop, which sets spacing and no font). The period keeps the
+  // Samaritan face it has always had.
   let html=''; const re=/([א-ת]+|[.:׃]|·)/g; let last=0, m;
   while((m=re.exec(text))!==null){
     if(m.index>last) html += esc(text.slice(last,m.index));
     html += (m[0]==='·') ? '<span class="wsep">·</span>'
-          : /^[.:׃]$/.test(m[0]) ? '<span class="samchar samstop">'+esc(m[0])+'</span>'
+          : (m[0]===':' || m[0]==='׃') ? '<span class="samstop">'+esc(m[0])+'</span>'
+          : (m[0]==='.') ? '<span class="samchar samstop">'+esc(m[0])+'</span>'
                          : '<span class="samchar">'+esc(m[0])+'</span>';
     last = re.lastIndex;
   }
