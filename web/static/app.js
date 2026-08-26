@@ -311,6 +311,7 @@ const I18N = {
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
     no_interp_ar:'התרגום הערבי לפירוש עדיין בהכנה', interp_ar_pending:'[טרם תורגם] ', interp_sam:'כתב שומרוני', interp_ar:'ערבית',
     interp_more:'להרחבה פנה אל:', interp_asatir_lead:'ומספר ספר האסאטיר',
+    interp_span:'על פסוקים {a}–{b}',
     interp_bhuq_lead:'ומדברי אבו אלפרג׳ איבן אל-כתאר בפירוש אם בחקותי',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_show_pass:'הצג סיסמה',
@@ -564,6 +565,7 @@ const I18N = {
     searching:'Searching…', no_interp:'No commentary for these verses',
     no_interp_ar:'The Arabic rendering is still being prepared', interp_ar_pending:'[not yet translated] ', interp_sam:'Samaritan script', interp_ar:'Arabic',
     interp_more:'Read further in:', interp_asatir_lead:'And the Book of Asatir recounts',
+    interp_span:'on verses {a}–{b}',
     interp_bhuq_lead:'And Abū l-Faraj ibn al-Kathār says, in his commentary on Im Beḥuqotay',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_show_pass:'Show the password',
@@ -817,6 +819,7 @@ const I18N = {
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
     no_interp_ar:'الترجمة العربية للتفسير قيد الإعداد', interp_ar_pending:'[لم يُترجَم بعد] ', interp_sam:'الخط السامري', interp_ar:'العربية',
     interp_more:'للتوسّع راجِع:', interp_asatir_lead:'ويروي كتاب الأساطير',
+    interp_span:'على الآيات {a}–{b}',
     interp_bhuq_lead:'ويقول أبو الفرج ابن الكثار في تفسير «إن سلكتم في فرائضي»',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_show_pass:'إظهار كلمة المرور',
@@ -3019,7 +3022,34 @@ async function buildInterpret(c, verses){
   panel.appendChild(head);
 
   let any = false;
+  // A source passage is linked to every verse it speaks about, and the panel
+  // used to set a copy of it under each one. Where a passage covers a run —
+  // the Asatir on the kings of Edom covers six verses of בראשית ל"ו, אם בחקותי
+  // on שמע ישראל covers two — the reader was handed the same paragraph, word
+  // for word, verse after verse, and had to read it again each time to find out
+  // it was the same. Now it is set ONCE, at the head of the run, and told what
+  // it covers: "ומספר ספר האסאטיר (על פסוקים ל"ד–ל"ט)".
+  //
+  // Only a run counts. The same passage returning after a gap is set again,
+  // because by then it is no longer on the screen above. vidx counts the VERSE
+  // LIST, not the rows drawn, so a verse with nothing of its own still breaks
+  // the run — as it must, since it puts a gap on the screen.
+  const carry = new Map();          // kind+text -> {lead, base, from, at}
+  const once = (kind, text, idx, num, lead, base) => {
+    const key = kind + ' ' + text;
+    const prev = carry.get(key);
+    if(prev && prev.idx === idx - 1){                // still the same run
+      prev.idx = idx;
+      prev.lead.textContent = prev.base + ' (' +
+        t('interp_span').replace('{a}', prev.from).replace('{b}', num) + '):';
+      return false;                                  // do not draw it again
+    }
+    carry.set(key, {lead, base, from: num, idx});
+    return true;
+  };
+  let vidx = -1;
   for(const v of verses){
+    vidx++;
     let txt = (m[v.id]||'').trim();
     const fellBack = ar && !txt && !!(mHe[v.id]||'').trim();
     if(fellBack) txt = (mHe[v.id]||'').trim();
@@ -3030,7 +3060,6 @@ async function buildInterpret(c, verses){
     // a verse a source speaks about is worth a row even when it has no
     // commentary of its own — that is what gives דברים anything to read
     if(!txt && !asaItems.length && !bhqItems.length) continue;
-    any = true;
     const row = el('div','irow');
     const num = el('button','inum'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
@@ -3044,10 +3073,12 @@ async function buildInterpret(c, verses){
       col.appendChild(body);
     }
     for(const it of asaItems){
+      const base = t('interp_asatir_lead')
+        + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '');
+      const leadEl = el('div','iasatir-lead', esc(base + ':'));
+      if(!once('asa', it.text || it.arabic || '', vidx, v.number, leadEl, base)) continue;
       const box = el('div','iasatir');
-      const lead = t('interp_asatir_lead')
-        + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '') + ':';
-      box.appendChild(el('div','iasatir-lead', esc(lead)));
+      box.appendChild(leadEl);
       const showArAsa = ar && !!(it.arabic||'').trim();
       const at = el('div','iasatir-text'+(showArAsa?' iar':''),
         showArAsa ? esc(it.arabic)
@@ -3058,10 +3089,12 @@ async function buildInterpret(c, verses){
       col.appendChild(box);
     }
     for(const it of bhqItems){
+      const base = t('interp_bhuq_lead')
+        + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '');
+      const leadEl = el('div','iasatir-lead', esc(base + ':'));
+      if(!once('bhq', it.text || '', vidx, v.number, leadEl, base)) continue;
       const box = el('div','iasatir ibhuq');
-      const lead = t('interp_bhuq_lead')
-        + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ':';
-      box.appendChild(el('div','iasatir-lead', esc(lead)));
+      box.appendChild(leadEl);
       // Arabic mode shows the Arabic rendering; a section not yet translated
       // falls back to its Hebrew, marked, exactly as the commentary above does
       const showAr = ar && !it.pending;
@@ -3073,6 +3106,10 @@ async function buildInterpret(c, verses){
       box.appendChild(bt);
       col.appendChild(box);
     }
+    // a verse whose only content was a passage already standing above it has
+    // nothing left to show, and an empty numbered row is worse than no row
+    if(!col.childNodes.length) continue;
+    any = true;
     row.appendChild(num); row.appendChild(col);
     if(!ar) addPencil(row, v.id, 'interpretation', ()=>(m[v.id]||''));
     panel.appendChild(row);
