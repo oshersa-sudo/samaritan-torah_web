@@ -312,6 +312,7 @@ const I18N = {
     no_interp_ar:'התרגום הערבי לפירוש עדיין בהכנה', interp_ar_pending:'[טרם תורגם] ', interp_sam:'כתב שומרוני', interp_ar:'ערבית',
     interp_more:'להרחבה פנה אל:', interp_asatir_lead:'ומספר ספר האסאטיר',
     interp_span:'על פסוקים {a}–{b}',
+    interp_words:'מילים', interp_words_lead:'מילות הפסוק:',
     interp_bhuq_lead:'ומדברי אבו אלפרג׳ איבן אל-כתאר בפירוש אם בחקותי',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_show_pass:'הצג סיסמה',
@@ -566,6 +567,7 @@ const I18N = {
     no_interp_ar:'The Arabic rendering is still being prepared', interp_ar_pending:'[not yet translated] ', interp_sam:'Samaritan script', interp_ar:'Arabic',
     interp_more:'Read further in:', interp_asatir_lead:'And the Book of Asatir recounts',
     interp_span:'on verses {a}–{b}',
+    interp_words:'Words', interp_words_lead:'Words of the verse:',
     interp_bhuq_lead:'And Abū l-Faraj ibn al-Kathār says, in his commentary on Im Beḥuqotay',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_show_pass:'Show the password',
@@ -820,6 +822,7 @@ const I18N = {
     no_interp_ar:'الترجمة العربية للتفسير قيد الإعداد', interp_ar_pending:'[لم يُترجَم بعد] ', interp_sam:'الخط السامري', interp_ar:'العربية',
     interp_more:'للتوسّع راجِع:', interp_asatir_lead:'ويروي كتاب الأساطير',
     interp_span:'على الآيات {a}–{b}',
+    interp_words:'كلمات', interp_words_lead:'كلمات الآية:',
     interp_bhuq_lead:'ويقول أبو الفرج ابن الكثار في تفسير «إن سلكتم في فرائضي»',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_show_pass:'إظهار كلمة المرور',
@@ -936,6 +939,10 @@ const S = {
   verses: [], verseFilter: null,
   commentarySel: null, samSrcChoice: null, tmSel: null,
   interpSam: false, interpLang: 'he',   // פירוש הפסוק view switches, panel-local
+  // the word strip under each commentary. On by default — it is the half of the
+  // commentary the sources could never supply — and the reader's choice to turn
+  // it off is remembered, unlike the two switches above which are panel-local.
+  interpWords: localStorage.getItem('as_interp_words') !== '0',
   searchReturn: false, searchFontOffset: 0,
   stack: [],                      // navigation breadcrumb stack for Back
 };
@@ -3003,6 +3010,14 @@ async function buildInterpret(c, verses){
   // into a roll-call. Unlike the Asatir it does have an Arabic rendering, and
   // /api/bhuq_by_verse falls back to the Hebrew per section where it is missing.
   const bhq = await api('bhuq_by_verse?verse_ids='+ids+(ar?'&lang=ar':'')).catch(()=>({}));
+  // The commentary is a synthesis OF SOURCES, and a source only speaks where it
+  // happened to speak: a hard word nobody wrote about passed in silence, and the
+  // Aramaic and the Arabic of the verse's own words were nowhere in the panel —
+  // they lived one screen away in מילון מילים. They are the same words the
+  // commentary is about, so they belong beside it. The word table is fetched
+  // once for the whole chapter and set under each verse as a quiet strip.
+  const wt = S.interpWords === false ? {} :
+             await api('word_table?verse_ids='+ids).catch(()=>({}));
   const fs = fsize();
   const panel = el('div','srcpanel interp-panel');
 
@@ -3017,7 +3032,12 @@ async function buildInterpret(c, verses){
   bSam.onclick=()=>{ S.interpLang='he'; S.interpSam = !samOn; paintVerses(); };
   const bAr  = el('button','ihead-btn'+(ar?' on':''), t('interp_ar'));
   bAr.onclick=()=>{ S.interpLang = ar ? 'he' : 'ar'; paintVerses(); };
-  tools.appendChild(bSam); tools.appendChild(bAr);
+  const wordsOn = S.interpWords !== false;
+  const bW = el('button','ihead-btn'+(wordsOn?' on':''), t('interp_words'));
+  bW.onclick=()=>{ S.interpWords = !wordsOn;
+                   localStorage.setItem('as_interp_words', wordsOn ? '0' : '1');
+                   paintVerses(); };
+  tools.appendChild(bW); tools.appendChild(bSam); tools.appendChild(bAr);
   head.appendChild(tools);
   panel.appendChild(head);
 
@@ -3071,6 +3091,29 @@ async function buildInterpret(c, verses){
       if(fellBack) body.prepend(el('span','ipend', t('interp_ar_pending')));
       body.style.fontSize = fs+'px';
       col.appendChild(body);
+    }
+    // the verse's own words: Hebrew sense, the Targum's Aramaic, the Arabic.
+    // Only a word that actually has something to say is set — a row carrying
+    // nothing but the word itself back is left out, or the strip would be as
+    // long as the verse and say half as much.
+    const words = (wt[v.id] || []).filter(w =>
+      (w.aramaic||'').trim() || (w.arabic||'').trim() ||
+      ((w.he_combined||w.meaning||'').trim() && (w.he_combined||w.meaning).trim() !== (w.word||'').trim()));
+    if(words.length){
+      const strip = el('div','iwords');
+      strip.appendChild(el('span','iwords-lead', t('interp_words_lead')));
+      for(const w of words){
+        const chip = el('span','iword');
+        chip.appendChild(el('b','iw-he', w.word || ''));
+        const gloss = (w.he_combined || w.meaning || '').trim();
+        if(gloss && gloss !== (w.word||'').trim()) chip.appendChild(el('span','iw-gloss', gloss));
+        if((w.aramaic||'').trim()) chip.appendChild(el('span','iw-arm', w.aramaic.trim()));
+        if((w.arabic||'').trim()){
+          const a = el('span','iw-ar', w.arabic.trim()); a.lang='ar'; chip.appendChild(a);
+        }
+        strip.appendChild(chip);
+      }
+      col.appendChild(strip);
     }
     for(const it of asaItems){
       const base = t('interp_asatir_lead')

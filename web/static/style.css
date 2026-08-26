@@ -1257,6 +1257,37 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 .interp-panel .iasatir-text .samchar2{ font-family:'SamComment'; }
 .interp-panel .iasatir-text.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
   line-height:2.05; }
+/* ── the word strip ──────────────────────────────────────────────────────────
+   The commentary above it is a synthesis of SOURCES, and a source speaks only
+   where it happened to speak. These are the verse's own words — the Hebrew
+   sense, the Targum's Aramaic, the Arabic — and they are here because they are
+   the same words the commentary is about; until now they lived a screen away in
+   מילון מילים.
+
+   It is set to read as apparatus and not as prose: smaller, quieter, each word
+   its own chip so the eye can find one rather than read the line. The chips wrap
+   and the strip never scrolls sideways. The Arabic gets its own face — a naskh
+   at the same size looks smaller than the Hebrew beside it, so it is nudged up. */
+.interp-panel .iwords{ margin-top:7px; padding-block:5px; padding-inline-start:10px;
+  border-inline-start:3px solid rgba(60,120,60,.30);
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; direction:rtl; }
+.interp-panel .iwords-lead{ flex:0 0 100%; font-size:12.5px; font-weight:700;
+  color:#3d6b3d; opacity:.9; margin-bottom:1px; }
+.interp-panel .iword{ display:inline-flex; align-items:baseline; flex-wrap:wrap;
+  gap:5px; font-size:12.5px; line-height:1.65; max-width:100%; }
+.interp-panel .iw-he{ color:var(--navy); font-weight:700; }
+.interp-panel .iw-gloss{ color:var(--dark); opacity:.8; }
+.interp-panel .iw-arm{ color:#6a5330; }
+.interp-panel .iw-arm::before{ content:'·'; opacity:.45; margin-inline-end:4px; }
+.interp-panel .iw-ar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
+  font-size:1.12em; color:#2f6060; }
+.interp-panel .iw-ar::before{ content:'·'; font-family:inherit; opacity:.45;
+  margin-inline-end:4px; }
+/* every chip after the first is fenced off from the one before it, so a strip of
+   ten words does not read as one run-on line */
+.interp-panel .iword + .iword{ border-inline-start:1px solid rgba(43,37,25,.16);
+  padding-inline-start:12px; }
+
 /* פירוש אם בחקותי quoted beneath the same way, on its own rule colour so two
    quoted sources under one verse stay visibly distinct from each other */
 .interp-panel .ibhuq{ border-inline-start-color:rgba(150,90,30,.34); }
