@@ -649,11 +649,20 @@ body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
          box-shadow:0 8px 24px rgba(43,37,25,.22), 0 2px 6px rgba(43,37,25,.12);
          backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
          max-width:calc(100% - 20px);
-         transition:opacity .28s ease, transform .28s ease;
+         transition:opacity .28s ease, transform .28s ease, box-shadow .22s ease;
          /* a tap on any of these must leave no mark — not on the button, not on
             the row: no text selection, no lingering focus ring, and (below) no
             hover state on devices that only pretend to have one */
          user-select:none; -webkit-user-select:none; }
+/* Over the toolbar the shadow lands on navy, not on cream, and the shadow above
+   was mixed for cream — on navy it is all but invisible, and the bar looks stuck
+   to the toolbar rather than held above it. While the bar is docked it therefore
+   throws a heavier one: a longer, wider fall for the height, and a tight dark
+   line right under the rim so the bar has an edge to end at. */
+body.nav-docked:not(.nav-hidden):not(.nav-flip) #navbar{
+  box-shadow:0 14px 30px -6px rgba(9,16,38,.55),
+             0 6px 12px -3px rgba(9,16,38,.45),
+             0 2px 4px rgba(9,16,38,.35); }
 #navbar button:focus{ outline:none; }
 #navbar button:focus-visible{ outline:2px solid var(--active); outline-offset:2px; }  /* keyboard only */
 /* the bar is out of sight until the screen is touched */
@@ -680,44 +689,21 @@ body.nav-flip #navbar{ opacity:0; pointer-events:none; transition:none; }
 body.nav-reserve:not(.has-spread) #content{ padding-bottom:var(--nav-clear, 46px); }
 body.nav-reserve.has-spread #spreadBtn{ margin-bottom:var(--nav-clear, 46px); }
 
-/* ── the cradle ──────────────────────────────────────────────────────────────
-   Where the toolbar is open beneath it, the bar does not hover over the toolbar
-   but settles INTO its top edge: the toolbar scoops a half-round bay out of
-   itself, exactly the bar's width, and the bar sits down in it.
+/* ── the bar floats, and casts ───────────────────────────────────────────────
+   There is no socket any more. The toolbar had been scooping a bay out of its
+   own edge for the bar to sit in — first painted in the page's colour, then cut
+   for real with a mask — and the bar was sunk a third of its height into it.
+   Both are gone. The toolbar's edge is straight and it is left alone.
 
-   The bay is CUT, not painted. It used to be a cream-coloured pseudo-element
-   laid over the toolbar's ground, and that only ever pretended: it matched the
-   page where the page happened to be flat cream, it stopped dead at the drag
-   handle, and the row of buttons underneath went on running straight across, so
-   the bar sat on the toolbar rather than in it. Now the toolbar is masked, and
-   the bay is a hole through the whole of it — the ground, the handle strip and
-   the tops of the buttons beneath alike — with the page itself, texture and all,
-   showing through. The bar drops into a socket that is really there.
+   What says the bar is above the page now is a shadow, not a hole. It rides
+   clear of the toolbar and drops its shadow onto it, which is what a floating
+   thing does and needs no cooperation from what it floats over.
 
-   The hole is a half-ellipse: as wide as the bar (--nav-w, published by
-   placeNavbar and following the bar as it grows a label) and as deep as the bar
-   sits (--nav-dip). Being elliptical it bites deepest at the centre and tapers
-   to nothing at the ends, and the centre of the toolbar falls in the gap between
-   the third and fourth buttons — so the deepest part of the cut lands where
-   there is no button at all, and no label is ever touched.
-
-   Fold the toolbar away, or let the bar fade, and there is nothing to settle
-   into: the depth animates back to nothing and the toolbar's edge is straight
-   again. (--bay-d is registered with @property below purely so that it CAN be
-   animated; an unregistered custom property is a string as far as transitions
-   are concerned, and the bay would snap shut.) */
-@property --bay-d{ syntax:'<length>'; inherits:false; initial-value:0px; }
-#toolbar{ position:relative;
-  --bay-d:0px;
-  --bay-w:calc(var(--nav-w, 240px) + 16px);
-  transition:--bay-d .22s ease;
-  -webkit-mask-image:radial-gradient(ellipse calc(var(--bay-w) / 2) calc(var(--bay-d) + .01px) at 50% 0,
-                     transparent 98.5%, #000 100%);
-          mask-image:radial-gradient(ellipse calc(var(--bay-w) / 2) calc(var(--bay-d) + .01px) at 50% 0,
-                     transparent 98.5%, #000 100%);
-  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
-body.nav-docked:not(.nav-hidden):not(.nav-flip) #toolbar{ --bay-d:var(--nav-dip, 27px); }
-/* the toolbar's own contents stay above the bay */
+   The shadow is two: a wide soft one that gives the height, and a tight dark
+   one just under the bar that gives the edge. Over the toolbar it is thrown
+   against navy rather than against the page, and a shadow tuned for cream
+   disappears there — so while the bar is docked it deepens. */
+#toolbar{ position:relative; }
 #toolbar > *{ position:relative; z-index:1; }
 
 /* ── the pin ─────────────────────────────────────────────────────────────────

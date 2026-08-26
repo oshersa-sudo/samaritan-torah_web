@@ -3968,23 +3968,26 @@ function placeNavbar(){
   const edge = tr && tr.height > 0 ? Math.round(a.bottom - tr.top) : 10;
   const r = nb.getBoundingClientRect();
   const nh = r.height || 57;
-  // Toolbar open: the bar settles INTO its top edge, its foot a little below the
-  // line, with the bay drawn behind it. Folded or gone: nothing to settle into,
-  // so it stands clear above whatever is there.
-  const dip = open ? Math.round(nh * NAV_DIP) : 0;
+  // The bar rides CLEAR of the toolbar and drops its shadow on it. It used to
+  // sink a third of its height into a bay the toolbar scooped for it; the bay is
+  // gone, the toolbar's edge is straight, and a bar sunk into a straight edge
+  // would just be a bar with its foot cut off. So there is no dip any more, and
+  // the same clearance is left whether the toolbar is open or folded.
+  const dip = 0;
   const st = document.documentElement.style;
-  st.setProperty('--nav-bottom', Math.max(8, edge - dip + (open ? 0 : 10)) + 'px');
-  st.setProperty('--nav-dip', (dip + 8) + 'px');
+  st.setProperty('--nav-bottom', Math.max(8, edge + NAV_LIFT) + 'px');
   // How far the bar actually rises above the toolbar's top edge — which is all
   // the clearance anything sitting there needs. The old figure was the bar's
   // whole height plus a margin, and it reserved room the bar does not occupy:
   // a third of it is down inside the toolbar.
-  st.setProperty('--nav-clear', Math.round(Math.max(10, nh - dip + (open ? 6 : 16))) + 'px');
+  st.setProperty('--nav-clear', Math.round(Math.max(10, nh + NAV_LIFT + 6)) + 'px');
   st.setProperty('--nav-space', Math.round(nh + 20) + 'px');
   if(r.width) st.setProperty('--nav-w', Math.round(r.width) + 'px');
+  // still published: not for a bay now, but so the shadow can deepen where it
+  // falls on the toolbar's navy instead of on the page
   document.body.classList.toggle('nav-docked', open);
 }
-const NAV_DIP = 0.34;      // how deep the bar sits in the toolbar's edge
+const NAV_LIFT = 10;       // how far clear of the toolbar the bar rides
 // And it goes away. A few seconds after the reader settles on a text screen the
 // bar fades out; the next touch anywhere on the app brings it back and starts
 // the count again. Only on the text screens: on the browse screens the bar is
