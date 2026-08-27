@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import hashlib
 import re
 import functools
 import json
@@ -159,9 +160,13 @@ def _seed_booklets():
     file over it to deliver those 64 rows would destroy all of it, so they are
     inserted in place, exactly like the portion-name corrections above.
 
-    INSERT ONLY. Nothing is updated, nothing is deleted, no other table is
-    touched. Idempotent on the author line's opening: once a section carrying it
-    is present the whole thing is a single SELECT and returns.
+    It touches ONLY rows it put there itself, recognised by the opening of their
+    author line, and no other table at all. It is idempotent on a fingerprint of
+    the content rather than on mere presence: when the DB already holds exactly
+    this patch the whole thing is one SELECT and returns, and when it holds an
+    OLDER one — text since corrected — the booklet rows it owns are replaced.
+    Insert-if-absent alone would have frozen the first version in place: a
+    correction to the prose could never reach a site that already had it.
 
     Verse ids are the join between the patch and the DB, which is safe because
     they are the same on both sides — 5,847 addresses checked, none re-created.
@@ -180,11 +185,22 @@ def _seed_booklets():
         with open(_BOOKLETS_PATCH, encoding='utf-8') as fh:
             patch = json.load(fh)
         tag = patch.get('tag') or ''
-        already = conn.execute('SELECT 1 FROM tradart_sections WHERE author LIKE ? LIMIT 1',
-                               (tag + '%',)).fetchone()
-        if already:
-            conn.close()
-            return
+        mine = list(conn.execute(
+            'SELECT id, title, author, ord, text FROM tradart_sections '
+            ' WHERE author LIKE ? ORDER BY ord', (tag + '%',)))
+        if mine:
+            fp = hashlib.sha1()
+            for _id, title, author, ordn, text in mine:
+                fp.update(('%s\x1f%s\x1f%s\x1f%s\x1e'
+                           % (title, author, ordn, text)).encode('utf-8'))
+            if fp.hexdigest() == patch.get('fingerprint'):
+                conn.close()
+                return                       # the DB already holds exactly this
+            ids = [r[0] for r in mine]
+            q = ','.join('?' * len(ids))
+            conn.execute('DELETE FROM tradart_verse_links WHERE section_id IN (%s)' % q, ids)
+            conn.execute('DELETE FROM tradart_sections WHERE id IN (%s)' % q, ids)
+            print('[booklets] replacing %d sections from an older patch' % len(ids))
         have = set(r[0] for r in conn.execute('SELECT id FROM verses'))
         n_sec = n_link = 0
         for s in patch.get('sections', []):

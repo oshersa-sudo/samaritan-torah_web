@@ -20,6 +20,7 @@ is correct on a database that does have it.
 
 Usage: py -3 scripts/booklets/export_patch.py
 """
+import hashlib
 import io
 import json
 import os
@@ -49,12 +50,19 @@ def main():
     # the section's own id is not carried: the receiving database assigns its
     # own, and the links follow it. Carrying it would collide the moment the
     # site's tradart table grows a row of its own.
-    out = {
-        'tag': TAG,
-        'sections': [{'title': s['title'], 'author': s['author'], 'ord': s['ord'],
-                      'text': s['text'], 'verses': sorted(links.get(s['id'], []))}
-                     for s in secs],
-    }
+    body = [{'title': s['title'], 'author': s['author'], 'ord': s['ord'],
+             'text': s['text'], 'verses': sorted(links.get(s['id'], []))}
+            for s in secs]
+    # A fingerprint of the content, so the receiving database can tell a patch it
+    # already holds from a NEWER one. Without it the seeder could only ever
+    # insert-if-absent, and a correction to the text - taking the writing tool's
+    # own voice out of it, say - would never reach a site that already had the
+    # first version. Computed over exactly the four stored columns, in ord order.
+    fp = hashlib.sha1()
+    for s in body:
+        fp.update(('%s\x1f%s\x1f%s\x1f%s\x1e'
+                   % (s['title'], s['author'], s['ord'], s['text'])).encode('utf-8'))
+    out = {'tag': TAG, 'fingerprint': fp.hexdigest(), 'sections': body}
     json.dump(out, io.open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     n_links = sum(len(s['verses']) for s in out['sections'])
     print('sections : %d' % len(out['sections']))
