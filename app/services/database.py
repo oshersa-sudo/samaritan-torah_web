@@ -145,6 +145,70 @@ def _apply_startup_migrations():
 _apply_startup_migrations()
 
 
+_BOOKLETS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                               'data', 'booklets_patch.json')
+
+
+def _seed_booklets():
+    """Add the three Samaritan study booklets to whatever DB is on disk.
+
+    They belong in tradart_sections / tradart_verse_links, and they are 64 rows
+    and 344 links — while the live DB on the persistent disk carries work that
+    exists nowhere else: eleven Samaritan-chapter splits made online, and the
+    numbering of ויקרא and במדבר that follows from them. Copying the bundled
+    file over it to deliver those 64 rows would destroy all of it, so they are
+    inserted in place, exactly like the portion-name corrections above.
+
+    INSERT ONLY. Nothing is updated, nothing is deleted, no other table is
+    touched. Idempotent on the author line's opening: once a section carrying it
+    is present the whole thing is a single SELECT and returns.
+
+    Verse ids are the join between the patch and the DB, which is safe because
+    they are the same on both sides — 5,847 addresses checked, none re-created.
+    A link whose verse is missing from THIS database is skipped rather than
+    inserted, so a dangling row can never be created (one link is in that
+    position on the live DB: במדבר 12:16-1, a Samaritan expansion verse the site
+    does not have)."""
+    try:
+        if not os.path.exists(_BOOKLETS_PATCH):
+            return
+        conn = sqlite3.connect(DB_PATH)
+        cols = [r[1] for r in conn.execute('PRAGMA table_info(tradart_sections)')]
+        if not cols:
+            conn.close()
+            return          # this DB has no such table — nothing to add to
+        with open(_BOOKLETS_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        tag = patch.get('tag') or ''
+        already = conn.execute('SELECT 1 FROM tradart_sections WHERE author LIKE ? LIMIT 1',
+                               (tag + '%',)).fetchone()
+        if already:
+            conn.close()
+            return
+        have = set(r[0] for r in conn.execute('SELECT id FROM verses'))
+        n_sec = n_link = 0
+        for s in patch.get('sections', []):
+            cur = conn.execute(
+                'INSERT INTO tradart_sections (title, author, ord, text) VALUES (?,?,?,?)',
+                (s.get('title'), s.get('author'), s.get('ord'), s.get('text')))
+            sid = cur.lastrowid          # the receiving DB assigns the id, not the patch
+            n_sec += 1
+            for vid in s.get('verses', []):
+                if vid not in have:
+                    continue
+                conn.execute('INSERT INTO tradart_verse_links (section_id, verse_id) '
+                             'VALUES (?,?)', (sid, vid))
+                n_link += 1
+        conn.commit()
+        conn.close()
+        print('[booklets] added %d sections and %d verse links' % (n_sec, n_link))
+    except Exception as exc:
+        print('[booklets] skipped: %s' % exc)
+
+
+_seed_booklets()
+
+
 _MAS_CHAPTER_COL_READY = False
 
 
