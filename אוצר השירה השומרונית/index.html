@@ -49,6 +49,7 @@
         <button id="adminBtn" class="tbtn hidden" title="כניסת מנהל">🔑 מנהל</button>
         <button id="addBtn"   class="tbtn hidden" title="הוספת הקלטה">＋ הוספה</button>
         <button id="perfBtn" class="tbtn hidden" title="ניהול רשימת המבצעים — מנהל בלבד">🎤 מבצעים</button>
+        <button id="joinBtn" class="tbtn hidden" title="איחוד רצועות של הקלטה לקובץ אחד — מנהל בלבד">⛓ איחוד רצועות</button>
         <button id="syncBtn" class="tbtn hidden" title="פרסום היחידה לאתר החי">⇧ סנכרן יחידה</button>
         <button id="pendBtn" class="tbtn hidden" title="הקלטות שנקלטו במכשיר וממתינות למיון">
           ● למיון <span id="pendN" class="pill hidden">0</span></button>
@@ -388,6 +389,35 @@
       <button class="btn ghost" data-close="perfModal">ביטול</button>
       <button class="btn" id="pfGo">שמור</button>
       <button class="btn ghost" id="pfDel">הסר תמונה</button>
+    </div>
+  </div>
+</div>
+
+<!-- איחוד רצועות: הקלטה שנסרקה בכמה קבצים הופכת לקובץ אחד רצוף. הקבצים
+     המקוריים אינם נוגעים, והאיחוד ניתן לביטול. -->
+<div id="joinModal" class="modal hidden">
+  <div class="sheet">
+    <div class="sheet-h">
+      <h2>איחוד רצועות לקובץ אחד</h2>
+      <button class="x" data-close="joinModal">✕</button>
+    </div>
+    <div class="sheet-b">
+      <p class="jn-note">קלטת שנסרקה בכמה חלקים מגיעה לכאן ככמה רצועות. כאן הן
+        נעשות קובץ אחד רצוף. הקבצים המקוריים על הכונן אינם נוגעים, והאיחוד
+        ניתן לביטול בכל עת.</p>
+      <label>הקלטה<input id="jnSearch" placeholder="חיפוש הקלטה בעלת יותר מרצועה אחת…"></label>
+      <div id="jnList" class="jn-list"></div>
+      <div id="jnPick" class="jn-pick hidden">
+        <div class="jn-head" id="jnHead"></div>
+        <div id="jnTracks" class="jn-tracks"></div>
+      </div>
+      <p id="jnErr" class="err hidden"></p>
+      <p id="jnSay" class="jn-say hidden"></p>
+    </div>
+    <div class="sheet-f">
+      <button class="btn ghost" data-close="joinModal">סגירה</button>
+      <button class="btn" id="jnGo" disabled>אחד לקובץ אחד</button>
+      <button class="btn ghost hidden" id="jnUndo">בטל איחוד</button>
     </div>
   </div>
 </div>

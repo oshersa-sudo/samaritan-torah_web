@@ -2259,3 +2259,44 @@ body{
   .card h3{font-size:.97rem}
   .ptime{font-size:.72rem}
 }
+
+
+/* ------------------------------------------------ איחוד רצועות (מנהל בלבד)
+   A recording that reached the archive as four files of one continuous piece
+   of singing. The list offers only recordings that have more than one track,
+   because those are the only ones there is anything to do to. */
+.jn-note{
+  margin:0 0 10px;font-size:.86rem;line-height:1.5;color:var(--muted,#6b6355);
+}
+.jn-list{
+  max-height:210px;overflow:auto;border:1px solid var(--line,#ddd6c6);
+  border-radius:8px;margin-top:4px;
+}
+.jn-list:empty{display:none}
+.jn-row{
+  display:block;width:100%;text-align:right;padding:7px 10px;border:0;
+  background:none;font:inherit;cursor:pointer;border-bottom:1px solid var(--line,#eee6d6);
+}
+.jn-row:last-child{border-bottom:0}
+.jn-row:hover{background:rgba(0,0,0,.04)}
+.jn-row.on{background:rgba(154,110,28,.14);font-weight:600}
+.jn-row small{display:block;color:var(--muted,#6b6355);font-weight:400}
+.jn-pick{margin-top:12px}
+.jn-head{font-weight:600;margin-bottom:6px}
+.jn-tracks{
+  border:1px solid var(--line,#ddd6c6);border-radius:8px;overflow:hidden;
+}
+.jn-tracks label{
+  display:flex;align-items:center;gap:8px;padding:6px 10px;
+  border-bottom:1px solid var(--line,#eee6d6);font-size:.9rem;cursor:pointer;
+}
+.jn-tracks label:last-child{border-bottom:0}
+.jn-tracks input{width:16px;height:16px;flex:0 0 auto}
+.jn-tracks .d{margin-inline-start:auto;color:var(--muted,#6b6355);font-size:.82rem}
+.jn-say{
+  margin:8px 0 0;font-size:.86rem;line-height:1.5;
+  color:#2c6e49;background:rgba(44,110,73,.08);
+  border:1px solid rgba(44,110,73,.28);border-radius:8px;padding:7px 10px;
+}
+.jn-say.work{color:#8a6d1f;background:rgba(154,110,28,.08);
+             border-color:rgba(154,110,28,.3)}

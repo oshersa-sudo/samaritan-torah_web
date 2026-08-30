@@ -20,6 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, 'scripts'))
 import additions as ADD
 import media_push as PUSH
+import merges as MERGE
 import overrides as OVR
 import people as PEOPLE
 import removed as GONE
@@ -271,6 +272,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.api_delete_recording()
         if p == '/api/restore_recording':
             return self.api_restore_recording()
+        if p == '/api/merge_tracks':
+            return self.api_merge_tracks()
         self.send_error(404)
 
     # ------------------------------------------------------------- catalog
@@ -284,9 +287,132 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         cat = ADD.merge(cat, ADD.load())
         cat = GONE.apply(cat, GONE.keys())        # deletions win over everything
         cat = OVR.apply(cat, OVR.load(), include_hidden=admin)
+        # after the edits, never before: an override is keyed on the first
+        # track's path, and joining the tracks moves that key
+        cat = MERGE.apply(cat, MERGE.load())
         cat = PEOPLE.apply(cat, PEOPLE.load())
         cat['meta']['admin'] = admin
         self.json_out(cat)
+
+    # --------------------------------------------------------- joining tracks
+    def api_merge_tracks(self):
+        """Join several tracks of one recording into a single file.
+
+        The originals are never touched. The joined file is written beside the
+        uploads, under `added/`, which is the one place this program writes
+        audio and the one place the media server is fed from — so a recording
+        joined here is published exactly as an uploaded one is.
+
+        The joining decodes and re-encodes rather than pasting the files end to
+        end. Tracks off one tape are routinely not the same underneath — a side
+        digitised in mono at 22 kHz followed by one in stereo at 44 — and
+        pasted together they play as noise from the join onward. The concat
+        filter brings each to a common form first.
+        """
+        if not self.is_admin():
+            return self.json_out({'ok': False, 'error': 'unauthorized'}, 401)
+        try:
+            body = json.loads(self.read_body() or b'{}')
+        except ValueError:
+            return self.json_out({'ok': False, 'error': 'bad request'}, 400)
+
+        rec_id = body.get('rec')
+        picked = body.get('tracks')                # indexes, or all of them
+        undo = bool(body.get('undo'))
+
+        try:
+            with open(CATALOG, encoding='utf-8') as fh:
+                cat = json.load(fh)
+        except OSError:
+            return self.json_out({'ok': False, 'error': 'catalog missing'}, 500)
+        cat = ADD.merge(cat, ADD.load())
+        cat = GONE.apply(cat, GONE.keys())
+        cat = OVR.apply(cat, OVR.load(), include_hidden=True)
+        rec = next((r for r in cat['recordings'] if r['id'] == rec_id), None)
+        if not rec:
+            return self.json_out({'ok': False, 'error': 'ההקלטה לא נמצאה'}, 404)
+
+        book = MERGE.load()
+        key = MERGE.key_of(rec)
+
+        if undo:
+            if book.pop(key, None) is None:
+                return self.json_out({'ok': False, 'error': 'לא היה כאן איחוד'}, 400)
+            MERGE.save(book)
+            return self.json_out({'ok': True, 'undone': True})
+
+        src = rec.get('orig') or rec['tr']         # always join the originals
+        idx = [i for i in (picked or range(len(src))) if 0 <= i < len(src)]
+        if len(idx) < 2:
+            return self.json_out(
+                {'ok': False, 'error': 'צריך לפחות שתי רצועות לאיחוד'}, 400)
+
+        paths = []
+        for i in idx:
+            rel = src[i]['f'].replace('/', os.sep)
+            if rel.startswith('added' + os.sep):
+                full = os.path.join(ADDED, rel[len('added') + 1:])
+            else:
+                full = os.path.join(ARCHIVE, rel)
+            if not os.path.isfile(full):
+                return self.json_out(
+                    {'ok': False,
+                     'error': 'הקובץ אינו על הכונן: ' + src[i]['f']}, 404)
+            paths.append(full)
+
+        folder = os.path.join(ADDED, 'merged')
+        os.makedirs(folder, exist_ok=True)
+        base = safe_name(rec.get('ttl') or 'recording', 'recording')[:70]
+        dest = os.path.join(folder, base + '.mp3')
+        n = 2
+        while os.path.exists(dest):                # never overwrite
+            dest = os.path.join(folder, '%s (%d).mp3' % (base, n))
+            n += 1
+
+        cmd = ['ffmpeg', '-v', 'error', '-y']
+        for f in paths:
+            cmd += ['-i', f]
+        cmd += ['-filter_complex',
+                ''.join('[%d:a]' % i for i in range(len(paths)))
+                + 'concat=n=%d:v=0:a=1[out]' % len(paths),
+                '-map', '[out]', '-c:a', 'libmp3lame', '-b:a', '192k', dest]
+        try:
+            r = subprocess.run(cmd, capture_output=True, text=True,
+                               encoding='utf-8', errors='replace', timeout=3600)
+        except FileNotFoundError:
+            return self.json_out(
+                {'ok': False, 'error': 'ffmpeg אינו מותקן על המחשב הזה'}, 500)
+        except subprocess.TimeoutExpired:
+            return self.json_out({'ok': False, 'error': 'האיחוד ארך זמן רב מדי'}, 500)
+        if r.returncode or not os.path.isfile(dest):
+            return self.json_out(
+                {'ok': False, 'error': 'ffmpeg נכשל: ' + (r.stderr or '')[-300:]},
+                500)
+
+        rel = 'added/' + os.path.relpath(dest, ADDED).replace(os.sep, '/')
+        secs = probe_duration(dest) or sum(src[i].get('s') or 0 for i in idx)
+        joined = {'f': rel, 's': secs, 'n': rec.get('ttl') or 'הקלטה מאוחדת'}
+
+        # what the recording now holds: the joined file where the first of the
+        # chosen tracks stood, and any track not chosen left exactly as it was
+        tracks, put = [], False
+        for i, t in enumerate(src):
+            if i in idx:
+                if not put:
+                    tracks.append(joined)
+                    put = True
+                continue
+            tracks.append({'f': t['f'], 's': t.get('s') or 0,
+                           'n': t.get('n') or ''})
+
+        book[key] = {'tracks': tracks, 'file': rel, 'seconds': secs,
+                     'parts': [src[i]['f'] for i in idx],
+                     'title': rec.get('ttl', '')}
+        MERGE.save(book)
+        PUSH.push(rel)                             # up to the media server
+        return self.json_out({'ok': True, 'file': rel, 'seconds': secs,
+                              'tracks': len(tracks), 'joined': len(idx),
+                              'size': os.path.getsize(dest)})
 
     # ------------------------------------------------------------- deletion
     def api_delete_recording(self):

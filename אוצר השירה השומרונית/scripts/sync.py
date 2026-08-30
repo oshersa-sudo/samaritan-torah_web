@@ -26,7 +26,7 @@ PUBLISH = ['index.html', 'unit.css', 'unit.js', 'serve.py', 'app.py',
            'desktop.py', 'VERSION', 'CHANGELOG.md',
            'data/catalog.json',
            'data/overrides.json', 'data/additions.json',
-           'data/performers.json', 'data/removed.json',
+           'data/performers.json', 'data/removed.json', 'data/merges.json',
            'data/pix_sources.json', 'data/local_media.json',
            'scripts', 'sounds', 'img', 'fonts', 'README.md']
 

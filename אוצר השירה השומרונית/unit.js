@@ -432,6 +432,16 @@ function playRec(recId, idx, quiet) {
   au.src = audioURL(t.f);
   vuPeak = 0;                            // the meter re-learns this tape's loudness
   bandDrop();          // another file: another key, another mode, another tuning
+
+  // A new piyyut arrives without the last one's effects on it.
+  //
+  // The desk is a place to work on ONE recording: an echo that suited a hall,
+  // a hum notch cut for the mains of one particular tape, a level pushed up
+  // because that tape was quiet. All of it belongs to that tape and to no
+  // other, and carrying it over means hearing the next recording through the
+  // last one's faults. Moving between the tracks OF one recording changes
+  // nothing, because that is the same tape.
+  if (!sameRec) mixWipe();
   if (!quiet && !sameRec) sfx('play');   // the deck's own click
   mixInit();                            // the chain must exist before playback
   if (MIX.ctx && MIX.ctx.state === 'suspended') MIX.ctx.resume();
@@ -2153,19 +2163,23 @@ function levelTick() {
 // a new recording starts the matcher's memory again
 au.addEventListener('loadstart', () => { matchPeak = 0; });
 
-/* One sprung lever puts everything back: the faders flat and every effect
- * out. It flies up on the press and drops again on its own, the way a
- * momentary switch does. */
-$('mixReset').onclick = () => {
-  const sw = $('mixReset');
-  sw.classList.add('fired');
-  setTimeout(() => sw.classList.remove('fired'), 190);
+/* Everything back: the faders flat and every effect out. */
+function mixWipe(note) {
   FX.echo = 0; FX.pitch = 0; FX.mode = 'mFlat';
   FX.denoise = FX.limit = FX.match = false;
   matchPeak = 0;                    // the matcher forgets what it had learnt
   mixSet(PRESET.mFlat.v);
   fxApply();
-  $('mixNote').textContent = 'הכול אופס';
+  $('mixNote').textContent = note || '';
+}
+
+/* One sprung lever does it by hand. It flies up on the press and drops again
+ * on its own, the way a momentary switch does. */
+$('mixReset').onclick = () => {
+  const sw = $('mixReset');
+  sw.classList.add('fired');
+  setTimeout(() => sw.classList.remove('fired'), 190);
+  mixWipe('הכול אופס');
 };
 
 try {
@@ -4586,6 +4600,9 @@ function showAdminUI(redraw) {
   $('pendBtn').classList.toggle('hidden', !ADMIN.token);
   if (ADMIN.token) drawPending();
   $('perfBtn').classList.toggle('hidden', !ADMIN.token);
+  // joining reads the files off the drive and writes a new one, so it exists
+  // only where the drive is — never in the read-only copy on the web
+  $('joinBtn').classList.toggle('hidden', !ADMIN.token || !!(C && C.meta.readonly));
   // publishing exists only in the local copy — the cloud has nowhere to push
   $('syncBtn').classList.toggle('hidden', !ADMIN.token || !!(C && C.meta.readonly));
   $('adminFlag').classList.toggle('hidden', !ADMIN.token);
@@ -4593,6 +4610,138 @@ function showAdminUI(redraw) {
   if (ADMIN.token) loadTrash();
   if (redraw && C) draw();               // edit affordances appear on login
 }
+
+/* ------------------------------------------------ איחוד רצועות (מנהל בלבד)
+ *
+ * Some tapes were digitised a side at a time, or in whatever lengths the
+ * machine that read them happened to produce, so one continuous piece of
+ * singing arrives as four files with a seam between each. This joins them
+ * into one.
+ *
+ * Nothing on the drive is touched. The joined file is written beside the
+ * uploads and the archive is left exactly as it was, which is why the join
+ * can be undone afterwards by forgetting it rather than by rebuilding
+ * anything. Only recordings that actually have more than one track are
+ * offered, because there is nothing to do to the others.
+ */
+const JOIN = { rec: null, busy: false };
+
+function joinOpen() {
+  $('jnSearch').value = '';
+  $('jnErr').classList.add('hidden');
+  $('jnSay').classList.add('hidden');
+  JOIN.rec = null;
+  $('jnPick').classList.add('hidden');
+  $('jnGo').disabled = true;
+  $('jnUndo').classList.add('hidden');
+  joinList();
+  $('joinModal').classList.remove('hidden');
+}
+
+function joinCandidates() {
+  return C.recordings
+    .filter(r => (r.orig || r.tr || []).length > 1 || r.merged)
+    .sort((a, b) => (a.ttl || '').localeCompare(b.ttl || '', 'he'));
+}
+
+function joinList() {
+  // the archive's own search, word for word: recHay folds the recording once
+  // and hits() matches every term against it, so the same part of a name that
+  // finds a recording in the index finds it here
+  const ts = terms($('jnSearch').value || '');
+  const rows = joinCandidates()
+    .filter(r => { if (!ts.length) return true; recHay(r); return hits(r._hay, r._low, ts); })
+    .slice(0, 80);
+  $('jnList').innerHTML = rows.map(r => {
+    const n = (r.orig || r.tr).length;
+    return `<button class="jn-row${JOIN.rec === r.id ? ' on' : ''}" data-jn="${r.id}">
+      ${esc(r.ttl)}
+      <small>${esc(perfName(r.p))} · ${n} רצועות · ${hours(r.s)}${
+        r.merged ? ' · מאוחדת' : ''}</small></button>`;
+  }).join('') || '<div class="jn-row">לא נמצאה הקלטה מתאימה</div>';
+  $('jnList').querySelectorAll('[data-jn]').forEach(b => {
+    b.onclick = () => joinPick(+b.dataset.jn);
+  });
+}
+
+function joinPick(id) {
+  const r = byId(C.recordings, id);
+  if (!r) return;
+  JOIN.rec = id;
+  const src = r.orig || r.tr;
+  $('jnHead').textContent = `${r.ttl} · ${perfName(r.p)}`;
+  $('jnTracks').innerHTML = src.map((t, i) =>
+    `<label><input type="checkbox" data-i="${i}" checked>
+       <span>${i + 1}. ${esc(trackName(r, i) || t.f.split('/').pop())}</span>
+       <span class="d">${dur(t.s)}</span></label>`).join('');
+  $('jnPick').classList.remove('hidden');
+  $('jnUndo').classList.toggle('hidden', !r.merged);
+  $('jnSay').classList.add('hidden');
+  $('jnErr').classList.add('hidden');
+  joinCount();
+  joinList();
+  $('jnTracks').querySelectorAll('input').forEach(c => c.onchange = joinCount);
+}
+
+function joinChosen() {
+  return [...$('jnTracks').querySelectorAll('input:checked')].map(c => +c.dataset.i);
+}
+
+function joinCount() {
+  const n = joinChosen().length;
+  $('jnGo').disabled = JOIN.busy || n < 2;
+  $('jnGo').textContent = n > 1 ? `אחד ${n} רצועות לקובץ אחד` : 'אחד לקובץ אחד';
+}
+
+function joinSay(msg, working) {
+  const el = $('jnSay');
+  el.textContent = msg;
+  el.classList.toggle('work', !!working);
+  el.classList.remove('hidden');
+}
+
+async function joinRun(undo) {
+  if (JOIN.busy || !JOIN.rec) return;
+  const r = byId(C.recordings, JOIN.rec);
+  JOIN.busy = true;
+  $('jnGo').disabled = true;
+  $('jnErr').classList.add('hidden');
+  joinSay(undo ? 'מבטל…'
+               : 'מאחד — פענוח, השוואת קצב הדגימה וכתיבת קובץ אחד. הקלטה ארוכה '
+               + 'עשויה לקחת דקה או שתיים.', true);
+  try {
+    const res = await fetch('api/merge_tracks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json',
+                 'X-Admin-Token': ADMIN.token },
+      body: JSON.stringify(undo ? { rec: JOIN.rec, undo: 1 }
+                                : { rec: JOIN.rec, tracks: joinChosen() }),
+    });
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || 'האיחוד נכשל');
+    await loadCatalog();                       // the recording now reads as one
+    if (undo) {
+      joinSay('האיחוד בוטל. ההקלטה חזרה לרצועות המקוריות שלה.');
+    } else {
+      joinSay(`אוחדו ${j.joined} רצועות לקובץ אחד · ${hours(j.seconds)} · `
+              + `${(j.size / 1048576).toFixed(1)} מגה. הקבצים המקוריים לא נגעו.`);
+    }
+    const again = byId(C.recordings, JOIN.rec);
+    if (again) joinPick(again.id);
+    if (cur.rec === JOIN.rec) playRec(JOIN.rec, 0, true);   // reload what plays
+  } catch (e) {
+    $('jnErr').textContent = String(e.message || e);
+    $('jnErr').classList.remove('hidden');
+    $('jnSay').classList.add('hidden');
+  }
+  JOIN.busy = false;
+  joinCount();
+}
+
+$('joinBtn').onclick = joinOpen;
+$('jnSearch').addEventListener('input', joinList);
+$('jnGo').onclick   = () => joinRun(false);
+$('jnUndo').onclick = () => joinRun(true);
 
 /* ------------------------------------------------------------ סל המחזור */
 let TRASH = [];

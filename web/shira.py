@@ -38,6 +38,7 @@ _SCRIPTS = os.path.join(UNIT, 'scripts')
 if _SCRIPTS not in sys.path:
     sys.path.append(_SCRIPTS)
 import additions as ADD          # noqa: E402
+import merges as MERGE           # noqa: E402
 import overrides as OVR          # noqa: E402
 import people as PEOPLE          # noqa: E402
 import removed as GONE           # noqa: E402
@@ -91,6 +92,9 @@ def api_catalog():
     cat = ADD.merge(cat, ADD.load())
     cat = GONE.apply(cat, GONE.keys())            # deletions win over everything
     cat = OVR.apply(cat, OVR.load(), include_hidden=False)
+    # tracks joined into one file, after the edits and never before: an
+    # override is keyed on the first track's path, and joining moves that key
+    cat = MERGE.apply(cat, MERGE.load())
     cat = PEOPLE.apply(cat, PEOPLE.load())
     cat['meta']['admin'] = False
     # the page reads these to know it is the online copy: it takes the
