@@ -341,30 +341,6 @@ body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
   .pfire, .psparks i{ animation:none; }
   .psparks, .pfirecv, .pscar, .pscraps{ display:none; }
 }
-/* ── the writing turns from one hand into the other ─────────────────────────
-   While the page burns, the same words are seen now in the square Hebrew face
-   and now in the Samaritan one, turn and turn about (startPoemFaces).
-   It is a change of FACE and nothing else: the same characters, in the same
-   cells, at the same font-size — so the page is neither re-measured nor
-   re-lit, and keeps its size and its burn right through the change. Both
-   lettered layers carry the class together — the charred letters that are read
-   and the ember within them — or the two would part company.
-
-   The Samaritan face is the wider hand by far — some two and a half times the
-   square Hebrew, word for word — so it is not simply put on: the two columns
-   are first frozen at the width the Hebrew gave them (the grid's own
-   grid-template-columns, pinned in px), and the Samaritan is then set at the
-   size that refills exactly that width (--samk, measured on the poem itself
-   rather than guessed — see measurePoemFace). Every line therefore begins and
-   ends where it began and ended, and the words spread across the same span,
-   because the cell justifies them either way. The line-height is divided back
-   out by the same factor, so a row keeps its height too and nothing below it
-   moves. The upshot: the block the fire was laid from does not move a pixel. */
-.bkpoem-grid.samface .bkpoem-cell{
-  font-family:'Samaritan','Hebrew',serif;
-  font-size:calc(1em * var(--samk,.5));
-  line-height:calc(1.45 / var(--samk,.5)); }
-
 /* nowrap keeps the half on one line; justifying the last line (which is also the
    only line) spreads its words across the whole column, so the colons line up */
 .bkpoem-cell{ text-align:justify; text-align-last:justify; }

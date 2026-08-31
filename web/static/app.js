@@ -1954,56 +1954,6 @@ function watchPoemCover(){
     document.body.classList.toggle('poem-off', cov);   // stops the CSS flame and sparks too
   }, 500);
 }
-const FACE_TURN = 3200;                    // how long one hand is held, in ms
-let _faceStop = null;
-// The Samaritan hand is the wider one — about two and a half times the square
-// Hebrew, and not by a constant: 'מגן' swells threefold where 'משקה' swells by
-// under two. So the size it must be set at is measured rather than assumed, and
-// measured on the poem itself: put the hand on, read the width, take it off.
-// Nothing is painted in between — it is all one task — so the page does not
-// so much as blink, and the fire, which is not touched at all, burns on.
-// The columns are then pinned at the width the Hebrew gave them, so that
-// neither hand can widen the poem afterwards.
-function measurePoemFace(grid){
-  const cells = grid.querySelectorAll('.bkpoem-cell');
-  if(!cells.length) return;
-  const colOf = n => { let w = 0;                       // widest cell in a column
-    for(let i = n; i < cells.length; i += 2) w = Math.max(w, cells[i].getBoundingClientRect().width);
-    return w; };
-  grid.style.gridTemplateColumns = '';                  // measure unpinned
-  grid.classList.remove('samface');
-  const he = grid.getBoundingClientRect().width, c1 = colOf(0), c2 = colOf(1);
-  grid.classList.add('samface');
-  grid.style.setProperty('--samk', '1');                // at its own full size
-  const sam = grid.getBoundingClientRect().width;
-  grid.classList.remove('samface');
-  grid.style.removeProperty('--samk');
-  if(!he || !sam) return;
-  // a shade under the exact ratio: rounding must never leave the hand too wide
-  grid.style.setProperty('--samk', (he / sam * .995).toFixed(4));
-  grid.style.gridTemplateColumns = c1.toFixed(2) + 'px ' + c2.toFixed(2) + 'px';
-}
-function startPoemFaces(){
-  if(_faceStop){ _faceStop(); _faceStop = null; }
-  // a reader who asked for stillness is not shown the writing changing under them
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const stack = document.querySelector('.ornframe .bkpoem-stack');
-  const grids = stack && stack.querySelectorAll('.bkpoem-grid');
-  if(!grids || !grids.length) return;
-  for(const g of grids) measurePoemFace(g);
-  let sam = false;
-  const id = setInterval(() => {
-    // the poem may go while the fire is still counting; it takes itself off
-    if(!document.body.contains(stack)){ clearInterval(id); _faceStop = null; return; }
-    if(_poemCovered) return;              // nothing to see; hold the hand it is on
-    sam = !sam;
-    for(const g of grids) g.classList.toggle('samface', sam);
-  }, FACE_TURN);
-  _faceStop = () => {
-    clearInterval(id);
-    for(const g of grids) g.classList.remove('samface');
-  };
-}
 // the wringing itself: fractal noise driving a displacement map, its frequency
 // and seed always on the move, which is what keeps the flame alive
 function fireDefs(){
@@ -2050,9 +2000,6 @@ function bookPoem(){
   // compositing; and again once the Torah face is in, since it is measured.
   setTimeout(fitBookPoem, 0);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitBookPoem);
-  // and once it is lettered and alight, the hands begin to turn. Kept apart from
-  // fitBookPoem: a resize re-lays the flame, but must not restart the turning.
-  setTimeout(startPoemFaces, 0);
   setTimeout(watchPoemCover, 0);
   return wrap;
 }
@@ -2067,17 +2014,7 @@ function fitBookPoem(){
   // the flame and the plume are drawn from the same words and must be lettered
   // to the same size, or the fire would part from what is burning
   const size = v => { for(const g of wrap.querySelectorAll('.bkpoem-grid')) g.style.fontSize = v; };
-  // The poem turns into the Samaritan hand while it burns (startPoemFaces), and
-  // the two hands do not measure alike. Always measure in the face the poem is
-  // set in: a size taken off the Samaritan hand would shift the poem under the
-  // reader the moment it turned back. The hand is put back before we leave,
-  // whichever way we leave — so the turning itself never notices.
-  const turned = [...wrap.querySelectorAll('.bkpoem-grid.samface')];
-  for(const g of turned) g.classList.remove('samface');
-  // and the columns come off their pins, or the poem would be measured at the
-  // width it was last pinned to instead of the width it actually wants
-  for(const g of wrap.querySelectorAll('.bkpoem-grid')) g.style.gridTemplateColumns = '';
-  try{ fitInBaseFace(); } finally { for(const g of turned) g.classList.add('samface'); }
+  fitInBaseFace();
 
   function fitInBaseFace(){
     // the room is the frame's CONTENT box: clientWidth still carries its padding
@@ -2103,9 +2040,6 @@ function fitBookPoem(){
     const tall = grid.getBoundingClientRect().height;
     if(room > 0 && tall > room)
       size(Math.max(POEM_MIN, px * room / tall).toFixed(2) + 'px');
-    // the type has a new size, so the Samaritan hand needs a new one too, and
-    // the columns new pins. This re-measures; it does not restart the turning.
-    for(const g of wrap.querySelectorAll('.bkpoem-grid')) measurePoemFace(g);
     startPoemFire();        // the letters have moved; the flame must be re-laid
   }
 }
