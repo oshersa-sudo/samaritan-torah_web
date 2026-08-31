@@ -632,13 +632,25 @@ body.poem-off .pfire, body.poem-off .psparks i{ animation-play-state:paused; }
          user-select:none; -webkit-user-select:none; }
 /* Over the toolbar the shadow lands on navy, not on cream, and the shadow above
    was mixed for cream — on navy it is all but invisible, and the bar looks stuck
-   to the toolbar rather than held above it. While the bar is docked it therefore
-   throws a heavier one: a longer, wider fall for the height, and a tight dark
-   line right under the rim so the bar has an edge to end at. */
+   to the toolbar rather than held above it.
+
+   So while the bar is docked it throws a heavier one, and throws it FAR ENOUGH
+   TO LAND: the bar rides ten pixels clear of the toolbar, and a shadow that
+   fades out in twenty never reaches the thing it is meant to fall on. This one
+   carries some forty-five pixels past the bar's foot, so a band across the top
+   of the toolbar is visibly darkened and the bar reads as hanging over it.
+
+   Neutral dark grey, not the navy-black it was: over the toolbar's own blue a
+   blue shadow tints rather than dims, and dimming is the whole point.
+
+   Three layers, each doing one job — the long fall that darkens the toolbar,
+   a middle that keeps it from banding, and a tight line right under the rim so
+   the bar has an edge to end at. The bar paints above the toolbar (z-index 5
+   against its z-index:auto), so the shadow lands on it rather than under it. */
 body.nav-docked:not(.nav-hidden):not(.nav-flip) #navbar{
-  box-shadow:0 14px 30px -6px rgba(9,16,38,.55),
-             0 6px 12px -3px rgba(9,16,38,.45),
-             0 2px 4px rgba(9,16,38,.35); }
+  box-shadow:0 18px 28px -8px rgba(26,26,28,.52),
+             0 8px 14px -4px rgba(26,26,28,.42),
+             0 3px 5px rgba(26,26,28,.42); }
 #navbar button:focus{ outline:none; }
 #navbar button:focus-visible{ outline:2px solid var(--active); outline-offset:2px; }  /* keyboard only */
 /* the bar is out of sight until the screen is touched */
@@ -681,6 +693,38 @@ body.nav-reserve.has-spread #spreadBtn{ margin-bottom:var(--nav-clear, 46px); }
    disappears there — so while the bar is docked it deepens. */
 #toolbar{ position:relative; }
 #toolbar > *{ position:relative; z-index:1; }
+
+/* ── the socket, cast instead of cut ─────────────────────────────────────────
+   A drop shadow says the bar is above the toolbar. It does not say the toolbar
+   is HOLLOWED for it, and that is what the bay used to say. The difference is
+   shape: a drop shadow is the bar's own outline blurred, even in depth from end
+   to end, while a socket is deepest under the middle of the bar and runs out to
+   nothing at its two ends.
+
+   So the darkening is given that shape directly — the same half-ellipse the bay
+   was once cut as, in the same place and to the same width (--nav-w, published
+   by placeNavbar and following the bar as it grows a label), only painted as
+   shade rather than removed as a hole. Nothing is cut, nothing shows through:
+   the toolbar's edge stays straight and the toolbar keeps every pixel it has.
+
+   It is laid ABOVE the buttons (z-index 2 against their 1), because a socket
+   that stops at the row of buttons is a socket with a floor: the two central
+   buttons have to darken along with the ground they sit on, or the eye reads a
+   stain rather than a hollow. It takes no pointer events, so nothing beneath it
+   is any harder to press.
+
+   Wider than the bar by a margin at each end, so the shade fades out into the
+   toolbar instead of ending on a line. */
+#toolbar::before{ content:''; position:absolute; z-index:2; pointer-events:none;
+  left:50%; transform:translateX(-50%); top:0;
+  --sock-w:calc(var(--nav-w, 240px) + 96px);
+  --sock-d:40px;
+  width:var(--sock-w); height:var(--sock-d);
+  background:radial-gradient(ellipse calc(var(--sock-w) / 2) var(--sock-d) at 50% 0,
+             rgba(12,12,14,.58) 0%, rgba(12,12,14,.40) 42%,
+             rgba(12,12,14,.18) 72%, rgba(12,12,14,0) 100%);
+  opacity:0; transition:opacity .22s ease; }
+body.nav-docked:not(.nav-hidden):not(.nav-flip) #toolbar::before{ opacity:1; }
 
 /* ── the pin ─────────────────────────────────────────────────────────────────
    It stands among the chapter's own signs, beside the bookmark, because what it
