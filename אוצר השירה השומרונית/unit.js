@@ -10,6 +10,149 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
   c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+/* ---- marking what was found, so a result explains itself.
+ *
+ * The match is made against a folded text — final letters opened out,
+ * punctuation turned to spaces, quotes dropped — and none of that text is
+ * what the reader sees. Marking the folded form and showing it would put
+ * "מ" where the name ends in "ם". So the folding is done again here one
+ * character at a time, keeping for every folded character the place it came
+ * from, and the marks are put back on the original by those positions. */
+function foldMap(s) {
+  s = String(s == null ? '' : s);
+  let f = '';
+  const at = [];
+  let space = false;
+  for (let i = 0; i < s.length; i++) {
+    let c = s[i].toLowerCase();
+    if ('"\'`׳״'.includes(c)) continue;                 // dropped entirely
+    if (/[-–—_/\\|,.;:()\[\]{}!?׃־\s]/.test(c)) {      // any of these is a space
+      if (!f.length || space) continue;                 // no leading or doubled
+      f += ' '; at.push(i); space = true;
+      continue;
+    }
+    space = false;
+    c = ({ 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' })[c] || c;
+    f += c; at.push(i);
+  }
+  while (f.endsWith(' ')) { f = f.slice(0, -1); at.pop(); }
+  return { f, at };
+}
+
+/* the text, escaped, with every place the query matched wrapped in <mark> */
+function mark(text, ts) {
+  const raw = String(text == null ? '' : text);
+  if (!ts || !ts.length) return esc(raw);
+  const { f, at } = foldMap(raw);
+  if (!f) return esc(raw);
+  const hit = new Array(raw.length).fill(false);
+  const low = f.replace(/[אהוי]/g, '');
+  for (const t of ts) {
+    if (!t) continue;
+    // where the word itself appears
+    for (let i = f.indexOf(t); i >= 0; i = f.indexOf(t, i + 1)) {
+      for (let k = i; k < i + t.length; k++) hit[at[k]] = true;
+    }
+    // and where it appears only once the vowel letters are dropped, which is
+    // how one Samaritan spelling finds another. The vowel-less text has its
+    // own positions, so they are walked back to the folded ones.
+    const lt = looseUsable(t);
+    if (!lt || f.includes(t)) continue;
+    const back = [];
+    for (let i = 0; i < f.length; i++) if (!'אהוי'.includes(f[i])) back.push(i);
+    for (let i = low.indexOf(lt); i >= 0; i = low.indexOf(lt, i + 1)) {
+      // The whole run is lit, not only the consonants that matched. A match
+      // made without the vowel letters skips the ones it does not use, and
+      // marking only those it touched breaks the word open — "שבוח" came out
+      // as "שב" and "ח" with a hole where the ו stood, which reads as two
+      // matches rather than one word.
+      const from = at[back[i]], to = at[back[i + lt.length - 1]];
+      for (let k = from; k <= to; k++) hit[k] = true;
+    }
+  }
+  let out = '', open = false;
+  for (let i = 0; i < raw.length; i++) {
+    if (hit[i] && !open) { out += '<mark>'; open = true; }
+    else if (!hit[i] && open) { out += '</mark>'; open = false; }
+    out += esc(raw[i]);
+  }
+  return out + (open ? '</mark>' : '');
+}
+
+/* what is being looked for right now — every view marks against this */
+function qterms() { return terms(F.q); }
+
+/* does this text answer the query at all? */
+function touched(text, ts) {
+  if (!ts || !ts.length || !text) return false;
+  const f = fold(text), l = loose(f);
+  return ts.some(t => f.includes(t)
+                   || (looseUsable(t) && l.includes(looseUsable(t))));
+}
+
+/* A window onto the match, not the first line of the text.
+ *
+ * An editor's note runs to several sentences and the word that was searched
+ * for is rarely in the first few — cut from the start, the very quotation
+ * meant to show why a row is listed arrived with the match cut off it, and
+ * five rows out of three thousand ended up quoting something with nothing
+ * lit in it. So the cut is made around the match. */
+function snippet(val, ts, width) {
+  const raw = String(val == null ? '' : val);
+  width = width || 52;
+  if (raw.length <= width) return raw;
+  const { f, at } = foldMap(raw);
+  const low = f.replace(/[אהוי]/g, '');
+  let where = -1;
+  for (const t of ts) {
+    let i = f.indexOf(t);
+    if (i < 0) {
+      const lt = looseUsable(t);
+      if (lt) {
+        const back = [];
+        for (let k = 0; k < f.length; k++) if (!'אהוי'.includes(f[k])) back.push(k);
+        const j = low.indexOf(lt);
+        if (j >= 0) i = back[j];
+      }
+    }
+    if (i >= 0) { where = at[i]; break; }
+  }
+  if (where < 0) return raw.slice(0, width - 1) + '…';
+  let from = Math.max(0, where - Math.floor(width / 3));
+  let to = Math.min(raw.length, from + width);
+  from = Math.max(0, to - width);
+  return (from > 0 ? '…' : '') + raw.slice(from, to) + (to < raw.length ? '…' : '');
+}
+
+/* ---- why a row is on the list, when its own name does not say so.
+ *
+ * A piyyut reaches the list because one of ITS RECORDINGS answers the query —
+ * most often through the singer. Nothing in the card then carries a mark, and
+ * a result with no visible reason reads as a fault in the search: type a
+ * singer's name on the piyyutim tab and fifty-eight cards appear, none of
+ * which contains the name anywhere. So the first thing that actually matched
+ * is named and shown, marked, under the card's own line.
+ */
+function whyRow(recs, ts) {
+  if (!ts || !ts.length || !recs || !recs.length) return '';
+  for (const r of recs) {
+    for (const [label, val] of [['מבצע', perfName(r.p)], ['חג', eventName(r.e)],
+                                ['הקלטה', r.ttl], ['פיוט', piyName(r.y)],
+                                ['שנה', r.year], ['תיאור', r.desc],
+                                  ['הערה', r.note],
+                                  // a recording is findable by its own track
+                                  // names too, and now and then that is the
+                                  // only place the query appears at all
+                                  ['רצועה', (r.tr || []).map(t => t.n)
+                                              .filter(Boolean).join(' · ')]]) {
+      if (touched(val, ts)) {
+        return `<br><span class="why">${label}: ${mark(snippet(val, ts), ts)}</span>`;
+      }
+    }
+  }
+  return '';
+}
+
 let C = null;                                   // the catalog
 const F = { q: '', perf: 0, event: 0, piyyut: 0 };
 let tab = 'piyyut';
@@ -27,13 +170,37 @@ function hours(sec) {
 }
 
 /* Fold Samaritan spelling variants so a search for "בריך" also finds "בריכ". */
+/* Punctuation is a space, not a letter.
+ *
+ * Titles in this archive are full of it — "אשול-2-פתחה", "קריאה בתורה -
+ * בראשית" — and so is what people type when they copy a name they have just
+ * read. Treated as a character, a hyphen made the whole query one long word
+ * that appears nowhere: measured, "אז-ישר" returned nothing at all while
+ * "אז ישר" returned twenty-six, and "אושר-ששוני" nothing while
+ * "אושר ששוני" returned fifty-nine. That is the whole of "it shows no
+ * results". Turned into a space it becomes two words, and both sides —
+ * the query and the text being searched — are folded the same way, so it
+ * makes no difference which of them the punctuation was in.
+ */
 function fold(s) {
   return (s || '').toLowerCase()
     .replace(/[ךםןףץ]/g, c => ({ 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' }[c]))
     .replace(/["'`׳״]/g, '')
+    .replace(/[-–—_/\\|,.;:()\[\]{}!?׃־]+/g, ' ')
     .replace(/\s+/g, ' ').trim();
 }
 function loose(s) { return fold(s).replace(/[אהוי]/g, ''); }
+
+/* The spelling-blind form is only worth trying when something is left of the
+ * word. Dropping the vowel letters from a short one leaves a letter or two
+ * that appear in nearly everything: "אב" became "ב" and matched 733 of the
+ * 767 piyyutim, "אוש" became "ש" and matched 596. A search that widens as
+ * you type is worse than one that finds nothing, because it looks like it is
+ * working. Below three letters the word is matched only as it was written. */
+function looseUsable(t) {
+  const l = loose(t);
+  return l.length >= 3 ? l : '';
+}
 
 /* ---- matching what was typed against what there is.
  *
@@ -56,7 +223,7 @@ function terms(q) { return fold(q).split(/\s+/).filter(Boolean); }
 function hits(hay, low, ts) {
   for (const t of ts) {
     if (hay.includes(t)) continue;
-    const lt = loose(t);
+    const lt = looseUsable(t);
     if (lt && low.includes(lt)) continue;
     return false;
   }
@@ -173,10 +340,11 @@ function viewPiyyut() {
     });
     list = list.concat(extra.filter(p => !F.perf && !F.event));
   }
-  const count = {}, secs = {};
+  const count = {}, secs = {}, sample = {};
   recs.forEach(r => {
     count[r.y] = (count[r.y] || 0) + 1;
     secs[r.y]  = (secs[r.y] || 0) + r.s;
+    (sample[r.y] = sample[r.y] || []).push(r);
   });
   const s = SORT_STATE.piyyut;
   list.sort((a, b) =>
@@ -189,7 +357,9 @@ function viewPiyyut() {
     // an index must not go blank because one row lacks an optional list
     meta:  `${count[p.id] || p.n_rec} הקלטות · ${hours(p.seconds)}` +
            ((p.variants || []).length
-             ? `<br><span dir="auto">גם: ${esc(p.variants.slice(0, 3).join(' · '))}</span>` : ''),
+             ? `<br><span dir="auto">גם: ${mark(p.variants.slice(0, 3).join(' · '), ts)}</span>` : '') +
+           (touched(p.name, ts) || touched((p.variants || []).join(' '), ts)
+             ? '' : whyRow(sample[p.id], ts)),
     tags:  named(p.events || []).slice(0, 2).map(e => ({ t: e, cls: 'ev' }))
              .concat(p.note ? [{ t: 'הערת עורך', cls: '' }] : []),
     click: () => { F.piyyut = p.id; go('rec'); },
@@ -198,10 +368,11 @@ function viewPiyyut() {
 
 function viewPerf() {
   const recs = filtered('perf');
-  const count = {}, secs = {};
+  const count = {}, secs = {}, sample = {};
   recs.forEach(r => {
     count[r.p] = (count[r.p] || 0) + 1;
     secs[r.p]  = (secs[r.p] || 0) + r.s;
+    (sample[r.p] = sample[r.p] || []).push(r);
   });
   const ts = terms(F.q);
   const s = SORT_STATE.perf;
@@ -221,9 +392,10 @@ function viewPerf() {
     <div class="card person" data-card="${i}">
       ${photoHTML(p)}
       <div class="body">
-        <h3>${esc(p.name)}</h3>
+        <h3>${mark(p.name, ts)}</h3>
         <div class="meta">${count[p.id] || 0} הקלטות · ${hours(secs[p.id] || 0)} · ${p.n_piyyut} פיוטים${
-          p.years ? ` · ${esc(p.years)}` : ''}</div>
+          p.years ? ` · ${esc(p.years)}` : ''}${
+          touched(p.name, ts) ? '' : whyRow(sample[p.id], ts)}</div>
         ${p.bio ? `<div class="meta">${esc(p.bio)}</div>` : ''}
         ${p.credit ? `<div class="pf-credit">תמונה: ${esc(p.credit)}</div>` : ''}
         <div class="tags">${named(p.events).slice(0, 3)
@@ -242,10 +414,11 @@ function photoHTML(p) {
 
 function viewEvent() {
   const recs = filtered('event');
-  const count = {}, secs = {};
+  const count = {}, secs = {}, sample = {};
   recs.forEach(r => {
     count[r.e] = (count[r.e] || 0) + 1;
     secs[r.e]  = (secs[r.e] || 0) + r.s;
+    (sample[r.e] = sample[r.e] || []).push(r);
   });
   const ts = terms(F.q);
   const s = SORT_STATE.event;
@@ -259,7 +432,8 @@ function viewEvent() {
 
   return card_grid(list.map(e => ({
     title: e.name,
-    meta:  `${count[e.id] || 0} הקלטות · ${hours(secs[e.id] || 0)} · ${e.n_piyyut} פיוטים`,
+    meta:  `${count[e.id] || 0} הקלטות · ${hours(secs[e.id] || 0)} · ${e.n_piyyut} פיוטים` +
+           (touched(e.name, ts) ? '' : whyRow(sample[e.id], ts)),
     tags:  e.performers.slice(0, 3).map(p => ({ t: p, cls: '' })),
     click: () => { F.event = e.id; go('piyyut'); },
   })));
@@ -291,8 +465,9 @@ function viewRec() {
 }
 
 function recRow(r) {
-  const sub = [esc(perfName(r.p)), esc(eventName(r.e))];
-  if (r.year) sub.push(esc(r.year));
+  const ts = qterms();
+  const sub = [mark(perfName(r.p), ts), mark(eventName(r.e), ts)];
+  if (r.year) sub.push(mark(r.year, ts));
   if (r.n > 1) sub.push(`${r.n} רצועות`);
   if (r.parts) sub.push(`${r.parts} חלקים`);
   if (r.kind === 'video') sub.push('וידאו');
@@ -300,9 +475,20 @@ function recRow(r) {
     <button class="row-h" data-toggle="${r.id}">
       <span class="row-play" data-play="${r.id}" title="נגן">▶</span>
       <span class="row-t">
-        <span class="t">${esc(r.ttl)}</span>
+        <span class="t">${mark(r.ttl, ts)}</span>
         <span class="s">${sub.join(' · ')}</span>
-        ${r.desc && !r.from_desc ? `<span class="s">${esc(r.desc)}</span>` : ''}
+        ${r.desc && !r.from_desc ? `<span class="s">${mark(r.desc, ts)}</span>` : ''}
+        ${(() => {
+          // A row can be on the list for something it does not show: the
+          // editor's note, or the names of its own tracks. Measured on four
+          // rows of a search for "שבת" — every one of them was there for a
+          // note or a track name, and nothing on the row said so.
+          if (!ts.length) return '';
+          const seen = [r.ttl, perfName(r.p), eventName(r.e), r.year,
+                        (r.from_desc ? '' : r.desc)];
+          if (seen.some(v => touched(v, ts))) return '';
+          return whyRow([r], ts).replace('<br>', '');
+        })()}
       </span>
       <span class="qadd${inQueue(r.id) ? ' on' : ''}" data-q="${r.id}"
             title="${inQueue(r.id) ? 'הסר מרשימת ההשמעה' : 'הוסף לרשימת ההשמעה'}">${
@@ -315,12 +501,13 @@ function recRow(r) {
 
 function card_grid(items) {
   window._cards = items;
+  const ts = qterms();
   return '<div class="grid">' + items.map((it, i) =>
     `<button class="card" data-card="${i}">
-       <h3>${esc(it.title)}</h3>
+       <h3>${mark(it.title, ts)}</h3>
        <div class="meta">${it.meta}</div>
        ${it.tags && it.tags.length ? '<div class="tags">' + it.tags.map(t =>
-         `<span class="tag ${t.cls}">${esc(t.t)}</span>`).join('') + '</div>' : ''}
+         `<span class="tag ${t.cls}">${mark(t.t, ts)}</span>`).join('') + '</div>' : ''}
      </button>`).join('') + '</div>';
 }
 

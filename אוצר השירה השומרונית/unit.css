@@ -2300,3 +2300,25 @@ body{
 }
 .jn-say.work{color:#8a6d1f;background:rgba(154,110,28,.08);
              border-color:rgba(154,110,28,.3)}
+
+
+/* ------------------------------------------- what the search actually found
+   A result that cannot be explained looks like a mistake. The part of the
+   name the query matched is lit, so the reason a row is on the list is
+   visible in the row itself — including where it matched the singer or the
+   feast rather than the title. */
+mark{
+  background:rgba(214,168,58,.34);
+  color:inherit;border-radius:3px;padding:0 1px;
+  box-shadow:0 0 0 1px rgba(214,168,58,.4);
+}
+.row .s mark{background:rgba(214,168,58,.26);box-shadow:none}
+.tag mark{background:rgba(214,168,58,.42);box-shadow:none}
+
+/* the line that says where the query was actually found, when it was not
+   found in the name on the card */
+.why{
+  display:inline-block;margin-top:2px;font-size:.78rem;
+  color:var(--muted,#6b6355);
+}
+.why mark{background:rgba(214,168,58,.3);box-shadow:none}

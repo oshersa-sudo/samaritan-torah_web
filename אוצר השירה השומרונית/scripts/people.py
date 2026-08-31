@@ -30,12 +30,28 @@ def save(d):
     os.replace(tmp, PATH)
 
 
-def apply(catalog, meta):
+def apply(catalog, meta, renames=None):
     """Attach photo / bio / years onto the performer rows of a catalog, and
     carry in performers that were added by hand but hold no recording yet —
-    they have to be listed before anything can be assigned to them."""
+    they have to be listed before anything can be assigned to them.
+
+    A performer added by hand is stored here under the name they were added
+    with, and a rename made afterwards moves every other mention of that
+    person but not this one. Since this runs last, the old name is put back
+    into the list at the very end and the merge looks to have half-failed —
+    measured: of six names merged at once, one returned. So the renames are
+    read here as well and the keys follow them.
+    """
     if not meta:
         return catalog
+    if renames is None:
+        try:
+            import overrides as _OVR
+            renames = _OVR.renames(_OVR.load())
+        except Exception:                       # noqa: BLE001 — no edits yet
+            renames = {}
+    if renames:
+        meta = {renames.get(k, k): v for k, v in meta.items()}
     known = {p['name'] for p in catalog.get('performers', [])}
     for p in catalog.get('performers', []):
         m = meta.get(p['name'])
