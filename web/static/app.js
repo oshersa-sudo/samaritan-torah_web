@@ -7458,38 +7458,31 @@ function installPlatform(){
 const INSTALL_UI = {
   he:{ title:'הוספת התורה למסך הבית', sub:'גישה מהירה במסך מלא, גם ללא רשת.', install:'התקנת האפליקציה', close:'סגירה',
        hint_and:'ההתקנה מוסיפה אייקון למסך הבית ופותחת את האפליקציה במסך מלא.', hint_desk:'יתווסף קיצור לאפליקציה שייפתח בחלון נפרד.',
-       or:'או', pwa_h:'התקנה מהדפדפן', apk_h:'הורדת אפליקציית אנדרואיד', apk_sub:'קובץ התקנה להורדה ישירה למכשיר.',
-       apk_btn:'הורדת האפליקציה', apk_ver:'גרסה',
-       apk_note:'בסיום ההורדה פתח את הקובץ ואשר את ההתקנה. אם המכשיר שואל — אשר התקנה ממקור זה.' },
+       or:'או', pwa_h:'התקנה מהדפדפן', play_h:'אפליקציית אנדרואיד ב-Google Play', play_sub:'האפליקציה המלאה, עם עדכונים אוטומטיים מהחנות.',
+       play_btn:'הורדה מ-Google Play',
+       play_note:'התקנת בעבר את האפליקציה מקובץ שהורד מהאתר? הסר קודם את ההתקנה הקודמת, ואז התקן מהחנות.' },
   en:{ title:'Add the Torah to your home screen', sub:'Quick full-screen access, even offline.', install:'Install the app', close:'Close',
        hint_and:'Installing adds an icon to your home screen and opens the app full-screen.', hint_desk:'A shortcut will be added that opens in its own window.',
-       or:'or', pwa_h:'Install from the browser', apk_h:'Download the Android app', apk_sub:'An installer file, downloaded straight to your device.',
-       apk_btn:'Download the app', apk_ver:'version',
-       apk_note:'When the download finishes, open the file and confirm the installation. If your device asks, allow installing from this source.' },
+       or:'or', pwa_h:'Install from the browser', play_h:'The Android app on Google Play', play_sub:'The full app, kept up to date by the store.',
+       play_btn:'Get it on Google Play',
+       play_note:'Installed the app earlier from a file downloaded from this site? Uninstall that copy first, then install from the store.' },
   ar:{ title:'أضِف التوراة إلى الشاشة الرئيسية', sub:'وصول سريع بملء الشاشة، حتى دون اتصال.', install:'تثبيت التطبيق', close:'إغلاق',
        hint_and:'يضيف التثبيت أيقونة إلى شاشتك الرئيسية ويفتح التطبيق بملء الشاشة.', hint_desk:'ستتم إضافة اختصار يُفتح في نافذة مستقلة.',
-       or:'أو', pwa_h:'التثبيت من المتصفّح', apk_h:'تنزيل تطبيق أندرويد', apk_sub:'ملف تثبيت يُنزَّل مباشرةً إلى جهازك.',
-       apk_btn:'تنزيل التطبيق', apk_ver:'الإصدار',
-       apk_note:'عند انتهاء التنزيل افتح الملف وأكّد التثبيت. إذا سألك الجهاز، اسمح بالتثبيت من هذا المصدر.' },
+       or:'أو', pwa_h:'التثبيت من المتصفّح', play_h:'تطبيق أندرويد على Google Play', play_sub:'التطبيق الكامل، مع تحديثات تلقائية من المتجر.',
+       play_btn:'التنزيل من Google Play',
+       play_note:'هل ثبّتَّ التطبيق سابقًا من ملف نُزّل من هذا الموقع؟ أزِل تلك النسخة أولًا، ثم ثبّت التطبيق من المتجر.' },
 };
-// The signed APK, offered next to the PWA install on Android. Fetched once and
-// cached; when it isn't published the card simply omits the option rather than
-// offering a download that 404s.
-let APK_INFO = null;
-async function loadApkInfo(){
-  // with an admin token the answer also carries the download tally, which is
-  // why this is re-fetched on entering admin mode rather than cached for good
-  const q = ADMIN.token ? '?token=' + encodeURIComponent(ADMIN.token) : '';
-  try{ APK_INFO = await (await fetch('/api/apk_info' + q)).json(); }
-  catch(e){ APK_INFO = {available:false}; }
-  return APK_INFO;
-}
+// The Android app is on Google Play, offered next to the PWA install on Android.
+// It replaced a sideloaded APK the site used to serve, whose old link now
+// redirects here too (see /download/samaritan-torah.apk in server.py).
+const PLAY_URL = 'https://play.google.com/store/apps/details?id=net.thesamaritans.torah';
 const INSTALL_ICONS = {
   share:'<svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 1.5v12" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round"/><path d="M6 5l4-4 4 4" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9H3.2A1.2 1.2 0 0 0 2 10.2v9.1A1.2 1.2 0 0 0 3.2 20.5h13.6A1.2 1.2 0 0 0 18 19.3v-9.1A1.2 1.2 0 0 0 16.8 9H15" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   add:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2.2" y="2.2" width="17.6" height="17.6" rx="4.4" stroke="#1F3864" stroke-width="1.7"/><path d="M11 7v8M7 11h8" stroke="#B8860B" stroke-width="1.9" stroke-linecap="round"/></svg>',
   check:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   dots:'<svg width="6" height="22" viewBox="0 0 6 22" fill="none"><circle cx="3" cy="3" r="2.1" fill="#1F3864"/><circle cx="3" cy="11" r="2.1" fill="#1F3864"/><circle cx="3" cy="19" r="2.1" fill="#1F3864"/></svg>',
   down:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v10" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round"/><path d="M6 8.5l4 4 4-4" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 16.5h13" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round"/></svg>',
+  play:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5.5 3.2v13.6L16.5 10 5.5 3.2z" stroke="#FBF8F0" stroke-width="1.8" stroke-linejoin="round"/></svg>',
   warn:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2.5l8.7 15.1H2.3L11 2.5z" stroke="#B5731B" stroke-width="1.7" stroke-linejoin="round"/><path d="M11 8.5v4" stroke="#B5731B" stroke-width="1.8" stroke-linecap="round"/><circle cx="11" cy="15.4" r="1.05" fill="#B5731B"/></svg>',
   logo:'<svg width="30" height="30" viewBox="0 2 40 36" fill="none" aria-hidden="true"><defs><linearGradient id="gShoham" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2D77E"/><stop offset=".5" stop-color="#C9A227"/><stop offset="1" stop-color="#8A6A12"/></linearGradient></defs><path d="M13 12 Q20 7 27 12" stroke="#C9A227" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="20" cy="9.4" r="1.9" fill="#C9A227" stroke="#6E5210" stroke-width=".6"/><ellipse cx="27" cy="21.5" rx="6.4" ry="8.6" fill="url(#gShoham)" stroke="#6E5210" stroke-width="1"/><ellipse cx="24.9" cy="18" rx="2.1" ry="3" fill="#FBEFC0" opacity=".55"/><line x1="22.3" y1="20" x2="31.7" y2="20" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="21.9" y1="22.4" x2="32.1" y2="22.4" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="22.3" y1="24.8" x2="31.7" y2="24.8" stroke="#6E5210" stroke-width=".65" opacity=".4"/><ellipse cx="13" cy="21.5" rx="6.4" ry="8.6" fill="url(#gShoham)" stroke="#6E5210" stroke-width="1"/><ellipse cx="10.9" cy="18" rx="2.1" ry="3" fill="#FBEFC0" opacity=".55"/><line x1="8.3" y1="20" x2="17.7" y2="20" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="7.9" y1="22.4" x2="18.1" y2="22.4" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="8.3" y1="24.8" x2="17.7" y2="24.8" stroke="#6E5210" stroke-width=".65" opacity=".4"/></svg>',
 };
@@ -7498,23 +7491,15 @@ function instStep(glyph, html){
          (glyph?'<span class="pwa-glyph">'+glyph+'</span>':'')+
          '<span class="pwa-text">'+html+'</span></li>';
 }
-// the second install option: a direct download of the signed Android app
-function apkBlock(U){
-  if(!APK_INFO || !APK_INFO.available) return '';
-  const meta = [APK_INFO.version ? U.apk_ver+' '+APK_INFO.version : '',
-                APK_INFO.size_mb ? APK_INFO.size_mb+' MB' : ''].filter(Boolean).join(' · ');
-  // admin only: how many times the file has actually been downloaded, and when
-  const tally = (ADMIN.token && APK_INFO.downloads != null)
-    ? '<p class="pwa-tally">' + esc(t('apk_downloads')) + ' <b>' + APK_INFO.downloads + '</b>'
-      + (APK_INFO.last_download ? ' <span>· ' + esc(t('apk_last_dl')) + ' ' + esc(APK_INFO.last_download) + '</span>' : '')
-      + '</p>'
-    : '';
+// the second install option: the app on Google Play. The note is for whoever
+// installed the old sideloaded APK: it was signed with a different key than
+// Play's, so Play cannot install over it until that copy is removed.
+function playBlock(U){
   return '<div class="pwa-or"><span>'+U.or+'</span></div>'+
-         '<p class="pwa-opt-h">'+U.apk_h+'</p>'+
-         '<p class="pwa-opt-sub">'+U.apk_sub+(meta?' <span class="pwa-opt-meta">'+meta+'</span>':'')+'</p>'+
-         '<a class="pwa-btn" href="/download/samaritan-torah.apk" download>'+INSTALL_ICONS.down+' '+U.apk_btn+'</a>'+
-         tally +
-         '<p class="pwa-hint">'+U.apk_note+'</p>';
+         '<p class="pwa-opt-h">'+U.play_h+'</p>'+
+         '<p class="pwa-opt-sub">'+U.play_sub+'</p>'+
+         '<a class="pwa-btn" href="'+PLAY_URL+'" target="_blank" rel="noopener">'+INSTALL_ICONS.play+' '+U.play_btn+'</a>'+
+         '<p class="pwa-hint">'+U.play_note+'</p>';
 }
 function instBody(plat, L, U){
   const I = INSTALL_ICONS;
@@ -7527,16 +7512,15 @@ function instBody(plat, L, U){
                      instStep(I.dots,L.inapp[0])+instStep('',L.inapp[1])+instStep(I.share,L.inapp[2])+'</ul>';
   if(plat === 'ios-inapp') return inappSteps;
   if(plat === 'android' || plat === 'android-inapp'){
-    // Two ways in: install from the browser, or download the signed APK. The
-    // in-app browser can't do the first but downloads the second just fine, so
-    // the APK is the more useful option exactly where the PWA route is blocked.
+    // Two ways in: install from the browser, or get the app from Google Play. The
+    // in-app browser can't do the first but hands a Play link to the store app,
+    // so Play is the more useful option exactly where the PWA route is blocked.
     let browserWay;
     if(plat === 'android-inapp')  browserWay = inappSteps;
     else if(deferredInstall)      browserWay = btn+'<p class="pwa-hint">'+U.hint_and+'</p>';
     else                          browserWay = '<ul class="pwa-steps">'+instStep(I.dots,L.android[0])+
                                                instStep(I.add,L.android[1])+instStep(I.check,L.android[2])+'</ul>';
-    const apk = apkBlock(U);
-    return apk ? '<p class="pwa-opt-h">'+U.pwa_h+'</p>'+browserWay+apk : browserWay;
+    return '<p class="pwa-opt-h">'+U.pwa_h+'</p>'+browserWay+playBlock(U);
   }
   if(deferredInstall) return btn+'<p class="pwa-hint">'+U.hint_desk+'</p>';      // desktop
   return '<ul class="pwa-steps">'+instStep('',L.desktop[0])+instStep('',L.desktop[1])+'</ul>';
@@ -7580,10 +7564,6 @@ function renderInstallCard(){
 function doInstall(){
   $('installModal').classList.remove('hidden');
   renderInstallCard();
-  // the APK option appears as soon as its details arrive, so opening the card
-  // never waits on the network
-  // as an admin, always re-ask: the tally moves, and it is only in the admin answer
-  if(!APK_INFO || ADMIN.token) loadApkInfo().then(renderInstallCard);
 }
 
 function showInfo(title, html){
@@ -8135,7 +8115,6 @@ function adminLoggedIn(token){
   $('adminMenuItem').textContent='✓ '+t('m_admin');
   adminBadge(true);
   tellUnitsAdmin();
-  APK_INFO = null;                     // re-ask, so the download tally comes with it
   let extra = '';
   if(!ADMIN.webauthn && waSupported())
     extra = `<button class="admin-btn" onclick="waRegister()">${esc(t('wa_setup'))}</button>`;

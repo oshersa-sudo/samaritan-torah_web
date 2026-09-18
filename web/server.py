@@ -2067,48 +2067,20 @@ def assetlinks():
     }])
 
 
-# The signed Android app (the TWA), offered in the install menu alongside the
-# PWA install. It lives in web/downloads/ rather than web/static/ so the service
-# worker — which caches everything under /static/ — never pulls a 1.7 MB APK
-# into the page cache.
-_APK_DIR = os.path.join(_WEB_DIR, 'downloads')
-_APK_NAME = 'samaritan-torah.apk'
-
-
-@app.route('/api/apk_info')
-def api_apk_info():
-    """Size and version for the install card, and 'available': False before the
-    APK is ever published — so the card simply omits the option instead of
-    offering a download that 404s."""
-    path = os.path.join(_APK_DIR, _APK_NAME)
-    if not os.path.exists(path):
-        return jsonify({'available': False})
-    version = ''
-    try:                                    # single source of truth: the TWA manifest
-        with open(os.path.join(_ROOT, 'twa', 'twa-manifest.json'), encoding='utf-8') as f:
-            version = _json.load(f).get('appVersion', '')
-    except Exception:
-        pass
-    out = {'available': True, 'version': version,
-           'size_mb': round(os.path.getsize(path) / 1048576.0, 1)}
-    if _valid_token(request.args.get('token')):     # the tally is the admin's, not the public's
-        n, last = analytics.counter('apk_download')
-        out['downloads'] = n
-        out['last_download'] = time.strftime('%d/%m/%Y %H:%M', time.localtime(last)) if last else None
-    return jsonify(out)
+# The Android app (the TWA) is on Google Play. The site used to serve a sideloaded
+# APK from web/downloads/, signed with the upload key rather than Play's — a build
+# Android developer verification blocks from 2026-09-30 — so its old download
+# link now sends people to the store listing instead.
+_PLAY_URL = 'https://play.google.com/store/apps/details?id=net.thesamaritans.torah'
 
 
 @app.route('/download/samaritan-torah.apk')
 def download_apk():
-    if not os.path.exists(os.path.join(_APK_DIR, _APK_NAME)):
-        return jsonify({'error': 'apk not published'}), 404
-    analytics.bump_counter('apk_download')   # counted where the file actually leaves
-    return send_from_directory(_APK_DIR, _APK_NAME, as_attachment=True,
-                               mimetype='application/vnd.android.package-archive')
+    return redirect(_PLAY_URL, code=302)
 
 
 # The install guide, one rendering per interface language. Kept out of static/
-# for the same reason the APK is: the service worker caches everything under
+# because the service worker caches everything under
 # /static/, and three 600 KB videos have no business sitting in the page cache
 # of someone who already installed. conditional=True keeps range requests
 # working, without which a phone cannot seek inside the clip.
