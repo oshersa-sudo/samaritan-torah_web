@@ -219,6 +219,8 @@ const I18N = {
     m_bhuq_book:'פירוש אם בחקותי', bhuq_title:'פירוש אם בחקותי — אבו אלפרג׳ איבן אל-כתאר',
     bhuq_toc_hint:'החיבור מחולק כאן לחלקים לפי מהלך הטיעון; המספרים בסוגריים הם סעיפי המחבר. בחר חלק לעיון:',
     m_asatir_book:'ספר האסאטיר', asatir_title:'ספר האסאטיר', asatir_toc_hint:'בחר פרק לעיון:',
+    m_wreschner_book:'מסורות שומרוניות · ורשנר 1888', wreschner_title:'מסורות שומרוניות · ורשנר 1888', wreschner_toc_hint:'בחר פרק לעיון:',
+    m_cohen_book:'חוקי הצרעת · כהן 1899', cohen_title:'חוקי הצרעת במקרא · כהן 1899', cohen_toc_hint:'בחר פרק לעיון:',
     asatir_note:'ספר האסאטיר — דברי הימים השומרוני מאדם ועד אחרית הימים, בתעתיק עברי.',
     m_people_book:'אישים וחוקרים שומרוניים', pp_title:'אישים וחוקרים שומרוניים',
     pp_search_ph:'חיפוש שם, תקופה או עניין…', pp_back_list:'חזרה לרשימה',
@@ -474,6 +476,8 @@ const I18N = {
     m_bhuq_book:'Commentary on Im Beḥuqotay', bhuq_title:'Im Beḥuqotay — Abū l-Faraj ibn al-Kathār',
     bhuq_toc_hint:'The treatise is divided here by the turns of its argument; the bracketed numbers are the author’s own paragraphs. Choose a part:',
     m_asatir_book:'The Book of Asatir', asatir_title:'The Book of Asatir', asatir_toc_hint:'Choose a chapter:',
+    m_wreschner_book:'Samaritan Traditions · Wreschner 1888', wreschner_title:'Samaritan Traditions · Wreschner 1888', wreschner_toc_hint:'Choose a chapter:',
+    m_cohen_book:'The Zaraath Laws · Cohen 1899', cohen_title:'The Zaraath Laws in Scripture · Cohen 1899', cohen_toc_hint:'Choose a chapter:',
     asatir_note:'The Book of Asatir — the Samaritan chronicle from Adam to the end of days, in Hebrew transcription.',
     m_people_book:'Samaritan Figures and Scholars', pp_title:'Samaritan Figures and Scholars',
     pp_search_ph:'Search a name, period or subject…', pp_back_list:'‹ Back to the list',
@@ -729,6 +733,8 @@ const I18N = {
     m_bhuq_book:'تفسير إم بحقوتي', bhuq_title:'تفسير إم بحقوتي — أبو الفرج ابن الكثار',
     bhuq_toc_hint:'قُسّم الكتاب هنا حسب مسار الحجّة؛ الأرقام بين قوسين هي فقرات المؤلف. اختر قسمًا:',
     m_asatir_book:'كتاب الأساطير', asatir_title:'كتاب الأساطير', asatir_toc_hint:'اختر أصحاحاً:',
+    m_wreschner_book:'التقاليد السامرية · فريشنر ١٨٨٨', wreschner_title:'التقاليد السامرية · فريشنر ١٨٨٨', wreschner_toc_hint:'اختر فصلاً:',
+    m_cohen_book:'أحكام البرص · كوهين ١٨٩٩', cohen_title:'أحكام البرص في الكتاب · كوهين ١٨٩٩', cohen_toc_hint:'اختر فصلاً:',
     asatir_note:'كتاب الأساطير — التاريخ السامري من آدم إلى آخر الأيام، بالنسخ العبري.',
     m_people_book:'أعلام وباحثون سامريّون', pp_title:'أعلام وباحثون سامريّون',
     pp_search_ph:'ابحث عن اسم أو حقبة أو موضوع…', pp_back_list:'العودة إلى القائمة',
@@ -5998,6 +6004,8 @@ const LIB_ITEMS = [
   {act:'people_book',  titleKey:'m_people_book',  open:()=>openPeopleBook()},
   {act:'composer',     titleKey:'m_composer',     open:()=>openComposer(), adminOnly:true},
   {act:'privatecomp',  titleKey:'m_privatecomp',  open:()=>openPrivateComp(), adminOnly:true},
+  {act:'wreschner_book', titleKey:'m_wreschner_book', open:()=>openWreschnerBook()},
+  {act:'cohen_book',     titleKey:'m_cohen_book',     open:()=>openCohenBook()},
 ];
 // ── ציר הזמן ההיסטורי השומרוני ───────────────────────────────────────────────
 // A page of its own (/timeline) with its own code and its own generated data,
@@ -6180,6 +6188,8 @@ function menuAction(a){
   else if(a==='sir_book')  openSirBook();
   else if(a==='bhuq_book') openBhuqBook();
   else if(a==='asatir_book') openAsatirBook();
+  else if(a==='wreschner_book') openWreschnerBook();
+  else if(a==='cohen_book') openCohenBook();
   else if(a==='piyutim_book') openPiyutimBook();
   else if(a==='rhyme_book')   openRhymeBook();
   else if(a==='people_book')  openPeopleBook();
@@ -6669,6 +6679,36 @@ const BOOK_CFG = {
     langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'},
            {key:'arabic', labelKey:'rd_ar', dir:'rtl'}],
   },
+  wreschner: {                       // מסורות שומרוניות — ורשנר, האלה 1888
+    titleKey:'wreschner_title', tocHintKey:'wreschner_toc_hint',
+    toc:()=>api('wreschner_toc'),
+    chapter:(id)=>api('wreschner_chapter?chap='+encodeURIComponent(id)),
+    search:(q)=>api('wreschner_search?q='+encodeURIComponent(q)),
+    words:null,
+    tocItem:(c)=>({id:c.chap, letter:c.heb, title:c.title, count:c.count}),
+    chapterTitle:(ch)=>esc(ch.heb)+'. '+esc(ch.title||''),
+    unitLabel:(s)=>esc(s.ref||'')+(s.title?('  ·  '+esc(s.title)):''),
+    unitVid:()=>null,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>esc(r.ref||'')+(r.title?('  ·  '+esc(r.title)):''),
+    searchTo:(r)=>({chap:r.chap, dom:'rdsec-'+r.id}),
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+  },
+  cohen: {                            // חוקי הצרעת — כהן 1899, על פי כתאב אל-כאפי
+    titleKey:'cohen_title', tocHintKey:'cohen_toc_hint',
+    toc:()=>api('cohen_toc'),
+    chapter:(id)=>api('cohen_chapter?chap='+encodeURIComponent(id)),
+    search:(q)=>api('cohen_search?q='+encodeURIComponent(q)),
+    words:null,
+    tocItem:(c)=>({id:c.chap, letter:c.heb, title:c.title, count:c.count}),
+    chapterTitle:(ch)=>esc(ch.heb)+'. '+esc(ch.title||''),
+    unitLabel:(s)=>esc(s.ref||'')+(s.title?('  ·  '+esc(s.title)):''),
+    unitVid:()=>null,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>esc(r.ref||'')+(r.title?('  ·  '+esc(r.title)):''),
+    searchTo:(r)=>({chap:r.chap, dom:'rdsec-'+r.id}),
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+  },
 };
 let RD = { key:null, cfg:null, chapter:null, lang:null, fs:parseFloat(localStorage.getItem('as_rd_fs')||'1')||1 };
 function rdApplyFs(){ $('rdBody').style.setProperty('--rd-fs', RD.fs); }
@@ -6690,6 +6730,8 @@ function openShytBook(){ openReader('shyt'); }
 function openSirBook(){ openReader('sir'); }
 function openBhuqBook(){ openReader('bhuq'); }
 function openAsatirBook(){ openReader('asatir'); }
+function openWreschnerBook(){ openReader('wreschner'); }
+function openCohenBook(){ openReader('cohen'); }
 function rdSetBack(mode){           // '' hidden · 'toc' · 'chapter'
   const b=$('rdBack');
   if(!mode){ b.classList.add('hidden'); return; }

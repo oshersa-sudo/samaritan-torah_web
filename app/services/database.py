@@ -225,6 +225,125 @@ def _seed_booklets():
 _seed_booklets()
 
 
+_LIBRARY_BOOKS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                    'data', 'library_books_patch.json')
+
+
+def _seed_library_books():
+    """Add the two translated studies (Wreschner 1888, Cohen 1899) to whatever DB
+    is on disk.
+
+    Each lives in a table of its own that nothing else writes to, so the table is
+    brought to the patch's content: created when absent, left alone when it
+    already holds exactly this version (compared by fingerprint), and refilled
+    when it holds an older one. No other table is touched."""
+    try:
+        if not os.path.exists(_LIBRARY_BOOKS_PATCH):
+            return
+        with open(_LIBRARY_BOOKS_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        conn = sqlite3.connect(DB_PATH)
+        for book in patch.get('books', []):
+            table = book.get('table')
+            if table not in ('wreschner_sections', 'cohen_sections'):
+                continue                     # a patch fills only the tables it owns
+            conn.execute("""CREATE TABLE IF NOT EXISTS %s (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                chap INTEGER, chap_title TEXT, ord INTEGER,
+                ref TEXT, title TEXT, text TEXT)""" % table)
+            have = [[r[0], r[1], r[2], r[3] or '', r[4] or '', r[5] or ''] for r in conn.execute(
+                'SELECT chap, chap_title, ord, ref, title, text FROM %s ORDER BY chap, ord' % table)]
+            fp = hashlib.sha1(json.dumps(have, ensure_ascii=False).encode('utf-8')).hexdigest()
+            if fp == book.get('fingerprint'):
+                continue                     # already exactly this
+            conn.execute('DELETE FROM %s' % table)
+            conn.executemany('INSERT INTO %s (chap, chap_title, ord, ref, title, text) '
+                             'VALUES (?,?,?,?,?,?)' % table, book.get('rows', []))
+            conn.execute('CREATE INDEX IF NOT EXISTS ix_%s_chap ON %s(chap, ord)' % (table, table))
+            print('[library] %s: %d rows' % (table, len(book.get('rows', []))))
+        conn.commit()
+        conn.close()
+    except Exception as exc:
+        print('[library] skipped: %s' % exc)
+
+
+_seed_library_books()
+
+
+_TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                               'data', 'translit_benhayyim_patch.json')
+_HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
+
+
+def _seed_benhayyim_translit():
+    """Bring Ben-Ḥayyim's transcription, read from his book, into whatever DB is on
+    disk — in place, never by replacing the file.
+
+    A verse is changed only when that is safe. It must still be the same verse:
+    its Samaritan letters match the ones the reading was made for, so a verse
+    merged or split online is left alone (punctuation is ignored — the live text
+    carries punctuation edits of its own). And its transcription must still hold a
+    value this project itself once shipped, so one corrected online is left alone.
+    The old correction pass (verse_translit_fix), which the book supersedes, is
+    removed on the same terms. Once applied, a rerun finds nothing to do."""
+    try:
+        if not os.path.exists(_TRANSLIT_PATCH):
+            return
+        conn = sqlite3.connect(DB_PATH)
+        names = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        if 'verse_translit' not in names:
+            conn.close()
+            return
+        with open(_TRANSLIT_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        sk = {vid: _HEB_LETTERS.sub('', t or '') for vid, t in conn.execute('SELECT id, text FROM verses')}
+        base = {vid: (t or '').strip() for vid, t in
+                conn.execute('SELECT verse_id, text FROM verse_translit')}
+        fix = ({vid: (t or '').strip() for vid, t in
+                conn.execute('SELECT verse_id, text FROM verse_translit_fix')}
+               if 'verse_translit_fix' in names else {})
+        upd, ins, dele = [], [], []
+        gone = moved = edited = kept = 0
+        for x in patch.get('verses', []):
+            vid, new = x['v'], x['new']
+            if vid not in sk:
+                gone += 1                    # merged away, or never on this DB
+                continue
+            if sk[vid] != x.get('sk', ''):
+                moved += 1                   # no longer the verse the reading is for
+                continue
+            cur = base.get(vid)
+            if cur != new:
+                if cur is None:
+                    ins.append((vid, new))
+                elif cur == '' or cur in x.get('old', []):
+                    upd.append((new, vid))
+                else:
+                    edited += 1              # corrected online — the correction stands
+                    continue
+            f = fix.get(vid)
+            if f is not None:
+                if f == '' or f in x.get('old_fix', []):
+                    dele.append((vid,))
+                else:
+                    kept += 1                # an online correction still overrides it
+        if upd or ins or dele:
+            conn.executemany('UPDATE verse_translit SET text=? WHERE verse_id=?', upd)
+            conn.executemany('INSERT INTO verse_translit (verse_id, text) VALUES (?,?)', ins)
+            conn.executemany('DELETE FROM verse_translit_fix WHERE verse_id=?', dele)
+            conn.commit()
+            print('[translit] Ben-Hayyim: %d updated, %d added, %d superseded corrections '
+                  'removed; left alone: %d not in this DB, %d verse changed since, '
+                  '%d edited online, %d online corrections kept'
+                  % (len(upd), len(ins), len(dele), gone, moved, edited, kept))
+        conn.close()
+    except Exception as exc:
+        print('[translit] skipped: %s' % exc)
+
+
+_seed_benhayyim_translit()
+
+
 _MAS_CHAPTER_COL_READY = False
 
 
@@ -1592,6 +1711,71 @@ def search_asatir(q, limit=80):
         out.append({'id': r['id'], 'chap': r['chap'], 'heb': _num_he(r['chap']),
                     'title': r['chap_title'] or '', 'ref': r['ref'] or '', 'snippet': snip})
     return out
+
+
+# ── Two translated studies, each a standalone book on the shelf ───────────────
+# Wreschner 1888 (a Halle dissertation on Samaritan tradition) and Cohen 1899
+# (the Zaraath laws after the Kitāb al-Kāfī), in the owner's Hebrew translation.
+# Neither is keyed to verses, so like the Asatir they are read chapter by
+# chapter; a "section" here is one paragraph of the translation, carrying the
+# printed page it came from (`ref`) and the heading it opens, when it opens one.
+def _study_toc(table):
+    conn = get_connection()
+    rows = conn.execute("""SELECT chap, chap_title, COUNT(*) n FROM %s
+        GROUP BY chap, chap_title ORDER BY chap""" % table).fetchall()
+    conn.close()
+    return [{'chap': r['chap'], 'heb': _num_he(r['chap']),
+             'title': r['chap_title'] or '', 'count': r['n']} for r in rows]
+
+
+def _study_chapter(table, chap):
+    """One chapter of a translated study, its scripture references made clickable."""
+    try:
+        chap = int(chap)
+    except (TypeError, ValueError):
+        return {'chap': None, 'sections': []}
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    secs = conn.execute("SELECT id, ref, title, chap_title, text FROM %s "
+                        "WHERE chap=? ORDER BY ord" % table, (chap,)).fetchall()
+    conn.close()
+    title = secs[0]['chap_title'] if secs else ''
+    out = [{'id': s['id'], 'ref': s['ref'] or '', 'title': s['title'] or '',
+            'hebrew': s['text'] or '',
+            'hebrew_html': _tm_mark_refs(s['text'] or '', vmap),
+            'verse_id': None} for s in secs]
+    return {'chap': chap, 'heb': _num_he(chap), 'title': title, 'sections': out}
+
+
+def _study_search(table, q, limit=80):
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    rows = conn.execute("SELECT id, chap, chap_title, ref, title, text FROM %s "
+                        "WHERE text LIKE ? OR title LIKE ? OR chap_title LIKE ? "
+                        "ORDER BY chap, ord LIMIT ?" % table,
+                        (like, like, like, limit)).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        txt = r['text'] or ''
+        i = txt.find(q)
+        snip = ('…' + txt[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0 else txt[:90]
+        out.append({'id': r['id'], 'chap': r['chap'], 'heb': _num_he(r['chap']),
+                    'title': r['title'] or r['chap_title'] or '',
+                    'ref': r['ref'] or '', 'snippet': snip})
+    return out
+
+
+def get_wreschner_toc():             return _study_toc('wreschner_sections')
+def get_wreschner_chapter(chap):     return _study_chapter('wreschner_sections', chap)
+def search_wreschner(q, limit=80):   return _study_search('wreschner_sections', q, limit)
+
+def get_cohen_toc():                 return _study_toc('cohen_sections')
+def get_cohen_chapter(chap):         return _study_chapter('cohen_sections', chap)
+def search_cohen(q, limit=80):       return _study_search('cohen_sections', q, limit)
 
 
 # ── Samaritan piyyutim ("עיון בפיוטים השומרוניים") + rhyme finder ──────────────

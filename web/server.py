@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '3.6'
+APP_VERSION = '3.7'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 _SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
@@ -2764,6 +2764,39 @@ def api_asatir_chapter():
 @app.route('/api/asatir_search')
 def api_asatir_search():
     return jsonify(db.search_asatir(request.args.get('q', '')))
+
+
+# ── שתי מהדורות מתורגמות: ורשנר 1888 וכהן 1899 ──
+# Read-only books: a table of contents, a chapter, and a search. They are not
+# verse sources, so there is no _by_verse endpoint and no verse-links table.
+@app.route('/api/wreschner_toc')
+def api_wreschner_toc():
+    return jsonify(db.get_wreschner_toc())
+
+
+@app.route('/api/wreschner_chapter')
+def api_wreschner_chapter():
+    return jsonify(db.get_wreschner_chapter(request.args.get('chap', '')))
+
+
+@app.route('/api/wreschner_search')
+def api_wreschner_search():
+    return jsonify(db.search_wreschner(request.args.get('q', '')))
+
+
+@app.route('/api/cohen_toc')
+def api_cohen_toc():
+    return jsonify(db.get_cohen_toc())
+
+
+@app.route('/api/cohen_chapter')
+def api_cohen_chapter():
+    return jsonify(db.get_cohen_chapter(request.args.get('chap', '')))
+
+
+@app.route('/api/cohen_search')
+def api_cohen_search():
+    return jsonify(db.search_cohen(request.args.get('q', '')))
 
 
 # ── Samaritan piyyutim reader + rhyme finder ────────────────────────────────
