@@ -383,7 +383,7 @@ const I18N = {
     renum_only_this:'רק פסוק זה', renum_ok:'מספר הפסוק עודכן.',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
-    bm_add:'הוסף סימניה לפרק זה', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
+    bm_add:'הוסף סימניה לפרק זה', nikud_off:'הצגה ללא ניקוד', nikud_on:'הצגה עם ניקוד', nikud_off_l:'ללא ניקוד', nikud_on_l:'ניקוד', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
     print_ch:'הדפסת פרק', print_title:'הדפסת פרק',
     nav_pin:'קיבוע שורת הנתיב וחלון ההשמעה על המסך', nav_portion_next:'הפרשה הבאה', nav_portion_prev:'הפרשה הקודמת',
     nav_book_next:'הספר הבא', nav_book_prev:'הספר הקודם',
@@ -646,7 +646,7 @@ const I18N = {
     renum_only_this:'Only this verse', renum_ok:'Verse number updated.',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
-    bm_add:'Bookmark this chapter', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
+    bm_add:'Bookmark this chapter', nikud_off:'Show without vocalization', nikud_on:'Show with vocalization', nikud_off_l:'no nikud', nikud_on_l:'nikud', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
     print_ch:'Print chapter', print_title:'Print chapter',
     nav_pin:'Keep the path line and the play window on screen', nav_portion_next:'Next parasha', nav_portion_prev:'Previous parasha',
     nav_book_next:'Next book', nav_book_prev:'Previous book',
@@ -909,7 +909,7 @@ const I18N = {
     renum_only_this:'هذه الآية فقط', renum_ok:'تم تحديث رقم الآية.',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
-    bm_add:'إضافة إشارة لهذا الأصحاح', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
+    bm_add:'إضافة إشارة لهذا الأصحاح', nikud_off:'العرض بدون تشكيل', nikud_on:'العرض مع التشكيل', nikud_off_l:'بدون تشكيل', nikud_on_l:'تشكيل', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
     print_ch:'طباعة الأصحاح', print_title:'طباعة الأصحاح',
     nav_pin:'تثبيت سطر المسار ونافذة التشغيل على الشاشة', nav_portion_next:'المقطع التالي', nav_portion_prev:'المقطع السابق',
     nav_book_next:'السفر التالي', nav_book_prev:'السفر السابق',
@@ -1096,6 +1096,24 @@ function addWordDots(text){
             .replace(/·?[ \t]+([.:׃])/g, '$1')     // pull a loose mark onto its word
             .replace(/·([.:׃])/g, '$1');           // and drop a divider before one
 }
+function samMarkupNikud(text){
+  // The vocalised text is the same text with the book's mark keys written after
+  // each letter, so a "letter" here is a letter and the keys that belong to it —
+  // otherwise samMarkup would cut them off into a span of their own and the marks
+  // would drift off the letters they sit on. The stops and the word divider are
+  // treated exactly as below.
+  let html=''; const re=/([א-ת0-9A-Z\uE000-\uE3FF\u200F]+|[.:׃]|·)/g; let last=0, m;
+  while((m=re.exec(text))!==null){
+    if(m.index>last) html += esc(text.slice(last,m.index));
+    html += (m[0]==='·') ? '<span class="wsep">·</span>'
+          : (m[0]===':' || m[0]==='׃') ? '<span class="samstop">'+esc(m[0])+'</span>'
+          : (m[0]==='.') ? '<span class="samchar samstop nik">'+esc(m[0])+'</span>'
+                         : '<span class="samchar nik">'+esc(m[0])+'</span>';
+    last = re.lastIndex;
+  }
+  if(last<text.length) html += esc(text.slice(last));
+  return html;
+}
 function samMarkup(text){
   // Hebrew letter runs and the verse-pause period render in the Samaritan font; the
   // word-separating middot is wrapped in its own .wsep span so trimEdgeDots() can
@@ -1215,7 +1233,13 @@ function scheduleDotTrim(){
 window.addEventListener('resize', ()=>{ clearTimeout(_dotTimer); _dotTimer=setTimeout(trimAllEdgeDots,160); });
 function verseHTML(v){
   if(S.english){ const e=v.english||('[verse '+v.number+']'); return {html:esc(e), cls:'vtext eng'}; }
-  if(S.samFont) return {html:samMarkup(addWordDots(v.text||'')), cls:'vtext'};
+  if(S.samFont){
+    // the vocalization is the Samaritan script's own; in Hebrew letters there is
+    // nothing to put the marks on, so it only ever shows with that face
+    const nk = SHOW_NIKUD && NIKUD[v.id];
+    return nk ? {html:samMarkupNikud(addWordDots(nk)), cls:'vtext nik'}
+              : {html:samMarkup(addWordDots(v.text||'')), cls:'vtext'};
+  }
   return {html:esc(v.text||''), cls:'vtext'};
 }
 function fsize(){ return (S.samFont?19:20) + S.fontOffset; }
@@ -2295,6 +2319,7 @@ async function renderVerses(chId, chNum, pid, pname){
   document.querySelectorAll('.verse-bless').forEach(e=>e.remove());   // clear on navigation
   _blessBusy=false; _blessNext=null; _cueFired.clear();   // a new chapter, blessed afresh
   if(SHOW_PRON) await ensurePron();          // pronunciation preview data for this chapter
+  if(SHOW_NIKUD) await ensureNikud();        // and the book's marks, when they are shown
   paintVerses();
   if(isSam) blessOnLanding();
 }
@@ -4489,6 +4514,28 @@ $('auSeek').oninput      = e=>ttsSeek(+e.target.value);
 //    pointed-Hebrew the read-aloud engine will actually speak (for tuning the rules) ──
 let PRON = {};             // verse_id -> transcription text
 let SHOW_PRON = localStorage.getItem('as_pron')==='1';
+let NIKUD = {};            // verse_id -> the verse with the printed book's marks
+let SHOW_NIKUD = localStorage.getItem('as_nikud')!=='0';   // shown unless turned off
+async function ensureNikud(){
+  const need = (S.verses||[]).map(v=>v.id).filter(id=>!(id in NIKUD));
+  if(!need.length) return;
+  try{ const nk=await api('nikud?verse_ids='+need.join(',')); for(const id of need) NIKUD[id]=nk[id]||''; }
+  catch(e){ for(const id of need) NIKUD[id]=NIKUD[id]||''; }
+}
+function syncNikudBtn(){
+  const b=$('nikudBtn'); if(!b) return;
+  // it belongs to the Samaritan script and shows only with it
+  b.classList.toggle('hidden', !(S.samFont && !S.english));
+  b.textContent = t(SHOW_NIKUD ? 'nikud_off_l' : 'nikud_on_l');
+  b.title = t(SHOW_NIKUD ? 'nikud_off' : 'nikud_on');
+  b.setAttribute('aria-label', b.title);
+  b.setAttribute('aria-pressed', SHOW_NIKUD ? 'true' : 'false');
+}
+async function toggleNikud(){
+  SHOW_NIKUD=!SHOW_NIKUD; localStorage.setItem('as_nikud', SHOW_NIKUD?'1':'0');
+  if(SHOW_NIKUD) await ensureNikud();
+  syncNikudBtn(); paintVerses();
+}
 async function ensurePron(){
   const need = (S.verses||[]).map(v=>v.id).filter(id=>!(id in PRON));
   if(!need.length) return;
@@ -4713,6 +4760,7 @@ function syncToolbar(isVerse){
   else    _ab.innerHTML = '<span class="sam-let">ࠀ</span>.<span class="sam-let">ࠁ</span>';
   $('fontBtn').title = sam ? t('font_heb') : t('font_sam');
   $('fontBtn').setAttribute('aria-label', sam ? t('font_heb') : t('font_sam'));
+  syncNikudBtn();
   setBtn('dictBtn',       isVerse, S.dict);
   setBtn('interpBtn',     isVerse, S.panel==='interpret');
   setBtn('compareBtn',    isVerse, S.panel==='compare');
@@ -4750,7 +4798,10 @@ function clearModesPreserveFont(targetPanel){
   clearModes();
   if(preserve){ S.samFont=sf; S.samFontFull=sff; }
 }
-$('fontBtn').onclick=()=>{ const was=S.samFont; clearModes(); S.samFont=!was; syncToolbar(true); paintVerses(); };
+$('fontBtn').onclick=async ()=>{ const was=S.samFont; clearModes(); S.samFont=!was;
+  if(S.samFont && SHOW_NIKUD) await ensureNikud();
+  syncToolbar(true); paintVerses(); };
+$('nikudBtn').onclick=toggleNikud;
 // "כולל פירושים?" — only meaningful while samFont is on; syncToolbar() shows/hides
 // and labels this button on every relevant state change, so this handler only
 // needs to flip the flag itself.

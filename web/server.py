@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '3.8'
+APP_VERSION = '3.9'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 _SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
@@ -2764,6 +2764,13 @@ def api_asatir_chapter():
 @app.route('/api/asatir_search')
 def api_asatir_search():
     return jsonify(db.search_asatir(request.args.get('q', '')))
+
+
+@app.route('/api/nikud')
+def api_nikud():
+    """The printed book's vocalization, by verse — fetched only when the reader
+    asks to see it, so a reader who does not pays nothing for it."""
+    return jsonify(db.get_nikud(_ids_arg()))
 
 
 # ── שתי מהדורות מתורגמות: ורשנר 1888 וכהן 1899 ──

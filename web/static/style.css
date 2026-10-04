@@ -2375,3 +2375,18 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
 .soc-f{ width:100%; box-sizing:border-box; font-family:inherit; font-size:13px; padding:5px 7px;
         border:1px solid var(--line); border-radius:6px; margin-bottom:5px; }
 .soc-hist{ font-size:12.5px; color:var(--muted); margin-top:8px; }
+
+/* ── ניקוד הספר המודפס ────────────────────────────────────────────────────────
+   The marks are drawn in the Samaritan face itself, as mark keys written after
+   each letter. The range is held to letters and keys so the stops and the word
+   divider keep falling to the reader's own font — in this face the colon has no
+   advance width and would land on the letter beside it. */
+@font-face{
+  font-family:'SamNikud';
+  src:url('fonts/Sam_font_Nikud.ttf') format('truetype');
+  font-display:swap;
+  unicode-range:U+05D0-05EA, U+0030-0039, U+0041-005A, U+E000-E3FF;
+}
+.samchar.nik{ font-family:'SamNikud','Samaritan',serif; }
+.vtext.nik{ line-height:2.2; }        /* the marks sit above the letters */
+.bm-nav.nik-nav{ font-size:.78em; letter-spacing:0; padding:0 .45em; width:auto; }

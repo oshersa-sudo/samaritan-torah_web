@@ -323,6 +323,54 @@ def _seed_dara_unit():
 _seed_dara_unit()
 
 
+_NIKUD_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                            'data', 'nikud_patch.json')
+
+
+def _seed_nikud():
+    """Add the printed book's vocalization to whatever DB is on disk.
+
+    It is kept apart from the text, in verse_nikud, so the Torah's own wording is
+    never touched: the marks are written after each letter of a copy, and striking
+    them out of that copy returns the verse exactly (checked when the patch is
+    built, on every verse). A verse only takes its marks when it still reads word
+    for word as it did when they were made, so one edited since is left alone and
+    counted. Running it again once applied finds nothing to do."""
+    try:
+        if not os.path.exists(_NIKUD_PATCH):
+            return
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute("""CREATE TABLE IF NOT EXISTS verse_nikud (
+            verse_id INTEGER PRIMARY KEY, display TEXT, typed TEXT)""")
+        with open(_NIKUD_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        text = {vid: (t or '') for vid, t in conn.execute('SELECT id, text FROM verses')}
+        have = {vid: (d or '') for vid, d in conn.execute('SELECT verse_id, display FROM verse_nikud')}
+        put, changed, gone = [], 0, 0
+        for r in patch.get('rows', []):
+            vid, cur = r['v'], text.get(r['v'])
+            if cur is None:
+                gone += 1                       # no such verse in this database
+                continue
+            if cur != r['h']:
+                changed += 1                    # the wording moved on; marks stay off
+                continue
+            if have.get(vid) != r['d']:
+                put.append((vid, r['d'], r['t']))
+        if put:
+            conn.executemany('INSERT OR REPLACE INTO verse_nikud (verse_id, display, typed) '
+                             'VALUES (?,?,?)', put)
+            conn.commit()
+            print('[nikud] %d verses vocalised; left alone: %d not in this DB, '
+                  '%d whose wording changed since' % (len(put), gone, changed))
+        conn.close()
+    except Exception as exc:
+        print('[nikud] skipped: %s' % exc)
+
+
+_seed_nikud()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
@@ -1264,6 +1312,25 @@ def get_translit(verse_ids):
                 out[r['verse_id']] = r['text']
     except Exception:
         pass
+    conn.close()
+    return out
+
+
+
+def get_nikud(verse_ids):
+    """{verse_id: the verse with the book's marks} for the verses that have them."""
+    if not verse_ids:
+        return {}
+    conn = get_connection()
+    out = {}
+    try:
+        ph = ','.join('?' * len(verse_ids))
+        for r in conn.execute('SELECT verse_id, display FROM verse_nikud '
+                              'WHERE verse_id IN (%s)' % ph, verse_ids):
+            if (r['display'] or '').strip():
+                out[r['verse_id']] = r['display']
+    except Exception:
+        pass                  # a database without the table simply has no marks
     conn.close()
     return out
 
