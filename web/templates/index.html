@@ -471,6 +471,35 @@
     <button class="popup-close" id="piyClose" data-i18n="close">סגור</button>
   </div>
 </div>
+<!-- פיוטי השומרונים בתעתיק הגייה (בן-חיים): תוכן לפי מחבר + קורא תלת-טורי -->
+<div id="daraModal" class="modal book-full hidden">
+  <div class="modal-box book-reader dara-reader">
+    <div class="rd-top">
+      <button id="daraToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="daraToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
+      <button id="daraPrint" class="rd-print" data-i18n-title="print_unit" title="הדפסה">🖨️</button>
+      <button id="daraBack" class="tm-back hidden" data-i18n="dara_back_tree">חזרה לתוכן</button>
+      <div class="modal-title" id="daraTitle" data-i18n="dara_title">פיוטי השומרונים בתעתיק הגייה</div>
+      <div class="dara-cols">
+        <button class="dara-col on" id="daraColA" data-i18n="dara_col_aram">ארמית</button>
+        <button class="dara-col on" id="daraColH" data-i18n="dara_col_heb">עברית</button>
+        <button class="dara-col on" id="daraColT" data-i18n="dara_col_tr">תעתיק</button>
+      </div>
+    </div>
+    <div class="tm-search-row">
+      <input id="daraSearch" type="text" dir="rtl" data-i18n-ph="dara_search_ph" placeholder="חיפוש בארמית, בעברית או בתעתיק…">
+    </div>
+    <div id="daraBody" class="dara-body">
+      <div id="daraTree" class="dara-tree"></div>
+      <div id="daraMain" class="dara-main">
+        <div class="tm-hint" id="daraEmptyHint" data-i18n="dara_empty">בחר פיוט מתוכן העניינים ←</div>
+      </div>
+    </div>
+    <button class="popup-close" id="daraClose" data-i18n="close">סגור</button>
+  </div>
+</div>
+<div id="daraWordPop" class="piy-wordpop hidden"></div>
+
 <div id="piyWordPop" class="piy-wordpop hidden"></div>
 
 <!-- מציאת חרוזים: חיפוש מילה/סופית/צליל מתוך מחסן המילים של הפיוטים -->

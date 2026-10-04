@@ -270,6 +270,59 @@ def _seed_library_books():
 _seed_library_books()
 
 
+_DARA_UNIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                'data', 'dara_unit_patch.json')
+
+
+def _seed_dara_unit():
+    """Add the liturgy volume ("פיוטי השומרונים בתעתיק הגייה") to whatever DB is
+    on disk.
+
+    Z. Ben-Ḥayyim's volume, line by line in his three columns — the Samaritan
+    Aramaic, his Hebrew rendering, and his transcription — plus the apparatus and
+    the word list that joins it to the dictionary. Five tables that nothing but
+    this patch ever writes to, so each is simply brought to the patch's content:
+    created when absent (with its indexes, without which the dictionary's joins
+    over sixteen thousand references crawl), left alone when it already holds
+    exactly this version, refilled when it holds an older one. No other table is
+    touched, and the live database file is never replaced."""
+    try:
+        if not os.path.exists(_DARA_UNIT_PATCH):
+            return
+        with open(_DARA_UNIT_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        conn = sqlite3.connect(DB_PATH)
+        for tb in patch.get('tables', []):
+            name, cols = tb.get('table') or '', tb.get('cols') or []
+            if not name.startswith('dara_') or not cols:
+                continue                 # a patch fills only the tables it owns
+            conn.execute((tb.get('create') or '').replace(
+                'CREATE TABLE', 'CREATE TABLE IF NOT EXISTS', 1))
+            for ix in tb.get('indexes') or []:
+                try:
+                    conn.execute(ix.replace('CREATE INDEX', 'CREATE INDEX IF NOT EXISTS', 1))
+                except sqlite3.OperationalError:
+                    pass
+            order = ', '.join(cols[:2])
+            have = [list(r) for r in conn.execute(
+                'SELECT %s FROM %s ORDER BY %s' % (', '.join(cols), name, order))]
+            fp = hashlib.sha1(json.dumps(have, ensure_ascii=False).encode('utf-8')).hexdigest()
+            if fp == tb.get('fingerprint'):
+                continue                 # already exactly this
+            rows = tb.get('rows') or []
+            conn.execute('DELETE FROM %s' % name)
+            conn.executemany('INSERT INTO %s (%s) VALUES (%s)'
+                             % (name, ', '.join(cols), ', '.join('?' * len(cols))), rows)
+            print('[liturgy] %s: %d rows' % (name, len(rows)))
+        conn.commit()
+        conn.close()
+    except Exception as exc:
+        print('[liturgy] skipped: %s' % exc)
+
+
+_seed_dara_unit()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
@@ -3858,3 +3911,137 @@ def duplicate_private_composition(cid):
         return new_id
     finally:
         conn.close()
+
+
+def _dara_occurrences(conn, word_fins, limit=25):
+    """The lines of Ben-Hayyim's liturgy volume in which these forms are sung —
+    the third body of occurrences the dictionary shows, beside the Torah and
+    Tibat Marqe. Each line carries the Aramaic as printed, his Hebrew rendering
+    and his phonetic transcription, which is where the dictionary's own
+    pronunciations come from."""
+    fins = [f for f in set(word_fins or []) if f]
+    if not fins:
+        return [], 0
+    qs = ','.join('?' * len(fins))
+    try:
+        rows = conn.execute(
+            "SELECT DISTINCT p.id AS piyut_id, p.title, p.ord AS pord, l.ord, l.n, "
+            "       l.aram, l.heb, l.translit, w.word "
+            "FROM dara_words w "
+            "JOIN dara_word_refs r ON r.word = w.word "
+            "JOIN dara_lines l ON l.piyut_id = r.piyut_id AND l.ord = r.line_ord "
+            "JOIN dara_piyutim p ON p.id = r.piyut_id "
+            "WHERE w.word_fin IN (%s) ORDER BY p.ord, l.ord" % qs, tuple(fins)).fetchall()
+    except sqlite3.OperationalError:
+        return [], 0
+    out = []
+    for o in rows[:limit]:
+        out.append({'piyut_id': o['piyut_id'], 'title': o['title'] or '',
+                    'n': o['n'] or '', 'aram': o['aram'] or '', 'heb': o['heb'] or '',
+                    'translit': o['translit'] or '', 'hi': [o['word']]})
+    return out, len(rows)
+
+
+# ── תעתיק בן-חיים: ספר הפיוטים ("פיוטי השומרונים בתעתיק הגייה") ────────────────
+# A library unit built from the scanned volume of Z. Ben-Hayyim's liturgy (the
+# CamScanner PDF the user supplied): every piyyut appears line by line in three
+# columns — the Samaritan Aramaic, Ben-Hayyim's Hebrew rendering, and his
+# phonetic transcription — with the apparatus and the "when is it said" note.
+# The word list built from those lines (dara_words) is what joins this book to
+# the Aramaic-Hebrew dictionary: it carries a pronunciation for nearly every
+# word, which the dictionary itself never had.
+def get_dara_toc():
+    """Every piyyut in the volume, grouped client-side by author."""
+    conn = get_connection()
+    rows = conn.execute("""SELECT id, author, sec, title, sources, usage, pages, n_lines
+        FROM dara_piyutim ORDER BY ord""").fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_dara_piyut(pid):
+    """One piyyut in full: its lines, its apparatus, and a word→(pronunciation,
+    meaning) map for the words that actually occur in it."""
+    try:
+        pid = int(pid)
+    except (TypeError, ValueError):
+        return None
+    conn = get_connection()
+    head = conn.execute("""SELECT id, author, sec, title, sources, usage, pages, n_lines
+        FROM dara_piyutim WHERE id=?""", (pid,)).fetchone()
+    if not head:
+        conn.close()
+        return None
+    lines = [dict(r) for r in conn.execute(
+        "SELECT ord, n, aram, heb, translit, page FROM dara_lines WHERE piyut_id=? ORDER BY ord",
+        (pid,))]
+    variants = [dict(r) for r in conn.execute(
+        "SELECT n, text FROM dara_vars WHERE piyut_id=?", (pid,))]
+    words = sorted({w for l in lines for w in re.findall(r'[א-ת]+', l['aram'] or '')})
+    gloss = {}
+    if words:
+        qs = ','.join('?' * len(words))
+        for r in conn.execute(
+                'SELECT word, translit, gloss, root FROM dara_words WHERE word IN (%s)' % qs,
+                tuple(words)):
+            gloss[r['word']] = {'t': r['translit'] or '', 'g': r['gloss'] or '', 'r': r['root'] or ''}
+    conn.close()
+    out = dict(head)
+    out['lines'] = lines
+    out['variants'] = variants
+    out['dict'] = gloss
+    return out
+
+
+def search_dara(q, limit=200):
+    """Search the volume by Aramaic, by the Hebrew rendering or by transcription."""
+    q = (q or '').strip()
+    if not q:
+        return []
+    conn = get_connection()
+    like = '%' + q + '%'
+    rows = conn.execute("""SELECT l.piyut_id, p.title, l.ord, l.n, l.aram, l.heb, l.translit, l.page
+        FROM dara_lines l JOIN dara_piyutim p ON p.id = l.piyut_id
+        WHERE l.aram LIKE ? OR l.heb LIKE ? OR l.translit LIKE ?
+        ORDER BY p.ord, l.ord LIMIT ?""", (like, like, like, limit)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_dara_word(word):
+    """One word of the volume: its pronunciation, its meaning, and every line it
+    occurs in. This is the bridge from the Aramaic-Hebrew dictionary into the
+    liturgy — the dictionary can now show how a word is actually pronounced."""
+    word = (word or '').strip()
+    if not word:
+        return None
+    conn = get_connection()
+    w = conn.execute(
+        "SELECT word, freq, translit, root, gloss FROM dara_words WHERE word=? OR word_norm=?",
+        (word, word)).fetchone()
+    if not w:
+        conn.close()
+        return None
+    refs = [dict(r) for r in conn.execute("""SELECT r.piyut_id, p.title, l.ord, l.n,
+            l.aram, l.heb, l.translit
+        FROM dara_word_refs r
+        JOIN dara_lines l ON l.piyut_id = r.piyut_id AND l.ord = r.line_ord
+        JOIN dara_piyutim p ON p.id = r.piyut_id
+        WHERE r.word=? ORDER BY p.ord, l.ord LIMIT 60""", (word,))]
+    conn.close()
+    out = dict(w)
+    out['refs'] = refs
+    return out
+
+
+def dara_pronounce(words):
+    """Pronunciations for a list of Aramaic words (used by the dictionary app)."""
+    words = [w for w in (words or []) if w]
+    if not words:
+        return {}
+    conn = get_connection()
+    qs = ','.join('?' * len(words))
+    rows = conn.execute(
+        'SELECT word, translit, gloss FROM dara_words WHERE word IN (%s)' % qs, tuple(words)).fetchall()
+    conn.close()
+    return {r['word']: {'t': r['translit'] or '', 'g': r['gloss'] or ''} for r in rows}

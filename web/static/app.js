@@ -234,6 +234,12 @@ const I18N = {
     pp_wiki_open:'מורחב — הערך המלא', pp_wiki_credit:'מתוך ויקיפדיה, הערך',
     pp_wiki_lang_he:'בעברית', pp_wiki_lang_en:'באנגלית', pp_wiki_lang_ar:'בערבית',
     m_piyutim_book:'עיון בפיוטים השומרוניים', piy_title:'עיון בפיוטים השומרוניים',
+    m_dara_book:'פיוטי השומרונים בתעתיק הגייה', dara_title:'פיוטי השומרונים בתעתיק הגייה',
+    dara_search_ph:'חיפוש בארמית, בעברית או בתעתיק…', dara_back_tree:'חזרה לתוכן',
+    dara_col_aram:'ארמית', dara_col_heb:'עברית', dara_col_tr:'תעתיק',
+    dara_empty:'בחר פיוט מתוכן העניינים ←', dara_lines:'שורות', dara_page:'עמ׳', dara_pages:'עמודים בספר',
+    dara_variants:'חילופי גרסה והערות הגייה', dara_occurs:'מופעים בספר', dara_loading:'טוען…',
+    dict_in_dara_sec:'בפיוטי הליטורגיה (בן-חיים)', dict_w_dara:'נאמרת בפיוטי הליטורגיה', dict_dara_only:'מן פיוטי הליטורגיה',
     piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
     piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
     piy_translation_he:'תרגום עברי', piy_no_dict_line:'אין ערכי מילון לשורה זו עדיין',
@@ -491,6 +497,12 @@ const I18N = {
     pp_wiki_open:'Expanded — the full article', pp_wiki_credit:'From Wikipedia, the article',
     pp_wiki_lang_he:'in Hebrew', pp_wiki_lang_en:'in English', pp_wiki_lang_ar:'in Arabic',
     m_piyutim_book:'Samaritan Piyyutim', piy_title:'Samaritan Piyyutim',
+    m_dara_book:'Samaritan Piyyutim in Phonetic Transcription', dara_title:'Samaritan Piyyutim in Phonetic Transcription',
+    dara_search_ph:'Search Aramaic, Hebrew or transcription…', dara_back_tree:'Back to contents',
+    dara_col_aram:'Aramaic', dara_col_heb:'Hebrew', dara_col_tr:'Transcription',
+    dara_empty:'Pick a piyyut from the contents →', dara_lines:'lines', dara_page:'p.', dara_pages:'Pages in the book',
+    dara_variants:'Variants and pronunciation notes', dara_occurs:'Occurrences in the book', dara_loading:'loading…',
+    dict_in_dara_sec:'In the liturgy (Ben-Ḥayyim)', dict_w_dara:'Sung in the liturgy', dict_dara_only:'From the liturgy',
     piy_back_tree:'Back to contents', piy_dict_toggle:'Word dictionary', piy_search_ph:'Search composition, author, or word…',
     piy_empty:'Choose a composition from the contents ←', piy_pick_first:'Choose a composition',
     piy_translation_he:'Hebrew translation', piy_no_dict_line:'No dictionary entries for this line yet',
@@ -748,6 +760,12 @@ const I18N = {
     pp_wiki_open:'موسّع — المقالة كاملة', pp_wiki_credit:'من ويكيبيديا، مقالة',
     pp_wiki_lang_he:'بالعبرية', pp_wiki_lang_en:'بالإنجليزية', pp_wiki_lang_ar:'بالعربية',
     m_piyutim_book:'الأناشيد السامرية', piy_title:'تصفّح الأناشيد السامرية',
+    m_dara_book:'الأناشيد السامرية بالنسخ الصوتي', dara_title:'الأناشيد السامرية بالنسخ الصوتي',
+    dara_search_ph:'ابحث بالآرامية أو العبرية أو النسخ الصوتي…', dara_back_tree:'العودة إلى الفهرس',
+    dara_col_aram:'آرامي', dara_col_heb:'عبري', dara_col_tr:'نسخ صوتي',
+    dara_empty:'اختر نشيدًا من الفهرس ←', dara_lines:'أسطر', dara_page:'ص', dara_pages:'الصفحات في الكتاب',
+    dara_variants:'الفروق وملاحظات النطق', dara_occurs:'مواضع في الكتاب', dara_loading:'جارٍ التحميل…',
+    dict_in_dara_sec:'في الأناشيد (بن حيّيم)', dict_w_dara:'ترد في الأناشيد', dict_dara_only:'من الأناشيد',
     piy_back_tree:'العودة للفهرس', piy_dict_toggle:'قاموس الكلمات', piy_search_ph:'بحث عن تأليف أو مؤلف أو كلمة…',
     piy_empty:'اختر تأليفًا من الفهرس ←', piy_pick_first:'اختر تأليفًا',
     piy_translation_he:'الترجمة العبرية', piy_no_dict_line:'لا توجد مداخل قاموس لهذا السطر بعد',
@@ -6000,6 +6018,7 @@ const LIB_ITEMS = [
   {act:'bhuq_book',    titleKey:'m_bhuq_book',    open:()=>openBhuqBook()},
   {act:'asatir_book',  titleKey:'m_asatir_book',  open:()=>openAsatirBook()},
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
+  {act:'dara_book',    titleKey:'m_dara_book',    open:()=>openDaraBook()},
   {act:'rhyme_book',   titleKey:'m_rhyme_book',   open:()=>openRhymeBook()},
   {act:'people_book',  titleKey:'m_people_book',  open:()=>openPeopleBook()},
   {act:'composer',     titleKey:'m_composer',     open:()=>openComposer(), adminOnly:true},
@@ -6422,9 +6441,11 @@ async function dictWords(start, prefix){
   for(const it of d.items){
     const cell=el('button','dict-wcell');
     cell.appendChild(el('span','dict-wword', esc(it.word)));
+    if(it.translit) cell.appendChild(el('span','dict-wpron', it.translit));
     const bd=el('span','dict-wbadges');
     if(it.in_torah){ const b=el('span','dict-wb tor','ת'); b.title=t('dict_w_torah'); bd.appendChild(b); }
     if(it.in_memar){ const b=el('span','dict-wb mem','מ'); b.title=t('dict_w_memar'); bd.appendChild(b); }
+    if(it.in_dara){ const b=el('span','dict-wb dara','פ'); b.title=t('dict_w_dara'); bd.appendChild(b); }
     if(it.meanings>1){ const b=el('span','dict-wb mng', it.meanings+'·'); b.title=t('dict_w_meanings'); bd.appendChild(b); }
     cell.appendChild(bd);
     cell.onclick=()=>dictWordDetail(it.word);
@@ -6523,6 +6544,8 @@ async function dictWordDetail(word, root){
       if(m.torah_count>m.torah.length)
         card.appendChild(el('div','note dict-more','…'+(m.torah_count-m.torah.length)+' '+t('dict_more')));
     } else card.appendChild(el('div','note dict-noocc', t('dict_no_occ')));
+    }
+    if(!m.from_dara || m.memar_count){
     // Tibåt Mårqe occurrences (same meaning)
     card.appendChild(el('div','dict-occ-h',
       esc(t('dict_in_memar_sec'))+' ('+m.memar_count+') · '+esc(meaningTag)));
@@ -7149,6 +7172,124 @@ document.addEventListener('click', e=>{
     pop.style.top=Math.min(e.clientY+12, innerHeight-90)+'px';
     pop.style.left=Math.max(10, e.clientX-150)+'px';
   } else if(!pop.classList.contains('hidden')) pop.classList.add('hidden');
+});
+
+// ── פיוטי השומרונים בתעתיק הגייה — the volume of Z. Ben-Hayyim's liturgy, read
+// line by line in the three columns the book itself prints: the Samaritan
+// Aramaic, his Hebrew rendering, and his phonetic transcription. Tapping an
+// Aramaic word shows how it is pronounced, what it means, and where else in the
+// volume it occurs — the same word list the Aramaic-Hebrew dictionary now draws
+// its pronunciations from.
+const DARA = { toc:null, cur:null, cols:{a:true,h:true,t:true} };
+async function daraEnsure(){ if(!DARA.toc) DARA.toc = await api('dara_toc'); return DARA.toc; }
+function openDaraBook(){
+  $('daraModal').classList.remove('hidden');
+  $('daraBody').classList.remove('piy-detail-open');
+  daraEnsure().then(()=>daraBuildTree());
+  trackNav(t('dara_title'));
+}
+function daraBuildTree(rows){
+  const tree=$('daraTree'); tree.innerHTML='';
+  const list = rows || DARA.toc || [];
+  const byAuthor={};
+  for(const p of list) (byAuthor[p.author] ||= []).push(p);
+  for(const author of Object.keys(byAuthor)){
+    const items=byAuthor[author];
+    const d=el('details','piy-fest'); d.open = items.length<=6;
+    d.innerHTML=`<summary>${esc(author)} <span class="piy-count">(${items.length})</span></summary>`;
+    for(const p of items){
+      const div=el('div','piy-item'); div.dataset.id=p.id;
+      if(DARA.cur && DARA.cur.id===p.id) div.classList.add('sel');
+      const label = p.sec ? (author+' '+p.sec) : author;
+      div.innerHTML=`<span class="piy-item-title">${esc(label)}</span>`+
+                    `<span class="piy-item-auth">${p.n_lines} ${esc(t('dara_lines'))} · ${esc(t('dara_page'))} ${esc((p.pages||'').split(',')[0]||'')}</span>`;
+      div.onclick=()=>daraShow(p.id);
+      d.appendChild(div);
+    }
+    tree.appendChild(d);
+  }
+  if(!tree.children.length) tree.appendChild(el('div','note', t('lib_no_result')));
+}
+function daraWordSpan(w){
+  const clean=(w||'').replace(/[^א-ת]/g,'');
+  const d = clean && DARA.cur && DARA.cur.dict && DARA.cur.dict[clean];
+  return `<span class="piy-w ${d?'piy-hasdef':''}" data-w="${esc(clean)}">${esc(w)}</span>`;
+}
+async function daraShow(id){
+  let p; try{ p=await api('dara_piyut?id='+id); }catch(e){ p=null; }
+  if(!p || p.error) return;
+  DARA.cur=p;
+  document.querySelectorAll('#daraTree .piy-item.sel').forEach(e=>e.classList.remove('sel'));
+  document.querySelectorAll('#daraTree .piy-item[data-id="'+id+'"]').forEach(e=>e.classList.add('sel'));
+  const rows = (p.lines||[]).map(l=>{
+    const aram = (l.aram||'').split(/\s+/).filter(Boolean).map(daraWordSpan).join(' ');
+    return `<tr><td class="dara-n">${esc(l.n||'')}</td>`+
+           `<td class="dara-a">${aram}</td>`+
+           `<td class="dara-h">${esc(l.heb||'')}</td>`+
+           `<td class="dara-t">${esc(l.translit||'')}</td></tr>`;
+  }).join('');
+  const vars = (p.variants||[]).map(v=>`<div class="dara-var"><b>${esc(v.n||'')}</b> ${esc(v.text||'')}</div>`).join('');
+  $('daraMain').innerHTML =
+    `<div class="dara-head"><h3>${esc(p.title)}</h3>`+
+    (p.usage?`<div class="dara-use">${esc(p.usage)}</div>`:'')+
+    (p.sources?`<div class="dara-src">${esc(p.sources)}</div>`:'')+
+    `<div class="dara-pages">${esc(t('dara_pages'))}: ${esc(p.pages||'')}</div></div>`+
+    `<table class="dara-tbl">${rows}</table>`+
+    (vars?`<details class="dara-vars"><summary>${esc(t('dara_variants'))} (${p.variants.length})</summary>${vars}</details>`:'');
+  daraApplyCols();
+  $('daraBody').classList.add('piy-detail-open');
+  $('daraBack').classList.remove('hidden');
+}
+function daraApplyCols(){
+  const m=$('daraMain');
+  m.classList.toggle('no-a', !DARA.cols.a);
+  m.classList.toggle('no-h', !DARA.cols.h);
+  m.classList.toggle('no-t', !DARA.cols.t);
+}
+[['daraColA','a'],['daraColH','h'],['daraColT','t']].forEach(pair=>{
+  const id=pair[0], k=pair[1];
+  $(id).onclick=()=>{ DARA.cols[k]=!DARA.cols[k]; $(id).classList.toggle('on', DARA.cols[k]); daraApplyCols(); };
+});
+let _daraSearchTimer=null;
+$('daraSearch').addEventListener('input', ()=>{
+  clearTimeout(_daraSearchTimer);
+  _daraSearchTimer=setTimeout(async ()=>{
+    const q=($('daraSearch').value||'').trim();
+    if(!q){ daraBuildTree(); return; }
+    let hits=[]; try{ hits=await api('dara_search?q='+encodeURIComponent(q)); }catch(e){}
+    const tree=$('daraTree'); tree.innerHTML='';
+    if(!hits.length){ tree.appendChild(el('div','note', t('lib_no_result'))); return; }
+    for(const h of hits){
+      const div=el('div','piy-item'); div.dataset.id=h.piyut_id;
+      div.innerHTML=`<span class="piy-item-title">${esc(h.title)} ${esc(h.n||'')}</span>`+
+                    `<span class="piy-item-auth">${esc(h.aram||'')}</span>`;
+      div.onclick=()=>daraShow(h.piyut_id);
+      tree.appendChild(div);
+    }
+  }, 250);
+});
+$('daraBack').onclick=()=>$('daraBody').classList.remove('piy-detail-open');
+$('daraClose').onclick=()=>$('daraModal').classList.add('hidden');
+$('daraToTorah').onclick=()=>$('daraModal').classList.add('hidden');
+// word tap: pronunciation + meaning + the other places the word is used
+document.addEventListener('click', async e=>{
+  const pop=$('daraWordPop'); if(!pop) return;
+  const inDara = e.target.closest && e.target.closest('#daraModal');
+  if(inDara && e.target.classList && e.target.classList.contains('piy-w')){
+    const w=e.target.dataset.w, d=(DARA.cur && DARA.cur.dict && DARA.cur.dict[w])||null;
+    pop.innerHTML=`<b>${esc(w)}</b>${d&&d.t?' <span class="dara-pron">'+esc(d.t)+'</span>':''}<br>`+
+                  (d&&d.g?esc(d.g):('<i>'+esc(t('piy_no_dict_entry'))+'</i>'))+
+                  `<div class="dara-pop-more">${esc(t('dara_loading'))}</div>`;
+    pop.classList.remove('hidden');
+    pop.style.top=Math.min(e.clientY+12, innerHeight-180)+'px';
+    pop.style.left=Math.max(10, e.clientX-160)+'px';
+    try{
+      const r=await api('dara_word?w='+encodeURIComponent(w));
+      const more=(r.refs||[]).slice(0,6).map(x=>`<div class="dara-pop-ref"><b>${esc(x.title)} ${esc(x.n||'')}</b> ${esc(x.aram||'')}</div>`).join('');
+      const box=pop.querySelector('.dara-pop-more');
+      if(box) box.innerHTML=`<div class="dara-pop-freq">${esc(t('dara_occurs'))}: ${r.freq}</div>${more}`;
+    }catch(err){ const box=pop.querySelector('.dara-pop-more'); if(box) box.textContent=''; }
+  } else if(!pop.classList.contains('hidden') && !(e.target.closest && e.target.closest('#daraWordPop'))) pop.classList.add('hidden');
 });
 
 // ── מציאת חרוזים — word/suffix/sound rhyme search over the piyyutim word bank.

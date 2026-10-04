@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '3.7'
+APP_VERSION = '3.8'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 _SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
@@ -2837,6 +2837,38 @@ def api_piyutim_rhyme():
     group = request.args.get('group', '')
     return jsonify(db.piyutim_rhyme_search(mode, q, clean_only, start_letter, group))
 
+
+# ── תעתיק בן-חיים: ספר הפיוטים בתעתיק הגייה ─────────────────────────────────
+@app.route('/api/dara_toc')
+def api_dara_toc():
+    return jsonify(db.get_dara_toc())
+
+
+@app.route('/api/dara_piyut')
+def api_dara_piyut():
+    r = db.get_dara_piyut(request.args.get('id', ''))
+    if not r:
+        return jsonify({'error': 'not found'}), 404
+    return jsonify(r)
+
+
+@app.route('/api/dara_search')
+def api_dara_search():
+    return jsonify(db.search_dara(request.args.get('q', '')))
+
+
+@app.route('/api/dara_word')
+def api_dara_word():
+    r = db.get_dara_word(request.args.get('w', ''))
+    if not r:
+        return jsonify({'error': 'not found'}), 404
+    return jsonify(r)
+
+
+@app.route('/api/dara_pronounce')
+def api_dara_pronounce():
+    words = [w for w in (request.args.get('w', '') or '').split(',') if w]
+    return jsonify(db.dara_pronounce(words))
 
 # ── אישי השומרונים (who's-who library unit) ─────────────────────────────────
 @app.route('/api/people_toc')
