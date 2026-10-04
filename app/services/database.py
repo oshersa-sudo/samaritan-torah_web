@@ -959,6 +959,29 @@ def get_word_table(verse_ids):
             'ar_he': arh, 'en_he': en_he, 'he_combined': ', '.join(he_combined),
             'meliz_he': meliz_he, 'meliz_ar': meliz_ar,
         })
+
+    # ── the words the curated glossary never covered ────────────────────────
+    # Everything above comes from verse_dictionary alone, and that table is not
+    # complete: 468 verses have no row in it at all — the whole of דברים א׳-ט׳,
+    # most of שמות כ׳ and כ״ב and כ״ו, the genealogies and name-lists — and 793
+    # more carry fewer rows than they have words. The panel showed those verses
+    # blank, and so did the word strip under the commentary, while the very same
+    # words WERE glossed a table away: word_gloss holds a Hebrew gloss for each of
+    # דברים א׳:א׳'s twenty-two tokens, word_align the Aramaic and Arabic for the
+    # tokens the glossary skipped, word_samaritan the Samaritan note.
+    #
+    # get_dict_select already knew this and fell back to those three, which is why
+    # TAPPING a word worked while the table above it stayed empty. The fallback is
+    # made here instead, at the source both of them read, so the two can no longer
+    # disagree about whether a word has a meaning.
+    #
+    # Rows already produced are left exactly as they are — a curated entry, and
+    # its ordering, is better than anything synthesised. Only tokens that no entry
+    # claims are added, in the order they stand in the verse.
+    try:
+        _fill_uncovered_words(conn, verse_ids, out)
+    except Exception:
+        pass                    # a gap-filler must never cost the panel its rows
     conn.close()
     return out
 
@@ -969,6 +992,89 @@ def get_word_table(verse_ids):
 #    a particle-stripped key, then a matres-lectionis skeleton). ─────────────────
 _DS_FIN = {'ם': 'מ', 'ן': 'נ', 'ץ': 'צ', 'ף': 'פ', 'ך': 'כ'}
 _DS_PUNCT = ' .,;:!?"\'־׳״-()[]׃׀'
+
+
+def _fill_uncovered_words(conn, verse_ids, out):
+    """Append a row for every verse token no verse_dictionary entry accounts for,
+    built from word_gloss / word_align / word_samaritan. Mutates `out` in place."""
+    ph = ','.join('?' * len(verse_ids))
+    texts = {r['id']: (r['text'] or '')
+             for r in conn.execute('SELECT id, text FROM verses WHERE id IN (%s)' % ph,
+                                   verse_ids)}
+    if not texts:
+        return
+
+    def pos_map(sql):
+        m = {}
+        try:
+            for r in conn.execute(sql % ph, verse_ids):
+                m[(r['verse_id'], r['pos'])] = r
+        except sqlite3.OperationalError:
+            pass
+        return m
+
+    gloss = pos_map('SELECT verse_id, pos, he FROM word_gloss WHERE verse_id IN (%s)')
+    align = pos_map('SELECT verse_id, pos, ar, arab, en, he FROM word_align '
+                    'WHERE verse_id IN (%s)')
+    samar = pos_map('SELECT verse_id, pos, note FROM word_samaritan WHERE verse_id IN (%s)')
+    ar_he = {}
+    try:
+        ar_he = {r[0]: r[1] for r in conn.execute('SELECT arabic, hebrew FROM arabic_he')}
+    except sqlite3.OperationalError:
+        pass
+
+    for vid, text in texts.items():
+        toks = text.split()
+        if not toks:
+            continue
+        entries = out.get(vid, [])
+        # Every word the table already speaks for, however it got there — a
+        # single entry or one word of a multi-word expression. A token is passed
+        # over when the table has a row for THAT WORD, not merely for that
+        # position: a verse says ואת three times and the glossary carries it once,
+        # and adding it twice more would show the reader the same word three times
+        # over. This is how the word-picker treats a repeat too — it reuses the
+        # one entry rather than making new ones.
+        covered = [ew for e in entries
+                   for ew in re.sub(r'\([^)]*\)', '', e.get('word') or '').split()
+                   if re.search('[א-ת]', ew)]
+        seen_words = []
+        added = []
+        for i, tk in enumerate(toks):
+            if any(_ds_match(tk, ew) for ew in covered):
+                continue
+            if any(_ds_match(tk, w) for w in seen_words):
+                continue          # a repeat of a word this filler already added
+            seen_words.append(tk)
+            g = gloss.get((vid, i))
+            a = align.get((vid, i))
+            s = samar.get((vid, i))
+            he = ((g['he'] if g else '') or (a['he'] if a else '') or '').strip()
+            # word_gloss stores "token - gloss" / "token (gloss)"; the gloss is what
+            # a reader wants in the meaning column, not the token echoed back
+            m = re.match(r'^\s*\S+\s*[-–—(]\s*(.+?)\s*\)?\s*$', he)
+            if m and m.group(1).strip():
+                he = m.group(1).strip()
+            aram = (a['ar'] if a else '') or ''
+            arab = (a['arab'] if a else '') or ''
+            eng = (a['en'] if a else '') or ''
+            note = (s['note'] if s else '') or ''
+            if not (he or aram.strip() or arab.strip() or eng.strip() or note.strip()):
+                continue                       # nothing to say about this token
+            arh = ar_he.get(arab.strip(), '')
+            combined = _dedup_he(
+                [p.strip() for p in re.split('[,،/]', he) if p.strip()]
+                + [p.strip() for p in re.split('[,،/]', arh) if p.strip()])
+            word = tk.strip(_DS_PUNCT) or tk
+            added.append({
+                'word': word, 'meaning': he or word, 'aramaic': aram.strip(),
+                'arabic': arab.strip(), 'english': eng.strip(), 'he': he,
+                'tal_he': '', 'tal_root': '', 'tal_ctx': False, 'ar_he': arh,
+                'en_he': '', 'he_combined': ', '.join(combined) or he,
+                'meliz_he': '', 'meliz_ar': '', 'filled': True,
+            })
+        if added:
+            out.setdefault(vid, []).extend(added)
 
 
 def _ds_fold(w):
