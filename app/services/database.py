@@ -346,23 +346,33 @@ def _seed_nikud():
             patch = json.load(fh)
         text = {vid: (t or '') for vid, t in conn.execute('SELECT id, text FROM verses')}
         have = {vid: (d or '') for vid, d in conn.execute('SELECT verse_id, display FROM verse_nikud')}
-        put, changed, gone = [], 0, 0
+        put, changed, gone, edged = [], 0, 0, 0
         for r in patch.get('rows', []):
             vid, cur = r['v'], text.get(r['v'])
             if cur is None:
                 gone += 1                       # no such verse in this database
                 continue
+            disp, typed = r['d'], r['t']
             if cur != r['h']:
-                changed += 1                    # the wording moved on; marks stay off
-                continue
-            if have.get(vid) != r['d']:
-                put.append((vid, r['d'], r['t']))
+                if cur.strip() != r['h'].strip():
+                    changed += 1                # the wording moved on; marks stay off
+                    continue
+                # same words, only a stray space or newline at an edge: the marks
+                # take the verse's own edges, so striking them out still returns it
+                lead = cur[:len(cur) - len(cur.lstrip())]
+                trail = cur[len(cur.rstrip()):]
+                disp = lead + disp.strip() + trail
+                typed = lead + typed.strip() + trail
+                edged += 1
+            if have.get(vid) != disp:
+                put.append((vid, disp, typed))
         if put:
             conn.executemany('INSERT OR REPLACE INTO verse_nikud (verse_id, display, typed) '
                              'VALUES (?,?,?)', put)
             conn.commit()
-            print('[nikud] %d verses vocalised; left alone: %d not in this DB, '
-                  '%d whose wording changed since' % (len(put), gone, changed))
+            print('[nikud] %d verses vocalised (%d kept the edge spacing of the verse); '
+                  'left alone: %d not in this DB, %d whose wording changed since'
+                  % (len(put), edged, gone, changed))
         conn.close()
     except Exception as exc:
         print('[nikud] skipped: %s' % exc)
