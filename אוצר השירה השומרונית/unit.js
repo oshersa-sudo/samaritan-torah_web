@@ -725,7 +725,63 @@ function beginLoad(track, ready) {
  * within a single recording: moving on to a DIFFERENT recording is a choice
  * somebody makes, and guessing which one would fetch the whole archive.
  */
-const AHEAD = { key: '', bytes: null, busy: '', lead: 15 };
+const AHEAD = {
+  key: '', bytes: null, busy: '', sized: {},
+  bps: 0,              // how fast this connection has actually been, bytes/sec
+  lead: 15,            // the fallback, used until the connection has been seen
+  min: 6, max: 90,     // never sooner than this, never later
+};
+
+/* ---- how fast this connection really is.
+ *
+ * Measured rather than assumed, because the two ends of it are a media server
+ * in a datacentre and a telephone on whatever it can find — and the archive is
+ * listened to on both. Every download already made says something, and the
+ * newest says most, so the estimate leans on it without forgetting the rest.
+ */
+function aheadLearn(bytes, ms) {
+  // Twenty milliseconds is enough to divide by honestly. The guard was sixty,
+  // and on a fast line — or the archive's own machine, serving off its drive —
+  // every download came in under it, so nothing was ever learnt and the fixed
+  // lead was used forever. A fast connection is exactly the case where the
+  // lead should come down.
+  if (ms < 20 || bytes < 40000) return;
+  const now = bytes / (ms / 1000);
+  AHEAD.bps = AHEAD.bps ? AHEAD.bps * 0.6 + now * 0.4 : now;
+}
+
+/* ---- how big the next one is, for one byte.
+ *
+ * A range request for a single byte comes back with the whole length in the
+ * Content-Range header, so the size is known without fetching the file. The
+ * answer is kept, because it cannot change.
+ */
+async function aheadSize(f) {
+  if (AHEAD.sized[f] !== undefined) return AHEAD.sized[f];
+  try {
+    const res = await fetch(audioURL(f), { headers: { Range: 'bytes=0-0' } });
+    const cr = res.headers.get('Content-Range') || '';
+    const n = +(cr.split('/')[1] || res.headers.get('Content-Length') || 0);
+    AHEAD.sized[f] = n > 1 ? n : 0;
+  } catch (e) {
+    AHEAD.sized[f] = 0;
+  }
+  return AHEAD.sized[f];
+}
+
+/* ---- and therefore how early to begin.
+ *
+ * Long enough to finish with room to spare, and not a second longer: fetched
+ * too early and a listener who stops after this track has paid for a file
+ * nobody heard; too late and the singing stops to wait. Where the size or the
+ * speed is not known yet it falls back to the fixed lead, which is what the
+ * first track of a session uses.
+ */
+function aheadLead(size) {
+  if (!size || !AHEAD.bps) return AHEAD.lead;
+  const need = size / AHEAD.bps * 1.7 + 1.5;   // room for a slow patch
+  return Math.max(AHEAD.min, Math.min(AHEAD.max, need));
+}
 
 function aheadKey(rec, idx) { return rec + ':' + idx; }
 
@@ -742,11 +798,13 @@ async function aheadFetch() {
   const key = aheadKey(nx.rec, nx.idx);
   if (AHEAD.key === key || AHEAD.busy === key) return;
   AHEAD.busy = key;
+  const t0 = Date.now();
   try {
     const res = await fetch(audioURL(nx.track.f));
     const total = +(res.headers.get('content-length') || 0);
     if (!res.ok || !total || total > MAX_FETCH) throw new Error('skip');
     const bytes = await res.blob();
+    aheadLearn(bytes.size, Date.now() - t0);   // what this one taught us
     // the listener may have moved on while this was coming down
     if (aheadKey(cur.rec, cur.idx + 1) === key) {
       AHEAD.key = key;
@@ -763,8 +821,12 @@ function aheadDrop() { AHEAD.key = ''; AHEAD.bytes = null; }
 /* watched on the ordinary time updates — no timer of its own */
 function aheadWatch() {
   if (!au.duration || !isFinite(au.duration) || au.paused) return;
+  const nx = aheadNext();
+  if (!nx) return;
+  // ask the size once, early, so the moment to begin can be worked out at all
+  if (AHEAD.sized[nx.track.f] === undefined) { aheadSize(nx.track.f); return; }
   const left = (TRIM.end || au.duration) - au.currentTime;
-  if (left > 0 && left <= AHEAD.lead) aheadFetch();
+  if (left > 0 && left <= aheadLead(AHEAD.sized[nx.track.f])) aheadFetch();
 }
 
 /* The element streams only a little ahead of the needle and then waits — which
@@ -774,6 +836,7 @@ function aheadWatch() {
  * the copy in memory: from then on every point in it is instant. */
 async function fetchTrack(track, token) {
   const url = audioURL(track.f);
+  const started = Date.now();
   try {
     const res = await fetch(url);
     if (!res.ok || !res.body) return failFetch(token);
@@ -792,6 +855,7 @@ async function fetchTrack(track, token) {
       LOAD.bytes += value.length;
     }
     if (token !== LOAD.token) return;
+    aheadLearn(LOAD.bytes, Date.now() - started);   // every download teaches
     const type = res.headers.get('content-type') || 'audio/mpeg';
     const bytes = new Blob(chunks, { type });
     swapToBlob(bytes, token);
