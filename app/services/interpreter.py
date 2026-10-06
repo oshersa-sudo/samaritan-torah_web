@@ -9,7 +9,14 @@ columns — nothing is generated at request time.
 import os
 import sqlite3
 
-_DB_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'torah.db')
+# The SAME database the rest of the app uses. This module used to name the
+# bundled copy outright and ignore DB_PATH, which on the server points at the
+# persistent disk — so the commentary panel was reading a different database
+# from every other panel: the copy frozen in git. A commentary edited online
+# was saved to the disk and never shown, and a commentary shipped as a boot
+# patch was written to the disk and never shown either. It is taken from
+# database.py so the two can no longer drift apart.
+from .database import DB_PATH as _DB_PATH
 
 # lang -> column. Anything unrecognised falls back to Hebrew rather than
 # erroring, so a stale client asking for a language we dropped still renders.
