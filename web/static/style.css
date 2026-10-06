@@ -2407,3 +2407,9 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
 .round .zoomi{ width:18px; height:18px; }
 .nav-back .tbi{ width:18px; height:18px; }
 #navbar{ gap:2px; padding:3px; }
+
+/* The reading pane hands the browser the up-and-down and keeps the sideways for
+   the app: without this the browser claims a horizontal drag as a scroll within
+   a few pixels, cancels the pointer, and the swipe that turns the page is never
+   seen. Vertical scrolling is untouched. */
+#content{ touch-action:pan-y; }
