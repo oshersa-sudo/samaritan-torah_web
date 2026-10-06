@@ -6445,30 +6445,40 @@ function libBuildGrid(){
       b.appendChild(el('span','lib-hint lib-hint-back', esc(t('lib_hint_back'))));
       b.classList.add('demo');                     // it dips twice: this is the pull
       setTimeout(()=>b.classList.remove('demo'), 3100);
-      setTimeout(()=>b.querySelectorAll('.lib-hint').forEach(h=>h.classList.add('gone')), 4000);
+      setTimeout(()=>b.querySelectorAll('.lib-hint').forEach(h=>h.classList.add('gone')), 1600);
 
       // ── pulling it back ──────────────────────────────────────────────────
       // Downwards, far enough not to be a tap, and further down than across so a
       // finger travelling along the shelf is not mistaken for one putting a book
       // away. While the finger is down the book follows it, so the gesture shows
       // what it is doing before it is finished.
-      let y0=0, x0=0, dragging=false;
+      // The position is carried on every move and the gesture is judged from the
+      // LAST one seen, never from the event that ends it: a pointercancel — which
+      // is what a touch screen sends the moment it decides a downward drag is a
+      // scroll — carries no useful coordinates, and reading them there was why
+      // the pull did nothing on a real finger. The book's own touch-action (in
+      // the stylesheet) keeps the browser from claiming the gesture in the first
+      // place; this is the belt to that pair of braces.
+      let y0=0, x0=0, ly=0, lx=0, dragging=false;
+      const track = e => { if(dragging){ ly=e.clientY; lx=e.clientX; } };
       b.addEventListener('pointerdown', e=>{
         if(e.pointerType==='mouse' && e.button!==0) return;
-        y0=e.clientY; x0=e.clientX; dragging=true;
-        b.setPointerCapture && b.setPointerCapture(e.pointerId);
+        y0=ly=e.clientY; x0=lx=e.clientX; dragging=true;
+        try{ b.setPointerCapture(e.pointerId); }catch(_){}
       }, {passive:true});
       b.addEventListener('pointermove', e=>{
         if(!dragging) return;
-        const dy=e.clientY-y0;
+        track(e);
+        const dy=ly-y0;
         if(dy>0) b.style.transform='translateY('+Math.min(dy,90)+'px) rotateY(180deg)';
       }, {passive:true});
       const settle = e => {
         if(!dragging) return;
         dragging=false;
+        if(e && e.clientY) track(e);
         b.style.transform='';
-        const dy=e.clientY-y0, dx=Math.abs(e.clientX-x0);
-        if(dy>48 && dy>dx){                    // put back on the shelf
+        const dy=ly-y0, dx=Math.abs(lx-x0);
+        if(dy>40 && dy>dx){                    // put back on the shelf
           b.dataset.dragged='1';
           LIB_PULLED=null;
           libBuildGrid();
@@ -6479,6 +6489,15 @@ function libBuildGrid(){
       };
       b.addEventListener('pointerup', settle, {passive:true});
       b.addEventListener('pointercancel', settle, {passive:true});
+      // some engines send no pointer events for a finger at all
+      b.addEventListener('touchstart', e=>{ const p=e.touches[0];
+        if(e.touches.length===1 && p){ y0=ly=p.clientY; x0=lx=p.clientX; dragging=true; } }, {passive:true});
+      b.addEventListener('touchmove', e=>{ const p=e.touches[0];
+        if(p && dragging){ ly=p.clientY; lx=p.clientX;
+          const dy=ly-y0; if(dy>0) b.style.transform='translateY('+Math.min(dy,90)+'px) rotateY(180deg)'; } }, {passive:true});
+      b.addEventListener('touchend', e=>{ const p=e.changedTouches&&e.changedTouches[0];
+        if(p && dragging){ ly=p.clientY; lx=p.clientX; } settle(null); }, {passive:true});
+      b.addEventListener('touchcancel', ()=>settle(null), {passive:true});
     }
     b.onclick=(ev)=>{
       if(b.dataset.dragged==='1'){ b.dataset.dragged=''; return; }   // that was a pull, not a tap

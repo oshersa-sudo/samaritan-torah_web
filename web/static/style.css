@@ -2456,7 +2456,9 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
   background:linear-gradient(#a46a43 0 2px, #7b4a2b 2px 7px, #5d3720 7px 100%);
   box-shadow:0 2px 0 rgba(60,32,16,.45), 0 7px 12px -4px rgba(60,32,16,.5); }
 
-.lib-spine{ position:relative; flex:0 0 auto; width:38px; height:124px; padding:0;
+/* the sideways-and-down gesture on a book belongs to the book, not to the
+   scrolling of the page behind it */
+.lib-spine{ touch-action:none; position:relative; flex:0 0 auto; width:38px; height:124px; padding:0;
   border:0; background:none; font:inherit; cursor:pointer;
   transform-style:preserve-3d; transition:transform .34s cubic-bezier(.3,.8,.4,1);
   transform-origin:50% 100%; }
@@ -2549,10 +2551,11 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
 /* The pulled book is turned a half-turn on its Y axis to show its cover; a hint
    riding on it inherited that turn and came out as mirror writing. It is turned
    back, and since that is a transform of its own it carries the centring too. */
+/* No lozenge behind it: the words stand on the shelf's own ground, in its own
+   ink, and leave almost at once — they are a nudge, not a label. */
 .lib-hint{ position:absolute; left:50%; transform:translateX(50%) rotateY(180deg);
-  padding:3px 9px; border-radius:11px; font-size:11px; line-height:1.3;
-  white-space:nowrap; color:#fff6e9; background:rgba(40,22,10,.82);
-  pointer-events:none; opacity:1; transition:opacity .5s ease; }
+  font-size:11.5px; line-height:1.3; font-weight:600; white-space:nowrap;
+  color:#4a3524; pointer-events:none; opacity:1; transition:opacity .45s ease; }
 .lib-hint-open{ top:-22px; }
 .lib-hint-back{ bottom:-22px; }
 .lib-hint.gone{ opacity:0; }
