@@ -281,6 +281,20 @@ def api_whatsnew():
     return jsonify({'added': ADD.load()[-60:][::-1]})
 
 
+@shira.route('/shira/api/version')
+def api_version():
+    """Which build this is. The page asks for it to put in its own footer, and
+    here it was the one request that answered 404 — so the version simply never
+    appeared on the web copy. The number is the unit's own VERSION file, which
+    is deployed with it, so the two cannot disagree."""
+    try:
+        with open(os.path.join(UNIT, 'VERSION'), encoding='utf-8') as fh:
+            v = fh.read().strip()
+    except OSError:
+        v = ''
+    return jsonify({'version': v, 'local': False})
+
+
 @shira.route('/shira/api/admin/status')
 def api_admin_status():
     """What signing in here is good for.
