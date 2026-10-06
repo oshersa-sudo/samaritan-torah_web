@@ -4130,7 +4130,54 @@ function updateNavDisabled(){
   }
 }
 $('prevBtn').onclick=()=> S.navMode==='chapter'? stepChapter(-1) : stepPortion(-1);
+
 $('nextBtn').onclick=()=> S.navMode==='chapter'? stepChapter(1)  : stepPortion(1);
+
+// ── paging by swipe ──────────────────────────────────────────────────────────
+// A swipe to the right turns the page forward, a swipe to the left back — the
+// same two steps the arrows take, by clicking the arrows themselves, so the
+// gesture inherits everything they already know: which of chapter and portion is
+// being stepped, and that a disabled arrow does nothing at the end of a book.
+//
+// What it must not do is fire on an ordinary read. The thumb has to travel 60px
+// across and further across than down, so a scroll never counts; a drag that
+// began inside something with sideways scrolling of its own is left to it; and a
+// selection being dragged out of the text is left alone. The tap that follows a
+// swipe is swallowed, or a swipe that happens to start and end on the same verse
+// would open the word dictionary on its way past.
+(function(){
+  const c = $('content'); if(!c) return;
+  const ACROSS = 60, SLOPE = 1.4;
+  let x0 = 0, y0 = 0, tracking = false;
+
+  c.addEventListener('pointerdown', e => {
+    if(e.pointerType === 'mouse' && e.button !== 0) return;
+    x0 = e.clientX; y0 = e.clientY; tracking = true;
+  }, {passive:true});
+  c.addEventListener('pointercancel', () => { tracking = false; }, {passive:true});
+
+  c.addEventListener('pointerup', e => {
+    if(!tracking) return;
+    tracking = false;
+    const dx = e.clientX - x0, dy = e.clientY - y0;
+    if(Math.abs(dx) < ACROSS || Math.abs(dx) < Math.abs(dy) * SLOPE) return;
+    if(S.view !== 'verses') return;
+    try{ if(String(getSelection() || '').trim().length > 2) return; }catch(_){}
+    for(let n = e.target; n && n !== c; n = n.parentElement)
+      if(n.scrollWidth > n.clientWidth + 4) return;
+
+    const b = $(dx > 0 ? 'nextBtn' : 'prevBtn');
+    if(!b || b.disabled || b.classList.contains('hidden')) return;
+    // the arrow's own handler, not a click on it: a click would be eaten by the
+    // very guard armed below, which is there for the browser's own click — the
+    // one it sends after a drag that began and ended on the same verse, and which
+    // would otherwise open the word dictionary on the way past
+    b.onclick();
+    const swallow = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    document.addEventListener('click', swallow, {capture:true, once:true});
+    setTimeout(() => document.removeEventListener('click', swallow, true), 400);
+  }, {passive:true});
+})();
 
 async function stepChapter(delta){
   S.verseFilter=null;

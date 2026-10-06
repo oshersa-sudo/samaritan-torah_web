@@ -2393,3 +2393,17 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
 .samchar.nik{ font-family:'SamNikud','Samaritan',serif; }
 .vtext.nik{ line-height:2.2; }        /* the marks sit above the letters */
 .bm-nav.nik-nav{ font-size:.78em; letter-spacing:0; padding:0 .45em; width:auto; }
+
+/* ── the navigation bar, a size down ─────────────────────────────────────────
+   Arrows 48→42, the round buttons 42→37, and every mark inside them to match.
+   It floats over the text it serves, so it should ask for as little of the page
+   as it can and still be hit with a thumb — 37px is still above the 34 a finger
+   needs. These come last in the file, over the several earlier rules that have
+   been setting these same sizes. */
+.nav-arrow{ width:42px; height:42px; }
+.nav-arrow.nav-haslabel{ width:auto; height:42px; padding:0 11px; max-width:40%; }
+.nav-arrow .nav-chevron{ width:19px; height:19px; }
+.round{ width:37px; height:37px; }
+.round .zoomi{ width:18px; height:18px; }
+.nav-back .tbi{ width:18px; height:18px; }
+#navbar{ gap:2px; padding:3px; }
