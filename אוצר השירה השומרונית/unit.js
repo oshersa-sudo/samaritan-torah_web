@@ -616,7 +616,10 @@ function playRec(recId, idx, quiet) {
   switching = true;
   seekFrom = 0;
   setTimeout(() => { switching = false; }, 400);
-  au.src = audioURL(t.f);
+  // handed over from the prefetch when this is the track it was fetching
+  const ready = (AHEAD.key === aheadKey(recId, idx)) ? AHEAD.bytes : null;
+  aheadDrop();
+  au.src = ready ? URL.createObjectURL(ready) : audioURL(t.f);
   vuPeak = 0;                            // the meter re-learns this tape's loudness
   bandDrop();          // another file: another key, another mode, another tuning
 
@@ -632,7 +635,7 @@ function playRec(recId, idx, quiet) {
   if (!quiet && !sameRec) sfx('play');   // the deck's own click
   mixInit();                            // the chain must exist before playback
   if (MIX.ctx && MIX.ctx.state === 'suspended') MIX.ctx.resume();
-  beginLoad(t);                          // watch it arrive, and hold the scrubber
+  beginLoad(t, ready);                   // watch it arrive, and hold the scrubber
   au.play().catch(() => {});
   setRate($('prate').value);            // a new source resets playbackRate
   openDeck();
@@ -679,7 +682,7 @@ function seekable(on) {
   $('pseek').classList.toggle('waiting', !on);
 }
 
-function beginLoad(track) {
+function beginLoad(track, ready) {
   clearInterval(LOAD.timer);
   const token = ++LOAD.token;
   LOAD.on = true; LOAD.started = false; LOAD.greenAt = 0;
@@ -687,9 +690,81 @@ function beginLoad(track) {
   TRIM.start = 0; TRIM.end = 0;
   if (LOAD.blob) { URL.revokeObjectURL(LOAD.blob); LOAD.blob = ''; }
   seekable(false);
+
+  // Already here, fetched while the track before it was still playing: there
+  // is nothing to wait for, so there is nothing to say about waiting.
+  if (ready) {
+    LOAD.total = LOAD.bytes = ready.size;
+    loadHide();
+    seekable(true);
+    LOAD.started = true;
+    // The address was made when the track was handed over, and the element is
+    // already playing from it. swapToBlob would mint a second one for the same
+    // bytes, leaving the first to be collected by nobody — so the one in use
+    // is recorded here instead, and the next load revokes it like any other.
+    LOAD.blob = au.getAttribute('src') || '';
+    ready.arrayBuffer().then(b => scanSilence(b, token)).catch(() => {});
+    return;
+  }
+
   loadSay('load', 'טוען הקלטה… 0%', 0);
   LOAD.timer = setInterval(loadTick, 200);
   fetchTrack(track, token);            // the actual download onto the device
+}
+
+/* ---- the next track, fetched before it is wanted.
+ *
+ * A recording in twelve parts was twelve pauses: the element was handed a new
+ * address at the instant the one before it ended, and then everyone waited for
+ * the first tenth of it to come down off the media server. On a piece sung
+ * without a break that pause falls in the middle of a line.
+ *
+ * So the one that follows is pulled down while the current one still has time
+ * left — far enough ahead that even a slow connection finishes, near enough
+ * that nothing is fetched for a listener who will stop after this track. Only
+ * within a single recording: moving on to a DIFFERENT recording is a choice
+ * somebody makes, and guessing which one would fetch the whole archive.
+ */
+const AHEAD = { key: '', bytes: null, busy: '', lead: 15 };
+
+function aheadKey(rec, idx) { return rec + ':' + idx; }
+
+/* the track that will play next, or nothing if this is the last one */
+function aheadNext() {
+  const r = byId(C.recordings, cur.rec);
+  if (!r || !r.tr || cur.idx + 1 >= r.tr.length) return null;
+  return { rec: cur.rec, idx: cur.idx + 1, track: r.tr[cur.idx + 1] };
+}
+
+async function aheadFetch() {
+  const nx = aheadNext();
+  if (!nx) return;
+  const key = aheadKey(nx.rec, nx.idx);
+  if (AHEAD.key === key || AHEAD.busy === key) return;
+  AHEAD.busy = key;
+  try {
+    const res = await fetch(audioURL(nx.track.f));
+    const total = +(res.headers.get('content-length') || 0);
+    if (!res.ok || !total || total > MAX_FETCH) throw new Error('skip');
+    const bytes = await res.blob();
+    // the listener may have moved on while this was coming down
+    if (aheadKey(cur.rec, cur.idx + 1) === key) {
+      AHEAD.key = key;
+      AHEAD.bytes = bytes;
+    }
+  } catch (e) {
+    // no prefetch, no harm: the track loads the ordinary way when it starts
+  }
+  if (AHEAD.busy === key) AHEAD.busy = '';
+}
+
+function aheadDrop() { AHEAD.key = ''; AHEAD.bytes = null; }
+
+/* watched on the ordinary time updates — no timer of its own */
+function aheadWatch() {
+  if (!au.duration || !isFinite(au.duration) || au.paused) return;
+  const left = (TRIM.end || au.duration) - au.currentTime;
+  if (left > 0 && left <= AHEAD.lead) aheadFetch();
 }
 
 /* The element streams only a little ahead of the needle and then waits — which
@@ -2694,6 +2769,7 @@ au.addEventListener('seeking', () => {
 let mediaAt = 0;
 au.addEventListener('timeupdate', () => {
   seekFrom = au.currentTime;
+  aheadWatch();                          // fetch the next one before it is due
   // the notification only needs this about once a second, not four times
   if (Date.now() - mediaAt > 1000) { mediaAt = Date.now(); mediaPos(); }
 });
