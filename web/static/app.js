@@ -1102,13 +1102,14 @@ function samMarkupNikud(text){
   // otherwise samMarkup would cut them off into a span of their own and the marks
   // would drift off the letters they sit on. The stops and the word divider are
   // treated exactly as below.
-  let html=''; const re=/([א-ת0-9A-Z\uE000-\uE3FF\u200F]+|[.:׃]|·)/g; let last=0, m;
+  let html=''; const re=/([א-ת0-9A-Z\uE000-\uE3FF\u200F]+|[:׃]-*|\.|·)/g; let last=0, m;
   while((m=re.exec(text))!==null){
     if(m.index>last) html += esc(text.slice(last,m.index));
+    const c0 = m[0][0];          // ׃-- and :-- arrive whole, so test the first char
     html += (m[0]==='·') ? '<span class="wsep">·</span>'
-          : (m[0]===':' || m[0]==='׃') ? '<span class="samstop">'+esc(m[0])+'</span>'
-          : (m[0]==='.') ? '<span class="samchar samstop nik">'+esc(m[0])+'</span>'
-                         : '<span class="samchar nik">'+esc(m[0])+'</span>';
+          : (c0===':' || c0==='׃') ? '<span class="samstop">'+esc(m[0])+'</span>'
+          : (c0==='.') ? '<span class="samchar samstop nik">'+esc(m[0])+'</span>'
+                       : '<span class="samchar nik">'+esc(m[0])+'</span>';
     last = re.lastIndex;
   }
   if(last<text.length) html += esc(text.slice(last));
@@ -1124,13 +1125,14 @@ function samMarkup(text){
   // had — the reader's own two dots — and are only pulled tight against the word
   // they close (.samstop, which sets spacing and no font). The period keeps the
   // Samaritan face it has always had.
-  let html=''; const re=/([א-ת]+|[.:׃]|·)/g; let last=0, m;
+  let html=''; const re=/([א-ת]+|[:׃]-*|\.|·)/g; let last=0, m;
   while((m=re.exec(text))!==null){
     if(m.index>last) html += esc(text.slice(last,m.index));
+    const c0 = m[0][0];          // ׃-- and :-- arrive whole, so test the first char
     html += (m[0]==='·') ? '<span class="wsep">·</span>'
-          : (m[0]===':' || m[0]==='׃') ? '<span class="samstop">'+esc(m[0])+'</span>'
-          : (m[0]==='.') ? '<span class="samchar samstop">'+esc(m[0])+'</span>'
-                         : '<span class="samchar">'+esc(m[0])+'</span>';
+          : (c0===':' || c0==='׃') ? '<span class="samstop">'+esc(m[0])+'</span>'
+          : (c0==='.') ? '<span class="samchar samstop">'+esc(m[0])+'</span>'
+                       : '<span class="samchar">'+esc(m[0])+'</span>';
     last = re.lastIndex;
   }
   if(last<text.length) html += esc(text.slice(last));
