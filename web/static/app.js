@@ -162,7 +162,7 @@ const I18N = {
       'כפתור הכתב מחליף בין הכתב העברי הרגיל לבין הכתב העברי-השומרוני העתיק.',
       'כאן בוחרים תרגום — ארמי, ערבי או אנגלי — והוא מוצג במקום הטקסט.',
       'השוואת נוסחים מציגה את נוסח שומרון מול נוסח המסורה, וגם מול תרגום השבעים, עם סימון ההבדלים.',
-      'חילופי נוסח מציג את גרסאות הנוסח מכתבי-יד שונים, ממהדורת פון גאל, עם עדי-הנוסח.',
+      'חילופי נוסח מציג את גרסאות הנוסח מכתבי-יד שונים, עם עדי-הנוסח.',
       'ממקור שומרון פותח את הפרשנות השומרונית לפסוק: תיבת מרקה, פירוש צדקה אל-חכים, המסורת השומרונית ועוד.',
       'פירוש הפסוק נפתח בפאנל שמתחת לטקסט, ובו פירוש רציף לכל פסוק הבנוי אך ורק מן המקורות השומרוניים, עם ציון שם האומר. בכותרת הפאנל אפשר להציגו בכתב שומרוני רהוט או בערבית, ובתחתיתו קישורים להרחבה: ממקור שומרון, פרשנות יהודית ומילון מילים.',
       'מילון מילים מציג לכל מילה בפסוק את תרגומה הארמי ואת פירושה מתוך המילון.',
@@ -196,12 +196,12 @@ const I18N = {
     src_sir:'סוד הלבבות', src_shyt:'שו"ת — יעקב בן אהרן הכהן', src_asatir:'ספר האסאטיר',
     src_translit:'תעתיק הגייה', tr_source:'טקסט המקור', tr_translit:'תעתיק ההגייה השומרוני',
     no_translit:'אין תעתיק הגייה לפסוקים אלה',
-    variants_title:'חילופי נוסח — מהדורת פון גאל',
+    variants_title:'חילופי נוסח',
     no_variants:'אין חילופי נוסח לפסוקים אלה.',
     app_hint:'המילים המודגשות בפסוק נושאות חילופי נוסח — לחץ על מילה כדי לקפוץ לחילופיה, ולחץ על חילוף כדי לחזור למילה.',
     dict_hint:'מילון מילים — חץ ⬆ ליד התרגום הארמי מציין שיש תוצאות נוספות. הקש על השורה לפירוש המלא, למיקומים בתורה ולצורות נוספות מתוך המילון', no_dict:'אין מילון זמין לפסוק זה',
     dict_pick_word:'👆 לחץ על מילה מודגשת כדי לראות את פירושה. לחיצה על מילה אחרת תחליף; לחיצה חוזרת על "מילון מילים" תכבה.',
-    more_results:'תוצאות נוספות', phr_occurrences:'מופעים', phr_words:'מילות הצירוף', phr_head:'מטבעות לשון', phr_formula:'כינוי קבוע', phr_idiom:'ניב', mean_head:'פירוש המילה', mean_memar:'לפי התרגום העברי של מימר מרקה', mean_torah:'לפי מילון המילים של התורה', mean_targum:'לפי מילון המילים של התרגום הארמי לתורה', mean_clash:'הערכים שלהלן הם של השורש, ולא של המילה הזאת', sug_head:'הצעה מתוך גזירה', sug_note:'לא אומתה מול המילון, מרקה או התורה — אין הפניה לשורש', ver_by:'מאומת לפי', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_page:'עמ׳', tal_none:'לא נמצא ערך עבור מילה זו במילון.', tal_click_precise:'לחץ לפירוש המדויק מתוך המילון ⬅',
+    more_results:'תוצאות נוספות', phr_occurrences:'מופעים', phr_words:'מילות הצירוף', phr_head:'מטבעות לשון', phr_formula:'כינוי קבוע', phr_idiom:'ניב', mean_head:'פירוש המילה', mean_memar:'לפי התרגום העברי של מימר מרקה', mean_torah:'לפי מילון המילים של התורה', mean_targum:'לפי מילון המילים של התרגום הארמי לתורה', mean_clash:'הערכים שלהלן הם של השורש, ולא של המילה הזאת', sug_head:'הצעה מתוך גזירה', sug_note:'לא אומתה מול המילון, מרקה או התורה — אין הפניה לשורש', ver_by:'מאומת לפי', infl_head:'ניתוח הצורה', infl_deriv:'גזירה', infl_marqe:'לפי התרגום העברי של מימר מרקה', infl_review:'הצעה — טעונה אישור', tal_meaning:'פירוש מתוך המילון', tal_torah:'מופעים בתורה', tal_forms:'צורות וערכים נוספים', tal_none:'לא נמצא ערך עבור מילה זו במילון.', tal_click_precise:'לחץ לפירוש המדויק מתוך המילון ⬅',
     week_portion:'פרשת השבוע', week_portion_here:'פרשת השבוע — {p}',
     week_portion_extra:'פרשה נוספת', week_portion_here_extra:'פרשה נוספת הנקראת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
@@ -219,8 +219,8 @@ const I18N = {
     m_bhuq_book:'פירוש אם בחקותי', bhuq_title:'פירוש אם בחקותי — אבו אלפרג׳ איבן אל-כתאר',
     bhuq_toc_hint:'החיבור מחולק כאן לחלקים לפי מהלך הטיעון; המספרים בסוגריים הם סעיפי המחבר. בחר חלק לעיון:',
     m_asatir_book:'ספר האסאטיר', asatir_title:'ספר האסאטיר', asatir_toc_hint:'בחר פרק לעיון:',
-    m_wreschner_book:'מסורות שומרוניות · ורשנר 1888', wreschner_title:'מסורות שומרוניות · ורשנר 1888', wreschner_toc_hint:'בחר פרק לעיון:',
-    m_cohen_book:'חוקי הצרעת · כהן 1899', cohen_title:'חוקי הצרעת במקרא · כהן 1899', cohen_toc_hint:'בחר פרק לעיון:',
+    m_wreschner_book:'מסורות שומרוניות', wreschner_title:'מסורות שומרוניות', wreschner_toc_hint:'בחר פרק לעיון:',
+    m_cohen_book:'חוקי הצרעת', cohen_title:'חוקי הצרעת במקרא', cohen_toc_hint:'בחר פרק לעיון:',
     asatir_note:'ספר האסאטיר — דברי הימים השומרוני מאדם ועד אחרית הימים, בתעתיק עברי.',
     m_people_book:'אישים וחוקרים שומרוניים', pp_title:'אישים וחוקרים שומרוניים',
     pp_search_ph:'חיפוש שם, תקופה או עניין…', pp_back_list:'חזרה לרשימה',
@@ -237,9 +237,9 @@ const I18N = {
     m_dara_book:'פיוטי השומרונים בתעתיק הגייה', dara_title:'פיוטי השומרונים בתעתיק הגייה',
     dara_search_ph:'חיפוש בארמית, בעברית או בתעתיק…', dara_back_tree:'חזרה לתוכן',
     dara_col_aram:'ארמית', dara_col_heb:'עברית', dara_col_tr:'תעתיק',
-    dara_empty:'בחר פיוט מתוכן העניינים ←', dara_lines:'שורות', dara_page:'עמ׳', dara_pages:'עמודים בספר',
+    dara_empty:'בחר פיוט מתוכן העניינים ←', dara_lines:'שורות',
     dara_variants:'חילופי גרסה והערות הגייה', dara_occurs:'מופעים בספר', dara_loading:'טוען…',
-    dict_in_dara_sec:'בפיוטי הליטורגיה (בן-חיים)', dict_w_dara:'נאמרת בפיוטי הליטורגיה', dict_dara_only:'מן פיוטי הליטורגיה',
+    dict_in_dara_sec:'בפיוטי הליטורגיה', dict_w_dara:'נאמרת בפיוטי הליטורגיה', dict_dara_only:'מן פיוטי הליטורגיה',
     piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
     piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
     piy_translation_he:'תרגום עברי', piy_no_dict_line:'אין ערכי מילון לשורה זו עדיין',
@@ -294,7 +294,7 @@ const I18N = {
       '<p><b>הספרים שעל המדף</b></p><ul><li><b>תיבת מרקה</b> — חיבור הדרש השומרוני הקדום, בארמית ובעברית זו מול זו</li><li><b>פירוש צדקה אל-חכים</b> — פירוש רצוף לספר בראשית, בעברית ובערבית</li><li><b>פירוש אם בחקותי</b> — חיבורו ההלכתי של אבו אלפרג׳ איבן אל-כתאר בתרגום ד"ר עלי ותד: 537 קטעים ב-24 חלקים, עם 814 ציטוטי מקרא לחיצים</li><li><b>ספר האסאטיר</b> — דברי הימים השומרוני מאדם ועד אחרית הימים, שישה-עשר פרקים המקושרים לפסוקים שהם מספרים</li><li><b>סוד הלבבות (סיר אל-קלוב)</b> — חיבור מחשבה ומוסר</li><li><b>שו"ת יעקב בן אהרן הכהן</b> — שאלות ותשובות בהלכה ובמנהג העדה</li><li><b>המילון הארמי-עברי</b> — דפדוף עמודי המילון, אינדקס, וכל מיקומי המילה</li><li><b>הפיוטים השומרוניים</b> ו<b>מציאת חרוזים</b> — עיון בפיוטים לפי חלוקתם, ומציאת חרוז מדויק, שוֵוה-הברות או שוֵוה-צליל</li><li><b>אישים וחוקרים שומרוניים</b> — 95 דמויות מתקופת המקרא ועד ימינו, לפי תקופה או לפי א״ב, ולכל אחת הסבר על מקומה במסורת</li></ul>',
       '<p><b>גרסה 2.3 — פירוש אם בחקותי בספרייה</b></p><ul><li>החיבור נוסף לספרייה כיחידה עצמאית, וספר האסאטיר נכנס גם לתוך "פירוש הפסוק" — מצוטט בשמו לצד הפירוש — ותורגם לערבית במלואו</li></ul><p><b>גרסה 2.2 — ספר האסאטיר</b></p><ul><li>הספר נוסף לספרייה כיחידה עצמאית, וגם ל"ממקור שומרון": בכל פסוק שהאסאטיר מספר את מעשהו נפתח כפתור ובו הפסקה הנוגעת בדבר</li></ul><p><b>גרסה 2.1 — פירוש לכל התורה, ערבית והדפסה</b></p><ul><li>פירוש הפסוק נכתב מחדש לכל בראשית, שמות, ויקרא ובמדבר — כל נקודה בשם אומרה</li><li>הדפסה ושמירה כ-PDF עם תצוגה מקדימה; במחשב — מסך מלא</li></ul>',
       '<p><b>גרסה 2.0 — הספרייה השומרונית</b></p><ul><li>הספרייה כעמוד כרטיסיות; קריאת פיוטים ומציאת חרוזים</li><li>האזנה להקראת פרקי התורה, עם בחירת קריין</li><li>כתב שומרוני גם לפירושים, ובראשית ב-250 פרקים מדויקים</li></ul><p><b>גרסה 1.5 — העשרת מקור המסורת</b></p><ul><li>"מן המסורת השומרונית" הורחב לארבעה חומשים מתוך ספרות הפירוש של הקהילה</li></ul><p><b>גרסה 1.4 — חוויית משתמש</b></p><ul><li>מסך פתיחה, חלון "ברוכים הבאים", אנימציית הפיכת דף, ודפדוף רציף בין פרקים וספרים</li></ul>',
-      '<p><b>גרסה 1.3 — חילופי נוסח והשוואות</b></p><ul><li>חילופי נוסח ממהדורת פון גאל, עם עדי-נוסח ותיאורי כתבי-יד</li><li>השוואה גם לתרגום השבעים; מחליף שפת ממשק (עברית/אנגלית/ערבית)</li></ul><p><b>גרסה 1.2 — ממקור שומרון</b></p><ul><li>תיבת מרקה, המסורת השומרונית, פירוש צדקה אל-חכים, סוד הלבבות, ספר האסאטיר</li><li>"פירוש הפסוק" — פירוש רציף רב-מקורי</li></ul><p><b>גרסה 1.1 — מילונים ושורשים</b></p><ul><li>מילון הארמית השומרונית; "מילון מילים" טבלאי לכל מילה בפסוק</li></ul><p><b>גרסה 1.0 — המהדורה הוובית</b></p><ul><li>עיון בתורה השומרונית בשתי החלוקות, כתב שומרוני, תרגומים, השוואה לנוסח המסורה, חיפוש ושיתוף</li></ul><p class="wc-sign"><b>תהנו!</b></p>',
+      '<p><b>גרסה 1.3 — חילופי נוסח והשוואות</b></p><ul><li>חילופי נוסח, עם עדי-נוסח ותיאורי כתבי-יד</li><li>השוואה גם לתרגום השבעים; מחליף שפת ממשק (עברית/אנגלית/ערבית)</li></ul><p><b>גרסה 1.2 — ממקור שומרון</b></p><ul><li>תיבת מרקה, המסורת השומרונית, פירוש צדקה אל-חכים, סוד הלבבות, ספר האסאטיר</li><li>"פירוש הפסוק" — פירוש רציף רב-מקורי</li></ul><p><b>גרסה 1.1 — מילונים ושורשים</b></p><ul><li>מילון הארמית השומרונית; "מילון מילים" טבלאי לכל מילה בפסוק</li></ul><p><b>גרסה 1.0 — המהדורה הוובית</b></p><ul><li>עיון בתורה השומרונית בשתי החלוקות, כתב שומרוני, תרגומים, השוואה לנוסח המסורה, חיפוש ושיתוף</li></ul><p class="wc-sign"><b>תהנו!</b></p>',
     ],
     interp_unavail:'פונקציה זו אינה פעילה באופן זמני.',
     welcome_title:'ברוכים הבאים לפרויקט אבני שהם',
@@ -309,12 +309,12 @@ const I18N = {
     notif_rec_title:'קבלת התראות',
     notif_rec_body:'אפשר התראות כדי לקבל עדכונים על חידושים, תוספות וגרסאות חדשות של האפליקציה.',
     notif_rec_btn:'אפשר התראות',
-    col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'ערך במילון', col_arabic:'ערבית', col_meliz:'המליץ',
+    col_word:'מילה', col_aram:'תרגום ארמי', col_heb:'פירוש עברי', col_tal:'ערך במילון', col_arabic:'ערבית', col_meliz:'פירוש ערבי',
     col_wordtrans:'תרגום המילה', col_src:'מילת המקור', col_arab:'תרגום ערבי', col_eng:'תרגום אנגלי', col_hetrans:'תרגום עברי',
     ws_tap_hint:'👆 לחץ על השורה לקבלת פירוש מורחב — כל תרגום ופירוש מהמקור שלו', ws_translation:'תרגום עברי', ws_from_targum:'מהתרגום הארמי (פירוש הפסוק)', ws_web:'פירושים מן הרשת', ws_jewish:'פרשנות יהודית', ws_samaritan:'ממקורות שומרון',
     ws_tal:'תרגום מהארמית', ws_tal_ctx:'מהארמית — לפי ההקשר בפסוק', ws_tal_gen:'מהארמית — תרגום כללי',
     ws_english:'מהתרגום האנגלי', ws_from_english:'אנגלית → עברית', ws_english_pending:'התרגום מהאנגלית בהכנה',
-    ws_melitz:'מן המליץ', ws_melitz_pending:'מקור המליץ טרם נוסף', ws_torah_occ:'מופעים בתורה (ארמית)', ws_marqe_occ:'מופעים בתיבת מרקה',
+    ws_melitz:'מן הפירוש הערבי', ws_melitz_pending:'הפירוש הערבי טרם נוסף', ws_torah_occ:'מופעים בתורה (ארמית)', ws_marqe_occ:'מופעים בתיבת מרקה',
     ws_arabic:'מהתרגום הערבי', ws_from_arabic:'תרגום מהערבית לעברית', ws_arabic_pending:'התרגום מהערבית לעברית בהכנה',
     searching:'מחפש…', no_interp:'פירוש אינו זמין לפסוקים אלה',
     no_interp_ar:'התרגום הערבי לפירוש עדיין בהכנה', interp_ar_pending:'[טרם תורגם] ', interp_sam:'כתב שומרוני', interp_ar:'ערבית',
@@ -425,7 +425,7 @@ const I18N = {
       'The script button switches between ordinary Hebrew and the ancient Samaritan-Hebrew script.',
       'Here you choose a translation — Aramaic, Arabic or English — shown in place of the text.',
       'Compare versions shows the Samaritan text against the Masoretic, and the Septuagint, with the differences marked.',
-      'Textual variants shows readings from different manuscripts, from von Gall’s edition, with their witnesses.',
+      'Textual variants shows readings from different manuscripts, with their witnesses.',
       'Samaritan sources opens the Samaritan commentary on the verse: Tibåt Mårqe, Ṣadaqah al-Ḥakīm’s commentary, the Samaritan tradition and more.',
       'Verse commentary opens a panel beneath the text with a flowing commentary on every verse, built only from the Samaritan sources and crediting each point to the source that says it. From the panel header you can render it in the fluent Samaritan script or in Arabic, and at its foot are links onward to the Samaritan sources, the Jewish commentators and the word dictionary.',
       'The word dictionary shows, for each word in the verse, its Aramaic translation and meaning from the dictionary.',
@@ -459,12 +459,12 @@ const I18N = {
     src_sir:'Sīr al-Qulūb (Secret of Hearts)', src_shyt:'Responsa of Jacob ben Aaron', src_asatir:'The Book of Asatir',
     src_translit:'Pronunciation transcription', tr_source:'Source text', tr_translit:'Samaritan pronunciation',
     no_translit:'No pronunciation transcription for these verses',
-    variants_title:'Textual variants — von Gall edition',
+    variants_title:'Textual variants',
     no_variants:"No textual variants for these verses.",
     app_hint:'The emphasised words in the verse carry textual variants — tap a word to jump to its variants, and tap a variant to jump back to the word.',
     dict_hint:"Word dictionary — a ⬆ arrow beside the Aramaic marks further results. Tap a row for the full entry, Torah occurrences and related forms from the dictionary", no_dict:'No dictionary for this verse',
     dict_pick_word:'👆 Tap an underlined word to see its entry. Tap another to swap it; tap “Word dictionary” again to turn off.',
-    more_results:'More results', phr_occurrences:'occurrences', phr_words:'Words of the phrase', phr_head:'Set phrases', phr_formula:'fixed epithet', phr_idiom:'idiom', mean_head:'Meaning of the word', mean_memar:'per Memar Marqe’s Hebrew translation', mean_torah:'per the Torah word-glossary', mean_targum:'per the Aramaic Targum word-glossary', mean_clash:'the entries below belong to the root, not to this word', sug_head:'Suggested by derivation', sug_note:'not confirmed against the dictionary, Marqe or the Torah — no root is offered', ver_by:'confirmed by', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_page:'p.', tal_none:'No entry found for this word in the dictionary.', tal_click_precise:'Tap for the exact entry from the dictionary ⬅',
+    more_results:'More results', phr_occurrences:'occurrences', phr_words:'Words of the phrase', phr_head:'Set phrases', phr_formula:'fixed epithet', phr_idiom:'idiom', mean_head:'Meaning of the word', mean_memar:'per Memar Marqe’s Hebrew translation', mean_torah:'per the Torah word-glossary', mean_targum:'per the Aramaic Targum word-glossary', mean_clash:'the entries below belong to the root, not to this word', sug_head:'Suggested by derivation', sug_note:'not confirmed against the dictionary, Marqe or the Torah — no root is offered', ver_by:'confirmed by', infl_head:'Form analysis', infl_deriv:'Derivation', infl_marqe:'per Memar Marqe’s own Hebrew translation', infl_review:'proposal — needs confirmation', tal_meaning:'Meaning from the dictionary', tal_torah:'Occurrences in the Torah', tal_forms:'Further forms & entries', tal_none:'No entry found for this word in the dictionary.', tal_click_precise:'Tap for the exact entry from the dictionary ⬅',
     week_portion:'This week’s portion', week_portion_here:'The portion of this week — {p}',
     week_portion_extra:'Additional portion', week_portion_here_extra:'An additional portion read this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
@@ -482,8 +482,8 @@ const I18N = {
     m_bhuq_book:'Commentary on Im Beḥuqotay', bhuq_title:'Im Beḥuqotay — Abū l-Faraj ibn al-Kathār',
     bhuq_toc_hint:'The treatise is divided here by the turns of its argument; the bracketed numbers are the author’s own paragraphs. Choose a part:',
     m_asatir_book:'The Book of Asatir', asatir_title:'The Book of Asatir', asatir_toc_hint:'Choose a chapter:',
-    m_wreschner_book:'Samaritan Traditions · Wreschner 1888', wreschner_title:'Samaritan Traditions · Wreschner 1888', wreschner_toc_hint:'Choose a chapter:',
-    m_cohen_book:'The Zaraath Laws · Cohen 1899', cohen_title:'The Zaraath Laws in Scripture · Cohen 1899', cohen_toc_hint:'Choose a chapter:',
+    m_wreschner_book:'Samaritan Traditions', wreschner_title:'Samaritan Traditions', wreschner_toc_hint:'Choose a chapter:',
+    m_cohen_book:'The Zaraath Laws', cohen_title:'The Zaraath Laws in Scripture', cohen_toc_hint:'Choose a chapter:',
     asatir_note:'The Book of Asatir — the Samaritan chronicle from Adam to the end of days, in Hebrew transcription.',
     m_people_book:'Samaritan Figures and Scholars', pp_title:'Samaritan Figures and Scholars',
     pp_search_ph:'Search a name, period or subject…', pp_back_list:'‹ Back to the list',
@@ -500,9 +500,9 @@ const I18N = {
     m_dara_book:'Samaritan Piyyutim in Phonetic Transcription', dara_title:'Samaritan Piyyutim in Phonetic Transcription',
     dara_search_ph:'Search Aramaic, Hebrew or transcription…', dara_back_tree:'Back to contents',
     dara_col_aram:'Aramaic', dara_col_heb:'Hebrew', dara_col_tr:'Transcription',
-    dara_empty:'Pick a piyyut from the contents →', dara_lines:'lines', dara_page:'p.', dara_pages:'Pages in the book',
+    dara_empty:'Pick a piyyut from the contents →', dara_lines:'lines',
     dara_variants:'Variants and pronunciation notes', dara_occurs:'Occurrences in the book', dara_loading:'loading…',
-    dict_in_dara_sec:'In the liturgy (Ben-Ḥayyim)', dict_w_dara:'Sung in the liturgy', dict_dara_only:'From the liturgy',
+    dict_in_dara_sec:'In the liturgy', dict_w_dara:'Sung in the liturgy', dict_dara_only:'From the liturgy',
     piy_back_tree:'Back to contents', piy_dict_toggle:'Word dictionary', piy_search_ph:'Search composition, author, or word…',
     piy_empty:'Choose a composition from the contents ←', piy_pick_first:'Choose a composition',
     piy_translation_he:'Hebrew translation', piy_no_dict_line:'No dictionary entries for this line yet',
@@ -557,7 +557,7 @@ const I18N = {
       '<p><b>The books on the shelf</b></p><ul><li><b>Tībåt Mårqe</b> — the early Samaritan homiletic work, Aramaic and Hebrew side by side</li><li><b>Ṣadaqah al-Ḥakīm</b> — a running commentary on Genesis, in Hebrew and Arabic</li><li><b>Im Bəḥuqqotay</b> — Abu\'l-Faraj ibn al-Kathār\'s halakhic work in Dr. Ali Watad\'s translation: 537 passages in 24 parts, with 814 tappable biblical citations</li><li><b>The Book of Asatir</b> — the Samaritan chronicle from Adam to the end of days, sixteen chapters linked to the verses they retell</li><li><b>Sīr al-Qulūb</b> — a work of thought and ethics</li><li><b>The responsa of Jacob ben Aaron the Priest</b> — questions and answers on law and custom</li><li><b>The Aramaic–Hebrew dictionary</b> — page browsing, an index, and every location of a word</li><li><b>The Samaritan piyyutim</b> and a <b>rhyme finder</b> — by exact rhyme, equal syllable count or sound</li><li><b>Samaritan Figures and Scholars</b> — 95 figures from the biblical era to our own day, by period or A–Z, each with an account of its place in the tradition</li></ul>',
       '<p><b>Version 2.3 — Im Bəḥuqqotay in the library</b></p><ul><li>The work joined the library as a unit of its own, and the Book of Asatir entered the verse commentary — quoted in its own name — and was translated into Arabic in full</li></ul><p><b>Version 2.2 — the Book of Asatir</b></p><ul><li>The book joined the library, and the Samaritan sources too: on every verse it recounts, a button opens the passage in question</li></ul><p><b>Version 2.1 — commentary for the whole Torah, Arabic and printing</b></p><ul><li>The verse commentary was rewritten for Genesis, Exodus, Leviticus and Numbers — every point credited to its source</li><li>Printing and PDF with an on-screen preview; on desktop the app fills the screen</li></ul>',
       '<p><b>Version 2.0 — the Samaritan library</b></p><ul><li>The library as a card gallery; a piyyutim reader and a rhyme finder</li><li>Listen to the Torah read aloud, with a choice of reader</li><li>Samaritan script for the commentaries too, and Genesis in an exact 250 chapters</li></ul><p><b>v1.5 — the Samaritan Library</b></p><ul><li>Full-book readers with contents, search and verse jumps; the Aramaic dictionary upgraded</li></ul><p><b>v1.4 — user experience</b></p><ul><li>Entry splash, a Welcome screen, a page-turn animation, continuous chapter & book paging</li></ul>',
-      '<p><b>v1.3 — textual variants & comparisons</b></p><ul><li>von Gall\'s variants, with witnesses and manuscript descriptions</li><li>Comparison to the Septuagint; UI language switcher (he/en/ar)</li></ul><p><b>v1.2 — Samaritan sources</b></p><ul><li>Tībåt Mårqe, the Samaritan tradition, Ṣadaqah al-Ḥakīm, Sīr al-Qulūb, the Book of Asatir</li><li>“Verse commentary” — a continuous, multi-source reading</li></ul><p><b>v1.1 — dictionaries & roots</b></p><ul><li>The Samaritan Aramaic dictionary; a per-word table for every word in a verse</li></ul><p><b>v1.0 — the web edition</b></p><ul><li>The Samaritan Torah in both divisions, Samaritan script, translations, comparison to the Masorah, search and sharing</li></ul><p class="wc-sign"><b>Enjoy!</b></p>',
+      '<p><b>v1.3 — textual variants & comparisons</b></p><ul><li>Textual variants, with witnesses and manuscript descriptions</li><li>Comparison to the Septuagint; UI language switcher (he/en/ar)</li></ul><p><b>v1.2 — Samaritan sources</b></p><ul><li>Tībåt Mårqe, the Samaritan tradition, Ṣadaqah al-Ḥakīm, Sīr al-Qulūb, the Book of Asatir</li><li>“Verse commentary” — a continuous, multi-source reading</li></ul><p><b>v1.1 — dictionaries & roots</b></p><ul><li>The Samaritan Aramaic dictionary; a per-word table for every word in a verse</li></ul><p><b>v1.0 — the web edition</b></p><ul><li>The Samaritan Torah in both divisions, Samaritan script, translations, comparison to the Masorah, search and sharing</li></ul><p class="wc-sign"><b>Enjoy!</b></p>',
     ],
     interp_unavail:'This feature is temporarily unavailable.',
     welcome_title:'Welcome to the Avnei Shoham project',
@@ -572,12 +572,12 @@ const I18N = {
     notif_rec_title:'Enable notifications',
     notif_rec_body:'Allow notifications to get updates about new features, additions and new versions of the app.',
     notif_rec_btn:'Enable notifications',
-    col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Dictionary entry', col_arabic:'Arabic', col_meliz:'HaMeliṣ',
+    col_word:'Word', col_aram:'Aramaic', col_heb:'Hebrew meaning', col_tal:'Dictionary entry', col_arabic:'Arabic', col_meliz:'Arabic gloss',
     col_wordtrans:'Word translation', col_src:'Source word', col_arab:'Arabic', col_eng:'English', col_hetrans:'Hebrew translation',
     ws_tap_hint:'👆 Tap the row for an expanded interpretation — every translation from its source', ws_translation:'Hebrew translation', ws_from_targum:'from the Aramaic Targum (verse reading)', ws_web:'web dictionaries', ws_jewish:'Jewish commentary', ws_samaritan:'from Samaritan sources',
     ws_tal:'from the Aramaic', ws_tal_ctx:'from the Aramaic — by the verse context', ws_tal_gen:'from the Aramaic — general gloss',
     ws_english:'from the English', ws_from_english:'English → Hebrew', ws_english_pending:'English translation in preparation',
-    ws_melitz:'from the Meliṣ', ws_melitz_pending:'the Meliṣ source is not yet added', ws_torah_occ:'occurrences in the Torah (Aramaic)', ws_marqe_occ:'occurrences in Tībåt Mårqe',
+    ws_melitz:'from the Arabic gloss', ws_melitz_pending:'the Arabic gloss is not yet added', ws_torah_occ:'occurrences in the Torah (Aramaic)', ws_marqe_occ:'occurrences in Tībåt Mårqe',
     ws_arabic:'from the Arabic', ws_from_arabic:'Arabic → Hebrew', ws_arabic_pending:'Arabic→Hebrew translation in preparation',
     searching:'Searching…', no_interp:'No commentary for these verses',
     no_interp_ar:'The Arabic rendering is still being prepared', interp_ar_pending:'[not yet translated] ', interp_sam:'Samaritan script', interp_ar:'Arabic',
@@ -722,12 +722,12 @@ const I18N = {
     src_sir:'سرّ القلوب', src_shyt:'أجوبة يعقوب بن هارون الكاهن', src_asatir:'كتاب الأساطير',
     src_translit:'نسخ النطق', tr_source:'النصّ المصدر', tr_translit:'نطق السامريين',
     no_translit:'لا يوجد نسخ نطق لهذه الآيات',
-    variants_title:'اختلافات النصّ — طبعة فون غال',
+    variants_title:'اختلافات النصّ',
     no_variants:'لا توجد اختلافات نصّية لهذه الآيات.',
     app_hint:'الكلمات المميّزة في الآية تحمل اختلافات نصّية — اضغط على كلمة للانتقال إلى اختلافاتها، واضغط على اختلاف للعودة إلى الكلمة.',
     dict_hint:'معجم الكلمات — السهم ⬆ بجانب الترجمة الآرامية يدلّ على وجود نتائج إضافية. اضغط على الصفّ لعرض المدخل الكامل ومواضع التوراة والصيغ الإضافية من المعجم', no_dict:'لا يوجد معجم لهذه الآية',
     dict_pick_word:'👆 اضغط على كلمة مسطّرة لرؤية مدخلها. اضغط أخرى لتبديلها؛ واضغط «معجم الكلمات» مرّة أخرى لإيقافه.',
-    more_results:'نتائج إضافية', phr_occurrences:'مواضع', phr_words:'كلمات التعبير', phr_head:'تعابير ثابتة', phr_formula:'لقب ثابت', phr_idiom:'تعبير اصطلاحي', mean_head:'معنى الكلمة', mean_memar:'حسب الترجمة العبرية لميمر مرقة', mean_torah:'حسب معجم كلمات التوراة', mean_targum:'حسب معجم كلمات الترجوم الآرامي', mean_clash:'المداخل أدناه تخصّ الجذر لا هذه الكلمة', sug_head:'اقتراح من الاشتقاق', sug_note:'غير مؤكَّد مقابل المعجم أو مرقة أو التوراة — لا يُعطى جذر', ver_by:'مؤكَّد بواسطة', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_page:'ص', tal_none:'لم يُعثر على مدخل لهذه الكلمة في المعجم.', tal_click_precise:'اضغط للمدخل الدقيق من المعجم ⬅',
+    more_results:'نتائج إضافية', phr_occurrences:'مواضع', phr_words:'كلمات التعبير', phr_head:'تعابير ثابتة', phr_formula:'لقب ثابت', phr_idiom:'تعبير اصطلاحي', mean_head:'معنى الكلمة', mean_memar:'حسب الترجمة العبرية لميمر مرقة', mean_torah:'حسب معجم كلمات التوراة', mean_targum:'حسب معجم كلمات الترجوم الآرامي', mean_clash:'المداخل أدناه تخصّ الجذر لا هذه الكلمة', sug_head:'اقتراح من الاشتقاق', sug_note:'غير مؤكَّد مقابل المعجم أو مرقة أو التوراة — لا يُعطى جذر', ver_by:'مؤكَّد بواسطة', infl_head:'تحليل الصيغة', infl_deriv:'الاشتقاق', infl_marqe:'حسب الترجمة العبرية لميمر مرقة', infl_review:'اقتراح — بحاجة إلى تأكيد', tal_meaning:'المعنى من المعجم', tal_torah:'المواضع في التوراة', tal_forms:'صيغ ومداخل إضافية', tal_none:'لم يُعثر على مدخل لهذه الكلمة في المعجم.', tal_click_precise:'اضغط للمدخل الدقيق من المعجم ⬅',
     week_portion:'فصل الأسبوع', week_portion_here:'فصل هذا الأسبوع — {p}',
     week_portion_extra:'فصل إضافي', week_portion_here_extra:'فصل إضافي يُقرأ هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
@@ -745,8 +745,8 @@ const I18N = {
     m_bhuq_book:'تفسير إم بحقوتي', bhuq_title:'تفسير إم بحقوتي — أبو الفرج ابن الكثار',
     bhuq_toc_hint:'قُسّم الكتاب هنا حسب مسار الحجّة؛ الأرقام بين قوسين هي فقرات المؤلف. اختر قسمًا:',
     m_asatir_book:'كتاب الأساطير', asatir_title:'كتاب الأساطير', asatir_toc_hint:'اختر أصحاحاً:',
-    m_wreschner_book:'التقاليد السامرية · فريشنر ١٨٨٨', wreschner_title:'التقاليد السامرية · فريشنر ١٨٨٨', wreschner_toc_hint:'اختر فصلاً:',
-    m_cohen_book:'أحكام البرص · كوهين ١٨٩٩', cohen_title:'أحكام البرص في الكتاب · كوهين ١٨٩٩', cohen_toc_hint:'اختر فصلاً:',
+    m_wreschner_book:'التقاليد السامرية', wreschner_title:'التقاليد السامرية', wreschner_toc_hint:'اختر فصلاً:',
+    m_cohen_book:'أحكام البرص', cohen_title:'أحكام البرص في الكتاب', cohen_toc_hint:'اختر فصلاً:',
     asatir_note:'كتاب الأساطير — التاريخ السامري من آدم إلى آخر الأيام، بالنسخ العبري.',
     m_people_book:'أعلام وباحثون سامريّون', pp_title:'أعلام وباحثون سامريّون',
     pp_search_ph:'ابحث عن اسم أو حقبة أو موضوع…', pp_back_list:'العودة إلى القائمة',
@@ -763,9 +763,9 @@ const I18N = {
     m_dara_book:'الأناشيد السامرية بالنسخ الصوتي', dara_title:'الأناشيد السامرية بالنسخ الصوتي',
     dara_search_ph:'ابحث بالآرامية أو العبرية أو النسخ الصوتي…', dara_back_tree:'العودة إلى الفهرس',
     dara_col_aram:'آرامي', dara_col_heb:'عبري', dara_col_tr:'نسخ صوتي',
-    dara_empty:'اختر نشيدًا من الفهرس ←', dara_lines:'أسطر', dara_page:'ص', dara_pages:'الصفحات في الكتاب',
+    dara_empty:'اختر نشيدًا من الفهرس ←', dara_lines:'أسطر',
     dara_variants:'الفروق وملاحظات النطق', dara_occurs:'مواضع في الكتاب', dara_loading:'جارٍ التحميل…',
-    dict_in_dara_sec:'في الأناشيد (بن حيّيم)', dict_w_dara:'ترد في الأناشيد', dict_dara_only:'من الأناشيد',
+    dict_in_dara_sec:'في الأناشيد', dict_w_dara:'ترد في الأناشيد', dict_dara_only:'من الأناشيد',
     piy_back_tree:'العودة للفهرس', piy_dict_toggle:'قاموس الكلمات', piy_search_ph:'بحث عن تأليف أو مؤلف أو كلمة…',
     piy_empty:'اختر تأليفًا من الفهرس ←', piy_pick_first:'اختر تأليفًا',
     piy_translation_he:'الترجمة العبرية', piy_no_dict_line:'لا توجد مداخل قاموس لهذا السطر بعد',
@@ -835,12 +835,12 @@ const I18N = {
     notif_rec_title:'تفعيل الإشعارات',
     notif_rec_body:'اسمح بالإشعارات لتصلك تحديثات حول الميزات الجديدة والإضافات والإصدارات الجديدة للتطبيق.',
     notif_rec_btn:'تفعيل الإشعارات',
-    col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'مدخل المعجم', col_arabic:'العربية', col_meliz:'المليص',
+    col_word:'الكلمة', col_aram:'الآرامية', col_heb:'المعنى العبري', col_tal:'مدخل المعجم', col_arabic:'العربية', col_meliz:'شرح عربي',
     col_wordtrans:'ترجمة الكلمة', col_src:'الكلمة الأصلية', col_arab:'ترجمة عربية', col_eng:'ترجمة إنجليزية', col_hetrans:'ترجمة عبرية',
     ws_tap_hint:'👆 اضغط الصفّ لتفسير موسّع — كلّ ترجمة من مصدرها', ws_translation:'ترجمة عبرية', ws_from_targum:'من الترجمة الآرامية (قراءة الآية)', ws_web:'معاجم الشبكة', ws_jewish:'تفسير يهودي', ws_samaritan:'من مصادر سامرية',
     ws_tal:'من الآرامية', ws_tal_ctx:'من الآرامية — حسب سياق الآية', ws_tal_gen:'من الآرامية — ترجمة عامة',
     ws_english:'من الإنجليزية', ws_from_english:'الإنجليزية ← العبرية', ws_english_pending:'الترجمة من الإنجليزية قيد الإعداد',
-    ws_melitz:'من المليص', ws_melitz_pending:'مصدر المليص لم يُضَف بعد', ws_torah_occ:'مواضع في التوراة (آرامية)', ws_marqe_occ:'مواضع في تيبات مارقه',
+    ws_melitz:'من الشرح العربي', ws_melitz_pending:'لم يُضَف الشرح العربي بعد', ws_torah_occ:'مواضع في التوراة (آرامية)', ws_marqe_occ:'مواضع في تيبات مارقه',
     ws_arabic:'من العربية', ws_from_arabic:'العربية ← العبرية', ws_arabic_pending:'ترجمة العربية إلى العبرية قيد الإعداد',
     searching:'جارٍ البحث…', no_interp:'لا يوجد تفسير لهذه الآيات',
     no_interp_ar:'الترجمة العربية للتفسير قيد الإعداد', interp_ar_pending:'[لم يُترجَم بعد] ', interp_sam:'الخط السامري', interp_ar:'العربية',
@@ -3901,7 +3901,6 @@ async function showTalFull(word){
         const it=el('div','tal-sense');
         let lead=''; if(s.lemma) lead+='<b>'+esc(s.lemma)+'</b> '; if(s.pos) lead+='<span class="pos">'+esc(s.pos)+'</span> ';
         it.innerHTML=lead+esc(s.gloss||'');
-        if(s.page) it.appendChild(el('span','tal-pg','  ('+t('tal_page')+' '+esc(String(s.page))+')'));
         body.appendChild(it);
       }
     }
@@ -6428,7 +6427,6 @@ function dictRootCard(rt, searchWord){
       if(s.lemma){ it.appendChild(dictFormChip(s.lemma)); it.appendChild(document.createTextNode(' ')); }
       if(s.pos) it.appendChild(el('span','pos', esc(s.pos)+' '));
       it.appendChild(document.createTextNode(s.gloss||''));
-      if(s.page) it.appendChild(el('span','tal-pg','  ('+t('tal_page')+' '+esc(String(s.page))+')'));
       card.appendChild(it);
     }
   }
@@ -6475,7 +6473,6 @@ async function dictAppSearch(){
         if(e.pos) it.appendChild(el('span','pos', esc(e.pos)+' '));
         if(e.root) it.appendChild(el('span','dict-direct-root', '('+t('tm_col_root')+' '+esc(e.root)+') '));
         it.appendChild(document.createTextNode(e.gloss||''));
-        if(e.page) it.appendChild(el('span','tal-pg','  ('+t('tal_page')+' '+esc(String(e.page))+')'));
         body.appendChild(it);
       }
     }
@@ -6577,7 +6574,6 @@ async function dictWordDetail(word, root){
         const it=el('div','dict-sense');
         if(s.pos) it.appendChild(el('span','pos', esc(s.pos)+' '));
         it.appendChild(document.createTextNode(s.gloss||''));
-        if(s.page) it.appendChild(el('span','tal-pg',' ('+t('tal_page')+' '+esc(String(s.page))+')'));
         sl.appendChild(it);
       }
       card.appendChild(sl);
@@ -7255,7 +7251,7 @@ function daraBuildTree(rows){
       if(DARA.cur && DARA.cur.id===p.id) div.classList.add('sel');
       const label = p.sec ? (author+' '+p.sec) : author;
       div.innerHTML=`<span class="piy-item-title">${esc(label)}</span>`+
-                    `<span class="piy-item-auth">${p.n_lines} ${esc(t('dara_lines'))} · ${esc(t('dara_page'))} ${esc((p.pages||'').split(',')[0]||'')}</span>`;
+                    `<span class="piy-item-auth">${p.n_lines} ${esc(t('dara_lines'))}</span>`;
       div.onclick=()=>daraShow(p.id);
       d.appendChild(div);
     }
@@ -7286,7 +7282,7 @@ async function daraShow(id){
     `<div class="dara-head"><h3>${esc(p.title)}</h3>`+
     (p.usage?`<div class="dara-use">${esc(p.usage)}</div>`:'')+
     (p.sources?`<div class="dara-src">${esc(p.sources)}</div>`:'')+
-    `<div class="dara-pages">${esc(t('dara_pages'))}: ${esc(p.pages||'')}</div></div>`+
+    `</div>`+
     `<table class="dara-tbl">${rows}</table>`+
     (vars?`<details class="dara-vars"><summary>${esc(t('dara_variants'))} (${p.variants.length})</summary>${vars}</details>`:'');
   daraApplyCols();
@@ -7859,7 +7855,7 @@ const HELP = {
       '<b>פירוש הפסוק</b> — נפתח ב<b>פאנל שמתחת לטקסט</b> (כמו "ממקור שומרון"), ובו פירוש רציף לכל פסוק הבנוי אך ורק מן המקורות השומרוניים (תרגום ארמי שומרוני, תיבת מרקה, פירוש צדקה אל-חכים, סוד הלבבות, שו"ת יעקב בן אהרן הכהן ועוד) וממילון המילים — לעולם לא מפרשנות יהודית. <b>דברים בשם אומרם</b>: כל נקודה הנשענת על מקור נקוב-שם מובאת בשמו. מכסה את בראשית, שמות, ויקרא ובמדבר; בפרק שאין לו חומר פרשני מיוחד הפירוש קצר ונשען על התרגום והמילון בלבד — מוטב קצר ומבוסס ממומצא.',
       'בכותרת פאנל הפירוש שני מתגים: <b>כתב שומרוני</b> — מציג את הפירוש בכתב השומרוני הרהוט, בלי לשנות את הטקסט שמעליו; ו<b>ערבית</b> — מציג תרגום ערבי מקצועי של הפירוש, שבו ציטוטי המקרא נשמרים בכתב העברי והייחוסים נשמרים כלשונם. בתחתית הפאנל קישורי הרחבה: <b>ממקור שומרון</b>, <b>פרשנות יהודית</b> ו<b>מילון מילים</b>.',
       '<b>השוואה לנ.מסורה</b> — נוסח שומרון מול המסורה (וגם מול תרגום השבעים), עם סימון ההבדלים באדום.',
-      '<b>חילופי נוסח</b> — חילופי הנוסח (העיצוריים) ממהדורת פון גאל, לכל חמשת חומשי התורה. <b>המילים שיש להן חילופי נוסח מודגשות בפסוק</b> — לחיצה על מילה קופצת לחילופיה, ולחיצה על חילוף חוזרת אל המילה בשורת הטקסט. ליד חילופים שתועדו להם עדי-נוסח מוצגים תיאור כתב-היד ותארוכו (כרגע לבראשית א׳).',
+      '<b>חילופי נוסח</b> — חילופי הנוסח (העיצוריים), לכל חמשת חומשי התורה. <b>המילים שיש להן חילופי נוסח מודגשות בפסוק</b> — לחיצה על מילה קופצת לחילופיה, ולחיצה על חילוף חוזרת אל המילה בשורת הטקסט. ליד חילופים שתועדו להם עדי-נוסח מוצגים תיאור כתב-היד ותארוכו (כרגע לבראשית א׳).',
       '<b>פרשנות יהודית</b> — רש"י, רמב"ן, קאסוטו, בעל הטורים ועוד, מאתר ספריא.',
       '<b>ממקור שומרון</b> — כל מקורות הפרשנות השומרוניים, והפאנל קופץ מעלה ומציג את כל הקיימים לפרק/לפסוק: <b>תיבת מרקה</b> · <b>מן המסורת השומרונית</b> (כולל השו"ת של יעקב בן אהרן הכהן, ופרשנויות בשם פנחס בן אברהם הכהן ואלעזר בן צדקה הכהן) · <b>פירוש צדקה אל-חכים</b> · <b>סוד הלבבות</b>.',
       '<b>מילון מילים</b> — טבלה לכל מילה: המילה · ארמי · פירוש עברי · ערך במילון · ערבית. הפירוש נקרא מתוך מילון הארמית השומרונית. <b>חץ ⬆ ליד התרגום הארמי מציין תוצאות נוספות</b> — לחיצה על שורה פותחת את הפירוש המלא מהמילון, מופעי המילה בתורה, וצורות נוספות.',
@@ -7912,7 +7908,7 @@ const HELP = {
       '<b>Verse commentary</b> — opens in a <b>panel beneath the text</b> (like Samaritan sources), with a flowing commentary on each verse built only from the Samaritan sources (the Samaritan Aramaic targum, Tibåt Mårqe, Ṣadaqah al-Ḥakīm, Sirr al-Qulūb, the responsa of Jacob ben Aaron and more) and the word dictionary — never from Jewish commentary. Every point resting on a named source is <b>credited to it by name</b>. It covers Genesis, Exodus, Leviticus and Numbers; where a chapter has no dedicated commentary material the note is short and rests on the targum and dictionary alone.',
       'The panel header carries two switches: <b>Samaritan script</b> renders the commentary in the fluent Samaritan face, leaving the verse text above it as it was; <b>Arabic</b> shows a professional Arabic rendering in which scriptural quotations stay in Hebrew letters and the attributions are preserved. At the foot of the panel are links onward to <b>Samaritan sources</b>, <b>Jewish commentary</b> and the <b>word dictionary</b>.',
       '<b>Compare to Masorah</b> — Samaritan vs. Masoretic text (and vs. the Septuagint), with the differences marked in red.',
-      '<b>Textual variants</b> — the (consonantal) variants from von Gall’s edition, for the whole Torah. <b>Words that carry a variant are emphasised in the verse</b> — tap a word to jump to its variants, tap a variant to jump back to the word. Where witnesses are recorded, each one shows its manuscript and date (currently Genesis 1).',
+      '<b>Textual variants</b> — the (consonantal) variants, for the whole Torah. <b>Words that carry a variant are emphasised in the verse</b> — tap a word to jump to its variants, tap a variant to jump back to the word. Where witnesses are recorded, each one shows its manuscript and date (currently Genesis 1).',
       '<b>Jewish commentary</b> — Rashi, Ramban, Cassuto, Baal ha-Turim and more, from Sefaria.',
       '<b>Samaritan sources</b> — all the Samaritan commentary sources (the panel scrolls up to show every one available for the chapter/verse): <b>Tībåt Mårqe</b> · <b>the Samaritan tradition</b> (incl. the responsa of Jacob ben Aaron, and pieces by Phinehas ben Abraham and Eleazar ben Tsedaka) · <b>Ṣadaqah al-Ḥakīm’s commentary</b> · <b>Sīr al-Qulūb</b>.',
       '<b>Word dictionary</b> — a table per word: word · Aramaic · Hebrew meaning · dictionary entry · Arabic. The meaning is read from the Samaritan Aramaic dictionary. <b>A ⬆ arrow by the Aramaic marks more results</b> — tap a row for the full entry, the word’s Torah occurrences and related forms.',
