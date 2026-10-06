@@ -258,8 +258,17 @@
       <p id="recIntro" class="recintro hidden">
         הפרטים שתמלא כאן יופיעו על הקלטת בזמן ההקלטה. בלחיצה על
         «התחל הקלטה» ייפתח המיקרופון של המכשיר, ולחיצה על STOP במקלט
-        תסיים את ההקלטה ותעלה אותה אל <b>ההקלטות למיון</b>.
+        תסיים אותה. <b>במצב מנהל ההקלטה נכנסת ישר לאוצר</b> תחת הכותרת
+        שמילאת; אחרת היא ממתינה ב<b>הקלטות למיון</b>.
+        <span class="opt">הקול נשמר כ‑AAC, שמתנגן בכל מכשיר, ונעשה MP3
+        בסנכרון מן המחשב שאליו מחובר כונן הארכיון.</span>
       </p>
+      <!-- מניין השמע מגיע: קובץ שכבר קיים, או המיקרופון כאן ועכשיו.
+           שתי הדרכים ממלאות את אותם פרטים ומתויקות באותו מקום. -->
+      <div class="srcpick" id="srcPick">
+        <button type="button" class="src on" id="srcFile">קובץ מן המכשיר</button>
+        <button type="button" class="src" id="srcMic">הקלטה עכשיו</button>
+      </div>
       <label id="upFilesRow">קובצי שמע <span class="opt">(אפשר לבחור כמה — הם ייכנסו כרצועות של הקלטה אחת)</span>
         <input id="upFiles" type="file" accept="audio/*" multiple></label>
       <div id="upList" class="uplist"></div>

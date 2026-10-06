@@ -2357,3 +2357,17 @@ mark{
   font-size:.8rem;color:inherit;
 }
 .ord .mv:disabled{opacity:.3;cursor:default}
+
+
+/* --------------------------------------------- מניין השמע מגיע: קובץ או מיקרופון */
+.srcpick{display:flex;gap:8px;margin:2px 0 10px}
+.srcpick .src{
+  flex:1 1 0;padding:9px 10px;border:1px solid var(--line,#ddd6c6);
+  border-radius:9px;background:var(--card,#fff);font:inherit;font-size:.9rem;
+  cursor:pointer;color:inherit;
+}
+.srcpick .src.on{
+  border-color:var(--gold,#9c6f1c);
+  background:rgba(154,110,28,.1);font-weight:600;
+}
+.srcpick .src:disabled{opacity:.45;cursor:default}

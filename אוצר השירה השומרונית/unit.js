@@ -1285,8 +1285,11 @@ $('prec').onclick = () => {
   if (REC.rec) return;                          // already running — STOP ends it
   const online = !!(C && C.meta && C.meta.readonly);
   if (online) {
-    // on the live site the media server keeps its own credentials, so the key
-    // asks for those rather than for the archive-drive admin
+    // An editor who is signed in may record and file it; anyone else signs in
+    // to the media server, which keeps its own credentials. The key used to
+    // say "available in admin mode only" to an editor who WAS in admin mode,
+    // because it was really asking about a quite unrelated setting.
+    if (ADMIN.token) return openRecordForm();
     if (C.meta.can_record === false) return ticker(REC_DENIED);
     if (REC.pass) return openRecordForm();
     pendingAfterLogin = 'record';
@@ -1299,22 +1302,11 @@ $('prec').onclick = () => {
 /* the add sheet, in its recording guise */
 function openRecordForm() {
   $('addBtn').click();                          // fills the datalists for us
-  $('addTitle').textContent = 'הקלטה חדשה';
-  $('recIntro').classList.remove('hidden');
-  $('upFilesRow').classList.add('hidden');
-  $('upList').innerHTML = '';
-  $('upGo').classList.add('hidden');
-  $('recGo').classList.remove('hidden');
+  addSource('mic');
 }
 
 /* and back to the shape it has for plain uploads */
-function resetAddForm() {
-  $('addTitle').textContent = 'הוספת הקלטה לאוצר';
-  $('recIntro').classList.add('hidden');
-  $('upFilesRow').classList.remove('hidden');
-  $('upGo').classList.remove('hidden');
-  $('recGo').classList.add('hidden');
-}
+function resetAddForm() { addSource('file'); }
 
 $('recGo').onclick = async () => {
   const err = m => { $('upErr').textContent = m; $('upErr').classList.remove('hidden'); };
@@ -1353,7 +1345,14 @@ function startRecording(stream) {
   REC.stream = stream;
   REC.chunks = [];
   // whatever this browser will actually encode
-  const type = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg']
+  // AAC in an MP4 first, and the reason is the listener rather than the
+  // recorder. No browser can record an MP3 — audio/mpeg is refused by all of
+  // them — so the choice is between what is left, and of those only MP4 plays
+  // everywhere: an Opus file in a WebM container is silent on an older iPhone,
+  // which is a good part of this community. It is turned into a true MP3 on
+  // the machine the archive drive is attached to, where ffmpeg already lives.
+  const type = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4',
+                'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg']
     .find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
   REC.rec = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
   REC.rec.ondataavailable = e => { if (e.data && e.data.size) REC.chunks.push(e.data); };
@@ -1448,7 +1447,7 @@ async function uploadRecording(blob, secs) {
   try {
     r = await fetch(online ? 'api/record' : 'api/upload', {
       method: 'POST', body: fd,
-      headers: online ? {} : { 'X-Admin-Token': ADMIN.token },
+      headers: ADMIN.token ? { 'X-Admin-Token': ADMIN.token } : {},
     }).then(x => x.json());
   } catch (e) { r = {}; }
   if (!r.ok) {
@@ -1463,8 +1462,10 @@ async function uploadRecording(blob, secs) {
       : 'ההעלאה נכשלה — ההקלטה ירדה למכשיר כדי שלא תאבד'), 1);
     return;
   }
-  if (!online) await loadCatalog();
-  toast(`נשמר להקלטות למיון: ${m.title || m.piyyut} · ${dur(secs)}`);
+  if (!online || r.filed) await loadCatalog();
+  toast(r.filed
+    ? `נכנס לאוצר: ${m.title || m.piyyut} · ${dur(secs)}`
+    : `נשמר להקלטות למיון: ${m.title || m.piyyut} · ${dur(secs)}`);
   markNewsSeen();
 }
 
@@ -5355,7 +5356,38 @@ $('addBtn').onclick = () => {
     .map(p => `<option value="${esc(p.name)}">`).join('');
   $('upEvent').innerHTML = C.events
     .map(e => `<option${e.name === 'שונות' ? ' selected' : ''}>${esc(e.name)}</option>`).join('');
+  addSource('file');
   openModal('addModal');
+};
+
+/* ---- where the sound is to come from.
+ *
+ * Adding a recording and making one are the same act with the same details —
+ * which piyyut, who sang it, at what feast — and differ only in where the
+ * audio comes from. So they are one sheet with a choice at its head, rather
+ * than a form for uploading and a separate button on the deck that was only
+ * reachable when a quite unrelated setting happened to be on.
+ */
+function addSource(which) {
+  const mic = which === 'mic';
+  $('srcFile').classList.toggle('on', !mic);
+  $('srcMic').classList.toggle('on', mic);
+  $('upFilesRow').classList.toggle('hidden', mic);
+  $('recIntro').classList.toggle('hidden', !mic);
+  $('upGo').classList.toggle('hidden', mic);
+  $('recGo').classList.toggle('hidden', !mic);
+  $('addTitle').textContent = mic ? 'הקלטה חדשה' : 'הוספת הקלטה לאוצר';
+  if (mic) $('upList').innerHTML = '';
+  $('upErr').classList.add('hidden');
+}
+
+$('srcFile').onclick = () => addSource('file');
+$('srcMic').onclick  = () => {
+  if (!navigator.mediaDevices || !window.MediaRecorder) {
+    $('upErr').textContent = 'הדפדפן הזה אינו יודע להקליט.';
+    return $('upErr').classList.remove('hidden');
+  }
+  addSource('mic');
 };
 $('upFiles').addEventListener('change', e => {
   const fs = [...e.target.files];

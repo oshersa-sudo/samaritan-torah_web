@@ -98,6 +98,24 @@ def _live_write(name, data):
     return True
 
 
+def _live_adds():
+    """Recordings made on the site itself.
+
+    additions.json is a LIST where the other edit files are maps, so it cannot
+    be layered entry by entry — it is simply appended, which is right: an
+    upload is a new thing rather than a correction to an old one.
+    """
+    p = _live_path('additions.json')
+    if not p or not os.path.exists(p):
+        return []
+    try:
+        with open(p, encoding='utf-8') as fh:
+            d = json.load(fh)
+        return d if isinstance(d, list) else []
+    except (OSError, ValueError):
+        return []
+
+
 def _layered(base, name):
     """The repo's file with the live layer on top, entry by entry."""
     over = _live_read(name)
@@ -192,7 +210,7 @@ def _catalog():
     """The catalogue exactly as the page is served it."""
     with open(os.path.join(DATA, 'catalog.json'), encoding='utf-8') as fh:
         cat = json.load(fh)
-    cat = ADD.merge(cat, ADD.load())
+    cat = ADD.merge(cat, ADD.load() + _live_adds())
     cat = GONE.apply(cat, GONE.keys())
     cat = OVR.apply(cat, _layered(OVR.load(), 'overrides.json'),
                     include_hidden=False)
@@ -209,7 +227,7 @@ def api_catalog():
             cat = json.load(fh)
     except OSError:
         return jsonify({'error': 'catalog missing'}), 500
-    cat = ADD.merge(cat, ADD.load())
+    cat = ADD.merge(cat, ADD.load() + _live_adds())
     cat = GONE.apply(cat, GONE.keys())            # deletions win over everything
     cat = OVR.apply(cat, _layered(OVR.load(), 'overrides.json'),
                     include_hidden=False)
@@ -224,7 +242,7 @@ def api_catalog():
     # editing what a recording SAYS, and the order of what it plays, can
     cat['meta']['readonly'] = True
     cat['meta']['can_edit'] = can_edit()
-    cat['meta']['can_record'] = bool(REC_PASSWORD)
+    cat['meta']['can_record'] = bool(REC_PASSWORD) or can_edit()
     cat['meta']['media'] = MEDIA
     cat['meta'].pop('root', None)     # the archive drive's own path is nobody's business
     return jsonify(cat)
@@ -248,7 +266,7 @@ def api_admin_status():
                     'user': ADMIN_USER or REC_USER,
                     'readonly': True,
                     'can_edit': can_edit(),
-                    'can_record': bool(REC_PASSWORD)})
+                    'can_record': bool(REC_PASSWORD) or can_edit()})
 
 
 # ------------------------------------------------------------ recording
@@ -355,13 +373,16 @@ def api_admin_login():
 @shira.route('/shira/api/record', methods=['POST'])
 def api_record():
     """Take a recording made on the phone and put it on the media server."""
-    if not REC_PASSWORD:
-        return jsonify({'ok': False, 'error': 'recording_disabled',
-                        'message': 'ההקלטה אינה מופעלת בשרת זה'}), 403
-    if (request.form.get('user', '') != REC_USER
-            or request.form.get('password', '') != REC_PASSWORD):
-        return jsonify({'ok': False, 'error': 'unauthorized',
-                        'message': 'שם המשתמש או הסיסמה שגויים'}), 401
+    # An editor is already signed in; the recording password is for everyone
+    # else, and its absence must not stop the one person who may file things.
+    if not (_is_admin() and can_edit()):
+        if not REC_PASSWORD:
+            return jsonify({'ok': False, 'error': 'recording_disabled',
+                            'message': 'ההקלטה אינה מופעלת בשרת זה'}), 403
+        if (request.form.get('user', '') != REC_USER
+                or request.form.get('password', '') != REC_PASSWORD):
+            return jsonify({'ok': False, 'error': 'unauthorized',
+                            'message': 'שם המשתמש או הסיסמה שגויים'}), 401
 
     f = request.files.get('file')
     if not f or not f.filename:
@@ -376,7 +397,50 @@ def api_record():
     piyyut = _safe(request.form.get('piyyut'), 'הקלטה')
     perf   = _safe(request.form.get('performer'), 'לא ידוע')
     stamp  = time.strftime('%Y-%m-%d %H%M%S')
-    rel    = '%s/%s/%s %s%s' % (PENDING_DIR, perf, piyyut, stamp, ext)
+
+    # Where it lands depends on who made it. Somebody who signed in to record
+    # is lending a voice to the archive and does not decide what it is: their
+    # recording waits on a pile for the editor to name and file. The editor
+    # has already named it on the form, so it goes straight into the archive
+    # — under `added/`, which is where every upload lives and where the media
+    # server is fed from, never into the scanned archive itself.
+    if _is_admin() and can_edit():
+        title = _safe(request.form.get('title'), '') or piyyut
+        rel = 'added/%s/%s/%s%s' % (perf, piyyut, _safe(title, 'הקלטה'), ext)
+        ok, err = _sftp_put(data, MEDIA_ROOT.rstrip('/') + '/' + rel)
+        if not ok:
+            return jsonify({'ok': False, 'error': err,
+                            'message': 'ההעלאה לשרת המדיה נכשלה'}), 502
+        try:
+            secs = int(float(request.form.get('seconds') or 0))
+        except ValueError:
+            secs = 0
+        rows = _live_adds()
+        row = {
+            'id': ADD.next_id(ADD.load() + rows),
+            'piyyut': request.form.get('piyyut') or piyyut,
+            'performer': request.form.get('performer') or 'לא ידוע',
+            'event': request.form.get('event') or 'שונות',
+            'title': request.form.get('title') or '',
+            'note': request.form.get('note') or '',
+            'dir': 'הוספות',
+            'added': time.strftime('%Y-%m-%dT%H:%M:%S'),
+            'recorded': 1,
+            # not MP3 yet, and the catalogue says so: the machine that holds
+            # the drive turns it into one, because no browser can encode MP3
+            # and this server has no ffmpeg to do it here
+            'needs_mp3': 1,
+            'tracks': [{'f': rel, 's': secs, 'n': request.form.get('title') or piyyut}],
+        }
+        rows.append(row)
+        if not _live_write('additions.json', rows):
+            return jsonify({'ok': False, 'error': 'no_store',
+                            'message': 'הקול הועלה אך הרשומה לא נשמרה'}), 500
+        return jsonify({'ok': True, 'stored': rel, 'bytes': len(data),
+                        'filed': True, 'id': row['id'],
+                        'message': 'ההקלטה נכנסה לאוצר'})
+
+    rel = '%s/%s/%s %s%s' % (PENDING_DIR, perf, piyyut, stamp, ext)
     ok, err = _sftp_put(data, MEDIA_ROOT.rstrip('/') + '/' + rel)
     if not ok:
         return jsonify({'ok': False, 'error': err,
@@ -478,6 +542,40 @@ def api_reorder():
     if not _live_write('merges.json', book | {key: cur}):
         return jsonify({'ok': False, 'error': 'השמירה נכשלה'}), 500
     return jsonify({'ok': True, 'live': True, 'tracks': len(picked)})
+
+
+# ------------------------------------------- bringing the live layer home
+#
+# What is edited or recorded on the site lives on this server's disk, and the
+# machine that holds the archive drive cannot see it. These two let it: one to
+# read the layer, one to put a corrected layer back. That is also how a
+# recording made on a telephone becomes an MP3 — the conversion happens where
+# ffmpeg is, which is there and not here.
+@shira.route('/shira/api/live_layer')
+def api_live_layer():
+    if not _is_admin():
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    return jsonify({'ok': True, 'dir': LIVE_DIR,
+                    'overrides': _live_read('overrides.json'),
+                    'merges': _live_read('merges.json'),
+                    'additions': _live_adds()})
+
+
+@shira.route('/shira/api/live_layer', methods=['POST'])
+def api_live_layer_put():
+    if not _is_admin():
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    if not can_edit():
+        return jsonify({'ok': False, 'error': 'no_store'}), 503
+    d = request.get_json(silent=True) or {}
+    wrote = []
+    for name, want in (('overrides.json', dict), ('merges.json', dict),
+                       ('additions.json', list)):
+        key = name.split('.')[0]
+        if key in d and isinstance(d[key], want):
+            if _live_write(name, d[key]):
+                wrote.append(name)
+    return jsonify({'ok': True, 'wrote': wrote})
 
 
 @shira.route('/shira/api/<path:_sub>', methods=['POST'])
