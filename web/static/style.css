@@ -2512,7 +2512,15 @@ body.a11y-invert .no-invert{ filter:invert(1) hue-rotate(180deg); }
 body.a11y-invert #content{ background-blend-mode:luminosity; }
 body.a11y-invert #app{ background-color:#f2f2f2; }
 
-.a11y-card{ max-width:460px; }
+/* A window of its own, on white, over the app: the panel was taking the app's
+   own background and the inversion switch was lost in it. */
+#a11yModal{ background:rgba(16,26,56,.5); }
+.a11y-card{ max-width:460px; background:#fff; color:#141414;
+  border-radius:14px; padding:18px 20px 16px; box-shadow:0 18px 40px rgba(0,0,0,.35); }
+.a11y-card .modal-head{ margin:0 0 6px; font-size:19px; font-weight:700; color:#141414; }
+.a11y-card .modal-foot{ display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-top:16px; }
+
 .a11y-row{ padding:14px 2px; border-bottom:1px solid var(--line); }
 .a11y-row:last-of-type{ border-bottom:0; }
 .a11y-label{ display:block; font-size:16px; font-weight:700; color:var(--dark); }
@@ -2538,13 +2546,24 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
    cover to be read. They sit outside the book so they do not cover its title,
    and they take no pointer events so they can never swallow the tap they are
    describing. */
-.lib-hint{ position:absolute; left:50%; transform:translateX(-50%);
+/* The pulled book is turned a half-turn on its Y axis to show its cover; a hint
+   riding on it inherited that turn and came out as mirror writing. It is turned
+   back, and since that is a transform of its own it carries the centring too. */
+.lib-hint{ position:absolute; left:50%; transform:translateX(50%) rotateY(180deg);
   padding:3px 9px; border-radius:11px; font-size:11px; line-height:1.3;
   white-space:nowrap; color:#fff6e9; background:rgba(40,22,10,.82);
   pointer-events:none; opacity:1; transition:opacity .5s ease; }
 .lib-hint-open{ top:-22px; }
 .lib-hint-back{ bottom:-22px; }
 .lib-hint.gone{ opacity:0; }
+/* and the book shows the gesture rather than only naming it: it dips, as a
+   finger pulling it down would take it, twice, and then holds still */
+.lib-spine.pulled.demo{ animation:libDemo 1.5s ease-in-out 2; }
+@keyframes libDemo{
+  0%,100%{ transform:translateY(-10px) rotateY(180deg); }
+  38%    { transform:translateY(16px)  rotateY(180deg); }
+  60%    { transform:translateY(-10px) rotateY(180deg); } }
+@media (prefers-reduced-motion: reduce){ .lib-spine.pulled.demo{ animation:none; } }
 /* the arrow of the "put it back" hint, nodding downwards while it is up */
 .lib-hint-back::after{ content:' ↓'; display:inline-block;
   animation:libNod 1.1s ease-in-out infinite; }
@@ -2571,15 +2590,22 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
    A book that has one grows to carry it; one that does not stays the size it
    was, so a shelf of books that say nothing about themselves looks exactly as
    it did. */
-.lib-spine.pulled.has-blurb{ width:176px; height:226px; }
-.cover-blurb{ margin-top:7px; padding:0 10px; max-height:132px; overflow:hidden;
-  font-size:10.5px; line-height:1.45; text-align:start; color:#fff2df;
-  text-shadow:0 1px 2px rgba(0,0,0,.5);
-  -webkit-mask-image:linear-gradient(#000 76%, transparent);
-          mask-image:linear-gradient(#000 76%, transparent); }
-.lib-spine.pulled .cover-face{ flex-direction:column; justify-content:flex-start;
-  padding-top:12px; }
-@media (max-width:420px){
-  .lib-spine.pulled.has-blurb{ width:158px; height:206px; }
-  .cover-blurb{ max-height:118px; font-size:10px; }
-}
+/* the author's name, set under the title as it is on a binding: smaller, a
+   little apart, and in the same ink */
+.cover-author{ margin-top:9px; padding:0 10px; font-size:11.5px; line-height:1.35;
+  color:#f3e2c8; text-shadow:0 1px 2px rgba(0,0,0,.5); }
+.cover-author::before{ content:''; display:block; width:28px; height:1px;
+  margin:0 auto 7px; background:rgba(255,246,233,.5); }
+.lib-spine.pulled .cover-face{ flex-direction:column; justify-content:center; }
+
+/* ── the inversion switch, last so it is not undone by the plain checkbox
+   rule written for it earlier in this file ─────────────────────────────── */
+/* the switch is a switch, not a checkbox lost against a tinted card */
+.a11y-switch input{ appearance:none; -webkit-appearance:none; position:relative;
+  width:52px; height:30px; border-radius:15px; background:#cfd4e2; cursor:pointer;
+  transition:background .18s ease; }
+.a11y-switch input::after{ content:''; position:absolute; top:3px; inset-inline-start:3px;
+  width:24px; height:24px; border-radius:50%; background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.35); transition:inset-inline-start .18s ease; }
+.a11y-switch input:checked{ background:var(--navy); }
+.a11y-switch input:checked::after{ inset-inline-start:25px; }

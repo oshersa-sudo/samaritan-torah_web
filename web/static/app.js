@@ -3589,16 +3589,25 @@ function buildDictSelect(c, verses){
     const num=el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
     const td=el('div','vtext'); td.style.fontSize=fs+'px';
+    // The word dictionary used to be written in Hebrew letters and nothing else,
+    // so choosing the Samaritan script turned it off — and a reader of the
+    // Samaritan text could never look a word up. The word is now set in whichever
+    // face is on; only its drawing changes, never which word it is or its index,
+    // which the backend counts the same way either way.
+    const sam = S.samFont && !S.english;
     const toks=(v.text||'').split(/(\s+)/);
     let wi=0;
     td.innerHTML = toks.map(tok=>{
       if(tok && !/^\s+$/.test(tok)){
         const i=wi++;                                   // keep index aligned with backend (all non-space tokens)
-        if(!/[א-ת]/.test(tok)) return esc(tok); // punctuation-only (e.g. ׃--): not a word, not clickable
-        return '<span class="dw" data-k="'+v.id+':'+i+'">'+esc(tok)+'</span>';
+        if(!/[א-ת]/.test(tok)) return sam ? samMarkup(tok) : esc(tok); // punctuation only — not a word
+        const inner = sam ? samMarkup(tok) : esc(tok);
+        return '<span class="dw" data-k="'+v.id+':'+i+'">'+inner+'</span>';
       }
-      return esc(tok);
+      // between words the Samaritan text carries its own separator, not a space
+      return sam ? '<span class="wsep">·</span>' : esc(tok);
     }).join('');
+    if(sam) td.classList.add('vsam');
     td.querySelectorAll('.dw').forEach(sp=>{ spanMap[sp.dataset.k]=sp; });
     row.appendChild(td); row.appendChild(num);
     c.appendChild(row);
@@ -4904,7 +4913,8 @@ function clearModesPreserveFont(targetPanel){
   clearModes();
   if(preserve){ S.samFont=sf; S.samFontFull=sff; }
 }
-$('fontBtn').onclick=async ()=>{ const was=S.samFont; clearModes(); S.samFont=!was;
+$('fontBtn').onclick=async ()=>{ const was=S.samFont, dict=S.dict;
+  clearModes(); S.samFont=!was; S.dict=dict;        // and the dictionary stays
   if(S.samFont && SHOW_NIKUD) await ensureNikud();
   syncToolbar(true); paintVerses(); };
 $('nikudBtn').onclick=toggleNikud;
@@ -4943,7 +4953,9 @@ function scrollToEl(selector){
   };
   setTimeout(tick,60);
 }
-$('dictBtn').onclick=()=>{ const was=S.dict; clearModes(); S.dict=!was; syncToolbar(true); paintVerses(); };
+$('dictBtn').onclick=()=>{ const was=S.dict, sf=S.samFont, sff=S.samFontFull;
+  clearModes(); S.dict=!was; S.samFont=sf; S.samFontFull=sff;   // the script stays
+  syncToolbar(true); paintVerses(); };
 // "פרשנות יהודית" is the one panel that needs what the chapter deliberately did
 // not carry. Fetch the full verses once per chapter, keeping the reader's place.
 async function ensureFullVerses(){
@@ -6376,32 +6388,21 @@ function openLibrary(){
 // which book, if any, has been drawn off the shelf and is facing the reader
 let LIB_PULLED = null;
 
-// ── what a book says about itself ────────────────────────────────────────────
-// A book drawn off the shelf shows its own opening — the first section of its
-// first chapter, which in these works is the author's own preface and usually
-// names him. Nothing is written here about any book: what is shown is what the
-// book says, and a book that says nothing shows nothing rather than a sentence
-// invented on its behalf. Fetched once per book and kept, because a reader
-// looking along a shelf pulls out several.
-const LIB_BLURB = {};
-async function libBlurb(act){
-  if(act in LIB_BLURB) return LIB_BLURB[act];
-  LIB_BLURB[act] = '';                       // so a second pull does not re-ask
-  const cfg = (typeof BOOK_CFG !== 'undefined') && BOOK_CFG[act && act.replace(/_book$/,'')];
-  if(!cfg || !cfg.toc || !cfg.chapter) return '';
-  try{
-    const toc = await cfg.toc();
-    if(!toc || !toc.length) return '';
-    const first = cfg.tocItem(toc[0]);
-    const ch = await cfg.chapter(first.id);
-    const secs = (ch && ch.sections) || [];
-    for(const s of secs){
-      const txt = String(s.hebrew || s.text || s.aramaic || '').replace(/\s+/g,' ').trim();
-      if(txt.length > 40){ LIB_BLURB[act] = txt; break; }
-    }
-  }catch(e){}
-  return LIB_BLURB[act];
-}
+// ── who wrote it ─────────────────────────────────────────────────────────────
+// A book drawn off the shelf names its author. Nothing here is researched or
+// inferred: every name below is one the app itself already carried — in the
+// book's own title, or in the book's own opening words. Two works are not named
+// because the app does not say who wrote them, and a guess on a cover would be
+// worse than a blank one.
+const LIB_AUTHOR = {
+  tm_book:        'מרקה',
+  tz_book:        'צדקה אל-חכים',
+  shyt_book:      'יעקב בן אהרן הכהן',
+  bhuq_book:      'אבו אלפרג׳ בן פתיאל',
+  wreschner_book: 'ורשנר',
+  cohen_book:     'כהן',
+  // sir_book, asatir_book — the app does not name an author for these
+};
 function libBuildGrid(){
   const q=($('libGallerySearch').value||'').trim().toLowerCase();
   const grid=$('libGrid'); grid.innerHTML='';
@@ -6433,16 +6434,17 @@ function libBuildGrid(){
       // said once, in words, for four seconds, and then the book is left to be
       // looked at. It is said again every time a book is drawn, because nobody
       // should have to have been paying attention the first time.
-      // its own opening, on the cover, once it has arrived
-      libBlurb(item.act).then(txt=>{
-        if(!txt || LIB_PULLED!==item.act) return;
-        const face=b.querySelector('.cover-face'); if(!face) return;
-        if(face.querySelector('.cover-blurb')) return;
-        face.appendChild(el('div','cover-blurb', esc(txt.slice(0, 260) + (txt.length>260?'…':''))));
-        b.classList.add('has-blurb');
-      });
+      // the author's name, under the title, on the cover it turns to show
+      const who = LIB_AUTHOR[item.act];
+      if(who){
+        const face=b.querySelector('.cover-face');
+        if(face && !face.querySelector('.cover-author'))
+          face.appendChild(el('div','cover-author', esc(who)));
+      }
       b.appendChild(el('span','lib-hint lib-hint-open', esc(t('lib_hint_open'))));
       b.appendChild(el('span','lib-hint lib-hint-back', esc(t('lib_hint_back'))));
+      b.classList.add('demo');                     // it dips twice: this is the pull
+      setTimeout(()=>b.classList.remove('demo'), 3100);
       setTimeout(()=>b.querySelectorAll('.lib-hint').forEach(h=>h.classList.add('gone')), 4000);
 
       // ── pulling it back ──────────────────────────────────────────────────
