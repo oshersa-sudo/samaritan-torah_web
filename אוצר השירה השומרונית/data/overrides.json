@@ -481,5 +481,891 @@
   "hidden": true,
   "event": "שבת",
   "performer": "אושר בן שוהם ששוני"
+ },
+ "שיראן ניר/קריאת תורה/barashet-uyii enosh - uri-nuri sirawi/01-Track 1.mp3": {
+  "title": "בראשית — ויחי אנוש",
+  "performer": "אורי בן תמים ששוני",
+  "event": "שונות"
+ },
+ "אושר ששוני/עמידות  השבת בבקר/dakura-duran.mp3": {
+  "title": "דכורה רבה - בית דוראן",
+  "performer": "אושר בן שוהם ששוני",
+  "event": "שבת"
+ },
+ "אושר ששוני/עמידות  השבת בבקר/iila rama-duran.mp3": {
+  "title": "חילה רמה - בית דוראן",
+  "performer": "אושר בן שוהם ששוני",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת סליחות/מימרי - אלעד ששוני/mimary2- elad.mp3": {
+  "title": "מימרי לכהלכון",
+  "performer": "אלעד בן אברהם ששוני",
+  "event": "שבת הסליחות"
+ },
+ "שיראן ניר/שבת סליחות/מימרי - אלעד ששוני/mimary3- elad.mp3": {
+  "title": "מימרי לכהלכון",
+  "performer": "אלעד בן אברהם ששוני",
+  "event": "שבת הסליחות"
+ },
+ "שיראן ניר/כיפור/אז אחל - הכהן ברית/az ahel - aaed elkahen.mp3": {
+  "title": "אז אחל - מליפוט",
+  "performer": "הכהן ברית בן טביה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/מועדים-שבתות מועדים/ברכו - הכהן ברית/bareku - aaed elkahen.mp3": {
+  "title": "ברכו ושבחו ורוממו - כבד",
+  "performer": "הכהן ברית בן טביה",
+  "event": "מועדים"
+ },
+ "שיראן ניר/מוסם סכות/אלהי אדם - הכהן ברית/eluwi adam - aaed elkahen.mp3": {
+  "title": "אלהי אדם בן  האדמה - כימי",
+  "performer": "הכהן ברית בן טביה",
+  "event": "צמות הסכות"
+ },
+ "שיראן ניר/כיפור/נפתח פינו-בית1 - אבו וואל/01 nfta fyano to me yashorak (2)  Section 1.mp3": {
+  "title": "נפתח פינו — מי ישורך",
+  "performer": "הכהן הגדול אהרן בן אב חסדה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto3 - aaed elkahen.mp3": {
+  "title": "האציתו שמועיה  3/6",
+  "performer": "הכהן נתנאל בן אברהם",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto4 - aaed elkahen.mp3": {
+  "title": "האציתו שמועיה  4/6",
+  "performer": "הכהן נתנאל בן אברהם",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto5 - aaed elkahen.mp3": {
+  "title": "האציתו שמועיה  5/6",
+  "performer": "הכהן נתנאל בן אברהם",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto6 - aaed elkahen.mp3": {
+  "title": "האציתו שמועיה  6/6",
+  "performer": "הכהן נתנאל בן אברהם",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/ימי חול/adani eshaelak abrehmek - hadir elkahen.wav": {
+  "title": "אדני אשאלך ברחמיך - פתחה",
+  "performer": "הכהן פינחס בן אברהם",
+  "event": "ימי חול"
+ },
+ "שיראן ניר/מוסם סכות/אלהי אדם - הכהן חאדיר/alohe adam bn adama - hadir elkahen.mp3": {
+  "title": "אלהי אדם בן האדמה  1/2",
+  "performer": "הכהן פינחס בן אברהם",
+  "event": "חג הסוכות"
+ },
+ "שיראן ניר/מוסם סכות/אלהי אדם - הכהן חאדיר/alohe adam bn adamh1 - hadir elkahen.mp3": {
+  "title": "אלהי אדם בן האדמה  2/2",
+  "performer": "הכהן פינחס בן אברהם",
+  "event": "חג הסוכות"
+ },
+ "שיראן ניר/ימי חול/udi it shema - hadir elkahen.wav": {
+  "title": "אודה את השם",
+  "performer": "הכהן פינחס בן אברהם",
+  "event": "ימי חול"
+ },
+ "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian1 - harel.mp3": {
+  "title": "הא סביען נפשאתה",
+  "performer": "הראל בן יפת ששוני",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian2 - harel.mp3": {
+  "title": "הא סביאן (2)",
+  "performer": "הראל בן יפת ששוני",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian3 - harel.mp3": {
+  "title": "הא סביאן (3)",
+  "performer": "הראל בן יפת ששוני",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian4 - harel.mp3": {
+  "title": "הא סביאן (4)",
+  "performer": "הראל בן יפת ששוני",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian5 - harel.mp3": {
+  "title": "הא סביאן (5)",
+  "performer": "הראל בן יפת ששוני",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/fetah kal mamlal nael.mp3": {
+  "title": "נפתח פינו - פתח כל ממלל נחל   1",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - אבו פרג/j ashbt ashbiai hze.mp3": {
+  "title": "השבת השביעי הזה - בית נפרד",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/kal haburaem - ananu raem1.mp3": {
+  "title": "נפתח פינו - כל הברואים",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/kal hakumem.mp3": {
+  "title": "נפתח פינו - כל הקמים",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/la mn ula ad.mp3": {
+  "title": "נפתח פינו - לא מן ועד",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/mi yeshurak.mp3": {
+  "title": "נפתח פינו - מי ישורך מכל",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/mifani nikra.mp3": {
+  "title": "נפתח פינו - מפני נקרא במכתב משה",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nalel alshema - ata barata.mp3": {
+  "title": "נפתח פינו - נהלל לשמה",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nemol lebabnu1.mp3": {
+  "title": "נפתח פינו - נמול לבבינו",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/niftah fianu.mp3": {
+  "title": "נפתח פינו",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nistar ata-mi ukal ida.mp3": {
+  "title": "נפתח פינו - נסתר אתה",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/shema il reom wanon.mp3": {
+  "title": "נפתח פינו - יהוה אל רחום וחנון",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/unaumer ud-hanon hanunem.mp3": {
+  "title": "נפתח פינו - ונאמר ועוד",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/yerei haraem-mi yalel utak.mp3": {
+  "title": "נפתח פינו - יראו הראים",
+  "performer": "חפץ בן שלבי מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5C the stairs prelude.mp3": {
+  "title": "ישר נשוה כהלן - עלייה לרגל",
+  "performer": "יפת בן רצון צדקה",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5D the stairs.mp3": {
+  "title": "קדישה יקירה - עלייה לרגל",
+  "performer": "יפת בן רצון צדקה",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5E Kadisha solo.mp3": {
+  "title": "קדישה יקירה - עלייה לרגל",
+  "performer": "יפת בן רצון צדקה",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/שנים עשר האבנים - יפת צדקה/5F Makom ha Avanim.mp3": {
+  "title": "קדישה יקירה - עלייה לרגל",
+  "performer": "יפת בן רצון צדקה",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/שנים עשר האבנים - יפת צדקה/5G Makom ha Avanim end.mp3": {
+  "title": "קדישה יקירה - עלייה לרגל",
+  "performer": "יפת בן רצון צדקה",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5H Shabehu_א solo.mp3": {
+  "title": "שבחו ורבו ורוממו לעלייה לרגל",
+  "performer": "יפת בן רצון צדקה",
+  "event": "עלייה לרגל"
+ },
+ "שיראן ניר/שבת/שבותיה שבחו - יפת צדקה/ba barok.mp3": {
+  "title": "בא ברוך",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/11-BAFAM KADESH 1 _ BAFAM KADESH 1.mp3": {
+  "title": "בפם קדש (1)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/12-BAFAM KADESH 2 _ BAFAM KADESH 2.mp3": {
+  "title": "בפם קדש (2)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/13-BAFAM KADESH 3 _ BAFAM KADESH 3.mp3": {
+  "title": "בפם קדש (3)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/14-BAFAM KADESH 4 _ BAFAM KADESH 4.mp3": {
+  "title": "בפם קדש (4)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/שבת/תפילת בוקר/עמידות/אלהים רחמנה - יפת צדקה/eluem remanah1.mp3": {
+  "title": "אלהים רחמנה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol1 - yefet tsedaka.mp3": {
+  "title": "אשול (1)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol10 - yefet tsedaka.mp3": {
+  "title": "אשול (10)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol11 - yefet tsedaka.mp3": {
+  "title": "אשול (11)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol12 - yefet tsedaka.mp3": {
+  "title": "אשול (12)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol2 - yefet tsedaka.mp3": {
+  "title": "אשול (2)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol3 - yefet tsedaka.mp3": {
+  "title": "אשול (3)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol4 - yefet tsedaka.mp3": {
+  "title": "אשול (4)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol5 - yefet tsedaka.mp3": {
+  "title": "אשול (5)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol6 - yefet tsedaka.mp3": {
+  "title": "אשול (6)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol7 - yefet tsedaka.mp3": {
+  "title": "אשול (7)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol8 - yefet tsedaka.mp3": {
+  "title": "אשול (8)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol9 - yefet tsedaka.mp3": {
+  "title": "אשול (9)",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג השבועות"
+ },
+ "שיראן ניר/מועדים-שבתות מועדים/פתחכ - יפת צדקה/04-fetac _ AudioTrack 04.mp3": {
+  "title": "פתחך יהוה נסי - שבתות המועדים",
+  "performer": "יפת בן רצון צדקה",
+  "event": "מועדים"
+ },
+ "שיראן ניר/מעמד הר סיני/הופע - יפת צדקה/hufa - yefet tsedaka (1).mp3": {
+  "title": "הופע נהר מופע - ליום מעמד הר סיני",
+  "performer": "יפת בן רצון צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara1 - yefet tsedaka.mp3": {
+  "title": "פסוקי המשכרה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שמחות"
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara2 - yefet tsedaka.mp3": {
+  "title": "פסוקי המשכרה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שמחות"
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara3 - yefet tsedaka.mp3": {
+  "title": "פסוקי המשכרה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שמחות"
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara4 - yefet tsedaka.mp3": {
+  "title": "פסוקי המשכרה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שמחות"
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara5 - yefet tsedaka.mp3": {
+  "title": "פסוקי המשכרה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שמחות"
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara6 - yefet tsedaka.mp3": {
+  "title": "פסוקי המשכרה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שמחות"
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara7 - yefet tsedaka.mp3": {
+  "title": "פסוקי המשכרה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שמחות"
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara8 - yefet tsedaka.mp3": {
+  "title": "פסוקי המשכרה",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שמחות"
+ },
+ "שיראן ניר/ימי חול/אור הבקר - יפת צדקה/or habekar - yefet tsedaka.mp3": {
+  "title": "אור הבקר",
+  "performer": "יפת בן רצון צדקה",
+  "event": "ימי חול"
+ },
+ "שיראן ניר/שבת/פרשת השבוע/בתים/דבעי - יפת צדקה/parasha sameah - adbai - yefet tsedaka.mp3": {
+  "title": "דבעי מדע מה הוא חילה ברנון  כל טב",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת/פרשת השבוע/בתים/דבעי - יפת צדקה/parasha sameah1 - adbai - yefet tsedaka.mp3": {
+  "title": "דבעי מדע מה הוא חילה ברנון  כל טב",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת/תפילת בוקר/שבחו - יפת צדקה/shabau - yefet tsedaka.mp3": {
+  "title": "שבחו של שבת בבקר",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת/תפילת בוקר/שבחו - יפת צדקה/shabau1 - yefet tsedaka.mp3": {
+  "title": "שבחו של שבת בבקר",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת/שבותיה שבחו - יפת צדקה/shabutia.mp3": {
+  "title": "שבותיה שבחו  - פיוט ליום השבת",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת/תפילת בוקר/עמידות/עבודה דעלמה תסתגד - יפת צדקה/tistaged2.mp3": {
+  "title": "עבודה דעלמה - עמידות שבת בבוקר",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת/תפילת בוקר/ישר נשוי כהלן - יפת צדקה/yshar nashbi kahlan - yefet tsedaka.mp3": {
+  "title": "ישר נשוה כהלן לשבת בבוקר",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת/תפילת בוקר/ישר נשוי כהלן - יפת צדקה/yshar nashbi kahlan1 - yefet tsedaka.mp3": {
+  "title": "ישר נשוה כהן לשבת בבוקר",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שונות/מקהלה/Koktel Samri/ahh sebyan.mp3": {
+  "title": "הא סביען נפשאתה - מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/amadti kamek - makela.mp3": {
+  "title": "עמדתי קמך — מקהלה",
+  "performer": "לא ידוע",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/ambarak-helki - makela.mp3": {
+  "title": "מברך  הוא ביתה דיעקב  - זבח הפסח - חלקי — מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/מקהלה/Koktel Samri/ashelam.mp3": {
+  "title": "השלם על משה - מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/מקהלה/Koktel Samri/assakot.mp3": {
+  "title": "שירת הסכות - מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/AUD-20170712-WA0037.m4a": {
+  "title": "⚠ שם קובץ וואטסאפ — אין כותרת",
+  "performer": "לא ידוע",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/AUD-20171210-WA0013.mp3": {
+  "title": "⚠ שם קובץ וואטסאפ — אין כותרת",
+  "performer": "לא ידוע",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/מקהלה/Koktel Samri/az yashar.mp3": {
+  "title": "אז ישר משה - חלקי - מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/bait b-ha sibian - yefet tsedaka.mp3": {
+  "title": "בית ב — הא סביאן",
+  "performer": "מקהלה",
+  "event": "שונות",
+  "hidden": true
+ },
+ "שיראן ניר/שונות/מקהלה/Koktel Samri/eh abram ozekoooto.mp3": {
+  "title": "אה אברהם וזכותו - מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/מקהלה/Koktel Samri/elae dargareezem.mp3": {
+  "title": "אלהה דהרגריזים - מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/מקהלה/Koktel Samri/elowem remana.mp3": {
+  "title": "אלהים רחמנה - מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שבת/elui abram - yefet tsedaka.mp3": {
+  "title": "אלהי אברהם  - נברך לשבת בבוקר -",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת/elui abram1 - yefet tsedaka.mp3": {
+  "title": "אלהי אברהןם - נברך",
+  "performer": "יפת בן רצון צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/ימי חול/hagadalot lu - ratson tsedaka.mp3": {
+  "title": "הגדלות לו",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "ימי חול"
+ },
+ "שיראן ניר/קריאת תורה/halak 2 - tura.mp3": {
+  "title": "חלק 2 — תורה",
+  "performer": "לא ידוע",
+  "event": "שונות"
+ },
+ "שיראן ניר/שמיני עצרת/hamued hashbi haze - ratson tsedaka.mp3": {
+  "title": "המועד השביעי הזה - בית נפרד",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "שמיני עצרת"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_1_Audio/JSPEC261.DW_Film_1_Audio_access.mp3": {
+  "title": "ראיונות ודברי הסבר 1",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_1_Audio/JSPEC261.DW_Film_1_Audio_preservation.mp3": {
+  "title": "ראיונות ודברי הסבר 2",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_1_Audio/JSPEC261.DW_Film_1_Audio_streaming.mp3": {
+  "title": "ראיונות ודברי הסבר 3",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_2_Audio/JSPEC261.DW_Film_2_Audio_access.mp3": {
+  "title": "ראיונות ודברי הסבר 4",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_2_Audio/JSPEC261.DW_Film_2_Audio_preservation.mp3": {
+  "title": "ראיונות ודברי הסבר 5",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_2_Audio/JSPEC261.DW_Film_2_Audio_streaming.mp3": {
+  "title": "ראיונות ודברי הסבר 6",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_3_Audio/JSPEC261.DW_Film_3_Audio_access.mp3": {
+  "title": "ראיונות ודברי הסבר 7",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_3_Audio/JSPEC261.DW_Film_3_Audio_preservation.mp3": {
+  "title": "ראיונות ודברי הסבר 8",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_3_Audio/JSPEC261.DW_Film_3_Audio_streaming.mp3": {
+  "title": "ראיונות ודברי הסבר 9",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_4_Audio/JSPEC261.DW_Film_4_Audio_access.mp3": {
+  "title": "ראיונות ודברי הסבר 10",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_4_Audio/JSPEC261.DW_Film_4_Audio_preservation.mp3": {
+  "title": "ראיונות ודברי הסבר 11",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "הקלטות ישנות/מתוך הסרט של בול 1966/JSPEC261.DW_Film_4_Audio/JSPEC261.DW_Film_4_Audio_streaming.mp3": {
+  "title": "ראיונות ודברי הסבר 12",
+  "performer": "לא ידוע",
+  "event": "ראיונות ודברי הסבר"
+ },
+ "JSPEC265.DW_H264.mp4": {
+  "title": "ראיונות ודברי הסבר 13",
+  "performer": "לא ידוע",
+  "event": "שונות"
+ },
+ "JSPEC266.DW_H264.mp4": {
+  "title": "ראיונות ודברי הסבר 14",
+  "performer": "לא ידוע",
+  "event": "שונות"
+ },
+ "שיראן ניר/מוסם סכות/kaal nebi-dikor - yefet tsedaka.mp3": {
+  "title": "לך נביע - דכור לחג הסכות",
+  "performer": "יפת בן רצון צדקה",
+  "event": "חג הסוכות"
+ },
+ "שיראן ניר/שונות/מקהלה/Koktel Samri/man yemte memar.mp3": {
+  "title": "מן ימטי מימר - מקהלה",
+  "performer": "מקהלה",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/tsadaka elkahen.mp3": {
+  "title": "צדקה הכהן",
+  "performer": "לא ידוע",
+  "event": "שונות"
+ },
+ "שיראן ניר/שונות/unas hanas-inasu shanainu - atalla elkahen.mp3": {
+  "title": "אל שער השמים - ונס הנס",
+  "performer": "הכהן נתנאל בן אברהם",
+  "event": "שונות"
+ },
+ "שיראן ניר/שמחות/uri-nuri.mp3": {
+  "title": "אורי — נורי",
+  "performer": "לא ידוע",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/yishtaba umalifot - menashe tsedaka.mp3": {
+  "title": "ישתבח ומליפוט",
+  "performer": "לא ידוע",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/שבת סליחות/yishtabah-amida a - seadia marhiv.mp3": {
+  "title": "ישתבח — עמידה א׳",
+  "performer": "לא ידוע",
+  "event": "שבת הסליחות"
+ },
+ "שיראן ניר/כיפור/בפם קדש - מנשה צדקה/bafam kadesh 1.mp3": {
+  "title": "בפם קדש נשבח",
+  "performer": "מנשה בן יצחק צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/ימי חול/אור הבקר - מנשה צדקה/or abekar.mp3": {
+  "title": "אור הבקר",
+  "performer": "מנשה בן יצחק צדקה",
+  "event": "ימי חול"
+ },
+ "שיראן ניר/שבת/תפילת בוקר/שבחו - מנשה צדקה/shabauo shel shabat baboker.mp3": {
+  "title": "שבחו של שבת בבקר",
+  "performer": "מנשה בן יצחק צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/שבת סליחות/שבוח - מנשה צדקה/shlom shema al mushi.mp3": {
+  "title": "שלום יהוה על משה",
+  "performer": "מנשה בן יצחק צדקה",
+  "event": "שבת הסליחות"
+ },
+ "שיראן ניר/מועדים-שבתות מועדים/ברכו - נתן יהושע/Bareku - Natan Yehoshua.mp3": {
+  "title": "ברכו  ושבחו ורבו ורוממו - כבד",
+  "performer": "נתן בן מצליח הושע",
+  "event": "מועדים"
+ },
+ "סעדיה מרחיב/Pesaach/Zevach Pessach/'Mbbrrak/1.mp3": {
+  "title": "מברך  הוא ביתה דיעקב  - זבח הפסח",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הפסח"
+ },
+ "סעדיה מרחיב/Pesaach/Mufatem/Tanin/Yishtaba-Mufat Tanen/2-Abod Simanaya/AudioTrack 18.mp3": {
+  "title": "עבוד סימניה",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הפסח"
+ },
+ "סעדיה מרחיב/Shabbat/Amidot Tfilat Boker/Abude Dalama/AudioTrack 14.mp3": {
+  "title": "עבודה דעלמה - עמידות שבת בבוקר",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "שבת"
+ },
+ "סעדיה מרחיב/Sukkot/Shabbat mued Hassakot/Dikur-Wabu Gadal/AudioTrack 23.mp3": {
+  "title": "והבו גדל - דכור",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הסוכות"
+ },
+ "סעדיה מרחיב/Shonot/Shamaaot/Ea Abraham U zekutu/AudioTrack 06.mp3": {
+  "title": "אה אברהם וזכותו",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "שמחות"
+ },
+ "סעדיה מרחיב/Shavuot/Aliya Laregel/Ela Rab Ulit Kabate-aliya laregel/AudioTrack 34.mp3": {
+  "title": "אלה רב ולית כותה — עלייה לרגל",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג השבועות"
+ },
+ "סעדיה מרחיב/Pesaach/Zevach Pessach/Eluwem Reemanna-Zevach/AudioTrack 01.mp3": {
+  "title": "אלהים רחמנה — זבח",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הפסח"
+ },
+ "סעדיה מרחיב/Shavuot/Yom Maamad Har Sini/Fassil-Shemauni U fagau le/1.mp3": {
+  "title": "שמעוני ופגעו לי - בית \"פציל\"",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "מעמד הר סיני"
+ },
+ "סעדיה מרחיב/Kipur/Hada Shirta.mp3": {
+  "title": "הדה שירתה רישה",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "יום הכיפורים"
+ },
+ "סעדיה מרחיב/Shavuot/Shabbat Amalek/Hasittu/AudioTrack 01.mp3": {
+  "title": "האציתו שמועיה",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג השבועות"
+ },
+ "סעדיה מרחיב/Pesaach/Zevach Pessach/Karzen Wammarem.mp3": {
+  "title": "כארזין ואמרים",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הפסח"
+ },
+ "סעדיה מרחיב/Sukkot/Aliya laregel/Lak Nebi maran-aliya laregel/AudioTrack 35.mp3": {
+  "title": "לך נביע מרן - עליה לרגל",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הסוכות"
+ },
+ "סעדיה מרחיב/Shonot/Shamaaot/Mi Yishti Hayayen/AudioTrack 01.mp3": {
+  "title": "מי ישתה היין",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "שמחות"
+ },
+ "סעדיה מרחיב/Shavuot/Shabbat Amalek/Mireosh Gabaat Hatura/AudioTrack 21.mp3": {
+  "title": "מראש גבעת התורה",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג השבועות"
+ },
+ "סעדיה מרחיב/Sukkot/Shabbat mued Hassakot/Naamad Al Terah-Maran/AudioTrack 01.mp3": {
+  "title": "נעמד על תרח — מרן",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הסוכות"
+ },
+ "סעדיה מרחיב/Shabbat/Parasha/1.mp3": {
+  "title": "קריאת פרשה",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "שבת"
+ },
+ "סעדיה מרחיב/Shonot/Shamaaot/Pasuk Hatan-maskara.mp3": {
+  "title": "פסוק חתן — מסכרה",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "שונות"
+ },
+ "סעדיה מרחיב/Shavuot/Shabbat Amalek/Pasuk-Uyaba Amalek/AudioTrack 14.mp3": {
+  "title": "פסוק — ויבא עמלק",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג השבועות"
+ },
+ "סעדיה מרחיב/Shavuot/Yom Maamad Har Sini/Shabbau leyom ha maamad/AudioTrack 37.mp3": {
+  "title": "שבחו ליום המעמד ( מעמד הר סיני)",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "מעמד הר סיני"
+ },
+ "סעדיה מרחיב/Pesaach/Tsimmot Pessach/Yishtaba-Mare De lauta.mp3": {
+  "title": "מרה דאלהותה - ישתבח",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הפסח"
+ },
+ "סעדיה מרחיב/Shabbat/Amidot Tfilat Boker/Abude Dalama/Yishtaba-Shabbat Seliyot.mp3": {
+  "title": "אל ים הסליחן והרחמים  - ישתבח",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "שבת"
+ },
+ "סעדיה מרחיב/Shavuot/Shabbat Amalek/Yishtabba-Eluwe Haruaot/AudioTrack 29.mp3": {
+  "title": "ישתבח — אלהי הרוחות",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג השבועות"
+ },
+ "סעדיה מרחיב/Pesaach/Zevach Pessach/Yishtaba-Zevach/Yishttabba-Zavach.mp3": {
+  "title": "ישתבח — חילה דשם קרבן הפסח",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הפסח"
+ },
+ "סעדיה מרחיב/Pesaach/Zevach Pessach/Yishtaba-Zevach/Yishttabba2-Eila ad sham Yishrael.mp3": {
+  "title": "ישתבח - חילה דשם עדתו ישראל - ליום הזבח בבוקר או ליום האחרון",
+  "performer": "עדי בן ברוך מרחיב",
+  "event": "חג הפסח"
+ },
+ "שיראן ניר/מועדים-שבתות מועדים/ברכו - צודיק/bareku - tzudik.mp3": {
+  "title": "ברכו ושבחו ורבו ורוממו - כבד",
+  "performer": "צודיק בן יפת צדקה",
+  "event": "מועדים"
+ },
+ "שיראן ניר/מועדים-שבתות מועדים/ברכו - צודיק/bareku1 - tzudik.mp3": {
+  "title": "ברכו ושבחו ורבו ורוממו - כבד",
+  "performer": "צודיק בן יפת צדקה",
+  "event": "מועדים"
+ },
+ "שיראן ניר/שבת/תפילת בוקר/שבחו מתלת כריזאן עד הסוף - צודיק/helek1.mp3": {
+  "title": "שבלו לשבת בבוקר - חלקית",
+  "performer": "צודיק בן יפת צדקה",
+  "event": "שבת"
+ },
+ "שיראן ניר/כיפור/הא צפר - רצון צדקה/aa safar - ratson tsedaka.mp3": {
+  "title": "הא צפר מברך - ליום כיפור",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/מעמד הר סיני/מליפוטים - רצון צדקה/adker altab  mushi- ratson tsedaka.mp3": {
+  "title": "אדכיר לטב משה  - מליפוט",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/מליפוטים - רצון צדקה/adker altab hadema - ratson tsedaka.mp3": {
+  "title": "אדכיר לטב משה  - מליפוט",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/eluinu karob-shema eluwinu-mi mani tubu - ratson tsedaka.mp3": {
+  "title": "נפתח פינו - אלהינו קרוב — שמע אלהינו — מי מני טובו",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi abram.mp3": {
+  "title": "נפתח אוצר תשבחן - אלהי אברהם",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi aharon kaena.mp3": {
+  "title": "נפתח אוצר תשבחן  - אלהי אהרן כהנה",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban amram.mp3": {
+  "title": "נפתח אוצר תשבחן - אלהי בן עמרם",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban farat.mp3": {
+  "title": "נפתח אוצר תשבחן  = אלהי בן פרת",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban shara.mp3": {
+  "title": "נפתח אוצר תשבחן - אלהי בן שרה",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi hakaenem.mp3": {
+  "title": "נפתח אוצר תשבחן  - אלהי הכהנים",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi mushi ban amaram.mp3": {
+  "title": "נפתח אוצר תשבחן - אלהי משה בן עמרם",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi yakob nadura.mp3": {
+  "title": "נפתח אוצר תשבחן  - אלהי יעקב נדורה",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal haburaem-hashamem-ananu raem  ratson tsedaka.mp3": {
+  "title": "נפתח פינו- כל הבראים — השמים — עננו רעם",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal haeluem-am hadurot - ratson tsedaka.mp3": {
+  "title": "נפתח פינו - כל האלהים — עם הדורות",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal hakumem - ratson tsedaka.mp3": {
+  "title": "נפתח פינו - כל הקמים",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/kal yami durot.mp3": {
+  "title": "נפתח אוצר תשבחן  - כל ימי דורות",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/mi ukal alnafshu-mikal hagadalot-harninu - ratson tsedaka.mp3": {
+  "title": "נפתח פינו - מי יוכל אל נפשו — מכל הגדלות — הרנינו",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/mifani nikra - ratson tsedaka.mp3": {
+  "title": "נפתח פינו  - מפני נקרא",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/שמיני עצרת/מועדי - רצון צדקה/muedi - ratson tsedaka.mp3": {
+  "title": "מועדי אלהים - שירה",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "שמיני עצרת"
+ },
+ "שיראן ניר/שמיני עצרת/מועדי - רצון צדקה/muedi2 - ratson tsedaka.mp3": {
+  "title": "מועדי אלהים - שירה",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "שמיני עצרת"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nahlel alshema-ma nuraem maashek-ata barata hakal - ratson tsedaka.mp3": {
+  "title": "נפתח פינו  - נהלל אלשמה — מה נוראים מעשיך — אתה בראת הכל",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/negadel alshema-nerumem hael- la ish - ratson tsedaka.mp3": {
+  "title": "נפתח פינו - נגדל אלשמה — נרומם האל — לא איש",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nemol lbabinu - ratson tsedaka.mp3": {
+  "title": "נפתח פינו - נמול לבבנו",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/niftah fianu-eii eshar eii - ratson tsedaka.mp3": {
+  "title": "נפתח פינו — עי אשר עי",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/niftah usar tashban.mp3": {
+  "title": "נפתח אוצר תשבחן",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/nikara sham shema.mp3": {
+  "title": "נפתח אוצר תשבחן  - נקרא שם השם",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "מעמד הר סיני"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nistar ata-reosh hakal- la man - ratson tsedaka.mp3": {
+  "title": "נפתח פינו - נסתר אתה — ראש הכל — לא מן",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/yerei haraem-miyeshi kamashek-mi yahlel - ratson tsedaka.mp3": {
+  "title": "נפתח פינו ירא הרעים — מי יעשה כמעשיך — מי יהלל",
+  "performer": "רצון בן בנימים צדקה",
+  "event": "יום הכיפורים"
  }
 }
