@@ -206,7 +206,8 @@ const I18N = {
     week_portion_extra:'פרשה נוספת', week_portion_here_extra:'פרשה נוספת הנקראת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_shira:'אוצר השירה השומרונית',
-    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', m_a11y:'הגדרות נגישות', a11y_size:'גודל הטקסט',
+    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', m_a11y:'הגדרות נגישות', rd_prev_ch:'‹ הפרק הקודם', rd_next_ch:'הפרק הבא ›',
+    lib_hint_back:'גרור מטה להחזרה למדף', lib_hint_open:'לחץ שוב לפתיחת הספר', a11y_size:'גודל הטקסט',
     a11y_invert:'היפוך צבעים', a11y_invert_hint:'רקע שחור וטקסט לבן, בכל מסכי האפליקציה',
     a11y_reset:'איפוס', shelf_sources:'פירושים ומסורת',
     shelf_tools:'מילונים וכלים', shelf_study:'ספרים ומחקר', m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
@@ -473,7 +474,8 @@ const I18N = {
     week_portion_extra:'Additional portion', week_portion_here_extra:'An additional portion read this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
     m_shira:'The Treasury of Samaritan Song',
-    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', m_a11y:'Accessibility', a11y_size:'Text size',
+    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', m_a11y:'Accessibility', rd_prev_ch:'‹ Previous', rd_next_ch:'Next ›',
+    lib_hint_back:'Drag down to put it back', lib_hint_open:'Tap again to open it', a11y_size:'Text size',
     a11y_invert:'Invert colours', a11y_invert_hint:'Black background, white text, throughout the app',
     a11y_reset:'Reset', shelf_sources:'Commentary and tradition',
     shelf_tools:'Dictionaries and tools', shelf_study:'Books and research', m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
@@ -740,7 +742,8 @@ const I18N = {
     week_portion_extra:'فصل إضافي', week_portion_here_extra:'فصل إضافي يُقرأ هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
     m_shira:'كنز الترتيل السامري',
-    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', m_a11y:'إعدادات الوصول', a11y_size:'حجم النصّ',
+    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', m_a11y:'إعدادات الوصول', rd_prev_ch:'‹ السابق', rd_next_ch:'التالي ›',
+    lib_hint_back:'اسحب للأسفل للإرجاع', lib_hint_open:'انقر ثانيةً لفتح الكتاب', a11y_size:'حجم النصّ',
     a11y_invert:'عكس الألوان', a11y_invert_hint:'خلفية سوداء ونصّ أبيض، في كلّ شاشات التطبيق',
     a11y_reset:'إعادة ضبط', shelf_sources:'التفاسير والتقاليد',
     shelf_tools:'المعاجم والأدوات', shelf_study:'كتب وأبحاث', m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
@@ -6207,7 +6210,9 @@ const LIB_SHELF = {
   dict_app:'shelf_tools', rhyme_book:'shelf_tools',
   composer:'shelf_tools', privatecomp:'shelf_tools',
   piyutim_book:'shelf_study', dara_book:'shelf_study', people_book:'shelf_study',
-  wreschner_book:'shelf_study', cohen_book:'shelf_study',
+  // "חוקי הצרעת" and "מסורות שומרוניות" are halakhah and tradition, not studies
+  // about them, and they stand with the commentaries
+  wreschner_book:'shelf_sources', cohen_book:'shelf_sources',
 };
 
 const LIB_ITEMS = [
@@ -6376,8 +6381,53 @@ function libBuildGrid(){
     // filtered shelf, so a book keeps its binding while the reader searches
     const vars=libCoverVars(i);
     for(const k in vars) b.style.setProperty(k, vars[k]);
-    if(LIB_PULLED===item.act) b.classList.add('pulled');
-    b.onclick=()=>{
+    if(LIB_PULLED===item.act){
+      b.classList.add('pulled');
+      // ── the two things a reader cannot guess ─────────────────────────────
+      // A book standing out of the shelf answers to two gestures and shows
+      // neither: a second tap opens it, a pull downwards puts it back. So it is
+      // said once, in words, for four seconds, and then the book is left to be
+      // looked at. It is said again every time a book is drawn, because nobody
+      // should have to have been paying attention the first time.
+      b.appendChild(el('span','lib-hint lib-hint-open', esc(t('lib_hint_open'))));
+      b.appendChild(el('span','lib-hint lib-hint-back', esc(t('lib_hint_back'))));
+      setTimeout(()=>b.querySelectorAll('.lib-hint').forEach(h=>h.classList.add('gone')), 4000);
+
+      // ── pulling it back ──────────────────────────────────────────────────
+      // Downwards, far enough not to be a tap, and further down than across so a
+      // finger travelling along the shelf is not mistaken for one putting a book
+      // away. While the finger is down the book follows it, so the gesture shows
+      // what it is doing before it is finished.
+      let y0=0, x0=0, dragging=false;
+      b.addEventListener('pointerdown', e=>{
+        if(e.pointerType==='mouse' && e.button!==0) return;
+        y0=e.clientY; x0=e.clientX; dragging=true;
+        b.setPointerCapture && b.setPointerCapture(e.pointerId);
+      }, {passive:true});
+      b.addEventListener('pointermove', e=>{
+        if(!dragging) return;
+        const dy=e.clientY-y0;
+        if(dy>0) b.style.transform='translateY('+Math.min(dy,90)+'px) rotateY(180deg)';
+      }, {passive:true});
+      const settle = e => {
+        if(!dragging) return;
+        dragging=false;
+        b.style.transform='';
+        const dy=e.clientY-y0, dx=Math.abs(e.clientX-x0);
+        if(dy>48 && dy>dx){                    // put back on the shelf
+          b.dataset.dragged='1';
+          LIB_PULLED=null;
+          libBuildGrid();
+        } else if(dy>8 || dx>8){
+          b.dataset.dragged='1';               // moved, but not enough — not a tap either
+          setTimeout(()=>{ b.dataset.dragged=''; }, 60);
+        }
+      };
+      b.addEventListener('pointerup', settle, {passive:true});
+      b.addEventListener('pointercancel', settle, {passive:true});
+    }
+    b.onclick=(ev)=>{
+      if(b.dataset.dragged==='1'){ b.dataset.dragged=''; return; }   // that was a pull, not a tap
       if(LIB_PULLED===item.act){           // already out and facing us — open it
         LIB_PULLED=null;
         $('libraryModal').classList.add('hidden');
@@ -7033,7 +7083,7 @@ const BOOK_CFG = {
     langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
   },
 };
-let RD = { key:null, cfg:null, chapter:null, lang:null, fs:parseFloat(localStorage.getItem('as_rd_fs')||'1')||1 };
+let RD = { key:null, cfg:null, chapter:null, lang:null, ids:[], fs:parseFloat(localStorage.getItem('as_rd_fs')||'1')||1 };
 function rdApplyFs(){ $('rdBody').style.setProperty('--rd-fs', RD.fs); }
 function rdZoom(d){ RD.fs=Math.min(2.2, Math.max(0.8, +(RD.fs+d).toFixed(2)));
   localStorage.setItem('as_rd_fs', RD.fs); rdApplyFs(); }
@@ -7069,6 +7119,7 @@ async function rdShowToc(){
   body.appendChild(el('div','tm-hint',esc(t(RD.cfg.tocHintKey))));
   let toc; try{ toc=await RD.cfg.toc(); }catch(e){ body.appendChild(el('div','note','—')); return; }
   const list=el('div','tm-toc');
+  RD.ids = toc.map(raw=>RD.cfg.tocItem(raw).id);   // the order, for הקודם/הבא
   toc.forEach(raw=>{ const b=RD.cfg.tocItem(raw);
     const card=el('button','tm-toc-item',
       '<span class="tm-toc-letter">'+esc(b.letter)+'</span>'
@@ -7094,6 +7145,34 @@ function rdLangBtn(){
   b.textContent = t('rd_show')+' '+t(other.labelKey);
   b.onclick = ()=>{ RD.lang=other.key; openRdChapter(RD.chapter, rdTopSection()); };
 }
+// ── הקודם · הבא ──────────────────────────────────────────────────────────────
+// Every unit is a book with chapters in an order, and until now the only way
+// from one to the next was back out to the contents and in again. The order is
+// the contents' own, taken when they are drawn; a chapter reached by any other
+// road asks for them once, quietly, so the two buttons are never missing.
+async function rdEnsureIds(){
+  if(RD.ids && RD.ids.length) return RD.ids;
+  try{ const toc = await RD.cfg.toc(); RD.ids = toc.map(raw=>RD.cfg.tocItem(raw).id); }
+  catch(e){ RD.ids = []; }
+  return RD.ids;
+}
+async function rdChapterNav(){
+  await rdEnsureIds();
+  const i = RD.ids.indexOf(RD.chapter);
+  const row = el('div','rd-chnav');
+  const mk = (toId, labelKey, cls) => {
+    const b = el('button','rd-chbtn '+cls, esc(t(labelKey)));
+    if(toId === undefined || toId === null) b.disabled = true;
+    else b.onclick = ()=> openRdChapter(toId);
+    return b;
+  };
+  // in a right-to-left book the previous chapter sits on the right, the next on
+  // the left — the same way round as the Torah's own arrows
+  row.appendChild(mk(i > 0 ? RD.ids[i-1] : null, 'rd_prev_ch', 'rd-prev'));
+  row.appendChild(mk(i >= 0 && i < RD.ids.length-1 ? RD.ids[i+1] : null, 'rd_next_ch', 'rd-next'));
+  return row;
+}
+
 async function openRdChapter(id, scrollDom){
   RD.chapter=id; rdSetBack('toc');
   const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
@@ -7124,6 +7203,7 @@ async function openRdChapter(id, scrollDom){
     sec.appendChild(td);
     body.appendChild(sec);
   }
+  body.appendChild(await rdChapterNav());     // הקודם · הבא, at the foot of the chapter
   if(scrollDom){ const tgt=document.getElementById(scrollDom);
     if(tgt){ tgt.scrollIntoView({block:'start'}); tgt.classList.add('tm-flash');
       setTimeout(()=>tgt.classList.remove('tm-flash'),1600); } }
