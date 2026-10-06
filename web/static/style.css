@@ -2559,3 +2559,27 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
   font-weight:600; cursor:pointer; }
 .rd-chbtn:hover:not(:disabled){ background:#f3f0e6; }
 .rd-chbtn:disabled{ opacity:.35; cursor:default; }
+
+/* A Hebrew quotation inside Arabic commentary is set in the Samaritan face like
+   any other quotation. The Arabic block names its own font on the container, so
+   the quotation's span must name the Samaritan one at least as specifically, or
+   it would inherit the Arabic and the whole point would be lost. */
+.interp-panel .itext.iar .samchar2,
+.interp-panel .iasatir-text.iar .samchar2{ font-family:'SamComment'; }
+
+/* ── the book's own opening, on the cover it shows when drawn ────────────────
+   A book that has one grows to carry it; one that does not stays the size it
+   was, so a shelf of books that say nothing about themselves looks exactly as
+   it did. */
+.lib-spine.pulled.has-blurb{ width:176px; height:226px; }
+.cover-blurb{ margin-top:7px; padding:0 10px; max-height:132px; overflow:hidden;
+  font-size:10.5px; line-height:1.45; text-align:start; color:#fff2df;
+  text-shadow:0 1px 2px rgba(0,0,0,.5);
+  -webkit-mask-image:linear-gradient(#000 76%, transparent);
+          mask-image:linear-gradient(#000 76%, transparent); }
+.lib-spine.pulled .cover-face{ flex-direction:column; justify-content:flex-start;
+  padding-top:12px; }
+@media (max-width:420px){
+  .lib-spine.pulled.has-blurb{ width:158px; height:206px; }
+  .cover-blurb{ max-height:118px; font-size:10px; }
+}

@@ -3086,8 +3086,21 @@ async function buildInterpret(c, verses){
     const col = el('div','icol');
     if(txt){
       const showAr = ar && !fellBack;
-      const body = el('div','itext'+(showAr?' iar':''), showAr ? esc(txt) : (!ar && (S.interpSam||S.samFont))
-        ? samMarkupFree(addWordDots(stripNiqqud(txt))) : esc(txt));
+// ── a Hebrew quotation inside Arabic prose ───────────────────────────────────
+// The Arabic commentary quotes the verse in its own letters, and those letters
+// were being set in the reader's ordinary font while the same quotation in the
+// Hebrew commentary was set in the Samaritan one. The Arabic branch simply
+// escaped the text and went no further.
+//
+// samMarkupFree is exactly the tool for it: it matches runs of Hebrew letters and
+// nothing else (SAM_FREE_RE), so Arabic passes through it untouched and only the
+// quotation is wrapped. What is NOT done in Arabic is addWordDots — the word
+// separator belongs to a line that is Samaritan throughout, and sprinkled through
+// a sentence of Arabic it would be punctuation nobody asked for.
+      const body = el('div','itext'+(showAr?' iar':''),
+        showAr ? samMarkupFree(stripNiqqud(txt))
+               : (!ar && (S.interpSam||S.samFont))
+                 ? samMarkupFree(addWordDots(stripNiqqud(txt))) : esc(txt));
       if(fellBack) body.prepend(el('span','ipend', t('interp_ar_pending')));
       body.style.fontSize = fs+'px';
       col.appendChild(body);
@@ -3124,7 +3137,7 @@ async function buildInterpret(c, verses){
       box.appendChild(leadEl);
       const showArAsa = ar && !!(it.arabic||'').trim();
       const at = el('div','iasatir-text'+(showArAsa?' iar':''),
-        showArAsa ? esc(it.arabic)
+        showArAsa ? samMarkupFree(stripNiqqud(it.arabic))
         : ((!ar && (S.interpSam||S.samFont))
             ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text)));
       at.style.fontSize = fs+'px';
@@ -3141,7 +3154,8 @@ async function buildInterpret(c, verses){
       // Arabic mode shows the Arabic rendering; a section not yet translated
       // falls back to its Hebrew, marked, exactly as the commentary above does
       const showAr = ar && !it.pending;
-      const bt = el('div','iasatir-text'+(showAr?' iar':''), showAr ? esc(it.text)
+      const bt = el('div','iasatir-text'+(showAr?' iar':''),
+        showAr ? samMarkupFree(stripNiqqud(it.text))
         : (!ar && (S.interpSam||S.samFont))
           ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
       if(ar && it.pending) bt.prepend(el('span','ipend', t('interp_ar_pending')));
@@ -6358,6 +6372,33 @@ function openLibrary(){
 }
 // which book, if any, has been drawn off the shelf and is facing the reader
 let LIB_PULLED = null;
+
+// ── what a book says about itself ────────────────────────────────────────────
+// A book drawn off the shelf shows its own opening — the first section of its
+// first chapter, which in these works is the author's own preface and usually
+// names him. Nothing is written here about any book: what is shown is what the
+// book says, and a book that says nothing shows nothing rather than a sentence
+// invented on its behalf. Fetched once per book and kept, because a reader
+// looking along a shelf pulls out several.
+const LIB_BLURB = {};
+async function libBlurb(act){
+  if(act in LIB_BLURB) return LIB_BLURB[act];
+  LIB_BLURB[act] = '';                       // so a second pull does not re-ask
+  const cfg = (typeof BOOK_CFG !== 'undefined') && BOOK_CFG[act && act.replace(/_book$/,'')];
+  if(!cfg || !cfg.toc || !cfg.chapter) return '';
+  try{
+    const toc = await cfg.toc();
+    if(!toc || !toc.length) return '';
+    const first = cfg.tocItem(toc[0]);
+    const ch = await cfg.chapter(first.id);
+    const secs = (ch && ch.sections) || [];
+    for(const s of secs){
+      const txt = String(s.hebrew || s.text || s.aramaic || '').replace(/\s+/g,' ').trim();
+      if(txt.length > 40){ LIB_BLURB[act] = txt; break; }
+    }
+  }catch(e){}
+  return LIB_BLURB[act];
+}
 function libBuildGrid(){
   const q=($('libGallerySearch').value||'').trim().toLowerCase();
   const grid=$('libGrid'); grid.innerHTML='';
@@ -6389,6 +6430,14 @@ function libBuildGrid(){
       // said once, in words, for four seconds, and then the book is left to be
       // looked at. It is said again every time a book is drawn, because nobody
       // should have to have been paying attention the first time.
+      // its own opening, on the cover, once it has arrived
+      libBlurb(item.act).then(txt=>{
+        if(!txt || LIB_PULLED!==item.act) return;
+        const face=b.querySelector('.cover-face'); if(!face) return;
+        if(face.querySelector('.cover-blurb')) return;
+        face.appendChild(el('div','cover-blurb', esc(txt.slice(0, 260) + (txt.length>260?'…':''))));
+        b.classList.add('has-blurb');
+      });
       b.appendChild(el('span','lib-hint lib-hint-open', esc(t('lib_hint_open'))));
       b.appendChild(el('span','lib-hint lib-hint-back', esc(t('lib_hint_back'))));
       setTimeout(()=>b.querySelectorAll('.lib-hint').forEach(h=>h.classList.add('gone')), 4000);
