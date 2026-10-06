@@ -206,7 +206,8 @@ const I18N = {
     week_portion_extra:'פרשה נוספת', week_portion_here_extra:'פרשה נוספת הנקראת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_shira:'אוצר השירה השומרונית',
-    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
+    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', shelf_sources:'פירושים ומסורת',
+    shelf_tools:'מילונים וכלים', shelf_study:'ספרים ומחקר', m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
     tm_toc_hint:'בחר מימר לעיון:', tm_back_toc:'‹ תוכן העניינים', tm_back_chapter:'‹ חזרה לפרק',
@@ -470,7 +471,8 @@ const I18N = {
     week_portion_extra:'Additional portion', week_portion_here_extra:'An additional portion read this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
     m_shira:'The Treasury of Samaritan Song',
-    m_mss:'The Samaritan Manuscript Treasury', m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
+    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', shelf_sources:'Commentary and tradition',
+    shelf_tools:'Dictionaries and tools', shelf_study:'Books and research', m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
     tm_toc_hint:'Choose a Memar to read:', tm_back_toc:'‹ Contents', tm_back_chapter:'‹ Back to the chapter',
@@ -734,7 +736,8 @@ const I18N = {
     week_portion_extra:'فصل إضافي', week_portion_here_extra:'فصل إضافي يُقرأ هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
     m_shira:'كنز الترتيل السامري',
-    m_mss:'كنز المخطوطات السامرية', m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
+    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', shelf_sources:'التفاسير والتقاليد',
+    shelf_tools:'المعاجم والأدوات', shelf_study:'كتب وأبحاث', m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
     tm_toc_hint:'اختر ميمراً للمطالعة:', tm_back_toc:'‹ المحتويات', tm_back_chapter:'‹ العودة إلى الفصل',
@@ -6124,6 +6127,57 @@ $('menuOverlay').onclick=closeMenu;
 document.querySelectorAll('.menu-item').forEach(b=>b.onclick=()=>{
   closeMenu(); menuAction(b.dataset.act);
 });
+// ── 6 · what the menu keeps, and what it folds away ──────────────────────────
+// The menu held fifteen entries of five different kinds. The five that are whole
+// applications of their own — the calendar, the family tree, the timeline, the
+// song archive and the manuscript treasury — go behind one line, "אפליקציות
+// נוספות", which opens them in place. The menu is eight lines until it is asked
+// for more, and the five keep the handlers they always had.
+document.addEventListener('DOMContentLoaded', ()=>{
+  const btn=$('moreAppsBtn'), box=$('moreApps'), drawer=$('menuDrawer');
+  if(!btn || !box || !drawer) return;
+
+  // Where the panel goes is read off the drawer itself rather than assumed, so
+  // it is right whichever edge the drawer is docked to — the app turns the page
+  // LTR for English, and anything that hard-codes "to the left" is wrong the day
+  // the drawer follows.
+  //
+  // Beside the drawer when there is room beside it, and over it when there is
+  // not: a phone's drawer is 82% of the screen, which leaves about sixty pixels
+  // — not a panel. There it slides in over the drawer as a second level with its
+  // own way back, which is what a phone does anyway.
+  const PANEL = 300, GAP = 8;
+  const place = () => {
+    // Read from the drawer's style and its own width, NOT from its bounding box:
+    // the drawer slides in on a transform, and a box measured mid-slide puts the
+    // panel where the drawer was passing rather than where it comes to rest.
+    const cs = getComputedStyle(drawer);
+    const dockedEnd = cs.right !== 'auto' && parseFloat(cs.right) === 0;
+    const w = drawer.offsetWidth, h = drawer.offsetHeight;
+    const beside = (window.innerWidth - w) >= PANEL + GAP;
+    box.classList.toggle('over-drawer', !beside);
+    box.style.top = (parseFloat(cs.top) || 0) + 'px';
+    box.style.height = h + 'px';
+    box.style.width = (beside ? PANEL : w) + 'px';
+    const off = beside ? w : 0;                  // beside it, or exactly over it
+    if(dockedEnd){ box.style.right = off + 'px'; box.style.left = 'auto'; }
+    else         { box.style.left  = off + 'px'; box.style.right = 'auto'; }
+  };
+  const open = on => {
+    if(on) place();
+    box.classList.toggle('hidden', !on);
+    btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+  };
+  btn.onclick = () => open(box.classList.contains('hidden'));   // set after the
+  $('moreAppsBack').onclick = () => open(false);                // .menu-item wiring,
+  $('menuOverlay').addEventListener('click', () => open(false), true);
+  window.addEventListener('resize', () => { if(!box.classList.contains('hidden')) place(); });
+  // the whole drawer closing takes the panel with it
+  const mo = new MutationObserver(() => {
+    if(drawer.classList.contains('hidden')) open(false);
+  });
+  mo.observe(drawer, {attributes:true, attributeFilter:['class']});
+});
 
 // ── הספרייה השומרונית: full-page gallery (searchable) ─────────────────────────
 // The cover IS the label: every book's title is written on its own front, so the
@@ -6137,6 +6191,19 @@ function libCoverVars(i){
   return { '--bk':`hsl(${h} 33% 39%)`, '--bk-dark':`hsl(${h} 40% 23%)`,
            '--bk-lite':`hsl(${h} 29% 50%)` };
 }
+// ── the shelves ─────────────────────────────────────────────────────────────
+// Three, by subject. A book not named here stands on the last one rather than
+// disappearing, so adding a book never needs this table touched.
+const LIB_SHELVES = ['shelf_sources', 'shelf_tools', 'shelf_study'];
+const LIB_SHELF = {
+  tm_book:'shelf_sources', tz_book:'shelf_sources', shyt_book:'shelf_sources',
+  sir_book:'shelf_sources', bhuq_book:'shelf_sources', asatir_book:'shelf_sources',
+  dict_app:'shelf_tools', rhyme_book:'shelf_tools',
+  composer:'shelf_tools', privatecomp:'shelf_tools',
+  piyutim_book:'shelf_study', dara_book:'shelf_study', people_book:'shelf_study',
+  wreschner_book:'shelf_study', cohen_book:'shelf_study',
+};
+
 const LIB_ITEMS = [
   {act:'dict_app',     titleKey:'m_dict_aram',    open:()=>openDictApp()},
   {act:'tm_book',      titleKey:'m_tm_book',      open:()=>openTmBook()},
@@ -6274,27 +6341,69 @@ $('shToTorah').onclick = () => $('shiraModal').classList.add('hidden');
 function openLibrary(){
   $('libraryModal').classList.remove('hidden');
   $('libGallerySearch').value='';
+  LIB_PULLED=null;            // the library is always entered with its books in
   libBuildGrid();
   trackNav(t('m_library'));
 }
+// which book, if any, has been drawn off the shelf and is facing the reader
+let LIB_PULLED = null;
 function libBuildGrid(){
   const q=($('libGallerySearch').value||'').trim().toLowerCase();
   const grid=$('libGrid'); grid.innerHTML='';
   let shown=0;
+  // ── a book on the shelf ────────────────────────────────────────────────────
+  // It stands with its spine out, as a book on a shelf does, and its name is
+  // written down the spine. The first touch draws it off the shelf and turns it
+  // to face the reader — the cover they already know, with the title across it —
+  // and only the second opens it. So a reader may look along a shelf, pull one
+  // out, see it was not the one, and put it back by reaching for another: there
+  // is a step between curiosity and leaving the page, which a grid of covers
+  // never had.
+  const makeBook=(item, i)=>{
+    const label=t(item.titleKey);
+    const b=el('button','lib-spine',
+      `<span class="spine-face"><span class="spine-title">${esc(label)}</span></span>`+
+      `<span class="cover-face"><span class="lib-book-title">${esc(label)}</span></span>`);
+    b.title=label;
+    b.dataset.act=item.act;
+    // colour by the item's fixed place in LIB_ITEMS, not by where it lands in a
+    // filtered shelf, so a book keeps its binding while the reader searches
+    const vars=libCoverVars(i);
+    for(const k in vars) b.style.setProperty(k, vars[k]);
+    if(LIB_PULLED===item.act) b.classList.add('pulled');
+    b.onclick=()=>{
+      if(LIB_PULLED===item.act){           // already out and facing us — open it
+        LIB_PULLED=null;
+        $('libraryModal').classList.add('hidden');
+        item.open();
+        return;
+      }
+      LIB_PULLED=item.act;                 // draw this one out, put any other back
+      libBuildGrid();
+    };
+    return b;
+  };
+
+  const wanted=[];
   LIB_ITEMS.forEach((item, i)=>{
     if(item.adminOnly && !ADMIN.token) return;   // "מחולל טיוטות פיוט" — שלב ראשון: מנהל בלבד
     const label=t(item.titleKey);
     if(q && !label.toLowerCase().includes(q)) return;
-    shown++;
-    const card=el('button','lib-card', `<span class="lib-book"><span class="lib-book-title">${esc(label)}</span></span>`);
-    card.title=label;                       // the cover clips very long titles — the tooltip doesn't
-    // colour by the item's fixed index, not by its place in the filtered grid,
-    // so a book keeps its binding while the reader searches
-    const vars=libCoverVars(i);
-    for(const k in vars) card.style.setProperty(k, vars[k]);
-    card.onclick=()=>{ $('libraryModal').classList.add('hidden'); item.open(); };
-    grid.appendChild(card);
+    wanted.push([item, i]);
   });
+  shown = wanted.length;
+  const last = LIB_SHELVES[LIB_SHELVES.length-1];
+  for(const shelf of LIB_SHELVES){
+    const on = wanted.filter(([item]) => (LIB_SHELF[item.act] || last) === shelf);
+    if(!on.length) continue;               // an empty shelf is not drawn at all
+    const unit=el('div','shelf');
+    unit.appendChild(el('div','shelf-name', esc(t(shelf))));
+    const row=el('div','shelf-books');
+    for(const [item, i] of on) row.appendChild(makeBook(item, i));
+    unit.appendChild(row);
+    unit.appendChild(el('div','shelf-plank'));
+    grid.appendChild(unit);
+  }
   $('libGalleryNoResult').classList.toggle('hidden', shown>0);
 }
 $('libGallerySearch').addEventListener('input', libBuildGrid);

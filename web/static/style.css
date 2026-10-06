@@ -2413,3 +2413,80 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
    a few pixels, cancels the pointer, and the swipe that turns the page is never
    seen. Vertical scrolling is untouched. */
 #content{ touch-action:pan-y; }
+
+/* ── the five applications behind one line ───────────────────────────────── */
+/* A panel standing against the drawer, not a fold inside it: the drawer keeps
+   its own length and the five applications arrive beside it. Which side is read
+   off the drawer at open time (see app.js) — the app turns LTR for English, and
+   a hard-coded side would be wrong the day the drawer follows. On a phone, where
+   the drawer is 82% of the screen and nothing fits beside it, .over-drawer lays
+   it over the drawer instead, with its own way back. */
+.menu-sub{ position:fixed; z-index:62; background:var(--cream); direction:rtl;
+  box-shadow:-4px 0 20px rgba(0,0,0,.22); overflow-y:auto; overscroll-behavior:contain;
+  animation:subIn .16s ease-out; }
+.menu-sub.over-drawer{ box-shadow:0 0 24px rgba(0,0,0,.3); }
+@keyframes subIn{ from{ opacity:0; transform:translateX(10px); } to{ opacity:1; transform:none; } }
+.menu-sub.hidden{ display:none; }
+.menu-sub .menu-item{ font-size:.96em; }
+.menu-sub-head{ display:flex; align-items:center; gap:10px; width:100%; position:sticky; top:0; z-index:1;
+  padding:16px 18px; border:0; border-bottom:1px solid rgba(26,56,115,.12);
+  background:var(--navy); color:#fff; font-family:inherit; font-size:17px;
+  font-weight:700; text-align:start; cursor:pointer; }
+.menu-sub-head .msb-arrow{ font-size:20px; opacity:.85; }
+.menu-group .mi-chev{ margin-inline-start:auto; font-size:17px; opacity:.6;
+  transition:transform .18s ease; }
+.menu-group[aria-expanded="true"] .mi-chev{ transform:rotate(-90deg); }
+
+/* ── the library as shelves ──────────────────────────────────────────────────
+   Books stand with their spines out on a mahogany plank, their names written
+   down the spine. The first touch draws one off the shelf and turns it to face
+   the reader — the same cover as before, title across the front — and only the
+   second opens it. Both faces live in the one button, back to back, and the
+   turn is a rotation of the pair; nothing is rebuilt mid-animation, so the
+   motion cannot stutter on a slow phone. */
+#libGrid{ display:block; }
+.shelf{ margin:0 0 26px; }
+.shelf-name{ padding:0 4px 7px; font-size:14px; font-weight:700; color:#5b4636;
+  letter-spacing:.02em; }
+.shelf-books{ display:flex; flex-wrap:wrap; align-items:flex-end; gap:7px;
+  min-height:132px; padding:0 10px; }
+/* the plank: three browns and a lit top edge, so it reads as a board seen
+   slightly from above rather than as a brown stripe */
+.shelf-plank{ height:15px; border-radius:2px 2px 4px 4px;
+  background:linear-gradient(#a46a43 0 2px, #7b4a2b 2px 7px, #5d3720 7px 100%);
+  box-shadow:0 2px 0 rgba(60,32,16,.45), 0 7px 12px -4px rgba(60,32,16,.5); }
+
+.lib-spine{ position:relative; flex:0 0 auto; width:38px; height:124px; padding:0;
+  border:0; background:none; font:inherit; cursor:pointer;
+  transform-style:preserve-3d; transition:transform .34s cubic-bezier(.3,.8,.4,1);
+  transform-origin:50% 100%; }
+.lib-spine .spine-face, .lib-spine .cover-face{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  backface-visibility:hidden; border-radius:2px 4px 4px 2px; overflow:hidden; }
+.lib-spine .spine-face{
+  background:linear-gradient(90deg, var(--bk-dark) 0 3px, var(--bk) 3px 86%, var(--bk-lite) 86% 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 2px 5px rgba(50,30,15,.4); }
+/* the name runs down the spine, the way it is printed on a book */
+.spine-title{ writing-mode:vertical-rl; text-orientation:mixed; transform:rotate(180deg);
+  max-height:108px; overflow:hidden; font-size:12.5px; font-weight:600; line-height:1.1;
+  color:#fff6e9; text-shadow:0 1px 2px rgba(0,0,0,.45); white-space:nowrap; }
+.lib-spine:hover{ transform:translateY(-6px); }
+
+/* drawn out: it comes forward, grows to a cover and turns its face over */
+.lib-spine .cover-face{ transform:rotateY(180deg);
+  background:linear-gradient(135deg, var(--bk-lite), var(--bk) 55%, var(--bk-dark));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), 0 10px 20px -6px rgba(50,30,15,.6); }
+.lib-spine.pulled{ width:116px; height:150px; transform:translateY(-10px) rotateY(180deg); z-index:2; }
+.lib-spine.pulled .spine-title{ opacity:0; }
+.lib-spine.pulled + .lib-spine{ margin-inline-start:4px; }
+.lib-spine .lib-book-title{ padding:0 9px; font-size:13.5px; font-weight:700; line-height:1.25;
+  text-align:center; color:#fff6e9; text-shadow:0 1px 2px rgba(0,0,0,.45); }
+
+@media (prefers-reduced-motion: reduce){
+  .lib-spine{ transition:none; }
+}
+@media (max-width:420px){
+  .lib-spine{ width:34px; height:112px; }
+  .lib-spine.pulled{ width:104px; height:138px; }
+  .spine-title{ max-height:98px; font-size:11.5px; }
+}
