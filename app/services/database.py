@@ -381,6 +381,50 @@ def _seed_nikud():
 _seed_nikud()
 
 
+_DEUT_INTERP_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                  'data', 'interp_deut_patch.json')
+
+
+def _seed_deut_interpretation():
+    """Fill in the per-verse commentary for Deuteronomy.
+
+    Four books had one and the fifth almost none — 743 of its 956 verses were
+    blank — not through any fault but because it had never been built. It is
+    shipped the way every other body of text here is shipped: as a patch applied
+    to whatever database is on the disk, never as a database of its own, because
+    the live one carries edits made online that the one in git has never seen.
+
+    The guard is the strictest one there is: a verse is written ONLY if its
+    commentary is empty. Nothing that exists is touched, so a commentary edited
+    online survives untouched, and a second run finds nothing left to do."""
+    try:
+        if not os.path.exists(_DEUT_INTERP_PATCH):
+            return
+        conn = sqlite3.connect(DB_PATH)
+        with open(_DEUT_INTERP_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        rows = patch.get('rows', [])
+        if not rows:
+            conn.close()
+            return
+        cur = conn.cursor()
+        written = 0
+        for r in rows:
+            cur.execute("UPDATE verses SET interpretation=? WHERE id=? "
+                        "AND TRIM(COALESCE(interpretation,''))=''", (r['t'], r['v']))
+            written += cur.rowcount
+        if written:
+            conn.commit()
+            print('[deut] %d verses of Deuteronomy given a commentary; '
+                  '%d already had one and were left alone' % (written, len(rows) - written))
+        conn.close()
+    except Exception as exc:
+        print('[deut] skipped: %s' % exc)
+
+
+_seed_deut_interpretation()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')

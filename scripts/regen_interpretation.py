@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Regenerate verses.interpretation for בראשית/שמות/ויקרא/במדבר (NOT דברים —
-scope approved by the user 2026-08-04) using ONLY Samaritan-tradition
+Regenerate verses.interpretation using ONLY Samaritan-tradition
 sources — the Samaritan Aramaic Targum (verses.sam_aramaic), the six
 verse-linked commentary tables (eyalk/tzdaka/sir/shyt/tm/tradart), and the
 word dictionary (word_gloss + meliz_gloss) — never Jewish commentary
@@ -16,6 +15,11 @@ Usage:
   py -3 scripts/regen_interpretation.py            # full run, 8 workers
   py -3 scripts/regen_interpretation.py --pilot     # 3 chapters only (Gen1, sparse Lev, mid Exod)
   py -3 scripts/regen_interpretation.py --limit 20  # first 20 remaining chapters
+  py -3 scripts/regen_interpretation.py --books 5 --out data/interp_deut.json
+                                                    # one book, its own checkpoint
+
+Deuteronomy was out of scope until 2026-10-07, when the user asked for it and
+approved the spend; --books is what lets a book be named rather than edited in.
 """
 import os
 import sys
@@ -32,7 +36,7 @@ _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(_ROOT, 'data', 'torah.db')
 OUT_PATH = os.path.join(_ROOT, 'data', 'interp_regen_output.json')
 MODEL = 'claude-opus-4-8'
-BOOKS_SCOPE = (1, 2, 3, 4)  # בראשית שמות ויקרא במדבר
+BOOKS_SCOPE = (1, 2, 3, 4, 5)  # all five; --books narrows it
 
 
 def _load_dotenv():
@@ -275,7 +279,15 @@ def main():
     ap.add_argument('--pilot', action='store_true')
     ap.add_argument('--limit', type=int, default=None)
     ap.add_argument('--workers', type=int, default=8)
+    ap.add_argument('--books', default=None,
+                    help='comma-separated book ids; default is all of BOOKS_SCOPE')
+    ap.add_argument('--out', default=None,
+                    help='checkpoint file; default is data/interp_regen_output.json')
     args = ap.parse_args()
+    global OUT_PATH
+    if args.out:
+        OUT_PATH = args.out if os.path.isabs(args.out) else os.path.join(_ROOT, args.out)
+    scope = tuple(int(x) for x in args.books.split(',')) if args.books else BOOKS_SCOPE
 
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -295,7 +307,8 @@ def main():
         exod_row = cur.fetchone()
         targets = [gen1, lev5] + ([exod_row[0]] if exod_row else [])
     else:
-        cur.execute(f'''SELECT id FROM sam_chapters WHERE book_id IN {BOOKS_SCOPE} ORDER BY book_id, number''')
+        ph = ','.join('?' * len(scope))
+        cur.execute(f'SELECT id FROM sam_chapters WHERE book_id IN ({ph}) ORDER BY book_id, number', scope)
         targets = [r[0] for r in cur.fetchall()]
 
     checkpoint = {}
