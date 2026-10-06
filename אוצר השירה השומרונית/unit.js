@@ -636,7 +636,17 @@ function playRec(recId, idx, quiet) {
   mixInit();                            // the chain must exist before playback
   if (MIX.ctx && MIX.ctx.state === 'suspended') MIX.ctx.resume();
   beginLoad(t, ready);                   // watch it arrive, and hold the scrubber
-  au.play().catch(() => {});
+  // A track that follows another is started without anybody touching the
+  // screen, and a browser is entitled to refuse that — phones routinely do.
+  // Swallowed, the refusal looked exactly like a recording that simply
+  // stopped at the end of its first part, which is the hardest kind of fault
+  // to report and the hardest to find. So it is said out loud, and the deck
+  // is left showing PLAY on the track it moved to rather than pretending.
+  au.play().catch(err => {
+    if (!quiet) return;                  // a press of PLAY reports itself
+    syncBtn();
+    toast('הדפדפן עצר את המעבר האוטומטי. הקש נגן כדי להמשיך.', 1);
+  });
   setRate($('prate').value);            // a new source resets playbackRate
   openDeck();
   headIn(true);
