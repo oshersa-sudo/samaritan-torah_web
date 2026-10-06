@@ -1,0 +1,850 @@
+{
+ "שיראן ניר/שבת סליחות/מימרי - אלעד ששוני/mimary2- elad.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שבת סליחות/מימרי - אלעד ששוני/mimary2- elad.mp3",
+    "s": 696,
+    "n": "מימרי לכהלכון"
+   },
+   {
+    "f": "שיראן ניר/שבת סליחות/מימרי - אלעד ששוני/mimary3- elad.mp3",
+    "s": 973,
+    "n": "מימרי לכהלכון"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שבת סליחות/מימרי - אלעד ששוני/mimary3- elad.mp3"
+  ],
+  "title": "מימרי לכהלכון",
+  "event": "שבת הסליחות",
+  "letter": "T",
+  "parts": [
+   "mimary2 — elad",
+   "mimary3 — elad"
+  ]
+ },
+ "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto3 - aaed elkahen.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto3 - aaed elkahen.mp3",
+    "s": 1032,
+    "n": "האציתו שמועיה  3/6"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto4 - aaed elkahen.mp3",
+    "s": 332,
+    "n": "האציתו שמועיה  4/6"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto5 - aaed elkahen.mp3",
+    "s": 455,
+    "n": "האציתו שמועיה  5/6"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto6 - aaed elkahen.mp3",
+    "s": 133,
+    "n": "האציתו שמועיה  6/6"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto4 - aaed elkahen.mp3",
+   "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto5 - aaed elkahen.mp3",
+   "שיראן ניר/שבועות/שבת עמלק-שישית/האציתו - סעדיה מרחיב/aseto - aaed alkahen/aseto6 - aaed elkahen.mp3"
+  ],
+  "title": "האציתו שמועיה",
+  "event": "חג השבועות",
+  "letter": "B",
+  "parts": [
+   "aseto3 — aaed elkahen",
+   "aseto4 — aaed elkahen",
+   "aseto5 — aaed elkahen",
+   "aseto6 — aaed elkahen"
+  ]
+ },
+ "שיראן ניר/מוסם סכות/אלהי אדם - הכהן חאדיר/alohe adam bn adama - hadir elkahen.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/מוסם סכות/אלהי אדם - הכהן חאדיר/alohe adam bn adama - hadir elkahen.mp3",
+    "s": 550,
+    "n": "אלהי אדם בן האדמה  1/2"
+   },
+   {
+    "f": "שיראן ניר/מוסם סכות/אלהי אדם - הכהן חאדיר/alohe adam bn adamh1 - hadir elkahen.mp3",
+    "s": 1468,
+    "n": "אלהי אדם בן האדמה  2/2"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/מוסם סכות/אלהי אדם - הכהן חאדיר/alohe adam bn adamh1 - hadir elkahen.mp3"
+  ],
+  "title": "אלהי אדם בן האדמה",
+  "event": "חג הסוכות",
+  "letter": "C",
+  "parts": [
+   "alohe adam bn adama",
+   "alohe adam bn adamh1"
+  ]
+ },
+ "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian1 - harel.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian1 - harel.mp3",
+    "s": 155,
+    "n": "הא סביען נפשאתה"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian2 - harel.mp3",
+    "s": 174,
+    "n": "הא סביאן (2)"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian3 - harel.mp3",
+    "s": 426,
+    "n": "הא סביאן (3)"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian4 - harel.mp3",
+    "s": 611,
+    "n": "הא סביאן (4)"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian5 - harel.mp3",
+    "s": 566,
+    "n": "הא סביאן (5)"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian2 - harel.mp3",
+   "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian3 - harel.mp3",
+   "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian4 - harel.mp3",
+   "שיראן ניר/שלש רגלים/הא סביען - הראל ששוני/ha sibian5 - harel.mp3"
+  ],
+  "title": "הא סביען נפשאתה",
+  "event": "עלייה לרגל",
+  "letter": "H",
+  "parts": [
+   "ha sibian1 — harel",
+   "ha sibian2 — harel",
+   "ha sibian3 — harel",
+   "ha sibian4 — harel",
+   "ha sibian5 — harel"
+  ]
+ },
+ "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/fetah kal mamlal nael.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/fetah kal mamlal nael.mp3",
+    "s": 751,
+    "n": "נפתח פינו - פתח כל ממלל נחל   1"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/kal haburaem - ananu raem1.mp3",
+    "s": 201,
+    "n": "נפתח פינו - כל הברואים"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/kal haburaem - ananu raem2.mp3",
+    "s": 293,
+    "n": "נפתח פינו - כל הברואים"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/kal hakumem.mp3",
+    "s": 467,
+    "n": "נפתח פינו - כל הקמים"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/la mn ula ad.mp3",
+    "s": 194,
+    "n": "נפתח פינו - לא מן ועד"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/mi yeshurak.mp3",
+    "s": 456,
+    "n": "נפתח פינו - מי ישורך מכל"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/mifani nikra.mp3",
+    "s": 832,
+    "n": "נפתח פינו - מפני נקרא במכתב משה"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nalel alshema - ata barata.mp3",
+    "s": 607,
+    "n": "נפתח פינו - נהלל לשמה"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/niftah fianu.mp3",
+    "s": 337,
+    "n": "נפתח פינו"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nemol lebabnu1.mp3",
+    "s": 160,
+    "n": "נפתח פינו - נמול לבבינו"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nemol lebabnu2.mp3",
+    "s": 367,
+    "n": "נפתח פינו - נמול לבבינו"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nistar ata-mi ukal ida.mp3",
+    "s": 609,
+    "n": "נפתח פינו - נסתר אתה"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/shema il reom wanon.mp3",
+    "s": 45,
+    "n": "נפתח פינו - יהוה אל רחום וחנון"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/unaumer ud-hanon hanunem.mp3",
+    "s": 763,
+    "n": "נפתח פינו - ונאמר ועוד"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/yerei haraem-mi yalel utak.mp3",
+    "s": 503,
+    "n": "נפתח פינו - יראו הראים"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/kal haburaem - ananu raem1.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/kal hakumem.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/la mn ula ad.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/mi yeshurak.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/mifani nikra.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nalel alshema - ata barata.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/niftah fianu.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nemol lebabnu1.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/nistar ata-mi ukal ida.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/shema il reom wanon.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/unaumer ud-hanon hanunem.mp3",
+   "שיראן ניר/כיפור/נפתח פינו  - אבו פרג/yerei haraem-mi yalel utak.mp3"
+  ],
+  "title": "נפתח פינו - פתח כל ממלל נחל",
+  "event": "יום הכיפורים",
+  "letter": "A",
+  "parts": [
+   "fetah kal mamlal nael",
+   "kal haburaem — ananu raem",
+   "kal hakumem",
+   "la mn ula ad",
+   "mi yeshurak",
+   "mifani nikra",
+   "nalel alshema — ata barata",
+   "niftah fianu",
+   "nemol lebabnu",
+   "nistar ata-mi ukal ida",
+   "shema il reom wanon",
+   "unaumer ud-hanon hanunem",
+   "yerei haraem-mi yalel utak"
+  ]
+ },
+ "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5C the stairs prelude.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5C the stairs prelude.mp3",
+    "s": 13,
+    "n": "ישר נשוה כהלן - עלייה לרגל"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5D the stairs.mp3",
+    "s": 60,
+    "n": "קדישה יקירה - עלייה לרגל"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5E Kadisha solo.mp3",
+    "s": 54,
+    "n": "קדישה יקירה - עלייה לרגל"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/שנים עשר האבנים - יפת צדקה/5F Makom ha Avanim.mp3",
+    "s": 52,
+    "n": "קדישה יקירה - עלייה לרגל"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/שנים עשר האבנים - יפת צדקה/5G Makom ha Avanim end.mp3",
+    "s": 6,
+    "n": "קדישה יקירה - עלייה לרגל"
+   },
+   {
+    "f": "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5H Shabehu_א solo.mp3",
+    "s": 57,
+    "n": "שבחו ורבו ורוממו לעלייה לרגל"
+   },
+   {
+    "f": "שיראן ניר/שבת/שבותיה שבחו - יפת צדקה/ba barok.mp3",
+    "s": 478,
+    "n": "בא ברוך"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5D the stairs.mp3",
+   "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5E Kadisha solo.mp3",
+   "שיראן ניר/שלש רגלים/שנים עשר האבנים - יפת צדקה/5F Makom ha Avanim.mp3",
+   "שיראן ניר/שלש רגלים/שנים עשר האבנים - יפת צדקה/5G Makom ha Avanim end.mp3",
+   "שיראן ניר/שלש רגלים/ישר נשוה כהלן-לא שלמה - יפת צדקה/5H Shabehu_א solo.mp3",
+   "שיראן ניר/שבת/שבותיה שבחו - יפת צדקה/ba barok.mp3"
+  ],
+  "title": "ישר נשוה כהלן - עלייה לרגל",
+  "event": "עלייה לרגל",
+  "letter": "E",
+  "parts": [
+   "5C the stairs prelude",
+   "5D the stairs",
+   "5E Kadisha solo",
+   "5F Makom ha Avanim",
+   "5G Makom ha Avanim end",
+   "5H Shabehu_א solo",
+   "ba barok"
+  ]
+ },
+ "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/11-BAFAM KADESH 1 _ BAFAM KADESH 1.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/11-BAFAM KADESH 1 _ BAFAM KADESH 1.mp3",
+    "s": 642,
+    "n": "בפם קדש (1)"
+   },
+   {
+    "f": "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/12-BAFAM KADESH 2 _ BAFAM KADESH 2.mp3",
+    "s": 332,
+    "n": "בפם קדש (2)"
+   },
+   {
+    "f": "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/13-BAFAM KADESH 3 _ BAFAM KADESH 3.mp3",
+    "s": 83,
+    "n": "בפם קדש (3)"
+   },
+   {
+    "f": "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/14-BAFAM KADESH 4 _ BAFAM KADESH 4.mp3",
+    "s": 364,
+    "n": "בפם קדש (4)"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/12-BAFAM KADESH 2 _ BAFAM KADESH 2.mp3",
+   "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/13-BAFAM KADESH 3 _ BAFAM KADESH 3.mp3",
+   "שיראן ניר/כיפור/בפם קדש  - יפת צדקה/14-BAFAM KADESH 4 _ BAFAM KADESH 4.mp3"
+  ],
+  "title": "בפם קדש",
+  "event": "יום הכיפורים",
+  "letter": "Z",
+  "parts": [
+   "BAFAM KADESH 1 _ BAFAM KADESH 1",
+   "BAFAM KADESH 2 _ BAFAM KADESH 2",
+   "BAFAM KADESH 3 _ BAFAM KADESH 3",
+   "BAFAM KADESH 4 _ BAFAM KADESH 4"
+  ]
+ },
+ "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol1 - yefet tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol1 - yefet tsedaka.mp3",
+    "s": 760,
+    "n": "אשול (1)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol10 - yefet tsedaka.mp3",
+    "s": 495,
+    "n": "אשול (10)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol11 - yefet tsedaka.mp3",
+    "s": 500,
+    "n": "אשול (11)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol12 - yefet tsedaka.mp3",
+    "s": 508,
+    "n": "אשול (12)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol2 - yefet tsedaka.mp3",
+    "s": 614,
+    "n": "אשול (2)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol3 - yefet tsedaka.mp3",
+    "s": 488,
+    "n": "אשול (3)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol4 - yefet tsedaka.mp3",
+    "s": 261,
+    "n": "אשול (4)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol5 - yefet tsedaka.mp3",
+    "s": 336,
+    "n": "אשול (5)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol6 - yefet tsedaka.mp3",
+    "s": 342,
+    "n": "אשול (6)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol7 - yefet tsedaka.mp3",
+    "s": 409,
+    "n": "אשול (7)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol8 - yefet tsedaka.mp3",
+    "s": 605,
+    "n": "אשול (8)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol9 - yefet tsedaka.mp3",
+    "s": 875,
+    "n": "אשול (9)"
+   },
+   {
+    "f": "שיראן ניר/מועדים-שבתות מועדים/פתחכ - יפת צדקה/04-fetac _ AudioTrack 04.mp3",
+    "s": 402,
+    "n": "פתחך יהוה נסי - שבתות המועדים"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol10 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol11 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol12 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol2 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol3 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol4 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol5 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol6 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol7 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol8 - yefet tsedaka.mp3",
+   "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol9 - yefet tsedaka.mp3",
+   "שיראן ניר/מועדים-שבתות מועדים/פתחכ - יפת צדקה/04-fetac _ AudioTrack 04.mp3"
+  ],
+  "title": "אשול",
+  "event": "חג השבועות",
+  "letter": "R",
+  "parts": [
+   "eshol1 — yefet tsedaka",
+   "eshol10 — yefet tsedaka",
+   "eshol11 — yefet tsedaka",
+   "eshol12 — yefet tsedaka",
+   "eshol2 — yefet tsedaka",
+   "eshol3 — yefet tsedaka",
+   "eshol4 — yefet tsedaka",
+   "eshol5 — yefet tsedaka",
+   "eshol6 — yefet tsedaka",
+   "eshol7 — yefet tsedaka",
+   "eshol8 — yefet tsedaka",
+   "eshol9 — yefet tsedaka",
+   "fetac _ AudioTrack 04"
+  ]
+ },
+ "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara1 - yefet tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara1 - yefet tsedaka.mp3",
+    "s": 109,
+    "n": "פסוקי המשכרה"
+   },
+   {
+    "f": "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara2 - yefet tsedaka.mp3",
+    "s": 448,
+    "n": "פסוקי המשכרה"
+   },
+   {
+    "f": "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara3 - yefet tsedaka.mp3",
+    "s": 267,
+    "n": "פסוקי המשכרה"
+   },
+   {
+    "f": "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara4 - yefet tsedaka.mp3",
+    "s": 532,
+    "n": "פסוקי המשכרה"
+   },
+   {
+    "f": "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara5 - yefet tsedaka.mp3",
+    "s": 642,
+    "n": "פסוקי המשכרה"
+   },
+   {
+    "f": "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara6 - yefet tsedaka.mp3",
+    "s": 564,
+    "n": "פסוקי המשכרה"
+   },
+   {
+    "f": "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara7 - yefet tsedaka.mp3",
+    "s": 422,
+    "n": "פסוקי המשכרה"
+   },
+   {
+    "f": "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara8 - yefet tsedaka.mp3",
+    "s": 260,
+    "n": "פסוקי המשכרה"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara2 - yefet tsedaka.mp3",
+   "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara3 - yefet tsedaka.mp3",
+   "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara4 - yefet tsedaka.mp3",
+   "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara5 - yefet tsedaka.mp3",
+   "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara6 - yefet tsedaka.mp3",
+   "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara7 - yefet tsedaka.mp3",
+   "שיראן ניר/שמחות/פרשת משכרה - יפת צדקה/mascara8 - yefet tsedaka.mp3"
+  ],
+  "title": "פסוקי המשכרה",
+  "event": "שמחות",
+  "letter": "S",
+  "parts": [
+   "mascara1 — yefet tsedaka",
+   "mascara2 — yefet tsedaka",
+   "mascara3 — yefet tsedaka",
+   "mascara4 — yefet tsedaka",
+   "mascara5 — yefet tsedaka",
+   "mascara6 — yefet tsedaka",
+   "mascara7 — yefet tsedaka",
+   "mascara8 — yefet tsedaka"
+  ]
+ },
+ "שיראן ניר/שבת/פרשת השבוע/בתים/דבעי - יפת צדקה/parasha sameah - adbai - yefet tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שבת/פרשת השבוע/בתים/דבעי - יפת צדקה/parasha sameah - adbai - yefet tsedaka.mp3",
+    "s": 151,
+    "n": "דבעי מדע מה הוא חילה ברנון  כל טב"
+   },
+   {
+    "f": "שיראן ניר/שבת/פרשת השבוע/בתים/דבעי - יפת צדקה/parasha sameah1 - adbai - yefet tsedaka.mp3",
+    "s": 346,
+    "n": "דבעי מדע מה הוא חילה ברנון  כל טב"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שבת/פרשת השבוע/בתים/דבעי - יפת צדקה/parasha sameah1 - adbai - yefet tsedaka.mp3"
+  ],
+  "title": "דבעי מדע מה הוא חילה ברנון כל טב",
+  "event": "שבת",
+  "letter": "W",
+  "parts": [
+   "parasha sameah — adbai — yefet tsedaka",
+   "parasha sameah1 — adbai — yefet tsedaka"
+  ]
+ },
+ "שיראן ניר/שבת/תפילת בוקר/שבחו - יפת צדקה/shabau - yefet tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שבת/תפילת בוקר/שבחו - יפת צדקה/shabau - yefet tsedaka.mp3",
+    "s": 410,
+    "n": "שבחו של שבת בבקר"
+   },
+   {
+    "f": "שיראן ניר/שבת/תפילת בוקר/שבחו - יפת צדקה/shabau1 - yefet tsedaka.mp3",
+    "s": 286,
+    "n": "שבחו של שבת בבקר"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שבת/תפילת בוקר/שבחו - יפת צדקה/shabau1 - yefet tsedaka.mp3"
+  ],
+  "title": "שבחו של שבת בבקר",
+  "event": "שבת",
+  "letter": "X",
+  "parts": [
+   "shabau — yefet tsedaka",
+   "shabau1 — yefet tsedaka"
+  ]
+ },
+ "שיראן ניר/שבת/תפילת בוקר/ישר נשוי כהלן - יפת צדקה/yshar nashbi kahlan - yefet tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שבת/תפילת בוקר/ישר נשוי כהלן - יפת צדקה/yshar nashbi kahlan - yefet tsedaka.mp3",
+    "s": 352,
+    "n": "ישר נשוה כהלן לשבת בבוקר"
+   },
+   {
+    "f": "שיראן ניר/שבת/תפילת בוקר/ישר נשוי כהלן - יפת צדקה/yshar nashbi kahlan1 - yefet tsedaka.mp3",
+    "s": 251,
+    "n": "ישר נשוה כהן לשבת בבוקר"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שבת/תפילת בוקר/ישר נשוי כהלן - יפת צדקה/yshar nashbi kahlan1 - yefet tsedaka.mp3"
+  ],
+  "title": "ישר נשוה כהלן לשבת בבוקר",
+  "event": "שבת",
+  "letter": "V",
+  "parts": [
+   "yshar nashbi kahlan — yefet tsedaka",
+   "yshar nashbi kahlan1 — yefet tsedaka"
+  ]
+ },
+ "שיראן ניר/מועדים-שבתות מועדים/ברכו - צודיק/bareku - tzudik.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/מועדים-שבתות מועדים/ברכו - צודיק/bareku - tzudik.mp3",
+    "s": 652,
+    "n": "ברכו ושבחו ורבו ורוממו - כבד"
+   },
+   {
+    "f": "שיראן ניר/מועדים-שבתות מועדים/ברכו - צודיק/bareku1 - tzudik.mp3",
+    "s": 419,
+    "n": "ברכו ושבחו ורבו ורוממו - כבד"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/מועדים-שבתות מועדים/ברכו - צודיק/bareku1 - tzudik.mp3"
+  ],
+  "title": "ברכו ושבחו ורבו ורוממו - כבד",
+  "event": "מועדים",
+  "letter": "F",
+  "parts": [
+   "bareku — tzudik",
+   "bareku1 — tzudik"
+  ]
+ },
+ "שיראן ניר/מעמד הר סיני/מליפוטים - רצון צדקה/adker altab  mushi- ratson tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/מעמד הר סיני/מליפוטים - רצון צדקה/adker altab  mushi- ratson tsedaka.mp3",
+    "s": 253,
+    "n": "אדכיר לטב משה  - מליפוט"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/מליפוטים - רצון צדקה/adker altab hadema - ratson tsedaka.mp3",
+    "s": 707,
+    "n": "אדכיר לטב משה  - מליפוט"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/מעמד הר סיני/מליפוטים - רצון צדקה/adker altab hadema - ratson tsedaka.mp3"
+  ],
+  "title": "אדכיר לטב משה - מליפוט",
+  "event": "מעמד הר סיני",
+  "letter": "L",
+  "parts": [
+   "adker altab  mushi — ratson tsedaka",
+   "adker altab hadema — ratson tsedaka"
+  ]
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/eluinu karob-shema eluwinu-mi mani tubu - ratson tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/eluinu karob-shema eluwinu-mi mani tubu - ratson tsedaka.mp3",
+    "s": 635,
+    "n": "נפתח פינו - אלהינו קרוב — שמע אלהינו — מי מני טובו"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi abram.mp3",
+    "s": 584,
+    "n": "נפתח אוצר תשבחן - אלהי אברהם"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi aharon kaena.mp3",
+    "s": 555,
+    "n": "נפתח אוצר תשבחן  - אלהי אהרן כהנה"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban amram.mp3",
+    "s": 616,
+    "n": "נפתח אוצר תשבחן - אלהי בן עמרם"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban farat.mp3",
+    "s": 646,
+    "n": "נפתח אוצר תשבחן  = אלהי בן פרת"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban shara.mp3",
+    "s": 676,
+    "n": "נפתח אוצר תשבחן - אלהי בן שרה"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi hakaenem.mp3",
+    "s": 669,
+    "n": "נפתח אוצר תשבחן  - אלהי הכהנים"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi mushi ban amaram.mp3",
+    "s": 1272,
+    "n": "נפתח אוצר תשבחן - אלהי משה בן עמרם"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi yakob nadura.mp3",
+    "s": 560,
+    "n": "נפתח אוצר תשבחן  - אלהי יעקב נדורה"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/mi ukal alnafshu-mikal hagadalot-harninu - ratson tsedaka.mp3",
+    "s": 618,
+    "n": "נפתח פינו - מי יוכל אל נפשו — מכל הגדלות — הרנינו"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/niftah usar tashban.mp3",
+    "s": 700,
+    "n": "נפתח אוצר תשבחן"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/nikara sham shema.mp3",
+    "s": 698,
+    "n": "נפתח אוצר תשבחן  - נקרא שם השם"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi abram.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi aharon kaena.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban amram.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban farat.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi ban shara.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi hakaenem.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi mushi ban amaram.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/eluwi yakob nadura.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/mi ukal alnafshu-mikal hagadalot-harninu - ratson tsedaka.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/niftah usar tashban.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/nikara sham shema.mp3"
+  ],
+  "title": "נפתח פינו - אלהינו קרוב — שמע אלהינו — מי מני טובו",
+  "event": "יום הכיפורים",
+  "letter": "U",
+  "parts": [
+   "eluinu karob-shema eluwinu-mi mani tubu — ratson tsedaka",
+   "eluwi abram",
+   "eluwi aharon kaena",
+   "eluwi ban amram",
+   "eluwi ban farat",
+   "eluwi ban shara",
+   "eluwi hakaenem",
+   "eluwi mushi ban amaram",
+   "eluwi yakob nadura",
+   "mi ukal alnafshu-mikal hagadalot-harninu — ratson tsedaka",
+   "niftah usar tashban",
+   "nikara sham shema"
+  ]
+ },
+ "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal haburaem-hashamem-ananu raem  ratson tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal haburaem-hashamem-ananu raem  ratson tsedaka.mp3",
+    "s": 602,
+    "n": "נפתח פינו- כל הבראים — השמים — עננו רעם"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal haeluem-am hadurot - ratson tsedaka.mp3",
+    "s": 462,
+    "n": "נפתח פינו - כל האלהים — עם הדורות"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal hakumem - ratson tsedaka.mp3",
+    "s": 502,
+    "n": "נפתח פינו - כל הקמים"
+   },
+   {
+    "f": "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/kal yami durot.mp3",
+    "s": 564,
+    "n": "נפתח אוצר תשבחן  - כל ימי דורות"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/mifani nikra - ratson tsedaka.mp3",
+    "s": 824,
+    "n": "נפתח פינו  - מפני נקרא"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nahlel alshema-ma nuraem maashek-ata barata hakal - ratson tsedaka.mp3",
+    "s": 595,
+    "n": "נפתח פינו  - נהלל אלשמה — מה נוראים מעשיך — אתה בראת הכל"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/negadel alshema-nerumem hael- la ish - ratson tsedaka.mp3",
+    "s": 589,
+    "n": "נפתח פינו - נגדל אלשמה — נרומם האל — לא איש"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nemol lbabinu - ratson tsedaka.mp3",
+    "s": 806,
+    "n": "נפתח פינו - נמול לבבנו"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/niftah fianu-eii eshar eii - ratson tsedaka.mp3",
+    "s": 562,
+    "n": "נפתח פינו — עי אשר עי"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nistar ata-reosh hakal- la man - ratson tsedaka.mp3",
+    "s": 603,
+    "n": "נפתח פינו - נסתר אתה — ראש הכל — לא מן"
+   },
+   {
+    "f": "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/yerei haraem-miyeshi kamashek-mi yahlel - ratson tsedaka.mp3",
+    "s": 600,
+    "n": "נפתח פינו ירא הרעים — מי יעשה כמעשיך — מי יהלל"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal haeluem-am hadurot - ratson tsedaka.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/kal hakumem - ratson tsedaka.mp3",
+   "שיראן ניר/מעמד הר סיני/נפתח אוצר תשבחן - רצון צדקה/kal yami durot.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/mifani nikra - ratson tsedaka.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nahlel alshema-ma nuraem maashek-ata barata hakal - ratson tsedaka.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/negadel alshema-nerumem hael- la ish - ratson tsedaka.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nemol lbabinu - ratson tsedaka.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/niftah fianu-eii eshar eii - ratson tsedaka.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/nistar ata-reosh hakal- la man - ratson tsedaka.mp3",
+   "שיראן ניר/כיפור/נפתח פינו - רצון צדקה/yerei haraem-miyeshi kamashek-mi yahlel - ratson tsedaka.mp3"
+  ],
+  "title": "נפתח פינו- כל הבראים — השמים — עננו רעם",
+  "event": "יום הכיפורים",
+  "letter": "G",
+  "parts": [
+   "kal haburaem-hashamem-ananu raem  ratson tsedaka",
+   "kal haeluem-am hadurot — ratson tsedaka",
+   "kal hakumem — ratson tsedaka",
+   "kal yami durot",
+   "mifani nikra — ratson tsedaka",
+   "nahlel alshema-ma nuraem maashek-ata barata hakal — ratson tsedaka",
+   "negadel alshema-nerumem hael — la ish — ratson tsedaka",
+   "nemol lbabinu — ratson tsedaka",
+   "niftah fianu-eii eshar eii — ratson tsedaka",
+   "nistar ata-reosh hakal — la man — ratson tsedaka",
+   "yerei haraem-miyeshi kamashek-mi yahlel — ratson tsedaka"
+  ]
+ },
+ "שיראן ניר/שמיני עצרת/מועדי - רצון צדקה/muedi - ratson tsedaka.mp3": {
+  "kind": "group",
+  "tracks": [
+   {
+    "f": "שיראן ניר/שמיני עצרת/מועדי - רצון צדקה/muedi - ratson tsedaka.mp3",
+    "s": 355,
+    "n": "מועדי אלהים - שירה"
+   },
+   {
+    "f": "שיראן ניר/שמיני עצרת/מועדי - רצון צדקה/muedi2 - ratson tsedaka.mp3",
+    "s": 347,
+    "n": "מועדי אלהים - שירה"
+   }
+  ],
+  "absorbed": [
+   "שיראן ניר/שמיני עצרת/מועדי - רצון צדקה/muedi2 - ratson tsedaka.mp3"
+  ],
+  "title": "מועדי אלהים - שירה",
+  "event": "שמיני עצרת",
+  "letter": "N",
+  "parts": [
+   "muedi — ratson tsedaka",
+   "muedi2 — ratson tsedaka"
+  ]
+ }
+}

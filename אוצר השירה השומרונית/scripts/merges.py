@@ -49,15 +49,40 @@ def key_of(rec):
 
 
 def apply(catalog, merges):
-    """Fold the joined files into a catalog, in place of the tracks they replace."""
+    """Fold the joinings into a catalog.
+
+    Two kinds live here, and they differ only in where the tracks came from.
+
+    A FILE joining replaces a recording's own tracks with the single file they
+    were written into — one continuous piece of singing that had arrived as
+    four files with a seam between each.
+
+    A GROUP joining is the other direction: several separate recordings that
+    are really one piece in parts. One of them leads, is given every member's
+    tracks in the order the editor set, and the others are dropped from the
+    index — not deleted, dropped. Their files are still played, as tracks of
+    the one that leads, and clearing the entry brings them all back standing
+    on their own.
+
+    Both are written against the leading recording's first-track path.
+    """
     if not merges:
         return catalog
+
+    # every recording some group has absorbed, so it is no longer listed alone
+    absorbed = set()
+    for m in merges.values():
+        absorbed.update(m.get('absorbed') or [])
 
     cat = dict(catalog)
     cat['recordings'] = []
     touched = False
     for rec in catalog['recordings']:
-        m = merges.get(key_of(rec))
+        k = key_of(rec)
+        if k in absorbed:
+            touched = True
+            continue                        # it plays inside the one that leads
+        m = merges.get(k)
         if not m or not m.get('tracks'):
             cat['recordings'].append(rec)
             continue
@@ -67,15 +92,25 @@ def apply(catalog, merges):
         r['tr'] = [{'f': t['f'], 's': t.get('s') or 0, 'n': t.get('n') or ''}
                    for t in m['tracks']]
         r['n'] = len(r['tr'])
+        # A group holds more singing than the recording that leads it did, so
+        # its length is the sum of what it now carries. Left alone, a piece in
+        # twelve parts went on announcing the length of its first part.
+        if m.get('kind') == 'group':
+            r['s'] = sum(t.get('s') or 0 for t in r['tr'])
+            if m.get('title'):
+                r['ttl'] = m['title']
+            r['grouped'] = len(r['tr'])
         r['merged'] = 1
         cat['recordings'].append(r)
 
     if not touched:
         return catalog
 
-    # The count of tracks is now wrong wherever it was rolled up, and it is
-    # read on the index cards. It is cheaper and safer to derive it again from
-    # the recordings than to try to adjust each row by the difference.
+    # Every count rolled up over the recordings is now wrong — how many
+    # recordings there are, how many tracks, how many minutes — because a
+    # group turned several rows into one. They are read off the index cards,
+    # so they are derived again from the recordings rather than adjusted by a
+    # difference nobody can check.
     cat['performers'] = [dict(p) for p in catalog['performers']]
     cat['events']     = [dict(e) for e in catalog['events']]
     cat['piyyutim']   = [dict(p) for p in catalog['piyyutim']]
@@ -83,11 +118,23 @@ def apply(catalog, merges):
                      (cat['piyyutim'], 'y')):
         by = {row['id']: row for row in seq}
         for row in seq:
-            row['n_tracks'] = 0
+            row['n_rec'] = row['n_tracks'] = row['seconds'] = 0
         for r in cat['recordings']:
             row = by.get(r[fld])
             if row:
+                row['n_rec']    += 1
                 row['n_tracks'] += r['n']
-    cat['meta'] = dict(catalog['meta'])
-    cat['meta']['n_tracks'] = sum(r['n'] for r in cat['recordings'])
+                row['seconds']  += r.get('s') or 0
+    # a row left holding nothing is no longer an index entry
+    cat['performers'] = [p for p in cat['performers'] if p['n_rec']]
+    cat['events']     = [e for e in cat['events'] if e['n_rec']]
+    cat['piyyutim']   = [y for y in cat['piyyutim'] if y['n_rec']]
+
+    m = cat['meta'] = dict(catalog['meta'])
+    m['n_rec']    = len(cat['recordings'])
+    m['n_tracks'] = sum(r['n'] for r in cat['recordings'])
+    m['seconds']  = sum(r.get('s') or 0 for r in cat['recordings'])
+    m['n_perf']   = len(cat['performers'])
+    m['n_event']  = len(cat['events'])
+    m['n_piyyut'] = len(cat['piyyutim'])
     return cat
