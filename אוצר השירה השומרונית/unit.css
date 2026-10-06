@@ -2322,3 +2322,38 @@ mark{
   color:var(--muted,#6b6355);
 }
 .why mark{background:rgba(214,168,58,.3);box-shadow:none}
+
+
+/* ------------------------------------------------ סדר הרצועות שבהקלטה
+   A piece that arrived as twelve files is one recording in twelve parts, and
+   the order they were scanned in is not the order they are sung in. Dragging
+   is the natural gesture and the arrows are the honest one — a finger on a
+   phone misses a drag target far more often than it misses a button. */
+.ed-order{margin-top:12px}
+.ed-order > b{display:block;margin-bottom:2px}
+.ed-order .hint{margin:0 0 6px;font-size:.8rem;color:var(--muted,#6b6355)}
+.ord{
+  list-style:none;margin:0;padding:0;border:1px solid var(--line,#ddd6c6);
+  border-radius:8px;overflow:hidden;max-height:260px;overflow-y:auto;
+}
+.ord li{
+  display:flex;align-items:center;gap:8px;padding:6px 9px;
+  border-bottom:1px solid var(--line,#eee6d6);background:var(--card,#fff);
+  font-size:.88rem;cursor:grab;
+}
+.ord li:last-child{border-bottom:0}
+.ord li.drag{opacity:.4}
+.ord li.over{box-shadow:inset 0 2px 0 var(--gold,#9c6f1c)}
+.ord .num{
+  flex:0 0 1.6em;text-align:center;font-weight:700;
+  color:var(--muted,#6b6355);font-size:.82rem;
+}
+.ord .nm{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+         white-space:nowrap}
+.ord .d{flex:0 0 auto;color:var(--muted,#6b6355);font-size:.8rem}
+.ord .mv{
+  flex:0 0 auto;border:1px solid var(--line,#ddd6c6);background:none;
+  border-radius:5px;width:24px;height:22px;cursor:pointer;line-height:1;
+  font-size:.8rem;color:inherit;
+}
+.ord .mv:disabled{opacity:.3;cursor:default}

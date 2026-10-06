@@ -5242,6 +5242,7 @@ function openEdit(recId) {
   $('edYear').value  = r.year || '';
   $('edNote').value  = r.note || '';
   $('edPub').checked = !r.hidden;
+  edOrderDraw(r);
   fillPerfSelect($('edPerf'), perfName(r.p));
   $('edNewPerfWrap').classList.add('hidden');
   $('edNewPerf').value = '';
@@ -5444,6 +5445,61 @@ $('edDel').onclick = async () => {
         (r.trashed ? ` · ${r.trashed} קבצים` : ' · קובצי המקור נשמרו בארכיון'));
 };
 
+/* ---- the order the parts of one recording play in.
+ *
+ * Shown only where there is more than one track, because there is nothing to
+ * order otherwise. It is held in a list beside the form and sent with the
+ * rest on save, so one press does the whole edit rather than leaving the
+ * order saved and the title not, or the other way about.
+ */
+let edTracks = [];
+
+function edOrderDraw(r) {
+  edTracks = (r.tr || []).map(t => ({ f: t.f, s: t.s, n: t.n }));
+  const wrap = $('edOrderWrap');
+  wrap.classList.toggle('hidden', edTracks.length < 2);
+  if (edTracks.length < 2) return;
+  edOrderPaint();
+}
+
+function edOrderPaint() {
+  $('edOrder').innerHTML = edTracks.map((t, i) => `
+    <li draggable="true" data-i="${i}">
+      <span class="num">${i + 1}</span>
+      <span class="nm" dir="auto">${esc(t.n || t.f.split('/').pop())}</span>
+      <span class="d">${dur(t.s)}</span>
+      <button class="mv" data-up="${i}" ${i === 0 ? 'disabled' : ''}
+              title="הזז למעלה">▲</button>
+      <button class="mv" data-dn="${i}" ${i === edTracks.length - 1 ? 'disabled' : ''}
+              title="הזז למטה">▼</button>
+    </li>`).join('');
+  const move = (from, to) => {
+    if (to < 0 || to >= edTracks.length) return;
+    edTracks.splice(to, 0, edTracks.splice(from, 1)[0]);
+    edOrderPaint();
+  };
+  $('edOrder').querySelectorAll('[data-up]').forEach(b =>
+    b.onclick = e => { e.preventDefault(); move(+b.dataset.up, +b.dataset.up - 1); });
+  $('edOrder').querySelectorAll('[data-dn]').forEach(b =>
+    b.onclick = e => { e.preventDefault(); move(+b.dataset.dn, +b.dataset.dn + 1); });
+
+  let from = -1;
+  $('edOrder').querySelectorAll('li').forEach(li => {
+    li.ondragstart = e => { from = +li.dataset.i; li.classList.add('drag');
+                            e.dataTransfer.effectAllowed = 'move'; };
+    li.ondragend = () => { from = -1;
+      $('edOrder').querySelectorAll('li').forEach(x =>
+        x.classList.remove('drag', 'over')); };
+    li.ondragover = e => { e.preventDefault(); li.classList.add('over'); };
+    li.ondragleave = () => li.classList.remove('over');
+    li.ondrop = e => {
+      e.preventDefault();
+      const to = +li.dataset.i;
+      if (from >= 0 && from !== to) move(from, to);
+    };
+  });
+}
+
 $('edGo').onclick = async () => {
   // a name typed into the "new performer" box joins the list first, so the
   // recording is linked to a real entry and not to a loose string
@@ -5476,10 +5532,29 @@ $('edGo').onclick = async () => {
     body: JSON.stringify(body),
   }).then(r => r.json()).catch(() => ({}));
   if (!r.ok) {
+    // the server's own sentence where it sent one — "readonly" told the
+    // editor nothing except that something had gone wrong
     $('edErr').textContent = r.error === 'unauthorized'
-      ? 'פג תוקף הכניסה. היכנס שוב.' : (r.error || 'השמירה נכשלה.');
+      ? 'פג תוקף הכניסה. היכנס שוב.'
+      : (r.message || r.error || 'השמירה נכשלה.');
     $('edErr').classList.remove('hidden');
     return;
+  }
+
+  // and the order, only where it was moved
+  const rec0 = byId(C.recordings, edRec);
+  const was = ((rec0 || {}).tr || []).map(t => t.f).join('\u0001');
+  if (edTracks.length > 1 && edTracks.map(t => t.f).join('\u0001') !== was) {
+    const o = await fetch('api/reorder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Token': ADMIN.token },
+      body: JSON.stringify({ key: edKey, tracks: edTracks.map(t => t.f) }),
+    }).then(x => x.json()).catch(() => ({}));
+    if (!o.ok) {
+      $('edErr').textContent = o.message || o.error || 'סדר הרצועות לא נשמר.';
+      $('edErr').classList.remove('hidden');
+      return;
+    }
   }
   closeModal('editModal');
   await loadCatalog();

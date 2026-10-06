@@ -330,6 +330,15 @@
       <label>חג או אירוע<select id="edEvent"></select></label>
       <label>הערת העורך<textarea id="edNote" rows="3"></textarea></label>
       <label class="check"><input id="edPub" type="checkbox"> מוצג באתר</label>
+
+      <!-- סדר הרצועות. מוצג רק כשיש יותר מאחת — פיוט שהגיע בחלקים אינו
+           מגיע בסדר שבו הוא מושר, והסדר הזה הוא חלק מן ההקלטה ולא קישוט. -->
+      <div id="edOrderWrap" class="ed-order hidden">
+        <b>סדר הרצועות</b>
+        <p class="hint">גרור, או הזז בחצים. נשמר בלחיצה על שמור.</p>
+        <ol id="edOrder" class="ord"></ol>
+      </div>
+
       <p id="edErr" class="err hidden"></p>
 
       <div class="danger">

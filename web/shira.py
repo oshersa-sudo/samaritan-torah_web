@@ -18,6 +18,8 @@ clips and edits the catalog by writing JSON next to itself; on Render the
 filesystem resets with every deploy, so those endpoints answer 403 here and the
 editing stays where the archive drive is.
 """
+import hashlib
+import hmac
 import json
 import os
 import re
@@ -44,6 +46,112 @@ import people as PEOPLE          # noqa: E402
 import removed as GONE           # noqa: E402
 
 MEDIA = os.environ.get('SHIRA_MEDIA', 'https://shira.onyx-study.com/archive/')
+
+# ---------------------------------------------------------------- editing here
+#
+# Everything else under /shira is read-only, and for a plain reason: this
+# container's filesystem is rebuilt on every deploy, so an edit written into it
+# would last until the next push and then vanish. That is why saving used to
+# answer 403.
+#
+# There is one place that survives — the persistent disk the Torah database
+# already lives on. Edits made on the site are written there, as a LAYER over
+# the files that came with the repository rather than instead of them:
+#
+#     what the site shows  =  the repo's edit files  +  the layer on the disk
+#
+# which is what lets both ends keep working. Publishing from the machine that
+# holds the archive drive still takes effect, an edit made here is not erased
+# by the next deploy, and where the two speak about the same recording the one
+# made here wins because it is the later word. Without the layering one side
+# would have to be declared the loser, and that is how the Torah database came
+# to have edits in one copy and not the other.
+LIVE_DIR = os.environ.get('SHIRA_LIVE_DIR') or (
+    '/var/data/shira' if os.path.isdir('/var/data') else '')
+
+
+def _live_path(name):
+    return os.path.join(LIVE_DIR, name) if LIVE_DIR else ''
+
+
+def _live_read(name):
+    p = _live_path(name)
+    if not p or not os.path.exists(p):
+        return {}
+    try:
+        with open(p, encoding='utf-8') as fh:
+            d = json.load(fh)
+        return d if isinstance(d, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _live_write(name, data):
+    p = _live_path(name)
+    if not p:
+        return False
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    tmp = p + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as fh:
+        json.dump(data, fh, ensure_ascii=False, indent=1)
+    os.replace(tmp, p)                     # never leave a half-written file
+    return True
+
+
+def _layered(base, name):
+    """The repo's file with the live layer on top, entry by entry."""
+    over = _live_read(name)
+    if not over:
+        return base
+    out = dict(base)
+    for k, v in over.items():
+        if isinstance(v, dict) and isinstance(out.get(k), dict):
+            merged = dict(out[k])
+            merged.update(v)
+            out[k] = merged
+        else:
+            out[k] = v
+    return out
+
+
+def can_edit():
+    return bool(ADMIN_PASSWORD and LIVE_DIR)
+
+
+# ---- who is allowed to. The same scheme the unit's own server uses: a
+# timestamp signed with the password, carried in a header, good for a day.
+ADMIN_USER = os.environ.get('ADMIN_USER', '')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
+_TOKEN_TTL = 24 * 3600
+_FAILS = {}
+
+
+def _make_token():
+    ts = str(int(time.time()))
+    sig = hmac.new(ADMIN_PASSWORD.encode(), ts.encode(), hashlib.sha256).hexdigest()
+    return ts + '.' + sig
+
+
+def _valid_token(tok):
+    if not ADMIN_PASSWORD or not tok or '.' not in str(tok):
+        return False
+    ts, _, sig = str(tok).partition('.')
+    if not ts.isdigit() or time.time() - int(ts) > _TOKEN_TTL:
+        return False
+    good = hmac.new(ADMIN_PASSWORD.encode(), ts.encode(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(sig, good)
+
+
+def _is_admin():
+    return _valid_token(request.headers.get('X-Admin-Token', ''))
+
+
+def _throttled(ip):
+    """Seconds still to wait, or 0 — a speed-bump against guessing."""
+    now = time.time()
+    fails = [t for t in _FAILS.get(ip, []) if now - t < 600]
+    _FAILS[ip] = fails
+    return 0 if len(fails) < 8 else int(600 - (now - min(fails))) + 1
 
 # only what the page itself asks for. Everything else in the unit — its local
 # server, its build scripts, the raw scan of the archive drive — stays private.
@@ -80,6 +188,18 @@ def audio(rel):
     return redirect(MEDIA + urllib.parse.quote(rel), code=302)
 
 
+def _catalog():
+    """The catalogue exactly as the page is served it."""
+    with open(os.path.join(DATA, 'catalog.json'), encoding='utf-8') as fh:
+        cat = json.load(fh)
+    cat = ADD.merge(cat, ADD.load())
+    cat = GONE.apply(cat, GONE.keys())
+    cat = OVR.apply(cat, _layered(OVR.load(), 'overrides.json'),
+                    include_hidden=False)
+    cat = MERGE.apply(cat, _layered(MERGE.load(), 'merges.json'))
+    return PEOPLE.apply(cat, PEOPLE.load())
+
+
 @shira.route('/shira/api/catalog')
 def api_catalog():
     """The catalog, assembled as the unit's own server assembles it, plus the
@@ -91,15 +211,19 @@ def api_catalog():
         return jsonify({'error': 'catalog missing'}), 500
     cat = ADD.merge(cat, ADD.load())
     cat = GONE.apply(cat, GONE.keys())            # deletions win over everything
-    cat = OVR.apply(cat, OVR.load(), include_hidden=False)
+    cat = OVR.apply(cat, _layered(OVR.load(), 'overrides.json'),
+                    include_hidden=False)
     # tracks joined into one file, after the edits and never before: an
     # override is keyed on the first track's path, and joining moves that key
-    cat = MERGE.apply(cat, MERGE.load())
+    cat = MERGE.apply(cat, _layered(MERGE.load(), 'merges.json'))
     cat = PEOPLE.apply(cat, PEOPLE.load())
     cat['meta']['admin'] = False
     # the page reads these to know it is the online copy: it takes the
     # recording straight to the media server rather than to a local drive
+    # the archive drive is not here, so adding and joining files cannot be;
+    # editing what a recording SAYS, and the order of what it plays, can
     cat['meta']['readonly'] = True
+    cat['meta']['can_edit'] = can_edit()
     cat['meta']['can_record'] = bool(REC_PASSWORD)
     cat['meta']['media'] = MEDIA
     cat['meta'].pop('root', None)     # the archive drive's own path is nobody's business
@@ -113,10 +237,18 @@ def api_whatsnew():
 
 @shira.route('/shira/api/admin/status')
 def api_admin_status():
-    """Editing the catalog still happens where the archive drive is; recording
-    from a phone does not, so the sign-in is offered when it can be honoured."""
-    return jsonify({'enabled': bool(REC_PASSWORD), 'user': REC_USER,
-                    'readonly': True, 'can_record': bool(REC_PASSWORD)})
+    """What signing in here is good for.
+
+    Adding a recording and joining files still happen where the archive drive
+    is — there is no drive here. Saying what a recording IS, and in what order
+    its parts play, happens wherever the editor happens to be, which is the
+    whole point of carrying the archive in a pocket.
+    """
+    return jsonify({'enabled': bool(ADMIN_PASSWORD or REC_PASSWORD),
+                    'user': ADMIN_USER or REC_USER,
+                    'readonly': True,
+                    'can_edit': can_edit(),
+                    'can_record': bool(REC_PASSWORD)})
 
 
 # ------------------------------------------------------------ recording
@@ -181,16 +313,38 @@ def _sftp_put(data, remote_path):
 
 @shira.route('/shira/api/admin/login', methods=['POST'])
 def api_admin_login():
-    """The only thing that can be signed in for out here is recording."""
-    if not REC_PASSWORD:
-        return jsonify({'ok': False, 'disabled': True,
-                        'message': 'ההקלטה אינה מופעלת בשרת זה'}), 403
+    """Sign in — as the editor if the admin password is given, else to record.
+
+    The editor's password is the app's own, so there is one to remember rather
+    than two, and the token it returns is a timestamp signed with it: nothing
+    is stored server-side, and it stops being accepted after a day.
+    """
     d = request.get_json(silent=True) or {}
     user = (d.get('user') or '').strip()
-    pwd  = (d.get('password') or '').strip()
+    pwd = (d.get('password') or '').strip()
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or '') \
+        .split(',')[0].strip()
+
+    wait = _throttled(ip)
+    if wait:
+        return jsonify({'ok': False, 'error': 'too many attempts',
+                        'wait': wait}), 429
+
+    if ADMIN_PASSWORD and user == ADMIN_USER and pwd == ADMIN_PASSWORD:
+        _FAILS.pop(ip, None)
+        if not can_edit():
+            return jsonify({'ok': False,
+                            'message': 'אין כאן אחסון קבוע, ולכן אין מה לשמור'}), 503
+        return jsonify({'ok': True, 'token': _make_token(), 'user': user})
+
+    if not REC_PASSWORD:
+        _FAILS.setdefault(ip, []).append(time.time())
+        return jsonify({'ok': False}), 401
     if user != REC_USER:
+        _FAILS.setdefault(ip, []).append(time.time())
         return jsonify({'ok': False, 'bad_user': True}), 401
     if pwd != REC_PASSWORD:
+        _FAILS.setdefault(ip, []).append(time.time())
         return jsonify({'ok': False}), 401
     # no token: the archive stays read-only here. The credentials come back so
     # the page can present them with the recording it uploads, and nothing
@@ -230,6 +384,100 @@ def api_record():
     return jsonify({'ok': True, 'stored': rel, 'bytes': len(data),
                     'pending': True,
                     'message': 'ההקלטה נשמרה בשרת המדיה וממתינה למיון'})
+
+
+# ------------------------------------------------------------- editing
+@shira.route('/shira/api/override', methods=['POST'])
+def api_override():
+    """What a recording says: its title, its singer, its feast, its note.
+
+    Written to the live layer only. The repository's own file is never
+    touched from here — it belongs to the machine that holds the archive.
+    """
+    if not _is_admin():
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    if not can_edit():
+        return jsonify({'ok': False, 'error': 'no_store',
+                        'message': 'אין כאן אחסון קבוע'}), 503
+    d = request.get_json(silent=True) or {}
+    key = (d.get('key') or '').strip()
+    if not key:
+        return jsonify({'ok': False, 'error': 'חסר מפתח'}), 400
+
+    book = _live_read('overrides.json')
+    cur = dict(book.get(key) or {})
+    for f in ('title', 'desc', 'performer', 'event', 'year', 'note'):
+        if f in d:
+            v = (d.get(f) or '').strip()
+            if v:
+                cur[f] = v
+            else:
+                cur.pop(f, None)
+    if 'hidden' in d:
+        if d['hidden']:
+            cur['hidden'] = True
+        else:
+            cur.pop('hidden', None)
+    if cur:
+        book[key] = cur
+    else:
+        book.pop(key, None)
+    if not _live_write('overrides.json', book):
+        return jsonify({'ok': False, 'error': 'השמירה נכשלה'}), 500
+    return jsonify({'ok': True, 'live': True})
+
+
+@shira.route('/shira/api/reorder', methods=['POST'])
+def api_reorder():
+    """The order the parts of one recording play in.
+
+    A piece that arrived as twelve files is one recording with twelve tracks,
+    and the order they were scanned in is not the order they are sung in. The
+    whole list comes back each time rather than a pair to swap: the editor is
+    looking at the order, and the order is what is saved.
+    """
+    if not _is_admin():
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    if not can_edit():
+        return jsonify({'ok': False, 'error': 'no_store',
+                        'message': 'אין כאן אחסון קבוע'}), 503
+    d = request.get_json(silent=True) or {}
+    key = (d.get('key') or '').strip()
+    order = d.get('tracks')
+    if not key or not isinstance(order, list) or len(order) < 2:
+        return jsonify({'ok': False, 'error': 'חסר מפתח או סדר'}), 400
+
+    # the recording as the site currently serves it, so the saved order is
+    # built from tracks that actually exist rather than from what was posted
+    cat = _catalog()
+    rec = next((r for r in cat['recordings'] if MERGE.key_of(r) == key), None)
+    if not rec:
+        return jsonify({'ok': False, 'error': 'ההקלטה לא נמצאה'}), 404
+    have = {t['f']: t for t in (rec.get('tr') or [])}
+    picked, seen = [], set()
+    for f in order:
+        t = have.get(f)
+        if t and f not in seen:
+            picked.append({'f': t['f'], 's': t.get('s') or 0,
+                           'n': t.get('n') or ''})
+            seen.add(f)
+    # Anything the posted order left out is put back at the end rather than
+    # dropped. A reorder is about sequence, never about contents, and a client
+    # that sends a short list — an older page, a half-finished drag — must not
+    # be able to take a recording's tracks away.
+    for t in (rec.get('tr') or []):
+        if t['f'] not in seen:
+            picked.append({'f': t['f'], 's': t.get('s') or 0,
+                           'n': t.get('n') or ''})
+
+    book = _live_read('merges.json')
+    base = dict((MERGE.load().get(key) or {}))
+    cur = dict(book.get(key) or base)
+    cur['tracks'] = picked
+    cur.setdefault('kind', 'group' if rec.get('grouped') else 'order')
+    if not _live_write('merges.json', book | {key: cur}):
+        return jsonify({'ok': False, 'error': 'השמירה נכשלה'}), 500
+    return jsonify({'ok': True, 'live': True, 'tracks': len(picked)})
 
 
 @shira.route('/shira/api/<path:_sub>', methods=['POST'])
