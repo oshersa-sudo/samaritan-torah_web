@@ -1707,7 +1707,9 @@ async function toMp3(blob, onPct) {
   onPct(1);
   const mp3 = new Blob(out, { type: 'audio/mpeg' });
   if (mp3.size < 1024) throw new Error('ההמרה יצאה ריקה');
-  return mp3;
+  // the decoded length, which is what the file actually is: the counter on
+  // the cassette can drift if the system freezes the page mid-recording
+  return { blob: mp3, seconds: buf.duration };
 }
 
 /* ----------------------------------------------------- up, with the bar
@@ -1806,8 +1808,10 @@ async function saveHeld() {
   try {
     rpStage('encode', 0, 'ממיר ל‑MP3 במכשיר…');
     if (!h.mp3) {
-      h.mp3 = await toMp3(h.blob, pct =>
+      const made = await toMp3(h.blob, pct =>
         rpStage('encode', pct, `ממיר ל‑MP3 — ${Math.round(pct * 100)}%`));
+      h.mp3 = made.blob;
+      if (made.seconds > 0.5) { h.secs = made.seconds; recHoldPaint(); }
     } else {
       rpStage('encode', 1, 'ההמרה כבר נעשתה');     // a second attempt
     }
@@ -1885,7 +1889,10 @@ function showSaved(piyyut) {
  * is ended so the microphone is released, and the browser asks before the
  * page goes — this is the one case the app cannot ask about itself. */
 window.addEventListener('pagehide', () => {
-  if (REC.rec) { try { REC.rec.stop(); } catch (e) {} }
+  // The same as closing the deck: end the tape and hold it. A page the system
+  // freezes and hands back later would otherwise come back with the counter
+  // still running over a recorder that has already stopped.
+  if (REC.rec) finishRecording('exit');
 });
 window.addEventListener('beforeunload', e => {
   if (!REC.rec && !REC.held) return;
