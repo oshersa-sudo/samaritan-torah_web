@@ -206,7 +206,9 @@ const I18N = {
     week_portion_extra:'פרשה נוספת', week_portion_here_extra:'פרשה נוספת הנקראת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_shira:'אוצר השירה השומרונית',
-    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', shelf_sources:'פירושים ומסורת',
+    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', m_a11y:'הגדרות נגישות', a11y_size:'גודל הטקסט',
+    a11y_invert:'היפוך צבעים', a11y_invert_hint:'רקע שחור וטקסט לבן, בכל מסכי האפליקציה',
+    a11y_reset:'איפוס', shelf_sources:'פירושים ומסורת',
     shelf_tools:'מילונים וכלים', shelf_study:'ספרים ומחקר', m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
@@ -471,7 +473,9 @@ const I18N = {
     week_portion_extra:'Additional portion', week_portion_here_extra:'An additional portion read this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
     m_shira:'The Treasury of Samaritan Song',
-    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', shelf_sources:'Commentary and tradition',
+    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', m_a11y:'Accessibility', a11y_size:'Text size',
+    a11y_invert:'Invert colours', a11y_invert_hint:'Black background, white text, throughout the app',
+    a11y_reset:'Reset', shelf_sources:'Commentary and tradition',
     shelf_tools:'Dictionaries and tools', shelf_study:'Books and research', m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
@@ -736,7 +740,9 @@ const I18N = {
     week_portion_extra:'فصل إضافي', week_portion_here_extra:'فصل إضافي يُقرأ هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
     m_shira:'كنز الترتيل السامري',
-    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', shelf_sources:'التفاسير والتقاليد',
+    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', m_a11y:'إعدادات الوصول', a11y_size:'حجم النصّ',
+    a11y_invert:'عكس الألوان', a11y_invert_hint:'خلفية سوداء ونصّ أبيض، في كلّ شاشات التطبيق',
+    a11y_reset:'إعادة ضبط', shelf_sources:'التفاسير والتقاليد',
     shelf_tools:'المعاجم والأدوات', shelf_study:'كتب وأبحاث', m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
@@ -4423,8 +4429,8 @@ async function crossBookPortion(delta){
 // reasonable zoom bounds: fsize()=(samFont?22:20)+offset, so the body text
 // stays between ~14px (still readable) and ~40px (won't overflow the screen).
 const FONT_MIN=-6, FONT_MAX=18;
-$('minusBtn').onclick=()=>{ S.fontOffset=Math.max(FONT_MIN,S.fontOffset-2); paintVerses(); updateZoomButtons(); };
-$('plusBtn').onclick=()=>{ S.fontOffset=Math.min(FONT_MAX,S.fontOffset+2); paintVerses(); updateZoomButtons(); };
+$('minusBtn').onclick=()=>{ a11yApplySize(S.fontOffset-2, true); };
+$('plusBtn').onclick=()=>{ a11yApplySize(S.fontOffset+2, true); };
 // the navbar magnifiers only do something in verse view (there is body text to
 // resize); on the chapter-list screens they are shown dimmed and non-clickable,
 // and within verse view they dim once the min/max font size is reached.
@@ -6431,6 +6437,65 @@ function openExternalUnit(url, title){
   if(typeof closeMenu === 'function') closeMenu();
   trackNav(title || url);
 }
+
+// ── הגדרות נגישות ────────────────────────────────────────────────────────────
+// Two settings, both remembered on the device: how big the text is, and whether
+// the colours are turned over.
+//
+// The size is the app's own — the same S.fontOffset the two magnifying glasses
+// have always moved, between the same FONT_MIN and FONT_MAX, in the same steps —
+// so nothing new is invented and the panel and the glasses cannot disagree. What
+// is new is that it is now kept; until today it was forgotten on every reload.
+//
+// The inversion is done with a filter over the whole app rather than a second set
+// of colours, because the app's colours are written in hundreds of places — in
+// the stylesheet, in the units, in markup built at run time — and a theme that
+// had to find them all would always be missing some, in the one screen nobody
+// thought to open. A filter cannot miss any. What it would get wrong is pictures,
+// which would come out as negatives, so each is turned back a second time and
+// lands as itself.
+const A11Y_INVERT_KEY = 'as_invert', A11Y_FONT_KEY = 'as_font';
+
+function a11yApplyInvert(on){
+  document.body.classList.toggle('a11y-invert', !!on);
+  const b = $('a11yInvert'); if(b) b.checked = !!on;
+  try{ localStorage.setItem(A11Y_INVERT_KEY, on ? '1' : '0'); }catch(e){}
+}
+function a11yApplySize(off, paint){
+  S.fontOffset = Math.max(FONT_MIN, Math.min(FONT_MAX, off));
+  try{ localStorage.setItem(A11Y_FONT_KEY, String(S.fontOffset)); }catch(e){}
+  const r = $('a11ySize'); if(r) r.value = String(S.fontOffset);
+  const p = $('a11yPreview'); if(p) p.style.fontSize = (20 + S.fontOffset) + 'px';
+  if(typeof updateZoomButtons === 'function') updateZoomButtons();
+  if(paint && S.view === 'verses') paintVerses();
+}
+function openA11y(){
+  $('a11ySize').value = String(S.fontOffset);
+  $('a11yPreview').style.fontSize = (20 + S.fontOffset) + 'px';
+  $('a11yInvert').checked = document.body.classList.contains('a11y-invert');
+  $('a11yModal').classList.remove('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  // what the reader chose last time, before anything is drawn
+  let off = 0, inv = false;
+  try{
+    const f = localStorage.getItem(A11Y_FONT_KEY);
+    if(f !== null && !isNaN(parseInt(f, 10))) off = parseInt(f, 10);
+    inv = localStorage.getItem(A11Y_INVERT_KEY) === '1';
+  }catch(e){}
+  a11yApplySize(off, false);
+  a11yApplyInvert(inv);
+
+  $('a11ySize').addEventListener('input', e => a11yApplySize(parseInt(e.target.value, 10), true));
+  $('a11ySmaller').onclick = ()=> a11yApplySize(S.fontOffset - 2, true);
+  $('a11yBigger').onclick  = ()=> a11yApplySize(S.fontOffset + 2, true);
+  $('a11yInvert').addEventListener('change', e => a11yApplyInvert(e.target.checked));
+  $('a11yReset').onclick = ()=>{ a11yApplySize(0, true); a11yApplyInvert(false); };
+  $('a11yClose').onclick = ()=> $('a11yModal').classList.add('hidden');
+  $('a11yModal').onclick = e => { if(e.target.id === 'a11yModal') $('a11yModal').classList.add('hidden'); };
+});
+
 function menuAction(a){
   if(a==='calendar')       openExternalUnit(CALENDAR_URL, t('m_calendar'));
   else if(a==='genealogy') openExternalUnit(GENEALOGY_URL, t('m_genealogy'));
@@ -6452,6 +6517,7 @@ function menuAction(a){
   else if(a==='install')   doInstall();
   else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
+  else if(a==='a11y')      openA11y();
   else if(a==='lang')      $('langModal').classList.remove('hidden');
   else if(a==='whatsnew')  showWhatsNewCarousel();
   else if(a==='help')      showHelp();

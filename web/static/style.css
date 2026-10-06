@@ -2490,3 +2490,44 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
   .lib-spine.pulled{ width:104px; height:138px; }
   .spine-title{ max-height:98px; font-size:11.5px; }
 }
+
+/* ── הגדרות נגישות ───────────────────────────────────────────────────────────
+   The inversion is a filter over the app rather than a second palette. The
+   app's colours are written in hundreds of places — the stylesheet, the units,
+   markup built at run time — and a dark theme that had to find them all would
+   always be missing some, on the one screen nobody thought to open. A filter
+   misses none. hue-rotate puts the hues back the right way round after the
+   invert, so the navy stays a navy and does not become mustard.
+
+   What a filter gets wrong is pictures, which would come back as negatives, so
+   every image is turned a second time and lands as itself. The parchment behind
+   the text is a background-image rather than an <img>, so it is dimmed instead:
+   inverted it would be a black field, which is what is wanted anyway. */
+body.a11y-invert{ filter:invert(1) hue-rotate(180deg); background:#000; }
+body.a11y-invert img,
+body.a11y-invert video,
+body.a11y-invert .no-invert{ filter:invert(1) hue-rotate(180deg); }
+/* the written leaf behind the reading pane: left at full strength under an
+   inversion it glares, so it is taken down to a whisper */
+body.a11y-invert #content{ background-blend-mode:luminosity; }
+body.a11y-invert #app{ background-color:#f2f2f2; }
+
+.a11y-card{ max-width:460px; }
+.a11y-row{ padding:14px 2px; border-bottom:1px solid var(--line); }
+.a11y-row:last-of-type{ border-bottom:0; }
+.a11y-label{ display:block; font-size:16px; font-weight:700; color:var(--dark); }
+.a11y-hint{ display:block; margin-top:3px; font-size:13px; color:var(--muted); line-height:1.5; }
+.a11y-size{ display:flex; align-items:center; gap:10px; margin-top:10px; }
+.a11y-size input[type=range]{ flex:1; }
+.a11y-step{ flex:0 0 auto; width:40px; height:40px; border:1px solid var(--line);
+  border-radius:9px; background:#fff; color:var(--dark); font-size:21px; cursor:pointer; }
+.a11y-step:active{ background:#eceff7; }
+.a11y-preview{ margin-top:12px; padding:10px 12px; border:1px solid var(--line);
+  border-radius:9px; background:#fffdf8; line-height:1.7; }
+.a11y-switch{ display:flex; align-items:center; justify-content:space-between; gap:14px;
+  cursor:pointer; }
+.a11y-switch input{ flex:0 0 auto; width:24px; height:24px; }
+.a11y-plain{ border:0; background:none; color:var(--accent); font-family:inherit;
+  font-size:15px; cursor:pointer; }
+.a11y-done{ min-width:96px; padding:10px 18px; border:0; border-radius:9px;
+  background:var(--navy); color:#fff; font-family:inherit; font-size:16px; cursor:pointer; }
