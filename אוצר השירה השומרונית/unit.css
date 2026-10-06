@@ -2371,3 +2371,52 @@ mark{
   background:rgba(154,110,28,.1);font-weight:600;
 }
 .srcpick .src:disabled{opacity:.45;cursor:default}
+
+/* ------------------------------------- הקלטה שטרם נשמרה, בתוך המקלט
+ * מופיעה מעל המקשים מפני ששם היא נמצאת: היא בתוך המכשיר, לא באוצר, וכל
+ * פעולה עליה — להשמיע, לשמור, למחוק — היא פעולה על המכשיר.
+ */
+.rechold{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin:8px 10px 0;padding:7px 10px;border-radius:9px;
+  background:rgba(179,49,47,.08);border:1px solid rgba(179,49,47,.3);
+  font-size:.84rem;
+}
+.rechold .rh-dot{
+  width:9px;height:9px;border-radius:50%;background:#b3312f;flex:0 0 auto;
+  animation:rhPulse 1.6s ease-in-out infinite;
+}
+@keyframes rhPulse{0%,100%{opacity:1}50%{opacity:.25}}
+.rechold .rh-txt{flex:1 1 auto;min-width:120px;font-weight:600;color:#7d2422}
+.rechold .rh-txt b{margin-inline-start:6px;font-weight:700}
+.rechold .rh-len{margin-inline-start:6px;font-weight:500;opacity:.8}
+.rechold .rh-btn{
+  padding:5px 10px;border-radius:7px;border:1px solid rgba(179,49,47,.45);
+  background:#b3312f;color:#fff;font:inherit;font-size:.82rem;font-weight:600;
+  cursor:pointer;
+}
+.rechold .rh-btn.ghost{background:transparent;color:#7d2422}
+
+/* ההקלטה מושהית: המקש נשאר שקוע, והנורה מפסיקה להבהב */
+#prec.paused .reclamp,#prec.paused .reclamp.on{animation:none;opacity:.45}
+
+/* ------------------------------------- הדרך אל האוצר, שלב אחרי שלב
+ * שלושה שלבים, כל אחד נמדד ולא משוער: ההמרה יודעת כמה דגימות נותרו,
+ * ההעלאה כמה בתים נשלחו, והבדיקה מבקשת את הקובץ מן השרת באמת.
+ */
+.rsteps{list-style:none;margin:0 0 10px;padding:0;font-size:.88rem}
+.rsteps li{
+  display:flex;align-items:center;gap:8px;padding:5px 0;color:#8a8577;
+}
+.rsteps li::before{
+  content:'○';font-size:.9rem;width:1.1em;text-align:center;flex:0 0 auto;
+}
+.rsteps li.now{color:inherit;font-weight:600}
+.rsteps li.now::before{content:'●';color:var(--accent,#9c6f1c)}
+.rsteps li.ok{color:#2f6b3a}
+.rsteps li.ok::before{content:'✓';color:#2f6b3a}
+.rsteps li.bad{color:#b3312f}
+.rsteps li.bad::before{content:'✕';color:#b3312f}
+.rsteps li span{margin-inline-start:auto;font-size:.8rem;font-weight:500;opacity:.8}
+#recProg .bar{height:8px;border-radius:4px}
+.rstat{margin:8px 0 0;font-size:.85rem;min-height:1.2em}

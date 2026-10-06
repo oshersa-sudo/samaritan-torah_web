@@ -257,11 +257,12 @@
     <div class="sheet-b">
       <p id="recIntro" class="recintro hidden">
         הפרטים שתמלא כאן יופיעו על הקלטת בזמן ההקלטה. בלחיצה על
-        «התחל הקלטה» ייפתח המיקרופון של המכשיר, ולחיצה על STOP במקלט
-        תסיים אותה. <b>במצב מנהל ההקלטה נכנסת ישר לאוצר</b> תחת הכותרת
-        שמילאת; אחרת היא ממתינה ב<b>הקלטות למיון</b>.
-        <span class="opt">הקול נשמר כ‑AAC, שמתנגן בכל מכשיר, ונעשה MP3
-        בסנכרון מן המחשב שאליו מחובר כונן הארכיון.</span>
+        «התחל הקלטה» ייפתח המיקרופון של המכשיר. במקלט: <b>PAUSE</b> משהה
+        את ההקלטה ו‑<b>PLAY</b> מחזיר אותה, <b>STOP</b> מסיים — ואז תישאל
+        אם לשמור אותה.
+        <span class="opt">אם כן, ההקלטה נעשית MP3 במכשיר עצמו, עולה,
+        ורק כשהקובץ זמין באמת הוא מופיע באוצר. אם לא — היא נשארת במקלט
+        ואפשר לשמוע אותה כפי שהוקלטה, עד שתישמר או תימחק.</span>
       </p>
       <!-- מניין השמע מגיע: קובץ שכבר קיים, או המיקרופון כאן ועכשיו.
            שתי הדרכים ממלאות את אותם פרטים ומתויקות באותו מקום. -->
@@ -291,6 +292,53 @@
       <button class="btn ghost" data-close="addModal">ביטול</button>
       <button class="btn" id="upGo">הוסף לאוצר</button>
       <button class="btn hidden" id="recGo">● התחל הקלטה</button>
+    </div>
+  </div>
+</div>
+
+<!-- STOP: לשמור או לא. התשובה «לא» אינה מאבדת דבר — ההקלטה נשארת במקלט. -->
+<div id="recAsk" class="modal hidden sticky">
+  <div class="sheet narrow">
+    <div class="sheet-h"><h2 id="recAskT">ההקלטה הסתיימה</h2></div>
+    <div class="sheet-b"><p id="recAskB"></p></div>
+    <div class="sheet-f">
+      <button class="btn ghost" id="recAskNo">לא עכשיו</button>
+      <button class="btn" id="recAskYes">שמור לאוצר</button>
+    </div>
+  </div>
+</div>
+
+<!-- REC כשיש הקלטה שטרם נשמרה: אין שתי הקלטות במקלט אחד. -->
+<div id="recWipe" class="modal hidden sticky">
+  <div class="sheet narrow">
+    <div class="sheet-h"><h2>הקלטה חדשה</h2></div>
+    <div class="sheet-b"><p id="recWipeB"></p></div>
+    <div class="sheet-f">
+      <button class="btn ghost" id="recWipeNo">לא, חזור</button>
+      <button class="btn" id="recWipeYes">כן, התחל מחדש</button>
+    </div>
+  </div>
+</div>
+
+<!-- הדרך מן ההקלטה אל האוצר, שלב אחרי שלב וכל אחד נמדד. -->
+<div id="recProg" class="modal hidden sticky">
+  <div class="sheet narrow">
+    <div class="sheet-h"><h2 id="rpTitle">שמירת ההקלטה</h2></div>
+    <div class="sheet-b">
+      <ol class="rsteps" id="rSteps">
+        <li data-s="encode">המרה ל‑MP3<span></span></li>
+        <li data-s="upload">העלאה לאתר<span></span></li>
+        <li data-s="check">בדיקת זמינות<span></span></li>
+      </ol>
+      <div class="bar" id="rBar"><i></i></div>
+      <p class="rstat" id="rStat"></p>
+      <p id="rErr" class="err hidden"></p>
+    </div>
+    <div class="sheet-f">
+      <button class="btn ghost hidden" id="rpDl">הורד למכשיר</button>
+      <button class="btn hidden" id="rpRetry">נסה שוב</button>
+      <button class="btn hidden" id="rpOpen">פתח באוצר</button>
+      <button class="btn ghost hidden" id="rpClose">סגור</button>
     </div>
   </div>
 </div>
@@ -969,6 +1017,16 @@
       <div class="seekrow">
         <input id="pseek" class="pseek" type="range" value="0" min="0" max="1000">
         <span class="ptime" id="ptime">0:00 / 0:00</span>
+      </div>
+
+      <!-- הקלטה שנעשתה ועוד לא נשמרה. היא יושבת כאן ונשמעת ב‑PLAY כפי
+           שהוקלטה, עד שתישמר או תימחק; וכל יציאה מן המקלט חוזרת לשאול. -->
+      <div class="rechold hidden" id="recHold">
+        <i class="rh-dot" aria-hidden="true"></i>
+        <span class="rh-txt">הקלטה שטרם נשמרה<b id="rhName"></b><span
+              class="rh-len" id="rhLen"></span></span>
+        <button class="rh-btn" id="rhKeep">שמור לאוצר</button>
+        <button class="rh-btn ghost" id="rhDrop">מחק</button>
       </div>
 
       <!-- אייקוני SVG ולא אמוג'י: אמוג'י מסוימים מוצגים בצבע המערכת

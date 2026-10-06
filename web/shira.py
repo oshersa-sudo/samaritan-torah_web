@@ -23,6 +23,7 @@ import hmac
 import json
 import os
 import re
+import shutil
 import sys
 import time
 import urllib.parse
@@ -111,9 +112,20 @@ def _live_adds():
     try:
         with open(p, encoding='utf-8') as fh:
             d = json.load(fh)
-        return d if isinstance(d, list) else []
+        rows = d if isinstance(d, list) else []
     except (OSError, ValueError):
         return []
+    # A recording made here is collected later by the machine that holds the
+    # archive drive, which files it as an ordinary addition in the repo and
+    # leaves this row alone until a deploy carries the repo's copy up. For
+    # that one stretch it is written in both places, so the filed copy — the
+    # later word, and the one pointing at the media server — wins, and this
+    # one steps aside. Without this the recording would appear twice.
+    try:
+        filed = {r.get('id') for r in ADD.load()}
+    except (OSError, ValueError):
+        filed = set()
+    return [r for r in rows if r.get('id') not in filed]
 
 
 def _layered(base, name):
@@ -174,7 +186,7 @@ def _throttled(ip):
 # only what the page itself asks for. Everything else in the unit — its local
 # server, its build scripts, the raw scan of the archive drive — stays private.
 _OPEN_DIRS  = ('img/', 'fonts/', 'sounds/', 'photos/')
-_OPEN_FILES = ('index.html', 'unit.css', 'unit.js')
+_OPEN_FILES = ('index.html', 'unit.css', 'unit.js', 'lame.min.js')
 # the catalogue, and the two lists the picture screen reads: the photographs
 # on the community's own site, and the archive's own pictures and films
 _OPEN_DATA  = ('catalog.json', 'pix_sources.json', 'local_media.json')
@@ -216,6 +228,22 @@ def _catalog():
                     include_hidden=False)
     cat = MERGE.apply(cat, _layered(MERGE.load(), 'merges.json'))
     return PEOPLE.apply(cat, PEOPLE.load())
+
+
+@shira.route('/shira/api/rec/<path:rel>')
+def api_rec_file(rel):
+    """A recording made in the app, played straight off the site's own disk.
+
+    Every other recording is streamed from the media server, which this one
+    is not on yet. Public on purpose: it is in the catalogue, so it has to
+    answer to the same listeners as everything else in it.
+    """
+    d = _rec_dir()
+    if not d:
+        return ('', 404)
+    # conditional: the player asks for byte ranges, and seeking depends on
+    # getting them rather than the whole file each time
+    return send_from_directory(d, rel, conditional=True, max_age=86400)
 
 
 @shira.route('/shira/api/catalog')
@@ -284,6 +312,86 @@ MEDIA_ROOT   = os.environ.get('SHIRA_MEDIA_ROOT', '/srv/shira/archive')
 PENDING_DIR  = 'pending'          # under MEDIA_ROOT, alongside the archive
 
 _AUDIO_EXT = ('.webm', '.m4a', '.mp4', '.ogg', '.opus', '.mp3', '.wav')
+
+# A recording made in the app lands here, on the site's own persistent disk,
+# and is served from here — not from the media server, which this end has no
+# way to write to. It stays until the machine that holds the archive drive
+# collects it (scripts/live_mp3.py), which copies it to the media server and
+# points the catalogue entry there instead. The disk is small and it is the
+# same disk the edits live on, so the limits below are not negotiable: a
+# recording that cannot be stored safely is refused, with a reason, rather
+# than filling the disk that everything else depends on.
+REC_SUB      = 'rec'
+MAX_REC      = 80 * 1024 * 1024        # one recording
+MAX_REC_ALL  = 500 * 1024 * 1024       # all of them, uncollected
+KEEP_FREE    = 200 * 1024 * 1024       # never take the disk below this
+
+
+def _rec_dir(make=False):
+    d = _live_path(REC_SUB)
+    if d and make:
+        os.makedirs(d, exist_ok=True)
+    return d
+
+
+def _rec_file(name):
+    """The path of one waiting recording, or '' if that is not where it is."""
+    d = _rec_dir()
+    if not d:
+        return ''
+    name = str(name or '').replace('\\', '/').lstrip('/')
+    if name.startswith(REC_SUB + '/'):
+        name = name[len(REC_SUB) + 1:]
+    if not name:
+        return ''
+    root = os.path.abspath(d)
+    full = os.path.abspath(os.path.join(root, name))
+    return full if full.startswith(root + os.sep) else ''
+
+
+def _rec_list():
+    """What is waiting, for the collector to come and fetch."""
+    d = _rec_dir()
+    out = []
+    if not d or not os.path.isdir(d):
+        return out
+    for base, _dirs, files in os.walk(d):
+        for f in files:
+            full = os.path.join(base, f)
+            try:
+                st = os.stat(full)
+            except OSError:
+                continue
+            out.append({'name': os.path.relpath(full, d).replace(os.sep, '/'),
+                        'bytes': st.st_size, 'mtime': int(st.st_mtime)})
+    return sorted(out, key=lambda r: r['mtime'])
+
+
+def _rec_room(n):
+    """Is there room for `n` more bytes? Returns an error message, or ''."""
+    d = _rec_dir()
+    if not d:
+        return 'אין דיסק קבוע בשרת זה'
+    if n > MAX_REC:
+        return 'ההקלטה גדולה מ-%d מגה' % (MAX_REC // 1048576)
+    held = sum(r['bytes'] for r in _rec_list())
+    if held + n > MAX_REC_ALL:
+        return ('הדיסק של האתר מחזיק %d מגה של הקלטות שעוד לא נאספו — '
+                'הרץ את האיסוף מן המחשב שבו כונן הארכיון'
+                % (held // 1048576))
+    probe = d                              # the rec folder may not exist yet,
+    while probe and not os.path.isdir(probe):   # so ask about the nearest
+        up = os.path.dirname(probe)             # folder that does — otherwise
+        if up == probe:                         # the question goes unasked
+            break
+        probe = up
+    try:
+        free = shutil.disk_usage(probe).free
+    except OSError:
+        free = None
+    if free is not None and free - n < KEEP_FREE:
+        return 'אין מקום פנוי בדיסק של האתר'
+    return ''
 
 
 def _safe(name, fallback):
@@ -394,60 +502,84 @@ def api_record():
     if not data:
         return jsonify({'ok': False, 'error': 'הקובץ ריק'}), 400
 
+    why = _rec_room(len(data))
+    if why:
+        return jsonify({'ok': False, 'error': 'no_room', 'message': why}), 507
+
     piyyut = _safe(request.form.get('piyyut'), 'הקלטה')
     perf   = _safe(request.form.get('performer'), 'לא ידוע')
-    stamp  = time.strftime('%Y-%m-%d %H%M%S')
+    title  = _safe(request.form.get('title'), '') or piyyut
+    stamp  = time.strftime('%Y-%m-%d %H%M')
+    mine   = bool(_is_admin() and can_edit())
 
-    # Where it lands depends on who made it. Somebody who signed in to record
-    # is lending a voice to the archive and does not decide what it is: their
-    # recording waits on a pile for the editor to name and file. The editor
-    # has already named it on the form, so it goes straight into the archive
-    # — under `added/`, which is where every upload lives and where the media
-    # server is fed from, never into the scanned archive itself.
-    if _is_admin() and can_edit():
-        title = _safe(request.form.get('title'), '') or piyyut
-        rel = 'added/%s/%s/%s%s' % (perf, piyyut, _safe(title, 'הקלטה'), ext)
-        ok, err = _sftp_put(data, MEDIA_ROOT.rstrip('/') + '/' + rel)
-        if not ok:
-            return jsonify({'ok': False, 'error': err,
-                            'message': 'ההעלאה לשרת המדיה נכשלה'}), 502
-        try:
-            secs = int(float(request.form.get('seconds') or 0))
-        except ValueError:
-            secs = 0
-        rows = _live_adds()
-        row = {
-            'id': ADD.next_id(ADD.load() + rows),
-            'piyyut': request.form.get('piyyut') or piyyut,
-            'performer': request.form.get('performer') or 'לא ידוע',
-            'event': request.form.get('event') or 'שונות',
-            'title': request.form.get('title') or '',
-            'note': request.form.get('note') or '',
-            'dir': 'הוספות',
-            'added': time.strftime('%Y-%m-%dT%H:%M:%S'),
-            'recorded': 1,
-            # not MP3 yet, and the catalogue says so: the machine that holds
-            # the drive turns it into one, because no browser can encode MP3
-            # and this server has no ffmpeg to do it here
-            'needs_mp3': 1,
-            'tracks': [{'f': rel, 's': secs, 'n': request.form.get('title') or piyyut}],
-        }
-        rows.append(row)
-        if not _live_write('additions.json', rows):
-            return jsonify({'ok': False, 'error': 'no_store',
-                            'message': 'הקול הועלה אך הרשומה לא נשמרה'}), 500
+    # It arrives finished. The phone encodes it to MP3 before sending, because
+    # no browser will record one and this server has no ffmpeg to make one, so
+    # what is written here is already the file that will be played — and the
+    # catalogue is told only after it is written. That order is the point: a
+    # title whose file is not yet the file it will be answers with an error.
+    sub = '' if mine else PENDING_DIR + '/'
+    name = '%s%s %s%s' % (sub, title, stamp, ext)
+    dest = _rec_file(name)
+    if not dest:
+        return jsonify({'ok': False, 'error': 'no_store',
+                        'message': 'אין דיסק קבוע בשרת זה'}), 503
+    n = 2
+    while os.path.exists(dest):                      # never overwrite
+        name = '%s%s %s (%d)%s' % (sub, title, stamp, n, ext)
+        dest = _rec_file(name)
+        n += 1
+    try:
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        with open(dest + '.part', 'wb') as fh:
+            fh.write(data)
+        os.replace(dest + '.part', dest)             # whole, or not there
+    except OSError as e:
+        return jsonify({'ok': False, 'error': 'write_failed',
+                        'message': 'הכתיבה לדיסק של האתר נכשלה: %s' % e}), 500
+
+    rel = REC_SUB + '/' + name
+    url = '/shira/api/rec/' + urllib.parse.quote(name)
+
+    # Somebody who signed in only to record is lending a voice to the archive
+    # and does not decide what it is: their recording waits for an editor to
+    # name and file it, and no catalogue entry is made. The editor has already
+    # named it on the form.
+    if not mine:
         return jsonify({'ok': True, 'stored': rel, 'bytes': len(data),
-                        'filed': True, 'id': row['id'],
-                        'message': 'ההקלטה נכנסה לאוצר'})
+                        'pending': True, 'url': url,
+                        'message': 'ההקלטה נשמרה וממתינה למיון'})
 
-    rel = '%s/%s/%s %s%s' % (PENDING_DIR, perf, piyyut, stamp, ext)
-    ok, err = _sftp_put(data, MEDIA_ROOT.rstrip('/') + '/' + rel)
-    if not ok:
-        return jsonify({'ok': False, 'error': err,
-                        'message': 'ההעלאה לשרת המדיה נכשלה'}), 502
+    try:
+        secs = int(float(request.form.get('seconds') or 0))
+    except ValueError:
+        secs = 0
+    rows = _live_adds()
+    row = {
+        'id': ADD.next_id(ADD.load() + rows),
+        'piyyut': request.form.get('piyyut') or piyyut,
+        'performer': request.form.get('performer') or 'לא ידוע',
+        'event': request.form.get('event') or 'שונות',
+        'title': request.form.get('title') or '',
+        'note': request.form.get('note') or '',
+        'dir': 'הוספות',
+        'added': time.strftime('%Y-%m-%dT%H:%M:%S'),
+        'recorded': 1,
+        # on the site's disk, not on the media server — until it is collected
+        'on_disk': 1,
+        'tracks': [{'f': rel, 's': secs,
+                    'n': request.form.get('title') or piyyut}],
+    }
+    rows.append(row)
+    if not _live_write('additions.json', rows):
+        try:
+            os.remove(dest)      # nothing half-entered: no file, no entry
+        except OSError:
+            pass
+        return jsonify({'ok': False, 'error': 'no_store',
+                        'message': 'הרשומה לא נשמרה — ההקלטה לא נכנסה'}), 500
     return jsonify({'ok': True, 'stored': rel, 'bytes': len(data),
-                    'pending': True,
-                    'message': 'ההקלטה נשמרה בשרת המדיה וממתינה למיון'})
+                    'filed': True, 'id': row['id'], 'url': url,
+                    'message': 'ההקלטה נכנסה לאוצר'})
 
 
 # ------------------------------------------------------------- editing
@@ -558,7 +690,8 @@ def api_live_layer():
     return jsonify({'ok': True, 'dir': LIVE_DIR,
                     'overrides': _live_read('overrides.json'),
                     'merges': _live_read('merges.json'),
-                    'additions': _live_adds()})
+                    'additions': _live_adds(),
+                    'rec_files': _rec_list()})
 
 
 @shira.route('/shira/api/live_layer', methods=['POST'])
@@ -575,7 +708,19 @@ def api_live_layer_put():
         if key in d and isinstance(d[key], want):
             if _live_write(name, d[key]):
                 wrote.append(name)
-    return jsonify({'ok': True, 'wrote': wrote})
+    # a recording that has been collected — copied to the media server and the
+    # entry pointed there — no longer needs to sit on this disk. It is dropped
+    # only after the entry above has been rewritten, never before.
+    gone = []
+    for one in (d.get('drop') or []):
+        full = _rec_file(one)
+        if full and os.path.isfile(full):
+            try:
+                os.remove(full)
+                gone.append(one)
+            except OSError:
+                pass
+    return jsonify({'ok': True, 'wrote': wrote, 'dropped': gone})
 
 
 @shira.route('/shira/api/<path:_sub>', methods=['POST'])

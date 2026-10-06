@@ -591,6 +591,10 @@ let cur = { rec: 0, idx: 0 };
  * going there straight saves the player a redirect on every track and seek. */
 function audioURL(rel) {
   const enc = rel.split('/').map(encodeURIComponent).join('/');
+  // A recording made in the app itself has not reached the media server yet:
+  // it waits on the site's own disk until the machine with the archive drive
+  // collects it, and until then the site serves it.
+  if (rel.indexOf('rec/') === 0) return 'api/' + enc;
   const base = (C && C.meta && C.meta.media) || 'audio/';
   return base + enc;
 }
@@ -1109,7 +1113,19 @@ function deckResume() {
 /* Closing the player ejects the cassette rather than just blinking the window
  * away: the lid swings up, and the cassette tips back on its rails and rises
  * out of the well — held out, the way a deck offers it to be taken. */
+/* Leaving the recorder with a recording still in it counts as STOP.
+ *
+ * The tape is ended and the question is asked, rather than the sound being
+ * lost because a window was shut — which is the one thing a recorder must
+ * never do. Nothing is closed until the recording has been answered for.
+ */
 $('dwClose').onclick = () => {
+  if (REC.rec) { sfx('stop'); return finishRecording('exit'); }
+  if (REC.held) return askKeep('exit');
+  deckEject();
+};
+
+function deckEject() {
   au.pause(); stopAudio(); spoolStop(false);
   dancerOut('right');            // she is off the stage before the lid shuts
   headIn(false);
@@ -1140,6 +1156,7 @@ function headIn(on) {
 
 /* --------------------------------------------------- play / pause / stop */
 $('pbtn').onclick = () => {
+  if (REC.rec) return recPause();     // recording: the key holds the tape
   if (!au.src) return;
   if (au.paused) {
     sfx('play'); headIn(true);
@@ -1155,8 +1172,8 @@ $('pbtn').onclick = () => {
  * back to the start rather than jumping there. */
 let rewinding = 0;
 $('pstop').onclick = () => {
-  // recording first: STOP is what ends it and sends it up
-  if (REC.rec) { sfx('stop'); stopRecording(); return; }
+  // recording first: STOP is what ends it, and then asks
+  if (REC.rec) { sfx('stop'); finishRecording(); return; }
   if (!au.src) return;
   au.pause();
   dancerOut('right');                // she runs off the way she came in
@@ -1272,7 +1289,17 @@ $('ptickerTxt').addEventListener('animationend', () => {
  */
 const REC = { stream: null, rec: null, chunks: [], meta: null,
               ctx: null, an: null, t0: 0, tick: 0,
+              paused: false, acc: 0,  // PAUSE: what ran before this stretch
+              held: null,             // recorded, not saved — {blob, secs, meta}
               user: '', pass: '' };   // live site only: the media server's own
+
+const MIC_WANT = { audio: { echoCancellation: false, noiseSuppression: false,
+                            autoGainControl: false, channelCount: 1 } };
+
+/* How long has been recorded — not how long ago it started. A paused stretch
+ * is not on the tape, so it must not be on the counter either. */
+const recElapsed = () =>
+  REC.acc + (REC.paused ? 0 : (Date.now() - REC.t0) / 1000);
 
 function recArmed(on) {
   $('prec').classList.toggle('armed', on);
@@ -1283,6 +1310,7 @@ function recArmed(on) {
  * file what comes back. Outside admin mode it asks to sign in. */
 $('prec').onclick = () => {
   if (REC.rec) return;                          // already running — STOP ends it
+  if (REC.held) return askWipe();               // one tape in the machine
   const online = !!(C && C.meta && C.meta.readonly);
   if (online) {
     // An editor who is signed in may record and file it; anyone else signs in
@@ -1315,12 +1343,11 @@ $('recGo').onclick = async () => {
   if (!navigator.mediaDevices || !window.MediaRecorder)
     return err('המכשיר הזה אינו תומך בהקלטה מן הדפדפן.');
 
+  if (REC.held) { closeModal('addModal'); return askWipe(); }
+
   let stream;
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: false, noiseSuppression: false,
-               autoGainControl: false, channelCount: 1 },
-    });
+    stream = await navigator.mediaDevices.getUserMedia(MIC_WANT);
   } catch (e) {
     return err(e && e.name === 'NotAllowedError'
       ? 'הגישה למיקרופון נדחתה. אשר אותה בהגדרות הדפדפן ונסה שוב.'
@@ -1344,6 +1371,11 @@ function startRecording(stream) {
 
   REC.stream = stream;
   REC.chunks = [];
+  REC.paused = false;
+  REC.acc = 0;
+  // the encoder, fetched while the singing is still going on: by the time
+  // STOP is pressed it is here, and the conversion starts on the spot
+  loadLame().catch(() => {});
   // whatever this browser will actually encode
   // AAC in an MP4 first, and the reason is the listener rather than the
   // recorder. No browser can record an MP3 — audio/mpeg is refused by all of
@@ -1371,10 +1403,56 @@ function startRecording(stream) {
   recArmed(true);
   headIn(true);
   keepAwake(true);
-  writeRecLabels(0);
+  recHoldPaint();
   REC.t0 = Date.now();
-  REC.tick = setInterval(() => writeRecLabels((Date.now() - REC.t0) / 1000), 250);
-  toast('מקליט — לחץ STOP לסיום ולשמירה');
+  writeRecLabels(0);
+  REC.tick = setInterval(() => writeRecLabels(recElapsed()), 250);
+  recKeys();
+  toast('מקליט — PAUSE משהה, STOP מסיים');
+}
+
+/* The PLAY key while recording: the tape stops where it is and goes on from
+ * there, which is what PAUSE means on this machine. The microphone is left
+ * open — stopping the track would end the recording — but the analyser the
+ * lamps read is set aside, so the meter falls to rest. A meter that goes on
+ * dancing over a tape that is not moving says the wrong thing.
+ */
+function recPause() {
+  const r = REC.rec;
+  if (!r) return;
+  if (typeof r.pause !== 'function')
+    return toast('הדפדפן הזה אינו יודע להשהות הקלטה — STOP מסיים', 1);
+  try {
+    if (REC.paused) { r.resume(); } else { r.pause(); }
+  } catch (e) {
+    return toast('ההשהיה לא נענתה', 1);
+  }
+  if (REC.paused) {
+    REC.t0 = Date.now();
+    REC.paused = false;
+    REC.an = REC.anHeld || REC.an;
+    sfx('play');
+    toast('ממשיך להקליט');
+  } else {
+    REC.acc = recElapsed();
+    REC.paused = true;
+    REC.anHeld = REC.an;
+    REC.an = null;
+    sfx('pause');
+    toast('ההקלטה מושהית — PLAY ממשיך, STOP מסיים');
+  }
+  recKeys();
+  writeRecLabels(recElapsed());
+}
+
+/* the keys say which way the machine is standing */
+function recKeys() {
+  const on = !!REC.rec, run = on && !REC.paused;
+  $('prec').classList.toggle('paused', on && REC.paused);
+  $('recLamp').classList.toggle('on', run);
+  $('icPlay').classList.toggle('hidden', on ? !REC.paused : !au.paused);
+  $('icPause').classList.toggle('hidden', on ? REC.paused : au.paused);
+  $('pbtn').classList.toggle('down', on ? run : !au.paused);
 }
 
 /* the cassette carries what was typed into the form, and counts up */
@@ -1386,90 +1464,440 @@ function writeRecLabels(secs) {
   $('cEvent').textContent = m.event || '';
   $('cLine2').textContent = new Date().getFullYear();
   $('cParts').textContent = 'REC';
-  $('cTime').textContent  = `${dur(secs)} / ● REC`;
+  $('cTime').textContent  = `${dur(secs)} / ${REC.paused ? '⏸ PAUSE' : '● REC'}`;
   if ($('ptitle').textContent !== (m.title || 'הקלטה חדשה')) {
     setLine('ptitle', m.title || 'הקלטה חדשה');       // only on a real change:
     setLine('psub', [m.performer, m.event].filter(Boolean).join(' · '));
   }                                                    // the counter ticks 4×/s
-  $('dwName').textContent = 'מקליט…';
+  $('dwName').textContent = REC.paused ? 'מושהה…' : 'מקליט…';
 }
 
-async function stopRecording() {
+/* STOP. The tape is ended, the microphone let go, and what was recorded is
+ * in hand — and only then is the question asked. Holding it first and asking
+ * second is the whole point: whichever way the question is answered, the
+ * sound exists. An answer cannot lose it.
+ */
+async function finishRecording(why) {
   if (!REC.rec) return false;
   clearInterval(REC.tick);
-  const secs = (Date.now() - REC.t0) / 1000;
+  const secs = recElapsed();
   const blob = await new Promise(res => {
     REC.rec.onstop = () => res(new Blob(REC.chunks,
       { type: REC.rec.mimeType || 'audio/webm' }));
-    REC.rec.stop();
+    try { REC.rec.stop(); } catch (e) { res(new Blob(REC.chunks)); }
   });
   REC.stream.getTracks().forEach(t => t.stop());
   if (REC.ctx) { try { REC.ctx.close(); } catch (e) {} }
-  REC.rec = null; REC.stream = null; REC.an = null; REC.ctx = null;
+  REC.rec = null; REC.stream = null; REC.an = null; REC.anHeld = null;
+  REC.ctx = null; REC.paused = false;
   recArmed(false);
   headIn(false);
   keepAwake(false);
-  if (secs < 1 || !blob.size) { toast('ההקלטה קצרה מדי — לא נשמרה', 1); return true; }
-  await uploadRecording(blob, secs);
+  recKeys();
+  if (secs < 1 || !blob.size) {
+    toast('ההקלטה קצרה מדי — לא נשמרה', 1);
+    $('dwName').textContent = '';
+    return true;
+  }
+  recHold(blob, secs);
+  askKeep(why);
   return true;
 }
 
-/* Up to the archive, into the pile waiting to be sorted.
+/* ------------------------------------------- the recording, in the machine
  *
- * Where that is depends on where the app is running. On this machine the
- * archive drive is here: the clip is written to disk first and copied to the
- * media server afterwards, so a recording survives a network that is down.
- * On a phone there is no drive, so it goes straight to the media server.
+ * Between STOP and the archive it sits here: playable from the deck exactly
+ * as the microphone took it, before any conversion touches it. That is what
+ * makes "not now" a real answer rather than a way of throwing something away.
  */
-async function uploadRecording(blob, secs) {
-  const m = REC.meta || {};
-  const ext = /mp4/.test(blob.type) ? 'm4a' : /ogg/.test(blob.type) ? 'ogg' : 'webm';
-  const when = new Date().toISOString().slice(0, 16).replace('T', ' ').replace(':', '');
+function recHold(blob, secs) {
+  recDrop(true);
+  REC.held = { blob, secs, meta: Object.assign({}, REC.meta), mp3: null,
+               url: URL.createObjectURL(blob) };
+  au.pause();
+  mixWipe();                             // the previous recording's effects
+  cur = { rec: 0, idx: 0 };
+  au.src = REC.held.url;
+  // A file written by MediaRecorder often carries no duration, and a deck
+  // cannot show a tape whose length it does not know. Reading to the far end
+  // once makes the browser work it out.
+  au.addEventListener('loadedmetadata', function fix() {
+    au.removeEventListener('loadedmetadata', fix);
+    if (!isFinite(au.duration)) {
+      const back = () => {
+        au.removeEventListener('timeupdate', back);
+        au.currentTime = 0;
+      };
+      au.addEventListener('timeupdate', back);
+      try { au.currentTime = 1e6; } catch (e) {}
+    }
+  });
+  const m = REC.held.meta || {};
+  setLine('ptitle', m.title || m.piyyut || 'הקלטה חדשה');
+  setLine('psub', [m.performer, m.event].filter(Boolean).join(' · '));
+  $('dwName').textContent = 'טרם נשמרה';
+  recHoldPaint();
+}
+
+function recHoldPaint() {
+  const h = REC.held;
+  $('recHold').classList.toggle('hidden', !h);
+  if (!h) return;
+  const m = h.meta || {};
+  $('rhName').textContent = m.title || m.piyyut || '';
+  $('rhLen').textContent = dur(h.secs);
+  $('recHold').title = 'לחץ PLAY לשמוע אותה כפי שהוקלטה';
+}
+
+/* let it go — after it has been saved, or because it was asked to be */
+function recDrop(quiet) {
+  const h = REC.held;
+  REC.held = null;
+  if (!h) { recHoldPaint(); return; }
+  if (au.getAttribute('src') === h.url) { au.pause(); stopAudio(); headIn(false); }
+  try { URL.revokeObjectURL(h.url); } catch (e) {}
+  recHoldPaint();
+  if (!quiet) { $('dwName').textContent = ''; toast('ההקלטה נמחקה'); }
+}
+
+/* -------------------------------------------------------- the questions */
+function askKeep(why) {
+  const h = REC.held;
+  if (!h) return;
+  const leaving = why === 'exit';
+  $('recAskT').textContent = leaving ? 'יציאה מן המקלט' : 'ההקלטה הסתיימה';
+  $('recAskB').innerHTML = (leaving
+      ? 'יצאת מן המקלט וההקלטה עוד לא נשמרה, ולכן היא נעצרה כאילו נלחץ STOP. '
+      : '')
+    + `אורך ההקלטה <b>${dur(h.secs)}</b>. לשמור אותה באוצר?`
+    + (leaving
+        ? '<span class="opt"> יציאה היא הרגע שבו צריך להחליט: או שהיא נשמרת,'
+          + ' או שהיא נמחקת. דבר אינו נעלם מעצמו.</span>'
+        : '<span class="opt"> אם לא — היא תישאר במקלט, אפשר יהיה לשמוע אותה'
+          + ' כפי שהוקלטה, ולשמור או למחוק אחר כך.</span>');
+  // Leaving has no "later": a deck that can never be closed while something
+  // is in it is a trap, and a recording that quietly disappears when a window
+  // shuts is worse. So the two answers here both end it.
+  $('recAskNo').textContent = leaving ? 'מחק וצא' : 'לא עכשיו';
+  $('recAskNo').onclick = leaving
+    ? () => { closeModal('recAsk'); recDrop(false); deckEject(); }
+    : () => { closeModal('recAsk'); toast('ההקלטה נשארה במקלט — PLAY משמיע אותה'); };
+  openModal('recAsk');
+}
+
+$('recAskYes').onclick = () => { closeModal('recAsk'); saveHeld(); };
+
+/* REC with a tape already in the machine */
+function askWipe() {
+  const h = REC.held;
+  if (!h) return;
+  const m = h.meta || {};
+  $('recWipeB').innerHTML =
+    `במקלט יש הקלטה שטרם נשמרה — <b>${esc(m.title || m.piyyut || 'הקלטה')}</b>,`
+    + ` ${dur(h.secs)}. האם ברצונך למחוק את ההקלטה הקיימת ולהתחיל הקלטה חדשה?`;
+  $('recWipeYes').textContent = 'כן, התחל מחדש';
+  $('recWipeYes').onclick = wipeAndRecord;
+  openModal('recWipe');
+}
+
+$('recWipeNo').onclick = () => closeModal('recWipe');
+
+async function wipeAndRecord() {
+  closeModal('recWipe');
+  recDrop(true);
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia(MIC_WANT);
+  } catch (e) {
+    return toast('הגישה למיקרופון נדחתה', 1);
+  }
+  startRecording(stream);                 // the same details, a new take
+}
+
+$('rhKeep').onclick = () => saveHeld();
+$('rhDrop').onclick = () => {
+  const h = REC.held;
+  if (!h) return;
+  const m = h.meta || {};
+  $('recWipeB').innerHTML = `למחוק את ההקלטה «${esc(m.title || m.piyyut
+    || 'הקלטה')}» (${dur(h.secs)})? היא לא נשמרה באוצר.`;
+  $('recWipeYes').textContent = 'כן, מחק';
+  $('recWipeYes').onclick = () => { closeModal('recWipe'); recDrop(false); };
+  openModal('recWipe');
+};
+
+/* ==================================================== an MP3, made here
+ *
+ * No browser records MP3: audio/mpeg is refused by every MediaRecorder there
+ * is. It used to be uploaded as recorded and converted later, elsewhere —
+ * which is why the archive could hold a title whose file was not yet the file
+ * it would be, and why opening it in between gave an error. So the encoding
+ * happens before anything is sent. The phone decodes what it recorded and
+ * encodes it with the archive's own copy of the LAME encoder, frame by frame,
+ * letting the main thread go between batches so the app stays alive and the
+ * bar can move. What is uploaded is a finished MP3, and nothing enters the
+ * catalogue until that file answers from the server.
+ */
+let lameWait = null;
+function loadLame() {
+  if (lameWait) return lameWait;
+  lameWait = new Promise((ok, no) => {
+    if (window.lamejs) return ok(window.lamejs);
+    const t = document.createElement('script');
+    t.src = 'lame.min.js';                 // 153 KB, and only for a recorder
+    t.onload = () => window.lamejs ? ok(window.lamejs)
+                                   : no(new Error('הקודן לא נטען'));
+    t.onerror = () => no(new Error('הקודן לא נטען'));
+    document.head.appendChild(t);
+  });
+  lameWait.catch(() => { lameWait = null; });     // so a retry fetches again
+  return lameWait;
+}
+
+const MP3_RATE = 44100;        // the rate every MP3 player is sure of
+const MP3_KBPS = 128;          // mono at 128: more than a voice needs
+
+async function toMp3(blob, onPct) {
+  const lame = await loadLame();
+  const raw = await blob.arrayBuffer();
+  const OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let buf = null;
+  // decoded through a context at the MP3's own rate, so what the encoder is
+  // handed is already at the rate it will write
+  if (OC) {
+    try {
+      buf = await new OC(1, MP3_RATE, MP3_RATE).decodeAudioData(raw.slice(0));
+    } catch (e) { buf = null; }
+  }
+  if (!buf && AC) {
+    const ctx = new AC();
+    try {
+      buf = await ctx.decodeAudioData(raw.slice(0));
+    } finally {
+      try { ctx.close(); } catch (e) {}
+    }
+  }
+  if (!buf || !buf.length) throw new Error('לא הצלחתי לקרוא את ההקלטה');
+
+  const n = buf.length;
+  const L = buf.getChannelData(0);
+  const R = buf.numberOfChannels > 1 ? buf.getChannelData(1) : null;
+  const enc = new lame.Mp3Encoder(1, buf.sampleRate, MP3_KBPS);
+  const FRAME = 1152;                       // one MP3 frame of samples
+  const BATCH = FRAME * 40;                 // ~1 s between breaths
+  const pcm = new Int16Array(FRAME);
+  const out = [];
+  for (let i = 0; i < n; i += FRAME) {
+    const m = Math.min(FRAME, n - i);
+    for (let j = 0; j < m; j++) {
+      let v = R ? (L[i + j] + R[i + j]) / 2 : L[i + j];
+      v = v < -1 ? -1 : v > 1 ? 1 : v;
+      pcm[j] = v < 0 ? v * 0x8000 : v * 0x7fff;
+    }
+    const got = enc.encodeBuffer(m === FRAME ? pcm : pcm.subarray(0, m));
+    if (got.length) out.push(new Int8Array(got));
+    if (i % BATCH === 0) {
+      onPct(i / n);
+      await new Promise(r => setTimeout(r, 0));
+    }
+  }
+  const tail = enc.flush();
+  if (tail.length) out.push(new Int8Array(tail));
+  onPct(1);
+  const mp3 = new Blob(out, { type: 'audio/mpeg' });
+  if (mp3.size < 1024) throw new Error('ההמרה יצאה ריקה');
+  return mp3;
+}
+
+/* ----------------------------------------------------- up, with the bar
+ *
+ * Where it goes depends on where the app is running. On this machine the
+ * archive drive is here, so the finished MP3 is filed exactly as any other
+ * added file is. On the web it goes to the site, which keeps it on its own
+ * disk and serves it from there until the machine with the drive collects it.
+ */
+function sendMp3(mp3, h, onPct) {
   const online = !!(C && C.meta && C.meta.readonly);
+  const m = h.meta || {};
+  const when = new Date().toISOString().slice(0, 16)
+                 .replace('T', ' ').replace(':', '');
   const fd = new FormData();
-  fd.append('file', blob, `${m.piyyut || 'הקלטה'} ${when}.${ext}`);
-  fd.append('piyyut', m.piyyut || '');
-  fd.append('performer', m.performer || '');
-  fd.append('event', m.event || '');
-  fd.append('title', m.title || '');
-  fd.append('note', m.note || '');
-  fd.append('pending', '1');                    // goes to the sorting pile
-  fd.append('seconds', Math.round(secs));
-  if (online) {                                 // the media server checks these
+  fd.append('file', mp3, `${m.title || m.piyyut || 'הקלטה'} ${when}.mp3`);
+  ['piyyut', 'performer', 'event', 'title', 'note']
+    .forEach(k => fd.append(k, m[k] || ''));
+  fd.append('seconds', Math.round(h.secs));
+  if (online) {                                 // the site checks these too
     fd.append('user', REC.user || '');
     fd.append('password', REC.pass || '');
   }
-
-  $('dwName').textContent = 'מעלה…';
-  toast(online ? 'ההקלטה הסתיימה — מעלה לשרת המדיה'
-               : 'ההקלטה הסתיימה — נשמרת ומועלית');
-  let r = {};
-  try {
-    r = await fetch(online ? 'api/record' : 'api/upload', {
-      method: 'POST', body: fd,
-      headers: ADMIN.token ? { 'X-Admin-Token': ADMIN.token } : {},
-    }).then(x => x.json());
-  } catch (e) { r = {}; }
-  if (!r.ok) {
-    // hold the audio so nothing is lost if the archive cannot be reached
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `${m.piyyut || 'הקלטה'} ${when}.${ext}`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 20000);
-    toast(r.message || (r.error === 'recording_disabled'
-      ? 'ההקלטה אינה מופעלת בשרת — ההקלטה ירדה למכשיר כדי שלא תאבד'
-      : 'ההעלאה נכשלה — ההקלטה ירדה למכשיר כדי שלא תאבד'), 1);
-    return;
-  }
-  if (!online || r.filed) await loadCatalog();
-  toast(r.filed
-    ? `נכנס לאוצר: ${m.title || m.piyyut} · ${dur(secs)}`
-    : `נשמר להקלטות למיון: ${m.title || m.piyyut} · ${dur(secs)}`);
-  markNewsSeen();
+  return new Promise((ok, no) => {
+    const x = new XMLHttpRequest();
+    x.open('POST', online ? 'api/record' : 'api/upload');
+    if (ADMIN.token) x.setRequestHeader('X-Admin-Token', ADMIN.token);
+    x.upload.onprogress = e => { if (e.lengthComputable) onPct(e.loaded / e.total); };
+    x.onload = () => {
+      let r = {};
+      try { r = JSON.parse(x.responseText); } catch (e) {}
+      if (x.status === 401) {
+        ADMIN.token = ''; sessionStorage.removeItem('shira_admin'); showAdminUI();
+        return no(new Error('פג תוקף הכניסה כמנהל — היכנס שוב ושמור מחדש'));
+      }
+      if (!r.ok) return no(new Error(r.message || r.error
+                                     || `ההעלאה נדחתה (${x.status})`));
+      onPct(1);
+      ok(r);
+    };
+    x.onerror = () => no(new Error('שגיאת רשת בהעלאה'));
+    x.send(fd);
+  });
 }
 
+/* the last step, and the one that was missing: ask the server for the file */
+async function reachable(url) {
+  if (!url) return false;
+  try {
+    const res = await fetch(url, { headers: { Range: 'bytes=0-1' },
+                                   cache: 'no-store' });
+    return res.ok || res.status === 206;
+  } catch (e) { return false; }
+}
+
+/* ---------------------------------------------------------- the panel */
+function rpStage(key, pct, say) {
+  const li = $('rSteps').querySelector(`[data-s="${key}"]`);
+  if (li) {
+    $('rSteps').querySelectorAll('li').forEach(x => x.classList.remove('now'));
+    li.classList.add('now');
+    li.classList.remove('bad');
+  }
+  if (pct !== null && pct !== undefined)
+    $('rBar').firstElementChild.style.width = Math.round(pct * 100) + '%';
+  if (say) $('rStat').textContent = say;
+}
+
+function rpDone(key, note) {
+  const li = $('rSteps').querySelector(`[data-s="${key}"]`);
+  if (!li) return;
+  li.classList.remove('now');
+  li.classList.add('ok');
+  if (note) li.querySelector('span').textContent = note;
+}
+
+function rpOpen() {
+  ['rpDl', 'rpRetry', 'rpOpen', 'rpClose']
+    .forEach(id => $(id).classList.add('hidden'));
+  $('rErr').classList.add('hidden');
+  $('rpTitle').textContent = 'שמירת ההקלטה';
+  $('rSteps').querySelectorAll('li').forEach(li => {
+    li.className = '';
+    li.querySelector('span').textContent = '';
+  });
+  $('rBar').firstElementChild.style.width = '0';
+  $('rStat').textContent = 'מתחיל…';
+  openModal('recProg');
+}
+
+async function saveHeld() {
+  const h = REC.held;
+  if (!h || REC.saving) return;
+  REC.saving = true;
+  rpOpen();
+  try {
+    rpStage('encode', 0, 'ממיר ל‑MP3 במכשיר…');
+    if (!h.mp3) {
+      h.mp3 = await toMp3(h.blob, pct =>
+        rpStage('encode', pct, `ממיר ל‑MP3 — ${Math.round(pct * 100)}%`));
+    } else {
+      rpStage('encode', 1, 'ההמרה כבר נעשתה');     // a second attempt
+    }
+    rpDone('encode', `${(h.mp3.size / 1048576).toFixed(1)} MB`);
+
+    rpStage('upload', 0, 'מעלה…');
+    const r = await sendMp3(h.mp3, h, pct =>
+      rpStage('upload', pct, `מעלה — ${Math.round(pct * 100)}%`));
+    rpDone('upload');
+
+    rpStage('check', 1, 'בודק שהקובץ נגיש מן השרת…');
+    const url = r.url || (r.rec && r.rec.tracks && r.rec.tracks[0]
+                          ? audioURL(r.rec.tracks[0].f) : '');
+    const live = await reachable(url);
+    rpDone('check', live ? 'נענה' : 'לא נבדק');
+    await loadCatalog();
+    markNewsSeen();
+
+    const m = h.meta || {};
+    $('rpTitle').textContent = 'הקובץ זמין באוצר';
+    $('rStat').textContent = live
+      ? `«${m.title || m.piyyut}» נשמר כ‑MP3 ומתנגן מן השרת.`
+      : `«${m.title || m.piyyut}» נשמר כ‑MP3. השרת עוד לא ענה לבדיקה —`
+        + ' רענן בעוד רגע אם הוא אינו מתנגן.';
+    $('rpOpen').classList.remove('hidden');
+    $('rpClose').classList.remove('hidden');
+    $('rpOpen').onclick = () => { closeModal('recProg'); showSaved(m.piyyut); };
+    recDrop(true);                     // it is in the archive now, not here
+    $('dwName').textContent = '';
+    toast(`נכנס לאוצר: ${m.title || m.piyyut} · ${dur(h.secs)}`);
+  } catch (e) {
+    const li = $('rSteps').querySelector('li.now');
+    if (li) { li.classList.remove('now'); li.classList.add('bad'); }
+    $('rStat').textContent = '';
+    $('rErr').textContent = (e && e.message) || 'השמירה נכשלה';
+    $('rErr').classList.remove('hidden');
+    $('rpRetry').classList.remove('hidden');
+    $('rpDl').classList.remove('hidden');
+    $('rpClose').classList.remove('hidden');
+    $('rpRetry').onclick = () => saveHeld();
+    $('rpDl').onclick = () => recSaveLocal();
+  } finally {
+    REC.saving = false;
+  }
+}
+
+$('rpClose').onclick = () => closeModal('recProg');
+
+/* the archive could not be reached: the sound goes to the device instead, so
+ * that a failed upload costs a file on disk and not a performance */
+function recSaveLocal() {
+  const h = REC.held;
+  if (!h) return;
+  const m = h.meta || {};
+  const blob = h.mp3 || h.blob;
+  const ext = h.mp3 ? 'mp3' : /mp4/.test(h.blob.type) ? 'm4a'
+            : /ogg/.test(h.blob.type) ? 'ogg' : 'webm';
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${m.title || m.piyyut || 'הקלטה'}.${ext}`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 20000);
+  toast('ההקלטה ירדה למכשיר');
+}
+
+/* and show it where it now lives */
+function showSaved(piyyut) {
+  F.q = ''; $('q').value = ''; F.perf = F.event = 0;
+  F.piyyut = (C.piyyutim.find(p => p.name === piyyut) || {}).id || 0;
+  go('rec');
+}
+
+/* The app being closed is not a reason to lose a recording either: the tape
+ * is ended so the microphone is released, and the browser asks before the
+ * page goes — this is the one case the app cannot ask about itself. */
+window.addEventListener('pagehide', () => {
+  if (REC.rec) { try { REC.rec.stop(); } catch (e) {} }
+});
+window.addEventListener('beforeunload', e => {
+  if (!REC.rec && !REC.held) return;
+  e.preventDefault();
+  e.returnValue = 'יש הקלטה שטרם נשמרה';
+  return e.returnValue;
+});
+
 function syncBtn() {
+  // while the machine records, the keys say what the RECORDING is doing: the
+  // player has no tape in it, and would read its silence as "paused"
+  if (REC.rec) return recKeys();
   const st = !au.src ? 'none' : au.paused ? 'paused' : 'playing';
   if (navigator.mediaSession) navigator.mediaSession.playbackState = st;
   upward({ type: 'state', state: st });
@@ -4976,8 +5404,12 @@ const closeModal = id => {
 };
 document.querySelectorAll('[data-close]').forEach(b =>
   b.onclick = () => closeModal(b.dataset.close));
+// a sheet marked `sticky` asks about something that exists and has to be
+// answered; a click past its edge is not an answer
 document.querySelectorAll('.modal').forEach(m =>
-  m.onclick = e => { if (e.target === m) closeModal(m.id); });
+  m.onclick = e => {
+    if (e.target === m && !m.classList.contains('sticky')) closeModal(m.id);
+  });
 
 function showAdminUI(redraw) {
   $('addBtn').classList.toggle('hidden', !ADMIN.token);
