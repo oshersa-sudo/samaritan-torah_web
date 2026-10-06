@@ -722,7 +722,12 @@ body.nav-reserve.has-spread #spreadBtn{ margin-bottom:var(--nav-clear, 46px); }
   left:50%; transform:translateX(-50%); top:0;
   --sock-w:calc(var(--nav-w, 240px) + 96px);
   --sock-d:40px;
-  width:var(--sock-w); height:var(--sock-d);
+  /* never wider than the bar it sits on: the sock is the nav bar's width plus
+     96px, and centred — so on a narrow phone it stuck out 38px each side and,
+     being in the flow's overflow, made the whole document wider than the
+     screen. The app, centred in that wider document, then sat off to one side
+     with a white band beside it and its right edge cut off. */
+  width:min(var(--sock-w), 100%); height:var(--sock-d);
   background:radial-gradient(ellipse calc(var(--sock-w) / 2) var(--sock-d) at 50% 0,
              rgba(12,12,14,.58) 0%, rgba(12,12,14,.40) 42%,
              rgba(12,12,14,.18) 72%, rgba(12,12,14,0) 100%);

@@ -191,7 +191,15 @@ def cmd_collect(args):
         if b.processing_status != 'ended':
             print(f'  skipping {b.id} — still {b.processing_status}')
             continue
-        for res in client.messages.batches.results(rec['batch_id']):
+        # a batch keeps its results for a limited time; one submitted in an
+        # earlier round can be 'ended' and have nothing left to fetch, and that
+        # must not stop the batches that do
+        try:
+            results = list(client.messages.batches.results(rec['batch_id']))
+        except Exception as exc:
+            print(f'  skipping {b.id} — its results are gone ({str(exc)[:50]})')
+            continue
+        for res in results:
             ch_id = int(res.custom_id[2:])          # strip the "ar" prefix
             if res.result.type != 'succeeded':
                 errored += 1

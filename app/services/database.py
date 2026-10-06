@@ -408,15 +408,24 @@ def _seed_deut_interpretation():
             conn.close()
             return
         cur = conn.cursor()
-        written = 0
+        written = he = ar = 0
         for r in rows:
             cur.execute("UPDATE verses SET interpretation=? WHERE id=? "
                         "AND TRIM(COALESCE(interpretation,''))=''", (r['t'], r['v']))
-            written += cur.rowcount
+            he += cur.rowcount
+        # and its Arabic, under the same rule: only where there is none
+        ar_path = os.path.join(os.path.dirname(_DEUT_INTERP_PATCH), 'interp_deut_ar_patch.json')
+        if os.path.exists(ar_path):
+            with open(ar_path, encoding='utf-8') as fh:
+                for r in json.load(fh).get('rows', []):
+                    cur.execute("UPDATE verses SET interpretation_ar=? WHERE id=? "
+                                "AND TRIM(COALESCE(interpretation_ar,''))=''", (r['t'], r['v']))
+                    ar += cur.rowcount
+        written = he + ar
         if written:
             conn.commit()
-            print('[deut] %d verses of Deuteronomy given a commentary; '
-                  '%d already had one and were left alone' % (written, len(rows) - written))
+            print('[deut] Deuteronomy: %d verses given a Hebrew commentary, %d an Arabic one; '
+                  'everything that already had one was left as it was' % (he, ar))
         conn.close()
     except Exception as exc:
         print('[deut] skipped: %s' % exc)

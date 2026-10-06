@@ -227,7 +227,11 @@ def call_model(prompt, retries=4):
         try:
             msg = client.messages.create(
                 model=MODEL,
-                max_tokens=4096,
+                # a chapter is one request, and a long one — האזינו runs to 43
+                # verses in the Samaritan division — overran 4096 and came back
+                # with its later verses simply missing, which looked like the
+                # model having nothing to say about them
+                max_tokens=16384,
                 system=SYSTEM,
                 tools=[TOOL],
                 tool_choice={'type': 'tool', 'name': 'submit_chapter_commentary'},
