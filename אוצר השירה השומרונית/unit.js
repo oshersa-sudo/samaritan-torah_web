@@ -616,9 +616,9 @@ function playRec(recId, idx, quiet) {
   switching = true;
   seekFrom = 0;
   setTimeout(() => { switching = false; }, 400);
-  // handed over from the prefetch when this is the track it was fetching
-  const ready = (AHEAD.key === aheadKey(recId, idx)) ? AHEAD.bytes : null;
-  aheadDrop();
+  // already held, with its silences already measured
+  const ready = (BANK.rec === recId) ? BANK.blob[idx] : null;
+  const edges = (BANK.rec === recId) ? BANK.trim[idx] : null;
   au.src = ready ? URL.createObjectURL(ready) : audioURL(t.f);
   vuPeak = 0;                            // the meter re-learns this tape's loudness
   bandDrop();          // another file: another key, another mode, another tuning
@@ -635,7 +635,8 @@ function playRec(recId, idx, quiet) {
   if (!quiet && !sameRec) sfx('play');   // the deck's own click
   mixInit();                            // the chain must exist before playback
   if (MIX.ctx && MIX.ctx.state === 'suspended') MIX.ctx.resume();
-  beginLoad(t, ready);                   // watch it arrive, and hold the scrubber
+  beginLoad(t, ready, edges);            // watch it arrive, and hold the scrubber
+  bankOpen(recId);                       // and keep the rest of it coming
   // A track that follows another is started without anybody touching the
   // screen, and a browser is entitled to refuse that — phones routinely do.
   // Swallowed, the refusal looked exactly like a recording that simply
@@ -692,7 +693,7 @@ function seekable(on) {
   $('pseek').classList.toggle('waiting', !on);
 }
 
-function beginLoad(track, ready) {
+function beginLoad(track, ready, edges) {
   clearInterval(LOAD.timer);
   const token = ++LOAD.token;
   LOAD.on = true; LOAD.started = false; LOAD.greenAt = 0;
@@ -713,7 +714,19 @@ function beginLoad(track, ready) {
     // bytes, leaving the first to be collected by nobody — so the one in use
     // is recorded here instead, and the next load revokes it like any other.
     LOAD.blob = au.getAttribute('src') || '';
-    ready.arrayBuffer().then(b => scanSilence(b, token)).catch(() => {});
+    if (edges) {
+      // measured while this part was waiting its turn, so the singing starts
+      // on the first note instead of on the silence the tape was carrying
+      TRIM.start = edges.start;
+      TRIM.end = edges.end;
+      if (edges.start) {
+        const go = () => { if (au.currentTime < edges.start) au.currentTime = edges.start; };
+        go();
+        au.addEventListener('loadedmetadata', go, { once: true });
+      }
+    } else {
+      ready.arrayBuffer().then(b => scanSilence(b, token)).catch(() => {});
+    }
     return;
   }
 
@@ -735,109 +748,127 @@ function beginLoad(track, ready) {
  * within a single recording: moving on to a DIFFERENT recording is a choice
  * somebody makes, and guessing which one would fetch the whole archive.
  */
-const AHEAD = {
-  key: '', bytes: null, busy: '', sized: {},
-  bps: 0,              // how fast this connection has actually been, bytes/sec
-  lead: 15,            // the fallback, used until the connection has been seen
-  min: 6, max: 90,     // never sooner than this, never later
+/* ================================================== the whole recording, held
+ *
+ * A piyyut that arrives in seventy-six files is one piece of singing, and it
+ * should be heard as one. Fetching the next part as the current one runs out
+ * removed the wait but left the seams: each file was digitised with the tape
+ * already turning, so each carries silence at its head and its tail, and
+ * seventy-six of those are seventy-six holes in the middle of the music.
+ *
+ * So the whole recording is pulled down instead, from the moment it is
+ * opened. The first part plays as soon as it is here; the rest arrive behind
+ * it, one at a time so they never compete with what is being heard, and each
+ * is measured as it lands — where its singing begins, where it ends. By the
+ * time a part is reached both its bytes and its edges are known, so it starts
+ * ON the singing rather than on the silence before it.
+ *
+ * Memory is bounded. Parts already heard are let go, and the fetching pauses
+ * when what is held reaches the ceiling and resumes as room is freed, so a
+ * recording of seventy-six parts costs no more than one of six.
+ */
+const BANK = {
+  rec: 0,                     // which recording is held
+  blob: {},                   // index → the bytes
+  trim: {},                   // index → {start, end}, measured not guessed
+  size: {},                   // index → bytes held, for the ceiling
+  held: 0,
+  busy: false,
+  ceiling: 64 * 1024 * 1024,  // what may be kept at once
+  window: 12,                 // how far ahead of the needle to run
+  keep: 2,                    // parts behind the needle to hold on to
 };
 
-/* ---- how fast this connection really is.
- *
- * Measured rather than assumed, because the two ends of it are a media server
- * in a datacentre and a telephone on whatever it can find — and the archive is
- * listened to on both. Every download already made says something, and the
- * newest says most, so the estimate leans on it without forgetting the rest.
- */
-function aheadLearn(bytes, ms) {
-  // Twenty milliseconds is enough to divide by honestly. The guard was sixty,
-  // and on a fast line — or the archive's own machine, serving off its drive —
-  // every download came in under it, so nothing was ever learnt and the fixed
-  // lead was used forever. A fast connection is exactly the case where the
-  // lead should come down.
-  if (ms < 20 || bytes < 40000) return;
-  const now = bytes / (ms / 1000);
-  AHEAD.bps = AHEAD.bps ? AHEAD.bps * 0.6 + now * 0.4 : now;
+function bankDrop() {
+  BANK.rec = 0; BANK.blob = {}; BANK.trim = {}; BANK.size = {};
+  BANK.held = 0; BANK.busy = false;
 }
 
-/* ---- how big the next one is, for one byte.
- *
- * A range request for a single byte comes back with the whole length in the
- * Content-Range header, so the size is known without fetching the file. The
- * answer is kept, because it cannot change.
- */
-async function aheadSize(f) {
-  if (AHEAD.sized[f] !== undefined) return AHEAD.sized[f];
-  try {
-    const res = await fetch(audioURL(f), { headers: { Range: 'bytes=0-0' } });
-    const cr = res.headers.get('Content-Range') || '';
-    const n = +(cr.split('/')[1] || res.headers.get('Content-Length') || 0);
-    AHEAD.sized[f] = n > 1 ? n : 0;
-  } catch (e) {
-    AHEAD.sized[f] = 0;
-  }
-  return AHEAD.sized[f];
-}
-
-/* ---- and therefore how early to begin.
- *
- * Long enough to finish with room to spare, and not a second longer: fetched
- * too early and a listener who stops after this track has paid for a file
- * nobody heard; too late and the singing stops to wait. Where the size or the
- * speed is not known yet it falls back to the fixed lead, which is what the
- * first track of a session uses.
- */
-function aheadLead(size) {
-  if (!size || !AHEAD.bps) return AHEAD.lead;
-  const need = size / AHEAD.bps * 1.7 + 1.5;   // room for a slow patch
-  return Math.max(AHEAD.min, Math.min(AHEAD.max, need));
-}
-
-function aheadKey(rec, idx) { return rec + ':' + idx; }
-
-/* the track that will play next, or nothing if this is the last one */
-function aheadNext() {
-  const r = byId(C.recordings, cur.rec);
-  if (!r || !r.tr || cur.idx + 1 >= r.tr.length) return null;
-  return { rec: cur.rec, idx: cur.idx + 1, track: r.tr[cur.idx + 1] };
-}
-
-async function aheadFetch() {
-  const nx = aheadNext();
-  if (!nx) return;
-  const key = aheadKey(nx.rec, nx.idx);
-  if (AHEAD.key === key || AHEAD.busy === key) return;
-  AHEAD.busy = key;
-  const t0 = Date.now();
-  try {
-    const res = await fetch(audioURL(nx.track.f));
-    const total = +(res.headers.get('content-length') || 0);
-    if (!res.ok || !total || total > MAX_FETCH) throw new Error('skip');
-    const bytes = await res.blob();
-    aheadLearn(bytes.size, Date.now() - t0);   // what this one taught us
-    // the listener may have moved on while this was coming down
-    if (aheadKey(cur.rec, cur.idx + 1) === key) {
-      AHEAD.key = key;
-      AHEAD.bytes = bytes;
+/* let go of what has been heard, so what is coming has room */
+function bankForget() {
+  for (const k of Object.keys(BANK.blob)) {
+    const i = +k;
+    if (i < cur.idx - BANK.keep) {
+      BANK.held -= BANK.size[i] || 0;
+      delete BANK.blob[i];
+      delete BANK.size[i];
     }
-  } catch (e) {
-    // no prefetch, no harm: the track loads the ordinary way when it starts
   }
-  if (AHEAD.busy === key) AHEAD.busy = '';
+  if (BANK.held < 0) BANK.held = 0;
 }
 
-function aheadDrop() { AHEAD.key = ''; AHEAD.bytes = null; }
-
-/* watched on the ordinary time updates — no timer of its own */
-function aheadWatch() {
-  if (!au.duration || !isFinite(au.duration) || au.paused) return;
-  const nx = aheadNext();
-  if (!nx) return;
-  // ask the size once, early, so the moment to begin can be worked out at all
-  if (AHEAD.sized[nx.track.f] === undefined) { aheadSize(nx.track.f); return; }
-  const left = (TRIM.end || au.duration) - au.currentTime;
-  if (left > 0 && left <= aheadLead(AHEAD.sized[nx.track.f])) aheadFetch();
+/* the next part worth fetching: the soonest one after the needle that is not
+   held yet, so a listener who skips forward is served before one who waits */
+function bankWant() {
+  const r = byId(C.recordings, BANK.rec);
+  if (!r) return -1;
+  // Only so far ahead. Seventy-six parts is sixty-eight megabytes, and
+  // holding all of it to play the first minute is a cost a telephone pays for
+  // nothing: a dozen parts in front of the needle is already more than any
+  // listener can get ahead of, and it costs the same whether the recording has
+  // six parts or seventy-six.
+  const last = Math.min(r.tr.length, cur.idx + BANK.window);
+  for (let i = cur.idx; i < last; i++) {
+    if (BANK.blob[i] === undefined) return i;
+  }
+  return -1;
 }
+
+async function bankFill() {
+  if (BANK.busy) return;
+  BANK.busy = true;
+  try {
+    for (;;) {
+      bankForget();
+      if (BANK.held >= BANK.ceiling) break;       // full for now
+      const r = byId(C.recordings, BANK.rec);
+      const i = bankWant();
+      if (!r || i < 0) break;                     // all of it is here
+      const t = r.tr[i];
+      let bytes = null;
+      try {
+        const res = await fetch(audioURL(t.f));
+        const total = +(res.headers.get('content-length') || 0);
+        if (res.ok && total && total <= MAX_FETCH) bytes = await res.blob();
+      } catch (e) {
+        bytes = null;                             // it will load when played
+      }
+      if (BANK.rec !== cur.rec) break;            // moved to another recording
+      if (!bytes) { BANK.blob[i] = null; BANK.size[i] = 0; continue; }
+      BANK.blob[i] = bytes;
+      BANK.size[i] = bytes.size;
+      BANK.held += bytes.size;
+      if (BANK.trim[i] === undefined) {
+        BANK.trim[i] = null;                      // measured just below
+        bytes.arrayBuffer()
+          .then(b => silenceEdges(b))
+          .then(e => {
+            BANK.trim[i] = e || null;
+            // the part being heard right now learns its own edges late
+            if (cur.idx === i && e) {
+              TRIM.start = e.start; TRIM.end = e.end;
+              if (e.start && au.currentTime < e.start) au.currentTime = e.start;
+            }
+          })
+          .catch(() => { BANK.trim[i] = null; });
+      }
+    }
+  } finally {
+    BANK.busy = false;
+  }
+}
+
+/* opened a recording: hold the whole of it, unless it is a single part */
+function bankOpen(recId) {
+  const r = byId(C.recordings, recId);
+  if (!r) return;
+  if (BANK.rec !== recId) { bankDrop(); BANK.rec = recId; }
+  if ((r.tr || []).length < 2) return;            // nothing to run on from
+  bankFill();
+}
+
+/* room may have been freed, or a skip may have put a gap ahead */
+function bankNudge() { if (BANK.rec === cur.rec) bankFill(); }
 
 /* The element streams only a little ahead of the needle and then waits — which
  * is why the figure used to sit still, and why reaching for the scrubber
@@ -846,7 +877,6 @@ function aheadWatch() {
  * the copy in memory: from then on every point in it is instant. */
 async function fetchTrack(track, token) {
   const url = audioURL(track.f);
-  const started = Date.now();
   try {
     const res = await fetch(url);
     if (!res.ok || !res.body) return failFetch(token);
@@ -865,7 +895,6 @@ async function fetchTrack(track, token) {
       LOAD.bytes += value.length;
     }
     if (token !== LOAD.token) return;
-    aheadLearn(LOAD.bytes, Date.now() - started);   // every download teaches
     const type = res.headers.get('content-type') || 'audio/mpeg';
     const bytes = new Blob(chunks, { type });
     swapToBlob(bytes, token);
@@ -952,9 +981,18 @@ const SILENCE = 0.012;                // below this counts as nothing
 
 /* The bytes are already here — the download did that — so this only decodes
  * them and reads where the sound begins and ends. */
-async function scanSilence(buf, token) {
-  if (!window.AudioContext && !window.webkitAudioContext) return;
-  if (token !== LOAD.token) return;
+/* ---- where the singing actually begins and ends inside a file.
+ *
+ * Every one of these was digitised with the tape already running, so each
+ * carries a little silence at its head and a little at its tail. On a single
+ * recording that is barely noticed. On a piyyut that arrives in seventy-six
+ * parts it is seventy-six small holes in the middle of the singing, and
+ * those are what is heard as "it stops between the parts".
+ *
+ * Answers in seconds, or null when the file is nothing but silence.
+ */
+async function silenceEdges(buf) {
+  if (!window.AudioContext && !window.webkitAudioContext) return null;
   try {
     const AC = window.AudioContext || window.webkitAudioContext;
     const ctx = new AC();
@@ -976,12 +1014,21 @@ async function scanSilence(buf, token) {
     while (b > a && !loud(b)) b -= win;
     const start = Math.max(0, a / rate - 0.15);   // leave a breath either side
     const end   = Math.min(audio.duration, (b + win) / rate + 0.25);
-    if (end - start < 1) return;                  // nothing but silence: leave it
-    if (token !== LOAD.token) return;             // the user moved on meanwhile
-    TRIM.start = start > 0.4 ? start : 0;
-    TRIM.end   = end < audio.duration - 0.4 ? end : 0;
-    if (TRIM.start && au.currentTime < TRIM.start) au.currentTime = TRIM.start;
-  } catch (e) { /* an odd codec, a short read — play it as it comes */ }
+    if (end - start < 1) return null;             // nothing but silence
+    return { start: start > 0.4 ? start : 0,
+             end: end < audio.duration - 0.4 ? end : 0 };
+  } catch (e) {
+    return null;                   // an odd codec, a short read — play it whole
+  }
+}
+
+async function scanSilence(buf, token) {
+  if (token !== LOAD.token) return;
+  const e = await silenceEdges(buf);
+  if (!e || token !== LOAD.token) return;         // the user moved on meanwhile
+  TRIM.start = e.start;
+  TRIM.end = e.end;
+  if (TRIM.start && au.currentTime < TRIM.start) au.currentTime = TRIM.start;
 }
 
 // the tail: stop where the singing stopped, and move on as if it had ended
@@ -2843,7 +2890,7 @@ au.addEventListener('seeking', () => {
 let mediaAt = 0;
 au.addEventListener('timeupdate', () => {
   seekFrom = au.currentTime;
-  aheadWatch();                          // fetch the next one before it is due
+  bankNudge();                           // keep the rest of the recording coming
   // the notification only needs this about once a second, not four times
   if (Date.now() - mediaAt > 1000) { mediaAt = Date.now(); mediaPos(); }
 });
