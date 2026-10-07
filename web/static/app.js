@@ -206,7 +206,7 @@ const I18N = {
     week_portion_extra:'פרשה נוספת', week_portion_here_extra:'פרשה נוספת הנקראת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_shira:'אוצר השירה השומרונית',
-    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', m_a11y:'הגדרות נגישות', tools_bar:'כלים', rd_prev_ch:'‹ הפרק הקודם', rd_next_ch:'הפרק הבא ›',
+    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', m_a11y:'הגדרות נגישות', tools_bar:'כלים', rd_bar:'סרגל ההשמעה', rd_prev_ch:'‹ הפרק הקודם', rd_next_ch:'הפרק הבא ›',
     lib_hint_back:'גרור מטה להחזרה למדף', lib_hint_open:'לחץ שוב לפתיחת הספר', a11y_size:'גודל הטקסט',
     a11y_invert:'היפוך צבעים', a11y_invert_hint:'רקע שחור וטקסט לבן, בכל מסכי האפליקציה',
     a11y_reset:'איפוס', shelf_sources:'פירושים ומסורת',
@@ -475,7 +475,7 @@ const I18N = {
     week_portion_extra:'Additional portion', week_portion_here_extra:'An additional portion read this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
     m_shira:'The Treasury of Samaritan Song',
-    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', m_a11y:'Accessibility', tools_bar:'Tools', rd_prev_ch:'‹ Previous', rd_next_ch:'Next ›',
+    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', m_a11y:'Accessibility', tools_bar:'Tools', rd_bar:'Reading player', rd_prev_ch:'‹ Previous', rd_next_ch:'Next ›',
     lib_hint_back:'Drag down to put it back', lib_hint_open:'Tap again to open it', a11y_size:'Text size',
     a11y_invert:'Invert colours', a11y_invert_hint:'Black background, white text, throughout the app',
     a11y_reset:'Reset', shelf_sources:'Commentary and tradition',
@@ -744,7 +744,7 @@ const I18N = {
     week_portion_extra:'فصل إضافي', week_portion_here_extra:'فصل إضافي يُقرأ هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
     m_shira:'كنز الترتيل السامري',
-    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', m_a11y:'إعدادات الوصول', tools_bar:'أدوات', rd_prev_ch:'‹ السابق', rd_next_ch:'التالي ›',
+    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', m_a11y:'إعدادات الوصول', tools_bar:'أدوات', rd_bar:'شريط الاستماع', rd_prev_ch:'‹ السابق', rd_next_ch:'التالي ›',
     lib_hint_back:'اسحب للأسفل للإرجاع', lib_hint_open:'انقر ثانيةً لفتح الكتاب', a11y_size:'حجم النصّ',
     a11y_invert:'عكس الألوان', a11y_invert_hint:'خلفية سوداء ونصّ أبيض، في كلّ شاشات التطبيق',
     a11y_reset:'إعادة ضبط', shelf_sources:'التفاسير والتقاليد',
@@ -4704,6 +4704,8 @@ function setView(){
   { const pb=$('playBtn'); if(pb) pb.classList.toggle('hidden', !isVerse); }   // (removed from UI)
   $('printBtn').classList.toggle('hidden', !isVerse);   // print-to-PDF
   $('pronBtn').classList.toggle('hidden', !isVerse);    // pronunciation preview toggle
+  // the play sign goes with them; readingBar brings it back where a reading exists
+  if(!isVerse){ const b=$('rdBarBtn'); if(b) b.classList.add('hidden'); }
   if(!isVerse && typeof ttsStop==='function') ttsStop();
   syncToolbar(isVerse);
   updateToolbarFold(isVerse);
@@ -10027,8 +10029,31 @@ function rdContChip(){
   };
   return b;
 }
+// ── סרגל ההשמעה: נסתר, עד שמבקשים אותו ──────────────────────────────────────
+// The reading bar used to sit over every chapter whether or not anyone wanted to
+// listen, and it is the tallest thing between the path line and the first verse.
+// Now it waits behind the play sign in the tools row, and the reader's answer —
+// shown or hidden — is remembered for the next chapter and the next visit.
+const RDBAR = { on: (()=>{ try{ return localStorage.getItem('as_reading_bar')==='1'; }
+                           catch(e){ return false; } })() };
+function rdBarPaint(){
+  const b = $('rdBarBtn'); if(!b) return;
+  b.classList.toggle('on', RDBAR.on);
+  b.setAttribute('aria-pressed', RDBAR.on ? 'true' : 'false');
+  document.querySelectorAll('.reading-bar').forEach(
+    el => el.classList.toggle('rdbar-off', !RDBAR.on));
+}
+{ const b = $('rdBarBtn');
+  if(b) b.onclick = ()=>{
+    RDBAR.on = !RDBAR.on;
+    try{ localStorage.setItem('as_reading_bar', RDBAR.on ? '1' : '0'); }catch(e){}
+    rdBarPaint();
+  };
+}
 function readingBar(c){
   RDAU.ui = null;
+  // the sign only offers itself where there is in fact something to hear
+  { const b=$('rdBarBtn'); if(b) b.classList.add('hidden'); }
   const opts = readingOptions(); if(!opts.length) return;
   let rec = rdPickOption(opts);
   const bar = el('div','reading-bar');
@@ -10045,6 +10070,8 @@ function readingBar(c){
   head.appendChild(title);
   head.appendChild(rdRepeatBtn());     // RTL: lands immediately to the right of the flag
   head.appendChild(rdContChip());
+  if(!RDBAR.on) bar.classList.add('rdbar-off');
+  { const b=$('rdBarBtn'); if(b){ b.classList.remove('hidden'); } }
   bar.appendChild(head);
   bar.appendChild(row);
   row.appendChild(btn);
