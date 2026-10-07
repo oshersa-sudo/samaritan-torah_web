@@ -4189,8 +4189,12 @@ def _dara_occurrences(conn, word_fins, limit=25):
 def get_dara_toc():
     """Every piyyut in the volume, grouped client-side by author."""
     conn = get_connection()
-    rows = conn.execute("""SELECT id, author, sec, title, sources, usage, pages, n_lines
-        FROM dara_piyutim ORDER BY ord""").fetchall()
+    # the opening words come too: a piyyut is known by them, not by its number
+    rows = conn.execute("""SELECT p.id, p.author, p.sec, p.title, p.sources, p.usage,
+               p.pages, p.n_lines,
+               (SELECT l.aram FROM dara_lines l WHERE l.piyut_id = p.id
+                 ORDER BY l.ord LIMIT 1) AS opening
+        FROM dara_piyutim p ORDER BY p.ord""").fetchall()
     conn.close()
     return [dict(r) for r in rows]
 
@@ -4245,9 +4249,16 @@ def search_dara(q, limit=200):
 
 
 def get_dara_word(word):
-    """One word of the volume: its pronunciation, its meaning, and every line it
-    occurs in. This is the bridge from the Aramaic-Hebrew dictionary into the
-    liturgy — the dictionary can now show how a word is actually pronounced."""
+    """Everything the app holds about one word of the liturgy.
+
+    It used to answer from the volume's own word list alone and return nothing at
+    all when that list was silent — so a reader tapping a word was told there was
+    no entry while the dictionary held the word, the Torah held it, and the
+    Arabic lexicon glossed it. Now the volume's list is one source among several:
+    its pronunciation and its lines, Tal's dictionary with its senses and the
+    Torah verses it cites, the Arabic gloss, and the word's own places in the
+    Torah text. A word that genuinely appears nowhere returns an empty record
+    rather than nothing, so the reader is told that, and not told it wrongly."""
     word = (word or '').strip()
     if not word:
         return None
@@ -4255,18 +4266,44 @@ def get_dara_word(word):
     w = conn.execute(
         "SELECT word, freq, translit, root, gloss FROM dara_words WHERE word=? OR word_norm=?",
         (word, word)).fetchone()
-    if not w:
-        conn.close()
-        return None
-    refs = [dict(r) for r in conn.execute("""SELECT r.piyut_id, p.title, l.ord, l.n,
-            l.aram, l.heb, l.translit
-        FROM dara_word_refs r
-        JOIN dara_lines l ON l.piyut_id = r.piyut_id AND l.ord = r.line_ord
-        JOIN dara_piyutim p ON p.id = r.piyut_id
-        WHERE r.word=? ORDER BY p.ord, l.ord LIMIT 60""", (word,))]
+    out = dict(w) if w else {'word': word, 'freq': 0, 'translit': '',
+                             'root': '', 'gloss': ''}
+
+    # where it is sung
+    try:
+        out['refs'] = [dict(r) for r in conn.execute("""SELECT r.piyut_id, p.title, l.ord, l.n,
+                l.aram, l.heb, l.translit
+            FROM dara_word_refs r
+            JOIN dara_lines l ON l.piyut_id = r.piyut_id AND l.ord = r.line_ord
+            JOIN dara_piyutim p ON p.id = r.piyut_id
+            WHERE r.word=? ORDER BY p.ord, l.ord LIMIT 60""", (word,))]
+    except Exception:
+        out['refs'] = []
+
+    # the Arabic gloss, where HaMeliṣ has one for this word
+    try:
+        row = conn.execute(
+            "SELECT hebrew, arabic FROM meliz_gloss WHERE lemma=? LIMIT 1", (word,)).fetchone()
+        if row:
+            out['meliz'] = {'he': row['hebrew'] or '', 'ar': row['arabic'] or ''}
+    except Exception:
+        pass
     conn.close()
-    out = dict(w)
-    out['refs'] = refs
+
+    # the dictionary: its senses, and the Torah verses it cites for them
+    try:
+        out['tal'] = tal_full_lookup(word)
+    except Exception:
+        out['tal'] = None
+    # and a short meaning, when the volume's list had none of its own
+    if not (out.get('gloss') or '').strip():
+        try:
+            c = tal_concise(word)
+            if c and c.get('gloss'):
+                out['gloss'] = c['gloss']
+                out['gloss_from'] = 'tal'
+        except Exception:
+            pass
     return out
 
 

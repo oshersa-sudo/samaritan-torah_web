@@ -206,7 +206,7 @@ const I18N = {
     week_portion_extra:'פרשה נוספת', week_portion_here_extra:'פרשה נוספת הנקראת השבוע — {p}',
     m_timeline:'ציר הזמן ההיסטורי השומרוני',
     m_shira:'אוצר השירה השומרונית',
-    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', m_a11y:'הגדרות נגישות', rd_prev_ch:'‹ הפרק הקודם', rd_next_ch:'הפרק הבא ›',
+    m_mss:'אוצר כתבי היד השומרוניים בתבל', m_more_apps:'אפליקציות נוספות', m_a11y:'הגדרות נגישות', tools_bar:'כלים', rd_prev_ch:'‹ הפרק הקודם', rd_next_ch:'הפרק הבא ›',
     lib_hint_back:'גרור מטה להחזרה למדף', lib_hint_open:'לחץ שוב לפתיחת הספר', a11y_size:'גודל הטקסט',
     a11y_invert:'היפוך צבעים', a11y_invert_hint:'רקע שחור וטקסט לבן, בכל מסכי האפליקציה',
     a11y_reset:'איפוס', shelf_sources:'פירושים ומסורת',
@@ -240,9 +240,9 @@ const I18N = {
     m_piyutim_book:'עיון בפיוטים השומרוניים', piy_title:'עיון בפיוטים השומרוניים',
     m_dara_book:'פיוטי השומרונים בתעתיק הגייה', dara_title:'פיוטי השומרונים בתעתיק הגייה',
     dara_search_ph:'חיפוש בארמית, בעברית או בתעתיק…', dara_back_tree:'חזרה לתוכן',
-    dara_col_aram:'ארמית', dara_col_heb:'עברית', dara_col_tr:'תעתיק',
+    dara_col_aram:'ארמית', dara_col_heb:'עברית', dara_col_tr:'תעתיק', dara_col_sam:'כתב שומרוני',
     dara_empty:'בחר פיוט מתוכן העניינים ←', dara_lines:'שורות',
-    dara_variants:'חילופי גרסה והערות הגייה', dara_occurs:'מופעים בספר', dara_loading:'טוען…',
+    dara_variants:'חילופי גרסה והערות הגייה', dara_occurs:'מופעים בספר', dara_pop_dict:'מן המילון', dara_pop_arabic:'בערבית', dara_loading:'טוען…',
     dict_in_dara_sec:'בפיוטי הליטורגיה', dict_w_dara:'נאמרת בפיוטי הליטורגיה', dict_dara_only:'מן פיוטי הליטורגיה',
     piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
     piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
@@ -475,7 +475,7 @@ const I18N = {
     week_portion_extra:'Additional portion', week_portion_here_extra:'An additional portion read this week — {p}',
     m_timeline:'The Samaritan Historical Timeline',
     m_shira:'The Treasury of Samaritan Song',
-    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', m_a11y:'Accessibility', rd_prev_ch:'‹ Previous', rd_next_ch:'Next ›',
+    m_mss:'The Samaritan Manuscript Treasury', m_more_apps:'More applications', m_a11y:'Accessibility', tools_bar:'Tools', rd_prev_ch:'‹ Previous', rd_next_ch:'Next ›',
     lib_hint_back:'Drag down to put it back', lib_hint_open:'Tap again to open it', a11y_size:'Text size',
     a11y_invert:'Invert colours', a11y_invert_hint:'Black background, white text, throughout the app',
     a11y_reset:'Reset', shelf_sources:'Commentary and tradition',
@@ -509,9 +509,9 @@ const I18N = {
     m_piyutim_book:'Samaritan Piyyutim', piy_title:'Samaritan Piyyutim',
     m_dara_book:'Samaritan Piyyutim in Phonetic Transcription', dara_title:'Samaritan Piyyutim in Phonetic Transcription',
     dara_search_ph:'Search Aramaic, Hebrew or transcription…', dara_back_tree:'Back to contents',
-    dara_col_aram:'Aramaic', dara_col_heb:'Hebrew', dara_col_tr:'Transcription',
+    dara_col_aram:'Aramaic', dara_col_heb:'Hebrew', dara_col_tr:'Transcription', dara_col_sam:'Samaritan script',
     dara_empty:'Pick a piyyut from the contents →', dara_lines:'lines',
-    dara_variants:'Variants and pronunciation notes', dara_occurs:'Occurrences in the book', dara_loading:'loading…',
+    dara_variants:'Variants and pronunciation notes', dara_occurs:'Occurrences in the book', dara_pop_dict:'From the dictionary', dara_pop_arabic:'In Arabic', dara_loading:'loading…',
     dict_in_dara_sec:'In the liturgy', dict_w_dara:'Sung in the liturgy', dict_dara_only:'From the liturgy',
     piy_back_tree:'Back to contents', piy_dict_toggle:'Word dictionary', piy_search_ph:'Search composition, author, or word…',
     piy_empty:'Choose a composition from the contents ←', piy_pick_first:'Choose a composition',
@@ -744,7 +744,7 @@ const I18N = {
     week_portion_extra:'فصل إضافي', week_portion_here_extra:'فصل إضافي يُقرأ هذا الأسبوع — {p}',
     m_timeline:'الخطّ الزمني التاريخي السامري',
     m_shira:'كنز الترتيل السامري',
-    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', m_a11y:'إعدادات الوصول', rd_prev_ch:'‹ السابق', rd_next_ch:'التالي ›',
+    m_mss:'كنز المخطوطات السامرية', m_more_apps:'تطبيقات أخرى', m_a11y:'إعدادات الوصول', tools_bar:'أدوات', rd_prev_ch:'‹ السابق', rd_next_ch:'التالي ›',
     lib_hint_back:'اسحب للأسفل للإرجاع', lib_hint_open:'انقر ثانيةً لفتح الكتاب', a11y_size:'حجم النصّ',
     a11y_invert:'عكس الألوان', a11y_invert_hint:'خلفية سوداء ونصّ أبيض، في كلّ شاشات التطبيق',
     a11y_reset:'إعادة ضبط', shelf_sources:'التفاسير والتقاليد',
@@ -778,9 +778,9 @@ const I18N = {
     m_piyutim_book:'الأناشيد السامرية', piy_title:'تصفّح الأناشيد السامرية',
     m_dara_book:'الأناشيد السامرية بالنسخ الصوتي', dara_title:'الأناشيد السامرية بالنسخ الصوتي',
     dara_search_ph:'ابحث بالآرامية أو العبرية أو النسخ الصوتي…', dara_back_tree:'العودة إلى الفهرس',
-    dara_col_aram:'آرامي', dara_col_heb:'عبري', dara_col_tr:'نسخ صوتي',
+    dara_col_aram:'آرامي', dara_col_heb:'عبري', dara_col_tr:'نسخ صوتي', dara_col_sam:'الخطّ السامري',
     dara_empty:'اختر نشيدًا من الفهرس ←', dara_lines:'أسطر',
-    dara_variants:'الفروق وملاحظات النطق', dara_occurs:'مواضع في الكتاب', dara_loading:'جارٍ التحميل…',
+    dara_variants:'الفروق وملاحظات النطق', dara_occurs:'مواضع في الكتاب', dara_pop_dict:'من المعجم', dara_pop_arabic:'بالعربية', dara_loading:'جارٍ التحميل…',
     dict_in_dara_sec:'في الأناشيد', dict_w_dara:'ترد في الأناشيد', dict_dara_only:'من الأناشيد',
     piy_back_tree:'العودة للفهرس', piy_dict_toggle:'قاموس الكلمات', piy_search_ph:'بحث عن تأليف أو مؤلف أو كلمة…',
     piy_empty:'اختر تأليفًا من الفهرس ←', piy_pick_first:'اختر تأليفًا',
@@ -4918,6 +4918,30 @@ $('fontBtn').onclick=async ()=>{ const was=S.samFont, dict=S.dict;
   if(S.samFont && SHOW_NIKUD) await ensureNikud();
   syncToolbar(true); paintVerses(); };
 $('nikudBtn').onclick=toggleNikud;
+
+// ── the tools, behind three dots ─────────────────────────────────────────────
+// The bookmark, the pin, the printer, the pronunciation and the vocalization sat
+// out on the path line, five marks competing with the one line that says where
+// the reader is. They are behind a single button now, in the place they used to
+// occupy, and open sideways from it as a row — the same buttons with the same
+// ids, so every handler, every hidden-state and the guided tour address them as
+// before. It closes on the next touch anywhere else, because a reader who has
+// printed has finished with it.
+(function(){
+  const btn=$('toolsBtn'), row=$('toolsRow');
+  if(!btn || !row) return;
+  const show = on => {
+    row.classList.toggle('hidden', !on);
+    btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    btn.classList.toggle('on', on);
+  };
+  btn.onclick = e => { e.stopPropagation(); show(row.classList.contains('hidden')); };
+  // a tool that was used has done its work; the row steps back
+  row.addEventListener('click', e => { if(e.target.closest('button')) setTimeout(()=>show(false), 180); });
+  document.addEventListener('click', e => {
+    if(!row.classList.contains('hidden') && !e.target.closest('#toolsRow, #toolsBtn')) show(false);
+  }, true);
+})();
 // "כולל פירושים?" — only meaningful while samFont is on; syncToolbar() shows/hides
 // and labels this button on every relevant state change, so this handler only
 // needs to flip the flag itself.
@@ -7641,6 +7665,27 @@ function openDaraBook(){
   daraEnsure().then(()=>daraBuildTree());
   trackNav(t('dara_title'));
 }
+function daraName(p){
+  const op = String(p.opening || '').trim();
+  if(!op) return p.sec ? (p.author+' '+p.sec) : p.author;
+  let n = 0, cut = op.length;
+  for(let i = 0; i < op.length; i++){
+    if(/[א-ת]/.test(op[i])) n++;
+    if(n >= 4){                       // four letters, then to the end of the word
+      let j = i + 1;
+      while(j < op.length && /[א-ת]/.test(op[j])) j++;
+      cut = j; break;
+    }
+  }
+  return op.slice(0, cut) + (cut < op.length ? '…' : '');
+}
+function daraKind(p){
+  // the rubric says when it is said; its first clause is what kind of piece it is
+  const u = String(p.usage || '').trim();
+  if(!u) return '';
+  const stop = u.search(/[,.;]/);
+  return stop > 0 ? u.slice(0, stop) : u;
+}
 function daraBuildTree(rows){
   const tree=$('daraTree'); tree.innerHTML='';
   const list = rows || DARA.toc || [];
@@ -7653,9 +7698,15 @@ function daraBuildTree(rows){
     for(const p of items){
       const div=el('div','piy-item'); div.dataset.id=p.id;
       if(DARA.cur && DARA.cur.id===p.id) div.classList.add('sel');
-      const label = p.sec ? (author+' '+p.sec) : author;
+      // A piyyut is named by the words it opens with, as the tradition names it,
+      // not by its place in the volume. Four letters of the opening, carried to
+      // the end of the word they fall in so the name is a word and not a stump,
+      // and beside it what the piyyut is for — the first clause of its rubric.
+      const label = daraName(p);
+      const kind = daraKind(p);
       div.innerHTML=`<span class="piy-item-title">${esc(label)}</span>`+
-                    `<span class="piy-item-auth">${p.n_lines} ${esc(t('dara_lines'))}</span>`;
+                    `<span class="piy-item-auth">${kind ? esc(kind) + ' · ' : ''}`+
+                    `${p.n_lines} ${esc(t('dara_lines'))}</span>`;
       div.onclick=()=>daraShow(p.id);
       d.appendChild(div);
     }
@@ -7663,10 +7714,21 @@ function daraBuildTree(rows){
   }
   if(!tree.children.length) tree.appendChild(el('div','note', t('lib_no_result')));
 }
+// ── the piyyut in the Samaritan hand ─────────────────────────────────────────
+// The same words, in the letters they were written in, with the word-divider
+// between them as the manuscripts set it — a dot at the middle of the line, not
+// a space. The word keeps its span and its data, so it is still a word a reader
+// can tap and look up; only its drawing changes.
+let DARA_SAM = false;
 function daraWordSpan(w){
   const clean=(w||'').replace(/[^א-ת]/g,'');
   const d = clean && DARA.cur && DARA.cur.dict && DARA.cur.dict[clean];
-  return `<span class="piy-w ${d?'piy-hasdef':''}" data-w="${esc(clean)}">${esc(w)}</span>`;
+  const body = DARA_SAM ? ('<span class="samchar2">'+esc(w)+'</span>') : esc(w);
+  return `<span class="piy-w ${d?'piy-hasdef':''}" data-w="${esc(clean)}">${body}</span>`;
+}
+function daraJoin(words){
+  // between words the Samaritan text carries its own divider, centred on the line
+  return words.join(DARA_SAM ? '<span class="wsep">·</span>' : ' ');
 }
 async function daraShow(id){
   let p; try{ p=await api('dara_piyut?id='+id); }catch(e){ p=null; }
@@ -7675,7 +7737,7 @@ async function daraShow(id){
   document.querySelectorAll('#daraTree .piy-item.sel').forEach(e=>e.classList.remove('sel'));
   document.querySelectorAll('#daraTree .piy-item[data-id="'+id+'"]').forEach(e=>e.classList.add('sel'));
   const rows = (p.lines||[]).map(l=>{
-    const aram = (l.aram||'').split(/\s+/).filter(Boolean).map(daraWordSpan).join(' ');
+    const aram = daraJoin((l.aram||'').split(/\s+/).filter(Boolean).map(daraWordSpan));
     return `<tr><td class="dara-n">${esc(l.n||'')}</td>`+
            `<td class="dara-a">${aram}</td>`+
            `<td class="dara-h">${esc(l.heb||'')}</td>`+
@@ -7693,6 +7755,18 @@ async function daraShow(id){
   $('daraBody').classList.add('piy-detail-open');
   $('daraBack').classList.remove('hidden');
 }
+(function(){
+  const b=$('daraColS'); if(!b) return;
+  b.onclick=()=>{
+    DARA_SAM=!DARA_SAM;
+    b.classList.toggle('on', DARA_SAM);
+    b.setAttribute('aria-pressed', DARA_SAM?'true':'false');
+    try{ localStorage.setItem('as_dara_sam', DARA_SAM?'1':'0'); }catch(e){}
+    if(DARA.cur) daraShow(DARA.cur.id);     // redraw the piyyut in the other hand
+  };
+  try{ if(localStorage.getItem('as_dara_sam')==='1'){ DARA_SAM=true;
+    b.classList.add('on'); b.setAttribute('aria-pressed','true'); } }catch(e){}
+})();
 function daraApplyCols(){
   const m=$('daraMain');
   m.classList.toggle('no-a', !DARA.cols.a);
@@ -7724,25 +7798,79 @@ $('daraSearch').addEventListener('input', ()=>{
 $('daraBack').onclick=()=>$('daraBody').classList.remove('piy-detail-open');
 $('daraClose').onclick=()=>$('daraModal').classList.add('hidden');
 $('daraToTorah').onclick=()=>$('daraModal').classList.add('hidden');
-// word tap: pronunciation + meaning + the other places the word is used
+// ── tapping a word in the liturgy ────────────────────────────────────────────
+// It used to answer from the volume's own word list alone, and say "no entry"
+// the moment that list was silent — while the dictionary held the word, the
+// Torah held it, and the Arabic lexicon glossed it. It now shows what the app
+// knows: how the word is pronounced, what it means and from where that meaning
+// comes, the dictionary's senses under their root, the Arabic, the verses of the
+// Torah the dictionary cites, and the lines of the liturgy it is sung in.
+//
+// closest('.piy-w'), not the target's own class: in the Samaritan hand the word's
+// letters live in a span inside it, and the tap lands on that.
 document.addEventListener('click', async e=>{
   const pop=$('daraWordPop'); if(!pop) return;
-  const inDara = e.target.closest && e.target.closest('#daraModal');
-  if(inDara && e.target.classList && e.target.classList.contains('piy-w')){
-    const w=e.target.dataset.w, d=(DARA.cur && DARA.cur.dict && DARA.cur.dict[w])||null;
-    pop.innerHTML=`<b>${esc(w)}</b>${d&&d.t?' <span class="dara-pron">'+esc(d.t)+'</span>':''}<br>`+
-                  (d&&d.g?esc(d.g):('<i>'+esc(t('piy_no_dict_entry'))+'</i>'))+
+  const hit = e.target.closest && e.target.closest('#daraModal .piy-w');
+  if(hit){
+    const w=hit.dataset.w, d=(DARA.cur && DARA.cur.dict && DARA.cur.dict[w])||null;
+    pop.innerHTML=`<div class="dara-pop-head"><b>${esc(w)}</b>`+
+                  `${d&&d.t?' <span class="dara-pron">'+esc(d.t)+'</span>':''}</div>`+
+                  (d&&d.g?`<div class="dara-pop-gloss">${esc(d.g)}</div>`:'')+
                   `<div class="dara-pop-more">${esc(t('dara_loading'))}</div>`;
     pop.classList.remove('hidden');
-    pop.style.top=Math.min(e.clientY+12, innerHeight-180)+'px';
-    pop.style.left=Math.max(10, e.clientX-160)+'px';
+    pop.style.top=Math.min(e.clientY+12, innerHeight-320)+'px';
+    pop.style.left=Math.max(10, Math.min(e.clientX-170, innerWidth-350))+'px';
     try{
-      const r=await api('dara_word?w='+encodeURIComponent(w));
-      const more=(r.refs||[]).slice(0,6).map(x=>`<div class="dara-pop-ref"><b>${esc(x.title)} ${esc(x.n||'')}</b> ${esc(x.aram||'')}</div>`).join('');
+      const r=await api('dara_word?w='+encodeURIComponent(w)) || {};
+      const sec=(title, body)=> body ? `<div class="dara-pop-sec"><h5>${esc(title)}</h5>${body}</div>` : '';
+      let html='';
+
+      // the meaning, when the volume's own list had none and another source did
+      if(!(d&&d.g) && (r.gloss||'').trim())
+        html += `<div class="dara-pop-gloss">${esc(r.gloss)}</div>`;
+
+      // the dictionary: each root, its senses, and the verses it cites
+      const roots=((r.tal||{}).roots)||[];
+      if(roots.length){
+        html += sec(t('dara_pop_dict'), roots.map(rt=>{
+          const senses=(rt.senses||[]).slice(0,4).map(s=>
+            `<div class="dara-pop-sense">${esc(s.gloss||'')}`+
+            `${s.pos?' <i>'+esc(s.pos)+'</i>':''}</div>`).join('');
+          const tor=(rt.torah||[]).slice(0,6).map(v=>
+            `<button class="dara-pop-v" data-vid="${v.verse_id}">`+
+            `${esc(v.book||'')} ${esc(String(v.chapter||''))}:${esc(String(v.verse||''))}</button>`).join('');
+          return `<div class="dara-pop-root"><b>${esc(rt.root||'')}</b>${senses}`+
+                 (tor?`<div class="dara-pop-vs">${tor}</div>`:'')+`</div>`;
+        }).join(''));
+      }
+
+      // the Arabic, where HaMeliṣ glosses it
+      if(r.meliz && (r.meliz.ar || r.meliz.he))
+        html += sec(t('dara_pop_arabic'),
+          `<div class="dara-pop-ar" dir="rtl">${esc(r.meliz.ar||'')}</div>`+
+          (r.meliz.he?`<div class="dara-pop-sense">${esc(r.meliz.he)}</div>`:''));
+
+      // and where it is sung
+      const refs=(r.refs||[]).slice(0,8).map(x=>
+        `<div class="dara-pop-ref"><b>${esc(x.title||'')} ${esc(x.n||'')}</b> ${esc(x.aram||'')}</div>`).join('');
+      if(refs) html += sec(t('dara_occurs')+' ('+(r.freq||0)+')', refs);
+
       const box=pop.querySelector('.dara-pop-more');
-      if(box) box.innerHTML=`<div class="dara-pop-freq">${esc(t('dara_occurs'))}: ${r.freq}</div>${more}`;
+      if(box) box.innerHTML = html || `<i>${esc(t('piy_no_dict_entry'))}</i>`;
     }catch(err){ const box=pop.querySelector('.dara-pop-more'); if(box) box.textContent=''; }
   } else if(!pop.classList.contains('hidden') && !(e.target.closest && e.target.closest('#daraWordPop'))) pop.classList.add('hidden');
+});
+// a cited verse in the window opens that verse in the Torah
+$('daraWordPop') && $('daraWordPop').addEventListener('click', async e=>{
+  const b=e.target.closest('.dara-pop-v'); if(!b) return;
+  const vid=parseInt(b.dataset.vid,10); if(!vid) return;
+  let rec; try{ rec=await api('locate_verse?verse_id='+vid); }catch(_){ return; }
+  if(!rec || !rec.portion_id) return;
+  $('daraWordPop').classList.add('hidden');
+  $('daraModal').classList.add('hidden');
+  S.book=rec.book_id; S.bookName=rec.book_name;
+  await openChapter(rec.chapter_id, rec.chapter_number, rec.portion_id, rec.portion_name);
+  filterVerse(vid);
 });
 
 // ── מציאת חרוזים — word/suffix/sound rhyme search over the piyyutim word bank.

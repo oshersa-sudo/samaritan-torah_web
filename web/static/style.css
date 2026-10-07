@@ -2617,3 +2617,44 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
   box-shadow:0 1px 3px rgba(0,0,0,.35); transition:inset-inline-start .18s ease; }
 .a11y-switch input:checked{ background:var(--navy); }
 .a11y-switch input:checked::after{ inset-inline-start:25px; }
+
+/* ── the tools behind three dots ─────────────────────────────────────────────
+   One mark on the path line instead of five, in the place the five held; the
+   row opens sideways from it, over the line rather than pushing it. */
+.tools-nav{ position:relative; z-index:3; }
+.tools-dots{ display:block; width:4px; height:4px; border-radius:50%;
+  background:currentColor; box-shadow:0 -7px 0 currentColor, 0 7px 0 currentColor; }
+.tools-nav.on{ background:var(--active); color:#fff; }
+.tools-row{ display:inline-flex; align-items:center; gap:4px;
+  margin-inline-start:4px; animation:toolsIn .16s ease-out; }
+.tools-row.hidden{ display:none; }
+@keyframes toolsIn{ from{ opacity:0; transform:translateX(8px); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce){ .tools-row{ animation:none; } }
+
+/* ── הפיוט בכתב שומרוני ──────────────────────────────────────────────────────
+   The Aramaic column in the Samaritan hand, its word-divider a dot at the middle
+   of the line rather than a space. The dot keeps the reader's own font: the
+   Samaritan face has no middle dot and would draw nothing in its place. */
+.dara-sam.on{ background:var(--active); color:#fff; }
+.dara-a .samchar2{ font-family:'SamComment'; font-size:1.12em; line-height:1.9; }
+.dara-a .wsep{ padding:0 .22em; color:#8a7a55; font-family:'Hebrew',sans-serif; }
+
+/* ── חלון המילה בפיוטים ──────────────────────────────────────────────────────
+   It holds several sources now, so it is a small panel rather than a line: a
+   heading, the meaning, the dictionary's senses under their root with the verses
+   it cites, the Arabic, and the lines the word is sung in. It scrolls rather
+   than growing past the screen. */
+#daraWordPop{ max-width:340px; max-height:60vh; overflow-y:auto; }
+.dara-pop-head{ font-size:17px; }
+.dara-pop-gloss{ margin:4px 0 2px; color:var(--dark); }
+.dara-pop-sec{ margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
+.dara-pop-sec h5{ margin:0 0 5px; font-size:12px; font-weight:700; color:var(--muted);
+  letter-spacing:.02em; }
+.dara-pop-root{ margin-bottom:7px; }
+.dara-pop-root > b{ color:var(--accent); }
+.dara-pop-sense{ font-size:13.5px; line-height:1.5; }
+.dara-pop-vs{ display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+.dara-pop-v{ padding:2px 7px; border:1px solid var(--line); border-radius:9px;
+  background:#fffdf8; color:var(--navy); font-family:inherit; font-size:12px; cursor:pointer; }
+.dara-pop-v:hover{ background:#eef2fb; }
+.dara-pop-ar{ font-family:'Amiri','Noto Naskh Arabic',serif; font-size:16px; }
