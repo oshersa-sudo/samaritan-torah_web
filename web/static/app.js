@@ -7836,9 +7836,16 @@ document.addEventListener('click', async e=>{
           const senses=(rt.senses||[]).slice(0,4).map(s=>
             `<div class="dara-pop-sense">${esc(s.gloss||'')}`+
             `${s.pos?' <i>'+esc(s.pos)+'</i>':''}</div>`).join('');
-          const tor=(rt.torah||[]).slice(0,6).map(v=>
-            `<button class="dara-pop-v" data-vid="${v.verse_id}">`+
-            `${esc(v.book||'')} ${esc(String(v.chapter||''))}:${esc(String(v.verse||''))}</button>`).join('');
+          // The dictionary names the place as book, chapter and verse; where it also
+          // knows which verse that is in our own text, the citation opens it, and
+          // where it does not it is printed and left alone rather than offered as a
+          // link that would go nowhere.
+          const tor=(rt.torah||[]).slice(0,6).map(v=>{
+            const ref=`${esc(v.book||'')} ${esc(String(v.ch||''))}:${esc(String(v.vn||''))}`;
+            return v.verse_id
+              ? `<button class="dara-pop-v" data-vid="${v.verse_id}">${ref}</button>`
+              : `<span class="dara-pop-v dead">${ref}</span>`;
+          }).join('');
           return `<div class="dara-pop-root"><b>${esc(rt.root||'')}</b>${senses}`+
                  (tor?`<div class="dara-pop-vs">${tor}</div>`:'')+`</div>`;
         }).join(''));
@@ -7868,9 +7875,11 @@ $('daraWordPop') && $('daraWordPop').addEventListener('click', async e=>{
   if(!rec || !rec.portion_id) return;
   $('daraWordPop').classList.add('hidden');
   $('daraModal').classList.add('hidden');
-  S.book=rec.book_id; S.bookName=rec.book_name;
-  await openChapter(rec.chapter_id, rec.chapter_number, rec.portion_id, rec.portion_name);
-  filterVerse(vid);
+  // the same road the library's readers take to a cited verse: locate_verse answers
+  // in the standard division, and goToJewish is what knows how to arrive there —
+  // it loads that book's portions first, which openChapter on its own does not.
+  await goToJewish(rec);
+  S.searchReturn=false;
 });
 
 // ── מציאת חרוזים — word/suffix/sound rhyme search over the piyyutim word bank.

@@ -2658,3 +2658,6 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
   background:#fffdf8; color:var(--navy); font-family:inherit; font-size:12px; cursor:pointer; }
 .dara-pop-v:hover{ background:#eef2fb; }
 .dara-pop-ar{ font-family:'Amiri','Noto Naskh Arabic',serif; font-size:16px; }
+
+/* a citation our own text cannot be opened at: printed, not offered */
+.dara-pop-v.dead{ background:transparent; border-color:#d8d2c4; color:#7a7366; cursor:default; }
