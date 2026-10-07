@@ -166,13 +166,13 @@ const I18N = {
       'ממקור שומרון פותח את הפרשנות השומרונית לפסוק: תיבת מרקה, פירוש צדקה אל-חכים, המסורת השומרונית ועוד.',
       'פירוש הפסוק נפתח בפאנל שמתחת לטקסט, ובו פירוש רציף לכל פסוק הבנוי אך ורק מן המקורות השומרוניים, עם ציון שם האומר. בכותרת הפאנל אפשר להציגו בכתב שומרוני רהוט או בערבית, ובתחתיתו קישורים להרחבה: ממקור שומרון, פרשנות יהודית ומילון מילים.',
       'מילון מילים מציג לכל מילה בפסוק את תרגומה הארמי ואת פירושה מתוך המילון.',
-      'סמל המדפסת שבשורת הניווט מכין את הפרק להדפסה או לשמירה כקובץ PDF. אפשר לבחור גופן, להסיר את מספרי הפסוקים, ולצרף את פירוש הפסוק, מילון המילים ותרגום — ולראות תצוגה מקדימה על המסך לפני ההדפסה.',
+      'שלוש הנקודות שבשורת הנתיב פותחות סרגל כלים: סימניה, קיבוע השורה, מדפסת, הגייה, וכפתור ההשמעה שמחזיר את סרגל ההקראה. המדפסת מכינה את הפרק להדפסה או לשמירה כ-PDF, עם בחירת גופן, הסרת מספרי הפסוקים וצירוף הפירוש, המילון והתרגום.',
       'בכפתורי פרק הבא והקודם מדפדפים בין הפרקים ברצף, גם מעבר לגבולות הספר. הזכוכיות מגדילות ומקטינות את הטקסט.',
       'כעת נדגים חיפוש. נפתח את מסך החיפוש ונקליד מילה — למשל, בראשית.',
       'אלו תוצאות החיפוש. כל תוצאה מציינת את מיקום הפסוק; לחיצה עליה קופצת ישירות אל הפסוק באפליקציה.',
       'בחיפוש המתקדם אפשר לחפש לפי שורש, בתרגום הארמי, או להתעלם מסופיות. אפשר גם להשתמש בתווים כלליים: סימן שאלה לתו אחד, כוכבית למחרוזת, ופלוס לכל המילים באותו פסוק.',
-      'בתפריט ההמבורגר נמצאים: התקנת האפליקציה, החלפת שפה, לוח השנה השומרוני, אילן היוחסין, מה חדש, עזרה ועוד.',
-      'תחת הספרייה השומרונית נמצאים המילון הארמי-עברי, ושני ספרים מלאים לעיון: תיבת מרקה ופירוש צדקה אל-חכים.',
+      'בתפריט ההמבורגר: הספרייה השומרונית, הסימניות שלי, הגדרות נגישות, החלפת שפה, מה חדש, עזרה והסיור הזה. ותחת אפליקציות נוספות — לוח השנה, אילן היוחסין, ציר הזמן, אוצר השירה ואוצר כתבי היד.',
+      'הספרייה השומרונית היא מדף של שלוש-עשרה יחידות: המילון הארמי-עברי, פיוטי השומרונים בתעתיק הגייה, אישים וחוקרים, ועשרה חיבורים שלמים לעיון — תיבת מרקה, פירוש צדקה אל-חכים, סוד הלבבות, ספר האסאטיר ועוד.',
       'כך נראה המילון: אפשר לחפש מילה, לדפדף באינדקס או בעמודי המילון, וללחוץ על מילה כדי לראות את כל מיקומיה.',
       'בכך תם הסיור. תוכלו לחזור אליו בכל עת מתפריט ההמבורגר, תחת העזרה. קריאה נעימה ומועילה!',
     ],
@@ -435,13 +435,13 @@ const I18N = {
       'Samaritan sources opens the Samaritan commentary on the verse: Tibåt Mårqe, Ṣadaqah al-Ḥakīm’s commentary, the Samaritan tradition and more.',
       'Verse commentary opens a panel beneath the text with a flowing commentary on every verse, built only from the Samaritan sources and crediting each point to the source that says it. From the panel header you can render it in the fluent Samaritan script or in Arabic, and at its foot are links onward to the Samaritan sources, the Jewish commentators and the word dictionary.',
       'The word dictionary shows, for each word in the verse, its Aramaic translation and meaning from the dictionary.',
-      'The printer icon in the navigation row prepares the chapter for printing or for saving as a PDF. You can choose the font, drop the verse numbers, and include the verse commentary, the word dictionary and a translation — with an on-screen preview before you print.',
+      'The three dots on the path line open a row of tools: bookmark, pin, printer, pronunciation, and a play sign that brings back the reading player. The printer prepares the chapter for printing or for saving as a PDF, with a choice of font, verse numbers off, and the commentary, glossary and a translation included.',
       'The next and previous buttons page through the chapters continuously, even across books. The magnifiers enlarge and shrink the text.',
       'Now let’s try a search. We open the search screen and type a word — for example, Bereshit.',
       'These are the search results. Each one shows the verse’s location; tapping it jumps straight to that verse.',
       'Advanced search lets you search by root, in the Aramaic, or ignore final letters. You can also use wildcards: a question mark for one letter, an asterisk for a string, and a plus for all words in the same verse.',
-      'The menu holds: install the app, change language, the Samaritan calendar, the genealogy, what’s new, help and more.',
-      'Under the Samaritan Library are the Aramaic–Hebrew dictionary and two full books to read: Tibåt Mårqe and Ṣadaqah al-Ḥakīm’s commentary.',
+      'The menu holds the Samaritan Library, your bookmarks, accessibility settings, the language, what’s new, help and this tour. Under More applications: the calendar, the genealogy, the historical timeline, the song archive and the manuscript treasury.',
+      'The Samaritan Library is a shelf of thirteen units: the Aramaic–Hebrew dictionary, the Samaritan liturgy in transcription, the who’s-who of Samaritan figures, and ten complete works to read — Tibåt Mårqe, Ṣadaqah al-Ḥakīm’s commentary, Sir al-Qulūb, the Asatir and more.',
       'This is the dictionary: you can search a word, browse the index or the pages, and tap a word to see all its locations.',
       'That’s the end of the tour. You can return to it any time from the menu, under Help. Enjoy your study!',
     ],
@@ -704,13 +704,13 @@ const I18N = {
       'مصادر سامرية تفتح التفسير السامري للآية: تيبات مارقه، تفسير صدقة الحكيم، التقليد السامري وغيرها.',
       'تفسير الآية يفتح لوحة تحت النصّ فيها تفسير متصل لكلّ آية، مبنيّ على المصادر السامرية وحدها مع نسبة كلّ قول إلى قائله. ومن عنوان اللوحة يمكن عرضه بالخطّ السامري أو بالعربية، وفي أسفلها روابط إلى المصادر السامرية والتفسير اليهودي ومعجم الكلمات.',
       'معجم الكلمات يعرض لكلّ كلمة في الآية ترجمتها الآرامية ومعناها من المعجم.',
-      'رمز الطابعة في شريط التنقّل يهيئ الأصحاح للطباعة أو للحفظ كملفّ PDF. يمكنك اختيار الخطّ، وإزالة أرقام الآيات، وإرفاق تفسير الآية ومعجم الكلمات وترجمة — مع معاينة على الشاشة قبل الطباعة.',
+      'النقاط الثلاث في سطر المسار تفتح شريط أدوات: علامة مرجعيّة، تثبيت، طابعة، نطق، وزرّ استماع يعيد شريط التلاوة. والطابعة تهيئ الأصحاح للطباعة أو للحفظ كملفّ PDF، مع اختيار الخطّ وإزالة أرقام الآيات وإرفاق التفسير والمعجم والترجمة.',
       'زرّا الأصحاح التالي والسابق يقلّبان بين الأصحاحات بسلاسة، حتى عبر الأسفار. والعدسات تكبّر النصّ وتصغّره.',
       'والآن لنجرّب البحث. نفتح شاشة البحث ونكتب كلمة — مثلًا، بيريشيت.',
       'هذه نتائج البحث. كلّ نتيجة تبيّن موضع الآية؛ والضغط عليها يقفز مباشرة إلى تلك الآية.',
       'البحث المتقدّم يتيح البحث حسب الجذر، في الآرامية، أو تجاهل الحروف النهائية. ويمكن استخدام أحرف عامة: علامة استفهام لحرفٍ واحد، ونجمة لسلسلة، وزائد لكلّ الكلمات في الآية نفسها.',
-      'تضمّ القائمة: تثبيت التطبيق، تغيير اللغة، التقويم السامري، شجرة الأنساب، ما الجديد، المساعدة وغيرها.',
-      'ضمن المكتبة السامرية يوجد المعجم الآرامي-العبري، وكتابان كاملان للمطالعة: تيبات مارقه وتفسير صدقة الحكيم.',
+      'تضمّ القائمة: المكتبة السامرية، علاماتك المرجعيّة، إعدادات الوصول، اللغة، ما الجديد، المساعدة وهذه الجولة. وتحت تطبيقات أخرى: التقويم، شجرة الأنساب، الخطّ الزمني، كنز الغناء وكنز المخطوطات.',
+      'المكتبة السامرية رفّ من ثلاث عشرة وحدة: المعجم الآرامي-العبري، وتراتيل السامريين بالنسخ الصوتي، والأعلام والباحثون، وعشرة مؤلّفات كاملة للمطالعة — تيبات مارقه، تفسير صدقة الحكيم، سرّ القلوب، الأساطير وغيرها.',
       'هكذا يبدو المعجم: يمكنكم البحث عن كلمة، وتصفّح الفهرس أو صفحات المعجم، والضغط على كلمة لرؤية كلّ مواضعها.',
       'بهذا انتهت الجولة. يمكنكم العودة إليها في أيّ وقت من القائمة، تحت المساعدة. قراءةً ممتعة ونافعة!',
     ],
@@ -9674,7 +9674,7 @@ setTimeout(triggerOnboarding, 2500);
 // spotlights each control with an arrow + caption, and DRIVES the real app as the
 // demo (opens menus, runs a live search, opens the library …). Auto-advances per
 // narration, with prev/next/mute/close; opens on first entry and from the menu.
-const TOUR = { i:0, token:0, running:false, muted:false, auto:true, _t:null };
+const TOUR = { i:0, token:0, running:false, muted:false, auto:true, _t:null, _w:null };
 let TOUR_VOICES = [];
 function tourLoadVoices(){ try{ TOUR_VOICES = speechSynthesis.getVoices()||[]; }catch(e){} }
 if('speechSynthesis' in window){ tourLoadVoices(); speechSynthesis.onvoiceschanged = tourLoadVoices; }
@@ -9685,23 +9685,58 @@ function tourPickVoice(){
   const male = cands.find(v=>/\b(male|david|daniel|maged|majed|fahad|fahed|tarik|naayf|hamza)\b/i.test(v.name||''));
   return male || cands[0] || TOUR_VOICES.find(v=>(v.lang||'').toLowerCase().startsWith(lp)) || null;
 }
+// ── הקול של הסיור ───────────────────────────────────────────────────────────
+// The step used to be given a fixed allowance — sixty milliseconds a letter plus
+// four seconds — and when it ran out the tour moved on. But a voice reads at
+// about eighty-three milliseconds a letter, so every long caption was cut off
+// mid-sentence and the tour raced ahead of its own narration. Guessing how long
+// speech will take is the wrong thing to do when the browser will simply say:
+// speechSynthesis.speaking. So the step now waits for the voice to fall silent,
+// and the allowance is only a last resort for a voice that never starts at all.
+//
+// Chrome also stops a long utterance at about fifteen seconds unless resume() is
+// called while it runs; the same heartbeat that watches for silence does that.
 function tourSpeak(text, adv){
   clearTimeout(TOUR._t);
-  const fallback = Math.max(3200, (text||'').length*60);
-  if(TOUR.muted || !('speechSynthesis' in window) || !text){ TOUR._t=setTimeout(adv, fallback); return; }
+  clearInterval(TOUR._w);
+  const words = (text||'').trim().split(/\s+/).filter(Boolean).length;
+  const cap = Math.max(6000, words*900 + 8000);     // a voice that hangs, not one that is slow
+  if(TOUR.muted || !('speechSynthesis' in window) || !text){
+    TOUR._t = setTimeout(adv, Math.max(3200, (text||'').length*70)); return;
+  }
   try{ speechSynthesis.cancel(); }catch(e){}
-  const u=new SpeechSynthesisUtterance(text);
-  const v=tourPickVoice();
+  const u = new SpeechSynthesisUtterance(text);
+  const v = tourPickVoice();
   if(v){ u.voice=v; u.lang=v.lang; } else u.lang={he:'he-IL', en:'en-US', ar:'ar-SA'}[LANG]||'he-IL';
-  u.pitch=0.8; u.rate=0.97; u.onend=adv;
-  try{ speechSynthesis.speak(u); }catch(e){ TOUR._t=setTimeout(adv, fallback); return; }
-  TOUR._t=setTimeout(adv, fallback+4000);   // safety, in case onend never fires
+  u.pitch=0.8; u.rate=0.97;
+  let spoke=false, quiet=0;
+  u.onstart = ()=>{ spoke=true; };
+  u.onend   = adv;
+  u.onerror = ()=>{ clearInterval(TOUR._w); adv(); };
+  try{ speechSynthesis.speak(u); }
+  catch(e){ TOUR._t = setTimeout(adv, Math.max(3200, (text||'').length*70)); return; }
+
+  const t0 = Date.now();
+  TOUR._w = setInterval(()=>{
+    if(!TOUR.running){ clearInterval(TOUR._w); return; }
+    let talking = false;
+    try{ talking = speechSynthesis.speaking;
+         if(talking && !speechSynthesis.paused) speechSynthesis.resume(); }catch(e){}
+    if(talking){ quiet = 0; }
+    else if(spoke && ++quiet >= 2){ clearInterval(TOUR._w); adv(); }   // ended, and onend did not say so
+    if(Date.now() - t0 > cap){ clearInterval(TOUR._w); adv(); }        // never started, or hung
+  }, 450);
 }
 function tourPlace(el){
   const ring=$('tourRing'), arrow=$('tourArrow'), cap=$('tourCaption');
   if(!el){ ring.classList.remove('on'); arrow.classList.remove('on'); cap.classList.remove('top'); return; }
   const r=el.getBoundingClientRect();
-  if(r.width<2 || r.height<2){ ring.classList.remove('on'); arrow.classList.remove('on'); return; }
+  // a step whose target has been moved behind something, or removed outright, is
+  // the way this tour goes stale; it says so instead of pointing at nothing
+  if(r.width<2 || r.height<2){
+    console.warn('[tour] step %d points at %s, which is not on screen',
+                 TOUR.i+1, el.id || el.className || el.tagName);
+    ring.classList.remove('on'); arrow.classList.remove('on'); return; }
   const pad=6;
   ring.style.left=(r.left-pad)+'px'; ring.style.top=(r.top-pad)+'px';
   ring.style.width=(r.width+pad*2)+'px'; ring.style.height=(r.height+pad*2)+'px';
@@ -9748,7 +9783,13 @@ const TOUR_STEPS = [
   { el:()=>$('samSrcBtn') },
   { pre:async()=>{ await tourToVerses(); }, el:()=>$('interpBtn') },
   { el:()=>$('dictBtn') },
-  { pre:async()=>{ await tourToVerses(); }, el:()=>$('printBtn') },
+  // the printer moved into the tools row, which opens only when asked; the step
+  // opens it the way a reader would, so there is something to point at
+  { pre:async()=>{ await tourToVerses();
+                   const row=$('toolsRow');
+                   if(row && row.classList.contains('hidden')) $('toolsBtn').click();
+                   await tourWait(420); },
+    el:()=>$('printBtn') },
   { el:()=>$('nextBtn') },
   { pre:async()=>{ showSearch(true); await tourWait(280); $('searchInput').value='בראשית'; }, el:()=>$('searchInput') },
   { pre:async()=>{ $('searchInput').value='בראשית'; doSearch(); await tourWait(750); },
@@ -9783,6 +9824,13 @@ function tourGo(i){
   })();
 }
 function startTour(){
+  // the narration and the steps are two lists that must stay the same length; a
+  // step added without a caption, or a caption left behind, shows up here rather
+  // than as a silent gap in the middle of the tour
+  const nn = tourNarration().length;
+  if(nn !== TOUR_STEPS.length)
+    console.warn('[tour] %d steps but %d captions in %s — the two have drifted apart',
+                 TOUR_STEPS.length, nn, LANG);
   closeMenu();
   ['welcomeModal','tourPrompt','onboardModal','infoModal'].forEach(id=>{ const m=$(id); if(m) m.classList.add('hidden'); });
   TOUR.running=true; TOUR.auto=true; TOUR.i=0;
@@ -9793,7 +9841,7 @@ function startTour(){
 }
 function endTour(){
   TOUR.running=false; TOUR.token++;
-  clearTimeout(TOUR._t);
+  clearTimeout(TOUR._t); clearInterval(TOUR._w);
   try{ speechSynthesis.cancel(); }catch(e){}
   $('tourOverlay').classList.add('hidden');
   $('bookModal') && $('bookModal').classList.add('hidden');
@@ -9804,7 +9852,7 @@ $('tourNext').onclick=()=>{ TOUR.auto=true; tourGo(TOUR.i+1); };
 $('tourPrev').onclick=()=>{ TOUR.auto=true; tourGo(TOUR.i-1); };
 $('tourEnd').onclick=endTour;
 $('tourMute').onclick=()=>{ TOUR.muted=!TOUR.muted; tourSetMuteIcon();
-  if(TOUR.muted){ try{ speechSynthesis.cancel(); }catch(e){} } };
+  if(TOUR.muted){ clearInterval(TOUR._w); try{ speechSynthesis.cancel(); }catch(e){} } };
 
 // ── chanted-reading recordings (הקלטות קריאה לפי פרקים שומרוניים) ─────────────
 // Manifest lives at /static/audio/readings/readings.json; each entry carries the
