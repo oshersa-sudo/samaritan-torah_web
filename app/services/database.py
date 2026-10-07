@@ -434,6 +434,60 @@ def _seed_deut_interpretation():
 _seed_deut_interpretation()
 
 
+_INTERP_FIXES = os.path.join(os.path.dirname(__file__), '..', '..',
+                             'data', 'interp_fixes.json')
+
+
+def _seed_interp_fixes():
+    """Correct a commentary that read the wrong Torah.
+
+    The per-verse commentary is built from the Samaritan sources, and some of
+    those sources — a lecture summarised from a transcript, above all — quote the
+    Song of Moses in the Masoretic wording. Where that happened the commentary
+    inherited the quotation, and at Deuteronomy 32:18 it inherited the meaning
+    with it: it glossed תֶּשִׁי as forgetting, while the Samaritan text reads
+    תשא, which the Samaritan Targum renders שבקתא and the Arabic تطرح — you
+    forsook. The forgetting is the next word.
+
+    Unlike the patch above, this one must overwrite rather than fill. So its
+    guard is the strictest kind available: a verse is rewritten only when what
+    is in the database is character-for-character the text known to be wrong.
+    A commentary edited online no longer matches and is left alone; a second run
+    finds the corrected text and does nothing."""
+    try:
+        if not os.path.exists(_INTERP_FIXES):
+            return
+        with open(_INTERP_FIXES, encoding='utf-8') as fh:
+            fixes = json.load(fh).get('fixes') or []
+        if not fixes:
+            return
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        n = 0
+        for fx in fixes:
+            # the guard rides in the WHERE clause: a row is rewritten only while
+            # it still holds, character for character, the text known to be wrong
+            if fx.get('to_he') and fx.get('from_he'):
+                cur.execute("UPDATE verses SET interpretation=? "
+                            "WHERE id=? AND interpretation=?",
+                            (fx['to_he'], fx['verse_id'], fx['from_he']))
+                n += cur.rowcount
+            if fx.get('to_ar') and fx.get('from_ar'):
+                cur.execute("UPDATE verses SET interpretation_ar=? "
+                            "WHERE id=? AND interpretation_ar=?",
+                            (fx['to_ar'], fx['verse_id'], fx['from_ar']))
+                n += cur.rowcount
+        if n:
+            conn.commit()
+            print('[fix] %d commentary fields corrected to the Samaritan reading' % n)
+        conn.close()
+    except Exception as exc:
+        print('[fix] skipped: %s' % exc)
+
+
+_seed_interp_fixes()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
@@ -1560,11 +1614,24 @@ def locate_verse(verse_id):
             'portion_id': p['id'] if p else None, 'portion_name': p['name'] if p else ''}
 
 
+# the five final letters sort with the letters they are forms of, so כתב and
+# מלך fall where a reader looking them up would expect, and not between ט and כ
+_FINALS = {'ך': 'כ', 'ם': 'מ', 'ן': 'נ',
+           'ף': 'פ', 'ץ': 'צ'}
+
+
+def _he_sort_key(w):
+    return ''.join(_FINALS.get(c, c) for c in (w or ''))
+
+
 @_without_lexicon([])
 def get_tm_words(book):
     """A per-chapter glossary: the distinct Aramaic words of a TM book that have a
-    gloss in A. Tal's dictionary (word · root · Hebrew meaning), in order of first
-    appearance."""
+    gloss in A. Tal's dictionary (word · root · Hebrew meaning).
+
+    Ordered by the Aramaic word's own alphabet. It used to come out in order of
+    first appearance, which is an order only the book knows: a reader with a word
+    in hand had to read the whole list to find out whether it was there."""
     conn = get_connection()
     rows = conn.execute("SELECT aramaic FROM tm_sections WHERE book=? ORDER BY sort_key",
                         (book,)).fetchall()
@@ -1587,6 +1654,7 @@ def get_tm_words(book):
     for w in order:
         if w in gloss:
             out.append({'word': w, 'root': gloss[w][0], 'gloss': gloss[w][1]})
+    out.sort(key=lambda r: _he_sort_key(r['word']))
     return out
 
 

@@ -2691,3 +2691,13 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
 .vrow .num{ min-width:22px; height:22px; background:transparent; color:#5f6b8f;
   font-size:12.5px; padding:1px 2px; margin-top:7px; }
 .vrow .num.active{ background:var(--accent); color:#fff; min-width:24px; padding:1px 5px; }
+
+/* ── חיפוש במילון המילים ─────────────────────────────────────────────────────
+   A glossary is looked into, not read through, so it opens with a line to type
+   into; the count beside it says how much of the list the typing has left. */
+.tm-wfind{ display:flex; align-items:center; gap:8px; padding:4px 2px 9px; }
+.tm-wfind-in{ flex:1; min-width:0; font-family:inherit; font-size:15px; padding:8px 11px;
+  border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--dark); }
+.tm-wfind-in:focus{ outline:2px solid var(--active); outline-offset:1px; }
+.tm-wfind-n{ flex:0 0 auto; color:var(--muted); font-size:13px; }
+.tm-wtbl tr.hidden{ display:none; }

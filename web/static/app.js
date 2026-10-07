@@ -214,7 +214,7 @@ const I18N = {
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
     tm_toc_hint:'בחר מימר לעיון:', tm_back_toc:'‹ תוכן העניינים', tm_back_chapter:'‹ חזרה לפרק',
-    tm_words_btn:'מילון מילים', tm_words_title:'מילון מילים — מתוך המילון', tm_col_root:'שורש',
+    tm_words_btn:'מילון מילים', tm_words_title:'מילון מילים — מתוך המילון', tm_words_find:'חיפוש מילה, שורש או פירוש', tm_col_root:'שורש',
     tm_no_results:'לא נמצאו תוצאות', tm_sections_n:'קטעים', tm_open_verse:'פתח את הפסוק באפליקציה',
     m_tz_book:'פירוש צדקה אל-חכים (בראשית)', tz_title:'פירוש צדקה אל-חכים — בראשית',
     tz_toc_hint:'בחר פרק לעיון:', tz_chapter_label:'פרק', tz_arabic_pending:'התרגום לערבית בהכנה — מוצג הנוסח העברי.',
@@ -483,7 +483,7 @@ const I18N = {
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
     tm_toc_hint:'Choose a Memar to read:', tm_back_toc:'‹ Contents', tm_back_chapter:'‹ Back to the chapter',
-    tm_words_btn:'Word glossary', tm_words_title:'Word glossary — from the dictionary', tm_col_root:'Root',
+    tm_words_btn:'Word glossary', tm_words_title:'Word glossary — from the dictionary', tm_words_find:'Search a word, root or meaning', tm_col_root:'Root',
     tm_no_results:'No results found', tm_sections_n:'sections', tm_open_verse:'Open the verse in the app',
     m_tz_book:'Ṣadaqah al-Ḥakīm (Genesis)', tz_title:'Ṣadaqah al-Ḥakīm — Genesis',
     tz_toc_hint:'Choose a chapter:', tz_chapter_label:'Chapter', tz_arabic_pending:'The Arabic is being prepared — showing the Hebrew.',
@@ -752,7 +752,7 @@ const I18N = {
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
     tm_toc_hint:'اختر ميمراً للمطالعة:', tm_back_toc:'‹ المحتويات', tm_back_chapter:'‹ العودة إلى الفصل',
-    tm_words_btn:'معجم الكلمات', tm_words_title:'معجم الكلمات — من المعجم', tm_col_root:'الجذر',
+    tm_words_btn:'معجم الكلمات', tm_words_title:'معجم الكلمات — من المعجم', tm_words_find:'ابحث عن كلمة أو جذر أو معنى', tm_col_root:'الجذر',
     tm_no_results:'لا توجد نتائج', tm_sections_n:'مقاطع', tm_open_verse:'افتح الآية في التطبيق',
     m_tz_book:'تفسير صدقة الحكيم (التكوين)', tz_title:'تفسير صدقة الحكيم — التكوين',
     tz_toc_hint:'اختر أصحاحاً:', tz_chapter_label:'أصحاح', tz_arabic_pending:'الترجمة العربية قيد الإعداد — يُعرض النصّ العبري.',
@@ -7335,17 +7335,44 @@ async function rdShowWords(id){
   catch(e){ body.innerHTML=''; body.appendChild(el('div','note','—')); return; }
   body.innerHTML='';
   if(!words.length){ body.appendChild(el('div','note',t('tm_no_results'))); return; }
+
+  // A glossary of a few hundred words is a thing to look a word up in, not a
+  // thing to read, so it is searchable: the word itself, its root, or the Hebrew
+  // meaning. The list is already in hand, so the filter answers as you type.
+  const box=el('div','tm-wfind');
+  const inp=document.createElement('input');
+  inp.type='search'; inp.className='tm-wfind-in';
+  inp.placeholder=t('tm_words_find'); inp.setAttribute('aria-label',t('tm_words_find'));
+  box.appendChild(inp);
+  const count=el('span','tm-wfind-n'); box.appendChild(count);
+  body.appendChild(box);
+
   const tbl=el('table','wtbl tm-wtbl');
   const hr=el('tr'); for(const h of [t('col_word'),t('tm_col_root'),t('col_heb')]) hr.appendChild(el('th',null,esc(h)));
   tbl.appendChild(hr);
+  const rows=[];
   for(const w of words){ const tr=el('tr');
     tr.appendChild(el('td','wt-word',esc(w.word)));
     tr.appendChild(el('td','wt-tal',esc(w.root||'—')));
     tr.appendChild(el('td','wt-mean',esc(w.gloss||'—')));
     tr.classList.add('tappable'); tr.onclick=()=>showTalFull(w.word);
     tbl.appendChild(tr);
+    rows.push([tr, (w.word+' '+(w.root||'')+' '+(w.gloss||'')).toLowerCase()]);
   }
   body.appendChild(tbl);
+
+  const paint=()=>{
+    const q=(inp.value||'').trim().toLowerCase();
+    let n=0;
+    for(const [tr, hay] of rows){
+      const on = !q || hay.indexOf(q) >= 0;
+      tr.classList.toggle('hidden', !on);
+      if(on) n++;
+    }
+    count.textContent = q ? n+' / '+rows.length : rows.length;
+  };
+  inp.addEventListener('input', paint);
+  paint();
 }
 async function rdSearch(){
   const q=($('rdInput').value||'').trim(); if(!q) return;
@@ -7642,10 +7669,16 @@ $('piyBack').onclick=()=>$('piyBody').classList.remove('piy-detail-open');
 $('piyClose').onclick=()=>$('piyModal').classList.add('hidden');
 $('piyToTorah').onclick=()=>$('piyModal').classList.add('hidden');
 // word-tap popup (mirrors the standalone prototype's #wordPop)
+// Scoped to #piyModal. The liturgy unit draws its words with the same .piy-w
+// class, so an unscoped listener fired there too: tapping a word opened the big
+// window with its dictionary entries and this small one on top of it, saying
+// there was no entry — because it had looked in this unit's glossary, which is
+// a different book's and does not carry that word.
 document.addEventListener('click', e=>{
   const pop=$('piyWordPop'); if(!pop) return;
-  if(e.target.classList && e.target.classList.contains('piy-w')){
-    const w=e.target.dataset.w, d=PIY.curDict && PIY.curDict[w];
+  const hit = e.target.closest && e.target.closest('#piyModal .piy-w');
+  if(hit){
+    const w=hit.dataset.w, d=PIY.curDict && PIY.curDict[w];
     pop.innerHTML=`<b>${esc(w)}</b><br>${d?esc(d):('<i>'+esc(t('piy_no_dict_entry'))+'</i>')}`;
     pop.classList.remove('hidden');
     pop.style.top=Math.min(e.clientY+12, innerHeight-90)+'px';
@@ -7681,13 +7714,6 @@ function daraName(p){
   }
   return op.slice(0, cut) + (cut < op.length ? '…' : '');
 }
-function daraKind(p){
-  // the rubric says when it is said; its first clause is what kind of piece it is
-  const u = String(p.usage || '').trim();
-  if(!u) return '';
-  const stop = u.search(/[,.;]/);
-  return stop > 0 ? u.slice(0, stop) : u;
-}
 function daraBuildTree(rows){
   const tree=$('daraTree'); tree.innerHTML='';
   const list = rows || DARA.toc || [];
@@ -7705,10 +7731,12 @@ function daraBuildTree(rows){
       // the end of the word they fall in so the name is a word and not a stump,
       // and beside it what the piyyut is for — the first clause of its rubric.
       const label = daraName(p);
-      const kind = daraKind(p);
+      // The rubric says when the piece is said, and saying it here made a line
+      // that ran off the edge and hid the name it was meant to accompany. It is
+      // kept where it does no harm — on hover — and the line carries the name.
+      if(p.usage) div.title = String(p.usage);
       div.innerHTML=`<span class="piy-item-title">${esc(label)}</span>`+
-                    `<span class="piy-item-auth">${kind ? esc(kind) + ' · ' : ''}`+
-                    `${p.n_lines} ${esc(t('dara_lines'))}</span>`;
+                    `<span class="piy-item-auth">${p.n_lines} ${esc(t('dara_lines'))}</span>`;
       div.onclick=()=>daraShow(p.id);
       d.appendChild(div);
     }
