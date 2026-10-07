@@ -477,9 +477,16 @@ def _seed_interp_fixes():
                             "WHERE id=? AND interpretation_ar=?",
                             (fx['to_ar'], fx['verse_id'], fx['from_ar']))
                 n += cur.rowcount
+        # ותיקון בנוסח עצמו, כשהעד היחיד לו הוא שגיאה: השורה נושאת גם
+        # sam_hebrew ו-old_text, ושניהם גורסים אחרת. אותו שמירה בדיוק —
+        # רק בעוד הנוסח זהה אות באות לזה שידוע כשגוי.
+        for fx in json.load(open(_INTERP_FIXES, encoding='utf-8')).get('text_fixes') or []:
+            cur.execute("UPDATE verses SET text=? WHERE id=? AND text=?",
+                        (fx['to_text'], fx['verse_id'], fx['from_text']))
+            n += cur.rowcount
         if n:
             conn.commit()
-            print('[fix] %d commentary fields corrected to the Samaritan reading' % n)
+            print('[fix] %d fields corrected to the Samaritan reading' % n)
         conn.close()
     except Exception as exc:
         print('[fix] skipped: %s' % exc)
