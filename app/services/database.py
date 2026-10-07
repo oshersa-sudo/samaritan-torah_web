@@ -480,10 +480,21 @@ def _seed_interp_fixes():
         # ותיקון בנוסח עצמו, כשהעד היחיד לו הוא שגיאה: השורה נושאת גם
         # sam_hebrew ו-old_text, ושניהם גורסים אחרת. אותו שמירה בדיוק —
         # רק בעוד הנוסח זהה אות באות לזה שידוע כשגוי.
-        for fx in json.load(open(_INTERP_FIXES, encoding='utf-8')).get('text_fixes') or []:
+        _all = json.load(open(_INTERP_FIXES, encoding='utf-8'))
+        for fx in _all.get('text_fixes') or []:
             cur.execute("UPDATE verses SET text=? WHERE id=? AND text=?",
                         (fx['to_text'], fx['verse_id'], fx['from_text']))
             n += cur.rowcount
+        # ושכבת הניקוד, שהיא מה שהקורא רואה בכתב השומרוני. בלעדיה הנוסח
+        # והניקוד היו אומרים שתי אותיות שונות באותו מקום.
+        for fx in _all.get('nikud_fixes') or []:
+            cur.execute("UPDATE verse_nikud SET display=? WHERE verse_id=? AND display=?",
+                        (fx['to_display'], fx['verse_id'], fx['from_display']))
+            n += cur.rowcount
+            if fx.get('to_typed'):
+                cur.execute("UPDATE verse_nikud SET typed=? WHERE verse_id=? AND typed=?",
+                            (fx['to_typed'], fx['verse_id'], fx['from_typed']))
+                n += cur.rowcount
         if n:
             conn.commit()
             print('[fix] %d fields corrected to the Samaritan reading' % n)
