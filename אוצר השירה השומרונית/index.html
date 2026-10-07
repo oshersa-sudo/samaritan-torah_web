@@ -496,6 +496,18 @@
 <!-- קלטת. הסלילים קשורים ל-currentTime, ולכן הם מסתובבים קדימה בנגינה,
      אחורה בהרצה לאחור, ונעצרים בעצירה — בלי טיפול נפרד בכל מקרה.
      פרטי ההקלטה נכתבים על תווית הקלטת עצמה. -->
+<!-- מילות הפיוט. נפתח מעל הטייפ ועד לקצה המסך, נגלל בתוכו, ונסגר עם
+     ההקלטה. מזעור מקפל אותו לפס, והכיתוב שעל הקלטת מעלה אותו שוב. -->
+<section class="piywin hidden" id="piyWin" aria-label="מילות הפיוט">
+  <header class="pw-bar">
+    <span class="pw-name" id="pwName"></span>
+    <button class="pw-btn" id="pwMin" type="button" title="מזער">─</button>
+    <button class="pw-btn" id="pwClose" type="button" title="סגור">✕</button>
+  </header>
+  <div class="pw-src" id="pwSrc"></div>
+  <div class="pw-body" id="pwBody" tabindex="0"></div>
+</section>
+
 <!-- חלון נגן הקלטות: נפתח בלחיצה על הקלטה, וניתן למזער אותו -->
 <section class="deckwin hidden" id="deckWin" aria-label="נגן הקלטות">
   <header class="dw-bar" id="dwBar">
@@ -875,6 +887,13 @@
       <!-- השנה, כשהיא ידועה: מתחת לשם המבצע, באותיות קטנות -->
       <text x="890" y="232" text-anchor="end" class="che" font-size="24" fill="#8a7f6b"
             letter-spacing="1" id="cLine2"></text>
+      <!-- "הצג פיוט" — נכתב על התווית עצמה, ככיתוב שנוסף בעט על קלטת, ומופיע
+           רק בהקלטה שזוהה לה חיבור בקאולי או בספר הליטורגיה. -->
+      <g id="cPiyut" class="cpiyut" role="button" tabindex="0"
+         aria-label="הצג את מילות הפיוט" style="display:none">
+        <rect x="690" y="258" width="200" height="40" rx="8"/>
+        <text x="790" y="285" text-anchor="middle" class="chand" font-size="30">הצג פיוט</text>
+      </g>
       <!-- שם היצרן מוטבע על המדבקה, משמאל לחלון הסלילים, כמו בקלטת שבתמונה.
            העותק הבהיר שמתחת נותן את תחושת ההטבעה בנייר. -->
       <g class="cbrand">
