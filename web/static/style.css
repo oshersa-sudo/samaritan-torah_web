@@ -2668,13 +2668,26 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
    carries its own ground — a panel on the app's own parchment, bordered and
    lifted — so what it covers is covered, and where it ends is plain. */
 .tools-row{ background:#fff; border:1px solid rgba(26,42,74,.22);
-  border-radius:10px; padding:3px 7px; box-shadow:0 3px 10px rgba(16,26,56,.22);
+  border-radius:11px; padding:5px 11px; gap:6px; box-shadow:0 3px 10px rgba(16,26,56,.22);
   position:relative; z-index:6; }
-.tools-row .bm-nav{ padding:0 4px; }
+/* a little more room per sign, and a little more sign — enough that a thumb
+   lands on one and not between two, not so much that the row becomes a bar */
+.tools-row .bm-nav{ padding:0 6px; font-size:26px; }
+.tools-row .bm-nav.print-nav{ font-size:18px; }
+.tools-row .bm-nav.pron-nav{ font-size:21px; }
 
 /* the play sign, drawn rather than lettered so it reads the same on every font */
-.rdbar-nav svg{ width:19px; height:19px; display:block; }
+.rdbar-nav svg{ width:21px; height:21px; display:block; }
 .rdbar-nav.on{ background:var(--active); border-radius:7px; color:#fff; }
 
 /* the reading bar, kept until it is asked for */
 .reading-bar.rdbar-off{ display:none; }
+
+/* ── מספר הפסוק ──────────────────────────────────────────────────────────────
+   It was a filled tile beside every verse, and a column of tiles down the page
+   reads as a column of buttons competing with the text they number. The number
+   is enough: it keeps its place and its tap, and loses the ground under it. The
+   chosen verse still fills, because that is the one thing the colour was for. */
+.vrow .num{ min-width:22px; height:22px; background:transparent; color:#5f6b8f;
+  font-size:12.5px; padding:1px 2px; margin-top:7px; }
+.vrow .num.active{ background:var(--accent); color:#fff; min-width:24px; padding:1px 5px; }
