@@ -1126,7 +1126,6 @@ $('dwClose').onclick = () => {
 };
 
 function deckEject() {
-  if (typeof piyHide === 'function') piyHide();   // הפיוט של ההקלטה יוצא עמה
   au.pause(); stopAudio(); spoolStop(false);
   dancerOut('right');            // she is off the stage before the lid shuts
   headIn(false);
@@ -3820,7 +3819,6 @@ function deckLabel(r, idx) {
   // shorter than it looks it could be: the type mark sits centred on the same
   // red band, and the title must stop before reaching it
   $('cRec').textContent   = r ? cut(r.ttl, 22) : 'אוצר השירה השומרונית';
-  if (typeof piySyncLabel === 'function') piySyncLabel(r);   // "הצג פיוט", אם יש
   $('cLine2').textContent = r && r.year ? r.year : '';
   $('cEvent').textContent = r ? eventName(r.e) : '—';
   $('cParts').textContent = r ? (r.parts ? `${r.parts} חלקים` : `${r.n} רצועות`) : 'C-90';
@@ -6455,134 +6453,4 @@ async function loadCatalog() {
   PL.lists.forEach(l => { l.items = l.items.filter(id => byId(C.recordings, id)); });
   drawQueue();
   await loadNews(true);
-})();
-
-/* ── מילות הפיוט שעל הקלטת ───────────────────────────────────────────────────
- *
- * חלק מן ההקלטות זוהה להן החיבור שבקאולי או בספר הליטורגיה של בן-חיים, על פי
- * השוואה בין שם ההקלטה לשורת הפתיחה של החיבור. לאלה נוסף כיתוב על תווית
- * הקלטת, והוא פותח את המילים.
- *
- * החלון עומד במקום שהטייפ עומד בו ונפרש עד קצה המסך; גובהו נמדד מן הטייפ
- * עצמו בכל פתיחה ובכל שינוי גודל, כדי שלא ייחתך ולא יכסה אותו. סגירת ההקלטה
- * סוגרת אותו, משום שהוא של ההקלטה ולא של המסך.
- */
-const PIY = { texts: null, loading: null, open: false, min: false, recP: null };
-
-function piyLoad() {
-  if (PIY.texts) return Promise.resolve(PIY.texts);
-  if (!PIY.loading) {
-    PIY.loading = fetch('data/piyyut_texts.json')
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { PIY.texts = (d && d.items) || {}; return PIY.texts; })
-      .catch(() => { PIY.texts = {}; return PIY.texts; });
-  }
-  return PIY.loading;
-}
-
-/* הנקודה שבין מילה למילה היא המפריד שבכתבי היד, ולכן היא באה במקום הרווח
- * ולא בנוסף עליו. סימני פיסוק נשארים צמודים למילה שלפניהם. */
-function piyLine(txt) {
-  const words = String(txt || '').split(/\s+/).filter(Boolean);
-  return words.map(w => '<span class="pw-w">' + esc(w) + '</span>')
-  // הרווחים שמסביב לנקודה אינם קישוט: היישור לשני הצדדים נעשה במתיחת
-  // רווחים, ובלעדיהם אין לדפדפן מה למתוח, והשורה נשארת צמודה לצד אחד.
-              .join(' <span class="wsep">\u00b7</span> ');
-}
-
-function piyPlace() {
-  const win = $('piyWin');
-  if (!win || win.classList.contains('hidden')) return;
-  const deck = $('deckWin');
-  let gap = 300;
-  if (deck && !deck.classList.contains('hidden')) {
-    const r = deck.getBoundingClientRect();
-    gap = Math.max(12, Math.round(innerHeight - r.top + 10));
-  }
-  // על מסך גבוה הטייפ יושב למטה ונשאר מקום מעליו, וזה המצב שלשמו נכתב
-  // הדבר. על מסך נמוך — או כשהמיקסר פרוש — הטייפ תופס כמעט את הכול, ולולא
-  // רצפה היה הפיוט נפתח בגובה של שורה. הוא מקבל תמיד כמעט מחצית המסך,
-  // ועולה על ראש הטייפ; פקדיו ממילא בתחתיתו.
-  gap = Math.min(gap, Math.round(innerHeight * 0.55));
-  win.style.setProperty('--piy-bottom', gap + 'px');
-}
-
-function piyShow(pid) {
-  piyLoad().then(items => {
-    const it = items[String(pid)];
-    if (!it) return;
-    PIY.recP = String(pid);
-    $('pwName').textContent = it.name || '';
-    const where = it.unit === 'קאולי'
-      ? ('קאולי · ' + (it.ref || ('פיוט ' + it.id)))
-      : ('ספר הליטורגיה · פיוט ' + it.id);
-    $('pwSrc').textContent = where + (it.title ? ' · ' + it.title : '');
-    const rub = new Set(it.rubric || []);
-    $('pwBody').innerHTML =
-      it.lines.map((l, i) => rub.has(i)
-        ? '<p class="pw-line rub">' + esc(l) + '</p>'
-        : '<p class="pw-line">' + piyLine(l) + '</p>').join('') +
-      '<div class="pw-end">' + it.lines.length + ' שורות</div>';
-    $('pwBody').scrollTop = 0;
-    const win = $('piyWin');
-    win.classList.remove('hidden', 'min');
-    PIY.open = true; PIY.min = false;
-    $('pwMin').textContent = '─';
-    piyPlace();
-  });
-}
-
-function piyHide() {
-  const win = $('piyWin');
-  if (!win) return;
-  win.classList.add('hidden');
-  win.classList.remove('min');
-  PIY.open = false; PIY.min = false;
-}
-
-/* הכיתוב שעל הקלטת מופיע רק להקלטה שיש לה חיבור, ולחיצה עליו פותחת את
- * החלון — או מעלה אותו, כשהוא ממוזער. */
-function piySyncLabel(rec) {
-  const g = $('cPiyut');
-  if (!g) return;
-  piyLoad().then(items => {
-    // y הוא הפיוט; p הוא המבצע
-    const pid = rec && rec.y != null ? String(rec.y) : null;
-    const has = pid && items[pid];
-    g.style.display = has ? '' : 'none';
-    if (!has && PIY.open) piyHide();
-    if (has && PIY.open && PIY.recP !== pid) piyShow(pid);
-  });
-}
-
-(function piyWire() {
-  const g = $('cPiyut');
-  if (g) {
-    const go = () => {
-      const r = byId(C.recordings, cur.rec);
-      if (!r || r.y == null) return;
-      if (PIY.open && PIY.min) {            // ממוזער — מעלים אותו כפי שהיה
-        $('piyWin').classList.remove('min');
-        PIY.min = false; $('pwMin').textContent = '─'; piyPlace();
-      } else if (PIY.open) {
-        piyHide();
-      } else {
-        piyShow(r.y);
-      }
-    };
-    g.addEventListener('click', go);
-    g.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
-    });
-  }
-  const mn = $('pwMin');
-  if (mn) mn.onclick = () => {
-    PIY.min = $('piyWin').classList.toggle('min');
-    mn.textContent = PIY.min ? '▢' : '─';
-    if (!PIY.min) piyPlace();
-  };
-  const cl = $('pwClose');
-  if (cl) cl.onclick = piyHide;
-  addEventListener('resize', piyPlace);
-  addEventListener('orientationchange', () => setTimeout(piyPlace, 120));
 })();
