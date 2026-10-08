@@ -347,8 +347,24 @@
   <div class="search-in">
     <input id="q" type="search" autocomplete="off"
            placeholder="חיפוש בכל האינדקסים — פיוט, מבצע, חג או אירוע…">
-    <button id="qclear" class="qclear hidden" title="נקה">✕</button>
+    <!-- שני הכפתורים יושבים יחד בקצה השורה, כדי שהמיקרופון לא יזוז
+         כשה-✕ מופיע ונעלם -->
+    <span class="qtools">
+      <button id="qclear" class="qclear hidden" title="נקה">✕</button>
+      <button id="qmic" class="qmic hidden" aria-label="חיפוש בדיבור"
+              title="חיפוש בדיבור — אמור את שם הפיוט, ואם תרצה «של» ושם המבצע">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/>
+          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0" fill="none"
+                stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          <rect x="11.1" y="18" width="1.8" height="3" rx=".9"/>
+          <rect x="8" y="20.4" width="8" height="1.8" rx=".9"/>
+        </svg>
+      </button>
+    </span>
   </div>
+  <!-- מה שנשמע, ומה שהובן ממנו: כדי שהתוצאות יסבירו את עצמן -->
+  <p id="qheard" class="qheard hidden"></p>
   <div class="barrow">
     <label class="sortbox">מיון:
       <select id="sort"></select>

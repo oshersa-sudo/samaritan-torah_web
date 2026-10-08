@@ -317,6 +317,7 @@ function clearFilters() {
   F.q = ''; F.perf = 0; F.event = 0; F.piyyut = 0;
   $('q').value = '';
   $('qclear').classList.add('hidden');
+  heardSay('');                        // that answer was to another question
   draw();
   $('q').focus();
 }
@@ -5379,9 +5380,237 @@ au.onerror = () => {
 let qt;
 $('q').addEventListener('input', e => {
   clearTimeout(qt);
+  heardSay('');                        // typing replaces whatever was heard
   qt = setTimeout(() => { F.q = e.target.value.trim(); draw(); }, 130);
 });
-$('qclear').onclick = () => { $('q').value = ''; F.q = ''; draw(); };
+$('qclear').onclick = () => {
+  $('q').value = ''; F.q = ''; heardSay(''); draw();
+};
+
+/* ===================================================== חיפוש בדיבור
+ *
+ * The microphone belongs in this search more than in most: the names here are
+ * hard to type and harder to spell — "אשול-2-פתחה", "בריך/בריכ" — and the
+ * person looking usually heard the piyyut rather than read it. The listening
+ * is the browser's own (in Chrome that is Google's service), and the language
+ * is Hebrew whatever the app is set to, because that is what this archive is
+ * written in.
+ *
+ * Three things are done to what comes back, each for a reason this archive
+ * gave:
+ *
+ * "פלוס" becomes "+". Four recordings here are two piyyutim under one title,
+ * joined by a plus sign — "אל שער השמים + בריך אלהנו" — and nobody says
+ * "plus sign" out loud.
+ *
+ * "של" (and "עם", "בביצוע", "מפי") divides the piyyut from the singer. Said
+ * aloud, "שרת בך הברכה של עדי מרחיב" is one title and one performer, not six
+ * words that all have to turn up somewhere — and the word "של" itself appears
+ * in no title, so leaving it in would rule out everything. But the division is
+ * made ONLY when what follows is a singer this archive has: otherwise the
+ * sentence is searched as it was said, word for word, and a title that happens
+ * to contain "של" is still found.
+ *
+ * And every alternative the recogniser offers is tried, not just its first.
+ * Google's Hebrew has never heard a Samaritan piyyut title: "שרת בך" comes
+ * back as "שרך בך" as readily as not. So the archive itself breaks the tie —
+ * the reading that actually finds something is the one used, and what was
+ * heard is shown either way, so the results explain themselves.
+ */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const VOICE = { rec: null, on: false, before: '' };
+
+/* the words that introduce a singer, and the fillers before the name */
+const VOICE_BY = /\s(?:של|עם|בביצוע|מפי|שירת|בפי)\s/;
+const VOICE_FILLER = /^(?:ה?מבצע(?:ת)?|ה?זמר(?:ת)?|ה?חזן|ה?כהן)\s+/;
+
+function voiceHeard(said) {
+  let full = String(said || '').replace(/\s+/g, ' ').trim();
+  full = full.replace(/(^|\s)פלוס(\s|$)/g, '$1+$2');   // the joined titles
+  const m = full.match(VOICE_BY);
+  if (!m) return { full, left: full, perf: '' };
+  const i = full.indexOf(m[0]);
+  return { full,
+           left: full.slice(0, i).trim(),
+           perf: full.slice(i + m[0].length).replace(VOICE_FILLER, '').trim() };
+}
+
+/* the singer this archive has, matched the same way the search matches
+   anything else; the shortest name that fits wins, being the most specific */
+function voicePerf(text) {
+  const ts = terms(text);
+  if (!ts.length || !C) return 0;
+  let best = 0, len = 1e9;
+  for (const p of C.performers) {
+    const hay = fold(p.name);
+    if (hits(hay, loose(hay), ts) && hay.length < len) { best = p.id; len = hay.length; }
+  }
+  return best;
+}
+
+/* how many recordings a reading would actually find — the tie-breaker */
+function voiceScore(q, perfId) {
+  if (!C) return 0;
+  const ts = terms(q);
+  let n = 0;
+  for (const r of C.recordings) {
+    if (perfId && r.p !== perfId) continue;
+    if (ts.length) { recHay(r); if (!hits(r._hay, r._low, ts)) continue; }
+    n++;
+  }
+  return n;
+}
+
+/* Every reading the recogniser offered, best first, judged by what it finds.
+ *
+ * Three passes, and the order is the point: a reading that lands exactly beats
+ * a reading that has to be loosened, whichever of them the recogniser liked
+ * better.
+ *
+ * The loosening, in the third pass, applies only when the singer is one this
+ * archive has — because then that half is certain and the title is the half
+ * that was heard rather than read, so the title is shortened from its end a
+ * word at a time until something answers. Measured here: "שרת בך הברכה" by
+ * עדי מרחיב finds nothing and "שרת בך" by him finds the one recording that
+ * was meant, the archive keeping the same piyyut under both names. Whatever
+ * was dropped is said out loud, so nobody is shown a result for a question
+ * they did not ask.
+ */
+function voicePick(alts) {
+  const read = alts.map(said => {
+    const v = voiceHeard(said);
+    return { said, v, perf: v.perf ? voicePerf(v.perf) : 0 };
+  });
+
+  // 1. exactly what was said, the singer apart
+  for (const r of read) {
+    if (!r.perf) continue;
+    const n = voiceScore(r.v.left, r.perf);
+    if (n) return { said: r.said, q: r.v.left, perf: r.perf, n, dropped: [] };
+  }
+  // 2. exactly what was said, every word of it
+  for (const r of read) {
+    const n = voiceScore(r.v.full, 0);
+    if (n) return { said: r.said, q: r.v.full, perf: 0, n, dropped: [] };
+  }
+  // 3. the singer holds; the title gives way from its end
+  for (const r of read) {
+    if (!r.perf) continue;
+    const words = terms(r.v.left);
+    for (let k = words.length - 1; k >= 1; k--) {
+      const q = words.slice(0, k).join(' ');
+      const n = voiceScore(q, r.perf);
+      if (n) return { said: r.said, q, perf: r.perf, n, dropped: words.slice(k) };
+    }
+  }
+  // and when not one word of the title lands, the singer alone — said as such
+  for (const r of read) {
+    if (!r.perf) continue;
+    const n = voiceScore('', r.perf);
+    if (n) return { said: r.said, q: '', perf: r.perf, n,
+                    dropped: terms(r.v.left) };
+  }
+  const first = read[0] || { said: '', v: { full: '' } };
+  return { said: first.said, q: first.v.full, perf: 0, n: 0, dropped: [] };
+}
+
+/* what was heard and what was made of it */
+function heardSay(html, warn) {
+  const box = $('qheard');
+  box.classList.toggle('hidden', !html);
+  box.classList.toggle('warn', !!warn);
+  if (!html) return;
+  box.innerHTML = `<span class="qh-txt">${html}</span>`
+                + '<button class="qh-x" title="הסתר">✕</button>';
+  box.querySelector('.qh-x').onclick = () => heardSay('');
+}
+
+function voiceApply(pick, alts) {
+  F.perf = pick.perf;
+  F.event = 0;
+  F.piyyut = 0;                       // a new question, not a narrowing of the old
+  F.q = pick.q;
+  $('q').value = pick.q;
+  $('qclear').classList.toggle('hidden', !pick.q);
+  const name = pick.perf ? perfName(pick.perf) : '';
+  const lost = (pick.dropped || []).join(' ');
+  let say = `🎤 שמעתי <span class="qh-said">«${esc(pick.said)}»</span>`;
+  if (name && pick.q) say += ` — מחפש <b>${esc(pick.q)}</b> אצל <b>${esc(name)}</b>`;
+  else if (name) say += ` — כל ההקלטות של <b>${esc(name)}</b>`;
+  else if (pick.said !== pick.q) say += ` — מחפש <b>${esc(pick.q)}</b>`;
+  if (lost)
+    say += `<span class="qh-said"> · «${esc(lost)}» לא נמצא אצלו, והושמט</span>`;
+  if (alts.length > 1 && pick.said !== alts[0])
+    say += `<span class="qh-said"> · ולא «${esc(alts[0])}», שאינו באוצר</span>`;
+  if (!pick.n) say += ' — <b>לא נמצא דבר.</b> נסה שוב, או הקלד';
+  heardSay(say, !pick.n);
+  if (pick.perf) go('rec'); else draw();
+}
+
+function voiceStop() {
+  VOICE.on = false;
+  $('qmic').classList.remove('on');
+  $('q').placeholder = VOICE.ph || $('q').placeholder;
+  if (VOICE.rec) { try { VOICE.rec.abort(); } catch (e) {} }
+  VOICE.rec = null;
+}
+
+function voiceStart() {
+  if (!SR) return;
+  if (VOICE.on) return voiceStop();              // the key toggles
+  const rec = new SR();
+  rec.lang = 'he-IL';                            // always: this archive is Hebrew
+  rec.interimResults = true;
+  rec.continuous = false;
+  rec.maxAlternatives = 5;
+  VOICE.rec = rec;
+  VOICE.on = true;
+  VOICE.before = $('q').value;
+  VOICE.ph = $('q').placeholder;
+  $('qmic').classList.add('on');
+  $('q').placeholder = 'מדבר… אמור את שם הפיוט';
+  heardSay('');
+
+  rec.onresult = e => {
+    const res = e.results[e.results.length - 1];
+    if (!res.isFinal) {                          // show it arriving
+      $('q').value = res[0].transcript;
+      return;
+    }
+    const alts = [];
+    for (let i = 0; i < res.length; i++) {
+      const t = (res[i].transcript || '').trim();
+      if (t && alts.indexOf(t) < 0) alts.push(t);
+    }
+    voiceStop();
+    if (!alts.length) { $('q').value = VOICE.before; return; }
+    voiceApply(voicePick(alts), alts);
+  };
+  rec.onerror = e => {
+    const why = {
+      'no-speech': 'לא נשמע דבר. נסה שוב, קרוב יותר למיקרופון',
+      'audio-capture': 'לא נמצא מיקרופון במכשיר',
+      'not-allowed': 'הגישה למיקרופון נדחתה — אשר אותה בהגדרות הדפדפן',
+      'service-not-allowed': 'הגישה למיקרופון נדחתה — אשר אותה בהגדרות הדפדפן',
+      'network': 'שירות הזיהוי לא נענה. בדוק את החיבור',
+    }[e.error] || 'הזיהוי נכשל';
+    $('q').value = VOICE.before;
+    voiceStop();
+    heardSay('🎤 ' + esc(why), 1);
+  };
+  rec.onend = () => { if (VOICE.on) voiceStop(); };
+  try {
+    rec.start();
+  } catch (e) {
+    voiceStop();
+    heardSay('🎤 ' + esc('לא הצלחתי לפתוח את המיקרופון'), 1);
+  }
+}
+
+$('qmic').onclick = voiceStart;
+// shown only where it can work; in a browser without speech recognition a
+// microphone key that answers nothing is worse than no key at all
+if (SR) $('qmic').classList.remove('hidden');
 $('tabs').addEventListener('click', e => {
   const t = e.target.closest('.tab');
   if (t) go(t.dataset.tab);

@@ -1618,8 +1618,13 @@ body{
   color:var(--dark);
 }
 #q:focus{outline:none;border-color:var(--active);box-shadow:0 0 0 3px rgba(56,128,230,.14)}
+/* הכפתורים שבתוך שורת החיפוש, בקצה שבו נגמרת ההקלדה */
+.qtools{
+  position:absolute;left:6px;top:50%;transform:translateY(-50%);
+  display:flex;align-items:center;gap:1px;
+}
+#q{padding-inline-end:76px}
 .qclear{
-  position:absolute;left:8px;top:50%;transform:translateY(-50%);
   border:0;background:none;color:var(--muted);font-size:1rem;cursor:pointer;
   padding:4px 7px;border-radius:6px;
 }
@@ -2420,3 +2425,34 @@ mark{
 .rsteps li span{margin-inline-start:auto;font-size:.8rem;font-weight:500;opacity:.8}
 #recProg .bar{height:8px;border-radius:4px}
 .rstat{margin:8px 0 0;font-size:.85rem;min-height:1.2em}
+
+
+/* ------------------------------------------------- חיפוש בדיבור
+ * כפתור המיקרופון מופיע רק במקום שבו יש לדפדפן זיהוי דיבור. כשהוא מאזין
+ * הוא נושם — מחוון אחד, ולא טקסט שמתחלף — כדי שיהיה ברור שהמכשיר פתוח.
+ */
+.qmic{
+  border:0;background:none;color:var(--muted);cursor:pointer;
+  padding:4px 6px;border-radius:6px;line-height:0;
+}
+.qmic svg{width:19px;height:19px;fill:currentColor}
+.qmic:hover{background:#eceef4;color:var(--dark)}
+.qmic.on{color:#b3312f;background:rgba(179,49,47,.1)}
+.qmic.on svg{animation:micBreath 1.4s ease-in-out infinite}
+@keyframes micBreath{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* מה שנשמע ומה שהובן. יושב מתחת לשורה ולא בתוכה, שאינו שדה אלא הסבר. */
+.qheard{
+  max-width:1080px;margin:7px auto 0;padding:6px 10px;border-radius:8px;
+  background:#f3f0e7;border:1px solid var(--line);
+  font-size:.84rem;line-height:1.5;color:var(--dark);
+  display:flex;align-items:flex-start;gap:8px;
+}
+.qheard b{font-weight:700}
+.qheard .qh-txt{flex:1 1 auto}
+.qheard .qh-said{opacity:.75}
+.qheard .qh-x{
+  flex:0 0 auto;border:0;background:none;color:var(--muted);cursor:pointer;
+  font-size:.9rem;padding:0 3px;border-radius:5px;
+}
+.qheard.warn{background:#fbf1f0;border-color:#d8c9c7;color:#8c2f2c}
