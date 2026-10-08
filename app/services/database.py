@@ -505,6 +505,13 @@ def _seed_interp_fixes():
             n += cur.rowcount
         # וקישורי מקור שהמקשר לא מצא. כאן השמירה היא היפוכה: הקישור נכתב
         # רק אם אינו קיים, שאם לא כן תיווצר כפילות בכל עלייה של השרת.
+        # ומה שנשאר ריק מקבל את הטקסט. זו השמירה הבטוחה מכולן: כתיבה
+        # לשדה ריק אינה יכולה למחוק דבר, ולכן אין צורך להכיר את מה שהיה.
+        for fx in (_all.get('fill_if_empty') or {}).get('rows') or []:
+            cur.execute("UPDATE verses SET interpretation=? WHERE id=? "
+                        "AND TRIM(COALESCE(interpretation,''))=''",
+                        (fx['text'], fx['verse_id']))
+            n += cur.rowcount
         for fx in (_all.get('tm_links_add') or {}).get('rows') or []:
             cur.execute("INSERT INTO tm_verse_links (verse_id, section_id) "
                         "SELECT ?, ? WHERE NOT EXISTS (SELECT 1 FROM tm_verse_links "
