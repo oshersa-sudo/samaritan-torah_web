@@ -186,7 +186,7 @@ def _throttled(ip):
 # only what the page itself asks for. Everything else in the unit — its local
 # server, its build scripts, the raw scan of the archive drive — stays private.
 _OPEN_DIRS  = ('img/', 'fonts/', 'sounds/', 'photos/')
-_OPEN_FILES = ('index.html', 'unit.css', 'unit.js', 'lame.min.js')
+_OPEN_FILES = ('index.html', 'unit.css', 'unit.js', 'lame.min.js', 'car.html')
 # the catalogue, and the two lists the picture screen reads: the photographs
 # on the community's own site, and the archive's own pictures and films
 _OPEN_DATA  = ('catalog.json', 'pix_sources.json', 'local_media.json')
@@ -206,6 +206,10 @@ def _allowed(sub):
 def page(sub='index.html'):
     """The page asks for unit.css and unit.js by RELATIVE path, so the trailing
     slash matters — Flask redirects /shira to /shira/ on its own."""
+    # /shira/car is the address somebody saves to a car screen's home page;
+    # it should not have to be spelled with an extension
+    if sub == 'car':
+        sub = 'car.html'
     if not _allowed(sub):
         return ('', 404)
     return send_from_directory(UNIT, sub)

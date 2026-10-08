@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#11161f">
+<title>אוצר השירה — מצב רכב</title>
+<!--
+  מצב רכב.
+
+  עמוד נפרד, ולא היחידה הרגילה בקטן. ביחידה הרגילה יש מיקסר, רקדנית, מילון
+  ופאנל עריכה — דברים שבנהיגה אינם רק מיותרים אלא מזיקים, מפני שכל אחד מהם
+  הוא עוד מבט במסך. כאן יש ארבעה מקשים גדולים, רשימה אחת בכל פעם, וקול.
+
+  והוא עומד בפני עצמו: קובץ אחד, בלי unit.js שמשקלו 290 קילובייט ובלי גופן
+  חיצוני, מפני שיחידת הרכב תלויה בנקודה חמה של טלפון וכל בקשה נוספת נראית.
+  הקטלוג נשמר אצלה אחרי הפעם הראשונה, כך שהעמוד נפתח מיד גם בלי קליטה —
+  ורק ההשמעה עצמה זקוקה לרשת.
+-->
+<style>
+:root{
+  --bg:#11161f; --card:#1b2330; --card2:#222c3c; --line:#2f3a4d;
+  --txt:#f2efe6; --dim:#9aa6b8; --gold:#d8a53c; --live:#4a9d5f;
+  --tap:72px;                      /* שום דבר שנוגעים בו אינו קטן מזה */
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg);color:var(--txt);
+  font:500 18px/1.45 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+  display:flex;flex-direction:column;overflow:hidden;
+  overscroll-behavior:none;user-select:none;
+}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.hide{display:none !important}
+
+/* ---------------------------------------------------------------- כותרת */
+header{
+  flex:0 0 auto;display:flex;align-items:center;gap:8px;
+  padding:8px 12px;background:#0d121a;border-bottom:1px solid var(--line);
+}
+#back{min-width:var(--tap);height:56px;border-radius:12px;background:var(--card);
+      font-size:1.5rem;line-height:1}
+#htitle{flex:1 1 auto;font-size:1.15rem;font-weight:700;overflow:hidden;
+        text-overflow:ellipsis;white-space:nowrap}
+.hbtn{min-width:var(--tap);height:56px;border-radius:12px;background:var(--card);
+      font-size:1.35rem;line-height:1}
+.hbtn.on{background:#7d2422;color:#fff}
+#mic.on{animation:pulse 1.3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+main{flex:1 1 auto;position:relative;overflow:hidden}
+.view{position:absolute;inset:0;display:flex;flex-direction:column}
+
+/* ----------------------------------------------------------------- נגן */
+#now{padding:14px 16px;gap:10px}
+#ntitle{
+  font-size:clamp(1.5rem,5.2vh,2.4rem);font-weight:800;line-height:1.2;
+  color:var(--gold);max-height:2.5em;overflow:hidden;
+}
+#nsub{font-size:clamp(1rem,3vh,1.35rem);color:var(--dim)}
+#npart{font-size:1rem;color:var(--dim)}
+#bar{
+  height:18px;border-radius:9px;background:var(--card2);margin:4px 0;
+  position:relative;flex:0 0 auto;
+}
+#bar i{display:block;height:100%;width:0;border-radius:9px;background:var(--gold)}
+#times{display:flex;justify-content:space-between;font-size:.95rem;color:var(--dim)}
+.keys{
+  margin-top:auto;display:flex;gap:12px;align-items:stretch;
+  padding-bottom:4px;
+}
+.key{
+  flex:1 1 0;height:clamp(78px,20vh,120px);border-radius:16px;
+  background:var(--card);display:flex;align-items:center;justify-content:center;
+}
+.key:active{background:var(--card2)}
+.key svg{width:44%;max-width:56px;height:auto;fill:var(--txt)}
+#kplay{background:var(--gold);flex:1.5 1 0}
+#kplay svg{fill:#1a1206}
+#nstate{font-size:.95rem;color:var(--dim);min-height:1.3em}
+
+/* --------------------------------------------------------------- רשימה */
+.tabs{
+  flex:0 0 auto;display:flex;gap:8px;padding:10px 12px 6px;overflow-x:auto;
+}
+.tab{
+  flex:1 0 auto;min-width:120px;height:58px;border-radius:12px;
+  background:var(--card);font-size:1.05rem;font-weight:600;
+}
+.tab.on{background:var(--gold);color:#1a1206}
+#rows{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 12px 16px}
+.row{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:start;
+  min-height:var(--tap);padding:10px 14px;margin-bottom:8px;border-radius:12px;
+  background:var(--card);
+}
+.row:active{background:var(--card2)}
+.row.on{outline:2px solid var(--gold)}
+.row .t{flex:1 1 auto;font-size:1.1rem;font-weight:600;overflow:hidden;
+        text-overflow:ellipsis;white-space:nowrap}
+.row .s{flex:0 0 auto;font-size:.92rem;color:var(--dim);white-space:nowrap}
+.note{padding:18px 14px;color:var(--dim);font-size:1.05rem;text-align:center}
+.note b{color:var(--txt)}
+</style>
+</head>
+<body>
+
+<header>
+  <button id="back" aria-label="חזרה">›</button>
+  <div id="htitle">אוצר השירה</div>
+  <button id="mic" class="hbtn hide" aria-label="חיפוש בדיבור">🎤</button>
+  <button id="toList" class="hbtn" aria-label="רשימה">☰</button>
+</header>
+
+<main>
+  <!-- מה מתנגן עכשיו. זה המסך שרואים בנהיגה, ולכן אין בו אלא ארבעה מקשים. -->
+  <section id="now" class="view">
+    <div id="ntitle">אוצר השירה השומרונית</div>
+    <div id="nsub">בחר הקלטה מן הרשימה, או אמור מה לחפש</div>
+    <div id="npart"></div>
+    <div id="bar"><i></i></div>
+    <div id="times"><span id="tnow">0:00</span><span id="tall">0:00</span></div>
+    <div id="nstate"></div>
+    <div class="keys">
+      <button class="key" id="kprev" aria-label="הקודם">
+        <svg viewBox="0 0 24 24"><path d="M20 5 9 12l11 7z"/><rect x="4" y="5" width="2.8" height="14" rx="1"/></svg></button>
+      <button class="key" id="kplay" aria-label="נגן או השהה">
+        <svg id="icP" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg>
+        <svg id="icS" viewBox="0 0 24 24" class="hide"><path d="M7 4h4v16H7zM13 4h4v16h-4z"/></svg></button>
+      <button class="key" id="knext" aria-label="הבא">
+        <svg viewBox="0 0 24 24"><path d="M4 5l11 7-11 7z"/><rect x="17.2" y="5" width="2.8" height="14" rx="1"/></svg></button>
+    </div>
+  </section>
+
+  <!-- רשימה אחת בכל פעם, שורות גדולות, ושתי רמות לכל היותר -->
+  <section id="list" class="view hide">
+    <div class="tabs">
+      <button class="tab on" data-k="perf">מבצעים</button>
+      <button class="tab" data-k="event">חגים</button>
+      <button class="tab" data-k="all">הכול</button>
+    </div>
+    <div id="rows"></div>
+  </section>
+</main>
+
+<audio id="au" preload="metadata"></audio>
+
+<script>
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+var au = $('au');
+var C = null, kind = 'perf', stack = [], cur = { rec: 0, idx: 0 };
+var KEY = 'shira_car';
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  });
+}
+function dur(sec) {
+  sec = Math.round(sec || 0);
+  var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  var mm = h ? String(m).padStart(2, '0') : String(m);
+  return (h ? h + ':' : '') + mm + ':' + String(s).padStart(2, '0');
+}
+function byId(a, id) { for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i]; return null; }
+function perfName(id) { var p = byId(C.performers, id); return p ? p.name : ''; }
+function eventName(id) { var e = byId(C.events, id); return e ? e.name : ''; }
+function piyName(id) { var p = byId(C.piyyutim, id); return p ? p.name : ''; }
+
+/* the same address the main unit builds, including a recording that is still
+   on the site's own disk and has not reached the media server yet */
+function audioURL(rel) {
+  var enc = rel.split('/').map(encodeURIComponent).join('/');
+  if (rel.indexOf('rec/') === 0) return 'api/' + enc;
+  return ((C && C.meta && C.meta.media) || 'audio/') + enc;
+}
+
+/* ---- the same matching the main unit uses, and for the same reasons: final
+   letters opened out, punctuation turned to spaces, and a second pass with the
+   vowel letters dropped so one Samaritan spelling finds another. It is copied
+   rather than shared because this page deliberately loads nothing else. */
+function fold(s) {
+  return (s || '').toLowerCase()
+    .replace(/[ךםןףץ]/g, function (c) {
+      return { 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' }[c]; })
+    .replace(/["'`׳״]/g, '')
+    .replace(/[-–—_/\\|,.;:()\[\]{}!?׃־]+/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function loose(s) { return fold(s).replace(/[אהוי]/g, ''); }
+function looseUsable(t) { var l = loose(t); return l.length >= 3 ? l : ''; }
+function terms(q) { return fold(q).split(/\s+/).filter(Boolean); }
+function hits(hay, low, ts) {
+  for (var i = 0; i < ts.length; i++) {
+    if (hay.indexOf(ts[i]) >= 0) continue;
+    var lt = looseUsable(ts[i]);
+    if (lt && low.indexOf(lt) >= 0) continue;
+    return false;
+  }
+  return true;
+}
+function recHay(r) {
+  if (r._hay === undefined) {
+    r._hay = fold([r.ttl, perfName(r.p), eventName(r.e), piyName(r.y), r.year]
+                  .filter(Boolean).join(' '));
+    r._low = loose(r._hay);
+  }
+  return r;
+}
+
+/* ------------------------------------------------------------ the archive */
+function audioOnly(cat) {
+  // four of the 923 are film; an <audio> element has no business with them
+  cat.recordings = cat.recordings.filter(function (r) { return r.kind !== 'video'; });
+  return cat;
+}
+
+function remember(cat) {
+  try { localStorage.setItem(KEY + '_cat', JSON.stringify(cat)); } catch (e) {}
+}
+
+function load() {
+  var cached = null;
+  try { cached = JSON.parse(localStorage.getItem(KEY + '_cat') || 'null'); } catch (e) {}
+  if (cached && cached.recordings) {
+    C = audioOnly(cached);
+    ready();
+    // and refresh behind the driver's back, since the archive grows
+    fetch('api/catalog').then(function (r) { return r.json(); })
+      .then(function (d) { if (d && d.recordings) { remember(d); } })['catch'](function () {});
+    return;
+  }
+  say('טוען את האוצר…');
+  fetch('api/catalog').then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d || !d.recordings) throw new Error('bad');
+      remember(d);
+      C = audioOnly(d);
+      ready();
+    })['catch'](function () {
+      say('אין חיבור לרשת. חבר את הטלפון ונסה שוב.');
+    });
+}
+
+function say(msg) { $('nstate').textContent = msg || ''; }
+
+function ready() {
+  say('');
+  drawList();
+  var last = null;
+  try { last = JSON.parse(localStorage.getItem(KEY + '_at') || 'null'); } catch (e) {}
+  if (last && byId(C.recordings, last.rec)) {
+    cur = { rec: last.rec, idx: last.idx || 0 };
+    load1(cur.rec, cur.idx, last.t || 0, true);   // ready, not playing
+    say('ממשיך מהיכן שהפסקת — לחץ נגן');
+  } else {
+    view('list');
+  }
+  if (SR) $('mic').classList.remove('hide');
+}
+
+/* ----------------------------------------------------------------- views */
+function view(v) {
+  $('now').classList.toggle('hide', v !== 'now');
+  $('list').classList.toggle('hide', v !== 'list');
+  $('toList').textContent = v === 'list' ? '♪' : '☰';
+  $('toList').setAttribute('aria-label', v === 'list' ? 'נגן' : 'רשימה');
+}
+$('toList').onclick = function () {
+  view($('list').classList.contains('hide') ? 'list' : 'now');
+};
+/* Back means one step the way it was walked, not "up" by some rule: from the
+   player it returns to the list that was open, and only from a list does it
+   climb a level. A driver who pressed a name and then a recording expects the
+   first press back to put the recordings in front of them again. */
+$('back').onclick = function () {
+  if ($('list').classList.contains('hide')) { view('list'); return; }
+  if (stack.length) { var f = stack.pop(); f(); return; }
+  if (au.getAttribute('src')) view('now');
+};
+
+function head(t) { $('htitle').textContent = t; }
+
+/* ------------------------------------------------------------- the lists */
+function rowsHTML(items) {
+  return items.map(function (it) {
+    return '<button class="row' + (it.on ? ' on' : '') + '" data-i="' + it.k + '">'
+         + '<span class="t">' + esc(it.t) + '</span>'
+         + '<span class="s">' + esc(it.s || '') + '</span></button>';
+  }).join('') || '<p class="note">אין כאן דבר.</p>';
+}
+
+function paint(items, onPick) {
+  $('rows').innerHTML = rowsHTML(items);
+  $('rows').scrollTop = 0;
+  var bs = $('rows').querySelectorAll('.row');
+  for (var i = 0; i < bs.length; i++) {
+    (function (b) { b.onclick = function () { onPick(b.dataset.i); }; })(bs[i]);
+  }
+  view('list');
+}
+
+function count(filter) {
+  var n = 0;
+  for (var i = 0; i < C.recordings.length; i++) if (filter(C.recordings[i])) n++;
+  return n;
+}
+
+function drawList() {
+  head(kind === 'perf' ? 'מבצעים' : kind === 'event' ? 'חגים ואירועים' : 'כל ההקלטות');
+  stack = [];
+  if (kind === 'perf') {
+    var ps = C.performers.map(function (p) {
+      return { k: 'p' + p.id, t: p.name,
+               s: count(function (r) { return r.p === p.id; }) + ' הקלטות' };
+    }).filter(function (x) { return parseInt(x.s, 10) > 0; });
+    paint(ps, function (k) { openGroup('p', +k.slice(1)); });
+  } else if (kind === 'event') {
+    var es = C.events.map(function (e) {
+      return { k: 'e' + e.id, t: e.name,
+               s: count(function (r) { return r.e === e.id; }) + ' הקלטות' };
+    }).filter(function (x) { return parseInt(x.s, 10) > 0; });
+    paint(es, function (k) { openGroup('e', +k.slice(1)); });
+  } else {
+    showRecs(C.recordings.slice(), 'כל ההקלטות');
+  }
+}
+
+function openGroup(what, id) {
+  var list = C.recordings.filter(function (r) {
+    return what === 'p' ? r.p === id : r.e === id;
+  });
+  stack.push(drawList);
+  showRecs(list, what === 'p' ? perfName(id) : eventName(id));
+}
+
+function showRecs(list, title) {
+  head(title);
+  var items = list.map(function (r) {
+    return { k: String(r.id), on: r.id === cur.rec,
+             t: r.ttl || piyName(r.y),
+             s: (r.tr.length > 1 ? r.tr.length + ' רצועות · ' : '') + dur(r.s) };
+  });
+  paint(items, function (k) { play(+k, 0); });
+}
+
+var tabs = document.querySelectorAll('.tab');
+for (var ti = 0; ti < tabs.length; ti++) {
+  (function (b) {
+    b.onclick = function () {
+      for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('on');
+      b.classList.add('on');
+      kind = b.dataset.k;
+      drawList();
+    };
+  })(tabs[ti]);
+}
+
+/* ------------------------------------------------------------- the player */
+function load1(recId, idx, at, hold) {
+  var r = byId(C.recordings, recId);
+  if (!r || !r.tr[idx]) return;
+  cur = { rec: recId, idx: idx };
+  au.src = audioURL(r.tr[idx].f);
+  if (at) {
+    au.addEventListener('loadedmetadata', function once() {
+      au.removeEventListener('loadedmetadata', once);
+      try { au.currentTime = at; } catch (e) {}
+    });
+  }
+  $('ntitle').textContent = r.ttl || piyName(r.y);
+  $('nsub').textContent = [perfName(r.p), eventName(r.e)].filter(Boolean).join(' · ');
+  $('npart').textContent = r.tr.length > 1
+    ? 'רצועה ' + (idx + 1) + ' מתוך ' + r.tr.length : '';
+  $('tall').textContent = dur(r.tr[idx].s);
+  view('now');
+  if (!hold) au.play()['catch'](function () { say('לחץ נגן כדי להתחיל'); });
+  keep();
+}
+
+function play(recId, idx) { say(''); load1(recId, idx, 0, false); }
+
+function step(d) {
+  var r = byId(C.recordings, cur.rec);
+  if (!r) return;
+  var i = cur.idx + d;
+  if (i < 0 || i >= r.tr.length) return;
+  load1(cur.rec, i, 0, false);
+}
+
+$('kplay').onclick = function () {
+  if (!au.src) { view('list'); return; }
+  if (au.paused) au.play()['catch'](function () {}); else au.pause();
+};
+$('kprev').onclick = function () { if (au.currentTime > 3) { au.currentTime = 0; } else step(-1); };
+$('knext').onclick = function () { step(1); };
+
+au.addEventListener('play',  function () { icons(); });
+au.addEventListener('pause', function () { icons(); keep(); });
+au.addEventListener('ended', function () { step(1); });      // one piece of singing
+au.addEventListener('error', function () { say('הקובץ לא נטען — בדוק את החיבור'); });
+au.addEventListener('timeupdate', function () {
+  var d = au.duration || 0;
+  $('bar').firstElementChild.style.width = d ? (au.currentTime / d * 100) + '%' : '0';
+  $('tnow').textContent = dur(au.currentTime);
+  if (d) $('tall').textContent = dur(d);
+  if (Math.floor(au.currentTime) % 5 === 0) keep();
+});
+function icons() {
+  $('icP').classList.toggle('hide', !au.paused);
+  $('icS').classList.toggle('hide', au.paused);
+}
+/* a big target: the whole bar seeks, because a thumb in a moving car is not
+   going to land on a 6-pixel handle */
+$('bar').onclick = function (e) {
+  if (!au.duration) return;
+  var b = $('bar').getBoundingClientRect();
+  var x = (e.clientX - b.left) / b.width;
+  au.currentTime = (1 - x) * au.duration;        // RTL: the start is on the right
+};
+
+/* where the driver was, so the next trip carries on from it */
+function keep() {
+  try {
+    localStorage.setItem(KEY + '_at', JSON.stringify(
+      { rec: cur.rec, idx: cur.idx, t: Math.floor(au.currentTime || 0) }));
+  } catch (e) {}
+}
+window.addEventListener('pagehide', keep);
+
+/* ----------------------------------------------------- asking out loud
+ * In a car this is the real way in: the lists are long, the road is not
+ * waiting, and a name here is hard to spell even sitting still. The rules are
+ * the unit's own — "פלוס" is the plus sign that joins two piyyutim in one
+ * title, and "של" divides the piyyut from the singer, but only when what
+ * follows is a singer this archive has.
+ */
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var listening = null;
+
+function heard(said) {
+  var full = String(said || '').replace(/\s+/g, ' ').trim();
+  full = full.replace(/(^|\s)פלוס(\s|$)/g, '$1+$2');
+  var m = full.match(/\s(?:של|עם|בביצוע|מפי|שירת|בפי)\s/);
+  if (!m) return { full: full, left: full, perf: '' };
+  var i = full.indexOf(m[0]);
+  return { full: full, left: full.slice(0, i).trim(),
+           perf: full.slice(i + m[0].length)
+                     .replace(/^(?:ה?מבצע(?:ת)?|ה?זמר(?:ת)?|ה?חזן|ה?כהן)\s+/, '').trim() };
+}
+function whichPerf(text) {
+  var ts = terms(text), best = 0, len = 1e9;
+  if (!ts.length) return 0;
+  for (var i = 0; i < C.performers.length; i++) {
+    var p = C.performers[i], hay = fold(p.name);
+    if (hits(hay, loose(hay), ts) && hay.length < len) { best = p.id; len = hay.length; }
+  }
+  return best;
+}
+function found(q, perfId) {
+  var ts = terms(q), out = [];
+  for (var i = 0; i < C.recordings.length; i++) {
+    var r = C.recordings[i];
+    if (perfId && r.p !== perfId) continue;
+    if (ts.length) { recHay(r); if (!hits(r._hay, r._low, ts)) continue; }
+    out.push(r);
+  }
+  return out;
+}
+/* every reading the recogniser offered, judged by what it actually finds —
+   Google's Hebrew has never heard a Samaritan piyyut title */
+function pick(alts) {
+  var read = alts.map(function (s) {
+    var v = heard(s);
+    return { said: s, v: v, perf: v.perf ? whichPerf(v.perf) : 0 };
+  });
+  var i, r, got;
+  for (i = 0; i < read.length; i++) {
+    r = read[i];
+    if (!r.perf) continue;
+    got = found(r.v.left, r.perf);
+    if (got.length) return { said: r.said, list: got, who: perfName(r.perf), q: r.v.left };
+  }
+  for (i = 0; i < read.length; i++) {
+    r = read[i];
+    got = found(r.v.full, 0);
+    if (got.length) return { said: r.said, list: got, who: '', q: r.v.full };
+  }
+  for (i = 0; i < read.length; i++) {
+    r = read[i];
+    if (!r.perf) continue;
+    var w = terms(r.v.left);
+    for (var k = w.length - 1; k >= 0; k--) {
+      got = found(w.slice(0, k).join(' '), r.perf);
+      if (got.length) return { said: r.said, list: got, who: perfName(r.perf),
+                               q: w.slice(0, k).join(' ') };
+    }
+  }
+  return { said: alts[0] || '', list: [], who: '', q: alts[0] || '' };
+}
+
+$('mic').onclick = function () {
+  if (!SR) return;
+  if (listening) { try { listening.abort(); } catch (e) {} listening = null; return; }
+  var rec = new SR();
+  rec.lang = 'he-IL';                 // תמיד עברית: זו השפה שהאוצר כתוב בה
+  rec.interimResults = false;
+  rec.maxAlternatives = 5;
+  listening = rec;
+  $('mic').classList.add('on');
+  head('מדבר…');
+  rec.onresult = function (e) {
+    var res = e.results[e.results.length - 1], alts = [];
+    for (var i = 0; i < res.length; i++) {
+      var t = (res[i].transcript || '').trim();
+      if (t && alts.indexOf(t) < 0) alts.push(t);
+    }
+    done();
+    if (!alts.length) return;
+    var p = pick(alts);
+    if (!p.list.length) {
+      head('לא נמצא');
+      $('rows').innerHTML = '<p class="note">שמעתי <b>«' + esc(p.said)
+        + '»</b><br>ולא נמצא דבר. נסה שוב.</p>';
+      view('list');
+      return;
+    }
+    if (p.list.length === 1) { play(p.list[0].id, 0); say('שמעתי: ' + p.said); return; }
+    stack.push(drawList);
+    showRecs(p.list, p.q ? (p.who ? p.q + ' · ' + p.who : p.q)
+                         : (p.who || 'תוצאות'));
+  };
+  rec.onerror = function (e) {
+    done();
+    head(e.error === 'not-allowed' ? 'אין גישה למיקרופון'
+       : e.error === 'no-speech' ? 'לא נשמע דבר' : 'הזיהוי נכשל');
+  };
+  rec.onend = function () { done(); };
+  function done() {
+    listening = null;
+    $('mic').classList.remove('on');
+    if ($('htitle').textContent === 'מדבר…') head('אוצר השירה');
+  }
+  try { rec.start(); } catch (e) { done(); }
+};
+
+/* the screen may not sleep over a piyyut that is still playing */
+var lock = null;
+function awake(on) {
+  try {
+    if (on && !lock && navigator.wakeLock) {
+      navigator.wakeLock.request('screen').then(function (l) { lock = l; })['catch'](function () {});
+    } else if (!on && lock) { lock.release(); lock = null; }
+  } catch (e) { lock = null; }
+}
+au.addEventListener('play', function () { awake(true); });
+au.addEventListener('pause', function () { awake(false); });
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'visible' && !au.paused) awake(true);
+});
+
+icons();
+load();
+</script>
+</body>
+</html>

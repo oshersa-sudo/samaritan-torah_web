@@ -2456,3 +2456,7 @@ mark{
   font-size:.9rem;padding:0 3px;border-radius:5px;
 }
 .qheard.warn{background:#fbf1f0;border-color:#d8c9c7;color:#8c2f2c}
+
+
+/* הקישור למצב רכב לובש את מראה הכפתורים שלידו */
+a.tbtn{text-decoration:none;display:inline-flex;align-items:center}
