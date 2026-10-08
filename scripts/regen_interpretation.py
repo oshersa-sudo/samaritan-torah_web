@@ -287,6 +287,10 @@ def main():
                     help='comma-separated book ids; default is all of BOOKS_SCOPE')
     ap.add_argument('--out', default=None,
                     help='checkpoint file; default is data/interp_regen_output.json')
+    # a run aimed at named Samaritan chapters rather than whole books. The Song
+    # of Moses is three of them, and rewriting it should not reach the other 938.
+    ap.add_argument('--chapters', default=None,
+                    help='comma-separated sam_chapters ids; overrides --books')
     args = ap.parse_args()
     global OUT_PATH
     if args.out:
@@ -311,9 +315,12 @@ def main():
         exod_row = cur.fetchone()
         targets = [gen1, lev5] + ([exod_row[0]] if exod_row else [])
     else:
-        ph = ','.join('?' * len(scope))
-        cur.execute(f'SELECT id FROM sam_chapters WHERE book_id IN ({ph}) ORDER BY book_id, number', scope)
-        targets = [r[0] for r in cur.fetchall()]
+        if args.chapters:
+            targets = [int(x) for x in args.chapters.split(',') if x.strip()]
+        else:
+            ph = ','.join('?' * len(scope))
+            cur.execute(f'SELECT id FROM sam_chapters WHERE book_id IN ({ph}) ORDER BY book_id, number', scope)
+            targets = [r[0] for r in cur.fetchall()]
 
     checkpoint = {}
     if os.path.exists(OUT_PATH):

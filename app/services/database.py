@@ -495,6 +495,23 @@ def _seed_interp_fixes():
                 cur.execute("UPDATE verse_nikud SET typed=? WHERE verse_id=? AND typed=?",
                             (fx['to_typed'], fx['verse_id'], fx['from_typed']))
                 n += cur.rowcount
+        # שורה שבשדה הפירוש אינה פירוש — שריד הוראה, תרגום מכונה של נוסח
+        # הפסוק, או הפסוק עצמו מנוסח מחדש — מרוקנת ולא מוחלפת. פאנל ריק
+        # עדיף על פירוש שגוי, ואותה שמירה חלה: רק בעוד הטקסט זהה אות באות.
+        for fx in (_all.get('junk_clear') or {}).get('rows') or []:
+            cur.execute("UPDATE verses SET interpretation='' "
+                        "WHERE id=? AND interpretation=?",
+                        (fx['verse_id'], fx['from_he']))
+            n += cur.rowcount
+        # וקישורי מקור שהמקשר לא מצא. כאן השמירה היא היפוכה: הקישור נכתב
+        # רק אם אינו קיים, שאם לא כן תיווצר כפילות בכל עלייה של השרת.
+        for fx in (_all.get('tm_links_add') or {}).get('rows') or []:
+            cur.execute("INSERT INTO tm_verse_links (verse_id, section_id) "
+                        "SELECT ?, ? WHERE NOT EXISTS (SELECT 1 FROM tm_verse_links "
+                        "WHERE verse_id=? AND section_id=?)",
+                        (fx['verse_id'], fx['section_id'],
+                         fx['verse_id'], fx['section_id']))
+            n += cur.rowcount
         if n:
             conn.commit()
             print('[fix] %d fields corrected to the Samaritan reading' % n)
