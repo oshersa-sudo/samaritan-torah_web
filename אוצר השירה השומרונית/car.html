@@ -548,6 +548,25 @@ $('mic').onclick = function () {
   try { rec.start(); } catch (e) { done(); }
 };
 
+/* The phone's Back key, and the one on the car unit's own frame.
+ *
+ * Here a step back is exactly what the «חזרה» key does, so the two are the
+ * same answer: from the player to the list that was open, from a list up a
+ * level, and only from the top of the lists does a press leave. One spare
+ * history entry is kept so that a press has something to consume rather than
+ * falling through to the system on the first touch.
+ */
+window.unitBack = function () {
+  if ($('list').classList.contains('hide')) { view('list'); return true; }
+  if (stack.length) { var f = stack.pop(); f(); return true; }
+  return false;
+};
+function backSpare() {
+  try { history.pushState({ car: 1 }, '', location.href); } catch (e) {}
+}
+addEventListener('popstate', function () { if (unitBack()) backSpare(); });
+backSpare();
+
 /* the screen may not sleep over a piyyut that is still playing */
 var lock = null;
 function awake(on) {

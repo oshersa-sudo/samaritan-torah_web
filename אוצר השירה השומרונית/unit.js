@@ -1886,6 +1886,46 @@ function showSaved(piyyut) {
   go('rec');
 }
 
+/* ================================================ the phone's Back key
+ *
+ * Inside the Torah app this unit is a frame, and the page above it reads one
+ * press as "close the panel". But a press means one step, and in here a step
+ * is nearly always something of the unit's own — a sheet standing open, the
+ * deck in front of the lists, a search that narrowed everything. Closing the
+ * whole archive for that is not a step back; it is leaving, with the deck and
+ * whatever was playing gone with it.
+ *
+ * So the unit answers for itself. The page above calls this before it closes
+ * anything, and `true` means the press was spent here. Opened on its own —
+ * /shira/ in a browser of its own, which is how a car unit opens it — there is
+ * no page above, so the same answer is wired straight to the key, with one
+ * spare history entry kept so that a press has something to consume instead of
+ * falling through and leaving the app.
+ */
+window.unitBack = function () {
+  // a question about a recording that exists has to be answered, not waved
+  // away: the press is spent, and deliberately nothing happens
+  if (document.querySelector('.modal.sticky:not(.hidden)')) return true;
+  const open = document.querySelectorAll('.modal:not(.hidden)');
+  if (open.length) { closeModal(open[open.length - 1].id); return true; }
+  // the deck folds to its title bar rather than ejecting — a press should not
+  // stop the singing
+  const deck = $('deckWin');
+  if (!deck.classList.contains('hidden') && !deck.classList.contains('min')) {
+    $('dwMin').click();
+    return true;
+  }
+  // and a narrowed archive widens before it is left
+  if (F.q || F.perf || F.event || F.piyyut) { clearFilters(); return true; }
+  return false;
+};
+
+if (window.top === window) {
+  const spare = () => { try { history.pushState({ unit: 1 }, '', location.href); } catch (e) {} };
+  addEventListener('popstate', () => { if (unitBack()) spare(); });
+  spare();
+}
+
 /* The app being closed is not a reason to lose a recording either: the tape
  * is ended so the microphone is released, and the browser asks before the
  * page goes — this is the one case the app cannot ask about itself. */

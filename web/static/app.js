@@ -10486,7 +10486,18 @@ async function openRoute(path, silent){
 // a level. Only at the book list — nothing open, nowhere further up — is the
 // spare not replaced, and the next press leaves the app, which is what a reader
 // at the front page means by it.
-function backSpare(){ try{ history.pushState({app:1, spare:1}, '', location.pathname); }catch(e){}}
+// One spare, and from the first moment.
+//
+// It used to be laid down on the load event, which waits for every picture
+// and every frame on the page — on a phone over a hotspot that is seconds
+// after the reader can already press something, and a press in those seconds
+// went straight through and left the app. It is laid now, when the script runs,
+// and again on load, and never twice: the entry is pushed only when the one
+// being stood on is not already it.
+function backSpare(){
+  if(history.state && history.state.spare) return;
+  try{ history.pushState({app:1, spare:1}, '', location.pathname); }catch(e){}
+}
 // What is currently laid over the page — closed topmost first.
 //
 // This asks the page rather than carrying a list of window names. The app has
@@ -10495,6 +10506,18 @@ function backSpare(){ try{ history.pushState({app:1, spare:1}, '', location.path
 // an open unit and left the app. Anything that is fixed to the screen, visible,
 // and large is a layer, and the one with the highest stacking order is the one
 // the reader sees on top — that is the one a Back press should take away.
+function layerStep(top){
+  const f = top.querySelector && top.querySelector('iframe');
+  if(f){
+    try{
+      const w = f.contentWindow;
+      if(w && typeof w.unitBack === 'function' && w.unitBack()) return true;
+    }catch(e){ /* a frame from elsewhere cannot be asked; close it instead */ }
+  }
+  const b = top.querySelector && top.querySelector('.tm-back');
+  if(b && !b.classList.contains('hidden') && b.offsetParent){ b.click(); return true; }
+  return false;
+}
 function closeTopLayer(){
   if(document.body.classList.contains('print-preview')){ $('ppCloseBtn').click(); return true; }
   const seen = [];
@@ -10509,6 +10532,17 @@ function closeTopLayer(){
   if(!seen.length) return false;
   seen.sort((a, b) => (a.z - b.z) || (a.el.compareDocumentPosition(b.el) & 2 ? 1 : -1));
   const top = seen[seen.length - 1].el;
+  // A layer that has a step of its own takes it first.
+  //
+  // Closing a reader that is three chapters deep, or an archive with a sheet
+  // open over it, is not a step back — it is leaving, and that is exactly what
+  // the press was not meant to do. The library readers already carry the
+  // button that means one step (.tm-back), and a unit shown in a frame is
+  // asked outright: these frames are the app's own pages on the app's own
+  // origin, so it is a plain function call and the answer arrives in time to
+  // decide what this press does. Only when the layer says it has nowhere left
+  // to go is the layer itself taken away.
+  if(layerStep(top)) return true;
   // the drawer and its overlay are one thing and close together
   if(top.classList.contains('menu-overlay') || top.classList.contains('menu-drawer')){
     if(typeof closeMenu === 'function'){ closeMenu(); return true; }
@@ -10530,6 +10564,7 @@ addEventListener('popstate', (e) => {
   // at the front page: let the press go where it was always going
 });
 addEventListener('load', backSpare);
+backSpare();
 
 // ── start ────────────────────────────────────────────────────────────────────
 // open whatever the address asks for; a plain '/' is the book list as before
