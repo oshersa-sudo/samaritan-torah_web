@@ -39,8 +39,10 @@ header{
   flex:0 0 auto;display:flex;align-items:center;gap:8px;
   padding:8px 12px;background:#0d121a;border-bottom:1px solid var(--line);
 }
+/* מילה ולא חץ: חץ זווית נהפך לכיוונו בטקסט מימין לשמאל, ובמסך שמביטים
+   בו חצי שנייה בנהיגה מילה אינה משאירה מקום לספק */
 #back{min-width:var(--tap);height:56px;border-radius:12px;background:var(--card);
-      font-size:1.5rem;line-height:1}
+      font-size:1.05rem;font-weight:600;line-height:1;padding:0 14px}
 #htitle{flex:1 1 auto;font-size:1.15rem;font-weight:700;overflow:hidden;
         text-overflow:ellipsis;white-space:nowrap}
 .hbtn{min-width:var(--tap);height:56px;border-radius:12px;background:var(--card);
@@ -107,7 +109,7 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 <body>
 
 <header>
-  <button id="back" aria-label="חזרה">›</button>
+  <button id="back" aria-label="חזרה">חזרה</button>
   <div id="htitle">אוצר השירה</div>
   <button id="mic" class="hbtn hide" aria-label="חיפוש בדיבור">🎤</button>
   <button id="toList" class="hbtn" aria-label="רשימה">☰</button>
