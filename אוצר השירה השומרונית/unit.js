@@ -5654,6 +5654,13 @@ function voiceStart() {
   }
 }
 
+/* אודות. הגרסה נקראת מן השרת ולא נכתבת כאן, שמספר גרסה שמוקלד ביד
+   מתיישן באותו רגע שבו הוא נכתב. */
+$('aboutBtn').onclick = () => {
+  $('abVer').textContent = (HOLD && HOLD.version) || '—';
+  openModal('aboutModal');
+};
+
 $('qmic').onclick = voiceStart;
 // shown only where it can work; in a browser without speech recognition a
 // microphone key that answers nothing is worse than no key at all

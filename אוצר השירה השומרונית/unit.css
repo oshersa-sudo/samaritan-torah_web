@@ -2460,3 +2460,18 @@ mark{
 
 /* הקישור למצב רכב לובש את מראה הכפתורים שלידו */
 a.tbtn{text-decoration:none;display:inline-flex;align-items:center}
+
+
+/* ------------------------------------------------------------ אודות
+ * קצרה בכוונה: מניין זה בא, של מי, ואיך להגיע אל מי שבנה. שורה אחת
+ * לכל דבר, שדף זכויות שצריך לקרוא פעמיים אינו עושה את עבודתו.
+ */
+.about{text-align:center;line-height:1.75}
+.about .ab-ver{margin:0 0 14px;color:var(--muted);font-size:.9rem}
+.about .ab-rights{margin:0 0 16px;font-size:1.05rem}
+.about .ab-rights b{display:inline-block;font-weight:700}
+.about .ab-links{margin:0 0 14px}
+.about .ab-links a{color:var(--active);text-decoration:none;font-weight:600}
+.about .ab-links a:hover{text-decoration:underline}
+.about .ab-mail{margin:0;font-size:.95rem;color:var(--muted)}
+.about .ab-mail a{color:var(--active);text-decoration:none}

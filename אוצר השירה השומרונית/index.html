@@ -58,6 +58,7 @@
         </button>
         <!-- עמוד נפרד לנהיגה: מקשים גדולים, רשימה אחת, וקול. קישור ולא
              כפתור, כדי שאפשר יהיה לשמור אותו למסך הבית של יחידת הרכב. -->
+        <button id="aboutBtn" class="tbtn" title="אודות האוצר">ⓘ אודות</button>
         <a id="carBtn" class="tbtn" href="car.html"
            title="מצב רכב — מסך גדול לנהיגה, לשמירה במסך הבית של יחידת הרכב">🚗 מצב רכב</a>
         <!-- כפתורי ההשמעה נוספו מאוחר יותר ולכן הם באים אחרי הקיימים -->
@@ -343,6 +344,27 @@
       <button class="btn hidden" id="rpRetry">נסה שוב</button>
       <button class="btn hidden" id="rpOpen">פתח באוצר</button>
       <button class="btn ghost hidden" id="rpClose">סגור</button>
+    </div>
+  </div>
+</div>
+
+<!-- אודות: מניין זה בא, ושל מי. -->
+<div id="aboutModal" class="modal hidden">
+  <div class="sheet narrow">
+    <div class="sheet-h">
+      <h2>אודות</h2>
+      <button class="x" data-close="aboutModal">✕</button>
+    </div>
+    <div class="sheet-b about">
+      <p class="ab-ver">גרסה <b id="abVer">—</b></p>
+      <p class="ab-rights">כל הזכויות שמורות ל:<br>
+        <b>פרויקט אבני שהם</b><br>
+        <b>אוצר השירה השומרונית</b></p>
+      <p class="ab-links">
+        <a href="https://play.google.com/store/apps/details?id=net.thesamaritans.torah" target="_blank" rel="noopener">התורה השומרונית ב‑Google&nbsp;Play</a><br>
+        <a href="https://www.the-samaritans.net" target="_blank" rel="noopener">www.the-samaritans.net</a>
+      </p>
+      <p class="ab-mail">כתבו לנו: <a href="mailto:oshersa@gmail.com">oshersa@gmail.com</a></p>
     </div>
   </div>
 </div>

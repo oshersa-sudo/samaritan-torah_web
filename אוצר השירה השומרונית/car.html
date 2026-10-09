@@ -176,6 +176,14 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
   width:var(--tap);height:var(--tap);border-radius:12px;background:var(--card);
   color:inherit;font:inherit;font-size:1.6rem;line-height:1;
 }
+/* ------------------------------------------------- אודות */
+.abwrap{flex:1 1 auto;overflow-y:auto;padding:18px 16px;text-align:center;
+        line-height:1.8}
+.abwrap .ab-ver{margin:0 0 16px;color:var(--dim);font-size:.95rem}
+.abwrap .ab-rights{margin:0 0 18px;font-size:1.15rem}
+.abwrap .ab-links{margin:0 0 16px;font-size:1.05rem}
+.abwrap a{color:var(--gold);text-decoration:none}
+.abwrap .ab-mail{margin:0;color:var(--dim)}
 .note{padding:18px 14px;color:var(--dim);font-size:1.05rem;text-align:center}
 .note b{color:var(--txt)}
 /* ההוראה למי שמדבר — גדולה דיה להיקרא במבט אחד, ועומדת במקום הרשימה */
@@ -264,6 +272,20 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
         <svg id="icS" viewBox="0 0 24 24" class="hide"><path d="M7 4h4v16H7zM13 4h4v16h-4z"/></svg></button>
       <button class="key" id="knext" aria-label="הבא">
         <svg viewBox="0 0 24 24"><path d="M4 5l11 7-11 7z"/><rect x="17.2" y="5" width="2.8" height="14" rx="1"/></svg></button>
+    </div>
+  </section>
+
+  <!-- אודות. נגישה מסוף הרשימה הראשית, ולא ממקש בשורה העליונה —
+       בנהיגה אין קוראים זכויות, ומי שמחפש אותן אינו ממהר. -->
+  <section id="about" class="view hide">
+    <div class="abwrap">
+      <p class="ab-ver">גרסה <b id="abVer">—</b></p>
+      <p class="ab-rights">כל הזכויות שמורות ל:<br>
+        <b>פרויקט אבני שהם</b><br><b>אוצר השירה השומרונית</b></p>
+      <p class="ab-links">
+        <a href="https://play.google.com/store/apps/details?id=net.thesamaritans.torah" target="_blank" rel="noopener">התורה השומרונית ב‑Google&nbsp;Play</a><br>
+        <a href="https://www.the-samaritans.net" target="_blank" rel="noopener">www.the-samaritans.net</a></p>
+      <p class="ab-mail">כתבו לנו: <a href="mailto:oshersa@gmail.com">oshersa@gmail.com</a></p>
     </div>
   </section>
 
@@ -414,6 +436,7 @@ function ready() {
 /* ----------------------------------------------------------------- views */
 function view(v) {
   $('mix').classList.add('hide');
+  $('about').classList.add('hide');
   $('now').classList.toggle('hide', v !== 'now');
   $('list').classList.toggle('hide', v !== 'list');
   $('toList').textContent = v === 'list' ? '♪' : '☰';
@@ -444,12 +467,36 @@ function rowsHTML(items) {
   }).join('') || '<p class="note">אין כאן דבר.</p>';
 }
 
+function aboutOpen() {
+  $('now').classList.add('hide');
+  $('list').classList.add('hide');
+  $('mix').classList.add('hide');
+  $('about').classList.remove('hide');
+  head('אודות');
+  if (!$('abVer').dataset.got) {
+    fetch('api/version').then(function (x) { return x.json(); })
+      .then(function (d) {
+        $('abVer').textContent = (d && d.version) || '—';
+        $('abVer').dataset.got = '1';
+      })['catch'](function () {});
+  }
+}
+
 function paint(items, onPick) {
   $('rows').innerHTML = rowsHTML(items);
   $('rows').scrollTop = 0;
   var bs = $('rows').querySelectorAll('.row');
   for (var i = 0; i < bs.length; i++) {
     (function (b) { b.onclick = function () { onPick(b.dataset.i); }; })(bs[i]);
+  }
+  // at the foot of a top-level list only: not under every search result
+  if (!stack.length) {
+    var a = document.createElement('button');
+    a.className = 'row';
+    a.innerHTML = '<span class="rt"><span class="t">אודות</span></span>'
+                + '<span class="s">ומי עשה את זה</span>';
+    a.onclick = aboutOpen;
+    $('rows').appendChild(a);
   }
   view('list');
 }
@@ -816,6 +863,10 @@ $('mic').onclick = function () {
  * falling through to the system on the first touch.
  */
 window.unitBack = function () {
+  if (!$('about').classList.contains('hide')) {
+    view(au.getAttribute('src') ? 'now' : 'list');
+    return true;
+  }
   if (!$('mix').classList.contains('hide')) {
     view(au.getAttribute('src') ? 'now' : 'list');
     return true;
