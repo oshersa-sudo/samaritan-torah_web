@@ -56,10 +56,14 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 
 /* ----------------------------------------------------------------- נגן */
 #now{padding:14px 16px;gap:10px}
+/* flex מכווץ ילדים כברירת מחדל, ועם הרצועה הנוספת הכותרת היא שנעלמה
+   ראשונה — ממש היא, מה שהשיר הזה הוא. כאן היא אינה מתכווצת. */
 #ntitle{
+  flex:0 0 auto;
   font-size:clamp(1.5rem,5.2vh,2.4rem);font-weight:800;line-height:1.2;
   color:var(--gold);max-height:2.5em;overflow:hidden;
 }
+#nsub,#npart,#times,#nstate,#bar{flex:0 0 auto}
 #nsub{font-size:clamp(1rem,3vh,1.35rem);color:var(--dim)}
 #npart{font-size:1rem;color:var(--dim)}
 #bar{
@@ -81,8 +85,43 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 #kplay{background:var(--gold);flex:1.5 1 0}
 #kplay svg{fill:#1a1206}
 #nstate{font-size:.95rem;color:var(--dim);min-height:1.3em}
+/* כשאין מה לומר, השורה אינה תופסת מקום — וזה בדיוק המקום שהרצועה של
+   המבצעים האחרים צריכה כדי שהמקשים יישארו בגודלם */
+#nstate:empty{display:none;min-height:0}
+
+/* ------------------------------------- אותו שיר, קול אחר
+ * רצועה אופקית ולא רשימה: היא אינה גוזלת מן המקשים, ומראה בבת אחת כמה
+ * קולות יש לשיר הזה — מה שבלעדיה מחייב לחזור אל הרשימות ולחפש מחדש.
+ */
+.alts{flex:0 0 auto;display:flex;flex-direction:column;gap:6px}
+.alth{font-size:.9rem;color:var(--dim)}
+/* overflow-x לבדו הופך גם את האנכי לגלילה, וזה מה שקיצץ את השורה השנייה
+   של כל כפתור; הגובה קבוע והאנכי חסום */
+.altrow{
+  display:flex;gap:8px;height:64px;overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;align-items:stretch;
+}
+.altrow button{
+  flex:0 0 auto;padding:8px 14px;border-radius:12px;justify-content:center;
+  background:var(--card);color:inherit;font:inherit;
+  display:flex;flex-direction:column;align-items:flex-start;gap:2px;white-space:nowrap;
+}
+.altrow button:active{background:var(--card2)}
+.altrow b{font-size:1rem;font-weight:600}
+.altrow small{font-size:.84rem;color:var(--dim)}
 
 /* --------------------------------------------------------------- רשימה */
+.find{flex:0 0 auto;display:flex;gap:8px;padding:10px 12px 0}
+.find input{
+  flex:1 1 auto;min-width:0;height:64px;padding:0 16px;border-radius:12px;
+  border:1px solid var(--line);background:var(--card);color:var(--txt);
+  font:inherit;font-size:1.15rem;
+}
+.find input:focus{outline:none;border-color:var(--gold)}
+.find button{
+  width:var(--tap);height:64px;border-radius:12px;background:var(--card);
+  color:inherit;font-size:1.3rem;
+}
 .tabs{
   flex:0 0 auto;display:flex;gap:8px;padding:10px 12px 6px;overflow-x:auto;
 }
@@ -156,13 +195,14 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
   #ntitle{font-size:1.15rem;max-height:1.35em}
   #nsub{font-size:.8rem}
   #npart{font-size:.78rem}
-  #times{display:none}
+  #times,#alts{display:none}
   #bar{height:10px;margin:2px 0}
   .key{height:56px}
   .key svg{max-width:34px}
   header{padding:4px 8px}
   #back,.hbtn{height:40px;font-size:.95rem}
   .tab{height:42px}
+  .find input,.find button{height:48px}
 }
 @media (max-width:520px){
   .row .t{font-size:1rem}
@@ -176,6 +216,11 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
   <button id="back" aria-label="חזרה">חזרה</button>
   <div id="htitle">אוצר השירה</div>
         <button id="mic" class="hbtn hide" aria-label="חיפוש בדיבור">🎤</button>
+  <button id="findBtn" class="hbtn" aria-label="חיפוש בהקלדה">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M10.5 3a7.5 7.5 0 1 0 4.55 13.46l4.24 4.25 1.42-1.42-4.25-4.24A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z"/>
+    </svg>
+  </button>
   <button id="mixBtn" class="hbtn" aria-label="מיקסר">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <rect x="3" y="4" width="2" height="16" rx="1"/><circle cx="4" cy="9" r="2.6"/>
@@ -195,6 +240,12 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
     <div id="bar"><i></i></div>
     <div id="times"><span id="tnow">0:00</span><span id="tall">0:00</span></div>
     <div id="nstate"></div>
+    <!-- אותו פיוט אצל אחרים. 85 מן הפיוטים כאן מושרים ביותר מפה אחת, ועד
+         תשע; זו הדרך לשמוע את אותו השיר בקולות שונים בלי לחזור לרשימות. -->
+    <div id="alts" class="alts hide">
+      <span class="alth">אותו שיר אצל</span>
+      <div id="altRow" class="altrow"></div>
+    </div>
     <div class="keys">
       <button class="key" id="kprev" aria-label="הקודם">
         <svg viewBox="0 0 24 24"><path d="M20 5 9 12l11 7z"/><rect x="4" y="5" width="2.8" height="14" rx="1"/></svg></button>
@@ -213,6 +264,13 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 
   <!-- רשימה אחת בכל פעם, שורות גדולות, ושתי רמות לכל היותר -->
   <section id="list" class="view hide">
+    <!-- כשהקול אינו עובד — רעש, או דפדפן בלי זיהוי — מקלידים. השדה גדול
+         כמו מקש, ומחפש תוך כדי הקלדה באותם כללים של היחידה. -->
+    <div class="find hide" id="find">
+      <input id="fq" type="search" autocomplete="off" inputmode="search"
+             placeholder="שם הפיוט, מבצע או חג">
+      <button id="fx" aria-label="נקה">✕</button>
+    </div>
     <div class="tabs">
       <button class="tab on" data-k="perf">מבצעים</button>
       <button class="tab" data-k="event">חגים</button>
@@ -447,6 +505,9 @@ for (var ti = 0; ti < tabs.length; ti++) {
       for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('on');
       b.classList.add('on');
       kind = b.dataset.k;
+      // a tab is a way out of the search, so the field goes with it
+      $('fq').value = '';
+      $('find').classList.add('hide');
       drawList();
     };
   })(tabs[ti]);
@@ -470,6 +531,7 @@ function load1(recId, idx, at, hold) {
     ? 'רצועה ' + (idx + 1) + ' מתוך ' + r.tr.length : '';
   $('tall').textContent = dur(r.tr[idx].s);
   sysSay(r, idx);
+  altsPaint(r);
   mxApply();                 // the shaping is on from the first note, not the second
   view('now');
   if (!hold) au.play()['catch'](function () { say('לחץ נגן כדי להתחיל'); });
@@ -477,6 +539,43 @@ function load1(recId, idx, at, hold) {
 }
 
 function play(recId, idx) { say(''); load1(recId, idx, 0, false); }
+
+/* The same piyyut in another voice.
+ *
+ * Every recording here carries the id of the piyyut it is, so this is not a
+ * guess from the title: it is the archive's own answer to "who else sang
+ * this". One entry per singer — the longest they left, which is almost always
+ * the full rendering rather than a fragment — and the one playing is left out,
+ * since it is already in the air.
+ */
+function altsFor(r) {
+  if (!C || !r || !r.y) return [];
+  var best = {};
+  for (var i = 0; i < C.recordings.length; i++) {
+    var x = C.recordings[i];
+    if (x.y !== r.y || x.p === r.p) continue;
+    if (!best[x.p] || (x.s || 0) > (best[x.p].s || 0)) best[x.p] = x;
+  }
+  var out = [];
+  for (var k in best) if (Object.prototype.hasOwnProperty.call(best, k)) out.push(best[k]);
+  out.sort(function (a, b) { return (b.s || 0) - (a.s || 0); });
+  return out;
+}
+
+function altsPaint(r) {
+  var list = altsFor(r);
+  $('alts').classList.toggle('hide', !list.length);
+  if (!list.length) { $('altRow').innerHTML = ''; return; }
+  $('altRow').innerHTML = list.map(function (x, i) {
+    return '<button data-a="' + i + '"><b>' + esc(perfName(x.p)) + '</b>'
+         + '<small>' + (x.tr.length > 1 ? x.tr.length + ' רצועות · ' : '')
+         + dur(x.s) + '</small></button>';
+  }).join('');
+  var bs = $('altRow').querySelectorAll('[data-a]');
+  for (var j = 0; j < bs.length; j++) {
+    (function (b) { b.onclick = function () { play(list[+b.dataset.a].id, 0); }; })(bs[j]);
+  }
+}
 
 function step(d) {
   var r = byId(C.recordings, cur.rec);
@@ -661,6 +760,12 @@ window.unitBack = function () {
     view(au.getAttribute('src') ? 'now' : 'list');
     return true;
   }
+  if (!$('find').classList.contains('hide') && !$('list').classList.contains('hide')) {
+    $('fq').value = '';
+    $('find').classList.add('hide');
+    drawList();
+    return true;
+  }
   if ($('list').classList.contains('hide')) { view('list'); return true; }
   if (stack.length) { var f = stack.pop(); f(); return true; }
   return false;
@@ -814,6 +919,42 @@ function trimRow(k, label, v) {
        + '<span class="val">' + (v > 0 ? '+' : '') + v + ' דציבל</span>'
        + '<button data-t="' + k + '" data-d="3" aria-label="הוסף">+</button></div>';
 }
+
+/* Typing, for when the voice cannot be used.
+ *
+ * A car is a noisy room and not every unit's browser can listen at all; and
+ * some names are easier typed than said. The rules are the archive's own —
+ * every word has to turn up somewhere, each tried as written and again with
+ * the vowel letters dropped — so what is typed here finds what it finds in
+ * the unit at home.
+ */
+var fqt = 0;
+function findRun() {
+  var v = $('fq').value.trim();
+  if (!v) { drawList(); $('find').classList.remove('hide'); return; }
+  var ts = terms(v), out = [];
+  for (var i = 0; i < C.recordings.length; i++) {
+    var r = C.recordings[i];
+    recHay(r);
+    if (hits(r._hay, r._low, ts)) out.push(r);
+  }
+  stack = [];
+  showRecs(out, out.length + ' נמצאו', true);
+  $('find').classList.remove('hide');       // showRecs returns to the list view
+}
+
+$('findBtn').onclick = function () {
+  var open = $('find').classList.contains('hide');
+  view('list');
+  $('find').classList.toggle('hide', !open);
+  if (open) { head('חיפוש'); $('fq').focus(); }
+  else { $('fq').value = ''; drawList(); }
+};
+$('fx').onclick = function () { $('fq').value = ''; $('fq').focus(); findRun(); };
+$('fq').addEventListener('input', function () {
+  clearTimeout(fqt);
+  fqt = setTimeout(findRun, 160);
+});
 
 $('mixBtn').onclick = function () {
   var open = $('mix').classList.contains('hide');
