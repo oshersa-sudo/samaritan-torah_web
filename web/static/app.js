@@ -4817,13 +4817,18 @@ function updateToolbarFold(isVerse){
 }
 (function(){
   const h=document.getElementById('tbHandle'); if(!h) return;
-  let downY=null;
-  h.addEventListener('pointerdown', e=>{ downY=e.clientY; });
+  // The state the gesture is judged against is the one the finger CAME DOWN on.
+  // The document-level tap listener (the one that calls the nav bar back) runs
+  // at capture on the same pointerup and opens this bar first; reading tbFolded
+  // afterwards found it already open and folded it straight back — so a tap on
+  // the folded handle did nothing at all.
+  let downY=null, downFolded=false;
+  h.addEventListener('pointerdown', e=>{ downY=e.clientY; downFolded=tbFolded; });
   const release=(e)=>{
     const dy = downY==null ? 0 : (e.clientY-downY); downY=null;
     if(dy < -12){ tbUserOpened=true; setToolbarFolded(false,true); armBarIdleFold(); }  // drag up → open
     else if(dy > 12){ tbUserOpened=false; setToolbarFolded(true,true); }    // drag down → fold
-    else if(tbFolded){ tbUserOpened=true; setToolbarFolded(false,true); armBarIdleFold(); }   // tap → open
+    else if(downFolded){ tbUserOpened=true; setToolbarFolded(false,true); armBarIdleFold(); }   // tap → open
     else { tbUserOpened=false; setToolbarFolded(true,true); }               // tap → fold
   };
   h.addEventListener('pointerup', release);
