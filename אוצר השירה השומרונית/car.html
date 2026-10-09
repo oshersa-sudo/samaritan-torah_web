@@ -78,10 +78,6 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 }
 .key:active{background:var(--card2)}
 .key svg{width:44%;max-width:56px;height:auto;fill:var(--txt)}
-/* המפה אינה מקש נגינה, ולכן היא צרה וכהה יותר — ונמצאת בקצה */
-.key.kmap{flex:.62 1 0;flex-direction:column;gap:2px;background:#161d28;color:var(--dim)}
-.key.kmap svg{width:34%;max-width:34px;fill:var(--dim)}
-.key.kmap b{font-size:.8rem;font-weight:600}
 #kplay{background:var(--gold);flex:1.5 1 0}
 #kplay svg{fill:#1a1206}
 #nstate{font-size:.95rem;color:var(--dim);min-height:1.3em}
@@ -143,7 +139,6 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 @media (max-width:520px){
   .row .t{font-size:1rem}
   .tab{min-width:92px;font-size:.95rem}
-  .key.kmap b{display:none}
 }
 </style>
 </head>
@@ -173,10 +168,6 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
         <svg id="icS" viewBox="0 0 24 24" class="hide"><path d="M7 4h4v16H7zM13 4h4v16h-4z"/></svg></button>
       <button class="key" id="knext" aria-label="הבא">
         <svg viewBox="0 0 24 24"><path d="M4 5l11 7-11 7z"/><rect x="17.2" y="5" width="2.8" height="14" rx="1"/></svg></button>
-      <!-- אל המפה, וההשמעה נמשכת מאחוריה -->
-      <button class="key kmap" id="kwaze" aria-label="פתח את ויז">
-        <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
-        <b>ויז</b></button>
     </div>
   </section>
 
@@ -630,8 +621,9 @@ backSpare();
  * page cannot float itself over another app — that is the system's to do, not
  * the page's. What the page CAN do is hand the recording to the system, so
  * that the car's own media controls — the notification, the widget, the keys
- * on the steering wheel — carry it while Waze or anything else is in front.
- * The sound does not stop when this page goes behind; only its screen does.
+ * on the steering wheel — carry it while a map or anything else is in front.
+ * The sound does not stop when this page goes behind; only its screen does,
+ * and the driver never has to come back here to pause or to skip.
  */
 function sysSay(r, i) {
   if (!('mediaSession' in navigator)) return;
@@ -656,13 +648,6 @@ au.addEventListener('play', function () {
 au.addEventListener('pause', function () {
   if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
 });
-
-/* And one key to the map. It opens Waze in a window of its own, which leaves
- * this page behind but playing — which is the arrangement a driver actually
- * wants: the road in front, the singing going on. */
-$('kwaze').onclick = function () {
-  try { window.open('https://waze.com/ul', '_blank'); } catch (e) {}
-};
 
 /* the screen may not sleep over a piyyut that is still playing */
 var lock = null;
