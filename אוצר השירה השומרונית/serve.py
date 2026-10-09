@@ -49,6 +49,9 @@ mimetypes.add_type('audio/mpeg', '.mp3')
 mimetypes.add_type('audio/x-ms-wma', '.wma')
 mimetypes.add_type('audio/mp4', '.m4a')
 mimetypes.add_type('video/mpeg', '.mpg')
+# the car unit's manifest, so a head unit saves it as an app with its
+# own cassette icon rather than as a bookmark wearing the Torah's
+mimetypes.add_type('application/manifest+json', '.webmanifest')
 
 RANGE_RE = re.compile(r'bytes=(\d*)-(\d*)')
 

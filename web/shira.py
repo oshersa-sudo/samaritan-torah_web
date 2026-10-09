@@ -26,6 +26,7 @@ import re
 import shutil
 import sys
 import time
+import mimetypes
 import urllib.parse
 
 from flask import Blueprint, jsonify, redirect, request, send_from_directory
@@ -47,6 +48,10 @@ import people as PEOPLE          # noqa: E402
 import removed as GONE           # noqa: E402
 
 MEDIA = os.environ.get('SHIRA_MEDIA', 'https://shira.onyx-study.com/archive/')
+
+# so a car's head unit saves the player as an app of its own, with its own
+# cassette icon, rather than as a bookmark wearing the Torah's mark
+mimetypes.add_type('application/manifest+json', '.webmanifest')
 
 # ---------------------------------------------------------------- editing here
 #
@@ -186,7 +191,8 @@ def _throttled(ip):
 # only what the page itself asks for. Everything else in the unit — its local
 # server, its build scripts, the raw scan of the archive drive — stays private.
 _OPEN_DIRS  = ('img/', 'fonts/', 'sounds/', 'photos/')
-_OPEN_FILES = ('index.html', 'unit.css', 'unit.js', 'lame.min.js', 'car.html')
+_OPEN_FILES = ('index.html', 'unit.css', 'unit.js', 'lame.min.js',
+               'car.html', 'car.webmanifest')
 # the catalogue, and the two lists the picture screen reads: the photographs
 # on the community's own site, and the archive's own pictures and films
 _OPEN_DATA  = ('catalog.json', 'pix_sources.json', 'local_media.json')
