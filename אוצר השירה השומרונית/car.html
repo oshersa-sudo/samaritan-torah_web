@@ -67,8 +67,14 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 #now{padding:14px 16px;gap:10px}
 /* flex מכווץ ילדים כברירת מחדל, ועם הרצועה הנוספת הכותרת היא שנעלמה
    ראשונה — ממש היא, מה שהשיר הזה הוא. כאן היא אינה מתכווצת. */
+.nthead{flex:0 0 auto;display:flex;align-items:flex-start;gap:10px}
+.fav{
+  flex:0 0 auto;width:var(--tap);height:56px;border-radius:12px;
+  background:var(--card);color:var(--dim);font-size:1.7rem;line-height:1;
+}
+.fav.on{background:var(--gold);color:#1a1206}
 #ntitle{
-  flex:0 0 auto;
+  flex:1 1 auto;min-width:0;
   font-size:clamp(1.5rem,5.2vh,2.4rem);font-weight:800;line-height:1.2;
   color:var(--gold);max-height:2.5em;overflow:hidden;
 }
@@ -77,9 +83,13 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 #npart{font-size:1rem;color:var(--dim)}
 #bar{
   height:18px;border-radius:9px;background:var(--card2);margin:4px 0;
-  position:relative;flex:0 0 auto;
+  position:relative;flex:0 0 auto;overflow:hidden;
 }
-#bar i{display:block;height:100%;width:0;border-radius:9px;background:var(--gold)}
+/* שתי שכבות באותו פס: מה שהגיע, ומעליו היכן אנחנו */
+#bar i{position:absolute;inset-block:0;inset-inline-start:0;display:block;
+       height:100%;width:0;border-radius:9px}
+#buf{background:#3a4759}
+#fill{background:var(--gold)}
 #times{display:flex;justify-content:space-between;font-size:.95rem;color:var(--dim)}
 .keys{
   margin-top:auto;display:flex;gap:12px;align-items:stretch;
@@ -252,10 +262,13 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 <main>
   <!-- מה מתנגן עכשיו. זה המסך שרואים בנהיגה, ולכן אין בו אלא ארבעה מקשים. -->
   <section id="now" class="view">
-    <div id="ntitle">אוצר השירה השומרונית</div>
+    <div class="nthead">
+      <div id="ntitle">אוצר השירה השומרונית</div>
+      <button id="kfav" class="fav hide" aria-label="הוסף למועדפים">★</button>
+    </div>
     <div id="nsub">בחר הקלטה מן הרשימה, או אמור מה לחפש</div>
     <div id="npart"></div>
-    <div id="bar"><i></i></div>
+    <div id="bar"><i id="buf"></i><i id="fill"></i></div>
     <div id="times"><span id="tnow">0:00</span><span id="tall">0:00</span></div>
     <div id="nstate"></div>
     <!-- אותו פיוט אצל אחרים. 85 מן הפיוטים כאן מושרים ביותר מפה אחת, ועד
@@ -307,6 +320,7 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
       <button class="tab on" data-k="perf">מבצעים</button>
       <button class="tab" data-k="event">חגים</button>
       <button class="tab" data-k="all">הכול</button>
+      <button class="tab" data-k="fav">מועדפים</button>
     </div>
     <div id="rows"></div>
   </section>
@@ -416,6 +430,7 @@ function say(msg) { $('nstate').textContent = msg || ''; }
 
 function ready() {
   say('');
+  favLoad();
   try {
     var m = JSON.parse(localStorage.getItem(KEY + '_mix') || 'null');
     if (m) { MX.pre = m.p || 'tape'; MX.bass = m.b || 0; MX.treb = m.t || 0; }
@@ -508,7 +523,8 @@ function count(filter) {
 }
 
 function drawList() {
-  head(kind === 'perf' ? 'מבצעים' : kind === 'event' ? 'חגים ואירועים' : 'כל ההקלטות');
+  head(kind === 'perf' ? 'מבצעים' : kind === 'event' ? 'חגים ואירועים'
+       : kind === 'fav' ? 'מועדפים' : 'כל ההקלטות');
   stack = [];
   if (kind === 'perf') {
     var ps = C.performers.map(function (p) {
@@ -522,6 +538,20 @@ function drawList() {
                s: count(function (r) { return r.e === e.id; }) + ' הקלטות' };
     }).filter(function (x) { return parseInt(x.s, 10) > 0; });
     paint(es, function (k) { openGroup('e', +k.slice(1)); });
+  } else if (kind === 'fav') {
+    var mine = [];
+    for (var i = 0; i < FAV.length; i++) {
+      var fr = byId(C.recordings, FAV[i]);
+      if (fr) mine.push(fr);
+    }
+    if (!mine.length) {
+      head('מועדפים');
+      $('rows').innerHTML = '<p class="note">עוד אין מועדפים.<br>'
+        + 'פתח הקלטה ולחץ על הכוכב שליד שמה.</p>';
+      view('list');
+      return;
+    }
+    showRecs(mine, 'מועדפים', true);
   } else {
     showRecs(C.recordings.slice(), 'כל ההקלטות', true);
   }
@@ -575,7 +605,18 @@ function load1(recId, idx, at, hold) {
   var r = byId(C.recordings, recId);
   if (!r || !r.tr[idx]) return;
   cur = { rec: recId, idx: idx };
-  au.src = audioURL(r.tr[idx].f);
+  // already here, fetched while the part before it was still playing — so it
+  // starts on the note rather than on a wait
+  var held = (BANK.rec === recId) ? BANK.blob[idx] : null;
+  if (BANK.lastURL) { try { URL.revokeObjectURL(BANK.lastURL); } catch (e) {} }
+  if (held) {
+    BANK.lastURL = URL.createObjectURL(held);
+    au.src = BANK.lastURL;
+    $('buf').style.width = '100%';
+  } else {
+    BANK.lastURL = '';
+    au.src = audioURL(r.tr[idx].f);
+  }
   if (at) {
     au.addEventListener('loadedmetadata', function once() {
       au.removeEventListener('loadedmetadata', once);
@@ -589,6 +630,8 @@ function load1(recId, idx, at, hold) {
   $('tall').textContent = dur(r.tr[idx].s);
   sysSay(r, idx);
   altsPaint(r);
+  favPaint();
+  bankOpen(recId);               // and keep the rest of it coming
   mxApply();                 // the shaping is on from the first note, not the second
   view('now');
   if (!hold) au.play()['catch'](function () { say('לחץ נגן כדי להתחיל'); });
@@ -705,10 +748,11 @@ au.addEventListener('ended', function () { step(1); });      // one piece of sin
 au.addEventListener('error', function () { say('הקובץ לא נטען — בדוק את החיבור'); });
 au.addEventListener('timeupdate', function () {
   var d = au.duration || 0;
-  $('bar').firstElementChild.style.width = d ? (au.currentTime / d * 100) + '%' : '0';
+  $('fill').style.width = d ? (au.currentTime / d * 100) + '%' : '0';
   $('tnow').textContent = dur(au.currentTime);
   if (d) $('tall').textContent = dur(d);
-  if (Math.floor(au.currentTime) % 5 === 0) keep();
+  if (Math.floor(au.currentTime) % 5 === 0) { keep(); bankFill(); }
+  paintBuf();
 });
 function icons() {
   $('icP').classList.toggle('hide', !au.paused);
@@ -1074,6 +1118,157 @@ $('mixBtn').onclick = function () {
   $('mix').classList.toggle('hide', !open);
   if (open) { head('מיקסר'); mxPaint(); mxApply(); }
   else { view(au.getAttribute('src') ? 'now' : 'list'); }
+};
+
+/* ============================== מה שכבר הגיע, ומה שעוד בדרך
+ *
+ * Two things, and they are the same thing seen twice.
+ *
+ * While a track is playing the bar shows not only where the needle is but
+ * how much of the sound has actually arrived — the darker fill behind the
+ * gold. On a hotspot at seventy that is the difference between "it is
+ * thinking" and "it is broken", and it costs nothing: the browser already
+ * knows, it was simply never asked.
+ *
+ * And a recording in seventy-six parts is one piece of singing. So while the
+ * part being heard streams, the parts after it are fetched whole in the
+ * background, one at a time so they never compete with what is in the air.
+ * When one ends the next is already here and starts from memory, with no
+ * pause and nothing to press — which is what "do not make me move from track
+ * to track" means. What has been heard is let go, so seventy-six parts cost
+ * no more than two.
+ */
+var BANK = { rec: 0, blob: {}, size: {}, held: 0, busy: false,
+             ceiling: 64 * 1024 * 1024, keep: 1 };
+
+function bankDrop() {
+  // only one address is ever minted — the one the element is playing from —
+  // and load1 revokes it as it mints the next; the held blobs themselves are
+  // let go by dropping the references
+  BANK = { rec: 0, blob: {}, size: {}, held: 0, busy: false,
+           lastURL: BANK.lastURL || '', ceiling: BANK.ceiling, keep: BANK.keep };
+}
+
+function bankForget() {
+  for (var k in BANK.blob) {
+    var i = +k;
+    if (i < cur.idx - BANK.keep) {
+      BANK.held -= BANK.size[i] || 0;
+      delete BANK.blob[i];
+      delete BANK.size[i];
+    }
+  }
+  if (BANK.held < 0) BANK.held = 0;
+}
+
+function bankWant() {
+  var r = byId(C.recordings, BANK.rec);
+  if (!r) return -1;
+  for (var i = cur.idx + 1; i < r.tr.length; i++) {
+    if (BANK.blob[i] === undefined) return i;
+  }
+  return -1;
+}
+
+function grab(url, onPct) {
+  return new Promise(function (ok, no) {
+    var x = new XMLHttpRequest();
+    x.open('GET', url);
+    x.responseType = 'blob';
+    if (onPct) x.onprogress = function (e) {
+      if (e.lengthComputable) onPct(e.loaded / e.total);
+    };
+    x.onload = function () { x.status < 400 ? ok(x.response) : no(new Error('' + x.status)); };
+    x.onerror = function () { no(new Error('net')); };
+    x.send();
+  });
+}
+
+function bankFill() {
+  if (BANK.busy) return;
+  BANK.busy = true;
+  var step1 = function () {
+    bankForget();
+    var r = byId(C.recordings, BANK.rec);
+    var i = bankWant();
+    if (!r || i < 0 || BANK.held >= BANK.ceiling) { BANK.busy = false; return; }
+    grab(audioURL(r.tr[i].f)).then(function (b) {
+      if (BANK.rec !== cur.rec) { BANK.busy = false; return; }
+      BANK.blob[i] = b;
+      BANK.size[i] = b.size;
+      BANK.held += b.size;
+      step1();
+    })['catch'](function () {
+      BANK.blob[i] = null;                  // it will stream when its turn comes
+      BANK.size[i] = 0;
+      step1();
+    });
+  };
+  step1();
+}
+
+function bankOpen(recId) {
+  var r = byId(C.recordings, recId);
+  if (!r) return;
+  if (BANK.rec !== recId) { bankDrop(); BANK.rec = recId; }
+  if ((r.tr || []).length < 2) return;      // nothing to run on from
+  bankFill();
+}
+
+/* what has arrived, drawn behind where we are */
+function paintBuf() {
+  var d = au.duration || 0, end = 0;
+  try {
+    for (var i = 0; i < au.buffered.length; i++) {
+      if (au.buffered.start(i) <= au.currentTime && au.buffered.end(i) > end)
+        end = au.buffered.end(i);
+    }
+  } catch (e) { end = 0; }
+  $('buf').style.width = d ? Math.min(100, end / d * 100) + '%' : '0';
+}
+
+au.addEventListener('progress', paintBuf);
+au.addEventListener('waiting', function () { say('טוען…'); });
+au.addEventListener('canplay', function () { if ($('nstate').textContent === 'טוען…') say(''); });
+au.addEventListener('loadstart', function () {
+  $('buf').style.width = '0';
+  if (au.readyState < 3) say('טוען…');
+});
+
+/* ===================================================== מועדפים
+ *
+ * A favourite is the recording, not the part — so a piyyut in seventy-six
+ * parts is kept whole and plays from its first to its last without a hand.
+ */
+var FAV = [];
+function favLoad() {
+  try { FAV = JSON.parse(localStorage.getItem(KEY + '_fav') || '[]') || []; }
+  catch (e) { FAV = []; }
+}
+function favSave() {
+  try { localStorage.setItem(KEY + '_fav', JSON.stringify(FAV)); } catch (e) {}
+}
+function favHas(id) { return FAV.indexOf(id) >= 0; }
+function favPaint() {
+  var on = favHas(cur.rec);
+  $('kfav').classList.toggle('hide', !cur.rec);
+  $('kfav').classList.toggle('on', on);
+  $('kfav').setAttribute('aria-label', on ? 'הסר ממועדפים' : 'הוסף למועדפים');
+  $('kfav').title = on ? 'הסר ממועדפים' : 'הוסף למועדפים';
+}
+$('kfav').onclick = function () {
+  if (!cur.rec) return;
+  var r = byId(C.recordings, cur.rec);
+  if (favHas(cur.rec)) {
+    FAV.splice(FAV.indexOf(cur.rec), 1);
+    say('הוסר מן המועדפים');
+  } else {
+    FAV.push(cur.rec);
+    say('נוסף למועדפים' + (r && r.tr.length > 1
+        ? ' — כל ' + r.tr.length + ' הרצועות' : ''));
+  }
+  favSave();
+  favPaint();
 };
 
 /* the screen may not sleep over a piyyut that is still playing */
