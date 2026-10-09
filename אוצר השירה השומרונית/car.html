@@ -98,7 +98,7 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 /* overflow-x לבדו הופך גם את האנכי לגלילה, וזה מה שקיצץ את השורה השנייה
    של כל כפתור; הגובה קבוע והאנכי חסום */
 .altrow{
-  display:flex;gap:8px;height:64px;overflow-x:auto;overflow-y:hidden;
+  display:flex;gap:8px;height:72px;overflow-x:auto;overflow-y:hidden;
   -webkit-overflow-scrolling:touch;align-items:stretch;
 }
 .altrow button{
@@ -107,7 +107,8 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
   display:flex;flex-direction:column;align-items:flex-start;gap:2px;white-space:nowrap;
 }
 .altrow button:active{background:var(--card2)}
-.altrow b{font-size:1rem;font-weight:600}
+.altrow b{font-size:1.02rem;font-weight:600;max-width:17em;overflow:hidden;
+          text-overflow:ellipsis}
 .altrow small{font-size:.84rem;color:var(--dim)}
 
 /* --------------------------------------------------------------- רשימה */
@@ -542,24 +543,70 @@ function play(recId, idx) { say(''); load1(recId, idx, 0, false); }
 
 /* The same piyyut in another voice.
  *
- * Every recording here carries the id of the piyyut it is, so this is not a
- * guess from the title: it is the archive's own answer to "who else sang
- * this". One entry per singer — the longest they left, which is almost always
- * the full rendering rather than a fragment — and the one playing is left out,
- * since it is already in the air.
+ * The archive's own answer comes first: every recording carries the id of the
+ * piyyut it is. But the titles here were written by different hands over
+ * forty years, and the same singing appears as «אשול צדקת אלה» at one and
+ * plainly «אשול» at another — so a title that CONTAINS the other's is taken
+ * as the same piyyut too, and not only at its start: «אור הבקר» sits at the
+ * end of «תסאביך ואור הבקר» and in the middle of «פתחת אשול».
+ *
+ * Two things keep that from binding everything to everything. A word run has
+ * to carry at least one word of three letters or more, so «אה» or «על» alone
+ * cannot match a whole archive. And a leading ו is forgiven — that one letter
+ * is the difference between «ואור» and «אור», and measured over all 919
+ * recordings it turns this very case from nothing into eight while moving the
+ * average strip from 2.6 names to 2.7. Forgiving more prefixes than that
+ * bought four more recordings and loosened the rule; it is not done.
+ *
+ * One name per singer, their closest version: the archive's own id first, an
+ * identical title next, a contained one last, and the longer recording when
+ * those tie.
  */
+function wEq(a, b) {
+  return a === b || a === 'ו' + b || b === 'ו' + a;
+}
+function runIn(shortT, longT) {
+  var A = shortT.split(' '), B = longT.split(' '), i, j, ok;
+  if (!A[0] || A.length > B.length) return false;
+  var thick = false;
+  for (i = 0; i < A.length; i++) if (A[i].length >= 3) thick = true;
+  if (!thick) return false;
+  for (i = 0; i + A.length <= B.length; i++) {
+    ok = true;
+    for (j = 0; j < A.length; j++) if (!wEq(A[j], B[i + j])) { ok = false; break; }
+    if (ok) return true;
+  }
+  return false;
+}
+function sameSong(x, r) {
+  if (x.y && x.y === r.y) return 0;
+  var xs = [fold(x.ttl || ''), fold(piyName(x.y) || '')];
+  var rs = [fold(r.ttl || ''), fold(piyName(r.y) || '')];
+  for (var a = 0; a < 2; a++) {
+    for (var b = 0; b < 2; b++) {
+      if (!xs[a] || !rs[b]) continue;
+      if (xs[a] === rs[b]) return 1;
+      if (runIn(xs[a], rs[b]) || runIn(rs[b], xs[a])) return 2;
+    }
+  }
+  return -1;
+}
 function altsFor(r) {
-  if (!C || !r || !r.y) return [];
+  if (!C || !r) return [];
   var best = {};
   for (var i = 0; i < C.recordings.length; i++) {
     var x = C.recordings[i];
-    if (x.y !== r.y || x.p === r.p) continue;
-    if (!best[x.p] || (x.s || 0) > (best[x.p].s || 0)) best[x.p] = x;
+    if (x.id === r.id || x.p === r.p) continue;
+    var sc = sameSong(x, r);
+    if (sc < 0) continue;
+    var cur = best[x.p];
+    if (!cur || sc < cur.sc || (sc === cur.sc && (x.s || 0) > (cur.x.s || 0)))
+      best[x.p] = { sc: sc, x: x };
   }
   var out = [];
   for (var k in best) if (Object.prototype.hasOwnProperty.call(best, k)) out.push(best[k]);
-  out.sort(function (a, b) { return (b.s || 0) - (a.s || 0); });
-  return out;
+  out.sort(function (a, b) { return a.sc - b.sc || (b.x.s || 0) - (a.x.s || 0); });
+  return out.map(function (v) { return v.x; });
 }
 
 function altsPaint(r) {
@@ -567,8 +614,12 @@ function altsPaint(r) {
   $('alts').classList.toggle('hide', !list.length);
   if (!list.length) { $('altRow').innerHTML = ''; return; }
   $('altRow').innerHTML = list.map(function (x, i) {
-    return '<button data-a="' + i + '"><b>' + esc(perfName(x.p)) + '</b>'
-         + '<small>' + (x.tr.length > 1 ? x.tr.length + ' רצועות · ' : '')
+    // the title as it stands at that singer, above the name — because the
+    // match may be a loose one, and the reader should see what they are
+    // being offered rather than trust that it is the same thing
+    return '<button data-a="' + i + '"><b>' + esc(x.ttl || piyName(x.y)) + '</b>'
+         + '<small>' + esc(perfName(x.p)) + ' · '
+         + (x.tr.length > 1 ? x.tr.length + ' רצועות · ' : '')
          + dur(x.s) + '</small></button>';
   }).join('');
   var bs = $('altRow').querySelectorAll('[data-a]');
