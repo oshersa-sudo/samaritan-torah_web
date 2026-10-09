@@ -78,6 +78,10 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 }
 .key:active{background:var(--card2)}
 .key svg{width:44%;max-width:56px;height:auto;fill:var(--txt)}
+/* המפה אינה מקש נגינה, ולכן היא צרה וכהה יותר — ונמצאת בקצה */
+.key.kmap{flex:.62 1 0;flex-direction:column;gap:2px;background:#161d28;color:var(--dim)}
+.key.kmap svg{width:34%;max-width:34px;fill:var(--dim)}
+.key.kmap b{font-size:.8rem;font-weight:600}
 #kplay{background:var(--gold);flex:1.5 1 0}
 #kplay svg{fill:#1a1206}
 #nstate{font-size:.95rem;color:var(--dim);min-height:1.3em}
@@ -99,11 +103,48 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 }
 .row:active{background:var(--card2)}
 .row.on{outline:2px solid var(--gold)}
-.row .t{flex:1 1 auto;font-size:1.1rem;font-weight:600;overflow:hidden;
+.row .rt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.row .t{font-size:1.1rem;font-weight:600;overflow:hidden;
+        text-overflow:ellipsis;white-space:nowrap}
+.row .w{font-size:.88rem;color:var(--dim);overflow:hidden;
         text-overflow:ellipsis;white-space:nowrap}
 .row .s{flex:0 0 auto;font-size:.92rem;color:var(--dim);white-space:nowrap}
 .note{padding:18px 14px;color:var(--dim);font-size:1.05rem;text-align:center}
 .note b{color:var(--txt)}
+
+/* ------------------------------------------------- חצי מסך
+ * כשהמערכת מעמידה את העמוד לצד מפה, נשאר לו חצי מסך ולפעמים פחות. המקשים
+ * נשארים גדולים — הם מה שנוגעים בו בנהיגה — והשאר מתכווץ סביבם.
+ */
+@media (max-height:420px){
+  #now{padding:8px 12px;gap:6px}
+  #ntitle{font-size:clamp(1.1rem,7vh,1.5rem)}
+  #nsub,#npart,#times{font-size:.85rem}
+  #bar{height:12px}
+  .key{height:clamp(56px,26vh,78px)}
+  header{padding:5px 10px}
+  #back,.hbtn{height:46px}
+  .tab{height:48px}
+}
+/* ורבע מסך: הזמן שעבר נקרא מן הפס עצמו, והמקשים נשארים מה שנוגעים בו */
+@media (max-height:320px){
+  #now{gap:4px;padding:6px 10px}
+  #ntitle{font-size:1.15rem;max-height:1.35em}
+  #nsub{font-size:.8rem}
+  #npart{font-size:.78rem}
+  #times{display:none}
+  #bar{height:10px;margin:2px 0}
+  .key{height:56px}
+  .key svg{max-width:34px}
+  header{padding:4px 8px}
+  #back,.hbtn{height:40px;font-size:.95rem}
+  .tab{height:42px}
+}
+@media (max-width:520px){
+  .row .t{font-size:1rem}
+  .tab{min-width:92px;font-size:.95rem}
+  .key.kmap b{display:none}
+}
 </style>
 </head>
 <body>
@@ -132,6 +173,10 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
         <svg id="icS" viewBox="0 0 24 24" class="hide"><path d="M7 4h4v16H7zM13 4h4v16h-4z"/></svg></button>
       <button class="key" id="knext" aria-label="הבא">
         <svg viewBox="0 0 24 24"><path d="M4 5l11 7-11 7z"/><rect x="17.2" y="5" width="2.8" height="14" rx="1"/></svg></button>
+      <!-- אל המפה, וההשמעה נמשכת מאחוריה -->
+      <button class="key kmap" id="kwaze" aria-label="פתח את ויז">
+        <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+        <b>ויז</b></button>
     </div>
   </section>
 
@@ -289,7 +334,8 @@ function head(t) { $('htitle').textContent = t; }
 function rowsHTML(items) {
   return items.map(function (it) {
     return '<button class="row' + (it.on ? ' on' : '') + '" data-i="' + it.k + '">'
-         + '<span class="t">' + esc(it.t) + '</span>'
+         + '<span class="rt"><span class="t">' + esc(it.t) + '</span>'
+         + (it.w ? '<span class="w">' + esc(it.w) + '</span>' : '') + '</span>'
          + '<span class="s">' + esc(it.s || '') + '</span></button>';
   }).join('') || '<p class="note">אין כאן דבר.</p>';
 }
@@ -326,7 +372,7 @@ function drawList() {
     }).filter(function (x) { return parseInt(x.s, 10) > 0; });
     paint(es, function (k) { openGroup('e', +k.slice(1)); });
   } else {
-    showRecs(C.recordings.slice(), 'כל ההקלטות');
+    showRecs(C.recordings.slice(), 'כל ההקלטות', true);
   }
 }
 
@@ -335,15 +381,25 @@ function openGroup(what, id) {
     return what === 'p' ? r.p === id : r.e === id;
   });
   stack.push(drawList);
-  showRecs(list, what === 'p' ? perfName(id) : eventName(id));
+  showRecs(list, what === 'p' ? perfName(id) : eventName(id), what === 'e');
 }
 
-function showRecs(list, title) {
+/* `who`: whether to name the singer on each row.
+ *
+ * Under a performer's own name it would be the same words on all 173 rows and
+ * only noise. Under a feast, or in the whole archive, it is the thing a driver
+ * is choosing by — and so is the number of parts, because a recording in
+ * seventy-six of them is an hour of singing and one in a single part is four
+ * minutes. Both go on a second line, quiet, so the title still reads first.
+ */
+function showRecs(list, title, who) {
   head(title);
   var items = list.map(function (r) {
+    var parts = r.tr.length > 1 ? r.tr.length + ' רצועות' : 'רצועה אחת';
     return { k: String(r.id), on: r.id === cur.rec,
              t: r.ttl || piyName(r.y),
-             s: (r.tr.length > 1 ? r.tr.length + ' רצועות · ' : '') + dur(r.s) };
+             w: who ? perfName(r.p) : '',
+             s: parts + ' · ' + dur(r.s) };
   });
   paint(items, function (k) { play(+k, 0); });
 }
@@ -377,6 +433,7 @@ function load1(recId, idx, at, hold) {
   $('npart').textContent = r.tr.length > 1
     ? 'רצועה ' + (idx + 1) + ' מתוך ' + r.tr.length : '';
   $('tall').textContent = dur(r.tr[idx].s);
+  sysSay(r, idx);
   view('now');
   if (!hold) au.play()['catch'](function () { say('לחץ נגן כדי להתחיל'); });
   keep();
@@ -532,7 +589,7 @@ $('mic').onclick = function () {
     if (p.list.length === 1) { play(p.list[0].id, 0); say('שמעתי: ' + p.said); return; }
     stack.push(drawList);
     showRecs(p.list, p.q ? (p.who ? p.q + ' · ' + p.who : p.q)
-                         : (p.who || 'תוצאות'));
+                         : (p.who || 'תוצאות'), !p.who);
   };
   rec.onerror = function (e) {
     done();
@@ -566,6 +623,46 @@ function backSpare() {
 }
 addEventListener('popstate', function () { if (unitBack()) backSpare(); });
 backSpare();
+
+/* ================================== while the map is in front
+ *
+ * A driver wants the road on the screen and the singing in the air, and a web
+ * page cannot float itself over another app — that is the system's to do, not
+ * the page's. What the page CAN do is hand the recording to the system, so
+ * that the car's own media controls — the notification, the widget, the keys
+ * on the steering wheel — carry it while Waze or anything else is in front.
+ * The sound does not stop when this page goes behind; only its screen does.
+ */
+function sysSay(r, i) {
+  if (!('mediaSession' in navigator)) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: r.ttl || piyName(r.y),
+      artist: perfName(r.p),
+      album: eventName(r.e) + (r.tr.length > 1
+        ? ' · רצועה ' + (i + 1) + ' מתוך ' + r.tr.length : ''),
+    });
+    var on = function (a, f) { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
+    on('play', function () { au.play()['catch'](function () {}); });
+    on('pause', function () { au.pause(); });
+    on('previoustrack', function () { if (au.currentTime > 3) { au.currentTime = 0; } else step(-1); });
+    on('nexttrack', function () { step(1); });
+    on('stop', function () { au.pause(); });
+  } catch (e) { /* an older browser: the keys simply do less */ }
+}
+au.addEventListener('play', function () {
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+});
+au.addEventListener('pause', function () {
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+});
+
+/* And one key to the map. It opens Waze in a window of its own, which leaves
+ * this page behind but playing — which is the arrangement a driver actually
+ * wants: the road in front, the singing going on. */
+$('kwaze').onclick = function () {
+  try { window.open('https://waze.com/ul', '_blank'); } catch (e) {}
+};
 
 /* the screen may not sleep over a piyyut that is still playing */
 var lock = null;
