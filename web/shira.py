@@ -213,8 +213,11 @@ def page(sub='index.html'):
     """The page asks for unit.css and unit.js by RELATIVE path, so the trailing
     slash matters — Flask redirects /shira to /shira/ on its own."""
     # /shira/car is the address somebody saves to a car screen's home page;
-    # it should not have to be spelled with an extension
-    if sub == 'car':
+    # it should not have to be spelled with an extension — nor without the
+    # trailing slash that a phone keyboard and a car unit's address bar both
+    # like to add on their own. Measured: /shira/car answered and /shira/car/
+    # answered 404, which is a shut door for a reason nobody can see.
+    if sub.rstrip('/') == 'car':
         sub = 'car.html'
     if not _allowed(sub):
         return ('', 404)
