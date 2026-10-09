@@ -44,9 +44,14 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .hide{display:none !important}
 
 /* ---------------------------------------------------------------- כותרת */
+/* על מסך מחשב, או על המסך הרחב של רכב חדש, התוכן מפסיק לגדול ברוחב
+   שיד עוד חוצה; המשטחים הכהים ממשיכים עד הקצה כדי ששום דבר לא ירחף. */
 header{
   flex:0 0 auto;display:flex;align-items:center;gap:8px;
   padding:8px 12px;background:#0d121a;border-bottom:1px solid var(--line);
+}
+header,.tabs,.find,#rows,#now,.mixrows,.abwrap{
+  max-width:1180px;margin-left:auto;margin-right:auto;width:100%;
 }
 /* מילה ולא חץ: חץ זווית נהפך לכיוונו בטקסט מימין לשמאל, ובמסך שמביטים
    בו חצי שנייה בנהיגה מילה אינה משאירה מקום לספק */
@@ -75,19 +80,25 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 .fav.on{background:var(--gold);color:#1a1206}
 #ntitle{
   flex:1 1 auto;min-width:0;
+  font-size:1.9rem;
   font-size:clamp(1.5rem,5.2vh,2.4rem);font-weight:800;line-height:1.2;
   color:var(--gold);max-height:2.5em;overflow:hidden;
 }
 #nsub,#npart,#times,#nstate,#bar{flex:0 0 auto}
-#nsub{font-size:clamp(1rem,3vh,1.35rem);color:var(--dim)}
+#nsub{font-size:1.15rem;font-size:clamp(1rem,3vh,1.35rem);color:var(--dim)}
 #npart{font-size:1rem;color:var(--dim)}
 #bar{
   height:18px;border-radius:9px;background:var(--card2);margin:4px 0;
   position:relative;flex:0 0 auto;overflow:hidden;
 }
 /* שתי שכבות באותו פס: מה שהגיע, ומעליו היכן אנחנו */
-#bar i{position:absolute;inset-block:0;inset-inline-start:0;display:block;
-       height:100%;width:0;border-radius:9px}
+/* top/bottom/right קודם — הדף תמיד מימין לשמאל, ולכן ההתחלה היא הימין;
+   התכונות הלוגיות באות אחריהן, למי שמכיר אותן */
+#bar i{
+  position:absolute;top:0;bottom:0;right:0;
+  inset-block:0;inset-inline-start:0;
+  display:block;height:100%;width:0;border-radius:9px;
+}
 #buf{background:#3a4759}
 #fill{background:var(--gold)}
 #times{display:flex;justify-content:space-between;font-size:.95rem;color:var(--dim)}
@@ -96,7 +107,7 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
   padding-bottom:4px;
 }
 .key{
-  flex:1 1 0;height:clamp(78px,20vh,120px);border-radius:16px;
+  flex:1 1 0;height:96px;height:clamp(78px,20vh,120px);border-radius:16px;
   background:var(--card);display:flex;align-items:center;justify-content:center;
 }
 .key:active{background:var(--card2)}
@@ -114,20 +125,23 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
  */
 .alts{flex:0 0 auto;display:flex;flex-direction:column;gap:6px}
 .alth{font-size:.9rem;color:var(--dim)}
-/* overflow-x לבדו הופך גם את האנכי לגלילה, וזה מה שקיצץ את השורה השנייה
-   של כל כפתור; הגובה קבוע והאנכי חסום */
+/* שמונה מבצעים ברצועה נגללת הם שורה שבורה, לא רשימה. הכפתורים חולקים
+   את הרוחב שיש בשווה, ומה שאינו נכנס אינו נדחק החוצה אלא נאסף לכפתור
+   «עוד N» שפותח את כולם כרשימה — שם הגלילה היא דבר טבעי. */
 .altrow{
-  display:flex;gap:8px;height:72px;overflow-x:auto;overflow-y:hidden;
-  -webkit-overflow-scrolling:touch;align-items:stretch;
+  display:flex;gap:8px;height:72px;overflow:hidden;align-items:stretch;
 }
 .altrow button{
-  flex:0 0 auto;padding:8px 14px;border-radius:12px;justify-content:center;
-  background:var(--card);color:inherit;font:inherit;
-  display:flex;flex-direction:column;align-items:flex-start;gap:2px;white-space:nowrap;
+  flex:1 1 0;min-width:0;padding:8px 12px;border-radius:12px;
+  justify-content:center;background:var(--card);color:inherit;font:inherit;
+  display:flex;flex-direction:column;align-items:flex-start;gap:2px;
 }
+.altrow button.more{flex:0 0 auto;align-items:center;justify-content:center;
+                    color:var(--gold);font-weight:600;white-space:nowrap}
+.altrow b,.altrow small{max-width:100%;overflow:hidden;text-overflow:ellipsis;
+                        white-space:nowrap}
 .altrow button:active{background:var(--card2)}
-.altrow b{font-size:1.02rem;font-weight:600;max-width:17em;overflow:hidden;
-          text-overflow:ellipsis}
+.altrow b{font-size:1.02rem;font-weight:600}
 .altrow small{font-size:.84rem;color:var(--dim)}
 
 /* --------------------------------------------------------------- רשימה */
@@ -209,10 +223,10 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
  */
 @media (max-height:420px){
   #now{padding:8px 12px;gap:6px}
-  #ntitle{font-size:clamp(1.1rem,7vh,1.5rem)}
+  #ntitle{font-size:1.2rem;font-size:clamp(1.1rem,7vh,1.5rem)}
   #nsub,#npart,#times{font-size:.85rem}
   #bar{height:12px}
-  .key{height:clamp(56px,26vh,78px)}
+  .key{height:62px;height:clamp(56px,26vh,78px)}
   header{padding:5px 10px}
   #back,.hbtn{height:46px}
   .tab{height:48px}
@@ -232,9 +246,16 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
   .tab{height:42px}
   .find input,.find button{height:48px}
 }
+/* על טלפון, חמישה מקשים בני 72 וכותרת מבקשים 412 פיקסלים ויש 375 — ולכן
+   הם מתכווצים. זה מתחת לרף המגע שקבעתי לנהיגה, ובמתכוון: טלפון אינו הגה,
+   והמסך שמחזיקים ביד אינו נקרא במבט חטוף. */
 @media (max-width:520px){
   .row .t{font-size:1rem}
   .tab{min-width:92px;font-size:.95rem}
+  header{gap:6px;padding:6px 8px}
+  #back{min-width:0;padding:0 10px;font-size:.95rem}
+  .hbtn{min-width:56px;height:52px;font-size:1.15rem}
+  #htitle{font-size:1rem}
 }
 </style>
 </head>
@@ -340,11 +361,13 @@ function esc(s) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
   });
 }
+/* ולא padStart: היא צעירה מכמה מיחידות הרכב שבשוק */
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
 function dur(sec) {
   sec = Math.round(sec || 0);
   var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
-  var mm = h ? String(m).padStart(2, '0') : String(m);
-  return (h ? h + ':' : '') + mm + ':' + String(s).padStart(2, '0');
+  var mm = h ? pad2(m) : String(m);
+  return (h ? h + ':' : '') + mm + ':' + pad2(s);
 }
 function byId(a, id) { for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i]; return null; }
 function perfName(id) { var p = byId(C.performers, id); return p ? p.name : ''; }
@@ -708,10 +731,24 @@ function altsFor(r) {
   return out.map(function (v) { return v.x; });
 }
 
+/* how many names this screen can carry without crowding. A chip needs
+   about 240 pixels to say a title and a name without cutting either. */
+function altsFit() {
+  var w = $('altRow').clientWidth || window.innerWidth;
+  // never fewer than two: at one, the row would be a single «עוד 8» and no
+  // name at all — which tells the reader nothing about what is on offer
+  return Math.max(2, Math.min(5, Math.floor(w / 240)));
+}
+
+var ALTS = [];
 function altsPaint(r) {
   var list = altsFor(r);
+  ALTS = list;
   $('alts').classList.toggle('hide', !list.length);
   if (!list.length) { $('altRow').innerHTML = ''; return; }
+  var fit = altsFit();
+  var rest = 0;
+  if (list.length > fit) { rest = list.length - (fit - 1); list = list.slice(0, fit - 1); }
   $('altRow').innerHTML = list.map(function (x, i) {
     // the title as it stands at that singer, above the name — because the
     // match may be a loose one, and the reader should see what they are
@@ -720,12 +757,35 @@ function altsPaint(r) {
          + '<small>' + esc(perfName(x.p)) + ' · '
          + (x.tr.length > 1 ? x.tr.length + ' רצועות · ' : '')
          + dur(x.s) + '</small></button>';
-  }).join('');
+  }).join('')
+    + (rest ? '<button class="more" data-more="1">עוד ' + rest + '</button>' : '');
   var bs = $('altRow').querySelectorAll('[data-a]');
   for (var j = 0; j < bs.length; j++) {
     (function (b) { b.onclick = function () { play(list[+b.dataset.a].id, 0); }; })(bs[j]);
   }
+  var more = $('altRow').querySelector('[data-more]');
+  if (more) more.onclick = altsAll;
 }
+
+/* all of them, as a list — where a long one belongs */
+function altsAll() {
+  if (!ALTS.length) return;
+  var r = byId(C.recordings, cur.rec);
+  stack.push(function () { view('now'); });
+  showRecs(ALTS, 'אותו שיר אצל ' + ALTS.length + ' מבצעים', true);
+}
+
+/* the width can change under it — a window resized, a screen turned */
+var altsT = 0;
+function altsReflow() {
+  clearTimeout(altsT);
+  altsT = setTimeout(function () {
+    var r = byId(C.recordings, cur.rec);
+    if (r && !$('now').classList.contains('hide')) altsPaint(r);
+  }, 200);
+}
+window.addEventListener('resize', altsReflow);
+window.addEventListener('orientationchange', altsReflow);
 
 function step(d) {
   var r = byId(C.recordings, cur.rec);
