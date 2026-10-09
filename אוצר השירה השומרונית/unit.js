@@ -5459,6 +5459,8 @@ $('qclear').onclick = () => {
  */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const VOICE = { rec: null, on: false, before: '' };
+const VOICE_TIP = 'יש להגות בשם השיר בעברית כפי שנשמר במערכת'
+                + ' ולא כפי שנהגה בשפה השומרונית';
 
 /* the words that introduce a singer, and the fillers before the name */
 const VOICE_BY = /\s(?:של|עם|בביצוע|מפי|שירת|בפי)\s/;
@@ -5609,7 +5611,12 @@ function voiceStart() {
   VOICE.ph = $('q').placeholder;
   $('qmic').classList.add('on');
   $('q').placeholder = 'מדבר… אמור את שם הפיוט';
-  heardSay('');
+  // The recogniser is Google's Hebrew, and it has never heard this community
+  // speak. A title said the way it is sung — the Samaritan pronunciation —
+  // comes back as something else entirely; said the way it is written here,
+  // it comes back as itself. So the line says that before a word is spoken,
+  // rather than after the search has failed.
+  heardSay('<b>🎤 מדבר…</b> ' + esc(VOICE_TIP), 0);
 
   rec.onresult = e => {
     const res = e.results[e.results.length - 1];

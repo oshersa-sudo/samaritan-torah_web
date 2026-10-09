@@ -105,8 +105,36 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 .row .w{font-size:.88rem;color:var(--dim);overflow:hidden;
         text-overflow:ellipsis;white-space:nowrap}
 .row .s{flex:0 0 auto;font-size:.92rem;color:var(--dim);white-space:nowrap}
+/* ------------------------------------------------- מיקסר
+ * ביחידה הרגילה יש תשעה מחוונים; כאן יש ארבע בחירות ושני כפתורי ±, מפני
+ * שבנהיגה אין מכווננים צליל — בוחרים אחד מארבעה ומחזירים את העין לכביש.
+ */
+.mixrows{flex:1 1 auto;overflow-y:auto;padding:10px 12px 16px}
+.mixh{font-size:.95rem;color:var(--dim);margin:4px 2px 8px}
+.pset{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.pset button{
+  min-height:var(--tap);padding:10px 12px;border-radius:12px;background:var(--card);
+  color:inherit;font:inherit;font-size:1.05rem;font-weight:600;text-align:start;
+  display:flex;flex-direction:column;gap:2px;
+}
+.pset button small{font-size:.82rem;font-weight:500;color:var(--dim)}
+.pset button.on{background:var(--gold);color:#1a1206}
+.pset button.on small{color:#4a3407}
+.trim{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.trim .lab{flex:1 1 auto;font-size:1.05rem;font-weight:600}
+.trim .val{min-width:76px;text-align:center;font-size:1rem;color:var(--dim)}
+.trim button{
+  width:var(--tap);height:var(--tap);border-radius:12px;background:var(--card);
+  color:inherit;font:inherit;font-size:1.6rem;line-height:1;
+}
 .note{padding:18px 14px;color:var(--dim);font-size:1.05rem;text-align:center}
 .note b{color:var(--txt)}
+/* ההוראה למי שמדבר — גדולה דיה להיקרא במבט אחד, ועומדת במקום הרשימה */
+.note.tip{
+  margin:10px 2px;padding:20px 18px;border-radius:12px;
+  background:var(--card);color:var(--txt);font-size:1.12rem;line-height:1.55;
+  border:1px solid var(--line);
+}
 
 /* ------------------------------------------------- חצי מסך
  * כשהמערכת מעמידה את העמוד לצד מפה, נשאר לו חצי מסך ולפעמים פחות. המקשים
@@ -147,7 +175,14 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
 <header>
   <button id="back" aria-label="חזרה">חזרה</button>
   <div id="htitle">אוצר השירה</div>
-  <button id="mic" class="hbtn hide" aria-label="חיפוש בדיבור">🎤</button>
+        <button id="mic" class="hbtn hide" aria-label="חיפוש בדיבור">🎤</button>
+  <button id="mixBtn" class="hbtn" aria-label="מיקסר">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3" y="4" width="2" height="16" rx="1"/><circle cx="4" cy="9" r="2.6"/>
+      <rect x="11" y="4" width="2" height="16" rx="1"/><circle cx="12" cy="15" r="2.6"/>
+      <rect x="19" y="4" width="2" height="16" rx="1"/><circle cx="20" cy="8" r="2.6"/>
+    </svg>
+  </button>
   <button id="toList" class="hbtn" aria-label="רשימה">☰</button>
 </header>
 
@@ -171,6 +206,11 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
     </div>
   </section>
 
+  <!-- המיקסר, בגודל שאפשר לגעת בו בנסיעה: ארבע בחירות ושני כפתורי ± -->
+  <section id="mix" class="view hide">
+    <div id="mixRows" class="mixrows"></div>
+  </section>
+
   <!-- רשימה אחת בכל פעם, שורות גדולות, ושתי רמות לכל היותר -->
   <section id="list" class="view hide">
     <div class="tabs">
@@ -182,7 +222,7 @@ main{flex:1 1 auto;position:relative;overflow:hidden}
   </section>
 </main>
 
-<audio id="au" preload="metadata"></audio>
+<audio id="au" preload="metadata" crossorigin="anonymous"></audio>
 
 <script>
 'use strict';
@@ -286,6 +326,10 @@ function say(msg) { $('nstate').textContent = msg || ''; }
 
 function ready() {
   say('');
+  try {
+    var m = JSON.parse(localStorage.getItem(KEY + '_mix') || 'null');
+    if (m) { MX.pre = m.p || 'tape'; MX.bass = m.b || 0; MX.treb = m.t || 0; }
+  } catch (e) {}
   drawList();
   var last = null;
   try { last = JSON.parse(localStorage.getItem(KEY + '_at') || 'null'); } catch (e) {}
@@ -301,6 +345,7 @@ function ready() {
 
 /* ----------------------------------------------------------------- views */
 function view(v) {
+  $('mix').classList.add('hide');
   $('now').classList.toggle('hide', v !== 'now');
   $('list').classList.toggle('hide', v !== 'list');
   $('toList').textContent = v === 'list' ? '♪' : '☰';
@@ -425,6 +470,7 @@ function load1(recId, idx, at, hold) {
     ? 'רצועה ' + (idx + 1) + ' מתוך ' + r.tr.length : '';
   $('tall').textContent = dur(r.tr[idx].s);
   sysSay(r, idx);
+  mxApply();                 // the shaping is on from the first note, not the second
   view('now');
   if (!hold) au.play()['catch'](function () { say('לחץ נגן כדי להתחיל'); });
   keep();
@@ -489,6 +535,8 @@ window.addEventListener('pagehide', keep);
  */
 var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 var listening = null;
+var TIP = 'יש להגות בשם השיר בעברית כפי שנשמר במערכת'
+        + ' ולא כפי שנהגה בשפה השומרונית';
 
 function heard(said) {
   var full = String(said || '').replace(/\s+/g, ' ').trim();
@@ -561,6 +609,9 @@ $('mic').onclick = function () {
   listening = rec;
   $('mic').classList.add('on');
   head('מדבר…');
+  // said before a word is spoken, not after the search has come back empty
+  $('rows').innerHTML = '<p class="note tip">' + esc(TIP) + '</p>';
+  view('list');
   rec.onresult = function (e) {
     var res = e.results[e.results.length - 1], alts = [];
     for (var i = 0; i < res.length; i++) {
@@ -586,6 +637,7 @@ $('mic').onclick = function () {
     done();
     head(e.error === 'not-allowed' ? 'אין גישה למיקרופון'
        : e.error === 'no-speech' ? 'לא נשמע דבר' : 'הזיהוי נכשל');
+    $('rows').innerHTML = '<p class="note tip">' + esc(TIP) + '</p>';
   };
   rec.onend = function () { done(); };
   function done() {
@@ -605,6 +657,10 @@ $('mic').onclick = function () {
  * falling through to the system on the first touch.
  */
 window.unitBack = function () {
+  if (!$('mix').classList.contains('hide')) {
+    view(au.getAttribute('src') ? 'now' : 'list');
+    return true;
+  }
   if ($('list').classList.contains('hide')) { view('list'); return true; }
   if (stack.length) { var f = stack.pop(); f(); return true; }
   return false;
@@ -644,10 +700,129 @@ function sysSay(r, i) {
 }
 au.addEventListener('play', function () {
   if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+  // Once the sound passes through the mixer it passes through its context, and
+  // a context created without a touch starts suspended — which would be not a
+  // flat sound but no sound at all. Pressing play is the touch.
+  if (MX.ctx && MX.ctx.state === 'suspended') { try { MX.ctx.resume(); } catch (e) {} }
 });
 au.addEventListener('pause', function () {
   if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
 });
+
+/* ================================================== המיקסר
+ *
+ * The unit at home has nine faders; nobody sets nine faders at seventy. So
+ * what comes here is the mixer's ABILITIES and not its panel: four choices
+ * that each mean something about these recordings, and two trims.
+ *
+ * They are real filters, not labels. «שיקום קלטת» cuts the rumble every one
+ * of these cassettes carries and lifts the presence the tape lost; «דיבור
+ * ברור» goes further for a lecture or a reading; «חזק ואחיד» evens the
+ * loudness out, which is what a moving car actually needs — the quiet verse
+ * and the loud one both have to come through over the road.
+ *
+ * The graph is built on first use. It cannot be built at all unless the audio
+ * element declares crossorigin: these files come from another host, and Web
+ * Audio reads a cross-origin stream as silence otherwise — the tap open and
+ * nothing coming out.
+ */
+var MX = { ctx: null, n: null, pre: 'tape', bass: 0, treb: 0 };
+var PRESETS = {
+  off:   { t: 'ללא עיבוד', d: 'כפי שההקלטה נשמרה',
+           hp: 20,  pk: 0, pf: 2500, comp: 0,  gain: 1 },
+  tape:  { t: 'שיקום קלטת', d: 'חיתוך רעש וחידוד',
+           hp: 70,  pk: 3, pf: 2500, comp: 14, gain: 1.05 },
+  talk:  { t: 'דיבור ברור', d: 'לקריאה ולדרשה',
+           hp: 120, pk: 5, pf: 1800, comp: 20, gain: 1.1 },
+  loud:  { t: 'חזק ואחיד', d: 'לרעש הדרך',
+           hp: 80,  pk: 2, pf: 2200, comp: 30, gain: 1.3 }
+};
+
+function mxInit() {
+  if (MX.n) return MX.n;
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  try {
+    var c = new AC();
+    var src = c.createMediaElementSource(au);
+    var hp = c.createBiquadFilter();   hp.type = 'highpass';  hp.frequency.value = 20;
+    var lo = c.createBiquadFilter();   lo.type = 'lowshelf';  lo.frequency.value = 180;
+    var pk = c.createBiquadFilter();   pk.type = 'peaking';   pk.Q.value = 0.9;
+    var hi = c.createBiquadFilter();   hi.type = 'highshelf'; hi.frequency.value = 4500;
+    var cp = c.createDynamicsCompressor();
+    var g  = c.createGain();
+    src.connect(hp); hp.connect(lo); lo.connect(pk); pk.connect(hi);
+    hi.connect(cp); cp.connect(g); g.connect(c.destination);
+    MX.ctx = c;
+    MX.n = { hp: hp, lo: lo, pk: pk, hi: hi, cp: cp, g: g };
+  } catch (e) {
+    MX.n = null;                       // an old browser, or no media element
+  }
+  return MX.n;
+}
+
+function mxApply() {
+  var n = mxInit();
+  if (!n) return;
+  if (MX.ctx && MX.ctx.state === 'suspended') { try { MX.ctx.resume(); } catch (e) {} }
+  var p = PRESETS[MX.pre] || PRESETS.off;
+  n.hp.frequency.value = p.hp;
+  n.pk.frequency.value = p.pf;
+  n.pk.gain.value = p.pk;
+  n.lo.gain.value = MX.bass;
+  n.hi.gain.value = p.pk ? Math.max(MX.treb, 1) : MX.treb;
+  n.cp.threshold.value = p.comp ? -p.comp : 0;
+  n.cp.ratio.value = p.comp ? 1 + p.comp / 8 : 1;
+  n.g.gain.value = p.gain;
+  try {
+    localStorage.setItem(KEY + '_mix',
+      JSON.stringify({ p: MX.pre, b: MX.bass, t: MX.treb }));
+  } catch (e) {}
+  mxPaint();
+}
+
+function mxPaint() {
+  if ($('mix').classList.contains('hide')) return;
+  var keys = ['off', 'tape', 'talk', 'loud'];
+  $('mixRows').innerHTML =
+    '<p class="mixh">עיבוד</p><div class="pset">'
+    + keys.map(function (k) {
+        return '<button data-p="' + k + '"' + (MX.pre === k ? ' class="on"' : '') + '>'
+             + esc(PRESETS[k].t) + '<small>' + esc(PRESETS[k].d) + '</small></button>';
+      }).join('')
+    + '</div><p class="mixh">כוונון</p>'
+    + trimRow('bass', 'בס', MX.bass) + trimRow('treb', 'טרבל', MX.treb);
+  var bs = $('mixRows').querySelectorAll('[data-p]');
+  for (var i = 0; i < bs.length; i++) {
+    (function (b) { b.onclick = function () { MX.pre = b.dataset.p; mxApply(); }; })(bs[i]);
+  }
+  var ts = $('mixRows').querySelectorAll('[data-t]');
+  for (var j = 0; j < ts.length; j++) {
+    (function (b) {
+      b.onclick = function () {
+        var k = b.dataset.t, d = +b.dataset.d;
+        MX[k] = Math.max(-9, Math.min(9, MX[k] + d));
+        mxApply();
+      };
+    })(ts[j]);
+  }
+}
+
+function trimRow(k, label, v) {
+  return '<div class="trim"><span class="lab">' + label + '</span>'
+       + '<button data-t="' + k + '" data-d="-3" aria-label="הפחת">−</button>'
+       + '<span class="val">' + (v > 0 ? '+' : '') + v + ' דציבל</span>'
+       + '<button data-t="' + k + '" data-d="3" aria-label="הוסף">+</button></div>';
+}
+
+$('mixBtn').onclick = function () {
+  var open = $('mix').classList.contains('hide');
+  $('now').classList.add('hide');
+  $('list').classList.add('hide');
+  $('mix').classList.toggle('hide', !open);
+  if (open) { head('מיקסר'); mxPaint(); mxApply(); }
+  else { view(au.getAttribute('src') ? 'now' : 'list'); }
+};
 
 /* the screen may not sleep over a piyyut that is still playing */
 var lock = null;
