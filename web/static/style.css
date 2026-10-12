@@ -2837,3 +2837,25 @@ body:not(.ux2) #shareNav{ display:none; }
 .imt.iartr .imt-lead{ color:#55497f; }
 .imt-text.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
   direction:rtl; text-align:right; }
+
+/* ── the line that was chosen draws in, and lights ───────────────────────────
+   A tick alone asks the eye to look for it. The chosen line is set in from
+   both sides and tinted, so which one is on reads from the shape of the block
+   before a single word is read. */
+.sheet-sub-row.sel{ width:auto; margin-inline:10px; border-radius:8px;
+  background:#eef3fb; border-top-color:transparent;
+  box-shadow:inset 0 0 0 1px rgba(26,56,115,.22); }
+.sheet-sub-row.sel:hover{ background:#e6edf9; }
+.sheet-sub-toggle.sel{ background:#f3efe2; box-shadow:inset 0 0 0 1px rgba(138,129,114,.3); }
+
+/* ── and a lit button in the bar carries its own light ───────────────────────
+   The gold bar under the active item says WHICH, but from across the screen the
+   bar still read as five identical items. The lit one now sits in a faint well
+   of its own with a soft glow, so "something is on, and it is this" is legible
+   at a glance — and pressing it again puts it out. */
+body.ux2 #toolbar .tb.on{ background:rgba(233,196,106,.14) !important;
+  box-shadow:inset 0 0 0 1px rgba(233,196,106,.35), 0 0 12px rgba(233,196,106,.22);
+  border-radius:9px; }
+body.ux2 #toolbar .tb.on .tbi, body.ux2 #toolbar .tb.on .ux-ico{ filter:drop-shadow(0 0 4px rgba(233,196,106,.55)); }
+body.ux2 #toolbar .tb.on::after{ width:22px; height:3px; box-shadow:0 0 7px rgba(233,196,106,.7); }
+body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
