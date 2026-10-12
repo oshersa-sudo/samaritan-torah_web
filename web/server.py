@@ -2921,6 +2921,13 @@ def api_apparatus():
     return jsonify(db.get_apparatus(_ids_arg()))
 
 
+# what each panel would find for these verses — the sheet behind the one button
+# asks this so it can leave out a source that has nothing to say here
+@app.route('/api/verse_sources')
+def api_verse_sources():
+    return jsonify(db.get_verse_sources(_ids_arg()))
+
+
 @app.route('/api/tal')
 def api_tal():
     word = request.args.get('word', '')

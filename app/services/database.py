@@ -2670,6 +2670,84 @@ def get_apparatus(verse_ids):
     return out
 
 
+# ── what each panel would find, per verse ────────────────────────────────────
+# The one button that replaced six cannot promise what it does not have, so the
+# sheet it opens asks this first: for these verses, how much does each panel
+# actually hold? Read-only throughout — nothing here writes.
+_SAM_SOURCES = [('tibat', 'tm_verse_links'), ('eyalk', 'eyalk_verse_links'),
+                ('shyt', 'shyt_verse_links'), ('tzdaka', 'tzdaka_verse_links'),
+                ('bhuq', 'bhuq_verse_links'), ('sir', 'sir_verse_links'),
+                ('asatir', 'asatir_verse_links')]
+
+
+def get_verse_sources(verse_ids):
+    """{verse_id: {panel: count}} — how much each panel would find, per verse.
+
+    A count of zero is kept rather than dropped: the caller is shown what is
+    there, and decides whether an absent source is worth a grey line or no line
+    at all. A table this database does not carry simply counts nothing."""
+    if not verse_ids:
+        return {}
+    ids = [int(v) for v in verse_ids]
+    ph = ','.join('?' * len(ids))
+    out = {v: {'interpret': 0, 'jewish': 0, 'variants': 0, 'translit': 0,
+               'samsrc': 0, 'compare': 0, 'translate': 0, 'by': {}} for v in ids}
+    conn = get_connection()
+
+    def note(vid, key, n=1, sub=None):
+        if vid not in out or not n:
+            return
+        out[vid][key] = out[vid].get(key, 0) + n
+        if sub:
+            out[vid]['by'][sub] = out[vid]['by'].get(sub, 0) + n
+
+    # the verse's own columns: the commentary, the Jewish commentators, the
+    # texts it can be compared with, and the translations it carries
+    cols = ('interpretation', 'rashi', 'ramban', 'cassuto', 'baal_haturim',
+            'masoretic_text', 'lxx_text', 'onkelos_text', 'qumran_text',
+            'sam_aramaic', 'arabic_trans', 'english')
+    try:
+        for r in conn.execute('SELECT id, %s FROM verses WHERE id IN (%s)'
+                              % (', '.join(cols), ph), ids):
+            vid = r['id']
+            has = lambda c: 1 if (r[c] or '').strip() else 0      # noqa: E731
+            note(vid, 'interpret', has('interpretation'))
+            for c in ('rashi', 'ramban', 'cassuto', 'baal_haturim'):
+                note(vid, 'jewish', has(c), c)
+            for c, name in (('masoretic_text', 'masoretic'), ('lxx_text', 'lxx'),
+                            ('onkelos_text', 'onkelos'), ('qumran_text', 'qumran')):
+                note(vid, 'compare', has(c), name)
+            for c, name in (('sam_aramaic', 'aramaic'), ('arabic_trans', 'arabic'),
+                            ('english', 'english')):
+                note(vid, 'translate', has(c), name)
+    except Exception as exc:
+        print('[sources] verses: %s' % exc)
+
+    # the Samaritan works, one table each
+    for name, table in _SAM_SOURCES:
+        try:
+            for r in conn.execute('SELECT verse_id, COUNT(*) AS n FROM "%s" '
+                                  'WHERE verse_id IN (%s) GROUP BY verse_id'
+                                  % (table, ph), ids):
+                note(r['verse_id'], 'samsrc', r['n'], name)
+        except Exception:
+            pass                       # a database without that work simply has none
+
+    # the manuscript apparatus, and the pronunciation
+    for table, key, sub in (('vongall_apparatus', 'variants', None),
+                            ('verse_translit', 'translit', 'translit')):
+        try:
+            for r in conn.execute('SELECT verse_id, COUNT(*) AS n FROM "%s" '
+                                  'WHERE verse_id IN (%s) GROUP BY verse_id'
+                                  % (table, ph), ids):
+                note(r['verse_id'], key, r['n'], sub)
+        except Exception:
+            pass
+
+    conn.close()
+    return out
+
+
 def _vongall_legend(conn):
     """{base-siglum: {repository, shelfmark, date, note}} from von Gall's manuscript
     legend. Cached for the process (the legend is static)."""

@@ -160,11 +160,8 @@ const I18N = {
       'אלו פסוקי הפרק. ליד כל פסוק מספרו; לחיצה על מספר מציגה רק אותו פסוק.',
       'שימו לב לסרגל הכלים שבתחתית. הוא מתקפל אוטומטית כדי לפנות מקום לקריאה — ראיתם איך נסגר ונפתח. גררו או הקישו על הידית שבמרכזו כדי לפתוח אותו שוב בכל עת.',
       'כפתור הכתב מחליף בין הכתב העברי הרגיל לבין הכתב העברי-השומרוני העתיק.',
-      'כאן בוחרים תרגום — ארמי, ערבי או אנגלי — והוא מוצג במקום הטקסט.',
-      'השוואת נוסחים מציגה את נוסח שומרון מול נוסח המסורה, וגם מול תרגום השבעים, עם סימון ההבדלים.',
-      'חילופי נוסח מציג את גרסאות הנוסח מכתבי-יד שונים, עם עדי-הנוסח.',
-      'ממקור שומרון פותח את הפרשנות השומרונית לפסוק: תיבת מרקה, פירוש צדקה אל-חכים, המסורת השומרונית ועוד.',
-      'פירוש הפסוק נפתח בפאנל שמתחת לטקסט, ובו פירוש רציף לכל פסוק הבנוי אך ורק מן המקורות השומרוניים, עם ציון שם האומר. בכותרת הפאנל אפשר להציגו בכתב שומרוני רהוט או בערבית, ובתחתיתו קישורים להרחבה: ממקור שומרון, פרשנות יהודית ומילון מילים.',
+      'כפתור "לצד הפסוק" אוסף אל תוכו את כל מה שאפשר להציג לצד הטקסט: פירוש הפסוק, מקורות שומרון, תעתיק ההגייה, השוואת נוסחים, חילופי נוסח, התרגומים והפרשנות היהודית.',
+            'הגיליון נפתח ואומר מה יש בפרק שלפניכם, ולצד כל מקור — בכמה מפסוקיו הוא נמצא. מקור שאין לו דבר בפרק הזה אינו מוצג כשורה ריקה, אלא נרשם למטה בשורה אחת. כך רואים מראש מה כדאי לפתוח.',
       'מילון מילים מציג לכל מילה בפסוק את תרגומה הארמי ואת פירושה מתוך המילון.',
       'שלוש הנקודות שבשורת הנתיב פותחות סרגל כלים: סימניה, קיבוע השורה, מדפסת, הגייה, וכפתור ההשמעה שמחזיר את סרגל ההקראה. המדפסת מכינה את הפרק להדפסה או לשמירה כ-PDF, עם בחירת גופן, הסרת מספרי הפסוקים וצירוף הפירוש, המילון והתרגום.',
       'בכפתורי פרק הבא והקודם מדפדפים בין הפרקים ברצף, גם מעבר לגבולות הספר. הזכוכיות מגדילות ומקטינות את הטקסט.',
@@ -389,6 +386,8 @@ const I18N = {
     renum_only_this:'רק פסוק זה', renum_ok:'מספר הפסוק עודכן.',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
+    ux_side:'לצד הפסוק', ux_for_chapter:'הפרק כולו', ux_verses:'פסוקים',
+    ux_none_here:'אין בפרק זה:', ux_dict_l:'מילון', ux_font_l:'כתב',
     bm_add:'הוסף סימניה לפרק זה', nikud_off:'הצגה ללא ניקוד', nikud_on:'הצגה עם ניקוד', nikud_off_l:'ללא ניקוד', nikud_on_l:'ניקוד', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
     print_ch:'הדפסת פרק', print_title:'הדפסת פרק',
     nav_pin:'קיבוע שורת הנתיב וחלון ההשמעה על המסך', nav_portion_next:'הפרשה הבאה', nav_portion_prev:'הפרשה הקודמת',
@@ -429,11 +428,8 @@ const I18N = {
       'These are the chapter’s verses. Each verse shows its number; tapping a number shows just that verse.',
       'Notice the toolbar at the bottom. It folds away automatically to make room for reading — you just saw it close and open. Drag or tap the handle in its middle to reopen it any time.',
       'The script button switches between ordinary Hebrew and the ancient Samaritan-Hebrew script.',
-      'Here you choose a translation — Aramaic, Arabic or English — shown in place of the text.',
-      'Compare versions shows the Samaritan text against the Masoretic, and the Septuagint, with the differences marked.',
-      'Textual variants shows readings from different manuscripts, with their witnesses.',
-      'Samaritan sources opens the Samaritan commentary on the verse: Tibåt Mårqe, Ṣadaqah al-Ḥakīm’s commentary, the Samaritan tradition and more.',
-      'Verse commentary opens a panel beneath the text with a flowing commentary on every verse, built only from the Samaritan sources and crediting each point to the source that says it. From the panel header you can render it in the fluent Samaritan script or in Arabic, and at its foot are links onward to the Samaritan sources, the Jewish commentators and the word dictionary.',
+      'The “Beside the verse” button gathers everything that can be set alongside the text: the verse commentary, the Samaritan sources, the pronunciation, the version comparison, the textual variants, the translations and the Jewish commentators.',
+            'The sheet opens and says what this chapter actually holds, and beside each source, in how many of its verses. A source with nothing here is not shown as an empty line; it is named below in a single line. So you can see in advance what is worth opening.',
       'The word dictionary shows, for each word in the verse, its Aramaic translation and meaning from the dictionary.',
       'The three dots on the path line open a row of tools: bookmark, pin, printer, pronunciation, and a play sign that brings back the reading player. The printer prepares the chapter for printing or for saving as a PDF, with a choice of font, verse numbers off, and the commentary, glossary and a translation included.',
       'The next and previous buttons page through the chapters continuously, even across books. The magnifiers enlarge and shrink the text.',
@@ -658,6 +654,8 @@ const I18N = {
     renum_only_this:'Only this verse', renum_ok:'Verse number updated.',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
+    ux_side:'Beside the verse', ux_for_chapter:'The whole chapter', ux_verses:'verses',
+    ux_none_here:'Not in this chapter:', ux_dict_l:'Dictionary', ux_font_l:'Script',
     bm_add:'Bookmark this chapter', nikud_off:'Show without vocalization', nikud_on:'Show with vocalization', nikud_off_l:'no nikud', nikud_on_l:'nikud', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
     print_ch:'Print chapter', print_title:'Print chapter',
     nav_pin:'Keep the path line and the play window on screen', nav_portion_next:'Next parasha', nav_portion_prev:'Previous parasha',
@@ -698,11 +696,8 @@ const I18N = {
       'هذه آيات الأصحاح. بجانب كلّ آية رقمها؛ والضغط على الرقم يعرض تلك الآية وحدها.',
       'انتبهوا إلى شريط الأدوات في الأسفل. يُطوى تلقائيًا لإفساح مجال القراءة — رأيتموه يُغلق ويُفتح. اسحبوا أو اضغطوا المقبض في وسطه لإعادة فتحه في أيّ وقت.',
       'زرّ الخطّ يبدّل بين العبرية العادية والخطّ العبري-السامري القديم.',
-      'هنا تختارون ترجمة — آرامية أو عربية أو إنجليزية — تُعرض مكان النصّ.',
-      'مقارنة النصوص تعرض النصّ السامري مقابل الماسوري، والسبعينية، مع تمييز الفروق.',
-      'اختلافات النصّ تعرض قراءات من مخطوطات مختلفة، من طبعة فون غال، مع شهودها.',
-      'مصادر سامرية تفتح التفسير السامري للآية: تيبات مارقه، تفسير صدقة الحكيم، التقليد السامري وغيرها.',
-      'تفسير الآية يفتح لوحة تحت النصّ فيها تفسير متصل لكلّ آية، مبنيّ على المصادر السامرية وحدها مع نسبة كلّ قول إلى قائله. ومن عنوان اللوحة يمكن عرضه بالخطّ السامري أو بالعربية، وفي أسفلها روابط إلى المصادر السامرية والتفسير اليهودي ومعجم الكلمات.',
+      'زرّ «بجانب الآية» يجمع كلّ ما يمكن عرضه إلى جانب النصّ: تفسير الآية، والمصادر السامرية، والنسخ الصوتي، ومقارنة النصوص، واختلافات النصّ، والترجمات، والتفاسير اليهودية.',
+            'يُفتح اللوح فيقول ما يحتويه هذا الأصحاح فعلًا، وبجانب كلّ مصدر في كم آية من آياته يوجد. والمصدر الذي لا شيء له هنا لا يُعرض كسطر فارغ، بل يُذكر أدناه في سطر واحد. فترون مقدّمًا ما يستحقّ الفتح.',
       'معجم الكلمات يعرض لكلّ كلمة في الآية ترجمتها الآرامية ومعناها من المعجم.',
       'النقاط الثلاث في سطر المسار تفتح شريط أدوات: علامة مرجعيّة، تثبيت، طابعة، نطق، وزرّ استماع يعيد شريط التلاوة. والطابعة تهيئ الأصحاح للطباعة أو للحفظ كملفّ PDF، مع اختيار الخطّ وإزالة أرقام الآيات وإرفاق التفسير والمعجم والترجمة.',
       'زرّا الأصحاح التالي والسابق يقلّبان بين الأصحاحات بسلاسة، حتى عبر الأسفار. والعدسات تكبّر النصّ وتصغّره.',
@@ -927,6 +922,8 @@ const I18N = {
     renum_only_this:'هذه الآية فقط', renum_ok:'تم تحديث رقم الآية.',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
+    ux_side:'بجانب الآية', ux_for_chapter:'الأصحاح كلّه', ux_verses:'آيات',
+    ux_none_here:'لا يوجد في هذا الأصحاح:', ux_dict_l:'قاموس', ux_font_l:'الخط',
     bm_add:'إضافة إشارة لهذا الأصحاح', nikud_off:'العرض بدون تشكيل', nikud_on:'العرض مع التشكيل', nikud_off_l:'بدون تشكيل', nikud_on_l:'تشكيل', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
     print_ch:'طباعة الأصحاح', print_title:'طباعة الأصحاح',
     nav_pin:'تثبيت سطر المسار ونافذة التشغيل على الشاشة', nav_portion_next:'المقطع التالي', nav_portion_prev:'المقطع السابق',
@@ -4850,6 +4847,79 @@ function updateToolbarFold(isVerse){
   h.addEventListener('pointerup', release);
   h.addEventListener('pointercancel', ()=>{ downY=null; });
 })();
+// ── one question instead of six buttons ──────────────────────────────────────
+// Six coloured buttons each asked the reader to guess whether they had anything
+// for the chapter in front of them, and five of the six usually did not. One
+// button now opens a sheet that answers first: every source that HAS something
+// here, with how much, and one quiet line naming the ones that have nothing.
+//
+// The six buttons stay in the DOM — the sheet opens some of them by clicking
+// them — and ?ux=0 shows them again, which is the way back if this bar turns
+// out to be wrong.
+const UX2 = new URLSearchParams(location.search).get('ux')!=='0';
+const SRC = {};                      // verse id → {panel: count}
+async function ensureSources(){
+  const need = (S.verses||[]).map(v=>v.id).filter(id=>!(id in SRC));
+  if(!need.length) return;
+  try{ const d=await api('verse_sources?verse_ids='+need.join(',')); Object.assign(SRC, d); }
+  catch(e){ for(const id of need) SRC[id]=SRC[id]||{}; }
+}
+// a panel's number is how many verses of this chapter have it — the figure that
+// tells the reader whether it is worth opening at all
+function sheetCounts(){
+  const out={};
+  for(const v of (S.verses||[])){
+    const s=SRC[v.id]||{};
+    for(const r of SIDE_ROWS) if(s[r.key]) out[r.key]=(out[r.key]||0)+1;
+  }
+  return out;
+}
+// the pronunciation gets a line of its own here for the first time; until now it
+// was reachable only from inside "ממקור שומרון"
+const SIDE_ROWS = [
+  {key:'interpret', label:'interp',       open:()=>openPanel('interpret')},
+  {key:'samsrc',    label:'samsrc',       open:()=>openPanel('samaritan_src')},
+  {key:'translit',  label:'src_translit', open:()=>{ openPanel('samaritan_src'); S.samSrcChoice='translit'; paintVerses(); }},
+  {key:'compare',   label:'compare',      open:()=>$('compareBtn').click()},
+  {key:'variants',  label:'variants',     open:()=>openPanel('variants')},
+  {key:'translate', label:'translate',    open:()=>$('translateBtn').click()},
+  {key:'jewish',    label:'commentary',   open:()=>openPanel('commentary')},
+];
+function openPanel(name){            // open, never toggle off — the sheet chose it
+  if(S.panel!==name) togglePanel(name);
+}
+function closeSideSheet(){ $('sideSheet').classList.add('hidden'); }
+async function openSideSheet(){
+  await ensureSources();
+  const counts=sheetCounts();
+  const n=(S.verses||[]).length;
+  $('sheetTitle').textContent = t('ux_for_chapter')+' · '+n+' '+t('ux_verses');
+  const rows=$('sheetRows'); rows.innerHTML='';
+  const missing=[];
+  for(const r of SIDE_ROWS){
+    const c=counts[r.key]||0;
+    if(!c){ missing.push(t(r.label)); continue; }
+    const b=el('button','sheet-row');
+    b.appendChild(el('span','sheet-label', t(r.label)));
+    b.appendChild(el('span','sheet-count', String(c)));
+    b.onclick=()=>{ closeSideSheet(); r.open(); };
+    rows.appendChild(b);
+  }
+  $('sheetNone').textContent = missing.length ? (t('ux_none_here')+' '+missing.join(' · ')) : '';
+  $('sideSheet').classList.remove('hidden');
+}
+if($('sideBtn')) $('sideBtn').onclick=openSideSheet;
+if($('sheetClose')) $('sheetClose').onclick=closeSideSheet;
+if($('sideSheet')) $('sideSheet').onclick=e=>{ if(e.target.id==='sideSheet') closeSideSheet(); };
+if($('shareNav')) $('shareNav').onclick=openShare;
+// ?ux=0 puts the six buttons back, so the two bars can be held side by side and
+// so a reader who finds this bar wrong has somewhere to stand. The script is
+// loaded at the end of <body>, so the class can go on straight away; the
+// listener is the belt for a future move of the tag.
+if(UX2){
+  if(document.body) document.body.classList.add('ux2');
+  else document.addEventListener('DOMContentLoaded', ()=>document.body.classList.add('ux2'));
+}
 // base colours of each mode button (matching the native app's palette);
 // disabled → grey, active → bright blue, otherwise its own colour.
 const BTN_BASE = {
@@ -4859,6 +4929,7 @@ const BTN_BASE = {
 };
 function syncToolbar(isVerse){
   $('shareBtn').classList.toggle('hidden', !isVerse);
+  const sn=$('shareNav'); if(sn) sn.classList.toggle('hidden', !isVerse);
   // "עיון" goes to the book list — so on the book list itself it does nothing, and
   // it greys out there like any other button with nothing to do
   $('browseBtn').disabled = (S.view === 'books');
@@ -4870,6 +4941,9 @@ function syncToolbar(isVerse){
   // active at a time (clicking one turns the previous off), so every button is
   // simply enabled in verse view and highlighted when it is the active one.
   const sam=S.samFont;
+  // the one button that opens the sheet is lit whenever something chosen from
+  // that sheet is on the screen
+  if($('sideBtn')) setBtn('sideBtn', isVerse, !!S.panel || S.english);
   setBtn('fontBtn', isVerse, sam);
   // the button shows just "א-ב" in the script you'd switch TO: Samaritan ࠀࠁ when
   // currently Hebrew, regular Hebrew אב when currently Samaritan.
@@ -9782,12 +9856,13 @@ const TOUR_STEPS = [
   { pre:async()=>{ await tourToVerses(); setToolbarFolded(true,true); await tourWait(1300); setToolbarFolded(false,true); await tourWait(300); },
     el:()=>$('tbHandle') },
   { pre:async()=>{ await tourToVerses(); }, el:()=>$('fontBtn') },
-  { el:()=>$('translateBtn') },
-  { el:()=>$('compareBtn') },
-  { el:()=>$('variantsBtn') },
-  { el:()=>$('samSrcBtn') },
-  { pre:async()=>{ await tourToVerses(); }, el:()=>$('interpBtn') },
-  { el:()=>$('dictBtn') },
+  // the six panel buttons became one, so the two steps that remain are the
+  // button and the sheet it opens — and the sheet is opened the way a reader
+  // opens it, so there is something real to point at
+  { pre:async()=>{ await tourToVerses(); closeSideSheet(); }, el:()=>$('sideBtn') },
+  { pre:async()=>{ await tourToVerses(); await openSideSheet(); await tourWait(380); },
+    el:()=>$('sheetRows') },
+  { pre:async()=>{ closeSideSheet(); await tourWait(200); }, el:()=>$('dictBtn') },
   // the printer moved into the tools row, which opens only when asked; the step
   // opens it the way a reader would, so there is something to point at
   { pre:async()=>{ await tourToVerses();

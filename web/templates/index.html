@@ -86,7 +86,7 @@
   </header>
 
   <!-- breadcrumb (with the bookmark sign pinned to its left corner) -->
-  <nav id="crumbs"><span class="bm-navs"><button id="toolsBtn" class="bm-nav tools-nav" type="button" data-i18n-title="tools_bar" title="כלים" aria-label="כלים" aria-expanded="false"><span class="tools-dots" aria-hidden="true"></span></button><span id="toolsRow" class="tools-row hidden"><button id="navPin" class="bm-nav pin-nav" type="button" data-i18n-title="nav_pin" title="קיבוע שורת הנתיב וחלון ההשמעה" aria-label="קיבוע שורת הנתיב" aria-pressed="false">📌</button><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button><button id="printBtn" class="bm-nav print-nav hidden" data-i18n-title="print_ch" title="הדפסת פרק" aria-label="הדפסת פרק">🖨️</button><button id="pronBtn" class="bm-nav pron-nav hidden" data-i18n-title="show_pron" title="הצג הגייה (תצוגה מקדימה)" aria-label="הצג הגייה">אָ</button><button id="rdBarBtn" class="bm-nav rdbar-nav hidden" type="button" data-i18n-title="rd_bar" title="סרגל ההשמעה" aria-label="סרגל ההשמעה" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button><button id="nikudBtn" class="bm-nav nik-nav hidden" type="button" title="הצגה ללא ניקוד" aria-label="הצגה ללא ניקוד" aria-pressed="true">ללא ניקוד</button></span></span></nav>
+  <nav id="crumbs"><span class="bm-navs"><button id="toolsBtn" class="bm-nav tools-nav" type="button" data-i18n-title="tools_bar" title="כלים" aria-label="כלים" aria-expanded="false"><span class="tools-dots" aria-hidden="true"></span></button><span id="toolsRow" class="tools-row hidden"><button id="navPin" class="bm-nav pin-nav" type="button" data-i18n-title="nav_pin" title="קיבוע שורת הנתיב וחלון ההשמעה" aria-label="קיבוע שורת הנתיב" aria-pressed="false">📌</button><button id="bmAddBtn" class="bm-nav hidden" data-i18n-title="bm_add" title="הוסף סימניה לפרק זה">🔖</button><button id="printBtn" class="bm-nav print-nav hidden" data-i18n-title="print_ch" title="הדפסת פרק" aria-label="הדפסת פרק">🖨️</button><button id="pronBtn" class="bm-nav pron-nav hidden" data-i18n-title="show_pron" title="הצג הגייה (תצוגה מקדימה)" aria-label="הצג הגייה">אָ</button><button id="shareNav" class="bm-nav share-nav hidden" type="button" data-i18n-title="share" title="שתף" aria-label="שתף"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button><button id="rdBarBtn" class="bm-nav rdbar-nav hidden" type="button" data-i18n-title="rd_bar" title="סרגל ההשמעה" aria-label="סרגל ההשמעה" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button><button id="nikudBtn" class="bm-nav nik-nav hidden" type="button" title="הצגה ללא ניקוד" aria-label="הצגה ללא ניקוד" aria-pressed="true">ללא ניקוד</button></span></span></nav>
 
   <!-- main scrolling content -->
   <main id="content"></main>
@@ -128,12 +128,13 @@
     <div class="tb-row">
       <button id="shareBtn" class="tb green hidden" data-i18n-title="share" title="שתף" aria-label="שתף"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
       <button id="browseBtn" class="tb navy has-ico"><svg class="tbi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="tb-label" data-i18n="browse">עיון</span></button>
-      <button id="searchBtn" class="tb navy" data-i18n="search">חיפוש</button>
-      <button id="dictBtn" class="tb" disabled data-i18n="dict">מילון מילים</button>
-      <button id="fontBtn" class="tb font-btn" disabled title="כתב שומרוני" aria-label="כתב שומרוני"><span class="font-ab sam-script">ࠀࠁ</span></button>
+      <button id="searchBtn" class="tb navy has-ico"><svg class="tbi ux-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg><span class="tb-label" data-i18n="search">חיפוש</span></button>
+      <button id="dictBtn" class="tb" disabled><svg class="tbi ux-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z"/><path d="M4 18a2 2 0 0 1 2-2h12"/><line x1="8" y1="8" x2="14" y2="8"/><line x1="8" y1="12" x2="12" y2="12"/></svg><span class="tb-label ux-no" data-i18n="dict">מילון מילים</span><span class="tb-label ux-only" data-i18n="ux_dict_l">מילון</span></button>
+      <button id="fontBtn" class="tb font-btn" disabled title="כתב שומרוני" aria-label="כתב שומרוני"><span class="font-ab sam-script">ࠀࠁ</span><span class="tb-label ux-only" data-i18n="ux_font_l">כתב</span></button>
+      <button id="sideBtn" class="tb" disabled><svg class="tbi ux-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="15" y1="4" x2="15" y2="20"/><line x1="6" y1="9" x2="12" y2="9"/><line x1="6" y1="13" x2="12" y2="13"/></svg><span class="tb-label" data-i18n="ux_side">לצד הפסוק</span></button>
       <button id="interpBtn" class="tb" disabled><span class="tb-label" data-i18n="interp">פירוש הפסוק</span></button>
     </div>
-    <div class="tb-row">
+    <div class="tb-row tb-row2">
       <button id="commentaryBtn" class="tb" disabled data-i18n="commentary">פרשנות יהודית</button>
       <button id="compareBtn" class="tb" disabled data-i18n="compare">השוואת נוסחים</button>
       <button id="variantsBtn" class="tb" disabled data-i18n="variants">חילופי נוסח</button>
@@ -214,6 +215,19 @@
 </div>
 
 <!-- version-comparison picker -->
+<!-- the sheet behind "לצד הפסוק": the six panels as one question, each line
+     carrying how much it would actually find in this chapter. -->
+<div id="sideSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-card">
+    <div class="sheet-head">
+      <span id="sheetTitle" class="sheet-title"></span>
+      <button id="sheetClose" class="sheet-x" data-i18n-aria="close" aria-label="סגור">&times;</button>
+    </div>
+    <div id="sheetRows" class="sheet-rows"></div>
+    <div id="sheetNone" class="sheet-none"></div>
+  </div>
+</div>
+
 <div id="cmpModal" class="modal hidden">
   <div class="modal-box">
     <div class="modal-title" data-i18n="cmp_title">בחר נוסח להשוואה</div>

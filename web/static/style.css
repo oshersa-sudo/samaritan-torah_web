@@ -2701,3 +2701,81 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
 .tm-wfind-in:focus{ outline:2px solid var(--active); outline-offset:1px; }
 .tm-wfind-n{ flex:0 0 auto; color:var(--muted); font-size:13px; }
 .tm-wtbl tr.hidden{ display:none; }
+
+/* ── one chooser instead of six ──────────────────────────────────────────────
+   body.ux2 hides the six panel buttons and shows the one that replaces them.
+   ?ux=0 puts the old bar back, so the two can be held side by side and so a
+   reader who finds the new bar wrong has somewhere to stand. */
+body.ux2 #interpBtn, body.ux2 #commentaryBtn, body.ux2 #compareBtn,
+body.ux2 #variantsBtn, body.ux2 #samSrcBtn, body.ux2 #translateBtn{ display:none; }
+body:not(.ux2) #sideBtn{ display:none; }
+
+/* The bar carried 12.5px labels under a 20px verse, which told the reader the
+   buttons mattered nearly as much as the Torah. Fewer of them leaves room to
+   say otherwise. */
+body.ux2 #toolbar .tb{ font-size:14px; }
+
+/* ── the bar itself: one colour, five equal items, an icon over a short label.
+   The six coloured blocks each shouted in a colour of their own; now the bar is
+   the header's navy and only the ACTIVE item says anything — a short gold bar
+   under it, the gold of the date line above. The inline background that
+   syncToolbar() still paints is overruled here rather than in the script, so
+   ?ux=0 keeps the old bar untouched. */
+body.ux2 #toolbar{ padding:0 4px 2px; gap:0; border-top:1px solid rgba(255,255,255,.08); }
+body.ux2 .tb-rows{ gap:0; }
+body.ux2 .tb-row{ gap:0; }
+body.ux2 .tb-row2{ display:none; }
+body.ux2 #toolbar .tb{ background:transparent !important; border-radius:8px; padding:7px 2px 7px;
+  min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; font-size:11.5px; line-height:1.2; color:#cfd6e6; position:relative; white-space:nowrap; }
+body.ux2 #toolbar .tb .tbi, body.ux2 #toolbar .tb .ux-ico{ width:22px; height:22px; }
+body.ux2 #toolbar .tb .tb-label{ display:block; }
+body.ux2 #toolbar .tb.font-btn .font-ab{ font-size:15px; line-height:22px; height:22px; display:block;
+  letter-spacing:.02em; overflow:visible; }
+body.ux2 #toolbar .tb.font-btn .font-ab .sam-let{ font-size:1.05em; }
+body.ux2 #toolbar .tb:disabled{ opacity:.38; }
+body.ux2 #toolbar .tb:not(:disabled):active{ background:rgba(255,255,255,.08) !important; }
+body.ux2 #toolbar .tb.on{ color:#fff; }
+body.ux2 #toolbar .tb.on::after{ content:''; position:absolute; bottom:3px; left:50%; transform:translateX(-50%);
+  width:18px; height:3px; border-radius:2px; background:#e9c46a; }
+body.ux2 #searchBtn::before{ display:none; }
+/* the hides need to outrank the display:flex above (an id and three classes) */
+body.ux2 #toolbar #shareBtn, body.ux2 #toolbar .tb.hidden,
+body.ux2 #toolbar #interpBtn, body.ux2 #toolbar #commentaryBtn, body.ux2 #toolbar #compareBtn,
+body.ux2 #toolbar #variantsBtn, body.ux2 #toolbar #samSrcBtn, body.ux2 #toolbar #translateBtn{ display:none; }
+body.ux2 #toolbar .tb .tb-label.ux-no{ display:none; }
+/* the blind's handle: a thin line, no shutter */
+body.ux2 .tb-handle{ height:12px; }
+body.ux2 #toolbar.folded .tb-handle{ height:28px; }
+body.ux2 .tb-grip{ width:36px; height:4px; border-radius:2px; background:rgba(255,255,255,.35); box-shadow:none; }
+body.ux2 .tb-grip::after{ display:none; }
+body.ux2 .tb-handle:hover .tb-grip{ background:rgba(255,255,255,.6); }
+/* labels that belong to one bar only */
+body:not(.ux2) .tb-label.ux-only{ display:none; }
+body.ux2 .tb-label.ux-only{ display:block; }
+body:not(.ux2) #searchBtn .ux-ico, body:not(.ux2) #dictBtn .ux-ico, body:not(.ux2) #sideBtn .ux-ico{ display:none; }
+/* share moved off the bar into the tools row behind the three dots */
+body:not(.ux2) #shareNav{ display:none; }
+.share-nav{ color:#218c66; }
+.share-nav svg{ width:18px; height:18px; display:block; }
+
+/* ── the sheet that one button opens ─────────────────────────────────────── */
+.sheet{ position:fixed; inset:0; z-index:50; background:rgba(16,26,56,.45);
+  display:flex; align-items:flex-end; justify-content:center; }
+.sheet.hidden{ display:none; }
+.sheet-card{ width:100%; max-width:520px; background:#fffdf8; border-radius:16px 16px 0 0;
+  padding:14px 16px 20px; box-shadow:0 -6px 24px rgba(0,0,0,.25); max-height:76vh; overflow:auto; }
+.sheet-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.sheet-title{ font-size:16px; font-weight:700; color:#1c1a17; }
+.sheet-x{ width:34px; height:34px; border:1px solid #cec3ae; border-radius:9px;
+  background:#fffdf8; color:#1c1a17; font-size:19px; cursor:pointer; }
+.sheet-rows{ display:flex; flex-direction:column; gap:6px; }
+.sheet-row{ display:flex; align-items:center; justify-content:space-between; gap:10px;
+  width:100%; padding:13px 14px; font-size:16px; text-align:start; cursor:pointer;
+  border:1px solid #e0d8c6; border-radius:10px; background:#fff; color:#1c1a17; }
+.sheet-row:hover{ background:#f6f1e6; }
+.sheet-count{ min-width:26px; padding:1px 8px; border-radius:11px; font-size:13px;
+  background:#eee6d6; color:#5b5346; text-align:center; }
+/* what the chapter does NOT have is said once, quietly, instead of being six
+   buttons that each open onto a message saying so */
+.sheet-none{ margin-top:12px; font-size:13px; color:#8a8172; line-height:1.6; }
