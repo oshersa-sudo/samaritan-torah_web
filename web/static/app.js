@@ -386,6 +386,7 @@ const I18N = {
     renum_only_this:'רק פסוק זה', renum_ok:'מספר הפסוק עודכן.',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
+    ux_comm_mt:'וגם נוסח המסורה מתחת לכל פסוק', ux_no_mt:'אין מקבילה בנוסח המסורה',
     ux_interp_where:'היכן להציג את הפירוש?',
     ux_interp_chapter:'פירוש מתחת לפרק', ux_interp_verse:'פירוש מתחת לכל פסוק',
     ux_side:'לצד הפסוק', ux_for_chapter:'הפרק כולו', ux_verses:'פסוקים',
@@ -656,6 +657,7 @@ const I18N = {
     renum_only_this:'Only this verse', renum_ok:'Verse number updated.',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
+    ux_comm_mt:'Also the Masoretic text beneath each verse', ux_no_mt:'No Masoretic counterpart',
     ux_interp_where:'Where should the commentary go?',
     ux_interp_chapter:'Commentary below the chapter', ux_interp_verse:'Commentary below each verse',
     ux_side:'Beside the verse', ux_for_chapter:'The whole chapter', ux_verses:'verses',
@@ -926,6 +928,7 @@ const I18N = {
     renum_only_this:'هذه الآية فقط', renum_ok:'تم تحديث رقم الآية.',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
+    ux_comm_mt:'وأيضًا النصّ الماسوري أسفل كل آية', ux_no_mt:'لا مقابل في النصّ الماسوري',
     ux_interp_where:'أين يُعرض التفسير؟',
     ux_interp_chapter:'التفسير أسفل الأصحاح', ux_interp_verse:'التفسير أسفل كل آية',
     ux_side:'بجانب الآية', ux_for_chapter:'الأصحاح كلّه', ux_verses:'آيات',
@@ -991,6 +994,8 @@ const S = {
   // where the verse commentary is set: under the whole chapter (the panel), or
   // beneath each verse in turn — the reader's last choice, kept
   interpInline: localStorage.getItem('as_interp_inline') === '1',
+  commentaryInline: localStorage.getItem('as_comm_inline') === '1',   // the Jewish commentators, the same two places
+  commentaryMT: localStorage.getItem('as_comm_mt') === '1',           // …and the Masoretic verse set between the two
   searchReturn: false, searchFontOffset: 0,
   stack: [],                      // navigation breadcrumb stack for Back
 };
@@ -2769,7 +2774,10 @@ function paintVerses(){
 
   if(usePanel && S.panel!=='compare'){
     addNumStrip(c, all);
-    if(S.panel==='commentary'){ addPlainRows(c, verses); buildCommentary(c, verses); }
+    if(S.panel==='commentary'){
+      if(S.commentaryInline) buildCommentaryInline(c, verses);
+      else { addPlainRows(c, verses); buildCommentary(c, verses); }
+    }
     else if(S.panel==='samaritan_src'){ if(S.samSrcChoice!=='translit') addPlainRows(c, verses); buildSamSrc(c, verses); }
     else if(S.panel==='variants'){ buildVariantsView(c, verses); }
     else if(S.panel==='interpret'){
@@ -3413,6 +3421,55 @@ function buildCommentary(c, verses){
     }
   }
   c.appendChild(panel);
+}
+
+// The Jewish commentators beneath each verse. The picker (no commentator chosen
+// yet) and the live-Sefaria list stay as a panel — the first because there is
+// nothing to put under a verse before a name is picked, the second because it
+// is fetched one verse at a time and cannot be set under a whole chapter — and
+// the plain verses follow them, so the chapter never disappears from view.
+function buildCommentaryInline(c, verses){
+  if(S.commentarySel===null || S.commentarySel==='web'){
+    buildCommentary(c, verses);
+    addPlainRows(c, verses);
+    return;
+  }
+  const names=Object.fromEntries(COMMENTATORS);
+  const wrap = el('div','interp-panel interp-inline comm-inline');
+  const head=el('div','shead ihead-wrap');
+  const back=el('button','miniback','‹ בחר פרשן'); back.onclick=()=>{ S.commentarySel=null; paintVerses(); };
+  head.appendChild(back); head.appendChild(el('div','stitle',esc(names[S.commentarySel])));
+  // the same switch as on the sheet, here so it can be flipped while reading
+  const mtBtn=el('button','ihead-btn'+(S.commentaryMT?' on':''), t('cv_masoretic'));
+  mtBtn.onclick=()=>{ S.commentaryMT=!S.commentaryMT;
+                      localStorage.setItem('as_comm_mt', S.commentaryMT?'1':'0'); paintVerses(); };
+  head.appendChild(mtBtn);
+  wrap.appendChild(head);
+  wrap.appendChild(el('div','note','באדיבות אתר ספריא'));
+  const fs=fsize();
+  let any=false;
+  for(const v of verses){
+    addPlainRows(wrap, [v]);
+    if(S.commentaryMT){
+      // the Masoretic wording the commentator was reading, between the
+      // Samaritan verse and his words on it; a Samaritan-only verse says so
+      const mt=(v.masoretic_text||'').trim();
+      const mb=el('div','imt');
+      mb.appendChild(el('div','imt-lead', t('cv_masoretic')+':'));
+      if(mt){ const mtx=el('div','imt-text', esc(mt)); mtx.style.fontSize=fs+'px'; mb.appendChild(mtx); }
+      else mb.appendChild(el('div','imt-none', t('ux_no_mt')));
+      wrap.appendChild(mb);
+    }
+    const txt=(v[S.commentarySel]||'').trim();
+    if(!txt) continue;
+    any=true;
+    const box=el('div','iinline');
+    const body=el('div','itext', esc(txt)); body.style.fontSize=fs+'px';
+    box.appendChild(body);
+    wrap.appendChild(box);
+  }
+  if(!any) wrap.appendChild(el('div','note','אין פרשנות '+esc(names[S.commentarySel])+' לפסוקים אלה'));
+  c.appendChild(wrap);
 }
 
 // ── ממקור שומרון (Tibåt Mårqe / eyalk) ───────────────────────────────────────
@@ -4945,6 +5002,12 @@ const SIDE_ROWS = [
   {key:'translate', label:'translate',    open:()=>$('translateBtn').click()},
   {key:'jewish',    label:'commentary',   open:()=>openPanel('commentary')},
 ];
+// the two commentaries that can sit either under the chapter or under each
+// verse: the state flag that says which, where that choice is kept, and the
+// panel the row opens — keyed by the sheet row
+const SHEET_PLACE = {interpret:['interpInline','as_interp_inline','interpret'],
+                     jewish:   ['commentaryInline','as_comm_inline','commentary']};
+
 function openPanel(name){            // open, never toggle off — the sheet chose it
   if(S.panel!==name) togglePanel(name);
 }
@@ -4962,22 +5025,37 @@ async function openSideSheet(){
     const b=el('button','sheet-row');
     b.appendChild(el('span','sheet-label', t(r.label)));
     b.appendChild(el('span','sheet-count', String(c)));
-    if(r.key==='interpret'){
-      // the commentary has two places it can stand, so this row does not open
-      // it at once: it unfolds the choice, with the reader's own place ticked
-      b.appendChild(el('span','sheet-mode', t(S.interpInline?'ux_interp_verse':'ux_interp_chapter')));
+    const place=SHEET_PLACE[r.key];
+    if(place){
+      // a commentary has two places it can stand, so this row does not open it
+      // at once: it unfolds the choice, with the reader's own place ticked
+      const [sk, store, pname]=place;
+      b.appendChild(el('span','sheet-mode', t(S[sk]?'ux_interp_verse':'ux_interp_chapter')));
       const sub=el('div','sheet-sub hidden');
       sub.appendChild(el('div','sheet-where', t('ux_interp_where')));
       for(const inline of [false,true]){
-        const o=el('button','sheet-sub-row'+(S.interpInline===inline?' sel':''));
+        const o=el('button','sheet-sub-row'+(S[sk]===inline?' sel':''));
         o.appendChild(el('span','sheet-check','✓'));
         o.appendChild(el('span','', t(inline?'ux_interp_verse':'ux_interp_chapter')));
         o.onclick=()=>{
-          S.interpInline=inline; localStorage.setItem('as_interp_inline', inline?'1':'0');
+          S[sk]=inline; localStorage.setItem(store, inline?'1':'0');
           closeSideSheet();
-          if(S.panel!=='interpret') togglePanel('interpret'); else paintVerses();
+          if(S.panel!==pname) togglePanel(pname); else paintVerses();
         };
         sub.appendChild(o);
+      }
+      if(r.key==='jewish'){
+        // the Jewish commentators read the Masoretic verse, so beneath each
+        // verse that wording can be set too — a third line that is a switch,
+        // not a choice: it stays on the sheet and takes effect at once
+        const m=el('button','sheet-sub-row sheet-sub-toggle'+(S.commentaryMT?' sel':''));
+        m.appendChild(el('span','sheet-check','✓'));
+        m.appendChild(el('span','', t('ux_comm_mt')));
+        m.onclick=()=>{ S.commentaryMT=!S.commentaryMT;
+          localStorage.setItem('as_comm_mt', S.commentaryMT?'1':'0');
+          m.classList.toggle('sel', S.commentaryMT);
+          if(S.panel==='commentary' && S.commentaryInline) paintVerses(); };
+        sub.appendChild(m);
       }
       b.onclick=()=>{ const hidden=sub.classList.toggle('hidden'); b.classList.toggle('sheet-open', !hidden); };
       rows.appendChild(b); rows.appendChild(sub);

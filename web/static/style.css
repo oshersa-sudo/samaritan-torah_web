@@ -2808,3 +2808,19 @@ body:not(.ux2) #shareNav{ display:none; }
 .iinline .itext .samchar2{ font-family:'SamComment'; }
 .iinline .itext.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif; direction:rtl; }
 .sam .interp-inline .vrow .vtext{ font-weight:700; }
+
+/* the Jewish commentators beneath each verse: same frame, their own header row */
+.comm-inline .shead{ display:flex; align-items:center; gap:6px; margin:4px 2px 2px; }
+.comm-inline .shead .stitle{ flex:1; text-align:center; font-weight:700; color:var(--navy); font-size:17px; }
+.comm-inline .shead .ihead-btn{ flex:0 0 auto; }
+.comm-inline > .note{ margin:0 2px 8px; }
+/* the Masoretic verse set between the Samaritan verse and the commentator */
+.imt{ direction:rtl; margin:-2px 42px 6px 2px; padding:6px 11px 7px; border-radius:8px;
+  background:rgba(60,120,120,.07); border-inline-start:3px solid rgba(60,120,120,.5); }
+.imt-lead{ font-size:12.5px; font-weight:700; color:#2f6060; margin-bottom:2px; }
+.imt-text{ line-height:1.7; text-align:right; color:var(--dark); font-weight:400; }
+.imt-none{ font-size:13px; color:#8a8172; }
+.iinline + .imt, .imt + .iinline{ margin-top:0; }
+/* the switch line at the foot of the sheet's sub-choice: a switch, not a choice */
+.sheet-sub-toggle{ border-top:1px dashed #d9d0bb; font-size:14px; color:#5b5346; }
+.sheet-sub-toggle.sel{ font-weight:400; color:#1c1a17; }
