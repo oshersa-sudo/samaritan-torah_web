@@ -386,6 +386,8 @@ const I18N = {
     renum_only_this:'רק פסוק זה', renum_ok:'מספר הפסוק עודכן.',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
+    ux_interp_where:'היכן להציג את הפירוש?',
+    ux_interp_chapter:'פירוש מתחת לפרק', ux_interp_verse:'פירוש מתחת לכל פסוק',
     ux_side:'לצד הפסוק', ux_for_chapter:'הפרק כולו', ux_verses:'פסוקים',
     ux_none_here:'אין בפרק זה:', ux_dict_l:'מילון', ux_font_l:'כתב',
     bm_add:'הוסף סימניה לפרק זה', nikud_off:'הצגה ללא ניקוד', nikud_on:'הצגה עם ניקוד', nikud_off_l:'ללא ניקוד', nikud_on_l:'ניקוד', play_chapter:'הקראת הפרק', show_pron:'הצג הגייה (תצוגה מקדימה)', bm_my:'הסימניות שלי', bm_delete:'מחק נבחרות',
@@ -654,6 +656,8 @@ const I18N = {
     renum_only_this:'Only this verse', renum_ok:'Verse number updated.',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
+    ux_interp_where:'Where should the commentary go?',
+    ux_interp_chapter:'Commentary below the chapter', ux_interp_verse:'Commentary below each verse',
     ux_side:'Beside the verse', ux_for_chapter:'The whole chapter', ux_verses:'verses',
     ux_none_here:'Not in this chapter:', ux_dict_l:'Dictionary', ux_font_l:'Script',
     bm_add:'Bookmark this chapter', nikud_off:'Show without vocalization', nikud_on:'Show with vocalization', nikud_off_l:'no nikud', nikud_on_l:'nikud', play_chapter:'Read the chapter aloud', show_pron:'Show pronunciation (preview)', bm_my:'My bookmarks', bm_delete:'Delete selected',
@@ -922,6 +926,8 @@ const I18N = {
     renum_only_this:'هذه الآية فقط', renum_ok:'تم تحديث رقم الآية.',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
+    ux_interp_where:'أين يُعرض التفسير؟',
+    ux_interp_chapter:'التفسير أسفل الأصحاح', ux_interp_verse:'التفسير أسفل كل آية',
     ux_side:'بجانب الآية', ux_for_chapter:'الأصحاح كلّه', ux_verses:'آيات',
     ux_none_here:'لا يوجد في هذا الأصحاح:', ux_dict_l:'قاموس', ux_font_l:'الخط',
     bm_add:'إضافة إشارة لهذا الأصحاح', nikud_off:'العرض بدون تشكيل', nikud_on:'العرض مع التشكيل', nikud_off_l:'بدون تشكيل', nikud_on_l:'تشكيل', play_chapter:'قراءة الأصحاح صوتيًا', show_pron:'إظهار النطق (معاينة)', bm_my:'إشاراتي المرجعية', bm_delete:'حذف المحدّد',
@@ -982,6 +988,9 @@ const S = {
   // commentary the sources could never supply — and the reader's choice to turn
   // it off is remembered, unlike the two switches above which are panel-local.
   interpWords: localStorage.getItem('as_interp_words') !== '0',
+  // where the verse commentary is set: under the whole chapter (the panel), or
+  // beneath each verse in turn — the reader's last choice, kept
+  interpInline: localStorage.getItem('as_interp_inline') === '1',
   searchReturn: false, searchFontOffset: 0,
   stack: [],                      // navigation breadcrumb stack for Back
 };
@@ -2763,7 +2772,11 @@ function paintVerses(){
     if(S.panel==='commentary'){ addPlainRows(c, verses); buildCommentary(c, verses); }
     else if(S.panel==='samaritan_src'){ if(S.samSrcChoice!=='translit') addPlainRows(c, verses); buildSamSrc(c, verses); }
     else if(S.panel==='variants'){ buildVariantsView(c, verses); }
-    else if(S.panel==='interpret'){ addPlainRows(c, verses); buildInterpret(c, verses); maybeDict(c, verses); }
+    else if(S.panel==='interpret'){
+      if(S.interpInline) buildInterpretInline(c, verses);
+      else { addPlainRows(c, verses); buildInterpret(c, verses); }
+      maybeDict(c, verses);
+    }
     else if(S.panel==='aramaic'){ buildAramaic(c, verses); maybeDict(c, verses); }
     else if(S.panel==='arabic'){ buildArabic(c, verses); maybeDict(c, verses); }
   } else if(usePanel && S.panel==='compare'){
@@ -2986,12 +2999,10 @@ async function buildCompare(c, verses){
   });
   c.appendChild(grid);
 }
-async function buildInterpret(c, verses){
-  // Rendered as its own panel BELOW the verse text (the caller adds the plain
-  // verses first), matching how "ממקור שומרון" presents its sources — rather
-  // than replacing the verse text inline the way it used to. In Samaritan-font
-  // mode the commentary comes out in the fluent Samaritan commentary font, so
-  // the original stands in Samaritan script with its interpretation beneath it.
+// The commentary is fetched once for the whole chapter, whichever of its two
+// shapes is drawn: the panel below the chapter, or verse by verse. Splitting
+// the fetch from the drawing is what lets the second shape exist at all.
+async function interpFetch(verses){
   const ar = (S.interpLang==='ar');
   const ids = verses.map(v=>v.id).join(',');
   // In Arabic mode fetch BOTH: a verse whose Arabic is still missing falls back
@@ -3018,12 +3029,13 @@ async function buildInterpret(c, verses){
   // once for the whole chapter and set under each verse as a quiet strip.
   const wt = S.interpWords === false ? {} :
              await api('word_table?verse_ids='+ids).catch(()=>({}));
-  const fs = fsize();
-  const panel = el('div','srcpanel interp-panel');
+  return {ar, m, mHe, asa, bhq, wt};
+}
 
-  // Header: title on one side, the two view switches on the other. Both are
-  // panel-local — the Samaritan one deliberately does NOT touch S.samFont, so
-  // switching the commentary to Samaritan script leaves the verse text alone.
+// Header: title on one side, the two view switches on the other. Both are
+// panel-local — the Samaritan one deliberately does NOT touch S.samFont, so
+// switching the commentary to Samaritan script leaves the verse text alone.
+function interpHead(ar){
   const head = el('div','ptitle irow-head');
   head.appendChild(el('span','', t('interp')));
   const tools = el('div','ihead-tools');
@@ -3039,24 +3051,25 @@ async function buildInterpret(c, verses){
                    paintVerses(); };
   tools.appendChild(bW); tools.appendChild(bSam); tools.appendChild(bAr);
   head.appendChild(tools);
-  panel.appendChild(head);
+  return head;
+}
 
-  let any = false;
-  // A source passage is linked to every verse it speaks about, and the panel
-  // used to set a copy of it under each one. Where a passage covers a run —
-  // the Asatir on the kings of Edom covers six verses of בראשית ל"ו, אם בחקותי
-  // on שמע ישראל covers two — the reader was handed the same paragraph, word
-  // for word, verse after verse, and had to read it again each time to find out
-  // it was the same. Now it is set ONCE, at the head of the run, and told what
-  // it covers: "ומספר ספר האסאטיר (על פסוקים ל"ד–ל"ט)".
-  //
-  // Only a run counts. The same passage returning after a gap is set again,
-  // because by then it is no longer on the screen above. vidx counts the VERSE
-  // LIST, not the rows drawn, so a verse with nothing of its own still breaks
-  // the run — as it must, since it puts a gap on the screen.
+// A source passage is linked to every verse it speaks about, and the panel
+// used to set a copy of it under each one. Where a passage covers a run —
+// the Asatir on the kings of Edom covers six verses of בראשית ל"ו, אם בחקותי
+// on שמע ישראל covers two — the reader was handed the same paragraph, word
+// for word, verse after verse, and had to read it again each time to find out
+// it was the same. Now it is set ONCE, at the head of the run, and told what
+// it covers: "ומספר ספר האסאטיר (על פסוקים ל"ד–ל"ט)".
+//
+// Only a run counts. The same passage returning after a gap is set again,
+// because by then it is no longer on the screen above. vidx counts the VERSE
+// LIST, not the rows drawn, so a verse with nothing of its own still breaks
+// the run — as it must, since it puts a gap on the screen.
+function interpOnce(){
   const carry = new Map();          // kind+text -> {lead, base, from, at}
-  const once = (kind, text, idx, num, lead, base) => {
-    const key = kind + ' ' + text;
+  return (kind, text, idx, num, lead, base) => {
+    const key = kind + ' ' + text;
     const prev = carry.get(key);
     if(prev && prev.idx === idx - 1){                // still the same run
       prev.idx = idx;
@@ -3067,25 +3080,26 @@ async function buildInterpret(c, verses){
     carry.set(key, {lead, base, from: num, idx});
     return true;
   };
-  let vidx = -1;
-  for(const v of verses){
-    vidx++;
-    let txt = (m[v.id]||'').trim();
-    const fellBack = ar && !txt && !!(mHe[v.id]||'').trim();
-    if(fellBack) txt = (mHe[v.id]||'').trim();
-    const asaItems = asa[v.id] || [];
-    const bhqItems = bhq[v.id] || [];
-    // strip leftover markdown (heading lines, ** bold) that leaked into the text
-    txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
-    // a verse a source speaks about is worth a row even when it has no
-    // commentary of its own — that is what gives דברים anything to read
-    if(!txt && !asaItems.length && !bhqItems.length) continue;
-    const row = el('div','irow');
-    const num = el('button','inum'+(S.verseFilter===v.id?' active':''), String(v.number));
-    num.onclick=()=>filterVerse(v.id);
-    const col = el('div','icol');
-    if(txt){
-      const showAr = ar && !fellBack;
+}
+
+// One verse's column: its commentary, the strip of its own words, and any
+// source quoted beneath it in its own name. null when there is nothing to show.
+function interpVerseCol(v, D, vidx, once){
+  const {ar, m, mHe, asa, bhq, wt} = D;
+  const fs = fsize();
+  let txt = (m[v.id]||'').trim();
+  const fellBack = ar && !txt && !!(mHe[v.id]||'').trim();
+  if(fellBack) txt = (mHe[v.id]||'').trim();
+  const asaItems = asa[v.id] || [];
+  const bhqItems = bhq[v.id] || [];
+  // strip leftover markdown (heading lines, ** bold) that leaked into the text
+  txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
+  // a verse a source speaks about is worth a row even when it has no
+  // commentary of its own — that is what gives דברים anything to read
+  if(!txt && !asaItems.length && !bhqItems.length) return null;
+  const col = el('div','icol');
+  if(txt){
+    const showAr = ar && !fellBack;
 // ── a Hebrew quotation inside Arabic prose ───────────────────────────────────
 // The Arabic commentary quotes the verse in its own letters, and those letters
 // were being set in the reader's ordinary font while the same quotation in the
@@ -3097,83 +3111,129 @@ async function buildInterpret(c, verses){
 // quotation is wrapped. What is NOT done in Arabic is addWordDots — the word
 // separator belongs to a line that is Samaritan throughout, and sprinkled through
 // a sentence of Arabic it would be punctuation nobody asked for.
-      const body = el('div','itext'+(showAr?' iar':''),
-        showAr ? samMarkupFree(stripNiqqud(txt))
-               : (!ar && (S.interpSam||S.samFont))
-                 ? samMarkupFree(addWordDots(stripNiqqud(txt))) : esc(txt));
-      if(fellBack) body.prepend(el('span','ipend', t('interp_ar_pending')));
-      body.style.fontSize = fs+'px';
-      col.appendChild(body);
-    }
-    // the verse's own words: Hebrew sense, the Targum's Aramaic, the Arabic.
-    // Only a word that actually has something to say is set — a row carrying
-    // nothing but the word itself back is left out, or the strip would be as
-    // long as the verse and say half as much.
-    const words = (wt[v.id] || []).filter(w =>
-      (w.aramaic||'').trim() || (w.arabic||'').trim() ||
-      ((w.he_combined||w.meaning||'').trim() && (w.he_combined||w.meaning).trim() !== (w.word||'').trim()));
-    if(words.length){
-      const strip = el('div','iwords');
-      strip.appendChild(el('span','iwords-lead', t('interp_words_lead')));
-      for(const w of words){
-        const chip = el('span','iword');
-        chip.appendChild(el('b','iw-he', w.word || ''));
-        const gloss = (w.he_combined || w.meaning || '').trim();
-        if(gloss && gloss !== (w.word||'').trim()) chip.appendChild(el('span','iw-gloss', gloss));
-        if((w.aramaic||'').trim()) chip.appendChild(el('span','iw-arm', w.aramaic.trim()));
-        if((w.arabic||'').trim()){
-          const a = el('span','iw-ar', w.arabic.trim()); a.lang='ar'; chip.appendChild(a);
-        }
-        strip.appendChild(chip);
+    const body = el('div','itext'+(showAr?' iar':''),
+      showAr ? samMarkupFree(stripNiqqud(txt))
+             : (!ar && (S.interpSam||S.samFont))
+               ? samMarkupFree(addWordDots(stripNiqqud(txt))) : esc(txt));
+    if(fellBack) body.prepend(el('span','ipend', t('interp_ar_pending')));
+    body.style.fontSize = fs+'px';
+    col.appendChild(body);
+  }
+  // the verse's own words: Hebrew sense, the Targum's Aramaic, the Arabic.
+  // Only a word that actually has something to say is set — a row carrying
+  // nothing but the word itself back is left out, or the strip would be as
+  // long as the verse and say half as much.
+  const words = (wt[v.id] || []).filter(w =>
+    (w.aramaic||'').trim() || (w.arabic||'').trim() ||
+    ((w.he_combined||w.meaning||'').trim() && (w.he_combined||w.meaning).trim() !== (w.word||'').trim()));
+  if(words.length){
+    const strip = el('div','iwords');
+    strip.appendChild(el('span','iwords-lead', t('interp_words_lead')));
+    for(const w of words){
+      const chip = el('span','iword');
+      chip.appendChild(el('b','iw-he', w.word || ''));
+      const gloss = (w.he_combined || w.meaning || '').trim();
+      if(gloss && gloss !== (w.word||'').trim()) chip.appendChild(el('span','iw-gloss', gloss));
+      if((w.aramaic||'').trim()) chip.appendChild(el('span','iw-arm', w.aramaic.trim()));
+      if((w.arabic||'').trim()){
+        const a = el('span','iw-ar', w.arabic.trim()); a.lang='ar'; chip.appendChild(a);
       }
-      col.appendChild(strip);
+      strip.appendChild(chip);
     }
-    for(const it of asaItems){
-      const base = t('interp_asatir_lead')
-        + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '');
-      const leadEl = el('div','iasatir-lead', esc(base + ':'));
-      if(!once('asa', it.text || it.arabic || '', vidx, v.number, leadEl, base)) continue;
-      const box = el('div','iasatir');
-      box.appendChild(leadEl);
-      const showArAsa = ar && !!(it.arabic||'').trim();
-      const at = el('div','iasatir-text'+(showArAsa?' iar':''),
-        showArAsa ? samMarkupFree(stripNiqqud(it.arabic))
-        : ((!ar && (S.interpSam||S.samFont))
-            ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text)));
-      at.style.fontSize = fs+'px';
-      box.appendChild(at);
-      col.appendChild(box);
-    }
-    for(const it of bhqItems){
-      const base = t('interp_bhuq_lead')
-        + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '');
-      const leadEl = el('div','iasatir-lead', esc(base + ':'));
-      if(!once('bhq', it.text || '', vidx, v.number, leadEl, base)) continue;
-      const box = el('div','iasatir ibhuq');
-      box.appendChild(leadEl);
-      // Arabic mode shows the Arabic rendering; a section not yet translated
-      // falls back to its Hebrew, marked, exactly as the commentary above does
-      const showAr = ar && !it.pending;
-      const bt = el('div','iasatir-text'+(showAr?' iar':''),
-        showAr ? samMarkupFree(stripNiqqud(it.text))
-        : (!ar && (S.interpSam||S.samFont))
-          ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
-      if(ar && it.pending) bt.prepend(el('span','ipend', t('interp_ar_pending')));
-      bt.style.fontSize = fs+'px';
-      box.appendChild(bt);
-      col.appendChild(box);
-    }
-    // a verse whose only content was a passage already standing above it has
-    // nothing left to show, and an empty numbered row is worse than no row
-    if(!col.childNodes.length) continue;
+    col.appendChild(strip);
+  }
+  for(const it of asaItems){
+    const base = t('interp_asatir_lead')
+      + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '');
+    const leadEl = el('div','iasatir-lead', esc(base + ':'));
+    if(!once('asa', it.text || it.arabic || '', vidx, v.number, leadEl, base)) continue;
+    const box = el('div','iasatir');
+    box.appendChild(leadEl);
+    const showArAsa = ar && !!(it.arabic||'').trim();
+    const at = el('div','iasatir-text'+(showArAsa?' iar':''),
+      showArAsa ? samMarkupFree(stripNiqqud(it.arabic))
+      : ((!ar && (S.interpSam||S.samFont))
+          ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text)));
+    at.style.fontSize = fs+'px';
+    box.appendChild(at);
+    col.appendChild(box);
+  }
+  for(const it of bhqItems){
+    const base = t('interp_bhuq_lead')
+      + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '');
+    const leadEl = el('div','iasatir-lead', esc(base + ':'));
+    if(!once('bhq', it.text || '', vidx, v.number, leadEl, base)) continue;
+    const box = el('div','iasatir ibhuq');
+    box.appendChild(leadEl);
+    // Arabic mode shows the Arabic rendering; a section not yet translated
+    // falls back to its Hebrew, marked, exactly as the commentary above does
+    const showAr = ar && !it.pending;
+    const bt = el('div','iasatir-text'+(showAr?' iar':''),
+      showAr ? samMarkupFree(stripNiqqud(it.text))
+      : (!ar && (S.interpSam||S.samFont))
+        ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+    if(ar && it.pending) bt.prepend(el('span','ipend', t('interp_ar_pending')));
+    bt.style.fontSize = fs+'px';
+    box.appendChild(bt);
+    col.appendChild(box);
+  }
+  // a verse whose only content was a passage already standing above it has
+  // nothing left to show, and an empty numbered row is worse than no row
+  return col.childNodes.length ? col : null;
+}
+
+async function buildInterpret(c, verses){
+  // Rendered as its own panel BELOW the verse text (the caller adds the plain
+  // verses first), matching how "ממקור שומרון" presents its sources — rather
+  // than replacing the verse text inline the way it used to. In Samaritan-font
+  // mode the commentary comes out in the fluent Samaritan commentary font, so
+  // the original stands in Samaritan script with its interpretation beneath it.
+  const D = await interpFetch(verses);
+  const panel = el('div','srcpanel interp-panel');
+  panel.appendChild(interpHead(D.ar));
+  const once = interpOnce();
+  let any = false, vidx = -1;
+  for(const v of verses){
+    vidx++;
+    const col = interpVerseCol(v, D, vidx, once);
+    if(!col) continue;
     any = true;
+    const row = el('div','irow');
+    const num = el('button','inum'+(S.verseFilter===v.id?' active':''), String(v.number));
+    num.onclick=()=>filterVerse(v.id);
     row.appendChild(num); row.appendChild(col);
-    if(!ar) addPencil(row, v.id, 'interpretation', ()=>(m[v.id]||''));
+    if(!D.ar) addPencil(row, v.id, 'interpretation', ()=>(D.m[v.id]||''));
     panel.appendChild(row);
   }
-  if(!any) panel.appendChild(el('div','note', ar ? t('no_interp_ar') : t('no_interp')));
+  if(!any) panel.appendChild(el('div','note', D.ar ? t('no_interp_ar') : t('no_interp')));
   else panel.appendChild(interpFooter());
   c.appendChild(panel);
+}
+
+// The other place the commentary can stand: each verse in its own row, set
+// bold, and its commentary directly beneath it. The chapter is then read verse
+// by verse — text, then meaning — instead of all the text and then all the
+// meaning, which on a phone meant scrolling back up to remember the wording.
+async function buildInterpretInline(c, verses){
+  const D = await interpFetch(verses);
+  const wrap = el('div','interp-panel interp-inline');
+  const hw = el('div','ihead-wrap'); hw.appendChild(interpHead(D.ar)); wrap.appendChild(hw);
+  const once = interpOnce();
+  let any = false, vidx = -1;
+  for(const v of verses){
+    vidx++;
+    addPlainRows(wrap, [v]);
+    const col = interpVerseCol(v, D, vidx, once);
+    if(!col) continue;
+    any = true;
+    const box = el('div','iinline');
+    box.appendChild(col);
+    if(!D.ar) addPencil(box, v.id, 'interpretation', ()=>(D.m[v.id]||''));
+    wrap.appendChild(box);
+  }
+  if(!any) wrap.appendChild(el('div','note', D.ar ? t('no_interp_ar') : t('no_interp')));
+  else wrap.appendChild(interpFooter());
+  c.appendChild(wrap);
 }
 // "להרחבה פנה אל…" — the commentary is a synthesis, so every panel ends with
 // one-click routes to the material it was distilled from (the Samaritan
@@ -4902,6 +4962,27 @@ async function openSideSheet(){
     const b=el('button','sheet-row');
     b.appendChild(el('span','sheet-label', t(r.label)));
     b.appendChild(el('span','sheet-count', String(c)));
+    if(r.key==='interpret'){
+      // the commentary has two places it can stand, so this row does not open
+      // it at once: it unfolds the choice, with the reader's own place ticked
+      b.appendChild(el('span','sheet-mode', t(S.interpInline?'ux_interp_verse':'ux_interp_chapter')));
+      const sub=el('div','sheet-sub hidden');
+      sub.appendChild(el('div','sheet-where', t('ux_interp_where')));
+      for(const inline of [false,true]){
+        const o=el('button','sheet-sub-row'+(S.interpInline===inline?' sel':''));
+        o.appendChild(el('span','sheet-check','✓'));
+        o.appendChild(el('span','', t(inline?'ux_interp_verse':'ux_interp_chapter')));
+        o.onclick=()=>{
+          S.interpInline=inline; localStorage.setItem('as_interp_inline', inline?'1':'0');
+          closeSideSheet();
+          if(S.panel!=='interpret') togglePanel('interpret'); else paintVerses();
+        };
+        sub.appendChild(o);
+      }
+      b.onclick=()=>{ const hidden=sub.classList.toggle('hidden'); b.classList.toggle('sheet-open', !hidden); };
+      rows.appendChild(b); rows.appendChild(sub);
+      continue;
+    }
     b.onclick=()=>{ closeSideSheet(); r.open(); };
     rows.appendChild(b);
   }

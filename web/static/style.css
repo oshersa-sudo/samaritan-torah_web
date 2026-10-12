@@ -2779,3 +2779,32 @@ body:not(.ux2) #shareNav{ display:none; }
 /* what the chapter does NOT have is said once, quietly, instead of being six
    buttons that each open onto a message saying so */
 .sheet-none{ margin-top:12px; font-size:13px; color:#8a8172; line-height:1.6; }
+
+/* ── the commentary's two places: a sub-choice inside the sheet ─────────── */
+.sheet-row.sheet-open{ border-bottom-left-radius:0; border-bottom-right-radius:0; background:#f6f1e6; }
+.sheet-sub{ display:flex; flex-direction:column; gap:0; margin-top:-6px; border:1px solid #e0d8c6;
+  border-top:0; border-radius:0 0 10px 10px; background:#fffdf8; overflow:hidden; }
+.sheet-sub-row{ display:flex; align-items:center; justify-content:flex-start; gap:10px; width:100%;
+  padding:11px 14px 11px 12px; font-size:15px; text-align:start; cursor:pointer; border:0;
+  border-top:1px solid #efe9db; background:transparent; color:#1c1a17; }
+.sheet-sub-row:hover{ background:#f6f1e6; }
+.sheet-sub-row .sheet-check{ width:20px; text-align:center; color:#1a3873; font-weight:700; visibility:hidden; }
+.sheet-sub-row.sel .sheet-check{ visibility:visible; }
+.sheet-sub-row.sel{ font-weight:700; }
+.sheet-where{ padding:8px 14px 4px; font-size:12.5px; color:#8a8172; }
+/* the row says, quietly, which of the two places is currently chosen */
+.sheet-row .sheet-mode{ font-size:12.5px; color:#8a8172; margin-inline-start:auto; }
+
+/* ── commentary beneath each verse ───────────────────────────────────────────
+   The verse keeps its row; its commentary follows it in a quiet cream block set
+   in from the number column, the way the pronunciation line does. The scripture
+   is set bold so the eye tells the two apart at a glance. */
+.interp-inline .vrow .vtext{ font-weight:700; }
+.interp-inline .ihead-wrap{ margin:4px 2px 8px; }
+.iinline{ direction:rtl; margin:-2px 42px 12px 2px; padding:8px 11px 9px; background:var(--cream);
+  border-inline-start:3px solid rgba(26,56,115,.45); border-radius:8px; position:relative; }
+.iinline .itext{ line-height:1.75; direction:rtl; text-align:justify; text-align-last:right;
+  overflow-wrap:break-word; word-break:break-word; white-space:pre-wrap; font-weight:400; }
+.iinline .itext .samchar2{ font-family:'SamComment'; }
+.iinline .itext.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif; direction:rtl; }
+.sam .interp-inline .vrow .vtext{ font-weight:700; }
