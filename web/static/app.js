@@ -161,7 +161,7 @@ const I18N = {
       'שימו לב לסרגל הכלים שבתחתית. הוא מתקפל אוטומטית כדי לפנות מקום לקריאה — ראיתם איך נסגר ונפתח. גררו או הקישו על הידית שבמרכזו כדי לפתוח אותו שוב בכל עת.',
       'כפתור הכתב מחליף בין הכתב העברי הרגיל לבין הכתב העברי-השומרוני העתיק.',
       'כפתור "לצד הפסוק" אוסף אל תוכו את כל מה שאפשר להציג לצד הטקסט: פירוש הפסוק, מקורות שומרון, תעתיק ההגייה, השוואת נוסחים, חילופי נוסח, התרגומים והפרשנות היהודית.',
-            'הגיליון נפתח ואומר מה יש בפרק שלפניכם, ולצד כל מקור — בכמה מפסוקיו הוא נמצא. מקור שאין לו דבר בפרק הזה אינו מוצג כשורה ריקה, אלא נרשם למטה בשורה אחת. כך רואים מראש מה כדאי לפתוח.',
+            'הגיליון נפתח ואומר מה יש בפרק שלפניכם, ולצד כל מקור — בכמה מפסוקיו הוא נמצא. מקור שאין לו דבר בפרק הזה נרשם למטה בשורה אחת. ושתי שורות נפתחות לבחירה: פירוש הפסוק והפרשנות היהודית יכולים לעמוד מתחת לפרק כולו, או מתחת לכל פסוק בנפרד.',
       'מילון מילים מציג לכל מילה בפסוק את תרגומה הארמי ואת פירושה מתוך המילון.',
       'שלוש הנקודות שבשורת הנתיב פותחות סרגל כלים: סימניה, קיבוע השורה, מדפסת, הגייה, וכפתור ההשמעה שמחזיר את סרגל ההקראה. המדפסת מכינה את הפרק להדפסה או לשמירה כ-PDF, עם בחירת גופן, הסרת מספרי הפסוקים וצירוף הפירוש, המילון והתרגום.',
       'בכפתורי פרק הבא והקודם מדפדפים בין הפרקים ברצף, גם מעבר לגבולות הספר. הזכוכיות מגדילות ומקטינות את הטקסט.',
@@ -386,6 +386,8 @@ const I18N = {
     renum_only_this:'רק פסוק זה', renum_ok:'מספר הפסוק עודכן.',
     merge_q:'לאחד את הפרק הנוכחי עם הפרק הבא? המספור בספר יתעדכן.', split_q:'לפצל את הפרק אחרי פסוק ',
     merged_ok:'הפרקים אוחדו.', split_ok:'הפרק פוצל.', confirm_yes:'אישור',
+    rd_wit_off:'החלפת הקורא לא פעילה בשלב זה', ux_ar_tr:'תרגום לערבית',
+    ux_no_ar_tr:'אין תרגום ערבי לפסוק זה',
     ux_comm_mt:'וגם נוסח המסורה מתחת לכל פסוק', ux_no_mt:'אין מקבילה בנוסח המסורה',
     ux_interp_where:'היכן להציג את הפירוש?',
     ux_interp_chapter:'פירוש מתחת לפרק', ux_interp_verse:'פירוש מתחת לכל פסוק',
@@ -432,7 +434,7 @@ const I18N = {
       'Notice the toolbar at the bottom. It folds away automatically to make room for reading — you just saw it close and open. Drag or tap the handle in its middle to reopen it any time.',
       'The script button switches between ordinary Hebrew and the ancient Samaritan-Hebrew script.',
       'The “Beside the verse” button gathers everything that can be set alongside the text: the verse commentary, the Samaritan sources, the pronunciation, the version comparison, the textual variants, the translations and the Jewish commentators.',
-            'The sheet opens and says what this chapter actually holds, and beside each source, in how many of its verses. A source with nothing here is not shown as an empty line; it is named below in a single line. So you can see in advance what is worth opening.',
+            'The sheet opens and says what this chapter holds, and beside each source, in how many of its verses. One with nothing here is named below in a single line. Two rows unfold into a choice: the verse commentary and the Jewish commentators can stand below the chapter, or below each verse.',
       'The word dictionary shows, for each word in the verse, its Aramaic translation and meaning from the dictionary.',
       'The three dots on the path line open a row of tools: bookmark, pin, printer, pronunciation, and a play sign that brings back the reading player. The printer prepares the chapter for printing or for saving as a PDF, with a choice of font, verse numbers off, and the commentary, glossary and a translation included.',
       'The next and previous buttons page through the chapters continuously, even across books. The magnifiers enlarge and shrink the text.',
@@ -657,6 +659,8 @@ const I18N = {
     renum_only_this:'Only this verse', renum_ok:'Verse number updated.',
     merge_q:'Merge the current chapter with the next? The book numbering will update.', split_q:'Split the chapter after verse ',
     merged_ok:'Chapters merged.', split_ok:'Chapter split.', confirm_yes:'Confirm',
+    rd_wit_off:'Choosing the reciter is off for now', ux_ar_tr:'Arabic translation',
+    ux_no_ar_tr:'No Arabic translation for this verse',
     ux_comm_mt:'Also the Masoretic text beneath each verse', ux_no_mt:'No Masoretic counterpart',
     ux_interp_where:'Where should the commentary go?',
     ux_interp_chapter:'Commentary below the chapter', ux_interp_verse:'Commentary below each verse',
@@ -703,7 +707,7 @@ const I18N = {
       'انتبهوا إلى شريط الأدوات في الأسفل. يُطوى تلقائيًا لإفساح مجال القراءة — رأيتموه يُغلق ويُفتح. اسحبوا أو اضغطوا المقبض في وسطه لإعادة فتحه في أيّ وقت.',
       'زرّ الخطّ يبدّل بين العبرية العادية والخطّ العبري-السامري القديم.',
       'زرّ «بجانب الآية» يجمع كلّ ما يمكن عرضه إلى جانب النصّ: تفسير الآية، والمصادر السامرية، والنسخ الصوتي، ومقارنة النصوص، واختلافات النصّ، والترجمات، والتفاسير اليهودية.',
-            'يُفتح اللوح فيقول ما يحتويه هذا الأصحاح فعلًا، وبجانب كلّ مصدر في كم آية من آياته يوجد. والمصدر الذي لا شيء له هنا لا يُعرض كسطر فارغ، بل يُذكر أدناه في سطر واحد. فترون مقدّمًا ما يستحقّ الفتح.',
+            'يُفتح اللوح فيقول ما يحتويه هذا الأصحاح فعلًا، وبجانب كلّ مصدر في كم آية من آياته يوجد. والمصدر الذي لا شيء له هنا يُذكر أدناه في سطر واحد. وسطران منها ينفتحان على خيار: تفسير الآية والتفاسير اليهودية يمكن أن يقفا أسفل الأصحاح كلّه، أو أسفل كل آية على حدة.',
       'معجم الكلمات يعرض لكلّ كلمة في الآية ترجمتها الآرامية ومعناها من المعجم.',
       'النقاط الثلاث في سطر المسار تفتح شريط أدوات: علامة مرجعيّة، تثبيت، طابعة، نطق، وزرّ استماع يعيد شريط التلاوة. والطابعة تهيئ الأصحاح للطباعة أو للحفظ كملفّ PDF، مع اختيار الخطّ وإزالة أرقام الآيات وإرفاق التفسير والمعجم والترجمة.',
       'زرّا الأصحاح التالي والسابق يقلّبان بين الأصحاحات بسلاسة، حتى عبر الأسفار. والعدسات تكبّر النصّ وتصغّره.',
@@ -928,6 +932,8 @@ const I18N = {
     renum_only_this:'هذه الآية فقط', renum_ok:'تم تحديث رقم الآية.',
     merge_q:'دمج الأصحاح الحالي مع التالي؟ سيُحدَّث ترقيم السفر.', split_q:'تقسيم الأصحاح بعد الآية ',
     merged_ok:'تمّ دمج الأصحاحين.', split_ok:'تمّ تقسيم الأصحاح.', confirm_yes:'تأكيد',
+    rd_wit_off:'تغيير القارئ غير متاح حاليًا', ux_ar_tr:'الترجمة العربية',
+    ux_no_ar_tr:'لا ترجمة عربية لهذه الآية',
     ux_comm_mt:'وأيضًا النصّ الماسوري أسفل كل آية', ux_no_mt:'لا مقابل في النصّ الماسوري',
     ux_interp_where:'أين يُعرض التفسير؟',
     ux_interp_chapter:'التفسير أسفل الأصحاح', ux_interp_verse:'التفسير أسفل كل آية',
@@ -1262,9 +1268,12 @@ function scheduleDotTrim(){
   clearTimeout(_dotTimer); _dotTimer=setTimeout(trimAllEdgeDots, 220);
 }
 window.addEventListener('resize', ()=>{ clearTimeout(_dotTimer); _dotTimer=setTimeout(trimAllEdgeDots,160); });
-function verseHTML(v){
+// `sam` forces the Samaritan face for this one row regardless of S.samFont —
+// the inline commentary uses it so the verse is not left in Hebrew letters
+// while its own commentary is set in Samaritan ones
+function verseHTML(v, sam){
   if(S.english){ const e=v.english||('[verse '+v.number+']'); return {html:esc(e), cls:'vtext eng'}; }
-  if(S.samFont){
+  if(S.samFont || sam){
     // the vocalization is the Samaritan script's own; in Hebrew letters there is
     // nothing to put the marks on, so it only ever shows with that face
     const nk = SHOW_NIKUD && NIKUD[v.id];
@@ -2835,7 +2844,7 @@ function paintVerses(){
   armReadingBlessings();   // plant the cues for blessings the reading itself calls for
 }
 
-function addPlainRows(c, verses){
+function addPlainRows(c, verses, sam){
   const fs = fsize();
   for(const v of verses){
     if(!(v.text||'').trim() && !S.english) continue;
@@ -2849,7 +2858,7 @@ function addPlainRows(c, verses){
       if(ADMIN.token && S.vmergeMode) return askMergeVerse(v, S.vmergeMode);
       return filterVerse(v.id);
     };
-    const vh = verseHTML(v);
+    const vh = verseHTML(v, sam);
     const t = el('div', vh.cls, vh.html);
     t.style.fontSize = (S.english?17:fs)+'px';
     if(S.english){ row.appendChild(num); row.appendChild(t); }
@@ -3228,9 +3237,25 @@ async function buildInterpretInline(c, verses){
   const hw = el('div','ihead-wrap'); hw.appendChild(interpHead(D.ar)); wrap.appendChild(hw);
   const once = interpOnce();
   let any = false, vidx = -1;
+  // the commentary's own script decides the verse's: in Samaritan mode the two
+  // are one page, not two faces. In Arabic the verse stays in ordinary letters
+  // and its Arabic translation is laid beneath it instead.
+  const samRows = !D.ar && (S.interpSam || S.samFont);
   for(const v of verses){
     vidx++;
-    addPlainRows(wrap, [v]);
+    addPlainRows(wrap, [v], samRows);
+    if(D.ar){
+      // the Arabic the commentary is written against, between the verse and the
+      // commentary — the same place, and the same frame, as the Masoretic verse
+      // beneath a Jewish commentator
+      const at=(v.arabic_trans||'').trim();
+      const ab=el('div','imt iartr');
+      ab.appendChild(el('div','imt-lead', t('ux_ar_tr')+':'));
+      if(at){ const ax=el('div','imt-text iar', esc(at)); ax.lang='ar';
+              ax.style.fontSize=fsize()+'px'; ab.appendChild(ax); }
+      else ab.appendChild(el('div','imt-none', t('ux_no_ar_tr')));
+      wrap.appendChild(ab);
+    }
     const col = interpVerseCol(v, D, vidx, once);
     if(!col) continue;
     any = true;
@@ -5243,8 +5268,8 @@ function togglePanel(name){
     if(S.panel==='samaritan_src'){ S.samSrcChoice=null; S.tmSel=null; }
   }
   syncToolbar(true); paintVerses();
-  if(S.panel==='commentary')
-    ensureFullVerses().then(()=>{ if(S.panel==='commentary') paintVerses(); });
+  if(S.panel==='commentary' || (S.panel==='interpret' && S.interpInline && S.interpLang==='ar'))
+    ensureFullVerses().then(()=>{ if(S.panel) paintVerses(); });
   if(S.panel) scrollToEl('.pair, .srcpanel');
 }
 $('interpBtn').onclick=()=>togglePanel('interpret');
@@ -10019,7 +10044,12 @@ const TOUR_STEPS = [
   // button and the sheet it opens — and the sheet is opened the way a reader
   // opens it, so there is something real to point at
   { pre:async()=>{ await tourToVerses(); closeSideSheet(); }, el:()=>$('sideBtn') },
-  { pre:async()=>{ await tourToVerses(); await openSideSheet(); await tourWait(380); },
+  { pre:async()=>{ await tourToVerses(); await openSideSheet(); await tourWait(380);
+                   // a row that unfolds is unfolded, so the caption describes
+                   // something the reader can actually see
+                   const r=document.querySelector('#sheetRows .sheet-row');
+                   if(r && !r.classList.contains('sheet-open')) r.click();
+                   await tourWait(320); },
     el:()=>$('sheetRows') },
   { pre:async()=>{ closeSideSheet(); await tourWait(200); }, el:()=>$('dictBtn') },
   // the printer moved into the tools row, which opens only when asked; the step
@@ -10197,6 +10227,8 @@ const rdFmt = s => { s=Math.max(0,s|0); return Math.floor(s/60)+':'+String(s%60)
 // STANDARD chapter. Loaded alongside the chanter's per-Samaritan-chapter set.
 let MASOROT = null;
 const CHANTER = 'מאיר בן יפנה ששוני';   // the reading witness of the original set
+// the other voices are being corrected; see the picker in rdRender
+const RD_WITNESS_OFF = true;
 fetch('/static/audio/masorot/masorot.json')
   .then(r=>r.ok ? r.json() : null)
   .then(j=>{ MASOROT=j; if(j && S.view==='verses') paintVerses(); })
@@ -10278,6 +10310,11 @@ function readingOptions(){
 // device), else — inside a continuous run — the one it started with, else the one
 // last heard, and only then the chapter's first option.
 function rdPickOption(opts){
+  // with the picker off, a choice saved earlier would hold the reader on a
+  // recording that is being corrected and leave no control to undo it, so the
+  // chanter's own reading is preferred and the saved name is passed over
+  if(RD_WITNESS_OFF)
+    return opts.find(o=>o.reader===CHANTER) || opts[0];
   const saved = localStorage.getItem('rd_reader');
   return opts.find(o=>o.reader===saved)
       || (RDC.on && RDC.want && opts.find(o=>o.reader===RDC.want))
@@ -10397,8 +10434,25 @@ function readingBar(c){
   row.appendChild(seek);
   const time = el('span','reading-time', rdFmt(isCur?rdVirtual():0)+' / '+rdFmt(rec.duration||0));
   row.appendChild(time);
-  // witness picker — only when this chapter has more than one reading witness
+  // witness picker — only when this chapter has more than one reading witness.
+  //
+  // It is OFF while every reading but Meir ben Yefune Sassoni's is being put
+  // right: the choice could not be honoured, so it is not offered. The control
+  // keeps its place, greyed, and says why when tapped — one that simply
+  // vanished would leave the reader hunting for it. aria-disabled rather than
+  // the disabled attribute, because a disabled control fires no click at all
+  // and so could not explain itself.
+  //
+  // To put it back: drop RD_WITNESS_OFF, and the select below returns.
   if(opts.length > 1){
+    if(RD_WITNESS_OFF){
+      const sel = el('button','reading-witness rd-wit-off', esc(rec.reader||''));
+      sel.type = 'button';
+      sel.setAttribute('aria-disabled','true');
+      sel.title = t('rd_wit_off');
+      sel.onclick = ()=> toast(t('rd_wit_off'));
+      row.appendChild(sel);
+    } else {
     const sel = el('select','reading-witness');
     opts.forEach((o,i)=>{ const op=document.createElement('option');
       op.value=i;
@@ -10417,6 +10471,7 @@ function readingBar(c){
       if(wasPlaying) readingToggle(o);      // switching mid-play continues with the new witness
     };
     row.appendChild(sel);
+    }
   }
   const spd = el('button','reading-speed','×'+RDAU.speed);
   spd.title = 'מהירות ההשמעה';

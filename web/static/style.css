@@ -2824,3 +2824,16 @@ body:not(.ux2) #shareNav{ display:none; }
 /* the switch line at the foot of the sheet's sub-choice: a switch, not a choice */
 .sheet-sub-toggle{ border-top:1px dashed #d9d0bb; font-size:14px; color:#5b5346; }
 .sheet-sub-toggle.sel{ font-weight:400; color:#1c1a17; }
+
+/* the reciter picker, switched off while the other readings are corrected:
+   it keeps its place and its width so the bar does not shift, but reads as
+   inert — and it is still clickable, so a tap can say why */
+.reading-witness.rd-wit-off{ background:#eceae4; color:#8a8172; border-color:#ddd7c9;
+  cursor:default; text-align:center; }
+.reading-witness.rd-wit-off:active{ background:#e4e1d9; }
+/* the verse's Arabic translation, set under the verse in Arabic mode — the same
+   frame as the Masoretic verse under a Jewish commentator, in its own colour */
+.imt.iartr{ background:rgba(90,80,140,.07); border-inline-start-color:rgba(90,80,140,.5); }
+.imt.iartr .imt-lead{ color:#55497f; }
+.imt-text.iar{ font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
+  direction:rtl; text-align:right; }
