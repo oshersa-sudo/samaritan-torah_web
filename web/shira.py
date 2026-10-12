@@ -192,7 +192,7 @@ def _throttled(ip):
 # server, its build scripts, the raw scan of the archive drive — stays private.
 _OPEN_DIRS  = ('img/', 'fonts/', 'sounds/', 'photos/')
 _OPEN_FILES = ('index.html', 'unit.css', 'unit.js', 'lame.min.js',
-               'car.html', 'car.webmanifest')
+               'car.html', 'car.webmanifest', 'car-sw.js')
 # the catalogue, and the two lists the picture screen reads: the photographs
 # on the community's own site, and the archive's own pictures and films
 _OPEN_DATA  = ('catalog.json', 'pix_sources.json', 'local_media.json')
