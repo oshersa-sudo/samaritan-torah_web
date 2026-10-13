@@ -640,6 +640,79 @@ def _seed_dict_in_torah():
 _seed_dict_in_torah()
 
 
+# ── every word in the index now carries a meaning, and its Arabic ────────────
+# 2,263 rows of the word index held no meaning, or held the word back as its own
+# meaning — "אבניו → אבניו", which is the same as none. A reader who found such
+# a word found nothing.
+#
+# The sources are asked first: Tal's own word glosses, Ben-Ḥayyim's liturgy word
+# list, HaMeliṣ, the piyyut dictionary, and last and weakest the word's ROOT
+# through the Hebrew index — weakest because it gives the root's meaning and not
+# the form's, and so it is recorded as such. 2,061 rows are answered that way.
+# Only the 202 that none of them knows are removed, which is what removing a
+# word with no meaning was meant to mean.
+#
+# And the Arabic is attached where there is one: HaMeliṣ gives it per Torah
+# location, and the Arabic translation of the Torah gives it word by word
+# through the alignment — 7,582 words in all. The rest have no Arabic in any
+# source here, and an empty column says so honestly.
+_DICT_FILL = os.path.join(os.path.dirname(__file__), '..', '..',
+                          'data', 'dict_fill.json')
+_DICT_ARABIC = os.path.join(os.path.dirname(__file__), '..', '..',
+                            'data', 'dict_arabic.json')
+
+
+def _seed_dict_glosses():
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        if not conn.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='table' "
+                            "AND name='dict_word_index'").fetchone()[0]:
+            return
+        cols = {r[1] for r in conn.execute('PRAGMA table_info(dict_word_index)')}
+        if 'arabic' not in cols:
+            conn.execute('ALTER TABLE dict_word_index ADD COLUMN arabic TEXT')
+        if 'gloss_src' not in cols:
+            conn.execute('ALTER TABLE dict_word_index ADD COLUMN gloss_src TEXT')
+
+        bare = ("TRIM(COALESCE(gloss,''))='' OR TRIM(COALESCE(gloss,''))=TRIM(word)")
+        filled = removed = 0
+        if os.path.exists(_DICT_FILL):
+            with open(_DICT_FILL, encoding='utf-8') as fh:
+                data = json.load(fh)
+            for f in data.get('fill') or []:
+                # the guard: only a row that is still bare is written
+                cur = conn.execute(
+                    'UPDATE dict_word_index SET gloss=?, gloss_src=? '
+                    'WHERE word=? AND (%s)' % bare, (f['gloss'], f['src'], f['word']))
+                filled += cur.rowcount
+            # whatever is still bare AFTER the sources have spoken has no
+            # meaning anywhere, and a word with no meaning has no business in a
+            # dictionary. Computed rather than listed, so it cannot go stale.
+            cur = conn.execute('DELETE FROM dict_word_index WHERE %s' % bare)
+            removed = cur.rowcount
+
+        arab = 0
+        if os.path.exists(_DICT_ARABIC):
+            with open(_DICT_ARABIC, encoding='utf-8') as fh:
+                ar = json.load(fh)
+            for w, a in ar.items():
+                cur = conn.execute(
+                    "UPDATE dict_word_index SET arabic=? "
+                    "WHERE word=? AND TRIM(COALESCE(arabic,''))=''", (a, w))
+                arab += cur.rowcount
+        conn.commit()
+        if filled or removed or arab:
+            print('[dict] %d rows given a meaning from the sources, %d with none '
+                  'anywhere removed, %d given their Arabic' % (filled, removed, arab))
+    except Exception as exc:
+        print('[dict] glosses: %s' % exc)
+    finally:
+        conn.close()
+
+
+_seed_dict_glosses()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
@@ -4038,13 +4111,24 @@ def dict_words_browse(start=0, limit=60, prefix=''):
         start = max(0, int(start))
     except (TypeError, ValueError):
         start = 0
-    rows = conn.execute(
-        "SELECT MIN(word) AS word, MAX(in_torah) AS it, MAX(in_memar) AS im, "
-        "COUNT(*) AS nm FROM dict_word_index GROUP BY word_norm "
-        "ORDER BY word_norm LIMIT ? OFFSET ?", (limit, start)).fetchall()
+    try:
+        rows = conn.execute(
+            "SELECT MIN(word) AS word, MAX(in_torah) AS it, MAX(in_memar) AS im, "
+            "COUNT(*) AS nm, MIN(NULLIF(TRIM(COALESCE(gloss,'')),'')) AS gl, "
+            "MIN(NULLIF(TRIM(COALESCE(arabic,'')),'')) AS ar "
+            "FROM dict_word_index GROUP BY word_norm "
+            "ORDER BY word_norm LIMIT ? OFFSET ?", (limit, start)).fetchall()
+    except sqlite3.OperationalError:
+        # a database from before the Arabic column was added
+        rows = conn.execute(
+            "SELECT MIN(word) AS word, MAX(in_torah) AS it, MAX(in_memar) AS im, "
+            "COUNT(*) AS nm, MIN(NULLIF(TRIM(COALESCE(gloss,'')),'')) AS gl, "
+            "NULL AS ar FROM dict_word_index GROUP BY word_norm "
+            "ORDER BY word_norm LIMIT ? OFFSET ?", (limit, start)).fetchall()
     conn.close()
     return {'start': start, 'limit': limit, 'total': total,
             'items': [{'word': r['word'] or '', 'meanings': r['nm'],
+                       'gloss': r['gl'] or '', 'arabic': r['ar'] or '',
                        'in_torah': bool(r['it']), 'in_memar': bool(r['im'])} for r in rows]}
 
 

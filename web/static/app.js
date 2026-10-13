@@ -7210,6 +7210,9 @@ async function dictWords(start, prefix){
     const cell=el('button','dict-wcell');
     cell.appendChild(el('span','dict-wword', esc(it.word)));
     if(it.translit) cell.appendChild(el('span','dict-wpron', it.translit));
+    if(it.gloss) cell.appendChild(el('span','dict-wgloss', esc(it.gloss)));
+    if(it.arabic){ const a=el('span','dict-war', esc(it.arabic)); a.lang='ar'; a.dir='rtl';
+                   cell.appendChild(a); }
     const bd=el('span','dict-wbadges');
     if(it.in_torah){ const b=el('span','dict-wb tor','ת'); b.title=t('dict_w_torah'); bd.appendChild(b); }
     if(it.in_memar){ const b=el('span','dict-wb mem','מ'); b.title=t('dict_w_memar'); bd.appendChild(b); }

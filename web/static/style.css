@@ -2870,3 +2870,11 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 .vtext.vsam .dw{ padding:0 .07em; }
 .vtext.vsam .dw.on{ text-underline-offset:.18em; }
 .vtext.vsam .wsep{ padding:0 .04em; }
+
+/* the word index says what the word means, not only that it exists */
+.dict-wgloss{ display:block; font-size:12.5px; color:#5b5346; line-height:1.35;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dict-war{ display:block; font-size:12.5px; color:#55497f; line-height:1.4;
+  font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dict-wcell{ text-align:start; }
