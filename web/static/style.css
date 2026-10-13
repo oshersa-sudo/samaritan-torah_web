@@ -2859,3 +2859,14 @@ body.ux2 #toolbar .tb.on{ background:rgba(233,196,106,.14) !important;
 body.ux2 #toolbar .tb.on .tbi, body.ux2 #toolbar .tb.on .ux-ico{ filter:drop-shadow(0 0 4px rgba(233,196,106,.55)); }
 body.ux2 #toolbar .tb.on::after{ width:22px; height:3px; box-shadow:0 0 7px rgba(233,196,106,.7); }
 body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
+
+
+/* ---- מילון המילים בכתב השומרוני -------------------------------------------
+ * כל מילה נושאת קו תחתון שאומר «אפשר לגעת בי», ובכתב השומרוני הקווים של שתי
+ * מילות שכנות נוגעים זה בזה ונקראים כקו אחד — ואז המשפט נראה כמילה אחת
+ * ארוכה. מעט אוויר משני צדי כל מילה מפריד ביניהם; גודל הטקסט מוקטן בנקודה
+ * אחת ב-JS, מפני ששם הוא נקבע.
+ */
+.vtext.vsam .dw{ padding:0 .07em; }
+.vtext.vsam .dw.on{ text-underline-offset:.18em; }
+.vtext.vsam .wsep{ padding:0 .04em; }

@@ -1238,18 +1238,27 @@ function trimEdgeDots(vtext){
     // ascent/line-height metrics make the dot's OWN "top" an unreliable signal
     // (it can sit a visible fraction off the true line even with no wrap).
     // Comparing two same-font neighbours is immune to that.
-    let n=s.nextElementSibling;
-    while(n && !n.classList.contains('samchar')) n=n.nextElementSibling;
-    let p=s.previousElementSibling;
-    while(p && !p.classList.contains('samchar')) p=p.previousElementSibling;
+    // In the word dictionary each word is wrapped in its own tappable span, so
+    // the .samchar is a CHILD of the sibling rather than the sibling itself.
+    // Looking only at siblings found nothing there — and "nothing" fell into
+    // the branch below that hides the dot, so every divider in the chapter
+    // disappeared the moment the dictionary was opened.
+    const wordIn = e => e && (e.classList && e.classList.contains('samchar')
+                              ? e : (e.querySelector && e.querySelector('.samchar')));
+    let n=s.nextElementSibling, nw=null;
+    while(n && !(nw = wordIn(n))) n=n.nextElementSibling;
+    let p=s.previousElementSibling, pw=null;
+    while(p && !(pw = wordIn(p))) p=p.previousElementSibling;
     // Half a line's tolerance, not one pixel. Two words on the SAME line can
     // still differ by a pixel or two once the text is justified and the type is
     // enlarged — sub-pixel positions, mixed faces — and at one pixel that read
     // as a line break, so dividers vanished from the middle of a line as the
     // reader zoomed. Half a line-height cannot be crossed by anything but a
     // real wrap.
-    if(!n || !p){ toHide.push(s); continue; }
-    const pr = p.getBoundingClientRect(), nr = n.getBoundingClientRect();
+    // and when the neighbours cannot be found at all, that is no evidence of a
+    // line break — it is no evidence. The divider stays.
+    if(!nw || !pw) continue;
+    const pr = pw.getBoundingClientRect(), nr = nw.getBoundingClientRect();
     const tol = Math.max(2, (pr.height || 16) * 0.5);
     if(nr.top > pr.top + tol) toHide.push(s);
   }
@@ -3730,24 +3739,47 @@ function buildDictSelect(c, verses){
     const row=el('div','vrow');
     const num=el('button','num'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
-    const td=el('div','vtext'); td.style.fontSize=fs+'px';
     // The word dictionary used to be written in Hebrew letters and nothing else,
     // so choosing the Samaritan script turned it off — and a reader of the
     // Samaritan text could never look a word up. The word is now set in whichever
     // face is on; only its drawing changes, never which word it is or its index,
     // which the backend counts the same way either way.
     const sam = S.samFont && !S.english;
-    const toks=(v.text||'').split(/(\s+)/);
-    let wi=0;
-    td.innerHTML = toks.map(tok=>{
-      if(tok && !/^\s+$/.test(tok)){
-        const i=wi++;                                   // keep index aligned with backend (all non-space tokens)
-        if(!/[א-ת]/.test(tok)) return sam ? samMarkup(tok) : esc(tok); // punctuation only — not a word
-        const inner = sam ? samMarkup(tok) : esc(tok);
-        return '<span class="dw" data-k="'+v.id+':'+i+'">'+inner+'</span>';
-      }
-      // between words the Samaritan text carries its own separator, not a space
-      return sam ? '<span class="wsep">·</span>' : esc(tok);
+    // A point smaller in the Samaritan face. Every word here carries an
+    // underline saying "touch me", and at full size two neighbouring underlines
+    // have no air between them and read as one long rule — which is what made a
+    // verse look like a single run-on word. The size is set inline, so it has to
+    // be decided here: a rule in the stylesheet cannot reach past it.
+    const td=el('div','vtext');
+    td.style.fontSize=(sam ? Math.max(14, fs - 1) : fs)+'px';
+    // The vocalization is the Samaritan script's own, and until now the
+    // dictionary dropped it: it drew the bare text while the ordinary view drew
+    // the pointed one, so opening the dictionary stripped the vowels off the
+    // chapter. It is used here — but only when it holds exactly as many words as
+    // the plain text, because the index of a word is what the dictionary looks it
+    // up by, and a count that differs by one would answer about the word next
+    // door.
+    const nkTxt = (sam && SHOW_NIKUD && NIKUD[v.id]) || '';
+    const words = (v.text||'').split(/\s+/).filter(x => x !== '');
+    const nkWords = nkTxt ? nkTxt.split(/\s+/).filter(x => x !== '') : [];
+    const useNik = words.length > 0 && nkWords.length === words.length;
+    // the same rule the ordinary view follows (addWordDots): no divider after a
+    // stop mark or a number, and none before the verse- or chapter-end
+    const PAUSE_END = /[:.׃]$/;
+    td.innerHTML = words.map((tok, i) => {              // i = index among all
+      const shown = useNik ? nkWords[i] : tok;          // non-space tokens
+      const body = !/[א-ת]/.test(tok)
+        ? (sam ? samMarkup(shown) : esc(shown))         // punctuation — not a word
+        : '<span class="dw" data-k="'+v.id+':'+i+'">'
+          + (sam ? (useNik ? samMarkupNikud(shown) : samMarkup(shown)) : esc(shown))
+          + '</span>';
+      const nx = words[i+1];
+      if(!nx) return body;
+      // and a space after the divider, as the ordinary view has: without one the
+      // words touch and their underlines run together
+      const sep = sam && !/^\d+$/.test(tok) && !PAUSE_END.test(tok)
+                  && !nx.startsWith('׃') && !nx.startsWith('--');
+      return body + (sep ? '<span class="wsep">·</span> ' : ' ');
     }).join('');
     if(sam) td.classList.add('vsam');
     td.querySelectorAll('.dw').forEach(sp=>{ spanMap[sp.dataset.k]=sp; });
@@ -5257,8 +5289,11 @@ function scrollToEl(selector){
   };
   setTimeout(tick,60);
 }
-$('dictBtn').onclick=()=>{ const was=S.dict, sf=S.samFont, sff=S.samFontFull;
+$('dictBtn').onclick=async ()=>{ const was=S.dict, sf=S.samFont, sff=S.samFontFull;
   clearModes(); S.dict=!was; S.samFont=sf; S.samFontFull=sff;   // the script stays
+  // the pointed text is fetched per chapter; without this the dictionary opens
+  // on bare consonants even where the ordinary view has the vowels
+  if(S.dict && S.samFont && SHOW_NIKUD) await ensureNikud();
   syncToolbar(true); paintVerses(); };
 // "פרשנות יהודית" is the one panel that needs what the chapter deliberately did
 // not carry. Fetch the full verses once per chapter, keeping the reader's place.
