@@ -713,6 +713,67 @@ def _seed_dict_glosses():
 _seed_dict_glosses()
 
 
+# ── the verses whose commentary field held the verse, written from the sources ─
+# 284 verses carried, under "פירוש הפסוק", a restatement of the verse and nothing
+# more — no source named, no word explained, and in some cases a different verse
+# altogether (דברים י״ב:י״ב held the forbidden birds of י״ד:י״ב). They are being
+# written one chapter at a time from what the Samaritan sources actually hold for
+# each verse: the Samaritan Targum, the Arabic translation, the word glossary,
+# HaMeliṣ, and the passages of תיבת מרקה / אם בחקותי / האסאטיר / צדקה אל-חכים
+# linked to that verse. Where the sources say nothing beyond the words, the
+# commentary explains the words and stops.
+#
+# The guard is the one used for the Deuteronomy restore, and for the same reason:
+# a value is replaced only while it carries no mark of being a commentary at all,
+# so nothing written by hand or edited online can be overwritten, and a second
+# run finds the new text — which does carry those marks — and leaves it alone.
+_INTERP_WRITTEN = os.path.join(os.path.dirname(__file__), '..', '..',
+                               'data', 'interp_written.json')
+
+
+def _seed_interp_written():
+    if not os.path.exists(_INTERP_WRITTEN):
+        return
+    try:
+        with open(_INTERP_WRITTEN, encoding='utf-8') as fh:
+            rows = json.load(fh)
+    except Exception as exc:
+        print('[written] %s' % exc)
+        return
+    conn = sqlite3.connect(DB_PATH)
+    done = skipped = 0
+    try:
+        for r in rows:
+            cur = conn.execute('SELECT interpretation FROM verses WHERE id=?',
+                               (r['id'],)).fetchone()
+            if cur is None:
+                continue
+            have = (cur[0] or '').strip()
+            if have and _INTERP_MARK.search(have):
+                skipped += 1
+                continue
+            if r.get('ar'):
+                conn.execute('UPDATE verses SET interpretation=?, interpretation_ar=? '
+                             'WHERE id=?', (r['he'], r['ar'], r['id']))
+            else:
+                # the Arabic that is there translates the bare verse, not this
+                # commentary, so it is cleared rather than left to disagree
+                conn.execute('UPDATE verses SET interpretation=?, interpretation_ar=NULL '
+                             'WHERE id=?', (r['he'], r['id']))
+            done += 1
+        conn.commit()
+    except Exception as exc:
+        print('[written] %s' % exc)
+    finally:
+        conn.close()
+    if done or skipped:
+        print('[written] %d verses given a commentary from the sources; '
+              '%d already had one' % (done, skipped))
+
+
+_seed_interp_written()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
