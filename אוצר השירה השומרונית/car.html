@@ -84,7 +84,10 @@ main{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
 }
 
 /* ----------------------------------------------------------------- נגן */
-#now{padding:14px 16px;gap:10px}
+/* gap:8 ולא 10 — חמישה מקשים, רצועת מבצעים וכל השורות ביקשו 492 פיקסלים
+   ויש 480. שתי נקודות בכל מרווח מחזירות את השתים-עשרה החסרות, והמקשים
+   נשארים 96 */
+#now{padding:14px 16px;gap:8px}
 /* flex מכווץ ילדים כברירת מחדל, ועם הרצועה הנוספת הכותרת היא שנעלמה
    ראשונה — ממש היא, מה שהשיר הזה הוא. כאן היא אינה מתכווצת. */
 .nthead{flex:0 0 auto;display:flex;align-items:flex-start;gap:10px}
@@ -126,6 +129,10 @@ main{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
 }
 .key:active{background:var(--card2)}
 .key svg{width:44%;max-width:56px;height:auto;fill:var(--txt)}
+/* מקשי העשר שניות צרים מן השאר ונושאים את המספר מתחת לחץ */
+.key.skip{flex:.8 1 0;flex-direction:column;gap:1px}
+.key.skip svg{width:36%;max-width:38px}
+.key.skip b{font-size:.78rem;font-weight:700;letter-spacing:.02em}
 #kplay{background:var(--gold);flex:1.5 1 0}
 #kplay svg{fill:#1a1206}
 #nstate{font-size:.95rem;color:var(--dim);min-height:1.3em}
@@ -143,7 +150,7 @@ main{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
    את הרוחב שיש בשווה, ומה שאינו נכנס אינו נדחק החוצה אלא נאסף לכפתור
    «עוד N» שפותח את כולם כרשימה — שם הגלילה היא דבר טבעי. */
 .altrow{
-  display:flex;gap:8px;height:72px;overflow:hidden;align-items:stretch;
+  display:flex;gap:8px;height:64px;overflow:hidden;align-items:stretch;
 }
 .altrow button{
   flex:1 1 0;min-width:0;padding:8px 12px;border-radius:12px;
@@ -340,9 +347,17 @@ main{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
     <div class="keys">
       <button class="key" id="kprev" aria-label="הקודם">
         <svg viewBox="0 0 24 24"><path d="M20 5 9 12l11 7z"/><rect x="4" y="5" width="2.8" height="14" rx="1"/></svg></button>
+      <!-- עשר שניות. הן יושבות משני צדי הנגינה, ולא בקצוות, מפני שהן
+           הדבר שנוגעים בו באמצע שיר — להחזיר מילה שלא נשמעה. -->
+      <button class="key skip" id="kb10" aria-label="עשר שניות אחורה">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1.5L7 6l5 4.5V7a5.5 5.5 0 1 1-5.5 5.5H4A8 8 0 1 0 12 5z"/></svg>
+        <b>10</b></button>
       <button class="key" id="kplay" aria-label="נגן או השהה">
         <svg id="icP" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg>
         <svg id="icS" viewBox="0 0 24 24" class="hide"><path d="M7 4h4v16H7zM13 4h4v16h-4z"/></svg></button>
+      <button class="key skip" id="kf10" aria-label="עשר שניות קדימה">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1.5L17 6l-5 4.5V7a5.5 5.5 0 1 0 5.5 5.5H20A8 8 0 1 1 12 5z"/></svg>
+        <b>10</b></button>
       <button class="key" id="knext" aria-label="הבא">
         <svg viewBox="0 0 24 24"><path d="M4 5l11 7-11 7z"/><rect x="17.2" y="5" width="2.8" height="14" rx="1"/></svg></button>
     </div>
@@ -843,6 +858,20 @@ $('kplay').onclick = function () {
   if (!au.src) { view('list'); return; }
   if (au.paused) au.play()['catch'](function () {}); else au.pause();
 };
+/* עשר שניות, ולא דילוג לרצועה: בתוך פיוט אחד זו החזרה על מילה שנבלעה
+   ברעש הדרך, וזה השימוש האמיתי בנהיגה */
+function nudge(sec) {
+  if (!au.getAttribute('src')) return;
+  var d = au.duration;
+  var t = (au.currentTime || 0) + sec;
+  if (t < 0) t = 0;
+  if (d && t > d - 0.25) t = Math.max(0, d - 0.25);
+  try { au.currentTime = t; } catch (e) {}
+  tickTimes();
+}
+$('kb10').onclick = function () { nudge(-10); };
+$('kf10').onclick = function () { nudge(10); };
+
 $('kprev').onclick = function () { if (au.currentTime > 3) { au.currentTime = 0; } else step(-1); };
 $('knext').onclick = function () { step(1); };
 
@@ -850,6 +879,13 @@ au.addEventListener('play',  function () { icons(); });
 au.addEventListener('pause', function () { icons(); keep(); });
 au.addEventListener('ended', function () { step(1); });      // one piece of singing
 au.addEventListener('error', function () { say('הקובץ לא נטען — בדוק את החיבור'); });
+function tickTimes() {
+  var d = au.duration || 0;
+  $('fill').style.width = d ? (au.currentTime / d * 100) + '%' : '0';
+  $('tnow').textContent = dur(au.currentTime);
+  paintBuf();
+}
+
 au.addEventListener('timeupdate', function () {
   var d = au.duration || 0;
   $('fill').style.width = d ? (au.currentTime / d * 100) + '%' : '0';
@@ -1059,6 +1095,8 @@ function sysSay(r, i) {
     on('pause', function () { au.pause(); });
     on('previoustrack', function () { if (au.currentTime > 3) { au.currentTime = 0; } else step(-1); });
     on('nexttrack', function () { step(1); });
+    on('seekbackward', function () { nudge(-10); });
+    on('seekforward', function () { nudge(10); });
     on('stop', function () { au.pause(); });
   } catch (e) { /* an older browser: the keys simply do less */ }
 }
