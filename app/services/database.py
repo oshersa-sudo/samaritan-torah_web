@@ -529,6 +529,116 @@ def _seed_interp_fixes():
 
 _seed_interp_fixes()
 
+_INTERP_RESTORE = os.path.join(os.path.dirname(__file__), '..', '..',
+                               'data', 'interp_deut_restore.json')
+
+
+# ── the commentary of Deuteronomy, where the field holds scripture ───────────
+# On the deployed database 333 verses of Deuteronomy carry, in the verse
+# commentary field, the verse itself — sometimes the Masoretic wording with its
+# vocalisation, sometimes a machine restatement ("זכור את אשר עשה יהוה אלהיך
+# ל Maryam בדרך"), and in Deut 32:1-10 the blessings of chapter 28 set under
+# the Song verse by verse. None of it is a commentary.
+#
+# The guard is a test of WHAT is in the field, not of its exact text: a
+# commentary in this app always names what it is doing — it quotes, or it says
+# מבאר / התרגום / לפי / במליץ / כדברי. Bare scripture says none of that. So the
+# patch replaces a value only when that value carries no such mark, which
+#   · cannot overwrite a real commentary, whatever it says;
+#   · needs no knowledge of what the deployed text happens to be;
+#   · runs once and then stops, since the restored text does carry the marks.
+_INTERP_MARK = re.compile('["\'‘’“”„«—–]'
+                          '|מבאר|התרגום|לפי |במליץ|המליץ|פירוש|עניינו|מתפרש'
+                          '|מוסר|כלומר|היינו|מצביע|מלמד|כדברי|לומד|מוסיף')
+
+
+def _seed_interp_deut_restore():
+    path = _INTERP_RESTORE
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, encoding='utf-8') as fh:
+            rows = json.load(fh)
+    except Exception as exc:
+        print('[deut-restore] %s' % exc)
+        return
+    conn = sqlite3.connect(DB_PATH)
+    done = skipped = 0
+    try:
+        for r in rows:
+            cur = conn.execute('SELECT interpretation FROM verses WHERE id=?',
+                               (r['id'],)).fetchone()
+            if cur is None:
+                continue
+            have = (cur[0] or '').strip()
+            if have and _INTERP_MARK.search(have):
+                skipped += 1          # a real commentary is already there
+                continue
+            conn.execute('UPDATE verses SET interpretation=?, interpretation_ar=? '
+                         'WHERE id=?', (r['he'], r['ar'] or None, r['id']))
+            done += 1
+        conn.commit()
+    except Exception as exc:
+        print('[deut-restore] %s' % exc)
+    finally:
+        conn.close()
+    print('[deut-restore] %d verses of Deuteronomy given back their commentary; '
+          '%d already had one and were left alone' % (done, skipped))
+
+
+_seed_interp_deut_restore()
+
+
+# ── the dictionary's "occurs in the Torah" flag, recomputed ──────────────────
+# dict_word_index carries a flag per word saying whether it occurs in the
+# Torah, and the index unit uses it to offer the word's Torah occurrences.
+# 8,876 of its rows said no while the word is plainly there in the Samaritan
+# Targum — דנע among them, whose derived מדנע ("east", the place of the sun's
+# rising) stands in thirty verses, from בארעה כלי מדנעת עדן to ודנע לה שמשה.
+# A reader looking the word up was told the Torah does not have it.
+#
+# The flag is derived, not authored, so it is recomputed rather than patched:
+# every Hebrew-letter run in sam_aramaic is collected once and the column is
+# set from that. Idempotent by construction — a second run computes the same
+# answer — and it writes nothing but this one derived column.
+def _seed_dict_in_torah():
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        have = conn.execute(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' "
+            "AND name='dict_word_index'").fetchone()[0]
+        if not have:
+            return
+        words = set()
+        for (txt,) in conn.execute('SELECT sam_aramaic FROM verses'):
+            if txt:
+                words.update(re.findall(r'[א-ת]+', txt))
+        if not words:
+            return
+        # a word may stand in the Targum only behind a proclitic: דנע itself is
+        # never a bare token, yet ודנע לה שמשה — "and the sun rose upon him" —
+        # is Genesis 32:32. One leading ו/ב/ל/כ/מ/ד/ה/ש is therefore lifted as
+        # well, which is the normalisation the root index already uses.
+        for w in list(words):
+            if len(w) > 3 and w[0] in 'ובלכמדהש':
+                words.add(w[1:])
+        wrong = conn.execute(
+            'SELECT COUNT(*) FROM dict_word_index WHERE in_torah=0 AND word IN (%s)'
+            % ','.join('?' * len(words)), tuple(words)).fetchone()[0]
+        if not wrong:
+            return                      # already right; nothing to do
+        conn.execute('UPDATE dict_word_index SET in_torah=1 WHERE word IN (%s)'
+                     % ','.join('?' * len(words)), tuple(words))
+        conn.commit()
+        print('[dict] %d dictionary rows now know their word is in the Torah' % wrong)
+    except Exception as exc:
+        print('[dict] in_torah: %s' % exc)
+    finally:
+        conn.close()
+
+
+_seed_dict_in_torah()
+
 
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')

@@ -3123,9 +3123,16 @@ function interpVerseCol(v, D, vidx, once){
   const bhqItems = bhq[v.id] || [];
   // strip leftover markdown (heading lines, ** bold) that leaked into the text
   txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
-  // a verse a source speaks about is worth a row even when it has no
-  // commentary of its own — that is what gives דברים anything to read
-  if(!txt && !asaItems.length && !bhqItems.length) return null;
+  // Every verse is worth a row. A verse a source speaks about earns one even
+  // with no commentary of its own — that is what gives דברים anything to read —
+  // and a verse with neither still has its own words, which are what the
+  // commentary is about in the first place. The glossary below is therefore the
+  // floor of this panel, not an extra: the reader who opens "פירוש הפסוק" on a
+  // verse nobody expounded is told what its words mean rather than shown a gap.
+  const wordRows = (wt[v.id] || []).filter(w =>
+    (w.aramaic||'').trim() || (w.arabic||'').trim() ||
+    ((w.he_combined||w.meaning||'').trim() && (w.he_combined||w.meaning).trim() !== (w.word||'').trim()));
+  if(!txt && !asaItems.length && !bhqItems.length && !wordRows.length) return null;
   const col = el('div','icol');
   if(txt){
     const showAr = ar && !fellBack;
@@ -3152,9 +3159,7 @@ function interpVerseCol(v, D, vidx, once){
   // Only a word that actually has something to say is set — a row carrying
   // nothing but the word itself back is left out, or the strip would be as
   // long as the verse and say half as much.
-  const words = (wt[v.id] || []).filter(w =>
-    (w.aramaic||'').trim() || (w.arabic||'').trim() ||
-    ((w.he_combined||w.meaning||'').trim() && (w.he_combined||w.meaning).trim() !== (w.word||'').trim()));
+  const words = wordRows;
   if(words.length){
     const strip = el('div','iwords');
     strip.appendChild(el('span','iwords-lead', t('interp_words_lead')));
@@ -8141,6 +8146,7 @@ $('daraSearch').addEventListener('input', ()=>{
 $('daraBack').onclick=()=>$('daraBody').classList.remove('piy-detail-open');
 $('daraClose').onclick=()=>$('daraModal').classList.add('hidden');
 $('daraToTorah').onclick=()=>$('daraModal').classList.add('hidden');
+$('daraToLib').onclick=()=>{ $('daraModal').classList.add('hidden'); openLibrary(); };
 // ── tapping a word in the liturgy ────────────────────────────────────────────
 // It used to answer from the volume's own word list alone, and say "no entry"
 // the moment that list was silent — while the dictionary held the word, the
