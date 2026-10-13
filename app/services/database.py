@@ -673,33 +673,67 @@ def _seed_dict_glosses():
             conn.execute('ALTER TABLE dict_word_index ADD COLUMN arabic TEXT')
         if 'gloss_src' not in cols:
             conn.execute('ALTER TABLE dict_word_index ADD COLUMN gloss_src TEXT')
+        if 'arabic' not in cols or 'gloss_src' not in cols:
+            conn.commit()
 
-        bare = ("TRIM(COALESCE(gloss,''))='' OR TRIM(COALESCE(gloss,''))=TRIM(word)")
-        filled = removed = 0
-        if os.path.exists(_DICT_FILL):
-            with open(_DICT_FILL, encoding='utf-8') as fh:
-                data = json.load(fh)
-            for f in data.get('fill') or []:
-                # the guard: only a row that is still bare is written
-                cur = conn.execute(
+        bare = "TRIM(COALESCE(gloss,''))='' OR TRIM(COALESCE(gloss,''))=TRIM(word)"
+        # ── the marker that keeps this patch off the boot path ───────────────
+        # The first guard asked whether any row still lacked its Arabic, and
+        # seventy thousand of them always will — most words have no Arabic in
+        # any source here. So the guard never fired and ten thousand updates ran
+        # on every boot: forty-four seconds before the port was bound, which is
+        # how the live site came to serve its maintenance page.
+        #
+        # What the patch needs to know is not the state of the rows but whether
+        # IT has already run, so it records that, keyed by the content of its own
+        # two files. A changed file is a new key and the patch runs again.
+        conn.execute('CREATE TABLE IF NOT EXISTS patch_state '
+                     '(key TEXT PRIMARY KEY, value TEXT)')
+        stamp = ''
+        for path in (_DICT_FILL, _DICT_ARABIC):
+            try:
+                stamp += '%d:%d|' % (os.path.getsize(path), int(os.path.getmtime(path)))
+            except OSError:
+                stamp += '-|'
+        done = conn.execute("SELECT value FROM patch_state WHERE key='dict_glosses'").fetchone()
+        if done and done[0] == stamp:
+            return
+        n_bare = conn.execute('SELECT COUNT(*) FROM dict_word_index WHERE %s' % bare).fetchone()[0]
+        n_noar = 1
+
+        filled = removed = arab = 0
+        if n_bare and os.path.exists(_DICT_FILL):
+            try:
+                with open(_DICT_FILL, encoding='utf-8') as fh:
+                    data = json.load(fh)
+            except Exception as exc:
+                print('[dict] fill: %s' % exc)
+                data = {}
+            rows = [(f['gloss'], f['src'], f['word']) for f in (data.get('fill') or [])]
+            if rows:
+                cur = conn.executemany(
                     'UPDATE dict_word_index SET gloss=?, gloss_src=? '
-                    'WHERE word=? AND (%s)' % bare, (f['gloss'], f['src'], f['word']))
-                filled += cur.rowcount
-            # whatever is still bare AFTER the sources have spoken has no
-            # meaning anywhere, and a word with no meaning has no business in a
-            # dictionary. Computed rather than listed, so it cannot go stale.
-            cur = conn.execute('DELETE FROM dict_word_index WHERE %s' % bare)
-            removed = cur.rowcount
+                    'WHERE word=? AND (%s)' % bare, rows)
+                filled = cur.rowcount if cur.rowcount and cur.rowcount > 0 else 0
+            # whatever is still bare after the sources have spoken has no meaning
+            # anywhere, and a word with no meaning has no business in a dictionary
+            removed = conn.execute('DELETE FROM dict_word_index WHERE %s' % bare).rowcount
 
-        arab = 0
-        if os.path.exists(_DICT_ARABIC):
-            with open(_DICT_ARABIC, encoding='utf-8') as fh:
-                ar = json.load(fh)
-            for w, a in ar.items():
-                cur = conn.execute(
+        if n_noar and os.path.exists(_DICT_ARABIC):
+            try:
+                with open(_DICT_ARABIC, encoding='utf-8') as fh:
+                    ar = json.load(fh)
+            except Exception as exc:
+                print('[dict] arabic: %s' % exc)
+                ar = {}
+            if ar:
+                cur = conn.executemany(
                     "UPDATE dict_word_index SET arabic=? "
-                    "WHERE word=? AND TRIM(COALESCE(arabic,''))=''", (a, w))
-                arab += cur.rowcount
+                    "WHERE word=? AND TRIM(COALESCE(arabic,''))=''",
+                    [(a, w) for w, a in ar.items()])
+                arab = cur.rowcount if cur.rowcount and cur.rowcount > 0 else 0
+        conn.execute('INSERT OR REPLACE INTO patch_state(key, value) '
+                     "VALUES('dict_glosses', ?)", (stamp,))
         conn.commit()
         if filled or removed or arab:
             print('[dict] %d rows given a meaning from the sources, %d with none '
@@ -709,8 +743,28 @@ def _seed_dict_glosses():
     finally:
         conn.close()
 
+# ── and it runs BEHIND the server, not in front of it ────────────────────────
+# Even with the marker, the first boot after a change still has ten thousand
+# rows to write, and on the deploy that introduced this patch those forty-odd
+# seconds came before the port was bound: Render stopped waiting, and the site
+# served its maintenance page. The work itself is sound — it is its place in the
+# order that was wrong.
+#
+# So it is started on a daemon thread. The port binds at once, the Torah is
+# served from the first second, and the dictionary finishes filling a minute
+# later. A reader who opens the word index in that minute sees it as it was,
+# which is a far smaller price than a site that is down.
+def _seed_dict_glosses_async():
+    try:
+        import threading
+        threading.Thread(target=_seed_dict_glosses, name='dict-glosses',
+                         daemon=True).start()
+    except Exception as exc:          # no threads available: do it in line
+        print('[dict] async: %s' % exc)
+        _seed_dict_glosses()
 
-_seed_dict_glosses()
+
+_seed_dict_glosses_async()
 
 
 # ── the verses whose commentary field held the verse, written from the sources ─
