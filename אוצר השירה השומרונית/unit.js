@@ -3969,7 +3969,12 @@ function deckLabel(r, idx) {
   $('cParts').textContent = r ? (r.parts ? `${r.parts} חלקים` : `${r.n} רצועות`) : 'C-90';
   // the strip is about the recording, not the track: moving between the parts
   // of one tape leaves it as it was, and only a new tape repaints it
-  if (altsRec !== (r && r.id)) { altsRec = r && r.id; altsPaint(r); }
+  if (altsRec !== (r && r.id)) {
+    altsRec = r && r.id;
+    altsPaint(r);
+    // another recording is another text, and the page starts at its top again
+    if (TXT.on) { txtAutoSet(true); txtLoad(); }
+  }
 }
 
 /* ---------------------------------------------------------- the dancer
@@ -4877,6 +4882,130 @@ function openFromLink() {
 const PIX = {
   on: false, list: [], i: 0, timer: 0, load: 0, which: 'A', key: '',
 };
+
+/* ============================================ מילות השיר, כפי שצולמו
+ *
+ * A photograph of the page the piyyut is written on, standing where the
+ * cassette stands, climbing as the singing goes on.
+ *
+ * About the climb, plainly: nothing here knows where in the page the singer
+ * has reached. There is no alignment between the sound and the writing, and
+ * inventing one would be inventing. What there is, is the length of the
+ * track — so the page is carried from its first line to its last across the
+ * length of the recording, and the position is read from the clock rather
+ * than counted up by a timer. That is worth more than it sounds: dragging
+ * the scrubber, skipping ten seconds, starting a part in the middle — the
+ * page is simply where the clock says, with nothing to re-synchronise.
+ *
+ * It will drift where a recording opens with a long introduction or repeats
+ * a verse, and for that there is a finger: touching the page stops the climb
+ * and hands it over, and the button gives it back.
+ */
+const TXT = { on: false, auto: true, rec: 0, url: '', full: false, lock: 0 };
+
+function txtScrollable() {
+  const s = $('txtScroll');
+  return Math.max(0, s.scrollHeight - s.clientHeight);
+}
+
+/* where the page should stand, for the clock as it is now */
+function txtFollow() {
+  if (!TXT.on || !TXT.auto || TXT.full) return;
+  const d = au.duration;
+  if (!isFinite(d) || d <= 0) return;
+  const span = txtScrollable();
+  if (span <= 0) return;
+  const at = Math.min(1, Math.max(0, au.currentTime / d));
+  TXT.lock = Date.now();            // this move is ours, not the reader's
+  $('txtScroll').scrollTop = at * span;
+}
+
+function txtAutoSet(on) {
+  TXT.auto = on;
+  $('txtAuto').classList.toggle('on', on);
+  $('txtAuto').textContent = on ? 'גלילה אוטומטית' : 'גלילה ידנית';
+  if (on) txtFollow();
+}
+
+/* the page of whichever recording is in the deck */
+function txtLoad() {
+  const r = byId(C.recordings, cur.rec);
+  const url = (r && r.tx) || '';
+  TXT.rec = r ? r.id : 0;
+  TXT.url = url;
+  const box = $('txt'), img = $('txtImg');
+  box.classList.toggle('empty', !url);
+  if (!url) {
+    img.removeAttribute('src');
+    $('txtNote').textContent = r
+      ? 'עדיין אין צילום של מילות השיר הזה'
+      : 'אין הקלטה בנגן';
+    return;
+  }
+  if (img.getAttribute('src') !== url) {
+    img.setAttribute('src', url);
+    img.onload = () => { $('txtScroll').scrollTop = 0; txtFollow(); };
+    img.onerror = () => {
+      box.classList.add('empty');
+      $('txtNote').textContent = 'לא ניתן להביא את צילום המילים כרגע';
+    };
+  }
+  $('txtScroll').scrollTop = 0;
+  txtFollow();
+}
+
+function txtOff() {
+  TXT.on = false;
+  $('txt').classList.add('hidden');
+  $('txt').setAttribute('aria-hidden', 'true');
+  if (TXT.full) txtFull(false);
+  $('dwText').setAttribute('aria-pressed', 'false');
+  $('dwText').title = 'מילות השיר';
+  dancerWatch();                     // the cassette is back, and so may she be
+}
+
+/* The whole screen. The sound is not touched — only the paper grows. */
+function txtFull(on) {
+  TXT.full = on;
+  $('txt').classList.toggle('full', on);
+  document.body.classList.toggle('txtfull', on);
+  $('txtClose').classList.toggle('hidden', !on);
+  $('txtBig').textContent = on ? '⤡' : '⤢';
+  $('txtBig').title = on ? 'חזרה אל המכשיר' : 'מסך מלא';
+  // on the full screen the reader reads at their own pace, by hand
+  $('txtAuto').classList.toggle('hidden', on);
+  if (!on) txtFollow();
+}
+
+$('dwText').onclick = () => {
+  sfx('click');
+  if (TXT.on) return txtOff();
+  if (PIX.on) pixOff();              // one screen stands over the cassette
+  TXT.on = true;
+  dancerAside();
+  const box = $('txt');
+  box.classList.remove('hidden');
+  box.setAttribute('aria-hidden', 'false');
+  $('dwText').setAttribute('aria-pressed', 'true');
+  $('dwText').title = 'חזרה אל הקלטת';
+  txtAutoSet(true);
+  txtLoad();
+};
+
+$('txtAuto').onclick = () => txtAutoSet(!TXT.auto);
+$('txtBig').onclick  = () => txtFull(!TXT.full);
+$('txtClose').onclick = () => txtFull(false);
+
+/* A finger on the page takes it over. The climb moves the page too, so the
+ * two have to be told apart: a scroll within a moment of our own move is
+ * ours, anything else is the reader's. */
+$('txtScroll').addEventListener('scroll', () => {
+  if (!TXT.on || TXT.full) return;
+  if (Date.now() - TXT.lock < 180) return;
+  if (TXT.auto) txtAutoSet(false);
+});
+
+au.addEventListener('timeupdate', txtFollow);
 /* what to look for, by the feast the recording belongs to. The archive's own
  * event list is in Hebrew; Commons is catalogued in English. */
 /* Kept to two or three words apiece. Commons wants every word of a search to
@@ -5357,6 +5486,7 @@ function dancerAside() {
 $('dwPix').onclick = async () => {
   sfx('click');
   if (PIX.on) return pixOff();
+  if (TXT.on) txtOff();                           // one screen over the cassette
   PIX.on = true;
   dancerAside();                                  // nothing of her would show
   const tv = $('tv');

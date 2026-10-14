@@ -592,6 +592,19 @@
         <path class="px-hill" d="M4 17.2 9.6 11.6l3.4 3.4 2.9-2.6 4.1 4.8z"/>
       </svg>
     </button>
+    <!-- מילות השיר, כפי שצולמו מן הכתב. כפתור נפרד מזה של התמונות: זה מביא
+         צילומים מן האינטרנט, וזה את הטקסט של הפיוט המושמע עצמו. -->
+    <button class="dw-btn dw-ico dw-txt" id="dwText" aria-pressed="false"
+            title="מילות השיר">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <!-- מגילה: דף ועליו שורות כתב -->
+        <path class="tx-sheet" d="M5.2 3.4h13.6v17.2H5.2z" fill="none"
+              stroke-width="1.9" stroke-linejoin="round"/>
+        <g class="tx-line" stroke-width="1.6" stroke-linecap="round">
+          <path d="M8 7.6h8"/><path d="M8 11h8"/><path d="M8 14.4h5.4"/>
+        </g>
+      </svg>
+    </button>
     <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר ונושאת את שם היצרן -->
     <span class="dw-handle" aria-hidden="true"><i><b>Panasonic</b></i></span>
     <!-- שולח את ההשמעה אל רמקול הבלוטות' של המכשיר. הצימוד עצמו נעשה
@@ -976,6 +989,21 @@
         <span class="tv-scan" aria-hidden="true"></span>
         <span class="tv-glass" aria-hidden="true"></span>
         <div class="tv-cap"><span id="tvCap">מחפש תמונות…</span></div>
+      </div>
+      <!-- מילות השיר. יושב באותו מקום של הטלוויזיה — מעל הקלטת — אך הוא
+           מסך של נייר ולא של זכוכית: הדף נפרש לרוחב המסגרת כולה, כך שאין
+           צורך לגלול ימינה ושמאלה, והוא עולה מאליו לאורך הרצועה. אפשר
+           לעצור אותו באצבע, ואפשר לפתוח אותו על פני המסך כולו. -->
+      <div class="txt hidden" id="txt" aria-hidden="true">
+        <div class="txt-scroll" id="txtScroll">
+          <img class="txt-img" id="txtImg" alt="מילות השיר">
+        </div>
+        <div class="txt-note" id="txtNote"></div>
+        <div class="txt-bar">
+          <button class="txt-btn" id="txtAuto" title="גלילה אוטומטית">גלילה אוטומטית</button>
+          <button class="txt-btn" id="txtBig" title="מסך מלא">⤢</button>
+          <button class="txt-btn txt-x hidden" id="txtClose" title="סגירה">✕</button>
+        </div>
       </div>
       </div>
     </div>

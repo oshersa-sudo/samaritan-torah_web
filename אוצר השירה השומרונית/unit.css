@@ -508,6 +508,65 @@ body{
                     rgba(0,0,0,0) 42%,rgba(0,0,0,.5) 100%),
     linear-gradient(115deg,rgba(255,255,255,.1) 0,rgba(255,255,255,0) 34%);
 }
+/* ---- מילות השיר -------------------------------------------------------
+ * מסך של נייר, במקומה של הקלטת. הדף נפרש לרוחב המסגרת ותו לא — זה כל
+ * ה"זום על הטקסט" שנדרש: ברוחב מלא אין מה לגלול ימינה ושמאלה, ונשארת
+ * גלילה אחת בלבד, מלמטה למעלה. ברקע נייר ולא זכוכית, מפני שזה מה שזה.
+ */
+.txt{
+  position:absolute;top:0;right:0;bottom:0;left:0;z-index:3;
+  border-radius:9px;overflow:hidden;background:#141210;
+  box-shadow:inset 0 0 26px rgba(0,0,0,.9);
+}
+.txt.hidden{display:none}
+.txt-scroll{
+  position:absolute;top:0;right:0;bottom:0;left:0;
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  scroll-behavior:auto;
+}
+.txt-scroll::-webkit-scrollbar{display:none}
+.txt-img{
+  display:block;width:100%;height:auto;              /* הרוחב הוא המסגרת */
+  background:#efe7d6;
+  /* הסריקות אפורות ודהויות; מעט ניגוד מחזיר את הדיו אל הנייר */
+  filter:contrast(1.14) brightness(1.04) saturate(.9);
+}
+.txt-img[src=""]{display:none}
+.txt-note{
+  position:absolute;top:0;right:0;left:0;bottom:0;display:none;
+  align-items:center;justify-content:center;text-align:center;
+  padding:0 22px;color:#cbb88a;font-size:12.5px;line-height:1.6;
+}
+.txt.empty .txt-note{display:flex}
+.txt.empty .txt-scroll{display:none}
+.txt-bar{
+  position:absolute;left:6px;bottom:6px;z-index:2;display:flex;gap:5px;
+}
+.txt-btn{
+  border:1px solid rgba(255,255,255,.14);border-radius:7px;cursor:pointer;
+  background:rgba(14,12,10,.74);color:#d9cfb6;
+  font:inherit;font-size:11px;padding:3px 8px;line-height:1.5;
+  backdrop-filter:blur(2px);
+}
+.txt-btn:hover{border-color:rgba(201,162,39,.6);color:#f0e6cf}
+.txt-btn.on{border-color:#c9a227;color:#f0e6cf;background:rgba(201,162,39,.16)}
+.txt-btn.hidden{display:none}
+
+/* ---- על פני המסך כולו.
+ * הנגינה ממשיכה — אין כאן דבר הנוגע בקול; רק הדף גדל. הגלילה כאן ידנית
+ * בלבד: מי שפתח דף על מלוא המסך רוצה לקרוא בקצב שלו. */
+.txt.full{
+  position:fixed;top:0;right:0;bottom:0;left:0;z-index:120;
+  border-radius:0;background:#141210;
+}
+.txt.full .txt-img{
+  width:auto;max-width:min(980px,100%);margin:0 auto;      /* עמוד, לא קיר */
+}
+.txt.full .txt-bar{left:auto;right:12px;bottom:12px}
+.txt.full .txt-btn{font-size:13px;padding:6px 12px}
+body.txtfull{overflow:hidden}
+
 .tv-cap{
   position:absolute;left:0;right:0;bottom:0;z-index:2;
   padding:4px 8px;direction:rtl;text-align:start;

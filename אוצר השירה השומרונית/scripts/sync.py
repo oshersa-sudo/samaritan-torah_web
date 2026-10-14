@@ -35,6 +35,11 @@ PUBLISH = ['index.html', 'unit.css', 'unit.js', 'serve.py', 'app.py',
            'data/overrides.json', 'data/additions.json',
            'data/performers.json', 'data/removed.json', 'data/merges.json',
            'data/pix_sources.json', 'data/local_media.json',
+           # the map of song-text photographs. The build bakes it into
+           # catalog.json, so the site does not read it — but it is the source
+           # the baking is done from, and it belongs beside the other editor's
+           # files rather than only on one machine.
+           'data/song_text.json',
            'scripts', 'sounds', 'img', 'fonts', 'README.md']
 
 

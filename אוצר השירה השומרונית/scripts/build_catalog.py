@@ -149,6 +149,26 @@ by_rec = collections.defaultdict(list)
 for t in tracks:
     by_rec[t['rec']].append(t)
 
+# ---------------------------------------------- מילות השיר כצילום
+# One image, many recordings. The same piyyut sung by six people is one sheet
+# of paper photographed once, so the map is written the way it is edited —
+# image → the recordings it serves — and turned here into the other direction,
+# which is how a player asks: this recording is playing, what is its text?
+SONG_TEXT = {}
+try:
+    with open(D('song_text.json'), encoding='utf-8') as fh:
+        st = json.load(fh)
+    base = st.get('base') or ''
+    for name, v in (st.get('images') or {}).items():
+        url = name if '://' in name else base + name
+        for rid in (v.get('recs') or []):
+            SONG_TEXT[rid] = url
+except (OSError, ValueError):
+    pass
+if SONG_TEXT:
+    print('song text: %d images → %d recordings'
+          % (len({v for v in SONG_TEXT.values()}), len(SONG_TEXT)))
+
 out_recs = []
 for r in sorted(recs, key=lambda r: r['id']):
     out_recs.append({
@@ -163,6 +183,7 @@ for r in sorted(recs, key=lambda r: r['id']):
         'kind': r['kind'],
         'parts': r.get('parts', 0),
         'hidden': r.get('hidden', 0),
+        'tx':   SONG_TEXT.get(r['id'], ''),      # צילום מילות השיר, אם יש
         'tr':   [{'f': t['file'], 's': t['sec'], 'n': t['name']}
                  for t in sorted(by_rec[r['id']], key=lambda t: t['ord'])],
     })
