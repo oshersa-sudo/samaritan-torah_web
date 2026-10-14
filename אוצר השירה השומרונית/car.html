@@ -989,9 +989,76 @@ function pick(alts) {
   return { said: alts[0] || '', list: [], who: '', q: alts[0] || '' };
 }
 
+/* What the recogniser said, written where it can be seen and corrected.
+ *
+ * Until now the voice went straight to results: when it misheard — and in a
+ * car, over road noise, against titles no Hebrew recogniser has ever met, it
+ * misheard often — nothing on the screen said what it had understood, and the
+ * only way out was to start over. Now the heard words land in the search box.
+ * They can be read, a letter can be fixed, and Enter searches again. */
+function heardInBox(said) {
+  $('fq').value = said || '';
+  $('find').classList.remove('hide');
+}
+
+/* Why the listening failed, in words. One line for each thing that actually
+ * goes wrong in a car: the microphone was never granted, the unit's browser
+ * has no recognition service behind it, there is no microphone at all, or the
+ * recogniser — which does its work on Google's servers, not in the car —
+ * could not reach the network. "הזיהוי נכשל" for all four told nobody
+ * anything. */
+var SR_ERR = {
+  'not-allowed':        'אין גישה למיקרופון — יש לאשר אותו בדפדפן',
+  'service-not-allowed': 'הדפדפן שברכב אינו מאפשר זיהוי דיבור',
+  'audio-capture':      'לא נמצא מיקרופון',
+  'network':            'הזיהוי נעשה ברשת, והרשת אינה בהישג',
+  'no-speech':          'לא נשמע דבר',
+  'language-not-supported': 'הדפדפן שברכב אינו מזהה עברית',
+  'bad-grammar':        'הזיהוי נכשל'
+};
+
+/* The tip, and under it the way out: the keyboard of the car unit has a
+ * microphone key of its own, and that one keeps working in browsers whose
+ * built-in recognition does not. */
+function micFell(msg) {
+  head(msg || 'הזיהוי נכשל');
+  $('rows').innerHTML = '<p class="note tip">' + esc(TIP) + '</p>'
+    + '<p class="note">אפשר גם להקליד כאן — ולמקלדת של הרכב יש'
+    + ' מקש מיקרופון משלה.</p>';
+  view('list');
+  $('find').classList.remove('hide');
+  try { $('fq').focus(); } catch (e) {}
+}
+
+/* Android asks for the microphone only when something asks for it.
+ *
+ * SpeechRecognition on its own does not always raise the prompt: on a good
+ * many units it simply fires `not-allowed` the instant it starts, which is
+ * exactly "it begins and shows an error at once". Asking for the device
+ * first raises the prompt, and the track is released immediately after —
+ * the recogniser wants the microphone for itself. */
+function withMic(go) {
+  var md = navigator.mediaDevices;
+  if (!md || !md.getUserMedia) { go(); return; }      // older unit: just try
+  md.getUserMedia({ audio: true }).then(function (st) {
+    try { st.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+    go();
+  })['catch'](function (err) {
+    var n = err && err.name;
+    micFell(n === 'NotAllowedError' || n === 'SecurityError'
+            ? SR_ERR['not-allowed']
+            : n === 'NotFoundError' ? SR_ERR['audio-capture']
+            : 'אין גישה למיקרופון');
+  });
+}
+
 $('mic').onclick = function () {
-  if (!SR) return;
+  if (!SR) { micFell('הדפדפן שברכב אינו יודע לזהות דיבור'); return; }
   if (listening) { try { listening.abort(); } catch (e) {} listening = null; return; }
+  withMic(startListening);
+};
+
+function startListening() {
   var rec = new SR();
   rec.lang = 'he-IL';                 // תמיד עברית: זו השפה שהאוצר כתוב בה
   rec.interimResults = false;
@@ -1014,20 +1081,23 @@ $('mic').onclick = function () {
     if (!p.list.length) {
       head('לא נמצא');
       $('rows').innerHTML = '<p class="note">שמעתי <b>«' + esc(p.said)
-        + '»</b><br>ולא נמצא דבר. נסה שוב.</p>';
+        + '»</b><br>ולא נמצא דבר. המילים בתיבה — אפשר לתקן ולחפש שוב.</p>';
       view('list');
+      heardInBox(p.said);
       return;
     }
-    if (p.list.length === 1) { play(p.list[0].id, 0); say('שמעתי: ' + p.said); return; }
+    if (p.list.length === 1) {
+      play(p.list[0].id, 0); say('שמעתי: ' + p.said); heardInBox(p.said); return;
+    }
     stack.push(drawList);
     showRecs(p.list, p.q ? (p.who ? p.q + ' · ' + p.who : p.q)
                          : (p.who || 'תוצאות'), !p.who);
+    heardInBox(p.said);          // after showRecs — it returns to the list view
   };
   rec.onerror = function (e) {
     done();
-    head(e.error === 'not-allowed' ? 'אין גישה למיקרופון'
-       : e.error === 'no-speech' ? 'לא נשמע דבר' : 'הזיהוי נכשל');
-    $('rows').innerHTML = '<p class="note tip">' + esc(TIP) + '</p>';
+    if (e && e.error === 'aborted') return;      // the listener stopped it
+    micFell(SR_ERR[e && e.error] || 'הזיהוי נכשל');
   };
   rec.onend = function () { done(); };
   function done() {
@@ -1035,8 +1105,8 @@ $('mic').onclick = function () {
     $('mic').classList.remove('on');
     if ($('htitle').textContent === 'מדבר…') head('אוצר השירה');
   }
-  try { rec.start(); } catch (e) { done(); }
-};
+  try { rec.start(); } catch (err) { done(); micFell('הזיהוי לא נפתח'); }
+}
 
 /* The phone's Back key, and the one on the car unit's own frame.
  *
