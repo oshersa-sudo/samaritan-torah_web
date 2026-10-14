@@ -2868,7 +2868,11 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
  * אחת ב-JS, מפני ששם הוא נקבע.
  */
 .vtext.vsam .dw{ padding:0 .07em; }
-.vtext.vsam .dw.on{ text-underline-offset:.18em; }
+.vtext.vsam .dw.on{ text-decoration:none; position:relative; }
+.vtext.vsam .dw.on::after{ content:''; position:absolute; left:.04em; right:.04em;
+  bottom:-.16em; height:1.5px; border-radius:1px; background:rgba(46,97,184,.5); }
+.vtext.vsam .dw.on:hover::after{ background:rgba(46,97,184,.8); }
+.vtext.vsam .dw.sel::after{ display:none; }
 .vtext.vsam .wsep{ padding:0 .04em; }
 
 /* the word index says what the word means, not only that it exists */

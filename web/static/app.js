@@ -3757,26 +3757,27 @@ function buildDictSelect(c, verses){
     // be decided here: a rule in the stylesheet cannot reach past it.
     const td=el('div','vtext');
     td.style.fontSize=(sam ? Math.max(14, fs - 1) : fs)+'px';
-    // The vocalization is the Samaritan script's own, and until now the
-    // dictionary dropped it: it drew the bare text while the ordinary view drew
-    // the pointed one, so opening the dictionary stripped the vowels off the
-    // chapter. It is used here — but only when it holds exactly as many words as
-    // the plain text, because the index of a word is what the dictionary looks it
-    // up by, and a count that differs by one would answer about the word next
-    // door.
-    const nkTxt = (sam && SHOW_NIKUD && NIKUD[v.id]) || '';
+    // ── the vocalisation comes OFF here, and on purpose ──────────────────
+    // The Samaritan vocalisation is written as mark keys standing after each
+    // letter — private use area, and plain A-Z — and those keys mean nothing
+    // outside the Samaritan face. In this view every word is wrapped in a span
+    // of its own and underlined, and the spans broke the run the marks depend
+    // on: the keys surfaced as bare Latin letters and empty boxes, and the
+    // whole verse read as gibberish.
+    //
+    // So the marks are dropped while a word is being picked. The text stays in
+    // the Samaritan face, which is what the reader chose; the pointed reading
+    // is one tap away in the ordinary view, where nothing is wrapped.
     const words = (v.text||'').split(/\s+/).filter(x => x !== '');
-    const nkWords = nkTxt ? nkTxt.split(/\s+/).filter(x => x !== '') : [];
-    const useNik = words.length > 0 && nkWords.length === words.length;
     // the same rule the ordinary view follows (addWordDots): no divider after a
     // stop mark or a number, and none before the verse- or chapter-end
     const PAUSE_END = /[:.׃]$/;
     td.innerHTML = words.map((tok, i) => {              // i = index among all
-      const shown = useNik ? nkWords[i] : tok;          // non-space tokens
+      const shown = tok;                                // non-space tokens
       const body = !/[א-ת]/.test(tok)
         ? (sam ? samMarkup(shown) : esc(shown))         // punctuation — not a word
         : '<span class="dw" data-k="'+v.id+':'+i+'">'
-          + (sam ? (useNik ? samMarkupNikud(shown) : samMarkup(shown)) : esc(shown))
+          + (sam ? samMarkup(shown) : esc(shown))
           + '</span>';
       const nx = words[i+1];
       if(!nx) return body;

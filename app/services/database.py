@@ -702,7 +702,8 @@ def _seed_dict_glosses():
         n_noar = 1
 
         filled = removed = arab = 0
-        if n_bare and os.path.exists(_DICT_FILL):
+        data = {}
+        if os.path.exists(_DICT_FILL):
             try:
                 with open(_DICT_FILL, encoding='utf-8') as fh:
                     data = json.load(fh)
@@ -710,14 +711,20 @@ def _seed_dict_glosses():
                 print('[dict] fill: %s' % exc)
                 data = {}
             rows = [(f['gloss'], f['src'], f['word']) for f in (data.get('fill') or [])]
-            if rows:
+            if rows and n_bare:
                 cur = conn.executemany(
                     'UPDATE dict_word_index SET gloss=?, gloss_src=? '
                     'WHERE word=? AND (%s)' % bare, rows)
                 filled = cur.rowcount if cur.rowcount and cur.rowcount > 0 else 0
             # whatever is still bare after the sources have spoken has no meaning
             # anywhere, and a word with no meaning has no business in a dictionary
-            removed = conn.execute('DELETE FROM dict_word_index WHERE %s' % bare).rowcount
+            if n_bare:
+                removed = conn.execute('DELETE FROM dict_word_index WHERE %s' % bare).rowcount
+            selfg = data.get('drop_selfgloss') or []
+            if selfg:
+                removed += conn.execute(
+                    'DELETE FROM dict_word_index WHERE word IN (%s)'
+                    % ','.join('?' * len(selfg)), tuple(selfg)).rowcount
 
         if n_noar and os.path.exists(_DICT_ARABIC):
             try:
@@ -4439,6 +4446,34 @@ def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
             senses.append({'lemma': s['lemma'] or '', 'pos': s['pos'] or '',
                            'gloss': g, 'page': s['printed']})
 
+        # ── a word with no entry still has a meaning, and must show it ───────
+        # Tal's printed dictionary is keyed by root, and some roots have no entry
+        # in it at all: דנע is one — "זרח", whose derived מדנע ("east", the place
+        # of the sun's rising) stands in thirty verses of the Targum. The panel
+        # opened on such a word with a root at the top and nothing under it, which
+        # reads as "the dictionary does not know this word" when the dictionary
+        # does know it. So where the printed entry is silent the index's own
+        # meaning is shown, marked for what it is, together with the Arabic where
+        # one of the sources has it.
+        if not senses:
+            fb = None
+            for where, arg in (('word_norm=?', wn), ('root_norm=? AND root_norm<>''', rn)):
+                try:
+                    fb = conn.execute(
+                        "SELECT MIN(NULLIF(TRIM(COALESCE(gloss,'')),'')) AS g, "
+                        "MIN(NULLIF(TRIM(COALESCE(arabic,'')),'')) AS a, "
+                        "MIN(NULLIF(TRIM(COALESCE(gloss_src,'')),'')) AS s "
+                        "FROM dict_word_index WHERE " + where, (arg,)).fetchone()
+                except sqlite3.OperationalError:
+                    fb = None
+                    break
+                if fb and fb['g']:
+                    break
+            if fb and fb['g']:
+                senses.append({'lemma': rt, 'pos': '', 'gloss': fb['g'],
+                               'arabic': fb['a'] or '', 'page': None,
+                               'from_index': True, 'src': fb['s'] or ''})
+
         # precise-meaning split (Phase 2): if the root carries more than one sense
         # and the clicked word is pinned to one of them, filter the occurrences to
         # that sense; otherwise fall back to the whole root (same behaviour as before
@@ -4502,6 +4537,26 @@ def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
                          'sense_split': bool(target is not None and (t_sense or m_sense)),
                          'torah': torah_out, 'torah_count': torah_count,
                          'memar': memar_all[:memar_limit], 'memar_count': memar_count})
+    if not any((m.get('senses') or []) for m in meanings):
+        try:
+            fb = conn.execute(
+                "SELECT MIN(word) AS w, MIN(root) AS r, "
+                "MIN(NULLIF(TRIM(COALESCE(gloss,'')),'')) AS g, "
+                "MIN(NULLIF(TRIM(COALESCE(arabic,'')),'')) AS a, "
+                "MIN(NULLIF(TRIM(COALESCE(gloss_src,'')),'')) AS s "
+                "FROM dict_word_index WHERE word_norm=?", (wn,)).fetchone()
+        except sqlite3.OperationalError:
+            fb = None
+        if fb and fb['g']:
+            sense = {'lemma': fb['w'] or word, 'pos': '', 'gloss': fb['g'],
+                     'arabic': fb['a'] or '', 'page': None,
+                     'from_index': True, 'src': fb['s'] or ''}
+            if meanings:
+                meanings[0]['senses'] = [sense]
+            else:
+                meanings.append({'root': fb['r'] or (fb['w'] or word), 'senses': [sense],
+                                 'forms': [], 'torah': [], 'torah_count': 0,
+                                 'memar': [], 'memar_count': 0})
     conn.close()
     return {'word': word, 'meanings': meanings}
 
