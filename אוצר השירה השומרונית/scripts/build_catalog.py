@@ -6,7 +6,7 @@ Produces data/catalog.json with four cross-linked indexes — מבצעים, חג
 carries its provenance so an archive-derived fact and an editor's note are
 never presented as the same kind of claim.
 """
-import os, re, sys, io, json, collections
+import os, re, sys, io, json, collections, urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from notes import NOTES
@@ -160,7 +160,10 @@ try:
         st = json.load(fh)
     base = st.get('base') or ''
     for name, v in (st.get('images') or {}).items():
-        url = name if '://' in name else base + name
+        # the files are named in Hebrew, with spaces. Written into the page as
+        # they stand they are a URL only by the browser's good manners; encoded
+        # here they are one by right.
+        url = name if '://' in name else base + urllib.parse.quote(name)
         for rid in (v.get('recs') or []):
             SONG_TEXT[rid] = url
 except (OSError, ValueError):
