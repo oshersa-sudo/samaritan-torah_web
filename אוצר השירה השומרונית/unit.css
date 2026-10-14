@@ -599,6 +599,54 @@ body{
 .deckwin.min .dw-body{display:none}
 .deckwin.min{width:min(300px,calc(100vw - 36px))}
 
+/* ---- אותו פיוט בפי אחרים ---------------------------------------------
+ * שורה של שמות מעל הקלטת. החלון רחב 430 פיקסלים בלבד, ושם של פיוט ושם של
+ * מבצע אינם נכנסים בשניים זה לצד זה בלי להיחתך — ולכן השורה נגללת לצדדים
+ * במקום להידחס. פס הגלילה עצמו מוסתר: במכשיר ישן אין פס, יש משהו שמזיזים.
+ */
+.alts{margin:0 0 11px}
+.alts-cap{
+  font-size:11.5px;letter-spacing:.02em;color:#9aa3b2;
+  margin:0 2px 6px;display:flex;align-items:center;gap:6px;
+}
+.alts-cap::before{
+  content:"";flex:0 0 auto;width:13px;height:13px;border-radius:50%;
+  border:1.5px solid #c9a227;                      /* סליל קטן, כמו שבקלטת */
+  box-shadow:inset 0 0 0 3.5px #22262c;
+}
+.alts-row{
+  display:flex;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;
+  padding-bottom:3px;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.alts-row::-webkit-scrollbar{display:none}
+.alts-row button{
+  flex:0 0 auto;max-width:218px;min-width:142px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+  padding:7px 10px;border-radius:9px;cursor:pointer;text-align:right;
+  color:#e8ecf4;font:inherit;
+  border:1px solid rgba(255,255,255,.085);
+  background:linear-gradient(180deg,rgba(74,79,87,.42),rgba(37,40,46,.5));
+  transition:border-color .15s,background .15s;
+}
+.alts-row button:hover{
+  border-color:rgba(201,162,39,.55);
+  background:linear-gradient(180deg,rgba(86,91,99,.5),rgba(45,48,55,.58));
+}
+.alts-row button b{
+  font-size:12.5px;font-weight:600;line-height:1.25;color:#f0e6cf;
+  display:block;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.alts-row button small{
+  font-size:11px;color:#a7b0bf;display:block;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.alts-row button.more{
+  justify-content:center;align-items:center;min-width:72px;
+  color:#c9a227;font-size:12px;
+}
+.deckwin.min .alts{display:none}
+
 /* ------------------------------------------- the front panel of the case
    Speaker on one side, cassette door on the other — side by side, so the
    recorder look costs no extra height. */

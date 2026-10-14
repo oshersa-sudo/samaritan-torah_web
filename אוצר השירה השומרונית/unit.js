@@ -3850,6 +3850,110 @@ function labelRoll(textId, groupId) {
   g.classList.add('roll');
 }
 
+/* ------------------------------------------- אותו פיוט בפי אחרים
+ *
+ * The rule is the car unit's own, word for word, and for the same reason.
+ *
+ * The archive's own answer comes first: every recording carries the id of the
+ * piyyut it is. But the titles here were written by different hands over
+ * forty years, and the same singing appears as «אשול צדקת אלה» at one and
+ * plainly «אשול» at another — so a title that CONTAINS the other's is taken
+ * as the same piyyut too, and not only at its start: «אור הבקר» sits at the
+ * end of «תסאביך ואור הבקר» and in the middle of «פתחת אשול».
+ *
+ * Two things keep that from binding everything to everything. A word run has
+ * to carry at least one word of three letters or more, so «אה» or «על» alone
+ * cannot match a whole archive. And a leading ו is forgiven — that one letter
+ * is the difference between «ואור» and «אור».
+ *
+ * One name per singer, their closest version: the archive's own id first, an
+ * identical title next, a contained one last, and the longer recording when
+ * those tie.
+ */
+const wEq = (a, b) => a === b || a === 'ו' + b || b === 'ו' + a;
+
+function runIn(shortT, longT) {
+  const A = shortT.split(' '), B = longT.split(' ');
+  if (!A[0] || A.length > B.length) return false;
+  if (!A.some(w => w.length >= 3)) return false;      // nothing thick enough
+  for (let i = 0; i + A.length <= B.length; i++) {
+    let ok = true;
+    for (let j = 0; j < A.length; j++) if (!wEq(A[j], B[i + j])) { ok = false; break; }
+    if (ok) return true;
+  }
+  return false;
+}
+
+/* 0 the archive says so · 1 the same title · 2 one title inside the other */
+function sameSong(x, r) {
+  if (x.y && x.y === r.y) return 0;
+  const xs = [fold(x.ttl || ''), fold(piyName(x.y) || '')];
+  const rs = [fold(r.ttl || ''), fold(piyName(r.y) || '')];
+  for (const a of xs) {
+    for (const b of rs) {
+      if (!a || !b) continue;
+      if (a === b) return 1;
+      if (runIn(a, b) || runIn(b, a)) return 2;
+    }
+  }
+  return -1;
+}
+
+function altsFor(r) {
+  if (!C || !r) return [];
+  const best = {};
+  for (const x of C.recordings) {
+    if (x.id === r.id || x.p === r.p) continue;       // one name per singer
+    const sc = sameSong(x, r);
+    if (sc < 0) continue;
+    const cur = best[x.p];
+    if (!cur || sc < cur.sc || (sc === cur.sc && (x.s || 0) > (cur.x.s || 0)))
+      best[x.p] = { sc, x };
+  }
+  return Object.keys(best).map(k => best[k])
+    .sort((a, b) => a.sc - b.sc || (b.x.s || 0) - (a.x.s || 0))
+    .map(v => v.x);
+}
+
+let ALTS = [], altsOpen = false, altsRec = null;
+
+/* The strip. Closed it shows the first few and offers the rest; opened it
+   shows them all, because a reader who asked for the rest wants to see it. */
+function altsPaint(r, keepOpen) {
+  const box = $('alts');
+  if (!box) return;
+  const list = altsFor(r);
+  ALTS = list;
+  if (!keepOpen) altsOpen = false;
+  box.classList.toggle('hidden', !list.length);
+  if (!list.length) { $('altRow').innerHTML = ''; return; }
+  // three fit without crowding in a window this narrow
+  const FIT = 3;
+  const show = altsOpen ? list : list.slice(0, list.length > FIT ? FIT - 1 : FIT);
+  const rest = list.length - show.length;
+  $('altsCap').textContent = `אותו שיר אצל ${list.length} מבצעים נוספים`;
+  $('altRow').innerHTML = show.map((x, i) =>
+    // the title as it stands at that singer, above the name — the match may
+    // be a loose one, and the listener should see what is being offered
+    `<button data-a="${i}" title="${esc((x.ttl || piyName(x.y)) + ' · ' + perfName(x.p))}">`
+    + `<b>${esc(x.ttl || piyName(x.y))}</b>`
+    + `<small>${esc(perfName(x.p))} · `
+    + (x.n > 1 ? `${x.n} רצועות · ` : '') + dur(x.s) + '</small></button>').join('')
+    + (rest > 0 ? `<button class="more" data-more="1">עוד ${rest}</button>` : '');
+  $('altRow').querySelectorAll('[data-a]').forEach(b => {
+    b.onclick = () => playRec(show[+b.dataset.a].id, 0);
+  });
+  const more = $('altRow').querySelector('[data-more]');
+  if (more) more.onclick = () => {
+    altsOpen = true;
+    // repaint the recording THIS strip is showing. Asking `cur` instead would
+    // be asking what the deck is playing, which is not always the same thing —
+    // and when it is not yet anything, the strip emptied itself.
+    altsPaint(byId(C.recordings, altsRec), true);
+    $('altRow').scrollLeft = $('altRow').scrollWidth;
+  };
+}
+
 /* the cassette's label carries the track and the performer */
 function deckLabel(r, idx) {
   const cut = (s, n) => (s || '').length > n ? s.slice(0, n - 1) + '…' : (s || '');
@@ -3863,6 +3967,9 @@ function deckLabel(r, idx) {
   $('cLine2').textContent = r && r.year ? r.year : '';
   $('cEvent').textContent = r ? eventName(r.e) : '—';
   $('cParts').textContent = r ? (r.parts ? `${r.parts} חלקים` : `${r.n} רצועות`) : 'C-90';
+  // the strip is about the recording, not the track: moving between the parts
+  // of one tape leaves it as it was, and only a new tape repaints it
+  if (altsRec !== (r && r.id)) { altsRec = r && r.id; altsPaint(r); }
 }
 
 /* ---------------------------------------------------------- the dancer
