@@ -22,8 +22,15 @@ CATALOG = os.path.join(UNIT, 'data', 'catalog.json')
 # descriptions, singers, recordings taken down — and they belong here beside
 # catalog.json. Leaving them out is what once put a singer online as
 # "לא ידוע" while his name sat in overrides.json on this machine.
+#
+# The car unit is four more files the site serves — the page, its worker, its
+# manifest and the encoder the recorder needs — and they were missing here.
+# They reached the site once, by hand, and after that an edit to מצב רכב could
+# be made, saved, synced, and still never appear: sync publishes this list and
+# nothing else. web/shira.py already serves exactly these names.
 PUBLISH = ['index.html', 'unit.css', 'unit.js', 'serve.py', 'app.py',
            'desktop.py', 'VERSION', 'CHANGELOG.md',
+           'car.html', 'car-sw.js', 'car.webmanifest', 'lame.min.js',
            'data/catalog.json',
            'data/overrides.json', 'data/additions.json',
            'data/performers.json', 'data/removed.json', 'data/merges.json',

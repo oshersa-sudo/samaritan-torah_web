@@ -240,6 +240,38 @@ PART_MARK = re.compile(
                                    # so "tsedaka" does not lose its last letter
 
 
+# A folder name that is nothing but a part marker: "A", "2", "Disk 3", "1-3".
+# Such a folder is a part of the folder ABOVE it, so every one of them answers
+# to the same empty base and they join each other.
+LEAF_MARK = re.compile(
+    r'^(?:[a-z]'
+    r'|\d{1,3}(?:\s*[-–—]\s*\d{1,3})?'
+    r'|(?:disk|disc|cd|part|חלק|דיסק)\s*\d{1,3})$', re.I)
+
+
+def folder_base(folder):
+    """What this folder would be a part OF — its own name with the part marker
+    taken off.
+
+    This is what keeps two different works apart. The join used to ask only for
+    the same performer, the same parent folder and the same title, and that is
+    satisfied by two *sibling works*: "אהרן כהן/אלהי אדם בן האדמה" and
+    "אהרן כהן/צמות הסכות" both sit under "אהרן כהן", so a file named for the
+    same piyyut inside the second was swallowed as a ninth track of the first.
+    Likewise "שיראן ניר/סכות" and "שיראן ניר/שבועות" are two festivals, and
+    three sabbaths under שבועות are three separate sittings. A part is only a
+    part when the folder names differ by the part marker and nothing else.
+    """
+    leaf = (folder or '').split('/')[-1].strip()
+    if LEAF_MARK.match(leaf):
+        return ''                      # a bare marker: part of the folder above
+    out, prev = leaf, None
+    while out != prev and len(out) > 3:
+        prev = out
+        out = PART_MARK.sub('', out).strip(' -–—_')
+    return (out or leaf).lower()
+
+
 def base_title(s):
     out, prev = (s or '').strip(), None
     while out != prev and len(out) > 3:
@@ -256,7 +288,11 @@ def part_rank(r):
     m = re.search(r'([abc])\s*$', (r['folder'] or '').split('/')[-1], re.I)
     if m:
         return (0, ord(m.group(1).lower()) - 96, r['folder'])
-    return (1, 0, r['folder'])
+    # No number anywhere — and a part with no number is the FIRST part:
+    # the second is the one that had to be told apart, which is why it is
+    # the one carrying the "2". This used to sort below every numbered
+    # part, so "אלהי אברהם יוציאך" played after "אלהי אברהם יוציאך2".
+    return (0, 1, r['folder'])
 
 
 parts = collections.defaultdict(list)
@@ -264,14 +300,15 @@ for r in recordings:
     if r.get('unident'):
         continue
     parent = '/'.join(r['folder'].split('/')[:-1])
-    parts[(r['performer'], parent, base_title(r['title']).lower())].append(r)
+    parts[(r['performer'], parent, base_title(r['title']).lower(),
+           folder_base(r['folder']))].append(r)
 
 by_rec = collections.defaultdict(list)
 for t in tracks:
     by_rec[t['rec']].append(t)
 
 merged_away, merged_groups = set(), 0
-for (perf, parent, base), group in parts.items():
+for (perf, parent, base, leaf), group in parts.items():
     if len(group) < 2 or len(base) < 2:
         continue
     group.sort(key=part_rank)

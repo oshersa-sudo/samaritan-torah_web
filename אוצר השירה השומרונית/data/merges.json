@@ -354,21 +354,6 @@
     "n": "אשול (1)"
    },
    {
-    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol10 - yefet tsedaka.mp3",
-    "s": 495,
-    "n": "אשול (10)"
-   },
-   {
-    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol11 - yefet tsedaka.mp3",
-    "s": 500,
-    "n": "אשול (11)"
-   },
-   {
-    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol12 - yefet tsedaka.mp3",
-    "s": 508,
-    "n": "אשול (12)"
-   },
-   {
     "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol2 - yefet tsedaka.mp3",
     "s": 614,
     "n": "אשול (2)"
@@ -409,6 +394,21 @@
     "n": "אשול (9)"
    },
    {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol10 - yefet tsedaka.mp3",
+    "s": 495,
+    "n": "אשול (10)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol11 - yefet tsedaka.mp3",
+    "s": 500,
+    "n": "אשול (11)"
+   },
+   {
+    "f": "שיראן ניר/שבועות/שבת הדברים-שביעית/אשול - יפת צדקה/eshol12 - yefet tsedaka.mp3",
+    "s": 508,
+    "n": "אשול (12)"
+   },
+   {
     "f": "שיראן ניר/מועדים-שבתות מועדים/פתחכ - יפת צדקה/04-fetac _ AudioTrack 04.mp3",
     "s": 402,
     "n": "פתחך יהוה נסי - שבתות המועדים"
@@ -433,9 +433,6 @@
   "letter": "R",
   "parts": [
    "eshol1 — yefet tsedaka",
-   "eshol10 — yefet tsedaka",
-   "eshol11 — yefet tsedaka",
-   "eshol12 — yefet tsedaka",
    "eshol2 — yefet tsedaka",
    "eshol3 — yefet tsedaka",
    "eshol4 — yefet tsedaka",
@@ -444,6 +441,9 @@
    "eshol7 — yefet tsedaka",
    "eshol8 — yefet tsedaka",
    "eshol9 — yefet tsedaka",
+   "eshol10 — yefet tsedaka",
+   "eshol11 — yefet tsedaka",
+   "eshol12 — yefet tsedaka",
    "fetac _ AudioTrack 04"
   ]
  },
