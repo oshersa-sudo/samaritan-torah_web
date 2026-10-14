@@ -154,7 +154,8 @@ for t in tracks:
 # of paper photographed once, so the map is written the way it is edited —
 # image → the recordings it serves — and turned here into the other direction,
 # which is how a player asks: this recording is playing, what is its text?
-SONG_TEXT = {}
+SONG_TEXT = collections.defaultdict(list)
+PAGE_RE = re.compile(r'(\d{1,2})\s*$')
 try:
     with open(D('song_text.json'), encoding='utf-8') as fh:
         st = json.load(fh)
@@ -164,13 +165,22 @@ try:
         # they stand they are a URL only by the browser's good manners; encoded
         # here they are one by right.
         url = name if '://' in name else base + urllib.parse.quote(name)
+        # A piyyut can run over more than one sheet — "נפתח פינו 1", "2", "3" —
+        # and those are not three texts but one, in order. The order is the
+        # number at the end of the name, and the player hangs them one under
+        # the other so the climb runs through all of them without a seam.
+        stem = os.path.splitext(os.path.basename(name))[0]
+        m = PAGE_RE.search(stem)
+        page = v.get('page') if v.get('page') is not None else (int(m.group(1)) if m else 1)
         for rid in (v.get('recs') or []):
-            SONG_TEXT[rid] = url
+            SONG_TEXT[rid].append((page, name, url))
 except (OSError, ValueError):
     pass
+SONG_TEXT = {rid: [u for _, _, u in sorted(v)] for rid, v in SONG_TEXT.items()}
 if SONG_TEXT:
-    print('song text: %d images → %d recordings'
-          % (len({v for v in SONG_TEXT.values()}), len(SONG_TEXT)))
+    print('song text: %d images → %d recordings (%d עם יותר מדף אחד)'
+          % (len({u for v in SONG_TEXT.values() for u in v}), len(SONG_TEXT),
+             sum(1 for v in SONG_TEXT.values() if len(v) > 1)))
 
 out_recs = []
 for r in sorted(recs, key=lambda r: r['id']):
@@ -186,7 +196,7 @@ for r in sorted(recs, key=lambda r: r['id']):
         'kind': r['kind'],
         'parts': r.get('parts', 0),
         'hidden': r.get('hidden', 0),
-        'tx':   SONG_TEXT.get(r['id'], ''),      # צילום מילות השיר, אם יש
+        'tx':   SONG_TEXT.get(r['id'], []),      # דפי מילות השיר, אם יש
         'tr':   [{'f': t['file'], 's': t['sec'], 'n': t['name']}
                  for t in sorted(by_rec[r['id']], key=lambda t: t['ord'])],
     })

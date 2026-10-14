@@ -4760,7 +4760,7 @@ const PIX = {
  * a verse, and for that there is a finger: touching the page stops the climb
  * and hands it over, and the button gives it back.
  */
-const TXT = { on: false, auto: true, rec: 0, url: '', full: false, lock: 0 };
+const TXT = { on: false, auto: true, rec: 0, pages: [], key: '', full: false, lock: 0 };
 
 function txtScrollable() {
   const s = $('txtScroll');
@@ -4803,29 +4803,45 @@ function txtAutoSet(on) {
 }
 
 /* the page of whichever recording is in the deck */
+/* A piyyut does not always fit on one sheet. "נפתח פינו" is three, and they
+ * are not three texts but one — so they hang one under the other inside the
+ * same scroller, and the climb runs from the first line of the first sheet to
+ * the last of the last without a seam. The clock knows nothing of pages. */
 function txtLoad() {
   const r = byId(C.recordings, cur.rec);
-  const url = (r && r.tx) || '';
+  const pages = !r ? [] : (Array.isArray(r.tx) ? r.tx : (r.tx ? [r.tx] : []));
   TXT.rec = r ? r.id : 0;
-  TXT.url = url;
-  const box = $('txt'), img = $('txtImg');
-  box.classList.toggle('empty', !url);
-  if (!url) {
-    img.removeAttribute('src');
+  TXT.pages = pages;
+  const box = $('txt'), wrap = $('txtScroll');
+  box.classList.toggle('empty', !pages.length);
+  if (!pages.length) {
+    wrap.innerHTML = '';
     $('txtNote').textContent = r
       ? 'עדיין אין צילום של מילות השיר הזה'
       : 'אין הקלטה בנגן';
     return;
   }
-  if (img.getAttribute('src') !== url) {
-    img.setAttribute('src', url);
-    img.onload = () => { $('txtScroll').scrollTop = 0; txtFollow(); };
-    img.onerror = () => {
-      box.classList.add('empty');
-      $('txtNote').textContent = 'לא ניתן להביא את צילום המילים כרגע';
-    };
+  // redrawn only when the sheets actually change: rebuilding the images on
+  // every track of the same recording would blink the page at every seam
+  const key = pages.join('|');
+  if (TXT.key !== key) {
+    TXT.key = key;
+    wrap.innerHTML = pages.map((u, i) =>
+      '<img class="txt-img" alt="מילות השיר' +
+      (pages.length > 1 ? ' — דף ' + (i + 1) + ' מתוך ' + pages.length : '') +
+      '" src="' + esc(u) + '">').join('');
+    let left = pages.length;
+    wrap.querySelectorAll('.txt-img').forEach(im => {
+      im.onload = () => { if (!--left) { wrap.scrollTop = 0; txtFollow(); } };
+      im.onerror = () => {
+        if (!wrap.querySelector('.txt-img[src]')) {
+          box.classList.add('empty');
+          $('txtNote').textContent = 'לא ניתן להביא את צילום המילים כרגע';
+        }
+      };
+    });
   }
-  $('txtScroll').scrollTop = 0;
+  wrap.scrollTop = 0;
   txtFollow();
 }
 
