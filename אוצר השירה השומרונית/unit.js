@@ -3974,6 +3974,7 @@ function deckLabel(r, idx) {
     altsPaint(r);
     // another recording is another text, and the page starts at its top again
     if (TXT.on) { txtAutoSet(true); txtLoad(); }
+    txtHintPaint();
   }
 }
 
@@ -4677,156 +4678,14 @@ $('dwQuiet').onclick = () => {
 };
 paintQuiet();
 
-/* ------------------------------------------------- sending the sound out
- * A page cannot pair a Bluetooth speaker itself. Pairing belongs to the
- * device's own settings, and the web's Bluetooth API reaches data services,
- * never the audio profile — so no browser can make this button do that part.
+/* השמעה ברמקול חיצוני ושידור אל מסך — הוסרו.
  *
- * What it can do is the part that matters once the speaker is paired: choose
- * which of the outputs the device already has the singing comes out of. Pair
- * the speaker once in the phone's or the computer's settings, press this,
- * pick it from the list, and the recording plays there instead of out of the
- * machine in your hand. The choice is remembered per device, and re-made on
- * the next recording; if the speaker has gone, playback quietly falls back.
+ * שני מקשים ישבו כאן ועשו מעט מאוד: אחד פתח את בורר יעדי ההשמעה של
+ * הדפדפן, והאחר את בורר מכשירי השידור של המערכת. שניהם קיימים ממילא
+ * במכשיר עצמו — בהגדרות הקול ובתפריט הדפדפן — ובשורה צרה הם לקחו את
+ * מקומם של מקשים שעושים משהו שאין לו תחליף. יעד ההשמעה נקבע מעתה
+ * בהגדרות המכשיר, כפי שהוא נקבע לכל שאר מה שמשמיע בו.
  */
-const BT = { id: localStorage.getItem('shira_sink') || '', label: '' };
-const btCan = () => typeof au.setSinkId === 'function';
-
-function paintBT() {
-  const b = $('dwBT'), on = !!BT.id && BT.id !== 'default';
-  b.setAttribute('aria-pressed', on ? 'true' : 'false');
-  b.classList.toggle('unsupported', !btCan());
-  b.title = !btCan() ? 'הדפדפן הזה אינו מאפשר לבחור את יעד ההשמעה — הבחירה נעשית בהגדרות המכשיר'
-          : on ? `ההשמעה יוצאת אל ${BT.label || 'רמקול חיצוני'} — לחיצה תחזיר אותה למכשיר`
-               : "השמעה ברמקול בלוטות'";
-}
-
-/* setSinkId rejects if the device has gone; then the sound simply stays where
- * it is, and the button goes back to showing the machine's own speaker. */
-async function btRoute(id, label, quiet) {
-  try {
-    await au.setSinkId(id || '');
-    BT.id = id || ''; BT.label = label || '';
-    localStorage.setItem('shira_sink', BT.id);
-    if (!quiet) toast(BT.id ? `ההשמעה יוצאת אל ${BT.label || 'הרמקול שנבחר'}`
-                            : 'ההשמעה חזרה אל המכשיר');
-  } catch (e) {
-    BT.id = ''; localStorage.removeItem('shira_sink');
-    if (!quiet) toast('לא ניתן היה לשלוח את ההשמעה אל הרמקול שנבחר', true);
-  }
-  paintBT();
-}
-
-$('dwBT').onclick = async () => {
-  sfx('click');
-  if (!btCan()) {
-    toast("בדפדפן זה יעד ההשמעה נקבע בהגדרות המכשיר: צמדו את רמקול הבלוטות' " +
-          'והקול יעבור אליו מאליו', true);
-    return;
-  }
-  if (BT.id) return btRoute('', '');            // pressing again brings it home
-  // the browser's own chooser where there is one: it needs no permission and
-  // names the outputs properly
-  if (navigator.mediaDevices && navigator.mediaDevices.selectAudioOutput) {
-    try {
-      const dev = await navigator.mediaDevices.selectAudioOutput();
-      if (dev && dev.deviceId) return btRoute(dev.deviceId, dev.label);
-      return;
-    } catch (e) { if (e && e.name === 'NotAllowedError') return; }
-  }
-  // otherwise, whatever enumerateDevices will admit to
-  let outs = [];
-  try {
-    outs = (await navigator.mediaDevices.enumerateDevices())
-             .filter(d => d.kind === 'audiooutput');
-  } catch (e) {}
-  outs = outs.filter(d => d.deviceId && d.deviceId !== 'default');
-  if (!outs.length) {
-    toast("לא נמצא רמקול בלוטות' מצומד. צמדו אותו בהגדרות המכשיר ונסו שוב", true);
-    return;
-  }
-  if (outs.length === 1) return btRoute(outs[0].deviceId, outs[0].label);
-  btMenu(outs);
-};
-
-/* a small list under the button, only when there is more than one output */
-function btMenu(outs) {
-  let m = $('btMenu');
-  if (!m) {
-    m = document.createElement('div');
-    m.id = 'btMenu'; m.className = 'bt-menu';
-    $('dwBar').appendChild(m);
-    addEventListener('pointerdown', e => {
-      if (!m.contains(e.target) && e.target !== $('dwBT')) m.classList.add('hidden');
-    });
-  }
-  m.innerHTML = '';
-  m.classList.remove('hidden');       // measurable before the names go in
-  outs.forEach((d, i) => {
-    const b = document.createElement('button');
-    const name = d.label || `יציאת שמע ${i + 1}`;
-    m.appendChild(b);
-    // a speaker's own name is often longer than the list is wide, so it
-    // travels across rather than being cut off where it matters most
-    rollInto(b, name, 7);
-    b.onclick = () => { m.classList.add('hidden'); btRoute(d.deviceId, name); };
-  });
-}
-
-/* the sink is a property of the element, so it has to be re-set on each new
- * recording — but silently: the listener chose it once and meant it */
-au.addEventListener('loadedmetadata', () => {
-  if (BT.id && btCan() && au.sinkId !== BT.id) btRoute(BT.id, BT.label, true);
-});
-if (BT.id && btCan()) btRoute(BT.id, BT.label, true); else paintBT();
-
-/* --------------------------------------------- watching it on a television
- * The Remote Playback API is the part of this the browser really does: it
- * puts up the device picker the system already knows about — a Chromecast, a
- * television running Cast — and hands the recording over to it. Safari has
- * its own door to the same room, for AirPlay. Where neither exists the key
- * says so rather than pretending.
- */
-function castCan() {
-  return !!(au.remote && typeof au.remote.prompt === 'function')
-      || typeof au.webkitShowPlaybackTargetPicker === 'function';
-}
-function paintCast(state) {
-  const b = $('dwCast');
-  if (state === 'connected' || state === 'connecting') {
-    b.setAttribute('aria-pressed', 'true');
-    b.title = 'ההקלטה מוצגת במכשיר חיצוני — לחיצה תנתק';
-  } else {
-    b.setAttribute('aria-pressed', 'false');
-    b.title = castCan() ? 'צפייה במכשיר טלוויזיה'
-                        : 'הדפדפן הזה אינו תומך בשידור אל מסך חיצוני';
-  }
-}
-$('dwCast').onclick = async () => {
-  sfx('click');
-  if (au.remote && au.remote.prompt) {
-    try { await au.remote.prompt(); }
-    catch (e) {
-      // the picker being dismissed is not a failure worth a message
-      if (e && e.name !== 'NotAllowedError' && e.name !== 'AbortError')
-        toast('לא נמצא מכשיר לשידור ברשת הזו', true);
-    }
-    return;
-  }
-  if (au.webkitShowPlaybackTargetPicker) return au.webkitShowPlaybackTargetPicker();
-  toast('הדפדפן הזה אינו תומך בשידור אל מסך חיצוני. ' +
-        'אפשר להטיל את המסך כולו מתוך תפריט הדפדפן', true);
-};
-if (au.remote) {
-  au.remote.addEventListener('connect', () => paintCast('connected'));
-  au.remote.addEventListener('connecting', () => paintCast('connecting'));
-  au.remote.addEventListener('disconnect', () => paintCast('disconnected'));
-  // the key dims where the network has nothing to send to
-  try {
-    au.remote.watchAvailability(has => $('dwCast').classList.toggle('away', !has));
-  } catch (e) {}
-}
-paintCast();
 
 /* ------------------------------------------------ sharing this recording
  * The link carries the recording's own id, and the page opens on it, so what
@@ -4920,6 +4779,22 @@ function txtFollow() {
   $('txtScroll').scrollTop = at * span;
 }
 
+/* The key says for itself that there is something behind it.
+ *
+ * A screen of paper is no use to anyone who does not know it is there, and
+ * nothing on a row of small keys tells you which of them has something today
+ * and which has nothing. So when this recording has a text the key beats
+ * quietly and a line under it, in white, says what pressing it will do. It
+ * goes the moment the text is opened: it is an invitation, not a sign. */
+function txtHintPaint() {
+  const b = $('dwText'), hint = $('txtHint');
+  if (!b || !hint) return;
+  const r = byId(C.recordings, cur.rec);
+  const show = !!(r && r.tx) && !TXT.on;
+  b.classList.toggle('has', show);
+  hint.classList.toggle('hidden', !show);
+}
+
 function txtAutoSet(on) {
   TXT.auto = on;
   $('txtAuto').classList.toggle('on', on);
@@ -4961,6 +4836,7 @@ function txtOff() {
   if (TXT.full) txtFull(false);
   $('dwText').setAttribute('aria-pressed', 'false');
   $('dwText').title = 'מילות השיר';
+  txtHintPaint();                    // closed again, so the invitation returns
   dancerWatch();                     // the cassette is back, and so may she be
 }
 
@@ -4990,6 +4866,7 @@ $('dwText').onclick = () => {
   $('dwText').title = 'חזרה אל הקלטת';
   txtAutoSet(true);
   txtLoad();
+  txtHintPaint();                    // opened: the invitation has been taken
 };
 
 $('txtAuto').onclick = () => txtAutoSet(!TXT.auto);

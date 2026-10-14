@@ -545,18 +545,6 @@
          השורה נשמרת להודעות המכשיר עצמו — מקליט, מעלה — ובמקומה יושבים
          כפתורי השידור, השיתוף והרקדנית. -->
     <span class="dw-name" id="dwName"></span>
-    <!-- שידור אל מסך חיצוני: כרומקאסט, וב־Safari אפל־טי־וי -->
-    <button class="dw-btn dw-ico" id="dwCast" title="צפייה במכשיר טלוויזיה">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <rect class="cs-scr" x="3" y="4.5" width="18" height="13" rx="2"
-              fill="none" stroke-width="1.9"/>
-        <g class="cs-wav" fill="none" stroke-width="1.9" stroke-linecap="round">
-          <path d="M3 14.6a4.9 4.9 0 0 1 4.9 4.9"/>
-          <path d="M3 11a8.5 8.5 0 0 1 8.5 8.5"/>
-        </g>
-        <circle class="cs-dot" cx="3.6" cy="19" r="1.5"/>
-      </svg>
-    </button>
     <!-- שיתוף ההקלטה הזו בוואטסאפ, עם קישור החוזר אליה ממש -->
     <button class="dw-btn dw-ico" id="dwShare" title="שיתוף ההקלטה בוואטסאפ">
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -594,31 +582,29 @@
     </button>
     <!-- מילות השיר, כפי שצולמו מן הכתב. כפתור נפרד מזה של התמונות: זה מביא
          צילומים מן האינטרנט, וזה את הטקסט של הפיוט המושמע עצמו. -->
+    <span class="dw-keywrap">
     <button class="dw-btn dw-ico dw-txt" id="dwText" aria-pressed="false"
             title="מילות השיר">
+      <!-- מגילה: שני גלילים ובין שורות הכתב. זה מה שפיוט כתוב עליו,
+           וזה גם מה שמבדיל אותו מיד מסמליל התצלום שלצידו. -->
       <svg viewBox="0 0 24 24" aria-hidden="true">
-        <!-- מגילה: דף ועליו שורות כתב -->
-        <path class="tx-sheet" d="M5.2 3.4h13.6v17.2H5.2z" fill="none"
-              stroke-width="1.9" stroke-linejoin="round"/>
-        <g class="tx-line" stroke-width="1.6" stroke-linecap="round">
-          <path d="M8 7.6h8"/><path d="M8 11h8"/><path d="M8 14.4h5.4"/>
+        <rect class="tx-roll" x="4" y="2.6" width="16" height="3.1" rx="1.55"/>
+        <rect class="tx-roll" x="4" y="18.3" width="16" height="3.1" rx="1.55"/>
+        <path class="tx-sheet" d="M5.9 5.7h12.2v12.6H5.9z" fill="none"
+              stroke-width="1.6"/>
+        <g class="tx-line" stroke-width="1.5" stroke-linecap="round">
+          <path d="M8.3 9.1h7.4"/><path d="M8.3 12h7.4"/><path d="M8.3 14.9h4.8"/>
         </g>
       </svg>
     </button>
+    <!-- כשיש לשיר טקסט, הכפתור אומר זאת בעצמו: הוא פועם, וחץ קטן מצביע
+         עליו מלמטה. ההודעה יורדת ברגע שנפתח הטקסט — היא הזמנה, לא שלט. -->
+    <span class="txt-hint hidden" id="txtHint" aria-hidden="true">
+      <i class="txt-hint-ar"></i>הצג את טקסט השיר
+    </span>
+    </span>
     <!-- ידית הנשיאה של הטייפ, מקופלת על גב המכשיר ונושאת את שם היצרן -->
     <span class="dw-handle" aria-hidden="true"><i><b>Panasonic</b></i></span>
-    <!-- שולח את ההשמעה אל רמקול הבלוטות' של המכשיר. הצימוד עצמו נעשה
-         בהגדרות המכשיר; כאן בוחרים לאן הקול יוצא. -->
-    <button class="dw-btn dw-bt" id="dwBT" aria-pressed="false"
-            title="השמעה ברמקול בלוטות'">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path class="bt-rune" d="M7 8.5 17 15.5 12 20.5V3.5L17 8.5 7 15.5"/>
-        <g class="bt-no">
-          <circle cx="17.8" cy="6.2" r="4.6" fill="none" stroke-width="2"/>
-          <path d="M14.5 6.2h6.6" stroke-width="2" stroke-linecap="round"/>
-        </g>
-      </svg>
-    </button>
     <!-- משתיק את נקישות המקשים בלבד; ההקלטה עצמה אינה מושפעת -->
     <button class="dw-btn dw-quiet" id="dwQuiet" aria-pressed="false"
             title="השתקת נקישות המקשים">

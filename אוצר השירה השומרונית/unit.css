@@ -422,8 +422,13 @@ body{
 .dw-btn:active{box-shadow:inset 0 2px 3px rgba(0,0,0,.55)}
 /* the three keys that took the place of the track's name: casting to a
    screen, sharing the recording, and calling the dancer off */
-.dw-ico{padding:3px 6px;line-height:0}
-.dw-ico svg{width:15px;height:15px;display:block}
+/* שני מקשים ירדו מן השורה — השידור אל מסך והשמעה ברמקול חיצוני — ומה
+   שנותר גדל על חשבונם. בשורה צרה כזו ארבעה פיקסלים הם הבדל בין מקש
+   שנלחץ בבטחה בנסיעה לבין מקש שמחטיאים. */
+.dw-ico{padding:4px 9px;line-height:0}
+.dw-ico svg{width:18px;height:18px;display:block}
+.dw-btn{padding:3px 11px;font-size:.86rem}
+.dw-bar{gap:7px}
 #dwCast .cs-scr,#dwCast .cs-wav{stroke:#cfd6e2}
 #dwCast .cs-dot{fill:#cfd6e2}
 #dwCast[aria-pressed="true"]{background:linear-gradient(180deg,#1e3d63,#132840)}
@@ -508,6 +513,52 @@ body{
                     rgba(0,0,0,0) 42%,rgba(0,0,0,.5) 100%),
     linear-gradient(115deg,rgba(255,255,255,.1) 0,rgba(255,255,255,0) 34%);
 }
+/* ---- הסמליל של מילות השיר, וההזמנה לפתוח אותן ------------------------- */
+#dwText .tx-roll{fill:#cfd6e2}
+#dwText .tx-sheet{stroke:#cfd6e2}
+#dwText .tx-line{stroke:#9aa3b2}
+#dwText[aria-pressed="true"]{background:linear-gradient(180deg,#6b5518,#45370f)}
+#dwText[aria-pressed="true"] .tx-roll{fill:#f0d890}
+#dwText[aria-pressed="true"] .tx-sheet{stroke:#f0d890}
+#dwText[aria-pressed="true"] .tx-line{stroke:#c9a227}
+
+/* יש טקסט לשיר הזה: המקש פועם, ולא זז ממקומו — פעימה היא הזמנה, קפיצה
+   היא הטרדה. הפעימה נעצרת למי שביקש מן המערכת פחות תנועה. */
+#dwText.has{animation:txtbeat 2.1s ease-in-out infinite}
+@keyframes txtbeat{
+  0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 0 0 rgba(240,216,144,.5)}
+  55%    {box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 0 6px rgba(240,216,144,0)}
+}
+#dwText.has .tx-roll{fill:#f0d890}
+#dwText.has .tx-sheet{stroke:#f0d890}
+
+/* העטיפה קיימת כדי שההודעה תיתלה על המקש עצמו. מדידה בזמן ריצה נכשלה
+   כאן בדיוק כפי שמדידה נכשלת תמיד: היא נעשתה לפני שהחלון קיבל את מידותיו,
+   יצאה אפס, וההודעה נדחקה אל קצה השורה. CSS אינו צריך לחכות לאיש. */
+.dw-keywrap{position:relative;display:flex}
+.txt-hint{
+  position:absolute;top:calc(100% + 7px);right:0;z-index:6;
+  padding:4px 9px;border-radius:7px;white-space:nowrap;pointer-events:none;
+  background:rgba(20,18,16,.92);border:1px solid rgba(240,216,144,.5);
+  color:#fff;                                   /* הכיתוב בלבן, כבקשתך */
+  font-size:11.5px;line-height:1.5;
+  box-shadow:0 3px 10px rgba(0,0,0,.5);
+  animation:txthint 2.1s ease-in-out infinite;
+}
+.txt-hint.hidden{display:none}
+/* החץ מצביע מלמטה אל המקש */
+.txt-hint-ar{
+  position:absolute;bottom:100%;right:14px;width:0;height:0;
+  border:5px solid transparent;border-bottom-color:rgba(240,216,144,.5);
+}
+@keyframes txthint{
+  0%,100%{transform:translateY(0);opacity:.96}
+  55%    {transform:translateY(-2.5px);opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  #dwText.has,.txt-hint{animation:none}
+}
+
 /* ---- מילות השיר -------------------------------------------------------
  * מסך של נייר, במקומה של הקלטת. הדף נפרש לרוחב המסגרת ותו לא — זה כל
  * ה"זום על הטקסט" שנדרש: ברוחב מלא אין מה לגלול ימינה ושמאלה, ונשארת
