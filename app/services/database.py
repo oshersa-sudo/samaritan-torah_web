@@ -726,6 +726,15 @@ def _seed_dict_glosses():
                     'DELETE FROM dict_word_index WHERE word IN (%s)'
                     % ','.join('?' * len(selfg)), tuple(selfg)).rowcount
 
+        for e in (data.get('enrich') or []):
+            cur = conn.execute(
+                "UPDATE dict_word_index SET gloss=?, "
+                "arabic=COALESCE(NULLIF(?, ''), arabic), gloss_src=? "
+                "WHERE word=? AND TRIM(COALESCE(gloss, ''))=?",
+                (e['to'], e.get('arabic') or '', e.get('src') or '',
+                 e['word'], e['from']))
+            filled += cur.rowcount
+
         if n_noar and os.path.exists(_DICT_ARABIC):
             try:
                 with open(_DICT_ARABIC, encoding='utf-8') as fh:
