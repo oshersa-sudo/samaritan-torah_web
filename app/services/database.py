@@ -922,6 +922,22 @@ def _seed_word_align():
         conn.execute('CREATE TABLE IF NOT EXISTS word_align('
                      'verse_id INTEGER, pos INTEGER, ar TEXT, arab TEXT, en TEXT, '
                      'he TEXT, PRIMARY KEY(verse_id, pos))')
+        # ...and its columns are brought up to what the reader asks for. The
+        # gap-filler selects ar, arab, en and he in one statement inside a try
+        # that swallows OperationalError: one column missing and the whole table
+        # silently contributes nothing, which is precisely what a verse with
+        # rows-but-no-Aramaic looks like. Adding a column cannot lose a row, and
+        # the check means it happens once.
+        have = {r[1] for r in conn.execute('PRAGMA table_info(word_align)')}
+        for col in ('ar', 'arab', 'en', 'he'):
+            if col not in have:
+                conn.execute('ALTER TABLE word_align ADD COLUMN %s TEXT' % col)
+                print('[word-align] column %s was missing and has been added' % col)
+        try:
+            conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS word_align_vp '
+                         'ON word_align(verse_id, pos)')
+        except Exception:
+            pass            # already keyed, or holds duplicates; neither is fatal
         cur = conn.cursor()
         vals = [(r['v'], r['p'], r.get('ar', ''), r.get('arab', ''), '', r.get('he', ''))
                 for r in rows]
@@ -948,8 +964,7 @@ def _seed_word_align():
         print('[word-align] %s' % exc)
     finally:
         conn.close()
-    if done:
-        print('[word-align] %d words given their Targum alignment' % done)
+    print('[word-align] %d of %d words given their Targum alignment' % (done, len(rows)))
 
 
 _seed_word_align()
