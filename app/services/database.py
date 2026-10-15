@@ -887,6 +887,59 @@ def _seed_interp_arabic():
 _seed_interp_arabic()
 
 
+_WORD_ALIGN_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                 'data', 'word_align_patch.json')
+
+
+def _seed_word_align():
+    """Give the forty-six verses that showed no word glossary their alignment.
+
+    They were never short of sources: each had its Targum, or — being a Samaritan
+    expansion — the Torah's own wording standing a second time somewhere that has
+    one, and word_gloss held a row for every token. What the rows held was the
+    token repeated as its own gloss, which the panel rightly discards.
+
+    INSERT OR IGNORE is the whole guard: a word that already has a row keeps it,
+    so nothing curated and nothing corrected online is overwritten, and a second
+    run has nothing to do.
+    """
+    if not os.path.exists(_WORD_ALIGN_PATCH):
+        return
+    try:
+        with open(_WORD_ALIGN_PATCH, encoding='utf-8') as fh:
+            rows = json.load(fh).get('rows', [])
+    except Exception as exc:
+        print('[word-align] %s' % exc)
+        return
+    if not rows:
+        return
+    conn = sqlite3.connect(DB_PATH)
+    done = 0
+    try:
+        names = {r[0] for r in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'")}
+        if 'word_align' not in names:
+            conn.close()
+            return
+        cur = conn.cursor()
+        cur.executemany(
+            'INSERT OR IGNORE INTO word_align(verse_id, pos, ar, arab, en, he) '
+            'VALUES (?,?,?,?,?,?)',
+            [(r['v'], r['p'], r.get('ar', ''), r.get('arab', ''), '', r.get('he', ''))
+             for r in rows])
+        done = cur.rowcount
+        conn.commit()
+    except Exception as exc:
+        print('[word-align] %s' % exc)
+    finally:
+        conn.close()
+    if done:
+        print('[word-align] %d words given their Targum alignment' % done)
+
+
+_seed_word_align()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
@@ -1619,6 +1672,11 @@ def _fill_uncovered_words(conn, verse_ids, out):
             m = re.match(r'^\s*\S+\s*[-–—(]\s*(.+?)\s*\)?\s*$', he)
             if m and m.group(1).strip():
                 he = m.group(1).strip()
+            # ...and where word_gloss holds ONLY the word again it says nothing, so
+            # it must not outrank the aligner's gloss. This is the whole reason the
+            # panel showed these verses blank: a gloss equal to its word is dropped.
+            if a and (a['he'] or '').strip() and _ds_match(tk, he):
+                he = (a['he'] or '').strip()
             aram = (a['ar'] if a else '') or ''
             arab = (a['arab'] if a else '') or ''
             eng = (a['en'] if a else '') or ''
