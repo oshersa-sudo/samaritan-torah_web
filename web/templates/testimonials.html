@@ -190,7 +190,11 @@
     document.documentElement.dir = RTL[l] ? 'rtl' : 'ltr';
     document.getElementById('backlink').textContent = BACK[l];
     document.getElementById('printbtn').textContent = PRN[l];
-    try{ localStorage.setItem('as_lang', l); }catch(e){}
+    // this visit only: the app's own preference (uiLang) is not rewritten from here,
+    // so reading one quotation in English does not turn the whole app English
+    try{ sessionStorage.setItem('tst_lang', l); }catch(e){}
+    // and the address carries it, so a reload keeps the choice
+    try{ history.replaceState(null, '', location.pathname + '?lang=' + l); }catch(e){}
   }
 
   function zoom(n){
@@ -202,12 +206,15 @@
   }
 
   (function(){
-    // ?lang= wins, because that is the app handing over the reader's choice;
-    // otherwise the language this device last chose, in the app or here.
+    // ?lang= first — it is either the app handing over the reader's choice or the
+    // switch on this page writing itself into the address. Then the last switch
+    // made here, then the app's own stored preference, so arriving at a bare
+    // /testimonials still opens in the right language.
     var q = new URLSearchParams(location.search).get('lang');
-    var saved = null;
-    try{ saved = localStorage.getItem('as_lang'); }catch(e){}
-    setLang(q || saved || 'he');
+    var mine = null, app = null;
+    try{ mine = sessionStorage.getItem('tst_lang'); }catch(e){}
+    try{ app = localStorage.getItem('uiLang'); }catch(e){}
+    setLang(q || mine || app || 'he');
     zoom(0);
   })();
 </script>
