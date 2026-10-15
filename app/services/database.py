@@ -844,6 +844,49 @@ def _seed_interp_written():
 _seed_interp_written()
 
 
+_INTERP_ARABIC = os.path.join(os.path.dirname(__file__), '..', '..',
+                              'data', 'interp_arabic.json')
+
+
+def _seed_interp_arabic():
+    """Give an existing Hebrew commentary its Arabic, where it has none.
+
+    These verses already carry a commentary that announces itself, so the
+    written-commentary seeder deliberately leaves them alone — and that is why
+    their Arabic stayed empty. The rule here is the narrowest one that does the
+    job: write the Arabic only into a row that has none, so a translation
+    corrected online is never overwritten, and a rerun finds nothing to do.
+    """
+    if not os.path.exists(_INTERP_ARABIC):
+        return
+    try:
+        with open(_INTERP_ARABIC, encoding='utf-8') as fh:
+            rows = json.load(fh)
+    except Exception as exc:
+        print('[interp-ar] %s' % exc)
+        return
+    conn = sqlite3.connect(DB_PATH)
+    done = 0
+    try:
+        cur = conn.cursor()
+        cur.executemany(
+            "UPDATE verses SET interpretation_ar=? WHERE id=? "
+            "AND TRIM(COALESCE(interpretation_ar,''))='' "
+            "AND TRIM(COALESCE(interpretation,''))<>''",
+            [(r['ar'], r['id']) for r in rows if (r.get('ar') or '').strip()])
+        done = cur.rowcount
+        conn.commit()
+    except Exception as exc:
+        print('[interp-ar] %s' % exc)
+    finally:
+        conn.close()
+    if done:
+        print('[interp-ar] %d commentaries given their Arabic' % done)
+
+
+_seed_interp_arabic()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
