@@ -2923,6 +2923,27 @@ def api_apparatus():
 
 # what each panel would find for these verses — the sheet behind the one button
 # asks this so it can leave out a source that has nothing to say here
+# the testimonials page: read once from its data file, never from the database,
+# because these are words people wrote and not text the app derives
+_TESTIMONIALS = None
+
+
+@app.route('/api/testimonials')
+def api_testimonials():
+    global _TESTIMONIALS
+    if _TESTIMONIALS is None:
+        path = os.path.join(os.path.dirname(__file__), '..', 'data', 'testimonials.json')
+        try:
+            import json as _j
+            with open(path, encoding='utf-8') as fh:
+                _TESTIMONIALS = _j.load(fh)
+        except Exception as exc:
+            app.logger.warning('testimonials: %s', exc)
+            print('[testimonials] %s' % exc)
+            _TESTIMONIALS = []
+    return jsonify(_TESTIMONIALS)
+
+
 @app.route('/api/verse_sources')
 def api_verse_sources():
     return jsonify(db.get_verse_sources(_ids_arg()))

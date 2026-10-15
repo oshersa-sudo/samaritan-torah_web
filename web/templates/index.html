@@ -340,6 +340,7 @@
   <button class="menu-item" data-act="lang"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="mi-label" data-i18n="m_lang">שנה שפה</span></button>
   <!-- "מה חדש?" מעומעם עד פרסום הגרסה הראשונה — להסיר את disabled כדי להחזירו -->
   <button class="menu-item" data-act="whatsnew"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span class="mi-label" data-i18n="m_whatsnew">מה חדש?</span></button>
+  <button class="menu-item" data-act="testimonials"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="mi-label" data-i18n="m_testimonials">מה כותבים עלינו</span></button>
   <button class="menu-item" data-act="help"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span class="mi-label" data-i18n="m_help">עזרה למשתמש</span></button>
   <button class="menu-item" data-act="tour"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg><span class="mi-label" data-i18n="m_tour">סרטון הסבר מודרך</span></button>
   <button class="menu-item" data-act="version"><svg class="mi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="mi-label" data-i18n="m_version">גרסא נוכחית</span></button>
@@ -440,6 +441,20 @@
 </div>
 
 <!-- אישים וחוקרים שומרוניים: who's-who — era/A-Z list on one side, the figure's entry on the other -->
+<!-- מה כותבים עלינו — forty-two voices, each in the language it was written in -->
+<div id="tstModal" class="modal book-full hidden">
+  <div class="modal-box book-reader tst-reader">
+    <div class="rd-top">
+      <button id="tstToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
+      <button id="tstPrint" class="rd-print" data-i18n-title="print_unit" title="הדפסה">🖨️</button>
+      <div class="modal-title" data-i18n="tst_title">מה כותבים עלינו</div>
+      <div class="rd-zoom"><button id="tstZoomOut" class="rd-zbtn" aria-label="הקטן טקסט">A−</button><button id="tstZoomIn" class="rd-zbtn" aria-label="הגדל טקסט">A+</button></div>
+      <button id="tstClose" class="modal-x" aria-label="סגור">&times;</button>
+    </div>
+    <div id="tstBody" class="rd-body tst-body"></div>
+  </div>
+</div>
+
 <div id="peopleModal" class="modal book-full hidden">
   <div class="modal-box book-reader pp-reader">
     <div class="rd-top">

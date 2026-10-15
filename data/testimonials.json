@@ -1,0 +1,596 @@
+[
+ {
+  "id": "mata",
+  "name": "Elíshabá Mata López",
+  "lang": "es",
+  "original": "Te agradezco que me hayas contactado directamente para compartir esta herramienta cuya primera impresión ha despertado mi interés. He revisado las características de la aplicación y me parece un entorno de labor sumamente potente para el análisis filológico investigador y también docente.\n\nLa posibilidad de comparar el Pentateuco samaritano con el texto masorético y Qumrán en una misma interfaz, junto con el acceso inmediato a la exégesis tradicional y los recursos de audio, parece facilitar enormemente la inmersión en el texto.\n\n[…]\n\nP.D.: No estoy segura de si lo has enviado a mis colegas del Área de Estudios Hebreos y Arameos también. En cualquier caso, lo compartiré y te pondré en copia.",
+  "he": "תודה שפנית אליי ישירות כדי לשתף בכלי הזה, שהרושם הראשוני ממנו עורר את התעניינותי. עיינתי במאפייני האפליקציה, והיא נראית לי סביבת עבודה עוצמתית ביותר לניתוח פילולוגי במחקר וגם בהוראה.\n\nהאפשרות להשוות את החומש השומרוני לנוסח המסורה ולקומראן בממשק אחד, לצד גישה מיידית לפרשנות המסורתית ולמשאבי השמע, נראית כמקלה מאוד על ההעמקה בטקסט.\n\n[…]\n\nנ״ב: איני בטוחה אם שלחת זאת גם לעמיתיי בתחום לימודי העברית והארמית. בכל מקרה, אשתף אותם ואצרף אותך להתכתבות.",
+  "en": "Thank you for contacting me directly to share this tool, whose first impression has sparked my interest. I have reviewed the application’s features, and it seems to me an extremely powerful working environment for philological analysis in research and teaching.\n\nThe possibility of comparing the Samaritan Pentateuch with the Masoretic Text and Qumran in the same interface, together with immediate access to traditional exegesis and audio resources, seems to make immersion in the text much easier.\n\n[…]\n\nP.S.: I am not sure whether you have also sent it to my colleagues in Hebrew and Aramaic Studies. In any case, I will share it and copy you in.",
+  "ar": "أشكرك على التواصل معي مباشرة لمشاركة هذه الأداة التي أثار انطباعها الأول اهتمامي. لقد راجعت خصائص التطبيق، ويبدو لي بيئة عمل قوية للغاية للتحليل الفيلولوجي في البحث والتدريس.\n\nإمكانية مقارنة أسفار التوراة السامرية بالنص الماسوري وقمران في واجهة واحدة، إلى جانب الوصول الفوري إلى التفسير التقليدي والموارد الصوتية، تبدو ميسّرة جدًا للتعمق في النص.\n\n[…]\n\nملاحظة: لست متأكدة مما إذا كنت قد أرسلتها أيضًا إلى زملائي في قسم الدراسات العبرية والآرامية. على أي حال، سأشاركها معهم وأضيفك إلى المراسلة.",
+  "meta": {
+   "he": "מרצה ללשון ולספרות עברית\nאוניברסיטת סלמנקה\nספרד",
+   "en": "Lecturer in Hebrew Language and Literature\nUniversity of Salamanca\nSpain",
+   "ar": "محاضرة في اللغة العبرية وآدابها\nجامعة سلامنكا\nإسبانيا"
+  }
+ },
+ {
+  "id": "koller",
+  "name": "Aaron Koller",
+  "lang": "en",
+  "date": "2026-10-07",
+  "original": "… think this will be very useful for our students and researchers.",
+  "he": "… אני סבור שזה יהיה שימושי מאוד לסטודנטים ולחוקרים שלנו.",
+  "ar": "… أعتقد أن هذا سيكون مفيدًا جدًا لطلابنا وباحثينا.",
+  "en": "… think this will be very useful for our students and researchers.",
+  "meta": {
+   "he": "פרופסור מלכותי לעברית וראש המחלקה ללימודי המזרח התיכון\nאוניברסיטת קיימברידג׳\nבריטניה",
+   "en": "Regius Professor of Hebrew; Chair of Middle Eastern Studies\nUniversity of Cambridge\nUnited Kingdom",
+   "ar": "الأستاذ الملكي للغة العبرية ورئيس قسم دراسات الشرق الأوسط\nجامعة كامبريدج\nالمملكة المتحدة"
+  }
+ },
+ {
+  "id": "benayem",
+  "name": "דוד (דודי) בן־נעים",
+  "lang": "he",
+  "date": "2026-10-12",
+  "original": "שמחתי מאד לראות את האפליקציה שלך , נוחה ומאד ידידותית\nאני בטוח שזה יקל מאד על חוקרי השומרונים ופרשנות התורה\nאנחנו נשמח להוסיף אותה לרשימת הלינקים המומלצים באתר הספריה ליהדות.",
+  "he": "שמחתי מאד לראות את האפליקציה שלך , נוחה ומאד ידידותית\nאני בטוח שזה יקל מאד על חוקרי השומרונים ופרשנות התורה\nאנחנו נשמח להוסיף אותה לרשימת הלינקים המומלצים באתר הספריה ליהדות.",
+  "en": "I was very pleased to see your application: convenient and very user-friendly. I am sure it will make things much easier for researchers of the Samaritans and Torah interpretation. We would be happy to add it to the list of recommended links on the Jewish Studies Library website.",
+  "ar": "سعدت كثيرًا برؤية تطبيقك؛ فهو مريح وسهل الاستخدام جدًا. وأنا واثق بأنه سيُيسّر كثيرًا عمل الباحثين في السامريين وتفسير التوراة. وسيسرّنا إضافته إلى قائمة الروابط الموصى بها في موقع مكتبة الدراسات اليهودية.",
+  "meta": {
+   "he": "אוצר אוסף יהדות, כתבי היד והספרים הנדירים\nאוניברסיטת בר־אילן\nישראל",
+   "en": "Curator of Judaica, Manuscripts and Rare Books\nBar-Ilan University\nIsrael",
+   "ar": "قيّم مجموعة الدراسات اليهودية والمخطوطات والكتب النادرة\nجامعة بار إيلان\nإسرائيل"
+  }
+ },
+ {
+  "id": "figeac",
+  "name": "Petra Figeac",
+  "lang": "en",
+  "date": "2026-10-08",
+  "original": "thank you so much for the tool. I already installed it and begun to try it. It will be very helpful!",
+  "en": "thank you so much for the tool. I already installed it and begun to try it. It will be very helpful!",
+  "he": "תודה רבה על הכלי. כבר התקנתי אותו והתחלתי לנסות אותו. הוא יהיה מועיל מאוד!",
+  "ar": "شكرًا جزيلًا على الأداة. لقد ثبّتها بالفعل وبدأت بتجربتها. ستكون مفيدة جدًا!",
+  "meta": {
+   "he": "מומחית תחום ליודאיקה, עברית, אגיפטולוגיה והמזרח הנוצרי\nהספרייה הממלכתית בברלין\nגרמניה",
+   "en": "Subject Librarian for Jewish Studies, Hebrew, Egyptology and the Christian Orient\nBerlin State Library\nGermany",
+   "ar": "أمينة مكتبة متخصصة في الدراسات اليهودية والعبرية والمصريات والشرق المسيحي\nمكتبة برلين الحكومية\nألمانيا"
+  }
+ },
+ {
+  "id": "wright",
+  "name": "Jacob L. Wright",
+  "lang": "en",
+  "date": "2026-10-07",
+  "original": "Wow, this is stunningly beautiful!",
+  "en": "Wow, this is stunningly beautiful!",
+  "he": "וואו, זה יפה להפליא!",
+  "ar": "واو، هذا جميل بشكل مذهل!",
+  "meta": {
+   "he": "פרופסור למקרא\nאוניברסיטת אמורי\nארצות הברית",
+   "en": "Professor of Hebrew Bible\nEmory University\nUnited States",
+   "ar": "أستاذ الكتاب المقدس العبري\nجامعة إيموري\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "bendov",
+  "name": "יונתן בן־דב",
+  "lang": "he",
+  "date": "2026-10-09",
+  "original": "תודה רבה לך על ההודעה, וברכות חמות על הקמת האתר הזה. האתר יפה ומקצועי.",
+  "he": "תודה רבה לך על ההודעה, וברכות חמות על הקמת האתר הזה. האתר יפה ומקצועי.",
+  "en": "Thank you very much for your message, and warm congratulations on creating this website. The website is beautiful and professional.",
+  "ar": "شكرًا جزيلًا على رسالتك، وأحرّ التهاني على إنشاء هذا الموقع. الموقع جميل ومهني.",
+  "meta": {
+   "he": "פרופסור בחוג למקרא\nאוניברסיטת תל אביב\nישראל",
+   "en": "Professor of Biblical Studies\nTel Aviv University\nIsrael",
+   "ar": "أستاذ الدراسات الكتابية\nجامعة تل أبيب\nإسرائيل"
+  }
+ },
+ {
+  "id": "stipp",
+  "name": "Hermann-Josef Stipp",
+  "lang": "en",
+  "date": "2026-10-11",
+  "original": "Your project seems to be a very helpful and user-friendly tool for Biblical studies. The presentation on screen looks really impressive.",
+  "en": "Your project seems to be a very helpful and user-friendly tool for Biblical studies. The presentation on screen looks really impressive.",
+  "he": "נראה שהפרויקט שלך הוא כלי מועיל מאוד וידידותי למשתמש ללימודי המקרא. התצוגה על המסך מרשימה ממש.",
+  "ar": "يبدو أن مشروعك أداة مفيدة جدًا وسهلة الاستخدام للدراسات الكتابية. والعرض على الشاشة يبدو مثيرًا للإعجاب حقًا.",
+  "meta": {
+   "he": "פרופסור בגמלאות לתאולוגיה של המקרא\nאוניברסיטת לודוויג מקסימיליאן במינכן\nגרמניה",
+   "en": "Retired Professor of Old Testament Theology\nLudwig Maximilian University of Munich\nGermany",
+   "ar": "أستاذ متقاعد في لاهوت العهد القديم\nجامعة لودفيغ ماكسيميليان في ميونيخ\nألمانيا"
+  }
+ },
+ {
+  "id": "francesca",
+  "name": "Francesca Stavrakopoulou",
+  "lang": "en",
+  "original": "what a useful resource it will be.",
+  "he": "איזה משאב שימושי זה יהיה.",
+  "en": "what a useful resource it will be.",
+  "ar": "يا له من مورد مفيد سيكون.",
+  "meta": {
+   "he": "פרופסור למקרא ולדתות עתיקות\nאוניברסיטת אקסטר\nבריטניה",
+   "en": "Professor of Hebrew Bible & Ancient Religion\nUniversity of Exeter\nUnited Kingdom",
+   "ar": "أستاذة الكتاب المقدس العبري والأديان القديمة\nجامعة إكستر\nالمملكة المتحدة"
+  }
+ },
+ {
+  "id": "goodman",
+  "name": "Lenn E. Goodman",
+  "lang": "en",
+  "original": "What a rich resource! Fascinating!",
+  "he": "איזה משאב עשיר! מרתק!",
+  "en": "What a rich resource! Fascinating!",
+  "ar": "يا له من مورد غني! رائع ومثير للاهتمام!",
+  "meta": {
+   "he": "פרופסור לפילוסופיה וללימודי יהדות\nאוניברסיטת ונדרבילט\nארצות הברית",
+   "en": "Professor of Philosophy and Jewish Studies\nVanderbilt University\nUnited States",
+   "ar": "أستاذ الفلسفة والدراسات اليهودية\nجامعة فاندربيلت\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "waldman",
+  "name": "Felicia Waldman",
+  "lang": "en",
+  "original": "The app looks very interesting and I will certainly forward it to other colleagues as well.",
+  "he": "האפליקציה נראית מעניינת מאוד, ובהחלט אעביר אותה גם לעמיתים נוספים.",
+  "en": "The app looks very interesting and I will certainly forward it to other colleagues as well.",
+  "ar": "يبدو التطبيق مثيرًا للاهتمام جدًا، وسأرسله بالتأكيد إلى زملاء آخرين أيضًا.",
+  "meta": {
+   "he": "פרופסור חבר במרכז ללימודי עברית\nאוניברסיטת בוקרשט\nרומניה",
+   "en": "Associate Professor, Center for Hebrew Studies\nUniversity of Bucharest\nRomania",
+   "ar": "أستاذة مشاركة، مركز الدراسات العبرية\nجامعة بوخارست\nرومانيا"
+  }
+ },
+ {
+  "id": "zatelli",
+  "name": "Ida Zatelli",
+  "lang": "en",
+  "original": "Great project! I shall send your message to some colleagues of mine.",
+  "he": "פרויקט נהדר! אשלח את הודעתך לכמה מעמיתיי.",
+  "en": "Great project! I shall send your message to some colleagues of mine.",
+  "ar": "مشروع رائع! سأرسل رسالتك إلى بعض زملائي.",
+  "meta": {
+   "he": "פרופסור אמריטה לעברית\nאוניברסיטת פירנצה\nאיטליה",
+   "en": "Professor Emerita of Hebrew\nUniversity of Florence\nItaly",
+   "ar": "أستاذة فخرية للغة العبرية\nجامعة فلورنسا\nإيطاليا"
+  }
+ },
+ {
+  "id": "esposito",
+  "name": "Raffaele Esposito",
+  "lang": "en",
+  "original": "Even though I am not in the field of biblical studies, I can see that this is a very interesting project and a very useful resource.\n\nI will be glad to share it with colleagues and students.",
+  "he": "אף שאיני עוסק בתחום חקר המקרא, אני רואה שזהו פרויקט מעניין מאוד ומשאב שימושי מאוד.\n\nאשמח לשתף אותו עם עמיתים וסטודנטים.",
+  "en": "Even though I am not in the field of biblical studies, I can see that this is a very interesting project and a very useful resource.\n\nI will be glad to share it with colleagues and students.",
+  "ar": "رغم أنني لست متخصصًا في الدراسات الكتابية، أرى أن هذا مشروع مثير للاهتمام جدًا ومورد مفيد جدًا.\n\nسيسرّني مشاركته مع الزملاء والطلاب.",
+  "meta": {
+   "he": "פרופסור חבר לספרות וללשון עברית מודרנית\nאוניברסיטת נאפולי ל׳אוריינטלה\nאיטליה",
+   "en": "Associate Professor, Modern Hebrew Literature and Language\nUniversity of Naples L’Orientale\nItaly",
+   "ar": "أستاذ مشارك في الأدب واللغة العبرية الحديثة\nجامعة نابولي لورينتالي\nإيطاليا"
+  }
+ },
+ {
+  "id": "tirosh",
+  "name": "Ofra Tirosh-Becker",
+  "lang": "en",
+  "original": "Congratulation on developing such an important research tool.\nI am sure it will be very useful to many scholars of biblical studies, Bible traditions, Bible translation, Hebrew and more.",
+  "he": "ברכות על פיתוח כלי מחקר כה חשוב.\nאני בטוחה שהוא יהיה שימושי מאוד לחוקרים רבים בתחומי המקרא, מסורות המקרא, תרגום המקרא, העברית ועוד.",
+  "en": "Congratulation on developing such an important research tool.\nI am sure it will be very useful to many scholars of biblical studies, Bible traditions, Bible translation, Hebrew and more.",
+  "ar": "تهانينا على تطوير أداة بحثية بهذه الأهمية.\nأنا واثقة بأنها ستكون مفيدة جدًا لباحثين كثيرين في الدراسات الكتابية وتقاليد الكتاب المقدس وترجماته والعبرية وغيرها.",
+  "meta": {
+   "he": "פרופסור, הקתדרה ללשון עברית ע״ש ביאליק\nהאוניברסיטה העברית בירושלים\nישראל",
+   "en": "Professor, Bialik Chair in Hebrew Language\nThe Hebrew University of Jerusalem\nIsrael",
+   "ar": "أستاذة، كرسي بياليك للغة العبرية\nالجامعة العبرية في القدس\nإسرائيل"
+  }
+ },
+ {
+  "id": "samuels",
+  "name": "Vardit Samuels",
+  "lang": "en",
+  "original": "Thank you for sharing this information with me. I have passed it along to my colleagues as well.",
+  "he": "תודה על שיתוף המידע איתי. העברתי אותו גם לעמיתיי.",
+  "en": "Thank you for sharing this information with me. I have passed it along to my colleagues as well.",
+  "ar": "شكرًا لمشاركة هذه المعلومات معي. لقد نقلتها إلى زملائي أيضًا.",
+  "meta": {
+   "he": "מומחית לאוסף היודאיקה\nספריית הרווארד\nארצות הברית",
+   "en": "Judaica Collection Specialist\nHarvard Library\nUnited States",
+   "ar": "متخصصة في مجموعة الدراسات اليهودية\nمكتبة هارفارد\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "guedes",
+  "name": "Andy Guedes",
+  "lang": "en",
+  "original": "We will feature it in our newsletter, which is published every Friday. We will be delighted to share it with our undergraduate and graduate students in Hebrew Language and Jewish Literature.",
+  "he": "נציג אותה בניוזלטר שלנו, המתפרסם מדי יום שישי. נשמח מאוד לשתף אותה עם הסטודנטים שלנו לתואר ראשון ולתארים מתקדמים בלשון עברית ובספרות יהודית.",
+  "en": "We will feature it in our newsletter, which is published every Friday. We will be delighted to share it with our undergraduate and graduate students in Hebrew Language and Jewish Literature.",
+  "ar": "سنعرضه في نشرتنا التي تصدر كل يوم جمعة. وسيسعدنا مشاركته مع طلابنا في مرحلتي البكالوريوس والدراسات العليا في اللغة العبرية والأدب اليهودي.",
+  "meta": {
+   "he": "חונך אקדמי, המרכז ללימודי יהדות\nאוניברסיטת סאו פאולו\nברזיל",
+   "en": "Academic Monitor, Center for Jewish Studies\nUniversity of São Paulo\nBrazil",
+   "ar": "مشرف أكاديمي، مركز الدراسات اليهودية\nجامعة ساو باولو\nالبرازيل"
+  }
+ },
+ {
+  "id": "prudky",
+  "name": "Martin Prudký",
+  "lang": "en",
+  "original": "It seems to be a very good study tool, indeed. I shared it with my colleagues and students.",
+  "he": "נראה שזהו אכן כלי לימוד טוב מאוד. שיתפתי אותו עם עמיתיי ועם תלמידיי.",
+  "en": "It seems to be a very good study tool, indeed. I shared it with my colleagues and students.",
+  "ar": "يبدو أنه أداة دراسية جيدة جدًا بالفعل. لقد شاركته مع زملائي وطلابي.",
+  "meta": {
+   "he": "פרופסור למקרא\nאוניברסיטת קארל בפראג\nצ׳כיה",
+   "en": "Professor of Old Testament Studies\nCharles University, Prague\nCzechia",
+   "ar": "أستاذ دراسات العهد القديم\nجامعة تشارلز، براغ\nالتشيك"
+  }
+ },
+ {
+  "id": "siquans",
+  "name": "Agnethe Siquans",
+  "lang": "en",
+  "original": "thank you for sharing this innovative tool with me! I will forward this information also to my colleagues. It will certainly be helpful in consulting Samaritan sources.",
+  "he": "תודה ששיתפת אותי בכלי החדשני הזה! אעביר את המידע גם לעמיתיי. הוא בהחלט יסייע בעיון במקורות שומרוניים.",
+  "en": "thank you for sharing this innovative tool with me! I will forward this information also to my colleagues. It will certainly be helpful in consulting Samaritan sources.",
+  "ar": "شكرًا لمشاركتي هذه الأداة المبتكرة! سأرسل هذه المعلومات إلى زملائي أيضًا. ستكون بالتأكيد مفيدة في الرجوع إلى المصادر السامرية.",
+  "meta": {
+   "he": "פרופסור למקרא\nאוניברסיטת וינה\nאוסטריה",
+   "en": "Professor of Old Testament Studies\nUniversity of Vienna\nAustria",
+   "ar": "أستاذة دراسات العهد القديم\nجامعة فيينا\nالنمسا"
+  }
+ },
+ {
+  "id": "stadel",
+  "name": "Christian Stadel",
+  "lang": "en",
+  "original": "That's a great app, thanks for sharing!",
+  "he": "זו אפליקציה נהדרת, תודה ששיתפת!",
+  "en": "That's a great app, thanks for sharing!",
+  "ar": "إنه تطبيق رائع، شكرًا لمشاركته!",
+  "meta": {
+   "he": "פרופסור וראש המחלקה ללשון העברית ובלשנות חברתית\nאוניברסיטת בן־גוריון בנגב\nישראל",
+   "en": "Professor; Head of Hebrew Language and Sociolinguistics\nBen-Gurion University of the Negev\nIsrael",
+   "ar": "أستاذ ورئيس قسم اللغة العبرية واللسانيات الاجتماعية\nجامعة بن غوريون في النقب\nإسرائيل"
+  }
+ },
+ {
+  "id": "sommer",
+  "name": "Benjamin D. Sommer",
+  "lang": "en",
+  "original": "Wow! Thanks so much for bringing this great resource to my attention!",
+  "he": "וואו! תודה רבה שהבאת לידיעתי את המשאב הנהדר הזה!",
+  "en": "Wow! Thanks so much for bringing this great resource to my attention!",
+  "ar": "واو! شكرًا جزيلًا على لفت انتباهي إلى هذا المورد الرائع!",
+  "meta": {
+   "he": "פרופסור למקרא ולשונות שמיות עתיקות\nבית המדרש לרבנים באמריקה, JTS\nארצות הברית",
+   "en": "Professor of Bible and Ancient Semitic Languages\nThe Jewish Theological Seminary\nUnited States",
+   "ar": "أستاذ الكتاب المقدس واللغات السامية القديمة\nالمعهد اللاهوتي اليهودي، JTS\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "harding",
+  "name": "James Harding",
+  "lang": "en",
+  "original": "Thank you very much indeed for sharing this very helpful resource.",
+  "he": "תודה רבה מאוד על שיתוף המשאב המועיל מאוד הזה.",
+  "en": "Thank you very much indeed for sharing this very helpful resource.",
+  "ar": "شكرًا جزيلًا حقًا على مشاركة هذا المورد المفيد جدًا.",
+  "meta": {
+   "he": "פרופסור חבר, התוכנית לתאולוגיה\nאוניברסיטת אוטגו\nניו זילנד",
+   "en": "Associate Professor, Theology Programme\nUniversity of Otago\nNew Zealand",
+   "ar": "أستاذ مشارك، برنامج اللاهوت\nجامعة أوتاغو\nنيوزيلندا"
+  }
+ },
+ {
+  "id": "sharon",
+  "name": "Nadav Sharon",
+  "lang": "en",
+  "original": "It looks very interesting and highly useful.\n\nI have added it to our library's resource guides.",
+  "he": "הוא נראה מעניין מאוד ושימושי ביותר.\n\nהוספתי אותו למדריכי המשאבים של הספרייה שלנו.",
+  "en": "It looks very interesting and highly useful.\n\nI have added it to our library's resource guides.",
+  "ar": "يبدو مثيرًا للاهتمام جدًا ومفيدًا للغاية.\n\nلقد أضفته إلى أدلة الموارد في مكتبتنا.",
+  "meta": {
+   "he": "ספרן יודאיקה, ספריית תומס פישר לספרים נדירים\nאוניברסיטת טורונטו\nקנדה",
+   "en": "Judaica Librarian, Thomas Fisher Rare Book Library\nUniversity of Toronto\nCanada",
+   "ar": "أمين مكتبة الدراسات اليهودية، مكتبة توماس فيشر للكتب النادرة\nجامعة تورونتو\nكندا"
+  }
+ },
+ {
+  "id": "stoekl",
+  "name": "Daniel Stökl Ben Ezra",
+  "lang": "en",
+  "original": "Many thanks that is very kind of you to share and congratulations for the great app.",
+  "he": "תודה רבה, אדיב מאוד מצדך לשתף, וברכות על האפליקציה הנהדרת.",
+  "en": "Many thanks that is very kind of you to share and congratulations for the great app.",
+  "ar": "شكرًا جزيلًا، من لطفك مشاركتها، وتهانينا على التطبيق الرائع.",
+  "meta": {
+   "he": "מנהל מחקר בפילולוגיה עברית וארמית\nEPHE–PSL, פריז\nצרפת",
+   "en": "Research Professor, Hebrew and Aramaic Philology\nEPHE–PSL, Paris\nFrance",
+   "ar": "أستاذ بحث في فقه اللغتين العبرية والآرامية\nEPHE–PSL، باريس\nفرنسا"
+  }
+ },
+ {
+  "id": "moshavi",
+  "name": "Adina Moshavi",
+  "lang": "en",
+  "original": "Thank you very much for letting me know about this wonderful resource!",
+  "he": "תודה רבה שהבאת לידיעתי את המשאב הנפלא הזה!",
+  "en": "Thank you very much for letting me know about this wonderful resource!",
+  "ar": "شكرًا جزيلًا على إطلاعي على هذا المورد الرائع!",
+  "meta": {
+   "he": "פרופסור ללשון עברית\nאוניברסיטת בר־אילן\nישראל",
+   "en": "Professor of Hebrew Language\nBar-Ilan University\nIsrael",
+   "ar": "أستاذة اللغة العبرية\nجامعة بار إيلان\nإسرائيل"
+  }
+ },
+ {
+  "id": "steudel",
+  "name": "Annette Steudel",
+  "lang": "en",
+  "original": "we are delighted to hear about your project …",
+  "he": "אנו שמחים מאוד לשמוע על הפרויקט שלך …",
+  "en": "we are delighted to hear about your project …",
+  "ar": "يسعدنا جدًا أن نسمع عن مشروعك …",
+  "meta": {
+   "he": "מנהלת העבודה בפרויקט Qumran Digital\nהאקדמיה למדעים בגטינגן\nגרמניה",
+   "en": "Research Unit Lead, Qumran Digital\nGöttingen Academy of Sciences and Humanities\nGermany",
+   "ar": "رئيسة وحدة البحث، قمران الرقمي\nأكاديمية العلوم والإنسانيات في غوتنغن\nألمانيا"
+  }
+ },
+ {
+  "id": "breuer",
+  "name": "Yochanan Breuer",
+  "lang": "en",
+  "original": "Thank you very much for sharing this important tool with me.",
+  "he": "תודה רבה ששיתפת אותי בכלי החשוב הזה.",
+  "en": "Thank you very much for sharing this important tool with me.",
+  "ar": "شكرًا جزيلًا لمشاركتي هذه الأداة المهمة.",
+  "meta": {
+   "he": "פרופסור אמריטוס ללשון עברית\nהאוניברסיטה העברית בירושלים\nישראל",
+   "en": "Professor Emeritus of Hebrew Language\nThe Hebrew University of Jerusalem\nIsrael",
+   "ar": "أستاذ فخري للغة العبرية\nالجامعة العبرية في القدس\nإسرائيل"
+  }
+ },
+ {
+  "id": "ratzon",
+  "name": "Eshbal Ratzon",
+  "lang": "en",
+  "original": "It looks like a wonderful resource!\nI already updated my course about calendars with a link to your website.\n\nI saw that Orion Center sent a recommendation on their mailing list. They have a very wide network.",
+  "he": "זה נראה כמו משאב נפלא!\nכבר עדכנתי את הקורס שלי על לוחות שנה בקישור לאתר שלך.\n\nראיתי שמרכז אוריון שלח המלצה ברשימת התפוצה שלו. יש להם רשת קשרים רחבה מאוד.",
+  "en": "It looks like a wonderful resource!\nI already updated my course about calendars with a link to your website.\n\nI saw that Orion Center sent a recommendation on their mailing list. They have a very wide network.",
+  "ar": "يبدو موردًا رائعًا!\nلقد حدّثت بالفعل مقرري عن التقاويم بإضافة رابط إلى موقعك.\n\nرأيت أن مركز أوريون أرسل توصية عبر قائمته البريدية. لديهم شبكة واسعة جدًا.",
+  "meta": {
+   "he": "חוקרת ומרצה, הפקולטה למדעי הרוח\nאוניברסיטת תל אביב\nישראל",
+   "en": "Researcher and Lecturer, Faculty of Humanities\nTel Aviv University\nIsrael",
+   "ar": "باحثة ومحاضرة، كلية العلوم الإنسانية\nجامعة تل أبيب\nإسرائيل"
+  }
+ },
+ {
+  "id": "wong",
+  "name": "Sonia Kwok Wong",
+  "lang": "en",
+  "original": "This is a very exciting project. Thank you for introducing.",
+  "he": "זהו פרויקט מרגש מאוד. תודה על הצגתו.",
+  "en": "This is a very exciting project. Thank you for introducing.",
+  "ar": "هذا مشروع مثير للحماس جدًا. شكرًا على التعريف به.",
+  "meta": {
+   "he": "פרופסור חבר, בית הספר לתאולוגיה של צ׳ונג צ׳י\nהאוניברסיטה הסינית בהונג קונג\nהונג קונג, סין",
+   "en": "Associate Professor, Divinity School of Chung Chi College\nThe Chinese University of Hong Kong\nHong Kong, China",
+   "ar": "أستاذة مشاركة، كلية اللاهوت في تشونغ تشي\nالجامعة الصينية في هونغ كونغ\nهونغ كونغ، الصين"
+  }
+ },
+ {
+  "id": "hempel",
+  "name": "Charlotte Hempel",
+  "lang": "en",
+  "original": "Many thanks Osher, this looks very helpful.",
+  "he": "תודה רבה אושר, זה נראה מועיל מאוד.",
+  "en": "Many thanks Osher, this looks very helpful.",
+  "ar": "شكرًا جزيلًا أوشر، يبدو هذا مفيدًا جدًا.",
+  "meta": {
+   "he": "פרופסור למקרא וליהדות בית שני\nאוניברסיטת ברמינגהם\nבריטניה",
+   "en": "Professor of Hebrew Bible and Second Temple Judaism\nUniversity of Birmingham\nUnited Kingdom",
+   "ar": "أستاذة الكتاب المقدس العبري ويهودية الهيكل الثاني\nجامعة برمنغهام\nالمملكة المتحدة"
+  }
+ },
+ {
+  "id": "kiron",
+  "name": "Arthur Kiron",
+  "lang": "en",
+  "original": "Congratulations o the launching of this important app for advancing  Samaritan Studies!",
+  "he": "ברכות על השקת האפליקציה החשובה הזאת לקידום חקר השומרונים!",
+  "en": "Congratulations o the launching of this important app for advancing  Samaritan Studies!",
+  "ar": "تهانينا على إطلاق هذا التطبيق المهم للنهوض بالدراسات السامرية!",
+  "meta": {
+   "he": "אוצר אוספי יודאיקה, קתדרת שוטנשטיין–ג׳סלסון\nספריות אוניברסיטת פנסילבניה\nארצות הברית",
+   "en": "Schottenstein-Jesselson Curator of Judaica Collections\nUniversity of Pennsylvania Libraries\nUnited States",
+   "ar": "قيّم مجموعات الدراسات اليهودية، منصب شوتنشتاين–جيسلسون\nمكتبات جامعة بنسلفانيا\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "mcgrew",
+  "name": "Israel McGrew",
+  "lang": "en",
+  "original": "I have forwarded it to my colleagues who do work in Pentateuch, however, and I wish you, your endeavors, and your community the best.",
+  "he": "עם זאת, העברתי אותו לעמיתיי העוסקים בחומש, ואני מאחל לך, למפעליך ולקהילתך כל טוב.",
+  "en": "I have forwarded it to my colleagues who do work in Pentateuch, however, and I wish you, your endeavors, and your community the best.",
+  "ar": "ومع ذلك، فقد أرسلته إلى زملائي الذين يعملون في أسفار التوراة الخمسة، وأتمنى لك ولمساعيك ولمجتمعك كل الخير.",
+  "meta": {
+   "he": "מרצה לכתבי הקודש\nמכון אוגוסטין\nארצות הברית",
+   "en": "Assistant Professor of Sacred Scripture\nAugustine Institute\nUnited States",
+   "ar": "أستاذ مساعد للكتاب المقدس\nمعهد أوغسطين\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "gribetz",
+  "name": "Sarit Kattan Gribetz",
+  "lang": "en",
+  "original": "… it sounds like an amazing resource.",
+  "he": "… זה נשמע כמו משאב מדהים.",
+  "en": "… it sounds like an amazing resource.",
+  "ar": "… يبدو أنه مورد مذهل.",
+  "meta": {
+   "he": "פרופסור חבר ללימודי דתות ולימודי יהדות\nאוניברסיטת ייל\nארצות הברית",
+   "en": "Associate Professor of Religious Studies and Jewish Studies\nYale University\nUnited States",
+   "ar": "أستاذة مشاركة في الدراسات الدينية واليهودية\nجامعة ييل\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "fassberg",
+  "name": "Steven Fassberg",
+  "lang": "en",
+  "original": "I've already forwarded it to some colleagues here and in the States.",
+  "he": "כבר העברתי אותו לכמה עמיתים כאן ובארצות הברית.",
+  "en": "I've already forwarded it to some colleagues here and in the States.",
+  "ar": "لقد أرسلته بالفعل إلى بعض الزملاء هنا وفي الولايات المتحدة.",
+  "meta": {
+   "he": "פרופסור אמריטוס לשפות שמיות עתיקות, קתדרת קספר לויאס\nהאוניברסיטה העברית בירושלים\nישראל",
+   "en": "Caspar Levias Professor Emeritus of Ancient Semitic Languages\nThe Hebrew University of Jerusalem\nIsrael",
+   "ar": "أستاذ فخري للغات السامية القديمة، كرسي كاسبار ليفياس\nالجامعة العبرية في القدس\nإسرائيل"
+  }
+ },
+ {
+  "id": "krausz",
+  "name": "Toby Krausz",
+  "lang": "en",
+  "original": "Very interesting!",
+  "he": "מעניין מאוד!",
+  "en": "Very interesting!",
+  "ar": "مثير للاهتمام جدًا!",
+  "meta": {
+   "he": "ספרן יודאיקה\nאוניברסיטת טורו\nארצות הברית",
+   "en": "Judaica Librarian\nTouro University\nUnited States",
+   "ar": "أمين مكتبة الدراسات اليهودية\nجامعة تورو\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "rezetko",
+  "name": "Robert Rezetko",
+  "lang": "en",
+  "original": "Thank you for sharing this impressive resource with us. We will add it to the online resource page of B&I (https://bibleinterp.arizona.edu/online-resources).",
+  "he": "תודה ששיתפתם אותנו במשאב המרשים הזה. נוסיף אותו לדף המשאבים המקוונים של B&I.",
+  "en": "Thank you for sharing this impressive resource with us. We will add it to the online resource page of B&I (https://bibleinterp.arizona.edu/online-resources).",
+  "ar": "شكرًا لمشاركتنا هذا المورد المثير للإعجاب. سنضيفه إلى صفحة الموارد الإلكترونية في B&I.",
+  "meta": {
+   "he": "עורך שותף\nThe Bible and Interpretation — אתר באוניברסיטת אריזונה\nארצות הברית (מיקום אתר הפרסום)",
+   "en": "Co-Editor\nThe Bible and Interpretation — website at the University of Arizona\nUnited States (publication host)",
+   "ar": "محرر مشارك\nThe Bible and Interpretation — موقع في جامعة أريزونا\nالولايات المتحدة (جهة استضافة المنشور)"
+  }
+ },
+ {
+  "id": "jones",
+  "name": "Charles Ellwood Jones",
+  "lang": "en",
+  "original": "I have posted in on AWOL",
+  "he": "פרסמתי זאת ב־AWOL.",
+  "en": "I have posted in on AWOL",
+  "ar": "لقد نشرته في AWOL.",
+  "meta": {
+   "he": "ספרן ללימודים קלאסיים ולמדעי הרוח; עורך AWOL\nאוניברסיטת פנסילבניה סטייט\nארצות הברית",
+   "en": "Tombros Librarian for Classics and Humanities; AWOL Editor\nPennsylvania State University\nUnited States",
+   "ar": "أمين مكتبة الدراسات الكلاسيكية والإنسانيات؛ محرر AWOL\nجامعة ولاية بنسلفانيا\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "mulaudzi",
+  "name": "Nkhumiseni Mulaudzi",
+  "lang": "en",
+  "original": "I really appreciate the material you sent me.",
+  "he": "אני מעריך מאוד את החומר ששלחת לי.",
+  "en": "I really appreciate the material you sent me.",
+  "ar": "أقدّر كثيرًا المواد التي أرسلتها إليّ.",
+  "meta": {
+   "he": "חוקר ומרצה למקרא, הפקולטה לתאולוגיה\nאוניברסיטת נורת׳־וסט\nדרום אפריקה",
+   "en": "Biblical Studies Researcher and Lecturer, Faculty of Theology\nNorth-West University\nSouth Africa",
+   "ar": "باحث ومحاضر في الدراسات الكتابية، كلية اللاهوت\nجامعة الشمال الغربي\nجنوب أفريقيا"
+  }
+ },
+ {
+  "id": "schlanger",
+  "name": "Judith Olszowy-Schlanger",
+  "lang": "en",
+  "original": "I thank you very much for sharing your project with me. I am copying Professor Daniel Stoekl in this message - he is a specialist of computerized treatment of texts.",
+  "he": "תודה רבה ששיתפת אותי בפרויקט שלך. אני מצרפת להודעה את פרופסור דניאל שטקל, מומחה לעיבוד ממוחשב של טקסטים.",
+  "en": "I thank you very much for sharing your project with me. I am copying Professor Daniel Stoekl in this message - he is a specialist of computerized treatment of texts.",
+  "ar": "أشكرك جزيلًا على مشاركتي مشروعك. أضيف الأستاذ دانيال شتوكل إلى هذه الرسالة؛ فهو متخصص في المعالجة الحاسوبية للنصوص.",
+  "meta": {
+   "he": "מנהלת מחקר, כתבי יד עבריים ויהודיים־ערביים בימי הביניים\nEPHE–PSL\nצרפת",
+   "en": "Research Professor, Medieval Hebrew and Judeo-Arabic Manuscripts\nEPHE–PSL\nFrance",
+   "ar": "أستاذة بحث في المخطوطات العبرية واليهودية العربية في العصور الوسطى\nEPHE–PSL\nفرنسا"
+  }
+ },
+ {
+  "id": "pollack",
+  "name": "John Pollack",
+  "lang": "en",
+  "original": "Thank you. I copy some of my colleagues.",
+  "he": "תודה. אני מצרף כמה מעמיתיי להתכתבות.",
+  "en": "Thank you. I copy some of my colleagues.",
+  "ar": "شكرًا. أضيف بعض زملائي إلى هذه المراسلة.",
+  "meta": {
+   "he": "אוצר שירותי מחקר, מרכז קיסלק\nספריות אוניברסיטת פנסילבניה\nארצות הברית",
+   "en": "Curator of Research Services, Kislak Center\nUniversity of Pennsylvania Libraries\nUnited States",
+   "ar": "قيّم خدمات البحث، مركز كيسلاك\nمكتبات جامعة بنسلفانيا\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "archaeology",
+  "name": "Archaeology Library Team",
+  "lang": "en",
+  "original": "Thank you for sharing with us in your project.\nWe will recommend it to our readers.",
+  "he": "תודה ששיתפת אותנו בפרויקט שלך.\nנמליץ עליו לקוראינו.",
+  "en": "Thank you for sharing with us in your project.\nWe will recommend it to our readers.",
+  "ar": "شكرًا لمشاركتنا مشروعك.\nسنوصي به لقرائنا.",
+  "meta": {
+   "he": "צוות ספריית המכון לארכאולוגיה\nאוניברסיטת תל אביב\nישראל",
+   "en": "Library Team, Institute of Archaeology\nTel Aviv University\nIsrael",
+   "ar": "فريق مكتبة معهد الآثار\nجامعة تل أبيب\nإسرائيل"
+  }
+ },
+ {
+  "id": "samet",
+  "name": "Nili Samet",
+  "lang": "en",
+  "original": "Thank you for sharing this resource. Wishing you every success with the project!",
+  "he": "תודה על שיתוף המשאב הזה. מאחלת לך הצלחה רבה בפרויקט!",
+  "en": "Thank you for sharing this resource. Wishing you every success with the project!",
+  "ar": "شكرًا على مشاركة هذا المورد. أتمنى لك كل النجاح في المشروع!",
+  "meta": {
+   "he": "פרופסור בחוג למקרא\nאוניברסיטת בר־אילן\nישראל",
+   "en": "Professor of Biblical Studies\nBar-Ilan University\nIsrael",
+   "ar": "أستاذة الدراسات الكتابية\nجامعة بار إيلان\nإسرائيل"
+  }
+ },
+ {
+  "id": "walton",
+  "name": "John H. Walton",
+  "lang": "en",
+  "original": "Thank you. I do not do much with textual criticism or with the Samaritan traditions, but I am glad to know of this.",
+  "he": "תודה. איני עוסק רבות בביקורת הנוסח או במסורות השומרוניות, אך אני שמח לדעת על כך.",
+  "en": "Thank you. I do not do much with textual criticism or with the Samaritan traditions, but I am glad to know of this.",
+  "ar": "شكرًا. لا أعمل كثيرًا في النقد النصي أو في التقاليد السامرية، لكنني سعيد بمعرفة هذا المورد.",
+  "meta": {
+   "he": "פרופסור אמריטוס למקרא\nמכללת ויטון\nארצות הברית",
+   "en": "Professor of Old Testament Emeritus\nWheaton College\nUnited States",
+   "ar": "أستاذ فخري لدراسات العهد القديم\nكلية ويتون\nالولايات المتحدة"
+  }
+ },
+ {
+  "id": "fargeon",
+  "name": "יאשיהו (יושי) פרג׳ון",
+  "lang": "he",
+  "original": "תודה רבה על ההפנייה לאתר היפה.",
+  "he": "תודה רבה על ההפנייה לאתר היפה.",
+  "en": "Thank you very much for directing me to the beautiful website.",
+  "ar": "شكرًا جزيلًا على إرشادي إلى الموقع الجميل.",
+  "meta": {
+   "he": "חוקר ומרצה במחלקה למקרא\nאוניברסיטת בר־אילן\nישראל",
+   "en": "Researcher and Lecturer, Bible Department\nBar-Ilan University\nIsrael",
+   "ar": "باحث ومحاضر، قسم الدراسات الكتابية\nجامعة بار إيلان\nإسرائيل"
+  }
+ }
+]

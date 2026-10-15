@@ -150,6 +150,12 @@ const I18N = {
     adv_hint:'או תוכל להשתמש ב-<b>?</b> או <b>*</b> כדי להחליף תו או מחרוזת תווים. לדוגמה: <b>א?ר</b> או <b>כא*</b>',
     apply:'אישור', menu:'תפריט', m_calendar:'חשבן קשטה — לוח השנה השומרוני',
     m_genealogy:'אילן היוחסין השומרוני המלא', m_install:'התקנת אפליקציה', m_lang:'שנה שפה',
+    m_testimonials:'מה כותבים עלינו', tst_title:'מה כותבים עלינו',
+    tst_intro:'מחמאות, דברי עידוד ושיתוף מתוך תגובות לקהילת התורה השומרונית.',
+    tst_sub:'מילים מהקהילה האקדמית ומעולם הספריות',
+    tst_count:'קולות · במילים שלהם', tst_original:'ציטוט במקור',
+    tst_translation:'תרגום לעברית', tst_only:'נכתב במקור בעברית',
+    tst_note:'קטעים נבחרים מהתכתבות אישית, בשפת המקור ובתרגום. השיוך מציין תפקיד, מוסד ומדינה; הדברים הם של הכותבים ואינם המלצה מוסדית.',
     m_whatsnew:'מה חדש?', m_help:'עזרה למשתמש', m_version:'גרסא נוכחית', m_contact:'צור קשר',
     m_tour:'סרטון הסבר מודרך', tour_prompt_title:'סרטון הסבר מודרך',
     tour_prompt_body:'רוצים סיור קצר ומונחה שמסביר ומדגים כיצד להשתמש במערכת? אפשר תמיד לחזור אליו מהתפריט, תחת העזרה.', tour_prompt_start:'התחל הסבר',
@@ -424,6 +430,12 @@ const I18N = {
     adv_hint:'You can use <b>?</b> or <b>*</b> to replace a letter or a string. E.g. <b>א?ר</b> or <b>כא*</b>',
     apply:'Apply', menu:'Menu', m_calendar:'Samaritan calendar (Ḥešbon Qašta)',
     m_genealogy:'Full Samaritan genealogy', m_install:'Install app', m_lang:'Change language',
+    m_testimonials:'What they write about us', tst_title:'What they write about us',
+    tst_intro:'Appreciation, encouragement and sharing from the scholarly and library communities.',
+    tst_sub:'In their own words',
+    tst_count:'voices · in their own words', tst_original:'Original quotation',
+    tst_translation:'English translation', tst_only:'Originally written in English',
+    tst_note:'Selected excerpts from personal correspondence, in the original language and in translation. The affiliation names a role, an institution and a country; the words are the writers\u2019 own and are not an institutional endorsement.',
     m_whatsnew:"What's new?", m_help:'Help', m_version:'Current version', m_contact:'Contact us',
     m_tour:'Guided tour', tour_prompt_title:'Guided tour',
     tour_prompt_body:'Would you like a short guided tour that explains and demonstrates how to use the app? You can always return to it from the menu, under Help.', tour_prompt_start:'Start tour',
@@ -698,6 +710,12 @@ const I18N = {
     adv_hint:'يمكنك استخدام <b>?</b> أو <b>*</b> لاستبدال حرف أو سلسلة أحرف. مثال: <b>א?ר</b> أو <b>כא*</b>',
     apply:'تأكيد', menu:'القائمة', m_calendar:'التقويم السامري (حسبان قشطة)',
     m_genealogy:'شجرة الأنساب السامرية الكاملة', m_install:'تثبيت التطبيق', m_lang:'تغيير اللغة',
+    m_testimonials:'ما يُكتب عنّا', tst_title:'ما يُكتب عنّا',
+    tst_intro:'كلمات تقدير وتشجيع ومشاركة من المجتمع الأكاديمي ومجتمع المكتبات.',
+    tst_sub:'بكلماتهم، من المجتمع الأكاديمي والمكتبات',
+    tst_count:'صوتًا · بكلماتهم', tst_original:'الاقتباس بلغته الأصلية',
+    tst_translation:'الترجمة العربية', tst_only:'كُتب أصلًا بالعربية',
+    tst_note:'مقتطفات مختارة من مراسلات شخصية، بلغتها الأصلية ومع ترجمتها. وتذكر النسبة الوظيفة والمؤسسة والبلد؛ والكلمات لأصحابها وليست تزكية مؤسسية.',
     m_whatsnew:'ما الجديد؟', m_help:'مساعدة المستخدم', m_version:'الإصدار الحالي', m_contact:'اتصل بنا',
     m_tour:'جولة إرشادية', tour_prompt_title:'جولة إرشادية',
     tour_prompt_body:'هل تريدون جولة قصيرة موجَّهة تشرح وتعرض كيفية استخدام التطبيق؟ يمكنكم دائمًا العودة إليها من القائمة، تحت المساعدة.', tour_prompt_start:'ابدأ الجولة',
@@ -6989,6 +7007,7 @@ function menuAction(a){
   else if(a==='adminlogin') openAdminLogin();
   else if(a==='a11y')      openA11y();
   else if(a==='lang')      $('langModal').classList.remove('hidden');
+  else if(a==='testimonials') openTestimonials();
   else if(a==='whatsnew')  showWhatsNewCarousel();
   else if(a==='help')      showHelp();
   else if(a==='tour')      startTour();
@@ -7734,6 +7753,103 @@ async function ppEnsureData(){
   if(!PP.toc){ try{ PP.toc = await api('people_toc'); }catch(e){ PP.toc = []; } }
   return PP.toc;
 }
+// ── מה כותבים עלינו ─────────────────────────────────────────────────────────
+// Forty-two excerpts from personal correspondence with the scholarly and library
+// communities. One rule shapes the page: the quotation stays in the language it
+// was written in. It is set first, in its own letters and its own direction, and
+// the translation follows beneath it under a label of its own.
+//
+// Where the original was already written in the reader's language the page says
+// so — "נכתב במקור בעברית" — instead of printing the same words twice, which is
+// what the source page did and what the reader would otherwise read as a repeat.
+let TST = null;
+function tstFont(n){
+  const b = Math.max(14, Math.min(26, (TST_FS = (TST_FS || 17) + n)));
+  TST_FS = b; try{ localStorage.setItem('as_tst_fs', b); }catch(e){}
+  const body = $('tstBody'); if(body) body.style.fontSize = b + 'px';
+}
+let TST_FS = (()=>{ try{ return parseInt(localStorage.getItem('as_tst_fs')||'17',10)||17; }
+                    catch(e){ return 17; } })();
+
+// the direction a quotation needs, by the language it was written in
+const TST_RTL = {he:true, ar:true, es:false, en:false};
+
+async function openTestimonials(){
+  closeMenu();
+  $('tstModal').classList.remove('hidden');
+  const body = $('tstBody');
+  body.innerHTML = '';
+  body.style.fontSize = TST_FS + 'px';
+  body.appendChild(el('div','note', t('searching')));
+  if(TST === null){
+    try{ TST = await api('testimonials'); }
+    catch(e){ TST = []; }
+  }
+  body.innerHTML = '';
+  const L = LANG;
+
+  const head = el('div','tst-head');
+  head.appendChild(el('div','tst-eyebrow', esc(t('tst_sub'))));
+  head.appendChild(el('div','tst-h1', esc(t('tst_title'))));
+  head.appendChild(el('div','tst-intro', esc(t('tst_intro'))));
+  head.appendChild(el('div','tst-count', TST.length + ' ' + esc(t('tst_count'))));
+  body.appendChild(head);
+
+  for(const r of TST){
+    const card = el('div','tst-card');
+
+    const who = el('div','tst-who');
+    who.appendChild(el('div','tst-name', esc(r.name || '')));
+    const meta = ((r.meta || {})[L] || (r.meta || {}).en || '').trim();
+    if(meta){
+      // the affiliation arrives as role / institution / country on three lines
+      const mw = el('div','tst-meta');
+      meta.split('\n').forEach((line, i) => {
+        if(line.trim()) mw.appendChild(el('div', i ? 'tst-meta-l' : 'tst-meta-l tst-role', esc(line.trim())));
+      });
+      who.appendChild(mw);
+    }
+    card.appendChild(who);
+
+    // ── the quotation, in the language it was written in ──────────────────
+    const orig = (r.original || '').trim();
+    const sameLang = (r.lang === L);
+    if(orig){
+      card.appendChild(el('div','tst-label', esc(sameLang ? t('tst_only') : t('tst_original'))));
+      const q = el('blockquote','tst-quote');
+      q.lang = r.lang || 'en';
+      q.dir = TST_RTL[r.lang] ? 'rtl' : 'ltr';
+      if(!TST_RTL[r.lang]) q.classList.add('tst-ltr');
+      orig.split(/\n+/).forEach(p => { if(p.trim()) q.appendChild(el('p','', esc(p.trim()))); });
+      card.appendChild(q);
+    }
+
+    // ── and the translation, only when it is not the original ─────────────
+    const tr = (r[L] || '').trim();
+    if(tr && !sameLang){
+      card.appendChild(el('div','tst-label tst-label-tr', esc(t('tst_translation'))));
+      const tq = el('div','tst-trans');
+      tq.lang = L;
+      tq.dir = (L === 'en') ? 'ltr' : 'rtl';
+      if(L === 'en') tq.classList.add('tst-ltr');
+      tr.split(/\n+/).forEach(p => { if(p.trim()) tq.appendChild(el('p','', esc(p.trim()))); });
+      card.appendChild(tq);
+    }
+
+    if(r.date) card.appendChild(el('div','tst-date', esc(r.date)));
+    body.appendChild(card);
+  }
+
+  body.appendChild(el('div','tst-note', esc(t('tst_note'))));
+  body.scrollTop = 0;
+}
+
+$('tstClose').onclick = ()=> $('tstModal').classList.add('hidden');
+$('tstToTorah').onclick = ()=> $('tstModal').classList.add('hidden');
+$('tstZoomIn').onclick = ()=> tstFont(+1);
+$('tstZoomOut').onclick = ()=> tstFont(-1);
+$('tstPrint').onclick = ()=> window.print();
+
 function openPeopleBook(){
   $('peopleModal').classList.remove('hidden');
   $('ppBody').classList.remove('pp-detail-open');

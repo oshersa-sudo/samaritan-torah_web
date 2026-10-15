@@ -2886,3 +2886,48 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 /* the Hebrew word an occurrence renders, beside its place */
 .tal-loc .occ-he{ font-style:normal; color:#55497f; margin-inline-start:.35em;
   font-size:.92em; opacity:.9; }
+
+/* ── מה כותבים עלינו ─────────────────────────────────────────────────────────
+   Forty-two excerpts, each a card. The quotation keeps the language it was
+   written in, so a card can hold two directions at once: the rule below sets
+   the direction per block rather than on the card, and .tst-ltr turns the
+   alignment with it — otherwise a Latin paragraph sits right-aligned inside a
+   right-to-left page and reads as if its lines were broken by hand. */
+.tst-body{ padding:14px 16px 28px; line-height:1.7; }
+.tst-head{ margin:4px 2px 18px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+.tst-eyebrow{ font-size:12.5px; letter-spacing:.06em; color:#8a8172; margin-bottom:4px; }
+.tst-h1{ font-size:1.5em; font-weight:700; color:var(--navy); line-height:1.25; }
+.tst-intro{ margin-top:6px; color:var(--dark); }
+.tst-count{ margin-top:8px; font-size:12.5px; color:#8a8172; }
+
+.tst-card{ background:#fffdf8; border:1px solid var(--line); border-radius:12px;
+  padding:14px 16px 12px; margin-bottom:14px;
+  box-shadow:0 1px 3px rgba(16,26,56,.05); }
+.tst-who{ margin-bottom:10px; padding-bottom:9px; border-bottom:1px dashed #e3dbc9; }
+.tst-name{ font-weight:700; color:var(--navy); font-size:1.06em; }
+.tst-meta{ margin-top:3px; }
+.tst-meta-l{ font-size:.82em; color:#6b6355; line-height:1.5; }
+.tst-meta-l.tst-role{ color:#55497f; }
+
+/* the label that says which of the two blocks follows */
+.tst-label{ font-size:11.5px; letter-spacing:.04em; color:#8a8172; margin:2px 0 4px;
+  text-transform:none; }
+.tst-label-tr{ margin-top:12px; padding-top:10px; border-top:1px dashed #e3dbc9; }
+
+.tst-quote{ margin:0; padding:0 0 0 0; border-inline-start:3px solid rgba(26,56,115,.4);
+  padding-inline-start:11px; }
+.tst-quote p, .tst-trans p{ margin:0 0 .55em; }
+.tst-quote p:last-child, .tst-trans p:last-child{ margin-bottom:0; }
+.tst-trans{ color:#3a362e; }
+/* a block in the other direction aligns with its own direction, not the page's */
+.tst-ltr{ text-align:left; }
+.tst-body [dir="rtl"]{ text-align:right; }
+
+.tst-date{ margin-top:9px; font-size:11.5px; color:#a49a87; }
+.tst-note{ margin:18px 2px 0; padding-top:14px; border-top:1px solid var(--line);
+  font-size:12.5px; color:#8a8172; line-height:1.65; }
+
+@media print{
+  .tst-reader .rd-top{ display:none; }
+  .tst-card{ break-inside:avoid; box-shadow:none; }
+}
