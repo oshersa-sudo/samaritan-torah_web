@@ -2111,7 +2111,9 @@ def healthz():
         books = db.get_books()
         _books_payload('samaritan')                      # fills the small cache too
         return jsonify({'ok': True, 'books': len(books),
-                        'ms': round((time.time() - t0) * 1000)})
+                        'ms': round((time.time() - t0) * 1000),
+                        # what the boot patches did — see database.PATCH_REPORT
+                        'patches': getattr(db, 'PATCH_REPORT', {})})
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
 

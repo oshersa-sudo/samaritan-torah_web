@@ -13,6 +13,12 @@ import unicodedata
 _BUNDLED_DB = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'torah.db')
 DB_PATH = os.environ.get('DB_PATH') or _BUNDLED_DB
 
+# What each boot patch did, so /healthz can say whether it took. The patches run
+# at import and print to a log; on a hosted deployment that log is not always
+# reachable, and "did the patch apply?" is then a question no one can answer from
+# outside. Each entry is a short string, written by the patch itself.
+PATCH_REPORT = {}
+
 # The Aramaic dictionary lives in its own file. It holds nothing keyed to a verse
 # and nothing the admin panel edits, so it can be replaced wholesale on every
 # deploy instead of being threaded past the live text. Attached read-only, and
@@ -904,14 +910,17 @@ def _seed_word_align():
     run has nothing to do.
     """
     if not os.path.exists(_WORD_ALIGN_PATCH):
+        PATCH_REPORT['word_align'] = 'no file at %s' % _WORD_ALIGN_PATCH
         return
     try:
         with open(_WORD_ALIGN_PATCH, encoding='utf-8') as fh:
             rows = json.load(fh).get('rows', [])
     except Exception as exc:
+        PATCH_REPORT['word_align'] = 'unreadable: %s' % exc
         print('[word-align] %s' % exc)
         return
     if not rows:
+        PATCH_REPORT['word_align'] = 'file holds no rows'
         return
     conn = sqlite3.connect(DB_PATH)
     done = 0
@@ -961,10 +970,24 @@ def _seed_word_align():
         done += cur.rowcount
         conn.commit()
     except Exception as exc:
+        PATCH_REPORT['word_align'] = 'failed: %s' % exc
         print('[word-align] %s' % exc)
     finally:
         conn.close()
-    print('[word-align] %d of %d words given their Targum alignment' % (done, len(rows)))
+    if 'word_align' not in PATCH_REPORT:
+        try:
+            chk = sqlite3.connect('file:%s?mode=ro' % DB_PATH, uri=True)
+            have = chk.execute(
+                "SELECT COUNT(*) FROM word_align WHERE verse_id IN (%s) "
+                "AND TRIM(COALESCE(ar,'')) <> ''"
+                % ','.join('?' * len({r['v'] for r in rows})),
+                sorted({r['v'] for r in rows})).fetchone()[0]
+            chk.close()
+        except Exception as exc:
+            have = 'unreadable: %s' % exc
+        PATCH_REPORT['word_align'] = '%s written, %s of %d now carry Aramaic' % (
+            done, have, len(rows))
+    print('[word-align] %s' % PATCH_REPORT['word_align'])
 
 
 _seed_word_align()
