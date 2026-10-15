@@ -243,6 +243,7 @@ const I18N = {
     dara_variants:'חילופי גרסה והערות הגייה', dara_occurs:'מופעים בספר', dara_pop_dict:'מן המילון', dara_pop_arabic:'בערבית', dara_loading:'טוען…',
     dict_in_dara_sec:'בפיוטי הליטורגיה', dict_w_dara:'נאמרת בפיוטי הליטורגיה', dict_dara_only:'מן פיוטי הליטורגיה',
     piy_back_tree:'חזרה לתוכן', piy_dict_toggle:'מילון המילים', piy_search_ph:'חיפוש חיבור, מחבר או מילה…',
+    piy_jump:'קפיצה אל פיוט', dara_jump:'קפיצה אל פיוט', jump_pick:'— קפיצה אל פיוט —',
     piy_empty:'בחר חיבור מתוכן העניינים ←', piy_pick_first:'בחר חיבור',
     piy_translation_he:'תרגום עברי', piy_no_dict_line:'אין ערכי מילון לשורה זו עדיין',
     piy_no_dict_entry:'אין ערך מילון עדיין',
@@ -7896,7 +7897,7 @@ function openPiyutimBook(){
   $('piyModal').classList.remove('hidden');
   $('piyBody').classList.remove('piy-detail-open');
   $('piyToRhyme').classList.add('hidden');   // only shown when entered via a rhyme-search jump
-  piyEnsureData().then(()=>piyBuildTree());
+  piyEnsureData().then(()=>{ piyBuildTree(); piyFillJump(); });
   trackNav(t('piy_title'));
 }
 function piyNorm(s){ return (s||'').replace(/[^א-ת]/g,''); }
@@ -7932,6 +7933,32 @@ function piyBuildTree(){
   }
   if(!tree.children.length) tree.appendChild(el('div','note', t('lib_no_result')));
 }
+/* The tree is right for browsing -- festival, then genre, then piece -- and
+ * wrong for arriving. Someone who knows which piyyut they want should not
+ * have to open three levels to reach it. The menu is the short way, and being
+ * the device's own control it carries type-ahead without a line of code from
+ * us. It is filled from the table the tree is built from, so the two can
+ * never disagree about what exists. */
+function piyFillJump(){
+  const sel=$('piyJump'); if(!sel) return;
+  const byFest={};
+  for(const p of (PIY.toc||[])) (byFest[p.festival] ||= []).push(p);
+  const order = PIY_FEST_ORDER.filter(f=>byFest[f])
+                  .concat(Object.keys(byFest).filter(f=>!PIY_FEST_ORDER.includes(f)));
+  let html = '<option value="">'+esc(t('jump_pick'))+'</option>';
+  for(const fest of order){
+    const items=byFest[fest].slice()
+      .sort((a,b)=>(a.title||a.incipit3||'').localeCompare(b.title||b.incipit3||'','he'));
+    html += '<optgroup label="'+esc(fest+' ('+items.length+')')+'">' + items.map(p=>{
+      const name=p.title||p.incipit3||'';
+      return '<option value="'+esc(String(p.id))+'">'+esc(p.author?name+' · '+p.author:name)+'</option>';
+    }).join('') + '</optgroup>';
+  }
+  sel.innerHTML=html;
+  if(PIY.cur) sel.value=PIY.cur.id;
+}
+$('piyJump').onchange=function(){ if(this.value) piyShow(this.value); };
+
 let _piySearchTimer=null;
 $('piySearch').addEventListener('input', ()=>{
   clearTimeout(_piySearchTimer);
@@ -7951,6 +7978,7 @@ async function piyShow(id){
   let p; try{ p=await api('piyutim_chapter?id='+id); }catch(e){ p=null; }
   if(!p || p.error) return;
   PIY.cur=p;
+  if($('piyJump')) $('piyJump').value=id;   // the menu also says where you are
   PIY.curDict=Object.assign({}, PIY.dict, p.dict||{});   // per-piece dict, enriched server-side with tal_word_gloss
   document.querySelectorAll('#piyTree .piy-item.sel').forEach(e=>e.classList.remove('sel'));
   document.querySelectorAll(`#piyTree .piy-item[data-id="${id}"]`).forEach(e=>e.classList.add('sel'));
@@ -8027,7 +8055,7 @@ async function daraEnsure(){ if(!DARA.toc) DARA.toc = await api('dara_toc'); ret
 function openDaraBook(){
   $('daraModal').classList.remove('hidden');
   $('daraBody').classList.remove('piy-detail-open');
-  daraEnsure().then(()=>daraBuildTree());
+  daraEnsure().then(()=>{ daraBuildTree(); daraFillJump(); });
   trackNav(t('dara_title'));
 }
 function daraName(p){
@@ -8080,6 +8108,25 @@ function daraBuildTree(rows){
 // a space. The word keeps its span and its data, so it is still a word a reader
 // can tap and look up; only its drawing changes.
 let DARA_SAM = false;
+/* the same short way through the volume, by its own ordering: author, then
+   the piece's letter, in the order the volume prints them */
+function daraFillJump(){
+  const sel=$('daraJump'); if(!sel) return;
+  const byAuthor={};
+  for(const p of (DARA.toc||[])) (byAuthor[p.author] ||= []).push(p);
+  let html = '<option value="">'+esc(t('jump_pick'))+'</option>';
+  for(const author of Object.keys(byAuthor)){
+    const items=byAuthor[author];
+    html += '<optgroup label="'+esc(author+' ('+items.length+')')+'">' + items.map(p=>{
+      const label = p.sec ? (author+' '+p.sec) : (p.title||author);
+      return '<option value="'+esc(String(p.id))+'">'+esc(label)+'</option>';
+    }).join('') + '</optgroup>';
+  }
+  sel.innerHTML=html;
+  if(DARA.cur) sel.value=DARA.cur.id;
+}
+$('daraJump').onchange=function(){ if(this.value) daraShow(this.value); };
+
 function daraWordSpan(w){
   const clean=(w||'').replace(/[^א-ת]/g,'');
   const d = clean && DARA.cur && DARA.cur.dict && DARA.cur.dict[clean];
@@ -8094,6 +8141,7 @@ async function daraShow(id){
   let p; try{ p=await api('dara_piyut?id='+id); }catch(e){ p=null; }
   if(!p || p.error) return;
   DARA.cur=p;
+  if($('daraJump')) $('daraJump').value=id;
   document.querySelectorAll('#daraTree .piy-item.sel').forEach(e=>e.classList.remove('sel'));
   document.querySelectorAll('#daraTree .piy-item[data-id="'+id+'"]').forEach(e=>e.classList.add('sel'));
   const rows = (p.lines||[]).map(l=>{

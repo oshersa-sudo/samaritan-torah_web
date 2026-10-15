@@ -1641,6 +1641,20 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 .tm-secnum.tm-jump{ cursor:pointer; text-decoration:underline dotted; }
 .tm-secnum.tm-jump:hover{ color:var(--active); }
 .tm-search-row{ display:flex; gap:8px; }
+/* ---- the piyyut menu.
+ * The tree is organised by festival and genre, which is right for browsing;
+ * someone coming to a particular piece has to open three levels to reach it.
+ * This is the short way -- and being the device's own control, it carries
+ * type-ahead without a line of code from us.
+ */
+.piy-jump{
+  flex:0 0 auto; max-width:46%;
+  font:inherit; font-size:15px; padding:9px 10px;
+  border:1px solid #cfd6e6; border-radius:8px;
+  background:#fff; color:inherit; cursor:pointer;
+}
+.piy-jump:hover{ border-color:#c9a227; }
+@media (max-width:620px){ .piy-jump{ max-width:42%; font-size:14px; } }
 .tm-search-row input{ flex:1; padding:9px 12px; border:1px solid #cfd6e6; border-radius:8px; font:inherit; font-size:16px; }
 .tm-body{ flex:1 1 auto; min-height:0; overflow-y:auto; padding:2px 2px 4px; }
 .tm-hint{ color:var(--muted); font-size:14px; margin:2px 0 8px; }
