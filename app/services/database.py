@@ -916,18 +916,33 @@ def _seed_word_align():
     conn = sqlite3.connect(DB_PATH)
     done = 0
     try:
-        names = {r[0] for r in conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='table'")}
-        if 'word_align' not in names:
-            conn.close()
-            return
+        # the table is created when it is missing: this deployment's database may
+        # never have run the migration that made it, and the app reads it
+        # defensively, so creating it adds nothing but somewhere to put the rows
+        conn.execute('CREATE TABLE IF NOT EXISTS word_align('
+                     'verse_id INTEGER, pos INTEGER, ar TEXT, arab TEXT, en TEXT, '
+                     'he TEXT, PRIMARY KEY(verse_id, pos))')
         cur = conn.cursor()
+        vals = [(r['v'], r['p'], r.get('ar', ''), r.get('arab', ''), '', r.get('he', ''))
+                for r in rows]
         cur.executemany(
             'INSERT OR IGNORE INTO word_align(verse_id, pos, ar, arab, en, he) '
-            'VALUES (?,?,?,?,?,?)',
-            [(r['v'], r['p'], r.get('ar', ''), r.get('arab', ''), '', r.get('he', ''))
-             for r in rows])
+            'VALUES (?,?,?,?,?,?)', vals)
         done = cur.rowcount
+        # and a row that already stood there, holding nothing: COALESCE keeps
+        # whatever each column already says and writes only into emptiness, so a
+        # curated value is never overwritten and a rerun changes nothing.
+        cur.executemany(
+            "UPDATE word_align SET "
+            "ar   = CASE WHEN TRIM(COALESCE(ar,''))   = '' THEN ? ELSE ar   END, "
+            "arab = CASE WHEN TRIM(COALESCE(arab,'')) = '' THEN ? ELSE arab END, "
+            "he   = CASE WHEN TRIM(COALESCE(he,''))   = '' THEN ? ELSE he   END "
+            "WHERE verse_id = ? AND pos = ? AND ("
+            "  (TRIM(COALESCE(ar,''))   = '' AND ? <> '') OR"
+            "  (TRIM(COALESCE(arab,'')) = '' AND ? <> '') OR"
+            "  (TRIM(COALESCE(he,''))   = '' AND ? <> ''))",
+            [(r[2], r[3], r[5], r[0], r[1], r[2], r[3], r[5]) for r in vals])
+        done += cur.rowcount
         conn.commit()
     except Exception as exc:
         print('[word-align] %s' % exc)
