@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מה כותבים עלינו · התורה השומרונית הישראלית</title>
+<meta name="theme-color" content="#1a3873">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* A page of its own, so the reader scrolls the document the way a document is
+     scrolled. Inside the app it was a reader panel, and a panel has to be told
+     its height before it will scroll at all — which is exactly what went wrong.
+     Here nothing is given a fixed height and nothing clips its overflow. */
+  :root{ --navy:#1a3873; --cream:#f7f7f2; --ink:#22221e; --muted:#8a8172;
+         --rule:#e4d9be; --card:#fffdf8; --dark:#3a362e; }
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--cream); color:var(--ink); line-height:1.7;
+        font-family:'Frank Ruhl Libre','Times New Roman',serif; }
+  html[lang=ar] body{ font-family:'Amiri','Frank Ruhl Libre',serif; }
+
+  header{ background:var(--navy); color:#fdfdf7; padding:18px 16px 16px; }
+  header .wrap{ max-width:760px; margin:0 auto; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.06em; opacity:.8; }
+  header h1{ margin:3px 0 0; font-size:23px; font-weight:700; line-height:1.25; }
+  header .intro{ margin:7px 0 0; font-size:15px; opacity:.9; }
+  header .count{ margin:8px 0 0; font-size:12.5px; opacity:.72; }
+
+  .bar{ max-width:760px; margin:12px auto 0; padding:0 16px;
+        display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .bar .sp{ flex:1 1 auto; }
+  .pill{ font-family:inherit; font-size:14px; padding:5px 13px; border-radius:999px;
+         cursor:pointer; border:1px solid var(--rule); background:var(--card);
+         color:var(--navy); text-decoration:none; display:inline-block; }
+  .pill.on{ background:var(--navy); color:var(--cream); border-color:var(--navy); }
+  /* A− and A+ are a fixed pair, not words: left to the page direction they
+     come out as −A and +A in Hebrew and Arabic. */
+  .pill.zoom{ padding:5px 10px; min-width:40px; text-align:center; direction:ltr; }
+
+  main{ max-width:760px; margin:0 auto; padding:16px 16px 56px; font-size:17px; }
+
+  .card{ background:var(--card); border:1px solid var(--rule); border-radius:12px;
+         padding:14px 16px 12px; margin-bottom:14px;
+         box-shadow:0 1px 3px rgba(16,26,56,.05); }
+  .who{ margin-bottom:10px; padding-bottom:9px; border-bottom:1px dashed #e3dbc9; }
+  .name{ font-weight:700; color:var(--navy); font-size:1.06em; }
+  .meta{ margin-top:3px; }
+  .meta-l{ font-size:.82em; color:#6b6355; line-height:1.5; }
+  .meta-l.role{ color:#55497f; }
+
+  /* the label that says which of the two blocks follows */
+  .label{ font-size:11.5px; letter-spacing:.04em; color:var(--muted); margin:2px 0 4px; }
+  .label-tr{ margin-top:12px; padding-top:10px; border-top:1px dashed #e3dbc9; }
+
+  blockquote.quote{ margin:0; border-inline-start:3px solid rgba(26,56,115,.4);
+                    padding-inline-start:11px; }
+  .quote p, .trans p{ margin:0 0 .55em; }
+  .quote p:last-child, .trans p:last-child{ margin-bottom:0; }
+  .trans{ color:var(--dark); }
+  /* a card can hold two directions at once, so each block is aligned with its
+     own direction and not with the page's */
+  [dir=rtl]{ text-align:right; }
+  [dir=ltr]{ text-align:left; }
+  .quote[lang=ar]{ font-family:'Amiri','Frank Ruhl Libre',serif; }
+
+  .date{ margin-top:9px; font-size:11.5px; color:#a49a87; }
+  .note{ margin:18px 2px 0; padding-top:14px; border-top:1px solid var(--rule);
+         font-size:12.5px; color:var(--muted); line-height:1.65; }
+
+  [hidden]{ display:none !important; }
+
+  @media print{
+    .bar{ display:none; }
+    header{ background:none; color:var(--ink); padding:0 0 10px; }
+    .card{ break-inside:avoid; box-shadow:none; }
+  }
+</style>
+</head>
+<body>
+
+{%- set LBL = {
+  'he': {'eyebrow':'מילים מהקהילה האקדמית ומעולם הספריות',
+         'title':'מה כותבים עלינו',
+         'intro':'מחמאות, דברי עידוד ושיתוף מתוך תגובות לקהילת התורה השומרונית.',
+         'count':'קולות · במילים שלהם',
+         'original':'ציטוט במקור',
+         'translation':'תרגום לעברית',
+         'only':'נכתב במקור בעברית',
+         'back':'↩ התורה', 'print':'הדפסה',
+         'note':'קטעים נבחרים מהתכתבות אישית, בשפת המקור ובתרגום. השיוך מציין תפקיד, מוסד ומדינה; הדברים הם של הכותבים ואינם המלצה מוסדית.'},
+  'en': {'eyebrow':'In their own words',
+         'title':'What they write about us',
+         'intro':'Appreciation, encouragement and sharing from the scholarly and library communities.',
+         'count':'voices · in their own words',
+         'original':'Original quotation',
+         'translation':'English translation',
+         'only':'Originally written in English',
+         'back':'↩ Torah', 'print':'Print',
+         'note':'Selected excerpts from personal correspondence, in the original language and in translation. The affiliation names a role, an institution and a country; the words are the writers’ own and are not an institutional endorsement.'},
+  'ar': {'eyebrow':'بكلماتهم، من المجتمع الأكاديمي والمكتبات',
+         'title':'ما يُكتب عنّا',
+         'intro':'كلمات تقدير وتشجيع ومشاركة من المجتمع الأكاديمي ومجتمع المكتبات.',
+         'count':'صوتًا · بكلماتهم',
+         'original':'الاقتباس بلغته الأصلية',
+         'translation':'الترجمة العربية',
+         'only':'كُتب أصلًا بالعربية',
+         'back':'↩ التوراة', 'print':'طباعة',
+         'note':'مقتطفات مختارة من مراسلات شخصية، بلغتها الأصلية ومع ترجمتها. وتذكر النسبة الوظيفة والمؤسسة والبلد؛ والكلمات لأصحابها وليست تزكية مؤسسية.'}
+} -%}
+{%- set RTL = {'he': true, 'ar': true, 'en': false, 'es': false} -%}
+
+<div class="bar">
+  <a class="pill" href="/" id="backlink">↩ התורה</a>
+  <button class="pill" onclick="window.print()" id="printbtn">הדפסה</button>
+  <span class="sp"></span>
+  <button class="pill zoom" onclick="zoom(-1)" aria-label="A minus">A−</button>
+  <button class="pill zoom" onclick="zoom(1)" aria-label="A plus">A+</button>
+  <button class="pill on" id="b_he" onclick="setLang('he')">עברית</button>
+  <button class="pill" id="b_en" onclick="setLang('en')">English</button>
+  <button class="pill" id="b_ar" onclick="setLang('ar')">العربية</button>
+</div>
+
+{% for L in ['he', 'en', 'ar'] %}
+{%- set lb = LBL[L] %}
+<div id="{{ L }}" class="pane" dir="{{ 'rtl' if RTL[L] else 'ltr' }}" {% if L != 'he' %}hidden{% endif %}>
+  <header><div class="wrap">
+    <div class="eyebrow">{{ lb.eyebrow }}</div>
+    <h1>{{ lb.title }}</h1>
+    <p class="intro">{{ lb.intro }}</p>
+    <p class="count">{{ rows|length }} {{ lb.count }}</p>
+  </div></header>
+  <main>
+    {% for r in rows %}
+    {%- set same = (r.lang == L) %}
+    <div class="card">
+      <div class="who">
+        <div class="name">{{ r.name }}</div>
+        {%- set meta = (r.meta or {}).get(L) or (r.meta or {}).get('en') or '' %}
+        {%- if meta.strip() %}
+        <div class="meta">
+          {%- for line in meta.split('\n') %}{% if line.strip() %}
+          <div class="meta-l{% if loop.first %} role{% endif %}">{{ line.strip() }}</div>
+          {%- endif %}{% endfor %}
+        </div>
+        {%- endif %}
+      </div>
+      {%- if (r.original or '').strip() %}
+      <div class="label">{{ lb.only if same else lb.original }}</div>
+      <blockquote class="quote" lang="{{ r.lang or 'en' }}" dir="{{ 'rtl' if RTL.get(r.lang) else 'ltr' }}">
+        {%- for p in (r.original or '').split('\n') %}{% if p.strip() %}
+        <p>{{ p.strip() }}</p>
+        {%- endif %}{% endfor %}
+      </blockquote>
+      {%- endif %}
+      {%- set tr = (r.get(L) or '').strip() %}
+      {%- if tr and not same %}
+      <div class="label label-tr">{{ lb.translation }}</div>
+      <div class="trans" lang="{{ L }}" dir="{{ 'rtl' if RTL[L] else 'ltr' }}">
+        {%- for p in tr.split('\n') %}{% if p.strip() %}
+        <p>{{ p.strip() }}</p>
+        {%- endif %}{% endfor %}
+      </div>
+      {%- endif %}
+      {%- if r.date %}<div class="date">{{ r.date }}</div>{% endif %}
+    </div>
+    {% endfor %}
+    <div class="note">{{ lb.note }}</div>
+  </main>
+</div>
+{% endfor %}
+
+<script>
+  // The three languages are all rendered; switching shows one and hides the
+  // others, so the page needs no network and keeps working with scripts off —
+  // Hebrew is simply the one that is already visible.
+  var BACK = {he:'↩ התורה', en:'↩ Torah', ar:'↩ التوراة'};
+  var PRN  = {he:'הדפסה',  en:'Print',   ar:'طباعة'};
+  var RTL  = {he:1, ar:1, en:0};
+
+  function setLang(l){
+    if(!BACK[l]) l = 'he';
+    ['he','en','ar'].forEach(function(x){
+      document.getElementById(x).hidden = (x !== l);
+      document.getElementById('b_' + x).classList.toggle('on', x === l);
+    });
+    document.documentElement.lang = l;
+    document.documentElement.dir = RTL[l] ? 'rtl' : 'ltr';
+    document.getElementById('backlink').textContent = BACK[l];
+    document.getElementById('printbtn').textContent = PRN[l];
+    try{ localStorage.setItem('as_lang', l); }catch(e){}
+  }
+
+  function zoom(n){
+    var cur = 17;
+    try{ cur = parseInt(localStorage.getItem('as_tst_fs') || '17', 10) || 17; }catch(e){}
+    var v = Math.max(14, Math.min(26, cur + n));
+    document.querySelectorAll('main').forEach(function(m){ m.style.fontSize = v + 'px'; });
+    try{ localStorage.setItem('as_tst_fs', v); }catch(e){}
+  }
+
+  (function(){
+    // ?lang= wins, because that is the app handing over the reader's choice;
+    // otherwise the language this device last chose, in the app or here.
+    var q = new URLSearchParams(location.search).get('lang');
+    var saved = null;
+    try{ saved = localStorage.getItem('as_lang'); }catch(e){}
+    setLang(q || saved || 'he');
+    zoom(0);
+  })();
+</script>
+</body>
+</html>

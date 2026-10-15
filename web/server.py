@@ -2928,8 +2928,7 @@ def api_apparatus():
 _TESTIMONIALS = None
 
 
-@app.route('/api/testimonials')
-def api_testimonials():
+def _testimonials():
     global _TESTIMONIALS
     if _TESTIMONIALS is None:
         path = os.path.join(os.path.dirname(__file__), '..', 'data', 'testimonials.json')
@@ -2941,7 +2940,21 @@ def api_testimonials():
             app.logger.warning('testimonials: %s', exc)
             print('[testimonials] %s' % exc)
             _TESTIMONIALS = []
-    return jsonify(_TESTIMONIALS)
+    return _TESTIMONIALS
+
+
+@app.route('/api/testimonials')
+def api_testimonials():
+    return jsonify(_testimonials())
+
+
+# A page of its own rather than a panel in the app, because a panel has to be
+# told its height before it will scroll and this one never was. Rendered on the
+# server in all three languages at once, so it scrolls, prints and reads with
+# scripts off; the switcher only shows one and hides the others.
+@app.route('/testimonials')
+def testimonials_page():
+    return render_template('testimonials.html', rows=_testimonials())
 
 
 @app.route('/api/verse_sources')
