@@ -993,6 +993,66 @@ def _seed_word_align():
 _seed_word_align()
 
 
+_INTERP_QUOTE_FIX = os.path.join(os.path.dirname(__file__), '..', '..',
+                                 'data', 'interp_quote_fix.json')
+
+
+def _seed_interp_quotes():
+    """Make the quotations in the commentaries read as the Samaritan Torah reads.
+
+    A commentary here quotes constantly, and a quotation in the wrong recension
+    is worse than none: the reader is shown, inside the Samaritan Torah, wording
+    the Samaritan Torah does not have — "אשר יבחר" where it reads "אשר בחר",
+    "בוקר" where it reads "בקר", ה׳ where it writes יהוה. Every quotation was
+    aligned to the text word for word, and only those differing from it in
+    spelling alone were corrected, each differing word replaced by the form the
+    text itself spells.
+
+    The guard is the whole field, so an edit made online is never overwritten and
+    a rerun changes nothing.
+    """
+    if not os.path.exists(_INTERP_QUOTE_FIX):
+        PATCH_REPORT['interp_quotes'] = 'no file'
+        return
+    try:
+        with open(_INTERP_QUOTE_FIX, encoding='utf-8') as fh:
+            rows = json.load(fh).get('rows', [])
+    except Exception as exc:
+        PATCH_REPORT['interp_quotes'] = 'unreadable: %s' % exc
+        return
+    if not rows:
+        PATCH_REPORT['interp_quotes'] = 'no rows'
+        return
+    conn = sqlite3.connect(DB_PATH)
+    done = 0
+    try:
+        cur = conn.cursor()
+        cur.executemany(
+            'UPDATE verses SET interpretation=? WHERE id=? '
+            "AND TRIM(COALESCE(interpretation,'')) = ?",
+            [(r['now'], r['v'], r['was']) for r in rows])
+        done = cur.rowcount
+        # where a commentary was rewritten rather than respelled, its Arabic
+        # translated the old wording and is replaced with it, under the same guard
+        withar = [(r['ar'], r['v'], r['now']) for r in rows if (r.get('ar') or '').strip()]
+        if withar:
+            cur.executemany(
+                'UPDATE verses SET interpretation_ar=? WHERE id=? '
+                "AND TRIM(COALESCE(interpretation,'')) = ?", withar)
+        conn.commit()
+    except Exception as exc:
+        PATCH_REPORT['interp_quotes'] = 'failed: %s' % exc
+        print('[quotes] %s' % exc)
+    finally:
+        conn.close()
+    if 'interp_quotes' not in PATCH_REPORT:
+        PATCH_REPORT['interp_quotes'] = '%d of %d commentaries corrected' % (done, len(rows))
+    print('[quotes] %s' % PATCH_REPORT['interp_quotes'])
+
+
+_seed_interp_quotes()
+
+
 _TRANSLIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'translit_benhayyim_patch.json')
 _HEB_LETTERS = re.compile(r'[^\u05D0-\u05EA]')
