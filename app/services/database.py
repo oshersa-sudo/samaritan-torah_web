@@ -4399,6 +4399,60 @@ def _hl_root(text, root_core):
     return out
 
 
+
+# ── where a word stands in the Targum, read from the alignment ───────────────
+# The dictionary panel lists a word's Torah occurrences through the root index,
+# and a word with no root recorded therefore showed none — fourteen per cent of
+# the words that do occur in the Torah. The Targum lies beside the Hebrew verse,
+# so the alignment already knows both the verse and the Hebrew word being
+# rendered; that index is built once from it and shipped as data.
+#
+# Loaded lazily: almost two megabytes of JSON does not belong on the boot path,
+# and most page views never open the dictionary.
+_WORD_LOC_PATH = os.path.join(os.path.dirname(__file__), '..', '..',
+                              'data', 'word_locations.json')
+_WORD_LOC = None
+
+
+def _word_locations():
+    global _WORD_LOC
+    if _WORD_LOC is None:
+        try:
+            with open(_WORD_LOC_PATH, encoding='utf-8') as fh:
+                _WORD_LOC = json.load(fh)
+        except Exception:
+            _WORD_LOC = {}
+    return _WORD_LOC
+
+
+def _targum_occurrences(conn, word_norm, limit=40):
+    """[{book, chapter, verse, verse_id, hebrew}] for a word, from the alignment."""
+    rec = _word_locations().get(word_norm)
+    if not rec:
+        return [], 0
+    pairs = rec.get('v') or []
+    ids = [p[0] for p in pairs][:limit]
+    if not ids:
+        return [], 0
+    heb_of = {p[0]: p[1] for p in pairs}
+    rows = conn.execute(
+        'SELECT v.id, v.number AS verse, v.text AS text, ch.number AS chapter, '
+        'b.name AS book FROM verses v JOIN chapters ch ON ch.id = v.chapter_id '
+        'JOIN books b ON b.id = ch.book_id WHERE v.id IN (%s)'
+        % ','.join('?' * len(ids)), ids).fetchall()
+    by_id = {r['id']: r for r in rows}
+    out = []
+    for vid in ids:
+        r = by_id.get(vid)
+        if not r:
+            continue
+        he = heb_of.get(vid, '')
+        out.append({'book': r['book'], 'ch': r['chapter'], 'vn': r['verse'],
+                    'verse_id': vid, 'text': r['text'] or '',
+                    'hi': _hl_root(r['text'] or '', he) if he else '',
+                    'hebrew': he, 'from_targum': True})
+    return out, rec.get('n') or len(out)
+
 def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
     """Everything a clicked index word opens to, grouped by meaning (= root, the only
     bridge between the Aramaic dictionary and the Hebrew Torah). For each meaning:
@@ -4546,6 +4600,16 @@ def dict_word_detail(word, root=None, torah_limit=40, memar_limit=30):
                          'sense_split': bool(target is not None and (t_sense or m_sense)),
                          'torah': torah_out, 'torah_count': torah_count,
                          'memar': memar_all[:memar_limit], 'memar_count': memar_count})
+    # a meaning with no occurrence to show gets the Targum's own
+    for m in meanings:
+        if not (m.get('torah') or []):
+            occ, n = _targum_occurrences(conn, wn)
+            if occ:
+                m['torah'] = occ
+                m['torah_count'] = n
+                m['torah_from_targum'] = True
+            break
+
     if not any((m.get('senses') or []) for m in meanings):
         try:
             fb = conn.execute(

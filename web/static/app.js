@@ -3901,7 +3901,8 @@ async function showWordSources(sel){
       body.appendChild(el('div','tal-sec', t('ws_torah_occ')+' ('+m.torah_count+')'));
       const wrap=el('div','tal-locs');
       for(const o of (m.torah||[]).slice(0,12)){
-        const sp=el('span','tal-loc occ-link', esc(o.book+' '+o.ch+':'+o.vn));
+        const sp=el('span','tal-loc occ-link',
+          esc(o.book+' '+o.ch+':'+o.vn) + (o.hebrew ? ' <i class="occ-he">'+esc(o.hebrew)+'</i>' : ''));
         sp.onclick=()=>openOccurrence('torah', o); wrap.appendChild(sp);
       }
       if(m.torah_count>(m.torah||[]).length) wrap.appendChild(el('span','tal-more','…'));
@@ -4129,7 +4130,8 @@ async function showTalFull(word){
     if(rt.torah && rt.torah.length){
       body.appendChild(el('div','tal-sec',t('tal_torah')+' ('+rt.torah_count+')'));
       const wrap=el('div','tal-locs');
-      for(const loc of rt.torah) wrap.appendChild(el('span','tal-loc', esc(loc.book+' '+loc.ch+':'+loc.vn)));
+      for(const loc of rt.torah) wrap.appendChild(el('span','tal-loc',
+        esc(loc.book+' '+loc.ch+':'+loc.vn) + (loc.hebrew ? ' <i class="occ-he">'+esc(loc.hebrew)+'</i>' : '')));
       if(rt.torah_count>rt.torah.length) wrap.appendChild(el('span','tal-more','…'));
       body.appendChild(wrap);
     }

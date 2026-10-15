@@ -2882,3 +2882,7 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
   font-family:'Noto Naskh Arabic','Amiri','Times New Roman',serif;
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .dict-wcell{ text-align:start; }
+
+/* the Hebrew word an occurrence renders, beside its place */
+.tal-loc .occ-he{ font-style:normal; color:#55497f; margin-inline-start:.35em;
+  font-size:.92em; opacity:.9; }
