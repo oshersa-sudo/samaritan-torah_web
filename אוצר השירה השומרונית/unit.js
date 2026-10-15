@@ -4760,7 +4760,8 @@ const PIX = {
  * a verse, and for that there is a finger: touching the page stops the climb
  * and hands it over, and the button gives it back.
  */
-const TXT = { on: false, auto: true, rec: 0, pages: [], key: '', full: false, lock: 0 };
+const TXT = { on: false, auto: true, rec: 0, pages: [], key: '', pdf: false,
+              full: false, lock: 0, bar: 0, zoom: 1 };
 
 function txtScrollable() {
   const s = $('txtScroll');
@@ -4769,7 +4770,7 @@ function txtScrollable() {
 
 /* where the page should stand, for the clock as it is now */
 function txtFollow() {
-  if (!TXT.on || !TXT.auto || TXT.full) return;
+  if (!TXT.on || !TXT.auto || TXT.full || TXT.pdf) return;
   const d = au.duration;
   if (!isFinite(d) || d <= 0) return;
   const span = txtScrollable();
@@ -4812,6 +4813,7 @@ function txtLoad() {
   const pages = !r ? [] : (Array.isArray(r.tx) ? r.tx : (r.tx ? [r.tx] : []));
   TXT.rec = r ? r.id : 0;
   TXT.pages = pages;
+  TXT.pdf = /\.pdf(?:[?#]|$)/i.test(pages[0] || '');
   const box = $('txt'), wrap = $('txtScroll');
   box.classList.toggle('empty', !pages.length);
   if (!pages.length) {
@@ -4826,22 +4828,37 @@ function txtLoad() {
   const key = pages.join('|');
   if (TXT.key !== key) {
     TXT.key = key;
-    wrap.innerHTML = pages.map((u, i) =>
-      '<img class="txt-img" alt="מילות השיר' +
-      (pages.length > 1 ? ' — דף ' + (i + 1) + ' מתוך ' + pages.length : '') +
-      '" src="' + esc(u) + '">').join('');
-    let left = pages.length;
-    wrap.querySelectorAll('.txt-img').forEach(im => {
-      im.onload = () => { if (!--left) { wrap.scrollTop = 0; txtFollow(); } };
-      im.onerror = () => {
-        if (!wrap.querySelector('.txt-img[src]')) {
-          box.classList.add('empty');
-          $('txtNote').textContent = 'לא ניתן להביא את צילום המילים כרגע';
-        }
-      };
-    });
+    if (TXT.pdf) {
+      // A text that arrived as a document is shown as one. The reader the
+      // browser already has scrolls it, zooms it with two fingers and finds
+      // its way through fifteen megabytes without waiting for all of them —
+      // none of which we would do better by redrawing it ourselves. What it
+      // does not do is climb by itself, so the clock lets go of it and the
+      // key that offers the climb steps aside.
+      wrap.innerHTML = '<iframe class="txt-pdf" title="מילות השיר" src="'
+        + esc(pages[0]) + '#toolbar=0&navpanes=0&view=FitH"></iframe>';
+    } else {
+      wrap.innerHTML = pages.map((u, i) =>
+        '<img class="txt-img" alt="מילות השיר' +
+        (pages.length > 1 ? ' — דף ' + (i + 1) + ' מתוך ' + pages.length : '') +
+        '" src="' + esc(u) + '">').join('');
+      let left = pages.length;
+      wrap.querySelectorAll('.txt-img').forEach(im => {
+        im.onload = () => { if (!--left) { wrap.scrollTop = 0; txtFollow(); } };
+        im.onerror = () => {
+          if (!wrap.querySelector('.txt-img[src]')) {
+            box.classList.add('empty');
+            $('txtNote').textContent = 'לא ניתן להביא את צילום המילים כרגע';
+          }
+        };
+      });
+    }
   }
-  wrap.scrollTop = 0;
+  box.classList.toggle('isPdf', TXT.pdf);
+  // a document climbs by nobody's hand but the reader's, so the key that
+  // offers the climb has nothing to offer and steps out of the row
+  $('txtAuto').classList.toggle('hidden', TXT.pdf || TXT.full);
+  if (!TXT.pdf) wrap.scrollTop = 0;
   txtFollow();
 }
 
@@ -4865,8 +4882,9 @@ function txtFull(on) {
   $('txtBig').textContent = on ? '⤡' : '⤢';
   $('txtBig').title = on ? 'חזרה אל המכשיר' : 'מסך מלא';
   // on the full screen the reader reads at their own pace, by hand
-  $('txtAuto').classList.toggle('hidden', on);
-  if (!on) txtFollow();
+  $('txtAuto').classList.toggle('hidden', on || TXT.pdf);
+  if (!on) { txtZoom(1); txtFollow(); }   // the frame is small again
+  txtBar(true);
 }
 
 $('dwText').onclick = () => {
@@ -4882,8 +4900,67 @@ $('dwText').onclick = () => {
   $('dwText').title = 'חזרה אל הקלטת';
   txtAutoSet(true);
   txtLoad();
+  txtBar(true);                      // seen once, then out of the way
   txtHintPaint();                    // opened: the invitation has been taken
 };
+
+/* The keys step aside.
+ *
+ * They were there all the time, over the writing, and over a photographed
+ * page they are nearly invisible anyway — a grey word on a grey scan. So
+ * they show themselves, wait a few seconds, and go; a touch anywhere on the
+ * page brings them back for a few seconds more. Nothing is lost by their
+ * going: what they do, they do when asked.
+ */
+function txtBar(show) {
+  clearTimeout(TXT.bar);
+  $('txt').classList.toggle('bare', !show);
+  if (show) TXT.bar = setTimeout(() => $('txt').classList.add('bare'), 2800);
+}
+['pointerdown', 'wheel'].forEach(ev =>
+  $('txt').addEventListener(ev, e => {
+    if (e.target.closest && e.target.closest('.txt-btn')) return;  // a press is not a peek
+    txtBar(true);
+  }, { passive: true }));
+
+/* Two fingers, on the whole screen.
+ *
+ * The browser does not pinch inside a scrolling box of its own accord, so the
+ * distance between the fingers is measured here and the page is scaled by it.
+ * Scaling from the midpoint keeps what is between the fingers between them,
+ * which is the whole point of pinching at a word. Once it is larger than the
+ * frame the box scrolls both ways, and that is the sideways scrolling that
+ * reading a wide sheet needs.
+ */
+function txtZoom(z, cx, cy) {
+  const sc = $('txtScroll');
+  const was = TXT.zoom;
+  TXT.zoom = Math.max(1, Math.min(5, z));
+  if (TXT.zoom === was) return;
+  sc.classList.toggle('zoomed', TXT.zoom > 1);
+  sc.style.setProperty('--txtz', TXT.zoom);
+  if (cx != null) {                      // hold the point between the fingers
+    const r = sc.getBoundingClientRect(), k = TXT.zoom / was;
+    sc.scrollLeft = (sc.scrollLeft + cx - r.left) * k - (cx - r.left);
+    sc.scrollTop  = (sc.scrollTop  + cy - r.top)  * k - (cy - r.top);
+  }
+}
+
+let pinch = null;
+$('txtScroll').addEventListener('touchstart', e => {
+  if (!TXT.full || e.touches.length !== 2) return;
+  const [a, b] = e.touches;
+  pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), z: TXT.zoom };
+}, { passive: true });
+$('txtScroll').addEventListener('touchmove', e => {
+  if (!pinch || e.touches.length !== 2) return;
+  const [a, b] = e.touches;
+  const d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+  if (pinch.d > 0) txtZoom(pinch.z * d / pinch.d,
+                           (a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2);
+}, { passive: true });
+['touchend', 'touchcancel'].forEach(ev =>
+  $('txtScroll').addEventListener(ev, () => { pinch = null; }, { passive: true }));
 
 $('txtAuto').onclick = () => txtAutoSet(!TXT.auto);
 $('txtBig').onclick  = () => txtFull(!TXT.full);

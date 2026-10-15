@@ -363,12 +363,19 @@ body{
    the handle (see .dw-name) so the two can never run into each other. */
 /* the carry handle is centred and out of the flow, so it has to give way as
    keys are added to the bar either side of it */
+/* הידית אינה ממורכזת עוד על השורה אלא על החלל שנותר לה.
+   כל עוד היו כאן שתי קבוצות שוות, מרכז השורה ומרכז החלל היו אותו
+   מקום. משירדו שני מקשים נותרו ארבעה מימין ושלושה משמאל, החלל זז —
+   והידית, שהייתה קבועה במרכז, מצאה את עצמה תחת מקש. עכשיו היא פריט
+   גמיש בשורה: היא תופסת את מה שנשאר, ודוחקת את שתי הקבוצות אל
+   הקצוות. כך היא לעולם אינה תחת דבר, בכל מספר מקשים. */
 .dw-handle{
-  position:absolute;top:50%;inset-inline-start:50%;transform:translate(50%,-50%);
-  width:120px;height:18px;pointer-events:none;
+  position:relative;flex:1 1 auto;min-width:0;height:18px;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
 }
 .dw-handle i{                  /* הידית עצמה */
-  position:absolute;inset:0 14px;border-radius:9px;
+  position:relative;width:92px;max-width:100%;height:100%;border-radius:9px;
   background:linear-gradient(180deg,#5c626c 0,#3a3f47 42%,#22262c 72%,#151920 100%);
   border:1px solid #0d1015;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -2px 3px rgba(0,0,0,.55),
@@ -385,14 +392,15 @@ body{
 }
 /* both pivots ride above the grip; without the z-index the ::before one would
    be painted under it and only the right-hand pivot would show */
-.dw-handle::before,.dw-handle::after{   /* הצירים שבהם היא נתפסת לגוף */
+/* הצירים נתלים על הידית עצמה ולא על התיבה, שכן התיבה משנה את רוחבה */
+.dw-handle i::before,.dw-handle i::after{
   content:'';position:absolute;top:4px;z-index:1;
   width:10px;height:10px;border-radius:50%;
   background:radial-gradient(circle at 38% 32%,#575d66,#272b31 62%,#14171c);
   box-shadow:inset 0 0 0 1px #0d1015;
 }
-.dw-handle::before{left:18px}
-.dw-handle::after{right:18px}
+.dw-handle i::before{left:-14px}
+.dw-handle i::after{right:-14px}
 /* Usually empty — the recording's name is on the cassette's own label — and
    kept for what only the machine can say: that it is recording, or sending a
    recording up. It must not grow when empty, or it would push the three keys
@@ -410,7 +418,12 @@ body{
    shove to the far edge — otherwise they follow the title into the middle
    and land on top of it. The shove goes on the FIRST of the group, so all
    three travel together and none is left stranded by the title. */
-#dwBT{margin-inline-start:auto}     /* the keys travel together at the end */
+/* The shove used to sit on #dwBT. That key was removed, and with it went the
+   only thing holding the row apart — so every key drifted to the middle and
+   came to rest on top of the carry handle. It sits now on the first key of
+   the trailing group, which is what it was always about: the group, not the
+   key that happened to lead it. */
+/* אין צורך עוד בדחיפה: הידית הגמישה היא שמפרידה בין הקבוצות */
 .dw-btn{
   position:relative;z-index:1;
   border:1px solid #14181e;background:linear-gradient(180deg,#4b515a,#31363d);
@@ -603,6 +616,22 @@ body{
 .txt-btn:hover{border-color:rgba(201,162,39,.6);color:#f0e6cf}
 .txt-btn.on{border-color:#c9a227;color:#f0e6cf;background:rgba(201,162,39,.16)}
 .txt-btn.hidden{display:none}
+/* הכפתורים נסוגים מאליהם, ונגיעה במסך מחזירה אותם. הם אינם נעלמים
+   בבת אחת: חצי שנייה של דעיכה אומרת «הייתי כאן» ולא «לא היה כלום». */
+.txt-bar{transition:opacity .45s ease,transform .45s ease}
+.txt.bare .txt-bar{opacity:0;transform:translateY(6px);pointer-events:none}
+
+/* מסמך — מוצג במציג של הדפדפן עצמו, על מלוא המסגרת */
+.txt-pdf{display:block;width:100%;height:100%;border:0;background:#141210}
+.txt.isPdf .txt-scroll{overflow:hidden}
+
+/* שתי אצבעות מגדילות, והדף נגלל אז לשני הכיוונים — זו הגלילה ימינה
+   ושמאלה שקריאת גיליון רחב זקוקה לה. */
+.txt.full .txt-scroll{overflow:auto;touch-action:pan-x pan-y}
+.txt.full .txt-scroll.zoomed{overflow:auto}
+.txt.full .txt-scroll.zoomed .txt-img{
+  width:calc(var(--txtz,1) * min(980px,100%));max-width:none;
+}
 
 /* ---- על פני המסך כולו.
  * הנגינה ממשיכה — אין כאן דבר הנוגע בקול; רק הדף גדל. הגלילה כאן ידנית
