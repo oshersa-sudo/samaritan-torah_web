@@ -996,6 +996,12 @@ _seed_word_align()
 _INTERP_QUOTE_FIX = os.path.join(os.path.dirname(__file__), '..', '..',
                                  'data', 'interp_quote_fix.json')
 
+# (verse id, the form to take out, the form the Samaritan text spells). Repaired
+# as a substring because these must not stand in a commentary in ANY state.
+SUBSTRING_REPAIRS = [
+    (55, 'על הכן', 'על כן'),            # Genesis 2:24 — see _seed_interp_quotes
+]
+
 
 def _seed_interp_quotes():
     """Make the quotations in the commentaries read as the Samaritan Torah reads.
@@ -1034,6 +1040,15 @@ def _seed_interp_quotes():
         done = cur.rowcount
         # where a commentary was rewritten rather than respelled, its Arabic
         # translated the old wording and is replaced with it, under the same guard
+        # A word I should never have written, healed wherever it stands rather than
+        # only where the field reads as I expect. "על הכן" occurs once in the whole
+        # Samaritan text and "על כן" in all forty of its other places, so the one
+        # was a slip in that verse and I carried it into the commentary.
+        for vid, bad, good in SUBSTRING_REPAIRS:
+            cur.execute('UPDATE verses SET interpretation = REPLACE(interpretation, ?, ?) '
+                        'WHERE id = ? AND interpretation LIKE ?',
+                        (bad, good, vid, '%' + bad + '%'))
+            done += cur.rowcount
         withar = [(r['ar'], r['v'], r['now']) for r in rows if (r.get('ar') or '').strip()]
         if withar:
             cur.executemany(
