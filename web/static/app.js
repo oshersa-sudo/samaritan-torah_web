@@ -5147,6 +5147,15 @@ async function openSideSheet(){
     S.commentarySel=keep.comm; S.samSrcChoice=keep.sam; S.tmSel=keep.tm;
     paintVerses();
   };
+  // bring a line of the sheet into view. The card carries the height limit and
+  // the overflow, so the card is what scrolls — and the line is left a little
+  // below the top, so the row that opened it stays visible.
+  const scrollInSheet=(elm, pad=64)=>{
+    const card=document.querySelector('#sideSheet .sheet-card');
+    if(!card || !elm) return;
+    const d = elm.getBoundingClientRect().top - card.getBoundingClientRect().top;
+    card.scrollTo({top: Math.max(0, card.scrollTop + d - pad), behavior:'smooth'});
+  };
   const subRow=(label, chosen, count, onpick, why)=>{
     const o=el('button','sheet-sub-row'+(chosen?' sel':'')+(onpick?'':' off'));
     o.appendChild(el('span','sheet-check','✓'));
@@ -5166,22 +5175,38 @@ async function openSideSheet(){
     b.appendChild(el('span','sheet-count', String(c)));
     const place=SHEET_PLACE[r.key];
     const sub = (place || r.key==='samsrc') ? el('div','sheet-sub hidden') : null;
+    let srcHead=null;
 
     if(place){
       // a commentary has two places it can stand, so this row does not open it
       // at once: it unfolds the choice, with the reader's own place ticked
       const [sk, store, pname]=place;
       const mode=[t(S[sk]?'ux_interp_verse':'ux_interp_chapter')];
+      const hasNames = r.key==='jewish';   // a second question waits below
+      let nameHead=null;
+      const placeRows=[];
       sub.appendChild(el('div','sheet-where', t('ux_interp_where')));
       for(const inline of [false,true]){
-        sub.appendChild(subRow(t(inline?'ux_interp_verse':'ux_interp_chapter'),
+        const pr=subRow(t(inline?'ux_interp_verse':'ux_interp_chapter'),
           S[sk]===inline, 0, ()=>{
+            if(hasNames){
+              // the place is half the answer; the other half is a few lines
+              // down, so the press settles this one and carries the reader on
+              S[sk]=inline; localStorage.setItem(store, inline?'1':'0');
+              placeRows.forEach((x,i)=>x.classList.toggle('sel', (i===1)===inline));
+              // already reading someone? then move him at once, behind the sheet
+              if(S.commentarySel && S.panel===pname) paintVerses();
+              scrollInSheet(nameHead);
+              return;
+            }
             // the line already chosen, pressed again, is a switch being put out:
             // the choice itself is kept — it is the panel that closes
             if(S[sk]===inline && S.panel===pname){ closeSideSheet(); togglePanel(pname); return; }
             S[sk]=inline; localStorage.setItem(store, inline?'1':'0');
             go(pname);
-          }));
+          });
+        placeRows.push(pr);
+        sub.appendChild(pr);
       }
       if(r.key==='jewish'){
         // the Jewish commentators read the Masoretic verse, so beneath each
@@ -5198,7 +5223,8 @@ async function openSideSheet(){
 
         // and which of them. Asked here rather than inside the panel, so the
         // reader answers both questions before anything opens.
-        sub.appendChild(el('div','sheet-where', t('ux_pick_commentator')));
+        nameHead=el('div','sheet-where', t('ux_pick_commentator'));
+        sub.appendChild(nameHead);
         const names=Object.fromEntries(COMMENTATORS);
         for(const [key,name] of COMMENTATORS){
           const cn=by[key]||0;
@@ -5214,7 +5240,8 @@ async function openSideSheet(){
       b.appendChild(el('span','sheet-mode', mode.join(' · ')));
     } else if(r.key==='samsrc'){
       // the same question the panel used to ask after opening, asked before it
-      sub.appendChild(el('div','sheet-where', t('ux_pick_source')));
+      srcHead=el('div','sheet-where', t('ux_pick_source'));
+      sub.appendChild(srcHead);
       let chosen='';
       for(const [bk, choice, lbl] of SAM_SUBS){
         const sn=by[bk]||0;
@@ -5229,7 +5256,10 @@ async function openSideSheet(){
 
     if(sub){
       b.onclick=()=>{ const hidden=sub.classList.toggle('hidden');
-                      b.classList.toggle('sheet-open', !hidden); };
+                      b.classList.toggle('sheet-open', !hidden);
+                      // the sources are the whole of this sub-menu, so opening it
+                      // is already the question — carry the reader to them
+                      if(!hidden && srcHead) scrollInSheet(srcHead); };
       rows.appendChild(b); rows.appendChild(sub);
       continue;
     }
