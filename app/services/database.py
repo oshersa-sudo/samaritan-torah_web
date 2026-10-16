@@ -384,6 +384,55 @@ def _seed_nikud():
         print('[nikud] skipped: %s' % exc)
 
 
+_VERSE_TEXT_FIX = os.path.join(os.path.dirname(__file__), '..', '..',
+                               'data', 'verse_text_fix.json')
+
+
+def _seed_verse_text():
+    """Correct a verse of the Torah, where one was asked for and agreed.
+
+    This is the only patch here that touches the text itself, and it is the
+    narrowest: every verse is named, with the exact wording it must still carry,
+    and it is replaced only where the verse reads exactly so. A verse edited
+    online since is left as it is and counted; nothing is matched by pattern.
+
+    Genesis 2:24 read "על הכן יעזב איש". That spelling stands once in the whole
+    Samaritan text, against forty places that read "על כן" — a slip in this one
+    verse, and one that had already been copied into the commentary on it.
+    """
+    if not os.path.exists(_VERSE_TEXT_FIX):
+        return
+    try:
+        with open(_VERSE_TEXT_FIX, encoding='utf-8') as fh:
+            rows = json.load(fh).get('rows', [])
+    except Exception as exc:
+        PATCH_REPORT['verse_text'] = 'unreadable: %s' % exc
+        return
+    if not rows:
+        return
+    conn = sqlite3.connect(DB_PATH)
+    done = 0
+    try:
+        cur = conn.cursor()
+        cur.executemany('UPDATE verses SET text=? WHERE id=? AND text=?',
+                        [(r['now'], r['v'], r['was']) for r in rows])
+        done = cur.rowcount
+        conn.commit()
+    except Exception as exc:
+        PATCH_REPORT['verse_text'] = 'failed: %s' % exc
+        print('[verse-text] %s' % exc)
+    finally:
+        conn.close()
+    if 'verse_text' not in PATCH_REPORT:
+        PATCH_REPORT['verse_text'] = '%d of %d verses corrected' % (done, len(rows))
+    if done:
+        print('[verse-text] %s' % PATCH_REPORT['verse_text'])
+
+
+# before the vocalisation, which only marks a verse while it still reads as it
+# did when the marks were made — the wording and the marks must arrive together
+_seed_verse_text()
+
 _seed_nikud()
 
 
