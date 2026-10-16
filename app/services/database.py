@@ -3266,7 +3266,14 @@ def get_apparatus(verse_ids):
 # The one button that replaced six cannot promise what it does not have, so the
 # sheet it opens asks this first: for these verses, how much does each panel
 # actually hold? Read-only throughout — nothing here writes.
+# (the key it is counted under, the table). "מן המסורת השומרונית" is drawn from
+# four tables and counted under the one name it is presented beneath — the
+# lectures, the two attributed articles, and the per-parasha tradition sections.
+# The responsa are inside that panel too, but they keep a key of their own: the
+# sheet gives them a line of their own, and counting them twice would offer the
+# same text behind two names.
 _SAM_SOURCES = [('tibat', 'tm_verse_links'), ('eyalk', 'eyalk_verse_links'),
+                ('eyalk', 'tradart_verse_links'), ('eyalk', 'binyamim_verse_links'),
                 ('shyt', 'shyt_verse_links'), ('tzdaka', 'tzdaka_verse_links'),
                 ('bhuq', 'bhuq_verse_links'), ('sir', 'sir_verse_links'),
                 ('asatir', 'asatir_verse_links')]
