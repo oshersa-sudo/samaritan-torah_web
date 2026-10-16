@@ -287,7 +287,7 @@ const I18N = {
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     // newest first: a reader opening "מה חדש" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>גרסה 4.3 — שאלה אחת במקום שישה כפתורים</b></p><ul><li><b>הסרגל התחתון</b> נעשה שורה אחת בנייבי של הכותרת: חמישה פריטים שווים, אייקון מעל תווית קצרה, והפעיל נדלק באור משלו. ששת כפתורי התוכן התכנסו לכפתור אחד — <b>לצד הפסוק</b></li><li><b>הגיליון שהוא פותח אומר תחילה מה יש</b>: כל מקור שיש לו דבר בפרק שלפניכם, ולצידו בכמה מפסוקיו הוא נמצא. מקור שאין לו דבר נרשם למטה בשורה אחת, במקום להיות כפתור שנפתח אל הודעה שאין. <b>תעתיק ההגייה</b> קיבל כאן שורה משלו בפעם הראשונה</li><li><b>הפירוש בוחר את מקומו</b> — מתחת לפרק כפי שהיה, או <b>מתחת לכל פסוק</b>: הפסוק מודגש ופירושו נקבע תחתיו. כך נקרא הפרק פסוק-אחרי-פסוק, טקסט ואז משמעות. הבחירה נשמרת</li><li><b>גם הפרשנות היהודית</b> בוחרת כך את מקומה, ואפשר לקבוע לצידה את <b>נוסח המסורה</b> מתחת לכל פסוק — הלשון שהפרשן היהודי קרא בה</li><li>כשהפירוש מוצג <b>בכתב שומרוני</b> הפסוק עובר עימו, וכשהוא מוצג <b>בערבית</b> נקבע תרגום הפסוק לערבית בין הפסוק לפירוש</li><li>תוקנה תקלה שבגללה לחיצה על ידית סרגל הכפתורים המקופל לא עשתה דבר</li><li><b>בחירת הקורא</b> בסרגל ההשמעה מושבתת זמנית, עד שתתוקן ההקראה של שאר המקריאים. בינתיים נשמעת הקראתו של מאיר בן יפנה ששוני</li><li>הסיור המודרך אינו נפתח עוד מאליו בכניסה — הוא ממתין בתפריט, תחת העזרה</li></ul>',
+      '<p><b>גרסה 4.3 — שאלה אחת במקום שישה כפתורים</b></p><ul><li><b>הסרגל התחתון</b> נעשה שורה אחת בנייבי של הכותרת: חמישה פריטים שווים, אייקון מעל תווית קצרה, והפעיל נדלק באור משלו. ששת כפתורי התוכן התכנסו לכפתור אחד — <b>לצד הפסוק</b></li><li><b>הגיליון שהוא פותח אומר תחילה מה יש</b>: כל מקור שיש לו דבר בפרק שלפניכם, ולצידו בכמה מפסוקיו הוא נמצא. מקור שאין לו דבר נרשם למטה בשורה אחת, במקום להיות כפתור שנפתח אל הודעה שאין. <b>תעתיק ההגייה</b> קיבל כאן שורה משלו בפעם הראשונה</li><li><b>הפירוש בוחר את מקומו</b> — מתחת לפרק כפי שהיה, או <b>מתחת לכל פסוק</b>: הפסוק מודגש ופירושו נקבע תחתיו. כך נקרא הפרק פסוק-אחרי-פסוק, טקסט ואז משמעות. הבחירה נשמרת</li><li><b>גם הפרשנות היהודית</b> בוחרת כך את מקומה, ואפשר לקבוע לצידה את <b>נוסח המסורה</b> מתחת לכל פסוק — הלשון שהפרשן היהודי קרא בה</li><li>כשהפירוש מוצג <b>בכתב שומרוני</b> הפסוק עובר עימו, וכשהוא מוצג <b>בערבית</b> נקבע תרגום הפסוק לערבית בין הפסוק לפירוש</li><li><b>הגיליון שואל גם את מי</b>: "פרשנות יהודית" נפתחת אל רשימת הפרשנים השמורים — כל אחד ומספר הפסוקים שיש לו כאן — ו"ממקור שומרון" אל רשימת החיבורים שיש להם דבר בפסוקים שלפניכם. הבחירה נעשית לפני הפתיחה, ולא אחריה, והשורה המקופלת אומרת מה ייפתח. <b>פרשנים נוספים</b> נקראים מספריא פסוק אחד בכל פעם, ולכן הם מופיעים רק כשפסוק יחיד מסונן — ובשאר הזמן נשארים בגיליון, אפורים, ואומרים מדוע</li><li>תוקנה תקלה שבגללה לחיצה על ידית סרגל הכפתורים המקופל לא עשתה דבר</li><li><b>בחירת הקורא</b> בסרגל ההשמעה מושבתת זמנית, עד שתתוקן ההקראה של שאר המקריאים. בינתיים נשמעת הקראתו של מאיר בן יפנה ששוני</li><li>הסיור המודרך אינו נפתח עוד מאליו בכניסה — הוא ממתין בתפריט, תחת העזרה</li></ul>',
       '<p><b>גרסה 4.1 — פירוש לכל התורה, נגישות, והספרייה שנפתחת</b></p><ul><li><b>ספר דברים קיבל פירוש לפסוק</b>, ובכך יש פירוש לכל חמשת החומשים — מ-213 פסוקים ל-916</li><li>תוקן ליקוי שבגללו פאנל הפירוש קרא ממאגר ישן: כל פירוש שנערך באתר לא הוצג לאיש. עכשיו הפירוש מלא גם בארבעת הספרים האחרים</li><li><b>ציטוטים בכתב השומרוני בתוך הפירוש הערבי</b> — עד היום נקבעו בגופן רגיל; עכשיו הם שזורים בערבית ככל ציטוט אחר</li><li><b>הגדרות נגישות</b> בתפריט: גודל הטקסט — שסוף סוף נשמר מפעם לפעם — והיפוך צבעים לרקע שחור וטקסט לבן בכל מסכי האפליקציה</li><li>בכל יחידה בספרייה, בתחתית הפרק: <b>הפרק הקודם</b> ו<b>הפרק הבא</b></li><li>ספר שנשלף מהמדף מראה את <b>פתיחת ספרו שלו</b>, גרירה מטה מחזירה אותו למקומו, והדרכה קצרה אומרת כיצד</li></ul>',
       '<p><b>גרסה 4.0 — הניקוד, ההגייה, ושתי יחידות חדשות בספרייה</b></p><ul><li><b>ניקוד</b> לכל חמשת החומשים בכתב השומרוני — 5,912 פסוקים. כשהנוסח מוצג בכתב השומרוני נוסף בסרגל כפתור <b>ללא ניקוד</b>, והבחירה נזכרת לפעם הבאה</li><li><b>תעתיק הגייה</b> לנוסח התורה — כיצד נקרא כל פסוק בפי הקוראים</li><li><b>פיוטי השומרונים בתעתיק הגייה</b> — יחידה חדשה בספרייה, 79 פיוטים בארמית, בעברית ובתעתיק, זה לצד זה</li><li>שתי מהדורות מתורגמות נוספו לספרייה: <b>מסורות שומרוניות</b> ו<b>חוקי הצרעת</b></li><li><b>דפדוף בהחלקה</b>: החלקה ימינה מדפדפת קדימה, שמאלה אחורה. סרגל הניווט הוקטן ותופס פחות מהמסך</li><li><b>הספרייה נעשתה מדף</b>: שלושה מדפי מהגוני לפי נושא, והספרים עומדים עליהם עם שמם לאורך הכריכה. נגיעה אחת מושכת ספר החוצה, שנייה פותחת אותו</li><li>חמש האפליקציות הנוספות — לוח השנה, אילן היוחסין, ציר הזמן, אוצר השירה ואוצר כתבי היד — התקבצו בתפריט לשורה אחת שנפתחת לצידו</li><li><b>מילון מילים</b>: הטבלה והבורר קוראים סוף סוף מאותם מקורות, וסימני העצירה בכתב השומרוני כבר אינם צמודים לאות שלפניהם</li></ul>',
       '<p><b>גרסה 3.6 — ספר בהדפסה, וסרגל ניווט שמפנה דרך לטקסט</b></p><ul><li>בדו־שיח ההדפסה נוספה הבחירה <b>מה להדפיס</b> — הפרק הנוכחי או <b>הפרשה כולה</b>; בהדפסה הרגילה זה גיליון לכל פרק, על כותרתו, פירושו ומילונו</li><li><b>פורמט ספר</b>: העמוד נחלק לשניים — חציו העליון התורה ותו לא, חציו התחתון הפירוש, וביניהם קו ורווח צר. אין כותרות ואין מספרי פסוקים, כי כל פירוש קורא לפסוק בשמו: שתי מילותיו הראשונות, שלוש נקודות, שתי האחרונות ומקף. שני החצאים אינם זרם אחד — פירוש ארוך ממשיך תחת הפרקים הבאים עד שהוא נגמר — והכל בכתב שומרוני ובכתיב חסר</li><li><b>סרגל ניווט חדש</b>: בתוך פרשה דיסקית ובה חץ בלבד, אל פרשה אחרת גלולה ובה שם הפרשה, ואל מחוץ לספר אותה גלולה בדיו — שהצעד הגדול לא ייראה כאחד הקטנים</li><li>הסרגל <b>צף מעל הדף</b> ואינו לוקח ממנו רצועה: במסכי הטקסט הוא נמוג לאחר רגע וכל נגיעה מחזירה אותו, והוא מפנה דרך לדף המתהפך וחוזר ברגע שהעלה נחת. נגיעה בו אינה מותירה סימן</li><li><b>נעץ</b> חדש בשורת סימני הפרק, לצד הסימנייה, מקבע על המסך את <b>שורת הנתיב</b> ואת <b>חלון ההשמעה</b>: נעוץ — הם נשארים בזמן הקריאה; משוחרר — הם מפנים את רצועתם לטקסט וחוזרים באותה נגיעה שמחזירה את סרגל הניווט. הבחירה נשמרת בין ביקורים</li><li>התריס העליון מתקפל עד הקצה — נשארת שורה אחת ובה שם האפליקציה, והידית מושכת אותו בחזרה כמקודם; וכפתורי הפסוקים הוקטנו</li><li>ובדף הספרים, בזמן שהעמוד בוער, הכתב מתחלף הלוך ושוב בין הפונט העברי לכתב השומרוני — העמוד אינו נמדד מחדש והאש אינה נערכת מחדש</li></ul>',
@@ -392,6 +392,10 @@ const I18N = {
     rd_wit_off:'החלפת הקורא לא פעילה בשלב זה', ux_ar_tr:'תרגום לערבית',
     ux_no_ar_tr:'אין תרגום ערבי לפסוק זה',
     ux_comm_mt:'וגם נוסח המסורה מתחת לכל פסוק', ux_no_mt:'אין מקבילה בנוסח המסורה',
+    ux_for_verse:'לפסוק',
+    ux_pick_commentator:'בחר פרשן', ux_pick_source:'בחר מקור',
+    ux_more_commentators:'פרשנים נוספים (ספריא)',
+    ux_more_one_verse:'בפסוק יחיד בלבד',
     ux_interp_where:'היכן להציג את הפירוש?',
     ux_interp_chapter:'פירוש מתחת לפרק', ux_interp_verse:'פירוש מתחת לכל פסוק',
     ux_side:'לצד הפסוק', ux_for_chapter:'הפרק כולו', ux_verses:'פסוקים',
@@ -562,7 +566,7 @@ const I18N = {
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     // newest first: a reader opening "What's new" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>Version 4.3 — one question instead of six buttons</b></p><ul><li><b>The bottom bar</b> became a single row in the header’s navy: five equal items, an icon over a short label, and the active one lit with a light of its own. The six content buttons gathered into one — <b>Beside the verse</b></li><li><b>The sheet it opens says what is there first</b>: every source that has something in the chapter before you, and beside it in how many of its verses. A source with nothing is named below in a single line, instead of being a button that opens onto a message saying so. <b>The pronunciation</b> gets a line of its own here for the first time</li><li><b>The commentary chooses its place</b> — below the chapter as before, or <b>below each verse</b>: the verse is set bold and its commentary directly beneath it, so the chapter reads verse by verse, text then meaning. The choice is kept</li><li><b>The Jewish commentators</b> choose their place the same way, and beside them the <b>Masoretic text</b> can be set under each verse — the wording the commentator was actually reading</li><li>With the commentary in <b>Samaritan script</b> the verse follows it, and in <b>Arabic</b> the verse’s Arabic translation is laid between the two</li><li>Fixed: tapping the folded button bar’s handle did nothing</li><li><b>Choosing the reciter</b> is off for now, until the other readings are put right. Meir ben Yefune Sassoni’s reading is heard meanwhile</li><li>The guided tour no longer opens by itself on entry — it waits in the menu, under Help</li></ul>',
+      '<p><b>Version 4.3 — one question instead of six buttons</b></p><ul><li><b>The bottom bar</b> became a single row in the header’s navy: five equal items, an icon over a short label, and the active one lit with a light of its own. The six content buttons gathered into one — <b>Beside the verse</b></li><li><b>The sheet it opens says what is there first</b>: every source that has something in the chapter before you, and beside it in how many of its verses. A source with nothing is named below in a single line, instead of being a button that opens onto a message saying so. <b>The pronunciation</b> gets a line of its own here for the first time</li><li><b>The commentary chooses its place</b> — below the chapter as before, or <b>below each verse</b>: the verse is set bold and its commentary directly beneath it, so the chapter reads verse by verse, text then meaning. The choice is kept</li><li><b>The Jewish commentators</b> choose their place the same way, and beside them the <b>Masoretic text</b> can be set under each verse — the wording the commentator was actually reading</li><li>With the commentary in <b>Samaritan script</b> the verse follows it, and in <b>Arabic</b> the verse’s Arabic translation is laid between the two</li><li><b>The sheet asks which, too</b>: “Jewish commentary” unfolds into the commentators it holds — each with the number of verses here that have him — and “From a Samaritan source” into the works that speak on the verses before you. The choice is made before the panel opens rather than after it, and the folded row says what will open. <b>More commentators</b> are read from Sefaria one verse at a time, so they appear only while a single verse is filtered; otherwise they stay on the sheet, greyed, saying why</li><li>Fixed: tapping the folded button bar’s handle did nothing</li><li><b>Choosing the reciter</b> is off for now, until the other readings are put right. Meir ben Yefune Sassoni’s reading is heard meanwhile</li><li>The guided tour no longer opens by itself on entry — it waits in the menu, under Help</li></ul>',
       '<p><b>Version 4.1 — Commentary for the whole Torah, accessibility, and a library that opens</b></p><ul><li><b>Deuteronomy now has a per-verse commentary</b>, so all five books do — from 213 verses to 916</li><li>A fault was fixed by which the commentary panel read an old database: anything edited on the site was never shown. The other four books are fuller for it too</li><li><b>Samaritan-script quotations inside the Arabic commentary</b> — until now set in the ordinary face; now woven into the Arabic like any other quotation</li><li><b>Accessibility settings</b> in the menu: text size — remembered at last from one visit to the next — and inverted colours, black ground and white letters throughout the app</li><li>In every library unit, at the foot of a chapter: <b>previous</b> and <b>next</b></li><li>A book drawn off the shelf shows <b>its own opening</b>, a pull downwards puts it back, and a short hint says how</li></ul>',
       '<p><b>Version 4.0 — Vocalization, pronunciation, and two new library units</b></p><ul><li><b>Vocalization</b> for all five books in the Samaritan script — 5,912 verses. With the Samaritan script showing, a <b>no vocalization</b> button appears in the bar, and the choice is remembered</li><li><b>Phonetic transcription</b> of the Torah text — how each verse is actually read aloud</li><li><b>Samaritan Piyyutim in Phonetic Transcription</b> — a new library unit: 79 piyyutim in Aramaic, Hebrew and transcription, side by side</li><li>Two translated studies joined the library: <b>Samaritan Traditions</b> and <b>The Zaraath Laws</b></li><li><b>Paging by swipe</b>: swipe right to go forward, left to go back. The navigation bar is smaller and asks less of the screen</li><li><b>The library is a shelf</b>: three mahogany shelves by subject, the books standing on them with their names down the spine. One touch draws a book out, a second opens it</li><li>The five other applications — calendar, family tree, timeline, song archive and manuscript treasury — gathered into one line of the menu that opens beside it</li><li><b>Word dictionary</b>: the table and the picker now read the same sources, and the stop marks in the Samaritan script no longer sit tight against the letter before them</li></ul>',
       '<p><b>Version 3.6 — A book on paper, and a nav bar that gets out of the way</b></p><ul><li>The print dialog gains <b>what to print</b> — this chapter or <b>the whole parasha</b>; in the ordinary printout that is one sheet per chapter, with its heading, commentary and glossary</li><li><b>Book format</b>: the page divides in two — the Torah alone above, the commentary below, a rule and a thin space between them. No headings and no verse numbers, because each comment names its verse by quoting it: the two words it opens with, three dots, the two it closes on, and a dash. The halves are not one stream — a long comment runs on beneath the chapters that follow until it ends — and all of it is set in Samaritan script and defective spelling</li><li>A <b>new nav bar</b>: inside a parasha a disc carrying a chevron alone; into another parasha a pill carrying its name; and out of the book that same pill in ink, so the largest step never looks like one of the small ones</li><li>The bar <b>floats over the page</b> instead of taking a band of it: on text screens it fades out after a moment and any touch brings it back, and it steps aside for a turning page and returns as the leaf lands. Touching it leaves no mark</li><li>A new <b>pin</b>, among the chapter signs beside the bookmark, holds the <b>path line</b> and the <b>play window</b> on screen: pinned, they stay while the reader reads; released, they give their band back to the text and return on the same touch that calls back the nav bar. The choice is remembered between visits</li><li>The top bar now folds all the way, leaving one line carrying the name of the app and the handle that pulls it back down as before; and the verse buttons were made smaller</li><li>And on the bookshelf, while the page burns, the writing turns back and forth between the Hebrew face and the Samaritan one — the page is never re-measured and the fire is never re-laid</li></ul>',
@@ -667,6 +671,10 @@ const I18N = {
     rd_wit_off:'Choosing the reciter is off for now', ux_ar_tr:'Arabic translation',
     ux_no_ar_tr:'No Arabic translation for this verse',
     ux_comm_mt:'Also the Masoretic text beneath each verse', ux_no_mt:'No Masoretic counterpart',
+    ux_for_verse:'For verse',
+    ux_pick_commentator:'Choose a commentator', ux_pick_source:'Choose a source',
+    ux_more_commentators:'More commentators (Sefaria)',
+    ux_more_one_verse:'single verse only',
     ux_interp_where:'Where should the commentary go?',
     ux_interp_chapter:'Commentary below the chapter', ux_interp_verse:'Commentary below each verse',
     ux_side:'Beside the verse', ux_for_chapter:'The whole chapter', ux_verses:'verses',
@@ -837,7 +845,7 @@ const I18N = {
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     // newest first: a reader opening "ما الجديد" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>الإصدار 4.3 — سؤال واحد بدل ستة أزرار</b></p><ul><li><b>الشريط السفلي</b> صار سطرًا واحدًا بلون العنوان: خمسة عناصر متساوية، أيقونة فوق تسمية قصيرة، والعنصر الفعّال يضيء بنوره. وأزرار المحتوى الستة اجتمعت في زرّ واحد — <b>بجانب الآية</b></li><li><b>واللوح الذي يفتحه يقول أولًا ما الموجود</b>: كلّ مصدر له شيء في هذا الأصحاح، وبجانبه في كم آية منه يوجد. والمصدر الذي لا شيء له يُذكر أدناه في سطر واحد. و<b>النسخ الصوتي</b> نال هنا سطرًا خاصًّا لأوّل مرّة</li><li><b>التفسير يختار مكانه</b> — أسفل الأصحاح كما كان، أو <b>أسفل كل آية</b>: الآية بخطّ عريض وتفسيرها تحتها مباشرة، فيُقرأ الأصحاح آية آية، نصًّا ثمّ معنى. والاختيار محفوظ</li><li>و<b>التفاسير اليهودية</b> تختار مكانها كذلك، ويمكن أن يوضع معها <b>النصّ الماسوري</b> أسفل كل آية — وهو اللفظ الذي قرأه المفسّر</li><li>وإذا عُرض التفسير <b>بالخطّ السامري</b> تبعته الآية، وإذا عُرض <b>بالعربية</b> وُضعت ترجمة الآية العربية بين الاثنين</li><li>أُصلح خلل: الضغط على مقبض شريط الأزرار المطوي لم يكن يفعل شيئًا</li><li><b>اختيار القارئ</b> متوقّف مؤقّتًا حتى تُصحَّح قراءات البقيّة، وتُسمع في هذه الأثناء قراءة مائير بن يفنه ساسوني</li><li>الجولة المرشدة لم تعد تُفتح من تلقاء نفسها عند الدخول — تنتظر في القائمة، تحت المساعدة</li></ul>',
+      '<p><b>الإصدار 4.3 — سؤال واحد بدل ستة أزرار</b></p><ul><li><b>الشريط السفلي</b> صار سطرًا واحدًا بلون العنوان: خمسة عناصر متساوية، أيقونة فوق تسمية قصيرة، والعنصر الفعّال يضيء بنوره. وأزرار المحتوى الستة اجتمعت في زرّ واحد — <b>بجانب الآية</b></li><li><b>واللوح الذي يفتحه يقول أولًا ما الموجود</b>: كلّ مصدر له شيء في هذا الأصحاح، وبجانبه في كم آية منه يوجد. والمصدر الذي لا شيء له يُذكر أدناه في سطر واحد. و<b>النسخ الصوتي</b> نال هنا سطرًا خاصًّا لأوّل مرّة</li><li><b>التفسير يختار مكانه</b> — أسفل الأصحاح كما كان، أو <b>أسفل كل آية</b>: الآية بخطّ عريض وتفسيرها تحتها مباشرة، فيُقرأ الأصحاح آية آية، نصًّا ثمّ معنى. والاختيار محفوظ</li><li>و<b>التفاسير اليهودية</b> تختار مكانها كذلك، ويمكن أن يوضع معها <b>النصّ الماسوري</b> أسفل كل آية — وهو اللفظ الذي قرأه المفسّر</li><li>وإذا عُرض التفسير <b>بالخطّ السامري</b> تبعته الآية، وإذا عُرض <b>بالعربية</b> وُضعت ترجمة الآية العربية بين الاثنين</li><li><b>واللوح يسأل أيضًا عن أيّ</b>: «التفاسير اليهودية» تنفتح على قائمة المفسّرين المحفوظين — كلٌّ وعدد الآيات التي له فيها هنا — و«من مصدر سامريّ» على قائمة المؤلَّفات التي لها كلام في الآيات التي أمامك. فالاختيار يسبق الفتح لا يتبعه، والسطر المطويّ يقول ما سيُفتح. و<b>المفسّرون الإضافيّون</b> يُقرأون من سفاريا آيةً آية، فلا يظهرون إلّا حين تُرشَّح آية واحدة؛ وفي غير ذلك يبقون في اللوح رماديّين، يقولون لماذا</li><li>أُصلح خلل: الضغط على مقبض شريط الأزرار المطوي لم يكن يفعل شيئًا</li><li><b>اختيار القارئ</b> متوقّف مؤقّتًا حتى تُصحَّح قراءات البقيّة، وتُسمع في هذه الأثناء قراءة مائير بن يفنه ساسوني</li><li>الجولة المرشدة لم تعد تُفتح من تلقاء نفسها عند الدخول — تنتظر في القائمة، تحت المساعدة</li></ul>',
       '<p><b>الإصدار 4.1 — تفسير لكامل التوراة، وإعدادات الوصول، ومكتبة تُفتَح</b></p><ul><li><b>سفر التثنية صار له تفسير لكلّ آية</b>، فصارت الأسفار الخمسة كلّها مفسَّرة — من ٢١٣ آية إلى ٩١٦</li><li>أُصلح خلل كان يجعل لوح التفسير يقرأ من قاعدة قديمة، فلا يظهر شيء ممّا حُرّر في الموقع. والأسفار الأربعة الأخرى صارت أوفى بذلك أيضًا</li><li><b>الاقتباسات بالخطّ السامري داخل التفسير العربي</b> — كانت تُكتب بالخطّ العاديّ، وصارت الآن منسوجة في العربية كأيّ اقتباس آخر</li><li><b>إعدادات الوصول</b> في القائمة: حجم النصّ — ويُحفَظ أخيرًا من زيارة إلى أخرى — وعكس الألوان: خلفية سوداء وحروف بيضاء في كلّ الشاشات</li><li>في كلّ وحدة من المكتبة، أسفل الأصحاح: <b>السابق</b> و<b>التالي</b></li><li>الكتاب المسحوب من الرفّ يُظهر <b>مطلعه هو</b>، وسحبه للأسفل يعيده إلى مكانه، وتلميح قصير يقول كيف</li></ul>',
       '<p><b>الإصدار 4.0 — التشكيل والنسخ الصوتي، ووحدتان جديدتان في المكتبة</b></p><ul><li><b>تشكيل</b> لأسفار التوراة الخمسة بالخطّ السامري — ٥٬٩١٢ آية. ومع الخطّ السامري يظهر في الشريط زرّ <b>بدون تشكيل</b>، ويُحفَظ الاختيار</li><li><b>نسخ صوتي</b> لنصّ التوراة — كيف تُقرأ كل آية</li><li><b>الأناشيد السامرية بالنسخ الصوتي</b> — وحدة جديدة في المكتبة: ٧٩ نشيدًا بالآرامية والعبرية والنسخ الصوتي، جنبًا إلى جنب</li><li>دراستان مترجمتان أُضيفتا إلى المكتبة: <b>التقاليد السامرية</b> و<b>أحكام البرص</b></li><li><b>التصفّح بالتمرير</b>: تمريرة إلى اليمين تتقدّم، وإلى اليسار ترجع. وشريط التنقّل صار أصغر</li><li><b>المكتبة صارت رفًّا</b>: ثلاثة رفوف من الماهوجني حسب الموضوع، والكتب قائمة عليها وأسماؤها على كعوبها. لمسة تسحب الكتاب، وأخرى تفتحه</li><li>التطبيقات الخمسة الأخرى اجتمعت في سطر واحد من القائمة يُفتح بجانبها</li><li><b>معجم الكلمات</b>: الجدول والمنتقي يقرآن المصادر نفسها، وعلامات الوقف في الخطّ السامري لم تعد ملتصقة بالحرف الذي يسبقها</li></ul>',
       '<p><b>الإصدار 3.6 — كتابٌ في الطباعة، وشريط تنقّل يُفسح الطريق للنصّ</b></p><ul><li>في حوار الطباعة أُضيف خيار <b>ما الذي يُطبع</b> — هذا الأصحاح أو <b>المقطع كاملاً</b>؛ وفي الطباعة العاديّة صفحةٌ لكلّ أصحاح بعنوانه وتفسيره ومعجمه</li><li><b>تنسيق الكتاب</b>: تنقسم الصفحة نصفين — التوراة وحدها أعلى، والتفسير أسفل، وبينهما خطّ ومسافة رفيعة. لا عناوين ولا أرقام آيات، لأنّ كلّ تفسير يسمّي آيته باقتباسها: كلمتاها الأوليان، ثلاث نقاط، وكلمتاها الأخيرتان وشَرطة. والنصفان ليسا تيّاراً واحداً — فالتفسير الطويل يمضي تحت الأصحاحات التالية حتّى ينتهي — وكلّه بالخطّ السامري وبالكتابة الناقصة</li><li><b>شريط تنقّل جديد</b>: داخل المقطع قرصٌ يحمل سهماً فقط، وإلى مقطع آخر كبسولةٌ تحمل اسمه، وإلى خارج السفر الكبسولة نفسها بالحبر، كي لا تبدو الخطوة الكبرى كإحدى الصغيرات</li><li>الشريط <b>يطفو فوق الصفحة</b> ولا يقتطع منها شريطاً: في شاشات النصّ يتلاشى بعد لحظة وأيّ لمسة تعيده، ويفسح الطريق للصفحة المنقلبة ويعود ما إن تحطّ. ولمسه لا تترك أثراً</li><li><b>مِسمار</b> جديد بين علامات الأصحاح، إلى جانب علامة الحفظ، يثبّت على الشاشة <b>سطر المسار</b> و<b>نافذة التشغيل</b>: مثبّتين يبقيان أثناء القراءة، ومحرَّرين يعيدان شريطهما إلى النصّ ويعودان باللمسة نفسها التي تستدعي شريط التنقّل. ويُحفظ الاختيار بين الزيارات</li><li>والشريط العلويّ يُطوى حتّى الحافة — يبقى سطرٌ واحد فيه اسم التطبيق، والمقبض يعيده كما كان؛ وصغّرت أزرار الآيات</li><li>وفي رفّ الكتب، بينما تحترق الصفحة، تتبدّل الكتابة جيئةً وذهاباً بين الخطّ العبريّ والسامريّ — دون إعادة قياس الصفحة ودون إعادة إشعال النار</li></ul>',
@@ -942,6 +950,10 @@ const I18N = {
     rd_wit_off:'تغيير القارئ غير متاح حاليًا', ux_ar_tr:'الترجمة العربية',
     ux_no_ar_tr:'لا ترجمة عربية لهذه الآية',
     ux_comm_mt:'وأيضًا النصّ الماسوري أسفل كل آية', ux_no_mt:'لا مقابل في النصّ الماسوري',
+    ux_for_verse:'للآية',
+    ux_pick_commentator:'اختر مفسّرًا', ux_pick_source:'اختر مصدرًا',
+    ux_more_commentators:'مفسّرون إضافيّون (سفاريا)',
+    ux_more_one_verse:'في آية واحدة فقط',
     ux_interp_where:'أين يُعرض التفسير؟',
     ux_interp_chapter:'التفسير أسفل الأصحاح', ux_interp_verse:'التفسير أسفل كل آية',
     ux_side:'بجانب الآية', ux_for_chapter:'الأصحاح كلّه', ux_verses:'آيات',
@@ -5055,14 +5067,38 @@ async function ensureSources(){
 }
 // a panel's number is how many verses of this chapter have it — the figure that
 // tells the reader whether it is worth opening at all
-function sheetCounts(){
+function sheetCounts(view){
   const out={};
-  for(const v of (S.verses||[])){
+  for(const v of (view||[])){
     const s=SRC[v.id]||{};
     for(const r of SIDE_ROWS) if(s[r.key]) out[r.key]=(out[r.key]||0)+1;
   }
   return out;
 }
+// What each individual source has, summed over the verses in view.
+// /api/verse_sources already returns this breakdown beside the totals the rows
+// above are built from, so both sub-menus cost nothing more to draw.
+function sheetBy(view){
+  const out={};
+  for(const v of (view||[])){
+    const by=(SRC[v.id]||{}).by||{};
+    for(const k in by) out[k]=(out[k]||0)+(by[k]||0);
+  }
+  return out;
+}
+// the verses the panels will actually draw — S.verses is the chapter, and a
+// search result or a tap on a verse number filters it to one
+function sheetView(){
+  const all=S.verses||[];
+  return S.verseFilter!=null ? all.filter(v=>v.id===S.verseFilter) : all;
+}
+// the Samaritan works: the key they are counted under, the key the panel
+// switches on, and the label. The pronunciation is not here — it has a row of
+// its own on the sheet, and two identical lines would only read as a mistake.
+const SAM_SUBS = [['tibat','tm','src_tibat'], ['eyalk','eyalk','src_eyalk'],
+                  ['tzdaka','tzdaka','src_tzdaka'], ['sir','sir','src_sir'],
+                  ['shyt','shyt','src_shyt'], ['bhuq','bhuq','src_bhuq'],
+                  ['asatir','asatir','src_asatir']];
 // the pronunciation gets a line of its own here for the first time; until now it
 // was reachable only from inside "ממקור שומרון"
 const SIDE_ROWS = [
@@ -5086,11 +5122,42 @@ function openPanel(name){            // open, never toggle off — the sheet cho
 function closeSideSheet(){ $('sideSheet').classList.add('hidden'); }
 async function openSideSheet(){
   await ensureSources();
-  const counts=sheetCounts();
-  const n=(S.verses||[]).length;
-  $('sheetTitle').textContent = t('ux_for_chapter')+' · '+n+' '+t('ux_verses');
+  const view=sheetView();
+  const counts=sheetCounts(view);
+  const by=sheetBy(view);
+  const n=view.length;
+  // Sefaria is read one verse at a time, so the extra commentators can only be
+  // offered while a single verse is in view — which is what the reader filtered
+  const oneVerse = S.verseFilter!=null && n===1;
+  $('sheetTitle').textContent = oneVerse
+    ? t('ux_for_verse')+' '+((view[0]||{}).number ?? '')
+    : t('ux_for_chapter')+' · '+n+' '+t('ux_verses');
   const rows=$('sheetRows'); rows.innerHTML='';
   const missing=[];
+
+  // Open a panel on a choice just made, or repaint it if it is already open.
+  // togglePanel starts a panel at its own picker — it clears the chosen
+  // commentator and the chosen source — which is right when a toolbar button
+  // opens it and wrong here, where the sheet has just answered that question.
+  // So the choice is carried across the opening and put back.
+  const go=(pname)=>{
+    const keep={comm:S.commentarySel, sam:S.samSrcChoice, tm:S.tmSel};
+    closeSideSheet();
+    if(S.panel!==pname) togglePanel(pname);
+    S.commentarySel=keep.comm; S.samSrcChoice=keep.sam; S.tmSel=keep.tm;
+    paintVerses();
+  };
+  const subRow=(label, chosen, count, onpick, why)=>{
+    const o=el('button','sheet-sub-row'+(chosen?' sel':'')+(onpick?'':' off'));
+    o.appendChild(el('span','sheet-check','✓'));
+    o.appendChild(el('span','sheet-sub-label', label));
+    if(why) o.appendChild(el('span','sheet-sub-note', why));
+    if(count) o.appendChild(el('span','sheet-sub-count', String(count)));
+    if(onpick) o.onclick=onpick;
+    else o.setAttribute('aria-disabled','true');
+    return o;
+  };
+
   for(const r of SIDE_ROWS){
     const c=counts[r.key]||0;
     if(!c){ missing.push(t(r.label)); continue; }
@@ -5098,26 +5165,23 @@ async function openSideSheet(){
     b.appendChild(el('span','sheet-label', t(r.label)));
     b.appendChild(el('span','sheet-count', String(c)));
     const place=SHEET_PLACE[r.key];
+    const sub = (place || r.key==='samsrc') ? el('div','sheet-sub hidden') : null;
+
     if(place){
       // a commentary has two places it can stand, so this row does not open it
       // at once: it unfolds the choice, with the reader's own place ticked
       const [sk, store, pname]=place;
-      b.appendChild(el('span','sheet-mode', t(S[sk]?'ux_interp_verse':'ux_interp_chapter')));
-      const sub=el('div','sheet-sub hidden');
+      const mode=[t(S[sk]?'ux_interp_verse':'ux_interp_chapter')];
       sub.appendChild(el('div','sheet-where', t('ux_interp_where')));
       for(const inline of [false,true]){
-        const o=el('button','sheet-sub-row'+(S[sk]===inline?' sel':''));
-        o.appendChild(el('span','sheet-check','✓'));
-        o.appendChild(el('span','', t(inline?'ux_interp_verse':'ux_interp_chapter')));
-        o.onclick=()=>{
-          // the line already chosen, pressed again, is a switch being put out:
-          // the choice itself is kept — it is the panel that closes
-          if(S[sk]===inline && S.panel===pname){ closeSideSheet(); togglePanel(pname); return; }
-          S[sk]=inline; localStorage.setItem(store, inline?'1':'0');
-          closeSideSheet();
-          if(S.panel!==pname) togglePanel(pname); else paintVerses();
-        };
-        sub.appendChild(o);
+        sub.appendChild(subRow(t(inline?'ux_interp_verse':'ux_interp_chapter'),
+          S[sk]===inline, 0, ()=>{
+            // the line already chosen, pressed again, is a switch being put out:
+            // the choice itself is kept — it is the panel that closes
+            if(S[sk]===inline && S.panel===pname){ closeSideSheet(); togglePanel(pname); return; }
+            S[sk]=inline; localStorage.setItem(store, inline?'1':'0');
+            go(pname);
+          }));
       }
       if(r.key==='jewish'){
         // the Jewish commentators read the Masoretic verse, so beneath each
@@ -5125,14 +5189,47 @@ async function openSideSheet(){
         // not a choice: it stays on the sheet and takes effect at once
         const m=el('button','sheet-sub-row sheet-sub-toggle'+(S.commentaryMT?' sel':''));
         m.appendChild(el('span','sheet-check','✓'));
-        m.appendChild(el('span','', t('ux_comm_mt')));
+        m.appendChild(el('span','sheet-sub-label', t('ux_comm_mt')));
         m.onclick=()=>{ S.commentaryMT=!S.commentaryMT;
           localStorage.setItem('as_comm_mt', S.commentaryMT?'1':'0');
           m.classList.toggle('sel', S.commentaryMT);
           if(S.panel==='commentary' && S.commentaryInline) paintVerses(); };
         sub.appendChild(m);
+
+        // and which of them. Asked here rather than inside the panel, so the
+        // reader answers both questions before anything opens.
+        sub.appendChild(el('div','sheet-where', t('ux_pick_commentator')));
+        const names=Object.fromEntries(COMMENTATORS);
+        for(const [key,name] of COMMENTATORS){
+          const cn=by[key]||0;
+          if(!cn) continue;
+          sub.appendChild(subRow(name, S.commentarySel===key, cn,
+            ()=>{ S.commentarySel=key; go(pname); }));
+        }
+        sub.appendChild(subRow(t('ux_more_commentators'), S.commentarySel==='web', 0,
+          oneVerse ? ()=>{ S.commentarySel='web'; go(pname); } : null,
+          oneVerse ? '' : t('ux_more_one_verse')));
+        if(S.commentarySel) mode.push(names[S.commentarySel] || t('ux_more_commentators'));
       }
-      b.onclick=()=>{ const hidden=sub.classList.toggle('hidden'); b.classList.toggle('sheet-open', !hidden); };
+      b.appendChild(el('span','sheet-mode', mode.join(' · ')));
+    } else if(r.key==='samsrc'){
+      // the same question the panel used to ask after opening, asked before it
+      sub.appendChild(el('div','sheet-where', t('ux_pick_source')));
+      let chosen='';
+      for(const [bk, choice, lbl] of SAM_SUBS){
+        const sn=by[bk]||0;
+        if(!sn) continue;
+        const is = S.samSrcChoice===choice;
+        if(is) chosen=t(lbl);
+        sub.appendChild(subRow(t(lbl), is, sn,
+          ()=>{ S.samSrcChoice=choice; S.tmSel=null; go('samaritan_src'); }));
+      }
+      if(chosen) b.appendChild(el('span','sheet-mode', chosen));
+    }
+
+    if(sub){
+      b.onclick=()=>{ const hidden=sub.classList.toggle('hidden');
+                      b.classList.toggle('sheet-open', !hidden); };
       rows.appendChild(b); rows.appendChild(sub);
       continue;
     }
