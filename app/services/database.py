@@ -1217,7 +1217,13 @@ def _seed_word_meaning():
         rows = patch.get('rows') or []
         if not rows:
             return
-        conn = sqlite3.connect(DB_PATH)
+        # the server boots more than one worker, and each runs this chain: two
+        # of them reaching this table at the same moment is the ordinary case,
+        # not the exception. So the writer waits for the other to finish rather
+        # than giving up on the lock — the work is idempotent, and whoever
+        # arrives second finds it already done and says so.
+        conn = sqlite3.connect(DB_PATH, timeout=90)
+        conn.execute('PRAGMA busy_timeout=90000')
         conn.execute('CREATE TABLE IF NOT EXISTS word_meaning ('
                      'word TEXT PRIMARY KEY, kind TEXT, gloss TEXT, '
                      'reading TEXT, src TEXT)')
@@ -1244,6 +1250,13 @@ def _seed_word_meaning():
     except Exception as exc:
         PATCH_REPORT['word_meaning'] = 'failed: %s' % exc
         print('[word-meaning] skipped: %s' % exc)
+        # a worker that lost the race leaves the table to the one that won it;
+        # the reader is never served a half-filled table, because the fill is
+        # one transaction
+        try:
+            conn.close()
+        except Exception:
+            pass
 
 
 _seed_word_meaning()
