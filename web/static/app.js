@@ -248,6 +248,7 @@ const I18N = {
     piy_translation_he:'תרגום עברי', piy_no_dict_line:'אין ערכי מילון לשורה זו עדיין',
     piy_k_maybe:'אפשר שהסריקה שיבשה; הקריאה הקרובה: %s',
     piy_k_line:'מתוך תרגום השורה:',
+    piy_k_none:'מילה שאין לה עדיין ערך במילון',
     piy_k_read:'הסריקה שיבשה; הקריאה: %s', piy_k_he:'עברית — בלא צורך בתרגום',
     piy_k_scan:'כאן הטקסט הוא סריקה שלא הוגהה; אין זו מילה', piy_k_near:'הקרוב שנמצא:',
     piy_no_dict_entry:'אין ערך מילון עדיין',
@@ -531,6 +532,7 @@ const I18N = {
     piy_translation_he:'Hebrew translation', piy_no_dict_line:'No dictionary entries for this line yet',
     piy_k_maybe:'the scan may be corrupt; nearest reading: %s',
     piy_k_line:'from the translation of the line:',
+    piy_k_none:'a word the dictionary does not carry yet',
     piy_k_read:'the scan is corrupt; reading: %s', piy_k_he:'Hebrew — needs no translation',
     piy_k_scan:'the text here is an unproofread scan; this is not a word', piy_k_near:'nearest found:',
     piy_no_dict_entry:'No dictionary entry yet',
@@ -814,6 +816,7 @@ const I18N = {
     piy_translation_he:'الترجمة العبرية', piy_no_dict_line:'لا توجد مداخل قاموس لهذا السطر بعد',
     piy_k_maybe:'قد يكون المسح مشوَّشًا؛ أقرب قراءة: %s',
     piy_k_line:'من ترجمة السطر:',
+    piy_k_none:'كلمة لا يحملها القاموس بعد',
     piy_k_read:'المسح مشوَّش؛ القراءة: %s', piy_k_he:'عبرية — لا تحتاج ترجمة',
     piy_k_scan:'النصّ هنا مسح غير مُراجَع؛ هذه ليست كلمة', piy_k_near:'الأقرب الموجود:',
     piy_no_dict_entry:'لا يوجد مدخل قاموس بعد',
@@ -8162,6 +8165,9 @@ function piyWordSays(w){
   // no entry anywhere, but the line this word stands in has its translation
   // printed beside it: both are shown, and the meaning is read off the parallel
   if(k.k==='line')  return {text:k.g||'', note:t('piy_k_line')+' '+(k.r||'')};
+  // a word the dictionary does not carry is not the same as a corrupt scan:
+  // saying the second about a real word says something untrue of the text
+  if(k.k==='none')  return {text:'', note:t('piy_k_none')};
   if(k.k==='scan')  return {text:'', note:t('piy_k_scan')+(k.r?(' · '+t('piy_k_near')+' '+k.r):'')};
   return g ? {text:g} : null;
 }
@@ -8413,6 +8419,7 @@ document.addEventListener('click', async e=>{
           kind==='maybe' ? t('piy_k_maybe').replace('%s', r.gloss_read||'') :
           kind==='line'  ? t('piy_k_line')+' '+(r.gloss_read||'') :
           kind==='he'    ? t('piy_k_he') :
+          kind==='none'  ? t('piy_k_none') :
           kind==='scan'  ? t('piy_k_scan') : '';
         const text=(r.gloss||'').trim();
         if(text && !(kind==='he' && text===w))
