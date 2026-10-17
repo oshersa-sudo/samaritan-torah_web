@@ -8157,7 +8157,8 @@ function piyWordSays(w){
   if(!k) return g ? {text:g} : null;
   if(k.k==='read')  return {text:g||k.g||'', note:t('piy_k_read').replace('%s', k.r||'')};
   if(k.k==='maybe') return {text:g||k.g||'', note:t('piy_k_maybe').replace('%s', k.r||'')};
-  if(k.k==='he')    return {text:g||k.g||'', note:t('piy_k_he')};
+  // a Hebrew word glossed by itself says nothing twice: the note alone
+  if(k.k==='he'){ const h=g||k.g||''; return {text: h===piyNorm(w)?'':h, note:t('piy_k_he')}; }
   // no entry anywhere, but the line this word stands in has its translation
   // printed beside it: both are shown, and the meaning is read off the parallel
   if(k.k==='line')  return {text:k.g||'', note:t('piy_k_line')+' '+(k.r||'')};
