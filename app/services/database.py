@@ -2995,6 +2995,37 @@ def _chunks(seq, n=_SQL_VARS):
         yield seq[i:i + n]
 
 
+_WORD_MEANING_MEM = None
+
+
+def _word_meaning_file():
+    """{word: {g, k, s, r}} read once from the patch that ships with the code.
+
+    Read lazily, because most requests never ask about a word no table could
+    answer, and kept in memory afterwards, because the file does not change
+    between deploys.
+    """
+    global _WORD_MEANING_MEM
+    if _WORD_MEANING_MEM is None:
+        out = {}
+        try:
+            with open(_WORD_MEANING_PATCH, encoding='utf-8') as fh:
+                for r in (json.load(fh).get('rows') or []):
+                    w = (r.get('w') or '').strip()
+                    if not w:
+                        continue
+                    v = {'g': (r.get('g') or '').strip(),
+                         'k': (r.get('k') or 'gloss').strip(),
+                         's': (r.get('s') or '').strip()}
+                    if (r.get('r') or '').strip():
+                        v['r'] = r['r'].strip()
+                    out[w] = v
+        except Exception as exc:
+            print('[word-meaning] file unread: %s' % exc)
+        _WORD_MEANING_MEM = out
+    return _WORD_MEANING_MEM
+
+
 def resolve_glosses(conn, words):
     """{form: {g, k, s}} — what is known about each of these forms.
 
@@ -3049,6 +3080,16 @@ def resolve_glosses(conn, words):
                               's': (r['src'] or '').strip()}
                     if (r['reading'] or '').strip():
                         out[w]['r'] = r['reading'].strip()
+    # and where the table could not be written at all — a second worker held the
+    # lock, the disk is read-only — the same words are read from the file that
+    # ships with the code. The table is an optimisation; the answer is not.
+    left = [w for w in want if w not in out]
+    if left:
+        f = _word_meaning_file()
+        for w in left:
+            v = f.get(w)
+            if v:
+                out[w] = dict(v)
     for w, name in echo.items():
         if w not in out:
             out[w] = {'g': '', 'k': 'he', 's': name}
