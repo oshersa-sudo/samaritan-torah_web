@@ -5364,7 +5364,9 @@ def get_dara_word(word):
     if not (out.get('gloss') or '').strip():
         try:
             c = tal_concise(word)
-            if c and c.get('gloss'):
+            # the word said back to itself is no meaning: leave it out, and the
+            # sources below get their turn to say something that is
+            if c and c.get('gloss') and c['gloss'].strip() != word:
                 out['gloss'] = c['gloss']
                 out['gloss_from'] = 'tal'
         except Exception:

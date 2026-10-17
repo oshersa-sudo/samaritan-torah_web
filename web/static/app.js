@@ -8403,9 +8403,22 @@ document.addEventListener('click', async e=>{
       const sec=(title, body)=> body ? `<div class="dara-pop-sec"><h5>${esc(title)}</h5>${body}</div>` : '';
       let html='';
 
-      // the meaning, when the volume's own list had none and another source did
-      if(!(d&&d.g) && (r.gloss||'').trim())
-        html += `<div class="dara-pop-gloss">${esc(r.gloss)}</div>`;
+      // the meaning, when the volume's own list had none and another source did —
+      // and, where that answer is not a plain meaning, what kind of answer it is:
+      // a reading correcting the scan, the translation of the line it stands in,
+      // a Hebrew word, or the plain statement that this is not a word
+      if(!(d&&d.g)){
+        const kind=r.gloss_kind||'gloss', note=
+          kind==='read'  ? t('piy_k_read').replace('%s', r.gloss_read||'') :
+          kind==='maybe' ? t('piy_k_maybe').replace('%s', r.gloss_read||'') :
+          kind==='line'  ? t('piy_k_line')+' '+(r.gloss_read||'') :
+          kind==='he'    ? t('piy_k_he') :
+          kind==='scan'  ? t('piy_k_scan') : '';
+        const text=(r.gloss||'').trim();
+        if(text && !(kind==='he' && text===w))
+          html += `<div class="dara-pop-gloss">${esc(text)}</div>`;
+        if(note) html += `<div class="piy-dw-note">${esc(note)}</div>`;
+      }
 
       // the dictionary: each root, its senses, and the verses it cites
       const roots=((r.tal||{}).roots)||[];
