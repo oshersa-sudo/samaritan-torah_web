@@ -1234,7 +1234,7 @@ def _seed_word_meaning():
         if have == len(rows) and ver and ver[0] == str(patch.get('version') or ''):
             PATCH_REPORT['word_meaning'] = 'already %d words' % have
             conn.close()
-            return
+            return True
         conn.execute('DELETE FROM word_meaning')
         conn.executemany('INSERT INTO word_meaning (word, kind, gloss, reading, src) '
                          'VALUES (?,?,?,?,?)',
@@ -1247,6 +1247,7 @@ def _seed_word_meaning():
         conn.close()
         PATCH_REPORT['word_meaning'] = '%d words read one by one' % len(rows)
         print('[word-meaning] %s' % PATCH_REPORT['word_meaning'])
+        return True
     except Exception as exc:
         PATCH_REPORT['word_meaning'] = 'failed: %s' % exc
         print('[word-meaning] skipped: %s' % exc)
@@ -1257,9 +1258,37 @@ def _seed_word_meaning():
             conn.close()
         except Exception:
             pass
+    return False
 
 
-_seed_word_meaning()
+def _seed_word_meaning_async():
+    """Fill the table patiently, off the boot path.
+
+    The lock it waits for is held by this same process a moment earlier (the
+    dictionary glosses are written in their own thread) or by a second worker
+    doing exactly this. None of that is worth delaying the first request for,
+    and none of it needs to succeed on the first try: the work is idempotent,
+    the file is shared, and whichever worker gets there first fills it for all
+    of them. Until it is filled the reader is not left without answers — the ten
+    tiers still speak; only the words read one by one are missing.
+    """
+    def run():
+        import time
+        for attempt in range(8):
+            try:
+                if _seed_word_meaning():
+                    return
+            except Exception as exc:
+                PATCH_REPORT['word_meaning'] = 'failed: %s' % exc
+            time.sleep(3 * (attempt + 1))
+    try:
+        import threading
+        threading.Thread(target=run, name='word-meaning', daemon=True).start()
+    except Exception:
+        run()
+
+
+_seed_word_meaning_async()
 
 _seed_benhayyim_translit()
 
