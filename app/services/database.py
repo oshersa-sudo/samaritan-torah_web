@@ -1188,6 +1188,66 @@ def _seed_benhayyim_translit():
         print('[translit] skipped: %s' % exc)
 
 
+_WORD_MEANING_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                   'data', 'word_meaning_patch.json')
+
+
+def _seed_word_meaning():
+    """The words that no table in this database could speak about.
+
+    Every word unit asks resolve_glosses, and that asks ten tables; what none of
+    them answered was then read one by one, in the line each word stands in. The
+    answer is one of four kinds, and the reader is told which:
+
+      gloss  a meaning, read off the line or from the word's own make-up
+      read   the piyyut corpus is unproofread scan, and the form is a misreading
+             of a real word: the reading is given, with that word's meaning
+      he     a Hebrew word in a Hebrew line, which needs no translating
+      scan   the form is not a word at all — the scan is corrupt here, and
+             saying so is the true answer, not silence
+
+    The table is this patch's own and nothing else writes it, so it is simply
+    brought to the patch's content.
+    """
+    try:
+        if not os.path.exists(_WORD_MEANING_PATCH):
+            return
+        with open(_WORD_MEANING_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        rows = patch.get('rows') or []
+        if not rows:
+            return
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute('CREATE TABLE IF NOT EXISTS word_meaning ('
+                     'word TEXT PRIMARY KEY, kind TEXT, gloss TEXT, '
+                     'reading TEXT, src TEXT)')
+        have = conn.execute('SELECT COUNT(*) FROM word_meaning').fetchone()[0]
+        ver = conn.execute("SELECT value FROM patch_state WHERE key='word_meaning'").fetchone() \
+            if conn.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                            "AND name='patch_state'").fetchone() else None
+        if have == len(rows) and ver and ver[0] == str(patch.get('version') or ''):
+            PATCH_REPORT['word_meaning'] = 'already %d words' % have
+            conn.close()
+            return
+        conn.execute('DELETE FROM word_meaning')
+        conn.executemany('INSERT INTO word_meaning (word, kind, gloss, reading, src) '
+                         'VALUES (?,?,?,?,?)',
+                         [(r.get('w'), r.get('k') or 'gloss', r.get('g') or '',
+                           r.get('r') or '', r.get('s') or '') for r in rows])
+        conn.execute('CREATE TABLE IF NOT EXISTS patch_state (key TEXT PRIMARY KEY, value TEXT)')
+        conn.execute("INSERT OR REPLACE INTO patch_state(key, value) VALUES ('word_meaning', ?)",
+                     (str(patch.get('version') or ''),))
+        conn.commit()
+        conn.close()
+        PATCH_REPORT['word_meaning'] = '%d words read one by one' % len(rows)
+        print('[word-meaning] %s' % PATCH_REPORT['word_meaning'])
+    except Exception as exc:
+        PATCH_REPORT['word_meaning'] = 'failed: %s' % exc
+        print('[word-meaning] skipped: %s' % exc)
+
+
+_seed_word_meaning()
+
 _seed_benhayyim_translit()
 
 
@@ -2802,17 +2862,25 @@ def get_piyutim_chapter(pid):
         return None
     words = set(re.findall(r'[א-ת]+', r['text'] or ''))
     gloss = {}
+    meta = {}
     if words:
         qs = ','.join('?' * len(words))
         for wr in conn.execute('SELECT word, gloss FROM piyutim_dict WHERE word IN (%s)' % qs, tuple(words)):
             gloss[wr['word']] = wr['gloss']
-        # tal_word_gloss (the Torah word-dictionary's 14,515-word table) as a free
-        # fallback for the many words piyutim's own small ~300-word glossary misses
-        for w, g in _piy_gloss_fallback(conn, [w for w in words if w not in gloss]).items():
-            gloss[w] = g
+        # and for every word that glossary misses, the same sources every other
+        # word unit asks — the dictionary, the Torah, the targum, and the words
+        # read one by one where none of those could answer
+        meta = resolve_glosses(conn, [w for w in words if w not in gloss])
+        for w, v in meta.items():
+            if v.get('g'):
+                gloss[w] = v['g']
     conn.close()
     out = dict(r)
     out['dict'] = gloss
+    # what kind of answer each of those is, where it is not a plain meaning: a
+    # reading that corrects the scan, a Hebrew word that needs no translating,
+    # or a form that is not a word. The reader is told which.
+    out['dict_kind'] = {w: v for w, v in (meta or {}).items() if v.get('k') != 'gloss'}
     return out
 
 
@@ -2856,21 +2924,108 @@ def _piy_phon_key(s, n):
 _PIY_ROW_COLS = 'word, freq, freq_clean, rhyme_key, rhyme_human, rhyme_conf, rhyme_method, definition, occurrences, tal_root'
 
 
+# ── one rule for every word unit ───────────────────────────────────────────
+# A word the app can be asked about comes back with a meaning. Each tier is a
+# table that already says what a form means, ordered by how directly it speaks
+# about this very form: the volume's own hand-made glossary first, then its
+# per-word column, then the app's Aramaic dictionary and the Torah's, then the
+# targum laid beside the Hebrew verse, then the remaining word lists.
+# (table, the column holding the form, the expression holding the meaning, the
+#  name the answer carries back)
+_GLOSS_TIERS = (
+    ('piyutim_dict',     'word',    'gloss',      'piyut'),
+    ('piyutim_words',    'word',    'definition', 'piyut'),
+    ('dict_word_index',  'word',    'gloss',      'dict'),
+    ('dict_infl',        'form',    "COALESCE(NULLIF(TRIM(gloss),''), "
+                                    "NULLIF(TRIM(gloss_tal),''), TRIM(memar_he))", 'dict'),
+    ('tal_word_gloss',   'word',    'gloss',      'torah'),
+    ('verse_dictionary', 'aramaic', 'hebrew',     'targum'),
+    ('dara_words',       'word',    'gloss',      'liturgy'),
+    ('meliz_gloss',      'lemma',   "COALESCE(NULLIF(TRIM(hebrew),''), TRIM(arabic))", 'meliz'),
+    ('word_gloss',       'word',    'he',         'torah'),
+    ('word_align',       'ar',      'he',         'targum'),
+)
+_SQL_VARS = 800          # SQLite's limit on bound parameters, with room to spare
+
+
+def _chunks(seq, n=_SQL_VARS):
+    for i in range(0, len(seq), n):
+        yield seq[i:i + n]
+
+
+def resolve_glosses(conn, words):
+    """{form: {g, k, s}} — what is known about each of these forms.
+
+    g the meaning, k what kind of answer it is ('gloss', or from the curated
+    table also 'read' for a scan the reading corrects, 'he' for a Hebrew word
+    that needs no translating, 'scan' for a form that is not a word), s the
+    source that said it. A form nothing speaks about is simply absent, and the
+    caller decides what to say about that.
+    """
+    want = {w for w in (words or []) if w}
+    if not want:
+        return {}
+    out, echo = {}, {}
+    for table, col, expr, name in _GLOSS_TIERS:
+        left = [w for w in want if w not in out]
+        if not left:
+            break
+        for part in _chunks(left):
+            qs = ','.join('?' * len(part))
+            try:
+                rows = conn.execute('SELECT %s AS w, %s AS g FROM "%s" WHERE %s IN (%s)'
+                                    % (col, expr, table, col, qs), tuple(part))
+            except sqlite3.Error:
+                break                      # a database without that table has no say
+            for r in rows:
+                w, g = (r['w'] or '').strip(), (r['g'] or '').strip()
+                if not w or not g or w in out:
+                    continue
+                if g == w:
+                    # the word said back to itself is no translation — but it is
+                    # a statement that the form is a word of the Hebrew the
+                    # reader is reading in, and that needs no translating. Said
+                    # as such, and only where nothing better was found.
+                    echo.setdefault(w, name)
+                    continue
+                out[w] = {'g': g, 'k': 'gloss', 's': name}
+    # and the words read one by one, where no table could answer
+    left = [w for w in want if w not in out]
+    if left:
+        for part in _chunks(left):
+            qs = ','.join('?' * len(part))
+            try:
+                rows = conn.execute('SELECT word, kind, gloss, reading, src FROM word_meaning '
+                                    'WHERE word IN (%s)' % qs, tuple(part)).fetchall()
+            except sqlite3.Error:
+                break
+            for r in rows:
+                w = (r['word'] or '').strip()
+                if w and w not in out:
+                    out[w] = {'g': (r['gloss'] or '').strip(),
+                              'k': (r['kind'] or 'gloss').strip(),
+                              's': (r['src'] or '').strip()}
+                    if (r['reading'] or '').strip():
+                        out[w]['r'] = r['reading'].strip()
+    for w, name in echo.items():
+        if w not in out:
+            out[w] = {'g': '', 'k': 'he', 's': name}
+    return out
+
+
 def _piy_gloss_fallback(conn, words):
-    """tal_word_gloss (14,515 Aramaic/Hebrew words, already built for the Torah's
-    own word-dictionary) as a free fallback wherever piyutim's own small
-    definition/dictionary is empty -- liturgical vocabulary overlaps heavily with
-    Targum/Torah vocabulary, so this covers far more words than piyutim_dict alone."""
-    # piyutim_words.definition is pre-enriched (scripts/piyutim/enrich_tal_roots.py
-    # resolves each word's root via the app's own Tal-dictionary pipeline --
-    # tal_full_lookup -- and fills empty definitions from the root's gloss), so
-    # this is a simple direct read, not a live join against a separate table.
+    """The meaning of every piyyut word the volume's own glossary leaves empty.
+
+    It used to read piyutim_words.definition and nothing else, trusting a
+    one-off script to have filled it — and that column is empty for seven in ten
+    of the corpus, so the reader was told there was no entry while the
+    dictionary held the word. It now asks the same sources as every other word
+    unit.
+    """
     words = [w for w in set(words) if w]
     if not words:
         return {}
-    qs = ','.join('?' * len(words))
-    rows = conn.execute('SELECT word, definition FROM piyutim_words WHERE word IN (%s)' % qs, tuple(words))
-    return {r['word']: r['definition'] for r in rows if (r['definition'] or '').strip()}
+    return {w: v['g'] for w, v in resolve_glosses(conn, words).items() if v.get('g')}
 
 
 def _piy_rowdicts(conn, rows):
@@ -5212,6 +5367,21 @@ def get_dara_word(word):
             if c and c.get('gloss'):
                 out['gloss'] = c['gloss']
                 out['gloss_from'] = 'tal'
+        except Exception:
+            pass
+    # and where the dictionary is silent too, the same sources every other word
+    # unit asks — including the words read one by one
+    if not (out.get('gloss') or '').strip():
+        try:
+            conn2 = get_connection()
+            v = resolve_glosses(conn2, [word]).get(word)
+            conn2.close()
+            if v:
+                out['gloss'] = v.get('g') or ''
+                out['gloss_from'] = v.get('s') or 'resolved'
+                out['gloss_kind'] = v.get('k') or 'gloss'
+                if v.get('r'):
+                    out['gloss_read'] = v['r']
         except Exception:
             pass
     return out

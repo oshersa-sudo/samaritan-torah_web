@@ -1737,6 +1737,10 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 .piy-dw{ display:inline-block; margin:2px 0 2px 10px; font-size:13px; }
 .piy-dw b{ color:var(--navy); }
 .piy-dw span{ color:#4a6b30; }
+/* what kind of answer a piyyut word got, where it is not a plain meaning:
+   a reading that corrects the scan, a Hebrew word, a corrupt form. Said in a
+   quieter voice than the meaning itself, and on its own line. */
+.piy-dw-note{ display:block; font-size:12px; color:#8d8372; font-style:italic; }
 .piy-dw-none{ color:var(--muted); }
 .piy-wordpop{ position:fixed; background:#fff; border:1px solid var(--accent); border-radius:8px;
   padding:9px 13px; box-shadow:0 4px 14px rgba(0,0,0,.2); z-index:80; max-width:280px; font-size:14px; }
