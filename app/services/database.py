@@ -4716,7 +4716,6 @@ def dict_word_search(word, limit=40):
     conn = get_connection()
     rows = conn.execute("SELECT lemma, root, pos, gloss_he, printed FROM tal_auth_entries "
                         "WHERE lemma_norm=? ORDER BY pdf, ord LIMIT ?", (bn, limit)).fetchall()
-    conn.close()
     out, seen = [], set()
     for r in rows:
         k = (r['lemma'], r['printed'], (r['gloss_he'] or '')[:20])
@@ -4725,6 +4724,30 @@ def dict_word_search(word, limit=40):
         seen.add(k)
         out.append({'lemma': r['lemma'] or '', 'root': r['root'] or '', 'pos': r['pos'] or '',
                     'gloss': (r['gloss_he'] or '').strip(), 'page': r['printed']})
+
+    # and what the app's own dictionary says about this form. Tal's pages are one
+    # source among several, and a reader who types a word the app glosses must
+    # not be told there is nothing — דנע stood in the index with its meaning in
+    # full while this search came back empty.
+    try:
+        said = resolve_glosses(conn, [base, word.strip()])
+        v = said.get(base) or said.get(word.strip()) or {}
+        g = (v.get('g') or '').strip()
+        if g and not any(g[:24] in (e['gloss'] or '') for e in out):
+            kind, read = v.get('k') or 'gloss', (v.get('r') or '').strip()
+            if kind == 'read' and read:
+                g = '%s — הסריקה שיבשה; הקריאה: %s' % (g, read)
+            elif kind == 'maybe' and read:
+                g = '%s — אפשר שהסריקה שיבשה; הקריאה הקרובה: %s' % (g, read)
+            elif kind == 'line' and read:
+                g = '%s — מתוך תרגום השורה: %s' % (g, read)
+            rt = conn.execute("SELECT root FROM dict_word_index WHERE word_norm=? "
+                              "AND TRIM(COALESCE(root,''))<>'' LIMIT 1", (bn,)).fetchone()
+            out.append({'lemma': base, 'root': (rt['root'] if rt else ''), 'pos': '',
+                        'gloss': g, 'page': None, 'src': v.get('s') or ''})
+    except Exception as exc:
+        print('[dict-search] %s' % exc)
+    conn.close()
     return out
 
 

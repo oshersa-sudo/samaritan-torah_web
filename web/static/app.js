@@ -7338,8 +7338,11 @@ async function dictAppSearch(){
   const roots=(d&&d.roots)||[];
   // direct head-word matches (the word itself stands in the dictionary), regardless of root
   if(direct && direct.length){
-    const have=new Set(roots.map(r=>r.root));
-    const fresh=direct.filter(e=>!e.root || !have.has(e.root));
+    // a direct entry is dropped only when the card for its root actually says
+    // something: דנע has a root card and no sense in it, and dropping the entry
+    // left the reader with a heading and nothing under it
+    const said=new Set(roots.filter(r=>(r.senses||[]).length).map(r=>r.root));
+    const fresh=direct.filter(e=>!e.root || !said.has(e.root));
     if(fresh.length){
       body.appendChild(el('div','tal-sec dict-direct-sec', esc(t('dict_in_dict'))));
       for(const e of fresh){
