@@ -190,7 +190,7 @@ const I18N = {
     save_yes:'כן, שמור', save_no:'לא, רק הפעם',
     samsrc_pick:'ממקור שומרון — בחר מקור', checking_sources:'בודק מקורות זמינים…',
     no_sam_source:'אין מקור שומרוני זמין לפסוקים אלה', back_sources:'‹ מקורות',
-    src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים', src_bhuq:'פירוש אם בחקותי',
+    src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים', src_bhuq:'פירוש אם בחקותי', src_ervah:'ספר הערוות',
     src_sir:'סוד הלבבות', src_shyt:'שו"ת — יעקב בן אהרן הכהן', src_asatir:'ספר האסאטיר',
     src_translit:'תעתיק הגייה', tr_source:'טקסט המקור', tr_translit:'תעתיק ההגייה השומרוני',
     no_translit:'אין תעתיק הגייה לפסוקים אלה',
@@ -219,6 +219,8 @@ const I18N = {
     m_shyt_book:'שו"ת — יעקב בן אהרן הכהן', shyt_title:'שו"ת — יעקב בן אהרן הכהן', shyt_toc_hint:'בחר שאלה לעיון:',
     m_sir_book:'סוד הלבבות (סיר אל-קלוב)', sir_title:'סוד הלבבות — סיר אל-קלוב', sir_toc_hint:'בחר פרק לעיון:',
     m_bhuq_book:'פירוש אם בחקותי', bhuq_title:'פירוש אם בחקותי — אבו אלפרג׳ איבן אל-כתאר',
+    m_ervah_book:'ספר הערוות', ervah_title:'ספר הערוות — כִּתַאבּ אל-עִירוֹת',
+    ervah_toc_hint:'החיבור בא כאן בתרגום עברי מלא ורצוף, מחולק לפרקים לפי מהלך הדיון. בחר פרק לעיון:',
     bhuq_toc_hint:'החיבור מחולק כאן לחלקים לפי מהלך הטיעון; המספרים בסוגריים הם סעיפי המחבר. בחר חלק לעיון:',
     m_asatir_book:'ספר האסאטיר', asatir_title:'ספר האסאטיר', asatir_toc_hint:'בחר פרק לעיון:',
     m_wreschner_book:'מסורות שומרוניות', wreschner_title:'מסורות שומרוניות', wreschner_toc_hint:'בחר פרק לעיון:',
@@ -292,6 +294,7 @@ const I18N = {
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     // newest first: a reader opening "מה חדש" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>גרסה 4.4 — ספר הערוות</b></p><ul><li><b>כִּתַאבּ אל-עִירוֹת — ספר הערוות</b> נוסף לספרייה: חיבור ההלכה השומרוני בדיני העריות, מפי הכהן פינחס בן יצחק, בתרגום עברי מלא ורצוף. עשרים וארבעה פרקים לפי מהלך הדיון, ובכל פרק מראי המקום שבגוף הטקסט פתוחים בלחיצה אל הפסוק עצמו</li><li><b>והספר קורא עם הפסוק</b>: תשעים ותשעה פסוקים שהחיבור מצטט — בויקרא, בדברים, בבראשית, בשמות ובמדבר — נושאים מעתה את דבריו. הוא נמנה בגיליון "לצד הפסוק" ככל מקור שומרוני, נפתח בשמו תחת "ממקור שומרון", ונשזר ב"פירוש הפסוק" מתחת לפסוק שהוא דן בו — והפסקה שמובאת היא זו שהספר ציטט בה את הפסוק, לא הפרק כולו</li><li>וכך גם בהדפסה: גיליון הפירוש נושא את דברי ספר הערוות בשם אומרם</li></ul>',
       '<p><b>גרסה 4.3 — שאלה אחת במקום שישה כפתורים</b></p><ul><li><b>הסרגל התחתון</b> נעשה שורה אחת בנייבי של הכותרת: חמישה פריטים שווים, אייקון מעל תווית קצרה, והפעיל נדלק באור משלו. ששת כפתורי התוכן התכנסו לכפתור אחד — <b>לצד הפסוק</b></li><li><b>הגיליון שהוא פותח אומר תחילה מה יש</b>: כל מקור שיש לו דבר בפרק שלפניכם, ולצידו בכמה מפסוקיו הוא נמצא. מקור שאין לו דבר נרשם למטה בשורה אחת, במקום להיות כפתור שנפתח אל הודעה שאין. <b>תעתיק ההגייה</b> קיבל כאן שורה משלו בפעם הראשונה</li><li><b>הפירוש בוחר את מקומו</b> — מתחת לפרק כפי שהיה, או <b>מתחת לכל פסוק</b>: הפסוק מודגש ופירושו נקבע תחתיו. כך נקרא הפרק פסוק-אחרי-פסוק, טקסט ואז משמעות. הבחירה נשמרת</li><li><b>גם הפרשנות היהודית</b> בוחרת כך את מקומה, ואפשר לקבוע לצידה את <b>נוסח המסורה</b> מתחת לכל פסוק — הלשון שהפרשן היהודי קרא בה</li><li>כשהפירוש מוצג <b>בכתב שומרוני</b> הפסוק עובר עימו, וכשהוא מוצג <b>בערבית</b> נקבע תרגום הפסוק לערבית בין הפסוק לפירוש</li><li><b>הגיליון שואל גם את מי</b>: "פרשנות יהודית" נפתחת אל רשימת הפרשנים השמורים — כל אחד ומספר הפסוקים שיש לו כאן — ו"ממקור שומרון" אל רשימת החיבורים שיש להם דבר בפסוקים שלפניכם. הבחירה נעשית לפני הפתיחה, ולא אחריה, והשורה המקופלת אומרת מה ייפתח. <b>פרשנים נוספים</b> נקראים מספריא פסוק אחד בכל פעם, ולכן הם מופיעים רק כשפסוק יחיד מסונן — ובשאר הזמן נשארים בגיליון, אפורים, ואומרים מדוע</li><li><b>ההדפסה יודעת טווח</b>: לא עוד הפרק שעל המסך או הפרשה שהוא בתוכה בלבד, אלא <b>מספר ומפרשה עד ספר ועד פרשה</b>, לפי חלוקת הפרשות השומרונית — ומתחת לבחירה נאמר גודלה בפרשות ובפרקים. אותה פרשה בשני הקצוות היא פרשה אחת. וכל גיליון נושא מעתה את ספרו ואת פרשתו שלו</li><li><b>ודף HTML אינטראקטיבי</b> במקום PDF: אותם גיליונות כקובץ אחד שנפתח בכל מכשיר — רשימת פרקים לדילוג, הפירוש והמילון מתקפלים, גופן שניתן להגדיל, וכפתור הדפסה. הגופן השומרוני נוסע בתוך הקובץ עצמו, כך שהוא קריא גם במכשיר שאינו מכיר אותו. אפשר <b>לשתף</b> אותו בוואטסאפ, בדואר ובכל אפליקציה; ומקבלו יוצר ממנו PDF בלחיצה</li><li><b>לכל מילה במילון יש מעתה תשובה</b> — בשירון ובספר הליטורגיה כאחד. עד כה שאל קורא השירון על מילה ונענה "אין ערך מילון עדיין" גם כשהמילון ידע אותה: היחידה חיפשה ברשימה קטנה משלה ולא במילון של האפליקציה. מעתה כל יחידת מילון שואלת את אותם עשרה מקורות, ומה שאין בהם נקרא מילה-מילה בשורה שבה היא עומדת. והקורא נאמר לו באיזו תשובה מדובר: פירוש; קריאה שמתקנת שיבוש סריקה; קריאה משוערת; מילה עברית שאינה צריכה תרגום; תרגום השורה שבה היא עומדת (כפי שנפתרה דנע); או — בחלק מאלפית מן המילים — שהטקסט כאן הוא סריקה שלא הוגהה ואין זו מילה כלל, ולצד זה הקריאות הקרובות</li><li><b>הבחירה נפתחת מיד</b>, ולא דרך בורר שנמחק מיד אחריו: ציור אחד ובקשה אחת, במקום שמונה. ו<b>מן המסורת השומרונית</b> נמנית כולה — גם המאמרים בשם אומרם וגם מקטעי המסורת לפרשה — ולכן אינה נעדרת עוד מן הגיליון במקום שיש לה בו דבר</li><li>תוקנה תקלה שבגללה לחיצה על ידית סרגל הכפתורים המקופל לא עשתה דבר</li><li><b>בחירת הקורא</b> בסרגל ההשמעה מושבתת זמנית, עד שתתוקן ההקראה של שאר המקריאים. בינתיים נשמעת הקראתו של מאיר בן יפנה ששוני</li><li>הסיור המודרך אינו נפתח עוד מאליו בכניסה — הוא ממתין בתפריט, תחת העזרה</li></ul>',
       '<p><b>גרסה 4.1 — פירוש לכל התורה, נגישות, והספרייה שנפתחת</b></p><ul><li><b>ספר דברים קיבל פירוש לפסוק</b>, ובכך יש פירוש לכל חמשת החומשים — מ-213 פסוקים ל-916</li><li>תוקן ליקוי שבגללו פאנל הפירוש קרא ממאגר ישן: כל פירוש שנערך באתר לא הוצג לאיש. עכשיו הפירוש מלא גם בארבעת הספרים האחרים</li><li><b>ציטוטים בכתב השומרוני בתוך הפירוש הערבי</b> — עד היום נקבעו בגופן רגיל; עכשיו הם שזורים בערבית ככל ציטוט אחר</li><li><b>הגדרות נגישות</b> בתפריט: גודל הטקסט — שסוף סוף נשמר מפעם לפעם — והיפוך צבעים לרקע שחור וטקסט לבן בכל מסכי האפליקציה</li><li>בכל יחידה בספרייה, בתחתית הפרק: <b>הפרק הקודם</b> ו<b>הפרק הבא</b></li><li>ספר שנשלף מהמדף מראה את <b>פתיחת ספרו שלו</b>, גרירה מטה מחזירה אותו למקומו, והדרכה קצרה אומרת כיצד</li></ul>',
       '<p><b>גרסה 4.0 — הניקוד, ההגייה, ושתי יחידות חדשות בספרייה</b></p><ul><li><b>ניקוד</b> לכל חמשת החומשים בכתב השומרוני — 5,912 פסוקים. כשהנוסח מוצג בכתב השומרוני נוסף בסרגל כפתור <b>ללא ניקוד</b>, והבחירה נזכרת לפעם הבאה</li><li><b>תעתיק הגייה</b> לנוסח התורה — כיצד נקרא כל פסוק בפי הקוראים</li><li><b>פיוטי השומרונים בתעתיק הגייה</b> — יחידה חדשה בספרייה, 79 פיוטים בארמית, בעברית ובתעתיק, זה לצד זה</li><li>שתי מהדורות מתורגמות נוספו לספרייה: <b>מסורות שומרוניות</b> ו<b>חוקי הצרעת</b></li><li><b>דפדוף בהחלקה</b>: החלקה ימינה מדפדפת קדימה, שמאלה אחורה. סרגל הניווט הוקטן ותופס פחות מהמסך</li><li><b>הספרייה נעשתה מדף</b>: שלושה מדפי מהגוני לפי נושא, והספרים עומדים עליהם עם שמם לאורך הכריכה. נגיעה אחת מושכת ספר החוצה, שנייה פותחת אותו</li><li>חמש האפליקציות הנוספות — לוח השנה, אילן היוחסין, ציר הזמן, אוצר השירה ואוצר כתבי היד — התקבצו בתפריט לשורה אחת שנפתחת לצידו</li><li><b>מילון מילים</b>: הטבלה והבורר קוראים סוף סוף מאותם מקורות, וסימני העצירה בכתב השומרוני כבר אינם צמודים לאות שלפניהם</li></ul>',
@@ -333,6 +336,7 @@ const I18N = {
     interp_span:'על פסוקים {a}–{b}',
     interp_words:'מילים', interp_words_lead:'מילות הפסוק:',
     interp_bhuq_lead:'ומדברי אבו אלפרג׳ איבן אל-כתאר בפירוש אם בחקותי',
+    interp_ervah_lead:'ומדברי הכהן פינחס בן יצחק בספר הערוות',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_show_pass:'הצג סיסמה',
     adm_forgot:'שכחתי סיסמה', adm_reset_title:'שחזור סיסמה', adm_reset_intro:'יישלח קוד בן שש ספרות לכתובת הדוא״ל של המנהל.', adm_reset_send:'שלח קוד', adm_reset_code:'הקוד שהתקבל', adm_reset_verify:'אישור הקוד', adm_reset_new:'סיסמה חדשה', adm_reset_rule:'לפחות שמונה תווים.', adm_reset_apply:'קבע סיסמה', adm_reset_sent:'קוד נשלח אל', adm_reset_bad:'הקוד שגוי או שאינו בן שש ספרות.', adm_reset_expired:'הקוד פג. בקש קוד חדש.', adm_reset_short:'הסיסמה קצרה מדי — לפחות שמונה תווים.', adm_reset_failed:'השליחה נכשלה. נסה שוב מאוחר יותר.', adm_reset_notarget:'לא הוגדרה כתובת דוא״ל למנהל בשרת.', adm_reset_busy:'יותר מדי בקשות. נסה שוב בעוד שעה.', adm_reset_done:'הסיסמה הוחלפה, ואתה מחובר.', adm_hide_pass:'הסתר סיסמה', adm_pass:'סיסמה', adm_login:'כניסה',
@@ -486,7 +490,7 @@ const I18N = {
     save_yes:'Yes, save', save_no:'No, just now',
     samsrc_pick:'Samaritan sources — choose a source', checking_sources:'Checking available sources…',
     no_sam_source:'No Samaritan source for these verses', back_sources:'‹ Sources',
-    src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary", src_bhuq:'Commentary on Im Beḥuqotay',
+    src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary", src_bhuq:'Commentary on Im Beḥuqotay', src_ervah:'The Book of Forbidden Unions',
     src_sir:'Sīr al-Qulūb (Secret of Hearts)', src_shyt:'Responsa of Jacob ben Aaron', src_asatir:'The Book of Asatir',
     src_translit:'Pronunciation transcription', tr_source:'Source text', tr_translit:'Samaritan pronunciation',
     no_translit:'No pronunciation transcription for these verses',
@@ -515,6 +519,8 @@ const I18N = {
     m_shyt_book:'Responsa of Jacob ben Aaron', shyt_title:'Responsa — Jacob ben Aaron the Priest', shyt_toc_hint:'Choose a question:',
     m_sir_book:'Sīr al-Qulūb (Secret of Hearts)', sir_title:'Sīr al-Qulūb — The Secret of Hearts', sir_toc_hint:'Choose a section:',
     m_bhuq_book:'Commentary on Im Beḥuqotay', bhuq_title:'Im Beḥuqotay — Abū l-Faraj ibn al-Kathār',
+    m_ervah_book:'The Book of Forbidden Unions', ervah_title:'Kitāb al-ʿAwrāt — the laws of forbidden unions',
+    ervah_toc_hint:'The treatise is given here in a full, continuous Hebrew translation, divided into chapters by the turns of its argument. Choose a chapter:',
     bhuq_toc_hint:'The treatise is divided here by the turns of its argument; the bracketed numbers are the author’s own paragraphs. Choose a part:',
     m_asatir_book:'The Book of Asatir', asatir_title:'The Book of Asatir', asatir_toc_hint:'Choose a chapter:',
     m_wreschner_book:'Samaritan Traditions', wreschner_title:'Samaritan Traditions', wreschner_toc_hint:'Choose a chapter:',
@@ -587,6 +593,7 @@ const I18N = {
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     // newest first: a reader opening "What's new" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>Version 4.4 — the Book of Forbidden Unions</b></p><ul><li><b>Kitāb al-ʿAwrāt</b> joins the library: the Samaritan treatise on the laws of forbidden unions, from the priest Pinḥas ben Yiṣḥaq, in a full and continuous Hebrew translation. Twenty-four chapters by the turns of its argument, and every citation inside the text opens on the verse itself</li><li><b>And the book reads beside the verse</b>: the ninety-nine verses it quotes — in Leviticus, Deuteronomy, Genesis, Exodus and Numbers — now carry what it says. It is counted on the "beside the verse" sheet like every Samaritan work, opens under its own name in "From a Samaritan source", and is woven into the verse commentary beneath the verse it argues about — the paragraph it quoted the verse in, not the whole chapter</li><li>The printed sheet carries it too, under the name of the one who said it</li></ul>',
       '<p><b>Version 4.3 — one question instead of six buttons</b></p><ul><li><b>The bottom bar</b> became a single row in the header’s navy: five equal items, an icon over a short label, and the active one lit with a light of its own. The six content buttons gathered into one — <b>Beside the verse</b></li><li><b>The sheet it opens says what is there first</b>: every source that has something in the chapter before you, and beside it in how many of its verses. A source with nothing is named below in a single line, instead of being a button that opens onto a message saying so. <b>The pronunciation</b> gets a line of its own here for the first time</li><li><b>The commentary chooses its place</b> — below the chapter as before, or <b>below each verse</b>: the verse is set bold and its commentary directly beneath it, so the chapter reads verse by verse, text then meaning. The choice is kept</li><li><b>The Jewish commentators</b> choose their place the same way, and beside them the <b>Masoretic text</b> can be set under each verse — the wording the commentator was actually reading</li><li>With the commentary in <b>Samaritan script</b> the verse follows it, and in <b>Arabic</b> the verse’s Arabic translation is laid between the two</li><li><b>The sheet asks which, too</b>: “Jewish commentary” unfolds into the commentators it holds — each with the number of verses here that have him — and “From a Samaritan source” into the works that speak on the verses before you. The choice is made before the panel opens rather than after it, and the folded row says what will open. <b>More commentators</b> are read from Sefaria one verse at a time, so they appear only while a single verse is filtered; otherwise they stay on the sheet, greyed, saying why</li><li><b>Printing now takes a range</b>: not only the chapter on screen or the parasha it belongs to, but <b>from a book and a parasha to a book and a parasha</b>, by the Samaritan division — with the size of the selection said underneath it. The same parasha on both ends is one parasha, and every sheet now carries its own book and parasha</li><li><b>And an interactive HTML page</b> instead of a PDF: the same sheets as one file that opens on any device — a list of chapters to jump by, the commentary and dictionary foldable, type that can be enlarged, and a print button. The Samaritan face travels inside the file, so it is readable on a device that has never seen it. It can be <b>shared</b> to WhatsApp, mail and any app; whoever receives it makes the PDF in one tap</li><li><b>Every word in the dictionary units now answers</b> — in the piyyut reader and in the liturgy volume alike. A reader who tapped a word in the piyyutim used to be told "no dictionary entry yet" even where the dictionary held the word: the unit looked in a small list of its own and not in the app’s dictionary. Now every word unit asks the same ten sources, and whatever none of them answered was read word by word in the line it stands in. The reader is told which kind of answer this is: a meaning; a reading that corrects a corrupt scan; a probable reading; a Hebrew word that needs no translating; the translation of the line it stands in (the way דנע itself was settled); or — in about one word in a hundred — that the text here is an unproofread scan and this is not a word at all, with the nearest readings beside it</li><li><b>A pick now opens at once</b>, not through a picker drawn and discarded a moment later: one drawing and one request instead of eight. And <b>the Samaritan tradition</b> is counted in full — the attributed articles and the per-parasha tradition sections included — so it is no longer absent from the sheet where it has something to say</li><li>Fixed: tapping the folded button bar’s handle did nothing</li><li><b>Choosing the reciter</b> is off for now, until the other readings are put right. Meir ben Yefune Sassoni’s reading is heard meanwhile</li><li>The guided tour no longer opens by itself on entry — it waits in the menu, under Help</li></ul>',
       '<p><b>Version 4.1 — Commentary for the whole Torah, accessibility, and a library that opens</b></p><ul><li><b>Deuteronomy now has a per-verse commentary</b>, so all five books do — from 213 verses to 916</li><li>A fault was fixed by which the commentary panel read an old database: anything edited on the site was never shown. The other four books are fuller for it too</li><li><b>Samaritan-script quotations inside the Arabic commentary</b> — until now set in the ordinary face; now woven into the Arabic like any other quotation</li><li><b>Accessibility settings</b> in the menu: text size — remembered at last from one visit to the next — and inverted colours, black ground and white letters throughout the app</li><li>In every library unit, at the foot of a chapter: <b>previous</b> and <b>next</b></li><li>A book drawn off the shelf shows <b>its own opening</b>, a pull downwards puts it back, and a short hint says how</li></ul>',
       '<p><b>Version 4.0 — Vocalization, pronunciation, and two new library units</b></p><ul><li><b>Vocalization</b> for all five books in the Samaritan script — 5,912 verses. With the Samaritan script showing, a <b>no vocalization</b> button appears in the bar, and the choice is remembered</li><li><b>Phonetic transcription</b> of the Torah text — how each verse is actually read aloud</li><li><b>Samaritan Piyyutim in Phonetic Transcription</b> — a new library unit: 79 piyyutim in Aramaic, Hebrew and transcription, side by side</li><li>Two translated studies joined the library: <b>Samaritan Traditions</b> and <b>The Zaraath Laws</b></li><li><b>Paging by swipe</b>: swipe right to go forward, left to go back. The navigation bar is smaller and asks less of the screen</li><li><b>The library is a shelf</b>: three mahogany shelves by subject, the books standing on them with their names down the spine. One touch draws a book out, a second opens it</li><li>The five other applications — calendar, family tree, timeline, song archive and manuscript treasury — gathered into one line of the menu that opens beside it</li><li><b>Word dictionary</b>: the table and the picker now read the same sources, and the stop marks in the Samaritan script no longer sit tight against the letter before them</li></ul>',
@@ -628,6 +635,7 @@ const I18N = {
     interp_span:'on verses {a}–{b}',
     interp_words:'Words', interp_words_lead:'Words of the verse:',
     interp_bhuq_lead:'And Abū l-Faraj ibn al-Kathār says, in his commentary on Im Beḥuqotay',
+    interp_ervah_lead:'And the priest Pinḥas ben Yiṣḥaq says, in the Book of Forbidden Unions',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_show_pass:'Show the password',
     adm_forgot:'Forgotten password', adm_reset_title:'Password recovery', adm_reset_intro:'A six-digit code will be sent to the maintainer’s email address.', adm_reset_send:'Send the code', adm_reset_code:'The code you received', adm_reset_verify:'Confirm the code', adm_reset_new:'New password', adm_reset_rule:'At least eight characters.', adm_reset_apply:'Set the password', adm_reset_sent:'A code was sent to', adm_reset_bad:'The code is wrong, or not six digits.', adm_reset_expired:'The code has expired. Ask for a new one.', adm_reset_short:'That password is too short — at least eight characters.', adm_reset_failed:'Sending failed. Try again later.', adm_reset_notarget:'No maintainer email address is configured on the server.', adm_reset_busy:'Too many requests. Try again in an hour.', adm_reset_done:'The password has been changed, and you are signed in.', adm_hide_pass:'Hide the password', adm_pass:'Password', adm_login:'Sign in',
@@ -781,7 +789,7 @@ const I18N = {
     save_yes:'نعم، احفظ', save_no:'لا، هذه المرّة فقط',
     samsrc_pick:'مصادر سامرية — اختر مصدراً', checking_sources:'جارٍ التحقق من المصادر…',
     no_sam_source:'لا يوجد مصدر سامري لهذه الآيات', back_sources:'‹ المصادر',
-    src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم', src_bhuq:'تفسير «إن سلكتم في فرائضي»',
+    src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم', src_bhuq:'تفسير «إن سلكتم في فرائضي»', src_ervah:'كتاب العورات',
     src_sir:'سرّ القلوب', src_shyt:'أجوبة يعقوب بن هارون الكاهن', src_asatir:'كتاب الأساطير',
     src_translit:'نسخ النطق', tr_source:'النصّ المصدر', tr_translit:'نطق السامريين',
     no_translit:'لا يوجد نسخ نطق لهذه الآيات',
@@ -810,6 +818,8 @@ const I18N = {
     m_shyt_book:'أجوبة يعقوب بن هارون الكاهن', shyt_title:'أجوبة يعقوب بن هارون الكاهن', shyt_toc_hint:'اختر سؤالاً:',
     m_sir_book:'سِرّ القلوب', sir_title:'سِرّ القلوب', sir_toc_hint:'اختر فصلاً:',
     m_bhuq_book:'تفسير إم بحقوتي', bhuq_title:'تفسير إم بحقوتي — أبو الفرج ابن الكثار',
+    m_ervah_book:'كتاب العورات', ervah_title:'كتاب العورات — أحكام العورات',
+    ervah_toc_hint:'يُقدَّم الكتاب هنا بترجمة عبرية كاملة متّصلة، مقسّمة إلى فصول حسب مسار البحث. اختر فصلًا:',
     bhuq_toc_hint:'قُسّم الكتاب هنا حسب مسار الحجّة؛ الأرقام بين قوسين هي فقرات المؤلف. اختر قسمًا:',
     m_asatir_book:'كتاب الأساطير', asatir_title:'كتاب الأساطير', asatir_toc_hint:'اختر أصحاحاً:',
     m_wreschner_book:'التقاليد السامرية', wreschner_title:'التقاليد السامرية', wreschner_toc_hint:'اختر فصلاً:',
@@ -882,6 +892,7 @@ const I18N = {
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     // newest first: a reader opening "ما الجديد" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>الإصدار 4.4 — كتاب العورات</b></p><ul><li><b>كتاب العورات</b> أُضيف إلى المكتبة: المصنّف السامري في أحكام العورات، عن الكاهن فينحاس بن إسحاق، بترجمة عبرية كاملة متّصلة. أربعة وعشرون فصلًا حسب مسار البحث، وكل إحالة داخل النصّ تفتح على الآية نفسها</li><li><b>والكتاب يُقرأ مع الآية</b>: تسع وتسعون آية يستشهد بها — في اللاويين والتثنية والتكوين والخروج والعدد — صارت تحمل كلامه. يُعدّ في لوح «إلى جانب الآية» كسائر المصادر السامرية، ويُفتح باسمه تحت «من مصدر سامري»، ويُنسج في تفسير الآية تحت الآية التي يبحثها — الفقرة التي اقتبس فيها الآية، لا الفصل كلّه</li><li>وكذلك في الطباعة: صفحة التفسير تحمل كلامه باسم قائله</li></ul>',
       '<p><b>الإصدار 4.3 — سؤال واحد بدل ستة أزرار</b></p><ul><li><b>الشريط السفلي</b> صار سطرًا واحدًا بلون العنوان: خمسة عناصر متساوية، أيقونة فوق تسمية قصيرة، والعنصر الفعّال يضيء بنوره. وأزرار المحتوى الستة اجتمعت في زرّ واحد — <b>بجانب الآية</b></li><li><b>واللوح الذي يفتحه يقول أولًا ما الموجود</b>: كلّ مصدر له شيء في هذا الأصحاح، وبجانبه في كم آية منه يوجد. والمصدر الذي لا شيء له يُذكر أدناه في سطر واحد. و<b>النسخ الصوتي</b> نال هنا سطرًا خاصًّا لأوّل مرّة</li><li><b>التفسير يختار مكانه</b> — أسفل الأصحاح كما كان، أو <b>أسفل كل آية</b>: الآية بخطّ عريض وتفسيرها تحتها مباشرة، فيُقرأ الأصحاح آية آية، نصًّا ثمّ معنى. والاختيار محفوظ</li><li>و<b>التفاسير اليهودية</b> تختار مكانها كذلك، ويمكن أن يوضع معها <b>النصّ الماسوري</b> أسفل كل آية — وهو اللفظ الذي قرأه المفسّر</li><li>وإذا عُرض التفسير <b>بالخطّ السامري</b> تبعته الآية، وإذا عُرض <b>بالعربية</b> وُضعت ترجمة الآية العربية بين الاثنين</li><li><b>واللوح يسأل أيضًا عن أيّ</b>: «التفاسير اليهودية» تنفتح على قائمة المفسّرين المحفوظين — كلٌّ وعدد الآيات التي له فيها هنا — و«من مصدر سامريّ» على قائمة المؤلَّفات التي لها كلام في الآيات التي أمامك. فالاختيار يسبق الفتح لا يتبعه، والسطر المطويّ يقول ما سيُفتح. و<b>المفسّرون الإضافيّون</b> يُقرأون من سفاريا آيةً آية، فلا يظهرون إلّا حين تُرشَّح آية واحدة؛ وفي غير ذلك يبقون في اللوح رماديّين، يقولون لماذا</li><li><b>والطباعة صارت تعرف المدى</b>: لا الأصحاح الذي على الشاشة أو مقطعه فحسب، بل <b>من سفر ومقطع إلى سفر ومقطع</b>، حسب التقسيم السامري — ويُقال تحت الاختيار حجمه بالمقاطع والفصول. والمقطع نفسه في الطرفين هو مقطع واحد، وكل صفحة تحمل الآن سفرها ومقطعها</li><li><b>وصفحة HTML تفاعلية</b> بدل PDF: الصفحات نفسها في ملف واحد يُفتح على أي جهاز — قائمة فصول للانتقال، والتفسير والقاموس قابلان للطيّ، وخطّ يمكن تكبيره، وزرّ طباعة. والخطّ السامري يسافر داخل الملف نفسه، فيكون مقروءًا على جهاز لم يعرفه قطّ. ويمكن <b>مشاركته</b> عبر واتساب والبريد وأي تطبيق؛ ومتلقّيه يصنع منه PDF بضغطة</li><li><b>لكلّ كلمة في وحدات القاموس جواب الآن</b> — في ديوان القصائد وفي كتاب الليتورجيا معًا. وكان قارئ القصائد يسأل عن كلمة فيُقال له «لا يوجد مدخل قاموس بعد» حتى حين يعرفها القاموس: فالوحدة كانت تبحث في قائمة صغيرة خاصّة بها لا في قاموس التطبيق. والآن تسأل كلّ وحدةٍ المصادر العشرة نفسها، وما لم يُجب عنه أحدها قُرئ كلمةً كلمة في السطر الذي تقف فيه. ويُقال للقارئ أيّ جواب هذا: معنى؛ أو قراءة تصحّح تشويش المسح؛ أو قراءة مرجَّحة؛ أو كلمة عبرية لا تحتاج ترجمة؛ أو ترجمة السطر الذي تقف فيه (كما حُلَّت دنע نفسها)؛ أو — في نحو كلمة من كلّ مئة — أنّ النصّ هنا مسح غير مُراجَع وليست هذه كلمة، وبجانبها أقرب القراءات</li><li><b>والاختيار يُفتح فورًا</b>، لا عبر منتقٍ يُرسم ثمّ يُمحى بعد لحظة: رسمٌ واحد وطلبٌ واحد بدل ثمانية. و<b>من التقليد السامري</b> يُحسَب كاملًا — بما فيه المقالات بأسماء أصحابها ومقاطع التقليد لكلّ فصل — فلم يَعُد يغيب عن اللوح حيث له كلام</li><li>أُصلح خلل: الضغط على مقبض شريط الأزرار المطوي لم يكن يفعل شيئًا</li><li><b>اختيار القارئ</b> متوقّف مؤقّتًا حتى تُصحَّح قراءات البقيّة، وتُسمع في هذه الأثناء قراءة مائير بن يفنه ساسوني</li><li>الجولة المرشدة لم تعد تُفتح من تلقاء نفسها عند الدخول — تنتظر في القائمة، تحت المساعدة</li></ul>',
       '<p><b>الإصدار 4.1 — تفسير لكامل التوراة، وإعدادات الوصول، ومكتبة تُفتَح</b></p><ul><li><b>سفر التثنية صار له تفسير لكلّ آية</b>، فصارت الأسفار الخمسة كلّها مفسَّرة — من ٢١٣ آية إلى ٩١٦</li><li>أُصلح خلل كان يجعل لوح التفسير يقرأ من قاعدة قديمة، فلا يظهر شيء ممّا حُرّر في الموقع. والأسفار الأربعة الأخرى صارت أوفى بذلك أيضًا</li><li><b>الاقتباسات بالخطّ السامري داخل التفسير العربي</b> — كانت تُكتب بالخطّ العاديّ، وصارت الآن منسوجة في العربية كأيّ اقتباس آخر</li><li><b>إعدادات الوصول</b> في القائمة: حجم النصّ — ويُحفَظ أخيرًا من زيارة إلى أخرى — وعكس الألوان: خلفية سوداء وحروف بيضاء في كلّ الشاشات</li><li>في كلّ وحدة من المكتبة، أسفل الأصحاح: <b>السابق</b> و<b>التالي</b></li><li>الكتاب المسحوب من الرفّ يُظهر <b>مطلعه هو</b>، وسحبه للأسفل يعيده إلى مكانه، وتلميح قصير يقول كيف</li></ul>',
       '<p><b>الإصدار 4.0 — التشكيل والنسخ الصوتي، ووحدتان جديدتان في المكتبة</b></p><ul><li><b>تشكيل</b> لأسفار التوراة الخمسة بالخطّ السامري — ٥٬٩١٢ آية. ومع الخطّ السامري يظهر في الشريط زرّ <b>بدون تشكيل</b>، ويُحفَظ الاختيار</li><li><b>نسخ صوتي</b> لنصّ التوراة — كيف تُقرأ كل آية</li><li><b>الأناشيد السامرية بالنسخ الصوتي</b> — وحدة جديدة في المكتبة: ٧٩ نشيدًا بالآرامية والعبرية والنسخ الصوتي، جنبًا إلى جنب</li><li>دراستان مترجمتان أُضيفتا إلى المكتبة: <b>التقاليد السامرية</b> و<b>أحكام البرص</b></li><li><b>التصفّح بالتمرير</b>: تمريرة إلى اليمين تتقدّم، وإلى اليسار ترجع. وشريط التنقّل صار أصغر</li><li><b>المكتبة صارت رفًّا</b>: ثلاثة رفوف من الماهوجني حسب الموضوع، والكتب قائمة عليها وأسماؤها على كعوبها. لمسة تسحب الكتاب، وأخرى تفتحه</li><li>التطبيقات الخمسة الأخرى اجتمعت في سطر واحد من القائمة يُفتح بجانبها</li><li><b>معجم الكلمات</b>: الجدول والمنتقي يقرآن المصادر نفسها، وعلامات الوقف في الخطّ السامري لم تعد ملتصقة بالحرف الذي يسبقها</li></ul>',
@@ -923,6 +934,7 @@ const I18N = {
     interp_span:'على الآيات {a}–{b}',
     interp_words:'كلمات', interp_words_lead:'كلمات الآية:',
     interp_bhuq_lead:'ويقول أبو الفرج ابن الكثار في تفسير «إن سلكتم في فرائضي»',
+    interp_ervah_lead:'ويقول الكاهن فينحاس بن إسحاق في كتاب العورات',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_show_pass:'إظهار كلمة المرور',
     adm_forgot:'نسيت كلمة المرور', adm_reset_title:'استعادة كلمة المرور', adm_reset_intro:'سيُرسَل رمز من ستّ خانات إلى بريد المشرف.', adm_reset_send:'إرسال الرمز', adm_reset_code:'الرمز الذي وصلك', adm_reset_verify:'تأكيد الرمز', adm_reset_new:'كلمة مرور جديدة', adm_reset_rule:'ثمانية محارف على الأقلّ.', adm_reset_apply:'تعيين كلمة المرور', adm_reset_sent:'أُرسل رمز إلى', adm_reset_bad:'الرمز خاطئ أو ليس من ستّ خانات.', adm_reset_expired:'انتهت صلاحيّة الرمز. اطلب رمزاً جديداً.', adm_reset_short:'كلمة المرور قصيرة — ثمانية محارف على الأقلّ.', adm_reset_failed:'فشل الإرسال. حاول لاحقاً.', adm_reset_notarget:'لم يُضبط بريد للمشرف على الخادم.', adm_reset_busy:'طلبات كثيرة. حاول بعد ساعة.', adm_reset_done:'تغيّرت كلمة المرور، وأنت الآن داخل.', adm_hide_pass:'إخفاء كلمة المرور', adm_pass:'كلمة المرور', adm_login:'دخول',
@@ -3114,6 +3126,9 @@ async function interpFetch(verses){
   // into a roll-call. Unlike the Asatir it does have an Arabic rendering, and
   // /api/bhuq_by_verse falls back to the Hebrew per section where it is missing.
   const bhq = await api('bhuq_by_verse?verse_ids='+ids+(ar?'&lang=ar':'')).catch(()=>({}));
+  // ספר הערוות stands beneath the commentary for the same reason, and names
+  // the verse the way the book itself named it — by quoting its words.
+  const erv = await api('ervah_by_verse?verse_ids='+ids).catch(()=>({}));
   // The commentary is a synthesis OF SOURCES, and a source only speaks where it
   // happened to speak: a hard word nobody wrote about passed in silence, and the
   // Aramaic and the Arabic of the verse's own words were nowhere in the panel —
@@ -3122,7 +3137,7 @@ async function interpFetch(verses){
   // once for the whole chapter and set under each verse as a quiet strip.
   const wt = S.interpWords === false ? {} :
              await api('word_table?verse_ids='+ids).catch(()=>({}));
-  return {ar, m, mHe, asa, bhq, wt};
+  return {ar, m, mHe, asa, bhq, erv, wt};
 }
 
 // Header: title on one side, the two view switches on the other. Both are
@@ -3178,13 +3193,14 @@ function interpOnce(){
 // One verse's column: its commentary, the strip of its own words, and any
 // source quoted beneath it in its own name. null when there is nothing to show.
 function interpVerseCol(v, D, vidx, once){
-  const {ar, m, mHe, asa, bhq, wt} = D;
+  const {ar, m, mHe, asa, bhq, erv, wt} = D;
   const fs = fsize();
   let txt = (m[v.id]||'').trim();
   const fellBack = ar && !txt && !!(mHe[v.id]||'').trim();
   if(fellBack) txt = (mHe[v.id]||'').trim();
   const asaItems = asa[v.id] || [];
   const bhqItems = bhq[v.id] || [];
+  const ervItems = (erv && erv[v.id]) || [];
   // strip leftover markdown (heading lines, ** bold) that leaked into the text
   txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
   // Every verse is worth a row. A verse a source speaks about earns one even
@@ -3196,7 +3212,7 @@ function interpVerseCol(v, D, vidx, once){
   const wordRows = (wt[v.id] || []).filter(w =>
     (w.aramaic||'').trim() || (w.arabic||'').trim() ||
     ((w.he_combined||w.meaning||'').trim() && (w.he_combined||w.meaning).trim() !== (w.word||'').trim()));
-  if(!txt && !asaItems.length && !bhqItems.length && !wordRows.length) return null;
+  if(!txt && !asaItems.length && !bhqItems.length && !ervItems.length && !wordRows.length) return null;
   const col = el('div','icol');
   if(txt){
     const showAr = ar && !fellBack;
@@ -3273,6 +3289,20 @@ function interpVerseCol(v, D, vidx, once){
     if(ar && it.pending) bt.prepend(el('span','ipend', t('interp_ar_pending')));
     bt.style.fontSize = fs+'px';
     box.appendChild(bt);
+    col.appendChild(box);
+  }
+  for(const it of ervItems){
+    const base = t('interp_ervah_lead')
+      + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '');
+    const leadEl = el('div','iasatir-lead', esc(base + ':'));
+    if(!once('erv', it.text || '', vidx, v.number, leadEl, base)) continue;
+    const box = el('div','iasatir ibhuq');
+    box.appendChild(leadEl);
+    const et = el('div','iasatir-text',
+      (!ar && (S.interpSam||S.samFont))
+        ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+    et.style.fontSize = fs+'px';
+    box.appendChild(et);
     col.appendChild(box);
   }
   // a verse whose only content was a passage already standing above it has
@@ -3705,6 +3735,26 @@ async function buildSamSrc(c, verses){
       if(it.anchors) card.appendChild(el('div','canchors',esc(it.anchors)));
       panel.appendChild(card);
     }
+    c.appendChild(panel); return;
+  }
+  if(S.samSrcChoice==='ervah'){
+    // The book argues the laws of forbidden unions from across the Torah, so a
+    // passage surfaces wherever it quotes — and what is shown is the paragraph
+    // the quotation stands in, under its chapter's name, not the whole chapter.
+    const items = await api('ervah?verse_ids='+ids);
+    const panel=el('div','srcpanel');
+    const head=el('div','shead');
+    const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle',t('src_ervah')));
+    panel.appendChild(head);
+    if(!items.length) panel.appendChild(el('div','note',t('no_sam_source')));
+    for(const it of items){
+      const card=el('div','card');
+      if(it.title) card.appendChild(el('div','chead',esc(it.title)));
+      const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      panel.appendChild(card);
+    }
+    panel.appendChild(el('div','canchors','כתאב אל-עירות · הכהן פינחס בן יצחק · תרגום עברי מלא'));
     c.appendChild(panel); return;
   }
   if(S.samSrcChoice==='bhuq'){
@@ -5144,7 +5194,7 @@ function sheetView(){
 const SAM_SUBS = [['tibat','tm','src_tibat'], ['eyalk','eyalk','src_eyalk'],
                   ['tzdaka','tzdaka','src_tzdaka'], ['sir','sir','src_sir'],
                   ['shyt','shyt','src_shyt'], ['bhuq','bhuq','src_bhuq'],
-                  ['asatir','asatir','src_asatir']];
+                  ['ervah','ervah','src_ervah'], ['asatir','asatir','src_asatir']];
 // the pronunciation gets a line of its own here for the first time; until now it
 // was reachable only from inside "ממקור שומרון"
 const SIDE_ROWS = [
@@ -6296,6 +6346,7 @@ async function prPrefetch(groups){
     pre.interp = await prFetchByVerses('interpretations', ids);
     pre.asatir = await prFetchByVerses('asatir_by_verse', ids);
     pre.bhuq   = await prFetchByVerses('bhuq_by_verse', ids);
+    pre.ervah  = await prFetchByVerses('ervah_by_verse', ids);
   }
   if(S_print.dict) pre.wtbl = await prFetchByVerses('word_table', ids);
   return pre;
@@ -6337,12 +6388,14 @@ async function addPrintInterp(page, verses, pre){
     // the printed page carries what the screen carries, ספר האסאטיר included
     const asa = (pre && pre.asatir) || await api('asatir_by_verse?verse_ids='+vids).catch(()=>({}));
     const bhq = (pre && pre.bhuq)   || await api('bhuq_by_verse?verse_ids='+vids).catch(()=>({}));
+    const erv = (pre && pre.ervah)  || await api('ervah_by_verse?verse_ids='+vids).catch(()=>({}));
     let any = false;
     verses.forEach(v => {
       const txt = (m[v.id]||'').trim();
       const items = asa[v.id] || [];
       const bitems = bhq[v.id] || [];
-      if(!txt && !items.length && !bitems.length) return;
+      const eitems = erv[v.id] || [];
+      if(!txt && !items.length && !bitems.length && !eitems.length) return;
       any = true;
       if(txt) sec.appendChild(prVrow(v.number, prProse(txt)));
       // `first` carries the verse number onto whichever quoted source opens the
@@ -6361,6 +6414,9 @@ async function addPrintInterp(page, verses, pre){
       for(const it of bitems)
         quoted(t('interp_bhuq_lead')
           + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ': ', it.text);
+      for(const it of eitems)
+        quoted(t('interp_ervah_lead')
+          + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '') + ': ', it.text);
     });
     if(!any) sec.appendChild(el('div','','אין פירוש זמין לפרק זה'));
   }catch(e){ sec.appendChild(el('div','','שגיאה בטעינת פירוש הפסוק')); }
@@ -6958,6 +7014,7 @@ const LIB_SHELVES = ['shelf_sources', 'shelf_tools', 'shelf_study'];
 const LIB_SHELF = {
   tm_book:'shelf_sources', tz_book:'shelf_sources', shyt_book:'shelf_sources',
   sir_book:'shelf_sources', bhuq_book:'shelf_sources', asatir_book:'shelf_sources',
+  ervah_book:'shelf_sources',
   dict_app:'shelf_tools', rhyme_book:'shelf_tools',
   composer:'shelf_tools', privatecomp:'shelf_tools',
   piyutim_book:'shelf_study', dara_book:'shelf_study', people_book:'shelf_study',
@@ -6973,6 +7030,7 @@ const LIB_ITEMS = [
   {act:'shyt_book',    titleKey:'m_shyt_book',    open:()=>openShytBook()},
   {act:'sir_book',     titleKey:'m_sir_book',     open:()=>openSirBook()},
   {act:'bhuq_book',    titleKey:'m_bhuq_book',    open:()=>openBhuqBook()},
+  {act:'ervah_book',   titleKey:'m_ervah_book',   open:()=>openErvahBook()},
   {act:'asatir_book',  titleKey:'m_asatir_book',  open:()=>openAsatirBook()},
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
   {act:'dara_book',    titleKey:'m_dara_book',    open:()=>openDaraBook()},
@@ -7121,6 +7179,7 @@ const LIB_AUTHOR = {
   tz_book:        'צדקה אל-חכים',
   shyt_book:      'יעקב בן אהרן הכהן',
   bhuq_book:      'אבו אלפרג׳ בן פתיאל',
+  ervah_book:     'הכהן פינחס בן יצחק',
   wreschner_book: 'ורשנר',
   cohen_book:     'כהן',
   // sir_book, asatir_book — the app does not name an author for these
@@ -7353,6 +7412,7 @@ function menuAction(a){
   else if(a==='shyt_book') openShytBook();
   else if(a==='sir_book')  openSirBook();
   else if(a==='bhuq_book') openBhuqBook();
+  else if(a==='ervah_book') openErvahBook();
   else if(a==='asatir_book') openAsatirBook();
   else if(a==='wreschner_book') openWreschnerBook();
   else if(a==='cohen_book') openCohenBook();
@@ -7821,6 +7881,22 @@ const BOOK_CFG = {
     searchTo:(r)=>({chap:r.id, dom:'rdsec-'+r.id}),
     langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
   },
+  ervah: {                             // ספר הערוות — one treatise, read chapter by chapter
+    titleKey:'ervah_title', tocHintKey:'ervah_toc_hint',
+    toc:()=>api('ervah_toc'),
+    chapter:(id)=>api('ervah_chapter?sec='+encodeURIComponent(id)),
+    search:(q)=>api('ervah_search?q='+encodeURIComponent(q)),
+    words:null,
+    // the badge is the chapter's number; the count is how many verses it reads
+    tocItem:(c)=>({id:c.id, letter:c.letter, title:c.title, count:c.count}),
+    chapterTitle:(ch)=>esc(ch.title||''),
+    unitLabel:()=>'',                  // the paragraphs are a running text, not numbered units
+    unitVid:(s)=>s.verse_id,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>esc(r.title||''),
+    searchTo:(r)=>({chap:r.id, dom:'rdsec-'+(r.id*1000+1)}),
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+  },
   bhuq: {                              // פירוש אם בחקותי — one treatise, grouped into parts
     titleKey:'bhuq_title', tocHintKey:'bhuq_toc_hint',
     toc:()=>api('bhuq_toc'),
@@ -7905,6 +7981,7 @@ function openTzBook(){ openReader('tz'); }
 function openShytBook(){ openReader('shyt'); }
 function openSirBook(){ openReader('sir'); }
 function openBhuqBook(){ openReader('bhuq'); }
+function openErvahBook(){ openReader('ervah'); }
 function openAsatirBook(){ openReader('asatir'); }
 function openWreschnerBook(){ openReader('wreschner'); }
 function openCohenBook(){ openReader('cohen'); }

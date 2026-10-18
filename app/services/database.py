@@ -276,6 +276,69 @@ def _seed_library_books():
 _seed_library_books()
 
 
+_ERVAH_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                            'data', 'ervah_patch.json')
+
+
+def _seed_ervah():
+    """כתאב אל-עירות (ספר הערוות) — the laws of forbidden unions, in the full
+    Hebrew translation, and the verses the book itself cites.
+
+    Two tables of its own that nothing else writes to, so they are brought to
+    the patch's content: created when absent, left alone when they already hold
+    exactly this version (compared by fingerprint), refilled when older. The
+    links are carried by section ORDER, not by id, since the ids are made here.
+    """
+    try:
+        if not os.path.exists(_ERVAH_PATCH):
+            return
+        with open(_ERVAH_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute("""CREATE TABLE IF NOT EXISTS ervah_sections (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ord INTEGER, title TEXT, text TEXT)""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS ervah_verse_links (
+            section_id INTEGER, verse_id INTEGER, quote TEXT, ref TEXT)""")
+        have_s = [[r[0], r[1] or '', r[2] or ''] for r in conn.execute(
+            'SELECT ord, title, text FROM ervah_sections ORDER BY ord')]
+        have_l = [[r[0], r[1], r[2] or '', r[3] or ''] for r in conn.execute(
+            """SELECT s.ord, l.verse_id, l.quote, l.ref
+               FROM ervah_verse_links l JOIN ervah_sections s ON s.id = l.section_id
+               ORDER BY s.ord, l.verse_id""")]
+        fp = hashlib.sha1(json.dumps([have_s, have_l], ensure_ascii=False)
+                          .encode('utf-8')).hexdigest()
+        if fp == patch.get('fingerprint'):
+            PATCH_REPORT['ervah'] = 'already current'
+            conn.close()
+            return
+        conn.execute('DELETE FROM ervah_verse_links')
+        conn.execute('DELETE FROM ervah_sections')
+        ids = {}
+        for ordn, title, text in patch.get('sections', []):
+            cur = conn.execute('INSERT INTO ervah_sections (ord, title, text) VALUES (?,?,?)',
+                               (ordn, title, text))
+            ids[ordn] = cur.lastrowid
+        rows = [(ids[o], vid, quote, ref) for o, vid, quote, ref in patch.get('links', [])
+                if o in ids]
+        conn.executemany('INSERT INTO ervah_verse_links (section_id, verse_id, quote, ref) '
+                         'VALUES (?,?,?,?)', rows)
+        conn.execute('CREATE INDEX IF NOT EXISTS ix_ervah_links_v '
+                     'ON ervah_verse_links(verse_id)')
+        conn.execute('CREATE INDEX IF NOT EXISTS ix_ervah_sections_ord '
+                     'ON ervah_sections(ord)')
+        conn.commit()
+        conn.close()
+        PATCH_REPORT['ervah'] = '%d sections, %d links' % (len(ids), len(rows))
+        print('[ervah] %s' % PATCH_REPORT['ervah'])
+    except Exception as exc:
+        PATCH_REPORT['ervah'] = 'failed: %s' % exc
+        print('[ervah] skipped: %s' % exc)
+
+
+_seed_ervah()
+
+
 _DARA_UNIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                 'data', 'dara_unit_patch.json')
 
@@ -2758,6 +2821,138 @@ def search_bhuq(q, limit=80):
     return out
 
 
+# ── ספר הערוות ──────────────────────────────────────────────────────────────
+# The book cites scripture as '(ויקרא י״ח, י״ד)' — the book's full name and two
+# Hebrew numerals, the numerals written with the gershayim a printed book uses.
+# That is the Tibåt Mårqe form with punctuation inside the numbers, which is why
+# it needs a pattern of its own rather than _TM_REF.
+_ERVAH_REF = re.compile(r'\((בראשית|שמות|ויקרא|במדבר|דברים)\s+'
+                        r'([א-ת״׳\'"]{1,8})\s*[,，،]\s*([א-ת״׳\'"]{1,8})\)')
+
+
+def _ervah_gem(s):
+    """A Hebrew numeral as a number; the gershayim are punctuation, not letters."""
+    return sum(_TM_GEM.get(c, 0) for c in (s or ''))
+
+
+def _ervah_mark_refs(text, vmap):
+    """Escape `text`, wrapping each citation's reference in a clickable ref."""
+    out, last = [], 0
+    for m in _ERVAH_REF.finditer(text or ''):
+        out.append(_tm_esc(text[last:m.start()]))
+        vid = vmap.get((_TM_BORD[m.group(1)], _ervah_gem(m.group(2)),
+                        _ervah_gem(m.group(3))))
+        lbl = _tm_esc(m.group(0))
+        out.append('<a class="tm-ref" data-vid="%d">%s</a>' % (vid, lbl) if vid else lbl)
+        last = m.end()
+    out.append(_tm_esc((text or '')[last:]))
+    return ''.join(out)
+
+
+_ERVAH_NUM = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב',
+              'יג', 'יד', 'טו', 'טז', 'יז', 'יח', 'יט', 'כ', 'כא', 'כב', 'כג', 'כד',
+              'כה', 'כו', 'כז', 'כח', 'כט', 'ל']
+
+
+def get_ervah_toc():
+    """The book's sections, in order — one card each, with how many verses it
+    reads."""
+    conn = get_connection()
+    try:
+        rows = conn.execute("""SELECT s.id, s.ord, s.title, LENGTH(s.text) len,
+                                      COUNT(l.verse_id) n
+                               FROM ervah_sections s
+                               LEFT JOIN ervah_verse_links l ON l.section_id = s.id
+                               GROUP BY s.id ORDER BY s.ord""").fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    return [{'id': r['id'], 'ord': r['ord'], 'letter': (_ERVAH_NUM[r['ord']] if 0 < r['ord'] < len(_ERVAH_NUM)
+                        else str(r['ord'])),
+             'title': r['title'] or '', 'count': r['n'] or 0,
+             'len': r['len'] or 0} for r in rows]
+
+
+def get_ervah_chapter(sid):
+    """One section, paragraph by paragraph, with its citations made clickable and
+    the verse each paragraph reads — so a reader can step from the book into the
+    Torah at the place it is arguing about."""
+    try:
+        sid = int(sid)
+    except (TypeError, ValueError):
+        return {'id': None, 'title': '', 'sections': []}
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    try:
+        s = conn.execute('SELECT id, ord, title, text FROM ervah_sections WHERE id=?',
+                         (sid,)).fetchone()
+        links = conn.execute('SELECT verse_id, quote FROM ervah_verse_links '
+                             'WHERE section_id=? ORDER BY verse_id', (sid,)).fetchall()
+    except Exception:
+        s, links = None, []
+    conn.close()
+    if not s:
+        return {'id': sid, 'title': '', 'sections': []}
+    # a paragraph's verse is the first verse whose quotation stands in it
+    byq = [(l['quote'] or '', l['verse_id']) for l in links if (l['quote'] or '').strip()]
+    out = []
+    for i, para in enumerate([p for p in (s['text'] or '').split('\n\n') if p.strip()], 1):
+        vid = None
+        for quote, v in byq:
+            if quote[:24] and quote[:24] in para:
+                vid = v
+                break
+        out.append({'id': sid * 1000 + i, 'ref': '', 'title': '',
+                    'hebrew': para, 'hebrew_html': _ervah_mark_refs(para, vmap),
+                    'verse_id': vid})
+    return {'id': sid, 'ord': s['ord'], 'title': s['title'] or '', 'sections': out}
+
+
+def _ervah_bare(s):
+    """The text with its vocalisation taken off, for matching against a word a
+    reader typed — nobody types עֶרְוַת."""
+    return re.sub(r'[֑-ׇ]', '', s or '')
+
+
+def _ervah_para_for(text, quote):
+    """The paragraph the book quoted a verse in — that is the passage that
+    belongs under the verse. A quotation that cannot be found (the text having
+    been re-flowed) falls back to the opening paragraph rather than to nothing."""
+    paras = [p for p in (text or '').split('\n\n') if p.strip()]
+    key = _ervah_bare(quote or '')[:24]
+    if key:
+        for p in paras:
+            if key in _ervah_bare(p):
+                return p
+    return paras[0] if paras else (text or '')
+
+
+def search_ervah(q, limit=80):
+    """Search the book (section titles + text), the marks set aside."""
+    q = _ervah_bare((q or '').strip())
+    if not q:
+        return []
+    conn = get_connection()
+    try:
+        rows = conn.execute('SELECT id, ord, title, text FROM ervah_sections '
+                            'ORDER BY ord').fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    out = []
+    for r in rows:
+        bare = _ervah_bare(r['text'] or '')
+        i = bare.find(q)
+        if i < 0 and q not in _ervah_bare(r['title'] or ''):
+            continue
+        snip = ('…' + bare[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0             else _ervah_bare(r['title'] or '')
+        out.append({'id': r['id'], 'ord': r['ord'],
+                    'title': _ervah_bare(r['title'] or ''), 'snippet': snip})
+        if len(out) >= limit:
+            break
+    return out
+
+
 def _asatir_ar_col(conn):
     """'s.arabic' when the DB has that column, else a literal empty string.
 
@@ -3403,6 +3598,69 @@ def get_bhuq_by_verse(verse_ids, lang='he'):
     return out
 
 
+def get_ervah_commentary(verse_ids):
+    """ספר הערוות on any of the given verses, in the book's own order. A section
+    is attached to a verse because the book quotes that verse in it — nothing
+    here is inferred — so a section argues under every verse it reads, and a
+    section reading several of them appears once."""
+    if not verse_ids:
+        return []
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT DISTINCT s.ord, s.title, s.text, l.quote
+                FROM ervah_sections s
+                JOIN ervah_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders})
+                ORDER BY s.ord""",
+            verse_ids
+        ).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    out, seen = [], set()
+    for r in rows:
+        para = _ervah_para_for(r['text'], r['quote'])
+        if para in seen:
+            continue                     # one paragraph quoting two of the verses
+        seen.add(para)
+        out.append({'ref': '', 'title': r['title'] or '', 'text': para})
+    return out
+
+
+def get_ervah_by_verse(verse_ids):
+    """The same sections keyed BY VERSE — {verse_id: [{ref, title, text}, ...]} —
+    so a passage can stand beneath the verse it argues about rather than at the
+    end of the chapter. The quotation the book made is the ref, because that is
+    what the book itself printed to name the verse."""
+    if not verse_ids:
+        return {}
+    conn = get_connection()
+    placeholders = ','.join('?' * len(verse_ids))
+    try:
+        rows = conn.execute(
+            f"""SELECT DISTINCT l.verse_id vid, l.quote, l.ref, s.ord, s.title, s.text
+                FROM ervah_sections s
+                JOIN ervah_verse_links l ON l.section_id = s.id
+                WHERE l.verse_id IN ({placeholders})
+                ORDER BY l.verse_id, s.ord""",
+            verse_ids
+        ).fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    out = {}
+    for r in rows:
+        seen = out.setdefault(r['vid'], [])
+        para = _ervah_para_for(r['text'], r['quote'])
+        if any(x['text'] == para for x in seen):
+            continue
+        seen.append({'ref': r['quote'] or r['ref'] or '', 'title': r['title'] or '',
+                     'text': para, 'pending': False})
+    return out
+
+
 def get_sir_commentary(verse_ids):
     """סוד הלבבות (Sīr al-Qulūb, ch.4, Abraham al-Kabatzi) relevant to any of the
     given verses, in reading order. Each item is {title, text}; a section linked to
@@ -3543,7 +3801,8 @@ _SAM_SOURCES = [('tibat', 'tm_verse_links'), ('eyalk', 'eyalk_verse_links'),
                 ('eyalk', 'tradart_verse_links'), ('eyalk', 'binyamim_verse_links'),
                 ('shyt', 'shyt_verse_links'), ('tzdaka', 'tzdaka_verse_links'),
                 ('bhuq', 'bhuq_verse_links'), ('sir', 'sir_verse_links'),
-                ('asatir', 'asatir_verse_links')]
+                ('asatir', 'asatir_verse_links'),
+                ('ervah', 'ervah_verse_links')]
 
 
 def get_verse_sources(verse_ids):

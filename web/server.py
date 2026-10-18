@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '4.3'
+APP_VERSION = '4.4'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 _SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
@@ -467,6 +467,7 @@ _RESEED_CONTENT_TABLES = [
     ('eyalk_verse_links', 'verse_id'), ('shyt_verse_links', 'verse_id'), ('sir_verse_links', 'verse_id'),
     ('tm_verse_links', 'verse_id'), ('tradart_verse_links', 'verse_id'), ('tzdaka_verse_links', 'verse_id'),
     ('bhuq_verse_links', 'verse_id'), ('asatir_verse_links', 'verse_id'),
+    ('ervah_verse_links', 'verse_id'),
 ]
 
 
@@ -2745,6 +2746,34 @@ def api_bhuq_by_verse():
     sets each passage under the verse it argues about."""
     lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
     return jsonify(db.get_bhuq_by_verse(_ids_arg(), lang))
+
+
+@app.route('/api/ervah')
+def api_ervah():
+    """כתאב אל-עירות — the passages of ספר הערוות that read these verses."""
+    return jsonify(db.get_ervah_commentary(_ids_arg()))
+
+
+@app.route('/api/ervah_by_verse')
+def api_ervah_by_verse():
+    """The same, keyed by verse, for the commentary panel and the printed sheet."""
+    return jsonify(db.get_ervah_by_verse(_ids_arg()))
+
+
+# ── ספר הערוות: full-book reader (the verse source is /api/ervah above) ──
+@app.route('/api/ervah_toc')
+def api_ervah_toc():
+    return jsonify(db.get_ervah_toc())
+
+
+@app.route('/api/ervah_chapter')
+def api_ervah_chapter():
+    return jsonify(db.get_ervah_chapter(request.args.get('sec', '')))
+
+
+@app.route('/api/ervah_search')
+def api_ervah_search():
+    return jsonify(db.search_ervah(request.args.get('q', '')))
 
 
 # ── פירוש אם בחקותי: full-book reader (the verse source is /api/bhuq above) ──
