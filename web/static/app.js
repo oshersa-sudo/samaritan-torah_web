@@ -11449,7 +11449,18 @@ async function prCollectCss(root){
         if(inner.length) out.push('@media ' + r.conditionText + '{' + inner.join('\n') + '}');
         continue;
       }
-      if(r.selectorText && prSelectorBites(r.selectorText, classes, root))
+      if(!r.selectorText) continue;
+      // html / body / :root carry the app's own frame — a screen that does not
+      // scroll — and a document is not a screen. Only the colour names are
+      // taken from them, since the sheet's rules refer to them.
+      if(prIsFrameSelector(r.selectorText)){
+        const vars = [];
+        for(const prop of r.style)
+          if(prop.indexOf('--') === 0) vars.push(prop + ':' + r.style.getPropertyValue(prop) + ';');
+        if(vars.length) out.push(':root{' + vars.join('') + '}');
+        continue;
+      }
+      if(prSelectorBites(r.selectorText, classes, root))
         out.push(r.cssText);
     }
   }
@@ -11473,13 +11484,20 @@ async function prCollectCss(root){
   }
   return out.join('\n');
 }
+// `html`, `body`, `:root` on their own (or together) — the app's frame, not a
+// document's. A selector that merely begins with one and goes on to name
+// something else is judged like any other, by whether it matches.
+function prIsFrameSelector(sel){
+  return sel.split(',').every(p => /^\s*(html|body|:root)\s*$/.test(p));
+}
 function prSelectorBites(sel, classes, root){
   // a cheap test first — does the selector even name one of our classes — and
   // only then the real one, which is what the browser itself would ask
   let named = false;
   for(const c of classes) if(sel.indexOf('.' + c) >= 0){ named = true; break; }
-  if(!named && !/^(html|body|:root)\b/.test(sel)) return false;
-  if(/^(html|body|:root)\b/.test(sel)) return true;
+  if(!named) return false;
+  // and then the real question, which is the one the browser itself would ask:
+  // does this rule bear on anything actually inside what is being exported
   try{ return !!root.querySelector(sel.replace(/::?(before|after|first-line|marker)/g, '')); }
   catch(e){ return false; }
 }
@@ -11534,11 +11552,16 @@ async function prBuildExportHtml(){
 ${css}
 /* the bar, the list and the chips belong to this file alone and not to the app */
 :root{ --prx-ink:#3d372c; --prx-line:#d9d0bb; --prx-bg:#fffdf7; }
-html,body{ margin:0; padding:0; background:#f4efe3; color:var(--prx-ink);
-  font-family:'Segoe UI',system-ui,sans-serif; }
+html,body{ margin:0 !important; padding:0 !important; background:#f4efe3;
+  color:var(--prx-ink); font-family:'Segoe UI',system-ui,sans-serif;
+  /* a document scrolls; the app it came from does not, and its rules must not
+     follow it here */
+  overflow:visible !important; height:auto !important; min-height:0 !important;
+  max-height:none !important; position:static !important; }
 .prx-bar{ position:sticky; top:0; z-index:9; display:flex; flex-wrap:wrap; gap:8px;
   align-items:center; padding:8px 12px; background:#1f3a5f; color:#fff; }
-.prx-bar h1{ margin:0; font-size:15px; font-weight:600; flex:1 1 auto; }
+.prx-bar h1{ margin:0 !important; padding:0 !important; font-size:15px;
+  font-weight:600; flex:1 1 auto; line-height:1.3; color:#fff; border:0; }
 .prx-bar select,.prx-bar button{ font-family:inherit; font-size:13px; padding:4px 8px;
   border-radius:6px; border:1px solid rgba(255,255,255,.35); background:#fff; color:var(--prx-ink); }
 .prx-bar button{ cursor:pointer; }
