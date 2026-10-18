@@ -1348,6 +1348,17 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
 
 /* ── print-to-PDF ──────────────────────────────────────────────────────── */
 .modal-box.pr-opts{ gap:14px; }
+/* the print range: two lines of pickers, a book and a parasha on each, and the
+   size of the selection beneath them in a quieter voice. */
+/* what the sharing can and cannot do, said quietly under the buttons */
+.pr-share-note{ margin:6px 2px 2px; font-size:12px; line-height:1.45; color:#8d8372; }
+.pr-range-row{ display:flex; align-items:center; gap:6px; margin:4px 0; }
+.pr-range-lab{ min-width:26px; font-size:13px; color:#5b5346; }
+.pr-sel{ flex:0 1 auto; max-width:46%; padding:5px 6px; border:1px solid #d9d0bb;
+  border-radius:6px; background:#fffdf7; font-family:inherit; font-size:13px; color:#3d372c; }
+.pr-sel-wide{ flex:1 1 auto; max-width:none; }
+.pr-range-size{ margin-top:5px; font-size:12px; color:#8d8372; }
+.pr-range-size.big{ color:#9a5b2e; }
 .pr-field{ display:flex; flex-direction:column; gap:6px; }
 .pr-label{ font-weight:700; color:var(--navy); font-size:14px; }
 .pr-choice{ display:flex; gap:8px; }

@@ -409,6 +409,17 @@ const I18N = {
     print_ch:'הדפסת פרק', print_title:'הדפסת פרק',
     nav_pin:'קיבוע שורת הנתיב וחלון ההשמעה על המסך', nav_portion_next:'הפרשה הבאה', nav_portion_prev:'הפרשה הקודמת',
     nav_book_next:'הספר הבא', nav_book_prev:'הספר הקודם',
+    print_scope_rg:'טווח', print_range:'הטווח — לפי חלוקת הפרשות השומרונית',
+    print_range_from:'מן', print_range_to:'עד',
+    print_range_size:'%p פרשות · %c פרקים', print_range_one:'פרשה אחת · %c פרקים',
+    print_range_building:'בונה… %d מתוך %t פרשות',
+    print_range_big:'בחירה גדולה — הבנייה עשויה לארוך',
+    print_html:'צור דף HTML אינטראקטיבי', print_share:'שתף — וואטסאפ, מייל, כל אפליקציה',
+    print_share_note:'הקובץ המשותף נפתח בכל מכשיר, ובו כפתור הדפסה — כך נוצר ה-PDF בצד המקבל',
+    print_share_saved:'הקובץ נשמר אצלך', print_share_attach:'צרפו אותו להודעה, או שלחו קישור לאפליקציה:',
+    print_share_wa:'וואטסאפ', print_share_mail:'מייל',
+    prx_jump:'דלגו אל…', prx_print:'הדפסה / שמירה כ-PDF', prx_sheets:'דפים',
+    prx_from:'מתוך התורה השומרונית הישראלית —', prx_shared_body:'נשלח מתוך',
     print_scope:'מה להדפיס', print_scope_ch:'הפרק הנוכחי', print_scope_pt:'הפרשה כולה',
     print_book:'פורמט ספר — תורה למעלה, פירוש למטה, כתב שומרוני בלבד', print_font:'גופן להדפסה', print_font_sam:'שומרוני', print_font_heb:'עברי',
     print_nonums:'הסר מספרי פסוק (רצף, כתב שומרוני בלבד)',
@@ -693,6 +704,17 @@ const I18N = {
     print_ch:'Print chapter', print_title:'Print chapter',
     nav_pin:'Keep the path line and the play window on screen', nav_portion_next:'Next parasha', nav_portion_prev:'Previous parasha',
     nav_book_next:'Next book', nav_book_prev:'Previous book',
+    print_scope_rg:'A range', print_range:'The range — by the Samaritan division of parashot',
+    print_range_from:'from', print_range_to:'to',
+    print_range_size:'%p parashot · %c chapters', print_range_one:'one parasha · %c chapters',
+    print_range_building:'building… %d of %t parashot',
+    print_range_big:'a large selection — building it may take a while',
+    print_html:'Make an interactive HTML page', print_share:'Share — WhatsApp, mail, any app',
+    print_share_note:'The shared file opens on any device and carries a print button — that is how the PDF is made on the other side',
+    print_share_saved:'The file is saved', print_share_attach:'Attach it to a message, or send a link to the app:',
+    print_share_wa:'WhatsApp', print_share_mail:'Mail',
+    prx_jump:'Jump to…', prx_print:'Print / save as PDF', prx_sheets:'sheets',
+    prx_from:'From the Israelite Samaritan Torah —', prx_shared_body:'sent from',
     print_scope:'What to print', print_scope_ch:'This chapter', print_scope_pt:'The whole parasha',
     print_book:'Book format — Torah above, commentary below, Samaritan script only', print_font:'Print font', print_font_sam:'Samaritan', print_font_heb:'Hebrew',
     print_nonums:'Remove verse numbers (continuous, Samaritan script only)',
@@ -977,6 +999,17 @@ const I18N = {
     print_ch:'طباعة الأصحاح', print_title:'طباعة الأصحاح',
     nav_pin:'تثبيت سطر المسار ونافذة التشغيل على الشاشة', nav_portion_next:'المقطع التالي', nav_portion_prev:'المقطع السابق',
     nav_book_next:'السفر التالي', nav_book_prev:'السفر السابق',
+    print_scope_rg:'مدى', print_range:'المدى — حسب تقسيم المقاطع السامري',
+    print_range_from:'من', print_range_to:'إلى',
+    print_range_size:'%p مقاطع · %c فصول', print_range_one:'مقطع واحد · %c فصول',
+    print_range_building:'قيد البناء… %d من %t مقاطع',
+    print_range_big:'اختيار كبير — قد يستغرق بناؤه وقتًا',
+    print_html:'أنشئ صفحة HTML تفاعلية', print_share:'شارِك — واتساب، بريد، أي تطبيق',
+    print_share_note:'الملف المشارَك يُفتح على أي جهاز وفيه زرّ طباعة — وهكذا يُصنع PDF عند المتلقّي',
+    print_share_saved:'حُفظ الملف', print_share_attach:'أرفقه برسالة، أو أرسل رابط التطبيق:',
+    print_share_wa:'واتساب', print_share_mail:'بريد',
+    prx_jump:'انتقل إلى…', prx_print:'طباعة / حفظ PDF', prx_sheets:'صفحات',
+    prx_from:'من توراة السامريين الإسرائيليين —', prx_shared_body:'أُرسل من',
     print_scope:'ما الذي يُطبع', print_scope_ch:'هذا الأصحاح', print_scope_pt:'المقطع كاملاً',
     print_book:'تنسيق الكتاب — التوراة أعلى والتفسير أسفل، بالخطّ السامري فقط', print_font:'خط الطباعة', print_font_sam:'سامري', print_font_heb:'عبري',
     print_nonums:'إزالة أرقام الآيات (نصّ متّصل، بالخط السامري فقط)',
@@ -5519,8 +5552,29 @@ const PRINT_TR_FIELD  = {aramaic:'sam_aramaic', arabic:'arabic_trans', english:'
 const PRINT_TR_LABEL  = {aramaic:'תרגום ארמי',  arabic:'תרגום ערבי',  english:'תרגום אנגלי'};
 const S_print = {font:'samaritan', fontTouched:false, noNums:false, interp:false,
                  dict:false, trans:false, trChoice:null,
-                 scope:'chapter',        // 'chapter' | 'portion' — one chapter or the whole parasha
+                 // 'chapter' | 'portion' | 'range' — the chapter on screen, the
+                 // parasha it belongs to, or a stretch of the Samaritan division
+                 scope:'chapter',
+                 range:{fb:null, fp:null, tb:null, tp:null},
                  book:false};            // פורמט ספר — see buildBookDoc()
+// the parashot of the Torah, book by book, read once and kept: the pickers, the
+// size line and the walk all need the same list and it does not change
+const PR_PORTIONS = {};
+async function prPortions(bookId){
+  if(!PR_PORTIONS[bookId])
+    PR_PORTIONS[bookId] = await api('portions?book_id=' + bookId + '&mode=samaritan');
+  return PR_PORTIONS[bookId] || [];
+}
+// every parasha of the Torah in the division's own order, each with its book
+async function prAllPortions(){
+  await ensureBooks();                      // fills S.books; it returns nothing
+  const books = S.books || [];
+  const out = [];
+  for(const b of (books || []))
+    for(const p of await prPortions(b.id))
+      out.push({book:b, portion:p});
+  return out;
+}
 
 $('printBtn').onclick = () => {
   // open on the script the reader is actually looking at, so printing follows
@@ -5535,9 +5589,15 @@ $('printBtn').onclick = () => {
   $('prBook').checked = S_print.book;
   // a chapter that is not inside a portion (the spread, a search result) has no
   // whole-parasha to offer, so the choice is simply not shown
+  // the whole-parasha choice needs a parasha to be in; the range does not —
+  // it is asked for from the division itself, so it is always available
   const canPortion = !!(S.curPid && (S.chList || []).length);
-  $('prScopeField').classList.toggle('hidden', !canPortion);
-  if(!canPortion) S_print.scope = 'chapter';
+  $('prScopeField').classList.remove('hidden');
+  document.querySelector('#printModal .pr-opt[data-scope=\"portion\"]')
+    .classList.toggle('pr-disabled', !canPortion);
+  if(!canPortion && S_print.scope === 'portion') S_print.scope = 'chapter';
+  $('prRangeField').classList.toggle('hidden', S_print.scope !== 'range');
+  if(S_print.scope === 'range') prRangeFill();
   document.querySelectorAll('#printModal .pr-opt[data-scope]')
     .forEach(b => b.classList.toggle('sel', b.dataset.scope === S_print.scope));
   updatePrintNoNumsState();
@@ -5547,8 +5607,93 @@ $('printBtn').onclick = () => {
 };
 document.querySelectorAll('#printModal .pr-opt[data-scope]').forEach(b=>{
   b.onclick = () => { S_print.scope = b.dataset.scope;
-    document.querySelectorAll('#printModal .pr-opt[data-scope]').forEach(x=>x.classList.toggle('sel', x===b)); };
+    document.querySelectorAll('#printModal .pr-opt[data-scope]').forEach(x=>x.classList.toggle('sel', x===b));
+    $('prRangeField').classList.toggle('hidden', S_print.scope!=='range');
+    if(S_print.scope==='range') prRangeFill(); };
 });
+
+// ── the range pickers ───────────────────────────────────────────────────────
+// Filled from the division itself, and opened on where the reader already is:
+// the parasha in front of them, on both sides, which is the one printout they
+// are most likely to want and the clearest way to show that two ends alike mean
+// one parasha.
+function prFillSel(sel, items, value, label){
+  sel.innerHTML = '';
+  for(const it of items){
+    const o = document.createElement('option');
+    o.value = it.id; o.textContent = label(it);
+    sel.appendChild(o);
+  }
+  if(value != null) sel.value = String(value);
+}
+async function prRangeFill(){
+  await ensureBooks();
+  const books = S.books || [];
+  const r = S_print.range;
+  if(!r.fb){                                  // first open: start where the reader is
+    r.fb = r.tb = S.book || (books[0] || {}).id;
+    const ps = await prPortions(r.fb);
+    const here = ps.find(p => p.id === S.curPid) || ps[0] || {};
+    r.fp = r.tp = here.id;
+  }
+  prFillSel($('prFromBook'), books, r.fb, b => b.name);
+  prFillSel($('prToBook'),   books, r.tb, b => b.name);
+  const fps = await prPortions(r.fb), tps = await prPortions(r.tb);
+  if(!fps.some(p => p.id === r.fp)) r.fp = (fps[0] || {}).id;
+  if(!tps.some(p => p.id === r.tp)) r.tp = (tps[tps.length - 1] || {}).id;
+  const name = p => p.name + ' (' + p.n_chapters + ')';
+  prFillSel($('prFromPortion'), fps, r.fp, name);
+  prFillSel($('prToPortion'),   tps, r.tp, name);
+  await prRangeSize();
+}
+// How far the building has got. Shown where the size of the selection is shown,
+// since it answers the same question a moment later: what is this going to be.
+// Called with (0, 0) it gives the line back to the size.
+function prBuildProgress(done, total){
+  const box = $('prRangeSize');
+  if(!box) return;
+  if(!total){ prRangeSize(); return; }
+  box.textContent = t('print_range_building').replace('%d', done).replace('%t', total);
+  box.classList.add('big');
+}
+// What was asked for, in parashot and in chapters, said before it is built
+async function prRangeSize(){
+  const box = $('prRangeSize');
+  const span = await prRangeSpan();
+  const chapters = span.reduce((n, x) => n + (x.portion.n_chapters || 0), 0);
+  box.textContent = span.length === 1
+    ? t('print_range_one').replace('%c', chapters)
+    : t('print_range_size').replace('%p', span.length).replace('%c', chapters);
+  const big = chapters > 120;
+  if(big) box.textContent += ' · ' + t('print_range_big');
+  box.classList.toggle('big', big);
+}
+// The parashot the two ends enclose, in the division's order. Ends given the
+// wrong way round are read the right way round.
+async function prRangeSpan(){
+  const all = await prAllPortions();
+  const r = S_print.range;
+  let i = all.findIndex(x => x.portion.id === r.fp);
+  let j = all.findIndex(x => x.portion.id === r.tp);
+  if(i < 0 || j < 0) return [];
+  if(i > j){ const k = i; i = j; j = k; }
+  return all.slice(i, j + 1);
+}
+for(const [id, key] of [['prFromBook','fb'], ['prToBook','tb'],
+                        ['prFromPortion','fp'], ['prToPortion','tp']]){
+  const elm = $(id);
+  if(elm) elm.onchange = async e => {
+    S_print.range[key] = parseInt(e.target.value, 10);
+    // a book changed means its parashot changed under it: the parasha on that
+    // side moves to the first of the new book rather than staying impossible
+    if(key === 'fb' || key === 'tb'){
+      const ps = await prPortions(S_print.range[key]);
+      S_print.range[key === 'fb' ? 'fp' : 'tp'] =
+        ((key === 'fb' ? ps[0] : ps[ps.length - 1]) || {}).id;
+    }
+    await prRangeFill();
+  };
+}
 $('prBook').onchange = e => { S_print.book = e.target.checked; updatePrintBookState(); };
 // פורמט ספר is a whole rendering of its own, not another option laid over the
 // ordinary sheet: the script is Samaritan by definition, there are no headings
@@ -5698,13 +5843,16 @@ const prVrow = (num, innerHTML, cls) => {
 // פירוש הפסוק and מילון מילים are sections of the sheet, not boxes on it: a frame
 // drawn round a commentary that runs over three pages breaks badly, so each is
 // set off from the text above it by a rule instead.
-const prSection = title => {
-  const s = el('div','pr-sec');
+// `kind` lets a sheet's parts be told apart afterwards — the shared file folds
+// the commentary and the dictionary away on request, and cannot do it by reading
+// their titles
+const prSection = (title, kind) => {
+  const s = el('div','pr-sec' + (kind ? ' pr-sec-' + kind : ''));
   s.appendChild(el('div','pr-sec-title', title));
   return s;
 };
 
-function printSkeleton(verses, chNum){
+function printSkeleton(verses, chNum, labels){
   // defaults to the chapter on screen; the whole-parasha printout passes each
   // chapter in turn, so one sheet-builder serves both scopes
   verses = verses || S.verses || [];
@@ -5713,9 +5861,12 @@ function printSkeleton(verses, chNum){
   const page = el('div','pr-page');
 
   const hdr = el('div','pr-header');
-  hdr.appendChild(el('div','pr-book', esc(S.bookName||'')));
-  hdr.appendChild(el('div','pr-portion', esc(S.portionName||'')));
-  let chLabel = S.chMode==='samaritan' ? ('פרק שומרוני '+chNum) : ('פרק '+chNum);
+  // a printout that crosses parashot cannot take its heading from the screen
+  const lb = labels || {};
+  hdr.appendChild(el('div','pr-book', esc(lb.book || S.bookName || '')));
+  hdr.appendChild(el('div','pr-portion', esc(lb.portion || S.portionName || '')));
+  const mode = lb.mode || S.chMode;
+  let chLabel = mode==='samaritan' ? ('פרק שומרוני '+chNum) : ('פרק '+chNum);
   const opening = ((verses[0]||{}).text||'').trim().split(/\s+/).filter(Boolean).slice(0,4).join(' ');
   if(opening) chLabel += ' (' + opening + ')';
   hdr.appendChild(el('div','pr-chapter', esc(chLabel)));
@@ -5799,6 +5950,38 @@ function ktivHaser(text){
 // same text as reading through it chapter by chapter.
 async function collectPrintGroups(){
   const here = { num: S.curChNum, verses: S.verses || [] };
+  // a range is of the Samaritan division by definition, whichever division the
+  // reader happens to be in: each parasha in turn, each of its chapters in turn,
+  // and every sheet carrying the name of the book and parasha it came from
+  if(S_print.scope === 'range'){
+    // one request for each parasha — chapters and verses together — and a few of
+    // them in flight at once. Asking chapter by chapter cost 949 requests for the
+    // Torah; asking parasha by parasha in single file cost ten seconds of a still
+    // screen. The answers are put back in the division's order, not the order
+    // they happen to arrive in.
+    const span = await prRangeSpan();
+    const got = new Array(span.length);
+    let next = 0, done = 0;
+    const worker = async () => {
+      while(next < span.length){
+        const i = next++;
+        try{ got[i] = await api('sam_portion?portion_id=' + span[i].portion.id) || []; }
+        catch(e){ got[i] = []; }
+        prBuildProgress(++done, span.length);
+      }
+    };
+    await Promise.all(Array.from({length: Math.min(4, span.length)}, worker));
+    const out = [];
+    span.forEach((x, i) => {
+      for(const ch of (got[i] || [])){
+        if(!(ch.verses || []).length) continue;
+        out.push({ num: ch.num, verses: ch.verses,
+                   labels:{ book: x.book.name, portion: x.portion.name, mode:'samaritan' } });
+      }
+    });
+    prBuildProgress(0, 0);
+    return out;
+  }
   if(S_print.scope !== 'portion' || !(S.chList || []).length) return [here];
   const isSam = S.chMode === 'samaritan';
   const out = [];
@@ -6085,9 +6268,44 @@ async function buildBookDoc(area){
   });
 }
 
+// One question for the whole printout instead of one per sheet. The ids are sent
+// three hundred at a time, because a URL is not endless, and the answers are
+// merged into one map per source.
+async function prFetchByVerses(path, ids){
+  const out = {};
+  for(let i = 0; i < ids.length; i += 300){
+    try{
+      const m = await api(path + (path.indexOf('?') >= 0 ? '&' : '?')
+                          + 'verse_ids=' + ids.slice(i, i + 300).join(','));
+      if(m) Object.assign(out, m);
+    }catch(e){ /* a chunk that will not load leaves its verses unadorned */ }
+  }
+  return out;
+}
+// What the optional sections need, for every verse of the printout at once.
+// Returns null when there is nothing to gain by it — one sheet asking for itself
+// is one request either way.
+async function prPrefetch(groups){
+  const many = groups.length > 1;
+  if(!many || !(S_print.interp || S_print.dict)) return null;
+  const ids = [];
+  for(const g of groups) for(const v of (g.verses || [])) ids.push(v.id);
+  if(!ids.length) return null;
+  const pre = {};
+  if(S_print.interp){
+    pre.interp = await prFetchByVerses('interpretations', ids);
+    pre.asatir = await prFetchByVerses('asatir_by_verse', ids);
+    pre.bhuq   = await prFetchByVerses('bhuq_by_verse', ids);
+  }
+  if(S_print.dict) pre.wtbl = await prFetchByVerses('word_table', ids);
+  return pre;
+}
+
 async function buildPrintPage(){
-  const verses = S.verses || [];
-  if(!verses.length) return;
+  // a range does not print what is on the screen and must not be refused for
+  // its sake: the chapter in front of the reader may be empty, or there may be
+  // no chapter at all, and the range still has everything it needs
+  if(S_print.scope !== 'range' && !(S.verses || []).length) return;
   const area = $('printArea'); area.innerHTML = '';
   // פורמט ספר is its own sheet from the ground up — no header, no verse numbers,
   // no optional sections — so it is built instead of the ordinary page, not on it
@@ -6096,25 +6314,29 @@ async function buildPrintPage(){
   // for a whole parasha it is each of its chapters, each with its own header and
   // its own commentary and dictionary beneath it — a printed parasha reads as
   // the chapters do, rather than as one undivided run of text.
-  for(const g of await collectPrintGroups()){
+  const groups = await collectPrintGroups();
+  const pre = await prPrefetch(groups);
+  for(const g of groups){
     if(!(g.verses || []).length) continue;
-    const page = printSkeleton(g.verses, g.num);
+    const page = printSkeleton(g.verses, g.num, g.labels);
     area.appendChild(page);
     // the commentary belongs to the chapter above it and so follows it directly;
     // the dictionary — a reference table rather than a reading — comes after both.
-    if(S_print.interp) await addPrintInterp(page, g.verses);
-    if(S_print.dict)   await addPrintDict(page, g.verses);
+    if(S_print.interp) await addPrintInterp(page, g.verses, pre);
+    if(S_print.dict)   await addPrintDict(page, g.verses, pre);
   }
 }
 
-async function addPrintInterp(page, verses){
-  const sec = prSection('פירוש הפסוק');
+async function addPrintInterp(page, verses, pre){
+  const sec = prSection('פירוש הפסוק', 'interp');
   try{
     const vids = verses.map(v=>v.id).join(',');
-    const m = await api('interpretations?verse_ids='+vids);
+    // handed the answer where the whole printout asked for it once; otherwise
+    // this sheet asks for its own, which for a single chapter is the same cost
+    const m   = (pre && pre.interp) || await api('interpretations?verse_ids='+vids);
     // the printed page carries what the screen carries, ספר האסאטיר included
-    const asa = await api('asatir_by_verse?verse_ids='+vids).catch(()=>({}));
-    const bhq = await api('bhuq_by_verse?verse_ids='+vids).catch(()=>({}));
+    const asa = (pre && pre.asatir) || await api('asatir_by_verse?verse_ids='+vids).catch(()=>({}));
+    const bhq = (pre && pre.bhuq)   || await api('bhuq_by_verse?verse_ids='+vids).catch(()=>({}));
     let any = false;
     verses.forEach(v => {
       const txt = (m[v.id]||'').trim();
@@ -6145,10 +6367,11 @@ async function addPrintInterp(page, verses){
   page.appendChild(sec);
 }
 
-async function addPrintDict(page, verses){
-  const sec = prSection('מילון מילים');
+async function addPrintDict(page, verses, pre){
+  const sec = prSection('מילון מילים', 'dict');
   try{
-    const m = await api('word_table?verse_ids='+verses.map(v=>v.id).join(','));
+    const m = (pre && pre.wtbl)
+            || await api('word_table?verse_ids='+verses.map(v=>v.id).join(','));
     const tbl = el('table','pr-wtbl','<thead><tr><th>מילה</th><th>ארמית</th><th>עברית</th><th>מילון</th></tr></thead>');
     const tbody = el('tbody');
     verses.forEach(v => (m[v.id]||[]).forEach(row => {
@@ -11172,3 +11395,259 @@ backSpare();
 openRoute(location.pathname, true);
 applyI18n();
 updateBmMenu();
+
+// ── HTML אינטראקטיבי: אותו דף, לשיתוף ולהדפסה ────────────────────────────────
+// What the print sheet is on paper, this is on a screen that is not ours: one
+// file, opening anywhere, carrying the text as it was set — and carrying with it
+// the few things paper cannot do. A list of its chapters to jump by; the
+// optional sections foldable, so a reader who wants only the text can have only
+// the text; type that can be made larger; and a print button, because the file
+// is also the way to make the PDF on a device we never touched.
+//
+// It must stand alone. So the rules it needs are read out of the app's own
+// stylesheet — only those that actually match something inside it — and the
+// faces are pointed at the live site by their full address, since a file sent to
+// someone else has no app around it to serve them.
+const PR_SITE = 'https://samaritan-torah.onrender.com';
+
+// the faces a shared file cannot do without: there is no Samaritan on anyone's
+// device, so without these the text is unreadable rather than merely plainer
+const PR_EMBED_FACES = ['Samaritan', 'SamComment', 'SamNikud'];
+async function prFontData(url){
+  const r = await fetch(url);
+  const b = await r.arrayBuffer();
+  let s = '', bytes = new Uint8Array(b);
+  for(let i = 0; i < bytes.length; i += 0x8000)
+    s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return 'data:font/ttf;base64,' + btoa(s);
+}
+async function prCollectCss(root){
+  // only the rules that bear on what is being exported: the stylesheet is two
+  // hundred kilobytes and almost none of it is about a printed sheet
+  const classes = new Set();
+  root.querySelectorAll('*').forEach(e => e.classList.forEach(c => classes.add(c)));
+  const out = [], embed = [];
+  for(const sheet of document.styleSheets){
+    let rules;
+    try{ rules = sheet.cssRules; }catch(e){ continue; }   // a sheet we may not read
+    for(const r of rules){
+      if(r.type === CSSRule.FONT_FACE_RULE){
+        // the Samaritan faces are written into the file; the rest keep their
+        // address, since a device without them still has a Hebrew or an Arabic
+        // of its own and the file stays small
+        const fam = (r.style.getPropertyValue('font-family') || '').replace(/['"]/g, '').trim();
+        if(PR_EMBED_FACES.indexOf(fam) >= 0) embed.push({fam: fam, rule: r});
+        else out.push(r.cssText.replace(/url\((['"]?)\/(?!\/)/g, 'url($1' + PR_SITE + '/'));
+        continue;
+      }
+      if(r.type === CSSRule.MEDIA_RULE){
+        // the print rules matter: the file is meant to be printed too
+        const inner = [];
+        for(const ir of r.cssRules)
+          if(ir.selectorText && prSelectorBites(ir.selectorText, classes, root))
+            inner.push(ir.cssText);
+        if(inner.length) out.push('@media ' + r.conditionText + '{' + inner.join('\n') + '}');
+        continue;
+      }
+      if(r.selectorText && prSelectorBites(r.selectorText, classes, root))
+        out.push(r.cssText);
+    }
+  }
+  // only the faces this document actually sets anything in
+  const used = new Set();
+  root.querySelectorAll('*').forEach(e => {
+    const f = getComputedStyle(e).fontFamily || '';
+    PR_EMBED_FACES.forEach(x => { if(f.indexOf(x) >= 0) used.add(x); });
+  });
+  for(const e of embed){
+    if(!used.has(e.fam)) continue;
+    const m = /url\((['"]?)([^'")]+)\1\)/.exec(e.rule.cssText);
+    if(!m) continue;
+    try{
+      const data = await prFontData(m[2].startsWith('/') || m[2].startsWith('http')
+                                    ? m[2] : ('/' + m[2].replace(/^\.?\//, '')));
+      out.unshift(e.rule.cssText.replace(m[0], 'url(' + data + ')'));
+    }catch(err){
+      out.unshift(e.rule.cssText.replace(/url\((['"]?)\/(?!\/)/g, 'url($1' + PR_SITE + '/'));
+    }
+  }
+  return out.join('\n');
+}
+function prSelectorBites(sel, classes, root){
+  // a cheap test first — does the selector even name one of our classes — and
+  // only then the real one, which is what the browser itself would ask
+  let named = false;
+  for(const c of classes) if(sel.indexOf('.' + c) >= 0){ named = true; break; }
+  if(!named && !/^(html|body|:root)\b/.test(sel)) return false;
+  if(/^(html|body|:root)\b/.test(sel)) return true;
+  try{ return !!root.querySelector(sel.replace(/::?(before|after|first-line|marker)/g, '')); }
+  catch(e){ return false; }
+}
+
+// the title the file carries: what was printed, in the reader's own words
+function prExportTitle(){
+  if(S_print.scope === 'range'){
+    const r = S_print.range, all = PR_PORTIONS;
+    const nm = (bid, pid) => ((all[bid] || []).find(p => p.id === pid) || {}).name || '';
+    const bk = bid => ((S.books || []).find(b => b.id === bid) || {}).name || '';
+    const a = bk(r.fb) + ' · ' + nm(r.fb, r.fp), b = bk(r.tb) + ' · ' + nm(r.tb, r.tp);
+    return a === b ? a : (a + ' — ' + b);
+  }
+  if(S_print.scope === 'portion') return (S.bookName || '') + ' · ' + (S.portionName || '');
+  return (S.bookName || '') + ' · ' + t(S.chMode === 'samaritan' ? 'sam_chapter' : 'chapter')
+         + ' ' + (S.curChNum || '');
+}
+
+async function prBuildExportHtml(){
+  const area = $('printArea');
+  if(!area.children.length) await buildPrintPage();
+  if(!area.children.length) return null;
+  const title = prExportTitle();
+  const css = await prCollectCss(area);
+  // the chapters, to jump by: each sheet is one, and it is named as its own
+  // header names it
+  const items = [...area.querySelectorAll('.pr-page')].map((p, i) => {
+    p.id = p.id || ('prx-' + i);
+    const h = p.querySelector('.pr-header');
+    const bits = h ? [...h.children].map(x => x.textContent.trim()).filter(Boolean) : [];
+    return {id: p.id, label: bits.join(' · ')};
+  });
+  const has = {
+    interp: !!area.querySelector('.pr-sec-interp'),
+    dict:   !!area.querySelector('.pr-sec-dict'),
+    trans:  !!area.querySelector('.pr-tr'),
+  };
+  const lang = (LANG || 'he');
+  const rtl = lang !== 'en';
+  const esc2 = x => String(x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const toc = items.map(it => `<option value="${esc2(it.id)}">${esc2(it.label)}</option>`).join('');
+  const chip = (key, label) => has[key]
+    ? `<label class="prx-chip"><input type="checkbox" checked data-sec="${key}"> ${esc2(label)}</label>` : '';
+
+  return `<!doctype html>
+<html lang="${esc2(lang)}" dir="${rtl ? 'rtl' : 'ltr'}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc2(title)}</title>
+<style>
+${css}
+/* the bar, the list and the chips belong to this file alone and not to the app */
+:root{ --prx-ink:#3d372c; --prx-line:#d9d0bb; --prx-bg:#fffdf7; }
+html,body{ margin:0; padding:0; background:#f4efe3; color:var(--prx-ink);
+  font-family:'Segoe UI',system-ui,sans-serif; }
+.prx-bar{ position:sticky; top:0; z-index:9; display:flex; flex-wrap:wrap; gap:8px;
+  align-items:center; padding:8px 12px; background:#1f3a5f; color:#fff; }
+.prx-bar h1{ margin:0; font-size:15px; font-weight:600; flex:1 1 auto; }
+.prx-bar select,.prx-bar button{ font-family:inherit; font-size:13px; padding:4px 8px;
+  border-radius:6px; border:1px solid rgba(255,255,255,.35); background:#fff; color:var(--prx-ink); }
+.prx-bar button{ cursor:pointer; }
+.prx-chips{ display:flex; flex-wrap:wrap; gap:10px; padding:6px 12px; background:#e8e0cd;
+  font-size:13px; }
+.prx-chip{ display:flex; align-items:center; gap:4px; }
+.prx-wrap{ padding:10px; }
+.prx-wrap .pr-page{ background:var(--prx-bg); margin:0 auto 14px; padding:16px 18px;
+  max-width:860px; box-shadow:0 1px 4px rgba(0,0,0,.12); border-radius:4px; }
+.prx-foot{ padding:14px; text-align:center; font-size:12px; color:#7d7465; }
+.prx-foot a{ color:#1f3a5f; }
+@media print{
+  .prx-bar,.prx-chips,.prx-foot{ display:none !important; }
+  html,body{ background:#fff; }
+  .prx-wrap{ padding:0; }
+  .prx-wrap .pr-page{ box-shadow:none; margin:0; max-width:none; border-radius:0; }
+}
+</style>
+</head>
+<body>
+<div class="prx-bar">
+  <h1>${esc2(title)}</h1>
+  <select id="prxJump"><option value="">${esc2(t('prx_jump'))}</option>${toc}</select>
+  <button id="prxSmall">A−</button><button id="prxBig">A+</button>
+  <button id="prxPrint">${esc2(t('prx_print'))}</button>
+</div>
+<div class="prx-chips">${chip('interp', t('print_interp'))}${chip('dict', t('print_dict'))}${chip('trans', t('print_trans'))}
+  <span style="flex:1 1 auto"></span><span>${esc2(items.length + ' ' + t('prx_sheets'))}</span></div>
+<div class="prx-wrap">${area.innerHTML}</div>
+<div class="prx-foot">${esc2(t('prx_from'))} <a href="${PR_SITE}">${PR_SITE.replace('https://','')}</a></div>
+<script>
+(function(){
+  var w=document.querySelector('.prx-wrap');
+  document.getElementById('prxJump').onchange=function(e){
+    var t=e.target.value && document.getElementById(e.target.value);
+    if(t) t.scrollIntoView({behavior:'smooth', block:'start'});
+  };
+  var size=1;
+  function zoom(d){ size=Math.max(.7, Math.min(1.8, size+d)); w.style.fontSize=(size*100)+'%'; }
+  document.getElementById('prxBig').onclick=function(){ zoom(.1); };
+  document.getElementById('prxSmall').onclick=function(){ zoom(-.1); };
+  document.getElementById('prxPrint').onclick=function(){ window.print(); };
+  // the optional sections fold away, so a reader who wants only the text has it
+  var map={interp:'.pr-sec-interp', dict:'.pr-sec-dict', trans:'.pr-tr'};
+  Array.prototype.forEach.call(document.querySelectorAll('[data-sec]'), function(cb){
+    cb.onchange=function(){
+      Array.prototype.forEach.call(w.querySelectorAll(map[cb.dataset.sec]||''), function(n){
+        n.style.display = cb.checked ? '' : 'none';
+      });
+    };
+  });
+})();
+</script>
+</body>
+</html>`;
+}
+
+// the file, kept where the reader keeps files
+function prFileName(){
+  const t0 = prExportTitle().replace(/[\\/:*?"<>|]/g, '').replace(/\s+/g, ' ').trim();
+  return (t0 || 'torah') + '.html';
+}
+async function prExportFile(){
+  const html = await prBuildExportHtml();
+  if(!html) return null;
+  return new File([html], prFileName(), {type:'text/html'});
+}
+async function prSaveHtml(){
+  const f = await prExportFile();
+  if(!f) return;
+  const url = URL.createObjectURL(f);
+  const a2 = document.createElement('a');
+  a2.href = url; a2.download = f.name;
+  document.body.appendChild(a2); a2.click(); a2.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+// passing it on. The device's own sharing takes the file itself — that is what
+// reaches WhatsApp or a mail with the thing attached. Where there is none, the
+// file is saved and the two links are offered with the app's address, so the
+// reader is never left with a button that does nothing.
+async function prShareHtml(){
+  const f = await prExportFile();
+  if(!f) return;
+  const title = prExportTitle();
+  if(navigator.canShare && navigator.canShare({files:[f]})){
+    try{ await navigator.share({files:[f], title: title, text: title}); return; }
+    catch(e){ if(e && e.name === 'AbortError') return; }
+  }
+  await prSaveHtml();
+  $('printShareModal').classList.remove('hidden');
+}
+$('prHtml').onclick = async () => {
+  $('printModal').classList.add('hidden');
+  await prSaveHtml();
+};
+$('prShare').onclick = async () => {
+  $('printModal').classList.add('hidden');
+  await prShareHtml();
+};
+// the two links, for a device with no sharing of its own
+document.querySelectorAll('#printShareModal .psh-opt').forEach(b => {
+  b.onclick = () => {
+    const title = prExportTitle(), url = PR_SITE;
+    const body = title + ' — ' + t('prx_shared_body') + ' ' + url;
+    if(b.dataset.via === 'wa')
+      window.open('https://wa.me/?text=' + encodeURIComponent(body), '_blank', 'noopener');
+    else if(b.dataset.via === 'mail')
+      window.location.href = 'mailto:?subject=' + encodeURIComponent(title)
+                           + '&body=' + encodeURIComponent(body);
+    $('printShareModal').classList.add('hidden');
+  };
+});

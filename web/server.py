@@ -1982,7 +1982,12 @@ def api_system_doc():
 
 @app.route('/fonts/<path:fn>')
 def fonts(fn):
-    return send_from_directory(os.path.join(app.static_folder, 'fonts'), fn)
+    # a page shared as a file is opened from somewhere else, and a font asked for
+    # across origins is refused unless this is said. There is nothing private in
+    # a typeface, and the ones here are the app's own.
+    r = send_from_directory(os.path.join(app.static_folder, 'fonts'), fn)
+    r.headers['Access-Control-Allow-Origin'] = '*'
+    return r
 
 
 # ── how long each thing may be kept ──────────────────────────────────────────
@@ -2261,24 +2266,42 @@ def api_verses():
     return jsonify(out)
 
 
+def _sam_verse_dict(r, cols):
+    """One verse as the Samaritan division shows it. Used by the single-chapter
+    route and by the whole-parasha one, so the two cannot drift apart."""
+    dd = _verse_dict(r, cols)
+    mc = r['mas_chapter'] if 'mas_chapter' in r.keys() else None
+    dd['jchapter'] = mc if mc else (r['jchapter'] if 'jchapter' in r.keys() else None)
+    mn = r['mas_number'] if 'mas_number' in r.keys() else None
+    dd['masnum'] = mn if mn else dd['number']     # Masoretic-comparison number (real)
+    sn = r['sam_number'] if 'sam_number' in r.keys() else None
+    if sn:                              # Samaritan division shows the Samaritan number
+        dd['number'] = sn
+    return dd
+
+
 @app.route('/api/sam_verses')
 def api_sam_verses():
     """Samaritan-division verses of a Samaritan chapter."""
     sid = int(request.args['sam_ch_id'])
-    rows = db.get_verses_by_sam_ch(sid)
     cols = _verse_cols()
-    out = []
-    for r in rows:
-        dd = _verse_dict(r, cols)
-        mc = r['mas_chapter'] if 'mas_chapter' in r.keys() else None
-        dd['jchapter'] = mc if mc else (r['jchapter'] if 'jchapter' in r.keys() else None)
-        mn = r['mas_number'] if 'mas_number' in r.keys() else None
-        dd['masnum'] = mn if mn else dd['number']     # Masoretic-comparison number (real)
-        sn = r['sam_number'] if 'sam_number' in r.keys() else None
-        if sn:                          # Samaritan division shows the Samaritan number
-            dd['number'] = sn
-        out.append(dd)
-    return jsonify(out)
+    return jsonify([_sam_verse_dict(r, cols) for r in db.get_verses_by_sam_ch(sid)])
+
+
+@app.route('/api/sam_portion')
+def api_sam_portion():
+    """A whole parasha of the Samaritan division: its chapters in order, each with
+    its verses. Printing a range used to ask chapter by chapter — nine hundred and
+    forty-nine requests for the Torah — and this is the same reading in fifty-four."""
+    pid = request.args.get('portion_id', '')
+    if not pid.isdigit():
+        return jsonify([])
+    chs = db.get_sam_chapters_in_portion(int(pid))
+    by = db.get_verses_by_sam_chs([r['id'] for r in chs])
+    cols = _verse_cols()
+    return jsonify([{'id': r['id'], 'num': r['number'],
+                     'verses': [_sam_verse_dict(v, cols) for v in (by.get(r['id']) or [])]}
+                    for r in chs])
 
 
 @app.route('/api/sam_chapter_marks')

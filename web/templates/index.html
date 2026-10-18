@@ -249,7 +249,24 @@
       <div class="pr-choice">
         <button class="pr-opt sel" data-scope="chapter" type="button" data-i18n="print_scope_ch">הפרק הנוכחי</button>
         <button class="pr-opt" data-scope="portion" type="button" data-i18n="print_scope_pt">הפרשה כולה</button>
+        <button class="pr-opt" data-scope="range" type="button" data-i18n="print_scope_rg">טווח</button>
       </div>
+    </div>
+    <!-- the range: from a book and a parasha, to a book and a parasha. Always of
+         the Samaritan division, and the same parasha on both sides is one parasha. -->
+    <div class="pr-field hidden" id="prRangeField">
+      <div class="pr-label" data-i18n="print_range">הטווח — לפי חלוקת הפרשות השומרונית</div>
+      <div class="pr-range-row">
+        <span class="pr-range-lab" data-i18n="print_range_from">מן</span>
+        <select id="prFromBook" class="pr-sel"></select>
+        <select id="prFromPortion" class="pr-sel pr-sel-wide"></select>
+      </div>
+      <div class="pr-range-row">
+        <span class="pr-range-lab" data-i18n="print_range_to">עד</span>
+        <select id="prToBook" class="pr-sel"></select>
+        <select id="prToPortion" class="pr-sel pr-sel-wide"></select>
+      </div>
+      <div class="pr-range-size" id="prRangeSize"></div>
     </div>
     <div class="pr-field">
       <div class="pr-label" data-i18n="print_font">גופן להדפסה</div>
@@ -266,7 +283,22 @@
     <div id="prTransChosen" class="pr-trans-chosen hidden"></div>
     <button id="prPreview" class="share-opt" style="background:#3a6b34" data-i18n="print_preview">תצוגה מקדימה</button>
     <button id="prGo" class="share-opt" style="background:var(--navy)" data-i18n="print_go">הדפס / שמור PDF</button>
+    <button id="prHtml" class="share-opt" style="background:#7a5a2e" data-i18n="print_html">צור דף HTML אינטראקטיבי</button>
+    <button id="prShare" class="share-opt" style="background:#2f7d6b" data-i18n="print_share">שתף — וואטסאפ, מייל, כל אפליקציה</button>
+    <div class="pr-share-note" data-i18n="print_share_note">הקובץ המשותף נפתח בכל מכשיר, ובו כפתור הדפסה — כך נוצר ה-PDF בצד המקבל</div>
     <button class="share-opt close" id="prCancel" data-i18n="close">סגור</button>
+  </div>
+</div>
+
+<!-- sharing on a device with no sharing of its own: the file is saved, and these
+     two carry the app's address to whoever should get it -->
+<div id="printShareModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title" data-i18n="print_share_saved">הקובץ נשמר אצלך</div>
+    <div class="pr-share-note" data-i18n="print_share_attach">צרפו אותו להודעה, או שלחו קישור לאפליקציה:</div>
+    <button class="share-opt psh-opt" data-via="wa" style="background:#25632f" data-i18n="print_share_wa">וואטסאפ</button>
+    <button class="share-opt psh-opt" data-via="mail" style="background:#2f5f7d" data-i18n="print_share_mail">מייל</button>
+    <button class="share-opt close" data-i18n="close">סגור</button>
   </div>
 </div>
 

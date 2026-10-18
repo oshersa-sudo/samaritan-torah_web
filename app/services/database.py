@@ -1543,6 +1543,35 @@ def get_sam_chapters_in_portion(portion_id):
     return rows
 
 
+def get_verses_by_sam_chs(sam_ch_ids):
+    """{sam_ch_id: rows} for several Samaritan chapters at once, each in reading
+    order. The same ordering as get_verses_by_sam_ch, which is where the reasoning
+    for it is written — this is that query asked once for many chapters instead of
+    once per chapter, for the printing of a range."""
+    ids = [int(i) for i in (sam_ch_ids or [])]
+    if not ids:
+        return {}
+    out = {}
+    conn = get_connection()
+    try:
+        for i in range(0, len(ids), 500):
+            part = ids[i:i + 500]
+            ph = ','.join('?' * len(part))
+            for r in conn.execute(
+                    """SELECT v.*, ch.number AS jchapter FROM verses v
+                       JOIN chapters ch ON ch.id = v.chapter_id
+                       WHERE v.sam_ch_id IN (%s)
+                       ORDER BY v.sam_ch_id, ch.number,
+                                CAST(v.number AS INTEGER),
+                                CASE WHEN instr(v.number,'-')>0
+                                     THEN CAST(substr(v.number, instr(v.number,'-')+1) AS INTEGER)
+                                     ELSE 0 END""" % ph, part):
+                out.setdefault(r['sam_ch_id'], []).append(r)
+    finally:
+        conn.close()
+    return out
+
+
 def get_verses_by_sam_ch(sam_ch_id):
     # Reading order is (Jewish chapter, verse number), NOT id: verses inserted
     # later carry a high id and would otherwise sort after the ׃-- end-mark and
