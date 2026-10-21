@@ -3146,8 +3146,12 @@ def _tabbakh_html(text, vmap, ar=False):
         out.append('<a class="tm-ref" data-vid="%d">%s</a>' % (vid, lbl) if vid else lbl)
         last = m.end()
     out.append(_tm_esc(text[last:]))
+    # word by word, with the middle dot the Samaritan script divides words by —
+    # outside the Samaritan font, which has no glyph for it
     marked = _TABBAKH_SAM.sub(
-        lambda m: '<span class="samchar tb-cite">%s</span>' % m.group(1), ''.join(out))
+        lambda m: '<span class="tb-q">%s</span>' % '<span class="wsep tb-sep">·</span> '.join(
+            '<span class="samchar tb-cite">%s</span>' % w for w in m.group(1).split()),
+        ''.join(out))
     # an uncertainty mark is the editor's, not the scribe's — never in Samaritan
     marked = re.sub(r'(<span class="samchar tb-cite">[^<]*?)(\[\?\]|\[\.\.\.\])',
                     lambda m: m.group(1) + '</span>' + m.group(2) + '<span class="samchar tb-cite">',
