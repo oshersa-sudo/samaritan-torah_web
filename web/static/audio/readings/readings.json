@@ -941,7 +941,7 @@
      "verses": "ח:כא-ט:ז",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 43,
@@ -963,7 +963,7 @@
      "verses": "ט:ח-ט:יא",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 44,
@@ -985,7 +985,7 @@
      "verses": "ט:יב-ט:יז",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 45,
@@ -1007,7 +1007,7 @@
      "verses": "ט:יח-ט:כב",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 46,
@@ -1029,7 +1029,7 @@
      "verses": "י:א-י:ה",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 47,
@@ -1051,7 +1051,7 @@
      "verses": "י:ו-י:יב",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 48,
@@ -1073,7 +1073,7 @@
      "verses": "י:יג-י:כ",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 49,
@@ -1095,7 +1095,7 @@
      "verses": "י:כא-י:כט",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 50,
@@ -1117,7 +1117,7 @@
      "verses": "יא:א-יא:ט",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 51,
@@ -1139,7 +1139,7 @@
      "verses": "יא:י-יא:יא",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 52,
@@ -1161,7 +1161,7 @@
      "verses": "יא:יב-יא:יג",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 53,
@@ -1183,7 +1183,7 @@
      "verses": "יא:יד-יא:טו",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 54,
@@ -1205,7 +1205,7 @@
      "verses": "יא:טז-יא:יז",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 55,
@@ -1227,7 +1227,7 @@
      "verses": "יא:יח-יא:יט",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 56,
@@ -1249,7 +1249,7 @@
      "verses": "יא:כ-יא:כא",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 57,
@@ -1271,7 +1271,7 @@
      "verses": "יא:כב-יא:כג",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 58,
@@ -1293,7 +1293,7 @@
      "verses": "יא:כד-יא:כה",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 59,
@@ -1315,7 +1315,7 @@
      "verses": "יא:כו-יא:לב",
      "portion": {
       "order": 5,
-      "name": "אל ליבו",
+      "name": "אל לבו",
       "id": 5
      },
      "sam_ch_number": 60,
@@ -17836,7 +17836,7 @@
      "verses": "ל:א-ל:יד",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 136,
@@ -17858,7 +17858,7 @@
      "verses": "ל:טו-ל:כ",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 137,
@@ -17880,7 +17880,7 @@
      "verses": "לא:א-לא:ו",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 138,
@@ -17902,7 +17902,7 @@
      "verses": "לא:ז-לא:יג",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 139,
@@ -17924,7 +17924,7 @@
      "verses": "לא:יד-לא:טו",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 140,
@@ -17946,7 +17946,7 @@
      "verses": "לא:טז-לא:יח",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 141,
@@ -17968,7 +17968,7 @@
      "verses": "לא:יט-לא:כא",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 142,
@@ -17990,7 +17990,7 @@
      "verses": "לא:כב-לא:כד",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 143,
@@ -18012,7 +18012,7 @@
      "verses": "לא:כה-לא:כט",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 144,
@@ -18034,7 +18034,7 @@
      "verses": "לא:ל-לא:ל",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 145,
@@ -18056,7 +18056,7 @@
      "verses": "לב:א-לב:מג",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 146,
@@ -18078,7 +18078,7 @@
      "verses": "לב:מד-לב:מז",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 147,
@@ -18100,7 +18100,7 @@
      "verses": "לב:מח-לב:נב",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 148,
@@ -18122,7 +18122,7 @@
      "verses": "לג:א-לג:ז",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 149,
@@ -18144,7 +18144,7 @@
      "verses": "לג:ח-לג:יא",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 150,
@@ -18166,7 +18166,7 @@
      "verses": "לג:יב-לג:יז",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 151,
@@ -18188,7 +18188,7 @@
      "verses": "לג:יח-לג:יט",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 152,
@@ -18210,7 +18210,7 @@
      "verses": "לג:כ-לג:כא",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 153,
@@ -18232,7 +18232,7 @@
      "verses": "לג:כב-לג:כג",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 154,
@@ -18254,7 +18254,7 @@
      "verses": "לג:כד-לג:כז",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 155,
@@ -18276,7 +18276,7 @@
      "verses": "לג:כח-לג:כט",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 156,
@@ -18298,7 +18298,7 @@
      "verses": "לד:א-לד:ד",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 157,
@@ -18320,7 +18320,7 @@
      "verses": "לד:ה-לד:ז",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 158,
@@ -18342,7 +18342,7 @@
      "verses": "לד:ח-לד:ט",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 159,
@@ -18364,7 +18364,7 @@
      "verses": "לד:י-לד:יב",
      "portion": {
       "order": 9,
-      "name": "והיה כי יביאך",
+      "name": "והיה כי יבאו",
       "id": 54
      },
      "sam_ch_number": 160,
