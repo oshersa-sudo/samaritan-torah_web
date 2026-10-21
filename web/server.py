@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '4.4'
+APP_VERSION = '4.5'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 _SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
@@ -2765,17 +2765,20 @@ def api_ervah_by_verse():
 # ── ספר הערוות: full-book reader (the verse source is /api/ervah above) ──
 @app.route('/api/ervah_toc')
 def api_ervah_toc():
-    return jsonify(db.get_ervah_toc())
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_ervah_toc(lang))
 
 
 @app.route('/api/ervah_chapter')
 def api_ervah_chapter():
-    return jsonify(db.get_ervah_chapter(request.args.get('sec', '')))
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_ervah_chapter(request.args.get('sec', ''), lang))
 
 
 @app.route('/api/ervah_search')
 def api_ervah_search():
-    return jsonify(db.search_ervah(request.args.get('q', '')))
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.search_ervah(request.args.get('q', ''), lang=lang))
 
 
 # ── פירוש אם בחקותי: full-book reader (the verse source is /api/bhuq above) ──

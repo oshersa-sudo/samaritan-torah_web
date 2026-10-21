@@ -2899,14 +2899,39 @@ def _ervah_mark_refs(text, vmap):
     return ''.join(out)
 
 
+_ERVAH_AR_BORD = {'التكوين': 1, 'الخروج': 2, 'اللاويين': 3, 'العدد': 4, 'التثنية': 5}
+_ERVAH_AR_REF = re.compile('(التكوين|الخروج|اللاويين|العدد|التثنية)'
+                           r'\s+([٠-٩]{1,3})\s*:\s*([٠-٩]{1,3})')
+
+
+def _ervah_ar_num(s):
+    """An Arabic-Indic numeral as a number."""
+    return int(''.join(chr(ord('0') + ord(c) - 0x660) for c in (s or '')) or 0)
+
+
+def _ervah_mark_refs_ar(text, vmap):
+    """The same, for the Arabic rendering — its citations name the book in Arabic
+    and count in Arabic-Indic digits, so they need their own reading."""
+    out, last = [], 0
+    for m in _ERVAH_AR_REF.finditer(text or ''):
+        out.append(_tm_esc(text[last:m.start()]))
+        vid = vmap.get((_ERVAH_AR_BORD[m.group(1)], _ervah_ar_num(m.group(2)),
+                        _ervah_ar_num(m.group(3))))
+        lbl = _tm_esc(m.group(0))
+        out.append('<a class="tm-ref" data-vid="%d">%s</a>' % (vid, lbl) if vid else lbl)
+        last = m.end()
+    out.append(_tm_esc((text or '')[last:]))
+    return ''.join(out)
+
+
 _ERVAH_NUM = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב',
               'יג', 'יד', 'טו', 'טז', 'יז', 'יח', 'יט', 'כ', 'כא', 'כב', 'כג', 'כד',
               'כה', 'כו', 'כז', 'כח', 'כט', 'ל']
 
 
-def get_ervah_toc():
+def get_ervah_toc(lang='he'):
     """The book's sections, in order — one card each, with how many verses it
-    reads."""
+    reads. In Arabic each chapter is named in Arabic."""
     conn = get_connection()
     try:
         rows = conn.execute("""SELECT s.id, s.ord, s.title, LENGTH(s.text) len,
@@ -2916,17 +2941,28 @@ def get_ervah_toc():
                                GROUP BY s.id ORDER BY s.ord""").fetchall()
     except Exception:
         rows = []
+    ar = _ervah_ar(conn) if lang == 'ar' else {}
     conn.close()
-    return [{'id': r['id'], 'ord': r['ord'], 'letter': (_ERVAH_NUM[r['ord']] if 0 < r['ord'] < len(_ERVAH_NUM)
-                        else str(r['ord'])),
-             'title': r['title'] or '', 'count': r['n'] or 0,
+
+    def badge(n):
+        # the chapter's number, counted the way the reader is reading
+        if lang == 'ar':
+            return ''.join(chr(0x660 + int(d)) for d in str(n))
+        return _ERVAH_NUM[n] if 0 < n < len(_ERVAH_NUM) else str(n)
+
+    return [{'id': r['id'], 'ord': r['ord'], 'letter': badge(r['ord']),
+             'title': ar.get((r['ord'], -1), '') or r['title'] or '', 'count': r['n'] or 0,
              'len': r['len'] or 0} for r in rows]
 
 
-def get_ervah_chapter(sid):
+def get_ervah_chapter(sid, lang='he'):
     """One section, paragraph by paragraph, with its citations made clickable and
     the verse each paragraph reads — so a reader can step from the book into the
-    Torah at the place it is arguing about."""
+    Torah at the place it is arguing about.
+
+    In Arabic the paragraph's own Arabic rendering is read in its place, keyed by
+    the same split; a paragraph with none yet keeps the Hebrew, marked `pending`,
+    so the book still reads continuously."""
     try:
         sid = int(sid)
     except (TypeError, ValueError):
@@ -2940,6 +2976,7 @@ def get_ervah_chapter(sid):
                              'WHERE section_id=? ORDER BY verse_id', (sid,)).fetchall()
     except Exception:
         s, links = None, []
+    ar = _ervah_ar(conn) if lang == 'ar' else {}
     conn.close()
     if not s:
         return {'id': sid, 'title': '', 'sections': []}
@@ -2952,10 +2989,17 @@ def get_ervah_chapter(sid):
             if quote[:24] and quote[:24] in para:
                 vid = v
                 break
+        txt = ar.get((s['ord'], i - 1), '') if lang == 'ar' else ''
+        arabic = bool(txt.strip())
+        pending = lang == 'ar' and not arabic
+        body = txt if arabic else para
         out.append({'id': sid * 1000 + i, 'ref': '', 'title': '',
-                    'hebrew': para, 'hebrew_html': _ervah_mark_refs(para, vmap),
+                    'hebrew': body, 'pending': pending,
+                    'hebrew_html': (_ervah_mark_refs_ar(body, vmap) if arabic
+                                    else _ervah_mark_refs(body, vmap)),
                     'verse_id': vid})
-    return {'id': sid, 'ord': s['ord'], 'title': s['title'] or '', 'sections': out}
+    return {'id': sid, 'ord': s['ord'],
+            'title': ar.get((s['ord'], -1), '') or s['title'] or '', 'sections': out}
 
 
 def _ervah_bare(s):
@@ -2977,8 +3021,12 @@ def _ervah_para_for(text, quote):
     return paras[0] if paras else (text or '')
 
 
-def search_ervah(q, limit=80):
-    """Search the book (section titles + text), the marks set aside."""
+def search_ervah(q, limit=80, lang='he'):
+    """Search the book (section titles + text), the marks set aside.
+
+    A reader reading the Arabic searches the Arabic: the section's paragraphs are
+    then joined from their Arabic rendering, so what is found is what is on the
+    page in front of them."""
     q = _ervah_bare((q or '').strip())
     if not q:
         return []
@@ -2988,16 +3036,24 @@ def search_ervah(q, limit=80):
                             'ORDER BY ord').fetchall()
     except Exception:
         rows = []
+    ar = _ervah_ar(conn) if lang == 'ar' else {}
     conn.close()
     out = []
     for r in rows:
-        bare = _ervah_bare(r['text'] or '')
+        body = r['text'] or ''
+        if lang == 'ar':
+            paras = [p for p in body.split('\n\n') if p.strip()]
+            body = '\n\n'.join(ar.get((r['ord'], i), '') or p
+                               for i, p in enumerate(paras))
+        bare = _ervah_bare(body)
         i = bare.find(q)
-        if i < 0 and q not in _ervah_bare(r['title'] or ''):
+        ttl = ar.get((r['ord'], -1), '') or r['title'] or ''
+        if i < 0 and q not in _ervah_bare(ttl):
             continue
-        snip = ('…' + bare[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0             else _ervah_bare(r['title'] or '')
+        snip = ('…' + bare[max(0, i - 32):i + len(q) + 44] + '…') if i >= 0             else _ervah_bare(ttl)
         out.append({'id': r['id'], 'ord': r['ord'],
-                    'title': _ervah_bare(r['title'] or ''), 'snippet': snip})
+                    'title': _ervah_bare(ar.get((r['ord'], -1), '') or r['title'] or ''),
+                    'snippet': snip})
         if len(out) >= limit:
             break
     return out
@@ -3649,7 +3705,10 @@ def get_bhuq_by_verse(verse_ids, lang='he'):
 
 
 def _ervah_ar(conn):
-    """{(section ord, paragraph): the Arabic of it} — empty when none is stored."""
+    """{(section ord, paragraph): the Arabic of it} — empty when none is stored.
+
+    A section's own title rides along under paragraph -1, so the book names its
+    chapters in Arabic too rather than heading Arabic text in Hebrew."""
     try:
         return {(r[0], r[1]): r[2] or '' for r in
                 conn.execute('SELECT ord, para, text FROM ervah_para_ar')}
@@ -3697,7 +3756,8 @@ def get_ervah_commentary(verse_ids, lang='he'):
             continue                     # one paragraph quoting two of the verses
         seen.add(para)
         txt = ar.get((r['ord'], i), '') if lang == 'ar' else ''
-        out.append({'ref': '', 'title': r['title'] or '',
+        ttl = ar.get((r['ord'], -1), '') if lang == 'ar' else ''
+        out.append({'ref': '', 'title': ttl or r['title'] or '',
                     'text': txt or para, 'pending': lang == 'ar' and not txt})
     return out
 
@@ -3731,7 +3791,8 @@ def get_ervah_by_verse(verse_ids, lang='he'):
         if any(x['_he'] == para for x in seen):
             continue
         txt = ar.get((r['ord'], i), '') if lang == 'ar' else ''
-        seen.append({'ref': r['quote'] or r['ref'] or '', 'title': r['title'] or '',
+        ttl = ar.get((r['ord'], -1), '') if lang == 'ar' else ''
+        seen.append({'ref': r['quote'] or r['ref'] or '', 'title': ttl or r['title'] or '',
                      'text': txt or para, 'pending': lang == 'ar' and not txt,
                      '_he': para})
     for items in out.values():
