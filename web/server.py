@@ -69,7 +69,7 @@ ADMIN_USER = os.environ.get('ADMIN_USER', 'oshersa')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 _TOKEN_TTL = 12 * 3600                 # admin session token lifetime (seconds)
 _LOGIN_FAILS = {}                      # ip -> [failure timestamps] (best-effort throttle)
-_EDITABLE = {'verses': {'text', 'masoretic_text', 'interpretation', 'sam_aramaic',
+_EDITABLE = {'verses': {'text', 'masoretic_text', 'interpretation', 'interpretation_sam', 'sam_aramaic',
                         'sam_hebrew', 'simple_hebrew', 'english', 'arabic_trans',
                         # per-version comparison texts, editable from the compare-view pencils
                         'lxx_text', 'onkelos_text', 'qumran_text',

@@ -1301,6 +1301,79 @@ def _seed_benhayyim_translit():
         print('[translit] skipped: %s' % exc)
 
 
+_INTERP_SAM_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                 'data', 'interp_sam_patch.json')
+
+
+def _seed_interp_sam():
+    """The verse commentary re-voiced in the Torah's own vocabulary, for the
+    Samaritan-script view — brought into whatever DB is on disk, in place.
+
+    It lives in its own column, verses.interpretation_sam, created here when
+    absent; verses.interpretation is never touched. A verse receives the text only
+    while it is still the verse the text was written for (its Samaritan letters
+    match — punctuation edited online is ignored), and only while its current
+    value is one this patch itself shipped (recorded in interp_sam_shipped), so a
+    commentary corrected online is left alone. Once applied, a rerun is one pass
+    of comparisons and changes nothing."""
+    try:
+        if not os.path.exists(_INTERP_SAM_PATCH):
+            return
+        # other boot patches may still hold the file (some run in threads): wait, don't fail
+        conn = sqlite3.connect(DB_PATH, timeout=120)
+        cols = [r[1] for r in conn.execute('PRAGMA table_info(verses)')]
+        if not cols:
+            conn.close()
+            return
+        if 'interpretation_sam' not in cols:
+            conn.execute('ALTER TABLE verses ADD COLUMN interpretation_sam TEXT')
+        conn.execute('CREATE TABLE IF NOT EXISTS interp_sam_shipped '
+                     '(verse_id INTEGER PRIMARY KEY, text TEXT)')
+        with open(_INTERP_SAM_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        import hashlib
+        sk = {vid: hashlib.sha1(_HEB_LETTERS.sub('', t or '').encode('utf-8')).hexdigest()[:12]
+              for vid, t in conn.execute('SELECT id, text FROM verses')}
+        cur = {vid: t for vid, t in conn.execute('SELECT id, interpretation_sam FROM verses')}
+        shipped = {vid: t for vid, t in conn.execute('SELECT verse_id, text FROM interp_sam_shipped')}
+        upd = []
+        gone = moved = edited = same = 0
+        for x in patch.get('rows', []):
+            vid, new = x['id'], x['sam']
+            if vid not in sk:
+                gone += 1
+                continue
+            if sk[vid] != x.get('skel'):
+                moved += 1                       # merged, split or re-lettered online
+                continue
+            have = cur.get(vid)
+            if have == new:
+                same += 1
+                continue
+            if have not in (None, '') and have != shipped.get(vid):
+                edited += 1                      # corrected online: theirs stands
+                continue
+            upd.append((new, vid))
+        if upd:
+            conn.executemany('UPDATE verses SET interpretation_sam=? WHERE id=?', upd)
+            conn.executemany('INSERT OR REPLACE INTO interp_sam_shipped (verse_id, text) VALUES (?,?)',
+                             [(vid, new) for new, vid in upd])
+            conn.commit()
+            PATCH_REPORT['interp_sam'] = ('%d verses written; left alone: %d not in this DB, '
+                                          '%d verse changed since, %d edited online; %d already current'
+                                          % (len(upd), gone, moved, edited, same))
+            print('[interp-sam] %s' % PATCH_REPORT['interp_sam'])
+        else:
+            PATCH_REPORT['interp_sam'] = 'already current'
+        conn.close()
+    except Exception as exc:
+        PATCH_REPORT['interp_sam'] = 'failed: %s' % exc
+        print('[interp-sam] skipped: %s' % exc)
+
+
+_seed_interp_sam()
+
+
 _WORD_MEANING_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                    'data', 'word_meaning_patch.json')
 

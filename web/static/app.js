@@ -1301,7 +1301,35 @@ function commentaryText(text){
 // commentary font (SamComment) without having to also turn on "כולל פירושים?".
 function interpText(text){
   if(!S.samFont) return esc(text||'');
-  return samMarkupFree(addWordDots(stripNiqqud(text||'')));
+  return samMarkupFree(samPunct(text||''));
+}
+// The re-voiced commentary in Samaritan script carries no modern punctuation.
+// The same conventions as the Aramaic translation: a middle dot between words;
+// the end of a sentence is ":-" and a pause (comma, semicolon, dash) is ":",
+// both drawn from the Hebrew font and glued to the word they close; a gloss in
+// parentheses is fenced by pauses; quotation marks, the gershayim inside a
+// letter-name (יו"ד → יוד), brackets and niqqud are dropped. No dot after a
+// stop mark, before one, after a number, or at the end of the text.
+function samPunct(text){
+  let t = stripNiqqud(text||'');
+  t = t.replace(/([א-ת]{2})["\u05f4]([א-ת])(?![א-ת])/g, '$1$2');
+  t = t.replace(/[\u05f3']/g, '');
+  t = t.replace(/["\u201c\u201d\u201e«»]/g, '');
+  t = t.replace(/([א-ת])-([א-ת])/g, '$1 $2');          // אל-חכים: a hyphen just separates
+  t = t.replace(/\s+-+\s+|^-+\s+|\s+-+$/g, ' : '); // a spaced hyphen used as a dash → pause
+  t = t.replace(/\s*[()\[\]]\s*/g, ' : ');
+  t = t.replace(/\s*[.?!\u2026]+\s*/g, ' :- ');
+  t = t.replace(/\s*(?:[,;\u2014\u2013]|:(?!-))+\s*/g, ' : ');   // pause (not the ":-" just made)
+  t = t.replace(/(\s*:-?\s*)+/g, m => m.indexOf(':-')>=0 ? ' :- ' : ' : ');
+  const toks = t.split(/\s+/).filter(Boolean), out = [];
+  for(let i=0;i<toks.length;i++){
+    const tok = toks[i];
+    if(tok===':' || tok===':-'){ if(out.length) out[out.length-1] = out[out.length-1].replace(/·$/,'') + tok; continue; }
+    const nxt = toks[i+1];
+    const sep = nxt!==undefined && nxt!==':' && nxt!==':-' && !/^\d+$/.test(tok);
+    out.push(tok + (sep ? '·' : ''));
+  }
+  return out.join(' ').replace(/^(:-?\s*)+/, '');
 }
 // Is a side/bottom panel currently showing? Samaritan-font mode normally
 // suppresses panels and falls back to plain verse text, unless "כולל פירושים?"
@@ -3121,11 +3149,16 @@ async function buildCompare(c, verses){
 // the fetch from the drawing is what lets the second shape exist at all.
 async function interpFetch(verses){
   const ar = (S.interpLang==='ar');
+  // In Samaritan script the commentary is not the modern Hebrew text set in
+  // another face: it is the same commentary re-voiced in the Torah's own
+  // vocabulary (verses.interpretation_sam), the version that belongs to that
+  // script. A verse not yet re-voiced comes back as its Hebrew commentary.
+  const sam = !ar && (S.interpSam || S.samFont);
   const ids = verses.map(v=>v.id).join(',');
   // In Arabic mode fetch BOTH: a verse whose Arabic is still missing falls back
   // to its Hebrew commentary with a marker, rather than silently vanishing from
   // the panel and making the chapter look like it has fewer verses than it does.
-  const m  = await api('interpretations?verse_ids='+ids+(ar?'&lang=ar':''));
+  const m  = await api('interpretations?verse_ids='+ids+(ar?'&lang=ar': sam?'&lang=sam':''));
   const mHe = ar ? await api('interpretations?verse_ids='+ids) : m;
   // ספר האסאטיר retells whole episodes rather than expounding wording, so it is
   // set BENEATH the commentary in its own name and its own words — not folded
@@ -3149,7 +3182,7 @@ async function interpFetch(verses){
   // once for the whole chapter and set under each verse as a quiet strip.
   const wt = S.interpWords === false ? {} :
              await api('word_table?verse_ids='+ids).catch(()=>({}));
-  return {ar, m, mHe, asa, bhq, erv, wt};
+  return {ar, sam, m, mHe, asa, bhq, erv, wt};
 }
 
 // Header: title on one side, the two view switches on the other. Both are
@@ -3242,7 +3275,7 @@ function interpVerseCol(v, D, vidx, once){
     const body = el('div','itext'+(showAr?' iar':''),
       showAr ? samMarkupFree(stripNiqqud(txt))
              : (!ar && (S.interpSam||S.samFont))
-               ? samMarkupFree(addWordDots(stripNiqqud(txt))) : esc(txt));
+               ? samMarkupFree(samPunct(txt)) : esc(txt));
     if(fellBack) body.prepend(el('span','ipend', t('interp_ar_pending')));
     body.style.fontSize = fs+'px';
     col.appendChild(body);
@@ -3347,7 +3380,7 @@ async function buildInterpret(c, verses){
     const num = el('button','inum'+(S.verseFilter===v.id?' active':''), String(v.number));
     num.onclick=()=>filterVerse(v.id);
     row.appendChild(num); row.appendChild(col);
-    if(!D.ar) addPencil(row, v.id, 'interpretation', ()=>(D.m[v.id]||''));
+    if(!D.ar) addPencil(row, v.id, D.sam ? 'interpretation_sam' : 'interpretation', ()=>(D.m[v.id]||''));
     panel.appendChild(row);
   }
   if(!any) panel.appendChild(el('div','note', D.ar ? t('no_interp_ar') : t('no_interp')));
@@ -3368,7 +3401,10 @@ async function buildInterpretInline(c, verses){
   // the commentary's own script decides the verse's: in Samaritan mode the two
   // are one page, not two faces. In Arabic the verse stays in ordinary letters
   // and its Arabic translation is laid beneath it instead.
-  const samRows = !D.ar && (S.interpSam || S.samFont);
+  // The verse rows follow the reader's own script choice. Choosing the Arabic
+  // commentary used to force them back into Hebrew letters; now the script set
+  // on the toolbar (or on this panel) stands until the reader changes it.
+  const samRows = S.samFont || S.interpSam;
   for(const v of verses){
     vidx++;
     addPlainRows(wrap, [v], samRows);
@@ -3389,7 +3425,7 @@ async function buildInterpretInline(c, verses){
     any = true;
     const box = el('div','iinline');
     box.appendChild(col);
-    if(!D.ar) addPencil(box, v.id, 'interpretation', ()=>(D.m[v.id]||''));
+    if(!D.ar) addPencil(box, v.id, D.sam ? 'interpretation_sam' : 'interpretation', ()=>(D.m[v.id]||''));
     wrap.appendChild(box);
   }
   if(!any) wrap.appendChild(el('div','note', D.ar ? t('no_interp_ar') : t('no_interp')));

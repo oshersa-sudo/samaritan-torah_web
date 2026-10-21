@@ -20,7 +20,10 @@ from .database import DB_PATH as _DB_PATH
 
 # lang -> column. Anything unrecognised falls back to Hebrew rather than
 # erroring, so a stale client asking for a language we dropped still renders.
-_COLUMNS = {'he': 'interpretation', 'ar': 'interpretation_ar'}
+_COLUMNS = {'he': 'interpretation', 'ar': 'interpretation_ar',
+            # the commentary re-voiced in Torah vocabulary, for the Samaritan-script
+            # view; a verse not yet re-voiced falls back to its Hebrew commentary
+            'sam': 'COALESCE(interpretation_sam, interpretation)'}
 
 
 def get_chapter_interpretations(verse_rows, lang='he'):
@@ -35,8 +38,14 @@ def get_chapter_interpretations(verse_rows, lang='he'):
     placeholders = ','.join('?' * len(ids))
     conn = sqlite3.connect(_DB_PATH)
     conn.row_factory = sqlite3.Row
-    rows = conn.execute(
-        f'SELECT id, {col} AS txt FROM verses WHERE id IN ({placeholders})', ids
-    ).fetchall()
+    try:
+        rows = conn.execute(
+            f'SELECT id, {col} AS txt FROM verses WHERE id IN ({placeholders})', ids
+        ).fetchall()
+    except sqlite3.OperationalError:
+        # a DB the boot patch has not reached yet has no interpretation_sam column
+        rows = conn.execute(
+            f'SELECT id, interpretation AS txt FROM verses WHERE id IN ({placeholders})', ids
+        ).fetchall()
     conn.close()
     return {r['id']: r['txt'] for r in rows if r['txt']}
