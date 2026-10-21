@@ -348,6 +348,47 @@ def _seed_ervah():
 _seed_ervah()
 
 
+_ERVAH_AR_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                               'data', 'ervah_ar_patch.json')
+
+
+def _seed_ervah_ar():
+    """The Arabic rendering of ספר הערוות, paragraph by paragraph.
+
+    A table of its own that nothing else writes to, brought to the patch's
+    content and compared by fingerprint, so a server already holding this
+    version does nothing. Paragraphs are keyed by their section's order and
+    their own position in it — the same split the Hebrew is read by."""
+    try:
+        if not os.path.exists(_ERVAH_AR_PATCH):
+            return
+        with open(_ERVAH_AR_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute("""CREATE TABLE IF NOT EXISTS ervah_para_ar (
+            ord INTEGER, para INTEGER, text TEXT, PRIMARY KEY (ord, para))""")
+        have = [[r[0], r[1], r[2] or ''] for r in conn.execute(
+            'SELECT ord, para, text FROM ervah_para_ar ORDER BY ord, para')]
+        fp = hashlib.sha1(json.dumps(have, ensure_ascii=False).encode('utf-8')).hexdigest()
+        if fp == patch.get('fingerprint'):
+            PATCH_REPORT['ervah_ar'] = 'already current'
+            conn.close()
+            return
+        conn.execute('DELETE FROM ervah_para_ar')
+        conn.executemany('INSERT INTO ervah_para_ar (ord, para, text) VALUES (?,?,?)',
+                         patch.get('paras', []))
+        conn.commit()
+        conn.close()
+        PATCH_REPORT['ervah_ar'] = '%d paragraphs' % len(patch.get('paras', []))
+        print('[ervah-ar] %s' % PATCH_REPORT['ervah_ar'])
+    except Exception as exc:
+        PATCH_REPORT['ervah_ar'] = 'failed: %s' % exc
+        print('[ervah-ar] skipped: %s' % exc)
+
+
+_seed_ervah_ar()
+
+
 _DARA_UNIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                 'data', 'dara_unit_patch.json')
 
@@ -3607,7 +3648,27 @@ def get_bhuq_by_verse(verse_ids, lang='he'):
     return out
 
 
-def get_ervah_commentary(verse_ids):
+def _ervah_ar(conn):
+    """{(section ord, paragraph): the Arabic of it} — empty when none is stored."""
+    try:
+        return {(r[0], r[1]): r[2] or '' for r in
+                conn.execute('SELECT ord, para, text FROM ervah_para_ar')}
+    except Exception:
+        return {}
+
+
+def _ervah_para_index(text, quote):
+    """Which paragraph of the section the book quoted the verse in."""
+    paras = [p for p in (text or '').split('\n\n') if p.strip()]
+    key = _ervah_bare(quote or '')[:24]
+    if key:
+        for i, p in enumerate(paras):
+            if key in _ervah_bare(p):
+                return i, p
+    return 0, (paras[0] if paras else (text or ''))
+
+
+def get_ervah_commentary(verse_ids, lang='he'):
     """ספר הערוות on any of the given verses, in the book's own order. A section
     is attached to a verse because the book quotes that verse in it — nothing
     here is inferred — so a section argues under every verse it reads, and a
@@ -3627,18 +3688,21 @@ def get_ervah_commentary(verse_ids):
         ).fetchall()
     except Exception:
         rows = []
+    ar = _ervah_ar(conn) if lang == 'ar' else {}
     conn.close()
     out, seen = [], set()
     for r in rows:
-        para = _ervah_para_for(r['text'], r['quote'])
+        i, para = _ervah_para_index(r['text'], r['quote'])
         if para in seen:
             continue                     # one paragraph quoting two of the verses
         seen.add(para)
-        out.append({'ref': '', 'title': r['title'] or '', 'text': para})
+        txt = ar.get((r['ord'], i), '') if lang == 'ar' else ''
+        out.append({'ref': '', 'title': r['title'] or '',
+                    'text': txt or para, 'pending': lang == 'ar' and not txt})
     return out
 
 
-def get_ervah_by_verse(verse_ids):
+def get_ervah_by_verse(verse_ids, lang='he'):
     """The same sections keyed BY VERSE — {verse_id: [{ref, title, text}, ...]} —
     so a passage can stand beneath the verse it argues about rather than at the
     end of the chapter. The quotation the book made is the ref, because that is
@@ -3658,15 +3722,21 @@ def get_ervah_by_verse(verse_ids):
         ).fetchall()
     except Exception:
         rows = []
+    ar = _ervah_ar(conn) if lang == 'ar' else {}
     conn.close()
     out = {}
     for r in rows:
         seen = out.setdefault(r['vid'], [])
-        para = _ervah_para_for(r['text'], r['quote'])
-        if any(x['text'] == para for x in seen):
+        i, para = _ervah_para_index(r['text'], r['quote'])
+        if any(x['_he'] == para for x in seen):
             continue
+        txt = ar.get((r['ord'], i), '') if lang == 'ar' else ''
         seen.append({'ref': r['quote'] or r['ref'] or '', 'title': r['title'] or '',
-                     'text': para, 'pending': False})
+                     'text': txt or para, 'pending': lang == 'ar' and not txt,
+                     '_he': para})
+    for items in out.values():
+        for x in items:
+            x.pop('_he', None)
     return out
 
 

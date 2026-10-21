@@ -2751,13 +2751,15 @@ def api_bhuq_by_verse():
 @app.route('/api/ervah')
 def api_ervah():
     """כתאב אל-עירות — the passages of ספר הערוות that read these verses."""
-    return jsonify(db.get_ervah_commentary(_ids_arg()))
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_ervah_commentary(_ids_arg(), lang))
 
 
 @app.route('/api/ervah_by_verse')
 def api_ervah_by_verse():
     """The same, keyed by verse, for the commentary panel and the printed sheet."""
-    return jsonify(db.get_ervah_by_verse(_ids_arg()))
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_ervah_by_verse(_ids_arg(), lang))
 
 
 # ── ספר הערוות: full-book reader (the verse source is /api/ervah above) ──

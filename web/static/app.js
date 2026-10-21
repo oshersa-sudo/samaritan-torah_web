@@ -337,6 +337,7 @@ const I18N = {
     interp_words:'מילים', interp_words_lead:'מילות הפסוק:',
     interp_bhuq_lead:'ומדברי אבו אלפרג׳ איבן אל-כתאר בפירוש אם בחקותי',
     interp_ervah_lead:'ומדברי הכהן פינחס בן יצחק בספר הערוות',
+    ervah_credit:'כתאב אל-עירות · הכהן פינחס בן יצחק · תרגום עברי מלא',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_show_pass:'הצג סיסמה',
     adm_forgot:'שכחתי סיסמה', adm_reset_title:'שחזור סיסמה', adm_reset_intro:'יישלח קוד בן שש ספרות לכתובת הדוא״ל של המנהל.', adm_reset_send:'שלח קוד', adm_reset_code:'הקוד שהתקבל', adm_reset_verify:'אישור הקוד', adm_reset_new:'סיסמה חדשה', adm_reset_rule:'לפחות שמונה תווים.', adm_reset_apply:'קבע סיסמה', adm_reset_sent:'קוד נשלח אל', adm_reset_bad:'הקוד שגוי או שאינו בן שש ספרות.', adm_reset_expired:'הקוד פג. בקש קוד חדש.', adm_reset_short:'הסיסמה קצרה מדי — לפחות שמונה תווים.', adm_reset_failed:'השליחה נכשלה. נסה שוב מאוחר יותר.', adm_reset_notarget:'לא הוגדרה כתובת דוא״ל למנהל בשרת.', adm_reset_busy:'יותר מדי בקשות. נסה שוב בעוד שעה.', adm_reset_done:'הסיסמה הוחלפה, ואתה מחובר.', adm_hide_pass:'הסתר סיסמה', adm_pass:'סיסמה', adm_login:'כניסה',
@@ -636,6 +637,7 @@ const I18N = {
     interp_words:'Words', interp_words_lead:'Words of the verse:',
     interp_bhuq_lead:'And Abū l-Faraj ibn al-Kathār says, in his commentary on Im Beḥuqotay',
     interp_ervah_lead:'And the priest Pinḥas ben Yiṣḥaq says, in the Book of Forbidden Unions',
+    ervah_credit:'Kitāb al-ʿAwrāt · the priest Pinḥas ben Yiṣḥaq · full Hebrew translation',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_show_pass:'Show the password',
     adm_forgot:'Forgotten password', adm_reset_title:'Password recovery', adm_reset_intro:'A six-digit code will be sent to the maintainer’s email address.', adm_reset_send:'Send the code', adm_reset_code:'The code you received', adm_reset_verify:'Confirm the code', adm_reset_new:'New password', adm_reset_rule:'At least eight characters.', adm_reset_apply:'Set the password', adm_reset_sent:'A code was sent to', adm_reset_bad:'The code is wrong, or not six digits.', adm_reset_expired:'The code has expired. Ask for a new one.', adm_reset_short:'That password is too short — at least eight characters.', adm_reset_failed:'Sending failed. Try again later.', adm_reset_notarget:'No maintainer email address is configured on the server.', adm_reset_busy:'Too many requests. Try again in an hour.', adm_reset_done:'The password has been changed, and you are signed in.', adm_hide_pass:'Hide the password', adm_pass:'Password', adm_login:'Sign in',
@@ -935,6 +937,7 @@ const I18N = {
     interp_words:'كلمات', interp_words_lead:'كلمات الآية:',
     interp_bhuq_lead:'ويقول أبو الفرج ابن الكثار في تفسير «إن سلكتم في فرائضي»',
     interp_ervah_lead:'ويقول الكاهن فينحاس بن إسحاق في كتاب العورات',
+    ervah_credit:'كتاب العورات · الكاهن فينحاس بن إسحاق · ترجمة عبرية كاملة',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_show_pass:'إظهار كلمة المرور',
     adm_forgot:'نسيت كلمة المرور', adm_reset_title:'استعادة كلمة المرور', adm_reset_intro:'سيُرسَل رمز من ستّ خانات إلى بريد المشرف.', adm_reset_send:'إرسال الرمز', adm_reset_code:'الرمز الذي وصلك', adm_reset_verify:'تأكيد الرمز', adm_reset_new:'كلمة مرور جديدة', adm_reset_rule:'ثمانية محارف على الأقلّ.', adm_reset_apply:'تعيين كلمة المرور', adm_reset_sent:'أُرسل رمز إلى', adm_reset_bad:'الرمز خاطئ أو ليس من ستّ خانات.', adm_reset_expired:'انتهت صلاحيّة الرمز. اطلب رمزاً جديداً.', adm_reset_short:'كلمة المرور قصيرة — ثمانية محارف على الأقلّ.', adm_reset_failed:'فشل الإرسال. حاول لاحقاً.', adm_reset_notarget:'لم يُضبط بريد للمشرف على الخادم.', adm_reset_busy:'طلبات كثيرة. حاول بعد ساعة.', adm_reset_done:'تغيّرت كلمة المرور، وأنت الآن داخل.', adm_hide_pass:'إخفاء كلمة المرور', adm_pass:'كلمة المرور', adm_login:'دخول',
@@ -3128,7 +3131,7 @@ async function interpFetch(verses){
   const bhq = await api('bhuq_by_verse?verse_ids='+ids+(ar?'&lang=ar':'')).catch(()=>({}));
   // ספר הערוות stands beneath the commentary for the same reason, and names
   // the verse the way the book itself named it — by quoting its words.
-  const erv = await api('ervah_by_verse?verse_ids='+ids).catch(()=>({}));
+  const erv = await api('ervah_by_verse?verse_ids='+ids+(ar?'&lang=ar':'')).catch(()=>({}));
   // The commentary is a synthesis OF SOURCES, and a source only speaks where it
   // happened to speak: a hard word nobody wrote about passed in silence, and the
   // Aramaic and the Arabic of the verse's own words were nowhere in the panel —
@@ -3298,9 +3301,14 @@ function interpVerseCol(v, D, vidx, once){
     if(!once('erv', it.text || '', vidx, v.number, leadEl, base)) continue;
     const box = el('div','iasatir ibhuq');
     box.appendChild(leadEl);
-    const et = el('div','iasatir-text',
-      (!ar && (S.interpSam||S.samFont))
+    // Arabic mode shows the Arabic rendering; a paragraph not yet rendered
+    // falls back to its Hebrew, marked, exactly as the commentary above does
+    const showAr = ar && !it.pending;
+    const et = el('div','iasatir-text'+(showAr?' iar':''),
+      showAr ? samMarkupFree(stripNiqqud(it.text))
+      : (!ar && (S.interpSam||S.samFont))
         ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+    if(ar && it.pending) et.prepend(el('span','ipend', t('interp_ar_pending')));
     et.style.fontSize = fs+'px';
     box.appendChild(et);
     col.appendChild(box);
@@ -3741,7 +3749,7 @@ async function buildSamSrc(c, verses){
     // The book argues the laws of forbidden unions from across the Torah, so a
     // passage surfaces wherever it quotes — and what is shown is the paragraph
     // the quotation stands in, under its chapter's name, not the whole chapter.
-    const items = await api('ervah?verse_ids='+ids);
+    const items = await api('ervah?verse_ids='+ids+(LANG==='ar'?'&lang=ar':''));
     const panel=el('div','srcpanel');
     const head=el('div','shead');
     const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
@@ -3754,7 +3762,7 @@ async function buildSamSrc(c, verses){
       const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
       panel.appendChild(card);
     }
-    panel.appendChild(el('div','canchors','כתאב אל-עירות · הכהן פינחס בן יצחק · תרגום עברי מלא'));
+    panel.appendChild(el('div','canchors', t('ervah_credit')));
     c.appendChild(panel); return;
   }
   if(S.samSrcChoice==='bhuq'){
