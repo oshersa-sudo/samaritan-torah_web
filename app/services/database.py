@@ -3120,12 +3120,38 @@ _TABBAKH_SAM = re.compile(r'⟦([^⟧]*)⟧')
 _TABBAKH_NOTE = re.compile(r'\[(\?|\.\.\.)\]')
 
 
+# a reference may name a range of verses — '(ויקרא ט׳, כ״ב–כ״ג)', '(اللاويين ٩:٢٢-٢٣)';
+# it links to the first
+_TABBAKH_REF = re.compile(r'\((בראשית|שמות|ויקרא|במדבר|דברים)\s+'
+                          r'([א-ת״׳\'"]{1,8})\s*[,，،]\s*([א-ת״׳\'"]{1,8})'
+                          r'(?:\s*[–\-]\s*[א-ת״׳\'"]{1,8})?\)')
+_TABBAKH_REF_AR = re.compile('\\((التكوين|الخروج|اللاويين|العدد|التثنية)'
+                             r'\s+([٠-٩]{1,3})\s*:\s*([٠-٩]{1,3})(?:\s*[–\-]\s*[٠-٩]{1,3})?\)')
+
+
+def _tabbakh_vid(m, vmap, ar):
+    if ar:
+        return vmap.get((_ERVAH_AR_BORD[m.group(1)], _ervah_ar_num(m.group(2)),
+                         _ervah_ar_num(m.group(3))))
+    return vmap.get((_TM_BORD[m.group(1)], _ervah_gem(m.group(2)), _ervah_gem(m.group(3))))
+
+
 def _tabbakh_html(text, vmap, ar=False):
     """Escape, make the verse references clickable, set the citations in
     Samaritan script and quieten the editor's [?] / [...] marks."""
-    marked = (_ervah_mark_refs_ar if ar else _ervah_mark_refs)(text or '', vmap)
+    text, out, last = text or '', [], 0
+    for m in (_TABBAKH_REF_AR if ar else _TABBAKH_REF).finditer(text):
+        out.append(_tm_esc(text[last:m.start()]))
+        vid, lbl = _tabbakh_vid(m, vmap, ar), _tm_esc(m.group(0))
+        out.append('<a class="tm-ref" data-vid="%d">%s</a>' % (vid, lbl) if vid else lbl)
+        last = m.end()
+    out.append(_tm_esc(text[last:]))
     marked = _TABBAKH_SAM.sub(
-        lambda m: '<span class="samchar tb-cite">%s</span>' % m.group(1), marked)
+        lambda m: '<span class="samchar tb-cite">%s</span>' % m.group(1), ''.join(out))
+    # an uncertainty mark is the editor's, not the scribe's — never in Samaritan
+    marked = re.sub(r'(<span class="samchar tb-cite">[^<]*?)(\[\?\]|\[\.\.\.\])',
+                    lambda m: m.group(1) + '</span>' + m.group(2) + '<span class="samchar tb-cite">',
+                    marked)
     return _TABBAKH_NOTE.sub(lambda m: '<span class="tb-unc">%s</span>' % m.group(0), marked)
 
 
@@ -3180,9 +3206,9 @@ def get_tabbakh_chapter(cid, lang='he'):
     out, last_page = [], None
     for p in paras:
         vid = None
-        m = _ERVAH_REF.search(p['he'] or '')
+        m = _TABBAKH_REF.search(p['he'] or '')
         if m:
-            vid = vmap.get((_TM_BORD[m.group(1)], _ervah_gem(m.group(2)), _ervah_gem(m.group(3))))
+            vid = _tabbakh_vid(m, vmap, False)
         # the page is named once, where it begins, as a printed edition marks it
         ref = ''
         if p['page'] != last_page:
