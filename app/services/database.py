@@ -3136,6 +3136,21 @@ def _tabbakh_vid(m, vmap, ar):
     return vmap.get((_TM_BORD[m.group(1)], _ervah_gem(m.group(2)), _ervah_gem(m.group(3))))
 
 
+def _tabbakh_cite(body):
+    """One citation's tokens as HTML: words, and between them '·', ':' or ':-'."""
+    out, prev_word = [], False
+    for tok in body.split():
+        if tok in (':', ':-'):
+            out.append('<span class="tb-sep tb-stop">%s</span> ' % tok)
+            prev_word = False
+            continue
+        if prev_word:
+            out.append('<span class="tb-sep">·</span> ')
+        out.append('<span class="samchar2 tb-cite">%s</span>' % tok)
+        prev_word = True
+    return '<span class="tb-q">%s</span>' % ''.join(out).rstrip()
+
+
 def _tabbakh_html(text, vmap, ar=False):
     """Escape, make the verse references clickable, set the citations in
     Samaritan script and quieten the editor's [?] / [...] marks."""
@@ -3146,21 +3161,21 @@ def _tabbakh_html(text, vmap, ar=False):
         out.append('<a class="tm-ref" data-vid="%d">%s</a>' % (vid, lbl) if vid else lbl)
         last = m.end()
     out.append(_tm_esc(text[last:]))
-    # word by word, with the middle dot the Samaritan script divides words by —
-    # outside the Samaritan font, which has no glyph for it
-    marked = _TABBAKH_SAM.sub(
-        lambda m: '<span class="tb-q">%s</span>' % '<span class="wsep tb-sep">·</span> '.join(
-            '<span class="samchar tb-cite">%s</span>' % w for w in m.group(1).split()),
-        ''.join(out))
+    # in the fluent (cursive) Samaritan face, word by word. The font's own stops
+    # are not used: between words a centred dot, a pause ':' and a verse end ':-',
+    # all set outside the Samaritan font, which has no proper glyph for them
+    marked = _TABBAKH_SAM.sub(lambda m: _tabbakh_cite(m.group(1)), ''.join(out))
     # an uncertainty mark is the editor's, not the scribe's — never in Samaritan
-    marked = re.sub(r'(<span class="samchar tb-cite">[^<]*?)(\[\?\]|\[\.\.\.\])',
-                    lambda m: m.group(1) + '</span>' + m.group(2) + '<span class="samchar tb-cite">',
+    marked = re.sub(r'(<span class="samchar2 tb-cite">[^<]*?)(\[\?\]|\[\.\.\.\])',
+                    lambda m: m.group(1) + '</span>' + m.group(2) + '<span class="samchar2 tb-cite">',
                     marked)
+    marked = marked.replace('<span class="samchar2 tb-cite"></span>', '')
     return _TABBAKH_NOTE.sub(lambda m: '<span class="tb-unc">%s</span>' % m.group(0), marked)
 
 
 def _tabbakh_bare(s):
-    return _TABBAKH_SAM.sub(lambda m: m.group(1), _ervah_bare(s or ''))
+    return _TABBAKH_SAM.sub(lambda m: ' '.join(w for w in m.group(1).split()
+                                               if w not in (':', ':-')), _ervah_bare(s or ''))
 
 
 def _tabbakh_num(n, ar):

@@ -2945,8 +2945,9 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 
 
 /* ── כתאב אלטבאח ── citations in Samaritan script, margin notes, uncertain readings */
-.tm-heb .tb-cite, .tm-aram .tb-cite{ font-size:1.12em; color:#7a3b12; padding:0 .12em; letter-spacing:.02em; }
+.tm-heb .tb-cite, .tm-aram .tb-cite{ font-family:'SamComment'; font-size:1.3em; color:#7a3b12; padding:0 .04em; }
 .tb-unc{ color:#a08a6a; font-size:.85em; }
 .tm-sec.tb-margin .tm-heb{ font-size:calc(14px*var(--rd-fs,1)); color:#6b5a44; border-inline-start:3px solid #d8c7a6; padding-inline-start:.6em; }
 .tm-sec.tb-heading .tm-heb{ font-weight:700; color:#7a3b12; }
-.tb-q .tb-sep{ color:#b08a5a; padding:0 .08em; font-size:.9em; }
+.tb-q .tb-sep{ font-family:inherit; color:#b08a5a; padding:0 .1em; font-weight:700; }
+.tb-q .tb-stop{ color:#7a3b12; }
