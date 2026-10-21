@@ -2943,3 +2943,9 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 .tal-loc .occ-he{ font-style:normal; color:#55497f; margin-inline-start:.35em;
   font-size:.92em; opacity:.9; }
 
+
+/* ── כתאב אלטבאח ── citations in Samaritan script, margin notes, uncertain readings */
+.tm-heb .tb-cite, .tm-aram .tb-cite{ font-size:1.12em; color:#7a3b12; padding:0 .12em; letter-spacing:.02em; }
+.tb-unc{ color:#a08a6a; font-size:.85em; }
+.tm-sec.tb-margin .tm-heb{ font-size:calc(14px*var(--rd-fs,1)); color:#6b5a44; border-inline-start:3px solid #d8c7a6; padding-inline-start:.6em; }
+.tm-sec.tb-heading .tm-heb{ font-weight:700; color:#7a3b12; }

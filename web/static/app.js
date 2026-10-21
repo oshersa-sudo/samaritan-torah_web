@@ -220,7 +220,7 @@ const I18N = {
     m_shyt_book:'שו"ת — יעקב בן אהרן הכהן', shyt_title:'שו"ת — יעקב בן אהרן הכהן', shyt_toc_hint:'בחר שאלה לעיון:',
     m_sir_book:'סוד הלבבות (סיר אל-קלוב)', sir_title:'סוד הלבבות — סיר אל-קלוב', sir_toc_hint:'בחר פרק לעיון:',
     m_bhuq_book:'פירוש אם בחקותי', bhuq_title:'פירוש אם בחקותי — אבו אלפרג׳ איבן אל-כתאר',
-    m_ervah_book:'ספר הערוות', ervah_title:'ספר הערוות — כִּתַאבּ אל-עִירוֹת',
+    m_ervah_book:'ספר הערוות', m_tabbakh_book:'כתאב אלטבאח', tabbakh_title:'כתאב אלטבאח — ספר הטבח', tabbakh_toc_hint:'ספר ההלכה של אבו אלחסן אלצורי, מתוך כתב היד שבספרייה הבריטית: הנוסח הערבי כפי שכתבו המעתיק ותרגום עברי מלא לצידו. ציטוטי התורה בכתב שומרוני. בחר פרק לעיון:', ervah_title:'ספר הערוות — כִּתַאבּ אל-עִירוֹת',
     ervah_toc_hint:'החיבור בא כאן בתרגום עברי מלא ורצוף, מחולק לפרקים לפי מהלך הדיון. בחר פרק לעיון:',
     bhuq_toc_hint:'החיבור מחולק כאן לחלקים לפי מהלך הטיעון; המספרים בסוגריים הם סעיפי המחבר. בחר חלק לעיון:',
     m_asatir_book:'ספר האסאטיר', asatir_title:'ספר האסאטיר', asatir_toc_hint:'בחר פרק לעיון:',
@@ -524,7 +524,7 @@ const I18N = {
     m_shyt_book:'Responsa of Jacob ben Aaron', shyt_title:'Responsa — Jacob ben Aaron the Priest', shyt_toc_hint:'Choose a question:',
     m_sir_book:'Sīr al-Qulūb (Secret of Hearts)', sir_title:'Sīr al-Qulūb — The Secret of Hearts', sir_toc_hint:'Choose a section:',
     m_bhuq_book:'Commentary on Im Beḥuqotay', bhuq_title:'Im Beḥuqotay — Abū l-Faraj ibn al-Kathār',
-    m_ervah_book:'The Book of Forbidden Unions', ervah_title:'Kitāb al-ʿAwrāt — the laws of forbidden unions',
+    m_ervah_book:'The Book of Forbidden Unions', m_tabbakh_book:'Kitāb al-Ṭabbākh', tabbakh_title:'Kitāb al-Ṭabbākh — the book of Abū l-Ḥasan al-Ṣūrī', tabbakh_toc_hint:'The law book of Abū l-Ḥasan al-Ṣūrī, from the British Library manuscript: the Arabic as the copyist wrote it, with a full Hebrew translation. Torah citations are kept in Samaritan script. Choose a chapter:', ervah_title:'Kitāb al-ʿAwrāt — the laws of forbidden unions',
     ervah_toc_hint:'The treatise is given here in a full, continuous Hebrew translation, divided into chapters by the turns of its argument. Choose a chapter:',
     bhuq_toc_hint:'The treatise is divided here by the turns of its argument; the bracketed numbers are the author’s own paragraphs. Choose a part:',
     m_asatir_book:'The Book of Asatir', asatir_title:'The Book of Asatir', asatir_toc_hint:'Choose a chapter:',
@@ -827,7 +827,7 @@ const I18N = {
     m_shyt_book:'أجوبة يعقوب بن هارون الكاهن', shyt_title:'أجوبة يعقوب بن هارون الكاهن', shyt_toc_hint:'اختر سؤالاً:',
     m_sir_book:'سِرّ القلوب', sir_title:'سِرّ القلوب', sir_toc_hint:'اختر فصلاً:',
     m_bhuq_book:'تفسير إم بحقوتي', bhuq_title:'تفسير إم بحقوتي — أبو الفرج ابن الكثار',
-    m_ervah_book:'كتاب العورات', ervah_title:'كتاب العورات — أحكام العورات',
+    m_ervah_book:'كتاب العورات', m_tabbakh_book:'كتاب الطبّاخ', tabbakh_title:'كتاب الطبّاخ — لأبي الحسن الصوري', tabbakh_toc_hint:'كتاب الشريعة لأبي الحسن الصوري، عن مخطوطة المكتبة البريطانية: النصّ العربي كما كتبه الناسخ، مع ترجمة عبرية كاملة. اقتباسات التوراة بالخطّ السامري. اختر فصلًا:', ervah_title:'كتاب العورات — أحكام العورات',
     ervah_toc_hint:'يُقدَّم الكتاب هنا بترجمة عربية كاملة متّصلة، مقسّمة إلى فصول حسب مسار البحث. اختر فصلًا:',
     bhuq_toc_hint:'قُسّم الكتاب هنا حسب مسار الحجّة؛ الأرقام بين قوسين هي فقرات المؤلف. اختر قسمًا:',
     m_asatir_book:'كتاب الأساطير', asatir_title:'كتاب الأساطير', asatir_toc_hint:'اختر أصحاحاً:',
@@ -7031,7 +7031,7 @@ const LIB_SHELVES = ['shelf_sources', 'shelf_tools', 'shelf_study'];
 const LIB_SHELF = {
   tm_book:'shelf_sources', tz_book:'shelf_sources', shyt_book:'shelf_sources',
   sir_book:'shelf_sources', bhuq_book:'shelf_sources', asatir_book:'shelf_sources',
-  ervah_book:'shelf_sources',
+  ervah_book:'shelf_sources', tabbakh_book:'shelf_sources',
   dict_app:'shelf_tools', rhyme_book:'shelf_tools',
   composer:'shelf_tools', privatecomp:'shelf_tools',
   piyutim_book:'shelf_study', dara_book:'shelf_study', people_book:'shelf_study',
@@ -7048,6 +7048,7 @@ const LIB_ITEMS = [
   {act:'sir_book',     titleKey:'m_sir_book',     open:()=>openSirBook()},
   {act:'bhuq_book',    titleKey:'m_bhuq_book',    open:()=>openBhuqBook()},
   {act:'ervah_book',   titleKey:'m_ervah_book',   open:()=>openErvahBook()},
+  {act:'tabbakh_book', titleKey:'m_tabbakh_book', open:()=>openTabbakhBook()},
   {act:'asatir_book',  titleKey:'m_asatir_book',  open:()=>openAsatirBook()},
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
   {act:'dara_book',    titleKey:'m_dara_book',    open:()=>openDaraBook()},
@@ -7197,6 +7198,7 @@ const LIB_AUTHOR = {
   shyt_book:      'יעקב בן אהרן הכהן',
   bhuq_book:      'אבו אלפרג׳ בן פתיאל',
   ervah_book:     'הכהן פינחס בן יצחק',
+  tabbakh_book:   'אבו אלחסן אלצורי',
   wreschner_book: 'ורשנר',
   cohen_book:     'כהן',
   // sir_book, asatir_book — the app does not name an author for these
@@ -7430,6 +7432,7 @@ function menuAction(a){
   else if(a==='sir_book')  openSirBook();
   else if(a==='bhuq_book') openBhuqBook();
   else if(a==='ervah_book') openErvahBook();
+  else if(a==='tabbakh_book') openTabbakhBook();
   else if(a==='asatir_book') openAsatirBook();
   else if(a==='wreschner_book') openWreschnerBook();
   else if(a==='cohen_book') openCohenBook();
@@ -7899,6 +7902,26 @@ const BOOK_CFG = {
     searchTo:(r)=>({chap:r.id, dom:'rdsec-'+r.id}),
     langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
   },
+  tabbakh: {                           // כתאב אלטבאח — Arabic original + Hebrew, citations in Samaritan script
+    titleKey:'tabbakh_title', tocHintKey:'tabbakh_toc_hint',
+    toc:()=>api('tabbakh_toc'+(LANG==='ar'?'?lang=ar':'')),
+    chapter:(id)=>api('tabbakh_chapter?ch='+encodeURIComponent(id)+(LANG==='ar'?'&lang=ar':'')),
+    search:(q)=>api('tabbakh_search?q='+encodeURIComponent(q)+(LANG==='ar'?'&lang=ar':'')),
+    words:null,
+    tocItem:(c)=>({id:c.id, letter:c.letter, title:c.title, count:c.count}),
+    chapterTitle:(ch)=>esc(ch.title||''),
+    unitLabel:(s)=>esc(s.ref||''),       // the manuscript page, where it begins
+    unitVid:(s)=>s.verse_id,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>esc(r.title||''),
+    searchTo:(r)=>({chap:r.id, dom:'rdsec-'+(r.id*1000+r.para)}),
+    // a reader of Arabic opens on the original; everyone else on the Hebrew
+    get langs(){ return LANG==='ar'
+      ? [{key:'arabic', htmlKey:'arabic_html', labelKey:'rd_ar', dir:'rtl'},
+         {key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}]
+      : [{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'},
+         {key:'arabic', htmlKey:'arabic_html', labelKey:'rd_ar', dir:'rtl'}]; },
+  },
   ervah: {                             // ספר הערוות — one treatise, read chapter by chapter
     titleKey:'ervah_title', tocHintKey:'ervah_toc_hint',
     toc:()=>api('ervah_toc'+(LANG==='ar'?'?lang=ar':'')),
@@ -8001,6 +8024,7 @@ function openShytBook(){ openReader('shyt'); }
 function openSirBook(){ openReader('sir'); }
 function openBhuqBook(){ openReader('bhuq'); }
 function openErvahBook(){ openReader('ervah'); }
+function openTabbakhBook(){ openReader('tabbakh'); }
 function openAsatirBook(){ openReader('asatir'); }
 function openWreschnerBook(){ openReader('wreschner'); }
 function openCohenBook(){ openReader('cohen'); }
@@ -8091,7 +8115,7 @@ async function openRdChapter(id, scrollDom){
   if(lc.key==='arabic' && ch.sections.every(s=>!s.arabic))
     body.appendChild(el('div','tm-hint',esc(t('tz_arabic_pending'))));
   for(const s of ch.sections){
-    const sec=el('div','tm-sec'); sec.id=RD.cfg.unitDom(s);
+    const sec=el('div','tm-sec'+(s.kind?' tb-'+s.kind:'')); sec.id=RD.cfg.unitDom(s);
     const vid=RD.cfg.unitVid(s);
     const num=el('div','tm-secnum'+(vid?' tm-jump':''), RD.cfg.unitLabel(s));
     if(vid){ num.dataset.vid=vid; num.title=t('tm_open_verse'); }

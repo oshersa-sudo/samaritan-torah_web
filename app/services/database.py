@@ -389,6 +389,58 @@ def _seed_ervah_ar():
 _seed_ervah_ar()
 
 
+_TABBAKH_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                              'data', 'tabbakh_patch.json')
+
+
+def _seed_tabbakh():
+    """כתאב אלטבאח — Abū l-Ḥasan al-Ṣūrī's book of law, read from the British
+    Library manuscript: the Arabic as the copyist wrote it and a full Hebrew
+    translation beside it, paragraph by paragraph, the Torah citations kept in
+    Samaritan script.
+
+    Two tables of its own that nothing else writes to, brought to the patch's
+    content and compared by fingerprint, so a server already holding this
+    version does nothing."""
+    try:
+        if not os.path.exists(_TABBAKH_PATCH):
+            return
+        with open(_TABBAKH_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute("""CREATE TABLE IF NOT EXISTS tabbakh_chapters (
+            ord INTEGER PRIMARY KEY, title TEXT, title_ar TEXT)""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS tabbakh_paras (
+            ord INTEGER, para INTEGER, page INTEGER, kind TEXT,
+            he TEXT, ar TEXT, PRIMARY KEY (ord, para))""")
+        have = [[[r[0], r[1] or '', r[2] or ''] for r in conn.execute(
+                    'SELECT ord, title, title_ar FROM tabbakh_chapters ORDER BY ord')],
+                [[r[0], r[1], r[2], r[3] or '', r[4] or '', r[5] or ''] for r in conn.execute(
+                    'SELECT ord, para, page, kind, he, ar FROM tabbakh_paras ORDER BY ord, para')]]
+        fp = hashlib.sha1(json.dumps(have, ensure_ascii=False).encode('utf-8')).hexdigest()
+        if fp == patch.get('fingerprint'):
+            PATCH_REPORT['tabbakh'] = 'already current'
+            conn.close()
+            return
+        conn.execute('DELETE FROM tabbakh_chapters')
+        conn.execute('DELETE FROM tabbakh_paras')
+        conn.executemany('INSERT INTO tabbakh_chapters (ord, title, title_ar) VALUES (?,?,?)',
+                         patch.get('chapters', []))
+        conn.executemany('INSERT INTO tabbakh_paras (ord, para, page, kind, he, ar) '
+                         'VALUES (?,?,?,?,?,?)', patch.get('paras', []))
+        conn.commit()
+        conn.close()
+        PATCH_REPORT['tabbakh'] = '%d chapters, %d paragraphs' % (
+            len(patch.get('chapters', [])), len(patch.get('paras', [])))
+        print('[tabbakh] %s' % PATCH_REPORT['tabbakh'])
+    except Exception as exc:
+        PATCH_REPORT['tabbakh'] = 'failed: %s' % exc
+        print('[tabbakh] skipped: %s' % exc)
+
+
+_seed_tabbakh()
+
+
 _DARA_UNIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                 'data', 'dara_unit_patch.json')
 
@@ -3057,6 +3109,127 @@ def search_ervah(q, limit=80, lang='he'):
         if len(out) >= limit:
             break
     return out
+
+# ── כתאב אלטבאח ─────────────────────────────────────────────────────────────
+# Each paragraph is stored twice — the copyist's Arabic and its Hebrew — and the
+# Torah citations stand in both as ⟦…⟧: Hebrew letters that the app's own
+# Samaritan font draws in Samaritan script. Hebrew citations are referenced as
+# '(ויקרא י״א, ג׳)', the Arabic as '(اللاويين ١١:٣)' — the ספר הערוות forms, so
+# the same readers make them clickable.
+_TABBAKH_SAM = re.compile(r'⟦([^⟧]*)⟧')
+_TABBAKH_NOTE = re.compile(r'\[(\?|\.\.\.)\]')
+
+
+def _tabbakh_html(text, vmap, ar=False):
+    """Escape, make the verse references clickable, set the citations in
+    Samaritan script and quieten the editor's [?] / [...] marks."""
+    marked = (_ervah_mark_refs_ar if ar else _ervah_mark_refs)(text or '', vmap)
+    marked = _TABBAKH_SAM.sub(
+        lambda m: '<span class="samchar tb-cite">%s</span>' % m.group(1), marked)
+    return _TABBAKH_NOTE.sub(lambda m: '<span class="tb-unc">%s</span>' % m.group(0), marked)
+
+
+def _tabbakh_bare(s):
+    return _TABBAKH_SAM.sub(lambda m: m.group(1), _ervah_bare(s or ''))
+
+
+def _tabbakh_num(n, ar):
+    if ar:
+        return ''.join(chr(0x660 + int(d)) for d in str(n))
+    return _ERVAH_NUM[n] if 0 < n < len(_ERVAH_NUM) else str(n)
+
+
+def get_tabbakh_toc(lang='he'):
+    """The book's chapters in order, with the manuscript pages each spans."""
+    ar = lang == 'ar'
+    conn = get_connection()
+    try:
+        rows = conn.execute("""SELECT c.ord, c.title, c.title_ar,
+                                      MIN(p.page) p0, MAX(p.page) p1, COUNT(p.para) n
+                               FROM tabbakh_chapters c
+                               LEFT JOIN tabbakh_paras p ON p.ord = c.ord
+                               GROUP BY c.ord ORDER BY c.ord""").fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    return [{'id': r['ord'], 'ord': r['ord'], 'letter': _tabbakh_num(r['ord'], ar) if r['ord'] else '·',
+             'title': (r['title_ar'] if ar and r['title_ar'] else r['title']) or '',
+             'pages': [r['p0'], r['p1']], 'count': r['n'] or 0} for r in rows]
+
+
+def get_tabbakh_chapter(cid, lang='he'):
+    """One chapter, paragraph by paragraph: Hebrew and Arabic side by side in the
+    payload (the reader shows one and toggles), the page of the manuscript each
+    stands on, and the first verse each cites."""
+    try:
+        cid = int(cid)
+    except (TypeError, ValueError):
+        return {'id': None, 'title': '', 'sections': []}
+    conn = get_connection()
+    vmap = _tm_vmap(conn)
+    try:
+        c = conn.execute('SELECT ord, title, title_ar FROM tabbakh_chapters WHERE ord=?',
+                         (cid,)).fetchone()
+        paras = conn.execute('SELECT para, page, kind, he, ar FROM tabbakh_paras '
+                             'WHERE ord=? ORDER BY para', (cid,)).fetchall()
+    except Exception:
+        c, paras = None, []
+    conn.close()
+    if not c:
+        return {'id': cid, 'title': '', 'sections': []}
+    out, last_page = [], None
+    for p in paras:
+        vid = None
+        m = _ERVAH_REF.search(p['he'] or '')
+        if m:
+            vid = vmap.get((_TM_BORD[m.group(1)], _ervah_gem(m.group(2)), _ervah_gem(m.group(3))))
+        # the page is named once, where it begins, as a printed edition marks it
+        ref = ''
+        if p['page'] != last_page:
+            ref = ('ص ' if lang == 'ar' else "עמ' ") + str(p['page'])
+            last_page = p['page']
+        kind = p['kind'] or 'para'
+        he, arb = p['he'] or '', p['ar'] or ''
+        out.append({'id': cid * 1000 + p['para'], 'ref': ref, 'kind': kind,
+                    'page': p['page'], 'title': '',
+                    'hebrew': he, 'arabic': arb,
+                    'hebrew_html': _tabbakh_html(he, vmap),
+                    'arabic_html': _tabbakh_html(arb, vmap, ar=True),
+                    'verse_id': vid})
+    return {'id': cid, 'ord': c['ord'],
+            'title': (c['title_ar'] if lang == 'ar' and c['title_ar'] else c['title']) or '',
+            'sections': out}
+
+
+def search_tabbakh(q, limit=80, lang='he'):
+    """Search both the Hebrew and the Arabic (vowel marks and citation brackets
+    set aside) — a reader may look for a word in either."""
+    q = _tabbakh_bare((q or '').strip())
+    if not q:
+        return []
+    conn = get_connection()
+    try:
+        rows = conn.execute("""SELECT p.ord, p.para, p.he, p.ar, c.title, c.title_ar
+                               FROM tabbakh_paras p JOIN tabbakh_chapters c ON c.ord = p.ord
+                               ORDER BY p.ord, p.para""").fetchall()
+    except Exception:
+        rows = []
+    conn.close()
+    out = []
+    for r in rows:
+        for txt in ((r['ar'], r['he']) if lang == 'ar' else (r['he'], r['ar'])):
+            bare = _tabbakh_bare(txt)
+            i = bare.find(q)
+            if i >= 0:
+                out.append({'id': r['ord'], 'para': r['para'],
+                            'title': (r['title_ar'] if lang == 'ar' and r['title_ar']
+                                      else r['title']) or '',
+                            'snippet': '…' + bare[max(0, i - 32):i + len(q) + 44] + '…'})
+                break
+        if len(out) >= limit:
+            break
+    return out
+
 
 
 def _asatir_ar_col(conn):

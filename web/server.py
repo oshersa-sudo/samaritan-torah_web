@@ -2790,6 +2790,25 @@ def api_ervah_search():
     return jsonify(db.search_ervah(request.args.get('q', ''), lang=lang))
 
 
+# ── כתאב אלטבאח: full-book reader (Arabic original + Hebrew translation) ──
+@app.route('/api/tabbakh_toc')
+def api_tabbakh_toc():
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_tabbakh_toc(lang))
+
+
+@app.route('/api/tabbakh_chapter')
+def api_tabbakh_chapter():
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_tabbakh_chapter(request.args.get('ch', ''), lang))
+
+
+@app.route('/api/tabbakh_search')
+def api_tabbakh_search():
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.search_tabbakh(request.args.get('q', ''), lang=lang))
+
+
 # ── פירוש אם בחקותי: full-book reader (the verse source is /api/bhuq above) ──
 @app.route('/api/bhuq_toc')
 def api_bhuq_toc():
