@@ -80,6 +80,15 @@ def _fix_portion_names():
                 'UPDATE portions SET name=? WHERE book_id=? AND mode=? AND name=?',
                 (right, book_id, mode, wrong))
             n += cur.rowcount
+            # the table of canonical chapter counts carries the name too, and it
+            # was filled from the spreadsheet rather than from the text
+            try:
+                cur = conn.execute('UPDATE canon_portion_counts SET portion_name=? '
+                                   'WHERE book_id=? AND portion_name=?',
+                                   (right, book_id, wrong))
+                n += cur.rowcount
+            except sqlite3.OperationalError:
+                pass     # a DB copy without that table is simply left alone
         if n:
             conn.commit()
         conn.close()
