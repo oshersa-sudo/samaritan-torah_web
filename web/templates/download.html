@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>הורדת האפליקציה · התורה השומרונית הישראלית</title>
+<meta name="theme-color" content="#1a3873">
+<meta name="robots" content="index, follow">
+<meta name="description" content="התורה השומרונית הישראלית — להורדה ב-Google Play וב-App Store.">
+<meta property="og:title" content="התורה השומרונית הישראלית — הורדת האפליקציה">
+<meta property="og:description" content="סרקו את הברקוד או הקישו על הקישור: האפליקציה זמינה לאנדרואיד ולאייפון.">
+<meta property="og:image" content="/static/img/icon-512.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="/static/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* A page of its own, so it can be sent to someone who has never opened the
+     app: one address, the mark, and the two stores. Everything it needs is
+     here — the codes are committed images, not a script's output, so the page
+     is whole even with nothing but HTML. */
+  :root{ --navy:#1a3873; --cream:#f7f7f2; --ink:#22221e; --muted:#6b6b63;
+         --rule:#e4d9be; --card:#fffdf8; --gold:#b8860b; }
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--cream); color:var(--ink); line-height:1.7;
+        font-family:'Frank Ruhl Libre','Times New Roman',serif;
+        display:flex; flex-direction:column; min-height:100vh; }
+  html[dir=ltr] body{ font-family:'Frank Ruhl Libre',Georgia,serif; }
+  html[lang=ar] body{ font-family:'Amiri','Frank Ruhl Libre',serif; }
+
+  .langs{ display:flex; gap:8px; justify-content:center; padding:14px 18px 0; }
+  .langs button{ font-family:inherit; font-size:14px; padding:5px 14px; border-radius:999px;
+                 cursor:pointer; border:1px solid var(--rule); background:var(--card); color:var(--navy); }
+  .langs button.on{ background:var(--navy); color:var(--cream); border-color:var(--navy); }
+
+  main{ flex:1; width:100%; max-width:820px; margin:0 auto; padding:18px 18px 44px; text-align:center; }
+  .mark{ width:112px; height:112px; border-radius:24px; display:block; margin:10px auto 14px;
+         box-shadow:0 6px 20px rgba(26,56,115,.18); }
+  h1{ margin:0 0 4px; font-size:26px; color:var(--navy); font-weight:700; }
+  .sub{ margin:0 0 2px; font-size:17px; color:var(--ink); }
+  .lede{ margin:10px auto 0; font-size:16px; color:var(--muted); max-width:46ch; }
+
+  /* the two stores stand side by side whatever the screen, and shrink rather
+     than stack: whoever opens this page is choosing between them, and a column
+     that has wrapped reads as if the second store came second */
+  .stores{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:26px 0 0; }
+  .store{ background:var(--card); border:1px solid var(--rule); border-radius:14px;
+          padding:20px 14px 18px; display:flex; flex-direction:column; align-items:center;
+          min-width:0; }
+  .store-h{ display:flex; align-items:center; gap:9px; color:var(--navy); }
+  .store-h svg{ flex:none; }
+  .store-name{ font-size:19px; font-weight:700; }
+  .store-plat{ margin:2px 0 0; font-size:14px; color:var(--muted); }
+  .qr{ width:100%; max-width:186px; height:auto; aspect-ratio:1; margin:16px 0 4px;
+       border:1px solid var(--rule); border-radius:10px; padding:7px; background:#fff; }
+  .qr-hint{ margin:0 0 14px; font-size:13.5px; color:var(--muted); }
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px;
+        background:var(--navy); color:var(--cream); text-decoration:none; font-size:15px;
+        padding:11px 10px; border-radius:999px; width:100%; max-width:260px;
+        white-space:nowrap; }
+  .btn:hover{ background:#16305f; }
+  .url{ margin:10px 0 0; font-size:12.5px; color:var(--muted); direction:ltr;
+        word-break:break-all; font-family:ui-monospace,Menlo,Consolas,monospace; }
+
+  footer{ border-top:1px solid var(--rule); padding:16px 18px 26px; text-align:center;
+          font-size:14px; color:var(--muted); }
+  footer a{ color:#2e61b8; }
+  .back{ display:inline-block; margin-bottom:8px; font-size:15px; }
+  @media (max-width:430px){
+    h1{ font-size:22px; }
+    .stores{ gap:9px; }
+    .store{ padding:15px 9px 14px; }
+    .store-name{ font-size:15.5px; }
+    .store-h{ gap:6px; }
+    .store-h svg{ width:19px; height:19px; }
+    .store-plat, .qr-hint{ font-size:12.5px; }
+    .btn{ font-size:13px; padding:10px 6px; gap:5px; }
+    .url{ font-size:10.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="langs">
+  <button id="bhe" class="on" type="button" onclick="setLang('he')">עברית</button>
+  <button id="ben" type="button" onclick="setLang('en')">English</button>
+  <button id="bar" type="button" onclick="setLang('ar')">العربية</button>
+</div>
+
+<main>
+  <img class="mark" src="/static/img/icon-512.png" alt="" width="112" height="112">
+  <h1 data-t="h1">הורדת האפליקציה</h1>
+  <p class="sub" data-t="sub">התורה השומרונית הישראלית</p>
+  <p class="lede" data-t="lede">סרקו את הברקוד במצלמת הטלפון, או הקישו על הקישור שמתחתיו.</p>
+
+  <div class="stores">
+
+    <section class="store">
+      <div class="store-h">
+        <!-- the house play mark, the same triangle the app's install card uses -->
+        <svg width="24" height="24" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5.5 3.2v13.6L16.5 10 5.5 3.2z" stroke="#1a3873" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span class="store-name">Google&nbsp;Play</span>
+      </div>
+      <p class="store-plat" data-t="plat_android">אנדרואיד</p>
+      <img class="qr" src="/static/img/qr-play.svg" width="186" height="186"
+           alt="ברקוד לחנות Google Play" data-t-alt="qr_play_alt">
+      <p class="qr-hint" data-t="scan">סרקו כדי להתקין</p>
+      <a class="btn" id="aPlay" href="https://play.google.com/store/apps/details?id=net.thesamaritans.torah"
+         target="_blank" rel="noopener"><span data-t="open_play">פתיחה ב-Google Play</span></a>
+      <p class="url">play.google.com/store/apps/details?id=net.thesamaritans.torah</p>
+    </section>
+
+    <section class="store">
+      <div class="store-h">
+        <!-- a phone, not a maker's mark: the store is named in words beside it -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="6.6" y="2.4" width="10.8" height="19.2" rx="2.4" stroke="#1a3873" stroke-width="1.8"/>
+          <line x1="10.4" y1="5.2" x2="13.6" y2="5.2" stroke="#1a3873" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="12" cy="18.4" r="1.1" fill="#1a3873"/>
+        </svg>
+        <span class="store-name">App&nbsp;Store</span>
+      </div>
+      <p class="store-plat" data-t="plat_ios">אייפון ואייפד</p>
+      <img class="qr" src="/static/img/qr-apple.svg" width="186" height="186"
+           alt="ברקוד לחנות App Store" data-t-alt="qr_apple_alt">
+      <p class="qr-hint" data-t="scan">סרקו כדי להתקין</p>
+      <a class="btn" id="aApple" href="https://apps.apple.com/il/app/the-samaritan-torah/id6818952046"
+         target="_blank" rel="noopener"><span data-t="open_apple">פתיחה ב-App Store</span></a>
+      <p class="url">apps.apple.com/il/app/the-samaritan-torah/id6818952046</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <a class="back" href="/" data-t="back">← חזרה לאפליקציה</a><br>
+  <span data-t="rights">כל הזכויות שמורות לאושר ששוני</span> ·
+  <a href="https://www.the-samaritans.net" target="_blank" rel="noopener">www.the-samaritans.net</a>
+</footer>
+
+<script>
+  var T = {
+    he:{ title:'הורדת האפליקציה · התורה השומרונית הישראלית',
+         h1:'הורדת האפליקציה', sub:'התורה השומרונית הישראלית',
+         lede:'סרקו את הברקוד במצלמת הטלפון, או הקישו על הקישור שמתחתיו.',
+         plat_android:'אנדרואיד', plat_ios:'אייפון ואייפד', scan:'סרקו כדי להתקין',
+         open_play:'פתיחה ב-Google Play', open_apple:'פתיחה ב-App Store',
+         qr_play_alt:'ברקוד לחנות Google Play', qr_apple_alt:'ברקוד לחנות App Store',
+         back:'← חזרה לאפליקציה', rights:'כל הזכויות שמורות לאושר ששוני' },
+    en:{ title:'Get the app · The Israelite Samaritan Torah',
+         h1:'Get the app', sub:'The Israelite Samaritan Torah',
+         lede:'Scan the code with your phone camera, or tap the link beneath it.',
+         plat_android:'Android', plat_ios:'iPhone and iPad', scan:'Scan to install',
+         open_play:'Open in Google Play', open_apple:'Open in the App Store',
+         qr_play_alt:'QR code for Google Play', qr_apple_alt:'QR code for the App Store',
+         back:'← Back to the app', rights:'All rights reserved to Osher Sassoni' },
+    ar:{ title:'تحميل التطبيق · التوراة السامرية الإسرائيلية',
+         h1:'تحميل التطبيق', sub:'التوراة السامرية الإسرائيلية',
+         lede:'امسح الرمز بكاميرا هاتفك، أو اضغط على الرابط الذي تحته.',
+         plat_android:'أندرويد', plat_ios:'آيفون وآيباد', scan:'امسح للتثبيت',
+         open_play:'الفتح في Google Play', open_apple:'الفتح في App Store',
+         qr_play_alt:'رمز الاستجابة السريعة لمتجر Google Play',
+         qr_apple_alt:'رمز الاستجابة السريعة لمتجر App Store',
+         back:'← العودة إلى التطبيق', rights:'جميع الحقوق محفوظة لأوشير ساسوني' }
+  };
+  function setLang(l){
+    var d = T[l] || T.he;
+    document.documentElement.lang = l;
+    document.documentElement.dir = (l === 'en') ? 'ltr' : 'rtl';
+    document.title = d.title;
+    document.querySelectorAll('[data-t]').forEach(function(e){ e.textContent = d[e.dataset.t] || ''; });
+    document.querySelectorAll('[data-t-alt]').forEach(function(e){ e.alt = d[e.dataset.tAlt] || ''; });
+    ['he','en','ar'].forEach(function(c){ document.getElementById('b'+c).classList.toggle('on', c === l); });
+    // the language chosen here is the app's own setting, under its own key, so
+    // walking back into the app arrives in the language just read
+    try{ localStorage.setItem('uiLang', l); }catch(e){}
+    try{ history.replaceState(null, '', (l === 'he') ? location.pathname
+                                                    : location.pathname + '?lang=' + l); }catch(e){}
+  }
+  // ?lang= wins (the app hands it over); otherwise follow the browser, so a link
+  // sent to someone who has never been here opens in a language they read
+  var want = new URLSearchParams(location.search).get('lang');
+  if(!T[want]){
+    var p = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+    want = p.indexOf('ar') === 0 ? 'ar' : (p.indexOf('he') === 0 || p.indexOf('iw') === 0 || !p) ? 'he' : 'en';
+  }
+  if(want !== 'he') setLang(want);
+</script>
+</body>
+</html>

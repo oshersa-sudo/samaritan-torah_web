@@ -149,7 +149,8 @@ const I18N = {
     flag_finals:'התעלם מסופיות', flag_aram:'חפש בתרגום הארמי', root_label:'שורש לחיפוש:',
     adv_hint:'או תוכל להשתמש ב-<b>?</b> או <b>*</b> כדי להחליף תו או מחרוזת תווים. לדוגמה: <b>א?ר</b> או <b>כא*</b>',
     apply:'אישור', menu:'תפריט', m_calendar:'חשבן קשטה — לוח השנה השומרוני',
-    m_genealogy:'אילן היוחסין השומרוני המלא', m_install:'התקנת אפליקציה', m_lang:'שנה שפה',
+    m_genealogy:'אילן היוחסין השומרוני המלא', m_install:'התקנת אפליקציה',
+    m_getapp:'הורדת האפליקציה מהחנויות', m_lang:'שנה שפה',
     m_testimonials:'מה כותבים עלינו',
     m_whatsnew:'מה חדש?', m_help:'עזרה למשתמש', m_version:'גרסא נוכחית', m_contact:'צור קשר',
     m_tour:'סרטון הסבר מודרך', tour_prompt_title:'סרטון הסבר מודרך',
@@ -294,6 +295,7 @@ const I18N = {
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     // newest first: a reader opening "מה חדש" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>גרסה 4.6 — עמוד הורדה אחד לשתי החנויות</b></p><ul><li><b>עמוד הורדה</b> חדש, בתפריט תחת <b>הורדת האפליקציה מהחנויות</b>: סמל האפליקציה, ושני כרטיסים — Google Play לאנדרואיד ו-App Store לאייפון ולאייפד — כל אחד עם ברקוד לסריקה ועם קישור ישיר</li><li><b>וכתובת משלו</b>: <span dir="ltr">samaritan-torah.onrender.com/download</span> — אפשר לשלוח אותה, להדפיס אותה או לתלות אותה, בלי לעבור דרך האפליקציה</li><li>העמוד נקרא בעברית, באנגלית ובערבית, והשפה שבוחרים בו היא זו שבה תיפתח האפליקציה</li></ul>',
       '<p><b>גרסה 4.5 — ספר הערוות בערבית</b></p><ul><li><b>כל הספר בערבית</b>: כִּתַאבּ אל-עִירוֹת נקרא מעתה בערבית מראשו ועד סופו — מאה שישים ושבע פסקאות, עשרים וארבעה שמות פרקים, ומראי המקום שבגוף הטקסט פתוחים בלחיצה אל הפסוק גם בערבית</li><li><b>ובפירוש הפסוק</b>: תשעים ותשעה הפסוקים שהחיבור מצטט נושאים את דבריו בערבית, ושם הפרק שממנו הם באים נאמר אף הוא בערבית — כך שהקורא בערבית אינו פוגש עוד עברית בלב הדברים</li><li>החיפוש בתוך הספר מחפש באותו נוסח שלפני הקורא: בערבית — בערבית</li></ul>',
       '<p><b>גרסה 4.4 — ספר הערוות</b></p><ul><li><b>כִּתַאבּ אל-עִירוֹת — ספר הערוות</b> נוסף לספרייה: חיבור ההלכה השומרוני בדיני העריות, מפי הכהן פינחס בן יצחק, בתרגום עברי מלא ורצוף. עשרים וארבעה פרקים לפי מהלך הדיון, ובכל פרק מראי המקום שבגוף הטקסט פתוחים בלחיצה אל הפסוק עצמו</li><li><b>והספר קורא עם הפסוק</b>: תשעים ותשעה פסוקים שהחיבור מצטט — בויקרא, בדברים, בבראשית, בשמות ובמדבר — נושאים מעתה את דבריו. הוא נמנה בגיליון "לצד הפסוק" ככל מקור שומרוני, נפתח בשמו תחת "ממקור שומרון", ונשזר ב"פירוש הפסוק" מתחת לפסוק שהוא דן בו — והפסקה שמובאת היא זו שהספר ציטט בה את הפסוק, לא הפרק כולו</li><li>וכך גם בהדפסה: גיליון הפירוש נושא את דברי ספר הערוות בשם אומרם</li></ul>',
       '<p><b>גרסה 4.3 — שאלה אחת במקום שישה כפתורים</b></p><ul><li><b>הסרגל התחתון</b> נעשה שורה אחת בנייבי של הכותרת: חמישה פריטים שווים, אייקון מעל תווית קצרה, והפעיל נדלק באור משלו. ששת כפתורי התוכן התכנסו לכפתור אחד — <b>לצד הפסוק</b></li><li><b>הגיליון שהוא פותח אומר תחילה מה יש</b>: כל מקור שיש לו דבר בפרק שלפניכם, ולצידו בכמה מפסוקיו הוא נמצא. מקור שאין לו דבר נרשם למטה בשורה אחת, במקום להיות כפתור שנפתח אל הודעה שאין. <b>תעתיק ההגייה</b> קיבל כאן שורה משלו בפעם הראשונה</li><li><b>הפירוש בוחר את מקומו</b> — מתחת לפרק כפי שהיה, או <b>מתחת לכל פסוק</b>: הפסוק מודגש ופירושו נקבע תחתיו. כך נקרא הפרק פסוק-אחרי-פסוק, טקסט ואז משמעות. הבחירה נשמרת</li><li><b>גם הפרשנות היהודית</b> בוחרת כך את מקומה, ואפשר לקבוע לצידה את <b>נוסח המסורה</b> מתחת לכל פסוק — הלשון שהפרשן היהודי קרא בה</li><li>כשהפירוש מוצג <b>בכתב שומרוני</b> הפסוק עובר עימו, וכשהוא מוצג <b>בערבית</b> נקבע תרגום הפסוק לערבית בין הפסוק לפירוש</li><li><b>הגיליון שואל גם את מי</b>: "פרשנות יהודית" נפתחת אל רשימת הפרשנים השמורים — כל אחד ומספר הפסוקים שיש לו כאן — ו"ממקור שומרון" אל רשימת החיבורים שיש להם דבר בפסוקים שלפניכם. הבחירה נעשית לפני הפתיחה, ולא אחריה, והשורה המקופלת אומרת מה ייפתח. <b>פרשנים נוספים</b> נקראים מספריא פסוק אחד בכל פעם, ולכן הם מופיעים רק כשפסוק יחיד מסונן — ובשאר הזמן נשארים בגיליון, אפורים, ואומרים מדוע</li><li><b>ההדפסה יודעת טווח</b>: לא עוד הפרק שעל המסך או הפרשה שהוא בתוכה בלבד, אלא <b>מספר ומפרשה עד ספר ועד פרשה</b>, לפי חלוקת הפרשות השומרונית — ומתחת לבחירה נאמר גודלה בפרשות ובפרקים. אותה פרשה בשני הקצוות היא פרשה אחת. וכל גיליון נושא מעתה את ספרו ואת פרשתו שלו</li><li><b>ודף HTML אינטראקטיבי</b> במקום PDF: אותם גיליונות כקובץ אחד שנפתח בכל מכשיר — רשימת פרקים לדילוג, הפירוש והמילון מתקפלים, גופן שניתן להגדיל, וכפתור הדפסה. הגופן השומרוני נוסע בתוך הקובץ עצמו, כך שהוא קריא גם במכשיר שאינו מכיר אותו. אפשר <b>לשתף</b> אותו בוואטסאפ, בדואר ובכל אפליקציה; ומקבלו יוצר ממנו PDF בלחיצה</li><li><b>לכל מילה במילון יש מעתה תשובה</b> — בשירון ובספר הליטורגיה כאחד. עד כה שאל קורא השירון על מילה ונענה "אין ערך מילון עדיין" גם כשהמילון ידע אותה: היחידה חיפשה ברשימה קטנה משלה ולא במילון של האפליקציה. מעתה כל יחידת מילון שואלת את אותם עשרה מקורות, ומה שאין בהם נקרא מילה-מילה בשורה שבה היא עומדת. והקורא נאמר לו באיזו תשובה מדובר: פירוש; קריאה שמתקנת שיבוש סריקה; קריאה משוערת; מילה עברית שאינה צריכה תרגום; תרגום השורה שבה היא עומדת (כפי שנפתרה דנע); או — בחלק מאלפית מן המילים — שהטקסט כאן הוא סריקה שלא הוגהה ואין זו מילה כלל, ולצד זה הקריאות הקרובות</li><li><b>הבחירה נפתחת מיד</b>, ולא דרך בורר שנמחק מיד אחריו: ציור אחד ובקשה אחת, במקום שמונה. ו<b>מן המסורת השומרונית</b> נמנית כולה — גם המאמרים בשם אומרם וגם מקטעי המסורת לפרשה — ולכן אינה נעדרת עוד מן הגיליון במקום שיש לה בו דבר</li><li>תוקנה תקלה שבגללה לחיצה על ידית סרגל הכפתורים המקופל לא עשתה דבר</li><li><b>בחירת הקורא</b> בסרגל ההשמעה מושבתת זמנית, עד שתתוקן ההקראה של שאר המקריאים. בינתיים נשמעת הקראתו של מאיר בן יפנה ששוני</li><li>הסיור המודרך אינו נפתח עוד מאליו בכניסה — הוא ממתין בתפריט, תחת העזרה</li></ul>',
@@ -451,7 +453,8 @@ const I18N = {
     flag_finals:'Ignore final letters', flag_aram:'Search the Aramaic', root_label:'Root to search:',
     adv_hint:'You can use <b>?</b> or <b>*</b> to replace a letter or a string. E.g. <b>א?ר</b> or <b>כא*</b>',
     apply:'Apply', menu:'Menu', m_calendar:'Samaritan calendar (Ḥešbon Qašta)',
-    m_genealogy:'Full Samaritan genealogy', m_install:'Install app', m_lang:'Change language',
+    m_genealogy:'Full Samaritan genealogy', m_install:'Install app',
+    m_getapp:'Get the app from the stores', m_lang:'Change language',
     m_testimonials:'What they write about us',
     m_whatsnew:"What's new?", m_help:'Help', m_version:'Current version', m_contact:'Contact us',
     m_tour:'Guided tour', tour_prompt_title:'Guided tour',
@@ -595,6 +598,7 @@ const I18N = {
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     // newest first: a reader opening "What's new" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>Version 4.6 — one download page for both stores</b></p><ul><li>A new <b>download page</b>, in the menu under <b>Get the app from the stores</b>: the mark of the app, and two cards — Google Play for Android and the App Store for iPhone and iPad — each with a code to scan and a direct link</li><li><b>And an address of its own</b>: samaritan-torah.onrender.com/download — it can be sent, printed or put on a wall without going through the app first</li><li>The page reads in Hebrew, English and Arabic, and the language chosen on it is the one the app then opens in</li></ul>',
       '<p><b>Version 4.5 — the Book of Forbidden Unions in Arabic</b></p><ul><li><b>The whole book in Arabic</b>: Kitāb al-ʿAwrāt now reads in Arabic from beginning to end — a hundred and sixty-seven paragraphs, twenty-four chapter names, and the citations inside the text open on the verse in Arabic too</li><li><b>And in the verse commentary</b>: the ninety-nine verses the treatise quotes carry what it says in Arabic, and the chapter they come from is named in Arabic as well — so a reader in Arabic no longer meets Hebrew in the middle of the argument</li><li>Searching inside the book searches the text in front of the reader: in Arabic, the Arabic</li></ul>',
       '<p><b>Version 4.4 — the Book of Forbidden Unions</b></p><ul><li><b>Kitāb al-ʿAwrāt</b> joins the library: the Samaritan treatise on the laws of forbidden unions, from the priest Pinḥas ben Yiṣḥaq, in a full and continuous Hebrew translation. Twenty-four chapters by the turns of its argument, and every citation inside the text opens on the verse itself</li><li><b>And the book reads beside the verse</b>: the ninety-nine verses it quotes — in Leviticus, Deuteronomy, Genesis, Exodus and Numbers — now carry what it says. It is counted on the "beside the verse" sheet like every Samaritan work, opens under its own name in "From a Samaritan source", and is woven into the verse commentary beneath the verse it argues about — the paragraph it quoted the verse in, not the whole chapter</li><li>The printed sheet carries it too, under the name of the one who said it</li></ul>',
       '<p><b>Version 4.3 — one question instead of six buttons</b></p><ul><li><b>The bottom bar</b> became a single row in the header’s navy: five equal items, an icon over a short label, and the active one lit with a light of its own. The six content buttons gathered into one — <b>Beside the verse</b></li><li><b>The sheet it opens says what is there first</b>: every source that has something in the chapter before you, and beside it in how many of its verses. A source with nothing is named below in a single line, instead of being a button that opens onto a message saying so. <b>The pronunciation</b> gets a line of its own here for the first time</li><li><b>The commentary chooses its place</b> — below the chapter as before, or <b>below each verse</b>: the verse is set bold and its commentary directly beneath it, so the chapter reads verse by verse, text then meaning. The choice is kept</li><li><b>The Jewish commentators</b> choose their place the same way, and beside them the <b>Masoretic text</b> can be set under each verse — the wording the commentator was actually reading</li><li>With the commentary in <b>Samaritan script</b> the verse follows it, and in <b>Arabic</b> the verse’s Arabic translation is laid between the two</li><li><b>The sheet asks which, too</b>: “Jewish commentary” unfolds into the commentators it holds — each with the number of verses here that have him — and “From a Samaritan source” into the works that speak on the verses before you. The choice is made before the panel opens rather than after it, and the folded row says what will open. <b>More commentators</b> are read from Sefaria one verse at a time, so they appear only while a single verse is filtered; otherwise they stay on the sheet, greyed, saying why</li><li><b>Printing now takes a range</b>: not only the chapter on screen or the parasha it belongs to, but <b>from a book and a parasha to a book and a parasha</b>, by the Samaritan division — with the size of the selection said underneath it. The same parasha on both ends is one parasha, and every sheet now carries its own book and parasha</li><li><b>And an interactive HTML page</b> instead of a PDF: the same sheets as one file that opens on any device — a list of chapters to jump by, the commentary and dictionary foldable, type that can be enlarged, and a print button. The Samaritan face travels inside the file, so it is readable on a device that has never seen it. It can be <b>shared</b> to WhatsApp, mail and any app; whoever receives it makes the PDF in one tap</li><li><b>Every word in the dictionary units now answers</b> — in the piyyut reader and in the liturgy volume alike. A reader who tapped a word in the piyyutim used to be told "no dictionary entry yet" even where the dictionary held the word: the unit looked in a small list of its own and not in the app’s dictionary. Now every word unit asks the same ten sources, and whatever none of them answered was read word by word in the line it stands in. The reader is told which kind of answer this is: a meaning; a reading that corrects a corrupt scan; a probable reading; a Hebrew word that needs no translating; the translation of the line it stands in (the way דנע itself was settled); or — in about one word in a hundred — that the text here is an unproofread scan and this is not a word at all, with the nearest readings beside it</li><li><b>A pick now opens at once</b>, not through a picker drawn and discarded a moment later: one drawing and one request instead of eight. And <b>the Samaritan tradition</b> is counted in full — the attributed articles and the per-parasha tradition sections included — so it is no longer absent from the sheet where it has something to say</li><li>Fixed: tapping the folded button bar’s handle did nothing</li><li><b>Choosing the reciter</b> is off for now, until the other readings are put right. Meir ben Yefune Sassoni’s reading is heard meanwhile</li><li>The guided tour no longer opens by itself on entry — it waits in the menu, under Help</li></ul>',
@@ -752,7 +756,8 @@ const I18N = {
     flag_finals:'تجاهل الحروف النهائية', flag_aram:'البحث في الترجمة الآرامية', root_label:'الجذر للبحث:',
     adv_hint:'يمكنك استخدام <b>?</b> أو <b>*</b> لاستبدال حرف أو سلسلة أحرف. مثال: <b>א?ר</b> أو <b>כא*</b>',
     apply:'تأكيد', menu:'القائمة', m_calendar:'التقويم السامري (حسبان قشطة)',
-    m_genealogy:'شجرة الأنساب السامرية الكاملة', m_install:'تثبيت التطبيق', m_lang:'تغيير اللغة',
+    m_genealogy:'شجرة الأنساب السامرية الكاملة', m_install:'تثبيت التطبيق',
+    m_getapp:'تحميل التطبيق من المتاجر', m_lang:'تغيير اللغة',
     m_testimonials:'ما يُكتب عنّا',
     m_whatsnew:'ما الجديد؟', m_help:'مساعدة المستخدم', m_version:'الإصدار الحالي', m_contact:'اتصل بنا',
     m_tour:'جولة إرشادية', tour_prompt_title:'جولة إرشادية',
@@ -896,6 +901,7 @@ const I18N = {
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     // newest first: a reader opening "ما الجديد" wants this version, not 1.0
     whatsnew_pages:[
+      '<p><b>الإصدار 4.6 — صفحة تحميل واحدة للمتجرين</b></p><ul><li><b>صفحة تحميل</b> جديدة، في القائمة تحت <b>تحميل التطبيق من المتاجر</b>: شعار التطبيق، وبطاقتان — Google Play للأندرويد وApp Store للآيفون والآيباد — لكلٍّ منهما رمز للمسح ورابط مباشر</li><li><b>ولها عنوان خاصّ بها</b>: <span dir="ltr">samaritan-torah.onrender.com/download</span> — يمكن إرساله أو طباعته أو تعليقه، من غير المرور بالتطبيق</li><li>تُقرأ الصفحة بالعبرية والإنجليزية والعربية، واللغة التي تُختار فيها هي التي يُفتح بها التطبيق</li></ul>',
       '<p><b>الإصدار 4.5 — كتاب العورات بالعربية</b></p><ul><li><b>الكتاب كلّه بالعربية</b>: صار كتاب العورات يُقرأ بالعربية من أوّله إلى آخره — مئة وسبع وستّون فقرة، وأربعة وعشرون عنوان فصل، والإحالات داخل النصّ تفتح على الآية بالعربية أيضًا</li><li><b>وفي تفسير الآية</b>: الآيات التسع والتسعون التي يستشهد بها المصنّف صارت تحمل كلامه بالعربية، واسم الفصل الذي جاءت منه يُذكر بالعربية كذلك — فلا يلقى القارئ بالعربية عبريةً في وسط الكلام</li><li>والبحث داخل الكتاب يبحث في النصّ الذي بين يدي القارئ: بالعربية — في العربية</li></ul>',
       '<p><b>الإصدار 4.4 — كتاب العورات</b></p><ul><li><b>كتاب العورات</b> أُضيف إلى المكتبة: المصنّف السامري في أحكام العورات، عن الكاهن فينحاس بن إسحاق، بترجمة عبرية كاملة متّصلة. أربعة وعشرون فصلًا حسب مسار البحث، وكل إحالة داخل النصّ تفتح على الآية نفسها</li><li><b>والكتاب يُقرأ مع الآية</b>: تسع وتسعون آية يستشهد بها — في اللاويين والتثنية والتكوين والخروج والعدد — صارت تحمل كلامه. يُعدّ في لوح «إلى جانب الآية» كسائر المصادر السامرية، ويُفتح باسمه تحت «من مصدر سامري»، ويُنسج في تفسير الآية تحت الآية التي يبحثها — الفقرة التي اقتبس فيها الآية، لا الفصل كلّه</li><li>وكذلك في الطباعة: صفحة التفسير تحمل كلامه باسم قائله</li></ul>',
       '<p><b>الإصدار 4.3 — سؤال واحد بدل ستة أزرار</b></p><ul><li><b>الشريط السفلي</b> صار سطرًا واحدًا بلون العنوان: خمسة عناصر متساوية، أيقونة فوق تسمية قصيرة، والعنصر الفعّال يضيء بنوره. وأزرار المحتوى الستة اجتمعت في زرّ واحد — <b>بجانب الآية</b></li><li><b>واللوح الذي يفتحه يقول أولًا ما الموجود</b>: كلّ مصدر له شيء في هذا الأصحاح، وبجانبه في كم آية منه يوجد. والمصدر الذي لا شيء له يُذكر أدناه في سطر واحد. و<b>النسخ الصوتي</b> نال هنا سطرًا خاصًّا لأوّل مرّة</li><li><b>التفسير يختار مكانه</b> — أسفل الأصحاح كما كان، أو <b>أسفل كل آية</b>: الآية بخطّ عريض وتفسيرها تحتها مباشرة، فيُقرأ الأصحاح آية آية، نصًّا ثمّ معنى. والاختيار محفوظ</li><li>و<b>التفاسير اليهودية</b> تختار مكانها كذلك، ويمكن أن يوضع معها <b>النصّ الماسوري</b> أسفل كل آية — وهو اللفظ الذي قرأه المفسّر</li><li>وإذا عُرض التفسير <b>بالخطّ السامري</b> تبعته الآية، وإذا عُرض <b>بالعربية</b> وُضعت ترجمة الآية العربية بين الاثنين</li><li><b>واللوح يسأل أيضًا عن أيّ</b>: «التفاسير اليهودية» تنفتح على قائمة المفسّرين المحفوظين — كلٌّ وعدد الآيات التي له فيها هنا — و«من مصدر سامريّ» على قائمة المؤلَّفات التي لها كلام في الآيات التي أمامك. فالاختيار يسبق الفتح لا يتبعه، والسطر المطويّ يقول ما سيُفتح. و<b>المفسّرون الإضافيّون</b> يُقرأون من سفاريا آيةً آية، فلا يظهرون إلّا حين تُرشَّح آية واحدة؛ وفي غير ذلك يبقون في اللوح رماديّين، يقولون لماذا</li><li><b>والطباعة صارت تعرف المدى</b>: لا الأصحاح الذي على الشاشة أو مقطعه فحسب، بل <b>من سفر ومقطع إلى سفر ومقطع</b>، حسب التقسيم السامري — ويُقال تحت الاختيار حجمه بالمقاطع والفصول. والمقطع نفسه في الطرفين هو مقطع واحد، وكل صفحة تحمل الآن سفرها ومقطعها</li><li><b>وصفحة HTML تفاعلية</b> بدل PDF: الصفحات نفسها في ملف واحد يُفتح على أي جهاز — قائمة فصول للانتقال، والتفسير والقاموس قابلان للطيّ، وخطّ يمكن تكبيره، وزرّ طباعة. والخطّ السامري يسافر داخل الملف نفسه، فيكون مقروءًا على جهاز لم يعرفه قطّ. ويمكن <b>مشاركته</b> عبر واتساب والبريد وأي تطبيق؛ ومتلقّيه يصنع منه PDF بضغطة</li><li><b>لكلّ كلمة في وحدات القاموس جواب الآن</b> — في ديوان القصائد وفي كتاب الليتورجيا معًا. وكان قارئ القصائد يسأل عن كلمة فيُقال له «لا يوجد مدخل قاموس بعد» حتى حين يعرفها القاموس: فالوحدة كانت تبحث في قائمة صغيرة خاصّة بها لا في قاموس التطبيق. والآن تسأل كلّ وحدةٍ المصادر العشرة نفسها، وما لم يُجب عنه أحدها قُرئ كلمةً كلمة في السطر الذي تقف فيه. ويُقال للقارئ أيّ جواب هذا: معنى؛ أو قراءة تصحّح تشويش المسح؛ أو قراءة مرجَّحة؛ أو كلمة عبرية لا تحتاج ترجمة؛ أو ترجمة السطر الذي تقف فيه (كما حُلَّت دنע نفسها)؛ أو — في نحو كلمة من كلّ مئة — أنّ النصّ هنا مسح غير مُراجَع وليست هذه كلمة، وبجانبها أقرب القراءات</li><li><b>والاختيار يُفتح فورًا</b>، لا عبر منتقٍ يُرسم ثمّ يُمحى بعد لحظة: رسمٌ واحد وطلبٌ واحد بدل ثمانية. و<b>من التقليد السامري</b> يُحسَب كاملًا — بما فيه المقالات بأسماء أصحابها ومقاطع التقليد لكلّ فصل — فلم يَعُد يغيب عن اللوح حيث له كلام</li><li>أُصلح خلل: الضغط على مقبض شريط الأزرار المطوي لم يكن يفعل شيئًا</li><li><b>اختيار القارئ</b> متوقّف مؤقّتًا حتى تُصحَّح قراءات البقيّة، وتُسمع في هذه الأثناء قراءة مائير بن يفنه ساسوني</li><li>الجولة المرشدة لم تعد تُفتح من تلقاء نفسها عند الدخول — تنتظر في القائمة، تحت المساعدة</li></ul>',
@@ -7436,6 +7442,7 @@ function menuAction(a){
   else if(a==='a11y')      openA11y();
   else if(a==='lang')      $('langModal').classList.remove('hidden');
   // its own page, not a panel: a document scrolls, a panel has to be told its height
+  else if(a==='getapp')    location.href = '/download?lang=' + LANG;
   else if(a==='testimonials') location.href = '/testimonials?lang=' + LANG;
   else if(a==='whatsnew')  showWhatsNewCarousel();
   else if(a==='help')      showHelp();
@@ -9144,24 +9151,33 @@ function installPlatform(){
 const INSTALL_UI = {
   he:{ title:'הוספת התורה למסך הבית', sub:'גישה מהירה במסך מלא, גם ללא רשת.', install:'התקנת האפליקציה', close:'סגירה',
        hint_and:'ההתקנה מוסיפה אייקון למסך הבית ופותחת את האפליקציה במסך מלא.', hint_desk:'יתווסף קיצור לאפליקציה שייפתח בחלון נפרד.',
-       or:'או', pwa_h:'התקנה מהדפדפן', play_h:'אפליקציית אנדרואיד ב-Google Play', play_sub:'האפליקציה המלאה, עם עדכונים אוטומטיים מהחנות.',
-       play_btn:'הורדה מ-Google Play',
-       play_note:'התקנת בעבר את האפליקציה מקובץ שהורד מהאתר? הסר קודם את ההתקנה הקודמת, ואז התקן מהחנות.' },
+       or:'או', pwa_h:'התקנה מהדפדפן',        play_note:'התקנת בעבר את האפליקציה מקובץ שהורד מהאתר? הסר קודם את ההתקנה הקודמת, ואז התקן מהחנות.',
+       stores_h:'האפליקציה בחנויות', stores_sub:'האפליקציה המלאה, עם עדכונים אוטומטיים מהחנות.',
+       plat_android:'אנדרואיד', plat_ios:'אייפון ואייפד',
+       stores_link:'שתי החנויות, עם ברקוד לסריקה ←' },
   en:{ title:'Add the Torah to your home screen', sub:'Quick full-screen access, even offline.', install:'Install the app', close:'Close',
        hint_and:'Installing adds an icon to your home screen and opens the app full-screen.', hint_desk:'A shortcut will be added that opens in its own window.',
-       or:'or', pwa_h:'Install from the browser', play_h:'The Android app on Google Play', play_sub:'The full app, kept up to date by the store.',
-       play_btn:'Get it on Google Play',
-       play_note:'Installed the app earlier from a file downloaded from this site? Uninstall that copy first, then install from the store.' },
+       or:'or', pwa_h:'Install from the browser',        play_note:'Installed the app earlier from a file downloaded from this site? Uninstall that copy first, then install from the store.',
+       stores_h:'The app in the stores', stores_sub:'The full app, kept up to date by the store.',
+       plat_android:'Android', plat_ios:'iPhone and iPad',
+       stores_link:'Both stores, with a code to scan →' },
   ar:{ title:'أضِف التوراة إلى الشاشة الرئيسية', sub:'وصول سريع بملء الشاشة، حتى دون اتصال.', install:'تثبيت التطبيق', close:'إغلاق',
        hint_and:'يضيف التثبيت أيقونة إلى شاشتك الرئيسية ويفتح التطبيق بملء الشاشة.', hint_desk:'ستتم إضافة اختصار يُفتح في نافذة مستقلة.',
-       or:'أو', pwa_h:'التثبيت من المتصفّح', play_h:'تطبيق أندرويد على Google Play', play_sub:'التطبيق الكامل، مع تحديثات تلقائية من المتجر.',
-       play_btn:'التنزيل من Google Play',
-       play_note:'هل ثبّتَّ التطبيق سابقًا من ملف نُزّل من هذا الموقع؟ أزِل تلك النسخة أولًا، ثم ثبّت التطبيق من المتجر.' },
+       or:'أو', pwa_h:'التثبيت من المتصفّح',        play_note:'هل ثبّتَّ التطبيق سابقًا من ملف نُزّل من هذا الموقع؟ أزِل تلك النسخة أولًا، ثم ثبّت التطبيق من المتجر.',
+       stores_h:'التطبيق في المتاجر', stores_sub:'التطبيق الكامل، مع تحديثات تلقائية من المتجر.',
+       plat_android:'أندرويد', plat_ios:'آيفون وآيباد',
+       stores_link:'المتجران معًا، مع رمز للمسح ←' },
 };
 // The Android app is on Google Play, offered next to the PWA install on Android.
 // It replaced a sideloaded APK the site used to serve, whose old link now
 // redirects here too (see /download/samaritan-torah.apk in server.py).
 const PLAY_URL = 'https://play.google.com/store/apps/details?id=net.thesamaritans.torah';
+// The iOS app. Apple sends a visitor from another country to their own
+// storefront, so the Israeli address serves everyone.
+const APPLE_URL = 'https://apps.apple.com/il/app/the-samaritan-torah/id6818952046';
+// Both stores, with a code each, also stand on a page of their own (/download) —
+// the address to send to someone who does not have the app yet.
+const STORES_URL = '/download';
 const INSTALL_ICONS = {
   share:'<svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 1.5v12" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round"/><path d="M6 5l4-4 4 4" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9H3.2A1.2 1.2 0 0 0 2 10.2v9.1A1.2 1.2 0 0 0 3.2 20.5h13.6A1.2 1.2 0 0 0 18 19.3v-9.1A1.2 1.2 0 0 0 16.8 9H15" stroke="#1F3864" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   add:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2.2" y="2.2" width="17.6" height="17.6" rx="4.4" stroke="#1F3864" stroke-width="1.7"/><path d="M11 7v8M7 11h8" stroke="#B8860B" stroke-width="1.9" stroke-linecap="round"/></svg>',
@@ -9169,6 +9185,7 @@ const INSTALL_ICONS = {
   dots:'<svg width="6" height="22" viewBox="0 0 6 22" fill="none"><circle cx="3" cy="3" r="2.1" fill="#1F3864"/><circle cx="3" cy="11" r="2.1" fill="#1F3864"/><circle cx="3" cy="19" r="2.1" fill="#1F3864"/></svg>',
   down:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v10" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round"/><path d="M6 8.5l4 4 4-4" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 16.5h13" stroke="#FBF8F0" stroke-width="1.9" stroke-linecap="round"/></svg>',
   play:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5.5 3.2v13.6L16.5 10 5.5 3.2z" stroke="#FBF8F0" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  apple:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="6.6" y="2.4" width="10.8" height="19.2" rx="2.4" stroke="#FBF8F0" stroke-width="1.8"/><line x1="10.4" y1="5.2" x2="13.6" y2="5.2" stroke="#FBF8F0" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="18.4" r="1.1" fill="#FBF8F0"/></svg>',
   warn:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2.5l8.7 15.1H2.3L11 2.5z" stroke="#B5731B" stroke-width="1.7" stroke-linejoin="round"/><path d="M11 8.5v4" stroke="#B5731B" stroke-width="1.8" stroke-linecap="round"/><circle cx="11" cy="15.4" r="1.05" fill="#B5731B"/></svg>',
   logo:'<svg width="30" height="30" viewBox="0 2 40 36" fill="none" aria-hidden="true"><defs><linearGradient id="gShoham" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2D77E"/><stop offset=".5" stop-color="#C9A227"/><stop offset="1" stop-color="#8A6A12"/></linearGradient></defs><path d="M13 12 Q20 7 27 12" stroke="#C9A227" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="20" cy="9.4" r="1.9" fill="#C9A227" stroke="#6E5210" stroke-width=".6"/><ellipse cx="27" cy="21.5" rx="6.4" ry="8.6" fill="url(#gShoham)" stroke="#6E5210" stroke-width="1"/><ellipse cx="24.9" cy="18" rx="2.1" ry="3" fill="#FBEFC0" opacity=".55"/><line x1="22.3" y1="20" x2="31.7" y2="20" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="21.9" y1="22.4" x2="32.1" y2="22.4" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="22.3" y1="24.8" x2="31.7" y2="24.8" stroke="#6E5210" stroke-width=".65" opacity=".4"/><ellipse cx="13" cy="21.5" rx="6.4" ry="8.6" fill="url(#gShoham)" stroke="#6E5210" stroke-width="1"/><ellipse cx="10.9" cy="18" rx="2.1" ry="3" fill="#FBEFC0" opacity=".55"/><line x1="8.3" y1="20" x2="17.7" y2="20" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="7.9" y1="22.4" x2="18.1" y2="22.4" stroke="#6E5210" stroke-width=".65" opacity=".4"/><line x1="8.3" y1="24.8" x2="17.7" y2="24.8" stroke="#6E5210" stroke-width=".65" opacity=".4"/></svg>',
 };
@@ -9180,11 +9197,24 @@ function instStep(glyph, html){
 // the second install option: the app on Google Play. The note is for whoever
 // installed the old sideloaded APK: it was signed with a different key than
 // Play's, so Play cannot install over it until that copy is removed.
-function playBlock(U){
+// The two stores, side by side, in every case: whoever opens the card may be
+// holding the other kind of phone, or sending the link to someone who is. Narrow
+// enough to stand two abreast even on a small screen — the platform under each
+// button says which is which, so the buttons themselves carry only the store's
+// name.
+function storesBlock(U){
+  const cell = (href, icon, name, plat) =>
+    '<div class="pwa-store">'+
+      '<a class="pwa-btn pwa-btn-sm" href="'+href+'" target="_blank" rel="noopener">'+icon+' '+name+'</a>'+
+      '<p class="pwa-store-plat">'+plat+'</p>'+
+    '</div>';
   return '<div class="pwa-or"><span>'+U.or+'</span></div>'+
-         '<p class="pwa-opt-h">'+U.play_h+'</p>'+
-         '<p class="pwa-opt-sub">'+U.play_sub+'</p>'+
-         '<a class="pwa-btn" href="'+PLAY_URL+'" target="_blank" rel="noopener">'+INSTALL_ICONS.play+' '+U.play_btn+'</a>'+
+         '<p class="pwa-opt-h">'+U.stores_h+'</p>'+
+         '<p class="pwa-opt-sub">'+U.stores_sub+'</p>'+
+         '<div class="pwa-stores2">'+
+           cell(PLAY_URL, INSTALL_ICONS.play, 'Google&nbsp;Play', U.plat_android)+
+           cell(APPLE_URL, INSTALL_ICONS.apple, 'App&nbsp;Store', U.plat_ios)+
+         '</div>'+
          '<p class="pwa-hint">'+U.play_note+'</p>';
 }
 function instBody(plat, L, U){
@@ -9192,11 +9222,12 @@ function instBody(plat, L, U){
   const btn = '<button class="pwa-btn" id="pwaCardInstall">'+I.down+' '+U.install+'</button>';
   if(plat === 'installed') return '<p class="pwa-hint">'+L.already+'</p>';
   if(plat === 'ios-safari')
-    return '<ul class="pwa-steps">'+instStep(I.share,L.ios[0])+instStep(I.add,L.ios[1])+instStep(I.check,L.ios[2])+
-           '</ul><p class="pwa-hint">'+L.ios_only+'</p>';
+    return '<p class="pwa-opt-h">'+U.pwa_h+'</p>'+
+           '<ul class="pwa-steps">'+instStep(I.share,L.ios[0])+instStep(I.add,L.ios[1])+instStep(I.check,L.ios[2])+
+           '</ul><p class="pwa-hint">'+L.ios_only+'</p>'+storesBlock(U);
   const inappSteps = '<div class="pwa-warn">'+I.warn+'<p>'+L.inapp_warn+'</p></div><ul class="pwa-steps">'+
                      instStep(I.dots,L.inapp[0])+instStep('',L.inapp[1])+instStep(I.share,L.inapp[2])+'</ul>';
-  if(plat === 'ios-inapp') return inappSteps;
+  if(plat === 'ios-inapp') return inappSteps+storesBlock(U);
   if(plat === 'android' || plat === 'android-inapp'){
     // Two ways in: install from the browser, or get the app from Google Play. The
     // in-app browser can't do the first but hands a Play link to the store app,
@@ -9206,10 +9237,13 @@ function instBody(plat, L, U){
     else if(deferredInstall)      browserWay = btn+'<p class="pwa-hint">'+U.hint_and+'</p>';
     else                          browserWay = '<ul class="pwa-steps">'+instStep(I.dots,L.android[0])+
                                                instStep(I.add,L.android[1])+instStep(I.check,L.android[2])+'</ul>';
-    return '<p class="pwa-opt-h">'+U.pwa_h+'</p>'+browserWay+playBlock(U);
+    return '<p class="pwa-opt-h">'+U.pwa_h+'</p>'+browserWay+storesBlock(U);
   }
-  if(deferredInstall) return btn+'<p class="pwa-hint">'+U.hint_desk+'</p>';      // desktop
-  return '<ul class="pwa-steps">'+instStep('',L.desktop[0])+instStep('',L.desktop[1])+'</ul>';
+  // desktop: the stores are still shown — a phone is where the app is wanted, and
+  // the codes on /download are how it gets there from a screen
+  const deskWay = deferredInstall ? btn+'<p class="pwa-hint">'+U.hint_desk+'</p>'
+                : '<ul class="pwa-steps">'+instStep('',L.desktop[0])+instStep('',L.desktop[1])+'</ul>';
+  return '<p class="pwa-opt-h">'+U.pwa_h+'</p>'+deskWay+storesBlock(U);
 }
 // The clip sits at the top of the card, above the written steps, and follows the
 // card's own language switcher rather than the page's — someone who switches to
@@ -9234,6 +9268,7 @@ function renderInstallCard(){
       '<button class="pwa-x" id="pwaCardClose" type="button" aria-label="'+U.close+'">×</button>'+
     '</div>'+
     '<div class="pwa-body">'+ guideVideo() + instBody(plat, L, U) +'</div>'+
+    '<p class="pwa-stores"><a href="'+STORES_URL+'?lang='+LANG+'">'+U.stores_link+'</a></p>'+
     '<div class="pwa-foot"><div class="pwa-langs">'+lbtn('he','עב')+lbtn('en','EN')+lbtn('ar','ع')+'</div>'+
       '<button class="pwa-snooze" id="pwaCardClose2" type="button">'+U.close+'</button></div>';
   $('pwaCardClose').onclick = $('pwaCardClose2').onclick = ()=>$('installModal').classList.add('hidden');

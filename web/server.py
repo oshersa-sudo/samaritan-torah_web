@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '4.5'
+APP_VERSION = '4.6'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 _SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
@@ -2078,6 +2078,15 @@ def assetlinks():
 # Android developer verification blocks from 2026-09-30 — so its old download
 # link now sends people to the store listing instead.
 _PLAY_URL = 'https://play.google.com/store/apps/details?id=net.thesamaritans.torah'
+
+
+# The page someone is sent to who does not have the app yet: the mark, and the
+# two stores with a code each. An address of its own (/download), so it can be
+# printed, forwarded or put on a sign without going through the app first.
+@app.route('/download')
+@app.route('/download/')
+def download_page():
+    return render_template('download.html')
 
 
 @app.route('/download/samaritan-torah.apk')
