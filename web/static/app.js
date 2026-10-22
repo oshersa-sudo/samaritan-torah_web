@@ -290,6 +290,8 @@ const I18N = {
     dict_same_meaning:'באותה משמעות (לפי השורש)', dict_more:'נוספים', dict_no_occ:'אין מופעים במשמעות זו.',
     dict_show_occ:'↳ הצג מופעים בתורה ובתיבת מרקה',
     dict_pages_hint:'דפדף בעמודי המילון.', dict_page_label:'עמוד', dict_prev:'‹ הקודם', dict_next:'הבא ›',
+    dict_in_piyut_corpus:'המילה באוצר הפיוטים', dict_in_text:'המילה בנוסח התורה', dict_in_text_both:'המילה בנוסח התורה ובתרגום',
+    dict_entry_no_gloss:'הערך עומד במילון, ופירושו לא נקרא מן הדף', tal_page:'עמוד',
     dict_dara_gloss:'מתוך מילון הפיוטים של בן־חיים', dict_in_piyut:'המילה בפיוטי השומרונים', dict_in_targum:'המילה בתרגום הארמי של התורה',
     dict_in_examples:'המילה במשפטי הדוגמה של המילון', dict_in_examples_hint:'המילון מביא את המילה בתוך המשפטים האלה; לצד כל אחד מהם המקום שממנו הוא מצוטט, ולחיצה עליו פותחת את הפסוק.',
     dict_in_dict:'נמצא במילון כערך:', dict_form_hint:'לחץ על צורה לקבלת כל מיקומיה במילון',
@@ -595,6 +597,8 @@ const I18N = {
     dict_same_meaning:'in the same meaning (by root)', dict_more:'more', dict_no_occ:'No occurrences in this meaning.',
     dict_show_occ:'↳ Show occurrences in the Torah & Tībåt Mårqe',
     dict_pages_hint:'Browse the dictionary pages.', dict_page_label:'Page', dict_prev:'‹ Prev', dict_next:'Next ›',
+    dict_in_piyut_corpus:'The word in the piyyut collection', dict_in_text:'The word in the Torah text', dict_in_text_both:'The word in the Torah text and its Targum',
+    dict_entry_no_gloss:'the entry stands in the dictionary; no meaning was read from the page', tal_page:'page',
     dict_dara_gloss:'From the word list of Ben-Ḥayyim’s liturgy volume', dict_in_piyut:'The word in the Samaritan piyyutim', dict_in_targum:'The word in the Aramaic Targum of the Torah',
     dict_in_examples:'The word in the dictionary’s example sentences', dict_in_examples_hint:'The dictionary shows the word inside these sentences; beside each is the place it is quoted from, and tapping that opens the verse.',
     dict_in_dict:'Found in the dictionary as a head-word:', dict_form_hint:'Tap a form for all its locations in the dictionary',
@@ -900,6 +904,8 @@ const I18N = {
     dict_same_meaning:'بالمعنى نفسه (حسب الجذر)', dict_more:'أخرى', dict_no_occ:'لا مواضع بهذا المعنى.',
     dict_show_occ:'↳ إظهار المواضع في التوراة وتيبات مارقه',
     dict_pages_hint:'تصفّح صفحات المعجم.', dict_page_label:'صفحة', dict_prev:'‹ السابق', dict_next:'التالي ›',
+    dict_in_piyut_corpus:'الكلمة في مجموعة القصائد', dict_in_text:'الكلمة في نصّ التوراة', dict_in_text_both:'الكلمة في نصّ التوراة وترجومه',
+    dict_entry_no_gloss:'المدخل قائم في المعجم، ولم يُقرأ معناه من الصفحة', tal_page:'صفحة',
     dict_dara_gloss:'من معجم القصائد لبن-حَيّيم', dict_in_piyut:'الكلمة في قصائد السامريين', dict_in_targum:'الكلمة في الترجوم الآرامي للتوراة',
     dict_in_examples:'الكلمة في جُمل الأمثلة في المعجم', dict_in_examples_hint:'يورد المعجم الكلمة داخل هذه الجمل؛ وإلى جانب كلٍّ منها الموضع المقتبسة منه، والضغط عليه يفتح النصّ.',
     dict_in_dict:'موجودة في المعجم كمدخل:', dict_form_hint:'اضغط صيغةً لكلّ مواضعها في المعجم',
@@ -7693,7 +7699,11 @@ async function dictAppSearch(){
         if(e.lemma){ it.appendChild(dictFormChip(e.lemma)); it.appendChild(document.createTextNode(' ')); }
         if(e.pos) it.appendChild(el('span','pos', esc(e.pos)+' '));
         if(e.root) it.appendChild(el('span','dict-direct-root', '('+t('tm_col_root')+' '+esc(e.root)+') '));
-        it.appendChild(document.createTextNode(e.gloss||''));
+        // nine of the dictionary's entries have no meaning in the reading of the
+        // page. Saying so is the truth; an empty line looks like a fault.
+        if((e.gloss||'').trim()) it.appendChild(document.createTextNode(e.gloss));
+        else it.appendChild(el('span','dict-nogloss', esc(t('dict_entry_no_gloss'))));
+        if(e.page) it.appendChild(el('span','dict-cite-ref', ' · '+t('tal_page')+' '+esc(String(e.page))));
         body.appendChild(it);
       }
     }
@@ -7743,10 +7753,23 @@ async function dictAppSearch(){
       body.appendChild(row);
     }
   }
-  // and where it stands in the Torah's own Targum
+  // the poems of the collection it is sung in
+  const pc=(d&&d.piyut_corpus)||[];
+  if(pc.length){
+    body.appendChild(el('div','tal-sec', esc(t('dict_in_piyut_corpus'))));
+    const wrap=el('div','tal-locs');
+    for(const o of pc){
+      const lbl=o.title+(o.author?(' · '+o.author):'');
+      wrap.appendChild(el('span','tal-loc', esc(lbl)));
+    }
+    body.appendChild(wrap);
+  }
+  // and where it stands in the Torah itself and in its Targum, verse by verse
   const tg=(d&&d.targum)||[];
   if(tg.length){
-    body.appendChild(el('div','tal-sec', esc(t('dict_in_targum'))));
+    const inHeb=tg.some(o=>o.kind==='h'), inAram=tg.some(o=>o.kind!=='h');
+    body.appendChild(el('div','tal-sec', esc(
+      (inHeb&&inAram) ? t('dict_in_text_both') : inHeb ? t('dict_in_text') : t('dict_in_targum'))));
     const wrap=el('div','tal-locs');
     for(const o of tg){
       const c=el('span','tal-loc tm-ref', esc(o.book+' '+o.ch+':'+o.vn));
@@ -7755,7 +7778,7 @@ async function dictAppSearch(){
     body.appendChild(wrap);
   }
   if(!roots.length && !(direct&&direct.length) && !cites.length && !piy.length
-     && !tg.length && !dara.gloss){
+     && !tg.length && !pc.length && !dara.gloss){
     body.appendChild(el('div','note',t('dict_app_empty')));
   }
 }

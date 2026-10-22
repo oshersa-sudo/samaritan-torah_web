@@ -883,6 +883,95 @@ def _seed_tal_cite_index():
 _seed_tal_cite_index()
 
 
+# ── every word of the Torah and of its Targum, by the verse it stands in ─────
+# The dictionary could answer a word only if some index already carried it. A
+# word that simply stands in the text — and ובשפילתה, בתה and ולשנינה do — fell
+# through all of them. The text is right here; indexing it costs a fifth of a
+# second at start-up and nothing on the wire.
+def _seed_text_word_index():
+    """Index the words of the Samaritan Torah and of its Aramaic Targum."""
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        n_src = conn.execute('SELECT COUNT(*) FROM verses').fetchone()[0]
+        conn.execute("""CREATE TABLE IF NOT EXISTS text_word_ix (
+            word_norm TEXT NOT NULL, verse_id INTEGER NOT NULL, kind TEXT NOT NULL,
+            PRIMARY KEY (word_norm, verse_id, kind))""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS text_word_build (
+            src_n INTEGER, rows_n INTEGER)""")
+        have = conn.execute('SELECT src_n, rows_n FROM text_word_build').fetchone()
+        if have and have[0] == n_src and have[1] == conn.execute(
+                'SELECT COUNT(*) FROM text_word_ix').fetchone()[0]:
+            PATCH_REPORT['text_words'] = 'already current'
+            return
+        pairs = set()
+        for vid, heb, aram in conn.execute('SELECT id, text, sam_aramaic FROM verses'):
+            for w in _cite_words(heb):
+                pairs.add((w, vid, 'h'))
+            for w in _cite_words(aram):
+                pairs.add((w, vid, 'a'))
+        conn.execute('DELETE FROM text_word_ix')
+        conn.executemany('INSERT OR IGNORE INTO text_word_ix (word_norm, verse_id, kind) '
+                         'VALUES (?,?,?)', sorted(pairs))
+        conn.execute('DELETE FROM text_word_build')
+        conn.execute('INSERT INTO text_word_build (src_n, rows_n) VALUES (?,?)',
+                     (n_src, len(pairs)))
+        conn.commit()
+        PATCH_REPORT['text_words'] = '%d words in %d verses' % (
+            len(set(w for w, _, _ in pairs)), n_src)
+        print('[text-words] %s' % PATCH_REPORT['text_words'])
+    except Exception as exc:
+        PATCH_REPORT['text_words'] = 'failed: %s' % exc
+        print('[text-words] skipped: %s' % exc)
+    finally:
+        conn.close()
+
+
+_seed_text_word_index()
+
+
+# ── and every word of the piyyut collection, by the poem it is sung in ───────
+# The collection had a word index of its own, but an incomplete one: ניב stands
+# in seventy-three of the poems and was not in it. The poems themselves are the
+# source of truth, so they are indexed here the same way the Torah is.
+def _seed_piyut_word_index():
+    """Index the words of the Samaritan piyyut collection."""
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        n_src = conn.execute('SELECT COUNT(*) FROM piyutim').fetchone()[0]
+        conn.execute("""CREATE TABLE IF NOT EXISTS piyut_word_ix (
+            word_norm TEXT NOT NULL, piyut_id INTEGER NOT NULL,
+            PRIMARY KEY (word_norm, piyut_id))""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS piyut_word_build (
+            src_n INTEGER, rows_n INTEGER)""")
+        have = conn.execute('SELECT src_n, rows_n FROM piyut_word_build').fetchone()
+        if have and have[0] == n_src and have[1] == conn.execute(
+                'SELECT COUNT(*) FROM piyut_word_ix').fetchone()[0]:
+            PATCH_REPORT['piyut_words'] = 'already current'
+            return
+        pairs = set()
+        for pid, txt in conn.execute('SELECT id, text FROM piyutim'):
+            for w in _cite_words(txt):
+                pairs.add((w, pid))
+        conn.execute('DELETE FROM piyut_word_ix')
+        conn.executemany('INSERT OR IGNORE INTO piyut_word_ix (word_norm, piyut_id) '
+                         'VALUES (?,?)', sorted(pairs))
+        conn.execute('DELETE FROM piyut_word_build')
+        conn.execute('INSERT INTO piyut_word_build (src_n, rows_n) VALUES (?,?)',
+                     (n_src, len(pairs)))
+        conn.commit()
+        PATCH_REPORT['piyut_words'] = '%d words in %d piyyutim' % (
+            len(set(w for w, _ in pairs)), n_src)
+        print('[piyut-words] %s' % PATCH_REPORT['piyut_words'])
+    except Exception as exc:
+        PATCH_REPORT['piyut_words'] = 'failed: %s' % exc
+        print('[piyut-words] skipped: %s' % exc)
+    finally:
+        conn.close()
+
+
+_seed_piyut_word_index()
+
+
 # ── every word in the index now carries a meaning, and its Arabic ────────────
 # 2,263 rows of the word index held no meaning, or held the word back as its own
 # meaning — "אבניו → אבניו", which is the same as none. A reader who found such
@@ -5216,6 +5305,7 @@ def tal_full_lookup(word, torah_limit=16):
            # and in the liturgy — which is where the words Tal never entered live
            'targum': targum_occurrences(word),
            'piyut': piyut_occurrences(word),
+           'piyut_corpus': piyut_corpus_occurrences(word),
            'dara': dara_gloss_for(word)}
     for root in roots:
         rn = _norm_fin(root)
@@ -5452,18 +5542,31 @@ def targum_occurrences(word, limit=12):
         return []
     conn = get_connection()
     try:
-        # a place name is indexed whole — "אברמונ פרצ" — so a reader typing one
-        # of its words is looking for exactly that entry, and finds it here
+        # First the text itself: a word that simply stands in a verse is answered
+        # by that verse, whether or not any index ever happened to carry it.
         rows = conn.execute(
-            "SELECT DISTINCT form, pron, book, chapter, verse, verse_id FROM root_index "
-            "WHERE form_norm = ? OR form_norm LIKE ? OR form_norm LIKE ? OR form_norm LIKE ? "
-            "ORDER BY verse_id LIMIT ?",
-            (bn, bn + ' %', '% ' + bn, '% ' + bn + ' %', limit)).fetchall()
+            """SELECT '' AS form, '' AS pron, bk.name AS book, ch.number AS chapter,
+                      v.number AS verse, v.id AS verse_id, x.kind
+               FROM text_word_ix x
+               JOIN verses v    ON v.id = x.verse_id
+               JOIN chapters ch ON ch.id = v.chapter_id
+               JOIN books bk    ON bk.id = ch.book_id
+               WHERE x.word_norm = ? ORDER BY v.id LIMIT ?""", (bn, limit)).fetchall()
+        if not rows:
+            # and a place name is indexed whole — "אברמונ פרצ" — so a reader
+            # typing one of its words is looking for exactly that entry
+            rows = conn.execute(
+                "SELECT form, pron, book, chapter, verse, verse_id, 'a' AS kind "
+                "FROM root_index WHERE form_norm = ? OR form_norm LIKE ? "
+                "   OR form_norm LIKE ? OR form_norm LIKE ? "
+                "GROUP BY verse_id ORDER BY verse_id LIMIT ?",
+                (bn, bn + ' %', '% ' + bn, '% ' + bn + ' %', limit)).fetchall()
     except sqlite3.OperationalError:
         rows = []
     conn.close()
     return [{'form': r['form'] or '', 'pron': r['pron'] or '', 'book': r['book'] or '',
-             'ch': r['chapter'], 'vn': r['verse'], 'verse_id': r['verse_id']} for r in rows]
+             'ch': r['chapter'], 'vn': r['verse'], 'verse_id': r['verse_id'],
+             'kind': r['kind']} for r in rows]
 
 
 def piyut_occurrences(word, limit=8):
@@ -5495,6 +5598,40 @@ def piyut_occurrences(word, limit=8):
         out.append({'title': (r['title'] or '').strip(), 'author': (r['author'] or '').strip(),
                     'aram': a, 'heb': (r['heb'] or '').strip(),
                     'translit': (r['translit'] or '').strip()})
+    return out
+
+
+def piyut_corpus_occurrences(word, limit=6):
+    """The poems of the Samaritan piyyut collection the word is sung in. A second
+    corpus beside Ben-Ḥayyim's volume, with an index of its own."""
+    bn = _norm_fin(_tal_bare(word))
+    if not bn or len(bn) < 2:
+        return []
+    conn = get_connection()
+    ids = []
+    try:                       # the poems themselves, indexed word by word
+        ids = [r['piyut_id'] for r in conn.execute(
+            "SELECT piyut_id FROM piyut_word_ix WHERE word_norm = ? LIMIT ?",
+            (bn, limit))]
+    except sqlite3.OperationalError:
+        ids = []
+    if not ids:                # the collection's older index, where it has more
+        try:
+            row = conn.execute(
+                "SELECT occurrences FROM piyutim_words WHERE word = ? OR word = ? LIMIT 1",
+                (word, bn)).fetchone()
+            ids = [int(x) for x in json.loads((row and row['occurrences']) or '[]')][:limit]
+        except Exception:
+            ids = []
+    out = []
+    if ids:
+        q = ','.join('?' * len(ids))
+        for r in conn.execute("SELECT id, title, incipit3, author, festival "
+                              "FROM piyutim WHERE id IN (%s)" % q, ids):
+            out.append({'id': r['id'], 'title': (r['title'] or r['incipit3'] or '').strip(),
+                        'author': (r['author'] or '').strip(),
+                        'festival': (r['festival'] or '').strip()})
+    conn.close()
     return out
 
 

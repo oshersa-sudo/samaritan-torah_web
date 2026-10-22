@@ -1087,6 +1087,7 @@ a.pwa-btn{ text-decoration:none; box-sizing:border-box; }
 .dict-cite-ref{ display:inline-block; margin-top:4px; font-size:13px; color:#6B6B63; }
 .dict-cite-he{ margin-top:3px; font-size:14.5px; color:#4A4A44; }
 .dict-translit{ font-size:14px; color:#7F6000; font-style:italic; }
+.dict-nogloss{ color:#8A8172; font-style:italic; }
 a.dict-cite-ref, .dict-cite-ref.tm-ref{ color:#2E61B8; cursor:pointer; }
 
 .pwa-stores2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; align-items:start; }
