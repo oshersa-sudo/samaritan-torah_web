@@ -5453,6 +5453,9 @@ def tal_full_lookup(word, torah_limit=16):
            'dara': dara_gloss_for(word),
            'torah_he': torah_word_gloss(word),
            'hebrew_side': hebrew_side(word),
+           # the same word as the dictionary prints it elsewhere: the gutturals
+           # and the sibilants interchange, and each spelling is its own entry
+           'near': near_spellings(word, roots),
            # the one lookup every word unit in this app is required to ask, so
            # the dictionary answers a word the same way the word panels do
            'said': (lambda v: ({'gloss': (v.get('g') or '').strip(),
@@ -5745,6 +5748,81 @@ def _cite_vid(ref, vmap):
         return None
     book = {'בר': 1, 'שמ': 2, 'ויק': 3, 'במ': 4, 'דב': 5}[m.group(1)]
     return vmap.get((book, _ervah_gem(m.group(2)), int(m.group(3))))
+
+
+# In Samaritan Aramaic the gutturals fell together and the sibilants with them,
+# so the same word is printed under more than one spelling: Tal has חפס "חפר,
+# נבר" on page 289 and עפס on 652, and a reader who types עפץ reaches neither.
+# These are the classes, and nothing else is folded — a wider net turns the
+# answer into a list.
+_SAM_CLASS = str.maketrans({'א': 'א', 'ה': 'א', 'ח': 'א', 'ע': 'א',
+                            'ז': 'ס', 'ס': 'ס', 'צ': 'ס',
+                            'ט': 'ת', 'ת': 'ת'})
+
+
+def _sam_skel(w):
+    return re.sub('[^' + chr(0x5d0) + '-' + chr(0x5ea) + ']', '',
+                  _norm_fin(_nomark(w or ''))).translate(_SAM_CLASS)
+
+
+_SKEL_FAMILY = None
+
+
+def _skel_family(conn):
+    """{the interchange skeleton: the entries printed with it}. Read once."""
+    global _SKEL_FAMILY
+    if _SKEL_FAMILY is not None:
+        return _SKEL_FAMILY
+    out = {}
+    try:
+        rows = conn.execute(
+            "SELECT lemma, lemma_norm, root, gloss_he, printed FROM tal_auth_entries "
+            "WHERE TRIM(COALESCE(gloss_he,''))<>''").fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    for r in rows:
+        ln = r['lemma_norm'] or ''
+        if ' ' in ln or not ln:
+            continue
+        out.setdefault(_sam_skel(ln), []).append(
+            {'lemma': r['lemma'] or '', 'norm': _norm_fin(_nomark(ln)),
+             'root': (r['root'] or '').strip(), 'gloss': (r['gloss_he'] or '').strip(),
+             'page': r['printed']})
+    _SKEL_FAMILY = out
+    return out
+
+
+def near_spellings(word, skip_roots=(), limit=8):
+    """The dictionary's entries for the same word spelled another way.
+
+    An offer, not a claim: the entry is shown as it is printed, with its page,
+    and the reader judges whether it is the same word. Entries the search has
+    already answered with are left out."""
+    bn = _norm_fin(_tal_bare(word))
+    if not bn or len(bn) < 2:
+        return []
+    conn = get_connection()
+    fam = _skel_family(conn).get(_sam_skel(bn), [])
+    conn.close()
+    skip = {(_norm_fin(r) or '') for r in skip_roots}
+    out = []
+    for e in fam:
+        if e['norm'] == bn or _norm_fin(e['root']) in skip:
+            continue
+        # closest spelling first: how many letters actually differ
+        d = sum(1 for a, b in zip(e['norm'], bn) if a != b) + abs(len(e['norm']) - len(bn))
+        out.append((d, e))
+    out.sort(key=lambda x: (x[0], str(x[1]['page'])))
+    seen, res = set(), []
+    for _, e in out:
+        k = (e['lemma'], e['gloss'][:20])
+        if k in seen:
+            continue
+        seen.add(k)
+        res.append(e)
+        if len(res) >= limit:
+            break
+    return res
 
 
 def dict_read_as(word, limit=8):
