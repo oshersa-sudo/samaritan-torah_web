@@ -2730,13 +2730,41 @@ def _tm_mark_refs(text, vmap):
     return ''.join(out)
 
 
+_VMAP_CACHE = None
+
+
 def _tm_vmap(conn):
+    """{(book, chapter, verse): verse id} — read once per process. It was being
+    rebuilt on every lookup, which meant a join over all six thousand verses for
+    each word somebody typed into the dictionary."""
+    global _VMAP_CACHE
+    if _VMAP_CACHE is not None:
+        return _VMAP_CACHE
     vmap = {}
     for r in conn.execute("""SELECT v.id, b.order_n bo, c.number cn, v.number vn FROM verses v
         JOIN chapters c ON c.id=v.chapter_id JOIN books b ON b.id=c.book_id"""):
         if str(r['vn']).isdigit():
             vmap[(r['bo'], r['cn'], int(r['vn']))] = r['id']
+    _VMAP_CACHE = vmap
     return vmap
+
+
+_VERSE_HE_CACHE = None
+
+
+def _verse_hebrew(conn):
+    """{verse id: its Hebrew} — read once per process, for the same reason."""
+    global _VERSE_HE_CACHE
+    if _VERSE_HE_CACHE is not None:
+        return _VERSE_HE_CACHE
+    out = {}
+    try:
+        for v in conn.execute('SELECT id, text FROM verses'):
+            out[v['id']] = (v['text'] or '').strip()
+    except sqlite3.OperationalError:
+        out = {}
+    _VERSE_HE_CACHE = out
+    return out
 
 
 def get_tm_toc():
@@ -5739,12 +5767,7 @@ def dict_read_as(word, limit=8):
         likes.append('%' + base[:-1] + tail + '%')
     conn = get_connection()
     vmap = _tm_vmap(conn)
-    vhe = {}
-    try:
-        for v in conn.execute('SELECT id, text FROM verses'):
-            vhe[v['id']] = (v['text'] or '').strip()
-    except sqlite3.OperationalError:
-        pass
+    vhe = _verse_hebrew(conn)
     out = []
 
     def add(kind, text, extra=None):
@@ -6057,12 +6080,7 @@ def tal_citations_for(word, limit=14):
     vmap = _tm_vmap(conn)
     # the verse each sentence quotes, in Hebrew: Tal prints his examples with
     # their Hebrew beside them, and that Hebrew is what the word is read by
-    vhe = {}
-    try:
-        for v in conn.execute('SELECT id, text FROM verses'):
-            vhe[v['id']] = (v['text'] or '').strip()
-    except sqlite3.OperationalError:
-        pass
+    vhe = _verse_hebrew(conn)
     conn.close()
     out, seen = [], set()
     for r in rows:

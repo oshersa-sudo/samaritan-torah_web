@@ -278,6 +278,7 @@ const I18N = {
     rhy_occ_n:'חיבורים', rhy_no_data:'אין נתונים',
     rhy_col_word:'מילה', rhy_col_freq:'שכיחות', rhy_col_group:'קבוצת חרוז', rhy_col_def:'תרגום (מילון)', rhy_col_occ:'היכן מופיעה',
     rd_he:'עברית', rd_ar:'ערבית', rd_aram:'ארמית', rd_show:'הצג:',
+    dict_app_failed:'החיפוש לא הושלם — ייתכן שהחיבור איטי. אין זה אומר שהמילה חסרה במילון.', dict_try_again:'נסו שוב',
     dict_app_title:'מילון ארמי&nbsp;-&nbsp;עברי,&nbsp;עברי&nbsp;ארמי', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
     dict_tab_search:'חיפוש', dict_tab_index:'אינדקס מילים', dict_tab_phrases:'מטבעות לשון', dict_phrases_hint:'צירופי לשון קבועים מן הפיוטים וממימר מרקה — כינויים ונוסחאות וניבים, עם התרגום העברי שמימר מרקה עצמו נותן להם. הקש על צירוף לפירושו המלא.', dict_tab_pages:'דפדוף עמודים',
     dict_index_hint:'דפדף בכל מילות המילון (לפי א״ב). הקלד אות/מילה לקפיצה. לחץ על מילה כדי לראות את מופעיה בתורה ובתיבת מרקה — באותה משמעות.', dict_index_ph:'קפוץ לאות/מילה…',
@@ -592,6 +593,7 @@ const I18N = {
     rhy_occ_n:'compositions', rhy_no_data:'No data',
     rhy_col_word:'Word', rhy_col_freq:'Frequency', rhy_col_group:'Rhyme group', rhy_col_def:'Gloss', rhy_col_occ:'Where it appears',
     rd_he:'Hebrew', rd_ar:'Arabic', rd_aram:'Aramaic', rd_show:'Show:',
+    dict_app_failed:'The search did not complete — the connection may be slow. It does not mean the word is missing.', dict_try_again:'Try again',
     dict_app_title:'Aramaic&nbsp;-&nbsp;Hebrew,&nbsp;Hebrew&nbsp;-&nbsp;Aramaic Dictionary', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
     dict_tab_search:'Search', dict_tab_index:'Word index', dict_tab_phrases:'Set phrases', dict_phrases_hint:'Fixed Aramaic phrases from the piyyutim and Memar Marqe — epithets, formulas and idioms, with the Hebrew that Memar Marqe’s own translation gives them. Tap one for its full entry.', dict_tab_pages:'Browse pages',
     dict_index_hint:'Browse every word in the dictionary (A–Z). Type a letter/word to jump. Tap a word to see where it occurs in the Torah and in Tībåt Mårqe — in the same meaning.', dict_index_ph:'Jump to a letter/word…',
@@ -906,6 +908,7 @@ const I18N = {
     rhy_occ_n:'تأليفات', rhy_no_data:'لا توجد بيانات',
     rhy_col_word:'الكلمة', rhy_col_freq:'التكرار', rhy_col_group:'مجموعة القافية', rhy_col_def:'الترجمة', rhy_col_occ:'أين تظهر',
     rd_he:'العبرية', rd_ar:'العربية', rd_aram:'الآرامية', rd_show:'اعرض:',
+    dict_app_failed:'لم يكتمل البحث — قد يكون الاتصال بطيئًا. وهذا لا يعني أنّ الكلمة غير موجودة.', dict_try_again:'حاول مرّة أخرى',
     dict_app_title:'معجم آرامي&nbsp;-&nbsp;عبري،&nbsp;عبري&nbsp;آرامي', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
     dict_tab_search:'بحث', dict_tab_index:'فهرس الكلمات', dict_tab_phrases:'تعابير ثابتة', dict_phrases_hint:'تعابير آرامية ثابتة من القصائد ومن ميمر مرقة — ألقاب وصيغ وتعابير اصطلاحية، مع الترجمة العبرية التي يمنحها ميمر مرقة نفسه. اضغط على تعبير لعرض مدخله الكامل.', dict_tab_pages:'تصفّح الصفحات',
     dict_index_hint:'تصفّح كلّ كلمات المعجم (أ–ي). اكتب حرفاً/كلمة للقفز. اضغط كلمة لرؤية مواضعها في التوراة وفي تيبات مارقه — بالمعنى نفسه.', dict_index_ph:'اقفز إلى حرف/كلمة…',
@@ -7621,7 +7624,17 @@ async function dictHeSearch(word){
   if(!word) return;
   body.appendChild(el('div','note',t('searching')));
   let d; try{ d=await api('dict_he_search?word='+encodeURIComponent(word)); }
-  catch(e){ body.innerHTML=''; body.appendChild(el('div','note',t('dict_app_empty'))); return; }
+  catch(e){
+    // A request that failed is not a word that does not exist. Saying "not
+    // found" about a word the dictionary holds is the worst thing this screen
+    // can do, so a failure says so and offers another go.
+    body.innerHTML='';
+    body.appendChild(el('div','note',t('dict_app_failed')));
+    const again=el('button','dict-occ-btn', esc(t('dict_try_again')));
+    again.onclick=()=>dictHeSearch(word);
+    body.appendChild(again);
+    return;
+  }
   body.innerHTML='';
   if(!d.results || !d.results.length){ body.appendChild(el('div','note',t('dict_app_empty'))); return; }
   for(const r of d.results){
@@ -7703,7 +7716,17 @@ async function dictAppSearch(){
   try{ [d, direct]=await Promise.all([
       api('tal_lookup?word='+encodeURIComponent(word)),
       api('dict_word?word='+encodeURIComponent(word)) ]); }
-  catch(e){ body.innerHTML=''; body.appendChild(el('div','note',t('dict_app_empty'))); return; }
+  catch(e){
+    // A request that failed is not a word that does not exist. Saying "not
+    // found" about a word the dictionary holds is the worst thing this screen
+    // can do, so a failure says so and offers another go.
+    body.innerHTML='';
+    body.appendChild(el('div','note',t('dict_app_failed')));
+    const again=el('button','dict-occ-btn', esc(t('dict_try_again')));
+    again.onclick=()=>dictAppSearch();
+    body.appendChild(again);
+    return;
+  }
   body.innerHTML='';
   const roots=(d&&d.roots)||[];
   // direct head-word matches (the word itself stands in the dictionary), regardless of root
