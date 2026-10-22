@@ -5048,31 +5048,78 @@ def _tal_variants(base):
     return full, prefixed
 
 
-_MARKED_HEADWORDS = None
+_BRACKET = re.compile(r'[\(\[]([^()\[\]]*)[\)\]]?')
 
 
-def _marked_headwords(conn):
-    """{plain head-word: [roots]} for the entries whose head-word carries a
-    homograph mark. Read once per process — 652 of the dictionary's entries, so a
-    word is answered from memory rather than by scanning the table each time."""
-    global _MARKED_HEADWORDS
-    if _MARKED_HEADWORDS is not None:
-        return _MARKED_HEADWORDS
+def _reader_spellings(lemma):
+    """Every way a reader might type a head-word Tal printed with his own marks.
+
+    He numbers homographs (חרש¹), daggers words from outside his main corpus
+    (†חזק), and puts a letter that may or may not be there in brackets —
+    (א)רתחח, תשמין(יות), מסתא(נ)בה, א]רקנע. A reader types one of the real
+    spellings, which is none of those strings: both readings of every optional
+    group are produced here, and each word of a head-word made of several."""
+    out = set()
+    for word in _nomark(lemma or '').split():
+        # a closing bracket with nothing opened before it marks an optional
+        # opening: א]רקנע is read רקנע as well as ארקנע, לנ]קבל both ways
+        m = re.match(r'([^()\[\]]+)[\)\]](?![^()\[\]]*[\)\]])', word)
+        if m and '(' not in word[:m.start(2) if m.lastindex and m.lastindex > 1 else m.end()]                 and '[' not in word[:m.end()]:
+            word = '(' + m.group(1) + ')' + word[m.end():]
+        forms = {word}
+        for _ in range(4):                    # nested or repeated groups
+            nxt = set()
+            for x in forms:
+                m = _BRACKET.search(x)
+                if m:
+                    nxt.add(x[:m.start()] + m.group(1) + x[m.end():])
+                    nxt.add(x[:m.start()] + x[m.end():])
+                else:
+                    nxt.add(x)
+            if nxt == forms:
+                break
+            forms = nxt
+        for f in forms:
+            f = _norm_fin(re.sub('[^' + chr(0x5d0) + '-' + chr(0x5ea) + ']', '', f))
+            if len(f) >= 2:
+                out.add(f)
+    return out
+
+
+_ALT_HEADWORDS = None
+
+
+def _alt_headwords(conn):
+    """{a spelling a reader would type: [the head-words printed that way]} for
+    every entry whose printed form is not what a reader types. Read once per
+    process, so a word is answered from memory rather than by scanning."""
+    global _ALT_HEADWORDS
+    if _ALT_HEADWORDS is not None:
+        return _ALT_HEADWORDS
     out = {}
     try:
-        rows = conn.execute(
-            "SELECT lemma_norm, root FROM tal_auth_entries "
-            "WHERE lemma_norm GLOB '*[¹²³⁴⁵⁶⁷⁸⁹†]*' "
-            "  AND TRIM(COALESCE(root,''))<>''").fetchall()
+        rows = conn.execute("SELECT lemma, lemma_norm, root FROM tal_auth_entries").fetchall()
     except sqlite3.OperationalError:
         rows = []
     for r in rows:
-        key = _norm_fin(_nomark(r['lemma_norm']))
-        root = (r['root'] or '').strip()
-        if key and root and root not in out.setdefault(key, []):
-            out[key].append(root)
-    _MARKED_HEADWORDS = out
+        own = r['lemma_norm'] or ''
+        for sp in _reader_spellings(r['lemma']):
+            if sp == own:
+                continue                      # already found letter for letter
+            e = out.setdefault(sp, {'lemmas': [], 'roots': []})
+            lem = (r['lemma'] or '').strip()
+            root = (r['root'] or '').strip()
+            if lem and lem not in e['lemmas']:
+                e['lemmas'].append(lem)
+            if root and root not in e['roots']:
+                e['roots'].append(root)
+    _ALT_HEADWORDS = out
     return out
+
+
+def _marked_headwords(conn):
+    """{a spelling a reader would type: [roots]} — the root side of the above."""
+    return {k: v['roots'] for k, v in _alt_headwords(conn).items() if v['roots']}
 
 
 @_without_lexicon([])
@@ -5330,6 +5377,13 @@ def tal_full_lookup(word, torah_limit=16):
            'piyut': piyut_occurrences(word),
            'piyut_corpus': piyut_corpus_occurrences(word),
            'dara': dara_gloss_for(word)}
+    # Nothing at all? Then say where the string itself was read from. The
+    # dictionary holds it; it must not pretend otherwise.
+    if not (out['roots'] or out['citations'] or out['targum'] or out['piyut']
+            or out['piyut_corpus'] or out['dara']):
+        out['read_as'] = dict_read_as(word)
+    else:
+        out['read_as'] = []
     for root in roots:
         rn = _norm_fin(root)
         senses = []
@@ -5477,6 +5531,15 @@ def dict_word_search(word, limit=40):
     except sqlite3.OperationalError:               # a connection without nomark()
         rows = conn.execute("SELECT lemma, root, pos, gloss_he, printed FROM tal_auth_entries "
                             "WHERE lemma_norm=? ORDER BY pdf, ord LIMIT ?", (bn, limit)).fetchall()
+    # …and the head-words a reader cannot type letter for letter, because Tal
+    # printed an optional letter in brackets: (א)רתחח is reached by רתחח and by
+    # ארתחח, and neither of those is the string the entry is stored under.
+    lemmas = (_alt_headwords(conn).get(bn) or {}).get('lemmas') or []
+    if lemmas:
+        q = ','.join('?' * len(lemmas))
+        rows = list(rows) + list(conn.execute(
+            "SELECT lemma, root, pos, gloss_he, printed FROM tal_auth_entries "
+            "WHERE lemma IN (%s) ORDER BY pdf, ord LIMIT ?" % q, lemmas + [limit]))
     out, seen = [], set()
     for r in rows:
         k = (r['lemma'], r['printed'], (r['gloss_he'] or '')[:20])
@@ -5551,6 +5614,68 @@ def _cite_vid(ref, vmap):
         return None
     book = {'בר': 1, 'שמ': 2, 'ויק': 3, 'במ': 4, 'דב': 5}[m.group(1)]
     return vmap.get((book, _ervah_gem(m.group(2)), int(m.group(3))))
+
+
+def dict_read_as(word, limit=8):
+    """The last thing the dictionary can say: where this exact string was read.
+
+    Some strings the dictionary holds are not words — the optical reading of a
+    page glues two together, or breaks one apart. Saying "not found" about a
+    string that is plainly on the page is wrong; saying where it was read, and
+    letting the reader see the whole of what it was read from, is right. Only
+    called when nothing else answered, so it may look the slow way."""
+    base = _tal_bare(word)
+    if not base or len(base) < 2:
+        return []
+    bn = _norm_fin(base)
+    # the stored string keeps its final letter; the reader's typing was folded,
+    # so look for both spellings
+    tail = {'כ': 'ך', 'מ': 'ם', 'נ': 'ן', 'פ': 'ף', 'צ': 'ץ'}.get(base[-1])
+    likes = ['%' + base + '%']
+    if tail:
+        likes.append('%' + base[:-1] + tail + '%')
+    conn = get_connection()
+    out = []
+
+    def add(kind, text, extra=None):
+        if len(out) < limit and text:
+            row = {'kind': kind, 'text': text.strip()}
+            row.update(extra or {})
+            out.append(row)
+
+    try:
+        for r in conn.execute("SELECT form, root FROM tal_forms WHERE form=? OR form_norm=? "
+                              "LIMIT 3", (base, bn)):
+            add('form', r['form'], {'root': r['root'] or ''})
+        for like in likes:
+            for r in conn.execute("SELECT lemma, root, gloss_he, printed FROM tal_auth_entries "
+                                  "WHERE lemma LIKE ? LIMIT 3", (like,)):
+                add('headword', r['lemma'], {'root': r['root'] or '',
+                                             'gloss': (r['gloss_he'] or '').strip(),
+                                             'page': r['printed']})
+            for r in conn.execute("SELECT form, root FROM tal_forms WHERE form LIKE ? LIMIT 3",
+                                  (like,)):
+                add('form', r['form'], {'root': r['root'] or ''})
+            # the earlier reading of the pages kept head-words of its own
+            for r in conn.execute("SELECT lemma FROM dict_entries WHERE lemma LIKE ? LIMIT 3",
+                                  (like,)):
+                add('early', r['lemma'])
+            # the text index keeps the vowels inside the word, so the search has
+            # to run on its bare form rather than on what is printed
+            for r in conn.execute("SELECT DISTINCT form, book, chapter, verse, verse_id "
+                                  "FROM root_index WHERE form_norm LIKE ? LIMIT 3",
+                                  ('%' + bn + '%',)):
+                add('text', r['form'], {'book': r['book'] or '', 'ch': r['chapter'],
+                                        'vn': r['verse'], 'verse_id': r['verse_id']})
+            if len(out) < limit:
+                for r in conn.execute("SELECT quote, source_ref FROM dict_citations "
+                                      "WHERE quote LIKE ? LIMIT 3", (like,)):
+                    add('sentence', _cite_clean(r['quote']),
+                        {'ref': _cite_ref_he(r['source_ref'] or '')})
+    except sqlite3.OperationalError:
+        pass
+    conn.close()
+    return out
 
 
 def targum_occurrences(word, limit=12):

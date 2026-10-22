@@ -292,6 +292,7 @@ const I18N = {
     dict_pages_hint:'דפדף בעמודי המילון.', dict_page_label:'עמוד', dict_prev:'‹ הקודם', dict_next:'הבא ›',
     dict_in_piyut_corpus:'המילה באוצר הפיוטים', dict_in_text:'המילה בנוסח התורה', dict_in_text_both:'המילה בנוסח התורה ובתרגום',
     dict_entry_no_gloss:'הערך עומד במילון, ופירושו לא נקרא מן הדף', tal_page:'עמוד',
+    dict_read_as:'כך נקרא במילון', dict_read_as_hint:'המילה שחיפשת אינה ערך בפני עצמה, אך המחרוזת הזאת נקראה מן המילון — כך היא עומדת שם.', dict_as_headword:'ערך־ראש', dict_as_form:'מפתח הצורות', dict_as_early:'ערך בקריאה מוקדמת של הדפים', dict_as_text:'צורה בטקסט', dict_as_sentence:'משפט דוגמה',
     dict_dara_gloss:'מתוך מילון הפיוטים של בן־חיים', dict_in_piyut:'המילה בפיוטי השומרונים', dict_in_targum:'המילה בתרגום הארמי של התורה',
     dict_in_examples:'המילה במשפטי הדוגמה של המילון', dict_in_examples_hint:'המילון מביא את המילה בתוך המשפטים האלה; לצד כל אחד מהם המקום שממנו הוא מצוטט, ולחיצה עליו פותחת את הפסוק.',
     dict_in_dict:'נמצא במילון כערך:', dict_form_hint:'לחץ על צורה לקבלת כל מיקומיה במילון',
@@ -599,6 +600,7 @@ const I18N = {
     dict_pages_hint:'Browse the dictionary pages.', dict_page_label:'Page', dict_prev:'‹ Prev', dict_next:'Next ›',
     dict_in_piyut_corpus:'The word in the piyyut collection', dict_in_text:'The word in the Torah text', dict_in_text_both:'The word in the Torah text and its Targum',
     dict_entry_no_gloss:'the entry stands in the dictionary; no meaning was read from the page', tal_page:'page',
+    dict_read_as:'How the dictionary was read here', dict_read_as_hint:'The word you typed is not an entry of its own, but this string was read from the dictionary — here is how it stands there.', dict_as_headword:'head-word', dict_as_form:'forms index', dict_as_early:'entry in an earlier reading of the pages', dict_as_text:'form in the text', dict_as_sentence:'example sentence',
     dict_dara_gloss:'From the word list of Ben-Ḥayyim’s liturgy volume', dict_in_piyut:'The word in the Samaritan piyyutim', dict_in_targum:'The word in the Aramaic Targum of the Torah',
     dict_in_examples:'The word in the dictionary’s example sentences', dict_in_examples_hint:'The dictionary shows the word inside these sentences; beside each is the place it is quoted from, and tapping that opens the verse.',
     dict_in_dict:'Found in the dictionary as a head-word:', dict_form_hint:'Tap a form for all its locations in the dictionary',
@@ -906,6 +908,7 @@ const I18N = {
     dict_pages_hint:'تصفّح صفحات المعجم.', dict_page_label:'صفحة', dict_prev:'‹ السابق', dict_next:'التالي ›',
     dict_in_piyut_corpus:'الكلمة في مجموعة القصائد', dict_in_text:'الكلمة في نصّ التوراة', dict_in_text_both:'الكلمة في نصّ التوراة وترجومه',
     dict_entry_no_gloss:'المدخل قائم في المعجم، ولم يُقرأ معناه من الصفحة', tal_page:'صفحة',
+    dict_read_as:'هكذا قُرئ في المعجم', dict_read_as_hint:'الكلمة التي كتبتها ليست مدخلًا بذاتها، لكنّ هذه السلسلة قُرئت من المعجم — وهكذا تقف فيه.', dict_as_headword:'مدخل', dict_as_form:'فهرس الصيغ', dict_as_early:'مدخل في قراءة سابقة للصفحات', dict_as_text:'صيغة في النصّ', dict_as_sentence:'جملة مثال',
     dict_dara_gloss:'من معجم القصائد لبن-حَيّيم', dict_in_piyut:'الكلمة في قصائد السامريين', dict_in_targum:'الكلمة في الترجوم الآرامي للتوراة',
     dict_in_examples:'الكلمة في جُمل الأمثلة في المعجم', dict_in_examples_hint:'يورد المعجم الكلمة داخل هذه الجمل؛ وإلى جانب كلٍّ منها الموضع المقتبسة منه، والضغط عليه يفتح النصّ.',
     dict_in_dict:'موجودة في المعجم كمدخل:', dict_form_hint:'اضغط صيغةً لكلّ مواضعها في المعجم',
@@ -7779,8 +7782,35 @@ async function dictAppSearch(){
     }
     body.appendChild(wrap);
   }
+  // last of all: the string itself, where the dictionary was read as holding it.
+  // Some of what the reading produced are not words — two glued together, or one
+  // broken apart — and for those this is the only honest thing to show.
+  const ra=(d&&d.read_as)||[];
+  if(ra.length){
+    body.appendChild(el('div','tal-sec', esc(t('dict_read_as'))));
+    body.appendChild(el('div','dict-form-hint', esc(t('dict_read_as_hint'))));
+    for(const x of ra){
+      const row=el('div','dict-cite');
+      const q=el('div','dict-cite-q'); q.innerHTML=markWord(x.text||'', word); row.appendChild(q);
+      const bits=[];
+      if(x.kind==='headword') bits.push(t('dict_as_headword'));
+      else if(x.kind==='form') bits.push(t('dict_as_form'));
+      else if(x.kind==='early') bits.push(t('dict_as_early'));
+      else if(x.kind==='text') bits.push(t('dict_as_text'));
+      else if(x.kind==='sentence') bits.push(t('dict_as_sentence'));
+      if(x.root) bits.push(t('tm_col_root')+' '+x.root);
+      if(x.gloss) bits.push(x.gloss);
+      if(x.page) bits.push(t('tal_page')+' '+x.page);
+      if(x.ref) bits.push(x.ref);
+      if(x.book) bits.push(x.book+' '+x.ch+':'+x.vn);
+      const r=el('span','dict-cite-ref', esc(bits.join(' · ')));
+      if(x.verse_id){ r.classList.add('tm-ref'); r.dataset.vid=x.verse_id; }
+      row.appendChild(r);
+      body.appendChild(row);
+    }
+  }
   if(!roots.length && !(direct&&direct.length) && !cites.length && !piy.length
-     && !tg.length && !pc.length && !dara.gloss){
+     && !tg.length && !pc.length && !dara.gloss && !ra.length){
     body.appendChild(el('div','note',t('dict_app_empty')));
   }
 }
