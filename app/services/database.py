@@ -5453,9 +5453,15 @@ def tal_full_lookup(word, torah_limit=16):
                 if l.get('heb'):
                     line_he = l['heb']
                     break
+        if not line_he:
+            for cq in out['citations']:
+                if cq.get('heb'):
+                    line_he = cq['heb']
+                    break
+
         if heb_text and not out['said'].get('kind'):
             out['said'] = {'gloss': '', 'kind': 'he', 'reading': '', 'src': 'text'}
-        elif (aram_text or out['piyut']) and line_he and not out['said'].get('kind'):
+        elif (aram_text or out['piyut'] or out['citations']) and line_he                 and not out['said'].get('kind'):
             out['said'] = {'gloss': '', 'kind': 'line', 'reading': line_he, 'src': 'line'}
         elif not out['said'].get('kind') and (out['targum'] or out['piyut']
                                               or out['piyut_corpus'] or out['citations']):
@@ -5463,13 +5469,19 @@ def tal_full_lookup(word, torah_limit=16):
             # answer, and it is NOT the same as calling it a corrupt scan.
             out['said'] = {'gloss': '', 'kind': 'none', 'reading': '', 'src': 'none'}
 
-    # Nothing at all? Then say where the string itself was read from. The
-    # dictionary holds it; it must not pretend otherwise.
+    # Where the string itself was read from. The dictionary holds it; it must not
+    # pretend otherwise — and the sentences it finds carry Hebrew of their own.
     if not (out['roots'] or out['citations'] or out['targum'] or out['piyut']
             or out['piyut_corpus'] or out['dara'] or out['torah_he']):
         out['read_as'] = dict_read_as(word)
     else:
         out['read_as'] = []
+    if not out['said'].get('kind') and not out['said'].get('gloss'):
+        for x in out['read_as']:
+            if (x.get('heb') or '').strip():
+                out['said'] = {'gloss': '', 'kind': 'line',
+                               'reading': x['heb'].strip(), 'src': 'line'}
+                break
     # a string that is only ever shown as "this is where it was read" — and a
     # head-word whose meaning the page never gave — are answered too: no source
     # we hold carries a meaning for it, which is a different thing from silence.
@@ -5726,6 +5738,13 @@ def dict_read_as(word, limit=8):
     if tail:
         likes.append('%' + base[:-1] + tail + '%')
     conn = get_connection()
+    vmap = _tm_vmap(conn)
+    vhe = {}
+    try:
+        for v in conn.execute('SELECT id, text FROM verses'):
+            vhe[v['id']] = (v['text'] or '').strip()
+    except sqlite3.OperationalError:
+        pass
     out = []
 
     def add(kind, text, extra=None):
@@ -5747,10 +5766,25 @@ def dict_read_as(word, limit=8):
             for r in conn.execute("SELECT form, root FROM tal_forms WHERE form LIKE ? LIMIT 3",
                                   (like,)):
                 add('form', r['form'], {'root': r['root'] or ''})
-            # the earlier reading of the pages kept head-words of its own
-            for r in conn.execute("SELECT lemma FROM dict_entries WHERE lemma LIKE ? LIMIT 3",
-                                  (like,)):
-                add('early', r['lemma'])
+            # the earlier reading of the pages kept head-words of its own, and
+            # the sentences printed under them — which carry the Hebrew the word
+            # is read against
+            for r in conn.execute(
+                    """SELECT e.lemma, c.quote, c.source_ref
+                       FROM dict_entries e
+                       LEFT JOIN dict_forms f ON f.entry_id = e.id
+                       LEFT JOIN dict_citations c ON c.form_id = f.id
+                       WHERE e.lemma LIKE ? LIMIT 3""", (like,)):
+                extra = {}
+                if r['source_ref']:
+                    extra['ref'] = _cite_ref_he(r['source_ref'])
+                    vid = _cite_vid(r['source_ref'], vmap)
+                    if vid:
+                        extra['verse_id'] = vid
+                        extra['heb'] = vhe.get(vid, '')
+                if r['quote']:
+                    extra['quote'] = _cite_clean(r['quote'])
+                add('early', r['lemma'], extra)
             # the text index keeps the vowels inside the word, so the search has
             # to run on its bare form rather than on what is printed
             for r in conn.execute("SELECT DISTINCT form, book, chapter, verse, verse_id "
@@ -6021,6 +6055,14 @@ def tal_citations_for(word, limit=14):
     except sqlite3.OperationalError:          # the index has not been built here
         rows = []
     vmap = _tm_vmap(conn)
+    # the verse each sentence quotes, in Hebrew: Tal prints his examples with
+    # their Hebrew beside them, and that Hebrew is what the word is read by
+    vhe = {}
+    try:
+        for v in conn.execute('SELECT id, text FROM verses'):
+            vhe[v['id']] = (v['text'] or '').strip()
+    except sqlite3.OperationalError:
+        pass
     conn.close()
     out, seen = [], set()
     for r in rows:
@@ -6029,7 +6071,9 @@ def tal_citations_for(word, limit=14):
             continue
         seen.add(q)
         ref = (r['source_ref'] or '').strip()
-        out.append({'quote': q, 'ref': _cite_ref_he(ref), 'verse_id': _cite_vid(ref, vmap)})
+        vid = _cite_vid(ref, vmap)
+        out.append({'quote': q, 'ref': _cite_ref_he(ref), 'verse_id': vid,
+                    'heb': vhe.get(vid, '')})
         if len(out) >= limit:
             break
     return out

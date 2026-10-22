@@ -7743,6 +7743,8 @@ async function dictAppSearch(){
       const q=el('div','dict-cite-q');
       q.innerHTML=markWord(c.quote||'', word);
       row.appendChild(q);
+      // the Hebrew of the verse the sentence quotes, so the word is read against it
+      if(c.heb){ const h=el('div','dict-cite-he'); h.innerHTML=markWord(c.heb, word); row.appendChild(h); }
       if(c.ref){
         const r=el('span','dict-cite-ref', esc(c.ref));
         if(c.verse_id){ r.classList.add('tm-ref'); r.dataset.vid=c.verse_id; }
