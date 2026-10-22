@@ -5656,7 +5656,10 @@ def dict_word_search(word, limit=40):
     of whether the word is itself a root (so a plain inflected form still hits, as
     long as it stands as a head-word in Tal). Complements the root resolution."""
     base = _tal_bare(word)
-    if not base or len(base) < 2:
+    # A single letter is a head-word in Tal — the name of the letter, and its
+    # numeral value — so one letter is looked up here; the costlier paths that
+    # follow still ask for two.
+    if not base:
         return []
     bn = _norm_fin(base)
     conn = get_connection()
