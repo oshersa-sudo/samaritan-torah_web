@@ -1532,6 +1532,10 @@ def get_connection():
         except sqlite3.Error:
             pass          # the dictionary is unavailable; the Torah still works
     _ensure_mas_chapter_column(conn)
+    try:                    # so a query can reach a head-word past its homograph mark
+        conn.create_function('nomark', 1, _nomark)
+    except Exception:
+        pass
     return conn
 
 
@@ -4727,6 +4731,19 @@ def _tal_skel(w):
     return _tal_bare(w).translate(_WEAK_TAL)
 
 
+# Tal numbers his homographs — חרש¹ the craftsman, חרש² the deaf man, חרש³ the
+# wood — and daggers the words attested outside his main corpus (†חזק, †צְלוּ).
+# The mark is part of the stored head-word, so a reader typing the plain word
+# never reached any of them: 640 of the dictionary's 12,802 entries stand behind
+# one. This takes the mark off for MATCHING only; what is displayed keeps it, so
+# the reader still sees which homograph a sense belongs to.
+_HOMOGRAPH = re.compile('[¹²³⁴-⁹†]')
+
+
+def _nomark(s):
+    return _HOMOGRAPH.sub('', s or '')
+
+
 @_without_lexicon([])
 def _tal_entries():
     """Cached [{id,lemma,gloss_en,pos,page,notes,_bare,_skel}, ...]."""
@@ -4844,6 +4861,33 @@ def _tal_variants(base):
     return full, prefixed
 
 
+_MARKED_HEADWORDS = None
+
+
+def _marked_headwords(conn):
+    """{plain head-word: [roots]} for the entries whose head-word carries a
+    homograph mark. Read once per process — 652 of the dictionary's entries, so a
+    word is answered from memory rather than by scanning the table each time."""
+    global _MARKED_HEADWORDS
+    if _MARKED_HEADWORDS is not None:
+        return _MARKED_HEADWORDS
+    out = {}
+    try:
+        rows = conn.execute(
+            "SELECT lemma_norm, root FROM tal_auth_entries "
+            "WHERE lemma_norm GLOB '*[¹²³⁴⁵⁶⁷⁸⁹†]*' "
+            "  AND TRIM(COALESCE(root,''))<>''").fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    for r in rows:
+        key = _norm_fin(_nomark(r['lemma_norm']))
+        root = (r['root'] or '').strip()
+        if key and root and root not in out.setdefault(key, []):
+            out[key].append(root)
+    _MARKED_HEADWORDS = out
+    return out
+
+
 @_without_lexicon([])
 def _tal_roots(word, conn):
     """Resolve an Aramaic surface word to its Tal root(s), most authoritative first:
@@ -4915,8 +4959,22 @@ def _tal_roots(word, conn):
                 return dedup(rs)
         return []
 
+    def marked(cands):
+        """Head-words that only a homograph mark kept out of reach (tier 1 compares
+        the stored lemma letter for letter, and חרש¹ is not חרש)."""
+        m = _marked_headwords(conn)
+        out = []
+        for cn in [_norm_fin(c) for c in cands]:
+            out += m.get(cn, ())
+        return dedup(out)
+
     full, prefixed = _tal_variants(base)
-    return resolve(full) or (resolve(prefixed) if prefixed else [])
+    found = resolve(full) or (resolve(prefixed) if prefixed else [])
+    # Appended, never merged into the tiers above: a word that already resolves
+    # keeps the root it resolved to, first and unchanged, and everything that reads
+    # the first root reads the same root as before. What the marks used to hide
+    # simply follows it — for חרש, the craftsman and the sorcerer after the deaf man.
+    return found + [r for r in marked(full) if r not in found]
 
 
 def dict_phrases_for(word, limit=12):
@@ -5215,8 +5273,13 @@ def dict_word_search(word, limit=40):
         return []
     bn = _norm_fin(base)
     conn = get_connection()
-    rows = conn.execute("SELECT lemma, root, pos, gloss_he, printed FROM tal_auth_entries "
-                        "WHERE lemma_norm=? ORDER BY pdf, ord LIMIT ?", (bn, limit)).fetchall()
+    try:
+        rows = conn.execute("SELECT lemma, root, pos, gloss_he, printed FROM tal_auth_entries "
+                            "WHERE lemma_norm=? OR nomark(lemma_norm)=? "
+                            "ORDER BY pdf, ord LIMIT ?", (bn, bn, limit)).fetchall()
+    except sqlite3.OperationalError:               # a connection without nomark()
+        rows = conn.execute("SELECT lemma, root, pos, gloss_he, printed FROM tal_auth_entries "
+                            "WHERE lemma_norm=? ORDER BY pdf, ord LIMIT ?", (bn, limit)).fetchall()
     out, seen = [], set()
     for r in rows:
         k = (r['lemma'], r['printed'], (r['gloss_he'] or '')[:20])
