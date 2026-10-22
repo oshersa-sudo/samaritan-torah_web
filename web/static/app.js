@@ -7759,7 +7759,9 @@ async function dictAppSearch(){
     body.appendChild(el('div','tal-sec', esc(t('dict_in_piyut_corpus'))));
     const wrap=el('div','tal-locs');
     for(const o of pc){
-      const lbl=o.title+(o.author?(' · '+o.author):'');
+      // "unknown" is not an attribution; a poem with no named author just says its name
+      const who=(o.author||'').trim();
+      const lbl=o.title+((who && !/^לא ידוע$/.test(who))?(' · '+who):'');
       wrap.appendChild(el('span','tal-loc', esc(lbl)));
     }
     body.appendChild(wrap);
