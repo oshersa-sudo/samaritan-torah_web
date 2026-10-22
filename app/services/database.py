@@ -5452,9 +5452,13 @@ def targum_occurrences(word, limit=12):
         return []
     conn = get_connection()
     try:
+        # a place name is indexed whole — "אברמונ פרצ" — so a reader typing one
+        # of its words is looking for exactly that entry, and finds it here
         rows = conn.execute(
             "SELECT DISTINCT form, pron, book, chapter, verse, verse_id FROM root_index "
-            "WHERE form_norm = ? ORDER BY verse_id LIMIT ?", (bn, limit)).fetchall()
+            "WHERE form_norm = ? OR form_norm LIKE ? OR form_norm LIKE ? OR form_norm LIKE ? "
+            "ORDER BY verse_id LIMIT ?",
+            (bn, bn + ' %', '% ' + bn, '% ' + bn + ' %', limit)).fetchall()
     except sqlite3.OperationalError:
         rows = []
     conn.close()
