@@ -5433,6 +5433,36 @@ def tal_full_lookup(word, torah_limit=16):
                                if (v.get('g') or v.get('r')) else {}))(
                (resolve_glosses(conn, [word, _tal_bare(word)]) or {}).get(word)
                or (resolve_glosses(conn, [_tal_bare(word)]) or {}).get(_tal_bare(word)) or {})}
+    # No source states a meaning? Then say what KIND of word it is, by the
+    # taxonomy this app already answers every word unit with: a word standing in
+    # the Hebrew text is Hebrew and needs no translating; an Aramaic word with no
+    # entry is read off the line standing beside it — the דנע method. Both are
+    # answers, and both are evidenced by what is shown above them.
+    if not (out['said'].get('gloss') or out['dara'].get('gloss')
+            or out['torah_he'].get('he') or out['hebrew_side']
+            or any(r['senses'] for r in out['roots'])):
+        heb_text = any(o.get('kind') == 'h' for o in out['targum'])
+        aram_text = any(o.get('kind') != 'h' for o in out['targum'])
+        line_he = ''
+        for o in out['targum']:
+            if o.get('heb'):
+                line_he = o['heb']
+                break
+        if not line_he:
+            for l in out['piyut']:
+                if l.get('heb'):
+                    line_he = l['heb']
+                    break
+        if heb_text and not out['said'].get('kind'):
+            out['said'] = {'gloss': '', 'kind': 'he', 'reading': '', 'src': 'text'}
+        elif (aram_text or out['piyut']) and line_he and not out['said'].get('kind'):
+            out['said'] = {'gloss': '', 'kind': 'line', 'reading': line_he, 'src': 'line'}
+        elif not out['said'].get('kind') and (out['targum'] or out['piyut']
+                                              or out['piyut_corpus'] or out['citations']):
+            # it stands somewhere and no source carries it. That is itself the
+            # answer, and it is NOT the same as calling it a corrupt scan.
+            out['said'] = {'gloss': '', 'kind': 'none', 'reading': '', 'src': 'none'}
+
     # Nothing at all? Then say where the string itself was read from. The
     # dictionary holds it; it must not pretend otherwise.
     if not (out['roots'] or out['citations'] or out['targum'] or out['piyut']

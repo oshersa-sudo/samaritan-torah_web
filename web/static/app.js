@@ -293,6 +293,8 @@ const I18N = {
     dict_in_piyut_corpus:'המילה באוצר הפיוטים', dict_in_text:'המילה בנוסח התורה', dict_in_text_both:'המילה בנוסח התורה ובתרגום',
     dict_entry_no_gloss:'הערך עומד במילון, ופירושו לא נקרא מן הדף', tal_page:'עמוד',
     dict_read_as:'כך נקרא במילון', dict_read_as_hint:'המילה שחיפשת אינה ערך בפני עצמה, אך המחרוזת הזאת נקראה מן המילון — כך היא עומדת שם.', dict_as_headword:'ערך־ראש', dict_as_form:'מפתח הצורות', dict_as_early:'ערך בקריאה מוקדמת של הדפים', dict_as_text:'צורה בטקסט', dict_as_sentence:'משפט דוגמה',
+    dict_said_line:'אין לה ערך במילון; התרגום העברי של השורה שלצידה מובא למעלה',
+    dict_said_none:'אין לה ערך באף אחד מן המקורות שבידינו; המקומות שבהם היא עומדת מובאים כאן',
     dict_said:'מה שהאפליקציה אומרת על המילה', dict_said_read:'הסריקה שיבשה; הקריאה:', dict_said_maybe:'אפשר שהסריקה שיבשה; הקריאה הקרובה:', dict_said_scan:'אינה מילה; הקריאות הקרובות:', dict_said_he:'עברית, אינה צריכה תרגום',
     dict_for_form:'לצורה',
     dict_hebrew_side:'מה עומד מולה בתרגום הארמי',
@@ -605,6 +607,8 @@ const I18N = {
     dict_in_piyut_corpus:'The word in the piyyut collection', dict_in_text:'The word in the Torah text', dict_in_text_both:'The word in the Torah text and its Targum',
     dict_entry_no_gloss:'the entry stands in the dictionary; no meaning was read from the page', tal_page:'page',
     dict_read_as:'How the dictionary was read here', dict_read_as_hint:'The word you typed is not an entry of its own, but this string was read from the dictionary — here is how it stands there.', dict_as_headword:'head-word', dict_as_form:'forms index', dict_as_early:'entry in an earlier reading of the pages', dict_as_text:'form in the text', dict_as_sentence:'example sentence',
+    dict_said_line:'no entry in the dictionary; the Hebrew of the line beside it is shown above',
+    dict_said_none:'no entry in any source we hold; the places it stands in are shown here',
     dict_said:'What the app says about this word', dict_said_read:'the scan is corrupt; the reading:', dict_said_maybe:'the scan may be corrupt; the nearest reading:', dict_said_scan:'not a word; nearest readings:', dict_said_he:'Hebrew, needs no translating',
     dict_for_form:'for the form',
     dict_hebrew_side:'What stands opposite it in the Aramaic Targum',
@@ -917,6 +921,8 @@ const I18N = {
     dict_in_piyut_corpus:'الكلمة في مجموعة القصائد', dict_in_text:'الكلمة في نصّ التوراة', dict_in_text_both:'الكلمة في نصّ التوراة وترجومه',
     dict_entry_no_gloss:'المدخل قائم في المعجم، ولم يُقرأ معناه من الصفحة', tal_page:'صفحة',
     dict_read_as:'هكذا قُرئ في المعجم', dict_read_as_hint:'الكلمة التي كتبتها ليست مدخلًا بذاتها، لكنّ هذه السلسلة قُرئت من المعجم — وهكذا تقف فيه.', dict_as_headword:'مدخل', dict_as_form:'فهرس الصيغ', dict_as_early:'مدخل في قراءة سابقة للصفحات', dict_as_text:'صيغة في النصّ', dict_as_sentence:'جملة مثال',
+    dict_said_line:'لا مدخل لها في المعجم؛ وترجمة السطر العبرية مبيّنة أعلاه',
+    dict_said_none:'لا مدخل لها في أيٍّ من مصادرنا؛ والمواضع التي تقف فيها مبيّنة هنا',
     dict_said:'ما يقوله التطبيق عن الكلمة', dict_said_read:'المسح مشوّش؛ القراءة:', dict_said_maybe:'قد يكون المسح مشوّشًا؛ أقرب قراءة:', dict_said_scan:'ليست كلمة؛ أقرب القراءات:', dict_said_he:'عبرية، لا تحتاج ترجمة',
     dict_for_form:'للصيغة',
     dict_hebrew_side:'ما يقابلها في الترجوم الآرامي',
@@ -7760,7 +7766,7 @@ async function dictAppSearch(){
   }
   // what resolve_glosses says — the one lookup every word unit in this app asks
   const said=(d&&d.said)||{};
-  if(said.gloss || said.reading){
+  if(said.gloss || said.reading || said.kind==='he' || said.kind==='none'){
     body.appendChild(el('div','tal-sec', esc(t('dict_said'))));
     const it=el('div','dict-direct');
     if(said.gloss) it.appendChild(document.createTextNode(said.gloss));
@@ -7772,6 +7778,10 @@ async function dictAppSearch(){
       it.appendChild(el('span','dict-nogloss', ' · '+t('dict_said_scan')+(said.reading?(' '+said.reading):'')));
     else if(said.kind==='he')
       it.appendChild(el('span','dict-nogloss', ' · '+t('dict_said_he')));
+    else if(said.kind==='line' && said.reading)
+      it.appendChild(el('span','dict-nogloss', ' · '+t('dict_said_line')));
+    else if(said.kind==='none')
+      it.appendChild(el('span','dict-nogloss', ' · '+t('dict_said_none')));
     body.appendChild(it);
   }
   // what this app's own word apparatus reads the word as, in the Torah
@@ -7877,7 +7887,7 @@ async function dictAppSearch(){
   }
   if(!roots.length && !(direct&&direct.length) && !cites.length && !piy.length
      && !tg.length && !pc.length && !dara.gloss && !ra.length && !twg.he
-     && !said.gloss && !said.reading && !hs.length){
+     && !said.gloss && !said.reading && !said.kind && !hs.length){
     body.appendChild(el('div','note',t('dict_app_empty')));
   }
 }
