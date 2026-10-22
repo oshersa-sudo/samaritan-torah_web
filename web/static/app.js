@@ -298,6 +298,7 @@ const I18N = {
     dict_said_none:'אין לה ערך באף אחד מן המקורות שבידינו; המקומות שבהם היא עומדת מובאים כאן',
     dict_said:'מה שהאפליקציה אומרת על המילה', dict_said_read:'הסריקה שיבשה; הקריאה:', dict_said_maybe:'אפשר שהסריקה שיבשה; הקריאה הקרובה:', dict_said_scan:'אינה מילה; הקריאות הקרובות:', dict_said_he:'עברית, אינה צריכה תרגום',
     dict_for_form:'לצורה',
+    dict_near_more:'הצג עוד איותים',
     dict_near:'המילון מביא את המילה גם באיות אחר', dict_near_hint:'בארמית השומרונית נתחלפו אותיות הגרון (א ה ח ע) והשורקות (ז ס צ), ולכן אותה מילה נדפסה אצל טל ביותר מאיות אחד. אלה הערכים הקרובים — ההכרעה בידך.',
     dict_hebrew_side:'מה עומד מולה בתרגום הארמי',
     dict_word_table:'כך נקראת המילה במילון המילים של התורה',
@@ -614,6 +615,7 @@ const I18N = {
     dict_said_none:'no entry in any source we hold; the places it stands in are shown here',
     dict_said:'What the app says about this word', dict_said_read:'the scan is corrupt; the reading:', dict_said_maybe:'the scan may be corrupt; the nearest reading:', dict_said_scan:'not a word; nearest readings:', dict_said_he:'Hebrew, needs no translating',
     dict_for_form:'for the form',
+    dict_near_more:'Show more spellings',
     dict_near:'The dictionary also prints it spelled otherwise', dict_near_hint:'In Samaritan Aramaic the gutturals (א ה ח ע) and the sibilants (ז ס צ) fell together, so the same word was printed under more than one spelling. These are the near entries — the judgement is yours.',
     dict_hebrew_side:'What stands opposite it in the Aramaic Targum',
     dict_word_table:'How the Torah word table reads this word',
@@ -930,6 +932,7 @@ const I18N = {
     dict_said_none:'لا مدخل لها في أيٍّ من مصادرنا؛ والمواضع التي تقف فيها مبيّنة هنا',
     dict_said:'ما يقوله التطبيق عن الكلمة', dict_said_read:'المسح مشوّش؛ القراءة:', dict_said_maybe:'قد يكون المسح مشوّشًا؛ أقرب قراءة:', dict_said_scan:'ليست كلمة؛ أقرب القراءات:', dict_said_he:'عبرية، لا تحتاج ترجمة',
     dict_for_form:'للصيغة',
+    dict_near_more:'عرض إملاءات أخرى',
     dict_near:'يورد المعجم الكلمة بإملاء آخر أيضًا', dict_near_hint:'في الآرامية السامرية تبادلت الحروف الحلقية (א ה ח ע) والصفيرية (ז ס צ)، فطُبعت الكلمة نفسها بأكثر من إملاء. هذه المداخل القريبة، والحكم لك.',
     dict_hebrew_side:'ما يقابلها في الترجوم الآرامي',
     dict_word_table:'هكذا تُقرأ الكلمة في معجم كلمات التوراة',
@@ -7785,14 +7788,21 @@ async function dictAppSearch(){
   if(near.length){
     body.appendChild(el('div','tal-sec', esc(t('dict_near'))));
     body.appendChild(el('div','dict-form-hint', esc(t('dict_near_hint'))));
-    for(const e of near){
+    const row=(e)=>{
       const it=el('div','dict-direct');
       it.appendChild(dictFormChip(e.lemma));
       it.appendChild(document.createTextNode(' '));
       if(e.root) it.appendChild(el('span','dict-direct-root','('+t('tm_col_root')+' '+esc(e.root)+') '));
       it.appendChild(document.createTextNode(e.gloss||''));
       if(e.page) it.appendChild(el('span','dict-cite-ref', ' · '+t('tal_page')+' '+esc(String(e.page))));
-      body.appendChild(it);
+      return it;
+    };
+    const SHOW=8;
+    for(const e of near.slice(0,SHOW)) body.appendChild(row(e));
+    if(near.length>SHOW){
+      const more=el('button','dict-occ-btn', esc(t('dict_near_more')+' ('+(near.length-SHOW)+')'));
+      more.onclick=()=>{ more.remove(); for(const e of near.slice(SHOW)) body.appendChild(row(e)); };
+      body.appendChild(more);
     }
   }
   // for a Hebrew word: the Aramaic the Targum puts opposite it

@@ -5455,7 +5455,9 @@ def tal_full_lookup(word, torah_limit=16):
            'hebrew_side': hebrew_side(word),
            # the same word as the dictionary prints it elsewhere: the gutturals
            # and the sibilants interchange, and each spelling is its own entry
-           'near': near_spellings(word, roots),
+           # up to twenty-four; the screen shows the closest eight and opens the
+           # rest, so a large family is never silently cut off
+           'near': near_spellings(word, roots, 24),
            # the one lookup every word unit in this app is required to ask, so
            # the dictionary answers a word the same way the word panels do
            'said': (lambda v: ({'gloss': (v.get('g') or '').strip(),
