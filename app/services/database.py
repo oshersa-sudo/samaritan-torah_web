@@ -5376,11 +5376,12 @@ def tal_full_lookup(word, torah_limit=16):
            'targum': targum_occurrences(word),
            'piyut': piyut_occurrences(word),
            'piyut_corpus': piyut_corpus_occurrences(word),
-           'dara': dara_gloss_for(word)}
+           'dara': dara_gloss_for(word),
+           'torah_he': torah_word_gloss(word)}
     # Nothing at all? Then say where the string itself was read from. The
     # dictionary holds it; it must not pretend otherwise.
     if not (out['roots'] or out['citations'] or out['targum'] or out['piyut']
-            or out['piyut_corpus'] or out['dara']):
+            or out['piyut_corpus'] or out['dara'] or out['torah_he']):
         out['read_as'] = dict_read_as(word)
     else:
         out['read_as'] = []
@@ -5692,9 +5693,12 @@ def targum_occurrences(word, limit=12):
     try:
         # First the text itself: a word that simply stands in a verse is answered
         # by that verse, whether or not any index ever happened to carry it.
+        # the verse comes with it, in both languages: for a word no source
+        # glosses, seeing it in its own verse beside the Hebrew is the meaning
         rows = conn.execute(
             """SELECT '' AS form, '' AS pron, bk.name AS book, ch.number AS chapter,
-                      v.number AS verse, v.id AS verse_id, x.kind
+                      v.number AS verse, v.id AS verse_id, x.kind,
+                      v.text AS heb, v.sam_aramaic AS aram
                FROM text_word_ix x
                JOIN verses v    ON v.id = x.verse_id
                JOIN chapters ch ON ch.id = v.chapter_id
@@ -5704,17 +5708,20 @@ def targum_occurrences(word, limit=12):
             # and a place name is indexed whole — "אברמונ פרצ" — so a reader
             # typing one of its words is looking for exactly that entry
             rows = conn.execute(
-                "SELECT form, pron, book, chapter, verse, verse_id, 'a' AS kind "
-                "FROM root_index WHERE form_norm = ? OR form_norm LIKE ? "
-                "   OR form_norm LIKE ? OR form_norm LIKE ? "
-                "GROUP BY verse_id ORDER BY verse_id LIMIT ?",
+                "SELECT r.form, r.pron, r.book, r.chapter, r.verse, r.verse_id, 'a' AS kind, "
+                "       v.text AS heb, v.sam_aramaic AS aram "
+                "FROM root_index r LEFT JOIN verses v ON v.id = r.verse_id "
+                "WHERE r.form_norm = ? OR r.form_norm LIKE ? "
+                "   OR r.form_norm LIKE ? OR r.form_norm LIKE ? "
+                "GROUP BY r.verse_id ORDER BY r.verse_id LIMIT ?",
                 (bn, bn + ' %', '% ' + bn, '% ' + bn + ' %', limit)).fetchall()
     except sqlite3.OperationalError:
         rows = []
     conn.close()
     return [{'form': r['form'] or '', 'pron': r['pron'] or '', 'book': r['book'] or '',
              'ch': r['chapter'], 'vn': r['verse'], 'verse_id': r['verse_id'],
-             'kind': r['kind']} for r in rows]
+             'kind': r['kind'], 'heb': (r['heb'] or '').strip(),
+             'aram': (r['aram'] or '').strip()} for r in rows]
 
 
 def piyut_occurrences(word, limit=8):
@@ -5781,6 +5788,58 @@ def piyut_corpus_occurrences(word, limit=6):
                         'festival': (r['festival'] or '').strip()})
     conn.close()
     return out
+
+
+def torah_word_gloss(word, limit=3):
+    """What this app's own word apparatus says the word means in the Torah.
+
+    Every word of the text already carries a Hebrew reading in the per-verse word
+    table a reader sees under the verse ("מילון מילים"). The dictionary never read
+    it, and so said nothing about אבתיכם, אדניהם or אחזיק — words nobody would
+    call rare. The reading is quoted as it stands, with the verse it was given in."""
+    base = _tal_bare(word)
+    bn = _norm_fin(base)
+    if not bn or len(bn) < 2:
+        return {}
+    conn = get_connection()
+    rows = []
+    try:
+        rows = conn.execute(
+            """SELECT g.he, g.word, bk.name AS book, ch.number AS ch, v.number AS vn,
+                      v.id AS verse_id
+               FROM word_gloss g
+               JOIN verses v    ON v.id = g.verse_id
+               JOIN chapters ch ON ch.id = v.chapter_id
+               JOIN books bk    ON bk.id = ch.book_id
+               WHERE g.word = ? AND TRIM(COALESCE(g.he,'')) <> ''
+               ORDER BY v.id LIMIT ?""", (base, limit)).fetchall()
+        if not rows:                 # the Aramaic side, where the two were aligned
+            rows = conn.execute(
+                """SELECT a.he, a.ar AS word, bk.name AS book, ch.number AS ch,
+                          v.number AS vn, v.id AS verse_id
+                   FROM word_align a
+                   JOIN verses v    ON v.id = a.verse_id
+                   JOIN chapters ch ON ch.id = v.chapter_id
+                   JOIN books bk    ON bk.id = ch.book_id
+                   WHERE a.ar = ? AND TRIM(COALESCE(a.he,'')) <> ''
+                   ORDER BY v.id LIMIT ?""", (base, limit)).fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    conn.close()
+    if not rows:
+        return {}
+    he = (rows[0]['he'] or '').strip()
+    if not he or _norm_fin(he) == bn:         # a word glossed by itself says nothing
+        for r in rows[1:]:
+            alt = (r['he'] or '').strip()
+            if alt and _norm_fin(alt) != bn:
+                he = alt
+                break
+        else:
+            return {}
+    return {'word': rows[0]['word'] or base, 'he': he,
+            'places': [{'book': r['book'], 'ch': r['ch'], 'vn': r['vn'],
+                        'verse_id': r['verse_id']} for r in rows]}
 
 
 def dara_gloss_for(word):
