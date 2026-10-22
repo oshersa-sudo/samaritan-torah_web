@@ -817,16 +817,27 @@ _CITE_FIN = {chr(0x5da): chr(0x5db), chr(0x5dd): chr(0x5de), chr(0x5df): chr(0x5
              chr(0x5e3): chr(0x5e4), chr(0x5e5): chr(0x5e6)}
 
 
+# bumped whenever _cite_words changes, so the indexes it built are rebuilt
+_CITE_RULE = 2
+
+
 def _cite_words(quote):
-    """The words of one example sentence, as a reader would type them: no niqqud,
-    final letters folded. A token with a quote mark inside it is the scan's own
-    leftover, not a word, and is dropped."""
+    """The words of one sentence, as a reader would type them: no niqqud, final
+    letters folded.
+
+    A token with a geresh inside it is the scan running two words together —
+    "יומיס׳אתפרשו". The glued token is not a word, but each half is read as one
+    on the screen, so both halves are indexed and the glued form is not."""
     out = set()
     for t in _CITE_TOKEN.findall(quote or ''):
         w = re.sub('[' + chr(0x591) + '-' + chr(0x5c7) + ']', '', t).strip(
             chr(0x5f3) + chr(0x5f4) + chr(39) + chr(34))
-        if len(w) >= 2 and _CITE_HEB.search(w) and not _CITE_INNER.search(w):
-            out.add(''.join(_CITE_FIN.get(ch, ch) for ch in w))
+        if not w or not _CITE_HEB.search(w):
+            continue
+        parts = _CITE_INNER.split(w) if _CITE_INNER.search(w) else [w]
+        for part in parts:
+            if len(part) >= 2 and _CITE_HEB.search(part):
+                out.add(''.join(_CITE_FIN.get(ch, ch) for ch in part))
     return out
 
 
@@ -854,8 +865,12 @@ def _seed_tal_cite_index():
             PRIMARY KEY (word_norm, cite_id))""")
         conn.execute("""CREATE TABLE IF NOT EXISTS tal_cite_build (
             src_n INTEGER, rows_n INTEGER)""")
-        have = conn.execute('SELECT src_n, rows_n FROM tal_cite_build').fetchone()
-        if have and have[0] == n_src and have[1] == conn.execute(
+        try:
+            conn.execute('ALTER TABLE tal_cite_build ADD COLUMN rule INTEGER DEFAULT 0')
+        except sqlite3.OperationalError:
+            pass                        # the column is already there
+        have = conn.execute('SELECT src_n, rows_n, rule FROM tal_cite_build').fetchone()
+        if have and have[0] == n_src and have[2] == _CITE_RULE and have[1] == conn.execute(
                 'SELECT COUNT(*) FROM tal_cite_word').fetchone()[0]:
             PATCH_REPORT['tal_cites'] = 'already current'
             return
@@ -867,8 +882,8 @@ def _seed_tal_cite_index():
         conn.executemany('INSERT OR IGNORE INTO tal_cite_word (word_norm, cite_id) '
                          'VALUES (?,?)', sorted(pairs))
         conn.execute('DELETE FROM tal_cite_build')
-        conn.execute('INSERT INTO tal_cite_build (src_n, rows_n) VALUES (?,?)',
-                     (n_src, len(pairs)))
+        conn.execute('INSERT INTO tal_cite_build (src_n, rows_n, rule) VALUES (?,?,?)',
+                     (n_src, len(pairs), _CITE_RULE))
         conn.commit()
         PATCH_REPORT['tal_cites'] = '%d words in %d sentences' % (
             len(set(w for w, _ in pairs)), n_src)
@@ -898,8 +913,12 @@ def _seed_text_word_index():
             PRIMARY KEY (word_norm, verse_id, kind))""")
         conn.execute("""CREATE TABLE IF NOT EXISTS text_word_build (
             src_n INTEGER, rows_n INTEGER)""")
-        have = conn.execute('SELECT src_n, rows_n FROM text_word_build').fetchone()
-        if have and have[0] == n_src and have[1] == conn.execute(
+        try:
+            conn.execute('ALTER TABLE text_word_build ADD COLUMN rule INTEGER DEFAULT 0')
+        except sqlite3.OperationalError:
+            pass                        # the column is already there
+        have = conn.execute('SELECT src_n, rows_n, rule FROM text_word_build').fetchone()
+        if have and have[0] == n_src and have[2] == _CITE_RULE and have[1] == conn.execute(
                 'SELECT COUNT(*) FROM text_word_ix').fetchone()[0]:
             PATCH_REPORT['text_words'] = 'already current'
             return
@@ -913,8 +932,8 @@ def _seed_text_word_index():
         conn.executemany('INSERT OR IGNORE INTO text_word_ix (word_norm, verse_id, kind) '
                          'VALUES (?,?,?)', sorted(pairs))
         conn.execute('DELETE FROM text_word_build')
-        conn.execute('INSERT INTO text_word_build (src_n, rows_n) VALUES (?,?)',
-                     (n_src, len(pairs)))
+        conn.execute('INSERT INTO text_word_build (src_n, rows_n, rule) VALUES (?,?,?)',
+                     (n_src, len(pairs), _CITE_RULE))
         conn.commit()
         PATCH_REPORT['text_words'] = '%d words in %d verses' % (
             len(set(w for w, _, _ in pairs)), n_src)
@@ -943,8 +962,12 @@ def _seed_piyut_word_index():
             PRIMARY KEY (word_norm, piyut_id))""")
         conn.execute("""CREATE TABLE IF NOT EXISTS piyut_word_build (
             src_n INTEGER, rows_n INTEGER)""")
-        have = conn.execute('SELECT src_n, rows_n FROM piyut_word_build').fetchone()
-        if have and have[0] == n_src and have[1] == conn.execute(
+        try:
+            conn.execute('ALTER TABLE piyut_word_build ADD COLUMN rule INTEGER DEFAULT 0')
+        except sqlite3.OperationalError:
+            pass                        # the column is already there
+        have = conn.execute('SELECT src_n, rows_n, rule FROM piyut_word_build').fetchone()
+        if have and have[0] == n_src and have[2] == _CITE_RULE and have[1] == conn.execute(
                 'SELECT COUNT(*) FROM piyut_word_ix').fetchone()[0]:
             PATCH_REPORT['piyut_words'] = 'already current'
             return
@@ -956,8 +979,8 @@ def _seed_piyut_word_index():
         conn.executemany('INSERT OR IGNORE INTO piyut_word_ix (word_norm, piyut_id) '
                          'VALUES (?,?)', sorted(pairs))
         conn.execute('DELETE FROM piyut_word_build')
-        conn.execute('INSERT INTO piyut_word_build (src_n, rows_n) VALUES (?,?)',
-                     (n_src, len(pairs)))
+        conn.execute('INSERT INTO piyut_word_build (src_n, rows_n, rule) VALUES (?,?,?)',
+                     (n_src, len(pairs), _CITE_RULE))
         conn.commit()
         PATCH_REPORT['piyut_words'] = '%d words in %d piyyutim' % (
             len(set(w for w, _ in pairs)), n_src)
