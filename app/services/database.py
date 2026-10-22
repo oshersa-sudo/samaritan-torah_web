@@ -1041,6 +1041,50 @@ def _seed_he_aram_index():
 _seed_he_aram_index()
 
 
+def _seed_aram_he_index():
+    """The same table read the other way: Aramaic word -> the Hebrew it renders.
+
+    Keyed on the normalised spelling of BOTH sides, because the Targum writes a
+    final letter where a reader types a medial one (it has נוף, the reader asks
+    for נופ) — matching the raw strings missed a quarter of the words."""
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        n_src = conn.execute('SELECT COUNT(*) FROM verse_dictionary').fetchone()[0]
+        conn.execute("""CREATE TABLE IF NOT EXISTS aram_he_ix (
+            ar_norm TEXT NOT NULL, hebrew TEXT NOT NULL, verse_id INTEGER,
+            PRIMARY KEY (ar_norm, hebrew, verse_id))""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS aram_he_build (
+            src_n INTEGER, rows_n INTEGER, rule INTEGER DEFAULT 0)""")
+        have = conn.execute('SELECT src_n, rows_n, rule FROM aram_he_build').fetchone()
+        if have and have[0] == n_src and have[2] == _CITE_RULE and have[1] == conn.execute(
+                'SELECT COUNT(*) FROM aram_he_ix').fetchone()[0]:
+            PATCH_REPORT['aram_he'] = 'already current'
+            return
+        pairs = set()
+        for vid, ar, he in conn.execute(
+                "SELECT verse_id, aramaic, hebrew FROM verse_dictionary "
+                "WHERE TRIM(COALESCE(hebrew,''))<>'' AND TRIM(COALESCE(aramaic,''))<>''"):
+            he = (he or '').strip()
+            an = _norm_fin(_tal_bare(ar or ''))
+            if an and he:
+                pairs.add((an, he, vid))
+        conn.execute('DELETE FROM aram_he_ix')
+        conn.executemany('INSERT OR IGNORE INTO aram_he_ix (ar_norm, hebrew, verse_id) '
+                         'VALUES (?,?,?)', sorted(pairs))
+        conn.execute('DELETE FROM aram_he_build')
+        conn.execute('INSERT INTO aram_he_build (src_n, rows_n, rule) VALUES (?,?,?)',
+                     (n_src, len(pairs), _CITE_RULE))
+        conn.commit()
+        PATCH_REPORT['aram_he'] = '%d Aramaic words' % len(set(a for a, _, _ in pairs))
+        print('[aram-he] %s' % PATCH_REPORT['aram_he'])
+    except Exception as exc:
+        PATCH_REPORT['aram_he'] = 'failed: %s' % exc
+        print('[aram-he] skipped: %s' % exc)
+    finally:
+        conn.close()
+
+
+
 # ── every word in the index now carries a meaning, and its Arabic ────────────
 # 2,263 rows of the word index held no meaning, or held the word back as its own
 # meaning — "אבניו → אבניו", which is the same as none. A reader who found such
@@ -5103,6 +5147,10 @@ def _norm_fin(w):
     return ''.join(_FINALS.get(c, c) for c in _tal_bare(w))
 
 
+# built here, not up with the other index seeds, because it keys on _norm_fin
+_seed_aram_he_index()
+
+
 def _tal_variants(base):
     """(full, prefixed) candidate groups. `full` = the surface form and its
     emphatic-state (-א/-ה) variant; `prefixed` = the same after stripping ONE
@@ -5453,6 +5501,8 @@ def tal_full_lookup(word, torah_limit=16):
            'dara': dara_gloss_for(word),
            'torah_he': torah_word_gloss(word),
            'hebrew_side': hebrew_side(word),
+           # and the other way: what the Targum itself renders this word by
+           'aramaic_side': aramaic_side(word),
            # the same word as the dictionary prints it elsewhere: the gutturals
            # and the sibilants interchange, and each spelling is its own entry
            # up to twenty-four; the screen shows the closest eight and opens the
@@ -6070,6 +6120,41 @@ def torah_word_gloss(word, limit=3):
     return {'word': rows[0]['word'] or base, 'he': he,
             'places': [{'book': r['book'], 'ch': r['ch'], 'vn': r['vn'],
                         'verse_id': r['verse_id']} for r in rows]}
+
+
+def aramaic_side(word, limit=4):
+    """For an Aramaic word: the Hebrew the Targum puts opposite it, and where.
+
+    The Targum is a witness that owes nothing to the dictionary — it renders the
+    verse, word by word, and that rendering is a reading of the word. Quoted as
+    it stands, with the verse, so it can be checked."""
+    bn = _norm_fin(_tal_bare(word))
+    if not bn:          # a single letter is a head-word of its own in Tal (ת = את)
+        return []
+    conn = get_connection()
+    try:
+        rows = conn.execute(
+            """SELECT x.hebrew, bk.name AS book, ch.number AS ch, v.number AS vn, v.id AS vid
+               FROM aram_he_ix x
+               JOIN verses v    ON v.id = x.verse_id
+               JOIN chapters ch ON ch.id = v.chapter_id
+               JOIN books bk    ON bk.id = ch.book_id
+               WHERE x.ar_norm = ?
+               ORDER BY v.id LIMIT ?""", (bn, limit * 6)).fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    conn.close()
+    out, seen = [], set()
+    for r in rows:
+        he = (r['hebrew'] or '').strip()
+        if not he or he in seen:
+            continue
+        seen.add(he)
+        out.append({'hebrew': he, 'book': r['book'], 'ch': r['ch'], 'vn': r['vn'],
+                    'verse_id': r['vid']})
+        if len(out) >= limit:
+            break
+    return out
 
 
 def hebrew_side(word, limit=4):
