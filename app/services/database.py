@@ -5470,6 +5470,11 @@ def tal_full_lookup(word, torah_limit=16):
         out['read_as'] = dict_read_as(word)
     else:
         out['read_as'] = []
+    # a string that is only ever shown as "this is where it was read" — and a
+    # head-word whose meaning the page never gave — are answered too: no source
+    # we hold carries a meaning for it, which is a different thing from silence.
+    if out['read_as'] and not out['said'].get('kind') and not out['said'].get('gloss'):
+        out['said'] = {'gloss': '', 'kind': 'none', 'reading': '', 'src': 'none'}
     for root in roots:
         rn = _norm_fin(root)
         senses = []
