@@ -293,6 +293,9 @@ const I18N = {
     dict_in_piyut_corpus:'המילה באוצר הפיוטים', dict_in_text:'המילה בנוסח התורה', dict_in_text_both:'המילה בנוסח התורה ובתרגום',
     dict_entry_no_gloss:'הערך עומד במילון, ופירושו לא נקרא מן הדף', tal_page:'עמוד',
     dict_read_as:'כך נקרא במילון', dict_read_as_hint:'המילה שחיפשת אינה ערך בפני עצמה, אך המחרוזת הזאת נקראה מן המילון — כך היא עומדת שם.', dict_as_headword:'ערך־ראש', dict_as_form:'מפתח הצורות', dict_as_early:'ערך בקריאה מוקדמת של הדפים', dict_as_text:'צורה בטקסט', dict_as_sentence:'משפט דוגמה',
+    dict_said:'מה שהאפליקציה אומרת על המילה', dict_said_read:'הסריקה שיבשה; הקריאה:', dict_said_maybe:'אפשר שהסריקה שיבשה; הקריאה הקרובה:', dict_said_scan:'אינה מילה; הקריאות הקרובות:', dict_said_he:'עברית, אינה צריכה תרגום',
+    dict_for_form:'לצורה',
+    dict_hebrew_side:'מה עומד מולה בתרגום הארמי',
     dict_word_table:'כך נקראת המילה במילון המילים של התורה',
     dict_dara_gloss:'מתוך מילון הפיוטים של בן־חיים', dict_in_piyut:'המילה בפיוטי השומרונים', dict_in_targum:'המילה בתרגום הארמי של התורה',
     dict_in_examples:'המילה במשפטי הדוגמה של המילון', dict_in_examples_hint:'המילון מביא את המילה בתוך המשפטים האלה; לצד כל אחד מהם המקום שממנו הוא מצוטט, ולחיצה עליו פותחת את הפסוק.',
@@ -602,6 +605,9 @@ const I18N = {
     dict_in_piyut_corpus:'The word in the piyyut collection', dict_in_text:'The word in the Torah text', dict_in_text_both:'The word in the Torah text and its Targum',
     dict_entry_no_gloss:'the entry stands in the dictionary; no meaning was read from the page', tal_page:'page',
     dict_read_as:'How the dictionary was read here', dict_read_as_hint:'The word you typed is not an entry of its own, but this string was read from the dictionary — here is how it stands there.', dict_as_headword:'head-word', dict_as_form:'forms index', dict_as_early:'entry in an earlier reading of the pages', dict_as_text:'form in the text', dict_as_sentence:'example sentence',
+    dict_said:'What the app says about this word', dict_said_read:'the scan is corrupt; the reading:', dict_said_maybe:'the scan may be corrupt; the nearest reading:', dict_said_scan:'not a word; nearest readings:', dict_said_he:'Hebrew, needs no translating',
+    dict_for_form:'for the form',
+    dict_hebrew_side:'What stands opposite it in the Aramaic Targum',
     dict_word_table:'How the Torah word table reads this word',
     dict_dara_gloss:'From the word list of Ben-Ḥayyim’s liturgy volume', dict_in_piyut:'The word in the Samaritan piyyutim', dict_in_targum:'The word in the Aramaic Targum of the Torah',
     dict_in_examples:'The word in the dictionary’s example sentences', dict_in_examples_hint:'The dictionary shows the word inside these sentences; beside each is the place it is quoted from, and tapping that opens the verse.',
@@ -911,6 +917,9 @@ const I18N = {
     dict_in_piyut_corpus:'الكلمة في مجموعة القصائد', dict_in_text:'الكلمة في نصّ التوراة', dict_in_text_both:'الكلمة في نصّ التوراة وترجومه',
     dict_entry_no_gloss:'المدخل قائم في المعجم، ولم يُقرأ معناه من الصفحة', tal_page:'صفحة',
     dict_read_as:'هكذا قُرئ في المعجم', dict_read_as_hint:'الكلمة التي كتبتها ليست مدخلًا بذاتها، لكنّ هذه السلسلة قُرئت من المعجم — وهكذا تقف فيه.', dict_as_headword:'مدخل', dict_as_form:'فهرس الصيغ', dict_as_early:'مدخل في قراءة سابقة للصفحات', dict_as_text:'صيغة في النصّ', dict_as_sentence:'جملة مثال',
+    dict_said:'ما يقوله التطبيق عن الكلمة', dict_said_read:'المسح مشوّش؛ القراءة:', dict_said_maybe:'قد يكون المسح مشوّشًا؛ أقرب قراءة:', dict_said_scan:'ليست كلمة؛ أقرب القراءات:', dict_said_he:'عبرية، لا تحتاج ترجمة',
+    dict_for_form:'للصيغة',
+    dict_hebrew_side:'ما يقابلها في الترجوم الآرامي',
     dict_word_table:'هكذا تُقرأ الكلمة في معجم كلمات التوراة',
     dict_dara_gloss:'من معجم القصائد لبن-حَيّيم', dict_in_piyut:'الكلمة في قصائد السامريين', dict_in_targum:'الكلمة في الترجوم الآرامي للتوراة',
     dict_in_examples:'الكلمة في جُمل الأمثلة في المعجم', dict_in_examples_hint:'يورد المعجم الكلمة داخل هذه الجمل؛ وإلى جانب كلٍّ منها الموضع المقتبسة منه، والضغط عليه يفتح النصّ.',
@@ -7736,6 +7745,35 @@ async function dictAppSearch(){
       body.appendChild(row);
     }
   }
+  // for a Hebrew word: the Aramaic the Targum puts opposite it
+  const hs=(d&&d.hebrew_side)||[];
+  if(hs.length){
+    body.appendChild(el('div','tal-sec', esc(t('dict_hebrew_side'))));
+    for(const o of hs){
+      const it=el('div','dict-direct');
+      it.appendChild(el('b','', esc(o.aramaic)));
+      if(o.of) it.appendChild(el('span','dict-nogloss', ' · '+t('dict_for_form')+' '+esc(o.of)));
+      const r=el('span','dict-cite-ref tm-ref', ' · '+o.book+' '+o.ch+':'+o.vn);
+      r.dataset.vid=o.verse_id; it.appendChild(r);
+      body.appendChild(it);
+    }
+  }
+  // what resolve_glosses says — the one lookup every word unit in this app asks
+  const said=(d&&d.said)||{};
+  if(said.gloss || said.reading){
+    body.appendChild(el('div','tal-sec', esc(t('dict_said'))));
+    const it=el('div','dict-direct');
+    if(said.gloss) it.appendChild(document.createTextNode(said.gloss));
+    if(said.kind==='read' && said.reading)
+      it.appendChild(el('span','dict-nogloss', ' · '+t('dict_said_read')+' '+said.reading));
+    else if(said.kind==='maybe' && said.reading)
+      it.appendChild(el('span','dict-nogloss', ' · '+t('dict_said_maybe')+' '+said.reading));
+    else if(said.kind==='scan')
+      it.appendChild(el('span','dict-nogloss', ' · '+t('dict_said_scan')+(said.reading?(' '+said.reading):'')));
+    else if(said.kind==='he')
+      it.appendChild(el('span','dict-nogloss', ' · '+t('dict_said_he')));
+    body.appendChild(it);
+  }
   // what this app's own word apparatus reads the word as, in the Torah
   const twg=(d&&d.torah_he)||{};
   if(twg.he){
@@ -7838,7 +7876,8 @@ async function dictAppSearch(){
     }
   }
   if(!roots.length && !(direct&&direct.length) && !cites.length && !piy.length
-     && !tg.length && !pc.length && !dara.gloss && !ra.length && !twg.he){
+     && !tg.length && !pc.length && !dara.gloss && !ra.length && !twg.he
+     && !said.gloss && !said.reading && !hs.length){
     body.appendChild(el('div','note',t('dict_app_empty')));
   }
 }

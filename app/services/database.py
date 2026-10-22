@@ -995,6 +995,52 @@ def _seed_piyut_word_index():
 _seed_piyut_word_index()
 
 
+# ── the Hebrew side, read off the Targum's own word dictionary ───────────────
+# verse_dictionary holds, for every word of the Targum, the Hebrew it renders.
+# Read the other way round it is a Hebrew→Aramaic dictionary — which is half of
+# what this unit is called — and nothing was reading it that way, so בפיה, איפת
+# and אמלט had no answer although the table says בפמה, אמכלה and סלק.
+def _seed_he_aram_index():
+    """Index the Hebrew of the Targum word dictionary, word by word."""
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        n_src = conn.execute('SELECT COUNT(*) FROM verse_dictionary').fetchone()[0]
+        conn.execute("""CREATE TABLE IF NOT EXISTS he_aram_ix (
+            he_norm TEXT NOT NULL, aramaic TEXT NOT NULL, verse_id INTEGER,
+            PRIMARY KEY (he_norm, aramaic, verse_id))""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS he_aram_build (
+            src_n INTEGER, rows_n INTEGER, rule INTEGER DEFAULT 0)""")
+        have = conn.execute('SELECT src_n, rows_n, rule FROM he_aram_build').fetchone()
+        if have and have[0] == n_src and have[2] == _CITE_RULE and have[1] == conn.execute(
+                'SELECT COUNT(*) FROM he_aram_ix').fetchone()[0]:
+            PATCH_REPORT['he_aram'] = 'already current'
+            return
+        pairs = set()
+        for vid, ar, he in conn.execute(
+                "SELECT verse_id, aramaic, hebrew FROM verse_dictionary "
+                "WHERE TRIM(COALESCE(hebrew,''))<>'' AND TRIM(COALESCE(aramaic,''))<>''"):
+            ar = (ar or '').strip()
+            for w in _cite_words(he):
+                pairs.add((w, ar, vid))
+        conn.execute('DELETE FROM he_aram_ix')
+        conn.executemany('INSERT OR IGNORE INTO he_aram_ix (he_norm, aramaic, verse_id) '
+                         'VALUES (?,?,?)', sorted(pairs))
+        conn.execute('DELETE FROM he_aram_build')
+        conn.execute('INSERT INTO he_aram_build (src_n, rows_n, rule) VALUES (?,?,?)',
+                     (n_src, len(pairs), _CITE_RULE))
+        conn.commit()
+        PATCH_REPORT['he_aram'] = '%d Hebrew words' % len(set(w for w, _, _ in pairs))
+        print('[he-aram] %s' % PATCH_REPORT['he_aram'])
+    except Exception as exc:
+        PATCH_REPORT['he_aram'] = 'failed: %s' % exc
+        print('[he-aram] skipped: %s' % exc)
+    finally:
+        conn.close()
+
+
+_seed_he_aram_index()
+
+
 # ── every word in the index now carries a meaning, and its Arabic ────────────
 # 2,263 rows of the word index held no meaning, or held the word back as its own
 # meaning — "אבניו → אבניו", which is the same as none. A reader who found such
@@ -5377,7 +5423,16 @@ def tal_full_lookup(word, torah_limit=16):
            'piyut': piyut_occurrences(word),
            'piyut_corpus': piyut_corpus_occurrences(word),
            'dara': dara_gloss_for(word),
-           'torah_he': torah_word_gloss(word)}
+           'torah_he': torah_word_gloss(word),
+           'hebrew_side': hebrew_side(word),
+           # the one lookup every word unit in this app is required to ask, so
+           # the dictionary answers a word the same way the word panels do
+           'said': (lambda v: ({'gloss': (v.get('g') or '').strip(),
+                                'kind': v.get('k') or '', 'reading': (v.get('r') or '').strip(),
+                                'src': v.get('s') or ''}
+                               if (v.get('g') or v.get('r')) else {}))(
+               (resolve_glosses(conn, [word, _tal_bare(word)]) or {}).get(word)
+               or (resolve_glosses(conn, [_tal_bare(word)]) or {}).get(_tal_bare(word)) or {})}
     # Nothing at all? Then say where the string itself was read from. The
     # dictionary holds it; it must not pretend otherwise.
     if not (out['roots'] or out['citations'] or out['targum'] or out['piyut']
@@ -5840,6 +5895,47 @@ def torah_word_gloss(word, limit=3):
     return {'word': rows[0]['word'] or base, 'he': he,
             'places': [{'book': r['book'], 'ch': r['ch'], 'vn': r['vn'],
                         'verse_id': r['verse_id']} for r in rows]}
+
+
+def hebrew_side(word, limit=4):
+    """For a Hebrew word: the Aramaic the Targum puts opposite it, and where.
+
+    This is the Hebrew→Aramaic half of the unit, read off the Targum's own word
+    dictionary rather than asserted. Empty for a word the Targum never renders."""
+    bn = _norm_fin(_tal_bare(word))
+    if not bn or len(bn) < 2:
+        return []
+    conn = get_connection()
+    try:
+        rows = conn.execute(
+            """SELECT x.aramaic, bk.name AS book, ch.number AS ch, v.number AS vn, v.id AS vid
+               FROM he_aram_ix x
+               JOIN verses v    ON v.id = x.verse_id
+               JOIN chapters ch ON ch.id = v.chapter_id
+               JOIN books bk    ON bk.id = ch.book_id
+               WHERE x.he_norm = ? ORDER BY v.id LIMIT ?""", (bn, limit * 3)).fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    conn.close()
+    out, seen = [], set()
+    for r in rows:
+        a = (r['aramaic'] or '').strip()
+        if not a or a in seen:
+            continue
+        seen.add(a)
+        out.append({'aramaic': a, 'book': r['book'], 'ch': r['ch'], 'vn': r['vn'],
+                    'verse_id': r['vid'], 'of': ''})
+        if len(out) >= limit:
+            break
+    # Nothing under the word as written? One proclitic is lifted and it is asked
+    # again — the same single step the root resolution takes, and no further:
+    # באהליהם is not in the table, אהליהם is, and the answer is marked as being
+    # for that form rather than for what was typed.
+    if not out and len(bn) >= 4 and bn[0] in 'ובלכמדהש':
+        for x in hebrew_side(bn[1:], limit):
+            x['of'] = bn[1:]
+            out.append(x)
+    return out
 
 
 def dara_gloss_for(word):
