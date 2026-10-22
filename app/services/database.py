@@ -808,6 +808,81 @@ def _seed_dict_in_torah():
 _seed_dict_in_torah()
 
 
+_CITE_TOKEN = re.compile('[' + chr(0x5d0) + '-' + chr(0x5ea) +
+                         chr(0x591) + '-' + chr(0x5c7) + chr(0x5f3) + chr(0x5f4) +
+                         chr(39) + chr(34) + ']+')
+_CITE_INNER = re.compile('[' + chr(0x5f3) + chr(0x5f4) + chr(39) + chr(34) + ']')
+_CITE_HEB = re.compile('[' + chr(0x5d0) + '-' + chr(0x5ea) + ']')
+_CITE_FIN = {chr(0x5da): chr(0x5db), chr(0x5dd): chr(0x5de), chr(0x5df): chr(0x5e0),
+             chr(0x5e3): chr(0x5e4), chr(0x5e5): chr(0x5e6)}
+
+
+def _cite_words(quote):
+    """The words of one example sentence, as a reader would type them: no niqqud,
+    final letters folded. A token with a quote mark inside it is the scan's own
+    leftover, not a word, and is dropped."""
+    out = set()
+    for t in _CITE_TOKEN.findall(quote or ''):
+        w = re.sub('[' + chr(0x591) + '-' + chr(0x5c7) + ']', '', t).strip(
+            chr(0x5f3) + chr(0x5f4) + chr(39) + chr(34))
+        if len(w) >= 2 and _CITE_HEB.search(w) and not _CITE_INNER.search(w):
+            out.add(''.join(_CITE_FIN.get(ch, ch) for ch in w))
+    return out
+
+
+# ── every word that stands inside one of Tal's example sentences ─────────────
+# A reader does not only type head-words. They type a word they met in one of
+# the sentences Tal prints under an entry — and until now the dictionary said
+# "not found" to 16,000 of those, although the word is plainly on the page.
+# The sentences are already in this database (dict_citations); only an index of
+# the words inside them was missing, so it is built here rather than shipped.
+def _seed_tal_cite_index():
+    """Index the words inside the dictionary's example sentences.
+
+    Built from what the database already holds, so nothing has to be carried
+    over the wire, and rebuilt only when the sentences themselves change."""
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        n_src = conn.execute(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' "
+            "AND name='dict_citations'").fetchone()[0]
+        if not n_src:
+            return
+        n_src = conn.execute('SELECT COUNT(*) FROM dict_citations').fetchone()[0]
+        conn.execute("""CREATE TABLE IF NOT EXISTS tal_cite_word (
+            word_norm TEXT NOT NULL, cite_id INTEGER NOT NULL,
+            PRIMARY KEY (word_norm, cite_id))""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS tal_cite_build (
+            src_n INTEGER, rows_n INTEGER)""")
+        have = conn.execute('SELECT src_n, rows_n FROM tal_cite_build').fetchone()
+        if have and have[0] == n_src and have[1] == conn.execute(
+                'SELECT COUNT(*) FROM tal_cite_word').fetchone()[0]:
+            PATCH_REPORT['tal_cites'] = 'already current'
+            return
+        pairs = set()
+        for cid, quote in conn.execute('SELECT id, quote FROM dict_citations'):
+            for w in _cite_words(quote):
+                pairs.add((w, cid))
+        conn.execute('DELETE FROM tal_cite_word')
+        conn.executemany('INSERT OR IGNORE INTO tal_cite_word (word_norm, cite_id) '
+                         'VALUES (?,?)', sorted(pairs))
+        conn.execute('DELETE FROM tal_cite_build')
+        conn.execute('INSERT INTO tal_cite_build (src_n, rows_n) VALUES (?,?)',
+                     (n_src, len(pairs)))
+        conn.commit()
+        PATCH_REPORT['tal_cites'] = '%d words in %d sentences' % (
+            len(set(w for w, _ in pairs)), n_src)
+        print('[tal-cites] %s' % PATCH_REPORT['tal_cites'])
+    except Exception as exc:
+        PATCH_REPORT['tal_cites'] = 'failed: %s' % exc
+        print('[tal-cites] skipped: %s' % exc)
+    finally:
+        conn.close()
+
+
+_seed_tal_cite_index()
+
+
 # ── every word in the index now carries a meaning, and its Arabic ────────────
 # 2,263 rows of the word index held no meaning, or held the word back as its own
 # meaning — "אבניו → אבניו", which is the same as none. A reader who found such
@@ -5132,7 +5207,16 @@ def tal_full_lookup(word, torah_limit=16):
             suggestion = {'root': row['root'], 'gloss': row['gloss_tal'] or row['gloss'],
                           'derivation': row['derivation'], 'memar_he': row['memar_he']}
     out = {'word': word, 'roots': [], 'derived_root': derived,
-           'suggestion': suggestion}
+           'suggestion': suggestion,
+           # where the word itself stands on Tal's pages. Shown even when a root
+           # was found — it is the evidence — and it is the whole answer for a
+           # word that only ever appears inside somebody else's example sentence.
+           'citations': tal_citations_for(word),
+           # the same word where it is actually used: in the Targum of the Torah,
+           # and in the liturgy — which is where the words Tal never entered live
+           'targum': targum_occurrences(word),
+           'piyut': piyut_occurrences(word),
+           'dara': dara_gloss_for(word)}
     for root in roots:
         rn = _norm_fin(root)
         senses = []
@@ -5312,6 +5396,163 @@ def dict_word_search(word, limit=40):
     except Exception as exc:
         print('[dict-search] %s' % exc)
     conn.close()
+    return out
+
+
+
+def _cite_clean(q):
+    """One example sentence, readable.
+
+    The sentences were read off the page, and between the Hebrew the reading
+    left behind fragments of Tal's English and of his reference numbers —
+    "NYY", "824", "[TD". A Latin token is kept only when it reads as an English
+    word (lower-case, or capitalised and long enough); everything else goes, and
+    the Hebrew, which is what the reader came for, is never touched."""
+    q = re.sub('[‎‏‪-‮]', '', q or '')
+    out = []
+    for t in q.split():
+        if _CITE_HEB.search(t):
+            out.append(t)
+        elif re.fullmatch(r"[a-z][a-z\-']{1,}[.,;:]?", t) or                 re.fullmatch(r"[A-Z][a-z\-']{2,}[.,;:]?", t):
+            out.append(t)
+    return re.sub(r'\s+', ' ', ' '.join(out)).strip(' .,;:-()[]')
+
+
+_CITE_BOOK = {'בר': 'בראשית', 'שמ': 'שמות', 'ויק': 'ויקרא', 'במ': 'במדבר', 'דב': 'דברים'}
+_CITE_REF = re.compile('^(בר|שמ|ויק|במ|דב)' + r'\s+([א-ת״׳]{1,6})\s+(\d{1,3})')
+
+
+def _cite_ref_he(ref):
+    """The place a sentence is quoted from, spelled out — the dictionary prints
+    it short (דב ח 19) and a reader should not have to decode it."""
+    m = _CITE_REF.match(ref or '')
+    if not m:
+        return (ref or '').strip()
+    return '%s %s %s' % (_CITE_BOOK[m.group(1)], m.group(2).strip('״׳'), m.group(3))
+
+
+def _cite_vid(ref, vmap):
+    """…and the verse it is, so the reader can step straight into it."""
+    m = _CITE_REF.match(ref or '')
+    if not m:
+        return None
+    book = {'בר': 1, 'שמ': 2, 'ויק': 3, 'במ': 4, 'דב': 5}[m.group(1)]
+    return vmap.get((book, _ervah_gem(m.group(2)), int(m.group(3))))
+
+
+def targum_occurrences(word, limit=12):
+    """The places the word itself stands in the Torah's Aramaic Targum.
+
+    The root recorded beside a form in that index is not always sound, so only
+    the places are reported — those are read straight off the text and cannot be
+    wrong. For a word Tal never gave an entry, seeing it in its own verse, with
+    the verse beside it, is the meaning."""
+    bn = _norm_fin(_tal_bare(word))
+    if not bn or len(bn) < 2:
+        return []
+    conn = get_connection()
+    try:
+        rows = conn.execute(
+            "SELECT DISTINCT form, pron, book, chapter, verse, verse_id FROM root_index "
+            "WHERE form_norm = ? ORDER BY verse_id LIMIT ?", (bn, limit)).fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    conn.close()
+    return [{'form': r['form'] or '', 'pron': r['pron'] or '', 'book': r['book'] or '',
+             'ch': r['chapter'], 'vn': r['verse'], 'verse_id': r['verse_id']} for r in rows]
+
+
+def piyut_occurrences(word, limit=8):
+    """The lines of the Samaritan liturgy — Z. Ben-Ḥayyim's volume — that the word
+    stands in, with his own reading of the line and, where he gives one, his
+    Hebrew. A word of the piyyutim that no dictionary entry covers is still a word
+    somebody sang, and this is where."""
+    bn = _norm_fin(_tal_bare(word))
+    if not bn or len(bn) < 2:
+        return []
+    conn = get_connection()
+    try:
+        rows = conn.execute(
+            """SELECT p.title, p.author, l.aram, l.heb, l.translit
+               FROM dara_word_refs w
+               JOIN dara_piyutim p ON p.id = w.piyut_id
+               JOIN dara_lines l   ON l.piyut_id = w.piyut_id AND l.ord = w.line_ord
+               WHERE w.word = ? OR w.word = ?
+               ORDER BY p.ord, l.ord LIMIT ?""", (word, bn, limit)).fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    conn.close()
+    out, seen = [], set()
+    for r in rows:
+        a = (r['aram'] or '').strip()
+        if not a or a in seen:
+            continue
+        seen.add(a)
+        out.append({'title': (r['title'] or '').strip(), 'author': (r['author'] or '').strip(),
+                    'aram': a, 'heb': (r['heb'] or '').strip(),
+                    'translit': (r['translit'] or '').strip()})
+    return out
+
+
+def dara_gloss_for(word):
+    """What the liturgy volume's own word list says the word means — read there,
+    not inferred here. Returns {} when it says nothing."""
+    bn = _norm_fin(_tal_bare(word))
+    if not bn:
+        return {}
+    conn = get_connection()
+    try:
+        r = conn.execute(
+            "SELECT word, root, gloss, translit FROM dara_words "
+            "WHERE (word = ? OR word_norm = ?) AND TRIM(COALESCE(gloss,'')) <> '' LIMIT 1",
+            (word, bn)).fetchone()
+    except sqlite3.OperationalError:
+        r = None
+    conn.close()
+    if not r:
+        return {}
+    return {'word': r['word'] or word, 'root': (r['root'] or '').strip(),
+            'gloss': (r['gloss'] or '').strip(), 'translit': (r['translit'] or '').strip()}
+
+
+def tal_citations_for(word, limit=14):
+    """Where the word stands inside Tal's dictionary: the example sentence it is
+    part of, the place that sentence cites, and the entry it was printed under.
+
+    This is an attestation, not a gloss — it says "the dictionary shows this word
+    here", which for a word Tal never gave an entry of its own is the whole of
+    what can honestly be said about it."""
+    base = _tal_bare(word)
+    if not base or len(base) < 2:
+        return []
+    bn = _norm_fin(base)
+    conn = get_connection()
+    try:
+        # The entry name the older reading attached to a sentence is wrong almost
+        # every time (it disagrees with the authoritative reading in 1,414 of
+        # 1,415 cases), so it is not shown. The page number is sound, and
+        # tal_pages turns it into the page as the book itself numbers it,
+        # together with the head-words that page runs between — which is a place
+        # a reader can actually turn to.
+        rows = conn.execute(
+            """SELECT c.quote, c.source_ref FROM tal_cite_word t
+               JOIN dict_citations c ON c.id = t.cite_id
+               WHERE t.word_norm = ? ORDER BY c.id LIMIT ?""",
+            (bn, limit * 3)).fetchall()
+    except sqlite3.OperationalError:          # the index has not been built here
+        rows = []
+    vmap = _tm_vmap(conn)
+    conn.close()
+    out, seen = [], set()
+    for r in rows:
+        q = _cite_clean(r['quote'])
+        if not q or q in seen:
+            continue
+        seen.add(q)
+        ref = (r['source_ref'] or '').strip()
+        out.append({'quote': q, 'ref': _cite_ref_he(ref), 'verse_id': _cite_vid(ref, vmap)})
+        if len(out) >= limit:
+            break
     return out
 
 

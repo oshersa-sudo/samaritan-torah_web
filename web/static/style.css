@@ -1077,6 +1077,18 @@ a.pwa-btn{ text-decoration:none; box-sizing:border-box; }
    card on one kind of phone is often sending the app to the other. They shrink
    rather than stack: the pair is the point, and a wrapped column reads as if one
    store came second. */
+/* the sentences from Tal's pages that a word stands in — for thousands of words
+   this is the only thing the dictionary can honestly say, so it is laid out to
+   be read, not squeezed into a footnote */
+.dict-cite{ border-inline-start:3px solid #E4D9BE; padding:7px 11px; margin:8px 0;
+  background:#FBF8F0; border-radius:0 9px 9px 0; }
+.dict-cite-q{ font-size:15.5px; line-height:1.7; color:#2A2A28; }
+.dict-cite-hit{ color:#7F6000; background:#F6EDD4; border-radius:4px; padding:0 2px; }
+.dict-cite-ref{ display:inline-block; margin-top:4px; font-size:13px; color:#6B6B63; }
+.dict-cite-he{ margin-top:3px; font-size:14.5px; color:#4A4A44; }
+.dict-translit{ font-size:14px; color:#7F6000; font-style:italic; }
+a.dict-cite-ref, .dict-cite-ref.tm-ref{ color:#2E61B8; cursor:pointer; }
+
 .pwa-stores2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; align-items:start; }
 .pwa-store{ min-width:0; }
 .pwa-btn-sm{ font-size:14px; padding:11px 8px; gap:6px; border-radius:11px; white-space:nowrap; }

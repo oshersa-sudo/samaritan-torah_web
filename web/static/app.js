@@ -290,6 +290,8 @@ const I18N = {
     dict_same_meaning:'באותה משמעות (לפי השורש)', dict_more:'נוספים', dict_no_occ:'אין מופעים במשמעות זו.',
     dict_show_occ:'↳ הצג מופעים בתורה ובתיבת מרקה',
     dict_pages_hint:'דפדף בעמודי המילון.', dict_page_label:'עמוד', dict_prev:'‹ הקודם', dict_next:'הבא ›',
+    dict_dara_gloss:'מתוך מילון הפיוטים של בן־חיים', dict_in_piyut:'המילה בפיוטי השומרונים', dict_in_targum:'המילה בתרגום הארמי של התורה',
+    dict_in_examples:'המילה במשפטי הדוגמה של המילון', dict_in_examples_hint:'המילון מביא את המילה בתוך המשפטים האלה; לצד כל אחד מהם המקום שממנו הוא מצוטט, ולחיצה עליו פותחת את הפסוק.',
     dict_in_dict:'נמצא במילון כערך:', dict_form_hint:'לחץ על צורה לקבלת כל מיקומיה במילון',
     dict_locations_title:'מיקומים במילון', dict_loc_count:'מופעים', dict_open_page:'פתח עמוד במילון',
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
@@ -593,6 +595,8 @@ const I18N = {
     dict_same_meaning:'in the same meaning (by root)', dict_more:'more', dict_no_occ:'No occurrences in this meaning.',
     dict_show_occ:'↳ Show occurrences in the Torah & Tībåt Mårqe',
     dict_pages_hint:'Browse the dictionary pages.', dict_page_label:'Page', dict_prev:'‹ Prev', dict_next:'Next ›',
+    dict_dara_gloss:'From the word list of Ben-Ḥayyim’s liturgy volume', dict_in_piyut:'The word in the Samaritan piyyutim', dict_in_targum:'The word in the Aramaic Targum of the Torah',
+    dict_in_examples:'The word in the dictionary’s example sentences', dict_in_examples_hint:'The dictionary shows the word inside these sentences; beside each is the place it is quoted from, and tapping that opens the verse.',
     dict_in_dict:'Found in the dictionary as a head-word:', dict_form_hint:'Tap a form for all its locations in the dictionary',
     dict_locations_title:'Locations in the dictionary', dict_loc_count:'occurrences', dict_open_page:'Open the dictionary page',
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
@@ -896,6 +900,8 @@ const I18N = {
     dict_same_meaning:'بالمعنى نفسه (حسب الجذر)', dict_more:'أخرى', dict_no_occ:'لا مواضع بهذا المعنى.',
     dict_show_occ:'↳ إظهار المواضع في التوراة وتيبات مارقه',
     dict_pages_hint:'تصفّح صفحات المعجم.', dict_page_label:'صفحة', dict_prev:'‹ السابق', dict_next:'التالي ›',
+    dict_dara_gloss:'من معجم القصائد لبن-حَيّيم', dict_in_piyut:'الكلمة في قصائد السامريين', dict_in_targum:'الكلمة في الترجوم الآرامي للتوراة',
+    dict_in_examples:'الكلمة في جُمل الأمثلة في المعجم', dict_in_examples_hint:'يورد المعجم الكلمة داخل هذه الجمل؛ وإلى جانب كلٍّ منها الموضع المقتبسة منه، والضغط عليه يفتح النصّ.',
     dict_in_dict:'موجودة في المعجم كمدخل:', dict_form_hint:'اضغط صيغةً لكلّ مواضعها في المعجم',
     dict_locations_title:'المواضع في المعجم', dict_loc_count:'مواضع', dict_open_page:'افتح صفحة المعجم',
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
@@ -7692,8 +7698,78 @@ async function dictAppSearch(){
       }
     }
   }
-  if(!roots.length && !(direct&&direct.length)){ body.appendChild(el('div','note',t('dict_app_empty'))); return; }
   for(const rt of roots) body.appendChild(dictRootCard(rt, word));
+  // Where the word itself stands on Tal's pages. For a word he never gave an
+  // entry of its own — and thousands stand only inside somebody else's example
+  // sentence — this is the whole answer, and it is an honest one: the sentence,
+  // and the verse it is quoted from, to step into.
+  const cites=(d&&d.citations)||[];
+  if(cites.length){
+    body.appendChild(el('div','tal-sec', esc(t('dict_in_examples'))));
+    body.appendChild(el('div','dict-form-hint', esc(t('dict_in_examples_hint'))));
+    for(const c of cites){
+      const row=el('div','dict-cite');
+      const q=el('div','dict-cite-q');
+      q.innerHTML=markWord(c.quote||'', word);
+      row.appendChild(q);
+      if(c.ref){
+        const r=el('span','dict-cite-ref', esc(c.ref));
+        if(c.verse_id){ r.classList.add('tm-ref'); r.dataset.vid=c.verse_id; }
+        row.appendChild(r);
+      }
+      body.appendChild(row);
+    }
+  }
+  // what the liturgy volume itself says the word means, where it says anything
+  const dara=(d&&d.dara)||{};
+  if(dara.gloss){
+    body.appendChild(el('div','tal-sec', esc(t('dict_dara_gloss'))));
+    const it=el('div','dict-direct');
+    if(dara.translit) it.appendChild(el('span','dict-translit', esc(dara.translit)+' '));
+    if(dara.root) it.appendChild(el('span','dict-direct-root','('+t('tm_col_root')+' '+esc(dara.root)+') '));
+    it.appendChild(document.createTextNode(dara.gloss));
+    body.appendChild(it);
+  }
+  // the lines of the liturgy the word is sung in, with Ben-Ḥayyim's own Hebrew
+  const piy=(d&&d.piyut)||[];
+  if(piy.length){
+    body.appendChild(el('div','tal-sec', esc(t('dict_in_piyut'))));
+    for(const l of piy){
+      const row=el('div','dict-cite');
+      const q=el('div','dict-cite-q'); q.innerHTML=markWord(l.aram||'', word); row.appendChild(q);
+      if(l.heb) row.appendChild(el('div','dict-cite-he', esc(l.heb)));
+      const who=[l.title, l.author].filter(Boolean).join(' · ');
+      if(who) row.appendChild(el('span','dict-cite-ref', esc(who)));
+      body.appendChild(row);
+    }
+  }
+  // and where it stands in the Torah's own Targum
+  const tg=(d&&d.targum)||[];
+  if(tg.length){
+    body.appendChild(el('div','tal-sec', esc(t('dict_in_targum'))));
+    const wrap=el('div','tal-locs');
+    for(const o of tg){
+      const c=el('span','tal-loc tm-ref', esc(o.book+' '+o.ch+':'+o.vn));
+      c.dataset.vid=o.verse_id; wrap.appendChild(c);
+    }
+    body.appendChild(wrap);
+  }
+  if(!roots.length && !(direct&&direct.length) && !cites.length && !piy.length
+     && !tg.length && !dara.gloss){
+    body.appendChild(el('div','note',t('dict_app_empty')));
+  }
+}
+// the searched word, picked out of the sentence it was found in
+function markWord(quote, word){
+  const w=(word||'').replace(/[֑-ׇ]/g,'').trim();
+  if(!w) return esc(quote);
+  const fold=s=>s.replace(/[֑-ׇ]/g,'').replace(/ך/g,'כ').replace(/ם/g,'מ')
+                 .replace(/ן/g,'נ').replace(/ף/g,'פ').replace(/ץ/g,'צ');
+  const key=fold(w);
+  return quote.split(/(\s+)/).map(tok=>{
+    const bare=tok.replace(/^[^א-ת]+|[^א-ת]+$/g,'');
+    return (bare && fold(bare)===key) ? '<b class="dict-cite-hit">'+esc(tok)+'</b>' : esc(tok);
+  }).join('');
 }
 // ── comprehensive word-index browsing ────────────────────────────────────────
 let DICT_WB={start:0, limit:60, total:0, prefix:''};
