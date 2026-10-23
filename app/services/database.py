@@ -5186,6 +5186,12 @@ _seed_aram_he_index()
 # longest first, so ית is taken off before the bare י
 _VERB_PREFIXES = ('אשת', 'ית', 'את', 'מת', 'נת', 'י', 'ת', 'נ', 'א')
 
+# The reflexive ת does not stay in front of a sibilant — it changes places with
+# it, and voices to ד or emphasises to ט on the way: את+ספר is אסתפר, את+זוע is
+# מזדוע, את+צמת is מצטמת, את+שעבד is ישתעבד. Without this the stem letter looks
+# like part of the root and the word resolves to nothing at all.
+_METATHESIS = re.compile('^[אימנותב]{1,2}([סשצז])[תטד](.+)$')
+
 _SUFFIXES = ('כונה', 'כונ', 'הונ', 'כמה', 'כמ', 'ננ', 'נן', 'נו', 'ונ', 'ון',
              'יכונ', 'יכמ', 'ימ', 'ים', 'ינ', 'ין', 'יה', 'יכ', 'ני', 'כי',
              'כ', 'ך', 'מ', 'ם', 'נ', 'ן', 'י')
@@ -5251,6 +5257,11 @@ def _tal_variants(base):
                 for c in (w[len(pre):], w[len(pre):] + 'ה'):
                     if c not in verbal:
                         verbal.append(c)
+        m = _METATHESIS.match(w)
+        if m:
+            c = m.group(1) + m.group(2)
+            if len(c) >= 3 and c not in verbal:
+                verbal.append(c)
     return full, prefixed, suffixed, verbal
 
 
