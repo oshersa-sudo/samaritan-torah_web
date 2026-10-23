@@ -5586,8 +5586,20 @@ def tal_full_lookup(word, torah_limit=16):
     # nothing vouches, the derivation is still shown, but as a suggestion, never as
     # a root: sending a reader to ק.ד.מ's occurrences because קמאה happened to strip
     # to something was the whole complaint.
+    # A root that carries no meaning is worse than no root: it silences the
+    # inflection index, which may hold one. The verbal-prefix tier added today
+    # made exactly that happen — ארשתונ began resolving to רשת, which Tal never
+    # glosses, and the "ארש: יסוד, בסיס" that dict_infl had been offering
+    # disappeared. So the index is consulted whenever nothing GLOSSES the word,
+    # not merely when nothing resolves it.
+    def _has_gloss(rs):
+        for r in rs or ():
+            if _auth_root_gloss(_norm_fin(r), conn):
+                return True
+        return bool(root_other_spelling(rs, 1))
+
     derived = suggestion = None
-    if not roots:
+    if not roots or not _has_gloss(roots):
         try:
             r = conn.execute(
                 "SELECT root, gloss, gloss_tal, memar_he, derivation, verified "
@@ -5596,12 +5608,12 @@ def tal_full_lookup(word, torah_limit=16):
         except sqlite3.OperationalError:
             r = []
         for row in r:
-            if (row['verified'] or '').strip():
+            if (row['verified'] or '').strip() and not roots:
                 roots = [row['root']]
                 derived = {'derivation': row['derivation'], 'verified': row['verified'],
                            'memar_he': row['memar_he']}
                 break
-        if not roots and r:
+        if r and (not roots or not _has_gloss(roots)):
             row = r[0]
             suggestion = {'root': row['root'], 'gloss': row['gloss_tal'] or row['gloss'],
                           'derivation': row['derivation'], 'memar_he': row['memar_he']}
