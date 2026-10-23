@@ -5054,9 +5054,22 @@ _VG_LEGEND = None
 _WEAK_TAL = str.maketrans('', '', 'אהויםןףךץ')   # matres lectionis + finals
 
 
+# What a scan leaves behind inside a word: a bidi or zero-width mark, a box
+# where a glyph could not be read. And the Hebrew-block ligatures, which ARE
+# two letters by definition — ױ is vav-yod — so writing them out is no guess.
+_SCAN_JUNK = re.compile('[​-‏‪-‮⁠﻿■-◿�]')
+_LIGATURE = {'װ': 'וו', 'ױ': 'וי', 'ײ': 'יי'}
+
+
 def _tal_bare(w):
-    """Strip niqqud/cantillation and surrounding punctuation from a word."""
+    """Strip niqqud/cantillation and surrounding punctuation from a word.
+
+    And the debris a scan leaves inside one: ■למאום answered nothing at all
+    while למאום has an entry, and the box is not part of the word."""
     w = re.sub('[֑-ׇ]', '', w or '')
+    w = _SCAN_JUNK.sub('', w)
+    if any(ch in _LIGATURE for ch in w):
+        w = ''.join(_LIGATURE.get(ch, ch) for ch in w)
     return w.strip(' .,;:!?"\'־׳״-()[]')
 
 
