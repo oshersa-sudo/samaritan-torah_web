@@ -5635,6 +5635,8 @@ def tal_full_lookup(word, torah_limit=16):
            'aramaic_side': aramaic_side(word),
            # the root as Tal spells it, when the form index spells it otherwise
            'root_spelling': root_other_spelling(roots),
+           # and last of all, the word index's own reading — see word_index_gloss
+           'index_gloss': None,
            # the same word as the dictionary prints it elsewhere: the gutturals
            # and the sibilants interchange, and each spelling is its own entry
            # up to twenty-four; the screen shows the closest eight and opens the
@@ -5778,6 +5780,15 @@ def tal_full_lookup(word, torah_limit=16):
         out['meaning']['disagrees'] = bool(out['roots']) and             not _gloss_matches_memar(senses, out['meaning']['gloss'])
     conn.close()
     out['phrases'] = dict_phrases_for(word)
+    # Last of all — after the roots and their senses are in — and only when the
+    # word is otherwise unexplained: the word index's own reading. That index is
+    # a unit of this app already, so a word with a reading there and a blank
+    # dictionary screen is an inconsistency, not a missing fact.
+    if not (any(sn.get('gloss') for r in out['roots'] for sn in r['senses'])
+            or out['torah_he'] or out['dara'] or out['root_spelling']
+            or (out['said'] or {}).get('gloss')
+            or ((out['suggestion'] or {}).get('gloss') or '').strip()):
+        out['index_gloss'] = word_index_gloss(word)
     return out
 
 
@@ -6252,6 +6263,32 @@ def torah_word_gloss(word, limit=3):
     return {'word': rows[0]['word'] or base, 'he': he,
             'places': [{'book': r['book'], 'ch': r['ch'], 'vn': r['vn'],
                         'verse_id': r['verse_id']} for r in rows]}
+
+
+def word_index_gloss(word):
+    """What the word index says, when nothing else says anything.
+
+    `dict_word_index` is already a unit of its own in this app — the reader can
+    browse it — so a word that has a reading there and a blank screen in the
+    dictionary is an inconsistency, not a missing fact. It is the LAST thing
+    asked and it is labelled as the index's reading, because its quality varies:
+    צעקותכ → צעק and ולהאזינ → אזן are right, while הררימ → "רר" is not. Shown so
+    the reader can judge it, never merged into Tal's own glosses."""
+    bn = _norm_fin(_tal_bare(word))
+    if not bn:
+        return None
+    conn = get_connection()
+    try:
+        r = conn.execute(
+            "SELECT word, gloss FROM dict_word_index "
+            "WHERE word_norm=? AND TRIM(COALESCE(gloss,''))<>'' LIMIT 1",
+            (bn,)).fetchone()
+    except sqlite3.OperationalError:
+        r = None
+    conn.close()
+    if not r:
+        return None
+    return {'word': r['word'], 'gloss': re.sub(r'\s+', ' ', (r['gloss'] or '').strip())[:160]}
 
 
 def root_other_spelling(roots, limit=6):

@@ -303,6 +303,7 @@ const I18N = {
     dict_hebrew_side:'מה עומד מולה בתרגום הארמי',
     dict_aramaic_side:'כיצד מתרגם אותה התרגום הארמי',
     dict_root_spelling:'השורש ככתיבתו במילון',
+    dict_index_gloss:'קריאת אינדקס המילים',
     dict_root_spelled:'נכתב כאן',
     dict_word_table:'כך נקראת המילה במילון המילים של התורה',
     dict_dara_gloss:'מתוך מילון הפיוטים של בן־חיים', dict_in_piyut:'המילה בפיוטי השומרונים', dict_in_targum:'המילה בתרגום הארמי של התורה',
@@ -623,6 +624,7 @@ const I18N = {
     dict_hebrew_side:'What stands opposite it in the Aramaic Targum',
     dict_aramaic_side:'How the Aramaic Targum renders it',
     dict_root_spelling:'The root as the dictionary spells it',
+    dict_index_gloss:'What the word index reads it as',
     dict_root_spelled:'spelled here',
     dict_word_table:'How the Torah word table reads this word',
     dict_dara_gloss:'From the word list of Ben-Ḥayyim’s liturgy volume', dict_in_piyut:'The word in the Samaritan piyyutim', dict_in_targum:'The word in the Aramaic Targum of the Torah',
@@ -943,6 +945,7 @@ const I18N = {
     dict_hebrew_side:'ما يقابلها في الترجوم الآرامي',
     dict_aramaic_side:'كيف يترجمها الترجوم الآرامي',
     dict_root_spelling:'الجذر بإملاء المعجم',
+    dict_index_gloss:'قراءة فهرس الكلمات',
     dict_root_spelled:'مكتوب هنا',
     dict_word_table:'هكذا تُقرأ الكلمة في معجم كلمات التوراة',
     dict_dara_gloss:'من معجم القصائد لبن-حَيّيم', dict_in_piyut:'الكلمة في قصائد السامريين', dict_in_targum:'الكلمة في الترجوم الآرامي للتوراة',
@@ -7854,6 +7857,17 @@ async function dictAppSearch(){
       if(o.gloss) it.appendChild(document.createTextNode(' — '+o.gloss));
       body.appendChild(it);
     }
+  }
+  // Last of all: the word index's reading, shown only for a word nothing else
+  // explains, and named as the index's — its quality varies and the reader has
+  // to be able to weigh it (צעקותך → צעק is right, הררים → רר is not).
+  const ig=(d&&d.index_gloss)||null;
+  if(ig && ig.gloss){
+    body.appendChild(el('div','tal-sec', esc(t('dict_index_gloss'))));
+    const it=el('div','dict-direct');
+    it.appendChild(el('b','', esc(ig.word)));
+    it.appendChild(document.createTextNode(' — '+ig.gloss));
+    body.appendChild(it);
   }
   // what resolve_glosses says — the one lookup every word unit in this app asks
   const said=(d&&d.said)||{};
