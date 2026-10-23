@@ -898,6 +898,34 @@ def _seed_tal_cite_index():
 _seed_tal_cite_index()
 
 
+def _seed_letter_root():
+    """One row in 12,793: the letter ט carries its gloss but no root, and the
+    lookup reaches an entry's senses through its root — so the gloss it already
+    has ("האות התשיעית באלפבית; סימן המספר 9") never reached a reader. Every one
+    of its seventeen sibling letters has the letter itself as its root, so this
+    restores a structural field, not a meaning. Nothing is written if the field
+    was filled in the meantime."""
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        n = conn.execute(
+            "UPDATE tal_auth_entries SET root = lemma "
+            "WHERE TRIM(COALESCE(gloss_he,'')) <> '' AND TRIM(COALESCE(root,'')) = '' "
+            "  AND LENGTH(TRIM(lemma)) = 1").rowcount
+        conn.commit()
+        PATCH_REPORT['letter_root'] = ('%d letter entries given their root' % n
+                                       if n else 'already current')
+        if n:
+            print('[letter-root] %s' % PATCH_REPORT['letter_root'])
+    except Exception as exc:
+        PATCH_REPORT['letter_root'] = 'failed: %s' % exc
+        print('[letter-root] skipped: %s' % exc)
+    finally:
+        conn.close()
+
+
+_seed_letter_root()
+
+
 # ── every word of the Torah and of its Targum, by the verse it stands in ─────
 # The dictionary could answer a word only if some index already carried it. A
 # word that simply stands in the text — and ובשפילתה, בתה and ולשנינה do — fell
@@ -5155,6 +5183,9 @@ _seed_aram_he_index()
 # ונ and before כ. Stripping one of these is morphology, not a guess — but it is
 # tried only after the surface form and the de-prefixed form have both failed,
 # so a word whose last letter belongs to its root (שלמ, קומ) is never cut.
+# longest first, so ית is taken off before the bare י
+_VERB_PREFIXES = ('אשת', 'ית', 'את', 'מת', 'נת', 'י', 'ת', 'נ', 'א')
+
 _SUFFIXES = ('כונה', 'כונ', 'הונ', 'כמה', 'כמ', 'ננ', 'נן', 'נו', 'ונ', 'ון',
              'יכונ', 'יכמ', 'ימ', 'ים', 'ינ', 'ין', 'יה', 'יכ', 'ני', 'כי',
              'כ', 'ך', 'מ', 'ם', 'נ', 'ן', 'י')
@@ -5181,8 +5212,16 @@ def _tal_variants(base):
     ending removed. A letter is stripped only when ≥3 letters remain (so a
     2-letter spurious match like מיא→מי can't fire), and ש is never a proclitic
     (usually a root letter — שמיא, שמש). The groups are resolved in this order, so
-    a real word is never mis-stripped (כהניא stays כהן rather than becoming הני)
-    and a word that already resolves keeps exactly the root it had."""
+    a word that already resolves keeps exactly the root it had.
+
+    What the order does NOT do — and an earlier version of this comment claimed it
+    did — is prevent a mis-strip: כהניא is כהן + the emphatic plural, and because
+    it resolves to nothing as written, the proclitic tier reaches הני. Measured
+    over the whole Aramaic Torah text: the proclitic tier fires on 51 of 16,012
+    words, most of them right (ו+לאהרן, ו+בכסף) and about six wrong — בלהבת→בת,
+    והאלהימ→טור, למוראתונ→את. No string test separates the two, because ולאהרן
+    strips twice exactly as בלהבת does, so the 51 are listed for a human to rule
+    on rather than filtered by a rule that would break the 45 correct ones."""
     full = [base]
     if len(base) >= 4 and base[-1] in 'אה':
         full.append(base[:-1])
@@ -5200,7 +5239,19 @@ def _tal_variants(base):
             for c in ([b, b[1:]] if len(b) >= 4 and b[0] in 'ובלכדמ' else [b]):
                 if len(c) >= 3 and c not in suffixed:
                     suffixed.append(c)
-    return full, prefixed, suffixed
+    # And the verb. ובלכדמ are the particles a noun carries; a VERB carries its
+    # own prefix — the imperfect י/ת/נ/א and the reflexive stems ית־ את־ מת־ —
+    # and none of them was ever stripped, which is why ויסעדננ (ו+יסעד+ננ) and
+    # ויתחננ (ו+ית+חנן) came back empty. Last of all the groups, and only ever on
+    # a word that everything above has failed on.
+    verbal = []
+    for w in [base] + prefixed + suffixed:
+        for pre in _VERB_PREFIXES:
+            if w.startswith(pre) and len(w) - len(pre) >= 3:
+                for c in (w[len(pre):], w[len(pre):] + 'ה'):
+                    if c not in verbal:
+                        verbal.append(c)
+    return full, prefixed, suffixed, verbal
 
 
 _BRACKET = re.compile(r'[\(\[]([^()\[\]]*)[\)\]]?')
@@ -5289,7 +5340,11 @@ def _tal_roots(word, conn, _depth=0):
     a form that still needs the machinery above rather than a flat table lookup.
     One level only — past that the strings get short enough to match anything."""
     base = _tal_bare(word)
-    if not base or len(base) < 2:
+    # One letter is a head-word of its own in Tal — the letter itself, its
+    # numeral, and for ב the preposition with its six senses. The two-letter gate
+    # that guards the stripping tiers was shutting all of them out here too; the
+    # tiers stay guarded by _tal_variants, which strips nothing under four letters.
+    if not base:
         return []
 
     def dedup(rs):
@@ -5362,12 +5417,20 @@ def _tal_roots(word, conn, _depth=0):
             out += m.get(cn, ())
         return dedup(out)
 
-    full, prefixed, suffixed = _tal_variants(base)
+    def stripped(cands):
+        """What a stripping tier is allowed to return. A one-letter root is a real
+        head-word when that letter is what was typed, but as the answer for
+        ומיתביתכ it is noise — the strip went too far and landed on a particle."""
+        return [r for r in resolve(cands) if len(_tal_bare(r)) >= 2]
+
+    full, prefixed, suffixed, verbal = _tal_variants(base)
     found = (resolve(full) or (resolve(prefixed) if prefixed else [])
-             or (resolve(suffixed) if suffixed else []))
-    if not found and suffixed and _depth < 1:
-        for c in suffixed:
-            found = _tal_roots(c, conn, _depth + 1)
+             or (stripped(suffixed) if suffixed else [])
+             or (stripped(verbal) if verbal else []))
+    if not found and _depth < 1:
+        for c in suffixed + verbal:
+            found = [r for r in _tal_roots(c, conn, _depth + 1)
+                     if len(_tal_bare(r)) >= 2]
             if found:
                 break
     # Appended, never merged into the tiers above: a word that already resolves
@@ -5547,6 +5610,8 @@ def tal_full_lookup(word, torah_limit=16):
            'hebrew_side': hebrew_side(word),
            # and the other way: what the Targum itself renders this word by
            'aramaic_side': aramaic_side(word),
+           # the root as Tal spells it, when the form index spells it otherwise
+           'root_spelling': root_other_spelling(roots),
            # the same word as the dictionary prints it elsewhere: the gutturals
            # and the sibilants interchange, and each spelling is its own entry
            # up to twenty-four; the screen shows the closest eight and opens the
@@ -6164,6 +6229,50 @@ def torah_word_gloss(word, limit=3):
     return {'word': rows[0]['word'] or base, 'he': he,
             'places': [{'book': r['book'], 'ch': r['ch'], 'vn': r['vn'],
                         'verse_id': r['verse_id']} for r in rows]}
+
+
+def root_other_spelling(roots, limit=6):
+    """The same root as the dictionary spells it, when the two indexes disagree.
+
+    The Torah form index writes a III-weak root with final ה (כסה, בכה, חזה);
+    Tal's own pages write it with י (כסי, בכי, חזי). A word resolved through the
+    index therefore arrives carrying a root the dictionary has no entry for — כסי
+    has fourteen glossed entries, כסה has none — and the reader is told nothing.
+
+    Only the ה/י pair, and only when the swap leads to exactly ONE spelling the
+    dictionary glosses, because the wider swap is a guess: אוה reaches אוֹ, אוי
+    and און at once, and רמן reaches רמי though רמון is a pomegranate. Returned
+    as its own field so the screen can say WHICH spelling it is showing, never
+    merged into the word's roots."""
+    out = []
+    conn = get_connection()
+    try:
+        for root in roots or ():
+            rn = _norm_fin(_tal_bare(root))
+            if not rn or rn[-1] not in 'הי':
+                continue
+            if conn.execute("SELECT 1 FROM tal_auth_entries WHERE root_norm=? "
+                            "AND TRIM(COALESCE(gloss_he,''))<>'' LIMIT 1", (rn,)).fetchone():
+                continue                       # the dictionary glosses it as spelled
+            alt = rn[:-1] + ('י' if rn[-1] == 'ה' else 'ה')
+            rows = conn.execute(
+                "SELECT DISTINCT root FROM tal_auth_entries WHERE root_norm=? "
+                "AND TRIM(COALESCE(gloss_he,''))<>''", (alt,)).fetchall()
+            if len(rows) != 1:                 # ambiguous — say nothing
+                continue
+            spelled = rows[0]['root']
+            for r in conn.execute(
+                    "SELECT lemma, gloss_he, printed FROM tal_auth_entries "
+                    "WHERE root_norm=? AND TRIM(COALESCE(gloss_he,''))<>'' "
+                    "ORDER BY pdf, ord LIMIT ?", (alt, limit)):
+                out.append({'root': spelled, 'of': root, 'lemma': r['lemma'],
+                            'gloss': (r['gloss_he'] or '').strip(), 'page': r['printed']})
+            if out:
+                break
+    except sqlite3.OperationalError:
+        pass
+    conn.close()
+    return out
 
 
 def aramaic_side(word, limit=4):

@@ -302,6 +302,8 @@ const I18N = {
     dict_near:'המילון מביא את המילה גם באיות אחר', dict_near_hint:'בארמית השומרונית נתחלפו אותיות הגרון (א ה ח ע) והשורקות (ז ס צ), ולכן אותה מילה נדפסה אצל טל ביותר מאיות אחד. אלה הערכים הקרובים — ההכרעה בידך.',
     dict_hebrew_side:'מה עומד מולה בתרגום הארמי',
     dict_aramaic_side:'כיצד מתרגם אותה התרגום הארמי',
+    dict_root_spelling:'השורש ככתיבתו במילון',
+    dict_root_spelled:'נכתב כאן',
     dict_word_table:'כך נקראת המילה במילון המילים של התורה',
     dict_dara_gloss:'מתוך מילון הפיוטים של בן־חיים', dict_in_piyut:'המילה בפיוטי השומרונים', dict_in_targum:'המילה בתרגום הארמי של התורה',
     dict_in_examples:'המילה במשפטי הדוגמה של המילון', dict_in_examples_hint:'המילון מביא את המילה בתוך המשפטים האלה; לצד כל אחד מהם המקום שממנו הוא מצוטט, ולחיצה עליו פותחת את הפסוק.',
@@ -620,6 +622,8 @@ const I18N = {
     dict_near:'The dictionary also prints it spelled otherwise', dict_near_hint:'In Samaritan Aramaic the gutturals (א ה ח ע) and the sibilants (ז ס צ) fell together, so the same word was printed under more than one spelling. These are the near entries — the judgement is yours.',
     dict_hebrew_side:'What stands opposite it in the Aramaic Targum',
     dict_aramaic_side:'How the Aramaic Targum renders it',
+    dict_root_spelling:'The root as the dictionary spells it',
+    dict_root_spelled:'spelled here',
     dict_word_table:'How the Torah word table reads this word',
     dict_dara_gloss:'From the word list of Ben-Ḥayyim’s liturgy volume', dict_in_piyut:'The word in the Samaritan piyyutim', dict_in_targum:'The word in the Aramaic Targum of the Torah',
     dict_in_examples:'The word in the dictionary’s example sentences', dict_in_examples_hint:'The dictionary shows the word inside these sentences; beside each is the place it is quoted from, and tapping that opens the verse.',
@@ -938,6 +942,8 @@ const I18N = {
     dict_near:'يورد المعجم الكلمة بإملاء آخر أيضًا', dict_near_hint:'في الآرامية السامرية تبادلت الحروف الحلقية (א ה ח ע) والصفيرية (ז ס צ)، فطُبعت الكلمة نفسها بأكثر من إملاء. هذه المداخل القريبة، والحكم لك.',
     dict_hebrew_side:'ما يقابلها في الترجوم الآرامي',
     dict_aramaic_side:'كيف يترجمها الترجوم الآرامي',
+    dict_root_spelling:'الجذر بإملاء المعجم',
+    dict_root_spelled:'مكتوب هنا',
     dict_word_table:'هكذا تُقرأ الكلمة في معجم كلمات التوراة',
     dict_dara_gloss:'من معجم القصائد لبن-حَيّيم', dict_in_piyut:'الكلمة في قصائد السامريين', dict_in_targum:'الكلمة في الترجوم الآرامي للتوراة',
     dict_in_examples:'الكلمة في جُمل الأمثلة في المعجم', dict_in_examples_hint:'يورد المعجم الكلمة داخل هذه الجمل؛ وإلى جانب كلٍّ منها الموضع المقتبسة منه، والضغط عليه يفتح النصّ.',
@@ -7832,6 +7838,20 @@ async function dictAppSearch(){
       it.appendChild(el('b','', esc(o.hebrew)));
       const r=el('span','dict-cite-ref tm-ref', ' · '+o.book+' '+o.ch+':'+o.vn);
       r.dataset.vid=o.verse_id; it.appendChild(r);
+      body.appendChild(it);
+    }
+  }
+  // The root arrives from the Torah form index spelled with ה, and the dictionary
+  // keeps it under י — so the entry exists and the word looked empty. Shown with
+  // BOTH spellings named, because this is a link between two indexes, not a root.
+  const rsp=(d&&d.root_spelling)||[];
+  if(rsp.length){
+    body.appendChild(el('div','tal-sec', esc(t('dict_root_spelling'))));
+    for(const o of rsp){
+      const it=el('div','dict-direct');
+      it.appendChild(el('b','', esc(o.root)));
+      if(o.of) it.appendChild(el('span','dict-nogloss', ' · '+t('dict_root_spelled')+' '+esc(o.of)));
+      if(o.gloss) it.appendChild(document.createTextNode(' — '+o.gloss));
       body.appendChild(it);
     }
   }
