@@ -6166,7 +6166,41 @@ def targum_occurrences(word, limit=12):
              'aram': (r['aram'] or '').strip()} for r in rows]
 
 
-_PROCLITIC = 'ובלכדמהש'
+# ש is not among them: it is almost always a root letter here (שמיא, שמש), and
+# including it made שרירה answer a reader who typed רירה.
+_PROCLITIC = 'ובלכדמה'
+_TO_FIN = {'מ': 'ם', 'נ': 'ן', 'צ': 'ץ', 'פ': 'ף', 'כ': 'ך'}
+
+
+def _is_a_word(bn, conn):
+    """Is this string attested as a word of its own anywhere we hold?
+
+    The test that tells מכות (which the piyyutim and Tal's sentences both use)
+    from רירה (which exists only inside שרירה). Nothing here is inferred — the
+    string either stands alone somewhere or it does not."""
+    for sql in ("SELECT 1 FROM text_word_ix WHERE word_norm=? LIMIT 1",
+                "SELECT 1 FROM piyut_word_ix WHERE word_norm=? LIMIT 1",
+                "SELECT 1 FROM tal_cite_word WHERE word_norm=? LIMIT 1",
+                "SELECT 1 FROM aram_he_ix WHERE ar_norm=? LIMIT 1",
+                "SELECT 1 FROM tal_auth_entries WHERE nomark(lemma_norm)=? LIMIT 1"):
+        try:
+            if conn.execute(sql, (bn,)).fetchone():
+                return True
+        except sqlite3.OperationalError:
+            continue
+    return False
+
+
+def _both_finals(w):
+    """The word as the lookup normalises it AND as a scribe ends it.
+
+    Ben-Ḥayyim's index writes ואדון with a final nun; everything upstream folds
+    finals to their medial form, so the two never met and 1,911 of his 5,440
+    entries — more than a third — stayed out of reach."""
+    out = [w]
+    if w and w[-1] in _TO_FIN:
+        out.append(w[:-1] + _TO_FIN[w[-1]])
+    return out
 
 
 def piyut_occurrences(word, limit=8):
@@ -6178,6 +6212,20 @@ def piyut_occurrences(word, limit=8):
     if not bn or len(bn) < 2:
         return []
     conn = get_connection()
+    cands = list(dict.fromkeys([word] + _both_finals(bn)))
+    try:
+        bare = conn.execute(
+            "SELECT 1 FROM dara_word_refs WHERE word IN (%s) LIMIT 1"
+            % ','.join('?' * len(cands)), tuple(cands)).fetchone()
+    except sqlite3.OperationalError:
+        bare = None
+    # ...and only for a string that is a word in its own right somewhere else.
+    # Without this, בריך answered רִיךְ and מסכינן answered סכיננ — the letter
+    # taken off was a root letter, and the reader was shown another word's line.
+    if not bare and len(bn) >= 3 and _is_a_word(bn, conn):
+        for ch in _PROCLITIC:
+            cands += _both_finals(ch + bn)
+        cands = list(dict.fromkeys(cands))
     try:
         rows = conn.execute(
             """SELECT p.title, p.author, l.aram, l.heb, l.translit
@@ -6190,8 +6238,14 @@ def piyut_occurrences(word, limit=8):
             # proclitic and all — it holds למכות, not מכות — so a reader asking
             # for the word itself found nothing where Ben-Ḥayyim has it. The same
             # single step the rest of the lookup takes: one particle in front.
-            % ','.join('?' * (2 + len(_PROCLITIC))),
-            tuple([word, bn] + [ch + bn for ch in _PROCLITIC]) + (limit,)).fetchall()
+            #
+            # Guarded twice, because the first version of this returned משה's
+            # lines for שה and מרה's for רה: the attached forms are tried ONLY
+            # when the bare word is absent from the index, and only from three
+            # letters up, since at two letters almost any word has a particle
+            # standing in front of it somewhere.
+            % ','.join('?' * len(cands)),
+            tuple(cands) + (limit,)).fetchall()
     except sqlite3.OperationalError:
         rows = []
     conn.close()
