@@ -5200,6 +5200,13 @@ _SUFFIXES = ('כונה', 'כונ', 'הונ', 'כמה', 'כמ', 'ננ', 'נן', '
 def _strip_suffix(w):
     """Every reading of w with one ending removed, longest ending first."""
     out = []
+    # The abstract noun in ־ו takes ־ות in the plural and the construct, which is
+    # a replacement and not a removal, so the loop below cannot reach it: מכות is
+    # מכו (מכה, פגע, אסון) and אלהות is אלהו. Without this the word fell through
+    # to the proclitic tier, which read the מ as a prefix and answered מכות with
+    # כות, "כמו, כאשר" — the wrong word entirely.
+    if w.endswith('ות') and len(w) >= 4:
+        out.append(w[:-2] + 'ו')
     for suf in _SUFFIXES:
         if w.endswith(suf) and len(w) - len(suf) >= 3:
             b = w[:-len(suf)]
@@ -5448,7 +5455,19 @@ def _tal_roots(word, conn, _depth=0):
     # keeps the root it resolved to, first and unchanged, and everything that reads
     # the first root reads the same root as before. What the marks used to hide
     # simply follows it — for חרש, the craftsman and the sorcerer after the deaf man.
-    return found + [r for r in marked(full) if r not in found]
+    # The ־ו noun's plural, appended rather than ordered in front, because both
+    # readings of the string are real: מכות is מ + כות ("כמו, כאשר") and it is
+    # also the plural of מכו ("מכה, פגע, אסון"), and only the line it stands in
+    # can decide. The proclitic tier answers first and keeps its place; this adds
+    # the other reading beside it, the way חרש shows שתק and חרש and כרב at once.
+    plural = []
+    if base.endswith('ות') and len(base) >= 4:
+        sing = base[:-2] + 'ו'
+        if sing != base:
+            plural = [r for r in resolve([sing]) if r not in found
+                      and _auth_root_gloss(_norm_fin(r), conn)]
+    out = found + plural
+    return out + [r for r in marked(full) if r not in out]
 
 
 def dict_phrases_for(word, limit=12):
@@ -6147,6 +6166,9 @@ def targum_occurrences(word, limit=12):
              'aram': (r['aram'] or '').strip()} for r in rows]
 
 
+_PROCLITIC = 'ובלכדמהש'
+
+
 def piyut_occurrences(word, limit=8):
     """The lines of the Samaritan liturgy — Z. Ben-Ḥayyim's volume — that the word
     stands in, with his own reading of the line and, where he gives one, his
@@ -6162,8 +6184,14 @@ def piyut_occurrences(word, limit=8):
                FROM dara_word_refs w
                JOIN dara_piyutim p ON p.id = w.piyut_id
                JOIN dara_lines l   ON l.piyut_id = w.piyut_id AND l.ord = w.line_ord
-               WHERE w.word = ? OR w.word = ?
-               ORDER BY p.ord, l.ord LIMIT ?""", (word, bn, limit)).fetchall()
+               WHERE w.word IN (%s)
+               ORDER BY p.ord, l.ord LIMIT ?"""
+            # The volume's index keeps the word exactly as the line writes it,
+            # proclitic and all — it holds למכות, not מכות — so a reader asking
+            # for the word itself found nothing where Ben-Ḥayyim has it. The same
+            # single step the rest of the lookup takes: one particle in front.
+            % ','.join('?' * (2 + len(_PROCLITIC))),
+            tuple([word, bn] + [ch + bn for ch in _PROCLITIC]) + (limit,)).fetchall()
     except sqlite3.OperationalError:
         rows = []
     conn.close()
