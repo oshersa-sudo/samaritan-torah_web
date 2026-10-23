@@ -5278,11 +5278,16 @@ def _marked_headwords(conn):
 
 
 @_without_lexicon([])
-def _tal_roots(word, conn):
+def _tal_roots(word, conn, _depth=0):
     """Resolve an Aramaic surface word to its Tal root(s), most authoritative first:
     the dictionary's own head-word (lemma), the word as a root, Tal's forms index,
     then the word→root gloss and the Torah-text root index. The full surface form is
-    resolved completely before any proclitic-stripped variant is tried."""
+    resolved completely before any proclitic-stripped variant is tried.
+
+    `_depth` lets the ending tier ask this same function about what it uncovered,
+    once: ונציאמונ is נצי + א + מ + ונ, two endings deep, and taking one off leaves
+    a form that still needs the machinery above rather than a flat table lookup.
+    One level only — past that the strings get short enough to match anything."""
     base = _tal_bare(word)
     if not base or len(base) < 2:
         return []
@@ -5360,6 +5365,11 @@ def _tal_roots(word, conn):
     full, prefixed, suffixed = _tal_variants(base)
     found = (resolve(full) or (resolve(prefixed) if prefixed else [])
              or (resolve(suffixed) if suffixed else []))
+    if not found and suffixed and _depth < 1:
+        for c in suffixed:
+            found = _tal_roots(c, conn, _depth + 1)
+            if found:
+                break
     # Appended, never merged into the tiers above: a word that already resolves
     # keeps the root it resolved to, first and unchanged, and everything that reads
     # the first root reads the same root as before. What the marks used to hide
