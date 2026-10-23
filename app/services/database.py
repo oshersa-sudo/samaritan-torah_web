@@ -6260,18 +6260,23 @@ def root_other_spelling(roots, limit=6):
     try:
         for root in roots or ():
             rn = _norm_fin(_tal_bare(root))
-            if not rn or rn[-1] not in 'הי':
+            if not rn or rn[-1] not in 'אהי' or len(rn) < 3:
                 continue
             if conn.execute("SELECT 1 FROM tal_auth_entries WHERE root_norm=? "
                             "AND TRIM(COALESCE(gloss_he,''))<>'' LIMIT 1", (rn,)).fetchone():
                 continue                       # the dictionary glosses it as spelled
-            alt = rn[:-1] + ('י' if rn[-1] == 'ה' else 'ה')
+            # all three weak finals at once, and ONE candidate across the lot:
+            # if both מטי and מטה were glossed there would be no telling which
+            # spelling this root is, so the dictionary says nothing rather than
+            # choose. Two-letter roots are left alone — דא → דה proves too little.
+            alts = [rn[:-1] + ch for ch in 'אהי' if ch != rn[-1]]
             rows = conn.execute(
-                "SELECT DISTINCT root FROM tal_auth_entries WHERE root_norm=? "
-                "AND TRIM(COALESCE(gloss_he,''))<>''", (alt,)).fetchall()
-            if len(rows) != 1:                 # ambiguous — say nothing
+                "SELECT DISTINCT root, root_norm FROM tal_auth_entries "
+                "WHERE root_norm IN (%s) AND TRIM(COALESCE(gloss_he,''))<>''"
+                % ','.join('?' * len(alts)), alts).fetchall()
+            if len(rows) != 1:                 # none, or ambiguous — say nothing
                 continue
-            spelled = rows[0]['root']
+            spelled, alt = rows[0]['root'], rows[0]['root_norm']
             for r in conn.execute(
                     "SELECT lemma, gloss_he, printed FROM tal_auth_entries "
                     "WHERE root_norm=? AND TRIM(COALESCE(gloss_he,''))<>'' "
