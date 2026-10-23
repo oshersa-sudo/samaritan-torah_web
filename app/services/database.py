@@ -5151,13 +5151,38 @@ def _norm_fin(w):
 _seed_aram_he_index()
 
 
+# The pronominal and plural endings, longest first so כונ is taken off before
+# ונ and before כ. Stripping one of these is morphology, not a guess — but it is
+# tried only after the surface form and the de-prefixed form have both failed,
+# so a word whose last letter belongs to its root (שלמ, קומ) is never cut.
+_SUFFIXES = ('כונה', 'כונ', 'הונ', 'כמה', 'כמ', 'ננ', 'נן', 'נו', 'ונ', 'ון',
+             'יכונ', 'יכמ', 'ימ', 'ים', 'ינ', 'ין', 'יה', 'יכ', 'ני', 'כי',
+             'כ', 'ך', 'מ', 'ם', 'נ', 'ן', 'י')
+
+
+def _strip_suffix(w):
+    """Every reading of w with one ending removed, longest ending first."""
+    out = []
+    for suf in _SUFFIXES:
+        if w.endswith(suf) and len(w) - len(suf) >= 3:
+            b = w[:-len(suf)]
+            out.append(b)
+            if b[-1] in 'אה' and len(b) >= 4:
+                out.append(b[:-1])      # ...and its emphatic state
+            else:
+                out.append(b + 'ה')     # a construct that loses its ה: גמלי → גמלה
+    return out
+
+
 def _tal_variants(base):
-    """(full, prefixed) candidate groups. `full` = the surface form and its
-    emphatic-state (-א/-ה) variant; `prefixed` = the same after stripping ONE
-    proclitic (ובלכדמ). A letter is stripped only when ≥3 letters remain (so a
+    """(full, prefixed, suffixed) candidate groups. `full` = the surface form and
+    its emphatic-state (-א/-ה) variant; `prefixed` = the same after stripping ONE
+    proclitic (ובלכדמ); `suffixed` = either of those with one pronominal or plural
+    ending removed. A letter is stripped only when ≥3 letters remain (so a
     2-letter spurious match like מיא→מי can't fire), and ש is never a proclitic
-    (usually a root letter — שמיא, שמש). The full group is resolved first so a real
-    word is never mis-stripped (כהניא stays כהן rather than becoming הני)."""
+    (usually a root letter — שמיא, שמש). The groups are resolved in this order, so
+    a real word is never mis-stripped (כהניא stays כהן rather than becoming הני)
+    and a word that already resolves keeps exactly the root it had."""
     full = [base]
     if len(base) >= 4 and base[-1] in 'אה':
         full.append(base[:-1])
@@ -5167,7 +5192,15 @@ def _tal_variants(base):
         prefixed.append(s)
         if len(s) >= 4 and s[-1] in 'אה':
             prefixed.append(s[:-1])
-    return full, prefixed
+    # the reader types both at once often enough — ובזכותמ is ו + ב + זכות + מ,
+    # which needs the second proclitic off as well as the ending
+    suffixed = []
+    for w in [base] + prefixed:
+        for b in _strip_suffix(w):
+            for c in ([b, b[1:]] if len(b) >= 4 and b[0] in 'ובלכדמ' else [b]):
+                if len(c) >= 3 and c not in suffixed:
+                    suffixed.append(c)
+    return full, prefixed, suffixed
 
 
 _BRACKET = re.compile(r'[\(\[]([^()\[\]]*)[\)\]]?')
@@ -5324,8 +5357,9 @@ def _tal_roots(word, conn):
             out += m.get(cn, ())
         return dedup(out)
 
-    full, prefixed = _tal_variants(base)
-    found = resolve(full) or (resolve(prefixed) if prefixed else [])
+    full, prefixed, suffixed = _tal_variants(base)
+    found = (resolve(full) or (resolve(prefixed) if prefixed else [])
+             or (resolve(suffixed) if suffixed else []))
     # Appended, never merged into the tiers above: a word that already resolves
     # keeps the root it resolved to, first and unchanged, and everything that reads
     # the first root reads the same root as before. What the marks used to hide
@@ -6191,11 +6225,30 @@ def hebrew_side(word, limit=4):
     # again — the same single step the root resolution takes, and no further:
     # באהליהם is not in the table, אהליהם is, and the answer is marked as being
     # for that form rather than for what was typed.
-    if not out and len(bn) >= 4 and bn[0] in 'ובלכמדהש':
-        for x in hebrew_side(bn[1:], limit):
-            x['of'] = bn[1:]
-            out.append(x)
-    return out
+    # Nothing as written? Take the word apart — one proclitic off the front, one
+    # ending off the back — and ask again for each. Both readings are offered,
+    # each marked with the form it answers for, because only the reader can tell
+    # which is meant: שמורימ is שמור with a plural ending, or ש+מורימ, and the
+    # table has an answer under both. Choosing one of them for him would be the
+    # guess this dictionary is not allowed to make.
+    if not out:
+        tries = []
+        if len(bn) >= 4 and bn[0] in 'ובלכמדהש':
+            tries.append(bn[1:])
+        tries += [b for b in _strip_suffix(bn) if b != bn]
+        seen_of = set()
+        for b in tries:
+            if b in seen_of:
+                continue
+            seen_of.add(b)
+            for x in hebrew_side(b, limit):
+                x['of'] = b
+                if x['aramaic'] not in seen:
+                    seen.add(x['aramaic'])
+                    out.append(x)
+            if len(out) >= limit:
+                break
+    return out[:limit]
 
 
 def dara_gloss_for(word):
