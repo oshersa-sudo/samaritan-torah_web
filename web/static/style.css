@@ -2956,3 +2956,19 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 .tal-loc .occ-he{ font-style:normal; color:#55497f; margin-inline-start:.35em;
   font-size:.92em; opacity:.9; }
 
+/* ── admin to-do list (משימות לביצוע או להשלמה) ── */
+.tk-bar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; font-size:.9em; }
+.tk-bar .admin-btn{ margin-inline-start:auto; }
+.tk-row{ border:1px solid var(--line); border-radius:8px; padding:7px 9px; margin-bottom:6px; background:#fff;
+         border-inline-start:5px solid #c9a24a; }
+.tk-row.tk-doing{ border-inline-start-color:#1f6f78; }
+.tk-row.tk-done{ border-inline-start-color:#3a6b34; opacity:.65; }
+.tk-row.tk-late{ background:#fff3f0; }
+.tk-title{ width:100%; box-sizing:border-box; font:inherit; font-weight:600; border:1px solid transparent;
+           border-radius:5px; padding:3px 5px; background:transparent; }
+.tk-title:focus{ border-color:var(--line); background:#fff; }
+.tk-fields{ display:flex; flex-wrap:wrap; gap:6px 10px; align-items:flex-end; margin-top:4px; font-size:.8em; }
+.tk-fields label{ display:flex; flex-direction:column; gap:1px; }
+.tk-fields select,.tk-fields input{ font:inherit; padding:2px 4px; }
+.tk-note{ width:9em; }
+.tk-del{ margin-inline-start:auto; padding:3px 8px; }

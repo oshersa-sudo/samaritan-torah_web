@@ -285,3 +285,122 @@ def secret_clear(name):
         conn.commit(); conn.close()
     except Exception:
         pass
+
+
+# ── the admin's own to-do list ───────────────────────────────────────────────
+# Kept here for the same reason the password is: this file lives on the
+# persistent disk and is never downloaded or reseeded, so "טען DB מהמאגר" cannot
+# wipe the list. Seeded once (a flag row, not "table is empty"), so deleting every
+# task does not bring the starting ones back.
+TASK_STATUSES = ('todo', 'doing', 'done')          # לביצוע · בביצוע · בוצעה
+_SEED_DUE = '2026-12-31'
+_SEED_TASKS = [
+    'הכנסת הספר מסאיל אל חולוף ליחידות והדפסת עותק מודפס',
+    'תיקוני אילן היוחסין',
+    'יישור ותיקונים לטקסט המקראי בחלוקת הפסוקים כמו במסורה',
+    'יישור קבצי הקריאה של הקוראים האחרים אל מול הפרקים השומרוניים',
+    'שילוב מסאיל אל חולוף בפירוש לפסוק',
+    'שילוב היחידה - כיתאב אל כאפי',
+    'שילוב היחידה - כיתאב אל טבאח',
+    'תיקון היחידות אל ערוות והצרעת',
+    'תיקון היחידה של האישים',
+    'תיקון לינק התורה וציר הזמן ההיסטורי באתר האינטרנט',
+    'שילוב מידע על השומרונים באפליקציה מתוך האתר',
+    'שיפורי ממשק - הסרת החלוקה היהודית והשומרונית, הסתרת ה-X',
+    'שילוב צילום הפיוט בתוך היחידה של השמע',
+    'תיקונים והשלמות למילון הארמית',
+    'העלאת כל הסידור השומרוני עם יכולת חיפוש ובניית מאגר התפילות והפיוטים הגדול',
+]
+
+
+def _tasks_table(conn):
+    conn.execute('''CREATE TABLE IF NOT EXISTS admin_tasks(
+        id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL,
+        priority INTEGER NOT NULL DEFAULT 3, due TEXT, status TEXT NOT NULL DEFAULT 'todo',
+        note TEXT NOT NULL DEFAULT '', created INTEGER)''')
+    _kv_table(conn)
+    if not conn.execute("SELECT 1 FROM admin_secrets WHERE name='tasks_seeded'").fetchone():
+        now = int(time.time())
+        conn.executemany(
+            'INSERT INTO admin_tasks(title, priority, due, status, note, created) VALUES(?,?,?,?,?,?)',
+            [(t, 3, _SEED_DUE, 'todo', '', now + i) for i, t in enumerate(_SEED_TASKS)])
+        conn.execute("INSERT INTO admin_secrets(name, value, extra, ts) VALUES('tasks_seeded','1',NULL,?)", (now,))
+        conn.commit()
+
+
+def _task_row(r):
+    return {'id': r[0], 'title': r[1], 'priority': r[2], 'due': r[3] or '', 'status': r[4], 'note': r[5]}
+
+
+def tasks_list():
+    conn = _connect(); _tasks_table(conn)
+    rows = conn.execute('SELECT id, title, priority, due, status, note FROM admin_tasks ORDER BY id').fetchall()
+    conn.close()
+    return [_task_row(r) for r in rows]
+
+
+def _clean_task(d, partial=False):
+    """Validate the fields the page sends; returns (clean dict, error or None).
+    Limits are the ones the page promises: description 100, note 15, priority 1-5."""
+    out = {}
+    if 'title' in d or not partial:
+        v = str(d.get('title') or '').strip()
+        if not v or len(v) > 100:
+            return None, 'title'
+        out['title'] = v
+    if 'priority' in d or not partial:
+        try:
+            v = int(d.get('priority', 3))
+        except (TypeError, ValueError):
+            return None, 'priority'
+        if not 1 <= v <= 5:
+            return None, 'priority'
+        out['priority'] = v
+    if 'due' in d or not partial:
+        v = str(d.get('due') or '').strip()
+        if v and not re.fullmatch(r'\d{4}-\d{2}-\d{2}', v):
+            return None, 'due'
+        out['due'] = v
+    if 'status' in d or not partial:
+        v = str(d.get('status') or 'todo')
+        if v not in TASK_STATUSES:
+            return None, 'status'
+        out['status'] = v
+    if 'note' in d or not partial:
+        v = str(d.get('note') or '').strip()
+        if len(v) > 15:
+            return None, 'note'
+        out['note'] = v
+    return out, None
+
+
+def task_add(d):
+    c, err = _clean_task(d)
+    if err:
+        return None, err
+    conn = _connect(); _tasks_table(conn)
+    cur = conn.execute('INSERT INTO admin_tasks(title, priority, due, status, note, created) VALUES(?,?,?,?,?,?)',
+                       (c['title'], c['priority'], c['due'], c['status'], c['note'], int(time.time())))
+    conn.commit(); tid = cur.lastrowid; conn.close()
+    return tid, None
+
+
+def task_update(tid, d):
+    c, err = _clean_task(d, partial=True)
+    if err:
+        return False, err
+    if not c:
+        return True, None
+    conn = _connect(); _tasks_table(conn)
+    # column names come from _clean_task's own fixed keys, never from the request
+    cur = conn.execute('UPDATE admin_tasks SET %s WHERE id=?' % ', '.join('%s=?' % k for k in c),
+                       list(c.values()) + [tid])
+    conn.commit(); n = cur.rowcount; conn.close()
+    return n > 0, (None if n else 'not found')
+
+
+def task_delete(tid):
+    conn = _connect(); _tasks_table(conn)
+    cur = conn.execute('DELETE FROM admin_tasks WHERE id=?', (tid,))
+    conn.commit(); n = cur.rowcount; conn.close()
+    return n > 0

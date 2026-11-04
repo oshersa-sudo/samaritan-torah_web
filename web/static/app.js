@@ -387,6 +387,8 @@ const I18N = {
     adm_disk:'💾 מקום בדיסק', adm_disk_db:'קובץ ה-DB החי', adm_disk_backups:'גיבויים ישנים',
     adm_disk_free:'פנוי בדיסק', adm_disk_total:'סה״כ דיסק', adm_disk_clean:'נקה גיבויים ישנים ושחרר מקום',
     adm_disk_clean_q:'הגיבויים הישנים יימחקו מהדיסק (היסטוריית ה-git נשארת שלמה כגיבוי אמיתי). להמשיך?',
+    tk_menu:'📋 משימות לביצוע או להשלמה', tk_title:'משימות לביצוע או להשלמה', tk_desc:'תיאור המשימה', tk_prio:'עדיפות', tk_due:'עד תאריך', tk_status:'סטטוס', tk_note:'הערה',
+    tk_s_todo:'לביצוע', tk_s_doing:'בביצוע', tk_s_done:'בוצעה', tk_add:'➕ הוסף משימה', tk_del:'🗑 מחק', tk_del_q:'למחוק את המשימה?', tk_empty:'אין משימות', tk_open:'פתוחות', tk_err:'השמירה נכשלה — בדוק את השדות', tk_new:'משימה חדשה',
     adm_disk_cleaned:'גיבויים נמחקו ומקום שוחרר.',
     edit_title:'עריכת טקסט', edit_save:'שמור שינוי', edit_saved:'השינוי נשמר.', edit_err:'שמירה נכשלה.',
     edit_which_ver:'לאיזה נוסח לבצע את השינוי?',
@@ -708,6 +710,8 @@ const I18N = {
     adm_disk:'💾 Disk space', adm_disk_db:'Live DB file', adm_disk_backups:'Old backups',
     adm_disk_free:'Free on disk', adm_disk_total:'Total disk', adm_disk_clean:'Clean old backups and free space',
     adm_disk_clean_q:'Old backups on disk will be deleted (git history remains the real backup). Continue?',
+    tk_menu:'📋 Tasks to do or finish', tk_title:'Tasks to do or finish', tk_desc:'Task description', tk_prio:'Priority', tk_due:'Due date', tk_status:'Status', tk_note:'Note',
+    tk_s_todo:'To do', tk_s_doing:'In progress', tk_s_done:'Done', tk_add:'➕ Add task', tk_del:'🗑 Delete', tk_del_q:'Delete this task?', tk_empty:'No tasks', tk_open:'open', tk_err:'Could not save — check the fields', tk_new:'New task',
     adm_disk_cleaned:'Backups deleted and space freed.',
     edit_title:'Edit text', edit_save:'Save change', edit_saved:'Saved.', edit_err:'Save failed.',
     edit_which_ver:'Which version do you want to edit?',
@@ -1029,6 +1033,8 @@ const I18N = {
     adm_disk:'💾 مساحة القرص', adm_disk_db:'ملف DB الحيّ', adm_disk_backups:'نسخ احتياطية قديمة',
     adm_disk_free:'المساحة الحرّة', adm_disk_total:'إجمالي القرص', adm_disk_clean:'حذف النسخ الاحتياطية القديمة وتحرير المساحة',
     adm_disk_clean_q:'سيتم حذف النسخ الاحتياطية القديمة من القرص (سجلّ git يبقى النسخة الاحتياطية الحقيقية). متابعة؟',
+    tk_menu:'📋 مهام للتنفيذ أو الإكمال', tk_title:'مهام للتنفيذ أو الإكمال', tk_desc:'وصف المهمة', tk_prio:'الأولوية', tk_due:'حتى تاريخ', tk_status:'الحالة', tk_note:'ملاحظة',
+    tk_s_todo:'للتنفيذ', tk_s_doing:'قيد التنفيذ', tk_s_done:'تمّت', tk_add:'➕ إضافة مهمة', tk_del:'🗑 حذف', tk_del_q:'حذف هذه المهمة؟', tk_empty:'لا توجد مهام', tk_open:'مفتوحة', tk_err:'تعذّر الحفظ — تحقّق من الحقول', tk_new:'مهمة جديدة',
     adm_disk_cleaned:'تم حذف النسخ الاحتياطية وتحرير المساحة.',
     edit_title:'تحرير النصّ', edit_save:'حفظ التغيير', edit_saved:'تمّ الحفظ.', edit_err:'فشل الحفظ.',
     edit_which_ver:'ما هو النصّ الذي تريد تعديله؟',
@@ -10224,6 +10230,7 @@ function adminDbControls(){
     + `<button class="admin-btn" onclick="openSystemDoc()">${esc(t('adm_sysdoc'))}</button>`
     + `<button class="admin-btn" onclick="openAnalytics()">${esc(t('adm_analytics'))}</button>`
     + `<button class="admin-btn" onclick="openSocial()">📣 ${esc(t('adm_social'))}</button>`
+    + `<button class="admin-btn" onclick="openTasks()">${esc(t('tk_menu'))}</button>`
     + `<button class="admin-btn" onclick="openDiskUsage()">${esc(t('adm_disk'))}</button>`
     + `<a class="admin-btn" style="text-decoration:none;text-align:center" `
     + `href="/api/admin/download_db?token=${encodeURIComponent(ADMIN.token)}">${esc(t('admin_dl_db'))}</a>`
@@ -10244,6 +10251,76 @@ async function openSystemDoc(){
   $('infoTitle').textContent = t('adm_sysdoc') + ' — ' + t('adm_version_word') + ' ' + (r.version||'');
   $('infoBody').innerHTML = '<pre class="whatsnew sysdoc">'+esc(r.text.trim())+'</pre>';
 }
+// ── משימות לביצוע או להשלמה ──────────────────────────────────────────────────
+// The admin's own to-do list. Kept on the server (analytics.db, on the persistent
+// disk), so it follows the admin from phone to computer and survives a DB reseed.
+// Limits are the ones the page promises and the server re-checks: description up
+// to 100 characters, note up to 15, priority 1–5.
+const TK = {rows:[], filter:'open'};
+async function tkCall(path, body){
+  try{ return await apiPost('admin/tasks/'+path, Object.assign({token:ADMIN.token}, body||{})); }
+  catch(e){ return {ok:false}; }
+}
+async function openTasks(){
+  if(!ADMIN.token) return;
+  let r; try{ r = await fetch('/api/admin/tasks?token='+encodeURIComponent(ADMIN.token)).then(x=>x.json()); }
+  catch(e){ r={ok:false}; }
+  if(!r || !r.ok) return showInfo(t('tk_title'), `<div class="note">${esc(t('edit_err'))}</div>`);
+  TK.rows = r.tasks || [];
+  tkPaint();
+}
+function tkPaint(){
+  const ST = ['doing','todo','done'];                       // working first, finished last
+  const rows = TK.rows.slice().sort((a,b)=> ST.indexOf(a.status)-ST.indexOf(b.status)
+      || a.priority-b.priority || (a.due||'9').localeCompare(b.due||'9') || a.id-b.id);
+  const shown = TK.filter==='open' ? rows.filter(x=>x.status!=='done') : rows;
+  const open = TK.rows.filter(x=>x.status!=='done').length;
+  const today = new Date().toISOString().slice(0,10);
+  const opt = (v,cur,label)=>`<option value="${v}"${v==cur?' selected':''}>${esc(String(label))}</option>`;
+  let h = `<div class="tk-bar"><span>${open} ${esc(t('tk_open'))} / ${TK.rows.length}</span>
+      <label><input type="checkbox" ${TK.filter==='open'?'checked':''} onchange="TK.filter=this.checked?'open':'all';tkPaint()"> ${esc(t('tk_open'))}</label>
+      <button class="admin-btn" onclick="tkAdd()">${esc(t('tk_add'))}</button></div>`;
+  if(!shown.length) h += `<div class="note">${esc(t('tk_empty'))}</div>`;
+  for(const k of shown){
+    const late = k.status!=='done' && k.due && k.due < today;
+    h += `<div class="tk-row tk-${k.status}${late?' tk-late':''}" data-id="${k.id}">
+      <input class="tk-title" maxlength="100" value="${esc(k.title)}" aria-label="${esc(t('tk_desc'))}"
+             onchange="tkSet(${k.id},'title',this.value.trim(),this)">
+      <div class="tk-fields">
+        <label>${esc(t('tk_prio'))}<select onchange="tkSet(${k.id},'priority',+this.value,this)">
+          ${[1,2,3,4,5].map(n=>opt(n,k.priority,n)).join('')}</select></label>
+        <label>${esc(t('tk_due'))}<input type="date" value="${esc(k.due)}"
+             onchange="tkSet(${k.id},'due',this.value,this)"></label>
+        <label>${esc(t('tk_status'))}<select onchange="tkSet(${k.id},'status',this.value,this)">
+          ${ST.map(s=>opt(s,k.status,t('tk_s_'+s))).join('')}</select></label>
+        <label>${esc(t('tk_note'))}<input class="tk-note" maxlength="15" value="${esc(k.note)}"
+             onchange="tkSet(${k.id},'note',this.value.trim(),this)"></label>
+        <button class="admin-btn cancel tk-del" onclick="tkDel(${k.id})">${esc(t('tk_del'))}</button>
+      </div></div>`;
+  }
+  showInfo(t('tk_title'), h);
+}
+async function tkSet(id, field, value, el){
+  const r = await tkCall('update', {id, [field]: value});
+  if(!r || !r.ok){ alert(t('tk_err')); return openTasks(); }
+  const k = TK.rows.find(x=>x.id===id); if(k) k[field] = value;
+  if(field==='status' || field==='priority' || field==='due') tkPaint();
+}
+async function tkAdd(){
+  const r = await tkCall('add', {title:t('tk_new'), priority:3, status:'todo', due:'2026-12-31', note:''});
+  if(!r || !r.ok) return alert(t('tk_err'));
+  await openTasks();
+  const inp = document.querySelector(`.tk-row[data-id="${r.id}"] .tk-title`);
+  if(inp){ inp.scrollIntoView({block:'center'}); inp.focus(); inp.select(); }
+}
+async function tkDel(id){
+  if(!await askConfirm(t('tk_title'), t('tk_del_q'), t('confirm_yes'), t('c_cancel'))) return;
+  const r = await tkCall('delete', {id});
+  if(!r || !r.ok) return alert(t('tk_err'));
+  TK.rows = TK.rows.filter(x=>x.id!==id); tkPaint();
+}
+
+
 // admin disk-usage panel — surfaces the live persistent disk's free space and
 // lets the admin reclaim it by deleting old same-disk backup copies (the git
 // history is the real backup, so these are safe to prune)

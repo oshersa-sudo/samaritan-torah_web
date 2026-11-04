@@ -450,6 +450,51 @@ def admin_analytics():
     return jsonify({'ok': True, 'sessions': analytics.recent_sessions(300)})
 
 
+@app.route('/api/admin/tasks')
+def admin_tasks_list():
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    return jsonify({'ok': True, 'tasks': analytics.tasks_list()})
+
+
+@app.route('/api/admin/tasks/add', methods=['POST'])
+def admin_tasks_add():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    tid, err = analytics.task_add(d)
+    if err:
+        return jsonify({'ok': False, 'error': err}), 400
+    return jsonify({'ok': True, 'id': tid})
+
+
+@app.route('/api/admin/tasks/update', methods=['POST'])
+def admin_tasks_update():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        tid = int(d.get('id'))
+    except (TypeError, ValueError):
+        return jsonify({'ok': False, 'error': 'bad id'}), 400
+    ok, err = analytics.task_update(tid, d)
+    if not ok:
+        return jsonify({'ok': False, 'error': err}), (404 if err == 'not found' else 400)
+    return jsonify({'ok': True})
+
+
+@app.route('/api/admin/tasks/delete', methods=['POST'])
+def admin_tasks_delete():
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'ok': False, 'error': 'unauthorized'}), 401
+    try:
+        tid = int(d.get('id'))
+    except (TypeError, ValueError):
+        return jsonify({'ok': False, 'error': 'bad id'}), 400
+    return jsonify({'ok': analytics.task_delete(tid)})
+
+
 @app.route('/api/admin/download_db')
 def admin_download_db():
     """Download the live DB (with online edits) so it can be committed back to git.
