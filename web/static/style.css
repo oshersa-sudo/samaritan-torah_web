@@ -2972,3 +2972,34 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 .tk-fields select,.tk-fields input{ font:inherit; padding:2px 4px; }
 .tk-note{ width:9em; }
 .tk-del{ margin-inline-start:auto; padding:3px 8px; }
+
+
+/* ── units shown in a frame: the bar is the app's, the page below it is theirs ──
+   The calendar, the family tree and the manuscripts are whole apps of their own,
+   shown here inside a frame. Their close button used to be laid ON the embedded
+   page at top:10px left:12px — and every one of those apps keeps its own control
+   in exactly that corner: the calendar's hamburger is fixed at top:10 left:10,
+   42x42, and the family tree's "🔧 מנהל" sits at left:16 top:14. Ours covered
+   theirs almost to the pixel.
+   The button stands in a bar of its own now and the frame begins beneath it, so
+   nothing of the embedded page is ever under it — not today, and not when those
+   apps move their own buttons tomorrow. The wrapper stays position:fixed and is
+   still raised and lowered by `style.display` block/none, which is what the Back
+   key looks for (closeTopLayer in app.js). */
+.unit-wrap{ position:fixed; inset:0; z-index:4000; background:#f4f1ea; }
+.unit-bar{ position:absolute; top:0; inset-inline:0; height:48px; z-index:4001;
+           display:flex; align-items:center; gap:10px; padding:0 10px;
+           box-sizing:border-box; background:var(--navy); color:#fff; }
+/* The height is stated, not left to `bottom:0` — an iframe is a REPLACED element,
+   and an absolutely positioned replaced box with height:auto takes its intrinsic
+   height, which for an iframe is the browser's default 150px; `bottom` is then
+   ignored and the unit came out 150 pixels tall at the top of the page. */
+.unit-wrap > iframe{ position:absolute; top:48px; inset-inline:0;
+                     width:100%; height:calc(100% - 48px); border:0; display:block; }
+.unit-x{ flex:0 0 auto; width:38px; height:38px; border:1px solid rgba(255,255,255,.38);
+         border-radius:9px; background:rgba(255,255,255,.14); color:#fff;
+         font-family:inherit; font-size:20px; line-height:1; cursor:pointer; }
+.unit-x:hover{ background:rgba(255,255,255,.28); }
+.unit-bar-title{ flex:1 1 auto; min-width:0; text-align:center; font-size:16px;
+                 font-weight:700; white-space:nowrap; overflow:hidden;
+                 text-overflow:ellipsis; padding-inline-end:48px; }

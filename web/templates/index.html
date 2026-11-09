@@ -1078,12 +1078,14 @@
   </div>
 </div>
 
-<div id="extFrameWrap" style="display:none;position:fixed;inset:0;z-index:4000;background:#f4f1ea">
-  <button id="extFrameClose" aria-label="חזרה לתורה" title="חזרה לתורה"
-          style="position:absolute;top:10px;left:12px;z-index:4001;width:38px;height:38px;
-                 border:1px solid #cec3ae;border-radius:9px;background:#fffdf8;color:#1c1a17;
-                 font-size:17px;cursor:pointer">&times;</button>
-  <iframe id="extFrame" title="" style="width:100%;height:100%;border:0;display:block"></iframe>
+<!-- The close button sits in a bar of the app's own, never on the embedded page:
+     each of these apps keeps a hamburger or an admin button in that same corner. -->
+<div id="extFrameWrap" class="unit-wrap" style="display:none">
+  <div class="unit-bar">
+    <button id="extFrameClose" class="unit-x" aria-label="חזרה לתורה" title="חזרה לתורה">&times;</button>
+    <span class="unit-bar-title" id="extFrameTitle"></span>
+  </div>
+  <iframe id="extFrame" title=""></iframe>
 </div>
 <script>
   // wired here, not in app.js: that script is loaded above this markup and the
@@ -1095,13 +1097,12 @@
 </script>
 
 <!-- אוצר כתבי היד: opens the unit full-screen, exactly as the recordings archive does -->
-<div id="mssFrameWrap" style="display:none;position:fixed;inset:0;z-index:4000;background:#f4f1ea">
-  <button id="mssFrameClose" aria-label="סגירה"
-          style="position:absolute;top:10px;left:12px;z-index:4001;width:38px;height:38px;
-                 border:1px solid #cec3ae;border-radius:9px;background:#fffdf8;color:#1c1a17;
-                 font-size:17px;cursor:pointer">&times;</button>
-  <iframe id="mssFrame" title="אוצר כתבי היד השומרוניים בתבל"
-          style="width:100%;height:100%;border:0;display:block"></iframe>
+<div id="mssFrameWrap" class="unit-wrap" style="display:none">
+  <div class="unit-bar">
+    <button id="mssFrameClose" class="unit-x" aria-label="סגירה" title="חזרה לתורה">&times;</button>
+    <span class="unit-bar-title" data-i18n="m_mss">אוצר כתבי היד השומרוניים בתבל</span>
+  </div>
+  <iframe id="mssFrame" title="אוצר כתבי היד השומרוניים בתבל"></iframe>
 </div>
 <script>
 (function(){

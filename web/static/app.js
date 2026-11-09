@@ -7449,6 +7449,8 @@ function openExternalUnit(url, title){
   const w = $('extFrameWrap'), f = $('extFrame');
   if(f.getAttribute('data-url') !== url){ f.setAttribute('data-url', url); f.src = url; }
   f.title = title || '';
+  // the unit's name in the bar, so the bar says what the frame is showing
+  const t0 = $('extFrameTitle'); if(t0) t0.textContent = title || '';
   w.style.display = 'block';
   document.body.style.overflow = 'hidden';
   if(typeof closeMenu === 'function') closeMenu();
