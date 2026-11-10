@@ -182,6 +182,11 @@
   side.appendChild(menuBtn); side.appendChild(starBtn);
   hub.appendChild(side);
 
+  // the main menu is not for pinching: no zoom by two fingers, by the browser's gesture, or by Ctrl + wheel
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(ev => hub.addEventListener(ev, e => e.preventDefault()));
+  hub.addEventListener('touchmove', e => { if(e.touches && e.touches.length > 1) e.preventDefault(); }, { passive:false });
+  hub.addEventListener('wheel', e => { if(e.ctrlKey) e.preventDefault(); }, { passive:false });
+
   // ── the main menu's own hamburger ──────────────────────────────────────────
   // Ten entries and nothing else — the installing, the stores, accessibility, language, what is new,
   // what is written about the app, help, the guided tour, the version and the contact form. The
@@ -200,7 +205,7 @@
   ];
   const drawerWrap = document.createElement('div');
   drawerWrap.className = 'hub-drawer-wrap';
-  drawerWrap.innerHTML = '<div class="hub-drawer-ov"></div><nav class="hub-drawer" aria-label="menu"><div class="hub-drawer-head"></div></nav>';
+  drawerWrap.innerHTML = '<div class="hub-drawer-ov"></div><nav class="hub-drawer" aria-label="menu"><div class="hub-drawer-head"><button type="button" class="hub-drawer-back" aria-label="back">&larr;</button><span class="hub-drawer-title"></span></div></nav>';
   hub.appendChild(drawerWrap);
   const drawerNav = drawerWrap.querySelector('.hub-drawer');
   const menuItems = MENU.map(([act, key, run]) => {
@@ -215,6 +220,7 @@
   function openHubMenu(){ drawerWrap.classList.add('open'); }
   function closeHubMenu(){ drawerWrap.classList.remove('open'); }
   drawerWrap.querySelector('.hub-drawer-ov').addEventListener('click', closeHubMenu);
+  drawerWrap.querySelector('.hub-drawer-back').addEventListener('click', closeHubMenu);       // the arrow in the drawer: back to the main page
   // "change language": the same choosing, and the same question about keeping it, as the buttons at the top
   function openLangChooser(){
     if(hub.querySelector('.hub-confirm')) return;
@@ -416,7 +422,8 @@
     starBtn.setAttribute('aria-label', t('m_whatsnew')); starBtn.title = t('m_whatsnew');
     starBtn.querySelector('.hub-star-cap').textContent = X.newsShort;
     langBox.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.lang === L));
-    drawerWrap.querySelector('.hub-drawer-head').textContent = t('menu');
+    drawerWrap.querySelector('.hub-drawer-title').textContent = t('menu');
+    drawerWrap.querySelector('.hub-drawer-back').setAttribute('aria-label', t('close'));
     menuItems.forEach(({ b, key }) => { b.querySelector('.hub-di-label').textContent = t(key); });
     paintHubDate();
     if(topIdx >= 0) fill(topIdx);
@@ -529,8 +536,8 @@
   }
   function fitCard(){
     if(!isOpen()) return;
-    for(let z = 1.12; z >= .55; z -= .03){ setPz(z); if(cardFits()) return; }
-    setPz(.55);
+    for(let z = wideScreen() ? 1.12 : .95; z >= .62; z -= .03){ setPz(z); if(cardFits()) return; }
+    setPz(.62);
   }
   function fitAll(){
     if(!isOpen() || !dial.clientWidth) return;
@@ -538,7 +545,7 @@
     hub.style.removeProperty('--D');
     const baseD = dial.clientWidth; let scale = 1;
     const every = z => { for(let i = 0; i <= N; i++){ fill(i); setPz(z); if(!cardFits()) return false; } return true; };
-    while(!every(.8) && scale > .62){ scale -= .05; hub.style.setProperty('--D', Math.round(baseD * scale) + 'px'); }
+    while(!every(.68) && scale > .62){ scale -= .05; hub.style.setProperty('--D', Math.round(baseD * scale) + 'px'); }
     fill(cur >= 0 ? cur : 0); fitCard();
   }
   let _fcT = null;

@@ -508,3 +508,32 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
   transform:scale(var(--us, 1)); transform-origin:0 0;
   width:calc(100% / var(--us, 1)); height:calc((100% - 48px) / var(--us, 1));
 }
+
+/* ── phone: the dial has the screen, the card is small, the instructions sit low ── */
+#hub{ touch-action:pan-y; }                                   /* no pinch, no double-tap zoom on the main menu */
+.hub-hint{ margin-top:auto; padding-top:8px; }                /* the instructions, down toward the foot */
+.hub-foot{ margin-top:4px; padding-top:4px; }
+@media (max-width:1099px){
+  #hub{ --D:min(97vw, max(300px, calc(100dvh - 300px))); }
+  .hub-title{ margin-top:34px; }
+  .hub-date{ margin-top:6px; }
+  .hub-stage{ margin-top:6px; }
+  .hub-pop{ padding:9px 12px 10px; margin-top:12px; border-radius:12px; }
+  .hub-pop .hub-tag{ display:none; }                          /* the heading says it; the card is for the points */
+  .hub-pop h2{ font-size:1.18em; margin-bottom:4px; }
+  .hub-pop ul{ line-height:1.36; margin-bottom:7px; }
+  .hub-pop li{ margin:1px 0; }
+  .hub-pop .hub-go{ padding:4px 13px; }
+  .hub-shotbtn{ padding:4px 10px; }
+  .hub-foot .hub-copy{ display:none; }
+}
+
+/* the drawer, once open, takes the touches: the rule above (#hub > …, for position) outranked
+   `.hub-drawer-wrap.open`, so an open drawer let every tap fall through to the circles beneath it */
+#hub > .hub-drawer-wrap.open{ pointer-events:auto; }
+.hub-drawer-head{ display:flex; align-items:center; gap:10px; }
+.hub-drawer-back{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%; cursor:pointer; padding:0; line-height:1; font-size:20px;
+  border:1px solid rgba(200,164,86,.6); background:rgba(10,23,51,.55); color:var(--gold-bright);
+}
+.hub-drawer-back:hover{ background:rgba(200,164,86,.25); }

@@ -11914,6 +11914,7 @@ function closeTopLayer(){
     const cs = getComputedStyle(el);
     if(cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') continue;
     if(parseFloat(cs.opacity) === 0) continue;
+    if(cs.pointerEvents === 'none') continue;     // a decoration the reader cannot touch (the flying scraps) is not a layer — it used to eat the first Back press at the front page
     const r = el.getBoundingClientRect();
     if(r.width < innerWidth * 0.5 || r.height < innerHeight * 0.4) continue;   // not a layer
     seen.push({ el, z: parseInt(cs.zIndex, 10) || 0 });
