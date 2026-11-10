@@ -16,6 +16,7 @@
 <meta name="apple-mobile-web-app-title" content="תורה שומרונית">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ asset_build }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='hub.css') }}?v={{ asset_build }}">
 <!-- splash display fonts (Hebrew); degrade gracefully to system fonts if offline -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,6 +55,26 @@
 <!-- ░ transition layer: a dimmed etching the splash dissolves through on its way
      into the app, then slowly fades away itself ░ -->
 <div id="splash-image" aria-hidden="true"><div class="pic"></div></div>
+
+<!-- ░ התפריט הראשי — the page the app opens on: the Torah in the middle, the other
+     apps on a ring round it that turns like a dial. Hidden at once on a deep link. ░ -->
+<div id="hub" role="main" aria-label="התפריט הראשי — אבני שהם">
+  <div class="hub-pages" id="hubPages" aria-hidden="true"></div>
+  <h1 class="hub-title">אבני שהם</h1>
+  <div class="hub-date" id="hubDate" dir="rtl" lang="he"></div>
+  <div class="hub-stage">
+    <div class="hub-dial" id="hubDial">
+      <button type="button" id="hubTorah" class="hub-c hub-center" aria-label="התורה השומרונית">
+        <img src="{{ url_for('static', filename='img/torah_scroll_nobg.png') }}" alt="">
+        <span class="hub-name">התורה השומרונית</span>
+      </button>
+    </div>
+    <aside class="hub-pop" id="hubPop" aria-live="polite"></aside>
+  </div>
+  <div class="hub-hint">סובבו את החוגה · הקישו על עיגול כדי להיכנס</div>
+  <div class="hub-copy">© כל הזכויות שמורות לאושר ששוני</div>
+</div>
+<script>if(location.pathname.length > 1) document.getElementById('hub').classList.add('hidden');</script>
 
 <div id="app">
 
@@ -1108,7 +1129,7 @@
 (function(){
   var btn = document.getElementById('mssMenuItem');
   if(!btn) return;
-  btn.addEventListener('click', function(){
+  function openMss(){
     var w = document.getElementById('mssFrameWrap');
     var f = document.getElementById('mssFrame');
     if(!f.src) f.src = '/manuscripts/';
@@ -1120,12 +1141,15 @@
     w.style.display = 'block';
     document.body.style.overflow = 'hidden';
     if (typeof closeMenu === 'function') closeMenu();   // the app's own drawer
-  });
+  }
+  window.openMss = openMss;           // the main menu (hub) opens it too
+  btn.addEventListener('click', openMss);
   document.getElementById('mssFrameClose').addEventListener('click', function(){
     document.getElementById('mssFrameWrap').style.display = 'none';
     document.body.style.overflow = '';
   });
 })();
 </script>
+<script src="{{ url_for('static', filename='hub.js') }}?v={{ asset_build }}"></script>
 </body>
 </html>

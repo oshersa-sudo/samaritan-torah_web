@@ -1,0 +1,189 @@
+/* ───────────────────────── התפריט הראשי — "אבני שהם" ─────────────────────────
+   A dial of circles: the Torah fixed in the middle, the other five apps on a ring
+   around it that turns like a combination lock. Navy and gold, over the same
+   faint Samaritan page the entry splash is written on.
+   Everything here is scoped to #hub / .hub-* so it can be removed without a trace. */
+
+#hub{
+  --ink-night:#0a1733; --ink-abyss:#04081a; --lapis:#173a72;
+  --gold:#c8a456; --gold-bright:#eccd84; --parchment:#efe6cc;
+  --D:min(92vw, max(300px, min(540px, calc(100dvh - 340px))));   /* the dial's side; the circles are fractions of it */
+  position:fixed; inset:0; z-index:3500; overflow-x:hidden; overflow-y:auto;
+  background:radial-gradient(120% 80% at 50% 32%, var(--lapis) 0%, var(--ink-night) 46%, var(--ink-abyss) 100%);
+  font-family:'Heebo',system-ui,sans-serif; color:var(--parchment);
+  direction:rtl; -webkit-overflow-scrolling:touch;
+  padding:max(14px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom));
+  display:flex; flex-direction:column; align-items:center;
+}
+#hub.hidden{ display:none !important; }
+/* the faint Samaritan page behind everything (same as the splash) */
+#hub .hub-pages{
+  position:fixed; inset:-6% -4%; display:flex; gap:2.6vw; justify-content:center;
+  pointer-events:none; z-index:0;
+}
+#hub .hub-pages .col{
+  writing-mode:vertical-rl; font-family:'Samaritan',serif; font-size:2.0vw;
+  line-height:1.7; letter-spacing:.18em; color:var(--gold); opacity:.06;
+  white-space:nowrap; filter:blur(.4px); user-select:none;
+}
+#hub::after{                       /* vignette */
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:radial-gradient(130% 95% at 50% 38%, transparent 52%, rgba(4,8,26,.78) 100%);
+}
+#hub > *{ position:relative; z-index:1; }
+
+/* heading: the name in spaced gold, then today's date beneath it */
+.hub-title{
+  margin:clamp(6px,2vh,22px) 0 0; text-align:center;
+  font-family:'Frank Ruhl Libre',serif; font-weight:500;
+  font-size:clamp(22px,4.6vw,38px); letter-spacing:.62em; padding-inline-start:.62em;
+  color:var(--gold); text-shadow:0 2px 24px rgba(0,0,0,.5);
+}
+.hub-title::before, .hub-title::after{
+  content:""; display:inline-block; vertical-align:middle;
+  width:clamp(22px,7vw,64px); height:1px; margin:0 .7em;
+  background:linear-gradient(90deg,transparent,var(--gold)); opacity:.7;
+}
+.hub-title::after{ transform:scaleX(-1); }
+.hub-date{
+  margin:8px 14px 0; text-align:center; max-width:96vw; line-height:1.5;
+  font-family:'Heebo',sans-serif; font-weight:300; font-size:clamp(13px,2.4vw,17px);
+  letter-spacing:.06em; color:var(--gold-bright); opacity:.92; min-height:1.5em;
+}
+
+/* the dial */
+.hub-stage{ position:relative; width:var(--D); flex:0 0 auto; margin-top:clamp(10px,2.4vh,26px); }
+.hub-dial{
+  position:relative; width:var(--D); height:var(--D);
+  touch-action:none; user-select:none; -webkit-user-select:none; cursor:grab;
+}
+.hub-dial.dragging{ cursor:grabbing; }
+/* the track the circles ride on */
+.hub-dial::before{
+  content:""; position:absolute; left:50%; top:50%;
+  width:calc(var(--D) * .72); height:calc(var(--D) * .72); transform:translate(-50%,-50%);
+  border-radius:50%; border:1px solid rgba(200,164,86,.28);
+  box-shadow:0 0 0 calc(var(--D) * .05) rgba(200,164,86,.035);
+  pointer-events:none;
+}
+/* a small notch at the top: the position the dial reads from */
+.hub-dial::after{
+  content:""; position:absolute; left:50%; top:calc(var(--D) * -.012); width:0; height:0;
+  transform:translateX(-50%); border-left:7px solid transparent; border-right:7px solid transparent;
+  border-top:10px solid var(--gold); opacity:.85; pointer-events:none;
+}
+
+/* every circle */
+.hub-c{
+  position:absolute; left:50%; top:50%; border-radius:50%; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25em;
+  text-align:center; color:var(--parchment); font-family:'Frank Ruhl Libre',serif; font-weight:700;
+  background:radial-gradient(circle at 34% 28%, #2a56a0 0%, var(--lapis) 46%, #0c2147 100%);
+  border:2px solid var(--gold);
+  box-shadow:0 10px 28px rgba(0,0,0,.5), inset 0 0 0 4px rgba(10,23,51,.55), inset 0 0 22px rgba(200,164,86,.16);
+  -webkit-tap-highlight-color:transparent; padding:0;
+  transition:box-shadow .35s ease, border-color .35s ease, filter .35s ease;
+}
+.hub-c:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:4px; }
+.hub-c .hub-ico{ width:34%; height:34%; color:var(--gold-bright); flex:0 0 auto; }
+.hub-c .hub-name{ font-size:calc(var(--D) * .036); line-height:1.15; padding:0 7%; letter-spacing:.01em; }
+
+/* the middle one: the Torah */
+.hub-center{
+  width:calc(var(--D) * .38); height:calc(var(--D) * .38);
+  margin:calc(var(--D) * -.19) 0 0 calc(var(--D) * -.19);
+  background:radial-gradient(circle at 36% 26%, #31609f 0%, #1a438a 40%, #0b1f45 100%);
+  border-width:3px; border-color:var(--gold-bright); gap:.2em;
+  box-shadow:0 14px 40px rgba(0,0,0,.55), 0 0 0 calc(var(--D) * .012) rgba(200,164,86,.22),
+             inset 0 0 0 5px rgba(10,23,51,.5), inset 0 0 40px rgba(236,205,132,.2);
+}
+.hub-center img{ width:auto; height:35%; filter:drop-shadow(0 4px 8px rgba(0,0,0,.5)); }
+.hub-center .hub-name{ font-size:calc(var(--D) * .037); line-height:1.05; color:var(--gold-bright); padding:0 12%; }
+.hub-center:hover{ filter:brightness(1.12); }
+
+/* the ring: each satellite sits at --a degrees from the top, kept upright */
+.hub-sat{
+  width:calc(var(--D) * .26); height:calc(var(--D) * .26);
+  margin:calc(var(--D) * -.13) 0 0 calc(var(--D) * -.13);
+  transform:rotate(var(--a)) translateY(calc(var(--D) * -.36)) rotate(calc(var(--a) * -1));
+  transition:transform .55s cubic-bezier(.22,.8,.26,1), box-shadow .35s ease, border-color .35s ease, filter .35s ease;
+}
+.hub-dial.dragging .hub-sat{ transition:box-shadow .35s ease, border-color .35s ease; }
+.hub-sat{ filter:brightness(.86) saturate(.9); }
+.hub-sat.top{
+  filter:none; border-color:var(--gold-bright);
+  box-shadow:0 12px 34px rgba(0,0,0,.55), 0 0 0 4px rgba(236,205,132,.18),
+             0 0 30px rgba(236,205,132,.38), inset 0 0 0 4px rgba(10,23,51,.5), inset 0 0 26px rgba(236,205,132,.22);
+}
+.hub-sat:hover{ filter:brightness(1.12); }
+
+.hub-hint{
+  margin:14px 0 0; text-align:center; font-weight:300; font-size:13px; letter-spacing:.14em;
+  color:var(--gold); opacity:.7;
+}
+
+/* the pop-up: what the app on top gives, and how it is made */
+.hub-pop{
+  position:absolute; width:min(310px, 86vw); box-sizing:border-box; padding:14px 16px 14px;
+  border:1px solid rgba(200,164,86,.55); border-radius:14px;
+  background:linear-gradient(180deg, rgba(23,58,114,.92), rgba(10,23,51,.94));
+  box-shadow:0 14px 40px rgba(0,0,0,.55); color:var(--parchment);
+  opacity:1; transition:opacity .28s ease, transform .28s ease;
+}
+.hub-pop.swap{ opacity:0; transform:translateY(6px); }
+.hub-pop h2{ margin:0 0 2px; font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:19px; color:var(--gold-bright); }
+.hub-pop .hub-tag{ margin:0 0 8px; font-size:13px; color:var(--gold); font-weight:300; letter-spacing:.04em; }
+.hub-pop ul{ margin:0 0 10px; padding:0 16px 0 0; font-size:14px; line-height:1.55; }
+.hub-pop li{ margin:2px 0; }
+.hub-pop li::marker{ color:var(--gold); }
+.hub-pop .hub-go{
+  display:inline-block; border:1px solid var(--gold); background:rgba(200,164,86,.14); color:var(--gold-bright);
+  border-radius:20px; padding:6px 18px; font:inherit; font-weight:700; font-size:14px; cursor:pointer;
+}
+.hub-pop .hub-go:hover{ background:rgba(200,164,86,.28); }
+
+/* wide screens: beside the dial, joined to the top circle by a hairline */
+@media (min-width:1100px){
+  .hub-pop{ right:calc(100% + 26px); top:0; }
+  .hub-pop::before{
+    content:""; position:absolute; left:100%; top:calc(var(--D) * .14); height:1px;
+    width:calc(26px + var(--D) * .37); background:linear-gradient(90deg, var(--gold), rgba(200,164,86,.15));
+  }
+}
+/* narrow screens: a card under the dial, with a pointer up to it */
+@media (max-width:1099px){
+  .hub-pop{ position:relative; margin:22px auto 0; width:min(420px, 92vw); }
+  .hub-pop::before{
+    content:""; position:absolute; left:50%; top:-8px; width:14px; height:14px;
+    transform:translateX(-50%) rotate(45deg); background:rgb(23,58,114);
+    border-top:1px solid rgba(200,164,86,.55); border-left:1px solid rgba(200,164,86,.55);
+  }
+  .hub-stage{ display:flex; flex-direction:column; align-items:center; width:100%; }
+  .hub-dial{ flex:0 0 auto; }
+}
+@media (min-width:1100px){ #hub{ --D:min(92vw, calc(100dvh - 210px), 620px); } }
+.hub-copy{ margin:18px 12px 0; font-weight:300; font-size:11px; letter-spacing:.05em; color:var(--gold); opacity:.6; text-align:center; }
+
+@media (prefers-reduced-motion:reduce){
+  .hub-sat{ transition:none; } .hub-pop{ transition:none; }
+}
+
+/* ── how a unit's own bar answers to the hub ───────────────────────────────────
+   X always goes back to the main menu. The "↩ התורה" link is kept only for a unit
+   that was reached from the Torah's own hamburger menu. */
+body.from-hub .rd-totorah, body.from-hub .unit-totorah{ display:none !important; }
+.hub-x{
+  flex:0 0 auto; width:34px; height:34px; border-radius:9px; cursor:pointer; line-height:1;
+  font-family:inherit; font-size:21px; padding:0;
+  border:1px solid var(--navy); background:#fff; color:var(--navy);
+}
+.hub-x:hover{ background:var(--navy); color:#fff; }
+/* in the app's own dark unit bar the X is the white one it has always been (.unit-x) */
+.unit-bar .hub-x{ border:1px solid rgba(255,255,255,.38); background:rgba(255,255,255,.14); color:#fff; width:38px; height:38px; }
+.unit-totorah{
+  flex:0 0 auto; border:1px solid rgba(255,255,255,.38); background:rgba(255,255,255,.14); color:#fff;
+  border-radius:9px; padding:7px 12px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap;
+}
+.unit-totorah:hover{ background:rgba(255,255,255,.28); }
+/* the title in a unit bar was centred with room for ONE button; give it the room for two */
+.unit-bar .unit-bar-title{ padding-inline-end:0; }
