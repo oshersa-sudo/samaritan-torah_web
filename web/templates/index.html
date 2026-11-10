@@ -753,10 +753,12 @@
 <div id="contactModal" class="modal hidden">
   <div class="modal-box">
     <div class="modal-title" data-i18n="m_contact">צור קשר</div>
-    <div class="form-row"><label for="cName" data-i18n="c_name">שם מלא</label><input id="cName" type="text" autocomplete="name"></div>
-    <div class="form-row"><label for="cEmail" data-i18n="c_email">כתובת מייל</label><input id="cEmail" type="email" dir="ltr" autocomplete="email"></div>
-    <div class="form-row"><label for="cMsg" data-i18n="c_msg">הודעה (עד 100 מילים)</label><textarea id="cMsg" rows="5"></textarea></div>
-    <div id="cCount" class="form-count">0 / 100 מילים</div>
+    <div class="form-row"><label for="cName" data-i18n="c_name">שם השולח</label><input id="cName" type="text" maxlength="80" autocomplete="name"></div>
+    <div class="form-row"><label for="cSubject" data-i18n="c_subject">נושא</label><input id="cSubject" type="text" maxlength="120"></div>
+    <div class="form-row"><label for="cEmail" data-i18n="c_email">כתובת מייל לחזרה (לא חובה)</label><input id="cEmail" type="email" dir="ltr" autocomplete="email"></div>
+    <div class="form-row"><label for="cMsg" data-i18n="c_msg">פירוט (עד 200 מילים)</label><textarea id="cMsg" rows="6"></textarea></div>
+    <div id="cCount" class="form-count">0 / 200</div>
+    <input id="cWebsite" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
     <div id="cErr" class="form-err"></div>
     <div class="form-btns">
       <button id="cSend" class="form-send" data-i18n="c_send">שלח</button>

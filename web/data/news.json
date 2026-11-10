@@ -1,0 +1,22 @@
+[
+  {
+    "app": "library",
+    "date": "2026-10-19T12:00:00",
+    "he": "ספר הערוות נוסף לספרייה",
+    "en": "The Book of Forbidden Unions joins the library",
+    "ar": "أُضيف كتاب العورات إلى المكتبة",
+    "text_he": "כִּתַאבּ אל-עִירוֹת — חיבור ההלכה השומרוני בדיני העריות, בתרגום עברי מלא, עם מראי המקום פתוחים אל הפסוק.",
+    "text_en": "Kitab al-Awrat — the Samaritan treatise on the laws of forbidden unions, in a full Hebrew translation, its citations opening on the verse.",
+    "text_ar": "كتاب العورات — المصنّف السامري في أحكام العورات، بترجمة عبرية كاملة، وإحالاته تفتح على الآية."
+  },
+  {
+    "app": "library",
+    "date": "2026-10-21T12:00:00",
+    "he": "ספר הערוות נקרא בערבית",
+    "en": "The Book of Forbidden Unions now reads in Arabic",
+    "ar": "كتاب العورات يُقرأ الآن بالعربية",
+    "text_he": "כל הספר בערבית, מראשו ועד סופו: 167 פסקאות ו-24 שמות פרקים.",
+    "text_en": "The whole book in Arabic, from beginning to end: 167 paragraphs and 24 chapter names.",
+    "text_ar": "الكتاب كلّه بالعربية من أوّله إلى آخره: 167 فقرة و24 عنوان فصل."
+  }
+]

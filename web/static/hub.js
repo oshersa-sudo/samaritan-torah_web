@@ -25,7 +25,7 @@
   const TX = {
     he: {
       torah:'התורה השומרונית הישראלית', hint:'סובבו את החוגה · הקישו על עיגול כדי להיכנס',
-      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', exit:'יציאה לתפריט הראשי', shots:'צ. מסך', title:'אבני שהם', goTorah:'כניסה לתורה ›',
+      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', exit:'יציאה לתפריט הראשי', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
       torahHelp:{ tag:'חמשת חומשי התורה בנוסח השומרוני',
         points:['חמישה חומשי תורה בנוסח השומרוני, בכתב השומרוני ובאותיות עבריות','פירוש הפסוק מן המקורות השומרוניים, ותרגומים: ארמי, ערבי ואנגלי','השוואת נוסחים: המסורה, השבעים, אונקלוס וקומראן','מילון מילים, הקראה, חיפוש מתקדם והדפסה'] },
       apps:{
@@ -47,7 +47,7 @@
     },
     en: {
       torah:'The Israelite Samaritan Torah', hint:'Turn the dial · tap a circle to enter',
-      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', exit:'Exit to the main menu', shots:'Screenshots', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
+      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', exit:'Exit to the main menu', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
       torahHelp:{ tag:'The five books of the Torah in the Samaritan text',
         points:['The five books in the Samaritan text, in Samaritan script and Hebrew letters','Verse commentary from the Samaritan sources, and translations: Aramaic, Arabic and English','Comparison of versions: Masoretic, Septuagint, Onkelos and Qumran','A word dictionary, read-aloud, advanced search and printing'] },
       apps:{
@@ -69,7 +69,7 @@
     },
     ar: {
       torah:'التوراة السامرية الإسرائيلية', hint:'أدِر القرص · اضغط على دائرة للدخول',
-      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', exit:'الخروج إلى القائمة الرئيسية', shots:'لقطات', title:'אבני שהם', goTorah:'دخول التوراة ›',
+      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', exit:'الخروج إلى القائمة الرئيسية', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
       torahHelp:{ tag:'أسفار التوراة الخمسة بالنص السامري',
         points:['أسفار التوراة الخمسة بالنص السامري، بالخط السامري وبالحروف العبرية','تفسير الآية من المصادر السامرية، وترجمات: آرامية وعربية وإنجليزية','مقارنة النسخ: الماسوري والسبعينية وأونقلوس وقمران','قاموس للكلمات، وقراءة مسموعة، وبحث متقدّم، وطباعة'] },
       apps:{
@@ -173,14 +173,155 @@
   const menuBtn = document.createElement('button');
   menuBtn.type = 'button'; menuBtn.className = 'hub-menu';
   menuBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>';
-  // the app's own drawer, with all of its entries; raised above the hub while the hub is up
-  menuBtn.addEventListener('click', () => { if(typeof openMenu === 'function') openMenu(); });
+  // the main menu's own drawer: ten entries, and nothing else
+  menuBtn.addEventListener('click', () => openHubMenu());
   const starBtn = document.createElement('button');
   starBtn.type = 'button'; starBtn.className = 'hub-star';
   starBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 1.8 15.2 8.3 22.3 9.3 17.1 14.3 18.4 21.4 12 18 5.6 21.4 6.9 14.3 1.7 9.3 8.8 8.3"/></svg><span class="hub-star-cap"></span>';
   starBtn.addEventListener('click', () => openNews());
   side.appendChild(menuBtn); side.appendChild(starBtn);
   hub.appendChild(side);
+
+  // ── the main menu's own hamburger ──────────────────────────────────────────
+  // Ten entries and nothing else — the installing, the stores, accessibility, language, what is new,
+  // what is written about the app, help, the guided tour, the version and the contact form. The
+  // apps themselves are the circles; the Torah's own menu keeps its own, longer list.
+  const MENU = [
+    ['install',      'm_install',      () => doInstall()],
+    ['getapp',       'm_getapp',       () => { location.href = '/download?lang=' + LANG; }],
+    ['a11y',         'm_a11y',         () => openA11y()],
+    ['lang',         'm_lang',         () => openLangChooser()],
+    ['whatsnew',     'm_whatsnew',     () => openNews()],
+    ['testimonials', 'm_testimonials', () => { location.href = '/testimonials?lang=' + LANG; }],
+    ['help',         'm_help',         () => showHelp()],
+    ['tour',         'm_tour',         () => startTour()],
+    ['version',      'm_version',      () => showVersionLog()],
+    ['contact',      'm_contact',      () => openContact()]
+  ];
+  const drawerWrap = document.createElement('div');
+  drawerWrap.className = 'hub-drawer-wrap';
+  drawerWrap.innerHTML = '<div class="hub-drawer-ov"></div><nav class="hub-drawer" aria-label="menu"><div class="hub-drawer-head"></div></nav>';
+  hub.appendChild(drawerWrap);
+  const drawerNav = drawerWrap.querySelector('.hub-drawer');
+  const menuItems = MENU.map(([act, key, run]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'hub-di'; b.dataset.act = act;
+    // the same little pictures the Torah's own menu uses
+    const src = document.querySelector('.menu-item[data-act="' + act + '"] .mi-ico');
+    b.innerHTML = (src ? src.outerHTML : '<svg class="mi-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>') + '<span class="hub-di-label"></span>';
+    b.addEventListener('click', () => { closeHubMenu(); run(); });
+    drawerNav.appendChild(b);
+    return { b, key };
+  });
+  function openHubMenu(){ drawerWrap.classList.add('open'); }
+  function closeHubMenu(){ drawerWrap.classList.remove('open'); }
+  drawerWrap.querySelector('.hub-drawer-ov').addEventListener('click', closeHubMenu);
+  // "change language": the same choosing, and the same question about keeping it, as the buttons at the top
+  function openLangChooser(){
+    if(hub.querySelector('.hub-confirm')) return;
+    const o = document.createElement('div'); o.className = 'hub-confirm';
+    o.innerHTML = '<div class="hub-confirm-box" role="dialog" aria-modal="true"><h3></h3></div>';
+    const box = o.firstChild; box.querySelector('h3').textContent = t('m_lang');
+    [['he', 'עברית'], ['en', 'English'], ['ar', 'العربية']].forEach(([code, label]) => {
+      const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'hub-yes' + (code === lang() ? ' cur' : ''); bt.textContent = label;
+      if(code === 'ar') bt.dir = 'rtl'; if(code === 'en') bt.dir = 'ltr';
+      bt.onclick = () => { o.remove(); pickLang(code); };
+      box.appendChild(bt);
+    });
+    const no = document.createElement('button'); no.type = 'button'; no.className = 'hub-no'; no.textContent = t('close'); no.onclick = () => o.remove();
+    box.appendChild(no); hub.appendChild(o); no.focus();
+  }
+
+  // ── the accessibility settings reach every app ─────────────────────────────
+  // Colours turned over already cover the whole page, frames included. The size of the type, which until
+  // now moved only the Torah's verses, is carried to the others: the timeline, the recordings and the
+  // manuscripts (same-origin pages, zoomed), the calendar and the family tree (framed sites, scaled), and
+  // the reading windows of the library and the dictionary (their own size settings).
+  const a11yScale = () => Math.max(.8, Math.min(1.9, 1 + ((typeof S !== 'undefined' && S.fontOffset) || 0) / 20));
+  function applyA11yAll(force){
+    const sc = a11yScale();
+    ['tlFrame', 'shFrame', 'mssFrame'].forEach(id => {
+      const f = $(id); if(!f) return;
+      try{ const d = f.contentDocument; if(d && d.documentElement) d.documentElement.style.zoom = sc === 1 ? '' : String(sc); }catch(e){}
+    });
+    const ef = $('extFrame'); if(ef){ ef.style.setProperty('--us', String(sc)); ef.classList.toggle('us', sc !== 1); }
+    if(sc === 1 && !force) return;                                         // leave the units' own A+ / A− alone until asked
+    try{
+      if(typeof DICT_FS !== 'undefined'){ DICT_FS = sc; if(typeof dictApplyFs === 'function') dictApplyFs(); }
+      if(typeof RD !== 'undefined'){ RD.fs = sc; if(typeof rdApplyFs === 'function') rdApplyFs(); if(typeof ppApplyFs === 'function') ppApplyFs(); }
+    }catch(e){}
+  }
+  if(typeof a11yApplySize === 'function'){
+    const o = a11yApplySize;
+    a11yApplySize = function(){ const r = o.apply(this, arguments); applyA11yAll(true); return r; };
+  }
+  ['tlFrame', 'shFrame', 'mssFrame', 'extFrame'].forEach(id => { const f = $(id); if(f) f.addEventListener('load', () => applyA11yAll(false)); });
+  applyA11yAll(false);
+
+  // ── what is new in each app ────────────────────────────────────────────────
+  // A small blinking star at the upper left of a circle, with the number of things added to that app
+  // that the reader has not seen. It shows what was added in the last 30 days and after the last time
+  // the reader opened that app's news. Pressing it opens that app's news alone; closing the window
+  // puts the star out. What has been seen is kept on this device only.
+  const NEWS_DAYS = 30;
+  let NEWS = {};                                                // app → items, newest first (from /api/news)
+  const seenKey = k => 'as_news_seen_' + k;
+  const getSeen = k => { try{ return localStorage.getItem(seenKey(k)) || ''; }catch(e){ return ''; } };
+  const cutoff = k => Math.max(Date.parse(getSeen(k)) || 0, Date.now() - NEWS_DAYS * 864e5);
+  const newItems = k => (NEWS[k] || []).filter(it => Date.parse(it.date) > cutoff(k));
+  async function loadNews(){
+    try{ const r = await fetch('/api/news', { cache:'no-store' }); if(r.ok){ const j = await r.json(); NEWS = j.apps || {}; } }catch(e){ /* offline: no stars */ }
+    paintBadges();
+  }
+  function paintBadges(){
+    sats.forEach((b, i) => {
+      const k = APPS[i].key, n = newItems(k).length;
+      let nb = b.querySelector('.hub-nb');
+      if(!n){ if(nb) nb.remove(); return; }
+      if(!nb){
+        nb = document.createElement('span'); nb.className = 'hub-nb'; nb.setAttribute('role', 'button'); nb.tabIndex = 0;
+        nb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 1.8 15.2 8.3 22.3 9.3 17.1 14.3 18.4 21.4 12 18 5.6 21.4 6.9 14.3 1.7 9.3 8.8 8.3"/></svg><b></b>';
+        const open = e => { e.stopPropagation(); e.preventDefault(); openAppNews(k, nb); };
+        nb.addEventListener('click', open);
+        nb.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') open(e); });
+        nb.addEventListener('pointerdown', e => e.stopPropagation());          // a press here is not a turn of the dial
+        b.appendChild(nb);
+      }
+      nb.querySelector('b').textContent = n > 99 ? '99+' : String(n);
+      nb.setAttribute('aria-label', T().newsApp + ': ' + n);
+    });
+  }
+  function openAppNews(k, from){
+    if(hub.querySelector('.hub-news')) return;
+    const items = (NEWS[k] || []).slice(0, 30); if(!items.length) return;
+    const L = lang(), X = T(), cut = cutoff(k);
+    const o = document.createElement('div'); o.className = 'hub-news';
+    o.innerHTML = '<div class="hub-news-box" role="dialog" aria-modal="true"><div class="hub-news-head"><h2></h2>' +
+                  '<button type="button" class="hub-news-x">&times;</button></div><div class="hub-news-body"></div></div>';
+    o.querySelector('h2').textContent = '★ ' + X.apps[k].name + ' — ' + X.newsTitle;
+    const body = o.querySelector('.hub-news-body');
+    const loc = L === 'he' ? 'he-IL' : L === 'ar' ? 'ar' : 'en-GB';
+    items.forEach(it => {
+      const d = document.createElement('div'); d.className = 'hub-news-page';
+      d.innerHTML = '<p><b></b></p><p class="hub-news-date"></p><p class="hub-news-txt"></p>';
+      d.querySelector('b').textContent = (Date.parse(it.date) > cut ? '★ ' : '') + (it[L] || it.he || '');
+      let when = ''; try{ when = new Date(it.date).toLocaleDateString(loc, { day:'numeric', month:'long', year:'numeric' }); }catch(e){}
+      d.querySelector('.hub-news-date').textContent = when;
+      const tx = it['text_' + L] || it.text_he || '';
+      if(tx) d.querySelector('.hub-news-txt').textContent = tx; else d.querySelector('.hub-news-txt').remove();
+      body.appendChild(d);
+    });
+    const x = o.querySelector('.hub-news-x'); x.setAttribute('aria-label', t('close'));
+    const close = () => {
+      o.remove(); document.removeEventListener('keydown', esc);
+      try{ localStorage.setItem(seenKey(k), items[0].date); }catch(e){}            // all of it is seen now: the star goes out
+      paintBadges();
+    };
+    const esc = e => { if(e.key === 'Escape') close(); };
+    x.onclick = close;
+    o.addEventListener('click', e => { if(e.target === o) close(); });
+    document.addEventListener('keydown', esc);
+    hub.appendChild(o); x.focus();
+  }
 
   // what's new: the newest version and the two before it, scrolling, and no further back
   function openNews(){
@@ -275,9 +416,11 @@
     starBtn.setAttribute('aria-label', t('m_whatsnew')); starBtn.title = t('m_whatsnew');
     starBtn.querySelector('.hub-star-cap').textContent = X.newsShort;
     langBox.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.lang === L));
+    drawerWrap.querySelector('.hub-drawer-head').textContent = t('menu');
+    menuItems.forEach(({ b, key }) => { b.querySelector('.hub-di-label').textContent = t(key); });
     paintHubDate();
     if(topIdx >= 0) fill(topIdx);
-    refit();
+    refit(); refitCard(); paintBadges();
   }
 
   // ── every name inside its circle ────────────────────────────────────────────
@@ -370,6 +513,38 @@
 
   // ── the pop-up ─────────────────────────────────────────────────────────────
   const pop = $('hubPop');
+  // The card's type is sized so that all of it is seen at once, with nothing to scroll: as large as
+  // will go (a little larger than usual where there is room), smaller where there is not. On a
+  // phone that means the page under the dial; on a wide screen, the card beside it, no taller than the
+  // dial. If even the smallest type will not do, the dial gives up some room. The dial's size is
+  // settled for the card with the most to say, so it does not jump from one app to the next.
+  const wideScreen = () => innerWidth >= 1100;
+  const setPz = z => pop.style.setProperty('--pz', z.toFixed(3));
+  function cardFits(){
+    if(wideScreen()){
+      const r = pop.getBoundingClientRect();
+      return r.height <= dial.clientHeight * 1.06 && r.bottom <= innerHeight - 6 && hub.scrollHeight <= hub.clientHeight + 1;
+    }
+    return hub.scrollHeight <= hub.clientHeight + 1;
+  }
+  function fitCard(){
+    if(!isOpen()) return;
+    for(let z = 1.12; z >= .55; z -= .03){ setPz(z); if(cardFits()) return; }
+    setPz(.55);
+  }
+  function fitAll(){
+    if(!isOpen() || !dial.clientWidth) return;
+    const cur = topIdx;
+    hub.style.removeProperty('--D');
+    const baseD = dial.clientWidth; let scale = 1;
+    const every = z => { for(let i = 0; i <= N; i++){ fill(i); setPz(z); if(!cardFits()) return false; } return true; };
+    while(!every(.8) && scale > .62){ scale -= .05; hub.style.setProperty('--D', Math.round(baseD * scale) + 'px'); }
+    fill(cur >= 0 ? cur : 0); fitCard();
+  }
+  let _fcT = null;
+  const refitCard = () => { clearTimeout(_fcT); _fcT = setTimeout(fitAll, 80); };
+  addEventListener('resize', refitCard);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(refitCard);
   let popTimer = null;
   function fill(i){
     const isTorah = i === N, X = T();
@@ -397,9 +572,9 @@
   }
   function showPop(i){
     clearTimeout(popTimer);
-    if(!pop.innerHTML){ fill(i); return; }
+    if(!pop.innerHTML){ fill(i); fitCard(); return; }
     pop.classList.add('swap');
-    popTimer = setTimeout(() => { fill(i); pop.classList.remove('swap'); }, 170);
+    popTimer = setTimeout(() => { fill(i); fitCard(); pop.classList.remove('swap'); }, 170);
   }
 
   // ── dragging it like a dial ────────────────────────────────────────────────
@@ -623,6 +798,7 @@
     hub.classList.remove('hidden');
     document.body.classList.add('hub-open');
     hub.scrollTop = 0;
+    refitCard(); loadNews();
     document.body.style.overflow = 'hidden';
     setOrigin('menu');
   }
@@ -633,6 +809,7 @@
     setOrigin('hub');
     hideHub();
     a.open();
+    setTimeout(() => applyA11yAll(false), 600);
   }
   function enterTorah(){ setOrigin('menu'); hideHub(); }
   center.addEventListener('click', enterTorah);
@@ -727,6 +904,7 @@
   const unitVisible = () => [...document.querySelectorAll('.rd-totorah')].some(b => { const m = b.closest('.modal'); return m && !m.classList.contains('hidden'); })
     || ['extFrameWrap', 'mssFrameWrap'].some(id => { const w = $(id); return w && w.style.display === 'block'; });
   function closeHubLayer(){
+    if(drawerWrap.classList.contains('open')){ closeHubMenu(); return true; }
     const sh = hub.querySelector('.hub-shots .hub-news-x'); if(sh){ sh.click(); return true; }
     const nw = hub.querySelector('.hub-news .hub-news-x'); if(nw){ nw.click(); return true; }
     const cf = hub.querySelector('.hub-confirm .hub-no'); if(cf){ cf.click(); return true; }
@@ -786,7 +964,7 @@
         'מסובבים את החוגה בגרירה, בגלגל העכבר או בחצים. העיגול שבראש החוגה מציג בכרטיס שבצדו מה האפליקציה נותנת, ולחיצה על עיגול נכנסת אליה.',
         'בכל כרטיס יש כפתור "צ. מסך", משמאל לכפתור הכניסה. לחיצה עליו פותחת חלון עם צילומי מסך של האפליקציה שאפשר לגלול ביניהם.',
         'אחרי העיגול האחרון מתרחב עיגול התורה על פני כל החוגה ומציג את ההסבר על התורה. הסיבוב הבא מחזיר אותו למקומו, ולחיצה עליו נכנסת לתורה.',
-        'בצד שמאל: תפריט ההמבורגר עם כל האפשרויות, ומתחתיו כוכב מהבהב — מה חדש, חמש הגרסאות האחרונות.',
+        'בצד שמאל: תפריט ההמבורגר — התקנה, הורדה מהחנויות, נגישות, שפה, מה חדש, מה כותבים עלינו, עזרה, סרטון הסבר, גרסה וצור קשר — ומתחתיו כוכב מהבהב: מה חדש, חמש הגרסאות האחרונות.',
         'בצד ימין: בחירת שפה — עברית, אנגלית או ערבית — שממשיכה לכל מסכי האפליקציה, ושואלת אם לשמור אותה. לידה מוצגת גרסת האפליקציה.',
         'מכל אפליקציה חוזרים לתפריט הראשי בלחיצה על X, וגם דרך "יציאה לתפריט הראשי" בתפריט ההמבורגר. הקישור "התורה" מוצג רק למי שנכנס מתפריט ההמבורגר של התורה.'
       ],
@@ -795,7 +973,8 @@
         '<b>סיבוב החוגה</b> — בגרירה, בגלגל העכבר או בחצים. העיגול שבראש החוגה מציג <b>כרטיס</b> בצד: מה האפליקציה נותנת, וכפתור כניסה. לחיצה על העיגול עצמו נכנסת אליה.',
         '<b>צ. מסך</b> — בכל כרטיס יש כפתור כזה, משמאל לכפתור הכניסה. לחיצה עליו פותחת חלון עם צילומי מסך של האפליקציה שאפשר לגלול ביניהם; עד שלוחצים — אין צילומי מסך על המסך.',
         '<b>עיגול התורה</b> — אחרי העיגול האחרון הוא מתרחב על פני כל החוגה ומציג את ההסבר על התורה; הסיבוב הבא מחזיר אותו למקומו. לחיצה עליו נכנסת לתורה.',
-        '<b>כוכב "מה חדש"</b> (משמאל, מהבהב) פותח את חמש הגרסאות האחרונות, עם גלילה. מעליו <b>תפריט ההמבורגר</b> עם כל האפשרויות. מימין — <b>בחירת שפה</b> (עברית · English · العربية), שממשיכה לכל מסכי האפליקציה ושואלת אם לשמור, וגרסת האפליקציה.',
+        '<b>כוכב "מה חדש"</b> (משמאל, מהבהב) פותח את חמש הגרסאות האחרונות, עם גלילה. לידו <b>תפריט ההמבורגר</b> (התקנה, הורדה מהחנויות, נגישות, שפה, מה חדש, מה כותבים עלינו, עזרה, סרטון הסבר, גרסה, צור קשר). מימין — <b>בחירת שפה</b> (עברית · English · العربية), שממשיכה לכל מסכי האפליקציה ושואלת אם לשמור, וגרסת האפליקציה.',
+        '<b>כוכב קטן מהבהב על עיגול</b> — נוסף משהו חדש באפליקציה ההיא (פיוט, פריט בספרייה, כתב יד, עדכון בציר הזמן, בלוח או באילן היוחסין); המספר הוא כמות החידושים. לחיצה עליו פותחת את החידושים שלה בלבד, וסגירת החלון מכבה את הכוכב.',
         '<b>חזרה לתפריט הראשי</b> — X בכל אפליקציה ובכותרת התורה, ו"יציאה לתפריט הראשי" בתפריט ההמבורגר. הקישור "↩ התורה" מוצג רק למי שנכנס מתפריט ההמבורגר של התורה.'
       ]]
     },
@@ -805,7 +984,7 @@
         'Turn the dial by dragging, with the mouse wheel or with the arrow keys. The circle at the top of the dial shows, in the card beside it, what that app offers, and tapping a circle takes you in.',
         'Every card has a “Screenshots” button, beside the Enter button. Tap it to open a window of screenshots of the app that you can scroll through.',
         'After the last circle the Torah’s circle swells across the whole dial and shows what the Torah offers. The next turn puts it back in its place, and tapping it enters the Torah.',
-        'On the left: the hamburger menu with all its options, and under it a blinking star — what’s new, the last five versions.',
+        'On the left: the hamburger menu — install, the stores, accessibility, language, what’s new, what’s written about us, help, the guided tour, the version and contact — and beside it a blinking star: what’s new, the last five versions.',
         'On the right: the language switch — Hebrew, English or Arabic — which carries on through every screen of the app and asks whether to keep it. Beside it, the version of the app.',
         'From any app you return to the main menu with the X, or through “Exit to the main menu” in the hamburger menu. The “Torah” link is shown only to someone who came in from the Torah’s own hamburger menu.'
       ],
@@ -814,7 +993,8 @@
         '<b>Turning the dial</b> — by dragging, with the mouse wheel or with the arrow keys. The circle at the top shows a <b>card</b> at its side: what the app offers, and an enter button. Tapping the circle itself takes you in.',
         '<b>Screenshots</b> — each card has this button, beside the Enter button. Tap it to open a window of screenshots of the app that you can scroll through; until it is pressed, no screenshots are shown.',
         '<b>The Torah’s circle</b> — after the last circle it swells across the whole dial and shows what the Torah offers; the next turn puts it back. Tapping it enters the Torah.',
-        '<b>The “What’s new” star</b> (left, blinking) opens the last five versions, scrolling. Above it, the <b>hamburger menu</b> with all its options. On the right, the <b>language switch</b> (עברית · English · العربية), which carries through every screen and asks whether to keep it, and the version of the app.',
+        '<b>The “What’s new” star</b> (left, blinking) opens the last five versions, scrolling. Beside it, the <b>hamburger menu</b> (install, the stores, accessibility, language, what’s new, what’s written about us, help, the guided tour, the version, contact). On the right, the <b>language switch</b> (עברית · English · العربية), which carries through every screen and asks whether to keep it, and the version of the app.',
+        '<b>A small blinking star on a circle</b> — something new was added to that app (a piyyut, a library item, a manuscript, an update to the timeline, the calendar or the genealogy); the number is how many. Pressing it opens that app’s news alone, and closing the window puts the star out.',
         '<b>Back to the main menu</b> — an X in every app and in the Torah’s header, and “Exit to the main menu” in the hamburger menu. The “↩ Torah” link appears only for someone who came in from the Torah’s own hamburger menu.'
       ]]
     },
@@ -824,7 +1004,7 @@
         'أدِر القرص بالسحب أو بعجلة الفأرة أو بالأسهم. الدائرة التي في أعلى القرص تعرض في بطاقة بجانبها ما يقدّمه التطبيق، والضغط على دائرة يدخل إليه.',
         'في كل بطاقة زرّ «لقطات» بجانب زرّ الدخول. اضغط عليه لتفتح نافذة بلقطات شاشة للتطبيق يمكن تصفّحها.',
         'بعد الدائرة الأخيرة تتّسع دائرة التوراة على القرص كلّه وتعرض ما تقدّمه التوراة. الدورة التالية تعيدها إلى مكانها، والضغط عليها يدخل إلى التوراة.',
-        'على اليسار: قائمة الهامبرغر بكل خياراتها، وتحتها نجمة وامضة — ما الجديد، آخر خمسة إصدارات.',
+        'على اليسار: قائمة الهامبرغر — التثبيت، والمتاجر، وإعدادات الوصول، واللغة، وما الجديد، وما يُكتب عنّا، والمساعدة، والجولة الإرشادية، والإصدار، واتصل بنا — وبجانبها نجمة وامضة: ما الجديد، آخر خمسة إصدارات.',
         'على اليمين: اختيار اللغة — العبرية أو الإنجليزية أو العربية — وهو يستمر في كل شاشات التطبيق ويسأل إن كنت تريد حفظه. وبجانبه إصدار التطبيق.',
         'من أي تطبيق تعود إلى القائمة الرئيسية بالضغط على X، أو عبر «الخروج إلى القائمة الرئيسية» في قائمة الهامبرغر. ورابط «التوراة» لا يظهر إلا لمن دخل من قائمة الهامبرغر الخاصة بالتوراة.'
       ],
@@ -833,7 +1013,8 @@
         '<b>إدارة القرص</b> — بالسحب أو بعجلة الفأرة أو بالأسهم. الدائرة التي في أعلى القرص تعرض <b>بطاقة</b> على جانبها: ما يقدّمه التطبيق وزرّ للدخول. والضغط على الدائرة نفسها يدخل إليه.',
         '<b>لقطات</b> — في كل بطاقة هذا الزرّ بجانب زرّ الدخول. اضغط عليه لتفتح نافذة بلقطات شاشة للتطبيق يمكن تصفّحها؛ وما لم تضغط عليه لا تظهر أي لقطة.',
         '<b>دائرة التوراة</b> — بعد الدائرة الأخيرة تتّسع على القرص كلّه وتعرض ما تقدّمه التوراة؛ والدورة التالية تعيدها إلى مكانها. والضغط عليها يدخل إلى التوراة.',
-        '<b>نجمة «ما الجديد»</b> (يسارًا، وامضة) تفتح آخر خمسة إصدارات مع التمرير. وفوقها <b>قائمة الهامبرغر</b> بكل خياراتها. وعلى اليمين <b>اختيار اللغة</b> (עברית · English · العربية) الذي يستمر في كل الشاشات ويسأل إن كنت تريد حفظه، وإصدار التطبيق.',
+        '<b>نجمة «ما الجديد»</b> (يسارًا، وامضة) تفتح آخر خمسة إصدارات مع التمرير. وبجانبها <b>قائمة الهامبرغر</b> (التثبيت، والمتاجر، وإعدادات الوصول، واللغة، وما الجديد، وما يُكتب عنّا، والمساعدة، والجولة الإرشادية، والإصدار، واتصل بنا). وعلى اليمين <b>اختيار اللغة</b> (עברית · English · العربية) الذي يستمر في كل الشاشات ويسأل إن كنت تريد حفظه، وإصدار التطبيق.',
+        '<b>نجمة صغيرة وامضة على دائرة</b> — أُضيف شيء جديد إلى ذلك التطبيق (قصيدة، أو مادة في المكتبة، أو مخطوط، أو تحديث للخط الزمني أو التقويم أو شجرة الأنساب)؛ والرقم هو عدد المستجدّات. الضغط عليها يفتح مستجدّات ذلك التطبيق وحده، وإغلاق النافذة يُطفئ النجمة.',
         '<b>العودة إلى القائمة الرئيسية</b> — X في كل تطبيق وفي رأس التوراة، و«الخروج إلى القائمة الرئيسية» في قائمة الهامبرغر. ورابط «↩ التوراة» لا يظهر إلا لمن دخل من قائمة الهامبرغر الخاصة بالتوراة.'
       ]]
     }
@@ -854,7 +1035,7 @@
   if(typeof HELP !== 'undefined') ['he', 'en', 'ar'].forEach(l => { if(HELP[l]) HELP[l].unshift(HUBTXT[l].help); });
 
   window.AvneiHub = { show:showHub, hide:hideHub, enter, apps:APPS, turnTo, step, glint, pickLang, get top(){ return topIdx; }, get pos(){ return u; } };
-  turnTo(0); paintHub();
+  turnTo(0); paintHub(); loadNews(); setTimeout(refitCard, 400);
   document.body.classList.toggle('hub-open', !hub.classList.contains('hidden'));
   document.body.style.overflow = hub.classList.contains('hidden') ? '' : 'hidden';
 })();

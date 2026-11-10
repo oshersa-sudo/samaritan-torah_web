@@ -186,7 +186,7 @@ const I18N = {
     cmp_chapter_field:'מספר פרק (בנוסח ההשוואה)',
     ci_masoretic:'נוסח המסורה הוא הנוסח היהודי המקובל של המקרא, שנמסר, נוקד וטוים בידי בעלי המסורה בטבריה (סוף האלף הראשון לסה״נ). הוא הבסיס לרוב מהדורות התנ״ך הנדפסות.',
     ci_septuagint:'תרגום השבעים (LXX) הוא התרגום היווני הקדום של התורה, שנעשה באלכסנדריה במאה ה־3 לפנה״ס. הוא משקף לעיתים נוסח עברי קדום השונה מן המסורה, ובמקומות רבים קרוב דווקא לנוסח השומרוני.',
-    c_name:'שם מלא', c_email:'כתובת מייל', c_msg:'הודעה (עד 100 מילים)', c_send:'שלח', c_cancel:'ביטול',
+    c_name:'שם השולח', c_subject:'נושא', c_email:'כתובת מייל לחזרה (לא חובה)', c_msg:'פירוט (עד 200 מילים)', c_send:'שלח', c_cancel:'ביטול', c_sent:'ההודעה נשלחה. תודה!', c_sending:'שולח…', c_e_name:'יש להזין את שם השולח.', c_e_subject:'יש להזין נושא.', c_e_msg:'יש להזין פירוט.', c_e_long:'הפירוט ארוך מ-200 מילים.', c_e_mail:'כתובת המייל אינה תקינה.',
     lang_save_q:'האם ברצונך לשמור הגדרה זו?', lang_save_note:'הבחירה תישמר במכשיר זה לפעמים הבאות.',
     save_yes:'כן, שמור', save_no:'לא, רק הפעם',
     samsrc_pick:'ממקור שומרון — בחר מקור', checking_sources:'בודק מקורות זמינים…',
@@ -313,7 +313,7 @@ const I18N = {
     ob_dont:'אל תציג שוב', ob_later:'אחר כך', ob_close:'סגור', wc_read:'קראתי',
     // newest first: a reader opening "מה חדש" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>גרסה 5.0 — התפריט הראשי</b></p><ul><li><b>תפריט ראשי חדש</b> בכניסה לאפליקציה: התורה בעיגול גדול באמצע, ומסביבה חוגה מסתובבת של האפליקציות — לוח השנה, הספרייה, המילון, אוצר השירה, ציר הזמן, אוצר כתבי היד ואילן היוחסין. מסובבים בגרירה, בגלגל העכבר או בחצים, ולחיצה על עיגול נכנסת אליו</li><li><b>כרטיס לכל אפליקציה</b> עם מה שהיא נותנת, וצילומי מסך שאפשר לגלול בהם. אחרי העיגול האחרון מתרחב עיגול התורה על פני כל החוגה ומציג את ההסבר עליה</li><li><b>כוכב "מה חדש"</b> (חמש הגרסאות האחרונות), <b>תפריט המבורגר</b> מלא, בחירת <b>שפה</b> (עברית · English · العربية) עם שאלה אם לשמור, והתאריך השומרוני</li><li><b>חזרה לתפריט הראשי</b>: X בכל אפליקציה ובכותרת התורה, ו"יציאה לתפריט הראשי" בתפריט ההמבורגר; הקישור "↩ התורה" מוצג רק למי שנכנס מתפריט ההמבורגר של התורה</li><li><b>המילון הארמי-עברי</b> נפתח כאפליקציה בפני עצמה על כל החלון, ובכניסה העיגולים יוצאים מהמרכז אל מקומם והחוגה מסתובבת חצי סיבוב</li><li>הסרטון המודרך ודף העזרה מסבירים את התפריט הראשי</li></ul>',
+      '<p><b>גרסה 5.0 — התפריט הראשי</b></p><ul><li><b>תפריט ראשי חדש</b> בכניסה לאפליקציה: התורה בעיגול גדול באמצע, ומסביבה חוגה מסתובבת של האפליקציות — לוח השנה, הספרייה, המילון, אוצר השירה, ציר הזמן, אוצר כתבי היד ואילן היוחסין. מסובבים בגרירה, בגלגל העכבר או בחצים, ולחיצה על עיגול נכנסת אליו</li><li><b>כרטיס לכל אפליקציה</b> עם מה שהיא נותנת, וצילומי מסך שאפשר לגלול בהם. אחרי העיגול האחרון מתרחב עיגול התורה על פני כל החוגה ומציג את ההסבר עליה</li><li><b>כוכב "מה חדש"</b> (חמש הגרסאות האחרונות), <b>תפריט המבורגר</b> מלא, בחירת <b>שפה</b> (עברית · English · العربية) עם שאלה אם לשמור, והתאריך השומרוני</li><li><b>חזרה לתפריט הראשי</b>: X בכל אפליקציה ובכותרת התורה, ו"יציאה לתפריט הראשי" בתפריט ההמבורגר; הקישור "↩ התורה" מוצג רק למי שנכנס מתפריט ההמבורגר של התורה</li><li><b>המילון הארמי-עברי</b> נפתח כאפליקציה בפני עצמה על כל החלון, ובכניסה העיגולים יוצאים מהמרכז אל מקומם והחוגה מסתובבת חצי סיבוב</li><li><b>כוכב קטן מהבהב</b> על עיגול של אפליקציה כשנוסף בה משהו חדש, עם מספר החידושים; לחיצה עליו פותחת את החידושים שלה בלבד</li><li>הסרטון המודרך ודף העזרה מסבירים את התפריט הראשי</li></ul>',
       '<p><b>גרסה 4.6 — עמוד הורדה אחד לשתי החנויות</b></p><ul><li><b>עמוד הורדה</b> חדש, בתפריט תחת <b>הורדת האפליקציה מהחנויות</b>: סמל האפליקציה, ושני כרטיסים — Google Play לאנדרואיד ו-App Store לאייפון ולאייפד — כל אחד עם ברקוד לסריקה ועם קישור ישיר</li><li><b>וכתובת משלו</b>: <span dir="ltr">samaritan-torah.onrender.com/download</span> — אפשר לשלוח אותה, להדפיס אותה או לתלות אותה, בלי לעבור דרך האפליקציה</li><li>העמוד נקרא בעברית, באנגלית ובערבית, והשפה שבוחרים בו היא זו שבה תיפתח האפליקציה</li></ul>',
       '<p><b>גרסה 4.5 — ספר הערוות בערבית</b></p><ul><li><b>כל הספר בערבית</b>: כִּתַאבּ אל-עִירוֹת נקרא מעתה בערבית מראשו ועד סופו — מאה שישים ושבע פסקאות, עשרים וארבעה שמות פרקים, ומראי המקום שבגוף הטקסט פתוחים בלחיצה אל הפסוק גם בערבית</li><li><b>ובפירוש הפסוק</b>: תשעים ותשעה הפסוקים שהחיבור מצטט נושאים את דבריו בערבית, ושם הפרק שממנו הם באים נאמר אף הוא בערבית — כך שהקורא בערבית אינו פוגש עוד עברית בלב הדברים</li><li>החיפוש בתוך הספר מחפש באותו נוסח שלפני הקורא: בערבית — בערבית</li></ul>',
       '<p><b>גרסה 4.4 — ספר הערוות</b></p><ul><li><b>כִּתַאבּ אל-עִירוֹת — ספר הערוות</b> נוסף לספרייה: חיבור ההלכה השומרוני בדיני העריות, מפי הכהן פינחס בן יצחק, בתרגום עברי מלא ורצוף. עשרים וארבעה פרקים לפי מהלך הדיון, ובכל פרק מראי המקום שבגוף הטקסט פתוחים בלחיצה אל הפסוק עצמו</li><li><b>והספר קורא עם הפסוק</b>: תשעים ותשעה פסוקים שהחיבור מצטט — בויקרא, בדברים, בבראשית, בשמות ובמדבר — נושאים מעתה את דבריו. הוא נמנה בגיליון "לצד הפסוק" ככל מקור שומרוני, נפתח בשמו תחת "ממקור שומרון", ונשזר ב"פירוש הפסוק" מתחת לפסוק שהוא דן בו — והפסקה שמובאת היא זו שהספר ציטט בה את הפסוק, לא הפרק כולו</li><li>וכך גם בהדפסה: גיליון הפירוש נושא את דברי ספר הערוות בשם אומרם</li></ul>',
@@ -511,7 +511,7 @@ const I18N = {
     cmp_chapter_field:'Chapter number (in the compared version)',
     ci_masoretic:'The Masoretic Text is the authoritative Jewish text of the Hebrew Bible, transmitted and vocalised by the Masoretes of Tiberias (late 1st millennium CE). It underlies most printed editions of the Bible.',
     ci_septuagint:'The Septuagint (LXX) is the ancient Greek translation of the Torah, made in Alexandria in the 3rd century BCE. It sometimes reflects an early Hebrew text differing from the Masoretic — and in many places agrees with the Samaritan.',
-    c_name:'Full name', c_email:'Email address', c_msg:'Message (up to 100 words)', c_send:'Send', c_cancel:'Cancel',
+    c_name:'Sender’s name', c_subject:'Subject', c_email:'Reply e-mail (optional)', c_msg:'Details (up to 200 words)', c_send:'Send', c_cancel:'Cancel', c_sent:'Your message was sent. Thank you!', c_sending:'Sending…', c_e_name:'Please enter the sender’s name.', c_e_subject:'Please enter a subject.', c_e_msg:'Please enter the details.', c_e_long:'The details are longer than 200 words.', c_e_mail:'The e-mail address is not valid.',
     lang_save_q:'Save this language preference?', lang_save_note:'It will be saved on this device for next time.',
     save_yes:'Yes, save', save_no:'No, just now',
     samsrc_pick:'Samaritan sources — choose a source', checking_sources:'Checking available sources…',
@@ -637,7 +637,7 @@ const I18N = {
     ob_dont:'Don\'t show again', ob_later:'Later', ob_close:'Close', wc_read:'I have read',
     // newest first: a reader opening "What's new" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>Version 5.0 — the main menu</b></p><ul><li>A <b>new main menu</b> on entering the app: the Torah in a big circle in the middle, and round it a turning dial of the apps — the calendar, the library, the dictionary, the song treasury, the timeline, the manuscript treasury and the genealogy. Turn it by dragging, with the mouse wheel or the arrow keys, and tap a circle to go in</li><li>A <b>card for every app</b> saying what it offers, with screenshots to scroll through. After the last circle the Torah’s circle swells across the whole dial and explains itself</li><li>A blinking <b>“What’s new” star</b> (the last five versions), a full <b>hamburger menu</b>, a <b>language</b> switch (עברית · English · العربية) that asks whether to keep it, and the Samaritan date</li><li><b>Back to the main menu</b>: an X in every app and in the Torah’s header, and “Exit to the main menu” in the hamburger menu; the “↩ Torah” link shows only to someone who came in from the Torah’s own hamburger menu</li><li>The <b>Aramaic–Hebrew dictionary</b> opens as an app of its own across the whole window, and on entry the circles come out of the middle into place while the dial turns half a round</li><li>The guided tour and the help page explain the main menu</li></ul>',
+      '<p><b>Version 5.0 — the main menu</b></p><ul><li>A <b>new main menu</b> on entering the app: the Torah in a big circle in the middle, and round it a turning dial of the apps — the calendar, the library, the dictionary, the song treasury, the timeline, the manuscript treasury and the genealogy. Turn it by dragging, with the mouse wheel or the arrow keys, and tap a circle to go in</li><li>A <b>card for every app</b> saying what it offers, with screenshots to scroll through. After the last circle the Torah’s circle swells across the whole dial and explains itself</li><li>A blinking <b>“What’s new” star</b> (the last five versions), a full <b>hamburger menu</b>, a <b>language</b> switch (עברית · English · العربية) that asks whether to keep it, and the Samaritan date</li><li><b>Back to the main menu</b>: an X in every app and in the Torah’s header, and “Exit to the main menu” in the hamburger menu; the “↩ Torah” link shows only to someone who came in from the Torah’s own hamburger menu</li><li>The <b>Aramaic–Hebrew dictionary</b> opens as an app of its own across the whole window, and on entry the circles come out of the middle into place while the dial turns half a round</li><li>A small <b>blinking star</b> on an app’s circle when something new is added to it, with the number of new items; pressing it opens that app’s news alone</li><li>The guided tour and the help page explain the main menu</li></ul>',
       '<p><b>Version 4.6 — one download page for both stores</b></p><ul><li>A new <b>download page</b>, in the menu under <b>Get the app from the stores</b>: the mark of the app, and two cards — Google Play for Android and the App Store for iPhone and iPad — each with a code to scan and a direct link</li><li><b>And an address of its own</b>: samaritan-torah.onrender.com/download — it can be sent, printed or put on a wall without going through the app first</li><li>The page reads in Hebrew, English and Arabic, and the language chosen on it is the one the app then opens in</li></ul>',
       '<p><b>Version 4.5 — the Book of Forbidden Unions in Arabic</b></p><ul><li><b>The whole book in Arabic</b>: Kitāb al-ʿAwrāt now reads in Arabic from beginning to end — a hundred and sixty-seven paragraphs, twenty-four chapter names, and the citations inside the text open on the verse in Arabic too</li><li><b>And in the verse commentary</b>: the ninety-nine verses the treatise quotes carry what it says in Arabic, and the chapter they come from is named in Arabic as well — so a reader in Arabic no longer meets Hebrew in the middle of the argument</li><li>Searching inside the book searches the text in front of the reader: in Arabic, the Arabic</li></ul>',
       '<p><b>Version 4.4 — the Book of Forbidden Unions</b></p><ul><li><b>Kitāb al-ʿAwrāt</b> joins the library: the Samaritan treatise on the laws of forbidden unions, from the priest Pinḥas ben Yiṣḥaq, in a full and continuous Hebrew translation. Twenty-four chapters by the turns of its argument, and every citation inside the text opens on the verse itself</li><li><b>And the book reads beside the verse</b>: the ninety-nine verses it quotes — in Leviticus, Deuteronomy, Genesis, Exodus and Numbers — now carry what it says. It is counted on the "beside the verse" sheet like every Samaritan work, opens under its own name in "From a Samaritan source", and is woven into the verse commentary beneath the verse it argues about — the paragraph it quoted the verse in, not the whole chapter</li><li>The printed sheet carries it too, under the name of the one who said it</li></ul>',
@@ -835,7 +835,7 @@ const I18N = {
     cmp_chapter_field:'رقم الفصل (في النسخة المقارنة)',
     ci_masoretic:'النصّ الماسوري هو النصّ اليهودي المعتمد للكتاب المقدّس العبري، نقله وشكّله علماء المسورة في طبريّة (أواخر الألفية الأولى م). وهو أساس معظم الطبعات المطبوعة.',
     ci_septuagint:'الترجمة السبعينية (LXX) هي الترجمة اليونانية القديمة للتوراة، أُنجزت في الإسكندرية في القرن الثالث ق.م. تعكس أحيانًا نصًّا عبريًّا قديمًا يختلف عن الماسوري، ويقارب في مواضع كثيرة النصّ السامري.',
-    c_name:'الاسم الكامل', c_email:'البريد الإلكتروني', c_msg:'رسالة (حتى 100 كلمة)', c_send:'إرسال', c_cancel:'إلغاء',
+    c_name:'اسم المرسِل', c_subject:'الموضوع', c_email:'بريد للرد (اختياري)', c_msg:'التفاصيل (حتى 200 كلمة)', c_send:'إرسال', c_cancel:'إلغاء', c_sent:'تم إرسال رسالتك. شكرًا!', c_sending:'جارٍ الإرسال…', c_e_name:'يرجى إدخال اسم المرسِل.', c_e_subject:'يرجى إدخال الموضوع.', c_e_msg:'يرجى إدخال التفاصيل.', c_e_long:'التفاصيل تزيد على 200 كلمة.', c_e_mail:'عنوان البريد الإلكتروني غير صالح.',
     lang_save_q:'هل تريد حفظ هذا الإعداد؟', lang_save_note:'سيُحفظ على هذا الجهاز للمرّات القادمة.',
     save_yes:'نعم، احفظ', save_no:'لا، هذه المرّة فقط',
     samsrc_pick:'مصادر سامرية — اختر مصدراً', checking_sources:'جارٍ التحقق من المصادر…',
@@ -961,7 +961,7 @@ const I18N = {
     ob_dont:'لا تُظهر مرّة أخرى', ob_later:'لاحقًا', ob_close:'إغلاق', wc_read:'قرأتُ',
     // newest first: a reader opening "ما الجديد" wants this version, not 1.0
     whatsnew_pages:[
-      '<p><b>الإصدار 5.0 — القائمة الرئيسية</b></p><ul><li><b>قائمة رئيسية جديدة</b> عند الدخول إلى التطبيق: التوراة في دائرة كبيرة في الوسط، وحولها قرص يدور من التطبيقات — التقويم، والمكتبة، والقاموس، وكنز الأناشيد، والخط الزمني، وكنز المخطوطات، وشجرة الأنساب. أدِره بالسحب أو بعجلة الفأرة أو بالأسهم، واضغط على دائرة للدخول</li><li><b>بطاقة لكل تطبيق</b> تبيّن ما يقدّمه، مع لقطات شاشة يمكن تصفّحها. وبعد الدائرة الأخيرة تتّسع دائرة التوراة على القرص كلّه وتشرح نفسها</li><li><b>نجمة «ما الجديد»</b> الوامضة (آخر خمسة إصدارات)، و<b>قائمة الهامبرغر</b> الكاملة، واختيار <b>اللغة</b> (עברית · English · العربية) مع سؤال عن حفظه، والتاريخ السامري</li><li><b>العودة إلى القائمة الرئيسية</b>: X في كل تطبيق وفي رأس التوراة، و«الخروج إلى القائمة الرئيسية» في قائمة الهامبرغر؛ ورابط «↩ التوراة» لا يظهر إلا لمن دخل من قائمة الهامبرغر الخاصة بالتوراة</li><li><b>القاموس الآرامي-العبري</b> يُفتح كتطبيق مستقل على النافذة كلّها، وعند الدخول تخرج الدوائر من المركز إلى أماكنها ويدور القرص نصف دورة</li><li>الجولة الإرشادية وصفحة المساعدة تشرحان القائمة الرئيسية</li></ul>',
+      '<p><b>الإصدار 5.0 — القائمة الرئيسية</b></p><ul><li><b>قائمة رئيسية جديدة</b> عند الدخول إلى التطبيق: التوراة في دائرة كبيرة في الوسط، وحولها قرص يدور من التطبيقات — التقويم، والمكتبة، والقاموس، وكنز الأناشيد، والخط الزمني، وكنز المخطوطات، وشجرة الأنساب. أدِره بالسحب أو بعجلة الفأرة أو بالأسهم، واضغط على دائرة للدخول</li><li><b>بطاقة لكل تطبيق</b> تبيّن ما يقدّمه، مع لقطات شاشة يمكن تصفّحها. وبعد الدائرة الأخيرة تتّسع دائرة التوراة على القرص كلّه وتشرح نفسها</li><li><b>نجمة «ما الجديد»</b> الوامضة (آخر خمسة إصدارات)، و<b>قائمة الهامبرغر</b> الكاملة، واختيار <b>اللغة</b> (עברית · English · العربية) مع سؤال عن حفظه، والتاريخ السامري</li><li><b>العودة إلى القائمة الرئيسية</b>: X في كل تطبيق وفي رأس التوراة، و«الخروج إلى القائمة الرئيسية» في قائمة الهامبرغر؛ ورابط «↩ التوراة» لا يظهر إلا لمن دخل من قائمة الهامبرغر الخاصة بالتوراة</li><li><b>القاموس الآرامي-العبري</b> يُفتح كتطبيق مستقل على النافذة كلّها، وعند الدخول تخرج الدوائر من المركز إلى أماكنها ويدور القرص نصف دورة</li><li><b>نجمة صغيرة وامضة</b> على دائرة التطبيق عند إضافة شيء جديد إليه، مع عدد المستجدّات؛ والضغط عليها يفتح مستجدّات ذلك التطبيق وحده</li><li>الجولة الإرشادية وصفحة المساعدة تشرحان القائمة الرئيسية</li></ul>',
       '<p><b>الإصدار 4.6 — صفحة تحميل واحدة للمتجرين</b></p><ul><li><b>صفحة تحميل</b> جديدة، في القائمة تحت <b>تحميل التطبيق من المتاجر</b>: شعار التطبيق، وبطاقتان — Google Play للأندرويد وApp Store للآيفون والآيباد — لكلٍّ منهما رمز للمسح ورابط مباشر</li><li><b>ولها عنوان خاصّ بها</b>: <span dir="ltr">samaritan-torah.onrender.com/download</span> — يمكن إرساله أو طباعته أو تعليقه، من غير المرور بالتطبيق</li><li>تُقرأ الصفحة بالعبرية والإنجليزية والعربية، واللغة التي تُختار فيها هي التي يُفتح بها التطبيق</li></ul>',
       '<p><b>الإصدار 4.5 — كتاب العورات بالعربية</b></p><ul><li><b>الكتاب كلّه بالعربية</b>: صار كتاب العورات يُقرأ بالعربية من أوّله إلى آخره — مئة وسبع وستّون فقرة، وأربعة وعشرون عنوان فصل، والإحالات داخل النصّ تفتح على الآية بالعربية أيضًا</li><li><b>وفي تفسير الآية</b>: الآيات التسع والتسعون التي يستشهد بها المصنّف صارت تحمل كلامه بالعربية، واسم الفصل الذي جاءت منه يُذكر بالعربية كذلك — فلا يلقى القارئ بالعربية عبريةً في وسط الكلام</li><li>والبحث داخل الكتاب يبحث في النصّ الذي بين يدي القارئ: بالعربية — في العربية</li></ul>',
       '<p><b>الإصدار 4.4 — كتاب العورات</b></p><ul><li><b>كتاب العورات</b> أُضيف إلى المكتبة: المصنّف السامري في أحكام العورات، عن الكاهن فينحاس بن إسحاق، بترجمة عبرية كاملة متّصلة. أربعة وعشرون فصلًا حسب مسار البحث، وكل إحالة داخل النصّ تفتح على الآية نفسها</li><li><b>والكتاب يُقرأ مع الآية</b>: تسع وتسعون آية يستشهد بها — في اللاويين والتثنية والتكوين والخروج والعدد — صارت تحمل كلامه. يُعدّ في لوح «إلى جانب الآية» كسائر المصادر السامرية، ويُفتح باسمه تحت «من مصدر سامري»، ويُنسج في تفسير الآية تحت الآية التي يبحثها — الفقرة التي اقتبس فيها الآية، لا الفصل كلّه</li><li>وكذلك في الطباعة: صفحة التفسير تحمل كلامه باسم قائله</li></ul>',
@@ -9944,27 +9944,37 @@ async function showVersionLog(){
 function wordCount(s){ return (s.trim().match(/\S+/g)||[]).length; }
 function updateWordCount(){
   const n=wordCount($('cMsg').value);
-  $('cCount').textContent=n+' / 100 מילים';
-  $('cCount').style.color = n>100 ? '#bf3930' : '#73738c';
+  $('cCount').textContent=n+' / 200';
+  $('cCount').style.color = n>200 ? '#bf3930' : '#73738c';
 }
 function openContact(){
-  $('cErr').textContent=''; $('cName').value=''; $('cEmail').value=''; $('cMsg').value='';
+  $('cErr').textContent=''; $('cErr').style.color=''; $('cName').value=''; $('cSubject').value=''; $('cEmail').value=''; $('cMsg').value='';
+  if($('cWebsite')) $('cWebsite').value='';
   updateWordCount(); $('contactModal').classList.remove('hidden'); $('cName').focus();
 }
-$('cCancel').onclick=()=>$('contactModal').classList.add('hidden');
 $('cMsg').addEventListener('input', updateWordCount);
-$('cSend').onclick=()=>{
-  const name=$('cName').value.trim(), email=$('cEmail').value.trim(), msg=$('cMsg').value.trim();
-  const emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+// A message to the app's owner: sender, subject, up to 200 words. The server sends it on (the address is
+// its own configuration); with no mail relay there, the reader's mail program opens with it written out.
+$('cSend').onclick=async ()=>{
+  const name=$('cName').value.trim(), subject=$('cSubject').value.trim(), email=$('cEmail').value.trim(), msg=$('cMsg').value.trim();
+  const err=$('cErr'); err.style.color='';
   const n=wordCount(msg);
-  if(!name){ $('cErr').textContent='יש להזין שם מלא.'; return; }
-  if(!emailOk){ $('cErr').textContent='יש להזין כתובת מייל תקינה.'; return; }
-  if(n===0){ $('cErr').textContent='יש להזין הודעה.'; return; }
-  if(n>100){ $('cErr').textContent='ההודעה ארוכה מ-100 מילים.'; return; }
-  const subject='פנייה מהתורה השומרונית — '+name;
-  const body='שם: '+name+'\nמייל: '+email+'\n\n'+msg;
-  // open the user's mail client, pre-filled, addressed to the contact address
-  window.location.href='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  if(!name){ err.textContent=t('c_e_name'); return; }
+  if(!subject){ err.textContent=t('c_e_subject'); return; }
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ err.textContent=t('c_e_mail'); return; }
+  if(n===0){ err.textContent=t('c_e_msg'); return; }
+  if(n>200){ err.textContent=t('c_e_long'); return; }
+  $('cSend').disabled=true; err.textContent=t('c_sending');
+  let sent=false;
+  try{
+    const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name, subject, email, message:msg, website:$('cWebsite')?$('cWebsite').value:''})});
+    const j=await r.json(); sent=!!(j && j.sent);
+  }catch(e){ sent=false; }
+  $('cSend').disabled=false;
+  if(sent){ err.style.color='#2f7d3a'; err.textContent=t('c_sent'); setTimeout(()=>$('contactModal').classList.add('hidden'), 1400); return; }
+  const body='שם: '+name+(email?'\nמייל: '+email:'')+'\nנושא: '+subject+'\n\n'+msg;
+  window.location.href='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent('פנייה מהתורה השומרונית — '+subject)+'&body='+encodeURIComponent(body);
   $('contactModal').classList.add('hidden');
 };
 

@@ -194,7 +194,7 @@ def _reset_target():
     return os.environ.get('ADMIN_EMAIL', '').strip()
 
 
-def _mail(to, subject, body):
+def _mail(to, subject, body, reply_to=None):
     """Send through the configured SMTP relay. Returns True only if it left."""
     host = os.environ.get('SMTP_HOST', '').strip()
     if not host or not to:
@@ -208,6 +208,8 @@ def _mail(to, subject, body):
     msg['From'] = os.environ.get('SMTP_FROM', user or ('no-reply@' + host))
     msg['To'] = to
     msg['Subject'] = subject
+    if reply_to:
+        msg['Reply-To'] = reply_to
     msg.set_content(body)
     try:
         if port == 465:
@@ -224,6 +226,41 @@ def _mail(to, subject, body):
         return True
     except Exception:
         return False
+
+
+# ── צור קשר — a message from a reader to the app's owner ─────────────────────
+# The address it goes to is configuration (CONTACT_EMAIL), never the request's. A reader
+# gives a name, a subject and up to 200 words; a reply address is optional. If the server
+# has no mail relay (SMTP_HOST) the answer says so, and the page falls back to opening
+# the reader's own mail program with the message already written.
+_CONTACT_TO = os.environ.get('CONTACT_EMAIL', 'OSHERSA@GMAIL.COM').strip()
+_CONTACT_HITS = {}                      # ip -> [timestamps]; five an hour is plenty
+
+
+def _one_line(x, n):
+    return ' '.join(str(x or '').split())[:n]
+
+
+@app.route('/api/contact', methods=['POST'])
+def api_contact():
+    d = request.get_json(silent=True) or {}
+    if d.get('website'):                                  # the hidden field: only a program fills it
+        return jsonify({'ok': True, 'sent': True})
+    name, subject, email = _one_line(d.get('name'), 80), _one_line(d.get('subject'), 120), _one_line(d.get('email'), 120)
+    message = str(d.get('message') or '').strip()[:3000]
+    if not (name and subject and message) or len(message.split()) > 200:
+        return jsonify({'ok': False, 'error': 'invalid'}), 400
+    if email and not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+        email = ''
+    now = time.time()
+    ip = request.remote_addr or '?'
+    hits = [t for t in _CONTACT_HITS.get(ip, []) if now - t < 3600]
+    if len(hits) >= 5:
+        return jsonify({'ok': False, 'error': 'rate'}), 429
+    _CONTACT_HITS[ip] = hits + [now]
+    body = 'מאת: %s\nמייל לחזרה: %s\nנושא: %s\n\n%s\n' % (name, email or '—', subject, message)
+    sent = _mail(_CONTACT_TO, 'פנייה מהתורה השומרונית — ' + subject, body, reply_to=email or None)
+    return jsonify({'ok': True, 'sent': bool(sent)})
 
 
 def _mask(addr):
@@ -1991,6 +2028,10 @@ app.register_blueprint(_shira_bp)
 # media host and never pass through this server.
 from manuscripts import manuscripts as _mss_unit                    # noqa: E402
 app.register_blueprint(_mss_unit)
+
+# מה חדש בכל אפליקציה — the feed behind the stars on the main menu's circles (see news.py)
+from news import news as _news_bp                                    # noqa: E402
+app.register_blueprint(_news_bp)
 
 
 @app.route('/favicon.ico')

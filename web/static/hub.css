@@ -446,3 +446,65 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
   transition:opacity .6s ease;
 }
 .hub-spoke.gone{ opacity:0; }
+
+/* the card's type scales with --pz, which the script sets so the whole card is seen at once */
+.hub-pop{ font-size:calc(14px * var(--pz, 1)); }
+.hub-pop h2{ font-size:1.36em; }
+.hub-pop .hub-tag{ font-size:.93em; }
+.hub-pop ul{ font-size:1em; }
+.hub-pop .hub-go{ font-size:1em; }
+.hub-shotbtn{ font-size:.93em; }
+
+/* the little blinking star of what is new, at the upper left of a circle. It sits on the rim and
+   outside it, clear of the picture and the name inside, so it hides none of them. */
+.hub-nb{
+  position:absolute; left:-12%; top:-12%; width:32%; height:32%; min-width:22px; min-height:22px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:5;
+  -webkit-tap-highlight-color:transparent; outline:none;
+}
+.hub-nb svg{
+  position:absolute; inset:0; width:100%; height:100%; fill:var(--gold-bright); stroke:var(--gold); stroke-width:.7; stroke-linejoin:round;
+  filter:drop-shadow(0 0 4px rgba(236,205,132,.9)); animation:hubNb 1.5s ease-in-out infinite;
+}
+.hub-nb b{
+  position:relative; font-family:'Heebo',sans-serif; font-weight:800; font-size:max(10px, calc(var(--D) * .03)); line-height:1;
+  color:#0a1733; margin-top:6%;
+}
+.hub-nb:hover svg, .hub-nb:focus-visible svg{ fill:#fff3c8; }
+@keyframes hubNb{
+  0%,100%{ transform:scale(1); filter:drop-shadow(0 0 3px rgba(236,205,132,.8)); opacity:1; }
+  50%{ transform:scale(.86); filter:drop-shadow(0 0 9px rgba(255,236,170,1)); opacity:.78; }
+}
+.hub-news-date{ margin:0 0 .3em !important; font-size:.82em; color:var(--gold); opacity:.85; }
+.hub-news-txt{ margin:0 0 .4em !important; }
+
+/* the main menu's own hamburger: a drawer from the left with ten entries */
+#hub > .hub-drawer-wrap{ position:fixed; inset:0; z-index:8; pointer-events:none; }
+.hub-drawer-wrap.open{ pointer-events:auto; }
+.hub-drawer-ov{ position:absolute; inset:0; background:rgba(4,8,26,.58); opacity:0; transition:opacity .25s ease; }
+.hub-drawer-wrap.open .hub-drawer-ov{ opacity:1; }
+.hub-drawer{
+  position:absolute; top:0; bottom:0; left:0; width:min(330px, 86%); overflow-y:auto; -webkit-overflow-scrolling:touch;
+  background:linear-gradient(180deg, #17407f, #0a1733); border-right:1px solid rgba(200,164,86,.55);
+  box-shadow:6px 0 26px rgba(0,0,0,.55); transform:translateX(-104%); transition:transform .28s cubic-bezier(.22,.8,.26,1);
+  padding-bottom:env(safe-area-inset-bottom); direction:inherit;
+}
+.hub-drawer-wrap.open .hub-drawer{ transform:none; }
+.hub-drawer-head{
+  padding:16px 18px; font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:20px; color:var(--gold-bright);
+  border-bottom:1px solid rgba(200,164,86,.4); letter-spacing:.04em;
+}
+.hub-di{
+  display:flex; align-items:center; gap:13px; width:100%; padding:13px 18px; background:none; border:0;
+  border-bottom:1px solid rgba(200,164,86,.13); color:var(--parchment); font:inherit; font-size:16px; text-align:start; cursor:pointer;
+}
+.hub-di:hover, .hub-di:focus-visible{ background:rgba(200,164,86,.16); outline:none; }
+.hub-di svg{ width:22px; height:22px; flex:0 0 auto; color:var(--gold-bright); }
+.hub-confirm-box .hub-yes.cur{ background:var(--gold-bright); }
+@media (prefers-reduced-motion:reduce){ .hub-drawer, .hub-drawer-ov{ transition:none; } }
+
+/* the framed sites (the calendar, the family tree) are scaled, not zoomed, by the accessibility size */
+.unit-wrap > iframe#extFrame.us{
+  transform:scale(var(--us, 1)); transform-origin:0 0;
+  width:calc(100% / var(--us, 1)); height:calc((100% - 48px) / var(--us, 1));
+}
