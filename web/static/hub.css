@@ -1,40 +1,41 @@
 /* ───────────────────────── התפריט הראשי — "אבני שהם" ─────────────────────────
-   A dial of circles: the Torah fixed in the middle, the other five apps on a ring
-   around it that turns like a combination lock. Navy and gold, over the same
-   faint Samaritan page the entry splash is written on.
+   A dial of circles: the Torah fixed in the middle, the other apps on a ring
+   around it that turns like a combination lock. Navy and gold, over the faint Samaritan page the entry splash is written on.
    Everything here is scoped to #hub / .hub-* so it can be removed without a trace. */
 
 #hub{
   --ink-night:#0a1733; --ink-abyss:#04081a; --lapis:#173a72;
   --gold:#c8a456; --gold-bright:#eccd84; --parchment:#efe6cc;
-  --D:min(92vw, max(300px, min(540px, calc(100dvh - 340px))));   /* the dial's side; the circles are fractions of it */
+  --D:min(92vw, max(300px, min(540px, calc(100dvh - 360px))));   /* the dial's side; the circles are fractions of it */
   position:fixed; inset:0; z-index:3500; overflow-x:hidden; overflow-y:auto;
   background:radial-gradient(120% 80% at 50% 32%, var(--lapis) 0%, var(--ink-night) 46%, var(--ink-abyss) 100%);
   font-family:'Heebo',system-ui,sans-serif; color:var(--parchment);
-  direction:rtl; -webkit-overflow-scrolling:touch;
-  padding:max(14px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling:touch;
+  padding:max(14px, env(safe-area-inset-top)) 0 max(14px, env(safe-area-inset-bottom));
   display:flex; flex-direction:column; align-items:center;
 }
 #hub.hidden{ display:none !important; }
-/* the faint Samaritan page behind everything (same as the splash) */
+#hub[lang=ar]{ font-family:'Arabic','Heebo',system-ui,sans-serif; }
+
+/* the faint Samaritan page behind everything: horizontal lines, right to left,
+   covering the whole screen */
 #hub .hub-pages{
-  position:fixed; inset:-6% -4%; display:flex; gap:2.6vw; justify-content:center;
-  pointer-events:none; z-index:0;
+  position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0;
+  font-family:'Samaritan',serif; font-size:var(--pf,24px); line-height:1.95;
+  letter-spacing:.14em; color:var(--gold); opacity:.085; direction:rtl;
+  user-select:none; -webkit-user-select:none;
 }
-#hub .hub-pages .col{
-  writing-mode:vertical-rl; font-family:'Samaritan',serif; font-size:2.0vw;
-  line-height:1.7; letter-spacing:.18em; color:var(--gold); opacity:.06;
-  white-space:nowrap; filter:blur(.4px); user-select:none;
-}
+#hub .hub-pages .row{ white-space:nowrap; overflow:hidden; height:1.95em; }
 #hub::after{                       /* vignette */
   content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
   background:radial-gradient(130% 95% at 50% 38%, transparent 52%, rgba(4,8,26,.78) 100%);
 }
 #hub > *{ position:relative; z-index:1; }
+#hub > .hub-pages{ position:fixed; z-index:0; }
 
 /* heading: the name in spaced gold, then today's date beneath it */
 .hub-title{
-  margin:clamp(6px,2vh,22px) 0 0; text-align:center;
+  margin:clamp(34px,6vh,50px) 0 0; text-align:center;
   font-family:'Frank Ruhl Libre',serif; font-weight:500;
   font-size:clamp(22px,4.6vw,38px); letter-spacing:.62em; padding-inline-start:.62em;
   color:var(--gold); text-shadow:0 2px 24px rgba(0,0,0,.5);
@@ -47,9 +48,11 @@
 .hub-title::after{ transform:scaleX(-1); }
 .hub-date{
   margin:8px 14px 0; text-align:center; max-width:96vw; line-height:1.5;
-  font-family:'Heebo',sans-serif; font-weight:300; font-size:clamp(13px,2.4vw,17px);
+  font-family:inherit; font-weight:300; font-size:clamp(13px,2.4vw,17px);
   letter-spacing:.06em; color:var(--gold-bright); opacity:.92; min-height:1.5em;
 }
+#hub[lang=ar] .hub-date, #hub[lang=ar] .hub-hint, #hub[lang=ar] .hub-pop .hub-tag, #hub[lang=ar] .hub-copy{ letter-spacing:0; }
+.hub-date #hubDateHe:not(:empty){ font-size:.8em; opacity:.75; margin-top:2px; font-family:'Heebo',sans-serif; letter-spacing:.04em; }
 
 /* the dial */
 .hub-stage{ position:relative; width:var(--D); flex:0 0 auto; margin-top:clamp(10px,2.4vh,26px); }
@@ -61,9 +64,9 @@
 /* the track the circles ride on */
 .hub-dial::before{
   content:""; position:absolute; left:50%; top:50%;
-  width:calc(var(--D) * .72); height:calc(var(--D) * .72); transform:translate(-50%,-50%);
-  border-radius:50%; border:1px solid rgba(200,164,86,.28);
-  box-shadow:0 0 0 calc(var(--D) * .05) rgba(200,164,86,.035);
+  width:calc(var(--D) * .77); height:calc(var(--D) * .77); transform:translate(-50%,-50%);
+  border-radius:50%; border:1px solid rgba(200,164,86,.26);
+  box-shadow:0 0 0 calc(var(--D) * .05) rgba(200,164,86,.03);
   pointer-events:none;
 }
 /* a small notch at the top: the position the dial reads from */
@@ -76,7 +79,7 @@
 /* every circle */
 .hub-c{
   position:absolute; left:50%; top:50%; border-radius:50%; cursor:pointer;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25em;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2em;
   text-align:center; color:var(--parchment); font-family:'Frank Ruhl Libre',serif; font-weight:700;
   background:radial-gradient(circle at 34% 28%, #2a56a0 0%, var(--lapis) 46%, #0c2147 100%);
   border:2px solid var(--gold);
@@ -84,28 +87,30 @@
   -webkit-tap-highlight-color:transparent; padding:0;
   transition:box-shadow .35s ease, border-color .35s ease, filter .35s ease;
 }
+#hub[lang=ar] .hub-c{ font-family:'Arabic','Frank Ruhl Libre',serif; }
 .hub-c:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:4px; }
-.hub-c .hub-ico{ width:34%; height:34%; color:var(--gold-bright); flex:0 0 auto; }
-.hub-c .hub-name{ font-size:calc(var(--D) * .036); line-height:1.15; padding:0 7%; letter-spacing:.01em; }
+.hub-c .hub-ico{ width:30%; height:30%; color:var(--gold-bright); flex:0 0 auto; }
+.hub-c .hub-name{ font-size:calc(var(--D) * .032); line-height:1.12; padding:0 6%; }
 
 /* the middle one: the Torah */
 .hub-center{
   width:calc(var(--D) * .38); height:calc(var(--D) * .38);
   margin:calc(var(--D) * -.19) 0 0 calc(var(--D) * -.19);
   background:radial-gradient(circle at 36% 26%, #31609f 0%, #1a438a 40%, #0b1f45 100%);
-  border-width:3px; border-color:var(--gold-bright); gap:.2em;
+  border-width:3px; border-color:var(--gold-bright); gap:.15em;
   box-shadow:0 14px 40px rgba(0,0,0,.55), 0 0 0 calc(var(--D) * .012) rgba(200,164,86,.22),
              inset 0 0 0 5px rgba(10,23,51,.5), inset 0 0 40px rgba(236,205,132,.2);
 }
-.hub-center img{ width:auto; height:35%; filter:drop-shadow(0 4px 8px rgba(0,0,0,.5)); }
-.hub-center .hub-name{ font-size:calc(var(--D) * .037); line-height:1.05; color:var(--gold-bright); padding:0 12%; }
+.hub-center img{ width:auto; height:34%; filter:drop-shadow(0 4px 8px rgba(0,0,0,.5)); }
+.hub-center .hub-name{ font-size:calc(var(--D) * .036); line-height:1.08; color:var(--gold-bright); padding:0 13%; }
 .hub-center:hover{ filter:brightness(1.12); }
 
-/* the ring: each satellite sits at --a degrees from the top, kept upright */
+/* the ring: each satellite sits at --a degrees from the top, kept upright.
+   Set out a little further from the middle. */
 .hub-sat{
-  width:calc(var(--D) * .26); height:calc(var(--D) * .26);
-  margin:calc(var(--D) * -.13) 0 0 calc(var(--D) * -.13);
-  transform:rotate(var(--a)) translateY(calc(var(--D) * -.36)) rotate(calc(var(--a) * -1));
+  width:calc(var(--D) * .23); height:calc(var(--D) * .23);
+  margin:calc(var(--D) * -.115) 0 0 calc(var(--D) * -.115);
+  transform:rotate(var(--a)) translateY(calc(var(--D) * -.385)) rotate(calc(var(--a) * -1));
   transition:transform .55s cubic-bezier(.22,.8,.26,1), box-shadow .35s ease, border-color .35s ease, filter .35s ease;
 }
 .hub-dial.dragging .hub-sat{ transition:box-shadow .35s ease, border-color .35s ease; }
@@ -116,9 +121,8 @@
              0 0 30px rgba(236,205,132,.38), inset 0 0 0 4px rgba(10,23,51,.5), inset 0 0 26px rgba(236,205,132,.22);
 }
 .hub-sat:hover{ filter:brightness(1.12); }
-
 .hub-hint{
-  margin:14px 0 0; text-align:center; font-weight:300; font-size:13px; letter-spacing:.14em;
+  margin:14px 12px 0; text-align:center; font-weight:300; font-size:13px; letter-spacing:.14em;
   color:var(--gold); opacity:.7;
 }
 
@@ -130,10 +134,12 @@
   box-shadow:0 14px 40px rgba(0,0,0,.55); color:var(--parchment);
   opacity:1; transition:opacity .28s ease, transform .28s ease;
 }
+.hub-pop:empty{ display:none; }
 .hub-pop.swap{ opacity:0; transform:translateY(6px); }
 .hub-pop h2{ margin:0 0 2px; font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:19px; color:var(--gold-bright); }
+#hub[lang=ar] .hub-pop h2{ font-family:'Arabic','Frank Ruhl Libre',serif; }
 .hub-pop .hub-tag{ margin:0 0 8px; font-size:13px; color:var(--gold); font-weight:300; letter-spacing:.04em; }
-.hub-pop ul{ margin:0 0 10px; padding:0 16px 0 0; font-size:14px; line-height:1.55; }
+.hub-pop ul{ margin:0 0 10px; padding:0; padding-inline-start:18px; font-size:14px; line-height:1.55; }
 .hub-pop li{ margin:2px 0; }
 .hub-pop li::marker{ color:var(--gold); }
 .hub-pop .hub-go{
@@ -142,12 +148,13 @@
 }
 .hub-pop .hub-go:hover{ background:rgba(200,164,86,.28); }
 
-/* wide screens: beside the dial, joined to the top circle by a hairline */
+/* wide screens: at the right of the dial, joined to the top circle by a hairline */
 @media (min-width:1100px){
-  .hub-pop{ right:calc(100% + 26px); top:0; }
+  #hub{ --D:min(92vw, calc(100dvh - 230px), 620px); }
+  .hub-pop{ left:calc(100% + 26px); top:0; }
   .hub-pop::before{
-    content:""; position:absolute; left:100%; top:calc(var(--D) * .14); height:1px;
-    width:calc(26px + var(--D) * .37); background:linear-gradient(90deg, var(--gold), rgba(200,164,86,.15));
+    content:""; position:absolute; right:100%; top:calc(var(--D) * .115); height:1px;
+    width:calc(26px + var(--D) * .385); background:linear-gradient(270deg, var(--gold), rgba(200,164,86,.15));
   }
 }
 /* narrow screens: a card under the dial, with a pointer up to it */
@@ -161,11 +168,52 @@
   .hub-stage{ display:flex; flex-direction:column; align-items:center; width:100%; }
   .hub-dial{ flex:0 0 auto; }
 }
-@media (min-width:1100px){ #hub{ --D:min(92vw, calc(100dvh - 210px), 620px); } }
-.hub-copy{ margin:18px 12px 0; font-weight:300; font-size:11px; letter-spacing:.05em; color:var(--gold); opacity:.6; text-align:center; }
+
+/* the foot of the page: the site's address, then the rights line */
+.hub-foot{ margin:auto 12px 0; padding-top:16px; text-align:center; }
+.hub-site{
+  display:inline-block; direction:ltr; font-family:'Heebo',sans-serif; font-weight:400;
+  font-size:14px; letter-spacing:.1em; color:var(--gold-bright); text-decoration:none;
+  border-bottom:1px solid rgba(236,205,132,.4); padding-bottom:1px;
+}
+.hub-site:hover{ color:#fff; border-bottom-color:#fff; }
+.hub-copy{ margin-top:8px; font-weight:300; font-size:11px; letter-spacing:.05em; color:var(--gold); opacity:.6; }
+
+/* the language switch, at the right */
+#hub > .hub-lang{
+  position:fixed; top:max(10px, env(safe-area-inset-top)); right:max(10px, env(safe-area-inset-right));
+  z-index:3; display:flex; gap:5px; direction:ltr;
+}
+.hub-lang button{
+  min-width:28px; height:28px; padding:0 6px; border-radius:14px; cursor:pointer;
+  border:1px solid rgba(200,164,86,.6); background:rgba(10,23,51,.55); color:var(--gold-bright);
+  font:inherit; font-size:12px; font-weight:700; line-height:1;
+}
+.hub-lang button:hover{ background:rgba(200,164,86,.22); }
+.hub-lang button.on{ background:var(--gold); color:#0a1733; border-color:var(--gold-bright); }
+
+/* "keep this language?" in the hub's own colours */
+#hub > .hub-confirm{
+  position:fixed; inset:0; z-index:6; display:flex; align-items:center; justify-content:center;
+  background:rgba(4,8,26,.62); padding:16px;
+}
+.hub-confirm-box{
+  width:min(340px,100%); box-sizing:border-box; padding:18px 18px 16px; text-align:center;
+  border:1px solid rgba(200,164,86,.6); border-radius:14px; box-shadow:0 18px 50px rgba(0,0,0,.6);
+  background:linear-gradient(180deg, #1c4690, #0c2147);
+}
+.hub-confirm-box h3{ margin:0 0 6px; font-family:'Frank Ruhl Libre',serif; font-size:18px; color:var(--gold-bright); }
+.hub-confirm-box p{ margin:0 0 14px; font-size:14px; line-height:1.5; }
+.hub-confirm-box button{
+  display:block; width:100%; margin-top:8px; padding:9px 12px; border-radius:20px; cursor:pointer;
+  font:inherit; font-weight:700; font-size:14px;
+}
+.hub-confirm-box .hub-yes{ border:1px solid var(--gold-bright); background:var(--gold); color:#0a1733; }
+.hub-confirm-box .hub-no{ border:1px solid rgba(200,164,86,.6); background:transparent; color:var(--gold-bright); }
 
 @media (prefers-reduced-motion:reduce){
-  .hub-sat{ transition:none; } .hub-pop{ transition:none; }
+  .hub-sat, .hub-pop{ transition:none; }
+  .hub-star svg{ animation:none; }
 }
 
 /* ── how a unit's own bar answers to the hub ───────────────────────────────────
@@ -187,3 +235,188 @@ body.from-hub .rd-totorah, body.from-hub .unit-totorah{ display:none !important;
 .unit-totorah:hover{ background:rgba(255,255,255,.28); }
 /* the title in a unit bar was centred with room for ONE button; give it the room for two */
 .unit-bar .unit-bar-title{ padding-inline-end:0; }
+
+/* the dictionary entered straight from the main menu was never on the library's shelf:
+   it has no shelf to go back to */
+#dictModal[data-direct] .rd-tolib{ display:none !important; }
+
+/* version beside the language switch */
+.hub-ver{ align-self:center; margin-inline-end:4px; font-family:'Heebo',sans-serif; font-size:11px; font-weight:400;
+  letter-spacing:.04em; color:var(--gold); opacity:.85; white-space:nowrap; direction:ltr; }
+
+/* the left side: hamburger, and under it a blinking gold star for what is new */
+#hub > .hub-side{
+  position:fixed; top:max(10px, env(safe-area-inset-top)); left:max(10px, env(safe-area-inset-left));
+  z-index:3; display:flex; flex-direction:row; align-items:flex-start; gap:8px; direction:ltr;
+}
+.hub-menu{
+  width:28px; height:28px; border-radius:50%; cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center;
+  border:1px solid rgba(200,164,86,.6); background:rgba(10,23,51,.55); color:var(--gold-bright);
+}
+.hub-menu svg{ width:15px; height:15px; }
+.hub-menu:hover{ background:rgba(200,164,86,.22); }
+.hub-star{
+  min-width:38px; padding:0; cursor:pointer; background:none; border:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:1px;
+  -webkit-tap-highlight-color:transparent;
+}
+.hub-star-cap{ font-family:'Heebo',sans-serif; font-size:9px; font-weight:400; letter-spacing:.03em; line-height:1.1;
+  color:var(--gold-bright); opacity:.9; white-space:nowrap; direction:rtl; }
+#hub[lang=ar] .hub-star-cap{ font-family:'Arabic','Heebo',sans-serif; }
+.hub-star svg{ width:21px; height:21px; fill:var(--gold-bright); stroke:var(--gold); stroke-width:.8; stroke-linejoin:round;
+  filter:drop-shadow(0 0 5px rgba(236,205,132,.85)); animation:hubTwinkle 1.7s ease-in-out infinite; }
+.hub-star:hover svg{ fill:#fff3c8; }
+@keyframes hubTwinkle{
+  0%,100%{ opacity:1; transform:scale(1) rotate(0deg); }
+  50%{ opacity:.3; transform:scale(.82) rotate(8deg); }
+}
+
+/* what is new: the newest version and two before it, scrolling */
+#hub > .hub-news{
+  position:fixed; inset:0; z-index:6; display:flex; align-items:center; justify-content:center;
+  background:rgba(4,8,26,.62); padding:16px;
+}
+.hub-news-box{
+  width:min(520px,100%); max-height:min(80vh, 640px); box-sizing:border-box; display:flex; flex-direction:column;
+  border:1px solid rgba(200,164,86,.6); border-radius:14px; box-shadow:0 18px 50px rgba(0,0,0,.6);
+  background:linear-gradient(180deg, #1c4690, #0c2147); color:var(--parchment); overflow:hidden;
+}
+.hub-news-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px;
+  border-bottom:1px solid rgba(200,164,86,.35); }
+.hub-news-head h2{ margin:0; font-family:'Frank Ruhl Libre',serif; font-size:19px; color:var(--gold-bright); }
+.hub-news-x{ width:34px; height:34px; border-radius:50%; cursor:pointer; line-height:1; font-size:22px; padding:0;
+  border:1px solid rgba(200,164,86,.6); background:transparent; color:var(--gold-bright); }
+.hub-news-x:hover{ background:rgba(200,164,86,.22); }
+.hub-news-body{ overflow-y:auto; -webkit-overflow-scrolling:touch; padding:6px 16px 14px; font-size:14.5px; line-height:1.6; }
+.hub-news-page{ padding:10px 0; }
+.hub-news-page + .hub-news-page{ border-top:1px dashed rgba(200,164,86,.35); }
+.hub-news-page p{ margin:.2em 0 .4em; }
+.hub-news-page p b:first-child{ color:var(--gold-bright); font-size:1.05em; }
+.hub-news-page ul{ margin:0 0 .4em; padding:0; padding-inline-start:20px; }
+.hub-news-page li{ margin:.25em 0; }
+.hub-news-page li::marker{ color:var(--gold); }
+
+/* while the main menu is up the app's own dialogs and its drawer rise above it: the
+   hamburger there is the very same menu, and what it opens must be seen. The drawer
+   comes in from the left here, where its button is. */
+body.hub-open .modal{ z-index:3700; }
+body.hub-open .menu-overlay{ z-index:3600; }
+body.hub-open .menu-drawer{ z-index:3601; right:auto; left:0; box-shadow:4px 0 20px rgba(0,0,0,.35); animation-name:drawerInL; }
+@keyframes drawerInL{ from{ transform:translateX(-100%); } to{ transform:translateX(0); } }
+
+/* on a phone the title sits a little lower, clear of the corner buttons */
+@media (max-width:480px){
+  .hub-title{ margin-top:42px; }
+}
+
+/* the Torah's own close: in its navy header, like the X of every other app, back to the main menu */
+#hdr .torah-x{
+  flex:0 0 auto; width:30px; height:30px; border-radius:9px; cursor:pointer; padding:0; line-height:1;
+  font-family:inherit; font-size:20px; color:#fff;
+  border:1px solid rgba(255,255,255,.38); background:rgba(255,255,255,.14);
+}
+#hdr .torah-x:hover{ background:rgba(255,255,255,.28); }
+/* "exit to the main menu" in the hamburger: pointless while the main menu is itself showing */
+body.hub-open .menu-item[data-act="hub"]{ display:none; }
+
+/* the Torah in the middle is a dome standing out of the page: a gloss high on one side, light on the
+   near edge and shade on the far one, and a shadow cast beneath. When its stop comes round it swells
+   from the middle to fill the whole dial, and goes back again as the dial turns on. */
+.hub-center{
+  overflow:hidden; z-index:2;
+  background:
+    radial-gradient(ellipse 58% 40% at 38% 19%, rgba(255,255,255,.55) 0, rgba(255,255,255,.16) 58%, transparent 100%),
+    radial-gradient(circle at 40% 34%, #5d94db 0, #2f63b3 32%, #16427f 60%, #0a2250 82%, #061638 100%);
+  border-width:3px; border-color:#f3d98e;
+  box-shadow:
+    0 calc(var(--D) * .035) calc(var(--D) * .07) rgba(0,0,0,.62),
+    0 0 calc(var(--D) * .05) rgba(255,226,140,.32),
+    inset calc(var(--D) * -.03) calc(var(--D) * -.04) calc(var(--D) * .07) rgba(0,8,30,.72),
+    inset calc(var(--D) * .02) calc(var(--D) * .025) calc(var(--D) * .05) rgba(150,190,255,.42);
+  transform:scale(calc(1 + var(--e, 0) * 1.63));          /* 1 → the dial's whole width (1 / .38) */
+  transition:transform .55s cubic-bezier(.22,.8,.26,1), filter .35s ease;
+}
+.hub-dial.dragging .hub-center{ transition:filter .35s ease; }
+.hub-center > *{ position:relative; z-index:2; }
+.hub-center img{ transform:scaleX(1.12); }                  /* the scroll, a little wider */
+.hub-sat{ opacity:calc(1 - var(--e, 0)); transition:transform .55s cubic-bezier(.22,.8,.26,1), box-shadow .35s ease, border-color .35s ease, filter .35s ease, opacity .55s ease; }
+.hub-dial.dragging .hub-sat{ transition:box-shadow .35s ease, border-color .35s ease; }
+/* the glint: a four-pointed flash, thin and white, at whatever point the script gives it (--gx, --gy) */
+.hub-center::before{
+  content:""; position:absolute; left:var(--gx, 30%); top:var(--gy, 25%); width:30%; height:30%; pointer-events:none; z-index:3;
+  transform:translate(-50%,-50%) scale(.1); opacity:0;
+  background:
+    radial-gradient(circle, #fff 0, rgba(255,255,255,.9) 6%, rgba(255,244,200,.35) 16%, transparent 34%),
+    linear-gradient(90deg, transparent 0, rgba(255,255,255,.95) 50%, transparent 100%) center / 100% 2px no-repeat,
+    linear-gradient(0deg, transparent 0, rgba(255,255,255,.95) 50%, transparent 100%) center / 2px 100% no-repeat;
+}
+.hub-center.glint::before{ animation:hubGlint 1.5s ease-out 1 both; }
+@keyframes hubGlint{
+  0%{ opacity:0; transform:translate(-50%,-50%) scale(.1) rotate(0deg); }
+  30%{ opacity:1; transform:translate(-50%,-50%) scale(1) rotate(14deg); }
+  62%{ opacity:.85; transform:translate(-50%,-50%) scale(.7) rotate(28deg); }
+  100%{ opacity:0; transform:translate(-50%,-50%) scale(.2) rotate(44deg); }
+}
+@media (prefers-reduced-motion:reduce){
+  .hub-center.glint::before{ animation-name:hubGlintSoft; transform:translate(-50%,-50%) scale(1); }
+}
+@keyframes hubGlintSoft{ 0%{ opacity:0; } 35%{ opacity:1; } 100%{ opacity:0; } }
+
+/* the dictionary is an app of its own: it takes the whole window, with no Torah showing behind it */
+#dictModal{ align-items:stretch; justify-content:stretch; padding:0; background:#fff; }
+#dictModal .modal-box.dict-app{ max-width:none; width:100%; height:100%; max-height:100%; border-radius:0; padding:14px; box-sizing:border-box; }
+
+/* in English the name is set in capitals, so it takes less letter-spacing to fit */
+#hub[lang=en] .hub-title{ letter-spacing:.34em; padding-inline-start:.34em; font-size:clamp(20px,4vw,32px); }
+
+/* the card: its text, and under it "enter" with the screenshots button beside it */
+.hub-pop{ width:min(370px, 90vw); }
+.hub-pop-txt{ min-width:0; }
+.hub-actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.hub-shotbtn{
+  display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(200,164,86,.55); background:transparent; color:var(--gold-bright);
+  border-radius:20px; padding:6px 13px; font:inherit; font-weight:600; font-size:13px; cursor:pointer;
+}
+.hub-shotbtn:hover{ background:rgba(200,164,86,.2); }
+@media (max-width:1099px){ .hub-pop{ width:min(430px, 92vw); } }
+
+/* the window of screenshots: it opens out of the button and scrolls sideways */
+#hub > .hub-shots{
+  position:fixed; inset:0; z-index:7; display:flex; align-items:center; justify-content:center;
+  background:rgba(4,8,26,.72); padding:14px; animation:hubFadeIn .25s ease both;
+}
+.hub-shots.closing{ animation:hubFadeOut .26s ease both; }
+.hub-shots-box{
+  width:min(560px,100%); max-height:94vh; box-sizing:border-box; display:flex; flex-direction:column;
+  border:1px solid rgba(200,164,86,.6); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.65);
+  background:linear-gradient(180deg, #1c4690, #0c2147); color:var(--parchment); overflow:hidden;
+  animation:hubShotsIn .42s cubic-bezier(.2,.9,.25,1) both;
+}
+.hub-shots.closing .hub-shots-box{ animation:hubShotsOut .26s ease-in both; }
+.hub-shots-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; border-bottom:1px solid rgba(200,164,86,.35); }
+.hub-shots-head h2{ margin:0; font-family:'Frank Ruhl Libre',serif; font-size:18px; color:var(--gold-bright); }
+.hub-shots-strip{
+  display:flex; gap:14px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+  padding:14px 8%; outline:none; scrollbar-width:thin; scrollbar-color:rgba(200,164,86,.6) transparent;
+}
+.hub-shots-strip img{
+  flex:0 0 auto; height:min(70vh, 640px); width:auto; max-width:84vw; object-fit:contain; scroll-snap-align:center;
+  border-radius:12px; border:1px solid rgba(200,164,86,.5); background:#fff; box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+.hub-shots-dots{ display:flex; justify-content:center; gap:7px; padding:0 0 12px; }
+.hub-shots-dots i{ width:8px; height:8px; border-radius:50%; background:rgba(200,164,86,.35); transition:background .2s, transform .2s; }
+.hub-shots-dots i.on{ background:var(--gold-bright); transform:scale(1.25); }
+@keyframes hubShotsIn{ from{ opacity:0; transform:scale(.12); } to{ opacity:1; transform:scale(1); } }
+@keyframes hubShotsOut{ from{ opacity:1; transform:scale(1); } to{ opacity:0; transform:scale(.12); } }
+@keyframes hubFadeIn{ from{ opacity:0; } to{ opacity:1; } }
+@keyframes hubFadeOut{ from{ opacity:1; } to{ opacity:0; } }
+@media (prefers-reduced-motion:reduce){
+  .hub-shots-box, .hub-shots.closing .hub-shots-box{ animation:none; }
+}
+
+/* the way in: the circles come out of the middle, all together, and the ring turns half a round;
+   --k is how far out they are (0 = in the Torah, 1 = in place), driven by the script */
+.hub-sat{ transform:rotate(var(--a)) translateY(calc(var(--D) * -.385 * var(--k, 1))) rotate(calc(var(--a) * -1));
+  opacity:calc((1 - var(--e, 0)) * min(1, var(--k, 1) * 3)); }
+.hub-dial.intro{ pointer-events:none; }
+.hub-dial.intro .hub-sat{ transition:none; }
+#hub.hub-intro .hub-pop{ opacity:0; }

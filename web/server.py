@@ -42,7 +42,7 @@ try:
 except Exception:
     pass
 
-APP_VERSION = '4.6'
+APP_VERSION = '5.0'
 _VER_UPDATES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VER_UPDATES.txt')
 _SYSTEM_DOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'SYSTEM_DOC.txt')
 
@@ -1912,11 +1912,11 @@ def _sam_opening(sam_ch_id):
 
 # ── pages ──────────────────────────────────────────────────────────────────
 def _asset_build():
-    """A stamp that changes whenever app.js or style.css does, so the page can ask
+    """A stamp that changes whenever app.js, style.css, hub.js or hub.css does, so the page can ask
     for them by version and they can then be cached for good."""
     try:
         newest = max(os.path.getmtime(os.path.join(app.static_folder, n))
-                     for n in ('app.js', 'style.css'))
+                     for n in ('app.js', 'style.css', 'hub.js', 'hub.css'))
         return str(int(newest))
     except OSError:
         return APP_VERSION
