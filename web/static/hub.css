@@ -394,14 +394,24 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
 .hub-shots.closing .hub-shots-box{ animation:hubShotsOut .26s ease-in both; }
 .hub-shots-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; border-bottom:1px solid rgba(200,164,86,.35); }
 .hub-shots-head h2{ margin:0; font-family:'Frank Ruhl Libre',serif; font-size:18px; color:var(--gold-bright); }
-.hub-shots-strip{
-  display:flex; gap:14px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
-  padding:14px 8%; outline:none; scrollbar-width:thin; scrollbar-color:rgba(200,164,86,.6) transparent;
+.hub-cf{
+  position:relative; height:min(66vh, 600px); overflow:hidden; outline:none; touch-action:pan-y; cursor:grab;
+  user-select:none; -webkit-user-select:none; margin:6px 0 2px;
 }
-.hub-shots-strip img{
-  flex:0 0 auto; height:min(70vh, 640px); width:auto; max-width:84vw; object-fit:contain; scroll-snap-align:center;
-  border-radius:12px; border:1px solid rgba(200,164,86,.5); background:#fff; box-shadow:0 8px 24px rgba(0,0,0,.5);
+.hub-cf.drag{ cursor:grabbing; }
+.hub-cf-item{
+  position:absolute; left:50%; top:50%; display:block; max-width:none; border-radius:12px; border:1px solid rgba(200,164,86,.55);
+  background:#fff; box-shadow:0 10px 28px rgba(0,0,0,.55); will-change:transform, opacity, filter;
+  transition:transform .5s cubic-bezier(.22,.8,.26,1), opacity .5s ease, filter .5s ease;
 }
+.hub-cf.drag .hub-cf-item{ transition:none; }
+.hub-cf-item:not(.front){ cursor:pointer; }
+.hub-cf-nav{
+  position:absolute; top:50%; z-index:20; width:34px; height:34px; margin-top:-17px; border-radius:50%; padding:0; line-height:1;
+  border:1px solid rgba(200,164,86,.7); background:rgba(10,23,51,.7); color:var(--gold-bright); font-size:22px; cursor:pointer;
+}
+.hub-cf-nav:hover{ background:rgba(200,164,86,.3); }
+.hub-cf-prev{ left:8px; } .hub-cf-next{ right:8px; }
 .hub-shots-dots{ display:flex; justify-content:center; gap:7px; padding:0 0 12px; }
 .hub-shots-dots i{ width:8px; height:8px; border-radius:50%; background:rgba(200,164,86,.35); transition:background .2s, transform .2s; }
 .hub-shots-dots i.on{ background:var(--gold-bright); transform:scale(1.25); }
@@ -411,6 +421,7 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
 @keyframes hubFadeOut{ from{ opacity:1; } to{ opacity:0; } }
 @media (prefers-reduced-motion:reduce){
   .hub-shots-box, .hub-shots.closing .hub-shots-box{ animation:none; }
+  .hub-cf-item{ transition-duration:.01ms; }
 }
 
 /* the way in: the circles come out of the middle, all together, and the ring turns half a round;
@@ -420,3 +431,18 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
 .hub-dial.intro{ pointer-events:none; }
 .hub-dial.intro .hub-sat{ transition:none; }
 #hub.hub-intro .hub-pop{ opacity:0; }
+
+/* the names are sized by the script to fit inside the round edge; these are only the starting sizes */
+.hub-c .hub-name{ padding:0 4%; max-width:100%; box-sizing:border-box; }
+.hub-center .hub-name{ padding:0 8%; }
+
+/* the dotted lines of the way in: from the Torah's rim to each circle as it comes out, then they fade */
+.hub-dial{ isolation:isolate; }
+.hub-spoke{
+  position:absolute; left:50%; top:50%; width:0; z-index:-1; pointer-events:none; transform-origin:0 0;
+  height:calc(max(0px, (var(--k, 1) * .385 - .19) * var(--D)));
+  border-left:3px dotted rgba(236,205,132,.9);
+  transform:rotate(calc(var(--a) + 180deg)) translateY(calc(var(--D) * .19));
+  transition:opacity .6s ease;
+}
+.hub-spoke.gone{ opacity:0; }

@@ -1023,7 +1023,8 @@
   }
   async function run(){
     buildPages(); fitVerse();
-    if(reduce){ lines.forEach(l=>l.style.clipPath='none'); verse.classList.add('lit'); await wait(1500); return finish(); }
+    // (A system setting that asks for less motion used to skip the writing and show the verse at once;
+    //  the hand writing the verse is the app's way in, so it is written whatever that setting says.)
     // Only if a gesture has already unlocked audio. Creating the context here
     // regardless made every visit log "The AudioContext was not allowed to
     // start" — the browser had refused it, and the sound button exists exactly
@@ -1046,6 +1047,8 @@
   window.SamaritanSplash={ skip, finish, config:SPLASH_CONFIG };
 })();
 </script>
+<!-- registered before the app's own, so that the main menu's Back handling (hub.js) is asked first -->
+<script>addEventListener('popstate', function(e){ if(window.__hubPop) window.__hubPop(e); });</script>
 <script src="{{ url_for('static', filename='app.js') }}?v={{ asset_build }}"></script>
 <script>
   if ('serviceWorker' in navigator) {

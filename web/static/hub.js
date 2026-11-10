@@ -118,6 +118,7 @@
   // ── build the ring: a circle for each app ──────────────────────────────────
   const dial = $('hubDial');
   const center = $('hubTorah');
+  const spokes = [];                                   // the dotted lines of the way in (made, and removed again, there)
   const sats = APPS.map((a, i) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'hub-c hub-sat'; b.dataset.i = i;
@@ -276,7 +277,53 @@
     langBox.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.lang === L));
     paintHubDate();
     if(topIdx >= 0) fill(topIdx);
+    refit();
   }
+
+  // ── every name inside its circle ────────────────────────────────────────────
+  // The names differ in length from one language to the next, so none is given a size
+  // beforehand: each is made as large as will go while every corner of its text (and of the
+  // picture above it) stays inside the circle's round edge, and is measured again whenever the
+  // language or the size of the dial changes. If even the smallest size will not do, the
+  // picture above it gives up some of its room.
+  function fitCircles(){
+    const D = dial.clientWidth; if(!D) return;
+    const circles = [center].concat(sats);
+    circles.forEach(b => {
+      const nm = b.querySelector('.hub-name'); if(!nm) return;
+      const ic = b.querySelector('.hub-ico, img');
+      const isC = b === center;
+      const maxPx = D * (isC ? .05 : .042), minPx = isC ? 9 : 7.5;
+      const scale = b.getBoundingClientRect().width / b.offsetWidth || 1;           // the Torah's circle may be swollen
+      const R = b.offsetWidth / 2 * .93;
+      const inside = el => {
+        const range = document.createRange(); range.selectNodeContents(el);
+        const r = range.getBoundingClientRect(), c = b.getBoundingClientRect();
+        const cx = c.left + c.width / 2, cy = c.top + c.height / 2;
+        return [[r.left, r.top], [r.right, r.top], [r.left, r.bottom], [r.right, r.bottom]]
+          .every(([x, y]) => Math.hypot((x - cx) / scale, (y - cy) / scale) <= R);
+      };
+      const iconInside = () => !ic || [0, 1, 2, 3].every(k => {
+        const r = ic.getBoundingClientRect(), c = b.getBoundingClientRect();
+        const x = k % 2 ? r.right : r.left, y = k < 2 ? r.top : r.bottom;
+        return Math.hypot((x - (c.left + c.width / 2)) / scale, (y - (c.top + c.height / 2)) / scale) <= R;
+      });
+      let done = false;
+      for(const iconPart of (isC ? [1, .85, .7] : [1, .82, .66])){
+        if(ic){ ic.style.height = (iconPart * (isC ? 34 : 30)) + '%'; if(ic.tagName === 'svg' || ic.classList.contains('hub-ico')) ic.style.width = (iconPart * 30) + '%'; }
+        for(let px = maxPx; px >= minPx; px -= .5){
+          nm.style.fontSize = px.toFixed(1) + 'px';
+          if(inside(nm) && iconInside()){ done = true; break; }
+        }
+        if(done) break;
+      }
+    });
+  }
+  let _fitT = null;
+  const refit = () => { clearTimeout(_fitT); _fitT = setTimeout(fitCircles, 40); };
+  addEventListener('resize', refit);
+  if(window.ResizeObserver) new ResizeObserver(refit).observe(dial);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(refit);
 
   // ── the turning ────────────────────────────────────────────────────────────
   // The dial has one stop for each app and, after the last of them, one more: the
@@ -307,6 +354,7 @@
   function paint(x){
     const ring = -ringSteps(x) * STEP + introDeg;
     sats.forEach((b, i) => b.style.setProperty('--a', (i * STEP + ring).toFixed(2) + 'deg'));
+    spokes.forEach((sp, i) => sp.style.setProperty('--a', (i * STEP + ring).toFixed(2) + 'deg'));
     dial.style.setProperty('--e', swell(x).toFixed(3));
   }
   function setTop(i){
@@ -402,49 +450,105 @@
 
   // ── screenshots ────────────────────────────────────────────────────────────
   // How many pictures each app has, in /static/img/hub/<app>-<n>.jpg
-  const SHOTS = { calendar:2, library:3, dict:2, shira:2, timeline:2, mss:2, genealogy:1, torah:3 };
-  const shotSrc = (k, n) => '/static/img/hub/' + k + '-' + n + '.jpg';
-  // The window opens out of the little picture it was opened from, and closes back into it.
+  const SHOTS = { calendar:2, library:3, dict:2, shira:2, timeline:2, mss:2, genealogy:3, torah:4 };
+  const shotSrc = (k, n) => '/static/img/hub/' + k + '-' + n + '.jpg?v=' + (window.APP_VERSION || '1');    // the version in the address, so a new picture is never hidden behind an old one
+  // A window that opens out of the button it was pressed from and closes back into it. The pictures
+  // sit on a wheel: one in front, the ones either side of it dimmed and out of focus, and turning
+  // the wheel — by the arrows, a swipe, the keys, the wheel of the mouse or the dots — is animated.
   function openShots(key, from, title){
     if(hub.querySelector('.hub-shots')) return;
     const n = SHOTS[key] || 0; if(!n) return;
+    const X = T();
     const o = document.createElement('div'); o.className = 'hub-shots';
     o.innerHTML = '<div class="hub-shots-box" role="dialog" aria-modal="true"><div class="hub-shots-head"><h2></h2>' +
                   '<button type="button" class="hub-news-x">&times;</button></div>' +
-                  '<div class="hub-shots-strip" tabindex="0"></div><div class="hub-shots-dots"></div></div>';
+                  '<div class="hub-cf" tabindex="0"><button type="button" class="hub-cf-nav hub-cf-prev" aria-label="‹">‹</button>' +
+                  '<button type="button" class="hub-cf-nav hub-cf-next" aria-label="›">›</button></div>' +
+                  '<div class="hub-shots-dots"></div></div>';
     o.querySelector('h2').textContent = title;
-    const strip = o.querySelector('.hub-shots-strip'), dots = o.querySelector('.hub-shots-dots');
+    const cf = o.querySelector('.hub-cf'), dots = o.querySelector('.hub-shots-dots');
+    const items = [];
     for(let i = 1; i <= n; i++){
-      const im = document.createElement('img'); im.src = shotSrc(key, i); im.alt = title + ' ' + i; im.decoding = 'async';
-      strip.appendChild(im);
-      const d = document.createElement('i'); if(i === 1) d.className = 'on'; dots.appendChild(d);
+      const im = document.createElement('img'); im.src = shotSrc(key, i); im.alt = title + ' ' + i; im.decoding = 'async'; im.draggable = false;
+      im.className = 'hub-cf-item'; cf.insertBefore(im, cf.querySelector('.hub-cf-nav')); items.push(im);
     }
-    if(n < 2) dots.style.display = 'none';
+    for(let i = 0; i < n; i++){
+      const d = document.createElement('i'); d.addEventListener('click', () => go(i)); dots.appendChild(d);
+    }
+    if(n < 2){ dots.style.display = 'none'; o.querySelectorAll('.hub-cf-nav').forEach(b => b.style.display = 'none'); }
     const box = o.querySelector('.hub-shots-box');
     hub.appendChild(o);
     try{
       const fr = from.getBoundingClientRect(), br = box.getBoundingClientRect();
       box.style.transformOrigin = (fr.left + fr.width / 2 - br.left).toFixed(0) + 'px ' + (fr.top + fr.height / 2 - br.top).toFixed(0) + 'px';
     }catch(e){}
+
+    // the wheel: `pos` is where it is turned to (a whole number at rest, between two while a finger is on it)
+    let pos = 0, dragging = false;
+    const circ = d => { d = ((d % n) + n) % n; return d > n / 2 ? d - n : d; };      // the short way round
+    function lay(){
+      const H = cf.clientHeight, W = cf.clientWidth;
+      items.forEach((im, i) => {
+        const off = circ(i - pos), a = Math.abs(off);
+        const asp = (im.naturalWidth && im.naturalHeight) ? im.naturalWidth / im.naturalHeight : .6;
+        let h = H, w = h * asp; if(w > W * .66){ w = W * .66; h = w / asp; }      // the front one fits the window
+        im.style.height = h + 'px'; im.style.width = w + 'px';
+        const step = w * .64;                                                       // how far a neighbour sits to the side
+        const sc = 1 - Math.min(a, 1.4) * .2;
+        im.style.transform = 'translate(-50%,-50%) translateX(' + (off * step).toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
+        im.style.opacity = a > 1.6 ? 0 : (1 - Math.min(a, 1) * .55).toFixed(2);
+        im.style.filter = a < .02 ? 'none' : 'blur(' + (Math.min(a, 1) * 3.2).toFixed(1) + 'px) brightness(' + (1 - Math.min(a, 1) * .22).toFixed(2) + ')';
+        im.style.zIndex = String(10 - Math.round(a * 4));
+        im.style.pointerEvents = a > 1.6 ? 'none' : 'auto';
+        im.classList.toggle('front', a < .5);
+      });
+      const cur = ((Math.round(pos) % n) + n) % n;
+      [...dots.children].forEach((d, i) => d.classList.toggle('on', i === cur));
+    }
+    function go(target){ cf.classList.remove('drag'); pos = target; lay(); }            // animated by the css transition
+    const step = d => go(Math.round(pos) + d);
+    items.forEach((im, i) => {
+      im.addEventListener('load', lay);
+      im.addEventListener('click', () => { if(!moved) go(pos + circ(i - pos)); });     // a click on a neighbour brings it to the front
+    });
+    o.querySelector('.hub-cf-prev').onclick = () => step(-1);
+    o.querySelector('.hub-cf-next').onclick = () => step(1);
+    let sx = 0, sp = 0, moved = false;
+    cf.addEventListener('pointerdown', e => {
+      if(e.target.closest && e.target.closest('.hub-cf-nav')) return;
+      dragging = true; moved = false; sx = e.clientX; sp = pos; cf.classList.add('drag');
+      try{ cf.setPointerCapture(e.pointerId); }catch(_){}
+    });
+    cf.addEventListener('pointermove', e => {
+      if(!dragging) return;
+      const dx = e.clientX - sx; if(Math.abs(dx) > 6) moved = true;
+      pos = sp - dx / (cf.clientWidth * .5);                                        // finger to the left brings the next one
+      lay();
+    });
+    const endDrag = () => { if(!dragging) return; dragging = false; cf.classList.remove('drag'); pos = Math.round(pos); lay(); setTimeout(() => { moved = false; }, 30); };
+    cf.addEventListener('pointerup', endDrag); cf.addEventListener('pointercancel', endDrag);
+    cf.addEventListener('wheel', e => {
+      e.preventDefault(); if(cf._busy) return; cf._busy = true; setTimeout(() => { cf._busy = false; }, 380);
+      step((e.deltaY || e.deltaX) > 0 ? 1 : -1);
+    }, { passive:false });
     let closing = false;
     const close = () => {
       if(closing) return; closing = true;
-      document.removeEventListener('keydown', esc);
+      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', lay);
       o.classList.add('closing');
       setTimeout(() => o.remove(), 260);
     };
-    const esc = e => { if(e.key === 'Escape') close(); };
-    document.addEventListener('keydown', esc);
+    const onKey = e => {
+      if(e.key === 'Escape') close();
+      else if(e.key === 'ArrowLeft'){ step(1); e.preventDefault(); }                // the one on the right comes forward
+      else if(e.key === 'ArrowRight'){ step(-1); e.preventDefault(); }
+    };
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('resize', lay);
     o.querySelector('.hub-news-x').onclick = close;
     o.addEventListener('click', e => { if(e.target === o) close(); });
-    // which picture is in the middle: the dots follow it
-    strip.addEventListener('scroll', () => {
-      const mid = strip.getBoundingClientRect().left + strip.clientWidth / 2;
-      let best = 0, bd = 1e9;
-      [...strip.children].forEach((im, i) => { const r = im.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid); if(d < bd){ bd = d; best = i; } });
-      [...dots.children].forEach((d, i) => d.classList.toggle('on', i === best));
-    }, { passive:true });
-    strip.focus({ preventScroll:true });
+    lay(); cf.focus({ preventScroll:true });
   }
 
   // ── the way in ─────────────────────────────────────────────────────────────
@@ -456,6 +560,7 @@
   const splashEl = document.getElementById('samaritan-splash');
   if(splashEl && isOpen()){
     hub.classList.add('hub-intro'); dial.classList.add('intro');
+    APPS.forEach(() => { const sp = document.createElement('i'); sp.className = 'hub-spoke'; sp.setAttribute('aria-hidden', 'true'); dial.insertBefore(sp, center); spokes.push(sp); });
     dial.style.setProperty('--k', '0'); introDeg = -180; paint(u);        // waiting: all in the middle
     let started = false;
     const easeOut = p => 1 - Math.pow(1 - p, 3);
@@ -471,6 +576,9 @@
         if(p < 1){ requestAnimationFrame(frame); return; }
         introDeg = 0; dial.style.removeProperty('--k'); paint(u);
         dial.classList.remove('intro'); hub.classList.remove('hub-intro');
+        // the dotted lines, shown while the circles came out, fade away
+        spokes.forEach(sp => sp.classList.add('gone'));
+        setTimeout(() => { spokes.splice(0).forEach(sp => sp.remove()); }, 700);
       })(t0);
     };
     new MutationObserver(() => { if(splashEl.classList.contains('is-done')) startIntro(); })
@@ -608,7 +716,50 @@
   });
   // Back, while the hub is up, is a press at the front page: nothing underneath
   // should step back behind it.
-  addEventListener('popstate', e => { if(isOpen()) e.stopImmediatePropagation(); }, true);
+  // The Back key always goes one step back, and its last step is THIS page — not the Torah.
+  //  · while the main menu is up, a press closes whatever is laid over it (a card, the gallery, a
+  //    dialog, the drawer, the tour) and nothing underneath steps back;
+  //  · a unit entered from here, closed by Back, lands here;
+  //  · at the Torah's first page, where there used to be nowhere further, Back now comes here.
+  // The press is offered to this file first (a listener registered ahead of the app's own, in index.html);
+  // after the app has dealt with it, the second listener below sees whether the app did anything with it.
+  let lastHandled = 0;
+  const unitVisible = () => [...document.querySelectorAll('.rd-totorah')].some(b => { const m = b.closest('.modal'); return m && !m.classList.contains('hidden'); })
+    || ['extFrameWrap', 'mssFrameWrap'].some(id => { const w = $(id); return w && w.style.display === 'block'; });
+  function closeHubLayer(){
+    const sh = hub.querySelector('.hub-shots .hub-news-x'); if(sh){ sh.click(); return true; }
+    const nw = hub.querySelector('.hub-news .hub-news-x'); if(nw){ nw.click(); return true; }
+    const cf = hub.querySelector('.hub-confirm .hub-no'); if(cf){ cf.click(); return true; }
+    if(typeof TOUR !== 'undefined' && TOUR.running && typeof endTour === 'function'){ endTour(); return true; }
+    const dr = $('menuDrawer'); if(dr && !dr.classList.contains('hidden')){ closeMenu(); return true; }
+    const md = [...document.querySelectorAll('.modal:not(.hidden)')].filter(m => getComputedStyle(m).display !== 'none');
+    if(md.length){ md[md.length - 1].classList.add('hidden'); return true; }
+    return false;
+  }
+  ['goBack', 'openRoute'].forEach(n => {
+    const o = window[n]; if(typeof o !== 'function') return;
+    window[n] = function(){ lastHandled = performance.now(); return o.apply(this, arguments); };
+  });
+  if(typeof closeTopLayer === 'function'){
+    const o = closeTopLayer;
+    closeTopLayer = function(){
+      const r = o.apply(this, arguments);
+      if(r){
+        lastHandled = performance.now();
+        if(document.body.classList.contains('from-hub') && !isOpen() && !unitVisible()) showHub();
+      }
+      return r;
+    };
+  }
+  window.__hubPop = e => {
+    if(!isOpen()) return;
+    e.stopImmediatePropagation();                                            // nothing under the menu steps back
+    if(closeHubLayer() && typeof backSpare === 'function') backSpare();     // one step taken; keep the press available
+  };
+  addEventListener('popstate', e => {
+    if(lastHandled >= e.timeStamp || isOpen()) return;                       // the app took a step, or the menu is up
+    if(typeof S !== 'undefined' && S.view === 'books'){ showHub(); if(typeof backSpare === 'function') backSpare(); }
+  });
   // the welcome/what's-new cards wait for the reader to reach the Torah itself
   if(typeof runOnboarding === 'function'){
     const orig = runOnboarding;
