@@ -283,6 +283,9 @@ const I18N = {
     rd_speak_stop:'עצירת ההקראה',
     rd_speak_none:'המכשיר הזה אינו יודע להקריא.',
     rd_speak_novoice:'לא נמצא במכשיר קול עברי, ולכן אין במה להקריא. אפשר להוסיף אותו בהגדרות המכשיר — שפה וקלט ← פלט דיבור ← התקנת קולות, ולבחור עברית. באנדרואיד הקול בא מ״מנוע הדיבור של Google״.',
+    rd_speak_ar_offer:'במכשיר הזה יש קול ערבי שעובד. אפשר לנסות להקריא בו גם את העברית — האותיות יומרו לאותיות ערביות, וההגייה תהיה מקורבת.',
+    rd_speak_ar_btn:'נסה בקול הערבי',
+    rd_speak_voices:'קולות שבמכשיר:',
     rd_speak_failed:'ההקראה לא יצאה לדרך. נסה שוב, ואם הקול מושמע כרגע במקום אחר — עצור אותו תחילה.',
     rd_speak_empty:'אין בעמוד הזה טקסט להקראה.',
     dict_app_failed:'החיפוש לא הושלם — ייתכן שהחיבור איטי. אין זה אומר שהמילה חסרה במילון.', dict_try_again:'נסו שוב',
@@ -614,6 +617,9 @@ const I18N = {
     rd_speak_stop:'Stop reading',
     rd_speak_none:'This device cannot read aloud.',
     rd_speak_novoice:'No Hebrew voice is installed on this device, so there is nothing to read with. Add one in the device settings — Language & input → Text-to-speech → install voice data — and choose Hebrew. On Android the voice comes from Google Text-to-Speech.',
+    rd_speak_ar_offer:'This device has a working Arabic voice. The Hebrew can be read with it — the letters are transliterated into Arabic script, so the pronunciation is approximate.',
+    rd_speak_ar_btn:'Try the Arabic voice',
+    rd_speak_voices:'Voices on this device:',
     rd_speak_failed:'The reading did not start. Try again, and if a voice is playing elsewhere, stop it first.',
     rd_speak_empty:'There is no text to read on this page.',
     dict_app_failed:'The search did not complete — the connection may be slow. It does not mean the word is missing.', dict_try_again:'Try again',
@@ -945,6 +951,9 @@ const I18N = {
     rd_speak_stop:'إيقاف القراءة',
     rd_speak_none:'هذا الجهاز لا يستطيع القراءة بصوت.',
     rd_speak_novoice:'لا يوجد صوت عبري مثبّت على هذا الجهاز. يمكن إضافته من إعدادات الجهاز — اللغة والإدخال ← تحويل النص إلى كلام ← تثبيت بيانات الصوت — واختيار العبرية.',
+    rd_speak_ar_offer:'في هذا الجهاز صوت عربي يعمل. يمكن قراءة العبرية به أيضاً — تُحوَّل الحروف إلى حروف عربية، فيكون النطق تقريبياً.',
+    rd_speak_ar_btn:'جرّب بالصوت العربي',
+    rd_speak_voices:'الأصوات في الجهاز:',
     rd_speak_failed:'لم تبدأ القراءة. حاول مرّة أخرى، وإن كان هناك صوت يعمل في مكان آخر فأوقفه أوّلاً.',
     rd_speak_empty:'لا يوجد نصّ للقراءة في هذه الصفحة.',
     dict_app_failed:'لم يكتمل البحث — قد يكون الاتصال بطيئًا. وهذا لا يعني أنّ الكلمة غير موجودة.', dict_try_again:'حاول مرّة أخرى',
@@ -8533,12 +8542,37 @@ $('rdZoomOut').onclick=()=>rdZoom(-0.12);
  *  3. The voice list arrives late. ttsHebVoice already listens for it, and this
  *     asks for the list again at the moment of speaking.
  */
-let RDT = { on:false, paused:false, idx:0, parts:[], guard:0, watch:0, spoke:0, errs:0 };
+let RDT = { on:false, paused:false, idx:0, parts:[], guard:0, watch:0, spoke:0, errs:0,
+            tongue:'hebrew', plan:[], pi:0, tried:[] };
 
-function rdVoiceFor(key){
-  const want = key === 'arabic' ? /^ar\b/i : /^(he|iw)\b/i;
+/* Every voice the device offers for a tongue, not one of them. The tag comes back
+   as "he-IL" on one engine, "he_IL" or bare "he" on another — and an engine that
+   LISTS a language does not promise it can sound it: on Android a language whose
+   voice data was never downloaded is listed all the same, and speaking it yields
+   silence. Hence a ladder of attempts (below), tried one after another. */
+function rdVoicesFor(key){
+  const want = key === 'arabic' ? /^ar([-_]|$)/i : /^(he|iw)([-_]|$)/i;
   let vs = []; try{ vs = speechSynthesis.getVoices() || []; }catch(e){}
-  return vs.find(v => want.test(v.lang || '')) || null;
+  return vs.filter(v => want.test(v.lang || ''));
+}
+function rdVoiceFor(key){ return rdVoicesFor(key)[0] || null; }
+function rdAllVoices(){ try{ return speechSynthesis.getVoices() || []; }catch(e){ return []; } }
+
+/* Hebrew letters in Arabic dress, for a device that owns a working Arabic voice
+   and no Hebrew one. The two alphabets are sisters and the consonants map one to
+   one, so an Arabic voice reading them gives a Semitic approximation. It is
+   offered by that name and taken only when the reader asks for it — never
+   substituted behind his back. */
+const _RD_AR = {'א':'ا','ב':'ب','ג':'ج','ד':'د','ה':'ه','ו':'و','ז':'ز','ח':'ح','ט':'ط','י':'ي',
+  'כ':'ك','ך':'ك','ל':'ل','מ':'م','ם':'م','נ':'ن','ן':'ن','ס':'س','ע':'ع','פ':'ف','ף':'ف',
+  'צ':'ص','ץ':'ص','ק':'ق','ר':'ر','ש':'ش','ת':'ت'};
+function rdToArabic(s){
+  return String(s || '')
+    .replace(/[֑-ׇ]/g, '')                    /* points and cantillation */
+    .replace(/[א-ת]/g, c => _RD_AR[c] || '')
+    .replace(/[׳״]/g, '')
+    .replace(/־/g, ' ')
+    .replace(/\s+/g, ' ').trim();
 }
 /* sentence by sentence, without lookbehind — iOS Safari did not have it until 16.4 */
 function rdSentences(txt){
@@ -8580,48 +8614,95 @@ function rdSpeakBtns(){
   if(!b) return;
   b.textContent = RDT.on ? (RDT.paused ? '▶' : '❚❚') : '🔊';
   b.title = RDT.on ? (RDT.paused ? t('rd_speak_resume') : t('rd_speak_pause')) : t('rd_speak');
-  st.classList.toggle('hidden', !RDT.on);
+  if(st) st.classList.toggle('hidden', !RDT.on);
+}
+/* the ladder: every voice of the tongue in turn, then the tongue by name with no
+   voice named (an engine may own one it did not list), and — once the reader has
+   agreed to it — the Arabic voice over transliterated letters. */
+function rdBuildPlan(tongue){
+  const plan = rdVoicesFor(tongue).map(v => ({voice:v, lang:v.lang || null, xlit:false}));
+  plan.push({voice:null, lang:(tongue === 'arabic' ? 'ar' : 'he-IL'), xlit:false});
+  if(tongue === 'hebrew' && localStorage.getItem('as_rd_ar_voice') === '1'){
+    rdVoicesFor('arabic').forEach(v => plan.push({voice:v, lang:v.lang || 'ar', xlit:true}));
+  }
+  return plan;
+}
+/* the voice has not said a word yet, so the watchdog stays armed; once it speaks
+   it is proved, and a later silence is the engine's business, not the voice's */
+function rdArmWatch(){
+  clearTimeout(RDT.watch); RDT.watch = 0;
+  if(RDT.spoke) return;
+  RDT.watch = setTimeout(() => { if(RDT.on && !RDT.spoke) rdTryNextPlan('silent'); }, 2600);
+}
+function rdTryNextPlan(why){
+  const att = RDT.plan[RDT.pi];
+  RDT.tried.push((att ? (att.voice ? (att.voice.name + ' [' + (att.voice.lang || '') + ']')
+                                   : ('lang=' + att.lang)) + (att.xlit ? ' ✦' : '') : '?') + ' → ' + why);
+  clearTimeout(RDT.watch); RDT.watch = 0;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  RDT.pi++; RDT.errs = 0;
+  if(RDT.pi >= RDT.plan.length){ rdSpeakFailed(why); return; }
+  setTimeout(() => { if(RDT.on && !RDT.paused) rdSpeakNext(); }, 80);
 }
 function rdSpeakNext(){
   if(!RDT.on || RDT.paused) return;
   const p = RDT.parts[RDT.idx];
   if(!p){ rdSpeakStop(); return; }
+  const att = RDT.plan[RDT.pi];
+  if(!att){ rdSpeakFailed('no-plan'); return; }
   rdSpeakMark(p.sec);
   let u;
-  try{ u = new SpeechSynthesisUtterance(p.text); }
+  try{ u = new SpeechSynthesisUtterance(att.xlit ? rdToArabic(p.text) : p.text); }
   catch(e){ rdSpeakFailed('utterance'); return; }
-  const lc = (RD.cfg && RD.cfg.langs.find(l => l.key === RD.lang)) || null;
-  const want = (lc && lc.key === 'arabic') ? 'arabic' : 'hebrew';
-  const v = rdVoiceFor(want);
-  /* With no voice of the right tongue, naming the language is still worth a try —
-     an engine may own one it did not list. What must not happen is naming a
-     language nobody has and calling that an answer; the watchdog catches that.
-     The assignment has a guard of its own: a voice object an engine will not take
-     is its business, and must not take the whole page's reading down with it. */
-  u.lang = want === 'arabic' ? 'ar' : 'he-IL';
-  if(v){ try{ u.voice = v; u.lang = v.lang || u.lang; }catch(e){} }
+  u.lang = att.lang || (RDT.tongue === 'arabic' ? 'ar' : 'he-IL');
+  /* a voice object an engine will not take is its own business, and must not
+     take the whole page's reading down with it */
+  if(att.voice){ try{ u.voice = att.voice; }catch(e){} }
   u.rate = 0.95;
   const step = () => { if(!RDT.on || RDT.paused) return; RDT.idx++; rdSpeakNext(); };
   u.onstart = () => { RDT.spoke++; clearTimeout(RDT.watch); RDT.watch = 0; };
   u.onend = step;
   u.onerror = (e) => {
+    const err = (e && e.error) || '';
+    if(err === 'interrupted' || err === 'canceled') return;        /* our own stop */
     RDT.errs++;
-    /* One sentence the engine refuses must not end the page. But a voice that
-       refuses EVERY sentence is not a bad sentence — it is a device with no such
-       voice, and marching silently through seventeen of them is what made this
-       button look broken. */
-    if(!RDT.spoke && RDT.errs >= 2){ rdSpeakFailed(e && e.error); return; }
+    /* Nothing has come out yet: this is not one bad sentence, it is a voice the
+       device cannot sound. Climb to the next rung instead of marching silently
+       through seventeen chunks of nothing — which is what made this look broken. */
+    if(!RDT.spoke){ rdTryNextPlan(err || 'error'); return; }
     step();
   };
-  try{ speechSynthesis.speak(u); }catch(e){ rdSpeakFailed('exception'); }
+  rdArmWatch();
+  try{ speechSynthesis.speak(u); }catch(e){ rdTryNextPlan('exception'); }
 }
-/* nothing came out — say why, instead of going quiet */
+/* nothing came out of any of them — say what was tried and what the device has,
+   instead of going quiet */
 function rdSpeakFailed(why){
-  const hadVoice = !!rdVoiceFor('hebrew');
+  const tongue = RDT.tongue;
+  const hadVoice = rdVoicesFor(tongue).length > 0;
+  const arVoice = (tongue === 'hebrew' && localStorage.getItem('as_rd_ar_voice') !== '1')
+                    ? rdVoiceFor('arabic') : null;
+  const langs = [...new Set(rdAllVoices().map(v => v.lang || '?'))];
+  const tried = RDT.tried.slice();
   rdSpeakStop();
-  showInfo(t('rd_speak'), '<div class="note">'
-    + esc(hadVoice ? t('rd_speak_failed') : t('rd_speak_novoice')) + '</div>');
-  try{ console.warn('read-aloud failed', why); }catch(e){}
+  let h = '<div class="note">' + esc(hadVoice ? t('rd_speak_failed') : t('rd_speak_novoice')) + '</div>';
+  if(arVoice){
+    h += '<div class="note" style="margin-top:12px">' + esc(t('rd_speak_ar_offer')) + '</div>'
+       + '<button id="rdSpeakArBtn" class="dict-app-go" style="margin-top:8px">'
+       + esc(t('rd_speak_ar_btn')) + '</button>';
+  }
+  h += '<div class="rd-diag">' + esc(t('rd_speak_voices')) + ' '
+     + esc(langs.length ? langs.join(', ') : '—')
+     + (tried.length ? ('<br>' + esc(tried.join(' · '))) : '')
+     + (why ? ('<br>' + esc(String(why))) : '') + '</div>';
+  showInfo(t('rd_speak'), h);
+  const b = $('rdSpeakArBtn');
+  if(b) b.onclick = () => {
+    localStorage.setItem('as_rd_ar_voice', '1');
+    $('infoModal').classList.add('hidden');
+    rdSpeakStart();
+  };
+  try{ console.warn('read-aloud failed', why, tried); }catch(e){}
 }
 function rdSpeakStart(){
   if(!('speechSynthesis' in window)){
@@ -8632,8 +8713,11 @@ function rdSpeakStart(){
     showInfo(t('rd_speak'), '<div class="note">'+esc(t('rd_speak_empty'))+'</div>'); return;
   }
   if(typeof ttsStop === 'function' && TTS && TTS.on) ttsStop();   /* one voice at a time */
+  const lc = (RD.cfg && RD.cfg.langs.find(l => l.key === RD.lang)) || null;
+  RDT.tongue = (lc && lc.key === 'arabic') ? 'arabic' : 'hebrew';
   RDT.parts = parts; RDT.idx = 0; RDT.on = true; RDT.paused = false;
-  RDT.spoke = 0; RDT.errs = 0;
+  RDT.spoke = 0; RDT.errs = 0; RDT.pi = 0; RDT.tried = [];
+  RDT.plan = rdBuildPlan(RDT.tongue);
   rdSpeakBtns();
   clearInterval(RDT.guard);
   RDT.guard = setInterval(() => {
@@ -8643,8 +8727,7 @@ function rdSpeakStart(){
   /* The watchdog is set BEFORE a word is attempted, not after. Armed afterwards,
      anything that threw on the way to the first utterance skipped it, and the
      button sat on ❚❚ for ever with nothing behind it. */
-  clearTimeout(RDT.watch);
-  RDT.watch = setTimeout(() => { if(RDT.on && !RDT.spoke) rdSpeakFailed('silent'); }, 2500);
+  rdArmWatch();
   /* cancel() and speak() in the same task is a known way to lose the utterance in
      Chrome, so the queue is only cleared when there IS something in it, and the
      first sentence then waits a tick. With nothing playing we speak at once,
@@ -8656,6 +8739,7 @@ function rdSpeakStart(){
 }
 function rdSpeakStop(){
   RDT.on = false; RDT.paused = false; RDT.parts = []; RDT.idx = 0;
+  RDT.pi = 0; RDT.plan = []; RDT.tried = []; RDT.spoke = 0; RDT.errs = 0;
   clearInterval(RDT.guard); RDT.guard = 0;
   clearTimeout(RDT.watch); RDT.watch = 0;
   try{ speechSynthesis.cancel(); }catch(e){}
@@ -8705,7 +8789,7 @@ function rdSetBack(mode){           // '' hidden · 'toc' · 'chapter'
   b.onclick = mode==='toc' ? rdShowToc : ()=>openRdChapter(RD.chapter);
 }
 async function rdShowToc(){
-  rdSpeakStop(); $('rdSpeak').classList.add('hidden');
+  rdSpeakStop(); $('rdAloud').classList.add('hidden');
   RD.chapter=null; rdSetBack(''); $('rdLang').classList.add('hidden');
   $('rdTitle').textContent=t(RD.cfg.titleKey);
   const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
@@ -8767,7 +8851,7 @@ async function rdChapterNav(){
 }
 
 async function openRdChapter(id, scrollDom){
-  rdSpeakStop(); $('rdSpeak').classList.remove('hidden'); rdSpeakBtns();
+  rdSpeakStop(); $('rdAloud').classList.remove('hidden'); rdSpeakBtns();
   RD.chapter=id; rdSetBack('toc');
   const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
   body.appendChild(el('div','note',t('searching')));
@@ -8822,7 +8906,7 @@ function reopenReader(a){
   openRdChapter(a.chapter);
 }
 async function rdShowWords(id){
-  rdSpeakStop(); $('rdSpeak').classList.add('hidden');
+  rdSpeakStop(); $('rdAloud').classList.add('hidden');
   rdSetBack('chapter'); $('rdLang').classList.add('hidden');
   $('rdTitle').textContent=t('tm_words_title');
   const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;

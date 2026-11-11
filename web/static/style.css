@@ -3006,13 +3006,26 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 
 
 /* ── הקראת הספר ──
-   The button sits in the reader's own bar beside the printer, and the section
-   being spoken is marked so the eye can follow the voice. */
+   The control floats in a corner of the reader, and the section being spoken is
+   marked so the eye can follow the voice. */
+.modal-box.book-reader{ position:relative; }
+/* a corner of its own, clear of the bar: in the bar it was the fifth button in a
+   row of five and went unseen. Floating, it is also within reach mid-chapter —
+   the voice can be stopped without going back up. */
+.rd-aloud{ position:absolute; inset-inline-end:16px; bottom:84px; z-index:4;
+           display:flex; gap:8px; align-items:center; }
+.rd-aloud.hidden{ display:none; }
 .rd-speak{ flex:0 0 auto; border:1px solid var(--navy); background:var(--navy); color:#fff;
-           border-radius:8px; padding:6px 10px; font:inherit; font-size:14px; line-height:1;
-           cursor:pointer; }
+           width:48px; height:48px; border-radius:50%; padding:0; font:inherit; font-size:20px;
+           line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;
+           box-shadow:0 3px 12px rgba(10,20,45,.34); }
 .rd-speak:hover{ background:var(--accent); border-color:var(--accent); }
 .rd-speak.hidden{ display:none; }
+#rdSpeakStop{ width:42px; height:42px; font-size:16px; background:#8a2e2e; border-color:#8a2e2e; }
+#rdSpeakStop:hover{ background:#a83c3c; border-color:#a83c3c; }
+/* what was tried and what the device owns — so a silence can be reported, not guessed */
+.rd-diag{ margin-top:14px; padding-top:8px; border-top:1px solid rgba(26,56,115,.18);
+          color:var(--muted); font-size:12.5px; line-height:1.6; word-break:break-word; }
 #rdBody .tm-sec.rd-reading{ background:#fff6d8; border-radius:7px;
                             box-shadow:0 0 0 2px #e3c66a inset; }
 

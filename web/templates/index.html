@@ -492,9 +492,6 @@
       <button id="rdToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
       <button id="rdToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
       <button id="rdPrint" class="rd-print" data-i18n-title="print_unit" title="הדפסה">🖨️</button>
-      <!-- הקראה: one button for all nine books, because they share this one reader -->
-      <button id="rdSpeak" class="rd-speak hidden" data-i18n-title="rd_speak" title="הקראה" aria-label="הקראה">🔊</button>
-      <button id="rdSpeakStop" class="rd-speak hidden" data-i18n-title="rd_speak_stop" title="עצירת ההקראה" aria-label="עצירת ההקראה">⏹</button>
       <button id="rdBack" class="tm-back hidden"></button>
       <div class="modal-title" id="rdTitle"></div>
       <div class="rd-zoom"><button id="rdZoomOut" class="rd-zbtn" aria-label="הקטן טקסט">A−</button><button id="rdZoomIn" class="rd-zbtn" aria-label="הגדל טקסט">A+</button></div>
@@ -505,6 +502,13 @@
       <button id="rdSearchBtn" class="dict-app-go" data-i18n="dict_app_search">חפש</button>
     </div>
     <div id="rdBody" class="tm-body"></div>
+    <!-- הקראה: one control for all nine books, because they share this one reader.
+         It floats in a corner of its own — in the bar it was one more button among
+         five, and the eye lost it between them. -->
+    <div id="rdAloud" class="rd-aloud hidden">
+      <button id="rdSpeak" class="rd-speak" data-i18n-title="rd_speak" title="הקראה" aria-label="הקראה">🔊</button>
+      <button id="rdSpeakStop" class="rd-speak hidden" data-i18n-title="rd_speak_stop" title="עצירת ההקראה" aria-label="עצירת ההקראה">⏹</button>
+    </div>
     <button class="popup-close" id="rdClose" data-i18n="close">סגור</button>
   </div>
 </div>
