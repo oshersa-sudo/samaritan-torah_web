@@ -332,13 +332,13 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
     0 0 calc(var(--D) * .05) rgba(255,226,140,.32),
     inset calc(var(--D) * -.03) calc(var(--D) * -.04) calc(var(--D) * .07) rgba(0,8,30,.72),
     inset calc(var(--D) * .02) calc(var(--D) * .025) calc(var(--D) * .05) rgba(150,190,255,.42);
-  transform:scale(calc(1 + var(--e, 0) * 1.63));          /* 1 → the dial's whole width (1 / .38) */
+  transform:scale(calc(1 + var(--e, 0) * 1.03));          /* 1 → out to the middle of the circles round it (.77 / .38), covering only half of each */
   transition:transform .55s cubic-bezier(.22,.8,.26,1), filter .35s ease;
 }
 .hub-dial.dragging .hub-center{ transition:filter .35s ease; }
 .hub-center > *{ position:relative; z-index:2; }
 .hub-center img{ transform:scaleX(1.12); }                  /* the scroll, a little wider */
-.hub-sat{ opacity:calc(1 - var(--e, 0)); transition:transform .55s cubic-bezier(.22,.8,.26,1), box-shadow .35s ease, border-color .35s ease, filter .35s ease, opacity .55s ease; }
+.hub-sat{ opacity:calc(1 - var(--e, 0) * .3); transition:transform .55s cubic-bezier(.22,.8,.26,1), box-shadow .35s ease, border-color .35s ease, filter .35s ease, opacity .55s ease; }
 .hub-dial.dragging .hub-sat{ transition:box-shadow .35s ease, border-color .35s ease; }
 /* the glint: a four-pointed flash, thin and white, at whatever point the script gives it (--gx, --gy) */
 .hub-center::before{
@@ -426,8 +426,9 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
 
 /* the way in: the circles come out of the middle, all together, and the ring turns half a round;
    --k is how far out they are (0 = in the Torah, 1 = in place), driven by the script */
-.hub-sat{ transform:rotate(var(--a)) translateY(calc(var(--D) * -.385 * var(--k, 1))) rotate(calc(var(--a) * -1));
-  opacity:calc((1 - var(--e, 0)) * min(1, var(--k, 1) * 3)); }
+.hub-sat{ transform:rotate(var(--a)) translateY(calc(var(--D) * -.385 * var(--k, 1))) rotate(calc(var(--a) * -1)) scale(calc(1 + var(--g, 0) * .14));
+  opacity:calc((1 - var(--e, 0) * .3) * min(1, var(--k, 1) * 3)); }
+.hub-sat.top{ z-index:1; }
 .hub-dial.intro{ pointer-events:none; }
 .hub-dial.intro .hub-sat{ transition:none; }
 #hub.hub-intro .hub-pop{ opacity:0; }

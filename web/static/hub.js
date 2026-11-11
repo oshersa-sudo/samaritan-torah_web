@@ -503,7 +503,13 @@
   }
   function paint(x){
     const ring = -ringSteps(x) * STEP + introDeg;
-    sats.forEach((b, i) => b.style.setProperty('--a', (i * STEP + ring).toFixed(2) + 'deg'));
+    sats.forEach((b, i) => {
+      const a = i * STEP + ring;
+      b.style.setProperty('--a', a.toFixed(2) + 'deg');
+      // the circle arriving at the pointer swells a little above the rest, and settles back as the ring carries on
+      const d = ((a % 360) + 540) % 360 - 180;
+      b.style.setProperty('--g', Math.max(0, 1 - Math.abs(d) / STEP).toFixed(3));
+    });
     spokes.forEach((sp, i) => sp.style.setProperty('--a', (i * STEP + ring).toFixed(2) + 'deg'));
     dial.style.setProperty('--e', swell(x).toFixed(3));
   }
