@@ -23,7 +23,7 @@
   --ruler-h: 62px;
   --priest-h: 40px;
   --head-h: 58px;
-  --filters-h: 38px;
+  --filters-h: 0px;      /* the layers are a menu now, not a row */
   --foot-h: 30px;
 
   --font: "Segoe UI", "Arial Hebrew", Arial, sans-serif;
@@ -78,12 +78,15 @@ html, body {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;                /* so the search may shrink instead of pushing the row wide */
 }
 
 .search-wrap { position: relative; }
 
 #search {
   width: 230px;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 7px 11px;
   border-radius: 7px;
   border: 1px solid var(--line);
@@ -149,31 +152,47 @@ button.on { background: var(--gold-soft); border-color: var(--gold); color: #fff
 
 /* ───────────────────────── שכבות ───────────────────────── */
 
+/* ── תפריט השכבות ──
+   The same chips, stacked in a panel that hangs from the button in the top bar.
+   `hidden` on the element is what opens and closes it, so there is one state and
+   not two. */
 #filters {
-  height: var(--filters-h);
+  position: absolute;
+  top: calc(var(--head-h) - 4px);
+  inset-inline-end: 10px;
+  width: min(280px, calc(100vw - 20px));
+  max-height: calc(100vh - var(--head-h) - 20px);
+  overflow-y: auto;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 16px;
-  background: #0f151d;
-  border-bottom: 1px solid var(--line);
-  font-size: 12.5px;
-  overflow-x: auto;
-  white-space: nowrap;
-  position: relative;
-  z-index: 30;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.55);
+  font-size: 13px;
+  z-index: 70;
 }
+#filters[hidden] { display: none; }
+#filters .flabel { padding: 6px 6px 2px; font-size: 11px; letter-spacing: .6px; text-transform: uppercase; }
+.lbtn { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.lbtn-ico { font-size: 15px; line-height: 1; }
+.lbtn-n { color: var(--gold); font-size: 11px; }
+.layers-wrap { position: static; }
 .flabel { color: var(--ink-dim); }
 .chip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
+  gap: 9px;
+  padding: 8px 9px;
+  border: 1px solid transparent;
+  border-radius: 7px;
   cursor: pointer;
   user-select: none;
 }
+.chip:hover { background: #1b2430; }
+.chip input { width: 16px; height: 16px; flex: 0 0 auto; }
 .chip input { accent-color: currentColor; margin: 0; }
 .chip[data-track=samaritan] { color: var(--c-samaritan); }
 .chip[data-track=israel]    { color: var(--c-israel); }
@@ -183,8 +202,15 @@ button.on { background: var(--gold-soft); border-color: var(--gold); color: #fff
 .chip[data-roster=priests]  { color: var(--c-priest); }
 .chip[data-roster=pm]       { color: var(--c-pm); }
 .chip[data-roster=pres]     { color: var(--c-pres); }
-.flabel.sep { margin-inline-start: 8px; padding-inline-start: 10px; border-inline-start: 1px solid var(--line); }
+.flabel.sep { margin-top: 6px; padding-top: 7px; border-top: 1px solid var(--line); }
 .chip.off { opacity: .38; }
+/* On a phone the zoom, the languages, the back link and the help move INTO this
+   menu — the same elements, moved, never copied, so every handler on them still
+   holds. Above 760px they move back to the top bar. */
+#menuExtra:empty { display: none; }
+#menuExtra { display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+             margin-top: 7px; padding-top: 8px; border-top: 1px solid var(--line); }
+#menuExtra .zoom input[type=range] { width: 92px; }
 
 /* ───────────────────────── פריסה ───────────────────────── */
 
@@ -570,20 +596,61 @@ button.on { background: var(--gold-soft); border-color: var(--gold); color: #fff
 [hidden] { display: none !important; }
 
 /* ───────────────────────── מסכים קטנים ───────────────────────── */
+/* ───────────────────────── טלפון ─────────────────────────
+   Everything here is the same argument: the chrome was eating the screen and the
+   timeline is the point of the page. The layers row is gone (it is a menu now),
+   the footer is gone (its lines are in the help window), the brand is one line,
+   and the search finally gets the width the row has left. Together that is about
+   seventy-six pixels of an 813-pixel phone handed back to the timeline. */
 @media (max-width: 760px) {
-  :root { --rail-w: 54px; --head-h: 52px; }
-  #topbar { gap: 8px; padding: 0 8px; overflow-x: auto; }
-  .brand h1 { font-size: 15px; white-space: nowrap; }
-  .brand .sub { display: none; }
-  .controls { gap: 6px; }
+  :root { --rail-w: 54px; --head-h: 46px; --foot-h: 0px; }
+  /* visible, not auto: the menu hangs out of the bar, and a scrolling bar clipped it */
+  #topbar { gap: 8px; padding: 0 8px; overflow: visible; }
+  .brand { flex: 0 0 auto; }
+  .brand .mark, .brand .sub { display: none; }
+  .brand h1 { font-size: 14px; white-space: nowrap; }
+  .controls { gap: 6px; flex: 1 1 auto; }
   #zoomFit, #playBtn { display: none; }
-  .results { width: min(320px, calc(100vw - 24px)); }
-  #search { width: 110px; }
-  .zoom input[type=range] { width: 70px; }
+  /* 16px is not a taste: at anything smaller iOS zooms the page in on focus */
+  .search-wrap { flex: 1 1 auto; min-width: 0; }
+  #search { width: auto; font-size: 16px; padding: 6px 9px; }
+  /* fixed, not absolute. Anchored to the inline-start of a 110px field, the panel
+     stood at left:-94px on a 375px screen — two thirds of the results off the edge,
+     which is what "the search does not work" looked like. */
+  .results { position: fixed; inset-inline: 8px; width: auto;
+             top: calc(var(--head-h) + 6px); max-height: 66vh; }
+  #filters { top: calc(var(--head-h) + 4px); }
   #card { left: 10px; right: 10px; width: auto; }
-  #foot { gap: 10px; font-size: 10.5px; }
-  #foot .foot-brand { display: none; }
-  .brand .mark { font-size: 9px; letter-spacing: 1px; }
-  .backlink span, .langs { font-size: 11px; }
+  #foot { display: none; }
   .ev .tl { max-width: 190px; }
 }
+
+/* On a narrow phone the page's own title is the one thing on the row that says
+   nothing the reader does not already know — the app's bar above the frame
+   carries it — and it was costing the search 140 of 375 pixels. The link it
+   held to the main site is in the menu, under "↩ לאתר". */
+@media (max-width: 560px) {
+  .brand { display: none; }
+}
+
+/* ── "נוח יותר לרוחב" ──
+   A browser cannot be told to turn the phone: the orientation lock needs full
+   screen, and full screen needs a tap. So this asks for the tap, and does both
+   on it. It shows only while a phone is held upright. */
+#rotate {
+  position: fixed; inset-inline: 10px; bottom: 10px; z-index: 90;
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; font-size: 13px;
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--gold-soft); border-radius: 10px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.6);
+}
+#rotate[hidden] { display: none; }
+#rotate span { flex: 1 1 auto; }
+#rotate button {
+  flex: 0 0 auto; padding: 5px 11px; border-radius: 7px;
+  border: 1px solid var(--gold-soft); background: var(--gold-soft);
+  color: #fff5df; font-family: inherit; font-size: 13px; cursor: pointer;
+}
+#rotate #rotateNo { background: transparent; border-color: var(--line); color: var(--ink-dim);
+                    padding: 5px 9px; font-size: 15px; line-height: 1; }

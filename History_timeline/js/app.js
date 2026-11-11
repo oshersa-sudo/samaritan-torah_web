@@ -34,7 +34,8 @@
    'card', 'cardYear', 'cardTitle', 'cardEras', 'cardBody', 'cardPriest', 'cardSrc', 'cardClose',
    'search', 'results', 'zoomIn', 'zoomOut', 'zoomRange', 'zoomFit', 'playBtn',
    'helpBtn', 'help', 'helpClose', 'credits', 'filters',
-   'backSite', 'brandHome', 'langs', 'foot'].forEach(function (id) {
+   'backSite', 'brandHome', 'langs', 'foot',
+   'layersBtn', 'layersN', 'menuExtra', 'rotate', 'rotateGo', 'rotateNo'].forEach(function (id) {
     el[id] = document.getElementById(id);
   });
 
@@ -589,8 +590,106 @@
     var t = chip.dataset.track || chip.dataset.roster;
     enabled[t] = chip.querySelector('input').checked ? 1 : 0;
     chip.classList.toggle('off', !enabled[t]);
+    countLayers();
     render();
   });
+
+  /* ─────────────── תפריט השכבות ─────────────── */
+
+  function countLayers() {
+    var on = 0, all = 0;
+    el.filters.querySelectorAll('.chip input').forEach(function (i) {
+      all++; if (i.checked) on++;
+    });
+    el.layersN.textContent = on + '/' + all;
+  }
+  function openLayers(yes) {
+    el.filters.hidden = !yes;
+    el.layersBtn.setAttribute('aria-expanded', yes ? 'true' : 'false');
+  }
+  el.layersBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    openLayers(el.filters.hidden);
+  });
+  /* A tap inside the menu is for the menu, never for the page behind it. */
+  el.filters.addEventListener('click', function (e) { e.stopPropagation(); });
+  document.addEventListener('click', function () { openLayers(false); });
+
+  /* On a phone the row cannot hold the zoom, the three languages, the link back
+     and the help as well as the search. They are MOVED into the menu rather than
+     copied, so every listener already on them still holds and there is no second
+     element with the same id. */
+  var mobileQ = window.matchMedia('(max-width: 760px)');
+  var movable = [];
+  ['.zoom', '.langs', '#backSite', '#helpBtn'].forEach(function (sel) {
+    var n = document.querySelector(sel);
+    if (n) movable.push({ node: n, home: n.parentNode, before: n.nextSibling });
+  });
+  function placeControls() {
+    var small = mobileQ.matches;
+    if (small) {
+      movable.forEach(function (m) {
+        if (m.node.parentNode !== el.menuExtra) el.menuExtra.appendChild(m.node);
+      });
+    } else {
+      /* backwards, so each anchor is already home before the next one looks for it */
+      for (var i = movable.length - 1; i >= 0; i--) {
+        var m = movable[i];
+        if (m.node.parentNode !== m.home) m.home.insertBefore(m.node, m.before);
+      }
+    }
+  }
+  if (mobileQ.addEventListener) mobileQ.addEventListener('change', placeControls);
+  else if (mobileQ.addListener) mobileQ.addListener(placeControls);
+
+  /* ─────────────── לרוחב ─────────────── */
+
+  /* The page cannot turn the phone by itself: locking the orientation needs full
+     screen, and full screen needs a gesture. So it is tried at once (which works
+     when the app still carries a fresh tap), again on the reader's first touch,
+     and the bar at the foot asks for that touch in the meantime. */
+  var rotateOff = false;
+  try { rotateOff = sessionStorage.getItem('tlRotateNo') === '1'; } catch (e) { /* no store */ }
+
+  function portrait() {
+    try {
+      if (screen.orientation && screen.orientation.type) return /portrait/.test(screen.orientation.type);
+    } catch (e) { /* older browser */ }
+    return window.innerHeight > window.innerWidth;
+  }
+  function wantsTurning() {
+    return !rotateOff && window.matchMedia('(max-width: 900px)').matches && portrait();
+  }
+  function showRotate() { el.rotate.hidden = !wantsTurning(); }
+  function goLandscape() {
+    var root = document.documentElement;
+    var step = Promise.resolve();
+    if (!document.fullscreenElement && root.requestFullscreen) {
+      try { step = root.requestFullscreen({ navigationUI: 'hide' }); } catch (e) { step = Promise.reject(e); }
+    }
+    return step.then(function () {
+      return (screen.orientation && screen.orientation.lock) ? screen.orientation.lock('landscape')
+                                                             : Promise.reject();
+    }).then(function () { el.rotate.hidden = true; return true; })
+      .catch(function () { return false; });      /* refused: the bar stays, asking */
+  }
+  el.rotateGo.addEventListener('click', function (e) { e.stopPropagation(); goLandscape(); });
+  el.rotateNo.addEventListener('click', function (e) {
+    e.stopPropagation();
+    rotateOff = true; el.rotate.hidden = true;
+    try { sessionStorage.setItem('tlRotateNo', '1'); } catch (er) { /* no store */ }
+  });
+  /* the first touch anywhere is a gesture, and a gesture is all the lock wanted */
+  var tried = false;
+  document.addEventListener('pointerdown', function once() {
+    if (tried) return;
+    tried = true;
+    if (wantsTurning()) goLandscape();
+  }, { once: true });
+  window.addEventListener('orientationchange', function () { setTimeout(showRotate, 150); });
+  if (screen.orientation && screen.orientation.addEventListener) {
+    screen.orientation.addEventListener('change', function () { setTimeout(showRotate, 150); });
+  }
 
   document.addEventListener('keydown', function (e) {
     if (e.target.tagName === 'INPUT') {
@@ -644,6 +743,16 @@
   });
 
   el.credits.innerHTML = CREDITS;
+  /* the footer is not drawn on a phone, so its two lines are kept here */
+  var cp = document.createElement('div');
+  cp.className = 'help-copy';
+  cp.textContent = T('copy');
+  el.credits.parentNode.appendChild(cp);
+
+  countLayers();
+  placeControls();
+  showRotate();
+  goLandscape();              /* works only while a tap is still fresh; harmless otherwise */
   drawRailTicks();
   render();
   /* פתיחה: מעט לפני הכניסה לארץ כנען */

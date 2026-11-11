@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>ציר הזמן ההיסטורי — הישראלים השומרונים</title>
-<link rel="stylesheet" href="css/style.css?v=1.0.0">
+<link rel="stylesheet" href="css/style.css?v=1.1.0">
 </head>
 <body>
 
@@ -19,6 +19,12 @@
     <div class="search-wrap">
       <input id="search" type="search" data-i18n-ph="searchPlaceholder" placeholder="חיפוש אירוע, אישיות או שנה…" autocomplete="off">
       <div id="results" class="results" hidden></div>
+    </div>
+
+    <div class="layers-wrap">
+      <button id="layersBtn" class="txt lbtn" aria-expanded="false" aria-controls="filters"
+              data-i18n-title="layersTitle" title="בחירת שכבות ורצועות">
+        <span class="lbtn-ico" aria-hidden="true">≡</span><span data-i18n="layersMenu">שכבות</span><span class="lbtn-n" id="layersN"></span></button>
     </div>
 
     <div class="zoom">
@@ -41,7 +47,11 @@
   </div>
 </header>
 
-<div id="filters">
+<!-- The layers used to lie across the page as a row of chips. On a phone that row
+     was one more band of chrome above the timeline, and the chips ran off the edge.
+     It is the same markup — same id, same .flabel and .chip, so app.js still finds
+     and labels them — only now it hangs from a button as a menu. -->
+<div id="filters" hidden>
   <span class="flabel">שכבות:</span>
   <label class="chip" data-track="samaritan"><input type="checkbox" checked> תולדות השומרונים</label>
   <label class="chip" data-track="israel"><input type="checkbox" checked> עם ישראל ויהודה</label>
@@ -52,6 +62,13 @@
   <label class="chip" data-roster="priests"><input type="checkbox" checked> כהנים גדולים</label>
   <label class="chip" data-roster="pm"><input type="checkbox" checked> ראשי ממשלה</label>
   <label class="chip" data-roster="pres"><input type="checkbox" checked> נשיאים</label>
+  <div id="menuExtra"></div>
+</div>
+
+<div id="rotate" hidden>
+  <span data-i18n="rotateHint">הציר נוח הרבה יותר לרוחב</span>
+  <button id="rotateGo" data-i18n="rotateDo">סובב את המסך</button>
+  <button id="rotateNo" aria-label="סגור">×</button>
 </div>
 
 <main id="main">
@@ -126,12 +143,12 @@
   </div>
 </div>
 
-<script src="js/i18n.js?v=1.0.0"></script>
-<script src="js/chrono.js?v=1.0.0"></script>
-<script src="data/credits.js?v=1.0.0"></script>
-<script src="data/periods.js?v=1.0.0"></script>
-<script src="data/rosters.js?v=1.0.0"></script>
-<script src="data/events.js?v=1.0.0"></script>
-<script src="js/app.js?v=1.0.0"></script>
+<script src="js/i18n.js?v=1.1.0"></script>
+<script src="js/chrono.js?v=1.1.0"></script>
+<script src="data/credits.js?v=1.1.0"></script>
+<script src="data/periods.js?v=1.1.0"></script>
+<script src="data/rosters.js?v=1.1.0"></script>
+<script src="data/events.js?v=1.1.0"></script>
+<script src="js/app.js?v=1.1.0"></script>
 </body>
 </html>

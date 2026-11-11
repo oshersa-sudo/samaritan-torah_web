@@ -278,6 +278,10 @@ const I18N = {
     rhy_occ_n:'חיבורים', rhy_no_data:'אין נתונים',
     rhy_col_word:'מילה', rhy_col_freq:'שכיחות', rhy_col_group:'קבוצת חרוז', rhy_col_def:'תרגום (מילון)', rhy_col_occ:'היכן מופיעה',
     rd_he:'עברית', rd_ar:'ערבית', rd_aram:'ארמית', rd_show:'הצג:',
+    rd_speak:'הקראת העמוד', rd_speak_pause:'השהיית ההקראה', rd_speak_resume:'המשך ההקראה',
+    rd_speak_stop:'עצירת ההקראה',
+    rd_speak_none:'המכשיר הזה אינו יודע להקריא.',
+    rd_speak_empty:'אין בעמוד הזה טקסט להקראה.',
     dict_app_failed:'החיפוש לא הושלם — ייתכן שהחיבור איטי. אין זה אומר שהמילה חסרה במילון.', dict_try_again:'נסו שוב',
     dict_app_title:'מילון ארמי&nbsp;-&nbsp;עברי,&nbsp;עברי&nbsp;ארמי', dict_app_ph:'הקלד מילה בארמית או שורש…', dict_app_search:'חפש', dict_app_hint:'חיפוש מילה במילון הארמית של השומרונים: שורש · פירוש עברי מתוך המילון · מיקומים בתורה.', dict_app_empty:'לא נמצא ערך. נסה את שורש המילה.',
     dict_tab_search:'חיפוש', dict_tab_index:'אינדקס מילים', dict_tab_phrases:'מטבעות לשון', dict_phrases_hint:'צירופי לשון קבועים מן הפיוטים וממימר מרקה — כינויים ונוסחאות וניבים, עם התרגום העברי שמימר מרקה עצמו נותן להם. הקש על צירוף לפירושו המלא.', dict_tab_pages:'דפדוף עמודים',
@@ -602,6 +606,10 @@ const I18N = {
     rhy_occ_n:'compositions', rhy_no_data:'No data',
     rhy_col_word:'Word', rhy_col_freq:'Frequency', rhy_col_group:'Rhyme group', rhy_col_def:'Gloss', rhy_col_occ:'Where it appears',
     rd_he:'Hebrew', rd_ar:'Arabic', rd_aram:'Aramaic', rd_show:'Show:',
+    rd_speak:'Read this page aloud', rd_speak_pause:'Pause reading', rd_speak_resume:'Resume reading',
+    rd_speak_stop:'Stop reading',
+    rd_speak_none:'This device cannot read aloud.',
+    rd_speak_empty:'There is no text to read on this page.',
     dict_app_failed:'The search did not complete — the connection may be slow. It does not mean the word is missing.', dict_try_again:'Try again',
     dict_app_title:'Aramaic&nbsp;-&nbsp;Hebrew,&nbsp;Hebrew&nbsp;-&nbsp;Aramaic Dictionary', dict_app_ph:'Type an Aramaic word or root…', dict_app_search:'Search', dict_app_hint:'Search the Dictionary of Samaritan Aramaic: root · Hebrew meaning from the dictionary · Torah occurrences.', dict_app_empty:'No entry found. Try the word\'s root.',
     dict_tab_search:'Search', dict_tab_index:'Word index', dict_tab_phrases:'Set phrases', dict_phrases_hint:'Fixed Aramaic phrases from the piyyutim and Memar Marqe — epithets, formulas and idioms, with the Hebrew that Memar Marqe’s own translation gives them. Tap one for its full entry.', dict_tab_pages:'Browse pages',
@@ -926,6 +934,10 @@ const I18N = {
     rhy_occ_n:'تأليفات', rhy_no_data:'لا توجد بيانات',
     rhy_col_word:'الكلمة', rhy_col_freq:'التكرار', rhy_col_group:'مجموعة القافية', rhy_col_def:'الترجمة', rhy_col_occ:'أين تظهر',
     rd_he:'العبرية', rd_ar:'العربية', rd_aram:'الآرامية', rd_show:'اعرض:',
+    rd_speak:'قراءة الصفحة بصوت', rd_speak_pause:'إيقاف مؤقت', rd_speak_resume:'متابعة القراءة',
+    rd_speak_stop:'إيقاف القراءة',
+    rd_speak_none:'هذا الجهاز لا يستطيع القراءة بصوت.',
+    rd_speak_empty:'لا يوجد نصّ للقراءة في هذه الصفحة.',
     dict_app_failed:'لم يكتمل البحث — قد يكون الاتصال بطيئًا. وهذا لا يعني أنّ الكلمة غير موجودة.', dict_try_again:'حاول مرّة أخرى',
     dict_app_title:'معجم آرامي&nbsp;-&nbsp;عبري،&nbsp;عبري&nbsp;آرامي', dict_app_ph:'اكتب كلمة آرامية أو جذرًا…', dict_app_search:'بحث', dict_app_hint:'ابحث في معجم الآرامية السامرية: الجذر · المعنى العبري من المعجم · مواضع التوراة.', dict_app_empty:'لم يُعثر على مدخل. جرّب جذر الكلمة.',
     dict_tab_search:'بحث', dict_tab_index:'فهرس الكلمات', dict_tab_phrases:'تعابير ثابتة', dict_phrases_hint:'تعابير آرامية ثابتة من القصائد ومن ميمر مرقة — ألقاب وصيغ وتعابير اصطلاحية، مع الترجمة العبرية التي يمنحها ميمر مرقة نفسه. اضغط على تعبير لعرض مدخله الكامل.', dict_tab_pages:'تصفّح الصفحات',
@@ -8347,6 +8359,129 @@ function rdZoom(d){ RD.fs=Math.min(2.2, Math.max(0.8, +(RD.fs+d).toFixed(2)));
   localStorage.setItem('as_rd_fs', RD.fs); rdApplyFs(); }
 $('rdZoomIn').onclick=()=>rdZoom(0.12);
 $('rdZoomOut').onclick=()=>rdZoom(-0.12);
+
+/* ── הקראת הספר ─────────────────────────────────────────────────────────────
+ * The nine library books share this one reader, so one button serves them all.
+ * The voice is the device's own (Web Speech): on Android and inside the Play
+ * app that IS Google's engine, it costs nothing and needs no key.
+ *
+ * Three things the engine makes you handle:
+ *  1. A long utterance stalls. The page is cut into sentences of about 180
+ *     characters, and each is spoken in turn.
+ *  2. Chrome stops speaking after roughly fifteen seconds unless it is poked;
+ *     the watchdog below resumes it while it should be running.
+ *  3. The voice list arrives late. ttsHebVoice already listens for it, and this
+ *     asks for the list again at the moment of speaking.
+ */
+let RDT = { on:false, paused:false, idx:0, parts:[], guard:0 };
+
+function rdVoiceFor(key){
+  const want = key === 'arabic' ? /^ar\b/i : /^(he|iw)\b/i;
+  let vs = []; try{ vs = speechSynthesis.getVoices() || []; }catch(e){}
+  return vs.find(v => want.test(v.lang || '')) || null;
+}
+/* sentence by sentence, without lookbehind — iOS Safari did not have it until 16.4 */
+function rdSentences(txt){
+  const str = String(txt || '').replace(/\s+/g, ' ').trim();
+  const stops = '.:!?׃؟־—', out = [];
+  let start = 0;
+  for(let i = 0; i < str.length; i++){
+    if(stops.indexOf(str[i]) >= 0 && (i + 1 >= str.length || str[i+1] === ' ')){
+      out.push(str.slice(start, i + 1).trim()); start = i + 1;
+    }
+  }
+  if(start < str.length) out.push(str.slice(start).trim());
+  return out.filter(Boolean);
+}
+function rdSpeakCollect(){
+  const parts = [];
+  document.querySelectorAll('#rdBody .tm-sec').forEach(sec => {
+    const td = sec.querySelector('.tm-heb, .tm-aram');
+    if(!td) return;
+    const txt = (td.textContent || '').trim();
+    if(!txt || txt === '—') return;
+    let buf = '';
+    for(const sent of rdSentences(txt)){
+      if(buf && (buf + ' ' + sent).length > 180){ parts.push({sec, text:buf}); buf = sent; }
+      else buf = buf ? buf + ' ' + sent : sent;
+    }
+    if(buf) parts.push({sec, text:buf});
+  });
+  return parts;
+}
+function rdSpeakMark(sec){
+  document.querySelectorAll('#rdBody .rd-reading').forEach(e => e.classList.remove('rd-reading'));
+  if(!sec) return;
+  sec.classList.add('rd-reading');
+  try{ sec.scrollIntoView({block:'center', behavior:'smooth'}); }catch(e){ sec.scrollIntoView(); }
+}
+function rdSpeakBtns(){
+  const b = $('rdSpeak'), st = $('rdSpeakStop');
+  if(!b) return;
+  b.textContent = RDT.on ? (RDT.paused ? '▶' : '❚❚') : '🔊';
+  b.title = RDT.on ? (RDT.paused ? t('rd_speak_resume') : t('rd_speak_pause')) : t('rd_speak');
+  st.classList.toggle('hidden', !RDT.on);
+}
+function rdSpeakNext(){
+  if(!RDT.on || RDT.paused) return;
+  const p = RDT.parts[RDT.idx];
+  if(!p){ rdSpeakStop(); return; }
+  rdSpeakMark(p.sec);
+  const u = new SpeechSynthesisUtterance(p.text);
+  const lc = (RD.cfg && RD.cfg.langs.find(l => l.key === RD.lang)) || null;
+  const v = rdVoiceFor(lc ? lc.key : 'hebrew');
+  if(v){ u.voice = v; u.lang = v.lang; }
+  else u.lang = (lc && lc.key === 'arabic') ? 'ar' : 'he-IL';
+  u.rate = 0.95;
+  const step = () => { if(!RDT.on || RDT.paused) return; RDT.idx++; rdSpeakNext(); };
+  u.onend = step;
+  u.onerror = step;          /* one sentence the engine refuses must not end the page */
+  try{ speechSynthesis.speak(u); }catch(e){ rdSpeakStop(); }
+}
+function rdSpeakStart(){
+  if(!('speechSynthesis' in window)){
+    showInfo(t('rd_speak'), '<div class="note">'+esc(t('rd_speak_none'))+'</div>'); return;
+  }
+  const parts = rdSpeakCollect();
+  if(!parts.length){
+    showInfo(t('rd_speak'), '<div class="note">'+esc(t('rd_speak_empty'))+'</div>'); return;
+  }
+  if(typeof ttsStop === 'function' && TTS && TTS.on) ttsStop();   /* one voice at a time */
+  try{ speechSynthesis.cancel(); }catch(e){}
+  RDT.parts = parts; RDT.idx = 0; RDT.on = true; RDT.paused = false;
+  rdSpeakBtns();
+  clearInterval(RDT.guard);
+  RDT.guard = setInterval(() => {
+    if(!RDT.on || RDT.paused) return;
+    try{ if(speechSynthesis.speaking) speechSynthesis.resume(); }catch(e){}
+  }, 9000);
+  rdSpeakNext();
+}
+function rdSpeakStop(){
+  RDT.on = false; RDT.paused = false; RDT.parts = []; RDT.idx = 0;
+  clearInterval(RDT.guard); RDT.guard = 0;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  document.querySelectorAll('#rdBody .rd-reading').forEach(e => e.classList.remove('rd-reading'));
+  rdSpeakBtns();
+}
+function rdSpeakToggle(){
+  if(!RDT.on){ rdSpeakStart(); return; }
+  if(RDT.paused){
+    RDT.paused = false; rdSpeakBtns();
+    /* resume() alone is unreliable across engines — speaking the sentence again is not */
+    try{ speechSynthesis.resume(); }catch(e){}
+    if(!speechSynthesis.speaking) rdSpeakNext();
+  } else {
+    RDT.paused = true; rdSpeakBtns();
+    try{ speechSynthesis.pause(); }catch(e){}
+  }
+}
+$('rdSpeak').onclick = rdSpeakToggle;
+$('rdSpeakStop').onclick = rdSpeakStop;
+/* the voice must not follow the reader out of the page it was reading */
+$('rdClose').addEventListener('click', rdSpeakStop);
+$('rdToTorah').addEventListener('click', rdSpeakStop);
+$('rdToLib').addEventListener('click', rdSpeakStop);
 function openReader(key){
   RD.key=key; RD.cfg=BOOK_CFG[key]; RD.chapter=null; RD.lang=RD.cfg.langs[0].key;
   $('rdInput').value=''; $('rdLang').classList.add('hidden');
@@ -8372,6 +8507,7 @@ function rdSetBack(mode){           // '' hidden · 'toc' · 'chapter'
   b.onclick = mode==='toc' ? rdShowToc : ()=>openRdChapter(RD.chapter);
 }
 async function rdShowToc(){
+  rdSpeakStop(); $('rdSpeak').classList.add('hidden');
   RD.chapter=null; rdSetBack(''); $('rdLang').classList.add('hidden');
   $('rdTitle').textContent=t(RD.cfg.titleKey);
   const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
@@ -8433,6 +8569,7 @@ async function rdChapterNav(){
 }
 
 async function openRdChapter(id, scrollDom){
+  rdSpeakStop(); $('rdSpeak').classList.remove('hidden'); rdSpeakBtns();
   RD.chapter=id; rdSetBack('toc');
   const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;
   body.appendChild(el('div','note',t('searching')));
@@ -8487,6 +8624,7 @@ function reopenReader(a){
   openRdChapter(a.chapter);
 }
 async function rdShowWords(id){
+  rdSpeakStop(); $('rdSpeak').classList.add('hidden');
   rdSetBack('chapter'); $('rdLang').classList.add('hidden');
   $('rdTitle').textContent=t('tm_words_title');
   const body=$('rdBody'); body.innerHTML=''; body.scrollTop=0;

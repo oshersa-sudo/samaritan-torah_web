@@ -3003,3 +3003,15 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 .unit-bar-title{ flex:1 1 auto; min-width:0; text-align:center; font-size:16px;
                  font-weight:700; white-space:nowrap; overflow:hidden;
                  text-overflow:ellipsis; padding-inline-end:48px; }
+
+
+/* ── הקראת הספר ──
+   The button sits in the reader's own bar beside the printer, and the section
+   being spoken is marked so the eye can follow the voice. */
+.rd-speak{ flex:0 0 auto; border:1px solid var(--navy); background:var(--navy); color:#fff;
+           border-radius:8px; padding:6px 10px; font:inherit; font-size:14px; line-height:1;
+           cursor:pointer; }
+.rd-speak:hover{ background:var(--accent); border-color:var(--accent); }
+.rd-speak.hidden{ display:none; }
+#rdBody .tm-sec.rd-reading{ background:#fff6d8; border-radius:7px;
+                            box-shadow:0 0 0 2px #e3c66a inset; }

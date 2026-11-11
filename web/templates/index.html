@@ -448,7 +448,9 @@
       <button id="tlToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
       <div class="modal-title" data-i18n="m_timeline">ציר הזמן ההיסטורי השומרוני</div>
     </div>
-    <iframe id="tlFrame" title="ציר הזמן ההיסטורי השומרוני"></iframe>
+    <!-- allow=fullscreen: locking the phone to landscape is only permitted from
+         full screen, and a frame cannot go full screen without being allowed to -->
+    <iframe id="tlFrame" title="ציר הזמן ההיסטורי השומרוני" allow="fullscreen"></iframe>
   </div>
 </div>
 
@@ -486,6 +488,9 @@
       <button id="rdToTorah" class="rd-totorah" data-i18n="to_torah" title="חזרה לתורה">↩ התורה</button>
       <button id="rdToLib" class="rd-tolib" data-i18n="to_library" title="חזרה לספרייה">📚</button>
       <button id="rdPrint" class="rd-print" data-i18n-title="print_unit" title="הדפסה">🖨️</button>
+      <!-- הקראה: one button for all nine books, because they share this one reader -->
+      <button id="rdSpeak" class="rd-speak hidden" data-i18n-title="rd_speak" title="הקראה" aria-label="הקראה">🔊</button>
+      <button id="rdSpeakStop" class="rd-speak hidden" data-i18n-title="rd_speak_stop" title="עצירת ההקראה" aria-label="עצירת ההקראה">⏹</button>
       <button id="rdBack" class="tm-back hidden"></button>
       <div class="modal-title" id="rdTitle"></div>
       <div class="rd-zoom"><button id="rdZoomOut" class="rd-zbtn" aria-label="הקטן טקסט">A−</button><button id="rdZoomIn" class="rd-zbtn" aria-label="הגדל טקסט">A+</button></div>
