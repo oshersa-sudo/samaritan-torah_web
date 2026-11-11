@@ -32,7 +32,7 @@
         dict:{ name:'המילון הארמי-עברי', tag:'ארמית שומרונית ועברית',
           points:['מילון ארמי-עברי, ועברי-ארמי.','מבוסס על מילונים שונים ומגוונים.','חיפוש לפי מילה, שורש מילה','משמעות המילה, מופעי המילה בפיוטים השומרוניים, בתורה הארמית ובתיבת מרקה'] },
         shira:{ name:'אוצר השירה השומרונית', short:'אוצר השירה', tag:'ארכיון ההקלטות של השירה והפיוט',
-          points:['הארכיון הגדול ביותר, לפיוטים והקלטות המושרות בידי בני העדה לאורך הדורות.','חיפוש לפי פיוט, אירוע, ומבצע','חיפוש מבצעים שונים לאותו פיוט','אקולייזר משוכלל המאפשר לשפר את איכות השמיעה','רשימות השמעה אישיות','מצב שמיעה ברכב'] },
+          points:['הארכיון הגדול ביותר, לפיוטים והקלטות המושרות בידי בני העדה לאורך הדורות.','חיפוש לפי פיוט, אירוע, ומבצע','חיפוש מבצעים שונים לאותו פיוט','אקולייזר משוכלל המאפשר לשפר את איכות השמיעה','רשימות השמעה אישיות'] },
         calendar:{ name:'לוח השנה השומרוני', tag:'התאריך, המועדים ופרשת השבוע',
           points:['לוח חשבון קשט - חשבון האמת - לוח השנה השומרוני.','מנוע חישובי עצמאי לאלפי שנים קדימה ולאחור.','ציון מועדי העדה, מועדי החגים היהודיים ואירועים כלליים.','ציון הפרשות השבועיות, כללי הלוח, אופן החישוב'] },
         library:{ name:'הספרייה', short:'הספרייה', tag:'הספרייה הדיגיטלית הנרחבת ביותר לאוצר החכמה השומרונית.',
@@ -54,7 +54,7 @@
         dict:{ name:'The Aramaic-Hebrew Dictionary', tag:'Samaritan Aramaic and Hebrew',
           points:['An Aramaic-Hebrew and Hebrew-Aramaic dictionary.','Based on a range of different dictionaries.','Search by word or by word root','The word’s meaning, and where it occurs in the Samaritan piyyutim, the Aramaic Targum and Tibat Marqe'] },
         shira:{ name:'The Samaritan Song Treasury', short:'The Song Treasury', tag:'The archive of Samaritan song and piyyut recordings',
-          points:['The largest archive of piyyutim and recordings sung by members of the community across the generations.','Search by piyyut, event and performer','Find different performers of the same piyyut','An advanced equalizer to improve the listening quality','Personal playlists','Car listening mode'] },
+          points:['The largest archive of piyyutim and recordings sung by members of the community across the generations.','Search by piyyut, event and performer','Find different performers of the same piyyut','An advanced equalizer to improve the listening quality','Personal playlists'] },
         calendar:{ name:'The Samaritan Calendar', tag:'The date, the festivals and the weekly portion',
           points:['Luach Heshbon Qushta — the reckoning of truth — the Samaritan calendar.','An independent calculation engine for thousands of years forward and back.','Marks the community’s festivals, the Jewish festivals and general events.','Marks the weekly portions, the rules of the calendar and how it is calculated'] },
         library:{ name:'The Library', short:'The Library', tag:'The most extensive digital library of Samaritan wisdom.',
@@ -76,7 +76,7 @@
         dict:{ name:'القاموس الآرامي-العبري', tag:'الآرامية السامرية والعبرية',
           points:['قاموس آرامي-عبري، وعبري-آرامي.','مبني على قواميس متنوعة ومختلفة.','بحث بحسب الكلمة أو جذر الكلمة','معنى الكلمة ومواضع ورودها في القصائد السامرية وفي الترجمة الآرامية للتوراة وفي ميمر مرقة'] },
         shira:{ name:'كنز الأناشيد السامرية', short:'كنز الأناشيد', tag:'أرشيف تسجيلات الأناشيد والقصائد السامرية',
-          points:['أكبر أرشيف للقصائد والتسجيلات التي أنشدها أبناء الطائفة عبر الأجيال.','بحث بحسب القصيدة والحدث والمؤدّي','البحث عن مؤدّين مختلفين للقصيدة نفسها','معادِل صوت متقدّم لتحسين جودة الاستماع','قوائم تشغيل شخصية','وضع الاستماع في السيارة'] },
+          points:['أكبر أرشيف للقصائد والتسجيلات التي أنشدها أبناء الطائفة عبر الأجيال.','بحث بحسب القصيدة والحدث والمؤدّي','البحث عن مؤدّين مختلفين للقصيدة نفسها','معادِل صوت متقدّم لتحسين جودة الاستماع','قوائم تشغيل شخصية'] },
         calendar:{ name:'التقويم السامري', tag:'التاريخ والأعياد ومقطع الأسبوع',
           points:['تقويم «حساب قشطة» — حساب الحق — التقويم السامري.','محرّك حسابي مستقل لآلاف السنين إلى الأمام وإلى الوراء.','بيان أعياد الطائفة والأعياد اليهودية والمناسبات العامة.','بيان المقاطع الأسبوعية وقواعد التقويم وطريقة الحساب'] },
         library:{ name:'المكتبة', short:'المكتبة', tag:'أوسع مكتبة رقمية لكنوز الحكمة السامرية.',
@@ -749,10 +749,10 @@
     const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
     const startIntro = () => {
       if(started) return; started = true;
-      const DUR = 1600, t0 = performance.now();
+      const DUR = 3600, t0 = performance.now();
       (function frame(now){
         const p = Math.min(1, (now - t0) / DUR);
-        dial.style.setProperty('--k', easeOut(Math.min(1, p / .7)).toFixed(3));   // out from the middle
+        dial.style.setProperty('--k', easeOut(Math.min(1, p / .6)).toFixed(3));   // out from the middle
         introDeg = -(1 - easeInOut(p)) * 180;                                     // half a turn, then still
         paint(u);
         if(p < 1){ requestAnimationFrame(frame); return; }
@@ -763,15 +763,14 @@
         setTimeout(() => { spokes.splice(0).forEach(sp => sp.remove()); }, 700);
       })(t0);
     };
-    new MutationObserver(() => { if(splashEl.classList.contains('is-done')) startIntro(); })
-      .observe(splashEl, { attributes:true, attributeFilter:['class'] });
-    addEventListener('samaritanSplashComplete', startIntro);
+    // it starts when the splash has finished fading — not under the fade, where a phone shows none of it
+    addEventListener('samaritanSplashComplete', () => setTimeout(startIntro, 250));
     setTimeout(startIntro, 20000);                      // never leave the circles in the middle
   }
 
   // ── a glint of sun on the Torah's dome ─────────────────────────────────────
   // Not a fixed light: it flashes at a different point each time, and only now and
-  // then — the first after about half a minute, then every two to five minutes.
+  // then — the first after ten seconds or so, then every half-minute to minute and a half.
   function glint(){
     if(!isOpen()) return;
     const ang = Math.random() * Math.PI * 2, rad = .15 + .6 * Math.sqrt(Math.random());
@@ -782,7 +781,7 @@
   }
   (function scheduleGlint(first){
     setTimeout(() => { glint(); scheduleGlint(false); },
-               first ? 25000 + Math.random() * 20000 : 120000 + Math.random() * 180000);
+               first ? 9000 + Math.random() * 8000 : 30000 + Math.random() * 40000);
   })(true);
 
   // ── entering an app ────────────────────────────────────────────────────────

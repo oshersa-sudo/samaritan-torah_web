@@ -1012,7 +1012,8 @@
     e.stopPropagation(); state.audioAllowed = true; initAudio(); resumeAudio(); soundBtn.classList.add('on');
   });
   // "always skip" — offered only on the installed app; the choice is stored locally
-  if(installed && skipAlwaysBtn) skipAlwaysBtn.classList.remove('hidden');
+  // (the 'always skip' choice is gone: the hand writing the verse is the way in, and it plays every time)
+  try{ localStorage.removeItem('as_skip_splash'); }catch(e){}
   if(skipAlwaysBtn) skipAlwaysBtn.addEventListener('click', ()=>{
     try{ localStorage.setItem('as_skip_splash','1'); }catch(e){} skip();
   });
@@ -1039,7 +1040,7 @@
     pen.style.opacity='0'; verse.classList.add('lit'); closeAudio();
     await wait(SPLASH_CONFIG.holdAfterWrite); finish();
   }
-  let alwaysSkip=false; try{ alwaysSkip = installed && localStorage.getItem('as_skip_splash')==='1'; }catch(e){}
+  let alwaysSkip=false; try{ alwaysSkip = false; }catch(e){}
   const ready=(document.fonts&&document.fonts.ready)
     ? Promise.race([document.fonts.ready, new Promise(r=>setTimeout(r,1200))]) : Promise.resolve();
   if(alwaysSkip){ quickEnter(); }
