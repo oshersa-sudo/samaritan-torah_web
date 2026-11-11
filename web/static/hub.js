@@ -749,7 +749,7 @@
     const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
     const startIntro = () => {
       if(started) return; started = true;
-      const DUR = 3600, t0 = performance.now();
+      const DUR = 2700, t0 = performance.now();
       (function frame(now){
         const p = Math.min(1, (now - t0) / DUR);
         dial.style.setProperty('--k', easeOut(Math.min(1, p / .6)).toFixed(3));   // out from the middle
