@@ -28,5 +28,15 @@
     "text_he": "יחידה חדשה בתפריט הראשי: סיור על פסגת הר גריזים וסביבותיו, עם 53 מקומות, שכבות החפירה, המקומות הקדושים ותמונות. התוכן ראשוני.",
     "text_en": "A new unit on the main menu: a tour of the summit of Mount Gerizim and its surroundings, with 53 places, the excavation layers, the holy places and pictures. The content is preliminary.",
     "text_ar": "وحدة جديدة في القائمة الرئيسية: جولة على قمة جبل جرزيم ومحيطه، مع 53 مكانًا وطبقات التنقيب والأماكن المقدّسة وصور. المحتوى أوّلي."
+  },
+  {
+    "app": "gerizim",
+    "date": "2026-11-12T01:04:00",
+    "he": "סיור רגלי בתוך המתחם המקודש והעיר",
+    "en": "A walking tour inside the sacred precinct and the city",
+    "ar": "جولة سيرًا على الأقدام داخل الحرم المقدّس والمدينة",
+    "text_he": "חדש בגבעת עולם: סיור רגלי בשחזור תלת-ממדי של המתחם המקודש ושל העיר שעל הפסגה, בתקופה ההלניסטית ובתקופה הפרסית, עם רחובות מדורגים על המדרון, דמויות, כתובות שנמצאו במקום ותצלומים של אורי אורחוף. נכנסים בלחיצה על סימן הסיור הרגלי שעל המפה. השחזור סכמטי, והתוכן ראשוני.",
+    "text_en": "New in Givat Olam: a walking tour through a 3D reconstruction of the sacred precinct and the city on the summit, in the Hellenistic and the Persian periods, with stepped streets on the slope, figures, the inscriptions found on the spot and photographs by Ori Orhof. Enter by pressing a walking-tour marker on the map. The reconstruction is schematic and the content is preliminary.",
+    "text_ar": "جديد في التلة الأبدية: جولة سيرًا على الأقدام في إعادة بناء ثلاثية الأبعاد للحرم المقدّس وللمدينة على القمة، في الفترتين الهلنستية والفارسية، مع شوارع مدرَّجة على السفح، وشخصيات، والنقوش التي وُجدت في المكان، وصور لأوري أورحوف. يُدخل إليها بالضغط على علامة الجولة على الخريطة. إعادة البناء تخطيطية والمحتوى أوّلي."
   }
 ]

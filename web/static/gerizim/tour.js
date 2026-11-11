@@ -42,7 +42,7 @@
       station: 'תחנה {i} מתוך {n}', note: 'תוכן ראשוני. המיקום והגבולות סומנו בקירוב וטעונים אימות.',
       nomap: 'מיקומו של המקום הזה עדיין לא אומת, ולכן הוא אינו מסומן על המפה.',
       far: 'נראה מן הפסגה: {d} ק"מ לכיוון {c}', farAway: 'מרחק מן הפסגה: {d} ק"מ לכיוון {c}', pickPrompt: 'לחץ על נקודה במפה', close: 'סגירה',
-      photoBy: 'צילום', licence: 'רישיון', source: 'Wikimedia Commons', listTitle: 'המקומות בסיור', photos: 'תמונות', dialLetters: ['צ', 'מז', 'ד', 'מע'], dialTitle: 'סיבוב המפה: גררו את החוגה, או לחצו על כיוון', lookTo: 'מבט אל {c}', elev: 'גובה {m} מ׳ מעל פני הים', pop: '{n} תושבים ({y})',
+      photoBy: 'צילום', licence: 'רישיון', source: 'Wikimedia Commons', listTitle: 'המקומות בסיור', photos: 'תמונות', ins: 'כתובות שנמצאו כאן', insNo: 'כתובת מס\' {n}', insAt: 'נמצאה', scr: { 'aramaic-lapidary': 'ארמית, כתב לפידרי', 'aramaic-cursive': 'ארמית, כתב רהוט', 'paleo-hebrew': 'כתב עברי קדום', greek: 'יוונית', samaritan: 'כתב שומרוני' }, flk: 'צילומי אורי אורחוף', flkPhoto: 'צילום', flkVideo: 'סרטון', flkNote: '', flkAll: 'כל האלבומים של הצלם ב-Flickr', plan: 'שרטוט המקום', planNote: 'שרטוט סכמטי שצויר לפי מידות החפירה. החץ מראה את הצפון; המקום שבכרטיס מודגש בזהב.', planHel: 'התקופה ההלניסטית', planPer: 'התקופה הפרסית', walk: 'סיור רגלי', walkBtn: 'היכנסו לסיור רגלי במקום הזה', walkTip: 'כניסה לסיור רגלי בשחזור תלת-ממדי', dialLetters: ['צ', 'מז', 'ד', 'מע'], dialTitle: 'סיבוב המפה: גררו את החוגה, או לחצו על כיוון', lookTo: 'מבט אל {c}', elev: 'גובה {m} מ׳ מעל פני הים', pop: '{n} תושבים ({y})',
       compass: ['צפון', 'צפון-מזרח', 'מזרח', 'דרום-מזרח', 'דרום', 'דרום-מערב', 'מערב', 'צפון-מערב'] },
     en: { dir: 'ltr', title: 'Mount Gerizim — A Tour of the Summit', tag: 'Prototype', period: 'Period:', all: 'All',
       tour: '▶ Guided tour', endTour: '■ End tour', home: 'Overview', relief: 'Exaggerate relief', pick: 'Mark a point', list: '☰ Places',
@@ -51,7 +51,7 @@
       station: 'Stop {i} of {n}', note: 'Preliminary content. Location and outline are approximate and need verification.',
       nomap: 'The location of this place has not been verified yet, so it is not marked on the map.',
       far: 'Seen from the summit: {d} km to the {c}', farAway: 'Distance from the summit: {d} km to the {c}', pickPrompt: 'Click a point on the map', close: 'Close',
-      photoBy: 'Photo', licence: 'Licence', source: 'Wikimedia Commons', listTitle: 'Places in the tour', photos: 'Photos', dialLetters: ['N', 'E', 'S', 'W'], dialTitle: 'Rotate the map: drag the dial, or tap a direction', lookTo: 'Look {c}', elev: '{m} m above sea level', pop: '{n} inhabitants ({y})',
+      photoBy: 'Photo', licence: 'Licence', source: 'Wikimedia Commons', listTitle: 'Places in the tour', photos: 'Photos', ins: 'Inscriptions found here', insNo: 'Inscription no. {n}', insAt: 'Found', scr: { 'aramaic-lapidary': 'Aramaic, lapidary script', 'aramaic-cursive': 'Aramaic, cursive script', 'paleo-hebrew': 'Paleo-Hebrew script', greek: 'Greek', samaritan: 'Samaritan script' }, flk: 'Photographs by Ori Orhof', flkPhoto: 'Photo', flkVideo: 'Video', flkNote: 'The photographs belong to the photographer and open on Flickr.', flkAll: 'All the photographer’s albums on Flickr', plan: 'Plan of the place', planNote: 'A schematic plan drawn from the excavation dimensions. The arrow points north; the place of this card is marked in gold.', planHel: 'Hellenistic period', planPer: 'Persian period', walk: 'Walk here', walkBtn: 'Walk around this place', walkTip: 'Enter a walk through a 3D reconstruction', dialLetters: ['N', 'E', 'S', 'W'], dialTitle: 'Rotate the map: drag the dial, or tap a direction', lookTo: 'Look {c}', elev: '{m} m above sea level', pop: '{n} inhabitants ({y})',
       compass: ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'] },
     ar: { dir: 'rtl', title: 'جبل جرزيم — جولة على القمة', tag: 'تجريبي', period: 'الفترة:', all: 'الكل',
       tour: '▶ جولة إرشادية', endTour: '■ إنهاء الجولة', home: 'نظرة عامة', relief: 'إبراز التضاريس', pick: 'تحديد نقطة', list: '☰ الأماكن',
@@ -60,7 +60,7 @@
       station: 'المحطة {i} من {n}', note: 'محتوى أوّلي. الموقع والحدود تقريبية وتحتاج إلى تحقق.',
       nomap: 'لم يُتحقق بعد من موقع هذا المكان، ولذلك لا يظهر على الخريطة.',
       far: 'يُرى من القمة: {d} كم باتجاه {c}', farAway: 'البعد عن القمة: {d} كم باتجاه {c}', pickPrompt: 'انقر على نقطة في الخريطة', close: 'إغلاق',
-      photoBy: 'تصوير', licence: 'الرخصة', source: 'ويكيميديا كومنز', listTitle: 'أماكن الجولة', photos: 'صور', dialLetters: ['ش', 'ق', 'ج', 'غ'], dialTitle: 'تدوير الخريطة: اسحب القرص أو اضغط على اتجاه', lookTo: 'النظر نحو {c}', elev: 'الارتفاع {m} م فوق سطح البحر', pop: '{n} نسمة ({y})',
+      photoBy: 'تصوير', licence: 'الرخصة', source: 'ويكيميديا كومنز', listTitle: 'أماكن الجولة', photos: 'صور', ins: 'نقوش وُجدت هنا', insNo: 'النقش رقم {n}', insAt: 'وُجد', scr: { 'aramaic-lapidary': 'آرامي، خط حجري', 'aramaic-cursive': 'آرامي، خط ليّن', 'paleo-hebrew': 'خط عبري قديم', greek: 'يوناني', samaritan: 'خط سامري' }, flk: 'صور أوري أورحوف', flkPhoto: 'صورة', flkVideo: 'فيديو', flkNote: 'الصور ملك للمصوّر وتُفتح في موقع Flickr.', flkAll: 'كل ألبومات المصوّر على Flickr', plan: 'مخطط المكان', planNote: 'مخطط تخطيطي رُسم بحسب قياسات التنقيب. السهم يشير إلى الشمال؛ ومكان هذه البطاقة مظلَّل بالذهبي.', planHel: 'الفترة الهلنستية', planPer: 'الفترة الفارسية', walk: 'جولة سيرًا', walkBtn: 'ادخل جولة سيرًا في هذا المكان', walkTip: 'دخول جولة سيرًا في إعادة بناء ثلاثية الأبعاد', dialLetters: ['ش', 'ق', 'ج', 'غ'], dialTitle: 'تدوير الخريطة: اسحب القرص أو اضغط على اتجاه', lookTo: 'النظر نحو {c}', elev: 'الارتفاع {m} م فوق سطح البحر', pop: '{n} نسمة ({y})',
       compass: ['الشمال', 'الشمال الشرقي', 'الشرق', 'الجنوب الشرقي', 'الجنوب', 'الجنوب الغربي', 'الغرب', 'الشمال الغربي'] }
   };
   let lang = 'he';
@@ -114,6 +114,127 @@
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-left');
   map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left');
 
+
+
+  /* ---------- הסיור הרגלי: כניסה מן המפה אל שחזור תלת-ממדי, כמו ירידה לתצוגת רחוב ---------- */
+  const WALK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13" cy="4" r="2"/><path d="M13 8l-3 5 3 3v6M10 13l-3 8M13 8l4 3 2-1M10 9l-3 2v3"/></svg>';
+  // נקודות הכניסה (במטרים: מזרחה, דרומה ממרכז הכנסייה) והמבט בכל אחת
+  const WALK_STARTS = (() => {
+    const WD = window.GERIZIM_WALK, o = {};
+    if (WD) Object.keys(WD.starts).forEach(k => { const s = WD.starts[k], en = WD.toEN(s.x, s.z); o[k] = { en, bearing: ((s.yaw * 180 / Math.PI + WD.north) % 360 + 360) % 360 }; });
+    return o;
+  })();
+  const WALK_FROM = { precinct: 'plaza', persian: 'plaza', stones12: 'plaza', secitadel: 'plaza', eaststairs: 'stairs', courts: 'stairs', westentrance: 'city', city: 'city', areaP: 'city', eternal: 'city', areaA: 'areaA', areaB: 'areaB' };
+  const VER = (() => { try { return (document.currentScript.src.split('?')[1] || ''); } catch (e) { return ''; } })();
+  let walkScripts = null;
+  const loadScript = src => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src + (VER ? '?' + VER : ''); s.onload = ok; s.onerror = bad; document.head.appendChild(s); });
+  function enterWalk(key) {
+    const st = WALK_STARTS[key] || WALK_STARTS.plaza, c0 = map.getCenter();
+    if (!st) return;
+    const back = { center: [c0.lng, c0.lat], zoom: map.getZoom(), pitch: map.getPitch(), bearing: map.getBearing() };
+    introEnd(true); endTour(); state.listing = false; state.sel = null; state.open = null; renderCard(); repaint();
+    if (!walkScripts) walkScripts = (window.GERIZIM_WALK ? Promise.resolve() : loadScript('walk_data.js')).then(() => loadScript('walk_people.js')).then(() => loadScript('walk.js'));
+    const mapEl = $('map');
+    map.stop();
+    map.flyTo({ center: at(st.en[0], st.en[1]), zoom: Math.min(map.getMaxZoom(), 19.2), pitch: 80, bearing: st.bearing, duration: 2300, essential: true, curve: 1 });
+    setTimeout(() => mapEl.classList.add('diving'), 1150);
+    const arrived = new Promise(r => setTimeout(r, 2350));
+    Promise.all([walkScripts, arrived]).then(() => window.GerizimWalk.enter({
+      start: key, lang,
+      onPlace: id => select(id),
+      // תצלומים אמיתיים של המקום: מן האוסף החופשי, ומצילומי אורי אורחוף
+      photosOf: id => {
+        // למקום שאין לו תצלומים משלו מוצגים תצלומי המתחם או שרידי העיר בכלל
+        const FB = { areaA: 'city', areaB: 'city', areaP: 'city', eaststairs: 'precinct', courts: 'precinct', secitadel: 'precinct', westentrance: 'precinct', persian: 'precinct' };
+        const own = (IMAGES[id] || {}).photos || [], src = own.length ? own : ((IMAGES[FB[id]] || {}).photos || []);
+        const a = src.map(im => Object.assign({ thumb: sized(im, 330) }, im));
+        const F = window.GERIZIM_FLICKR, fl = F && F.places && F.places[id] ? F.places[id].filter(it => it.t).map(it => ({ thumb: it.t, t: it.t, f: it.f, w: it.w, cap: it.c, by: F.by, lic: F.rights ? L(F.rights) : '', page: it.u, src: 'Flickr' })) : [];
+        return a.concat(fl);
+      },
+      onPhoto: (list, i) => lightbox(list, i),
+      inscr: window.GERIZIM_INSCR || [], scripts: T('scr'), insNo: T('insNo'),
+      onExit: () => { mapEl.classList.remove('diving'); map.jumpTo(Object.assign({}, back, { zoom: Math.max(back.zoom, 16.6) })); }
+    })).catch(() => { mapEl.classList.remove('diving'); walkScripts = null; map.flyTo(back); });
+  }
+  const walkPins = {};
+  function buildWalkPins() {
+    Object.keys(WALK_STARTS).forEach(k => {
+      const st = WALK_STARTS[k];
+      let el = walkPins[k];
+      if (!el) {
+        el = walkPins[k] = document.createElement('button');
+        el.className = 'pin walkpin';
+        el.onclick = e => { e.stopPropagation(); enterWalk(k); };
+        new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -9] }).setLngLat(at(st.en[0], st.en[1])).addTo(map);
+      }
+      el.innerHTML = WALK_ICON + '<span>' + esc(T('walk')) + '</span>'; el.title = T('walkTip'); el.dir = T('dir');
+    });
+  }
+
+
+  /* ---------- שרטוט סכמטי בכרטיס: מצויר כאן מנתוני השחזור, עם מקרא בשפת הממשק ---------- */
+  function planSection(p) {
+    const WD = window.GERIZIM_WALK;
+    if (!WD || !WALK_FROM[p.id]) return '';
+    const per = p.id === 'persian' ? 'p' : 'h', ok = o => !o.per || o.per === per;
+    const PB = WD.planBox || {}, B = PB[p.id] || PB.precinct || WD.bounds, x0 = B[0], z0 = B[1], w = B[2] - B[0], hgt = B[3] - B[1];
+    const inView = b => b && b[2] > B[0] && b[0] < B[2] && b[3] > B[1] && b[1] < B[3];
+    const r = (b, fill, extra) => '<rect x="' + (b[0] - x0) + '" y="' + (b[1] - z0) + '" width="' + (b[2] - b[0]) + '" height="' + (b[3] - b[1]) + '" fill="' + fill + '"' + (extra || '') + '/>';
+    let s = '<svg viewBox="0 0 ' + w + ' ' + hgt + '" role="img" aria-label="' + esc(T('plan')) + '">';
+    WD.floors.forEach(f => { if (ok(f) && !f.deco) s += r(f.box, f.steps ? '#c7b68b' : (f.mat === 'pave' ? '#e2d5b2' : '#d6c79f')); });
+    WD.floors.forEach(f => {                             // קווי המדרגות
+      if (!ok(f) || !f.steps) return; const b = f.box, q = f.ramp;
+      for (let i = 1; i < 12; i++) { const v = q.a + (q.b - q.a) * i / 12;
+        s += q.axis === 'x' ? '<line x1="' + (v - x0) + '" y1="' + (b[1] - z0) + '" x2="' + (v - x0) + '" y2="' + (b[3] - z0) + '" stroke="#7a6a45" stroke-width=".4"/>'
+                            : '<line x1="' + (b[0] - x0) + '" y1="' + (v - z0) + '" x2="' + (b[2] - x0) + '" y2="' + (v - z0) + '" stroke="#7a6a45" stroke-width=".4"/>'; }
+    });
+    WD.solids.forEach(o => { if (ok(o) && o.h > 0.5 && !o.shed) s += r(o.box, o.id ? '#b8862e' : (o.house ? '#93826c' : '#3b3024')); });
+    // המקומות שבמקרא: לכל אזור מספר, והאזורים של הכרטיס הזה מודגשים
+    const zs = WD.zones.filter(z => !z.per || z.per === per);
+    const boxOf = z => { if (z.box) return z.box; const fl = WD.floors.filter(f => z.floors.indexOf(f.id) >= 0 && ok(f)); if (!fl.length) return null;
+      return [Math.min.apply(0, fl.map(f => f.box[0])), Math.min.apply(0, fl.map(f => f.box[1])), Math.max.apply(0, fl.map(f => f.box[2])), Math.max.apply(0, fl.map(f => f.box[3]))]; };
+    const list = [];
+    zs.forEach(z => { const b = boxOf(z); if (!inView(b) || z.id === 'plaza' || z.id === 'road') return; const c = [Math.max(b[0], B[0]), Math.max(b[1], B[1]), Math.min(b[2], B[2]), Math.min(b[3], B[3])]; list.push({ z, b: c, hit: z.place === p.id }); });
+    list.forEach(o => { if (o.hit) s += r(o.b, 'rgba(217,178,95,.45)', ' stroke="#b8862e" stroke-width="1.2"'); });
+    list.forEach((o, i) => { const cx = (o.b[0] + o.b[2]) / 2 - x0, cz = (o.b[1] + o.b[3]) / 2 - z0;
+      s += '<circle cx="' + cx + '" cy="' + cz + '" r="5.2" fill="' + (o.hit ? '#b8862e' : '#fffaf0') + '" stroke="#3b3024" stroke-width=".7"/>' +
+           '<text x="' + cx + '" y="' + (cz + 2.3) + '" font-size="6.4" text-anchor="middle" font-family="sans-serif" font-weight="700" fill="#201a12">' + (i + 1) + '</text>'; });
+    // חץ צפון וקנה מידה
+    s += '<g transform="translate(' + (w - 14) + ' 16) rotate(' + (-(WD.north || 0)) + ')"><path d="M0 -11 l-4.5 13 h9z" fill="#3b3024"/><text x="0" y="11" font-size="7" text-anchor="middle" font-family="sans-serif" fill="#3b3024">N</text></g>' +
+         '<rect x="8" y="' + (hgt - 9) + '" width="50" height="2.4" fill="#3b3024"/><text x="33" y="' + (hgt - 11.5) + '" font-size="7" text-anchor="middle" font-family="sans-serif" fill="#3b3024">50 m</text></svg>';
+    return sec('plan', T('plan') + ' · ' + T(per === 'p' ? 'planPer' : 'planHel'),
+      '<div class="plan">' + s + '</div><ol class="planlist">' + list.map(o => '<li' + (o.hit ? ' class="hit"' : '') + '>' + esc(L(o.z.name)) + '</li>').join('') + '</ol>' +
+      '<p class="plannote">' + esc(T('planNote')) + '</p>', list.length);
+  }
+
+
+  /* ---------- צילומי אורי אורחוף: התמונות מוצגות ברשותו, ושמו כתוב על כל אחת; סרטונים נפתחים ב-Flickr ---------- */
+  let flkShown = [];
+  function flickrSection(p) {
+    const F = window.GERIZIM_FLICKR, list = F && F.places && F.places[p.id];
+    flkShown = [];
+    if (!list || !list.length) return '';
+    const rights = F.rights ? L(F.rights) : '© ' + F.by;
+    flkShown = list.filter(it => it.t).map(it => ({ t: it.t, f: it.f, w: it.w, cap: it.c, by: F.by, lic: rights, page: it.u, src: 'Flickr' }));
+    const links = list.filter(it => !it.t);
+    return sec('flk', T('flk'),
+      (flkShown.length ? strip(flkShown, 'flk') : '') +
+      (links.length ? '<ul class="flk">' + links.map(it => '<li><a href="' + esc(it.u) + '" target="_blank" rel="noopener"><b>' + esc(T(it.k === 'video' ? 'flkVideo' : 'flkPhoto')) + '</b>' +
+        '<span>' + esc(L(it.c)) + '</span><i>' + esc(it.y || '') + '</i></a></li>').join('') + '</ul>' : '') +
+      '<p class="flkmore">' + esc(rights) + ' <a href="' + esc(F.account + 'albums') + '" target="_blank" rel="noopener">' + esc(T('flkAll')) + '</a></p>', list.length);
+  }
+
+
+  /* ---------- הכתובות שנמצאו במקום: הנוסח העתיק, התרגום, והיכן בדיוק נמצאה כל אחת ---------- */
+  function insSection(p) {
+    const list = (window.GERIZIM_INSCR || []).filter(x => x.place === p.id || (p.id === 'precinct' && x.place === 'other'));
+    if (!list.length) return '';
+    return sec('ins', T('ins'), '<ul class="ins">' + list.map(x =>
+      '<li><div class="insno">' + esc(x.no != null ? T('insNo').replace('{n}', x.no) : L(x.label)) + (T('scr')[x.script] ? ' · ' + esc(T('scr')[x.script]) : '') + '</div>' +
+      (x.text ? '<div class="instx' + (x.script === 'greek' ? ' gr' : '') + '">' + esc(x.text) + '</div>' : '') +
+      (L(x.tr) ? '<div class="instr">' + esc(L(x.tr)) + '</div>' : '') +
+      '<div class="insnt">' + esc(T('insAt')) + ': ' + esc(L(x.spot)) + (L(x.note) ? ' · ' + esc(L(x.note)) : '') + '</div></li>').join('') + '</ul>', list.length);
+  }
 
   /* ---------- חוגת הכיוונים ---------- */
   // השושנה מסתובבת עם המפה, והמשולש שבראשה מסמן את כיוון המבט. גרירה מסובבת את המפה;
@@ -387,7 +508,7 @@
   }
   // Wikimedia מגיש תמונות מוקטנות רק ברוחבים קבועים; 330 לרצועה, 1280 לתצוגה המוגדלת
   const sized = (im, px) => im.t.replace(/\/\d+px-/, '/' + px + 'px-');
-  const big = im => (im.w >= 1280 ? sized(im, 1280) : im.t);
+  const big = im => im.f || (im.w >= 1280 ? sized(im, 1280) : im.t);
   function strip(list, key) {
     return '<div class="strip">' + list.map((im, i) =>
       '<button class="ph" data-set="' + key + '" data-i="' + i + '"><img loading="lazy" src="' + esc(sized(im, 330)) + '" alt="' + esc(L(im.cap) || '') + '"></button>').join('') + '</div>';
@@ -413,12 +534,14 @@
     const hasPhotos = im.photos && im.photos.length;
     if (hasPhotos && !phone) h += strip(im.photos, 'photos');
     h += '<p>' + esc(L(p.summary)) + '</p>';
+    if (WALK_FROM[p.id]) h += '<button class="walkbtn" id="cardWalk">' + WALK_ICON + esc(T('walkBtn')) + '</button>';
     if (p.geo) h += '<p class="farline">' + esc(geoLine(p.geo)) + '</p>';
     if (p.far) { const dd = distDir(p); h += '<p class="farline">' + esc(T(p.unseen ? 'farAway' : 'far').replace('{d}', dd.d).replace('{c}', dd.c)) + '</p>'; }
     if (p.nomap) h += '<p class="farline">' + esc(T('nomap')) + '</p>';
     if (hasPhotos && phone) h += sec('photos', T('photos'), strip(im.photos, 'photos'), im.photos.length);
     if (p.route) h += sec('route', T('route'), '<ol class="route">' + p.route.map(r =>
       '<li>' + (byId[r.id] ? linkTo(r.id) : '') + (r.note ? '<span>' + esc(L(r.note)) + '</span>' : '') + '</li>').join('') + '</ol>', p.route.length);
+    h += planSection(p);
     if (parts.length) h += sec('parts', T('parts'), '<div class="parts">' + parts.map(c => linkTo(c.id)).join('') + '</div>', parts.length);
     if (p.strata.length) h += sec('strata', T('strata'), p.strata.map(s =>
       '<div class="stratum' + (s.period === state.period ? ' hit' : '') + '">' +
@@ -431,6 +554,8 @@
         (p.finds.length ? '<ul>' + p.finds.map(f => '<li>' + esc(L(f)) + '</li>').join('') + '</ul>' : ''),
         p.finds.length + (hasInscr ? im.inscr.length : 0));
     }
+    h += insSection(p);
+    h += flickrSection(p);
     h += '<div class="nav' + (touring ? ' on' : '') + '">' +
         '<button id="tourPrev">' + esc(T('prev')) + '</button>' +
         '<em>' + esc(T('station').replace('{i}', state.tourAt + 1).replace('{n}', G.tour.length)) + '</em>' +
@@ -446,7 +571,8 @@
       $('tourNext').onclick = () => tourGo(state.tourAt + 1);
     }
     card.querySelectorAll('[data-go]').forEach(b => { b.onclick = () => { endTour(); select(b.dataset.go); }; });
-    card.querySelectorAll('.ph').forEach(b => { b.onclick = () => lightbox(im[b.dataset.set], +b.dataset.i); });
+    card.querySelectorAll('.ph').forEach(b => { b.onclick = () => lightbox(b.dataset.set === 'flk' ? flkShown : im[b.dataset.set], +b.dataset.i); });
+    if ($('cardWalk')) $('cardWalk').onclick = () => enterWalk(WALK_FROM[p.id]);
     // מה שהמשתמש פתח או סגר נשאר כך גם בכרטיסים הבאים
     card.querySelectorAll('details.sec').forEach(d => { d.ontoggle = () => { state.exp[d.dataset.sec] = d.open; }; });
   }
@@ -551,7 +677,23 @@
     $('btnTour').textContent = T('endTour');
     select(G.tour[i], true);
   }
+  // הסיור יוצא תמיד מנקודת הפתיחה: קודם חוזרים אל מבט העל שבו נפתח הדף, ורק משם טסים אל התחנה הראשונה
+  let tourWait = null;
+  function atHome() {
+    const h = home(), c = map.getCenter();
+    return Math.abs(c.lng - h.center[0]) < 12 * M_LON && Math.abs(c.lat - h.center[1]) < 12 * M_LAT && Math.abs(map.getZoom() - h.zoom) < 0.08 &&
+      Math.abs(map.getPitch() - h.pitch) < 2 && Math.abs(((map.getBearing() - h.bearing + 540) % 360) - 180) < 2;
+  }
+  function startTour() {
+    endTour(); select(null);
+    $('btnTour').classList.add('on');
+    $('btnTour').textContent = T('endTour');
+    if (atHome()) { introEnd(true); tourWait = setTimeout(() => { tourWait = null; tourGo(0); }, 350); return; }
+    goHome();
+    tourWait = setTimeout(() => { tourWait = null; tourGo(0); }, 2400 + 900);
+  }
   function endTour() {
+    if (tourWait) { clearTimeout(tourWait); tourWait = null; }
     state.tourAt = -1;
     $('btnTour').classList.remove('on');
     $('btnTour').textContent = T('tour');
@@ -562,8 +704,8 @@
   }
 
   $('btnTour').onclick = () => {
-    if (state.tourAt >= 0) { endTour(); select(null); goHome(); }
-    else tourGo(0);
+    if (state.tourAt >= 0 || tourWait) { endTour(); select(null); goHome(); }
+    else startTour();
   };
   $('btnHome').onclick = () => { endTour(); select(null); goHome(); };
   $('btnList').onclick = () => {
@@ -603,13 +745,14 @@
     document.title = T('title');
     $('ttl').textContent = T('title');
     $('tag').textContent = T('tag');
-    $('btnTour').textContent = state.tourAt >= 0 ? T('endTour') : T('tour');
+    $('btnTour').textContent = (state.tourAt >= 0 || tourWait) ? T('endTour') : T('tour');
     $('btnHome').textContent = T('home');
     $('btnList').textContent = T('list');
     $('btnRelief').textContent = T('relief');
     $('btnPick').textContent = T('pick');
     buildPeriods();
     buildDial();
+    buildWalkPins();
     barHeight();
     PLACES.forEach(p => { if (p._pin) { p._pin.textContent = pinText(p); p._pin.title = L(p.name); p._pin.dir = T('dir'); } });
     [...document.querySelectorAll('#langs button')].forEach(b => b.classList.toggle('on', b.dataset.lang === lang));

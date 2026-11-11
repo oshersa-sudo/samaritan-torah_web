@@ -870,6 +870,118 @@ window.GERIZIM_IMAGES = {
    }
   ]
  },
+ "city": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Mt-Grizim-national-park-7860.jpg/330px-Mt-Grizim-national-park-7860.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7860.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Mt-Grizim-national-park-7870.jpg/330px-Mt-Grizim-national-park-7870.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7870.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Mt-Grizim-national-park-7861.jpg/330px-Mt-Grizim-national-park-7861.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7861.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Mt-Grizim-national-park-7908.jpg/330px-Mt-Grizim-national-park-7908.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7908.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Mt-Grizim-national-park-7930.jpg/330px-Mt-Grizim-national-park-7930.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7930.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Mt-Grizim-national-park-7949.jpg/330px-Mt-Grizim-national-park-7949.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7949.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Mt-Grizim-national-park-7914.jpg/330px-Mt-Grizim-national-park-7914.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7914.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Mt-Grizim-national-park-7892.jpg/330px-Mt-Grizim-national-park-7892.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7892.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Mt-Grizim-national-park-7927.jpg/330px-Mt-Grizim-national-park-7927.jpg",
+    "w": 2592,
+    "page": "https://commons.wikimedia.org/wiki/File:Mt-Grizim-national-park-7927.jpg",
+    "by": "Bukvoed",
+    "lic": "CC BY 3.0",
+    "cap": {
+     "he": "שרידי המבנים באתר הארכיאולוגי שבהר גריזים",
+     "en": "Remains of the buildings at the Mount Gerizim archaeological site",
+     "ar": "بقايا المباني في الموقع الأثري في جبل جرزيم"
+    }
+   }
+  ]
+ },
  "northenclosure": {
   "photos": [
    {
