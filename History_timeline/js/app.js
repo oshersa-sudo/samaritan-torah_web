@@ -712,7 +712,10 @@
   var rT;
   window.addEventListener('resize', function () {
     clearTimeout(rT);
-    rT = setTimeout(function () { drawRailTicks(); render(); }, 120);
+    /* placeControls here as well as on the media query's own event: turning the
+       phone is exactly when the row changes shape, and resize is the one signal
+       that always arrives. Moving a node already in place costs nothing. */
+    rT = setTimeout(function () { placeControls(); drawRailTicks(); render(); }, 120);
   });
 
   /* ─────────────── התחלה ─────────────── */
