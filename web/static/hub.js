@@ -43,6 +43,8 @@
           points:['קטלוג כתבי היד של התורה ושל כתבי העדה בספריות ובאוספים ברחבי העולם','פרטי כל כתב יד ותיאורו','צפייה בדפי כתב היד'] },
         genealogy:{ name:'אילן היוחסין השומרוני', short:'אילן היוחסין', tag:'אילן היוחסין המלא של בני העדה',
           points:['אילן היוחסין השומרוני המלא של משפחות העדה','חיפוש אדם ומעקב אחר אבותיו וצאצאיו','מבוסס על מפקד העדה ועל רישומי אירועים','צפייה בקשרי המשפחה בין הדורות'] },
+        gerizim:{ name:'גבעת עולם', short:'גבעת עולם', tag:'סיור תלת-ממדי על פסגת הר גריזים וסביבותיו',
+          points:['סיור על צילום לוויין תלת-ממדי של פסגת ההר, עם חוגת כיוונים וסיור מודרך','המתחם המקודש, העיר ההלניסטית, הכנסייה המתומנת ותל א-ראס: מה נמצא בכל מקום, ושכבותיו לפי תקופות','המקומות הקדושים לעדה ושבע תחנות העלייה לרגל','אתרי הסביבה: שכם, הר עיבל, תל בלאטה, קבר יוסף ועוד, עם תמונות','התוכן ראשוני, ועוד יתעדכן'] },
       }
     },
     en: {
@@ -65,6 +67,8 @@
           points:['A catalogue of Torah and community manuscripts in libraries and collections worldwide','Details and a description of each manuscript','Viewing the manuscript pages'] },
         genealogy:{ name:'Samaritan Genealogy', short:'Genealogy', tag:'The full family tree of the community',
           points:['The full Samaritan family tree of the community’s families','Look up a person and follow their ancestors and descendants','Built on the community census and records of events','See the family ties across the generations'] },
+        gerizim:{ name:'Givat Olam — The Eternal Hill', short:'Givat Olam', tag:'A 3D tour of the summit of Mount Gerizim and its surroundings',
+          points:['A tour over 3D satellite imagery of the summit, with a direction dial and a guided route','The sacred precinct, the Hellenistic city, the octagonal church and Tell er-Ras: what was found at each place, and its layers by period','The community’s holy places and the seven stations of the pilgrimage','The sites around: Nablus, Mount Ebal, Tell Balata, Joseph’s Tomb and more, with pictures','The content is preliminary and will be updated'] },
       }
     },
     ar: {
@@ -87,6 +91,8 @@
           points:['فهرس لمخطوطات التوراة ومخطوطات الطائفة في المكتبات والمجموعات حول العالم','تفاصيل كل مخطوط ووصفه','تصفّح صفحات المخطوط'] },
         genealogy:{ name:'شجرة الأنساب السامرية', short:'شجرة الأنساب', tag:'شجرة الأنساب الكاملة لأبناء الطائفة',
           points:['شجرة الأنساب السامرية الكاملة لعائلات الطائفة','البحث عن شخص وتتبّع أجداده وأحفاده','مبنية على إحصاء الطائفة وسجلّات الأحداث','عرض الروابط العائلية عبر الأجيال'] },
+        gerizim:{ name:'جبعة عولام — التلة الأبدية', short:'التلة الأبدية', tag:'جولة ثلاثية الأبعاد على قمة جبل جرزيم ومحيطه',
+          points:['جولة على صورة فضائية ثلاثية الأبعاد لقمة الجبل، مع قرص للاتجاهات وجولة إرشادية','الحرم المقدّس، والمدينة الهلنستية، والكنيسة المثمّنة، وتل الراس: ما وُجد في كل مكان، وطبقاته بحسب الفترات','الأماكن المقدّسة للطائفة والمحطات السبع للحجّ','مواقع المحيط: نابلس، وجبل عيبال، وتل بلاطة، وقبر يوسف وغيرها، مع صور','المحتوى أوّلي وسيُحدَّث'] },
       }
     }
   };
@@ -101,6 +107,7 @@
     timeline:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="12" x2="22" y2="12"/><line x1="8" y1="10" x2="8" y2="5"/><circle cx="8" cy="12" r="2"/><line x1="16" y1="14" x2="16" y2="19"/><circle cx="16" cy="12" r="2"/></svg>',
     mss:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 5h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg>',
     dict:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z"/><path d="M4 18a2 2 0 0 1 2-2h12"/><line x1="8" y1="8" x2="14" y2="8"/><line x1="8" y1="12" x2="12" y2="12"/></svg>',
+    gerizim:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20l7-12 4 6 2.5-3.5L22 20z"/><path d="M9 8l-1.6 4.2 2.2-.9 1.6 1.6"/><circle cx="18" cy="5.5" r="1.8"/></svg>',
     genealogy:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.6"/><circle cx="5" cy="19" r="2.6"/><circle cx="19" cy="19" r="2.6"/><path d="M12 7.6V12M12 12H5v4.4M12 12h7v4.4"/></svg>',
   };
   // the order here is the order round the ring, clockwise from the top
@@ -111,7 +118,9 @@
     { key:'shira',     open:() => openShira() },
     { key:'timeline',  open:() => openTimeline() },
     { key:'mss',       open:() => (typeof window.openMss === 'function') && window.openMss() },
-    { key:'genealogy', open:() => openExternalUnit(GENEALOGY_URL, t('m_genealogy')) }
+    { key:'genealogy', open:() => openExternalUnit(GENEALOGY_URL, t('m_genealogy')) },
+    // the tour of Mount Gerizim: the app's own page, shown in the same frame-with-a-bar as the outside units
+    { key:'gerizim',   open:() => openExternalUnit('/static/gerizim/index.html?lang=' + lang(), T().apps.gerizim.short) }
   ];
   const N = APPS.length, STEP = 360 / N;
 
@@ -985,7 +994,7 @@
   const HUBTXT = {
     he: {
       tour:[
-        'זהו התפריט הראשי — הדף שנפתח בכניסה לאפליקציה. התורה בעיגול הגדול שבאמצע, ומסביבה שאר האפליקציות: לוח השנה, הספרייה, המילון הארמי-עברי, אוצר השירה, ציר הזמן, אוצר כתבי היד ואילן היוחסין.',
+        'זהו התפריט הראשי — הדף שנפתח בכניסה לאפליקציה. התורה בעיגול הגדול שבאמצע, ומסביבה שאר האפליקציות: לוח השנה, הספרייה, המילון הארמי-עברי, אוצר השירה, ציר הזמן, אוצר כתבי היד, אילן היוחסין וגבעת עולם — הסיור בהר גריזים.',
         'מסובבים את החוגה בגרירה, בגלגל העכבר או בחצים. העיגול שבראש החוגה מציג בכרטיס שבצדו מה האפליקציה נותנת, ולחיצה על עיגול נכנסת אליה.',
         'בכל כרטיס יש כפתור "צ. מסך", משמאל לכפתור הכניסה. לחיצה עליו פותחת חלון עם צילומי מסך של האפליקציה שאפשר לגלול ביניהם.',
         'אחרי העיגול האחרון מתרחב עיגול התורה על פני כל החוגה ומציג את ההסבר על התורה. הסיבוב הבא מחזיר אותו למקומו, ולחיצה עליו נכנסת לתורה.',
@@ -994,7 +1003,7 @@
         'מכל אפליקציה חוזרים לתפריט הראשי בלחיצה על X, וגם דרך "יציאה לתפריט הראשי" בתפריט ההמבורגר. הקישור "התורה" מוצג רק למי שנכנס מתפריט ההמבורגר של התורה.'
       ],
       help:['התפריט הראשי', [
-        'בכניסה לאפליקציה, אחרי מסך הפתיחה, נפתח <b>התפריט הראשי</b> — העיגולים יוצאים מהמרכז אל מקומם והחוגה מסתובבת חצי סיבוב: <b>התורה</b> בעיגול הגדול שבאמצע, ומסביבה <b>חוגה מסתובבת</b> של האפליקציות — לוח השנה, הספרייה, המילון הארמי-עברי, אוצר השירה, ציר הזמן, אוצר כתבי היד ואילן היוחסין.',
+        'בכניסה לאפליקציה, אחרי מסך הפתיחה, נפתח <b>התפריט הראשי</b> — העיגולים יוצאים מהמרכז אל מקומם והחוגה מסתובבת חצי סיבוב: <b>התורה</b> בעיגול הגדול שבאמצע, ומסביבה <b>חוגה מסתובבת</b> של האפליקציות — לוח השנה, הספרייה, המילון הארמי-עברי, אוצר השירה, ציר הזמן, אוצר כתבי היד, אילן היוחסין וגבעת עולם — הסיור בהר גריזים.',
         '<b>סיבוב החוגה</b> — בגרירה, בגלגל העכבר או בחצים. העיגול שבראש החוגה מציג <b>כרטיס</b> בצד: מה האפליקציה נותנת, וכפתור כניסה. לחיצה על העיגול עצמו נכנסת אליה.',
         '<b>צ. מסך</b> — בכל כרטיס יש כפתור כזה, משמאל לכפתור הכניסה. לחיצה עליו פותחת חלון עם צילומי מסך של האפליקציה שאפשר לגלול ביניהם; עד שלוחצים — אין צילומי מסך על המסך.',
         '<b>עיגול התורה</b> — אחרי העיגול האחרון הוא מתרחב על פני כל החוגה ומציג את ההסבר על התורה; הסיבוב הבא מחזיר אותו למקומו. לחיצה עליו נכנסת לתורה.',
@@ -1005,7 +1014,7 @@
     },
     en: {
       tour:[
-        'This is the main menu — the page that opens when you enter the app. The Torah is in the big circle in the middle, and around it the other apps: the calendar, the library, the Aramaic–Hebrew dictionary, the song treasury, the timeline, the manuscript treasury and the genealogy.',
+        'This is the main menu — the page that opens when you enter the app. The Torah is in the big circle in the middle, and around it the other apps: the calendar, the library, the Aramaic–Hebrew dictionary, the song treasury, the timeline, the manuscript treasury, the genealogy and Givat Olam — the tour of Mount Gerizim.',
         'Turn the dial by dragging, with the mouse wheel or with the arrow keys. The circle at the top of the dial shows, in the card beside it, what that app offers, and tapping a circle takes you in.',
         'Every card has a “Screenshots” button, beside the Enter button. Tap it to open a window of screenshots of the app that you can scroll through.',
         'After the last circle the Torah’s circle swells across the whole dial and shows what the Torah offers. The next turn puts it back in its place, and tapping it enters the Torah.',
@@ -1014,7 +1023,7 @@
         'From any app you return to the main menu with the X, or through “Exit to the main menu” in the hamburger menu. The “Torah” link is shown only to someone who came in from the Torah’s own hamburger menu.'
       ],
       help:['The main menu', [
-        'On entering the app, after the opening screen, the <b>main menu</b> opens — the circles come out of the middle into place and the dial turns half a round: the <b>Torah</b> in the big circle in the middle, and round it a <b>turning dial</b> of the apps — the calendar, the library, the Aramaic–Hebrew dictionary, the song treasury, the timeline, the manuscript treasury and the genealogy.',
+        'On entering the app, after the opening screen, the <b>main menu</b> opens — the circles come out of the middle into place and the dial turns half a round: the <b>Torah</b> in the big circle in the middle, and round it a <b>turning dial</b> of the apps — the calendar, the library, the Aramaic–Hebrew dictionary, the song treasury, the timeline, the manuscript treasury, the genealogy and Givat Olam — the tour of Mount Gerizim.',
         '<b>Turning the dial</b> — by dragging, with the mouse wheel or with the arrow keys. The circle at the top shows a <b>card</b> at its side: what the app offers, and an enter button. Tapping the circle itself takes you in.',
         '<b>Screenshots</b> — each card has this button, beside the Enter button. Tap it to open a window of screenshots of the app that you can scroll through; until it is pressed, no screenshots are shown.',
         '<b>The Torah’s circle</b> — after the last circle it swells across the whole dial and shows what the Torah offers; the next turn puts it back. Tapping it enters the Torah.',
@@ -1025,7 +1034,7 @@
     },
     ar: {
       tour:[
-        'هذه هي القائمة الرئيسية — الصفحة التي تُفتح عند الدخول إلى التطبيق. التوراة في الدائرة الكبيرة في الوسط، وحولها بقية التطبيقات: التقويم، والمكتبة، والقاموس الآرامي-العبري، وكنز الأناشيد، والخط الزمني، وكنز المخطوطات، وشجرة الأنساب.',
+        'هذه هي القائمة الرئيسية — الصفحة التي تُفتح عند الدخول إلى التطبيق. التوراة في الدائرة الكبيرة في الوسط، وحولها بقية التطبيقات: التقويم، والمكتبة، والقاموس الآرامي-العبري، وكنز الأناشيد، والخط الزمني، وكنز المخطوطات، وشجرة الأنساب، والتلة الأبدية — جولة جبل جرزيم.',
         'أدِر القرص بالسحب أو بعجلة الفأرة أو بالأسهم. الدائرة التي في أعلى القرص تعرض في بطاقة بجانبها ما يقدّمه التطبيق، والضغط على دائرة يدخل إليه.',
         'في كل بطاقة زرّ «لقطات» بجانب زرّ الدخول. اضغط عليه لتفتح نافذة بلقطات شاشة للتطبيق يمكن تصفّحها.',
         'بعد الدائرة الأخيرة تتّسع دائرة التوراة على القرص كلّه وتعرض ما تقدّمه التوراة. الدورة التالية تعيدها إلى مكانها، والضغط عليها يدخل إلى التوراة.',
@@ -1034,7 +1043,7 @@
         'من أي تطبيق تعود إلى القائمة الرئيسية بالضغط على X، أو عبر «الخروج إلى القائمة الرئيسية» في قائمة الهامبرغر. ورابط «التوراة» لا يظهر إلا لمن دخل من قائمة الهامبرغر الخاصة بالتوراة.'
       ],
       help:['القائمة الرئيسية', [
-        'عند الدخول إلى التطبيق، بعد شاشة البداية، تُفتح <b>القائمة الرئيسية</b> — تخرج الدوائر من المركز إلى أماكنها ويدور القرص نصف دورة: <b>التوراة</b> في الدائرة الكبيرة في الوسط، وحولها <b>قرص يدور</b> من التطبيقات — التقويم، والمكتبة، والقاموس الآرامي-العبري، وكنز الأناشيد، والخط الزمني، وكنز المخطوطات، وشجرة الأنساب.',
+        'عند الدخول إلى التطبيق، بعد شاشة البداية، تُفتح <b>القائمة الرئيسية</b> — تخرج الدوائر من المركز إلى أماكنها ويدور القرص نصف دورة: <b>التوراة</b> في الدائرة الكبيرة في الوسط، وحولها <b>قرص يدور</b> من التطبيقات — التقويم، والمكتبة، والقاموس الآرامي-العبري، وكنز الأناشيد، والخط الزمني، وكنز المخطوطات، وشجرة الأنساب، والتلة الأبدية — جولة جبل جرزيم.',
         '<b>إدارة القرص</b> — بالسحب أو بعجلة الفأرة أو بالأسهم. الدائرة التي في أعلى القرص تعرض <b>بطاقة</b> على جانبها: ما يقدّمه التطبيق وزرّ للدخول. والضغط على الدائرة نفسها يدخل إليه.',
         '<b>لقطات</b> — في كل بطاقة هذا الزرّ بجانب زرّ الدخول. اضغط عليه لتفتح نافذة بلقطات شاشة للتطبيق يمكن تصفّحها؛ وما لم تضغط عليه لا تظهر أي لقطة.',
         '<b>دائرة التوراة</b> — بعد الدائرة الأخيرة تتّسع على القرص كلّه وتعرض ما تقدّمه التوراة؛ والدورة التالية تعيدها إلى مكانها. والضغط عليها يدخل إلى التوراة.',

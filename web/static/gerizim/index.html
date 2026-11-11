@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>הר גריזים — סיור על הפסגה</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+  @font-face{font-family:'Samaritan';src:url('/fonts/Sam_font.ttf') format('truetype');font-display:block}
+  :root{
+    --ink:#f3ead6; --dim:#b9ad93; --gold:#d9b25f; --panel:rgba(24,20,15,.92);
+    --line:rgba(217,178,95,.35); --cardw:400px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:#14110d;color:var(--ink);overflow:hidden;
+    font-family:"Segoe UI","Arial Hebrew","Noto Sans Hebrew","Noto Naskh Arabic",Arial,sans-serif}
+  #map{position:fixed;inset:0;direction:ltr}
+  /* קנה המידה ושורת הקרדיט של המפה יושבים מעל סרגל הכלים, לא מתחתיו */
+  .maplibregl-ctrl-bottom-left,.maplibregl-ctrl-bottom-right{bottom:var(--barh,96px)}
+
+  /* כותרת */
+  #top{position:fixed;top:0;right:0;left:0;z-index:5;display:flex;align-items:center;gap:10px;
+    padding:calc(10px + env(safe-area-inset-top)) 14px 10px 58px;
+    background:linear-gradient(rgba(15,12,9,.85),rgba(15,12,9,0));pointer-events:none}
+  #top h1{margin:0;font-size:19px;font-weight:600;letter-spacing:.2px;text-shadow:0 1px 4px #000;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  #top .tag{font-size:12px;color:#14110d;background:var(--gold);border-radius:10px;padding:2px 9px;font-weight:600;white-space:nowrap}
+  #langs{margin-inline-start:auto;display:flex;gap:4px;pointer-events:auto;direction:ltr;flex:none}
+  #langs button{padding:3px 10px;font-size:13px;min-width:38px}
+
+  /* פתיחה: הכותרת השומרונית בזהב */
+  #intro{position:fixed;z-index:9;top:0;left:0;right:0;height:46vh;padding:max(74px,11vh) 16px 0;text-align:center;
+    pointer-events:none;opacity:0;transition:opacity 1.4s ease-out;
+    background:linear-gradient(rgba(8,6,3,.82),rgba(8,6,3,.45) 55%,rgba(8,6,3,0))}
+  #intro.show{opacity:1}
+  #intro.fade{opacity:0;transition:opacity 4s linear}
+  #introSam{font-family:'Samaritan',serif;direction:rtl;display:inline-block;
+    font-size:clamp(24px,5.4vw,76px);line-height:1.5;max-width:94vw;
+    /* המילוי המוזהב נצבע רק בתוך תיבת האלמנט — הריפוד מכניס לתוכה את רגלי האותיות */
+    padding:.25em .2em .6em;
+    background:linear-gradient(100deg,#8a6a1c 0%,#f6dc8a 20%,#fffbe0 36%,#e4b94f 50%,#fff6c8 64%,#c9982f 82%,#8a6a1c 100%);
+    background-size:230% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 16px rgba(255,214,110,.8)) drop-shadow(0 0 4px rgba(255,236,170,.9)) drop-shadow(0 3px 3px rgba(0,0,0,.85));
+    animation:shine 4.2s linear infinite}
+  @keyframes shine{from{background-position:210% 0}to{background-position:-20% 0}}
+  @media (prefers-reduced-motion:reduce){#introSam{animation:none;background-position:50% 0}}
+
+  /* שורת כלים תחתונה */
+  #bar{position:fixed;bottom:0;right:0;left:0;z-index:5;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:linear-gradient(rgba(15,12,9,0),rgba(15,12,9,.9) 45%);display:flex;flex-direction:column;gap:8px}
+  .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .row .lbl{font-size:12.5px;color:var(--dim);margin-inline-end:4px}
+  button{font:inherit;color:var(--ink);background:rgba(40,33,24,.92);border:1px solid var(--line);
+    border-radius:18px;padding:6px 13px;font-size:14px;cursor:pointer}
+  button:hover{border-color:var(--gold)}
+  button.on{background:var(--gold);color:#17130d;border-color:var(--gold);font-weight:600}
+  button.main{border-color:var(--gold)}
+
+  /* כרטיס מקום: תמיד בצד, כדי שהמקום עצמו יישאר גלוי */
+  #card{position:fixed;z-index:6;top:58px;right:12px;width:min(var(--cardw),calc(100vw - 24px));
+    max-height:calc(100vh - 176px);max-height:calc(100dvh - 176px);overflow:auto;background:var(--panel);
+    border:1px solid var(--line);border-radius:14px;padding:16px 18px 14px;box-shadow:0 10px 40px rgba(0,0,0,.55);
+    backdrop-filter:blur(6px);display:none;overscroll-behavior:contain}
+  #card.open{display:block}
+  #card .x{position:sticky;float:inline-end;top:0;margin-inline-start:8px;border-radius:50%;width:32px;height:32px;padding:0;
+    font-size:16px;line-height:1;z-index:2;background:rgba(40,33,24,.98)}
+  #card .kind{font-size:12.5px;color:var(--gold);margin-bottom:2px}
+  #card h2{margin:0 0 8px;font-size:21px;line-height:1.25}
+  #card p{margin:0 0 10px;line-height:1.6;font-size:15px}
+  #card h3{margin:14px 0 6px;font-size:14px;color:var(--gold);font-weight:600;border-top:1px solid var(--line);padding-top:10px;clear:both}
+  /* פרקי הכרטיס: נפתחים ונסגרים בלחיצה על הכותרת. בטלפון הם סגורים עד שמבקשים */
+  details.sec{border-top:1px solid var(--line);margin-top:12px;clear:both}
+  details.sec>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;
+    padding:10px 0 6px;font-size:14px;color:var(--gold);font-weight:600;user-select:none}
+  details.sec>summary::-webkit-details-marker{display:none}
+  details.sec>summary em{font-style:normal;font-weight:400;font-size:12px;color:var(--dim);
+    border:1px solid var(--line);border-radius:9px;padding:0 6px;line-height:16px}
+  details.sec>summary::after{content:"+";margin-inline-start:auto;font-size:18px;line-height:1;color:var(--dim);font-weight:400}
+  details.sec[open]>summary::after{content:"−"}
+  details.sec:not([open])>summary{padding-bottom:10px}
+  .crumb{font-size:13px;color:var(--dim);margin:-2px 0 8px}
+  .farline{font-size:13.5px !important;color:var(--dim)}
+  .stratum{border-inline-start:3px solid var(--line);padding-block:2px;padding-inline-start:10px;margin:0 0 9px}
+  .stratum.hit{border-inline-start-color:var(--gold);background:rgba(217,178,95,.08)}
+  .stratum b{display:block;font-size:14.5px}
+  .stratum i{font-style:normal;font-size:12.5px;color:var(--dim)}
+  .stratum span{display:block;font-size:14.5px;line-height:1.55;margin-top:2px}
+  #card ul{margin:0;padding-inline-start:18px;font-size:14.5px;line-height:1.6}
+  .note{font-size:12px;color:var(--dim);margin-top:12px}
+  .nav{display:none;justify-content:space-between;align-items:center;margin-top:12px;gap:8px}
+  .nav.on{display:flex}
+  .nav em{font-style:normal;font-size:12.5px;color:var(--dim)}
+
+  /* קישורים למקומות: חלקי המקום, רשימת המקומות, סדר התחנות */
+  .lnk{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;font-size:13.5px;border-radius:14px;text-align:start}
+  .lnk i{flex:none;width:9px;height:9px;border-radius:50%;border:1px solid rgba(0,0,0,.4)}
+  .parts{display:flex;flex-wrap:wrap;gap:6px}
+  .parts.col{flex-direction:column;align-items:flex-start}
+  .parts .sub{display:flex;flex-wrap:wrap;gap:5px;padding-inline-start:16px}
+  .parts .sub .lnk{font-size:12.5px;padding:3px 9px;border-style:dashed}
+  ol.route{margin:0;padding-inline-start:22px;font-size:14px;line-height:1.5}
+  ol.route li{margin-bottom:6px}
+  ol.route li span{display:block;font-size:12.5px;color:var(--dim)}
+
+  /* רצועת תמונות */
+  .strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin:0 0 10px;scrollbar-width:thin;clear:both}
+  .ph{flex:none;padding:0;border-radius:8px;overflow:hidden;height:92px;border:1px solid var(--line);background:#000}
+  .ph img{display:block;height:92px;width:auto;min-width:70px;object-fit:cover}
+
+  /* תמונה מוגדלת */
+  #lightbox{position:fixed;inset:0;z-index:20;background:rgba(6,5,3,.94);display:none;
+    flex-direction:column;align-items:center;justify-content:center;padding:44px 12px 12px}
+  #lightbox.open{display:flex}
+  #lbImg{max-width:100%;max-height:calc(100% - 70px);object-fit:contain;border-radius:6px;background:#111}
+  #lbCap{margin-top:10px;font-size:13px;color:var(--dim);text-align:center;max-width:900px;line-height:1.5}
+  #lbCap b{display:block;color:var(--ink);font-size:14.5px;font-weight:600}
+  #lbCap a{color:var(--gold)}
+  #lbX{position:absolute;top:10px;inset-inline-end:12px;border-radius:50%;width:36px;height:36px;padding:0;font-size:17px}
+  #lbPrev,#lbNext{position:absolute;top:50%;transform:translateY(-50%);border-radius:50%;width:42px;height:42px;padding:0;font-size:22px;line-height:1}
+  #lbPrev{right:10px} #lbNext{left:10px}
+
+  /* תוויות על המפה */
+  .pin{cursor:pointer;background:rgba(20,16,11,.86);border:1px solid var(--gold);color:var(--ink);
+    padding:3px 10px;border-radius:13px;font-size:13.5px;white-space:nowrap;
+    box-shadow:0 2px 8px rgba(0,0,0,.6);transition:filter .25s}
+  .pin::after{content:"";position:absolute;right:50%;bottom:-9px;width:1px;height:9px;background:var(--gold)}
+  .pin.g-holy{border-color:#f2f2f2}
+  .pin.g-holy::after{background:#f2f2f2}
+  .pin.g-around{border-color:#8ecbe6}
+  .pin.g-around::after{background:#8ecbe6}
+  .pin.far{font-size:12.5px;background:rgba(14,26,34,.82)}
+  .pin.part{font-size:12px;padding:1px 7px;min-width:22px;text-align:center;font-weight:600}
+  .lnk .no{flex:none;min-width:18px;height:18px;border-radius:9px;border:1px solid var(--gold);font-size:11.5px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:600}
+  /* המפה עצמה קובעת opacity לתוויות שמאחורי ההר, לכן העמעום נעשה ב-filter */
+  .pin.dim{filter:opacity(.3)}
+  .pin.sel{background:var(--gold);color:#17130d;font-weight:600;border-style:solid}
+
+
+  /* חוגת כיוונים צפה בצד שמאל למטה: שקופה, ורק קווי המתאר שלה נראים, עד שהעכבר או האצבע עליה */
+  #dial{position:fixed;z-index:5;left:14px;bottom:calc(var(--barh,96px) + 40px);--d:118px;--rad:43px;width:var(--d);height:var(--d);
+    border-radius:50%;background:transparent;border:1.5px solid var(--gold);opacity:.5;
+    transition:opacity .3s,background-color .3s,box-shadow .3s;
+    touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;direction:ltr}
+  #dial #dialRose .dl span,#dial #dialNow{text-shadow:0 0 3px #000,0 0 6px #000}
+  #dial.on,#dial:focus-within{opacity:.97;background:rgba(20,16,11,.88);box-shadow:0 4px 18px rgba(0,0,0,.6)}
+  @media (hover:hover){ #dial:hover{opacity:.97;background:rgba(20,16,11,.88);box-shadow:0 4px 18px rgba(0,0,0,.6)} }
+  #dial.on{cursor:grabbing}
+  #dialRose{position:absolute;inset:0;border-radius:50%}
+  #dialRose .tk{position:absolute;left:50%;top:3px;width:1px;height:5px;margin-left:-.5px;background:rgba(235,225,200,.5);
+    transform-origin:50% calc(var(--d) / 2 - 4px)}
+  #dialRose .tk.big{height:8px;width:2px;margin-left:-1px;background:var(--gold)}
+  #dialRose .dl{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;padding:0;border:0;background:none;
+    color:var(--ink);font-size:13px;font-weight:600;border-radius:50%;cursor:pointer;line-height:30px}
+  #dialRose .dl span{display:block}
+  #dialRose .dl.n{color:var(--gold);font-size:14.5px}
+  #dialRose .dl:hover span{text-decoration:underline}
+  #dialMark{position:absolute;left:50%;top:-8px;margin-left:-6px;width:0;height:0;border:6px solid transparent;border-bottom:0;border-top:9px solid var(--gold)}
+  #dialNow{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+    font-size:11.5px;line-height:1.2;color:var(--ink);pointer-events:none;padding:0 30px}
+  #toast{position:fixed;z-index:8;bottom:118px;right:50%;transform:translateX(50%);background:#000c;
+    border:1px solid var(--gold);border-radius:10px;padding:7px 14px;font-size:14px;direction:ltr;display:none}
+
+  /* טאבלט ואייפד */
+  @media (max-width:1100px){ :root{--cardw:330px} #card h2{font-size:19px} }
+  /* טלפון: הכרטיס עולה מלמטה, והמפה נשארת גלויה מעליו */
+  @media (max-width:640px){
+    #top{padding-left:54px;padding-right:10px;gap:6px}
+    #top h1{font-size:15px}
+    #top .tag{display:none}
+    #langs button{padding:3px 7px;min-width:32px;font-size:12.5px}
+    #bar{padding:8px 8px calc(8px + env(safe-area-inset-bottom));gap:6px}
+    .row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    .row::-webkit-scrollbar{display:none}
+    .row button,.row .lbl{flex:none}
+    button{padding:6px 11px;font-size:13.5px}
+    #card{top:auto;bottom:calc(104px + env(safe-area-inset-bottom));right:8px;left:8px;width:auto;
+      max-height:42vh;max-height:42dvh;padding:12px 14px 12px}
+    #card h2{font-size:18px}
+    #card p{font-size:14.5px}
+    .ph,.ph img{height:76px}
+    details.sec{margin-top:0}
+    details.sec>summary{padding:11px 0;font-size:14.5px}
+    #card .note{display:none}
+    #toast{bottom:112px}
+    #dial{--d:90px;--rad:31px;left:8px;bottom:calc(var(--barh,96px) + 66px)}
+    /* כשכרטיס פתוח הוא תופס את תחתית המסך, והחוגה עולה אל מעליו */
+    body:has(#card.open) #dial{bottom:calc(104px + 42dvh + 12px)}
+    #dialNow{font-size:10px;padding:0 24px}
+    #dialRose .dl{font-size:12px} #dialRose .dl.n{font-size:13px}
+  }
+  /* טלפון שוכב: אין גובה לכרטיס תחתון, ולכן הוא חוזר לצד */
+  @media (max-height:480px) and (min-width:641px){
+    :root{--cardw:300px}
+    #card{max-height:calc(100dvh - 120px)}
+    .ph,.ph img{height:64px}
+    #dial{--d:84px;--rad:29px;bottom:calc(var(--barh,96px) + 38px)}
+    #dialNow{font-size:10px;padding:0 22px}
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div id="intro" aria-hidden="true"><div id="introSam"></div></div>
+
+<div id="top"><h1 id="ttl">הר גריזים — סיור על הפסגה</h1><span class="tag" id="tag">ניסיון</span>
+  <div id="langs"><button data-lang="he">עב</button><button data-lang="en">EN</button><button data-lang="ar">ع</button></div></div>
+
+<aside id="card" aria-live="polite"></aside>
+<div id="toast"></div>
+<!-- חוגת הכיוונים: גרירה מסובבת את המפה, לחיצה על אות מפנה את המבט אליה -->
+<div id="dial" role="group"><div id="dialRose"></div><i id="dialMark"></i><span id="dialNow"></span></div>
+
+<div id="lightbox" role="dialog" aria-modal="true">
+  <button id="lbX" aria-label="סגירה">✕</button>
+  <button id="lbPrev" aria-label="הקודמת">›</button>
+  <button id="lbNext" aria-label="הבאה">‹</button>
+  <img id="lbImg" alt="">
+  <div id="lbCap"></div>
+</div>
+
+<div id="bar">
+  <div class="row" id="periods"></div>
+  <div class="row">
+    <button class="main" id="btnTour">▶ סיור מודרך</button>
+    <button id="btnList">☰ המקומות</button>
+    <button id="btnHome">מבט על</button>
+    <button id="btnRelief">הדגשת תבליט</button>
+    <button id="btnPick">סימון נקודה</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<!-- מספר הגרסה מונע מהדפדפן להגיש קובץ ישן מהמטמון; להעלות אותו בכל שינוי -->
+<script src="places.js?v=15"></script>
+<script src="images.js?v=15"></script>
+<script src="tour.js?v=15"></script>
+</body>
+</html>

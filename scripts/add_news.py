@@ -4,7 +4,7 @@
     py -3 scripts/add_news.py library "ספר חדש נוסף" --en "A new book" --ar "كتاب جديد" \
         --text "תיאור קצר" --text-en "A short note" --text-ar "..."
 
-app is one of: shira · calendar · library · timeline · mss · genealogy · dict
+app is one of: shira · calendar · library · timeline · mss · genealogy · dict · gerizim
 (shira needs nothing: its additions are read from the archive itself).
 The date defaults to now (ISO, local). The line goes to web/data/news.json.
 """
@@ -12,7 +12,7 @@ import argparse, datetime, json, os, sys
 
 sys.stdout.reconfigure(encoding='utf-8')
 FEED = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'web', 'data', 'news.json')
-APPS = ('shira', 'calendar', 'library', 'timeline', 'mss', 'genealogy', 'dict')
+APPS = ('shira', 'calendar', 'library', 'timeline', 'mss', 'genealogy', 'dict', 'gerizim')
 
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 ap.add_argument('app', choices=APPS)
