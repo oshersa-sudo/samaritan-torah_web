@@ -3028,9 +3028,40 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
   cursor:pointer; white-space:nowrap; }
 .lib-view:hover{ background:var(--navy); color:#fff; }
 
+/* width:100% is load-bearing. The grid carries margin-inline:auto on wide
+   screens, and an auto margin across a column flex container turns stretching
+   off — so the spread was measured against a box 280 pixels wide on a 1497-pixel
+   screen, found that nothing fitted, and flattened itself down to the minimum.
+   With a width of its own it stretches, and max-width still centres it. */
+#libGrid.as-covers{ width:100%; }
 .lib-grid.as-covers .shelf{ margin-bottom:20px; }
-.cover-row{ display:grid; grid-template-columns:repeat(auto-fill, minmax(132px, 1fr));
-  gap:16px 13px; padding:2px 6px 4px; }
+.cover-row{ display:grid; justify-content:center;
+  grid-template-columns:repeat(auto-fill, var(--cover-w, 132px));
+  gap:14px 13px; padding:2px 6px 4px; }
+/* the spread stands inside the page; it scrolls only when even the smallest
+   cover will not fit (see libFitCovers) */
+.lib-grid.as-covers.fit{ overflow:hidden; }
+/* flattened: display:contents lets the covers out of their sections and into one
+   grid, so the three headings and the breaks between the groups cost nothing —
+   no second copy of the markup, and every handler on a cover still holds */
+/* the id, not the class: #libGrid{display:block} in the shelf rules outranks any
+   selector made of classes, and under display:block the covers — let out of their
+   sections by display:contents — became block boxes a page wide, 762x1016 each */
+#libGrid.as-covers.flat{ display:grid; justify-content:center; align-content:start;
+  grid-template-columns:repeat(auto-fill, var(--cover-w, 132px)); gap:12px; }
+#libGrid.as-covers.flat .shelf,
+#libGrid.as-covers.flat .cover-row{ display:contents; }
+#libGrid.as-covers.flat .shelf-name{ display:none; }
+/* A grid of fourteen cannot always fill both dimensions exactly: once the width
+   is used up, one more pixel of cover wraps a row and overflows the height. What
+   is left over is therefore spread down the page instead of being dropped at the
+   foot of it, so the spread reads as a page and not as a block with a gap under
+   it. */
+#libGrid.as-covers.fit{ display:flex; flex-direction:column; justify-content:space-evenly; }
+#libGrid.as-covers.fit.flat{ display:grid; align-content:space-evenly; }
+.lib-grid.as-covers.fit .shelf{ margin-bottom:0; }
+.lib-grid.as-covers.fit .shelf-name{ padding-bottom:4px; font-size:13px; }
+.lib-grid.as-covers.fit .shelf:last-child{ margin-bottom:0; }
 
 .lib-cover{ position:relative; display:block; width:100%; aspect-ratio:3/4;
   padding:0; border:0; cursor:pointer; font:inherit; overflow:hidden;
@@ -3059,19 +3090,20 @@ html[dir="ltr"] .lib-cover{ border-radius:7px 3px 3px 7px; }
 .lib-cover .cover-text{ position:absolute; inset-inline:12% 8%; top:41%;
   transform:translateY(-38%); display:flex; flex-direction:column;
   align-items:center; justify-content:center; text-align:center; }
-.lib-cover .lib-book-title{ padding:0 4px; border:0; font-size:14px; font-weight:700;
+.lib-cover .lib-book-title{ padding:0 4px; border:0;
+  font-size:clamp(10px, calc(var(--cover-w, 132px) * .105), 15px); font-weight:700;
   line-height:1.3; color:#fff6e9; text-shadow:0 1px 3px rgba(0,0,0,.5);
   display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
-.lib-cover .cover-author{ margin-top:8px; font-size:11px; color:#f0ddbd; }
+.lib-cover .cover-author{ margin-top:6px; color:#f0ddbd;
+  font-size:clamp(8.5px, calc(var(--cover-w, 132px) * .082), 12px); }
 .lib-cover .cover-author::before{ width:22px; margin-bottom:6px; }
 /* the house's own name at the foot of the binding, where a publisher's is */
-.cover-imprint{ position:absolute; inset-inline:9% 5%; bottom:7.5%;
-  text-align:center; font-size:9.5px; letter-spacing:.14em; color:#e8cd8e;
+.cover-imprint{ position:absolute; inset-inline:9% 5%; bottom:7%;
+  text-align:center; letter-spacing:.14em; color:#e8cd8e;
+  font-size:clamp(7px, calc(var(--cover-w, 132px) * .068), 10px);
   opacity:.8; text-shadow:0 1px 2px rgba(0,0,0,.5); }
 
 @media (max-width:420px){
-  .cover-row{ grid-template-columns:repeat(auto-fill, minmax(112px, 1fr)); gap:13px 10px; }
-  .lib-cover .lib-book-title{ font-size:12.5px; }
-  .cover-imprint{ font-size:8.5px; }
+  .cover-row{ gap:12px 10px; }
 }
 @media (prefers-reduced-motion: reduce){ .lib-cover{ transition:none; } }

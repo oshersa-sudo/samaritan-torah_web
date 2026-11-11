@@ -7300,6 +7300,10 @@ function openLibrary(){
   $('libGallerySearch').value='';
   LIB_PULLED=null;            // the library is always entered with its books in
   libBuildGrid();
+  /* the box has no height until the overlay has been laid out, and the spread is
+     measured against that height — so it is measured again once there is one */
+  requestAnimationFrame(libFitCovers);
+  setTimeout(libFitCovers, 60);
   trackNav(t('m_library'));
 }
 // which book, if any, has been drawn off the shelf and is facing the reader
@@ -7516,6 +7520,72 @@ function libBuildGrid(){
   }
   $('libGalleryNoResult').classList.toggle('hidden', shown>0);
   libViewBtn();
+  libFitCovers();
+}
+
+/* ── the spread fills the page ───────────────────────────────────────────────
+ * A spread that scrolls is not a spread. The covers are sized so that all of
+ * them — with their headings and their gaps — stand inside the page at once,
+ * on whatever screen is holding it.
+ *
+ * The size is searched for rather than calculated. Three headings, the gaps,
+ * the margins between sections and the way a row wraps all enter the answer,
+ * and asking the browser how tall it came out is exact where arithmetic over
+ * those four would only be close. Nine measurements settle it, on fourteen
+ * elements, which is nothing.
+ */
+function libFitCovers(){
+  const grid = $('libGrid');
+  if(LIB_VIEW !== 'covers'){
+    grid.classList.remove('fit');
+    grid.style.removeProperty('--cover-w');
+    return;
+  }
+  const rows = grid.querySelectorAll('.cover-row');
+  if(!rows.length) return;
+  const H = grid.clientHeight, W = grid.clientWidth;
+  if(!H || !W) return;                       // not laid out yet; the caller tries again
+  const cs = getComputedStyle(grid);
+  const padX = parseFloat(cs.paddingLeft||0) + parseFloat(cs.paddingRight||0);
+  const inner = W - padX;
+  const GX = 13;                             // the column gap, as the stylesheet sets it
+  const MIN = 76, MAX = Math.min(260, inner);
+
+  grid.classList.add('fit');                 // no scrollbar while we measure
+  const put = w => { grid.style.setProperty('--cover-w', w + 'px'); };
+  const over = () => grid.scrollHeight > grid.clientHeight + 1;
+
+  const search = () => {
+    put(MAX);
+    if(over()){
+      let lo = MIN, hi = MAX;                // largest width that still fits
+      for(let i = 0; i < 9 && hi - lo > 1; i++){
+        const mid = Math.floor((lo + hi) / 2);
+        put(mid);
+        if(over()) hi = mid; else lo = mid;
+      }
+      put(lo);
+    }
+    /* Now widen to the edge: with the number of columns settled, give the row the
+       whole width rather than leaving a ragged margin — this is what "fits the
+       page" means across as well as down. */
+    const w0 = parseFloat(grid.style.getPropertyValue('--cover-w')) || MIN;
+    const cols = Math.max(1, Math.floor((inner + GX) / (w0 + GX)));
+    const wide = Math.floor((inner - (cols - 1) * GX) / cols);
+    if(wide > w0){ put(wide); if(over()) put(w0); }
+    return !over();
+  };
+
+  grid.classList.remove('flat');
+  if(!search()){
+    /* Not with the three headings, then without them: on a phone held sideways
+       the page is about 250 pixels tall, and three headings and the breaks
+       between their groups are most of what is missing. Flattened — one grid of
+       fourteen, the groups dropped — it fits, and seeing every book at once is
+       what a spread is for. The sections come back as soon as there is room. */
+    grid.classList.add('flat');
+    if(!search()) grid.classList.remove('fit');   /* still no: let it scroll */
+  }
 }
 function libViewBtn(){
   const b=$('libView'); if(!b) return;
@@ -7523,6 +7593,11 @@ function libViewBtn(){
   b.textContent = LIB_VIEW==='covers' ? t('lib_view_shelf') : t('lib_view_covers');
   b.title = t('lib_view_switch');
 }
+/* the page changes shape: another device, a turned phone, a resized window */
+addEventListener('resize', ()=>{
+  clearTimeout(window._libFitT);
+  window._libFitT = setTimeout(()=>{ if(!$('libraryModal').classList.contains('hidden')) libFitCovers(); }, 120);
+});
 $('libView').onclick=()=>{
   LIB_VIEW = LIB_VIEW==='covers' ? 'shelf' : 'covers';
   try{ localStorage.setItem('lib_view', LIB_VIEW); }catch(e){}
