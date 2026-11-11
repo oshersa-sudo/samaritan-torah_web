@@ -211,6 +211,7 @@ const I18N = {
     a11y_reset:'איפוס', shelf_sources:'פירושים ומסורת',
     shelf_tools:'מילונים וכלים', shelf_study:'ספרים ומחקר', m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
+    lib_view_switch:'שינוי תצוגה', lib_view_covers:'כריכות', lib_view_shelf:'מדפים',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
     tm_toc_hint:'בחר מימר לעיון:', tm_back_toc:'‹ תוכן העניינים', tm_back_chapter:'‹ חזרה לפרק',
     tm_words_btn:'מילון מילים', tm_words_title:'מילון מילים — מתוך המילון', tm_words_find:'חיפוש מילה, שורש או פירוש', tm_col_root:'שורש',
@@ -540,6 +541,7 @@ const I18N = {
     a11y_reset:'Reset', shelf_sources:'Commentary and tradition',
     shelf_tools:'Dictionaries and tools', shelf_study:'Books and research', m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
+    lib_view_switch:'Change the view', lib_view_covers:'Covers', lib_view_shelf:'Shelves',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
     tm_toc_hint:'Choose a Memar to read:', tm_back_toc:'‹ Contents', tm_back_chapter:'‹ Back to the chapter',
     tm_words_btn:'Word glossary', tm_words_title:'Word glossary — from the dictionary', tm_words_find:'Search a word, root or meaning', tm_col_root:'Root',
@@ -868,6 +870,7 @@ const I18N = {
     a11y_reset:'إعادة ضبط', shelf_sources:'التفاسير والتقاليد',
     shelf_tools:'المعاجم والأدوات', shelf_study:'كتب وأبحاث', m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
+    lib_view_switch:'تغيير العرض', lib_view_covers:'الأغلفة', lib_view_shelf:'الرفوف',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
     tm_toc_hint:'اختر ميمراً للمطالعة:', tm_back_toc:'‹ المحتويات', tm_back_chapter:'‹ العودة إلى الفصل',
     tm_words_btn:'معجم الكلمات', tm_words_title:'معجم الكلمات — من المعجم', tm_words_find:'ابحث عن كلمة أو جذر أو معنى', tm_col_root:'الجذر',
@@ -7296,6 +7299,38 @@ function openLibrary(){
 // which book, if any, has been drawn off the shelf and is facing the reader
 let LIB_PULLED = null;
 
+// ── two ways to look at a library ───────────────────────────────────────────
+// 'shelf'  — the books stand with their spines out, as they do on a shelf, and
+//            one is drawn out to be looked at.
+// 'covers' — every book faces the reader at once, bound and titled, the way a
+//            bookseller lays out a table. Nothing is hidden behind a spine and
+//            nothing has to be pulled; the price is that it takes more room.
+// The choice is the reader's and it is kept.
+let LIB_VIEW = 'shelf';
+try{ if(localStorage.getItem('lib_view') === 'covers') LIB_VIEW = 'covers'; }catch(e){}
+
+/* The house device, drawn rather than fetched: twelve covers would otherwise be
+   twelve pictures, and a drawing scales to any cover at any size and takes the
+   binding's own colour. Three lozenges are the three onyx stones the house is
+   named for, inside the double rule a bound book carries. */
+function libCoverArt(){
+  return '<svg class="cover-art" viewBox="0 0 120 164" preserveAspectRatio="none" aria-hidden="true">'
+    + '<rect x="7" y="7" width="106" height="150" rx="3" class="ca-rule1"/>'
+    + '<rect x="11.5" y="11.5" width="97" height="141" rx="2" class="ca-rule2"/>'
+    + '<g class="ca-corner">'
+    +   '<path d="M7 20 Q7 7 20 7"/><path d="M113 20 Q113 7 100 7"/>'
+    +   '<path d="M7 144 Q7 157 20 157"/><path d="M113 144 Q113 157 100 157"/>'
+    + '</g>'
+    + '<g class="ca-stones" transform="translate(60 34)">'
+    +   '<path d="M0 -11 L8.5 0 L0 11 L-8.5 0 Z"/>'
+    +   '<path d="M-17 -6.5 L-10.5 0 L-17 6.5 L-23.5 0 Z"/>'
+    +   '<path d="M17 -6.5 L23.5 0 L17 6.5 L10.5 0 Z"/>'
+    + '</g>'
+    + '<path class="ca-hair" d="M30 48 H90"/>'
+    + '<path class="ca-hair" d="M34 128 H86"/>'
+    + '</svg>';
+}
+
 // ── who wrote it ─────────────────────────────────────────────────────────────
 // A book drawn off the shelf names its author. Nothing here is researched or
 // inferred: every name below is one the app itself already carried — in the
@@ -7422,6 +7457,28 @@ function libBuildGrid(){
     return b;
   };
 
+  // ── a book facing the reader ───────────────────────────────────────────────
+  // The whole book at once: the house's binding, its title across the middle,
+  // and under a short rule the name of whoever wrote it. One tap opens it —
+  // there is nothing to draw out here, because nothing is turned away.
+  const makeCover=(item, i)=>{
+    const label=t(item.titleKey);
+    const who=LIB_AUTHOR[item.act];
+    const b=el('button','lib-cover',
+      libCoverArt()
+      + '<span class="cover-text">'
+      +   '<span class="lib-book-title">'+esc(label)+'</span>'
+      +   (who ? '<span class="cover-author">'+esc(who)+'</span>' : '')
+      + '</span>'
+      + '<span class="cover-imprint">'+esc(t('brand_top'))+'</span>');
+    b.title=label;
+    b.dataset.act=item.act;
+    const vars=libCoverVars(i);            // the same binding as on the shelf
+    for(const k in vars) b.style.setProperty(k, vars[k]);
+    b.onclick=()=>{ $('libraryModal').classList.add('hidden'); item.open(); };
+    return b;
+  };
+
   const wanted=[];
   LIB_ITEMS.forEach((item, i)=>{
     if(item.adminOnly && !ADMIN.token) return;   // "מחולל טיוטות פיוט" — שלב ראשון: מנהל בלבד
@@ -7430,20 +7487,42 @@ function libBuildGrid(){
     wanted.push([item, i]);
   });
   shown = wanted.length;
+  grid.classList.toggle('as-covers', LIB_VIEW==='covers');
   const last = LIB_SHELVES[LIB_SHELVES.length-1];
   for(const shelf of LIB_SHELVES){
     const on = wanted.filter(([item]) => (LIB_SHELF[item.act] || last) === shelf);
     if(!on.length) continue;               // an empty shelf is not drawn at all
     const unit=el('div','shelf');
     unit.appendChild(el('div','shelf-name', esc(t(shelf))));
-    const row=el('div','shelf-books');
-    for(const [item, i] of on) row.appendChild(makeBook(item, i));
-    unit.appendChild(row);
-    unit.appendChild(el('div','shelf-plank'));
+    if(LIB_VIEW==='covers'){
+      // no plank and no spines: the shelf itself goes, and only its name is kept
+      // as the heading over the books that stood on it
+      const row=el('div','cover-row');
+      for(const [item, i] of on) row.appendChild(makeCover(item, i));
+      unit.appendChild(row);
+    } else {
+      const row=el('div','shelf-books');
+      for(const [item, i] of on) row.appendChild(makeBook(item, i));
+      unit.appendChild(row);
+      unit.appendChild(el('div','shelf-plank'));
+    }
     grid.appendChild(unit);
   }
   $('libGalleryNoResult').classList.toggle('hidden', shown>0);
+  libViewBtn();
 }
+function libViewBtn(){
+  const b=$('libView'); if(!b) return;
+  // the button names where it takes you, not where you are
+  b.textContent = LIB_VIEW==='covers' ? t('lib_view_shelf') : t('lib_view_covers');
+  b.title = t('lib_view_switch');
+}
+$('libView').onclick=()=>{
+  LIB_VIEW = LIB_VIEW==='covers' ? 'shelf' : 'covers';
+  try{ localStorage.setItem('lib_view', LIB_VIEW); }catch(e){}
+  LIB_PULLED = null;                       // a book left standing out belongs to the shelf
+  libBuildGrid();
+};
 $('libGallerySearch').addEventListener('input', libBuildGrid);
 $('libGallerySearch').addEventListener('keydown', e=>{ if(e.key==='Enter'){
   const first=$('libGrid').querySelector('.lib-card'); if(first) first.click(); } });
