@@ -55,7 +55,7 @@
 .hub-date #hubDateHe:not(:empty){ font-size:.8em; opacity:.75; margin-top:2px; font-family:'Heebo',sans-serif; letter-spacing:.04em; }
 
 /* the dial */
-.hub-stage{ position:relative; width:var(--D); flex:0 0 auto; margin-top:clamp(26px,4.4vh,44px); }
+.hub-stage{ position:relative; width:var(--D); flex:0 0 auto; margin-top:clamp(36px,5.6vh,58px); }
 .hub-dial{
   position:relative; width:var(--D); height:var(--D);
   touch-action:none; user-select:none; -webkit-user-select:none; cursor:grab;
@@ -518,7 +518,7 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
   #hub{ --D:min(97vw, max(300px, calc(100dvh - 300px))); }
   .hub-title{ margin-top:34px; }
   .hub-date{ margin-top:6px; }
-  .hub-stage{ margin-top:24px; }
+  .hub-stage{ margin-top:max(30px, calc(var(--D) * .085)); }
   .hub-pop{ padding:9px 12px 10px; margin-top:12px; border-radius:12px; }
   .hub-pop .hub-tag{ display:none; }                          /* the heading says it; the card is for the points */
   .hub-pop h2{ font-size:1.18em; margin-bottom:4px; }
@@ -538,3 +538,5 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
   border:1px solid rgba(200,164,86,.6); background:rgba(10,23,51,.55); color:var(--gold-bright);
 }
 .hub-drawer-back:hover{ background:rgba(200,164,86,.25); }
+/* the lettering above the dial always stays in front of the circle that swells at the pointer */
+.hub-title, .hub-date{ position:relative; z-index:6; }
