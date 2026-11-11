@@ -265,6 +265,10 @@ body.from-hub .rd-totorah, body.from-hub .unit-totorah{ display:none !important;
 .hub-star svg{ width:21px; height:21px; fill:var(--gold-bright); stroke:var(--gold); stroke-width:.8; stroke-linejoin:round;
   filter:drop-shadow(0 0 5px rgba(236,205,132,.85)); animation:hubTwinkle 1.7s ease-in-out infinite; }
 .hub-star:hover svg{ fill:#fff3c8; }
+.hub-star.seen svg{ animation:none; }                    /* looked at: it stops blinking */
+/* the download button beside it: the same gold, a still picture */
+.hub-dl svg{ width:21px; height:21px; fill:none; stroke:var(--gold-bright); stroke-width:2.2; animation:none; filter:drop-shadow(0 0 4px rgba(236,205,132,.45)); }
+.hub-dl:hover svg{ fill:none; stroke:#fff3c8; }
 @keyframes hubTwinkle{
   0%,100%{ opacity:1; transform:scale(1) rotate(0deg); }
   50%{ opacity:.3; transform:scale(.82) rotate(8deg); }

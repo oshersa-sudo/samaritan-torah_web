@@ -25,7 +25,7 @@
   const TX = {
     he: {
       torah:'התורה השומרונית הישראלית', hint:'סובבו את החוגה · הקישו על עיגול כדי להיכנס',
-      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', exit:'יציאה לתפריט הראשי', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
+      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', dl:'הורדה', exit:'יציאה לתפריט הראשי', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
       torahHelp:{ tag:'חמשת חומשי התורה בנוסח השומרוני',
         points:['חמישה חומשי תורה בנוסח השומרוני, בכתב השומרוני ובאותיות עבריות','פירוש הפסוק מן המקורות השומרוניים, ותרגומים: ארמי, ערבי ואנגלי','השוואת נוסחים: המסורה, השבעים, אונקלוס וקומראן','מילון מילים, הקראה, חיפוש מתקדם והדפסה'] },
       apps:{
@@ -47,7 +47,7 @@
     },
     en: {
       torah:'The Israelite Samaritan Torah', hint:'Turn the dial · tap a circle to enter',
-      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', exit:'Exit to the main menu', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
+      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', dl:'Download', exit:'Exit to the main menu', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
       torahHelp:{ tag:'The five books of the Torah in the Samaritan text',
         points:['The five books in the Samaritan text, in Samaritan script and Hebrew letters','Verse commentary from the Samaritan sources, and translations: Aramaic, Arabic and English','Comparison of versions: Masoretic, Septuagint, Onkelos and Qumran','A word dictionary, read-aloud, advanced search and printing'] },
       apps:{
@@ -69,7 +69,7 @@
     },
     ar: {
       torah:'التوراة السامرية الإسرائيلية', hint:'أدِر القرص · اضغط على دائرة للدخول',
-      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', exit:'الخروج إلى القائمة الرئيسية', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
+      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', dl:'تنزيل', exit:'الخروج إلى القائمة الرئيسية', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
       torahHelp:{ tag:'أسفار التوراة الخمسة بالنص السامري',
         points:['أسفار التوراة الخمسة بالنص السامري، بالخط السامري وبالحروف العبرية','تفسير الآية من المصادر السامرية، وترجمات: آرامية وعربية وإنجليزية','مقارنة النسخ: الماسوري والسبعينية وأونقلوس وقمران','قاموس للكلمات، وقراءة مسموعة، وبحث متقدّم، وطباعة'] },
       apps:{
@@ -179,7 +179,18 @@
   starBtn.type = 'button'; starBtn.className = 'hub-star';
   starBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 1.8 15.2 8.3 22.3 9.3 17.1 14.3 18.4 21.4 12 18 5.6 21.4 6.9 14.3 1.7 9.3 8.8 8.3"/></svg><span class="hub-star-cap"></span>';
   starBtn.addEventListener('click', () => openNews());
-  side.appendChild(menuBtn); side.appendChild(starBtn);
+  // the star blinks until what is new has been looked at and its window closed; then it is still.
+  // Remembered on this device for this version — a new version makes it blink again.
+  const starKey = 'as_hub_star_seen';
+  const starSeen = () => { try{ return localStorage.getItem(starKey) === String(window.APP_VERSION || ''); }catch(e){ return false; } };
+  const stillStar = () => { starBtn.classList.add('seen'); try{ localStorage.setItem(starKey, String(window.APP_VERSION || '')); }catch(e){} };
+  if(starSeen()) starBtn.classList.add('seen');
+  // at the star's right: the way to the page where the app is downloaded
+  const dlBtn = document.createElement('button');
+  dlBtn.type = 'button'; dlBtn.className = 'hub-star hub-dl';
+  dlBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="3.5" x2="18" y2="3.5"/><line x1="12" y1="8" x2="12" y2="19"/><polyline points="7 14 12 19 17 14"/></svg><span class="hub-star-cap"></span>';
+  dlBtn.addEventListener('click', () => { location.href = '/download?lang=' + LANG; });
+  side.appendChild(menuBtn); side.appendChild(starBtn); side.appendChild(dlBtn);
   hub.appendChild(side);
 
   // the main menu is not for pinching: no zoom by two fingers, by the browser's gesture, or by Ctrl + wheel
@@ -341,7 +352,7 @@
     const body = o.querySelector('.hub-news-body');
     pages.forEach(html => { const d = document.createElement('div'); d.className = 'hub-news-page'; d.innerHTML = html; body.appendChild(d); });
     const x = o.querySelector('.hub-news-x'); x.setAttribute('aria-label', t('close'));
-    const close = () => { o.remove(); document.removeEventListener('keydown', esc); };
+    const close = () => { o.remove(); document.removeEventListener('keydown', esc); stillStar(); };
     const esc = e => { if(e.key === 'Escape') close(); };
     x.onclick = close;
     o.addEventListener('click', e => { if(e.target === o) close(); });
@@ -421,6 +432,8 @@
     menuBtn.setAttribute('aria-label', t('menu')); menuBtn.title = t('menu');
     starBtn.setAttribute('aria-label', t('m_whatsnew')); starBtn.title = t('m_whatsnew');
     starBtn.querySelector('.hub-star-cap').textContent = X.newsShort;
+    dlBtn.setAttribute('aria-label', t('m_getapp')); dlBtn.title = t('m_getapp');
+    dlBtn.querySelector('.hub-star-cap').textContent = X.dl;
     langBox.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.lang === L));
     drawerWrap.querySelector('.hub-drawer-title').textContent = t('menu');
     drawerWrap.querySelector('.hub-drawer-back').setAttribute('aria-label', t('close'));
