@@ -558,6 +558,51 @@
         'The Samaritan village on the western spur of the mountain, close to the summit. Here are the synagogue, the museum, and the site of the Passover sacrifice, where the whole community gathers every year.',
         'قرية السامريين على النتوء الغربي للجبل، قرب القمة. فيها الكنيس والمتحف وموضع ذبيحة الفصح، حيث تجتمع الطائفة كلها كل عام.'),
       strata: [], finds: []
+    },
+    // שלוש תחנות בשכונה; המיקומים מ-OpenStreetMap
+    {
+      id: 'synagogue', parent: 'luza', group: 'around', color: '#8ecbe6',
+      name: t('בית הכנסת של קרית לוזה', 'The synagogue of Kiryat Luza', 'كنيس قرية لوزة'),
+      kind: t('בית כנסת', 'Synagogue', 'كنيس'),
+      center: [35.269598, 32.20334], view: { zoom: 18, pitch: 60, bearing: 110 },
+      summary: t(
+        'בית הכנסת של בני העדה הגרים בהר. בתי הכנסת השומרוניים פונים אל פסגת הר גריזים, וכאן היא קרובה — כמה מאות מטרים ממזרח. מכאן יוצאים בחגי העלייה לרגל, פסח, שבועות וסוכות, אל הפסגה ואל תחנותיה.',
+        'The synagogue of the members of the community who live on the mountain. Samaritan synagogues face the summit of Mount Gerizim, and here it is close by — a few hundred metres to the east. From here the pilgrims set out at the three pilgrimage festivals, Passover, Shavuot and Sukkot, to the summit and its stations.',
+        'كنيس أبناء الطائفة المقيمين على الجبل. تتّجه الكنس السامرية نحو قمة جبل جرزيم، وهي هنا قريبة — على بضع مئات من الأمتار إلى الشرق. ومن هنا ينطلق الحجّاج في أعياد الحج الثلاثة، الفصح والأسابيع والمظال، إلى القمة ومحطّاتها.'),
+      strata: [], finds: []
+    },
+    {
+      id: 'museum', parent: 'luza', group: 'around', color: '#8ecbe6',
+      name: t('המוזיאון השומרוני', 'The Samaritan Museum', 'المتحف السامري'),
+      kind: t('מוזיאון', 'Museum', 'متحف'),
+      center: [35.270345, 32.203624], view: { zoom: 18, pitch: 60, bearing: 120 },
+      summary: t(
+        'מוזיאון קטן בשכונה, ובו מוצגים תולדות העדה השומרונית, מנהגיה, כתביה ותולדות ההר. בסמוך לו "מרכז השומרוני הטוב". המבקרים בהר נכנסים אליו לפני העלייה אל הפסגה או אחריה.',
+        'A small museum in the neighbourhood, presenting the history of the Samaritan community, its customs, its writings and the history of the mountain. Next to it is the "Good Samaritan Centre". Visitors to the mountain call in before or after going up to the summit.',
+        'متحف صغير في الحيّ، يعرض تاريخ الطائفة السامرية وعاداتها وكتاباتها وتاريخ الجبل. وإلى جواره «مركز السامري الصالح». ويدخله زوّار الجبل قبل الصعود إلى القمة أو بعده.'),
+      strata: [], finds: []
+    },
+    {
+      id: 'pesach', parent: 'luza', group: 'around', color: '#8ecbe6',
+      name: t('רחבת הזבח — מקום קורבן הפסח', 'The place of the Passover sacrifice', 'ساحة الذبيحة — موضع قربان الفصح'),
+      kind: t('מקום קדוש', 'Holy place', 'مكان مقدّس'),
+      center: [35.270779, 32.202664], view: { zoom: 18, pitch: 58, bearing: 100 },
+      summary: t(
+        'כאן מקריבה העדה השומרונית את קורבן הפסח מדי שנה, כמצוות התורה: בין הערביים של ארבעה עשר בחודש הראשון שוחטים את הטלאים, צולים אותם בתנורים החפורים בקרקע ואוכלים אותם בלילה, "מתניכם חגרים". זהו המקום היחיד בעולם שבו נעשה קורבן הפסח ברציפות עד היום, והוא מושך אליו מבקרים רבים.',
+        'Here the Samaritan community makes the Passover sacrifice every year, as the Torah commands: at twilight on the fourteenth of the first month the lambs are slaughtered, roasted in ovens dug into the ground and eaten at night, "with your loins girded". It is the only place in the world where the Passover sacrifice has been kept without interruption to this day, and it draws many visitors.',
+        'هنا تقيم الطائفة السامرية قربان الفصح كل عام، كما توصي التوراة: بين العشاءين في الرابع عشر من الشهر الأول تُذبح الحملان، وتُشوى في أفران محفورة في الأرض، وتؤكل ليلًا «وأحقاؤكم مشدودة». وهو المكان الوحيد في العالم الذي يُقام فيه قربان الفصح بلا انقطاع حتى اليوم، ويجتذب زوّارًا كثيرين.'),
+      strata: [], finds: []
+    },
+    {
+      id: 'masri', group: 'around', color: '#c9a0a0',
+      name: t('ארמון אל-מצרי — בית פלסטין', 'The al-Masri palace — Beit Falasteen', 'قصر المصري — بيت فلسطين'),
+      kind: t('בית אחוזה', 'Mansion', 'قصر'),
+      center: [35.2649, 32.2102], view: { zoom: 17.4, pitch: 60, bearing: 150 },
+      summary: t(
+        'ביתו של איש העסקים יליד שכם מוניב אל-מצרי, על המדרון הצפון-מערבי של הר גריזים מעל שכם, והוא קרא לו "בית פלסטין". הבית בנוי בדמות וילה לה רוטונדה של האדריכל אנדראה פלאדיו, מן המאה ה-16, ליד ויצ׳נצה שבאיטליה: אולם עגול מקורה כיפה וארבע חזיתות זהות עם עמודים. הבנייה החלה ב-1998, והבית נחנך בסביבות שנת 2000. התוכניות הוכנו יחד עם בנו רביע, שלמד אדריכלות. באולם המרכזי ארבעה ציורים של עונות השנה מאת הצייר האיטלקי אנדראה אפיאני, ובבית ספרייה של כמעט 5,000 ספרים ואוסף עתיקות שהובא מאירופה. בעבודות העפר נתגלו שרידי מנזר ביזנטי ובהם רצפות פסיפס — מנזר ביר אל-חמאם — שנחפרו בידי אוניברסיטת א-נג׳אח ורשות העתיקות הפלסטינית, ונשמרו בשטח האחוזה כגן ארכאולוגי קטן. זהו בית פרטי, ואין בו שעות ביקור קבועות.',
+        'The home of the Nablus-born businessman Munib al-Masri, on the upper north-western slope of Mount Gerizim above Nablus; he named it "Beit Falasteen", the House of Palestine. It is modelled on Andrea Palladio\'s 16th-century Villa La Rotonda near Vicenza: a domed central rotunda with four identical porticoed fronts. Building began in 1998 and the house was opened around 2000. The plans were drawn up with his son Rabih, who studied architecture. The central hall holds four paintings of the seasons by the Italian painter Andrea Appiani, and the house has a library of almost 5,000 books and a collection of antiques brought from Europe. Earthworks for the house uncovered a Byzantine monastery with mosaic floors — the Bir el-Hamam monastery — excavated by An-Najah University and the Palestinian antiquities department and kept in the grounds as a small archaeological park. It is a private home, with no regular visiting hours.',
+        'بيت رجل الأعمال النابلسي منيب المصري، على السفح الشمالي الغربي الأعلى لجبل جرزيم فوق نابلس، وقد سمّاه «بيت فلسطين». بُني على مثال فيلا لا روتوندا للمعماري أندريا بالاديو، من القرن السادس عشر، قرب فيتشنزا في إيطاليا: قاعة مستديرة تعلوها قبّة وأربع واجهات متماثلة ذات أعمدة. بدأ البناء عام 1998، وافتُتح البيت نحو عام 2000. وقد أُعدّت المخططات مع ابنه ربيع، الذي درس العمارة. وفي القاعة الوسطى أربع لوحات لفصول السنة للرسّام الإيطالي أندريا أپياني، وفي البيت مكتبة من نحو 5,000 كتاب ومجموعة تحف جُلبت من أوروبا. وفي أعمال الحفر كُشفت بقايا دير بيزنطي فيه أرضيات فسيفساء — دير بئر الحمام — نقّبت فيه جامعة النجاح ودائرة الآثار الفلسطينية، وحُفظ في أرض العقار حديقةً أثرية صغيرة. وهو بيت خاص، ولا مواعيد زيارة ثابتة له.'),
+      strata: [], finds: []
     }
   ];
 
@@ -740,7 +785,7 @@
     reach: 1000,                                  // כמה מטרים מותר להתרחק מן הפסגה, לכל כיוון
     periods, groups,
     places: places.concat(around),
-    tour: ['precinct', 'eaststairs', 'church', 'octagon', 'ghanim', 'stones12', 'eternal', 'isaac', 'areaP', 'areaA', 'luza', 'ras'],
+    tour: ['precinct', 'persian', 'eaststairs', 'courts', 'secitadel', 'westentrance', 'church', 'octagon', 'towers', 'northenclosure', 'ghanim', 'ras', 'stones12', 'eternal', 'isaac', 'city', 'areaP', 'areaA', 'areaB', 'luza', 'synagogue', 'museum', 'pesach', 'masri'],
     introText: 'והרגריזים· בית· אל· כל· ימי· חיינו'
   };
 })();

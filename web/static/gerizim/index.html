@@ -136,7 +136,7 @@
   #walkIns .instr{font-size:13.5px;line-height:1.45;margin-top:3px}
   #walkIns .insno{font-size:11.5px;color:var(--gold)}
   @media (hover:none),(max-width:820px){ #walkPad{display:flex} }
-  @media (max-width:640px){
+  @media (max-width:640px), (max-height:500px) and (orientation:landscape){
     #walkSide{width:132px;top:156px;padding:4px 4px 5px} #walkMini{height:116px} #walkMiniT{font-size:11px}
     #walkTop{gap:5px} #walkPer{gap:3px}
     #walkSide.big{width:calc(100vw - 20px)} #walkSide.big #walkMini{height:min(62vh,150vw)}
@@ -365,12 +365,106 @@
     #dial{--d:84px;--rad:29px;bottom:calc(var(--barh,96px) + 38px)}
     #dialNow{font-size:10px;padding:0 22px}
   }
+
+  /* ---- v59: סוג התמונה, סרטונים, מטיילים, צליל, המשכן ---- */
+  .ph{position:relative}
+  .ph em.mk{position:absolute;inset-inline-start:4px;bottom:4px;font-style:normal;font-size:10.5px;background:rgba(10,8,5,.78);color:#f1e6c8;padding:1px 6px;border-radius:6px}
+  #lbCap em.mk{display:inline-block;font-style:normal;font-size:12px;color:#17130d;background:var(--gold);border-radius:6px;padding:0 7px;margin:2px 0 4px}
+  button.vid{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:start;margin:0 0 6px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.03);color:var(--ink);cursor:pointer;font:inherit}
+  button.vid:hover{border-color:var(--gold)}
+  button.vid b{color:var(--gold);font-size:12px} button.vid span{font-size:13.5px;line-height:1.35} button.vid i{font-style:normal;color:var(--dim);font-size:12px}
+  .mlh{font-size:12.5px;color:var(--dim);margin:8px 0 5px}
+  #vbox{position:fixed;inset:0;z-index:45;background:rgba(6,5,3,.94);display:none;flex-direction:column;align-items:center;justify-content:center;padding:46px 12px 12px}
+  #vbox.open{display:flex}
+  #vbox .vf{width:min(960px,100%);aspect-ratio:16/9;max-height:calc(100% - 90px);background:#000;border-radius:8px;overflow:hidden}
+  #vbox iframe{width:100%;height:100%;border:0;display:block}
+  #vbX{position:absolute;top:8px;inset-inline-end:10px;font-size:20px;background:rgba(20,16,11,.84);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:4px 11px;cursor:pointer}
+  #vbCap{margin-top:10px;font-size:13px;color:var(--dim);text-align:center;max-width:900px;line-height:1.5}
+  #vbCap b{display:block;color:var(--ink);font-size:14.5px;font-weight:600} #vbCap a{color:var(--gold)}
+  .trv{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:0 0 8px;background:rgba(255,255,255,.025)}
+  .trv .trh{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
+  .trv .trh b{font-size:14.5px} .trv .trh em{font-style:normal;font-size:11.5px;border-radius:6px;padding:0 7px;background:rgba(217,178,95,.18);color:var(--gold)}
+  .trv .trh em.c-climbed{background:rgba(143,178,122,.22);color:#a9cf93} .trv .trh em.c-nablus_only{background:rgba(127,166,201,.2);color:#9cc0e0}
+  .trv .trt{font-size:12.5px;color:var(--dim);margin:2px 0 4px} .trv p{margin:0 0 6px;font-size:13.5px;line-height:1.5}
+  .trv blockquote{margin:0 0 6px;padding:2px 10px;border-inline-start:3px solid var(--gold);font-size:13px;line-height:1.5;color:var(--ink);font-family:Georgia,"Times New Roman",serif}
+  .trv blockquote i{display:block;color:var(--dim);font-family:inherit;margin-top:2px} .trv blockquote cite{display:block;font-size:11.5px;color:var(--dim);font-style:normal}
+  .trv .trat{font-size:12.5px;color:var(--dim);margin:0 0 4px} .trv .trat .lnk{display:inline-flex}
+  .trv a.trsrc{font-size:12.5px;color:var(--gold);text-decoration:none}
+  #btnMusic{display:none;min-width:38px;font-size:16px;line-height:1}
+  body.touring #btnMusic{display:inline-block}
+  #btnMusic.off{opacity:.55;text-decoration:line-through}
+  .pin.walkpin.mishkan{background:#e9c46a}
+  #walkSndMenu{position:absolute;top:100%;margin-top:6px;inset-inline-start:0;z-index:5;background:rgba(20,16,11,.95);border:1px solid rgba(217,178,95,.45);border-radius:10px;padding:6px 10px;display:flex;flex-direction:column;gap:6px;min-width:170px}
+  #walkSndMenu[hidden]{display:none}
+  #walkSndMenu label{display:flex;gap:8px;align-items:center;font-size:13.5px;color:#f1e9d6;cursor:pointer}
+  #walkTop .sndbox{position:relative;display:inline-flex}
+  #walkVerses{font-size:12.5px;line-height:1.5;margin:0 0 8px;max-height:34vh;overflow:auto;border-inline-start:3px solid #d4a64a;padding-inline-start:8px}
+  #walkVerses .vt{font-size:11.5px;color:var(--dim);margin-bottom:3px}
+  #walkVerses .vv{margin:0 0 5px} #walkVerses .vv b{color:var(--gold);font-weight:600;margin-inline-end:4px;font-size:11.5px}
+  #walkVerses .vv i{display:block;color:var(--dim);font-size:11.5px;font-style:normal}
+  #walkTl{display:inline-block;font-size:12.5px;color:var(--gold);margin:0 0 8px;text-decoration:none}
+  #permCredit{position:fixed;z-index:6;bottom:calc(var(--barh,96px) + 2px);left:50%;transform:translateX(-50%);font-size:10px;color:rgba(255,255,255,.78);text-shadow:0 1px 2px #000;pointer-events:none;white-space:nowrap}
+  ul.flk a{flex-wrap:wrap} ul.flk b,ul.flk i{flex:0 1 auto;min-width:0} ul.flk span{flex:1 1 60%;min-width:0;overflow-wrap:anywhere}
+  @media (max-width:640px), (max-height:500px) and (orientation:landscape){
+    #walkInfo.open{max-height:calc(100dvh - 210px);overflow-y:auto;overscroll-behavior:contain}
+    #walkVerses{max-height:none}
+  }
+  @media (max-height:500px) and (orientation:landscape){ #walkInfo.open{max-height:calc(100dvh - 70px)} }
+  @media (max-width:640px), (max-height:500px) and (orientation:landscape){
+    #walkInfo #walkVerses{display:none !important} #walkInfo.open #walkVerses:not(:empty){display:block !important}
+    #walkInfo #walkTl{display:none !important} #walkInfo.open #walkTl[href]{display:inline-block !important}
+  }
+
+  /* ---- המלצות המועצה (נייד) ---- */
+  .wz{margin:0 0 9px} .wz b{font-size:14px} .wz i{font-style:normal;font-size:11.5px;color:var(--dim);margin-inline-start:6px} .wz p{margin:2px 0 0;font-size:13.5px;line-height:1.5}
+  /* 2. הניווט של הסיור המודרך צמוד לתחתית הכרטיס */
+  .nav.on{position:sticky;bottom:-14px;z-index:2;background:var(--panel);margin:12px -18px -14px;padding:9px 18px 12px;border-top:1px solid var(--line);box-shadow:0 -8px 14px rgba(0,0,0,.35)}
+  #btnMore{display:none}
+  #coach{position:fixed;z-index:7;left:12px;right:12px;margin:0 auto;width:fit-content;bottom:calc(var(--barh,96px) + 22px);max-width:calc(100vw - 24px);display:none;align-items:center;gap:10px;
+    background:rgba(20,16,11,.93);border:1px solid var(--gold);border-radius:12px;padding:8px 10px 8px 14px;font-size:13.5px;color:#f1e9d6;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+  #coach.on{display:flex} #coach button{flex:none;min-width:36px;min-height:36px;padding:4px 8px}
+  #introGloss{display:block;margin-top:8px;font-size:clamp(13px,2.2vw,17px);color:rgba(245,236,214,.9);text-shadow:0 1px 3px #000;letter-spacing:.02em}
+  #walkLayers .lyx{display:block;width:100%;margin:0 0 6px;text-align:center}
+  #walk.lyopen #walkPad,#walk.lyopen #walkInfo{visibility:hidden}
+  #walkLayers{z-index:30}
+  @media (max-width:640px){
+    /* 3. שורה ראשית קבועה; הכלים הנוספים נפתחים ב"עוד" */
+    #btnMore{display:inline-block}
+    .nav.on{margin:12px -14px -12px;padding:9px 14px 10px;bottom:-12px}
+    #btnOrient,#btnRecon,#btnRelief,#btnPick{display:none}
+    body.more #btnOrient,body.more #btnRecon,body.more #btnRelief{display:inline-block}
+    body.more #bar .row:last-child{flex-wrap:wrap}
+    #periods{-webkit-mask-image:linear-gradient(to left,transparent 0,#000 28px);mask-image:linear-gradient(to left,transparent 0,#000 28px)}
+  }
+  /* 4. מטרות מגע בגודל של אצבע */
+  @media (pointer:coarse){
+    #bar button{min-height:42px}
+    #langs button{min-height:36px;min-width:40px}
+    .lnk{min-height:38px}
+    .maplibregl-ctrl-group button{width:38px;height:38px}
+    #walkTop button{min-height:40px}
+    #walkSndMenu label{min-height:40px}
+    .trv a.trsrc{display:inline-block;padding:9px 0}
+    #lbX,#lbPrev,#lbNext,#vbX{min-width:44px;min-height:44px}
+    #btnPick{display:none !important}
+    .walkpin{padding:6px 12px 6px 10px !important}
+  }
+  /* 5. טלפון שוכב בסיור הרגלי: הכרטיס בצד, החיצים בפינה, והסרגל בשורה אחת */
+  @media (max-height:500px) and (orientation:landscape){
+    #walkInfo{left:8px;right:auto;width:min(44vw,380px);bottom:8px}
+    #walkInfo.open{max-height:calc(100dvh - 64px)}
+    #walkPad{bottom:10px;right:14px;left:auto;transform:none}
+    #walkSide{top:52px;width:124px} #walkMini{height:92px}
+    #walkTop{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none} #walkTop::-webkit-scrollbar{display:none}
+    #walkTop button{font-size:12px;padding:5px 8px;flex:none}
+  }
 </style>
 </head>
 <body>
 <div id="map"></div>
 
-<div id="intro" aria-hidden="true"><div id="introSam"></div></div>
+<div id="intro" aria-hidden="true"><div id="introSam"></div><span id="introGloss"></span></div>
+<div id="coach" role="status"><span id="coachT"></span><button id="coachX" aria-label="">✕</button></div>
 
 <div id="top"><h1 id="ttl">הר גריזים — סיור על הפסגה</h1><span class="tag" id="tag">ניסיון</span>
   <div id="langs"><button data-lang="he">עב</button><button data-lang="en">EN</button><button data-lang="ar">ع</button></div></div>
@@ -391,31 +485,38 @@
 
 <div id="olegend" aria-hidden="true"></div>
 <div id="reconNote" aria-live="polite"></div>
+<div id="permCredit">© Esri, Maxar · Mapzen · © OpenStreetMap</div>
 <div id="bar">
   <div class="row" id="periods"></div>
   <div class="row">
     <button class="main" id="btnTour">▶ סיור מודרך</button>
+    <button id="btnMusic" aria-pressed="true">♪</button>
     <button id="btnOrient">מפת התמצאות</button>
     <button id="btnRecon">שחזור תלת-ממדי</button>
     <button id="btnList">☰ המקומות</button>
     <button id="btnHome">מבט על</button>
     <button id="btnRelief">הדגשת תבליט</button>
     <button id="btnPick">סימון נקודה</button>
+    <button id="btnMore" aria-expanded="false">⋯ עוד</button>
   </div>
 </div>
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <!-- מספר הגרסה מונע מהדפדפן להגיש קובץ ישן מהמטמון; להעלות אותו בכל שינוי -->
-<script src="places.js?v=58"></script>
-<script src="places_apply.js?v=58"></script>
-<script src="images.js?v=58"></script>
-<script src="walk_dem.js?v=58"></script>
-<script src="walk_data.js?v=58"></script>
-<script src="walk_info.js?v=58"></script>
-<script src="flickr.js?v=58"></script>
-<script src="inscriptions.js?v=58"></script>
-<script src="orient.js?v=58"></script>
-<script src="recon.js?v=58"></script>
-<script src="tour.js?v=58"></script>
+<script src="places.js?v=59"></script>
+<script src="places_apply.js?v=59"></script>
+<script src="images.js?v=59"></script>
+<script src="walk_dem.js?v=59"></script>
+<script src="walk_data.js?v=59"></script>
+<script src="walk_info.js?v=59"></script>
+<script src="walk_sanct.js?v=59"></script>
+<script src="audio.js?v=59"></script>
+<script src="media.js?v=59"></script>
+<script src="travelers.js?v=59"></script>
+<script src="flickr.js?v=59"></script>
+<script src="inscriptions.js?v=59"></script>
+<script src="orient.js?v=59"></script>
+<script src="recon.js?v=59"></script>
+<script src="tour.js?v=59"></script>
 </body>
 </html>

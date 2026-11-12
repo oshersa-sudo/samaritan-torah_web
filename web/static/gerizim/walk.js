@@ -24,6 +24,10 @@
       loading: 'جارٍ بناء الحرم…', fail: 'تعذّر تحميل الجولة. تحقّق من الاتصال وحاول ثانية.', map: 'أين أنا', fwd: 'إلى الأمام', back: 'إلى الخلف', left: 'يسارًا', right: 'يمينًا' }
   };
 
+  // התקופה השלישית (ימי הרצון והמשכן), הפסוקים שבכרטיס והקישור לציר הזמן
+  Object.assign(UI.he, { hintT: 'גררו כדי להביט סביב · הקישו על הקרקע כדי ללכת לשם · או הקישו והחזיקו את החיצים · הקשה על המפה הקטנה מעבירה לשם', lyClose: '✕ סגירה', noteR: 'שחזור להמחשה לפי נוסח התורה השומרוני: המידות באמות מן הפסוקים (אמה ≈ 48 ס"מ), ומה שהפסוקים אינם אומרים הושלם ומסומן בכל כרטיס. המקום והתקופה — לפי מסורת העדה. הדמויות ובעלי החיים להמחשה.', ly_temple: 'המקדש והמתחם — שחזור (הצעת החופר)', templeS: 'מקדש (שחזור)', rah: 'ימי הרצון · המשכן', rahS: 'ימי הרצון', rahT: 'ימי הרחותה – ימי הרצון: משכן משה שהציב יהושע בהר גריזים, לפי המסורת השומרונית', verses: 'הפסוקים שעליהם נשען השחזור (נוסח התורה השומרוני)', timeline: 'בציר הזמן ההיסטורי ←' });
+  Object.assign(UI.en, { hintT: 'Drag to look around · tap the ground to walk there · or tap and hold the arrows · tapping the small map takes you there', lyClose: '✕ Close', noteR: 'An illustrative reconstruction after the Samaritan Torah: the measurements in cubits come from the verses (a cubit ≈ 48 cm), and whatever the verses do not say was completed and is marked on every card. The place and the period follow the community\'s tradition. The figures and animals are for illustration.', ly_temple: 'The temple and precinct — reconstruction (the excavator\'s proposal)', templeS: 'Temple (reconstr.)', rah: 'Days of Favour · Tabernacle', rahS: 'Days of Favour', rahT: 'The Days of Favour (Rahuta): the Tabernacle of Moses, set up by Joshua on Mount Gerizim according to Samaritan tradition', verses: 'The verses the reconstruction rests on (Samaritan Torah)', timeline: 'On the historical timeline →' });
+  Object.assign(UI.ar, { hintT: 'اسحب للنظر حولك · انقر على الأرض للسير إليها · أو انقر على الأسهم واضغط مطوّلًا · النقر على الخريطة الصغيرة ينقلك إليها', lyClose: '✕ إغلاق', noteR: 'إعادة بناء توضيحية بحسب التوراة السامرية: القياسات بالأذرع مأخوذة من الآيات (الذراع ≈ 48 سم)، وما لا تذكره الآيات استُكمل ووُسم في كل بطاقة. الموضع والفترة بحسب تقليد الطائفة. والأشخاص والحيوانات للتوضيح.', ly_temple: 'الهيكل والحرم — إعادة بناء (اقتراح المنقّب)', templeS: 'هيكل (إعادة بناء)', rah: 'أيام الرضوان · المسكن', rahS: 'أيام الرضوان', rahT: 'أيام الرضوان (الرحوتا): مسكن موسى الذي نصبه يشوع على جبل جرزيم بحسب التقليد السامري', verses: 'الآيات التي تستند إليها إعادة البناء (التوراة السامرية)', timeline: 'على الخط الزمني التاريخي ←' });
   let THREE = null, renderer, scene, camera, root, clock;
   let lang = 'he', period = 'h', showTemple = false, opts = {};
   let active = false, raf = 0;
@@ -32,7 +36,8 @@
   const $ = id => document.getElementById(id);
   const T = k => (UI[lang] || UI.he)[k];
   const L = v => (v && (v[lang] || v.he)) || '';
-  const inPer = o => !o.per || o.per === period;
+  // tl: 1 — רק כששכבת המקדש דולקת; 0 — רק כשהיא כבויה (למשל המזבח המוגבה שבהצעת החופר)
+  const inPer = o => (o.per ? o.per === period : (period !== 'r' || !!o.allr)) && (o.tl == null || (o.tl ? showTemple : !showTemple));
 
   /* ---------- טעינת three.js לפי דרישה ---------- */
   function loadThree() {
@@ -47,6 +52,7 @@
   /* ---------- גובה הקרקע והיכן מותר ללכת ---------- */
   const inBox = (b, x, z, m) => x >= b[0] - (m || 0) && x <= b[2] + (m || 0) && z >= b[1] - (m || 0) && z <= b[3] + (m || 0);
   function floorY(f, x, z) {
+    if (f.follow) return groundY(x, z);
     if (!f.ramp) return f.y;
     const r = f.ramp, v = r.axis === 'x' ? x : z;
     const k = Math.max(0, Math.min(1, (v - r.a) / (r.b - r.a)));
@@ -73,7 +79,7 @@
       if (s.y0 > y + 1.7 || s.y0 + s.h < y + 0.35) continue;
       if (inBox(s.box, x, z, RADIUS)) return true;
     }
-    const tp = showTemple && W.temple[period];
+    const tp = showTemple && W.temple[period] && !W.temple[period].custom ? W.temple[period] : null;
     if (tp && (inBox(tp.box, x, z, RADIUS) || inBox(tp.porch, x, z, RADIUS))) return true;
     if (tp) for (const b of innerWalls(tp)) if (inBox(b, x, z, RADIUS)) return true;
     return false;
@@ -130,19 +136,30 @@
       g.fillStyle = bg; g.fillRect(0, 0, S, S);
       for (let i = 0; i < n; i++) {
         const x = R() * S, y = R() * S, rx = rmin + R() * (rmax - rmin), ry = rx * (0.6 + R() * 0.3);
+        const rot = R() * 0.6 - 0.3;
         for (const [ox, oy] of [[0, 0], [S, 0], [-S, 0], [0, S], [0, -S]]) {
-          g.beginPath(); g.ellipse(x + ox, y + oy, rx, ry, R() * 0.6 - 0.3, 0, 6.3);
-          g.fillStyle = cols[i % cols.length]; g.fill(); g.strokeStyle = 'rgba(40,32,22,.55)'; g.lineWidth = 1.5; g.stroke();
+          g.beginPath(); g.ellipse(x + ox, y + oy, rx, ry, rot, 0, 6.3);
+          const gr = g.createRadialGradient(x + ox - rx * 0.35, y + oy - ry * 0.4, rx * 0.1, x + ox, y + oy, rx * 1.05);
+          gr.addColorStop(0, '#ffffff22'); gr.addColorStop(0.25, cols[i % cols.length]); gr.addColorStop(1, 'rgba(60,48,32,.95)');
+          g.fillStyle = cols[i % cols.length]; g.fill(); g.fillStyle = gr; g.fill(); g.strokeStyle = 'rgba(40,32,22,.6)'; g.lineWidth = 1.6; g.stroke();
         }
       }
       speckle(g, 500, 0.12, ['#6d6250', '#fff'], S);
     });
-    m.field = lam(stones('#6f6452', ['#b3a58a', '#a39579', '#c2b497', '#958770'], 46, 14, 30));
+    m.field = lam(stones('#5f5545', ['#b3a58a', '#a39579', '#c2b497', '#958770'], 46, 14, 30));
     m.bigstone = lam(stones('#5f5646', ['#a99c84', '#b8ab92', '#9a8d75'], 12, 40, 62));
+    // שלוש שכבות טיח לבן על אבנים גדולות: מתחת לטיח ניכרים קווי הנדבכים, ועליו כתמי בלאי, שטפי גשם וטלאי טיח
     m.plaster = lam(tex((g, S) => {
-      g.fillStyle = '#efe8d6'; g.fillRect(0, 0, S, S); speckle(g, 700, 0.08, ['#cdbf9f', '#fff', '#b5a684'], S);
-      g.globalAlpha = 0.03; g.fillStyle = '#7a6a4a'; for (let i = 0; i < 7; i++) g.fillRect(R() * S, 0, 6 + R() * 22, S); g.globalAlpha = 1;
-    }));
+      g.fillStyle = '#ece4d0'; g.fillRect(0, 0, S, S);
+      for (let r = 0; r < 3; r++) for (let k = 0; k < 2; k++) {
+        const x = (k * S / 2 + (r % 2) * S / 4) % S, y = r * S / 3, w = S / 2, h = S / 3;
+        for (const ox of [0, -S]) { const gr = g.createLinearGradient(x + ox, y, x + ox, y + h); gr.addColorStop(0, 'rgba(255,255,250,.35)'); gr.addColorStop(0.85, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(90,75,50,.16)'); g.fillStyle = gr; g.fillRect(x + ox + 3, y + 3, w - 6, h - 6); }
+        g.strokeStyle = 'rgba(120,104,78,.13)'; g.lineWidth = 2.5; g.strokeRect(x + 2, y + 2, w - 4, h - 4); g.strokeRect(x - S + 2, y + 2, w - 4, h - 4);
+      }
+      speckle(g, 1400, 0.08, ['#cdbf9f', '#fff', '#b5a684'], S);
+      g.globalAlpha = 0.05; g.fillStyle = '#6e5e40'; for (let i = 0; i < 9; i++) g.fillRect(R() * S, R() * S * 0.4, 3 + R() * 10, S * (0.3 + R() * 0.6)); g.globalAlpha = 1;
+      for (let i = 0; i < 5; i++) { g.fillStyle = 'rgba(205,190,155,.35)'; g.beginPath(); g.ellipse(R() * S, R() * S, 10 + R() * 26, 6 + R() * 14, R() * 3, 0, 6.3); g.fill(); }
+    }, 512));
     m.pave = lam(tex((g, S) => {                        // ריצוף אבן
       g.fillStyle = '#b5a888'; g.fillRect(0, 0, S, S);
       for (let r = 0; r < 4; r++) for (let k = 0; k < 3; k++) {
@@ -153,6 +170,8 @@
       speckle(g, 600, 0.10, ['#8e8266', '#fff'], S);
     }));
     m.step = m.pave;
+    const relief = (mat, k) => new THREE.MeshPhongMaterial({ map: mat.map, bumpMap: mat.map, bumpScale: k, shininess: 5, specular: 0x141210, emissive: 0x1c1812 });
+    if (!(quality && quality.lite)) { m.field = relief(m.field, 0.06); m.bigstone = relief(m.bigstone, 0.09); m.ashlar = relief(m.ashlar, 0.035); m.plaster = relief(m.plaster, 0.015); m.pave = m.step = relief(m.pave, 0.03); }
     // טיח הסיד הלבן מאיר גם בצל
     m.plaster.emissive = new THREE.Color(0x3a362c); m.ashlar.emissive = new THREE.Color(0x2c2920);
     m.earth = lam(tex((g, S) => { g.fillStyle = '#b79f7b'; g.fillRect(0, 0, S, S); speckle(g, 2600, 0.16, ['#8f7a59', '#d2bd98', '#a08a66', '#c9b48e'], S); }));
@@ -160,6 +179,7 @@
     m.roof = lam(tex((g, S) => { g.fillStyle = '#a8946d'; g.fillRect(0, 0, S, S); speckle(g, 1800, 0.14, ['#8a7653', '#c4b08a'], S); }));
     m.wood = lam(tex((g, S) => { g.fillStyle = '#6b4a2b'; g.fillRect(0, 0, S, S); g.strokeStyle = 'rgba(30,18,8,.4)'; for (let i = 0; i < 40; i++) { g.beginPath(); const x = R() * S; g.moveTo(x, 0); g.lineTo(x + R() * 8 - 4, S); g.stroke(); } }));
     m.rock = lam(stones('#8d8068', ['#b9ad94', '#a89c83', '#c6baa0', '#9c907a'], 9, 46, 80));
+    if (!(quality && quality.lite)) m.rock = relief(m.rock, 0.08);
     m.cloth = c => new THREE.MeshLambertMaterial({ color: c, side: THREE.DoubleSide });
     m.dark = new THREE.MeshLambertMaterial({ color: 0x2a2118 });
     m.ash = new THREE.MeshLambertMaterial({ color: 0x8b8880 });
@@ -241,7 +261,7 @@
   function groundY(x, z) {
     let y = terrainH(x, z), cut = null, lay = null;
     for (const f of W.floors) {
-      if (f.deco || !inPer(f) || !inBox(f.box, x, z, f.city ? 2.6 : 1.4)) continue;
+      if (f.deco || f.follow || !inPer(f) || !inBox(f.box, x, z, f.city ? 2.6 : 1.4)) continue;
       const fy = floorY(f, Math.max(f.box[0], Math.min(f.box[2], x)), Math.max(f.box[1], Math.min(f.box[3], z))) - (f.steps ? 0.3 : 0.12);
       if (f.city) lay = lay == null ? fy : Math.min(lay, fy); else cut = cut == null ? fy : Math.min(cut, fy);
     }
@@ -268,6 +288,7 @@
     }
     g.computeVertexNormals();
     const ground = new THREE.Mesh(g, M.terrain); ground.receiveShadow = shadows; root.add(ground);
+    if (W.floors.some(f => f.follow && inPer(f))) clickables.push(ground);          // על ראש ההר החשוף הולכים על הקרקע עצמה
     // הרחק: טבעת נמוכה והרים באופק. הר עיבל מצפון
     const real = !!(life && life.farY(0, 0) != null);
     const far = new THREE.Mesh(new THREE.CircleGeometry(real ? 40000 : 2600, 40), new THREE.MeshLambertMaterial({ color: 0x8f8a63 }));
@@ -280,7 +301,7 @@
   }
   function buildFloors(M) {
     for (const f of W.floors) {
-      if (!inPer(f)) continue;
+      if (!inPer(f) || f.follow || f.nodraw) continue;
       const b = f.box, mat = M[f.mat] || M.earth;
       if (f.steps) {
         const r = f.ramp, n = f.steps, len = r.b - r.a, tread = len / n;
@@ -315,7 +336,7 @@
         g.setIndex([0, 2, 1, 1, 2, 3, 0, 4, 2, 1, 3, 5]); g.computeVertexNormals();
         root.add(new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: 0xe8e0cc, side: THREE.DoubleSide }))); continue;
       }
-      if (s.h <= 0) continue;
+      if (s.h <= 0 || s.hide) continue;
       const mat = M[s.mat] || M.ashlar;
       addBox(b, s.y0, s.h, mat, s.mat === 'bigstone' ? 4 : 2);
       const top = s.y0 + s.h, w = b[2] - b[0], d = b[3] - b[1];
@@ -367,7 +388,9 @@
       const me = new THREE.Mesh(new THREE.BoxGeometry(0.14, 4.2, 2.0), M.wood);
       me.position.set(dr.x, dr.y + 2.1, dr.z); me.rotation.y = dr.ry; root.add(me);
     }
-    const tp = showTemple && W.temple[period];
+    // מבנים מפורטים שנבנים בקוד משלהם: המשכן, המקדש שאפשר להיכנס אליו, כלי הקודש
+    for (const hk of (W.hooks || [])) { try { hk({ THREE, root, M, addBox, boxGeo, period, showTemple, shadows, inPer, inBox, texture, clickables, addSmoke, flames, floorAt, lite: quality && quality.lite }); } catch (e) { console.warn(e); } }
+    const tp = showTemple && W.temple[period] && !W.temple[period].custom ? W.temple[period] : null;
     if (tp) {                                          // בניין המקדש והמתחם הפנימי, לפי הצעת החופר: שקופים למחצה, כהשערה
       const tb = tp.box, pc = tp.porch;
       addBox(tb, 0.6, tp.h, M.ghost); addBox([tb[0] - 1, tb[1] - 1, tb[2] + 1, tb[3] + 1], 0, 0.6, M.ghost);
@@ -736,8 +759,13 @@
     }
     return false;
   }
+  // הקשה קצרה על חץ: צעד של כשני מטרים, או פנייה של 30 מעלות, בתנועה רכה
+  let nudge = 0, spin = 0;
+  function tapStep(k) { if (k === 'fwd') nudge = 2.2; else if (k === 'back') nudge = -1.6; else spin += (k === 'left' ? -1 : 1) * Math.PI / 6; }
   function step(dt) {
-    if (paused) { keys = {}; hold = {}; target = null; }
+    if (paused) { keys = {}; hold = {}; target = null; nudge = 0; spin = 0; }
+    if (spin) { const d = Math.sign(spin) * Math.min(Math.abs(spin), 2.4 * dt); look.yaw += d; spin -= d; if (Math.abs(spin) < 1e-3) spin = 0; }
+    if (nudge) { const d = Math.sign(nudge) * Math.min(Math.abs(nudge), SPEED * 0.8 * dt); if (!tryMove(Math.sin(look.yaw) * d, -Math.cos(look.yaw) * d)) nudge = 0; else nudge -= d; if (Math.abs(nudge) < 1e-3) nudge = 0; }
     const turn = ((keys.ArrowLeft || hold.left) ? -1 : 0) + ((keys.ArrowRight || hold.right) ? 1 : 0);
     if (turn) look.yaw += turn * 1.7 * dt;
     let fwd = ((keys.ArrowUp || keys.KeyW || hold.fwd) ? 1 : 0) - ((keys.ArrowDown || keys.KeyS || hold.back) ? 1 : 0);
@@ -885,7 +913,7 @@
   function setLayer(k, on) {
     layers[k] = !!on;
     try { localStorage.setItem('gerizim-layers', JSON.stringify(layers)); } catch (e) { /* בלי אחסון */ }
-    if (k === 'temple') { showTemple = layers.temple; if (active) rebuild(); }
+    if (k === 'temple') { showTemple = layers.temple; if (active) rebuild(); if (window.GerizimAudio) GerizimAudio.walkScene(period, showTemple); }
     if (k === 'walker') showAvatar = layers.walker;
     if (k === 'life' && life && life.show) life.show(layers.life);
     if (k === 'history') { infoClosed = false; }
@@ -898,7 +926,7 @@
   /* ---------- שילוט: לוחות שם חקוקים על החזיתות, ותוויות לנקודות העניין ---------- */
   const tagKey = z => z.tag || (INFO.zone || {})[z.id] || ((z.per || period) === 'p' ? 'samper' : 'samhel');
   const tagOf = z => (INFO.tags || {})[tagKey(z)] || null;
-  const infoById = id => W.zones.find(z => z.id === id && (!z.per || z.per === period)) || (INFO.marks || []).find(m => m.id === id) || null;
+  const infoById = id => W.zones.find(z => z.id === id && inPer(z)) || (INFO.marks || []).find(m => m.id === id) || null;
   function signSprite(name, col) {
     const tex = texture('sign' + lang + name + col, 512, 112, c => {
       const g = c.getContext('2d'); g.fillStyle = 'rgba(22,18,12,.84)'; g.strokeStyle = col; g.lineWidth = 5;
@@ -943,13 +971,13 @@
       sp.position.set(x, y, z); sp.visible = layers[layer]; root.add(sp); labelObjs.push(sp); signs.push({ sp, info, x, z, layer }); taps.push({ obj: sp, info });
     };
     for (const z of W.zones) {
-      if ((z.per && z.per !== period) || z.id === 'centre') continue;
+      if (!inPer(z) || z.id === 'centre' || z.nosign) continue;
       const f0 = zoneFloor(z), f = f0 && f0.room ? (W.floors.find(q => q.id === f0.id + 'door') || f0) : f0, b = f ? f.box : z.box; if (!b) continue;
       const x = (b[0] + b[2]) / 2, zz = (b[1] + b[3]) / 2;
-      add(z, x, zz, (f ? floorY(f, x, zz) : 0) + (f0 && f0.room ? 3.5 : 3.7));
+      add(z, x, zz, (f ? floorY(f, x, zz) : (z.y || 0)) + (z.signY || (f0 && f0.room ? 3.5 : 3.7)));
     }
     for (const m of (INFO.marks || [])) {
-      if ((m.per && m.per !== period) || (m.only === 'temple' && !(showTemple && W.temple[period]))) continue;
+      if (!inPer(m) || (m.only === 'temple' && !(showTemple && W.temple[period]))) continue;
       const x = m.e, z = -m.n; let top = null;
       for (const s of W.solids) if (inPer(s) && !s.shed && inBox(s.box, x, z, 0.5)) top = Math.max(top == null ? -1e9 : top, s.y0 + s.h);
       add(m, x, z, m.only === 'temple' ? W.temple[period].h + 1 : (top == null ? 4 : top + 1.4));
@@ -978,7 +1006,7 @@
   function stepSigns() {
     for (const s of signs) {
       const d = Math.hypot(s.x - pos.x, s.z - pos.z), k = Math.max(1, Math.min(5, d / 11));
-      s.sp.visible = layers[s.layer] && d > 4 && d < 150; s.sp.scale.set(2.7 * k, 0.59 * k, 1);
+      s.sp.visible = layers[s.layer] && d > (s.info.signNear ? 1.6 : 4) && d < (s.info.signNear || 150); { const kk = s.info.signNear ? k * 0.42 : k; s.sp.scale.set(2.7 * kk, 0.59 * kk, 1); }
     }
   }
   // המסלולים המרכזיים: אבני סימון שקועות בקרקע, כל שלושה מטרים
@@ -1055,8 +1083,8 @@
   function zoneAt() {
     const f = floorAt(pos.x, pos.z, pos.y), fid = f && f.f.id;
     for (const z of W.zones) {
-      if (z.per && z.per !== period) continue;
-      if (z.box && inBox(z.box, pos.x, pos.z) && (!f || Math.abs(f.y) < 0.5)) return z;
+      if (!inPer(z)) continue;
+      if (z.box && inBox(z.box, pos.x, pos.z) && (!f || Math.abs(f.y - (z.y || 0)) < 0.5)) return z;
       if (z.floors && z.floors.indexOf(fid) >= 0) return z;
     }
     return null;
@@ -1084,7 +1112,12 @@
     $('walkHere').textContent = peek ? T('look') : T('here');
     const tg = z && tagOf(z), who = $('walkWho');
     who.textContent = tg ? L(tg.text) : ''; who.style.display = tg ? '' : 'none'; if (tg) who.style.borderColor = tg.col;
-    const gs = z && (INFO.guess || {})[tagKey(z)]; $('walkGuess').textContent = gs ? L(gs) : ''; $('walkGuess').style.display = gs ? '' : 'none';
+    const gs = z && (z.guess || (INFO.guess || {})[tagKey(z)]); $('walkGuess').textContent = gs ? L(gs) : '';
+    const vs = $('walkVerses'), vv = z && z.verses ? z.verses : [];
+    const esc2 = x => String(x || '').replace(/[<>&]/g, '');
+    vs.innerHTML = vv.length ? '<div class="vt">' + T('verses') + '</div>' + vv.map(v => '<div class="vv"><b>' + esc2(typeof v.ref === 'string' ? v.ref : L(v.ref)) + '</b> <span dir="rtl" lang="he">' + esc2(v.he) + '</span>' + (lang !== 'he' && v.tr && v.tr[lang] ? '<i dir="' + (lang === 'ar' ? 'rtl' : 'ltr') + '">' + esc2(v.tr[lang]) + '</i>' : '') + '</div>').join('') : '';
+    vs.style.display = vv.length ? '' : 'none';
+    const tl = $('walkTl'); if (z && z.timeline) { tl.href = '/timeline/?ev=' + z.timeline + '&lang=' + lang; tl.textContent = T('timeline'); tl.style.display = ''; } else { tl.removeAttribute('href'); tl.textContent = ''; tl.style.display = 'none'; } $('walkGuess').style.display = gs ? '' : 'none';
     $('walkZone').textContent = z ? L(z.name) : '';
     $('walkText').textContent = z ? L(z.text) : '';
     $('walkMore').style.display = z && z.place && opts.onPlace ? '' : 'none';
@@ -1102,19 +1135,19 @@
     const g = miniBase.getContext('2d');
     g.fillStyle = '#f1e9d2'; g.fillRect(0, 0, cw, ch);
     const rect = (b, fill, stroke) => { const x = (b[0] - B[0]) * MK, y = (b[1] - B[1]) * MK, ww = (b[2] - b[0]) * MK, hh = (b[3] - b[1]) * MK; if (fill) { g.fillStyle = fill; g.fillRect(x, y, ww, hh); } if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1.2; g.strokeRect(x, y, ww, hh); } };
-    for (const f of W.floors) if (inPer(f) && !f.deco) rect(f.box, f.steps ? '#c9b98f' : (/^road|^eroad|^sroad/.test(f.id) ? '#e8dfc6' : f.mat === 'pave' ? '#e3d7b6' : '#d9cba4'));
+    for (const f of W.floors) if (inPer(f) && !f.deco && !f.follow) rect(f.box, f.steps ? '#c9b98f' : (/^road|^eroad|^sroad/.test(f.id) ? '#e8dfc6' : f.mat === 'pave' ? '#e3d7b6' : '#d9cba4'));
     for (const f of W.floors) if (inPer(f) && f.steps) {     // קווי מדרגות
       const b = f.box, r = f.ramp; g.strokeStyle = 'rgba(90,70,40,.55)'; g.lineWidth = 1;
       for (let i = 0; i <= 12; i++) { const v = r.a + (r.b - r.a) * i / 12; g.beginPath(); if (r.axis === 'x') { g.moveTo((v - B[0]) * MK, (b[1] - B[1]) * MK); g.lineTo((v - B[0]) * MK, (b[3] - B[1]) * MK); } else { g.moveTo((b[0] - B[0]) * MK, (v - B[1]) * MK); g.lineTo((b[2] - B[0]) * MK, (v - B[1]) * MK); } g.stroke(); }
     }
     for (const s of W.solids) if (inPer(s) && s.h > 0.5 && !s.shed) rect(s.box, s.id ? '#b8862e' : (s.house ? '#8a7a66' : '#3b3024'));
-    const tpm = showTemple && W.temple[period];
+    const tpm = showTemple && W.temple[period] && !W.temple[period].custom ? W.temple[period] : null;
     if (tpm) { g.setLineDash([5, 4]); rect(tpm.box, 'rgba(184,134,46,.25)', '#8a5a1c'); if (tpm.inner) rect(tpm.inner, null, '#8a5a1c'); g.setLineDash([]); }
     // התחנות המרכזיות, בשמן הקצר
     mapLab = [];
     const POI = INFO.poi || [];
     for (const id of Object.keys(INFO.mapNames || {})) {
-      const z = W.zones.find(q => q.id === id && (!q.per || q.per === period)); if (!z) continue;
+      const z = W.zones.find(q => q.id === id && inPer(q)); if (!z) continue;
       const f = zoneFloor(z), b = f ? f.box : z.box; if (!b) continue;
       mapLab.push({ x: (b[0] + b[2]) / 2, z: (b[1] + b[3]) / 2, name: L(INFO.mapNames[id]), layer: POI.indexOf(id) >= 0 ? 'poi' : 'names' });
     }
@@ -1176,19 +1209,21 @@
     if (el.dataset.ready) return;
     el.dataset.ready = '1';
     el.innerHTML = '<canvas id="walkCv"></canvas>' +
-      '<div id="walkTop"><button id="walkExit"></button><div id="walkPer"><button data-p="h"></button><button data-p="p"></button></div>' +
-      '<div id="walkLayersBox"><button id="walkLayersBtn" aria-haspopup="true" aria-expanded="false"></button><div id="walkLayers" hidden>' +
+      '<div id="walkTop"><button id="walkExit"></button><div id="walkPer"><button data-p="h"></button><button data-p="p"></button><button data-p="r"></button></div>' +
+      '<div id="walkLayersBox"><button id="walkLayersBtn" aria-haspopup="true" aria-expanded="false"></button><div id="walkLayers" hidden><button class="lyx" id="walkLayersX"></button>' +
       LAYERS.map(k => '<label><input type="checkbox" data-l="' + k + '"><span></span></label>').join('') + '</div></div>' +
-      '<button id="walkMapBtn"></button><button id="walkInfoBtn"></button>' +
+      '<button id="walkMapBtn"></button><button id="walkInfoBtn"></button><button id="walkSnd" aria-haspopup="true"></button>' +
       '<div id="walkLang"><button data-lang="he">עב</button><button data-lang="en">EN</button><button data-lang="ar">ع</button></div></div>' +
       '<div id="walkSide"><div id="walkMiniH"><span id="walkMiniT"></span><button id="walkMiniBig"></button><button id="walkMiniX">✕</button></div><canvas id="walkMini"></canvas><div id="walkLegend"></div></div>' +
-      '<div id="walkInfo"><button id="walkInfoX" class="wx">✕</button><div id="walkHere"></div><h3 id="walkZone"></h3><div id="walkWho"></div><p id="walkText"></p><div id="walkGuess"></div><div id="walkIns"></div><div id="walkPhotos"></div><button id="walkMore"></button><div id="walkNote"></div></div>' +
+      '<div id="walkInfo"><button id="walkInfoX" class="wx">✕</button><div id="walkHere"></div><h3 id="walkZone"></h3><div id="walkWho"></div><p id="walkText"></p><div id="walkVerses"></div><div id="walkGuess"></div><a id="walkTl" target="_blank" rel="noopener"></a><div id="walkIns"></div><div id="walkPhotos"></div><button id="walkMore"></button><div id="walkNote"></div></div>' +
       '<div id="walkPad"><button data-h="left" aria-label="">◀</button><div><button data-h="fwd">▲</button><button data-h="back">▼</button></div><button data-h="right">▶</button></div>' +
       '<div id="walkHint"></div><div id="walkAttr">Imagery © Esri, Maxar, Earthstar Geographics · Terrain: Mapzen, AWS Open Data</div><div id="walkLoad"></div>';
     $('walkExit').onclick = exit;
+    if (window.GerizimAudio) GerizimAudio.walkButton($('walkSnd'), () => lang);
     el.querySelectorAll('#walkPer button').forEach(b => { b.onclick = () => setPeriod(b.dataset.p); });
     // תפריט השכבות: נפתח ונסגר בלחיצה, וכל שכבה בו נדלקת ונכבית לעצמה
-    const menu = open => { $('walkLayers').hidden = !open; $('walkLayersBtn').setAttribute('aria-expanded', open ? 'true' : 'false'); $('walkLayersBtn').classList.toggle('on', open); };
+    const menu = open => { $('walkLayers').hidden = !open; $('walk').classList.toggle('lyopen', !!open); $('walkLayersBtn').setAttribute('aria-expanded', open ? 'true' : 'false'); $('walkLayersBtn').classList.toggle('on', open); };
+    $('walkLayersX').onclick = e => { e.stopPropagation(); menu(false); };
     $('walkLayersBtn').onclick = e => { e.stopPropagation(); menu($('walkLayers').hidden); };
     $('walkLayers').addEventListener('click', e => e.stopPropagation());
     el.addEventListener('pointerdown', e => { if (!$('walkLayers').hidden && !e.target.closest('#walkLayersBox')) menu(false); });
@@ -1200,7 +1235,8 @@
     $('walkInfoBtn').onclick = () => { if (!layers.history) { setLayer('history', true); return; } infoClosed = !infoClosed; if (infoClosed) { peek = null; insForce = null; } applyUI(); };
     $('walkInfoX').onclick = e => { e.stopPropagation(); infoClosed = true; peek = null; insForce = null; zoneId = undefined; applyUI(); };
     el.querySelectorAll('#walkPad button').forEach(b => {
-      const k = b.dataset.h, on = e => { e.preventDefault(); if (paused) return; hold[k] = true; hideHint(); }, off = () => { hold[k] = false; };
+      let t0 = 0;
+      const k = b.dataset.h, on = e => { e.preventDefault(); if (paused) return; hold[k] = true; t0 = performance.now(); hideHint(); }, off = () => { if (hold[k] && performance.now() - t0 < 230) tapStep(k); hold[k] = false; };
       b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off);
     });
     $('walkMini').addEventListener('click', e => {       // לחיצה על המפה מעבירה לשם
@@ -1223,15 +1259,15 @@
     avTick = 0;
   }
   function texts() {
-    const nar = window.innerWidth <= 640, S2 = k => (nar && T(k + 'S')) || T(k);          // במסך צר: תוויות קצרות, כדי שהסרגל העליון לא יכסה את הנוף
+    const nar = window.innerWidth <= 640 || (window.innerHeight <= 500 && window.innerWidth > window.innerHeight), S2 = k => (nar && T(k + 'S')) || T(k);          // במסך צר: תוויות קצרות, כדי שהסרגל העליון לא יכסה את הנוף
     $('walkExit').textContent = S2('exit');
-    const pb = $('walkPer').querySelectorAll('button'); pb[0].textContent = S2('hel'); pb[1].textContent = S2('per');
+    const pb = $('walkPer').querySelectorAll('button'); pb[0].textContent = S2('hel'); pb[1].textContent = S2('per'); pb[2].textContent = S2('rah'); pb[2].title = T('rahT');
     pb.forEach(b => b.classList.toggle('on', b.dataset.p === period));
-    $('walkLayersBtn').textContent = '☰ ' + T('layers'); $('walkMapBtn').textContent = T('mapBtn'); $('walkInfoBtn').textContent = 'ⓘ' + (nar ? '' : ' ' + T('infoBtn'));
+    $('walkLayersBtn').textContent = '☰ ' + T('layers'); $('walkLayersX').textContent = T('lyClose'); $('walkMapBtn').textContent = T('mapBtn'); $('walkInfoBtn').textContent = 'ⓘ' + (nar ? '' : ' ' + T('infoBtn'));
     $('walkInfoBtn').setAttribute('aria-label', T('infoBtn')); $('walkInfoX').setAttribute('aria-label', T('close')); $('walkInfoX').title = T('close');
     $('walkMiniX').setAttribute('aria-label', T('mapHide')); $('walkMiniX').title = T('mapHide');
     $('walk').querySelectorAll('#walkLayers label').forEach(lb => { lb.querySelector('span').textContent = T('ly_' + lb.querySelector('input').dataset.l); });
-    $('walkMore').textContent = T('more'); $('walkNote').textContent = T('note') + (INFO.plateNote ? ' ' + L(INFO.plateNote) : '') + (INFO.later ? ' ' + L(INFO.later) : '');
+    $('walkMore').textContent = T('more'); $('walkNote').textContent = period === 'r' ? T('noteR') : T('note') + (INFO.plateNote ? ' ' + L(INFO.plateNote) : '') + (INFO.later ? ' ' + L(INFO.later) : '');
     $('walkHint').textContent = T(window.matchMedia && matchMedia('(hover:none)').matches ? 'hintT' : 'hint'); $('walkMiniT').textContent = T('map'); $('walk').dir = lang === 'en' ? 'ltr' : 'rtl'; $('walk').lang = lang;
     const pad = $('walkPad').querySelectorAll('button'); ['left', 'fwd', 'back', 'right'].forEach((k, i) => pad[i].setAttribute('aria-label', T(k)));
     applyUI();
@@ -1241,8 +1277,10 @@
     pos.x = s.x; pos.z = s.z; pos.y = f.y; look.yaw = s.yaw; look.pitch = 0; target = null; bodyYaw = null;
     if (camera) camera.position.set(pos.x, pos.y + EYE, pos.z);
   }
-  function rebuild() { build(); miniBase = null; zoneId = undefined; texts(); if (!canStandAny(pos.x, pos.z)) place('plaza'); drawMini(true); }
-  function setPeriod(p) { if (p === period) return; period = p; peek = null; insForce = null; rebuild(); }
+  function rebuild() { build(); miniBase = null; zoneId = undefined; texts(); if (!canStandAny(pos.x, pos.z)) place(period === 'r' ? 'mishkan' : 'plaza'); drawMini(true); }
+  // מן התקופות האחרות אל ימי הרצון: עוברים אל רחבת המשכן
+  const goMishkan = () => { if (period === 'r' && W.starts.mishkan) place('mishkan'); };
+  function setPeriod(p) { if (p === period) return; const was = period; period = p; peek = null; insForce = null; rebuild(); if (p === 'r' && was !== 'r') goMishkan(); if (window.GerizimAudio) GerizimAudio.walkScene(period, showTemple); }
   // החלפת שפה בתוך הסיור: המקום, כיוון המבט והשכבות נשארים כפי שהם; רק הכיתוב מתחלף
   function setLang(code, extra) {
     lang = UI[code] ? code : 'he'; if (extra) Object.assign(opts, extra);
@@ -1263,20 +1301,23 @@
       if (!renderer) { setup($('walkCv')); bind($('walkCv')); }
       period = opts.period || period;
       if (opts.start !== 'plaza') period = 'h';
+      if (W.starts[opts.start] && W.starts[opts.start].per) period = W.starts[opts.start].per;
       entrySeed = (Date.now() ^ Math.floor(Math.random() * 1e9)) >>> 0;
       showTemple = layers.temple; paused = false; infoClosed = false; peek = null; insForce = null;
       place(opts.start || 'stairs'); build(); texts(); place(opts.start || 'stairs');
       active = true; resize(); zoneId = undefined; clock.getDelta(); cancelAnimationFrame(raf); tick();
       $('walkLoad').style.display = 'none'; $('walkHint').classList.remove('gone');
+      if (window.GerizimAudio) GerizimAudio.walkScene(period, showTemple);
       setTimeout(hideHint, 9000);
     }).catch(() => { $('walkLoad').textContent = T('fail'); setTimeout(exit, 2600); });
   }
   function exit() {
     active = false; paused = false; cancelAnimationFrame(raf); keys = {}; hold = {};
     $('walk').classList.remove('open'); $('walk').classList.remove('paused');
+    if (window.GerizimAudio) GerizimAudio.walkScene(null);
     if (opts.onExit) opts.onExit();
   }
-  window.GerizimWalk = { enter, exit, pause, setLang, setLayer, _shot: shot, _frame: (dt, n) => { for (let i = 0; i < (n || 1); i++) frame(dt || 0.033, false); }, _life: box => life && life.sample && life.sample(box), _go: (x, z, yaw, pitch) => { const f = canStandAny(x, z); if (!f) return false; pos.x = x; pos.z = z; pos.y = f.y; if (yaw != null) look.yaw = yaw; look.pitch = pitch || 0; target = null; camera.position.y = pos.y + EYE; return true; }, get active() { return active; }, get paused() { return paused; },
+  window.GerizimWalk = { enter, exit, pause, setLang, setLayer, _shot: shot, _frame: (dt, n) => { for (let i = 0; i < (n || 1); i++) frame(dt || 0.033, false); }, _life: box => life && life.sample && life.sample(box), _go: (x, z, yaw, pitch) => { const f = canStandAny(x, z); if (!f) return false; pos.x = x; pos.z = z; pos.y = f.y; if (yaw != null) look.yaw = yaw; look.pitch = pitch || 0; target = null; camera.position.y = pos.y + EYE; return true; }, get active() { return active; }, get paused() { return paused; }, get period() { return period; }, get temple() { return showTemple; }, _pos: () => pos,
     _state: () => ({ pos, look, period, lang, zoneId, paused, layers: Object.assign({}, layers), mapMode, infoClosed, quality, life: life && life.counts(), ins: insStones.map(q => [q.ins.no, +q.x.toFixed(1), +q.z.toFixed(1), q.shown, q.approx ? 1 : 0]), signs: signs.length, plates: taps.filter(q => q.plate).length, routes: routeObjs.length,
       vis: { plates: taps.filter(q => q.plate && q.obj.visible).length, labels: signs.filter(q => q.layer === 'names' && layers.names).length, poi: signs.filter(q => q.layer === 'poi' && layers.poi).length, routes: routeObjs.filter(o => o.visible).length, inscr: taps.filter(q => q.ins && q.obj.visible).length, info: !!$('walkInfo') && $('walkInfo').style.display !== 'none', templeMark: signs.some(q => q.info.id === 'temple') },
       walker: av && { on: showAvatar, headYaw: av.head.rotation.y, headPitch: av.head.rotation.x, y: av.position.y, scale: av.scale.x } }) };

@@ -73,6 +73,16 @@
   try { lang = localStorage.getItem('gerizim-lang') || 'he'; } catch (e) { /* בלי אחסון — עברית */ }
   try { const q = new URLSearchParams(location.search).get('lang'); if (q) lang = q; } catch (e) { /* כתובת בלי פרמטרים */ }
   if (!UI[lang]) lang = 'he';
+  // מדיה, תיאורי מטיילים, מוזיקה והמשכן
+  Object.assign(UI.he, { inWalk: 'בסיור הרגלי כאן', perH: 'התקופה ההלניסטית', perP: 'התקופה הפרסית', perR: 'ימי הרצון', photosOf: 'תמונות: {p}', photosOfNote: 'אין תמונות של החלק הזה עצמו; אלה תמונות של האתר כולו.', more: '⋯ עוד', moreClose: '× פחות', introGloss: 'והר גריזים — בית אל, כל ימי חיינו', coach: 'גררו כדי לסובב · הקישו על שם של מקום · או התחילו ▶ סיור מודרך', w_stairs: 'סיור רגלי · השער התחתון', w_plaza: 'סיור רגלי · רחבת המזבח', w_city: 'סיור רגלי · הכניסה המערבית', w_areaA: 'סיור רגלי · הרובע המערבי', w_areaB: 'סיור רגלי · הרובע הדרומי', media: 'סרטונים וקישורים', mediaLinks: 'עוד תמונות וסרטונים באתרי המקור (צפייה שם בלבד)', video: 'סרטון', play: 'צפייה בסרטון', mk_current: 'תצלום עדכני', mk_archival: 'תצלום ארכיוני', mk_rendering: 'הדמיה', mk_drawing: 'ציור ארכיוני', mk_tourism: 'אתר תיירות', mk_article: 'כתבה', mk_blog: 'בלוג', mk_data: 'נתונים', 'mk_video-extra': 'סרטון', mk_source: 'מקור', mk_link: 'קישור',
+    travel: 'בעיני מטיילים', travelAll: 'הר גריזים בעיני מטיילים', travelIntro: 'מבקרים שכתבו על ההר, ממארק טוויין ואילך. בכל אחד נבדק במקור עצמו אם עלה להר, ראה אותו מרחוק או תיאר רק את שכם והסביבה.', tr_climbed: 'עלה להר', tr_seen: 'ראה את ההר מרחוק', tr_nablus_only: 'תיאר את שכם והסביבה', trSource: 'המקור', trQuote: 'מן המקור', trAt: 'בתחנה:', trVisit: 'ביקור', trPub: 'פרסום',
+    music: 'מוזיקת רקע', walkBtnMishkan: 'היכנסו אל המשכן — ימי הרצון', walkMishkan: 'אל המשכן', walkMishkanTip: 'ימי הרצון: כניסה אל חצר המשכן ואל אוהל מועד' });
+  Object.assign(UI.en, { inWalk: 'In the walking tour here', perH: 'Hellenistic period', perP: 'Persian period', perR: 'Days of Favour', photosOf: 'Photos: {p}', photosOfNote: 'There are no photos of this part itself; these are photos of the whole site.', more: '⋯ More', moreClose: '× Less', introGloss: 'And Mount Gerizim — Bethel, all the days of our life', coach: 'Drag to turn · tap a place name · or start ▶ the guided tour', w_stairs: 'Walk · the lower gate', w_plaza: 'Walk · the altar court', w_city: 'Walk · the western entrance', w_areaA: 'Walk · the western quarter', w_areaB: 'Walk · the southern quarter', media: 'Videos and links', mediaLinks: 'More photos and videos on their source sites (view there only)', video: 'Video', play: 'Watch the video', mk_current: 'Recent photo', mk_archival: 'Archival photo', mk_rendering: 'Rendering', mk_drawing: 'Archival drawing', mk_tourism: 'Tourism site', mk_article: 'Article', mk_blog: 'Blog', mk_data: 'Data', 'mk_video-extra': 'Video', mk_source: 'Source', mk_link: 'Link',
+    travel: 'Through travellers\' eyes', travelAll: 'Mount Gerizim through travellers\' eyes', travelIntro: 'Visitors who wrote about the mountain, from Mark Twain onwards. For each, the source itself was checked: did the writer climb the mountain, see it from afar, or describe only Nablus and its surroundings.', tr_climbed: 'Climbed the mountain', tr_seen: 'Saw the mountain from afar', tr_nablus_only: 'Described Nablus and its surroundings', trSource: 'Source', trQuote: 'From the source', trAt: 'At the station:', trVisit: 'visit', trPub: 'published',
+    music: 'Background music', walkBtnMishkan: 'Enter the Tabernacle — the Days of Favour', walkMishkan: 'To the Tabernacle', walkMishkanTip: 'Days of Favour: enter the court of the Tabernacle and the Tent of Meeting' });
+  Object.assign(UI.ar, { inWalk: 'في الجولة سيرًا هنا', perH: 'الفترة الهلنستية', perP: 'الفترة الفارسية', perR: 'أيام الرضوان', photosOf: 'صور: {p}', photosOfNote: 'لا صور لهذا الجزء نفسه؛ هذه صور الموقع كله.', more: '⋯ المزيد', moreClose: '× أقل', introGloss: 'وجبل جرزيم — بيت إيل، كل أيام حياتنا', coach: 'اسحب للتدوير · انقر على اسم مكان · أو ابدأ ▶ الجولة المرشدة', w_stairs: 'جولة سيرًا · البوابة السفلى', w_plaza: 'جولة سيرًا · ساحة المذبح', w_city: 'جولة سيرًا · المدخل الغربي', w_areaA: 'جولة سيرًا · الحيّ الغربي', w_areaB: 'جولة سيرًا · الحيّ الجنوبي', media: 'مقاطع وروابط', mediaLinks: 'مزيد من الصور والمقاطع في مواقعها الأصلية (للمشاهدة هناك فقط)', video: 'مقطع', play: 'مشاهدة المقطع', mk_current: 'صورة حديثة', mk_archival: 'صورة أرشيفية', mk_rendering: 'محاكاة', mk_drawing: 'رسم أرشيفي', mk_tourism: 'موقع سياحي', mk_article: 'مقال', mk_blog: 'مدوّنة', mk_data: 'بيانات', 'mk_video-extra': 'مقطع', mk_source: 'مصدر', mk_link: 'رابط',
+    travel: 'بعيون الرحّالة', travelAll: 'جبل جرزيم بعيون الرحّالة', travelIntro: 'زوّار كتبوا عن الجبل، من مارك توين فصاعدًا. وقد فُحص في المصدر نفسه لكل منهم: هل صعد الجبل، أم رآه من بعيد، أم وصف نابلس وما حولها فقط.', tr_climbed: 'صعد الجبل', tr_seen: 'رأى الجبل من بعيد', tr_nablus_only: 'وصف نابلس وما حولها', trSource: 'المصدر', trQuote: 'من المصدر', trAt: 'في المحطة:', trVisit: 'الزيارة', trPub: 'النشر',
+    music: 'موسيقى خلفية', walkBtnMishkan: 'ادخلوا إلى المسكن — أيام الرضوان', walkMishkan: 'إلى المسكن', walkMishkanTip: 'أيام الرضوان: الدخول إلى دار المسكن وخيمة الاجتماع' });
   const T = k => UI[lang][k];
   // שדה תוכן הוא {he,en,ar}; בהיעדר תרגום חוזרים לעברית
   const L = v => (v && typeof v === 'object') ? (v[lang] || v.he || '') : (v || '');
@@ -132,7 +142,7 @@
     if (WD) Object.keys(WD.starts).forEach(k => { const s = WD.starts[k], en = WD.toEN(s.x, s.z); o[k] = { en, bearing: ((s.yaw * 180 / Math.PI + WD.north) % 360 + 360) % 360 }; });
     return o;
   })();
-  const WALK_FROM = { precinct: 'plaza', persian: 'plaza', stones12: 'plaza', secitadel: 'plaza', eaststairs: 'stairs', courts: 'stairs', westentrance: 'city', city: 'city', areaP: 'city', eternal: 'city', areaA: 'areaA', areaB: 'areaB' };
+  const WALK_FROM = { precinct: 'plaza', persian: 'plaza', stones12: 'plaza', secitadel: 'plaza', eaststairs: 'stairs', courts: 'stairs', westentrance: 'city', city: 'city', areaP: 'city', eternal: 'mishkan', areaA: 'areaA', areaB: 'areaB' };
   const VER = (() => { try { return (document.currentScript.src.split('?')[1] || ''); } catch (e) { return ''; } })();
   let walkScripts = null;
   const loadScript = src => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src + (VER ? '?' + VER : ''); s.onload = ok; s.onerror = bad; document.head.appendChild(s); });
@@ -176,7 +186,7 @@
         el._c = at(st.en[0], st.en[1]);
         new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -9] }).setLngLat(el._c).addTo(map);
       }
-      el.innerHTML = WALK_ICON + '<span>' + esc(T('walk')) + '</span>'; el.title = T('walkTip'); el.dir = T('dir'); el._w = 0;
+      el.innerHTML = WALK_ICON + '<span>' + esc(T(k === 'mishkan' ? 'walkMishkan' : ('w_' + k)) || T('walk')) + '</span>'; el.setAttribute('aria-label', T(k === 'mishkan' ? 'walkMishkan' : ('w_' + k)) || T('walk')); el.title = T(k === 'mishkan' ? 'walkMishkanTip' : 'walkTip'); el.classList.toggle('mishkan', k === 'mishkan'); el.dir = T('dir'); el._w = 0;
     });
   }
 
@@ -216,6 +226,65 @@
       '<p class="plannote">' + esc(T('planNote')) + '</p>', list.length);
   }
 
+
+  /* ---------- סרטונים וקישורים: סרטון מוטמע בנגן הרשמי שלו, וקישורים לתמונות שמותר רק לצפות בהן ---------- */
+  const MEDIA = (window.GERIZIM_MEDIA || {}).places || {};
+  // תמונות חופשיות נוספות מן המחקר מצטרפות לתמונות המקום
+  Object.keys(MEDIA).forEach(id => { const ph = MEDIA[id].photos; if (ph && ph.length) { IMAGES[id] = IMAGES[id] || {}; IMAGES[id].photos = (IMAGES[id].photos || []).concat(ph); } });
+  let vidShown = [];
+  function mediaSection(p) {
+    const m = MEDIA[p.id]; vidShown = m && m.videos ? m.videos : [];
+    const links = m && m.links ? m.links : [];
+    if (!vidShown.length && !links.length) return '';
+    const vids = vidShown.map((v, i) => '<button class="vid" data-video="' + i + '"><b>▶ ' + esc(T('video')) + '</b><span>' + esc(L(v.cap) || v.title) + '</span><i>' + esc([v.channel, v.year].filter(Boolean).join(' · ')) + '</i></button>').join('');
+    const lk = links.length ? '<p class="mlh">' + esc(T('mediaLinks')) + '</p><ul class="flk">' + links.map(it => '<li><a href="' + esc(it.url) + '" target="_blank" rel="noopener"><b>' + esc((it.kind && T('mk_' + it.kind)) || T('mk_link')) + '</b><span dir="auto">' + esc(L(it.desc)) + '</span>' + (it.site && L(it.desc).indexOf(it.site) < 0 ? '<i dir="auto">' + esc(it.site) + '</i>' : '') + '</a></li>').join('') + '</ul>' : '';
+    return sec('media', T('media'), vids + lk, vidShown.length + links.length);
+  }
+  function videoBox(i) {
+    const v = vidShown[i]; if (!v) return;
+    let box = $('vbox');
+    if (!box) {
+      box = document.createElement('div'); box.id = 'vbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+      box.innerHTML = '<button id="vbX" aria-label="">✕</button><div class="vf"><iframe id="vbF" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div id="vbCap"></div>';
+      document.body.appendChild(box);
+      const close = () => { box.classList.remove('open'); $('vbF').src = 'about:blank'; if (window.GerizimAudio) window.GerizimAudio.duck(false); };
+      $('vbX').onclick = close; box.onclick = e => { if (e.target === box) close(); };
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && box.classList.contains('open')) close(); });
+    }
+    $('vbX').setAttribute('aria-label', T('close'));
+    $('vbF').src = v.embed + (v.embed.indexOf('?') < 0 ? '?' : '&') + 'autoplay=1&rel=0';
+    $('vbF').title = v.title || T('video');
+    $('vbCap').innerHTML = '<b>' + esc(L(v.cap) || v.title) + '</b><span>' + esc([v.channel, v.year].filter(Boolean).join(' · ')) + ' · <a href="' + esc(v.watch) + '" target="_blank" rel="noopener">' + esc(v.site || 'YouTube') + '</a></span>';
+    box.classList.add('open');
+    if (window.GerizimAudio) window.GerizimAudio.duck(true);          // בזמן הסרטון המוזיקה יורדת
+  }
+
+  /* ---------- מה מתואר בסיור הרגלי במקום הזה: הממצאים לפי החפירה, אזור אחר אזור ---------- */
+  function walkZonesSection(p) {
+    const WD = window.GERIZIM_WALK; if (!WD || !WD.zones) return '';
+    const seen = {}, PER = { h: T('perH'), p: T('perP'), r: T('perR') };
+    const list = WD.zones.filter(z => z.place === p.id && !z.tl && z.per !== 'none' && (z.per !== 'r' || z.id === 'rapproach' || z.id === 'rholy') && z.text && !seen[z.id + (z.per || '')] && (seen[z.id + (z.per || '')] = 1));
+    if (!list.length) return '';
+    return sec('walkz', T('inWalk'), list.map(z => '<div class="wz"><b>' + esc(L(z.name)) + '</b>' + (z.per && PER[z.per] ? '<i>' + esc(PER[z.per]) + '</i>' : '') + '<p>' + esc(L(z.text)) + '</p></div>').join('') +
+      (WALK_FROM[p.id] && !inWalk() ? '<button class="walkbtn" data-walkz="1">' + WALK_ICON + esc(T(WALK_FROM[p.id] === 'mishkan' ? 'walkBtnMishkan' : 'walkBtn')) + '</button>' : ''), list.length);
+  }
+
+  /* ---------- הר גריזים בעיני מטיילים ---------- */
+  const TRAVEL = window.GERIZIM_TRAVEL || [];
+  const trStation = e => e.station === 'passover' ? 'pesach' : e.station;
+  function travelItem(e, withPlace) {
+    const yr = [e.visit_year ? T('trVisit') + ' ' + e.visit_year : '', e.pub_year ? T('trPub') + ' ' + e.pub_year : ''].filter(Boolean).join(' · ');
+    const q = e.quote && e.quote.orig ? '<blockquote dir="auto">' + esc(e.quote.orig) + (lang === 'he' && e.quote.he ? '<i dir="rtl">' + esc(e.quote.he) + '</i>' : lang === 'ar' && e.quote.ar ? '<i dir="rtl">' + esc(e.quote.ar) + '</i>' : e.quote.en && lang !== 'he' ? '<i>' + esc(e.quote.en) + '</i>' : '') + (e.quote.page ? '<cite>' + esc(e.quote.page) + '</cite>' : '') + '</blockquote>' : '';
+    const st = trStation(e), place = withPlace && byId[st] ? '<div class="trat">' + esc(T('trAt')) + ' ' + linkTo(st) + '</div>' : '';
+    return '<div class="trv"><div class="trh"><b>' + esc(L(e.writer)) + '</b><em class="c-' + esc(e.did_climb) + '">' + esc(T('tr_' + e.did_climb)) + '</em></div>' +
+      '<div class="trt"><i>' + esc((lang === 'ar' ? (e.title.ar || e.title.en) : L(e.title)) || e.title.orig) + '</i>' + (yr ? ' · ' + esc(yr) : '') + '</div>' +
+      '<p>' + esc(L(e.summary)) + '</p>' + q + place + '<a class="trsrc" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(T('trSource')) + ' ↗</a></div>';
+  }
+  function travelSection(p) {
+    const list = TRAVEL.filter(e => trStation(e) === p.id);
+    if (!list.length) return '';
+    return sec('travel', T('travel'), list.map(e => travelItem(e, false)).join(''), list.length);
+  }
 
   /* ---------- צילומי אורי אורחוף: התמונות מוצגות ברשותו, ושמו כתוב על כל אחת; סרטונים נפתחים ב-Flickr ---------- */
   let flkShown = [];
@@ -286,12 +355,12 @@
       dialDragged = false;
       clearTimeout(dialOff);
       dial.classList.add('on');            // האצבע על החוגה: היא נעשית אטומה
-      try { dial.setPointerCapture(e.pointerId); } catch (err) { /* דפדפן ישן — הגרירה עובדת גם בלי */ }
     });
     dial.addEventListener('pointermove', e => {
       if (!drag) return;
       if (!dialDragged && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 5) return;
-      if (!dialDragged) { dialDragged = true; introEnd(true); map.stop(); }
+      // רק כשהאצבע באמת גוררת היא "נתפסת" בחוגה; הקשה קצרה נשארת אצל האות שנלחצה
+      if (!dialDragged) { dialDragged = true; introEnd(true); map.stop(); try { dial.setPointerCapture(e.pointerId); } catch (err) { /* דפדפן ישן */ } }
       map.setBearing(drag.b - (ang(e) - drag.a));
     });
     // אחרי שהאצבע עוזבת החוגה נשארת גלויה עוד רגע, ואז חוזרת לשקיפות
@@ -531,6 +600,10 @@
   }
 
   map.on('load', () => {
+    setTimeout(() => {
+      const at2 = document.querySelector('.maplibregl-ctrl-attrib');
+      if (at2) { at2.classList.remove('maplibregl-compact-show'); at2.removeAttribute('open'); }
+    }, 2000);
     try {
       map.setSky({
         'sky-color': '#8fb8e0', 'horizon-color': '#dfe9f2', 'fog-color': '#e6ebee',
@@ -585,8 +658,17 @@
   let introDone = false, introTimer = null;
   const afterIntro = [];
   const introGone = () => $('intro').style.display === 'none';
+  function coach(on) {
+    let seen = false; try { seen = localStorage.getItem('gerizim-coach') === '1'; } catch (e) { /* בלי אחסון */ }
+    if (on && seen) return;
+    $('coachT').textContent = T('coach'); $('coachX').setAttribute('aria-label', T('close'));
+    $('coach').classList.toggle('on', !!on);
+    if (!on) try { localStorage.setItem('gerizim-coach', '1'); } catch (e) { /* בלי אחסון */ }
+  }
+  $('coachX').onclick = () => coach(false);
   function introHide() {
     $('intro').style.display = 'none';
+    setTimeout(() => { if (!state.sel && state.tourAt < 0 && !state.listing) coach(true); }, 600);
     afterIntro.splice(0).forEach(fn => fn());
   }
   function introEnd(fast) {
@@ -611,7 +693,7 @@
   const introStarted = () => $('intro').classList.contains('show');
   function intro() {
     const el = $('intro');
-    $('introSam').textContent = G.introText;
+    $('introSam').textContent = G.introText; $('introGloss').textContent = T('introGloss');
     const start = () => {
       if (introDone) return;
       el.classList.add('show');
@@ -690,7 +772,7 @@
   const big = im => im.f || (im.w >= 1280 ? sized(im, 1280) : im.w >= 960 ? sized(im, 960) : im.w >= 500 ? sized(im, 500) : im.t);
   function strip(list, key) {
     return '<div class="strip">' + list.map((im, i) =>
-      '<button class="ph" data-set="' + key + '" data-i="' + i + '"><img loading="lazy" src="' + esc(sized(im, 330)) + '" alt="' + esc(L(im.cap) || '') + '"></button>').join('') + '</div>';
+      '<button class="ph" data-set="' + key + '" data-i="' + i + '"><img loading="lazy" src="' + esc(sized(im, 330)) + '" alt="' + esc(L(im.cap) || '') + '">' + (im.k && im.k !== 'current' ? '<em class="mk">' + esc(T('mk_' + im.k)) + '</em>' : '') + '</button>').join('') + '</div>';
   }
   const linkTo = id => '<button class="lnk" data-go="' + id + '">' +
     (byId[id].parent && !byId[id].nomap ? '<b class="no">' + partNo(byId[id]) + '</b>' : '<i style="background:' + esc(byId[id].color) + '"></i>') +
@@ -712,17 +794,22 @@
     if (p.parent) h += '<div class="crumb">' + esc(T('partOf')) + ' ' + linkTo(p.parent) + '</div>';
     // בטלפון הכרטיס קצר: שם, סוג והסבר. תמונות והרחבות נפתחות רק כשמבקשים אותן
     const phone = isPhone();
+    // לחלק של אתר שאין לו תמונות משלו: תמונות האתר כולו, וכך כתוב מעליהן
+    const FBP = { areaA: 'city', areaB: 'city', areaP: 'city', areaE: 'city', areaT: 'city', areaK: 'city', eaststairs: 'precinct', courts: 'precinct', secitadel: 'precinct', westentrance: 'precinct', persian: 'precinct', northenclosure: 'church' };
+    const fbId = !(im.photos && im.photos.length) && FBP[p.id], fbPh = fbId ? ((IMAGES[fbId] || {}).photos || []) : [];
     const hasPhotos = im.photos && im.photos.length;
     if (hasPhotos && !phone) h += strip(im.photos, 'photos');
     h += '<p>' + esc(L(p.summary)) + '</p>';
-    if (WALK_FROM[p.id] && !walking) h += '<button class="walkbtn" id="cardWalk">' + WALK_ICON + esc(T('walkBtn')) + '</button>';
+    if (WALK_FROM[p.id] && !walking) h += '<button class="walkbtn" id="cardWalk">' + WALK_ICON + esc(T(WALK_FROM[p.id] === 'mishkan' ? 'walkBtnMishkan' : 'walkBtn')) + '</button>';
     if (p.geo) h += '<p class="farline">' + esc(geoLine(p.geo)) + '</p>';
     if (p.far) { const dd = distDir(p); h += '<p class="farline">' + esc(T(p.unseen ? 'farAway' : 'far').replace('{d}', dd.d).replace('{c}', dd.c)) + '</p>'; }
     if (p.nomap) h += '<p class="farline">' + esc(T('nomap')) + '</p>';
     if (hasPhotos && phone) h += sec('photos', T('photos'), strip(im.photos, 'photos'), im.photos.length);
+    if (!hasPhotos && fbPh.length) h += sec('photos', T('photosOf').replace('{p}', L(byId[fbId].name)), '<p class="farline">' + esc(T('photosOfNote')) + '</p>' + strip(fbPh, 'fb'), fbPh.length);
     if (p.route) h += sec('route', T('route'), '<ol class="route">' + p.route.map(r =>
       '<li>' + (byId[r.id] ? linkTo(r.id) : '') + (r.note ? '<span>' + esc(L(r.note)) + '</span>' : '') + '</li>').join('') + '</ol>', p.route.length);
     h += planSection(p);
+    h += walkZonesSection(p);
     if (parts.length) h += sec('parts', T('parts'), '<div class="parts">' + parts.map(c => linkTo(c.id)).join('') + '</div>', parts.length);
     if (p.strata.length) h += sec('strata', T('strata'), p.strata.map(s =>
       '<div class="stratum' + (s.period === state.period ? ' hit' : '') + '">' +
@@ -737,6 +824,8 @@
     }
     h += insSection(p);
     h += flickrSection(p);
+    h += mediaSection(p);
+    h += travelSection(p);
     h += '<div class="nav' + (touring ? ' on' : '') + '">' +
         '<button id="tourPrev">' + esc(T('prev')) + '</button>' +
         '<em>' + esc(T('station').replace('{i}', state.tourAt + 1).replace('{n}', G.tour.length)) + '</em>' +
@@ -752,8 +841,10 @@
       $('tourNext').onclick = () => tourGo(state.tourAt + 1);
     }
     card.querySelectorAll('[data-go]').forEach(b => { b.onclick = () => { endTour(); select(b.dataset.go); }; });
-    card.querySelectorAll('.ph').forEach(b => { b.onclick = () => lightbox(b.dataset.set === 'flk' ? flkShown : im[b.dataset.set], +b.dataset.i); });
+    card.querySelectorAll('.ph').forEach(b => { b.onclick = () => lightbox(b.dataset.set === 'flk' ? flkShown : b.dataset.set === 'fb' ? fbPh : im[b.dataset.set], +b.dataset.i); });
+    card.querySelectorAll('[data-video]').forEach(b => { b.onclick = () => videoBox(+b.dataset.video); });
     if ($('cardWalk')) $('cardWalk').onclick = () => enterWalk(WALK_FROM[p.id]);
+    card.querySelectorAll('[data-walkz]').forEach(b => { b.onclick = () => enterWalk(WALK_FROM[p.id]); });
     // מה שהמשתמש פתח או סגר נשאר כך גם בכרטיסים הבאים
     card.querySelectorAll('details.sec').forEach(d => { d.ontoggle = () => { state.exp[d.dataset.sec] = d.open; }; });
   }
@@ -782,8 +873,19 @@
       h += '<h3>' + esc(L(g.name)) + '</h3><div class="parts col">' + top.map(p => linkTo(p.id) +
         (kids(p.id).length ? '<div class="sub">' + kids(p.id).map(c => linkTo(c.id)).join('') + '</div>' : '')).join('') + '</div>';
     });
+    if (TRAVEL.length) h += '<h3>' + esc(T('travel')) + '</h3><div class="parts col"><button class="lnk" id="travelOpen"><i style="background:#b98a4a"></i>' + esc(T('travelAll')) + ' (' + TRAVEL.length + ')</button></div>';
     card.innerHTML = h;
     card.classList.add('open'); card.scrollTop = 0;
+    if ($('travelOpen')) $('travelOpen').onclick = renderTravel;
+    $('cardX').onclick = () => { state.listing = false; renderCard(); };
+    card.querySelectorAll('[data-go]').forEach(b => { b.onclick = () => { state.listing = false; select(b.dataset.go); }; });
+  }
+
+  function renderTravel() {
+    const card = $('card');
+    let h = '<button class="x" id="cardX" aria-label="' + esc(T('close')) + '">✕</button><div class="kind">' + esc(T('travel')) + '</div><h2>' + esc(T('travelAll')) + '</h2><p>' + esc(T('travelIntro')) + '</p>';
+    h += TRAVEL.map(e => travelItem(e, true)).join('');
+    card.innerHTML = h; card.classList.add('open'); card.scrollTop = 0;
     $('cardX').onclick = () => { state.listing = false; renderCard(); };
     card.querySelectorAll('[data-go]').forEach(b => { b.onclick = () => { state.listing = false; select(b.dataset.go); }; });
   }
@@ -794,7 +896,7 @@
     lb = { list, i };
     const im = list[i];
     $('lbImg').src = big(im);
-    $('lbCap').innerHTML = (L(im.cap) ? '<b>' + esc(L(im.cap)) + '</b>' : '') +
+    $('lbCap').innerHTML = (L(im.cap) ? '<b>' + esc(L(im.cap)) + '</b>' : '') + (im.k ? '<em class="mk">' + esc(T('mk_' + im.k)) + (im.y ? ' · ' + esc(im.y) : '') + '</em>' : '') +
       '<span>' + esc(T('photoBy')) + ': ' + esc(im.by || '—') + ' · ' + esc(T('licence')) + ': ' + esc(im.lic || '—') +
       ' · <a href="' + esc(im.page) + '" target="_blank" rel="noopener">' + esc(im.src || T('source')) + '</a></span>';
     $('lbPrev').style.visibility = $('lbNext').style.visibility = list.length > 1 ? 'visible' : 'hidden';
@@ -840,8 +942,10 @@
         bearing: dd.brg, duration, essential: true, curve: 1, padding: freePad() });
       return;
     }
+    let brg = p.view ? p.view.bearing : map.getBearing();
+    if (state.tourAt >= 0) { const cur = map.getBearing(), d = ((brg - cur + 540) % 360) - 180; if (Math.abs(d) > 60) brg = cur + Math.sign(d) * 60; }
     map.flyTo({ center: clampPt(p.focus), zoom: (p.view ? p.view.zoom : 17) + zoomBoost,
-      pitch: p.view ? p.view.pitch : 55, bearing: p.view ? p.view.bearing : map.getBearing(),
+      pitch: p.view ? p.view.pitch : 55, bearing: brg,
       duration, essential: true, curve: 1, padding: freePad() });
   }
 
@@ -865,6 +969,7 @@
     if (i < 0) i = 0;
     if (i >= G.tour.length) { endTour(); select(null); goHome(); return; }
     state.tourAt = i;
+    tourSound(true);
     $('btnTour').classList.add('on');
     $('btnTour').textContent = T('endTour');
     select(G.tour[i], true);
@@ -877,15 +982,21 @@
       Math.abs(map.getPitch() - h.pitch) < 2 && Math.abs(((map.getBearing() - h.bearing + 540) % 360) - 180) < 2;
   }
   function startTour() {
-    endTour(); select(null);
+    if ($('coach').classList.contains('on')) coach(false);
+    endTour(); select(null); tourSound(true);
     $('btnTour').classList.add('on');
     $('btnTour').textContent = T('endTour');
     if (atHome()) { introEnd(true); tourWait = setTimeout(() => { tourWait = null; tourGo(0); }, 350); return; }
     goHome();
     tourWait = setTimeout(() => { tourWait = null; tourGo(0); }, 2400 + 900);
   }
+  function tourSound(on) {
+    document.body.classList.toggle('touring', !!on);
+    if (window.GerizimAudio) window.GerizimAudio.music(!!on);
+  }
   function endTour() {
     if (tourWait) { clearTimeout(tourWait); tourWait = null; }
+    tourSound(false);
     state.tourAt = -1;
     $('btnTour').classList.remove('on');
     $('btnTour').textContent = T('tour');
@@ -901,6 +1012,9 @@
     else startTour();
   };
   $('btnHome').onclick = () => { endTour(); select(null); goHome(); };
+  if (window.GerizimAudio) window.GerizimAudio.musicButton($('btnMusic'));
+  function moreText() { const on = document.body.classList.contains('more'); $('btnMore').textContent = T(on ? 'moreClose' : 'more'); $('btnMore').setAttribute('aria-expanded', on ? 'true' : 'false'); }
+  $('btnMore').onclick = () => { document.body.classList.toggle('more'); moreText(); barHeight(); };
   $('btnList').onclick = () => {
     if (!introStarted()) map.jumpTo(home());
     endTour(); state.sel = null; state.open = null; state.listing = !state.listing; repaint();
@@ -948,7 +1062,7 @@
     $('btnRecon').textContent = T('recon'); $('btnRecon').title = T('reconTip'); reconApply();
     orientText();
     if (state.orient) labels();
-    $('btnPick').textContent = T('pick');
+    $('btnPick').textContent = T('pick'); moreText();
     $('lbX').setAttribute('aria-label', T('close')); $('lbPrev').setAttribute('aria-label', T('prev')); $('lbNext').setAttribute('aria-label', T('next'));
     buildPeriods();
     buildDial();

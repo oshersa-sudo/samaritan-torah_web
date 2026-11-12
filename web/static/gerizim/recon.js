@@ -39,7 +39,7 @@
     const MAT = { plaster: STONE, field: FIELD, roof: ROOF, bigstone: BIG };
     const per = s => s.per === 'h' ? 'h' : s.per === 'p' ? 'p' : 'hp';
     W.solids.forEach(s => {
-      if (s.rampTo || !s.h) return;
+      if (s.rampTo || !s.h || s.tl === 1 || s.hide || s.gone || s.per === 'r' || s.per === 'none') return;     // המקדש המשוער, המשכן וגופי חסימה אינם בשכבה הזאת
       const [x1, z1, x2, z2] = s.box, g = W.terrain((x1 + x2) / 2, (z1 + z2) / 2);
       const top = s.y0 + s.h - g, base = Math.max(0, s.y0 - g);
       if (top < 0.4) return;
@@ -48,6 +48,7 @@
     // המדרגות והריצופים: לוח דק לכל מדרגה, כך שהגרם נראה מדורג על המדרון
     W.floors.forEach(f => {
       const [x1, z1, x2, z2] = f.box, p = per(f);
+      if (f.per === 'r' || f.tl === 1) return;
       if (f.ramp && f.steps) {
         const r = f.ramp, n = Math.min(f.steps, 14);
         for (let i = 0; i < n; i++) {

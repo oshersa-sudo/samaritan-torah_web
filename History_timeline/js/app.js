@@ -758,8 +758,11 @@
   goLandscape();              /* works only while a tap is still fresh; harmless otherwise */
   drawRailTicks();
   render();
-  /* פתיחה: מעט לפני הכניסה לארץ כנען */
-  goToYear(-1700, 'start');
+  /* פתיחה: מעט לפני הכניסה לארץ כנען; קישור מבחוץ (?ev=e011) פותח ערך מסוים */
+  var deep = /[?&]ev=([a-z0-9]+)/i.exec(location.search);
+  var deepEv = deep && EVENTS.filter(function (x) { return x.id === deep[1]; })[0];
+  goToYear(deepEv ? deepEv.year - 40 : -1700, 'start');
+  if (deepEv) setTimeout(function () { openEvent(deepEv.id); }, 60);
 
   /* המידות האמיתיות של אזור המסלולים ידועות רק אחרי הפריסה הראשונה —
      לכן ציור חוזר בפריים הבא, ובכל שינוי גודל של אזור הציר. */
@@ -774,7 +777,7 @@
   /* העזרה נפתחת מעצמה רק בביקור הראשון */
   var seen = false;
   try { seen = localStorage.getItem('timelineHelpSeen') === '1'; } catch (e) { /* אין אחסון */ }
-  if (!seen) {
+  if (!seen && !deepEv) {
     el.help.hidden = false;
     try { localStorage.setItem('timelineHelpSeen', '1'); } catch (e) { /* אין אחסון */ }
   }
