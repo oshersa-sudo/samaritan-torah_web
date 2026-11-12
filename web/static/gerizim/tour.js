@@ -133,7 +133,7 @@
     if (!st) return;
     const back = { center: [c0.lng, c0.lat], zoom: map.getZoom(), pitch: map.getPitch(), bearing: map.getBearing() };
     introEnd(true); endTour(); state.listing = false; state.sel = null; state.open = null; renderCard(); repaint();
-    if (!walkScripts) walkScripts = (window.GERIZIM_WALK ? Promise.resolve() : loadScript('walk_data.js')).then(() => loadScript('walk_people.js')).then(() => loadScript('walk.js'));
+    if (!walkScripts) walkScripts = (window.GERIZIM_WALK ? Promise.resolve() : loadScript('walk_data.js')).then(() => loadScript('walk_people.js')).then(() => loadScript('walk_far.js')).then(() => loadScript('walk_life.js')).then(() => loadScript('walk.js'));
     const mapEl = $('map');
     map.stop();
     map.flyTo({ center: at(st.en[0], st.en[1]), zoom: Math.min(map.getMaxZoom(), 19.2), pitch: 80, bearing: st.bearing, duration: 2300, essential: true, curve: 1 });
@@ -141,7 +141,7 @@
     const arrived = new Promise(r => setTimeout(r, 2350));
     Promise.all([walkScripts, arrived]).then(() => window.GerizimWalk.enter({
       start: key, lang,
-      onPlace: id => select(id),
+      onPlace: id => select(id), onCloseCard: () => select(null), onLang: code => setLang(code),
       // תצלומים אמיתיים של המקום: מן האוסף החופשי, ומצילומי אורי אורחוף
       photosOf: id => {
         // למקום שאין לו תצלומים משלו מוצגים תצלומי המתחם או שרידי העיר בכלל
@@ -520,9 +520,11 @@
   function renderCard() {
     const card = $('card');
     if (state.listing) return renderList();
-    const p = byId[state.sel];
+    const p = byId[state.sel], walking = inWalk();
+    // כרטיס שנפתח מתוך הסיור הרגלי מוצג מעליו; ההליכה נעצרת עד שסוגרים אותו, והמבקר נשאר במקומו
+    card.classList.toggle('inwalk', walking); if (walking) window.GerizimWalk.pause(!!p);
     if (!p) { card.classList.remove('open'); return; }
-    const touring = state.tourAt >= 0;
+    const touring = state.tourAt >= 0 && !walking;
     const im = IMAGES[p.id] || {};
     const parts = kids(p.id);
     let h = '<button class="x" id="cardX" aria-label="' + esc(T('close')) + '">✕</button>' +
@@ -534,7 +536,7 @@
     const hasPhotos = im.photos && im.photos.length;
     if (hasPhotos && !phone) h += strip(im.photos, 'photos');
     h += '<p>' + esc(L(p.summary)) + '</p>';
-    if (WALK_FROM[p.id]) h += '<button class="walkbtn" id="cardWalk">' + WALK_ICON + esc(T('walkBtn')) + '</button>';
+    if (WALK_FROM[p.id] && !walking) h += '<button class="walkbtn" id="cardWalk">' + WALK_ICON + esc(T('walkBtn')) + '</button>';
     if (p.geo) h += '<p class="farline">' + esc(geoLine(p.geo)) + '</p>';
     if (p.far) { const dd = distDir(p); h += '<p class="farline">' + esc(T(p.unseen ? 'farAway' : 'far').replace('{d}', dd.d).replace('{c}', dd.c)) + '</p>'; }
     if (p.nomap) h += '<p class="farline">' + esc(T('nomap')) + '</p>';
@@ -655,6 +657,7 @@
       duration, essential: true, curve: 1, padding: freePad() });
   }
 
+  const inWalk = () => !!(window.GerizimWalk && window.GerizimWalk.active);
   function select(id, slow) {
     const started = introStarted();
     state.listing = false;
@@ -662,7 +665,7 @@
     const p = byId[id];
     state.open = p ? (p.parent || (kids(id).length ? id : null)) : null;
     repaint();
-    if (p) flyToPlace(p, slow);
+    if (p && !inWalk()) flyToPlace(p, slow);
     else if (!started && map.getPitch() < 50) map.jumpTo(home());
     // המצלמה כבר בדרך; הכרטיס עצמו נפתח רק אחרי שכותרת הפתיחה נמוגה
     whenIntroGone(() => { if (state.sel === id && !state.listing) renderCard(); });
@@ -750,21 +753,23 @@
     $('btnList').textContent = T('list');
     $('btnRelief').textContent = T('relief');
     $('btnPick').textContent = T('pick');
+    $('lbX').setAttribute('aria-label', T('close')); $('lbPrev').setAttribute('aria-label', T('prev')); $('lbNext').setAttribute('aria-label', T('next'));
     buildPeriods();
     buildDial();
     buildWalkPins();
     barHeight();
     PLACES.forEach(p => { if (p._pin) { p._pin.textContent = pinText(p); p._pin.title = L(p.name); p._pin.dir = T('dir'); } });
     [...document.querySelectorAll('#langs button')].forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+    if (window.GerizimWalk && window.GerizimWalk.setLang) window.GerizimWalk.setLang(lang, { scripts: T('scr'), insNo: T('insNo') });
     renderCard();
   }
-  [...document.querySelectorAll('#langs button')].forEach(b => {
-    b.onclick = () => {
-      lang = b.dataset.lang;
-      try { localStorage.setItem('gerizim-lang', lang); } catch (e) { /* לא נשמר — לא נורא */ }
-      applyLang();
-    };
-  });
+  function setLang(code) {
+    if (!UI[code]) return;
+    lang = code;
+    try { localStorage.setItem('gerizim-lang', lang); } catch (e) { /* לא נשמר — לא נורא */ }
+    applyLang();
+  }
+  [...document.querySelectorAll('#langs button')].forEach(b => { b.onclick = () => setLang(b.dataset.lang); });
   applyLang();
 
   /* ---------- סימון נקודה: לחיצה מחזירה קואורדינטות ---------- */

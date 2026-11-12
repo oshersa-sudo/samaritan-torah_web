@@ -72,6 +72,22 @@
   /* ---------- גופים בנויים ---------- */
   const solids = [];
   const S = (n1, n2, e1, e2, h, mat, per, y0, extra) => solids.push(Object.assign({ box: nb(n1, n2, e1, e2), h, mat, per, y0: y0 || 0 }, extra || {}));
+  /* חדר שאפשר להיכנס אליו: קירות, פתח באחד מהם, תקרה, ומעליה (אם יש) קומה שנייה.
+     מהלך הקירות ומידות החדר מן החפירה; גובה התקרה, הפתח המדויק והריהוט משוערים, לפי מבנים דומים מן התקופה. */
+  function room(id, n1, n2, e1, e2, y, o) {
+    const t = o.t || 0.6, hC = o.ceil || 3.3, d = o.door, per = o.per || H, mat = o.mat || 'plaster', y0 = y - 0.5, hW = hC + 0.5;
+    const wall = (a1, a2, c1, c2) => { if (a2 - a1 > 0.05 && c2 - c1 > 0.05) S(a1, a2, c1, c2, hW, mat, per, y0); };
+    const strip = side => side === 's' ? [n1, n1 + t, e1, e2] : side === 'n' ? [n2 - t, n2, e1, e2] : side === 'w' ? [n1, n2, e1, e1 + t] : [n1, n2, e2 - t, e2];
+    for (const side of ['s', 'n', 'w', 'e']) {
+      const b = strip(side);
+      if (!d || d.side !== side) { wall(b[0], b[1], b[2], b[3]); continue; }
+      if (side === 's' || side === 'n') { wall(b[0], b[1], b[2], d.a); wall(b[0], b[1], d.b, b[3]); S(b[0], b[1], d.a, d.b, hC - 2.25, mat, per, y + 2.25); F(id + 'door', b[0], b[1], d.a, d.b, { y, per, mat: 'pave' }); }
+      else { wall(b[0], d.a, b[2], b[3]); wall(d.b, b[1], b[2], b[3]); S(d.a, d.b, b[2], b[3], hC - 2.25, mat, per, y + 2.25); F(id + 'door', d.a, d.b, b[2], b[3], { y, per, mat: 'pave' }); }
+    }
+    S(n1, n2, e1, e2, 0.3, 'roof', per, y + hC, { shed: true });                                   // התקרה
+    if (o.top) S(n1, n2, e1, e2, o.top, mat, per, y + hC + 0.3, { roof: 'flat' });                 // הקומה שמעל
+    F(id, n1 + t, n2 - t, e1 + t, e2 - t, { y, per, mat: 'pave', room: true });
+  }
   const WALL = 7.5;                              // גובה משוער של חומות המתחם מעל הרחבה
 
   // ---- החומות ההלניסטיות: אבנים גדולות, בליטות ושקעים, שלוש שכבות טיח לבן ----
@@ -124,7 +140,8 @@
   S(86, 96, 108, 121.5, 5, 'plaster', H, -15.5, { roof: 'flat', house: true, shops: 'e' });
   // ---- המצודה הדרום-מזרחית: 24 על 25 מ', חצר 9.7 על 16 מ', חדר אירוח, תאים תת-קרקעיים ----
   S(-34, -30, 72, 97, 7, 'plaster', H, 0, { roof: 'flat' });
-  S(-30, -9, 72, 78, 7, 'plaster', H, 0, { roof: 'flat', house: true, shops: 'e' });      // חדר האירוח, 5.2 על 17.5 מ'
+  room('citroom', -28.7, -10.4, 72, 78, 0, { t: 0.4, door: { side: 'e', a: -23.3, b: -21.7 }, top: 3.4 });   // חדר האירוח, 5.2 על 17.5 מ', נפתח אל החצר
+  S(-30, -28.7, 72, 78, 7, 'plaster', H, 0, { roof: 'flat' }); S(-10.4, -9, 72, 78, 7, 'plaster', H, 0, { roof: 'flat' });
   S(-30, -9, 87.7, 97, 7, 'plaster', H, 0, { roof: 'flat' });                              // התאים שבמזרח
   S(-14, -9, 78, 80, 7, 'plaster', H, 0, { roof: 'flat' });
   S(-14, -9, 83, 87.7, 7, 'plaster', H, 0, { roof: 'flat' });
@@ -498,8 +515,10 @@
   const SG = (n1, n2, e1, e2, h, mat, o) => built(n1, n2, e1, e2, h, o, mat);
 
   SC(-123, -83, 32.5, 62, 6.5, { shops: 'w' });                               // מבנה הציבור J, כ-30 על 40 מ'
-  SC(-208, -170, 5.7, 12, 7.2);                                               // A-I: האגף המערבי, שתי קומות
-  SC(-185.2, -170, 12, 28.7, 7.2, { shops: 's' });
+  room('abath', -192, -187.5, 7.2, 12, YA, { door: { side: 'e', a: -190.65, b: -189.05 }, top: 3.4 });               // A-I: חדר רחצה באגף המערבי
+  SC(-208, -192, 5.7, 12, 7.2, { level: YA }); SC(-187.5, -170, 5.7, 12, 7.2, { level: YA }); SC(-192, -187.5, 5.7, 7.2, 7.2, { level: YA });   // שאר האגף המערבי, שתי קומות
+  room('aroom', -185.2, -178.7, 12, 24.4, YA, { door: { side: 's', a: 14.7, b: 16.2 }, top: 3.4 });          // חדר האירוח הגדול, 5.3 על 11.2 מ'
+  SC(-178.7, -170, 12, 28.7, 7.2, { level: YA }); SC(-185.2, -178.7, 24.4, 28.7, 7.2, { level: YA });
   SC(-194, -185.2, 19.4, 28.7, 4.6);
   SC(-208, -194, 12, 17.5, 4.6, { shops: 's' });
   SC(-208, -200, 17.5, 23, 4.6);
@@ -529,7 +548,7 @@
   SC(-343, -339.5, 52, 70, 5.2, { level: YB });
   SC(-356, -350.5, 52, 55, 5.2, { level: YB }); SC(-347.5, -343, 52, 55, 5.2, { level: YB });
   S(-350.5, -347.5, 52, 55, 2.6, 'plaster', H, YB + 2.6);
-  SC(-356, -343, 64.5, 70, 6.8, { level: YB });                               // אולם האירוח שמאחורי הסטיו
+  room('b2hall', -356, -343, 64.5, 70, r1(YB - 0.6), { door: { side: 'w', a: -352.3, b: -346.7 }, top: 2.9 });   // אולם האירוח שמאחורי הסטיו
   SC(-321, -297.5, 40, 57, 5, { shops: 's' });                                // B-I
   SC(-339, -321, 24, 40, 4.8, { shops: 'e' });
   SC(-321, -300, 59, 80, 4.8, { shops: 's' });
@@ -577,6 +596,36 @@
       'A gate of a single chamber, 7.5 by 8.5 m, built of large ashlars, with an outer opening of 2.7 m and a timber ceiling. The southern city wall is not a free-standing wall along its whole length: its line is the outer walls of the outermost houses, preserved to a height of 2.5 m.',
       'بوابة من حجرة واحدة، 7.5 × 8.5 م، مبنيّة بحجارة مشذّبة كبيرة، فتحتها الخارجية 2.7 م وسقفها من خشب. وسور المدينة الجنوبي ليس سورًا قائمًا بذاته على طوله كله: فخطّه هو الجدران الخارجية للبيوت الطرفية، وقد حُفظ إلى ارتفاع 2.5 م.'));
 
+  zone('citroom', 'secitadel', { floors: ['citroom', 'citroomdoor'] },
+    t('חדר האירוח של המצודה', 'The reception room of the citadel', 'قاعة الاستقبال في القلعة'),
+    t('אולם ארוך, 5.2 על 17.5 מ\', הנפתח אל חצר המצודה. כאן הוא מוצג כחדר הסבה: ספסלים לאורך הקירות, שולחנות נמוכים וכדים. הקירות נחפרו; הריהוט, התקרה והפתח המדויק משוערים, לפי חדרי אירוח דומים מן התקופה ההלניסטית.',
+      'A long hall, 5.2 by 17.5 m, opening on the courtyard of the citadel. It is shown here as a dining room: benches along the walls, low tables and jars. The walls were excavated; the furnishing, the ceiling and the exact doorway are conjecture, after similar reception rooms of the Hellenistic period.',
+      'قاعة طويلة، 5.2 × 17.5 م، تنفتح على فناء القلعة. تُعرض هنا قاعةَ اتّكاء: مقاعد على طول الجدران، وموائد منخفضة وجرار. الجدران منقَّبة؛ أمّا الأثاث والسقف وموضع الباب بدقّة فافتراضية، قياسًا على قاعات استقبال مشابهة من الفترة الهلنستية.'));
+  zone('aroom', 'areaA', { floors: ['aroom', 'aroomdoor'] },
+    t('חדר האירוח הגדול', 'The great reception room', 'قاعة الاستقبال الكبرى'),
+    t('הגדול בשני חדרי האירוח של הבית, 5.3 על 11.2 מ\', מצפון לחצר. מעליו עמדה קומה שנייה על קורות עץ. הריהוט שכאן משוער: ספסלי הסבה, שולחנות נמוכים ושטיח, כמקובל בבתים אמידים בתקופה ההלניסטית.',
+      'The larger of the two reception rooms of the house, 5.3 by 11.2 m, north of the courtyard. An upper storey stood above it on wooden beams. The furnishing here is conjecture: dining benches, low tables and a rug, as was usual in well-to-do houses of the Hellenistic period.',
+      'الكبرى بين قاعتَي الاستقبال في البيت، 5.3 × 11.2 م، شمالي الفناء. كان يعلوها طابق ثانٍ على عوارض خشبية. الأثاث هنا افتراضي: مقاعد اتّكاء وموائد منخفضة وبساط، كما جرت العادة في البيوت الميسورة في الفترة الهلنستية.'));
+  zone('b2hall', 'areaB', { floors: ['b2hall', 'b2halldoor'] },
+    t('אולם האירוח שמאחורי הסטיו', 'The reception hall behind the portico', 'قاعة الاستقبال خلف الرواق'),
+    t('האולם שאליו נכנסים בפתח הרחב שבין שני העמודים הדוריים. הקירות נחפרו; הריהוט ומראה הפנים משוערים.',
+      'The hall entered by the wide doorway between the two Doric columns. The walls were excavated; the furnishing and the look of the interior are conjecture.',
+      'القاعة التي يُدخل إليها من الباب الواسع بين العمودين الدوريين. الجدران منقَّبة؛ أمّا الأثاث وهيئة الداخل فافتراضيان.'));
+  zone('abath', 'areaA', { floors: ['abath', 'abathdoor'] },
+    t('חדר רחצה', 'A bathroom', 'غرفة استحمام'),
+    t('בבית הגדול נמצאו חדרי רחצה ובהם אמבטיות. כאן מוצג אחד מהם: אמבט ישיבה מטויח, כדי מים וספסל. מקומו המדויק של החדר בתוך האגף, הפתח והחפצים משוערים.',
+      'Bathrooms with tubs were found in the great house. One of them is shown here: a plastered sitting tub, water jars and a bench. The exact place of the room within the wing, the doorway and the objects are conjecture.',
+      'وُجدت في البيت الكبير غرف استحمام فيها أحواض. تُعرض هنا واحدة منها: حوض جلوس مطليّ، وجرار ماء ومقعد. موضع الغرفة بدقّة داخل الجناح، والباب والأغراض افتراضية.'));
+  // ריהוט משוער בחדרים, ומי שיושב בהם
+  for (const n of [-26.5, -23.9, -19.4, -16.8, -14.2]) pr('couch', n, 73.1, H, { along: 'n' });
+  pr('couch', -12, 75, H, { along: 'e' }); pr('table', -25.2, 74.4, H); pr('table', -18, 74.4, H); pr('table', -13.2, 75, H); pr('jars', -27.6, 76.6, H); pr('chest', -11.4, 77, H);
+  put('man', -20.5, 75.4, { seed: 91, per: H }); put('elder', -15.5, 74.9, { seed: 92, per: H }); put('woman', -24.6, 76.2, { carry: 'jar', seed: 93, per: H });
+  for (const e of [14.2, 17.4, 20.6]) pr('couch', -179.8, e, H, { along: 'e' });
+  pr('couch', -182, 23.3, H, { along: 'n' }); pr('couch', -182.3, 13.1, H, { along: 'n' }); pr('rug', -182.2, 18.4, H); pr('table', -181.3, 15.8, H); pr('table', -181.3, 20.4, H); pr('chest', -184, 22.6, H); pr('jars', -183.9, 13.4, H);
+  put('man', -182.6, 17.2, { seed: 94, per: H }); put('woman', -183.4, 20.2, { seed: 95, per: H }); put('elder', -181.2, 22, { seed: 96, per: H });
+  for (const n of [-354.3, -351.6, -348.9, -346.2]) pr('couch', n, 68.9, H, { along: 'n' });
+  pr('table', -353, 67.3, H); pr('table', -347.5, 67.3, H); pr('rug', -349.5, 66.6, H); pr('chest', -344.3, 68.6, H); pr('jars', -355, 65.8, H);
+  put('man', -350.6, 67, { seed: 97, per: H }); put('woman', -346.4, 66.4, { carry: 'jar', seed: 98, per: H });
   // החיים בעיר
   scatter(10, -165, -65, 21, 24, ['man', 'woman', 'elder', 'child', 'merchant'], { per: H });
   scatter(5, -55.5, -52, 36, 72, ['man', 'woman', 'elder'], { per: H });
@@ -591,13 +640,47 @@
   put('man', -349, 59, { seed: 80, per: H }); put('woman', -352, 61.5, { carry: 'jar', seed: 81, per: H }); put('elder', -346, 62.5, { seed: 82, per: H });
   an('donkey', -120, 22.4, H); an('sheep', -209.5, 40, H); an('goat', -209.3, 42, H); an('donkey', -209.6, 70, H); an('donkey', -332, 60, H); an('sheep', -334, 46, H); an('goat', -335, 47.6, H);
   an('donkey', -380, 49, H); an('sheep', -436, 50, H); an('sheep', -437, 48.4, H); an('goat', -80, 85, H);
-  pr('cistern', -189.6, 15.7, H); pr('jars', -186.4, 13, H); pr('oven', -193, 18.4, H);
+  pr('cistern', -189.6, 15.7, H); pr('jars', -186.4, 13, H); pr('oven', -192.9, 12.9, H);
   pr('stall', -323, 46, H, { face: 0 }); pr('stall', -323, 54, H, { face: 0 }); pr('stall', -337, 62, H, { face: Math.PI }); pr('stall', -337, 44, H, { face: Math.PI });
   pr('jars', -324, 50, H); pr('jars', -336, 58, H); pr('cage', -336.5, 48, H); pr('basket', -324.5, 57.5, H); pr('basket', -330, 66, H);
   pr('cistern', -346, 58.5, H); pr('oven', -354.5, 56.4, H); pr('oven', -354.6, 58.6, H); pr('jars', -344.5, 62.5, H);
   pr('column', -353.5, 64.1, H); pr('column', -345.5, 64.1, H);
   pr('stall', -360, 46.6, H, { face: Math.PI / 2 }); pr('stall', -385, 51.4, H, { face: -Math.PI / 2 }); pr('jars', -372, 51.2, H);
   pr('rock', -79, 86, H); pr('rock', -86, 80, H); pr('rock', -72, 92, H);
+
+  // ---- פרטי הסביבה: חפצי יומיום במקומות שבהם השתמשו בהם. כולם משוערים, לפי ממצאים דומים מן התקופה ----
+  const prx = (kind, n, e, per, o) => pr(kind, n, e, per, Object.assign({ x1: 1 }, o || {}));      // פרט העשרה: במכשיר חלש מוצג רק חלק מהם
+  // רחבת המתחם וחצרות העולים
+  prx('altartools', 46.6, 62.2, H); prx('woodpile', 35.6, 62.4, H, { along: 'e' }); prx('trough', 20, 70, null); prx('bench', 79, 20, H); prx('bench', 79, 30, H); prx('pithos', 57, 85, H);
+  prx('bench', 10, 97.4, H, { along: 'n' }); prx('pithos', 20, 108, H); prx('trough', 0, 100.5, H, { along: 'n' }); prx('bench', 15, 113, H, { along: 'n' }); prx('amphorae', 25, 126, H, { along: 'n' });
+  prx('woodpile', 36, 51, P, { along: 'e' }); prx('altartools', 84, 69, P);
+  // הרחוב המזרחי
+  prx('bench', 70, 122.3, H, { along: 'n' }); prx('amphorae', 60, 130.8, H, { along: 'n' }); prx('woodpile', 85, 122.4, H, { along: 'n' }); prx('trough', 90, 130.5, H, { along: 'n' }); prx('sacks', 78, 130.6, H);
+  // המצודה והכניסה המערבית
+  prx('rack', -15.5, 86.6, H); prx('woodpile', -29.2, 83.5, H, { along: 'e' }); prx('bench', -40, 45, H); prx('lamp', -27.9, 73, H); prx('lamp', -11.1, 73, H);
+  // הרחוב שלרגלי הכניסה, האחוזה ובית המגורים
+  prx('trough', -57, 15, H); prx('amphorae', -62.3, 10, H); prx('bench', -56.8, -5, H); prx('sacks', -62.2, -20, H); prx('produce', -57.2, 3.2, H, { c: 'figs' }); prx('woodpile', -62.3, 28, H, { along: 'e' });
+  prx('pithos', -37.5, -27, H); prx('pithos', -37.5, -25.3, H); prx('pithos', -37.5, -23.6, H); prx('amphorae', -52, -12, H); prx('produce', -45, -11, H, { c: 'olives' }); prx('produce', -46.4, -11, H, { c: 'olives' }); prx('sacks', -51.8, -27, H);
+  prx('quern', -70, -30, H); prx('pithos', -79, -40, H); prx('bench', -66.8, -39, H); prx('lamp', -79.2, -28, H);
+  prx('woodpile', -120, 21.1, H, { along: 'n' });
+  // הרובע המערבי: הבית הגדול
+  prx('quern', -191, 18.6, H); prx('vine', -187.6, 17.4, H); prx('amphorae', -186, 18.9, H, { along: 'n' }); prx('amphorae', -208.4, 40, H); prx('produce', -208.5, 60, H, { c: 'grain' });
+  prx('lamp', -184.2, 13.1, H); prx('lamp', -184.2, 23.3, H);
+  prx('tub', -190.7, 8.9, H); prx('jars', -190.9, 10.6, H); prx('bench', -188.5, 9.4, H); prx('lamp', -188.5, 8.1, H);
+  // הרובע הדרומי: השוק, הרחוב ובית הסטיו
+  prx('produce', -324.2, 43.6, H, { c: 'figs' }); prx('produce', -324.2, 56.4, H, { c: 'pomegranate' }); prx('produce', -336, 46.4, H, { c: 'olives' }); prx('produce', -336, 64.4, H, { c: 'grain' }); prx('produce', -330, 41.2, H, { c: 'dates' });
+  prx('cloth', -336.2, 60, H); prx('pots', -324, 60.6, H); prx('sacks', -330.5, 68.6, H); prx('amphorae', -322, 66, H); prx('bench', -321.8, 62.6, H); prx('pithos', -338, 41, H);
+  prx('woodpile', -350, 46.6, H, { along: 'n' }); prx('sacks', -395, 46.7, H); prx('pithos', -400, 51.4, H); prx('produce', -380, 46.5, H, { c: 'grain' }); prx('amphorae', -366, 51.5, H, { along: 'n' });
+  prx('quern', -352, 62, H); prx('vine', -349.5, 60.2, H); prx('pithos', -343.8, 56, H); prx('lamp', -344.3, 65.8, H);
+  // מי שיושב ומי שעובד: הסבה בחדרי האירוח, טחינה ברחיים, מוכרים ליד הסחורה
+  put('woman', -191.1, 17.9, { pose: 'crouch', seed: 201, per: H }); put('woman', -352.1, 62.7, { pose: 'crouch', seed: 202, per: H }); put('woman', -70.1, -29.3, { pose: 'crouch', seed: 203, per: H });
+  put('man', -26.5, 73.1, { pose: 'sit', seed: 204, per: H }); put('elder', -19.4, 73.1, { pose: 'sit', seed: 205, per: H }); put('man', -14.2, 73.1, { pose: 'sit', seed: 206, per: H });
+  put('man', -179.8, 14.2, { pose: 'sit', seed: 207, per: H }); put('elder', -179.8, 20.6, { pose: 'sit', seed: 208, per: H }); put('woman', -182, 23.3, { pose: 'sit', seed: 209, per: H });
+  put('man', -351.6, 68.9, { pose: 'sit', seed: 210, per: H }); put('elder', -346.2, 68.9, { pose: 'sit', seed: 211, per: H });
+  put('merchant', -321.8, 62.6, { pose: 'sit', seed: 212, per: H }); put('elder', 79, 20, { pose: 'sit', seed: 213, per: H }); put('man', 70, 122.3, { pose: 'sit', seed: 214, per: H }); put('woman', -56.8, -5, { pose: 'sit', seed: 215, per: H });
+  // חפצים שאי אפשר לעבור דרכם
+  const BLOCK = { stall: 1.15, cistern: 0.95, press: 1.4, oven: 0.8, couch: 0.7, table: 0.5, chest: 0.5, pithos: 0.5, quern: 0.55, trough: 0.75, bench: 0.6, woodpile: 0.7, tub: 0.8, basin: 1.0, column: 0.4, loom: 0.7, amphorae: 0.4, sacks: 0.5, produce: 0.45, pots: 0.6, cloth: 0.4, rack: 0.5, altartools: 0.5, lamp: 0.15, pen: 0 };
+  const blocks = props.filter(q => BLOCK[q.kind]).map(q => ({ x: q.x, z: q.z, r: BLOCK[q.kind], per: q.per }));
 
   // אזור שכל מפלסיו הלניסטיים שייך לתקופה ההלניסטית בלבד
   Z.forEach(z => { if (!z.per && z.floors && z.floors.every(id => (floors.find(f => f.id === id) || {}).per === H)) z.per = H; });
@@ -606,7 +689,9 @@
     .map(q => ({ x: q[1], z: -q[0], y: q[2], ry: q[3], per: H }));
 
   window.GERIZIM_WALK = {
-    floors, solids, temple, zones: Z, people, animals, props, doors, terrain, toEN,
+    floors, solids, temple, zones: Z, people, animals, props, blocks, doors, terrain, toEN,
+    origin: [35.273441, 32.201236],               // מרכז הכנסייה המתומנת: ממנו נמדד toEN
+    demOff: OFF,                                  // ההפרש בין מפלסי הזירה לגובהי מודל הגבהים
     north: 15,                                    // "למעלה" בשרטוט נוטה 15 מעלות מזרחה מן הצפון
     starts: {
       stairs: { x: 126.5, z: -74, yaw: Math.PI },         // ברחוב שמצפון לשער התחתון, פונים אל השער
