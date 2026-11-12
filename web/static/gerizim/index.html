@@ -244,6 +244,52 @@
   .pin.dim{filter:opacity(.3)}
   .pin.sel{background:var(--gold);color:#17130d;font-weight:600;border-style:solid}
 
+  /* ---------- מפת ההתמצאות ---------- */
+  .pin.olab{background:none;border:0;box-shadow:none;padding:0 2px;border-radius:0;color:#fff;font-size:12.5px;font-weight:600;
+    text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000,0 0 6px rgba(0,0,0,.9)}
+  .pin.olab::after{right:calc(50% - 4.5px);bottom:-14px;width:6px;height:6px;border-radius:50%;background:#fff;border:1.5px solid #1b140a}
+  .pin.o-town{font-size:14px;font-weight:700}
+  .pin.o-town::after{right:calc(50% - 5.5px);bottom:-15px;width:8px;height:8px}
+  .pin.o-settlement::after{border-radius:1px;background:#cfe3ff}
+  .pin.o-camp::after,.pin.o-quarter::after{background:#e9d7b0}
+  .pin.o-valley{color:#d9f0a8;font-size:14.5px;font-weight:500;font-style:italic;letter-spacing:.06em}
+  html[lang=ar] .pin.o-valley{letter-spacing:0}
+  .pin.o-valley::after,.pin.o-peak::after,.pin.o-road::after{display:none}
+  .pin.o-valley span{display:inline-block;transform:rotate(var(--rot,0deg))}
+  .pin.o-peak{color:#ffe7b8;font-size:13px}
+  .pin.o-road,.omark.shield{background:#ffcf40;color:#1b140a;border:1.5px solid #1b140a;border-radius:4px;padding:0 5px;font:700 12px/16px system-ui,sans-serif;
+    text-shadow:none;box-shadow:0 1px 4px rgba(0,0,0,.6);cursor:pointer;direction:ltr}
+  .pin.olab.sel{background:var(--gold);color:#17130d;text-shadow:none;padding:1px 8px;border-radius:11px}
+  .pin.o-valley.sel span{transform:none}
+  .omark{white-space:nowrap}
+  .omark.oldlab{color:#fff1c0;font-size:11.5px;font-style:italic;cursor:pointer;text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000}
+  .omark.end{background:rgba(20,16,11,.9);border:1px solid #ffcf40;border-radius:6px;padding:3px 9px;color:#fff;font-size:12.5px;display:flex;
+    align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.6);pointer-events:none}
+  .omark.end b{color:#ffcf40;font-size:16px;line-height:1}
+  .omark.end i{font-style:normal;opacity:.75;font-size:11px}
+  .omark.summit{background:var(--gold);color:#17130d;font-weight:700;font-size:12.5px;padding:2px 9px;border-radius:13px;border:1px solid #fff;
+    box-shadow:0 0 0 3px rgba(217,178,95,.35),0 2px 8px rgba(0,0,0,.6);cursor:pointer}
+  body.ofar .walkpin{display:none !important}
+  body.orient .pin.far:not(.olab){font-size:12px;padding:2px 8px}
+  #olegend{display:none;position:fixed;z-index:4;right:10px;bottom:calc(var(--barh,96px) + 34px);background:rgba(20,16,11,.86);border:1px solid rgba(217,178,95,.5);
+    border-radius:8px;padding:7px 10px;color:var(--ink);font-size:12px;line-height:1.75;box-shadow:0 2px 10px rgba(0,0,0,.5);pointer-events:none}
+  body.orient #olegend{display:block}
+  body.orient:has(#card.open) #olegend{display:none}
+  #olegend div{display:flex;align-items:center;gap:8px}
+  #olegend i{flex:none;font-style:normal}
+  #olegend .l60{width:26px;height:4px;border-radius:2px;background:#ffcf40;box-shadow:0 0 0 1.5px #1d1408}
+  #olegend .lold{width:26px;height:0;border-top:2px dashed #fff1c0}
+  #olegend .lvil{width:7px;height:7px;border-radius:50%;background:#fff;border:1.5px solid #1b140a;margin:0 9px}
+  #olegend .lval{color:#d9f0a8;font-style:italic}
+  #olegend .lpk{color:#ffe7b8}
+  #btnOrient.on{background:var(--gold);color:#17130d;border-color:var(--gold)}
+  @media (max-width:640px){
+    #olegend{font-size:11px;line-height:1.6;padding:5px 8px;right:6px;bottom:calc(var(--barh,96px) + 30px)}
+    .pin.olab{font-size:11.5px} .pin.o-town{font-size:12.5px} .pin.o-valley{font-size:13px}
+    .omark.end{font-size:11.5px;padding:2px 7px} .omark.end i{display:none}
+    #olegend div:nth-child(n+3){display:none}
+  }
+
 
   /* חוגת כיוונים צפה בצד שמאל למטה: שקופה, ורק קווי המתאר שלה נראים, עד שהעכבר או האצבע עליה */
   #dial{position:fixed;z-index:5;left:14px;bottom:calc(var(--barh,96px) + 40px);--d:118px;--rad:43px;width:var(--d);height:var(--d);
@@ -329,10 +375,12 @@
   <div id="lbCap"></div>
 </div>
 
+<div id="olegend" aria-hidden="true"></div>
 <div id="bar">
   <div class="row" id="periods"></div>
   <div class="row">
     <button class="main" id="btnTour">▶ סיור מודרך</button>
+    <button id="btnOrient">מפת התמצאות</button>
     <button id="btnList">☰ המקומות</button>
     <button id="btnHome">מבט על</button>
     <button id="btnRelief">הדגשת תבליט</button>
@@ -342,14 +390,15 @@
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <!-- מספר הגרסה מונע מהדפדפן להגיש קובץ ישן מהמטמון; להעלות אותו בכל שינוי -->
-<script src="places.js?v=55"></script>
-<script src="places_apply.js?v=55"></script>
-<script src="images.js?v=55"></script>
-<script src="walk_dem.js?v=55"></script>
-<script src="walk_data.js?v=55"></script>
-<script src="walk_info.js?v=55"></script>
-<script src="flickr.js?v=55"></script>
-<script src="inscriptions.js?v=55"></script>
-<script src="tour.js?v=55"></script>
+<script src="places.js?v=56"></script>
+<script src="places_apply.js?v=56"></script>
+<script src="images.js?v=56"></script>
+<script src="walk_dem.js?v=56"></script>
+<script src="walk_data.js?v=56"></script>
+<script src="walk_info.js?v=56"></script>
+<script src="flickr.js?v=56"></script>
+<script src="inscriptions.js?v=56"></script>
+<script src="orient.js?v=56"></script>
+<script src="tour.js?v=56"></script>
 </body>
 </html>

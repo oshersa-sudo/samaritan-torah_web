@@ -48,5 +48,15 @@
     "text_he": "חדש בגבעת עולם: הסיור הרגלי עשיר יותר. נוף ההר שמסביב, שמים ושמש, עצים וסלעים; אנשים ובעלי חיים שהולכים, יושבים, עובדים ומשוחחים, ובכל כניסה מעט אחרת; חפצי יומיום וחדרים שנכנסים אליהם; לוחות שם על חזיתות המבנים; תרגום לצד כל כתובת; מפה עם סימן \"אתם כאן\" וכיוון המבט; תפריט שכבות; ועברית, אנגלית וערבית מתוך הסיור. השחזור משוער, והתוכן ראשוני.",
     "text_en": "New in Givat Olam: a richer walking tour. The mountain landscape around, sky and sun, trees and rocks; people and animals that walk, sit, work and talk, a little different on every visit; everyday objects and rooms you can enter; name tablets on the facades; a translation beside every inscription; a map with a \"you are here\" marker and the direction of your gaze; a layers menu; and Hebrew, English and Arabic from inside the tour. The reconstruction is conjectural and the content is preliminary.",
     "text_ar": "جديد في التلة الأبدية: جولة سيرًا أغنى. مشهد الجبل من حولها، وسماء وشمس، وأشجار وصخور؛ وأناس وحيوانات يمشون ويجلسون ويعملون ويتحادثون، وفي كل دخول شيء مختلف قليلًا؛ وأغراض الحياة اليومية وغرف يمكن دخولها؛ وألواح أسماء على واجهات المباني؛ وترجمة بجانب كل نقش؛ وخريطة عليها علامة «أنتم هنا» واتجاه النظر؛ وقائمة طبقات؛ والعبرية والإنجليزية والعربية من داخل الجولة. إعادة البناء افتراضية والمحتوى أوّلي."
+  },
+  {
+    "app": "gerizim",
+    "date": "2026-11-12T03:49:46",
+    "he": "מפת התמצאות: הכפרים, העמקים וכביש 60 סביב ההר",
+    "en": "An orientation map: the villages, the valleys and Route 60 around the mountain",
+    "ar": "خريطة توجيه: القرى والسهول والطريق 60 حول الجبل",
+    "text_he": "חדש בגבעת עולם: הכפתור \"מפת התמצאות\" פותח מבט רחב מלמעלה על סביבות הר גריזים, והצפון למעלה. עליו שלושים יישובים ממערב, ממזרח, מצפון ומדרום, העמקים שלרגלי ההר (עמק המכמתת, בקעת עסכר, עמק בית דג'ן ועמק נחל שכם), ההרים, כביש 60 של היום והדרך הישנה מירושלים דרך שכם אל ג'נין, ושלטי כיוון ומרחק.",
+    "text_en": "New in Givat Olam: the \"Orientation map\" button opens a wide, north-up view of the country around Mount Gerizim. It shows thirty villages and towns on every side, the valleys at the foot of the mountain (the Mukhna plain, the plain of Askar, the Beit Dajan valley and the Nablus stream valley), the mountains, today's Route 60 and the old road from Jerusalem through Nablus to Jenin, with direction and distance signs.",
+    "text_ar": "جديد في التلة الأبدية: زرّ «خريطة توجيه» يفتح نظرة واسعة من الأعلى على محيط جبل جرزيم، والشمال إلى الأعلى. عليها ثلاثون قرية وبلدة من كل الجهات، والسهول عند سفح الجبل (سهل مخنة، وسهل عسكر، وسهل بيت دجن، ووادي نابلس)، والجبال، والطريق 60 اليوم والطريق القديمة من القدس عبر نابلس إلى جنين، مع لافتات الاتجاه والمسافة."
   }
 ]
