@@ -271,6 +271,20 @@
     box-shadow:0 0 0 3px rgba(217,178,95,.35),0 2px 8px rgba(0,0,0,.6);cursor:pointer}
   body.ofar .walkpin{display:none !important}
   body.orient .pin.far:not(.olab){font-size:12px;padding:2px 8px}
+  /* מעיינות במפת ההתמצאות, והערת השחזור התלת-ממדי */
+  .pin.o-spring{color:#bfe6ff;font-size:11.5px;font-style:italic;font-weight:600}
+  .pin.o-spring::after{background:#4fb3f0;border-color:#0d2a40;width:6px;height:6px}
+  .pin.o-spring.dotonly{font-size:0;padding:0;min-width:12px;min-height:4px}
+  .pin.o-spring.dotonly.sel{font-size:11.5px;padding:1px 8px}
+  #olegend .lspr{width:7px;height:7px;border-radius:50%;background:#4fb3f0;border:1.5px solid #0d2a40;margin:0 9px}
+  #btnRecon.on{background:var(--gold);color:#1b140a;border-color:var(--gold)}
+  #reconNote{display:none;position:fixed;z-index:4;left:50%;transform:translateX(-50%);top:58px;max-width:min(560px,calc(100vw - 110px));background:rgba(20,16,11,.86);
+    border:1px solid rgba(217,178,95,.5);border-radius:12px;padding:7px 14px;color:#f1e9d2;font-size:13px;line-height:1.45;text-align:center;pointer-events:none}
+  #reconNote b{display:block;font-weight:600}
+  #reconNote span{display:block;color:#cfc4a8;font-size:11.5px}
+  body.recon #reconNote{display:block}
+  body.recon:has(#walk.open) #reconNote,body.recon:has(#card.open) #reconNote{display:none}
+  @media (max-width:640px){#reconNote{top:52px;max-width:calc(100vw - 96px);font-size:12px;padding:6px 10px}#reconNote span{display:none}}
   #olegend{display:none;position:fixed;z-index:4;right:10px;bottom:calc(var(--barh,96px) + 34px);background:rgba(20,16,11,.86);border:1px solid rgba(217,178,95,.5);
     border-radius:8px;padding:7px 10px;color:var(--ink);font-size:12px;line-height:1.75;box-shadow:0 2px 10px rgba(0,0,0,.5);pointer-events:none}
   body.orient #olegend{display:block}
@@ -376,11 +390,13 @@
 </div>
 
 <div id="olegend" aria-hidden="true"></div>
+<div id="reconNote" aria-live="polite"></div>
 <div id="bar">
   <div class="row" id="periods"></div>
   <div class="row">
     <button class="main" id="btnTour">▶ סיור מודרך</button>
     <button id="btnOrient">מפת התמצאות</button>
+    <button id="btnRecon">שחזור תלת-ממדי</button>
     <button id="btnList">☰ המקומות</button>
     <button id="btnHome">מבט על</button>
     <button id="btnRelief">הדגשת תבליט</button>
@@ -390,15 +406,16 @@
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <!-- מספר הגרסה מונע מהדפדפן להגיש קובץ ישן מהמטמון; להעלות אותו בכל שינוי -->
-<script src="places.js?v=57"></script>
-<script src="places_apply.js?v=57"></script>
-<script src="images.js?v=57"></script>
-<script src="walk_dem.js?v=57"></script>
-<script src="walk_data.js?v=57"></script>
-<script src="walk_info.js?v=57"></script>
-<script src="flickr.js?v=57"></script>
-<script src="inscriptions.js?v=57"></script>
-<script src="orient.js?v=57"></script>
-<script src="tour.js?v=57"></script>
+<script src="places.js?v=58"></script>
+<script src="places_apply.js?v=58"></script>
+<script src="images.js?v=58"></script>
+<script src="walk_dem.js?v=58"></script>
+<script src="walk_data.js?v=58"></script>
+<script src="walk_info.js?v=58"></script>
+<script src="flickr.js?v=58"></script>
+<script src="inscriptions.js?v=58"></script>
+<script src="orient.js?v=58"></script>
+<script src="recon.js?v=58"></script>
+<script src="tour.js?v=58"></script>
 </body>
 </html>
