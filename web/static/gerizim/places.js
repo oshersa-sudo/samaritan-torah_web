@@ -6,6 +6,10 @@
   const t = (he, en, ar) => ({ he, en, ar });
 
   const periods = [
+    // ימי הרצון (הרחותה): 260 השנים מן הכניסה לארץ ועד הסתרת המשכן, לפי המסורת השומרונית (ציר הזמן, e011–e013)
+    { id: 'ratzon', name: t('ימי הרצון', 'Days of Favour', 'أيام الرضوان'),
+      label: t('ימי הרצון (הרחותה)', 'The Days of Favour (Raḥūtā)', 'أيام الرضوان (رحوتا)'),
+      years: t('260 השנים מן הכניסה לארץ, לפי המסורת השומרונית', 'The 260 years from the entry into the land, by Samaritan tradition', '260 سنة منذ الدخول إلى الأرض، بحسب التقليد السامري') },
     { id: 'persian', name: t('פרסית', 'Persian', 'الفارسية'),
       label: t('התקופה הפרסית', 'Persian period', 'الفترة الفارسية'),
       years: t('המאות ה-5–4 לפנה"ס', '5th–4th centuries BCE', 'القرنان الخامس والرابع ق.م') },
@@ -470,7 +474,9 @@
         'שורה של אבני גוויל גדולות, כ-6.5 על 18 מ\', ממערב לכנסייה. לדעת החופר זהו השריד היחיד מבניין המקדש של התקופה הפרסית, שלא פורק בשל קדושתו.',
         'A row of large rough stones, about 6.5 by 18 m, west of the church. The excavator regards it as the only remnant of the Persian-period temple building, left standing because of its sanctity.',
         'صف من حجارة غشيمة كبيرة، نحو 6.5 × 18 م، غرب الكنيسة. يرى المنقّب أنه البقية الوحيدة من مبنى الهيكل في الفترة الفارسية، وأنه لم يُفكَّك لقداسته.'),
-      strata: [ { period: 'persian', when: t('המאה ה-5 לפנה"ס', '5th century BCE', 'القرن الخامس ق.م'),
+      strata: [ { period: 'ratzon', when: t('ראשית ימי הרצון', 'The beginning of the Days of Favour', 'مطلع أيام الرضوان'), ev: 'e011',
+          text: t('במסורת העדה אלה האבנים שהציבו בני ישראל בעוברם את הירדן.', 'In the community\'s tradition these are the stones that the Children of Israel set up when they crossed the Jordan.', 'في تقليد الطائفة هذه هي الحجارة التي نصبها بنو إسرائيل حين عبروا الأردن.') },
+        { period: 'persian', when: t('המאה ה-5 לפנה"ס', '5th century BCE', 'القرن الخامس ق.م'),
           text: t('לידן, בצד הפנימי של המתחם, נמצא אחד מריכוזי עצמות הקורבנות.', 'Beside them, on the inner side of the precinct, one of the concentrations of sacrificial bones was found.', 'بجانبها، في الجهة الداخلية من الحرم، وُجد أحد تجمّعات عظام القرابين.') } ],
       finds: []
     },
@@ -483,7 +489,11 @@
         'משטח סלע בדרום הרמה, שבמסורת השומרונית הוא מקום המשכן. סוקרי המאה ה-19 תיארו משטח גיר משופע של כ-15 על 15 מ\', מוקף גושי אבן, בור עמוק בקצהו ורחבות תפילה מרוצפות סביבו.',
         'A rock surface on the south of the plateau, which Samaritan tradition holds to be the place of the Tabernacle. The 19th-century surveyors described a sloping limestone surface of about 15 by 15 m, ringed by blocks of stone, with a deep pit at its edge and paved prayer platforms around it.',
         'سطح صخري في جنوب الهضبة، هو في التقليد السامري موضع خيمة الاجتماع. وصف مسّاحو القرن التاسع عشر سطحًا جيريًا مائلًا نحو 15 × 15 م، تحيط به كتل حجرية، وفي طرفه حفرة عميقة وحوله مصاطب صلاة مبلّطة.'),
-      strata: [], finds: []
+      strata: [ { period: 'ratzon', when: t('260 השנים מן הכניסה לארץ', 'The 260 years from the entry into the land', '260 سنة منذ الدخول إلى الأرض'), ev: 'e011',
+          text: t('במסורת השומרונית עמד כאן משכן משה בכל ימי הרצון, מן הכניסה לארץ ועד השנה ה-260 לכניסה, שבה הסתיר ה\' את המשכן במערה בהרגריזים. בסיור הרגלי אפשר להיכנס אל משכן שנבנה לפי פסוקי התורה, להמחשה.',
+            'In Samaritan tradition the Tabernacle of Moses stood here throughout the Days of Favour, from the entry into the land until the 260th year after it, when God hid the Tabernacle in a cave on Mount Gerizim. In the walking tour you can enter a Tabernacle built from the verses of the Torah, as an illustration.',
+            'في التقليد السامري قام هنا مسكن موسى طوال أيام الرضوان، منذ الدخول إلى الأرض حتى السنة الـ260 بعده، حين أخفى الله المسكن في مغارة في جبل جرزيم. وفي الجولة سيرًا يمكن دخول مسكن مبنيّ وفق آيات التوراة، للتوضيح.') } ],
+      finds: []
     },
     {
       id: 'isaac', group: 'holy', color: '#f2f2f2', labelFrom: 16.3,

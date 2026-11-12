@@ -5,10 +5,11 @@
    ומידות הכנסייה, חומתה ומגדליה כפי שהן בכרטיסים.
    מה שהוא השערה: גובה הקירות והגגות, כיפת הכנסייה, צורת קבר השיח', בניין המקדש הרומי שעל תל א-ראס,
    ומהלך גרם המדרגות היורד ממנו אל העיר (קו ישר במורד המדרון; ראו tools/ras_stairs.py).
-   התקופות: p פרסית, h הלניסטית, hp שתיהן, r רומית, b ביזנטית, i אסלאמית. */
+   התקופות: z ימי הרצון (המשכן בגבעת עולם, להמחשה), p פרסית, h הלניסטית, hp שתיהן, r רומית, b ביזנטית, i אסלאמית. */
 (function () {
   const W = window.GERIZIM_WALK;
   const feats = [];
+  let ZFOCUS = null;
   const STONE = '#e7dcc3', FIELD = '#b8a98c', ROOF = '#a9573c', PAVE = '#d6cab0', PAVE2 = '#c6b999', WATER = '#5d93ad',
     RUIN = '#a89f8c', WHITE = '#f1ecdf', BIG = '#a59a86';
   const add = (r, b, h, c, p) => { if (h - b >= 0.08) feats.push({ r, b: Math.round(b * 100) / 100, h: Math.round(h * 100) / 100, c, p }); };
@@ -45,6 +46,24 @@
       if (top < 0.4) return;
       add([en(x1, z1), en(x2, z1), en(x2, z2), en(x1, z2)], base, top, MAT[s.mat] || STONE, per(s));
     });
+    // ימי הרצון: משכן משה בגבעת עולם. גופי החסימה של הסיור הרגלי הם מידות היריעות (5 אמות), קרשי אוהל מועד (10 אמות),
+    // המזבח והכיור; הכלים שבתוך האוהל אינם נראים מבחוץ ואינם בשכבה
+    const VESSEL = { rark: 1, rtable: 1, rmenorah: 1, rincense: 1 }, zc = [];
+    W.solids.forEach(s => {
+      if (s.per !== 'r' || !s.h || VESSEL[s.id]) return;
+      const [x1, z1, x2, z2] = s.box, g = W.terrain((x1 + x2) / 2, (z1 + z2) / 2);
+      const top = s.y0 + s.h - g, base = Math.max(0, s.y0 - g);
+      if (top < 0.3) return;
+      const c = s.mat === 'bronze' ? '#9a7a3c' : s.h < 3 ? WHITE : '#c9a54a';
+      // הרצפה של גבעת עולם בסיור מוגבהת מעל מודל הגבהים של המפה: הגוף יורד עד הקרקע, ולא מרחף
+      add([en(x1, z1), en(x2, z1), en(x2, z2), en(x1, z2)], 0, top, c, 'z'); zc.push(en((x1 + x2) / 2, (z1 + z2) / 2));
+    });
+    const TN = W.sanct && W.sanct.TN, court = W.floors.find(f => f.id === 'rcourt');
+    if (TN && court) {                                      // גג האוהל: היריעות והמכסים שמעל הקרשים
+      const g = W.terrain((TN.x1 + TN.x2) / 2, (TN.z1 + TN.z2) / 2), b = court.y + TN.h - g;
+      add([en(TN.x1, TN.z1), en(TN.x2, TN.z1), en(TN.x2, TN.z2), en(TN.x1, TN.z2)], b, b + 0.3, '#6b5238', 'z');
+    }
+    if (zc.length) ZFOCUS = { at: [zc.reduce((a, q) => a + q[0], 0) / zc.length, zc.reduce((a, q) => a + q[1], 0) / zc.length], zoom: 18.7, bearing: 260 };
     // המדרגות והריצופים: לוח דק לכל מדרגה, כך שהגרם נראה מדורג על המדרון
     W.floors.forEach(f => {
       const [x1, z1, x2, z2] = f.box, p = per(f);
@@ -128,7 +147,7 @@
   window.GERIZIM_RECON = {
     feats,
     // אילו תקופות מוצגות לכל בחירה בסרגל התקופות (בלי בחירה: המתחם ההלניסטי והמקדש הרומי, שאינם עולים זה על זה)
-    show: { '': ['h', 'hp', 'r'], persian: ['p', 'hp'], hellenistic: ['h', 'hp'], roman: ['r'], byzantine: ['b'], islamic: ['i'] },
-    focus: { roman: { at: [110, 800], zoom: 16.6, bearing: 170 }, byzantine: { at: [0, 10], zoom: 17.7, bearing: 200 }, islamic: { at: [25, 15], zoom: 18.1, bearing: 215 } }
+    show: { '': ['h', 'hp', 'r'], ratzon: ['z'], persian: ['p', 'hp'], hellenistic: ['h', 'hp'], roman: ['r'], byzantine: ['b'], islamic: ['i'] },
+    focus: { ratzon: ZFOCUS, roman: { at: [110, 800], zoom: 16.6, bearing: 170 }, byzantine: { at: [0, 10], zoom: 17.7, bearing: 200 }, islamic: { at: [25, 15], zoom: 18.1, bearing: 215 } }
   };
 })();

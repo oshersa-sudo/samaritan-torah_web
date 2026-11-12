@@ -832,6 +832,8 @@
   function tick() {
     if (!active) return;
     raf = requestAnimationFrame(tick);
+    // היחידה נסגרה והמסגרת רק הוסתרה, או שהלשונית ברקע: אין מה לצייר
+    if (document.hidden || window.GerizimOffscreen) { clock.getDelta(); return; }
     frame(clock.getDelta(), true);
   }
   // תמונה אחת של הסיור: תנועה, חיים, ציור, ועדכון הכרטיס והמפה. (בבדיקות היא מורצת גם ביד, בלי לחכות לדפדפן)
@@ -1209,7 +1211,7 @@
     if (el.dataset.ready) return;
     el.dataset.ready = '1';
     el.innerHTML = '<canvas id="walkCv"></canvas>' +
-      '<div id="walkTop"><button id="walkExit"></button><div id="walkPer"><button data-p="h"></button><button data-p="p"></button><button data-p="r"></button></div>' +
+      '<div id="walkTop"><button id="walkExit"></button><div id="walkPer"><button data-p="r"></button><button data-p="p"></button><button data-p="h"></button></div>' +
       '<div id="walkLayersBox"><button id="walkLayersBtn" aria-haspopup="true" aria-expanded="false"></button><div id="walkLayers" hidden><button class="lyx" id="walkLayersX"></button>' +
       LAYERS.map(k => '<label><input type="checkbox" data-l="' + k + '"><span></span></label>').join('') + '</div></div>' +
       '<button id="walkMapBtn"></button><button id="walkInfoBtn"></button><button id="walkSnd" aria-haspopup="true"></button>' +
@@ -1261,7 +1263,8 @@
   function texts() {
     const nar = window.innerWidth <= 640 || (window.innerHeight <= 500 && window.innerWidth > window.innerHeight), S2 = k => (nar && T(k + 'S')) || T(k);          // במסך צר: תוויות קצרות, כדי שהסרגל העליון לא יכסה את הנוף
     $('walkExit').textContent = S2('exit');
-    const pb = $('walkPer').querySelectorAll('button'); pb[0].textContent = S2('hel'); pb[1].textContent = S2('per'); pb[2].textContent = S2('rah'); pb[2].title = T('rahT');
+    const pb = $('walkPer').querySelectorAll('button'), PK = { h: 'hel', p: 'per', r: 'rah' };       // לפי התקופה של כל כפתור, לא לפי מקומו
+    pb.forEach(b => { b.textContent = S2(PK[b.dataset.p]); b.title = b.dataset.p === 'r' ? T('rahT') : ''; });
     pb.forEach(b => b.classList.toggle('on', b.dataset.p === period));
     $('walkLayersBtn').textContent = '☰ ' + T('layers'); $('walkLayersX').textContent = T('lyClose'); $('walkMapBtn').textContent = T('mapBtn'); $('walkInfoBtn').textContent = 'ⓘ' + (nar ? '' : ' ' + T('infoBtn'));
     $('walkInfoBtn').setAttribute('aria-label', T('infoBtn')); $('walkInfoX').setAttribute('aria-label', T('close')); $('walkInfoX').title = T('close');

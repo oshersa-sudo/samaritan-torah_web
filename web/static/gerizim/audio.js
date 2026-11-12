@@ -26,13 +26,29 @@
     verb = ctx.createConvolver(); const len = ctx.sampleRate * 2.6, ir = ctx.createBuffer(2, len, ctx.sampleRate);
     for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
     verb.buffer = ir; const wet = ctx.createGain(); wet.gain.value = 0.38; verb.connect(wet); wet.connect(master);
-    musicBus.connect(master); musicBus.connect(verb); ambBus.connect(master);
+    musicBus.connect(master); ambBus.connect(master);
     noise = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate); const nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
     // ספארי ודפדפנים זהירים מתחילים "מושעים": הלחיצה הבאה מעירה את השמע
-    const wake = () => { if (ctx.state === 'suspended') ctx.resume().catch(() => {}); };
-    ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, wake, { passive: true }));
+    ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, settle, { passive: true }));
     return ctx;
   }
+  /* מנוע השמע ממשיך לעבד גם בעוצמה אפס (רחש, מסננים, הד) — ובטלפון זה מורגש. לכן הוא מושעה כשאין מה להשמיע:
+     מחוץ לסיור הרגלי ובלי מוזיקה, כשהצלילים כבויים, וכשהדף מוסתר (גם כשהיחידה נסגרה והמסגרת שלה רק הוסתרה). */
+  // מסגרת שהוסתרה (display:none) שומרת על מידותיה ואינה "hidden" — אבל היא יוצאת מן התצוגה, וזה מה שנמדד כאן
+  let offscreen = false;
+  try { new IntersectionObserver(es => { offscreen = !es[es.length - 1].isIntersecting; window.GerizimOffscreen = offscreen; settle(); }).observe(document.documentElement); } catch (e) { /* דפדפן ישן: רק document.hidden */ }
+  const hiddenNow = () => document.hidden || offscreen;
+  const needed = () => !!((musicOn && pref.music) || (scene && pref.amb));
+  let sTimer = 0, verbOn = false;
+  function settle() {
+    if (!ctx) return;
+    clearTimeout(sTimer);
+    const want = needed() && !hiddenNow();
+    if (want) { if (ctx.state === 'suspended') ctx.resume().catch(() => {}); return; }
+    sTimer = setTimeout(() => { if (ctx && !(needed() && !hiddenNow()) && ctx.state === 'running') ctx.suspend().catch(() => {}); }, hiddenNow() ? 0 : 1800);
+  }
+  document.addEventListener('visibilitychange', settle);
+  window.addEventListener('resize', settle);
   const now = () => ctx.currentTime;
   const ramp = (p, v, tc) => { p.cancelScheduledValues(now()); p.setTargetAtTime(v, now(), tc || 0.4); };
   function noiseSrc() { const s = ctx.createBufferSource(); s.buffer = noise; s.loop = true; s.loopStart = Math.random(); s.start(); return s; }
@@ -78,9 +94,9 @@
   let duckN = 0;
   function music(on) {
     musicOn = !!on;
-    if (musicOn && pref.music) { if (!ensure()) return; startDrone(); mNext = now() + 0.4; clearInterval(mTimer); mTimer = setInterval(musicTick, 250); musicTick(); }
-    else if (ctx) { ramp(musicBus.gain, 0, 0.6); stopDrone(); clearInterval(mTimer); mTimer = 0; }
-    syncButtons();
+    if (musicOn && pref.music) { if (!ensure()) return; if (!verbOn) { musicBus.connect(verb); verbOn = true; } startDrone(); mNext = now() + 0.4; clearInterval(mTimer); mTimer = setInterval(musicTick, 250); musicTick(); }
+    else if (ctx) { ramp(musicBus.gain, 0, 0.6); stopDrone(); clearInterval(mTimer); mTimer = 0; setTimeout(() => { if (verbOn && !(musicOn && pref.music)) { try { musicBus.disconnect(verb); } catch (e) { /* */ } verbOn = false; } }, 3500); }
+    settle(); syncButtons();
   }
 
   /* ================= קולות הסביבה בסיור הרגלי ================= */
@@ -94,19 +110,19 @@
     { x: 104, z: 79, r: 36, lv: 0.55, per: 'r' }, { x: 118, z: 80, r: 26, lv: 0.6, per: 'r' }
   ];
   function buildChains() {
-    const c = {};
+    const c = {}, ns = noiseSrc();
     // המולה: רחש בתחום הדיבור, ומעליו הברות קצרות של קולות רחוקים
     c.crowd = ctx.createGain(); c.crowd.gain.value = 0; c.crowd.connect(ambBus);
     const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 620; bp.Q.value = 0.7;
-    const hum = ctx.createGain(); hum.gain.value = 0.16; noiseSrc().connect(bp); bp.connect(hum); hum.connect(c.crowd);
+    const hum = ctx.createGain(); hum.gain.value = 0.16; ns.connect(bp); bp.connect(hum); hum.connect(c.crowd);
     c.babble = ctx.createGain(); c.babble.gain.value = 0.8; const blp = ctx.createBiquadFilter(); blp.type = 'lowpass'; blp.frequency.value = 2300; c.babble.connect(blp); blp.connect(c.crowd);
     // אש: פצפוצים ורחש נמוך
     c.fire = ctx.createGain(); c.fire.gain.value = 0; c.fire.connect(ambBus);
-    const flp = ctx.createBiquadFilter(); flp.type = 'lowpass'; flp.frequency.value = 340; const fr = ctx.createGain(); fr.gain.value = 0.32; noiseSrc().connect(flp); flp.connect(fr); fr.connect(c.fire);
+    const flp = ctx.createBiquadFilter(); flp.type = 'lowpass'; flp.frequency.value = 340; const fr = ctx.createGain(); fr.gain.value = 0.32; ns.connect(flp); flp.connect(fr); fr.connect(c.fire);
     c.crackle = ctx.createGain(); c.crackle.gain.value = 1; const chp = ctx.createBiquadFilter(); chp.type = 'highpass'; chp.frequency.value = 1700; c.crackle.connect(chp); chp.connect(c.fire);
     // רוח: רחש נמוך שמתנשם לאט
     c.wind = ctx.createGain(); c.wind.gain.value = 0; c.wind.connect(ambBus);
-    const wlp = ctx.createBiquadFilter(); wlp.type = 'lowpass'; wlp.frequency.value = 420; wlp.Q.value = 0.6; noiseSrc().connect(wlp); wlp.connect(c.wind);
+    const wlp = ctx.createBiquadFilter(); wlp.type = 'lowpass'; wlp.frequency.value = 420; wlp.Q.value = 0.6; ns.connect(wlp); wlp.connect(c.wind);
     const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.07; lg.gain.value = 180; lfo.connect(lg); lg.connect(wlp.frequency); lfo.start();
     c.fx = ctx.createGain(); c.fx.gain.value = 1; c.fx.connect(ambBus);                     // צעדים, בעלי חיים, ציפורים
     return c;
@@ -178,13 +194,14 @@
     last = { x: p.x, z: p.z };
   }
   function walkScene(per, tl) {
-    if (per == null) { scene = null; clearInterval(aTimer); aTimer = 0; if (ctx) ramp(ambBus.gain, 0, 0.5); last = null; return; }
+    if (per == null) { scene = null; clearInterval(aTimer); aTimer = 0; if (ctx) ramp(ambBus.gain, 0, 0.5); last = null; settle(); return; }
     scene = { per, tl: !!tl };
     if (!pref.amb) return;
     if (!ensure()) return;
     if (!chains) chains = buildChains();
     ramp(ambBus.gain, 1, 0.8);
     if (!aTimer) aTimer = setInterval(ambTick, 110);
+    settle();
   }
 
   /* ================= כפתורים ================= */
@@ -223,7 +240,7 @@
     pref[k] = !!v; save();
     if (k === 'music') { if (musicOn) { if (pref.music) music(true); else if (ctx) { ramp(musicBus.gain, 0, 0.4); stopDrone(); } } }
     if (k === 'amb') { if (pref.amb && scene) walkScene(scene.per, scene.tl); else if (ctx) ramp(ambBus.gain, 0, 0.4); }
-    syncButtons();
+    settle(); syncButtons();
   }
   // קריינות (אם תתווסף): בזמן הדיבור המוזיקה יורדת, ואחריו חוזרת
   function duck(on) { duckN = Math.max(0, duckN + (on ? 1 : -1)); if (ctx && musicOn) musicTick(); }
