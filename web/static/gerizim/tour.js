@@ -426,7 +426,7 @@
       const el = document.createElement('div');
       el.className = 'omark ' + cls;
       if (go) el.addEventListener('click', ev => { ev.stopPropagation(); go(); });
-      new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(c).addTo(map);
+      new maplibregl.Marker({ element: el, anchor: 'center', opacityWhenCovered: '1' }).setLngLat(c).addTo(map);   // במבט מלמעלה אין מה שיסתיר; בלי זה שלט שבקצה המפה מתעמעם
       const o = { el, c }; oExtra.push(o); return o;
     };
     OR.shields.forEach(c => { const o = mk('shield', c, () => select('road60')); o.shield = true; o.el.textContent = '60'; });
@@ -500,7 +500,7 @@
       el.className = 'pin g-' + p.group + (p.parent ? ' part' : '') + (p.far ? ' far' : '') + (p.orient ? ' olab o-' + p.lab : '');
       el.addEventListener('click', ev => { ev.stopPropagation(); endTour(); select(p.id); });
       p._pin = el;
-      new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -9] }).setLngLat(p.center).addTo(map);
+      new maplibregl.Marker(Object.assign({ element: el, anchor: 'bottom', offset: [0, -9] }, p.far ? { opacityWhenCovered: '1' } : {})).setLngLat(p.center).addTo(map);
     });
 
     map.on('click', 'places-fill', ev => {
@@ -636,7 +636,7 @@
   }
   // Wikimedia מגיש תמונות מוקטנות רק ברוחבים קבועים; 330 לרצועה, 1280 לתצוגה המוגדלת
   const sized = (im, px) => im.t.replace(/\/\d+px-/, '/' + px + 'px-');
-  const big = im => im.f || (im.w >= 1280 ? sized(im, 1280) : im.t);
+  const big = im => im.f || (im.w >= 1280 ? sized(im, 1280) : im.w >= 960 ? sized(im, 960) : im.w >= 500 ? sized(im, 500) : im.t);
   function strip(list, key) {
     return '<div class="strip">' + list.map((im, i) =>
       '<button class="ph" data-set="' + key + '" data-i="' + i + '"><img loading="lazy" src="' + esc(sized(im, 330)) + '" alt="' + esc(L(im.cap) || '') + '"></button>').join('') + '</div>';

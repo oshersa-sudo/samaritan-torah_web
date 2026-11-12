@@ -982,6 +982,865 @@ window.GERIZIM_IMAGES = {
    }
   ]
  },
+ "rafidia": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Rafidia_001.jpg/330px-Rafidia_001.jpg",
+    "w": 2560,
+    "page": "https://commons.wikimedia.org/wiki/File:Rafidia_001.jpg",
+    "by": "أمين",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Christmas_tree%2C_Rafidia.jpg/330px-Christmas_tree%2C_Rafidia.jpg",
+    "w": 1152,
+    "page": "https://commons.wikimedia.org/wiki/File:Christmas_tree,_Rafidia.jpg",
+    "by": "Mohammad Hijjawi",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "עץ חג המולד ברפידיה",
+     "en": "The Christmas tree in Rafidia",
+     "ar": "شجرة الميلاد في رفيديا"
+    }
+   }
+  ]
+ },
+ "iraqburin": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Iraq_Burin_001.jpg/330px-Iraq_Burin_001.jpg",
+    "w": 5344,
+    "page": "https://commons.wikimedia.org/wiki/File:Iraq_Burin_001.jpg",
+    "by": "أمين",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/IraqBurin5837.JPG/330px-IraqBurin5837.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:IraqBurin5837.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/IraqBurin2308.JPG/330px-IraqBurin2308.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:IraqBurin2308.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "הצוק שעליו יושב הכפר, מבט מדרום",
+     "en": "The cliff on which the village stands, seen from the south",
+     "ar": "الجرف الذي تقوم عليه القرية، من الجنوب"
+    }
+   }
+  ]
+ },
+ "tell": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Tell%2C_Nablus.jpg/330px-Tell%2C_Nablus.jpg",
+    "w": 1600,
+    "page": "https://commons.wikimedia.org/wiki/File:Tell,_Nablus.jpg",
+    "by": "رائد عزمي حموده",
+    "lic": "CC BY 2.5"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/%D7%94%D7%A2%D7%99%D7%99%D7%A8%D7%94_%D7%AA%D7%9C.jpg/330px-%D7%94%D7%A2%D7%99%D7%99%D7%A8%D7%94_%D7%AA%D7%9C.jpg",
+    "w": 1280,
+    "page": "https://commons.wikimedia.org/wiki/File:%D7%94%D7%A2%D7%99%D7%99%D7%A8%D7%94_%D7%AA%D7%9C.jpg",
+    "by": "יאיר דב",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "sarra": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Sarra%2C_Nablus_5580.jpg/330px-Sarra%2C_Nablus_5580.jpg",
+    "w": 3648,
+    "page": "https://commons.wikimedia.org/wiki/File:Sarra,_Nablus_5580.jpg",
+    "by": "יעקב",
+    "lic": "CC0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Sarra_Zaharat-A-Sheikh_7557_d54.JPG/330px-Sarra_Zaharat-A-Sheikh_7557_d54.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Sarra_Zaharat-A-Sheikh_7557_d54.JPG",
+    "by": "יעקב",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "jit": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Jit.jpg/330px-Jit.jpg",
+    "w": 3264,
+    "page": "https://commons.wikimedia.org/wiki/File:Jit.jpg",
+    "by": "Orrling",
+    "lic": "CC BY-SA 3.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Jit%2C_Qalqilya_01.jpg/330px-Jit%2C_Qalqilya_01.jpg",
+    "w": 2908,
+    "page": "https://commons.wikimedia.org/wiki/File:Jit,_Qalqilya_01.jpg",
+    "by": "أمين",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Jit.png/330px-Jit.png",
+    "w": 784,
+    "page": "https://commons.wikimedia.org/wiki/File:Jit.png",
+    "by": "Conder and Kitchener",
+    "lic": "Public domain",
+    "cap": {
+     "he": "בית ההארחה של הכפר, ציור מסקר ארץ ישראל המערבית, 1882",
+     "en": "The village guest-house, a drawing from the Survey of Western Palestine, 1882",
+     "ar": "مضافة القرية، رسم من مسح فلسطين الغربية، 1882"
+    }
+   }
+  ]
+ },
+ "kedumim": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Landscape_of_Kedumim_11.jpg/330px-Landscape_of_Kedumim_11.jpg",
+    "w": 1152,
+    "page": "https://commons.wikimedia.org/wiki/File:Landscape_of_Kedumim_11.jpg",
+    "by": "Daniel Ventura",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Landscape_of_Kedumim_101.jpg/330px-Landscape_of_Kedumim_101.jpg",
+    "w": 1152,
+    "page": "https://commons.wikimedia.org/wiki/File:Landscape_of_Kedumim_101.jpg",
+    "by": "Daniel Ventura",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "beitwazan": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/BeitIba8367.JPG/330px-BeitIba8367.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:BeitIba8367.JPG",
+    "by": "יעקב",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "beitiba": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/BeitIba8366.JPG/330px-BeitIba8366.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:BeitIba8366.JPG",
+    "by": "יעקב",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/%D8%B4%D8%A7%D8%B1%D8%B9_%D8%A7%D9%84%D8%B1%D8%A6%D9%8A%D8%B3%D9%87_%D9%82%D8%B1%D9%8A%D8%A9_%D8%A8%D9%8A%D8%AA_%D8%A5%D9%8A%D8%A8%D8%A7_%D8%A8%D8%B9%D8%AF%D8%B3%D8%A9_%D8%A7%D9%84%D9%85%D8%B5%D9%88%D8%B1_%D8%A7%D9%84%D9%81%D9%88%D8%AA%D9%88%D8%BA%D8%B1%D8%A7%D9%81%D9%8A_%D8%A7%D9%84%D9%81%D9%84%D8%B3%D8%B7%D9%8A%D9%86%D9%8A_%D9%83%D9%85%D9%8A%D9%84_%D8%B9%D8%A8%D8%A7%D8%AF%D9%8A.jpg/330px-%D8%B4%D8%A7%D8%B1%D8%B9_%D8%A7%D9%84%D8%B1%D8%A6%D9%8A%D8%B3%D9%87_%D9%82%D8%B1%D9%8A%D8%A9_%D8%A8%D9%8A%D8%AA_%D8%A5%D9%8A%D8%A8%D8%A7_%D8%A8%D8%B9%D8%AF%D8%B3%D8%A9_%D8%A7%D9%84%D9%85%D8%B5%D9%88%D8%B1_%D8%A7%D9%84%D9%81%D9%88%D8%AA%D9%88%D8%BA%D8%B1%D8%A7%D9%81%D9%8A_%D8%A7%D9%84%D9%81%D9%84%D8%B3%D8%B7%D9%8A%D9%86%D9%8A_%D9%83%D9%85%D9%8A%D9%84_%D8%B9%D8%A8%D8%A7%D8%AF%D9%8A.jpg",
+    "w": 3472,
+    "page": "https://commons.wikimedia.org/wiki/File:%D8%B4%D8%A7%D8%B1%D8%B9_%D8%A7%D9%84%D8%B1%D8%A6%D9%8A%D8%B3%D9%87_%D9%82%D8%B1%D9%8A%D8%A9_%D8%A8%D9%8A%D8%AA_%D8%A5%D9%8A%D8%A8%D8%A7_%D8%A8%D8%B9%D8%AF%D8%B3%D8%A9_%D8%A7%D9%84%D9%85%D8%B5%D9%88%D8%B1_%D8%A7%D9%84%D9%81%D9%88%D8%AA%D9%88%D8%BA%D8%B1%D8%A7%D9%81%D9%8A_%D8%A7%D9%84%D9%81%D9%84%D8%B3%D8%B7%D9%8A%D9%86%D9%8A_%D9%83%D9%85%D9%8A%D9%84_%D8%B9%D8%A8%D8%A7%D8%AF%D9%8A.jpg",
+    "by": "كميل جواد نايف عبادي",
+    "lic": "CC0"
+   }
+  ]
+ },
+ "zawata": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Zwata8028.JPG/330px-Zwata8028.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Zwata8028.JPG",
+    "by": "יעקב",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/%D7%96%D7%95%D7%95%D7%90%D7%AA%D7%90.jpg/330px-%D7%96%D7%95%D7%95%D7%90%D7%AA%D7%90.jpg",
+    "w": 1280,
+    "page": "https://commons.wikimedia.org/wiki/File:%D7%96%D7%95%D7%95%D7%90%D7%AA%D7%90.jpg",
+    "by": "יאיר דב",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "qusin": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Qusin_004.jpg/330px-Qusin_004.jpg",
+    "w": 4032,
+    "page": "https://commons.wikimedia.org/wiki/File:Qusin_004.jpg",
+    "by": "أمين",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/GOPR2365.jpg/330px-GOPR2365.jpg",
+    "w": 4000,
+    "page": "https://commons.wikimedia.org/wiki/File:GOPR2365.jpg",
+    "by": "Nidal Ahmed 2",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "מבנה אבן ישן בכפר",
+     "en": "An old stone building in the village",
+     "ar": "مبنى حجري قديم في القرية"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Qusin_01.jpg/330px-Qusin_01.jpg",
+    "w": 4000,
+    "page": "https://commons.wikimedia.org/wiki/File:Qusin_01.jpg",
+    "by": "أمين",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "deirsharaf": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/%D8%A8%D9%84%D8%AF%D8%A9_%D8%AF%D9%8A%D8%B1_%D8%B4%D8%B1%D9%81_%D8%BA%D8%B1%D8%A8_%D9%85%D8%AF%D9%8A%D9%86%D8%A9_%D9%86%D8%A7%D8%A8%D9%84%D8%B3_2025_%D8%AA%D8%B5%D9%88%D9%8A%D8%B1_%D8%A7%D9%84%D9%85%D8%B5%D9%88%D8%B1_%D8%A7%D9%84%D9%81%D9%84%D8%B3%D8%B7%D9%8A%D9%86%D9%8A_%D9%83%D9%85%D9%8A%D9%84_%D8%B9%D8%A8%D8%A7%D8%AF%D9%8A.jpg/330px-%D8%A8%D9%84%D8%AF%D8%A9_%D8%AF%D9%8A%D8%B1_%D8%B4%D8%B1%D9%81_%D8%BA%D8%B1%D8%A8_%D9%85%D8%AF%D9%8A%D9%86%D8%A9_%D9%86%D8%A7%D8%A8%D9%84%D8%B3_2025_%D8%AA%D8%B5%D9%88%D9%8A%D8%B1_%D8%A7%D9%84%D9%85%D8%B5%D9%88%D8%B1_%D8%A7%D9%84%D9%81%D9%84%D8%B3%D8%B7%D9%8A%D9%86%D9%8A_%D9%83%D9%85%D9%8A%D9%84_%D8%B9%D8%A8%D8%A7%D8%AF%D9%8A.jpg",
+    "w": 4624,
+    "page": "https://commons.wikimedia.org/wiki/File:%D8%A8%D9%84%D8%AF%D8%A9_%D8%AF%D9%8A%D8%B1_%D8%B4%D8%B1%D9%81_%D8%BA%D8%B1%D8%A8_%D9%85%D8%AF%D9%8A%D9%86%D8%A9_%D9%86%D8%A7%D8%A8%D9%84%D8%B3_2025_%D8%AA%D8%B5%D9%88%D9%8A%D8%B1_%D8%A7%D9%84%D9%85%D8%B5%D9%88%D8%B1_%D8%A7%D9%84%D9%81%D9%84%D8%B3%D8%B7%D9%8A%D9%86%D9%8A_%D9%83%D9%85%D9%8A%D9%84_%D8%B9%D8%A8%D8%A7%D8%AF%D9%8A.jpg",
+    "by": "كميل جواد نايف عبادي",
+    "lic": "CC BY 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/West_Bank-39.jpg/330px-West_Bank-39.jpg",
+    "w": 4201,
+    "page": "https://commons.wikimedia.org/wiki/File:West_Bank-39.jpg",
+    "by": "Almonroth",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "כביש 60 מצפון לדיר שרף, בדרך מג'נין לשכם",
+     "en": "Route 60 north of Deir Sharaf, on the way from Jenin to Nablus",
+     "ar": "الطريق 60 شمالي دير شرف، في الطريق من جنين إلى نابلس"
+    }
+   }
+  ]
+ },
+ "burin": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Burin_Nablus_1.jpg/330px-Burin_Nablus_1.jpg",
+    "w": 8256,
+    "page": "https://commons.wikimedia.org/wiki/File:Burin_Nablus_1.jpg",
+    "by": "שי קנדלר",
+    "lic": "CC BY 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Burin_Nablus_2.jpg/330px-Burin_Nablus_2.jpg",
+    "w": 8256,
+    "page": "https://commons.wikimedia.org/wiki/File:Burin_Nablus_2.jpg",
+    "by": "שי קנדלר",
+    "lic": "CC BY 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Burin_Feb_22.jpg/330px-Burin_Feb_22.jpg",
+    "w": 1024,
+    "page": "https://commons.wikimedia.org/wiki/File:Burin_Feb_22.jpg",
+    "by": "שי קנדלר",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "madama": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Madama2349.JPG/330px-Madama2349.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Madama2349.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "מאדמא בעמק, מבט מדרום",
+     "en": "Madama in its valley, seen from the south",
+     "ar": "مادما في الوادي، من الجنوب"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/%D7%9E%D7%93%D7%90%D7%9E%D7%90.jpg/330px-%D7%9E%D7%93%D7%90%D7%9E%D7%90.jpg",
+    "w": 1600,
+    "page": "https://commons.wikimedia.org/wiki/File:%D7%9E%D7%93%D7%90%D7%9E%D7%90.jpg",
+    "by": "יאיר דב",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "asiraq": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/%D7%A2%D7%A6%D7%99%D7%A8%D7%94_%D7%90%D7%9C-%D7%A7%D7%99%D7%91%D7%9C%D7%99%D7%94.jpg/330px-%D7%A2%D7%A6%D7%99%D7%A8%D7%94_%D7%90%D7%9C-%D7%A7%D7%99%D7%91%D7%9C%D7%99%D7%94.jpg",
+    "w": 1280,
+    "page": "https://commons.wikimedia.org/wiki/File:%D7%A2%D7%A6%D7%99%D7%A8%D7%94_%D7%90%D7%9C-%D7%A7%D7%99%D7%91%D7%9C%D7%99%D7%94.jpg",
+    "by": "יאיר דב",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Asira3010.jpg/330px-Asira3010.jpg",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Asira3010.jpg",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "yitzhar": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/EliTapuachYitzhar4269.JPG/330px-EliTapuachYitzhar4269.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:EliTapuachYitzhar4269.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "urif": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Urif193.jpg/330px-Urif193.jpg",
+    "w": 2848,
+    "page": "https://commons.wikimedia.org/wiki/File:Urif193.jpg",
+    "by": "יעקב",
+    "lic": "CC BY-SA 3.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Urif2368.JPG/330px-Urif2368.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Urif2368.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 3.0"
+   }
+  ]
+ },
+ "huwara": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Hawara3141.jpg/330px-Hawara3141.jpg",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Hawara3141.jpg",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "חווארה לאורך הדרך הראשית, בעמק המכמתת; מבט מצפון",
+     "en": "Huwara along the main road, in the Mukhna plain; seen from the north",
+     "ar": "حوّارة على امتداد الطريق الرئيسة، في سهل مخنة؛ من الشمال"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Hawara2620.JPG/330px-Hawara2620.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Hawara2620.JPG",
+    "by": "יעקב",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Hawara2628.JPG/330px-Hawara2628.JPG",
+    "w": 3848,
+    "page": "https://commons.wikimedia.org/wiki/File:Hawara2628.JPG",
+    "by": "יעקב",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "einabus": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/EinabusQabalan2377.JPG/330px-EinabusQabalan2377.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:EinabusQabalan2377.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "עינאבוס במבט מרחוק מצפון (במרכז); מאחוריה קבלאן",
+     "en": "Einabus seen from afar, from the north (centre); Qabalan behind it",
+     "ar": "عينبوس من بعيد، من الشمال (في الوسط)؛ وخلفها قبلان"
+    }
+   }
+  ]
+ },
+ "odala": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Odala1.jpg/330px-Odala1.jpg",
+    "w": 3968,
+    "page": "https://commons.wikimedia.org/wiki/File:Odala1.jpg",
+    "by": "Palobserver",
+    "lic": "Public domain"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Odela3127.jpg/330px-Odela3127.jpg",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Odela3127.jpg",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "אודלה ושדות עמק המכמתת, מבט מצפון",
+     "en": "Odala and the fields of the Mukhna plain, seen from the north",
+     "ar": "أودلا وحقول سهل مخنة، من الشمال"
+    }
+   }
+  ]
+ },
+ "beita": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Beita%2C_Nablus_001.jpg/330px-Beita%2C_Nablus_001.jpg",
+    "w": 4000,
+    "page": "https://commons.wikimedia.org/wiki/File:Beita,_Nablus_001.jpg",
+    "by": "أمين",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Beita_municipality_december_2022.jpg/330px-Beita_municipality_december_2022.jpg",
+    "w": 3286,
+    "page": "https://commons.wikimedia.org/wiki/File:Beita_municipality_december_2022.jpg",
+    "by": "יורם שורק",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "בניין העירייה",
+     "en": "The town hall",
+     "ar": "مبنى البلدية"
+    }
+   }
+  ]
+ },
+ "balatacamp": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Balata_Panorama_From_Jerzim.jpg/330px-Balata_Panorama_From_Jerzim.jpg",
+    "w": 8194,
+    "page": "https://commons.wikimedia.org/wiki/File:Balata_Panorama_From_Jerzim.jpg",
+    "by": "Ibro84",
+    "lic": "Public domain",
+    "cap": {
+     "he": "מזרח שכם ובלאטה, מבט מהר גריזים",
+     "en": "East Nablus and Balata, seen from Mount Gerizim",
+     "ar": "شرق نابلس وبلاطة، من جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Balata_Camp_circa_1950.jpg/330px-Balata_Camp_circa_1950.jpg",
+    "w": 1451,
+    "page": "https://commons.wikimedia.org/wiki/File:Balata_Camp_circa_1950.jpg",
+    "by": "Vincent Bockstiegel",
+    "lic": "Public domain",
+    "cap": {
+     "he": "מחנה האוהלים, 1950 בקירוב",
+     "en": "The camp of tents, about 1950",
+     "ar": "مخيم الخيام، نحو سنة 1950"
+    }
+   }
+  ]
+ },
+ "askar": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/AskarDeirElHatib5571.JPG/330px-AskarDeirElHatib5571.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:AskarDeirElHatib5571.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "עסכר; מאחוריה דיר אל-חטב",
+     "en": "Askar; Deir al-Hatab beyond it",
+     "ar": "عسكر؛ وخلفها دير الحطب"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Northern_views._Sychar_%28Asker%29_and_Mt._Gerizim_LOC_matpc.01057.jpg/330px-Northern_views._Sychar_%28Asker%29_and_Mt._Gerizim_LOC_matpc.01057.jpg",
+    "w": 6061,
+    "page": "https://commons.wikimedia.org/wiki/File:Northern_views._Sychar_(Asker)_and_Mt._Gerizim_LOC_matpc.01057.jpg",
+    "by": "Matson Collection",
+    "lic": "Public domain",
+    "cap": {
+     "he": "סוכר (עסכר) והר גריזים, צילום סטריאוסקופי משנת 1900 בקירוב",
+     "en": "Sychar (Askar) and Mount Gerizim, a stereograph of about 1900",
+     "ar": "سوخار (عسكر) وجبل جرزيم، صورة مجسَّمة نحو سنة 1900"
+    }
+   }
+  ]
+ },
+ "azmut": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Azmut3562.jpg/330px-Azmut3562.jpg",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Azmut3562.jpg",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Azmut3313.jpg/330px-Azmut3313.jpg",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Azmut3313.jpg",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "deirhatab": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Deir_al-Hatab3071.jpg/330px-Deir_al-Hatab3071.jpg",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Deir_al-Hatab3071.jpg",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Deir_al-Hatab_01.jpg/330px-Deir_al-Hatab_01.jpg",
+    "w": 4000,
+    "page": "https://commons.wikimedia.org/wiki/File:Deir_al-Hatab_01.jpg",
+    "by": "أمين",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "הרחוב הראשי",
+     "en": "The main street",
+     "ar": "الشارع الرئيس"
+    }
+   }
+  ]
+ },
+ "rujeib": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Har_Gerizim_044.JPG/330px-Har_Gerizim_044.JPG",
+    "w": 6016,
+    "page": "https://commons.wikimedia.org/wiki/File:Har_Gerizim_044.JPG",
+    "by": "Meronim",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "רוג'ייב, מבט מהר גריזים",
+     "en": "Rujeib, seen from Mount Gerizim",
+     "ar": "روجيب، من جبل جرزيم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Rujeib5696.JPG/330px-Rujeib5696.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Rujeib5696.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "itamar": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Itamar2.jpg/330px-Itamar2.jpg",
+    "w": 750,
+    "page": "https://commons.wikimedia.org/wiki/File:Itamar2.jpg",
+    "by": "צילום על ידי מנחם ברודי photo{}shechem.org. Original uploader was Daniel Ventura",
+    "lic": "CC BY-SA 2.5"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Founders_Street_in_Itamar-_Settlement_in_the_West_Bank_panoramio.jpg/330px-Founders_Street_in_Itamar-_Settlement_in_the_West_Bank_panoramio.jpg",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Founders_Street_in_Itamar-_Settlement_in_the_West_Bank_panoramio.jpg",
+    "by": "‫יודקה yudkey‬‎",
+    "lic": "CC BY 3.0"
+   }
+  ]
+ },
+ "beitfurik": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Beit_Furik_from_Road_555.jpg/330px-Beit_Furik_from_Road_555.jpg",
+    "w": 1366,
+    "page": "https://commons.wikimedia.org/wiki/File:Beit_Furik_from_Road_555.jpg",
+    "by": "יורם שורק",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Beit_furik_entrance.jpg/330px-Beit_furik_entrance.jpg",
+    "w": 1600,
+    "page": "https://commons.wikimedia.org/wiki/File:Beit_furik_entrance.jpg",
+    "by": "יורם שורק",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "שער הכניסה לעיירה",
+     "en": "The gate at the entrance to the town",
+     "ar": "بوابة مدخل البلدة"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Mosque_in_Beit_Furik.jpg/330px-Mosque_in_Beit_Furik.jpg",
+    "w": 2048,
+    "page": "https://commons.wikimedia.org/wiki/File:Mosque_in_Beit_Furik.jpg",
+    "by": "יורם שורק",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "beitdajan": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Beit_Dajan_Nablus.jpg/330px-Beit_Dajan_Nablus.jpg",
+    "w": 1024,
+    "page": "https://commons.wikimedia.org/wiki/File:Beit_Dajan_Nablus.jpg",
+    "by": "שי קנדלר",
+    "lic": "CC BY-SA 4.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Beith_Dajan_from_south.jpg/330px-Beith_Dajan_from_south.jpg",
+    "w": 1600,
+    "page": "https://commons.wikimedia.org/wiki/File:Beith_Dajan_from_south.jpg",
+    "by": "יורם שורק",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "talluza": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/%D7%98%D7%9C%D7%95%D7%96%D7%94.jpg/330px-%D7%98%D7%9C%D7%95%D7%96%D7%94.jpg",
+    "w": 1280,
+    "page": "https://commons.wikimedia.org/wiki/File:%D7%98%D7%9C%D7%95%D7%96%D7%94.jpg",
+    "by": "יאיר דב",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "badhan": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Badan%2C_in_West_Bank.jpg/330px-Badan%2C_in_West_Bank.jpg",
+    "w": 1024,
+    "page": "https://commons.wikimedia.org/wiki/File:Badan,_in_West_Bank.jpg",
+    "by": "Raed Azmi Hamouda",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "הנחל בוואדי אל-באד'אן",
+     "en": "The brook in Wadi al-Badhan",
+     "ar": "الجدول في وادي الباذان"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Eau_dans_Wadi_Al-Badan.jpg/330px-Eau_dans_Wadi_Al-Badan.jpg",
+    "w": 1280,
+    "page": "https://commons.wikimedia.org/wiki/File:Eau_dans_Wadi_Al-Badan.jpg",
+    "by": "SallyMD",
+    "lic": "CC BY-SA 4.0"
+   }
+  ]
+ },
+ "kabir": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Har_kabir.jpg/330px-Har_kabir.jpg",
+    "w": 2048,
+    "page": "https://commons.wikimedia.org/wiki/File:Har_kabir.jpg",
+    "by": "my self",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "הר כביר במבט מהר גריזים; על ההר אלון מורה, ולרגליו עזמוט, דיר אל-חטב וסאלם",
+     "en": "Mount Kabir seen from Mount Gerizim; Elon Moreh on the mountain, and Azmut, Deir al-Hatab and Salim at its foot",
+     "ar": "جبل الكبير من جبل جرزيم؛ على الجبل ألون موريه، وعند سفحه عزموط ودير الحطب وسالم"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Har_kabir_12.JPG/330px-Har_kabir_12.JPG",
+    "w": 4000,
+    "page": "https://commons.wikimedia.org/wiki/File:Har_kabir_12.JPG",
+    "by": "Daniel Ventura",
+    "lic": "CC BY-SA 3.0"
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Har_kabir_21.JPG/330px-Har_kabir_21.JPG",
+    "w": 4000,
+    "page": "https://commons.wikimedia.org/wiki/File:Har_kabir_21.JPG",
+    "by": "Daniel Ventura",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "מבט מהר כביר צפונה: מימין עמק נחל תרצה",
+     "en": "Looking north from Mount Kabir: the valley of Nahal Tirzah on the right",
+     "ar": "منظر من جبل الكبير شمالًا: إلى اليمين وادي الفارعة"
+    }
+   }
+  ]
+ },
+ "salman": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Yitzhar4635_d42.JPG/330px-Yitzhar4635_d42.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Yitzhar4635_d42.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "ג'בל סלמאן והיישוב יצהר שבראשו, מבט מדרום",
+     "en": "Jabal Salman with Yitzhar on its top, seen from the south",
+     "ar": "جبل سلمان وعلى قمته يتسهار، من الجنوب"
+    }
+   }
+  ]
+ },
+ "mikhmetat": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Mikmethath_Valley_%28Sahl_Makhuna%29.jpg/330px-Mikmethath_Valley_%28Sahl_Makhuna%29.jpg",
+    "w": 3840,
+    "page": "https://commons.wikimedia.org/wiki/File:Mikmethath_Valley_(Sahl_Makhuna).jpg",
+    "by": "Bolter21",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "עמק המכמתת, מבט דרומה; ברקע אודלה (משמאל) וחווארה (מימין)",
+     "en": "The Mukhna plain, looking south; Odala (left) and Huwara (right) in the background",
+     "ar": "سهل مخنة، نظرة إلى الجنوب؛ في الخلفية أودلا (يسارًا) وحوّارة (يمينًا)"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Hawara3141.jpg/330px-Hawara3141.jpg",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Hawara3141.jpg",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "חווארה והדרך הראשית לאורך העמק, מבט מצפון",
+     "en": "Huwara and the main road along the plain, seen from the north",
+     "ar": "حوّارة والطريق الرئيسة على امتداد السهل، من الشمال"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Mount_Gerizim_View_IMG_2257.JPG/330px-Mount_Gerizim_View_IMG_2257.JPG",
+    "w": 5184,
+    "page": "https://commons.wikimedia.org/wiki/File:Mount_Gerizim_View_IMG_2257.JPG",
+    "by": "Deror_avi",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "שדות העמק לרגלי הר גריזים, מבט מן ההר",
+     "en": "The fields of the plain at the foot of Mount Gerizim, seen from the mountain",
+     "ar": "حقول السهل عند سفح جبل جرزيم، من الجبل"
+    }
+   }
+  ]
+ },
+ "askarplain": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Askar5633.JPG/330px-Askar5633.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Askar5633.JPG",
+    "by": "עדירל",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "בקעת עסכר: עסכר משמאל, מאחוריה דיר אל-חטב, ומימין סאלם",
+     "en": "The plain of Askar: Askar on the left, Deir al-Hatab beyond it, and Salim on the right",
+     "ar": "سهل عسكر: عسكر يسارًا، وخلفها دير الحطب، وسالم يمينًا"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Mount_Gerizim_View_IMG_2254.JPG/330px-Mount_Gerizim_View_IMG_2254.JPG",
+    "w": 4740,
+    "page": "https://commons.wikimedia.org/wiki/File:Mount_Gerizim_View_IMG_2254.JPG",
+    "by": "Deror_avi",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "מבט מהר גריזים מזרחה",
+     "en": "Looking east from Mount Gerizim",
+     "ar": "منظر من جبل جرزيم شرقًا"
+    }
+   }
+  ]
+ },
+ "beitdajanvalley": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/%D7%91%D7%99%D7%AA_%D7%93%D7%92%27%D7%9F.jpg/330px-%D7%91%D7%99%D7%AA_%D7%93%D7%92%27%D7%9F.jpg",
+    "w": 1448,
+    "page": "https://commons.wikimedia.org/wiki/File:%D7%91%D7%99%D7%AA_%D7%93%D7%92%27%D7%9F.jpg",
+    "by": "יאיר דב",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "הכפר בית דג'ן בבקעה",
+     "en": "The village of Beit Dajan in the valley",
+     "ar": "قرية بيت دجن في السهل"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Beit_Furik_from_Road_555.jpg/330px-Beit_Furik_from_Road_555.jpg",
+    "w": 1366,
+    "page": "https://commons.wikimedia.org/wiki/File:Beit_Furik_from_Road_555.jpg",
+    "by": "יורם שורק",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "בית פוריכ בשולי הבקעה",
+     "en": "Beit Furik on the edge of the valley",
+     "ar": "بيت فوريك على طرف السهل"
+    }
+   }
+  ]
+ },
+ "nablusvalley": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/BeitIba8368.JPG/330px-BeitIba8368.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:BeitIba8368.JPG",
+    "by": "יעקב",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "בית איבא בעמק נחל שכם, מבט מצפון; מאחוריה הדרך משכם לטול כרם",
+     "en": "Beit Iba in the Nablus stream valley, seen from the north; behind it the road from Nablus to Tulkarm",
+     "ar": "بيت إيبا في وادي نابلس، من الشمال؛ وخلفها الطريق من نابلس إلى طولكرم"
+    }
+   }
+  ]
+ },
+ "road60": {
+  "photos": [
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Interchange_at_northern_side_of_new_road_around_Hawara_9269.jpg/330px-Interchange_at_northern_side_of_new_road_around_Hawara_9269.jpg",
+    "w": 5184,
+    "page": "https://commons.wikimedia.org/wiki/File:Interchange_at_northern_side_of_new_road_around_Hawara_9269.jpg",
+    "by": "יעקב",
+    "lic": "CC0",
+    "cap": {
+     "he": "המחלף הצפוני של הכביש העוקף את חווארה, 2024",
+     "en": "The northern interchange of the road bypassing Huwara, 2024",
+     "ar": "التقاطع الشمالي للطريق الالتفافية حول حوّارة، 2024"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Hawara2620.JPG/330px-Hawara2620.JPG",
+    "w": 4608,
+    "page": "https://commons.wikimedia.org/wiki/File:Hawara2620.JPG",
+    "by": "יעקב",
+    "lic": "CC BY-SA 4.0",
+    "cap": {
+     "he": "הדרך הראשית בחווארה",
+     "en": "The main road in Huwara",
+     "ar": "الطريق الرئيسة في حوّارة"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/West_Bank-39.jpg/330px-West_Bank-39.jpg",
+    "w": 4201,
+    "page": "https://commons.wikimedia.org/wiki/File:West_Bank-39.jpg",
+    "by": "Almonroth",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "הכביש מצפון לדיר שרף, בדרך מג'נין לשכם",
+     "en": "The road north of Deir Sharaf, on the way from Jenin to Nablus",
+     "ar": "الطريق شمالي دير شرف، من جنين إلى نابلس"
+    }
+   },
+   {
+    "t": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/ILroute-60.png/330px-ILroute-60.png",
+    "w": 926,
+    "page": "https://commons.wikimedia.org/wiki/File:ILroute-60.png",
+    "by": "additions and English labels by Atefrat",
+    "lic": "CC BY-SA 3.0",
+    "cap": {
+     "he": "מהלך כביש 60 מבאר שבע עד נצרת; הקו המקווקו הוא התוואי המקורי, דרך הערים",
+     "en": "The course of Route 60 from Beersheba to Nazareth; the dotted line is the original route, through the cities",
+     "ar": "مسار الطريق 60 من بئر السبع إلى الناصرة؛ والخط المنقَّط هو المسار الأصلي عبر المدن"
+    }
+   }
+  ]
+ },
  "northenclosure": {
   "photos": [
    {

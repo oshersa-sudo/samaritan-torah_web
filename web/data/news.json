@@ -58,5 +58,15 @@
     "text_he": "חדש בגבעת עולם: הכפתור \"מפת התמצאות\" פותח מבט רחב מלמעלה על סביבות הר גריזים, והצפון למעלה. עליו שלושים יישובים ממערב, ממזרח, מצפון ומדרום, העמקים שלרגלי ההר (עמק המכמתת, בקעת עסכר, עמק בית דג'ן ועמק נחל שכם), ההרים, כביש 60 של היום והדרך הישנה מירושלים דרך שכם אל ג'נין, ושלטי כיוון ומרחק.",
     "text_en": "New in Givat Olam: the \"Orientation map\" button opens a wide, north-up view of the country around Mount Gerizim. It shows thirty villages and towns on every side, the valleys at the foot of the mountain (the Mukhna plain, the plain of Askar, the Beit Dajan valley and the Nablus stream valley), the mountains, today's Route 60 and the old road from Jerusalem through Nablus to Jenin, with direction and distance signs.",
     "text_ar": "جديد في التلة الأبدية: زرّ «خريطة توجيه» يفتح نظرة واسعة من الأعلى على محيط جبل جرزيم، والشمال إلى الأعلى. عليها ثلاثون قرية وبلدة من كل الجهات، والسهول عند سفح الجبل (سهل مخنة، وسهل عسكر، وسهل بيت دجن، ووادي نابلس)، والجبال، والطريق 60 اليوم والطريق القديمة من القدس عبر نابلس إلى جنين، مع لافتات الاتجاه والمسافة."
+  },
+  {
+    "app": "gerizim",
+    "date": "2026-11-12T09:05:50",
+    "he": "מפת ההתמצאות: תמונות ומידע לכל כפר, עמק והר",
+    "en": "The orientation map: photos and background for every village, valley and mountain",
+    "ar": "خريطة التوجيه: صور ومعلومات لكل قرية وسهل وجبل",
+    "text_he": "חדש בגבעת עולם: לכל אחד מ-37 האתרים שבמפת ההתמצאות נוספו תמונות ותיאור קצר — תולדות המקום, ממצאים, אוכלוסייה וגובה, ובמקומות רבים גם הקשר השומרוני: טור לוזה שבטלוזה, בדן שבוואדי אל-באד'אן, עין סוכר שבעסכר, בית פוריכ, חווארה, ג'ית ובית וזן. לחיצה על שם במפה פותחת את הכרטיס.",
+    "text_en": "New in Givat Olam: each of the 37 places on the orientation map now has photos and a short account — the history of the place, finds, population and elevation, and in many places the Samaritan connection too: Tur Luzeh at Talluza, Badan in Wadi al-Badhan, Ein Sukkar at Askar, Beit Furik, Huwara, Jit and Beit Wazan. Tap a name on the map to open its card.",
+    "text_ar": "جديد في التلة الأبدية: أُضيفت لكل واحد من المواقع الـ37 في خريطة التوجيه صور ووصف قصير — تاريخ المكان، والمكتشفات، وعدد السكان والارتفاع، وفي أماكن كثيرة الصلة السامرية أيضًا: طور لوزة في طلّوزة، وبدان في وادي الباذان، وعين سوخار في عسكر، وبيت فوريك، وحوّارة، وجيت، وبيت وزن. اضغط على الاسم في الخريطة لفتح البطاقة."
   }
 ]
