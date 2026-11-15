@@ -815,6 +815,10 @@
   const FIND_OFF = [];
   let findSel = null;                    // null = everywhere; otherwise a Set of app keys
   let findLayer = null, resLayer = null, findSeq = 0;
+  /* What was asked and what came back, kept while the reader is away in one of
+     the apps: coming back from a line of the answer lands on the answer again,
+     not on the bare menu — twenty lines are not worth searching for twice. */
+  let findKeep = null, findBack = false;
 
   const findable = () => FIND_APPS.filter(k => FIND_OFF.indexOf(k) < 0);
   function appName(k){
@@ -1017,8 +1021,10 @@
 
   // ── the answer ─────────────────────────────────────────────────────────────
   function closeResults(){ if(resLayer){ resLayer.remove(); resLayer = null; } }
+  function dropResults(){ findBack = false; findKeep = null; closeResults(); }
   function showResults(q, data){
     closeResults();
+    findKeep = { q: q, data: data };
     const X = T(), rows = data.rows || [];
     const o = document.createElement('div');
     o.className = 'hub-res';
@@ -1031,7 +1037,7 @@
     o.querySelector('.hub-res-q').textContent = '«' + q + '»';
     const bx = o.querySelector('.hub-res-x');
     bx.setAttribute('aria-label', t('close')); bx.title = t('close');
-    bx.addEventListener('click', () => closeResults());
+    bx.addEventListener('click', () => dropResults());
     const body = o.querySelector('.hub-res-body');
     if(!rows.length){
       const d = document.createElement('div'); d.className = 'hub-res-none';
@@ -1075,33 +1081,23 @@
   }
 
   // ── going there ────────────────────────────────────────────────────────────
-  /* Two of the units are pages of their own inside a frame, and both have a
-     search box. They are served from this very origin, so rather than teaching
-     each of them a new address, the term is simply typed into that box for the
-     reader — which is what they would have done themselves. */
-  function frameSearch(frame, sel, term){
-    if(!frame || !term) return;
-    const run = () => {
-      try{
-        const d = frame.contentDocument; if(!d) return;
-        const i = d.querySelector(sel); if(!i) return;
-        i.value = term;
-        const W = frame.contentWindow;
-        i.dispatchEvent(new W.Event('input', { bubbles:true }));
-        i.dispatchEvent(new W.Event('change', { bubbles:true }));
-        try{ i.dispatchEvent(new W.KeyboardEvent('keydown', { key:'Enter', bubbles:true })); }catch(e){}
-      }catch(e){ /* a frame that is not ours to touch */ }
-    };
-    let done = false;
-    const once = () => { if(done) return; done = true; setTimeout(run, 260); };
-    try{
-      if(frame.contentDocument && frame.contentDocument.readyState === 'complete') once();
-    }catch(e){}
-    frame.addEventListener('load', once, { once:true });
-    setTimeout(once, 1400);                       // a frame kept from last time fires no load
+  /* Two of the units are pages of their own inside a frame, served from this
+     very origin. Typing into their search box from out here was not enough —
+     a search box is wired to a page's own state, and filling it leaves that
+     state untouched — so each of them now TAKES a search: in the address when
+     its frame is opened for the first time, and in a message when the frame is
+     already standing. The message is the better of the two: nothing is
+     reloaded, so a recording that is playing goes on playing. */
+  function tellFrame(f, msg){
+    if(!f) return;
+    const send = () => { try{ f.contentWindow.postMessage(msg, location.origin); }catch(e){} };
+    send();
+    setTimeout(send, 450);
+    f.addEventListener('load', () => setTimeout(send, 350), { once:true });
   }
   async function goResult(r){
     const g = r.go || {};
+    findBack = true;                              // the way back from there is to this answer
     closeFind(true);                              // we are leaving the menu: no turn of the dial
     const open = fn => { setOrigin('hub'); hideHub(); setTimeout(fn, 20); };
     try{
@@ -1131,11 +1127,21 @@
         });
         return;
       }
-      if(g.t === 'shira'){ open(() => { openShira(); frameSearch($('shFrame'), '#q', g.q); }); return; }
+      if(g.t === 'shira'){
+        open(() => {
+          const f = $('shFrame');
+          if(f && !f.src) f.src = '/shira/?q=' + encodeURIComponent(g.q || '');
+          openShira();
+          tellFrame(f, { shiraAct:'find', q: g.q || '' });
+        });
+        return;
+      }
       if(g.t === 'mss'){
         open(() => {
+          const f = $('mssFrame');
+          if(f && !f.src) f.src = '/manuscripts/?q=' + encodeURIComponent(g.q || '');
           if(typeof window.openMss === 'function') window.openMss();
-          frameSearch($('mssFrame'), '#msSearch', g.q);
+          tellFrame(f, { mssFind: g.q || '' });
         });
         return;
       }
@@ -1244,6 +1250,19 @@
     refitCard(); loadNews();
     document.body.style.overflow = 'hidden';
     setOrigin('menu');
+    restoreFind();
+  }
+  /* back from an app that a line of the answer opened: the line, the question
+     and the whole answer are put back as they were. Once — a reader who then
+     closes the answer and enters an app from the dial is not dragged back. */
+  function restoreFind(){
+    if(!findBack) return;
+    findBack = false;
+    if(!findKeep) return;
+    openFind();
+    const inp = findLayer && findLayer.querySelector('.hub-find-in');
+    if(inp) inp.value = findKeep.q;
+    showResults(findKeep.q, findKeep.data);
   }
   function hideHub(){ hub.classList.add('hidden'); document.body.classList.remove('hub-open'); document.body.style.overflow = ''; }
   function enter(key){

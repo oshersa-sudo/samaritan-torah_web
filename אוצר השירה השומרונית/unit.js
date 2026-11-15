@@ -3253,6 +3253,7 @@ addEventListener('message', e => {
       if (isFinite(d.to)) { au.currentTime = d.to; mediaPos(); }
       break;
     case 'resume':        deckResume(); break;
+    case 'find':          shiraFindOutside(d.q); break;
   }
 });
 
@@ -5634,6 +5635,33 @@ $('qclear').onclick = () => {
   $('q').value = ''; F.q = ''; heardSay(''); draw();
 };
 
+/* ---------------------------------------------- a search from outside
+ *
+ * The house's own search (the magnifier in the main menu) looks through every
+ * app at once, this archive among them, and a line of its answer opens this
+ * page. What it sends is the name of the piyyut — nothing more: the search is
+ * run here exactly as if it had been typed into the box, and nothing is
+ * played. It arrives two ways: in the address when this page is opened for
+ * the first time, and in a message when it is already standing — the message
+ * being the gentler of the two, since it reloads nothing and a recording that
+ * is playing carries on.
+ *
+ * A term that comes before the catalogue is held until it is in; without that
+ * the search would run over an empty archive and find nothing.
+ */
+let _findWanted = null;
+function shiraFindOutside(q){
+  q = (q || '').trim();
+  if (!C) { _findWanted = q; return; }
+  _findWanted = null;
+  const box = $('q');
+  if (box) box.value = q;
+  F.q = q;
+  heardSay('');
+  draw();
+  try { if (box) box.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+}
+
 /* ===================================================== חיפוש בדיבור
  *
  * The microphone belongs in this search more than in most: the names here are
@@ -6935,6 +6963,12 @@ async function loadCatalog() {
   // a link shared out of the deck opens straight on its own recording
   openFromLink();
   addEventListener('hashchange', openFromLink);
+  // and a search sent here from the house's own search bar
+  try {
+    const want = new URLSearchParams(location.search).get('q');
+    if (want) shiraFindOutside(want);
+  } catch (e) { /* an address with no parameters */ }
+  if (_findWanted !== null) shiraFindOutside(_findWanted);   // it came before the catalogue
   const st = await fetch('api/admin/status').then(r => r.json()).catch(() => ({}));
   ADMIN.enabled = !!st.enabled;
   ADMIN.user    = st.user || '';

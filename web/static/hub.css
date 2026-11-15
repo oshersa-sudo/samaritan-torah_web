@@ -617,10 +617,12 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
 .hub-find-opt.off{ cursor:default; opacity:.55; }
 .hub-find-all{ font-weight:700; color:var(--gold-bright); }
 
-/* the answer: a page of its own, in the main menu's colours */
+/* The answer: a page of its own, in the main menu's colours but lighter than
+   the menu — a list is read, where the dial is only looked at, and gold on
+   near-black is handsome at a glance and tiring by the twentieth line. */
 #hub > .hub-res{
   position:fixed; inset:0; z-index:8; display:flex; flex-direction:column;
-  background:radial-gradient(120% 80% at 50% 32%, var(--lapis) 0%, var(--ink-night) 46%, var(--ink-abyss) 100%);
+  background:radial-gradient(130% 92% at 50% 16%, #2a5aa8 0%, #1a3c79 48%, #112a56 100%);
 }
 .hub-res-head{
   flex:0 0 auto; display:flex; align-items:center; gap:10px;
@@ -628,7 +630,7 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
   border-bottom:1px solid rgba(200,164,86,.35);
 }
 .hub-res-head h2{ margin:0; font-family:'Frank Ruhl Libre',serif; font-size:19px; color:var(--gold-bright); white-space:nowrap; }
-.hub-res-q{ flex:1 1 auto; min-width:0; font-size:13.5px; color:var(--gold); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hub-res-q{ flex:1 1 auto; min-width:0; font-size:14px; color:#f0dcab; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .hub-res-x{
   flex:0 0 auto; width:34px; height:34px; border-radius:50%; cursor:pointer; line-height:1; font-size:22px;
   padding:0; border:1px solid rgba(200,164,86,.6); background:transparent; color:var(--gold-bright);
@@ -639,16 +641,16 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
   padding:10px 14px max(18px, env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:8px;
 }
 .hub-res-row{
-  display:block; width:100%; text-align:start; cursor:pointer; padding:10px 12px; border-radius:12px;
-  border:1px solid rgba(200,164,86,.3); background:rgba(10,23,51,.5); color:var(--parchment); font:inherit;
+  display:block; width:100%; text-align:start; cursor:pointer; padding:11px 13px; border-radius:12px;
+  border:1px solid rgba(232,205,142,.34); background:rgba(28,64,124,.62); color:#f8f3e6; font:inherit;
 }
-.hub-res-row:hover{ background:rgba(200,164,86,.15); border-color:rgba(200,164,86,.62); }
+.hub-res-row:hover{ background:rgba(200,164,86,.22); border-color:rgba(236,205,132,.8); }
 .hub-res-line{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:3px; }
 .hub-res-app{ font-size:11.5px; font-weight:700; letter-spacing:.03em; padding:2px 9px; border-radius:999px;
   background:var(--gold); color:#0a1733; }
-.hub-res-kind{ font-size:11.5px; padding:2px 9px; border-radius:999px; color:var(--gold-bright);
-  border:1px solid rgba(200,164,86,.55); }
-.hub-res-unit{ font-size:11.5px; color:var(--gold); }
-.hub-res-ref{ font-size:15px; font-weight:700; line-height:1.35; color:var(--gold-bright); }
-.hub-res-txt{ font-size:13.5px; line-height:1.55; opacity:.88; }
-.hub-res-none{ padding:44px 12px; text-align:center; color:var(--gold); font-size:15px; }
+.hub-res-kind{ font-size:12px; padding:2px 9px; border-radius:999px; color:#ffe9b8;
+  border:1px solid rgba(236,205,132,.7); }
+.hub-res-unit{ font-size:12px; color:#edd9a6; }
+.hub-res-ref{ font-size:16px; font-weight:700; line-height:1.4; color:#ffe6ad; }
+.hub-res-txt{ font-size:14.5px; line-height:1.62; color:#f4edda; }
+.hub-res-none{ padding:44px 12px; text-align:center; color:#f0dcab; font-size:15.5px; }

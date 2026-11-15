@@ -3076,5 +3076,31 @@ updateCredit();
 
 // Land on the collection, not on an empty viewer.
 setTimeout(function(){ if(!doc) openLib(); }, 250);
+
+/* ---- חיפוש שהגיע מבחוץ ------------------------------------------------
+   החיפוש הכולל של "אבני שהם" סורק גם את הקטלוג הזה, ושורה בתשובתו פותחת
+   את העמוד הזה. מה שנשלח הוא סימן המדף או שם כתב היד, והוא מוקלד כאן
+   בתיבת החיפוש ממש כאילו הקליד אותו הקורא: בכתובת (?q=) כשהעמוד נפתח
+   בפעם הראשונה, ובהודעה מן העמוד המחזיק את המסגרת כשהוא כבר עומד. */
+function msFindOutside(q){
+  q = (q || "").trim();
+  var box = document.getElementById("msSearch");
+  if(!box) return;
+  box.value = q;
+  searchQuery = q.toLowerCase();
+  var clr = document.getElementById("btnSearchClear");
+  if(clr) clr.hidden = !q;
+  if(!doc) openLib();                       // the search is of the collection
+  renderLibrary();
+}
+window.addEventListener("message", function(e){
+  if(e.origin !== location.origin) return;
+  var d = e.data;
+  if(d && d.mssFind !== undefined) msFindOutside(d.mssFind);
+});
+try{
+  var _wantQ = new URLSearchParams(location.search).get("q");
+  if(_wantQ) setTimeout(function(){ msFindOutside(_wantQ); }, 300);
+}catch(e){ /* an address with no parameters */ }
 })();
 </script>

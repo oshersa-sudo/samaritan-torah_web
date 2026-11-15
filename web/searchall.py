@@ -193,7 +193,13 @@ def _json_after(src, marker):
 def _gen_flatten(data):
     """Everyone the tree names: the people of each family, and the wives and
     husbands recorded beside them, who are people the reader may well be
-    looking for and are listed nowhere else."""
+    looking for and are listed nowhere else.
+
+    Each one carries the key the tree itself knows it by — its number (uid), or
+    failing that its id — because that is what the tree's own search matches
+    exactly. A spouse is not a node of the tree at all, so the key kept for one
+    is the key of the person they stand beside: the search lands on him, with
+    her name written at his side, which is the nearest the tree can come."""
     out, seen = [], set()
     for h in (data.get('houses') or []):
         house = h.get('house') or ''
@@ -201,16 +207,17 @@ def _gen_flatten(data):
             fam = f.get('family') or ''
             for p in (f.get('persons') or []):
                 name = (p.get('name') or '').strip()
+                key = str(p.get('uid') or p.get('id') or name or '')
                 if name and (name, fam) not in seen:
                     seen.add((name, fam))
                     out.append({'name': name, 'house': house, 'family': fam,
-                                'note': p.get('note') or '', 'via': ''})
+                                'note': p.get('note') or '', 'via': '', 'key': key})
                 for sp in (p.get('spouses') or []):
                     sn = (sp.get('name') or '').strip()
                     if sn and (sn, fam) not in seen:
                         seen.add((sn, fam))
                         out.append({'name': sn, 'house': house, 'family': fam,
-                                    'note': sp.get('note') or '', 'via': name})
+                                    'note': sp.get('note') or '', 'via': name, 'key': key})
     return out
 
 
@@ -241,8 +248,10 @@ def _genealogy(q, raw, cap):
             break
         if _hit(q, p['name'], p['note']):
             where = ' · '.join(x for x in (p['house'], p['family']) if x)
+            if p['via']:
+                where += ' · לצד ' + p['via']
             out.append(_row('genealogy', 'kin', p['name'], where,
-                            {'t': 'genealogy', 'q': p['name']},
+                            {'t': 'genealogy', 'q': p['key'] or p['name']},
                             extra={'via': p['via']} if p['via'] else None))
     return out
 
@@ -414,10 +423,12 @@ def _mss(q, raw, cap):
             break
         if _hit(q, m.get('title'), m.get('inst'), m.get('shelf'), m.get('note')):
             ref = ' · '.join(x for x in (m.get('title'), m.get('shelf')) if x)
-            # the shelfmark is what that app's own search box finds it by in one
-            # go; a title can run to a dozen words and matches nothing exactly
+            # the TITLE, not the shelfmark: that app matches a query word by
+            # word against everything it holds about a manuscript, so a whole
+            # title lands on the one item, while "MS AC 4" — three short words,
+            # each of them common — was measured bringing back fifty-six
             out.append(_row('mss', 'mss', ref, m.get('inst') or '',
-                            {'t': 'mss', 'q': m.get('shelf') or m.get('title') or ''}))
+                            {'t': 'mss', 'q': m.get('title') or m.get('shelf') or ''}))
     world = _cached(os.path.join(_MSS_DATA, 'world-index.json'), _read_json) or []
     n = 0
     for m in world:
@@ -428,7 +439,7 @@ def _mss(q, raw, cap):
             n += 1
             ref = ' · '.join(x for x in (m.get('title'), m.get('shelf')) if x)
             out.append(_row('mss', 'mss_coll', ref, m.get('inst') or m.get('inst_en') or '',
-                            {'t': 'mss', 'q': m.get('shelf') or m.get('title') or ''}))
+                            {'t': 'mss', 'q': m.get('title') or m.get('shelf') or ''}))
     return out
 
 
