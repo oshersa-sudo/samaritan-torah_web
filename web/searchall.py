@@ -30,7 +30,9 @@ import json
 import os
 import re
 import sys
+import time
 import unicodedata
+import urllib.request
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _ROOT not in sys.path:
@@ -45,10 +47,18 @@ _TIMELINE = os.path.join(_ROOT, 'History_timeline', 'data', 'events.js')
 _GERIZIM = os.path.join(_ROOT, 'web', 'static', 'gerizim', 'places.js')
 _CALENDAR = os.path.join(_ROOT, 'web', 'static', 'data', 'calendar')
 
-# every app that can be searched from here, in the order results are shown.
-# The genealogy and the calendar's own site are somebody else's servers; the
-# calendar is here all the same, because the app carries its years itself.
-APPS = ('torah', 'library', 'dict', 'shira', 'mss', 'timeline', 'gerizim', 'calendar')
+# The family tree is a page of its own on another server (a Cloudflare worker),
+# and it carries its whole census inside that page as one JSON object. So it can
+# be searched too: the page is fetched once and kept for a few hours, and the
+# people are read out of it. Nothing is sent there but the request for the page.
+_GEN_URL = os.environ.get('GENEALOGY_URL', 'https://samaritan-genealogy.oshersa.workers.dev/')
+_GEN_TTL = 6 * 3600          # how long a fetched tree is trusted
+_GEN_RETRY = 300             # after a failure, do not hammer it: wait this long
+_gen = {'at': 0, 'people': None}
+
+# every app that can be searched from here, in the order results are shown
+APPS = ('torah', 'library', 'dict', 'shira', 'mss', 'timeline', 'gerizim',
+        'calendar', 'genealogy')
 
 # the library's units, each with the key the client knows it by
 _BOOKS = (
@@ -139,6 +149,102 @@ def _read_calendar(path):
             if name:
                 portions.setdefault(name, []).append((date, s.get('book_name', '')))
     return {'feasts': feasts, 'portions': portions}
+
+
+# ── the family tree, from the other server ──────────────────────────────────
+def _json_after(src, marker):
+    """The object that follows `marker` in a page of JavaScript. Walked brace by
+    brace (minding strings and escapes) rather than matched by pattern, because
+    the object is a quarter of a megabyte of census with braces inside every
+    note."""
+    i = src.find(marker)
+    if i < 0:
+        return None
+    j = src.find('{', i)
+    if j < 0:
+        return None
+    depth, k, instr, esc = 0, j, False, False
+    while k < len(src):
+        c = src[k]
+        if instr:
+            if esc:
+                esc = False
+            elif c == '\\':
+                esc = True
+            elif c == '"':
+                instr = False
+        else:
+            if c == '"':
+                instr = True
+            elif c == '{':
+                depth += 1
+            elif c == '}':
+                depth -= 1
+                if depth == 0:
+                    k += 1
+                    break
+        k += 1
+    try:
+        return json.loads(src[j:k])
+    except ValueError:
+        return None
+
+
+def _gen_flatten(data):
+    """Everyone the tree names: the people of each family, and the wives and
+    husbands recorded beside them, who are people the reader may well be
+    looking for and are listed nowhere else."""
+    out, seen = [], set()
+    for h in (data.get('houses') or []):
+        house = h.get('house') or ''
+        for f in (h.get('families') or []):
+            fam = f.get('family') or ''
+            for p in (f.get('persons') or []):
+                name = (p.get('name') or '').strip()
+                if name and (name, fam) not in seen:
+                    seen.add((name, fam))
+                    out.append({'name': name, 'house': house, 'family': fam,
+                                'note': p.get('note') or '', 'via': ''})
+                for sp in (p.get('spouses') or []):
+                    sn = (sp.get('name') or '').strip()
+                    if sn and (sn, fam) not in seen:
+                        seen.add((sn, fam))
+                        out.append({'name': sn, 'house': house, 'family': fam,
+                                    'note': sp.get('note') or '', 'via': name})
+    return out
+
+
+def _gen_people():
+    now = time.time()
+    if _gen['people'] is not None and now - _gen['at'] < _GEN_TTL:
+        return _gen['people']
+    try:
+        req = urllib.request.Request(_GEN_URL, headers={'User-Agent': 'Mozilla/5.0 (compatible)'})
+        with urllib.request.urlopen(req, timeout=8) as r:
+            html = r.read().decode('utf-8', 'replace')
+        people = _gen_flatten(_json_after(html, 'const DATA') or {})
+        if people:
+            _gen['people'], _gen['at'] = people, now
+            return people
+    except Exception:
+        pass
+    # unreachable, or changed beyond recognition: keep whatever was held and try
+    # again in a few minutes rather than on every keystroke
+    _gen['at'] = now - _GEN_TTL + _GEN_RETRY
+    return _gen['people'] or []
+
+
+def _genealogy(q, raw, cap):
+    out = []
+    for p in _gen_people():
+        if len(out) >= cap:
+            break
+        if _hit(q, p['name'], p['note']):
+            where = ' · '.join(x for x in (p['house'], p['family']) if x)
+            out.append(_row('genealogy', 'kin', p['name'], where,
+                            {'t': 'genealogy', 'q': p['name']},
+                            extra={'via': p['via']} if p['via'] else None))
+    return out
 
 
 # ── matching ────────────────────────────────────────────────────────────────
@@ -385,7 +491,8 @@ def _calendar(q, raw, cap):
 
 
 _FINDERS = {'torah': _torah, 'library': _library, 'dict': _dict, 'shira': _shira,
-            'mss': _mss, 'timeline': _timeline, 'gerizim': _gerizim, 'calendar': _calendar}
+            'mss': _mss, 'timeline': _timeline, 'gerizim': _gerizim, 'calendar': _calendar,
+            'genealogy': _genealogy}
 
 
 def search(q, scopes=None, cap=8, limit=240):

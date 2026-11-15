@@ -36,7 +36,7 @@
       kinds:{ verse:'פסוק בתורה', section:'קטע בספר', person:'אישיות', piyut:'פיוט',
         dara:'פיוט בתעתיק', word:'ערך במילון', shira_piyyut:'פיוט באוצר', shira_perf:'מבצע',
         shira_event:'מועד', mss:'כתב יד', mss_coll:'אוסף כתבי יד', tl:'אירוע',
-        place:'מקום בהר', feast:'מועד בלוח', parasha:'פרשת השבוע' },
+        place:'מקום בהר', feast:'מועד בלוח', parasha:'פרשת השבוע', kin:'אדם באילן' },
       apps:{
         dict:{ name:'המילון הארמי-עברי', tag:'ארמית שומרונית ועברית',
           points:['מילון ארמי-עברי, ועברי-ארמי.','מבוסס על מילונים שונים ומגוונים.','חיפוש לפי מילה, שורש מילה','משמעות המילה, מופעי המילה בפיוטים השומרוניים, בתורה הארמית ובתיבת מרקה'] },
@@ -69,7 +69,8 @@
       kinds:{ verse:'Verse of the Torah', section:'Passage', person:'Figure', piyut:'Piyyut',
         dara:'Piyyut in transcription', word:'Dictionary entry', shira_piyyut:'Piyyut in the archive',
         shira_perf:'Performer', shira_event:'Occasion', mss:'Manuscript', mss_coll:'Collection',
-        tl:'Event', place:'Place on the mountain', feast:'Festival', parasha:'Weekly portion' },
+        tl:'Event', place:'Place on the mountain', feast:'Festival', parasha:'Weekly portion',
+        kin:'In the family tree' },
       apps:{
         dict:{ name:'The Aramaic-Hebrew Dictionary', tag:'Samaritan Aramaic and Hebrew',
           points:['An Aramaic-Hebrew and Hebrew-Aramaic dictionary.','Based on a range of different dictionaries.','Search by word or by word root','The word’s meaning, and where it occurs in the Samaritan piyyutim, the Aramaic Targum and Tibat Marqe'] },
@@ -102,7 +103,8 @@
       kinds:{ verse:'آية من التوراة', section:'مقطع', person:'شخصية', piyut:'نشيد',
         dara:'نشيد بالنسخ الصوتي', word:'مدخل في المعجم', shira_piyyut:'نشيد في الأرشيف',
         shira_perf:'مؤدٍّ', shira_event:'مناسبة', mss:'مخطوط', mss_coll:'مجموعة مخطوطات',
-        tl:'حدث', place:'موقع في الجبل', feast:'عيد', parasha:'المقطع الأسبوعي' },
+        tl:'حدث', place:'موقع في الجبل', feast:'عيد', parasha:'المقطع الأسبوعي',
+        kin:'في شجرة النسب' },
       apps:{
         dict:{ name:'القاموس الآرامي-العبري', tag:'الآرامية السامرية والعبرية',
           points:['قاموس آرامي-عبري، وعبري-آرامي.','مبني على قواميس متنوعة ومختلفة.','بحث بحسب الكلمة أو جذر الكلمة','معنى الكلمة ومواضع ورودها في القصائد السامرية وفي الترجمة الآرامية للتوراة وفي ميمر مرقة'] },
@@ -806,7 +808,11 @@
    * the found text itself, in whatever language it was written in.
    */
   const FIND_APPS = ['torah', 'library', 'dict', 'shira', 'mss', 'timeline', 'gerizim', 'calendar', 'genealogy'];
-  const FIND_OFF = ['genealogy'];        // another house's server: it can be opened, not searched
+  /* Every app is searched. The family tree is somebody else's server, but it
+     carries its census inside its own page, so the server here reads it and
+     answers from it like any other. Nothing is beyond reach for now; the list
+     stays because the next app may be. */
+  const FIND_OFF = [];
   let findSel = null;                    // null = everywhere; otherwise a Set of app keys
   let findLayer = null, resLayer = null, findSeq = 0;
 
@@ -843,6 +849,10 @@
   }
 
   function openFind(){
+    // a layer taken out of the page by something else leaves this pointing at
+    // nothing; without the check the button would never open again
+    if(findLayer && !findLayer.isConnected) findLayer = null;
+    if(resLayer && !resLayer.isConnected) resLayer = null;
     if(findLayer) return;
     const X = T();
     const o = document.createElement('div');
@@ -1148,6 +1158,15 @@
         return;
       }
       if(g.t === 'calendar'){ open(() => openExternalUnit(CALENDAR_URL, t('m_calendar'))); return; }
+      if(g.t === 'genealogy'){
+        /* the tree is another server's page: its search box cannot be reached
+           from here, so the name is carried in the address. The tree will land
+           on the person the day it reads it; until then it opens at its front
+           page, with the name on the line that was pressed. */
+        open(() => openExternalUnit(GENEALOGY_URL + (g.q ? ('?q=' + encodeURIComponent(g.q)) : ''),
+                                    t('m_genealogy')));
+        return;
+      }
     }catch(e){ /* a door that would not open leaves the reader where they were */ }
   }
 
