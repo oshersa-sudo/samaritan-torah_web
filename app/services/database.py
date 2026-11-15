@@ -389,6 +389,84 @@ def _seed_ervah_ar():
 _seed_ervah_ar()
 
 
+_MASAIL_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                             'data', 'masail_patch.json')
+_MASAIL_AR_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                'data', 'masail_ar_patch.json')
+
+
+def _seed_masail():
+    """מסאיל אלח'לאף — Munajja ibn Ṣadaqa's disputations, in contemporary Hebrew,
+    with the Arabic of the manuscript (BL Or. 12271) paragraph by paragraph and
+    the verses the book itself quotes.
+
+    It is read and linked exactly as ספר הערוות is (the same readers, with
+    unit='masail'), so it keeps the same three tables of its own — sections,
+    verse links and the Arabic paragraphs — brought to the patch's content:
+    created when absent, left alone when they already hold exactly this version
+    (compared by fingerprint), refilled when older. No other table is touched."""
+    try:
+        if not os.path.exists(_MASAIL_PATCH):
+            return
+        with open(_MASAIL_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute("""CREATE TABLE IF NOT EXISTS masail_sections (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ord INTEGER, title TEXT, text TEXT)""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS masail_verse_links (
+            section_id INTEGER, verse_id INTEGER, quote TEXT, ref TEXT)""")
+        conn.execute("""CREATE TABLE IF NOT EXISTS masail_para_ar (
+            ord INTEGER, para INTEGER, text TEXT, PRIMARY KEY (ord, para))""")
+        have_s = [[r[0], r[1] or '', r[2] or ''] for r in conn.execute(
+            'SELECT ord, title, text FROM masail_sections ORDER BY ord')]
+        have_l = [[r[0], r[1], r[2] or '', r[3] or ''] for r in conn.execute(
+            """SELECT s.ord, l.verse_id, l.quote, l.ref
+               FROM masail_verse_links l JOIN masail_sections s ON s.id = l.section_id
+               ORDER BY s.ord, l.verse_id""")]
+        fp = hashlib.sha1(json.dumps([have_s, have_l], ensure_ascii=False)
+                          .encode('utf-8')).hexdigest()
+        if fp != patch.get('fingerprint'):
+            conn.execute('DELETE FROM masail_verse_links')
+            conn.execute('DELETE FROM masail_sections')
+            ids = {}
+            for ordn, title, text in patch.get('sections', []):
+                cur = conn.execute('INSERT INTO masail_sections (ord, title, text) VALUES (?,?,?)',
+                                   (ordn, title, text))
+                ids[ordn] = cur.lastrowid
+            have = set(r[0] for r in conn.execute('SELECT id FROM verses'))
+            rows = [(ids[o], vid, quote, ref) for o, vid, quote, ref in patch.get('links', [])
+                    if o in ids and vid in have]
+            conn.executemany('INSERT INTO masail_verse_links (section_id, verse_id, quote, ref) '
+                             'VALUES (?,?,?,?)', rows)
+            conn.execute('CREATE INDEX IF NOT EXISTS ix_masail_links_v '
+                         'ON masail_verse_links(verse_id)')
+            conn.execute('CREATE INDEX IF NOT EXISTS ix_masail_sections_ord '
+                         'ON masail_sections(ord)')
+            PATCH_REPORT['masail'] = '%d sections, %d links' % (len(ids), len(rows))
+        else:
+            PATCH_REPORT['masail'] = 'already current'
+        if os.path.exists(_MASAIL_AR_PATCH):
+            with open(_MASAIL_AR_PATCH, encoding='utf-8') as fh:
+                arp = json.load(fh)
+            have = [[r[0], r[1], r[2] or ''] for r in conn.execute(
+                'SELECT ord, para, text FROM masail_para_ar ORDER BY ord, para')]
+            fpa = hashlib.sha1(json.dumps(have, ensure_ascii=False).encode('utf-8')).hexdigest()
+            if fpa != arp.get('fingerprint'):
+                conn.execute('DELETE FROM masail_para_ar')
+                conn.executemany('INSERT INTO masail_para_ar (ord, para, text) VALUES (?,?,?)',
+                                 arp.get('paras', []))
+        conn.commit()
+        conn.close()
+        print('[masail] %s' % PATCH_REPORT['masail'])
+    except Exception as exc:
+        PATCH_REPORT['masail'] = 'failed: %s' % exc
+        print('[masail] skipped: %s' % exc)
+
+
+_seed_masail()
+
+
 _DARA_UNIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                 'data', 'dara_unit_patch.json')
 
@@ -3339,19 +3417,19 @@ _ERVAH_NUM = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', '�
               'כה', 'כו', 'כז', 'כח', 'כט', 'ל']
 
 
-def get_ervah_toc(lang='he'):
+def get_ervah_toc(lang='he', unit='ervah'):
     """The book's sections, in order — one card each, with how many verses it
     reads. In Arabic each chapter is named in Arabic."""
     conn = get_connection()
     try:
-        rows = conn.execute("""SELECT s.id, s.ord, s.title, LENGTH(s.text) len,
+        rows = conn.execute(f"""SELECT s.id, s.ord, s.title, LENGTH(s.text) len,
                                       COUNT(l.verse_id) n
-                               FROM ervah_sections s
-                               LEFT JOIN ervah_verse_links l ON l.section_id = s.id
+                               FROM {unit}_sections s
+                               LEFT JOIN {unit}_verse_links l ON l.section_id = s.id
                                GROUP BY s.id ORDER BY s.ord""").fetchall()
     except Exception:
         rows = []
-    ar = _ervah_ar(conn) if lang == 'ar' else {}
+    ar = _ervah_ar(conn, unit) if lang == 'ar' else {}
     conn.close()
 
     def badge(n):
@@ -3365,7 +3443,7 @@ def get_ervah_toc(lang='he'):
              'len': r['len'] or 0} for r in rows]
 
 
-def get_ervah_chapter(sid, lang='he'):
+def get_ervah_chapter(sid, lang='he', unit='ervah'):
     """One section, paragraph by paragraph, with its citations made clickable and
     the verse each paragraph reads — so a reader can step from the book into the
     Torah at the place it is arguing about.
@@ -3380,13 +3458,13 @@ def get_ervah_chapter(sid, lang='he'):
     conn = get_connection()
     vmap = _tm_vmap(conn)
     try:
-        s = conn.execute('SELECT id, ord, title, text FROM ervah_sections WHERE id=?',
+        s = conn.execute(f'SELECT id, ord, title, text FROM {unit}_sections WHERE id=?',
                          (sid,)).fetchone()
-        links = conn.execute('SELECT verse_id, quote FROM ervah_verse_links '
+        links = conn.execute(f'SELECT verse_id, quote FROM {unit}_verse_links '
                              'WHERE section_id=? ORDER BY verse_id', (sid,)).fetchall()
     except Exception:
         s, links = None, []
-    ar = _ervah_ar(conn) if lang == 'ar' else {}
+    ar = _ervah_ar(conn, unit) if lang == 'ar' else {}
     conn.close()
     if not s:
         return {'id': sid, 'title': '', 'sections': []}
@@ -3431,7 +3509,7 @@ def _ervah_para_for(text, quote):
     return paras[0] if paras else (text or '')
 
 
-def search_ervah(q, limit=80, lang='he'):
+def search_ervah(q, limit=80, lang='he', unit='ervah'):
     """Search the book (section titles + text), the marks set aside.
 
     A reader reading the Arabic searches the Arabic: the section's paragraphs are
@@ -3442,11 +3520,11 @@ def search_ervah(q, limit=80, lang='he'):
         return []
     conn = get_connection()
     try:
-        rows = conn.execute('SELECT id, ord, title, text FROM ervah_sections '
+        rows = conn.execute(f'SELECT id, ord, title, text FROM {unit}_sections '
                             'ORDER BY ord').fetchall()
     except Exception:
         rows = []
-    ar = _ervah_ar(conn) if lang == 'ar' else {}
+    ar = _ervah_ar(conn, unit) if lang == 'ar' else {}
     conn.close()
     out = []
     for r in rows:
@@ -4114,14 +4192,14 @@ def get_bhuq_by_verse(verse_ids, lang='he'):
     return out
 
 
-def _ervah_ar(conn):
+def _ervah_ar(conn, unit='ervah'):
     """{(section ord, paragraph): the Arabic of it} — empty when none is stored.
 
     A section's own title rides along under paragraph -1, so the book names its
     chapters in Arabic too rather than heading Arabic text in Hebrew."""
     try:
         return {(r[0], r[1]): r[2] or '' for r in
-                conn.execute('SELECT ord, para, text FROM ervah_para_ar')}
+                conn.execute(f'SELECT ord, para, text FROM {unit}_para_ar')}
     except Exception:
         return {}
 
@@ -4137,7 +4215,7 @@ def _ervah_para_index(text, quote):
     return 0, (paras[0] if paras else (text or ''))
 
 
-def get_ervah_commentary(verse_ids, lang='he'):
+def get_ervah_commentary(verse_ids, lang='he', unit='ervah'):
     """ספר הערוות on any of the given verses, in the book's own order. A section
     is attached to a verse because the book quotes that verse in it — nothing
     here is inferred — so a section argues under every verse it reads, and a
@@ -4149,15 +4227,15 @@ def get_ervah_commentary(verse_ids, lang='he'):
     try:
         rows = conn.execute(
             f"""SELECT DISTINCT s.ord, s.title, s.text, l.quote
-                FROM ervah_sections s
-                JOIN ervah_verse_links l ON l.section_id = s.id
+                FROM {unit}_sections s
+                JOIN {unit}_verse_links l ON l.section_id = s.id
                 WHERE l.verse_id IN ({placeholders})
                 ORDER BY s.ord""",
             verse_ids
         ).fetchall()
     except Exception:
         rows = []
-    ar = _ervah_ar(conn) if lang == 'ar' else {}
+    ar = _ervah_ar(conn, unit) if lang == 'ar' else {}
     conn.close()
     out, seen = [], set()
     for r in rows:
@@ -4172,7 +4250,7 @@ def get_ervah_commentary(verse_ids, lang='he'):
     return out
 
 
-def get_ervah_by_verse(verse_ids, lang='he'):
+def get_ervah_by_verse(verse_ids, lang='he', unit='ervah'):
     """The same sections keyed BY VERSE — {verse_id: [{ref, title, text}, ...]} —
     so a passage can stand beneath the verse it argues about rather than at the
     end of the chapter. The quotation the book made is the ref, because that is
@@ -4184,15 +4262,15 @@ def get_ervah_by_verse(verse_ids, lang='he'):
     try:
         rows = conn.execute(
             f"""SELECT DISTINCT l.verse_id vid, l.quote, l.ref, s.ord, s.title, s.text
-                FROM ervah_sections s
-                JOIN ervah_verse_links l ON l.section_id = s.id
+                FROM {unit}_sections s
+                JOIN {unit}_verse_links l ON l.section_id = s.id
                 WHERE l.verse_id IN ({placeholders})
                 ORDER BY l.verse_id, s.ord""",
             verse_ids
         ).fetchall()
     except Exception:
         rows = []
-    ar = _ervah_ar(conn) if lang == 'ar' else {}
+    ar = _ervah_ar(conn, unit) if lang == 'ar' else {}
     conn.close()
     out = {}
     for r in rows:
@@ -4209,6 +4287,14 @@ def get_ervah_by_verse(verse_ids, lang='he'):
         for x in items:
             x.pop('_he', None)
     return out
+
+
+# ── מסאיל אלח'לאף: the same readers as ספר הערוות, over its own tables ──
+def get_masail_toc(lang='he'):                 return get_ervah_toc(lang, unit='masail')
+def get_masail_chapter(sid, lang='he'):        return get_ervah_chapter(sid, lang, unit='masail')
+def search_masail(q, limit=80, lang='he'):     return search_ervah(q, limit, lang, unit='masail')
+def get_masail_commentary(verse_ids, lang='he'): return get_ervah_commentary(verse_ids, lang, unit='masail')
+def get_masail_by_verse(verse_ids, lang='he'):   return get_ervah_by_verse(verse_ids, lang, unit='masail')
 
 
 def get_sir_commentary(verse_ids):
@@ -4352,7 +4438,7 @@ _SAM_SOURCES = [('tibat', 'tm_verse_links'), ('eyalk', 'eyalk_verse_links'),
                 ('shyt', 'shyt_verse_links'), ('tzdaka', 'tzdaka_verse_links'),
                 ('bhuq', 'bhuq_verse_links'), ('sir', 'sir_verse_links'),
                 ('asatir', 'asatir_verse_links'),
-                ('ervah', 'ervah_verse_links')]
+                ('ervah', 'ervah_verse_links'), ('masail', 'masail_verse_links')]
 
 
 def get_verse_sources(verse_ids):
