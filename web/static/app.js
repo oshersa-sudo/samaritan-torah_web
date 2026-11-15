@@ -211,7 +211,7 @@ const I18N = {
     a11y_reset:'איפוס', shelf_sources:'פירושים ומסורת',
     shelf_tools:'מילונים וכלים', shelf_study:'ספרים ומחקר', m_library:'הספרייה השומרונית', m_dict_aram:'המילון הארמי-עברי ועברי-ארמי',
     lib_search_ph:'חיפוש ספר בספרייה…', lib_no_result:'לא נמצא ספר תואם',
-    lib_view_switch:'שינוי תצוגה', lib_view_covers:'פריסה מלאה', lib_view_shelf:'תצוגת מדף',
+    lib_view_switch:'שינוי תצוגה', cover_by:'מאת', lib_view_covers:'פריסה מלאה', lib_view_shelf:'תצוגת מדף',
     m_tm_book:'תיבת מרקה (מימר מרקה)', tm_title:'תיבת מרקה — מימר מרקה', tm_search_ph:'חיפוש בתוך הספר…',
     tm_toc_hint:'בחר מימר לעיון:', tm_back_toc:'‹ תוכן העניינים', tm_back_chapter:'‹ חזרה לפרק',
     tm_words_btn:'מילון מילים', tm_words_title:'מילון מילים — מתוך המילון', tm_words_find:'חיפוש מילה, שורש או פירוש', tm_col_root:'שורש',
@@ -546,7 +546,7 @@ const I18N = {
     a11y_reset:'Reset', shelf_sources:'Commentary and tradition',
     shelf_tools:'Dictionaries and tools', shelf_study:'Books and research', m_library:'The Samaritan Library', m_dict_aram:'The Aramaic–Hebrew & Hebrew–Aramaic Dictionary',
     lib_search_ph:'Search for a book…', lib_no_result:'No matching book',
-    lib_view_switch:'Change the view', lib_view_covers:'Full spread', lib_view_shelf:'Shelf view',
+    lib_view_switch:'Change the view', cover_by:'by', lib_view_covers:'Full spread', lib_view_shelf:'Shelf view',
     m_tm_book:'Tibåt Mårqe (Memar Marqah)', tm_title:'Tibåt Mårqe — Memar Marqah', tm_search_ph:'Search within the book…',
     tm_toc_hint:'Choose a Memar to read:', tm_back_toc:'‹ Contents', tm_back_chapter:'‹ Back to the chapter',
     tm_words_btn:'Word glossary', tm_words_title:'Word glossary — from the dictionary', tm_words_find:'Search a word, root or meaning', tm_col_root:'Root',
@@ -880,7 +880,7 @@ const I18N = {
     a11y_reset:'إعادة ضبط', shelf_sources:'التفاسير والتقاليد',
     shelf_tools:'المعاجم والأدوات', shelf_study:'كتب وأبحاث', m_library:'المكتبة السامرية', m_dict_aram:'المعجم الآرامي-العبري والعبري-الآرامي',
     lib_search_ph:'ابحث عن كتاب…', lib_no_result:'لا يوجد كتاب مطابق',
-    lib_view_switch:'تغيير العرض', lib_view_covers:'عرض كامل', lib_view_shelf:'عرض الرفّ',
+    lib_view_switch:'تغيير العرض', cover_by:'بقلم', lib_view_covers:'عرض كامل', lib_view_shelf:'عرض الرفّ',
     m_tm_book:'تيبات مارقه (ميمر مرقه)', tm_title:'تيبات مارقه — ميمر مرقه', tm_search_ph:'بحث داخل الكتاب…',
     tm_toc_hint:'اختر ميمراً للمطالعة:', tm_back_toc:'‹ المحتويات', tm_back_chapter:'‹ العودة إلى الفصل',
     tm_words_btn:'معجم الكلمات', tm_words_title:'معجم الكلمات — من المعجم', tm_words_find:'ابحث عن كلمة أو جذر أو معنى', tm_col_root:'الجذر',
@@ -7150,8 +7150,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
 const LIB_HUES = [352, 210, 96, 32, 275, 186, 18, 228, 320, 152, 45, 258];
 function libCoverVars(i){
   const h = (LIB_HUES[i % LIB_HUES.length] + Math.floor(i / LIB_HUES.length) * 17) % 360;
+  /* --bk* is the spine on the shelf. --ck* is the same hue taken down to the
+     depth a gold-tooled binding needs: lighter than this and the gold stops
+     being gold, darker and the books stop telling each other apart. */
   return { '--bk':`hsl(${h} 33% 39%)`, '--bk-dark':`hsl(${h} 40% 23%)`,
-           '--bk-lite':`hsl(${h} 29% 50%)` };
+           '--bk-lite':`hsl(${h} 29% 50%)`,
+           '--ck':`hsl(${h} 34% 12%)`, '--ck-dark':`hsl(${h} 38% 7%)`,
+           '--ck-lite':`hsl(${h} 30% 18%)` };
 }
 // ── the shelves ─────────────────────────────────────────────────────────────
 // Three, by subject. A book not named here stands on the last one rather than
@@ -7328,26 +7333,79 @@ let LIB_PULLED = null;
 let LIB_VIEW = 'shelf';
 try{ if(localStorage.getItem('lib_view') === 'covers') LIB_VIEW = 'covers'; }catch(e){}
 
-/* The house device, drawn rather than fetched: twelve covers would otherwise be
-   twelve pictures, and a drawing scales to any cover at any size and takes the
-   binding's own colour. Three lozenges are the three onyx stones the house is
-   named for, inside the double rule a bound book carries. */
+/* ── the house binding ───────────────────────────────────────────────────────
+ * Every unit of the library wears the same cover: a deep ground inside a double
+ * gold rule with a lozenge on each corner, the house's name tracked across the
+ * head between two hairlines, the work's title, its name in the other tongue,
+ * what kind of work it is, and whoever wrote it. The binding is drawn, not
+ * fetched — sixteen covers would otherwise be sixteen pictures, and a drawing
+ * takes any size and any colour.
+ *
+ * Only the ground colour tells one book from another, so a reader who knows a
+ * book by its colour still finds it.
+ */
 function libCoverArt(){
-  return '<svg class="cover-art" viewBox="0 0 120 164" preserveAspectRatio="none" aria-hidden="true">'
-    + '<rect x="7" y="7" width="106" height="150" rx="3" class="ca-rule1"/>'
-    + '<rect x="11.5" y="11.5" width="97" height="141" rx="2" class="ca-rule2"/>'
-    + '<g class="ca-corner">'
-    +   '<path d="M7 20 Q7 7 20 7"/><path d="M113 20 Q113 7 100 7"/>'
-    +   '<path d="M7 144 Q7 157 20 157"/><path d="M113 144 Q113 157 100 157"/>'
+  return '<svg class="cover-art" viewBox="0 0 300 400" preserveAspectRatio="none" aria-hidden="true">'
+    + '<rect class="ca-rule1" x="13" y="13" width="274" height="374"/>'
+    /* the inner frame turns its corners mitred, as a bound board does */
+    + '<path class="ca-rule2" d="M23 39 L39 23 L261 23 L277 39 L277 361 L261 377 L39 377 L23 361 Z"/>'
+    + '<g class="ca-knot">'
+    +   '<path d="M13 6 L20 13 L13 20 L6 13 Z"/><path d="M287 6 L294 13 L287 20 L280 13 Z"/>'
+    +   '<path d="M13 380 L20 387 L13 394 L6 387 Z"/><path d="M287 380 L294 387 L287 394 L280 387 Z"/>'
     + '</g>'
-    + '<g class="ca-stones" transform="translate(60 34)">'
-    +   '<path d="M0 -11 L8.5 0 L0 11 L-8.5 0 Z"/>'
-    +   '<path d="M-17 -6.5 L-10.5 0 L-17 6.5 L-23.5 0 Z"/>'
-    +   '<path d="M17 -6.5 L23.5 0 L17 6.5 L10.5 0 Z"/>'
-    + '</g>'
-    + '<path class="ca-hair" d="M30 48 H90"/>'
-    + '<path class="ca-hair" d="M34 128 H86"/>'
     + '</svg>';
+}
+
+/* ── what kind of work it is ─────────────────────────────────────────────────
+ * One word on the cover, under the title, where a publisher puts the series.
+ * Nothing here is a judgement: it is what the app already says each unit is.
+ */
+const LIB_KIND = {
+  dict_app:       {he:'מילון',                en:'Dictionary',                 ar:'معجم'},
+  tm_book:        {he:'מדרש ארמי',            en:'Aramaic midrash',            ar:'مدراش آرامي'},
+  tz_book:        {he:'פירוש לבראשית',        en:'Commentary on Genesis',      ar:'تفسير التكوين'},
+  shyt_book:      {he:'שאלות ותשובות',        en:'Responsa',                   ar:'أسئلة وأجوبة'},
+  sir_book:       {he:'חיבור מוסר',           en:'A work of moral teaching',   ar:'كتاب في الأخلاق'},
+  bhuq_book:      {he:'פירוש',                en:'Commentary',                 ar:'تفسير'},
+  ervah_book:     {he:'הלכה',                 en:'Halakhah',                   ar:'أحكام'},
+  asatir_book:    {he:'מסורת ואגדה',          en:'Tradition and legend',       ar:'تراث وأساطير'},
+  piyutim_book:   {he:'פיוטים',               en:'Piyyutim',                   ar:'أناشيد'},
+  dara_book:      {he:'פיוטים בתעתיק הגייה',  en:'Piyyutim in transcription',  ar:'أناشيد بالنسخ الصوتي'},
+  rhyme_book:     {he:'כלי עזר',              en:'A tool',                     ar:'أداة'},
+  people_book:    {he:'לקסיקון',              en:'Who’s who',                  ar:'معجم أعلام'},
+  wreschner_book: {he:'מחקר',                 en:'A study',                    ar:'دراسة'},
+  cohen_book:     {he:'הלכה',                 en:'Halakhah',                   ar:'أحكام'},
+  composer:       {he:'כלי יצירה',            en:'A writing tool',             ar:'أداة تأليف'},
+  privatecomp:    {he:'אוסף פרטי',            en:'A private collection',       ar:'مجموعة خاصة'},
+};
+function libKind(item){
+  const k = LIB_KIND[item.act];
+  return k ? (k[LANG] || k.he) : '';
+}
+/* The title again in the other tongue, as a Samaritan book carries its Hebrew
+   and its Arabic name together. Nothing is translated here: it is the app's own
+   name for the unit in its other language. */
+function libAltTitle(item){
+  const other = (LANG === 'he') ? 'ar' : 'he';
+  const s = I18N[other] && I18N[other][item.titleKey];
+  return (s && s !== t(item.titleKey)) ? s : '';
+}
+/* the face of the book, whether it is lying on the table or has just been drawn
+   off the shelf — one plate, so the two views cannot drift apart */
+function coverPlate(item){
+  const label = t(item.titleKey);
+  const alt   = libAltTitle(item);
+  const kind  = libKind(item);
+  const who   = LIB_AUTHOR[item.act];
+  return libCoverArt()
+    + '<span class="cover-head"><i></i><b class="ch-br">' + esc(t('brand_top')) + '</b><i></i></span>'
+    + '<span class="cover-text">'
+    +   '<span class="lib-book-title">' + esc(label) + '</span>'
+    +   (alt  ? '<span class="cover-alt">'  + esc(alt)  + '</span>' : '')
+    +   (kind ? '<span class="cover-kind">' + esc(kind) + '</span>' : '')
+    +   (who  ? '<span class="cover-by"><i>' + esc(t('cover_by')) + '</i>' + esc(who) + '</span>' : '')
+    + '</span>'
+    + '<span class="cover-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>';
 }
 
 // ── who wrote it ─────────────────────────────────────────────────────────────
@@ -7382,7 +7440,7 @@ function libBuildGrid(){
     const label=t(item.titleKey);
     const b=el('button','lib-spine',
       `<span class="spine-face"><span class="spine-title">${esc(label)}</span></span>`+
-      `<span class="cover-face"><span class="lib-book-title">${esc(label)}</span></span>`);
+      `<span class="cover-face cv">${coverPlate(item)}</span>`);
     b.title=label;
     b.dataset.act=item.act;
     // colour by the item's fixed place in LIB_ITEMS, not by where it lands in a
@@ -7397,13 +7455,6 @@ function libBuildGrid(){
       // said once, in words, for four seconds, and then the book is left to be
       // looked at. It is said again every time a book is drawn, because nobody
       // should have to have been paying attention the first time.
-      // the author's name, under the title, on the cover it turns to show
-      const who = LIB_AUTHOR[item.act];
-      if(who){
-        const face=b.querySelector('.cover-face');
-        if(face && !face.querySelector('.cover-author'))
-          face.appendChild(el('div','cover-author', esc(who)));
-      }
       b.appendChild(el('span','lib-hint lib-hint-open', esc(t('lib_hint_open'))));
       b.appendChild(el('span','lib-hint lib-hint-back', esc(t('lib_hint_back'))));
       b.classList.add('demo');                     // it dips twice: this is the pull
@@ -7482,14 +7533,7 @@ function libBuildGrid(){
   // there is nothing to draw out here, because nothing is turned away.
   const makeCover=(item, i)=>{
     const label=t(item.titleKey);
-    const who=LIB_AUTHOR[item.act];
-    const b=el('button','lib-cover',
-      libCoverArt()
-      + '<span class="cover-text">'
-      +   '<span class="lib-book-title">'+esc(label)+'</span>'
-      +   (who ? '<span class="cover-author">'+esc(who)+'</span>' : '')
-      + '</span>'
-      + '<span class="cover-imprint">'+esc(t('brand_top'))+'</span>');
+    const b=el('button','lib-cover cv', coverPlate(item));
     b.title=label;
     b.dataset.act=item.act;
     const vars=libCoverVars(i);            // the same binding as on the shelf
@@ -7529,6 +7573,7 @@ function libBuildGrid(){
   }
   $('libGalleryNoResult').classList.toggle('hidden', shown>0);
   libViewBtn();
+  libCoverTier();
   libFitCovers();
 }
 
@@ -7554,14 +7599,33 @@ function libFitCovers(){
   if(!rows.length) return;
   const H = grid.clientHeight, W = grid.clientWidth;
   if(!H || !W) return;                       // not laid out yet; the caller tries again
-  const cs = getComputedStyle(grid);
-  const padX = parseFloat(cs.paddingLeft||0) + parseFloat(cs.paddingRight||0);
+  const cs = getComputedStyle(grid), rcs = getComputedStyle(rows[0]);
+  /* the row has a padding of its own, and leaving it out of the sum is what put
+     a column's worth of empty margin down one side: the arithmetic believed
+     three covers fitted across where the stylesheet could only lay two */
+  const padX = parseFloat(cs.paddingLeft||0) + parseFloat(cs.paddingRight||0)
+             + parseFloat(rcs.paddingLeft||0) + parseFloat(rcs.paddingRight||0);
   const inner = W - padX;
-  const GX = 13;                             // the column gap, as the stylesheet sets it
-  const MIN = 76, MAX = Math.min(260, inner);
+  let GX = 13;                               // the column gap, set below with the width
+  /* The floor is where the binding stops being legible: under a hundred pixels a
+     cover carries nothing but its title and the spread becomes a colour chart.
+     Below it the page scrolls instead — a spread one swipe long is a smaller
+     loss than sixteen covers nobody can read. Ninety-six is also where the
+     stylesheet starts writing the binding out in full. */
+  const MIN = 96, MAX = Math.min(300, inner);
 
   grid.classList.add('fit');                 // no scrollbar while we measure
-  const put = w => { grid.style.setProperty('--cover-w', w + 'px'); };
+  /* The gap belongs to the width: small books on a small screen want small air
+     around them, big ones want more. It is set here rather than in the
+     stylesheet because the arithmetic below has to know it exactly — a gap the
+     measurement guessed at was what left a ragged margin down one side. */
+  const gapFor = w => Math.max(8, Math.min(26, Math.round(w * 0.14)));
+  const put = w => {
+    grid.style.setProperty('--cover-w', w + 'px');
+    GX = gapFor(w);
+    grid.style.setProperty('--cover-gx', GX + 'px');
+    grid.style.setProperty('--cover-gy', Math.round(GX * 1.25) + 'px');
+  };
   const over = () => grid.scrollHeight > grid.clientHeight + 1;
 
   const search = () => {
@@ -7579,22 +7643,48 @@ function libFitCovers(){
        whole width rather than leaving a ragged margin — this is what "fits the
        page" means across as well as down. */
     const w0 = parseFloat(grid.style.getPropertyValue('--cover-w')) || MIN;
+    const ok0 = !over();
+    /* How many fit across is settled FIRST, at the width the height allows, and
+       is then held: the gap follows the width, so a wider cover widens the gap
+       too, and letting the count follow that feedback ran a three-across spread
+       up to one cover a page wide. The count fixed, the width is filled out to
+       the edge — two passes, because the gap moves once with it. */
     const cols = Math.max(1, Math.floor((inner + GX) / (w0 + GX)));
-    const wide = Math.floor((inner - (cols - 1) * GX) / cols);
-    if(wide > w0){ put(wide); if(over()) put(w0); }
+    let wide = w0;
+    for(let k = 0; k < 3; k++){
+      const w2 = Math.max(w0, Math.floor((inner - (cols - 1) * gapFor(wide)) / cols));
+      if(w2 === wide) break;
+      wide = w2;
+    }
+    /* and if the last pixel does not fit after all, give it back */
+    while(wide > w0 && cols * wide + (cols - 1) * gapFor(wide) > inner) wide--;
+    /* if the smallest cover already overflows the page the height is lost
+       anyway, and a wider book is the better use of what is left */
+    if(wide > w0){ put(wide); if(ok0 && over()) put(w0); }
     return !over();
   };
 
-  grid.classList.remove('flat');
-  if(!search()){
-    /* Not with the three headings, then without them: on a phone held sideways
-       the page is about 250 pixels tall, and three headings and the breaks
-       between their groups are most of what is missing. Flattened — one grid of
-       fourteen, the groups dropped — it fits, and seeing every book at once is
-       what a spread is for. The sections come back as soon as there is room. */
-    grid.classList.add('flat');
-    if(!search()) grid.classList.remove('fit');   /* still no: let it scroll */
-  }
+  /* The subject headings stay. They were dropped once, to win the height back
+     on a phone held sideways; but a spread without them is a heap, and the
+     owner asked for the groups to be named. When even the smallest cover will
+     not fit under them, the spread scrolls — which is the cheaper loss. */
+  if(!search()) grid.classList.remove('fit');
+  libCoverTier();
+}
+/* ── how much of the binding is written out ──────────────────────────────────
+ * A cover seventy pixels wide cannot carry six lines of type. The tier is the
+ * cover's own width, and the stylesheet hides by degrees from it: small keeps
+ * the frame and the title, middle adds the house's name and the author, large
+ * carries the whole binding. */
+function libCoverTier(){
+  const grid = $('libGrid');
+  /* on the shelf it is the drawn-out book's own face that carries the plate */
+  const w = (LIB_VIEW === 'covers')
+    ? (parseFloat(getComputedStyle(grid).getPropertyValue('--cover-w')) || 132)
+    : 116;
+  grid.classList.toggle('sz-s', w < 96);
+  grid.classList.toggle('sz-m', w >= 96 && w < 146);
+  grid.classList.toggle('sz-l', w >= 146);
 }
 function libViewBtn(){
   const b=$('libView'); if(!b) return;

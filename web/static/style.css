@@ -2539,9 +2539,9 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
 .lib-spine:hover{ transform:translateY(-6px); }
 
 /* drawn out: it comes forward, grows to a cover and turns its face over */
-.lib-spine .cover-face{ transform:rotateY(180deg);
-  background:linear-gradient(135deg, var(--bk-lite), var(--bk) 55%, var(--bk-dark));
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), 0 10px 20px -6px rgba(50,30,15,.6); }
+.lib-spine .cover-face{ transform:rotateY(180deg); --cover-w:116px;
+  background:radial-gradient(116% 84% at 50% 32%, var(--ck-lite), var(--ck) 58%, var(--ck-dark));
+  box-shadow:inset 0 0 0 1px rgba(232,205,142,.18), 0 10px 20px -6px rgba(50,30,15,.6); }
 .lib-spine.pulled{ width:116px; height:150px; transform:translateY(-10px) rotateY(180deg); z-index:2; }
 .lib-spine.pulled .spine-title{ opacity:0; }
 .lib-spine.pulled + .lib-spine{ margin-inline-start:4px; }
@@ -2554,6 +2554,7 @@ body.div-collapsed .sam-date{ max-height:0 !important; opacity:0 !important;
 @media (max-width:420px){
   .lib-spine{ width:34px; height:112px; }
   .lib-spine.pulled{ width:104px; height:138px; }
+  .lib-spine .cover-face{ --cover-w:104px; }
   .spine-title{ max-height:98px; font-size:11.5px; }
 }
 
@@ -2659,10 +2660,6 @@ body.a11y-invert #app{ background-color:#f2f2f2; }
    it did. */
 /* the author's name, set under the title as it is on a binding: smaller, a
    little apart, and in the same ink */
-.cover-author{ margin-top:9px; padding:0 10px; font-size:11.5px; line-height:1.35;
-  color:#f3e2c8; text-shadow:0 1px 2px rgba(0,0,0,.5); }
-.cover-author::before{ content:''; display:block; width:28px; height:1px;
-  margin:0 auto 7px; background:rgba(255,246,233,.5); }
 .lib-spine.pulled .cover-face{ flex-direction:column; justify-content:center; }
 
 /* ── the inversion switch, last so it is not undone by the plain checkbox
@@ -3031,92 +3028,125 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 
 
 /* ── הספרייה: תצוגת הכריכות ──────────────────────────────────────────────────
-   The other way to look at the same shelves. Every book faces the reader,
-   bound in its own colour, titled across the middle and signed underneath;
-   the plank and the spines are gone, and one tap opens a book instead of two.
-   The binding colours are the same --bk/--bk-dark/--bk-lite the shelf uses, so
-   a book is recognisably the same book in both views. */
+   The other way to look at the same shelves. Every book faces the reader in
+   the house binding — a deep ground of its own colour inside a double gold
+   rule — grouped by subject under the group's name; the plank and the spines
+   are gone, and one tap opens a book instead of two. The ground is the same
+   hue the shelf gives that book's spine, taken down dark, so a book is
+   recognisably the same book in both views. */
 .lib-view{ flex:0 0 auto; border:1px solid var(--navy); background:#fff; color:var(--navy);
   border-radius:8px; padding:7px 12px; font:inherit; font-size:13.5px; font-weight:700;
   cursor:pointer; white-space:nowrap; }
 .lib-view:hover{ background:var(--navy); color:#fff; }
 
-/* width:100% is load-bearing. The grid carries margin-inline:auto on wide
-   screens, and an auto margin across a column flex container turns stretching
-   off — so the spread was measured against a box 280 pixels wide on a 1497-pixel
-   screen, found that nothing fitted, and flattened itself down to the minimum.
+/* ── הספרייה: פריסת הכריכות ──────────────────────────────────────────────────
+   The books lie face up on a table, grouped by subject with the group's name
+   over it, and each wears the house binding. The spread is sized to the page
+   (see libFitCovers): the gaps and the lettering follow the cover's width, so a
+   small screen gets small books with air around them rather than a crush.
    With a width of its own it stretches, and max-width still centres it. */
 #libGrid.as-covers{ width:100%; }
-.lib-grid.as-covers .shelf{ margin-bottom:20px; }
+.lib-grid.as-covers .shelf{ margin-bottom:calc(var(--cover-w, 132px) * .20); }
+.lib-grid.as-covers .shelf:last-child{ margin-bottom:0; }
+/* the subject's name over its books: a line of letters between two hairlines,
+   the way a chapter is headed in a printed book */
+.lib-grid.as-covers .shelf-name{ display:flex; align-items:center; gap:10px;
+  padding:0 2px calc(var(--cover-w, 132px) * .10);
+  font-size:clamp(11px, calc(var(--cover-w, 132px) * .092), 15px);
+  font-weight:700; letter-spacing:.07em; color:#6d5336; white-space:nowrap; }
+.lib-grid.as-covers .shelf-name::before,
+.lib-grid.as-covers .shelf-name::after{ content:''; flex:1 1 auto; height:1px;
+  background:linear-gradient(90deg, rgba(109,83,54,0), rgba(109,83,54,.42)); }
+.lib-grid.as-covers .shelf-name::after{ transform:scaleX(-1); }
+/* auto-FIT, not auto-fill: a group of two must sit in the middle of the table,
+   not at one end of eight empty tracks */
 .cover-row{ display:grid; justify-content:center;
-  grid-template-columns:repeat(auto-fill, var(--cover-w, 132px));
-  gap:14px 13px; padding:2px 6px 4px; }
-/* the spread stands inside the page; it scrolls only when even the smallest
-   cover will not fit (see libFitCovers) */
+  grid-template-columns:repeat(auto-fit, var(--cover-w, 132px));
+  gap:var(--cover-gy, 16px) var(--cover-gx, 13px);
+  padding:2px 6px 4px; }
+/* no scrollbar while the fit is being measured */
 .lib-grid.as-covers.fit{ overflow:hidden; }
-/* flattened: display:contents lets the covers out of their sections and into one
-   grid, so the three headings and the breaks between the groups cost nothing —
-   no second copy of the markup, and every handler on a cover still holds */
-/* the id, not the class: #libGrid{display:block} in the shelf rules outranks any
-   selector made of classes, and under display:block the covers — let out of their
-   sections by display:contents — became block boxes a page wide, 762x1016 each */
-#libGrid.as-covers.flat{ display:grid; justify-content:center; align-content:start;
-  grid-template-columns:repeat(auto-fill, var(--cover-w, 132px)); gap:12px; }
-#libGrid.as-covers.flat .shelf,
-#libGrid.as-covers.flat .cover-row{ display:contents; }
-#libGrid.as-covers.flat .shelf-name{ display:none; }
-/* A grid of fourteen cannot always fill both dimensions exactly: once the width
-   is used up, one more pixel of cover wraps a row and overflows the height. What
-   is left over is therefore spread down the page instead of being dropped at the
-   foot of it, so the spread reads as a page and not as a block with a gap under
-   it. */
+/* A grid of sixteen cannot always fill both dimensions exactly: once the width
+   is settled the rows are as tall as they are, and what is left over is spread
+   between the groups rather than banked at the bottom. */
 #libGrid.as-covers.fit{ display:flex; flex-direction:column; justify-content:space-evenly; }
-#libGrid.as-covers.fit.flat{ display:grid; align-content:space-evenly; }
-.lib-grid.as-covers.fit .shelf{ margin-bottom:0; }
-.lib-grid.as-covers.fit .shelf-name{ padding-bottom:4px; font-size:13px; }
-.lib-grid.as-covers.fit .shelf:last-child{ margin-bottom:0; }
 
+/* ── the binding itself ──────────────────────────────────────────────────────
+   A deep ground under a double gold rule with a lozenge on each corner, the
+   house's name across the head, and the title in the middle. The same plate
+   serves the spread and the book drawn off the shelf, so they cannot drift. */
 .lib-cover{ position:relative; display:block; width:100%; aspect-ratio:3/4;
   padding:0; border:0; cursor:pointer; font:inherit; overflow:hidden;
   border-radius:3px 7px 7px 3px;
-  background:linear-gradient(135deg, var(--bk-lite,#5a6b7a), var(--bk,#46566a) 55%, var(--bk-dark,#2b3542));
-  box-shadow:0 4px 10px -2px rgba(50,30,15,.45), inset 0 0 0 1px rgba(255,255,255,.14);
+  background:radial-gradient(116% 84% at 50% 32%, var(--ck-lite,#1b3b30), var(--ck,#132b23) 58%, var(--ck-dark,#0c1c17));
+  box-shadow:0 6px 14px -6px rgba(40,24,10,.5), inset 0 0 0 1px rgba(232,205,142,.18);
   transition:transform .16s, box-shadow .16s; }
 html[dir="ltr"] .lib-cover{ border-radius:7px 3px 3px 7px; }
 .lib-cover:hover{ transform:translateY(-3px);
-  box-shadow:0 10px 20px -5px rgba(50,30,15,.55), inset 0 0 0 1px rgba(255,255,255,.2); }
+  box-shadow:0 12px 22px -6px rgba(40,24,10,.6), inset 0 0 0 1px rgba(232,205,142,.34); }
 /* the binding edge, so a cover still reads as a bound book and not as a tile */
 .lib-cover::before{ content:''; position:absolute; inset-block:0; inset-inline-start:0;
-  width:9%; background:var(--bk-dark,#2b3542);
-  box-shadow:inset -1px 0 0 rgba(0,0,0,.3), 1px 0 2px rgba(255,255,255,.10); }
+  width:7%; background:linear-gradient(90deg, rgba(0,0,0,.34), rgba(0,0,0,.05));
+  border-inline-end:1px solid rgba(232,205,142,.22); pointer-events:none; z-index:1; }
 
-/* the drawn cover: rules, corners, and the three onyx stones of the house */
-.cover-art{ position:absolute; inset:5% 5% 5% 9%; width:auto; height:auto;
+/* the drawn frame */
+.cover-art{ position:absolute; inset-block:4.5%; inset-inline:8.5% 4.5%;
+  width:auto; height:auto; pointer-events:none; }
+.cover-art .ca-rule1, .cover-art .ca-rule2{ fill:none; stroke:#dcbd80; }
+.cover-art .ca-rule1{ stroke-width:1.8; opacity:.82; }
+.cover-art .ca-rule2{ stroke-width:1; opacity:.58; }
+.cover-art .ca-knot path{ fill:#e8cd8e; opacity:.85; }
+
+/* the house's name at the head, tracked, between two hairlines with a lozenge */
+.cover-head{ position:absolute; inset-inline:15% 10%; top:11.5%;
+  display:flex; align-items:center; justify-content:center; gap:11px;
   pointer-events:none; }
-.cover-art .ca-rule1, .cover-art .ca-rule2{ fill:none; stroke:#e8cd8e; }
-.cover-art .ca-rule1{ stroke-width:1.1; opacity:.72; }
-.cover-art .ca-rule2{ stroke-width:.55; opacity:.5; }
-.cover-art .ca-corner path{ fill:none; stroke:#e8cd8e; stroke-width:1.1; opacity:.72; }
-.cover-art .ca-stones path{ fill:#e8cd8e; opacity:.82; }
-.cover-art .ca-hair{ fill:none; stroke:#e8cd8e; stroke-width:.5; opacity:.4; }
+.cover-head i{ flex:1 1 auto; height:1px; position:relative;
+  background:rgba(232,205,142,.42); }
+.cover-head i::after{ content:''; position:absolute; top:-2.5px; width:6px; height:6px;
+  background:#e8cd8e; opacity:.9; transform:rotate(45deg); }
+.cover-head i:first-child::after{ inset-inline-end:-8px; }
+.cover-head i:last-child::after{ inset-inline-start:-8px; }
+.cover-head .ch-br{ flex:0 0 auto; color:#e8cd8e; font-weight:600;
+  font-size:clamp(7px, calc(var(--cover-w, 132px) * .062), 12px);
+  letter-spacing:.34em; padding-inline-start:.34em; }
 
-.lib-cover .cover-text{ position:absolute; inset-inline:12% 8%; top:41%;
-  transform:translateY(-38%); display:flex; flex-direction:column;
+/* title block */
+.cv .cover-text{ position:absolute; inset-inline:14% 9%; top:50%;
+  transform:translateY(-50%); display:flex; flex-direction:column;
   align-items:center; justify-content:center; text-align:center; }
-.lib-cover .lib-book-title{ padding:0 4px; border:0;
-  font-size:clamp(10px, calc(var(--cover-w, 132px) * .105), 15px); font-weight:700;
-  line-height:1.3; color:#fff6e9; text-shadow:0 1px 3px rgba(0,0,0,.5);
+.cv .lib-book-title{ padding:0 2px; border:0; color:#f0d79b;
+  font-size:clamp(10.5px, calc(var(--cover-w, 132px) * .112), 23px); font-weight:700;
+  line-height:1.28; text-shadow:0 1px 3px rgba(0,0,0,.5);
   display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
-.lib-cover .cover-author{ margin-top:6px; color:#f0ddbd;
-  font-size:clamp(8.5px, calc(var(--cover-w, 132px) * .082), 12px); }
-.lib-cover .cover-author::before{ width:22px; margin-bottom:6px; }
-/* the house's own name at the foot of the binding, where a publisher's is */
-.cover-imprint{ position:absolute; inset-inline:9% 5%; bottom:7%;
-  text-align:center; letter-spacing:.14em; color:#e8cd8e;
-  font-size:clamp(7px, calc(var(--cover-w, 132px) * .068), 10px);
-  opacity:.8; text-shadow:0 1px 2px rgba(0,0,0,.5); }
+.cv .cover-alt{ margin-top:.45em; color:rgba(232,205,142,.82);
+  font-size:clamp(8px, calc(var(--cover-w, 132px) * .082), 17px); line-height:1.35;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.cv .cover-kind{ margin-top:.9em; color:rgba(240,226,194,.72);
+  font-size:clamp(7.5px, calc(var(--cover-w, 132px) * .061), 12.5px); line-height:1.3; }
+.cv .cover-by{ margin-top:1.1em; color:#f0e2c2; line-height:1.35;
+  font-size:clamp(8px, calc(var(--cover-w, 132px) * .07), 14px); font-weight:700; }
+.cv .cover-by i{ display:block; margin-bottom:.35em; font-style:normal;
+  font-weight:400; letter-spacing:.14em; color:rgba(240,226,194,.6);
+  font-size:.78em; }
+/* the six small rings at the foot, where a printed book keeps its device */
+.cover-dots{ position:absolute; inset-inline:15% 10%; bottom:8.5%;
+  display:flex; align-items:center; justify-content:center; gap:.5em;
+  font-size:clamp(7px, calc(var(--cover-w, 132px) * .05), 11px); pointer-events:none; }
+.cover-dots i{ width:.55em; height:.55em; border-radius:50%;
+  border:1px solid rgba(232,205,142,.72); }
 
-@media (max-width:420px){
-  .cover-row{ gap:12px 10px; }
-}
+/* ── how much of the cover is shown ──────────────────────────────────────────
+   A cover seventy pixels wide cannot carry six lines of type legibly, so the
+   plate is written out by degrees: the small one keeps the frame and the title,
+   the middle one adds the house's name and the author, and only the large one
+   carries the whole binding. The thresholds are the cover's own width. */
+.lib-grid.sz-s .cover-head .ch-br,
+.lib-grid.sz-s .cover-alt, .lib-grid.sz-s .cover-kind,
+.lib-grid.sz-s .cover-by, .lib-grid.sz-s .cover-dots{ display:none; }
+.lib-grid.sz-s .cover-head{ gap:7px; }
+.lib-grid.sz-m .cover-alt{ display:none; }
+.lib-grid.sz-m .cover-kind{ margin-top:.7em; }
+.lib-grid.sz-m .cover-dots{ gap:.42em; }
+
 @media (prefers-reduced-motion: reduce){ .lib-cover{ transition:none; } }
