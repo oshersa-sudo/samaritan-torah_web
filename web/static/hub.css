@@ -544,3 +544,111 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
 .hub-drawer-back:hover{ background:rgba(200,164,86,.25); }
 /* the lettering above the dial always stays in front of the circle that swells at the pointer */
 .hub-title, .hub-date{ position:relative; z-index:6; }
+
+/* ── חיפוש אחד על פני כל הבית ────────────────────────────────────────────────
+   A magnifier at the right of the download button; it opens one line across the
+   middle of the main menu, with the apps to look in behind a small window of its
+   own, and answers on a page in the menu's own colours. */
+.hub-find-btn svg{ width:21px; height:21px; fill:none; stroke:var(--gold-bright); stroke-width:2.2;
+  animation:none; filter:drop-shadow(0 0 4px rgba(236,205,132,.45)); }
+.hub-find-btn:hover svg{ stroke:#fff3c8; }
+
+#hub > .hub-find{
+  position:fixed; inset:0; z-index:7; display:flex; align-items:center; justify-content:center;
+  background:rgba(4,8,26,.72); padding:16px;
+}
+.hub-find-wrap{ width:min(760px, 100%); }
+.hub-find-barwrap{ position:relative; }
+.hub-find-bar{
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:10px; border-radius:16px;
+  border:1px solid rgba(200,164,86,.6); background:linear-gradient(180deg, #1c4690, #0c2147);
+  box-shadow:0 18px 50px rgba(0,0,0,.6);
+}
+.hub-find-in{
+  flex:1 1 240px; min-width:0; padding:12px 14px; border-radius:11px; font:inherit; font-size:16px;
+  border:1px solid rgba(200,164,86,.45); background:rgba(4,8,26,.5); color:var(--parchment);
+}
+.hub-find-in::placeholder{ color:rgba(239,230,204,.52); font-size:13px; }
+.hub-find-in:focus{ outline:2px solid var(--gold-bright); outline-offset:1px; }
+.hub-find-go{
+  flex:1 1 auto; padding:11px 20px; border-radius:11px; cursor:pointer; font:inherit; font-size:15px;
+  font-weight:700; border:1px solid var(--gold-bright); background:var(--gold); color:#0a1733;
+}
+.hub-find-go:hover{ background:var(--gold-bright); }
+.hub-find-filter{
+  flex:0 0 auto; padding:11px 14px; border-radius:11px; cursor:pointer; font:inherit; font-size:14px;
+  border:1px solid rgba(200,164,86,.6); background:transparent; color:var(--gold-bright); white-space:nowrap;
+}
+.hub-find-filter:hover{ background:rgba(200,164,86,.2); }
+.hub-find-filter.on{ background:rgba(200,164,86,.26); border-color:var(--gold-bright); }
+.hub-find-x{
+  flex:0 0 auto; width:38px; height:38px; border-radius:50%; cursor:pointer; line-height:1; font-size:22px;
+  padding:0; border:1px solid rgba(200,164,86,.6); background:transparent; color:var(--gold-bright);
+}
+.hub-find-x:hover{ background:rgba(200,164,86,.22); }
+.hub-find-note{ margin-top:10px; min-height:1.3em; text-align:center; font-size:13.5px; color:var(--gold-bright); }
+
+/* the little window: which apps to look in. It hangs under the filter button,
+   inside the overlay, so nothing can clip it and nothing of the bar is hidden. */
+.hub-find-pop{
+  position:absolute; top:calc(100% + 8px); inset-inline-end:6px; z-index:3;
+  width:min(320px, calc(100vw - 36px)); max-height:min(58vh, 380px); overflow-y:auto;
+  border-radius:13px; border:1px solid rgba(200,164,86,.6); box-shadow:0 16px 40px rgba(0,0,0,.6);
+  background:linear-gradient(180deg, #1c4690, #0c2147); color:var(--parchment);
+}
+.hub-find-pop.hidden{ display:none; }
+.hub-find-pop-h{
+  position:sticky; top:0; display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:10px 12px; background:#14346f;
+  border-bottom:1px solid rgba(200,164,86,.35);
+}
+.hub-find-pop-h b{ font-family:'Frank Ruhl Libre',serif; font-size:15.5px; color:var(--gold-bright); }
+.hub-find-pop-x{
+  width:28px; height:28px; border-radius:50%; cursor:pointer; line-height:1; font-size:18px; padding:0;
+  border:1px solid rgba(200,164,86,.6); background:transparent; color:var(--gold-bright);
+}
+.hub-find-pop-b{ padding:6px 10px 10px; }
+.hub-find-opt{
+  display:flex; align-items:center; gap:9px; padding:7px 4px; cursor:pointer; font-size:14px;
+  border-bottom:1px solid rgba(200,164,86,.14);
+}
+.hub-find-opt:last-child{ border-bottom:0; }
+.hub-find-opt input{ width:17px; height:17px; flex:0 0 auto; accent-color:var(--gold); }
+.hub-find-opt.off{ cursor:default; opacity:.55; }
+.hub-find-all{ font-weight:700; color:var(--gold-bright); }
+
+/* the answer: a page of its own, in the main menu's colours */
+#hub > .hub-res{
+  position:fixed; inset:0; z-index:8; display:flex; flex-direction:column;
+  background:radial-gradient(120% 80% at 50% 32%, var(--lapis) 0%, var(--ink-night) 46%, var(--ink-abyss) 100%);
+}
+.hub-res-head{
+  flex:0 0 auto; display:flex; align-items:center; gap:10px;
+  padding:max(12px, env(safe-area-inset-top)) 16px 12px;
+  border-bottom:1px solid rgba(200,164,86,.35);
+}
+.hub-res-head h2{ margin:0; font-family:'Frank Ruhl Libre',serif; font-size:19px; color:var(--gold-bright); white-space:nowrap; }
+.hub-res-q{ flex:1 1 auto; min-width:0; font-size:13.5px; color:var(--gold); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hub-res-x{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%; cursor:pointer; line-height:1; font-size:22px;
+  padding:0; border:1px solid rgba(200,164,86,.6); background:transparent; color:var(--gold-bright);
+}
+.hub-res-x:hover{ background:rgba(200,164,86,.22); }
+.hub-res-body{
+  flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  padding:10px 14px max(18px, env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:8px;
+}
+.hub-res-row{
+  display:block; width:100%; text-align:start; cursor:pointer; padding:10px 12px; border-radius:12px;
+  border:1px solid rgba(200,164,86,.3); background:rgba(10,23,51,.5); color:var(--parchment); font:inherit;
+}
+.hub-res-row:hover{ background:rgba(200,164,86,.15); border-color:rgba(200,164,86,.62); }
+.hub-res-line{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:3px; }
+.hub-res-app{ font-size:11.5px; font-weight:700; letter-spacing:.03em; padding:2px 9px; border-radius:999px;
+  background:var(--gold); color:#0a1733; }
+.hub-res-kind{ font-size:11.5px; padding:2px 9px; border-radius:999px; color:var(--gold-bright);
+  border:1px solid rgba(200,164,86,.55); }
+.hub-res-unit{ font-size:11.5px; color:var(--gold); }
+.hub-res-ref{ font-size:15px; font-weight:700; line-height:1.35; color:var(--gold-bright); }
+.hub-res-txt{ font-size:13.5px; line-height:1.55; opacity:.88; }
+.hub-res-none{ padding:44px 12px; text-align:center; color:var(--gold); font-size:15px; }

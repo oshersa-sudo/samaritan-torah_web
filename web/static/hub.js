@@ -28,6 +28,15 @@
       copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', dl:'הורדה', exit:'יציאה לתפריט הראשי', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
       torahHelp:{ tag:'חמשת חומשי התורה בנוסח השומרוני',
         points:['חמישה חומשי תורה בנוסח השומרוני, בכתב השומרוני ובאותיות עבריות','פירוש הפסוק מן המקורות השומרוניים, ותרגומים: ארמי, ערבי ואנגלי','השוואת נוסחים: המסורה, השבעים, אונקלוס וקומראן','מילון מילים, הקראה, חיפוש מתקדם והדפסה'] },
+      find:'חיפוש', findPh:'חפש פיוט, מבצע, פסוק בתורה, מילה, מקום במפות או ערך בספרייה, ואנחנו נמצא אותו בשבילך',
+      findGo:'חפש', findFilter:'סינון', findFilterTitle:'סנן את החיפוש', findAll:'בכל הבית',
+      findResults:'תוצאות החיפוש', findNone:'לא נמצא דבר. אפשר לנסות מילה אחרת, או להרחיב את הסינון.',
+      findWait:'מחפש…', findShort:'שתי אותיות לפחות', findNoApp:'לא נבחרה אף אפליקציה לחפש בה',
+      findErr:'החיפוש לא יצא לדרך. נסו שוב.', findExt:'לא ניתן לחפש בה מכאן',
+      kinds:{ verse:'פסוק בתורה', section:'קטע בספר', person:'אישיות', piyut:'פיוט',
+        dara:'פיוט בתעתיק', word:'ערך במילון', shira_piyyut:'פיוט באוצר', shira_perf:'מבצע',
+        shira_event:'מועד', mss:'כתב יד', mss_coll:'אוסף כתבי יד', tl:'אירוע',
+        place:'מקום בהר', feast:'מועד בלוח', parasha:'פרשת השבוע' },
       apps:{
         dict:{ name:'המילון הארמי-עברי', tag:'ארמית שומרונית ועברית',
           points:['מילון ארמי-עברי, ועברי-ארמי.','מבוסס על מילונים שונים ומגוונים.','חיפוש לפי מילה, שורש מילה','משמעות המילה, מופעי המילה בפיוטים השומרוניים, בתורה הארמית ובתיבת מרקה'] },
@@ -52,6 +61,15 @@
       copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', dl:'Download', exit:'Exit to the main menu', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
       torahHelp:{ tag:'The five books of the Torah in the Samaritan text',
         points:['The five books in the Samaritan text, in Samaritan script and Hebrew letters','Verse commentary from the Samaritan sources, and translations: Aramaic, Arabic and English','Comparison of versions: Masoretic, Septuagint, Onkelos and Qumran','A word dictionary, read-aloud, advanced search and printing'] },
+      find:'Search', findPh:'Search for a piyyut, a performer, a verse of the Torah, a word, a place on the map or an entry in the library — and we will find it for you',
+      findGo:'Search', findFilter:'Filter', findFilterTitle:'Narrow the search', findAll:'Everywhere',
+      findResults:'Search results', findNone:'Nothing found. Try another word, or widen the filter.',
+      findWait:'Searching…', findShort:'Two letters at least', findNoApp:'No app chosen to search in',
+      findErr:'The search did not go through. Try again.', findExt:'not searchable from here',
+      kinds:{ verse:'Verse of the Torah', section:'Passage', person:'Figure', piyut:'Piyyut',
+        dara:'Piyyut in transcription', word:'Dictionary entry', shira_piyyut:'Piyyut in the archive',
+        shira_perf:'Performer', shira_event:'Occasion', mss:'Manuscript', mss_coll:'Collection',
+        tl:'Event', place:'Place on the mountain', feast:'Festival', parasha:'Weekly portion' },
       apps:{
         dict:{ name:'The Aramaic-Hebrew Dictionary', tag:'Samaritan Aramaic and Hebrew',
           points:['An Aramaic-Hebrew and Hebrew-Aramaic dictionary.','Based on a range of different dictionaries.','Search by word or by word root','The word’s meaning, and where it occurs in the Samaritan piyyutim, the Aramaic Targum and Tibat Marqe'] },
@@ -76,6 +94,15 @@
       copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', dl:'تنزيل', exit:'الخروج إلى القائمة الرئيسية', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
       torahHelp:{ tag:'أسفار التوراة الخمسة بالنص السامري',
         points:['أسفار التوراة الخمسة بالنص السامري، بالخط السامري وبالحروف العبرية','تفسير الآية من المصادر السامرية، وترجمات: آرامية وعربية وإنجليزية','مقارنة النسخ: الماسوري والسبعينية وأونقلوس وقمران','قاموس للكلمات، وقراءة مسموعة، وبحث متقدّم، وطباعة'] },
+      find:'بحث', findPh:'ابحث عن نشيد أو مؤدٍّ أو آية من التوراة أو كلمة أو موقع على الخريطة أو مدخل في المكتبة — ونحن نجده لك',
+      findGo:'ابحث', findFilter:'تصفية', findFilterTitle:'حصر البحث', findAll:'في كل البيت',
+      findResults:'نتائج البحث', findNone:'لم يُعثر على شيء. جرّب كلمة أخرى أو وسّع التصفية.',
+      findWait:'جارٍ البحث…', findShort:'حرفان على الأقل', findNoApp:'لم يُختر أي تطبيق للبحث فيه',
+      findErr:'لم ينجح البحث. حاول مرة أخرى.', findExt:'لا يمكن البحث فيه من هنا',
+      kinds:{ verse:'آية من التوراة', section:'مقطع', person:'شخصية', piyut:'نشيد',
+        dara:'نشيد بالنسخ الصوتي', word:'مدخل في المعجم', shira_piyyut:'نشيد في الأرشيف',
+        shira_perf:'مؤدٍّ', shira_event:'مناسبة', mss:'مخطوط', mss_coll:'مجموعة مخطوطات',
+        tl:'حدث', place:'موقع في الجبل', feast:'عيد', parasha:'المقطع الأسبوعي' },
       apps:{
         dict:{ name:'القاموس الآرامي-العبري', tag:'الآرامية السامرية والعبرية',
           points:['قاموس آرامي-عبري، وعبري-آرامي.','مبني على قواميس متنوعة ومختلفة.','بحث بحسب الكلمة أو جذر الكلمة','معنى الكلمة ومواضع ورودها في القصائد السامرية وفي الترجمة الآرامية للتوراة وفي ميمر مرقة'] },
@@ -443,6 +470,9 @@
     starBtn.querySelector('.hub-star-cap').textContent = X.newsShort;
     dlBtn.setAttribute('aria-label', t('m_getapp')); dlBtn.title = t('m_getapp');
     dlBtn.querySelector('.hub-star-cap').textContent = X.dl;
+    findBtn.setAttribute('aria-label', X.find); findBtn.title = X.find;
+    findBtn.querySelector('.hub-star-cap').textContent = X.find;
+    paintFindCount();
     langBox.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.lang === L));
     drawerWrap.querySelector('.hub-drawer-title').textContent = t('menu');
     drawerWrap.querySelector('.hub-drawer-back').setAttribute('aria-label', t('close'));
@@ -761,6 +791,366 @@
     lay(); cf.focus({ preventScroll:true });
   }
 
+  /* ── חיפוש אחד על פני כל הבית ───────────────────────────────────────────────
+   * A house of ten apps, each with a search of its own that searches only
+   * itself. Somebody who knows a word and not which app holds it had nowhere to
+   * type it. This is that place: one line in the middle of the main menu, and
+   * one list back — the app it was found in, what kind of thing it is, which
+   * unit of that app holds it, and the thing itself. Pressing a line opens the
+   * app at it.
+   *
+   * The looking is done on the server (web/searchall.py), which can reach the
+   * database and the other units' own data at once. What arrives here is
+   * language-neutral: every label on the screen is chosen below, from the hub's
+   * own three-language table, and the only text that comes from the server is
+   * the found text itself, in whatever language it was written in.
+   */
+  const FIND_APPS = ['torah', 'library', 'dict', 'shira', 'mss', 'timeline', 'gerizim', 'calendar', 'genealogy'];
+  const FIND_OFF = ['genealogy'];        // another house's server: it can be opened, not searched
+  let findSel = null;                    // null = everywhere; otherwise a Set of app keys
+  let findLayer = null, resLayer = null, findSeq = 0;
+
+  const findable = () => FIND_APPS.filter(k => FIND_OFF.indexOf(k) < 0);
+  function appName(k){
+    const X = T();
+    if(k === 'torah') return X.torah;
+    const a = X.apps[k];
+    return a ? (a.short || a.name) : k;
+  }
+  const kindName = k => (T().kinds || {})[k] || '';
+
+  // the magnifier, at the right of the download button
+  const findBtn = document.createElement('button');
+  findBtn.type = 'button'; findBtn.className = 'hub-star hub-find-btn';
+  findBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+    'stroke-linecap="round" aria-hidden="true"><circle cx="10.6" cy="10.6" r="6.3"/>' +
+    '<line x1="15.3" y1="15.3" x2="20.4" y2="20.4"/></svg><span class="hub-star-cap"></span>';
+  findBtn.addEventListener('click', () => openFind());
+  side.appendChild(findBtn);
+
+  /* the dial turns half a round, as it does on the way in. Closing the search
+     line puts the menu back the way it came. */
+  function spinHalf(){
+    const DUR = 900, t0 = performance.now();
+    const ease = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    (function frame(now){
+      const p = Math.min(1, (now - t0) / DUR);
+      introDeg = -(1 - ease(p)) * 180;
+      paint(u);
+      if(p < 1) requestAnimationFrame(frame);
+      else { introDeg = 0; paint(u); }
+    })(t0);
+  }
+
+  function openFind(){
+    if(findLayer) return;
+    const X = T();
+    const o = document.createElement('div');
+    o.className = 'hub-find';
+    o.innerHTML =
+      '<div class="hub-find-wrap">' +
+        '<div class="hub-find-barwrap">' +
+          '<div class="hub-find-bar">' +
+            '<button type="button" class="hub-find-x">&times;</button>' +
+            '<input class="hub-find-in" type="search" autocomplete="off" enterkeyhint="search">' +
+            '<button type="button" class="hub-find-go"></button>' +
+            '<button type="button" class="hub-find-filter" aria-haspopup="dialog" aria-expanded="false"></button>' +
+          '</div>' +
+          '<div class="hub-find-pop hidden" role="dialog"></div>' +
+        '</div>' +
+        '<div class="hub-find-note" role="status"></div>' +
+      '</div>';
+    const inp = o.querySelector('.hub-find-in');
+    const go = o.querySelector('.hub-find-go');
+    const flt = o.querySelector('.hub-find-filter');
+    const x = o.querySelector('.hub-find-x');
+    inp.placeholder = X.findPh; inp.setAttribute('aria-label', X.find);
+    go.textContent = X.findGo; go.setAttribute('aria-label', X.findGo);
+    flt.textContent = X.findFilter; flt.title = X.findFilterTitle;
+    x.setAttribute('aria-label', t('close')); x.title = t('close');
+    go.addEventListener('click', runFind);
+    inp.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); runFind(); } });
+    flt.addEventListener('click', e => { e.stopPropagation(); togglePop(); });
+    x.addEventListener('click', () => closeFind());
+    o.addEventListener('click', e => {
+      if(e.target === o) closeFind();
+      else closePop();                       // a press anywhere else puts the little window away
+    });
+    document.addEventListener('keydown', findEsc);
+    hub.appendChild(o);
+    findLayer = o;
+    paintFindCount();
+    setTimeout(() => inp.focus(), 40);
+  }
+  function findEsc(e){
+    if(e.key !== 'Escape') return;
+    if(resLayer) closeResults();
+    else if(findLayer && !findLayer.querySelector('.hub-find-pop.hidden')) closePop();
+    else if(findLayer) closeFind();
+  }
+  function closeFind(quiet){
+    closeResults();
+    if(findLayer){ findLayer.remove(); findLayer = null; }
+    document.removeEventListener('keydown', findEsc);
+    if(!quiet && isOpen()) spinHalf();
+  }
+
+  // ── the little window: which apps to look in ───────────────────────────────
+  function closePop(){
+    if(!findLayer) return;
+    const pop = findLayer.querySelector('.hub-find-pop');
+    if(pop) pop.classList.add('hidden');
+    const b = findLayer.querySelector('.hub-find-filter');
+    if(b) b.setAttribute('aria-expanded', 'false');
+  }
+  function togglePop(){
+    const pop = findLayer.querySelector('.hub-find-pop');
+    const b = findLayer.querySelector('.hub-find-filter');
+    if(!pop.classList.contains('hidden')){ closePop(); return; }
+    buildPop(pop);
+    pop.style.cssText = '';
+    pop.classList.remove('hidden');
+    b.setAttribute('aria-expanded', 'true');
+    fitPop(pop);
+  }
+  /* The little window must not hang off the screen, and must not cover the line
+     the reader is typing into. It is given the room there actually is under the
+     button; if that is too little, it opens upwards instead. */
+  function fitPop(pop){
+    const bar = findLayer.querySelector('.hub-find-bar').getBoundingClientRect();
+    const below = innerHeight - bar.bottom - 20;
+    const above = bar.top - 20;
+    if(below < 180 && above > below){
+      pop.style.top = 'auto';
+      pop.style.bottom = 'calc(100% + 8px)';
+      pop.style.maxHeight = Math.max(140, above) + 'px';
+    } else {
+      pop.style.maxHeight = Math.max(140, below) + 'px';
+    }
+  }
+  function buildPop(pop){
+    const X = T();
+    pop.innerHTML = '<div class="hub-find-pop-h"><b></b><button type="button" class="hub-find-pop-x">&times;</button></div>' +
+                    '<div class="hub-find-pop-b"></div>';
+    pop.querySelector('b').textContent = X.findFilterTitle;
+    const px = pop.querySelector('.hub-find-pop-x');
+    px.setAttribute('aria-label', t('close'));
+    px.addEventListener('click', e => { e.stopPropagation(); closePop(); });
+    pop.addEventListener('click', e => e.stopPropagation());
+    const body = pop.querySelector('.hub-find-pop-b');
+
+    const all = document.createElement('label');
+    all.className = 'hub-find-opt hub-find-all';
+    all.innerHTML = '<input type="checkbox"><span></span>';
+    all.querySelector('span').textContent = X.findAll;
+    const allBox = all.querySelector('input');
+    allBox.checked = !findSel;
+    allBox.addEventListener('change', () => {
+      findSel = allBox.checked ? null : new Set();
+      buildPop(pop); paintFindCount();
+    });
+    body.appendChild(all);
+
+    FIND_APPS.forEach(k => {
+      const off = FIND_OFF.indexOf(k) >= 0;
+      const row = document.createElement('label');
+      row.className = 'hub-find-opt' + (off ? ' off' : '');
+      row.innerHTML = '<input type="checkbox"><span></span>';
+      const box = row.querySelector('input');
+      box.checked = !off && (!findSel || findSel.has(k));
+      box.disabled = off;
+      row.querySelector('span').textContent = appName(k) + (off ? ' — ' + X.findExt : '');
+      box.addEventListener('change', () => {
+        if(!findSel) findSel = new Set(findable());      // "everything" becomes a list the moment one is dropped
+        if(box.checked) findSel.add(k); else findSel.delete(k);
+        if(findable().every(a => findSel.has(a))) findSel = null;
+        buildPop(pop); paintFindCount();
+      });
+      body.appendChild(row);
+    });
+  }
+  // the button says how narrow the search is, so a forgotten filter cannot
+  // quietly swallow half the house
+  function paintFindCount(){
+    if(!findLayer) return;
+    const b = findLayer.querySelector('.hub-find-filter');
+    const X = T();
+    const n = findSel ? findSel.size : findable().length;
+    b.textContent = findSel ? X.findFilter + ' · ' + n : X.findFilter;
+    b.classList.toggle('on', !!findSel);
+  }
+
+  // ── asking ─────────────────────────────────────────────────────────────────
+  async function runFind(){
+    if(!findLayer) return;
+    closePop();
+    const X = T();
+    const inp = findLayer.querySelector('.hub-find-in');
+    const note = findLayer.querySelector('.hub-find-note');
+    const q = (inp.value || '').trim();
+    if(q.length < 2){ note.textContent = X.findShort; return; }
+    const apps = (findSel ? [...findSel] : findable()).filter(k => FIND_OFF.indexOf(k) < 0);
+    if(!apps.length){ note.textContent = X.findNoApp; return; }
+    note.textContent = X.findWait;
+    const seq = ++findSeq;
+    let data = null;
+    try{
+      const r = await fetch('/api/search_all?q=' + encodeURIComponent(q) + '&apps=' + encodeURIComponent(apps.join(',')),
+                            { cache:'no-store' });
+      if(r.ok) data = await r.json();
+    }catch(e){ /* offline, or the server said no */ }
+    if(seq !== findSeq || !findLayer) return;
+    if(!data){ note.textContent = X.findErr; return; }
+    note.textContent = '';
+    showResults(q, data);
+  }
+
+  // ── the answer ─────────────────────────────────────────────────────────────
+  function closeResults(){ if(resLayer){ resLayer.remove(); resLayer = null; } }
+  function showResults(q, data){
+    closeResults();
+    const X = T(), rows = data.rows || [];
+    const o = document.createElement('div');
+    o.className = 'hub-res';
+    o.innerHTML =
+      '<div class="hub-res-head">' +
+        '<h2></h2><div class="hub-res-q"></div>' +
+        '<button type="button" class="hub-res-x">&times;</button>' +
+      '</div><div class="hub-res-body"></div>';
+    o.querySelector('h2').textContent = X.findResults + ' · ' + (data.count || 0);
+    o.querySelector('.hub-res-q').textContent = '«' + q + '»';
+    const bx = o.querySelector('.hub-res-x');
+    bx.setAttribute('aria-label', t('close')); bx.title = t('close');
+    bx.addEventListener('click', () => closeResults());
+    const body = o.querySelector('.hub-res-body');
+    if(!rows.length){
+      const d = document.createElement('div'); d.className = 'hub-res-none';
+      d.textContent = X.findNone; body.appendChild(d);
+    }
+    rows.forEach(r => body.appendChild(resultRow(r)));
+    hub.appendChild(o);
+    resLayer = o;
+    bx.focus();
+  }
+  /* one line: which app · what kind of thing · which unit of it · the thing */
+  function resultRow(r){
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'hub-res-row';
+    const head = document.createElement('div'); head.className = 'hub-res-line';
+    const chip = (cls, txt) => { const s = document.createElement('span'); s.className = cls; s.textContent = txt; head.appendChild(s); };
+    chip('hub-res-app', appName(r.app));
+    const kind = kindName(r.kind); if(kind) chip('hub-res-kind', kind);
+    const unit = r.unitKey ? t(r.unitKey) : '';
+    if(unit) chip('hub-res-unit', unit);
+    b.appendChild(head);
+
+    const ref = document.createElement('div'); ref.className = 'hub-res-ref';
+    // a library section has no reference of its own until the book says what it is:
+    // the unit's own searchRef() writes it, which is the very line its search box shows
+    let refTxt = r.ref || '';
+    if(!refTxt && r.go && r.go.t === 'book'){
+      try{ ref.innerHTML = BOOK_CFG[r.go.key].searchRef(r.go.row); }catch(e){ ref.textContent = ''; }
+    } else {
+      ref.textContent = refTxt;
+    }
+    if(r.when) ref.textContent = (ref.textContent ? ref.textContent + ' · ' : '') + r.when;
+    if(ref.textContent || ref.innerHTML) b.appendChild(ref);
+
+    if(r.text){
+      const tx = document.createElement('div'); tx.className = 'hub-res-txt'; tx.textContent = r.text;
+      b.appendChild(tx);
+    }
+    b.addEventListener('click', () => goResult(r));
+    return b;
+  }
+
+  // ── going there ────────────────────────────────────────────────────────────
+  /* Two of the units are pages of their own inside a frame, and both have a
+     search box. They are served from this very origin, so rather than teaching
+     each of them a new address, the term is simply typed into that box for the
+     reader — which is what they would have done themselves. */
+  function frameSearch(frame, sel, term){
+    if(!frame || !term) return;
+    const run = () => {
+      try{
+        const d = frame.contentDocument; if(!d) return;
+        const i = d.querySelector(sel); if(!i) return;
+        i.value = term;
+        const W = frame.contentWindow;
+        i.dispatchEvent(new W.Event('input', { bubbles:true }));
+        i.dispatchEvent(new W.Event('change', { bubbles:true }));
+        try{ i.dispatchEvent(new W.KeyboardEvent('keydown', { key:'Enter', bubbles:true })); }catch(e){}
+      }catch(e){ /* a frame that is not ours to touch */ }
+    };
+    let done = false;
+    const once = () => { if(done) return; done = true; setTimeout(run, 260); };
+    try{
+      if(frame.contentDocument && frame.contentDocument.readyState === 'complete') once();
+    }catch(e){}
+    frame.addEventListener('load', once, { once:true });
+    setTimeout(once, 1400);                       // a frame kept from last time fires no load
+  }
+  async function goResult(r){
+    const g = r.go || {};
+    closeFind(true);                              // we are leaving the menu: no turn of the dial
+    const open = fn => { setOrigin('hub'); hideHub(); setTimeout(fn, 20); };
+    try{
+      if(g.t === 'verse'){
+        setOrigin('menu'); hideHub();
+        const rec = await api('locate_verse?verse_id=' + g.vid);
+        if(rec && rec.portion_id) await goToJewish(rec);
+        return;
+      }
+      if(g.t === 'book'){
+        open(() => {
+          openReader(g.key);
+          const to = BOOK_CFG[g.key].searchTo(g.row);
+          setTimeout(() => openRdChapter(to.chap, to.dom), 80);
+        });
+        return;
+      }
+      if(g.t === 'person'){ open(() => { openPeopleBook(); setTimeout(() => ppShow(g.id), 320); }); return; }
+      if(g.t === 'piyut'){ open(() => { openPiyutimBook(); setTimeout(() => piyShow(g.id), 420); }); return; }
+      if(g.t === 'dara'){ open(() => { openDaraBook(); setTimeout(() => daraShow(g.id), 420); }); return; }
+      if(g.t === 'dict'){
+        open(() => {
+          const m = $('dictModal'); if(m) m.dataset.direct = '1';
+          openDictApp();
+          const i = $('dictAppInput');
+          if(i){ i.value = g.word; setTimeout(() => { if(typeof dictAppSearch === 'function') dictAppSearch(); }, 160); }
+        });
+        return;
+      }
+      if(g.t === 'shira'){ open(() => { openShira(); frameSearch($('shFrame'), '#q', g.q); }); return; }
+      if(g.t === 'mss'){
+        open(() => {
+          if(typeof window.openMss === 'function') window.openMss();
+          frameSearch($('mssFrame'), '#msSearch', g.q);
+        });
+        return;
+      }
+      if(g.t === 'timeline'){
+        open(() => {
+          const f = $('tlFrame');
+          if(f && g.ev){
+            try{ _tlLang = null; }catch(e){}            // the frame is kept; this one must be loaded afresh
+            f.src = '/timeline/?lang=' + encodeURIComponent(LANG) + '&ev=' + encodeURIComponent(g.ev);
+            $('timelineModal').classList.remove('hidden');
+            if(typeof trackNav === 'function') trackNav(t('m_timeline'));
+          } else openTimeline();
+        });
+        return;
+      }
+      if(g.t === 'gerizim'){
+        open(() => openExternalUnit('/static/gerizim/index.html?lang=' + lang() +
+                                    (g.place ? '&place=' + encodeURIComponent(g.place) : ''),
+                                    T().apps.gerizim.short));
+        return;
+      }
+      if(g.t === 'calendar'){ open(() => openExternalUnit(CALENDAR_URL, t('m_calendar'))); return; }
+    }catch(e){ /* a door that would not open leaves the reader where they were */ }
+  }
+
   // ── the way in ─────────────────────────────────────────────────────────────
   // Nothing sits between the entry animation and this page any more. As the splash
   // fades, all the small circles come out of the Torah at the middle, at once, to their
@@ -938,6 +1328,14 @@
   const unitVisible = () => [...document.querySelectorAll('.rd-totorah')].some(b => { const m = b.closest('.modal'); return m && !m.classList.contains('hidden'); })
     || ['extFrameWrap', 'mssFrameWrap'].some(id => { const w = $(id); return w && w.style.display === 'block'; });
   function closeHubLayer(){
+    // the search lies over everything here: its answer first, then its little
+    // window, then the line itself
+    if(resLayer){ closeResults(); return true; }
+    if(findLayer){
+      const pop = findLayer.querySelector('.hub-find-pop');
+      if(pop && !pop.classList.contains('hidden')){ closePop(); return true; }
+      closeFind(); return true;
+    }
     if(drawerWrap.classList.contains('open')){ closeHubMenu(); return true; }
     const sh = hub.querySelector('.hub-shots .hub-news-x'); if(sh){ sh.click(); return true; }
     const nw = hub.querySelector('.hub-news .hub-news-x'); if(nw){ nw.click(); return true; }

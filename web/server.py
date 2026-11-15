@@ -3540,6 +3540,24 @@ def api_word_sources():
     return jsonify(out)
 
 
+# ── חיפוש אחד על פני כל הבית ─────────────────────────────────────────────────
+# One search over every app at once. The work is in web/searchall.py; this is
+# the door. `apps` is a comma-separated list of the apps to look in — missing or
+# empty means all of them, which is what the search bar sends until the reader
+# narrows it.
+@app.route('/api/search_all')
+def api_search_all():
+    import searchall
+    q = request.args.get('q', '')
+    raw = (request.args.get('apps') or '').strip()
+    scopes = [s for s in raw.split(',') if s] or None
+    try:
+        cap = max(3, min(30, int(request.args.get('cap', '8'))))
+    except ValueError:
+        cap = 8
+    return jsonify(searchall.search(q, scopes, cap=cap))
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', '5000'))
     app.run(host='127.0.0.1', port=port, debug=False)

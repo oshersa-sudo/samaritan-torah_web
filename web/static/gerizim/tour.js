@@ -1100,4 +1100,14 @@
     toast(s);
     try { navigator.clipboard.writeText(s); } catch (e) { /* אין הרשאה — המספר מוצג על המסך */ }
   });
+
+  /* הגעה ישירה אל מקום, מן החיפוש הכולל של הבית: ?place=<id> בכתובת, או קריאה
+     ישירה מן העמוד שמחזיק את המסגרת. המפה צריכה להיות על רגליה תחילה. */
+  window.GERIZIM_GO = function (id) {
+    try { if (id && byId[id]) select(id, true); } catch (e) { /* מזהה שאינו מוכר */ }
+  };
+  try {
+    const want = new URLSearchParams(location.search).get('place');
+    if (want) setTimeout(function () { window.GERIZIM_GO(want); }, 1200);
+  } catch (e) { /* כתובת בלי פרמטרים */ }
 })();
