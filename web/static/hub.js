@@ -33,6 +33,7 @@
       findResults:'תוצאות החיפוש', findNone:'לא נמצא דבר. אפשר לנסות מילה אחרת, או להרחיב את הסינון.',
       findWait:'מחפש…', findShort:'שתי אותיות לפחות', findNoApp:'לא נבחרה אף אפליקציה לחפש בה',
       findErr:'החיפוש לא יצא לדרך. נסו שוב.', findExt:'לא ניתן לחפש בה מכאן',
+      findBackTo:'חזרה לתוצאות החיפוש', findBackBar:'חזרה לשורת החיפוש',
       kinds:{ verse:'פסוק בתורה', section:'קטע בספר', person:'אישיות', piyut:'פיוט',
         dara:'פיוט בתעתיק', word:'ערך במילון', shira_piyyut:'פיוט באוצר', shira_perf:'מבצע',
         shira_event:'מועד', mss:'כתב יד', mss_coll:'אוסף כתבי יד', tl:'אירוע',
@@ -66,6 +67,7 @@
       findResults:'Search results', findNone:'Nothing found. Try another word, or widen the filter.',
       findWait:'Searching…', findShort:'Two letters at least', findNoApp:'No app chosen to search in',
       findErr:'The search did not go through. Try again.', findExt:'not searchable from here',
+      findBackTo:'Back to the search results', findBackBar:'Back to the search line',
       kinds:{ verse:'Verse of the Torah', section:'Passage', person:'Figure', piyut:'Piyyut',
         dara:'Piyyut in transcription', word:'Dictionary entry', shira_piyyut:'Piyyut in the archive',
         shira_perf:'Performer', shira_event:'Occasion', mss:'Manuscript', mss_coll:'Collection',
@@ -100,6 +102,7 @@
       findResults:'نتائج البحث', findNone:'لم يُعثر على شيء. جرّب كلمة أخرى أو وسّع التصفية.',
       findWait:'جارٍ البحث…', findShort:'حرفان على الأقل', findNoApp:'لم يُختر أي تطبيق للبحث فيه',
       findErr:'لم ينجح البحث. حاول مرة أخرى.', findExt:'لا يمكن البحث فيه من هنا',
+      findBackTo:'العودة إلى نتائج البحث', findBackBar:'العودة إلى سطر البحث',
       kinds:{ verse:'آية من التوراة', section:'مقطع', person:'شخصية', piyut:'نشيد',
         dara:'نشيد بالنسخ الصوتي', word:'مدخل في المعجم', shira_piyyut:'نشيد في الأرشيف',
         shira_perf:'مؤدٍّ', shira_event:'مناسبة', mss:'مخطوط', mss_coll:'مجموعة مخطوطات',
@@ -1021,7 +1024,22 @@
 
   // ── the answer ─────────────────────────────────────────────────────────────
   function closeResults(){ if(resLayer){ resLayer.remove(); resLayer = null; } }
-  function dropResults(){ findBack = false; findKeep = null; closeResults(); }
+  function dropResults(){ findBack = false; findKeep = null; markFindBack(false); closeResults(); }
+  /* A reader who came out of a line of the answer is on the way BACK to it, not
+     merely closing a window. So every X that leads out of the app they landed
+     in becomes an arrow pointing the way they came — right in a page that
+     reads right to left, left in one that does not — and says where it leads.
+     It is put back to an X the moment the answer is reached again. */
+  function markFindBack(on){
+    const label = on ? T().findBackTo : T().exit;
+    const arrow = (lang() === 'en') ? '&#8592;' : '&#8594;';
+    document.querySelectorAll('.hub-x, #hdr .torah-x').forEach(b => {
+      b.innerHTML = on ? arrow : '&times;';
+      b.title = label;
+      b.setAttribute('aria-label', label);
+      b.classList.toggle('to-find', !!on);
+    });
+  }
   function showResults(q, data){
     closeResults();
     findKeep = { q: q, data: data };
@@ -1036,7 +1054,8 @@
     o.querySelector('h2').textContent = X.findResults + ' · ' + (data.count || 0);
     o.querySelector('.hub-res-q').textContent = '«' + q + '»';
     const bx = o.querySelector('.hub-res-x');
-    bx.setAttribute('aria-label', t('close')); bx.title = t('close');
+    bx.innerHTML = (lang() === 'en') ? '&#8592;' : '&#8594;';
+    bx.setAttribute('aria-label', X.findBackBar); bx.title = X.findBackBar;
     bx.addEventListener('click', () => dropResults());
     const body = o.querySelector('.hub-res-body');
     if(!rows.length){
@@ -1098,6 +1117,7 @@
   async function goResult(r){
     const g = r.go || {};
     findBack = true;                              // the way back from there is to this answer
+    markFindBack(true);
     closeFind(true);                              // we are leaving the menu: no turn of the dial
     const open = fn => { setOrigin('hub'); hideHub(); setTimeout(fn, 20); };
     try{
@@ -1258,6 +1278,7 @@
   function restoreFind(){
     if(!findBack) return;
     findBack = false;
+    markFindBack(false);                          // arrived: the X is an X again
     if(!findKeep) return;
     openFind();
     const inp = findLayer && findLayer.querySelector('.hub-find-in');

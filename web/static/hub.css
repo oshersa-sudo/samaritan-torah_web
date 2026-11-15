@@ -8,7 +8,10 @@
   --gold:#c8a456; --gold-bright:#eccd84; --parchment:#efe6cc;
   --D:min(92vw, max(300px, min(540px, calc(100dvh - 360px))));   /* the dial's side; the circles are fractions of it */
   position:fixed; inset:0; z-index:3500; overflow-x:hidden; overflow-y:auto;
-  background:radial-gradient(120% 80% at 50% 32%, var(--lapis) 0%, var(--ink-night) 46%, var(--ink-abyss) 100%);
+  /* the same ground the answer page stands on, so the two are one place: the
+     menu used to run down to near-black, and the answer beside it looked lit
+     from another room */
+  background:radial-gradient(130% 92% at 50% 16%, #2a5aa8 0%, #1a3c79 48%, #112a56 100%);
   font-family:'Heebo',system-ui,sans-serif; color:var(--parchment);
   -webkit-overflow-scrolling:touch;
   padding:max(14px, env(safe-area-inset-top)) 0 max(14px, env(safe-area-inset-bottom));
@@ -636,6 +639,10 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
   padding:0; border:1px solid rgba(200,164,86,.6); background:transparent; color:var(--gold-bright);
 }
 .hub-res-x:hover{ background:rgba(200,164,86,.22); }
+/* an X that is a way back: the arrow is drawn a little smaller than the cross
+   was, and the button glows faintly so the change is seen and not only read */
+.hub-x.to-find, #hdr .torah-x.to-find{ font-size:19px; }
+.hub-x.to-find{ background:rgba(236,205,132,.22); border-color:rgba(236,205,132,.75); }
 .hub-res-body{
   flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
   padding:10px 14px max(18px, env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:8px;
