@@ -193,6 +193,31 @@
   .stratum b{display:block;font-size:14.5px}
   .stratum i{font-style:normal;font-size:12.5px;color:var(--dim)}
   .stratum span{display:block;font-size:14.5px;line-height:1.55;margin-top:2px}
+  /* טיול בתמונות: לוח בצד (במחשב) או בחצי התחתון (בטלפון), והמפה נשארת גלויה ועוברת אל מקום כל תצלום */
+  #pwalk{position:fixed;z-index:25;display:none;flex-direction:column;background:rgba(18,15,11,.94);color:#f3ead6;border:1px solid rgba(217,178,95,.35);box-shadow:0 8px 30px rgba(0,0,0,.45);
+    top:58px;bottom:calc(var(--barh) + 10px);inset-inline-start:12px;width:min(46vw,620px);border-radius:12px;overflow:hidden}
+  #pwalk.open{display:flex}
+  #pwalk .pwtop{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid rgba(217,178,95,.25)}
+  #pwalk .pwtop b{flex:1;font-size:15.5px;color:var(--gold)}
+  #pwalk .pwtop span{font-size:13px;color:var(--dim)}
+  #pwalk .pwtop button{background:none;border:0;color:#f3ead6;font-size:18px;cursor:pointer;min-width:34px;min-height:34px}
+  #pwImg{width:100%;flex:1 1 auto;min-height:0;object-fit:contain;background:#0b0907;cursor:zoom-in}
+  #pwCap{padding:10px 14px 4px;overflow:auto;max-height:34%}
+  #pwCap b{display:block;font-size:15px;margin-bottom:3px}
+  #pwCap p{margin:0 0 6px;font-size:14px;line-height:1.55}
+  #pwCap .pwintro{color:var(--dim);font-size:13px}
+  #pwCap .pwcred{display:block;font-size:12px;color:var(--dim)}
+  #pwCap .pwcred a{color:var(--gold)}
+  #pwalk .pwnav{display:flex;gap:10px;padding:8px 12px 12px}
+  #pwalk .pwnav button{flex:1;min-height:42px;border-radius:9px;border:1px solid rgba(217,178,95,.5);background:rgba(217,178,95,.12);color:#f3ead6;font-size:22px;cursor:pointer}
+  .pwdot{width:18px;height:18px;border-radius:50%;background:#e9b949;border:3px solid #fff;box-shadow:0 0 0 3px rgba(0,0,0,.35)}
+  body.pwalking #card{display:none}
+  @media (max-width:760px){
+    #pwalk{top:auto;inset-inline:0;width:auto;bottom:calc(var(--barh) + 4px);height:56vh;border-radius:12px 12px 0 0}
+  }
+  @media (max-height:500px) and (orientation:landscape){
+    #pwalk{top:8px;bottom:8px;height:auto;width:52vw;inset-inline-start:8px;inset-inline-end:auto;border-radius:10px}
+  }
   .stratum a.stl{display:inline-block;margin-top:3px;font-size:13px;color:var(--gold);text-decoration:none}
   #card ul{margin:0;padding-inline-start:18px;font-size:14.5px;line-height:1.6}
   .note{font-size:12px;color:var(--dim);margin-top:12px}
@@ -476,6 +501,7 @@
 <div id="dial" role="group"><div id="dialRose"></div><i id="dialMark"></i><span id="dialNow"></span></div>
 
 <div id="walk" aria-live="polite"></div>
+<div id="pwalk" role="dialog" aria-labelledby="pwTitle"><div class="pwtop"><b id="pwTitle"></b><span id="pwCount"></span><button id="pwX" aria-label="✕">✕</button></div><img id="pwImg" alt=""><div id="pwCap"></div><div class="pwnav"><button id="pwPrev">‹</button><button id="pwNext">›</button></div></div>
 <div id="lightbox" role="dialog" aria-modal="true">
   <button id="lbX" aria-label="סגירה">✕</button>
   <button id="lbPrev" aria-label="הקודמת">›</button>
@@ -504,20 +530,22 @@
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <!-- מספר הגרסה מונע מהדפדפן להגיש קובץ ישן מהמטמון; להעלות אותו בכל שינוי -->
-<script src="places.js?v=61"></script>
-<script src="places_apply.js?v=61"></script>
-<script src="images.js?v=61"></script>
-<script src="walk_dem.js?v=61"></script>
-<script src="walk_data.js?v=61"></script>
-<script src="walk_info.js?v=61"></script>
-<script src="walk_sanct.js?v=61"></script>
-<script src="audio.js?v=61"></script>
-<script src="media.js?v=61"></script>
-<script src="travelers.js?v=61"></script>
-<script src="flickr.js?v=61"></script>
-<script src="inscriptions.js?v=61"></script>
-<script src="orient.js?v=61"></script>
-<script src="recon.js?v=61"></script>
-<script src="tour.js?v=61"></script>
+<script src="places.js?v=63"></script>
+<script src="places_apply.js?v=63"></script>
+<script src="images.js?v=63"></script>
+<script src="walk_dem.js?v=63"></script>
+<script src="walk_data.js?v=63"></script>
+<script src="walk_info.js?v=63"></script>
+<script src="walk_sanct.js?v=63"></script>
+<script src="walk_now.js?v=63"></script>
+<script src="audio.js?v=63"></script>
+<script src="media.js?v=63"></script>
+<script src="travelers.js?v=63"></script>
+<script src="photowalks.js?v=63"></script>
+<script src="flickr.js?v=63"></script>
+<script src="inscriptions.js?v=63"></script>
+<script src="orient.js?v=63"></script>
+<script src="recon.js?v=63"></script>
+<script src="tour.js?v=63"></script>
 </body>
 </html>

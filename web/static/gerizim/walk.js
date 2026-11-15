@@ -25,9 +25,9 @@
   };
 
   // התקופה השלישית (ימי הרצון והמשכן), הפסוקים שבכרטיס והקישור לציר הזמן
-  Object.assign(UI.he, { hintT: 'גררו כדי להביט סביב · הקישו על הקרקע כדי ללכת לשם · או הקישו והחזיקו את החיצים · הקשה על המפה הקטנה מעבירה לשם', lyClose: '✕ סגירה', noteR: 'שחזור להמחשה לפי נוסח התורה השומרוני: המידות באמות מן הפסוקים (אמה ≈ 48 ס"מ), ומה שהפסוקים אינם אומרים הושלם ומסומן בכל כרטיס. המקום והתקופה — לפי מסורת העדה. הדמויות ובעלי החיים להמחשה.', ly_temple: 'המקדש והמתחם — שחזור (הצעת החופר)', templeS: 'מקדש (שחזור)', rah: 'ימי הרצון · המשכן', rahS: 'ימי הרצון', rahT: 'ימי הרחותה – ימי הרצון: משכן משה שהציב יהושע בהר גריזים, לפי המסורת השומרונית', verses: 'הפסוקים שעליהם נשען השחזור (נוסח התורה השומרוני)', timeline: 'בציר הזמן ההיסטורי ←' });
-  Object.assign(UI.en, { hintT: 'Drag to look around · tap the ground to walk there · or tap and hold the arrows · tapping the small map takes you there', lyClose: '✕ Close', noteR: 'An illustrative reconstruction after the Samaritan Torah: the measurements in cubits come from the verses (a cubit ≈ 48 cm), and whatever the verses do not say was completed and is marked on every card. The place and the period follow the community\'s tradition. The figures and animals are for illustration.', ly_temple: 'The temple and precinct — reconstruction (the excavator\'s proposal)', templeS: 'Temple (reconstr.)', rah: 'Days of Favour · Tabernacle', rahS: 'Days of Favour', rahT: 'The Days of Favour (Rahuta): the Tabernacle of Moses, set up by Joshua on Mount Gerizim according to Samaritan tradition', verses: 'The verses the reconstruction rests on (Samaritan Torah)', timeline: 'On the historical timeline →' });
-  Object.assign(UI.ar, { hintT: 'اسحب للنظر حولك · انقر على الأرض للسير إليها · أو انقر على الأسهم واضغط مطوّلًا · النقر على الخريطة الصغيرة ينقلك إليها', lyClose: '✕ إغلاق', noteR: 'إعادة بناء توضيحية بحسب التوراة السامرية: القياسات بالأذرع مأخوذة من الآيات (الذراع ≈ 48 سم)، وما لا تذكره الآيات استُكمل ووُسم في كل بطاقة. الموضع والفترة بحسب تقليد الطائفة. والأشخاص والحيوانات للتوضيح.', ly_temple: 'الهيكل والحرم — إعادة بناء (اقتراح المنقّب)', templeS: 'هيكل (إعادة بناء)', rah: 'أيام الرضوان · المسكن', rahS: 'أيام الرضوان', rahT: 'أيام الرضوان (الرحوتا): مسكن موسى الذي نصبه يشوع على جبل جرزيم بحسب التقليد السامري', verses: 'الآيات التي تستند إليها إعادة البناء (التوراة السامرية)', timeline: 'على الخط الزمني التاريخي ←' });
+  Object.assign(UI.he, { hintT: 'גררו כדי להביט סביב · הקישו על הקרקע כדי ללכת לשם · או הקישו והחזיקו את החיצים · הקשה על המפה הקטנה מעבירה לשם', lyClose: '✕ סגירה', noteR: 'שחזור להמחשה לפי נוסח התורה השומרוני: המידות באמות מן הפסוקים (אמה ≈ 48 ס"מ), ומה שהפסוקים אינם אומרים הושלם ומסומן בכל כרטיס. המקום והתקופה — לפי מסורת העדה. הדמויות ובעלי החיים להמחשה.', ly_temple: 'המקדש והמתחם — שחזור (הצעת החופר)', templeS: 'מקדש (שחזור)', now: 'ימינו · היום', nowS: 'ימינו', nowT: 'ימינו אנו: הפסגה כפי שהיא היום — החורבות החפורות, מקומות הקודש של העדה וגדרותיהם, וקבר שיח\' ע\'אנם', noteN: 'ימינו: הפסגה כפי שהיא היום, לפי תצלומים עכשוויים ותצלום האוויר. מהלך החורבות לפי החפירה; גובהן, הגדרות ופרטים קטנים לפי התצלומים, בקירוב.', rah: 'ימי הרצון · המשכן', rahS: 'ימי הרצון', rahT: 'ימי הרחותה – ימי הרצון: משכן משה שהציב יהושע בהר גריזים, לפי המסורת השומרונית', verses: 'הפסוקים שעליהם נשען השחזור (נוסח התורה השומרוני)', timeline: 'בציר הזמן ההיסטורי ←' });
+  Object.assign(UI.en, { hintT: 'Drag to look around · tap the ground to walk there · or tap and hold the arrows · tapping the small map takes you there', lyClose: '✕ Close', noteR: 'An illustrative reconstruction after the Samaritan Torah: the measurements in cubits come from the verses (a cubit ≈ 48 cm), and whatever the verses do not say was completed and is marked on every card. The place and the period follow the community\'s tradition. The figures and animals are for illustration.', ly_temple: 'The temple and precinct — reconstruction (the excavator\'s proposal)', templeS: 'Temple (reconstr.)', now: 'Today', nowS: 'Today', nowT: 'Our days: the summit as it is today — the excavated ruins, the community\'s holy places with their fences, and the tomb of Sheikh Ghanim', noteN: 'Today: the summit as it is now, after recent photographs and the aerial image. The lines of the ruins follow the excavation; their heights, the fences and small details follow the photographs, approximately.', rah: 'Days of Favour · Tabernacle', rahS: 'Days of Favour', rahT: 'The Days of Favour (Rahuta): the Tabernacle of Moses, set up by Joshua on Mount Gerizim according to Samaritan tradition', verses: 'The verses the reconstruction rests on (Samaritan Torah)', timeline: 'On the historical timeline →' });
+  Object.assign(UI.ar, { hintT: 'اسحب للنظر حولك · انقر على الأرض للسير إليها · أو انقر على الأسهم واضغط مطوّلًا · النقر على الخريطة الصغيرة ينقلك إليها', lyClose: '✕ إغلاق', noteR: 'إعادة بناء توضيحية بحسب التوراة السامرية: القياسات بالأذرع مأخوذة من الآيات (الذراع ≈ 48 سم)، وما لا تذكره الآيات استُكمل ووُسم في كل بطاقة. الموضع والفترة بحسب تقليد الطائفة. والأشخاص والحيوانات للتوضيح.', ly_temple: 'الهيكل والحرم — إعادة بناء (اقتراح المنقّب)', templeS: 'هيكل (إعادة بناء)', now: 'أيامنا · اليوم', nowS: 'أيامنا', nowT: 'أيامنا: القمة كما هي اليوم — الأطلال المنقَّبة، والأماكن المقدّسة للطائفة وأسوارها، ومقام الشيخ غانم', noteN: 'أيامنا: القمة كما هي الآن، بحسب صور حديثة والصورة الجوية. مسار الأطلال بحسب التنقيب؛ أما ارتفاعها والأسوار والتفاصيل الصغيرة فبحسب الصور، على وجه التقريب.', rah: 'أيام الرضوان · المسكن', rahS: 'أيام الرضوان', rahT: 'أيام الرضوان (الرحوتا): مسكن موسى الذي نصبه يشوع على جبل جرزيم بحسب التقليد السامري', verses: 'الآيات التي تستند إليها إعادة البناء (التوراة السامرية)', timeline: 'على الخط الزمني التاريخي ←' });
   let THREE = null, renderer, scene, camera, root, clock;
   let lang = 'he', period = 'h', showTemple = false, opts = {};
   let active = false, raf = 0;
@@ -37,7 +37,10 @@
   const T = k => (UI[lang] || UI.he)[k];
   const L = v => (v && (v[lang] || v.he)) || '';
   // tl: 1 — רק כששכבת המקדש דולקת; 0 — רק כשהיא כבויה (למשל המזבח המוגבה שבהצעת החופר)
-  const inPer = o => (o.per ? o.per === period : (period !== 'r' || !!o.allr)) && (o.tl == null || (o.tl ? showTemple : !showTemple));
+  const inPer = o => (o.per ? o.per === period : (period === 'r' ? !!o.allr : period === 'n' ? !!o.alln : true)) && (o.tl == null || (o.tl ? showTemple : !showTemple));
+  /* תיבות מסובבות (W.rboxes): קירות, גדרות ומבנים שאינם בכיוון רשת המתחם — למשל חורבות הכנסייה ומקומות הקודש של ימינו,
+     שמכוונים לצפון האמיתי. {x, z, w, d, ry, y0, h, mat, per, block, mini} */
+  function rbLocal(r, x, z) { const dx = x - r.x, dz = z - r.z, c = Math.cos(r.ry || 0), s = Math.sin(r.ry || 0); return [dx * c - dz * s, dx * s + dz * c]; }
 
   /* ---------- טעינת three.js לפי דרישה ---------- */
   function loadThree() {
@@ -51,23 +54,29 @@
 
   /* ---------- גובה הקרקע והיכן מותר ללכת ---------- */
   const inBox = (b, x, z, m) => x >= b[0] - (m || 0) && x <= b[2] + (m || 0) && z >= b[1] - (m || 0) && z <= b[3] + (m || 0);
+  // רצפה מסובבת (f.rot = {x, z, w, d, ry}): שיפוע לאורך הציר המקומי u — למשל מדרגות בתוך מגדל שאינו בכיוון הרשת
+  const inRot = (q, x, z) => { const l = rbLocal(q, x, z); return Math.abs(l[0]) <= q.w / 2 && Math.abs(l[1]) <= q.d / 2; };
+  const onFloor = (f, x, z) => inBox(f.box, x, z) && (!f.rot || inRot(f.rot, x, z));
+  const rampV = (f, x, z) => f.ramp.axis === 'u' ? rbLocal(f.rot, x, z)[0] : f.ramp.axis === 'x' ? x : z;
   function floorY(f, x, z) {
     if (f.follow) return groundY(x, z);
     if (!f.ramp) return f.y;
-    const r = f.ramp, v = r.axis === 'x' ? x : z;
+    const r = f.ramp, v = rampV(f, x, z);
     const k = Math.max(0, Math.min(1, (v - r.a) / (r.b - r.a)));
     return r.ya + (r.yb - r.ya) * k;
   }
   // על מדרגות: גובה המדרגה עצמה שבנקודה (ההולך נע על קו השיפוע, אבל מי שעומד — עומד על מדרגה)
   function standY(f, x, z) {
     if (!f.steps) return floorY(f, x, z);
-    const r = f.ramp, v = r.axis === 'x' ? x : z, k = Math.max(0, Math.min(0.9999, (v - r.a) / (r.b - r.a)));
+    const r = f.ramp, v = rampV(f, x, z), k = Math.max(0, Math.min(0.9999, (v - r.a) / (r.b - r.a)));
     return r.ya + (r.yb - r.ya) * Math.floor(k * f.steps) / f.steps;
   }
+  // רצפה בלעדית (excl): מדרגות שבתחומן אין רצפה אחרת — מי שעומד שם עומד על המדרגות, לא על הקרקע או החדר שמתחתן
+  const exclAt = (x, z) => { for (const f of W.floors) if (f.excl && inPer(f) && onFloor(f, x, z)) return true; return false; };
   function floorAt(x, z, nearY) {
-    let best = null, bd = 1e9;
+    let best = null, bd = 1e9; const ex = exclAt(x, z);
     for (const f of W.floors) {
-      if (f.deco || !inPer(f) || !inBox(f.box, x, z)) continue;
+      if (f.deco || !inPer(f) || !onFloor(f, x, z) || (ex && !f.excl)) continue;
       const y = floorY(f, x, z), d = nearY == null ? -y : Math.abs(y - nearY);
       if (d < bd) { bd = d; best = { f, y }; }
     }
@@ -78,6 +87,11 @@
       if (!inPer(s) || s.h < 0.5 || s.shed) continue;
       if (s.y0 > y + 1.7 || s.y0 + s.h < y + 0.35) continue;
       if (inBox(s.box, x, z, RADIUS)) return true;
+    }
+    for (const r of (W.rboxes || [])) {
+      if (!inPer(r) || r.block === false || r.h < 0.5) continue;
+      if (r.y0 > y + 1.7 || r.y0 + r.h < y + 0.35) continue;
+      const q = rbLocal(r, x, z); if (Math.abs(q[0]) < r.w / 2 + RADIUS && Math.abs(q[1]) < r.d / 2 + RADIUS) return true;
     }
     const tp = showTemple && W.temple[period] && !W.temple[period].custom ? W.temple[period] : null;
     if (tp && (inBox(tp.box, x, z, RADIUS) || inBox(tp.porch, x, z, RADIUS))) return true;
@@ -261,7 +275,8 @@
   function groundY(x, z) {
     let y = terrainH(x, z), cut = null, lay = null;
     for (const f of W.floors) {
-      if (f.deco || f.follow || !inPer(f) || !inBox(f.box, x, z, f.city ? 2.6 : 1.4)) continue;
+      if (f.deco || f.follow || !inPer(f) || !inBox(f.box, x, z, f.cutM != null ? f.cutM : f.city ? 2.6 : 1.4)) continue;
+      if (f.rot) continue;
       const fy = floorY(f, Math.max(f.box[0], Math.min(f.box[2], x)), Math.max(f.box[1], Math.min(f.box[3], z))) - (f.steps ? 0.3 : 0.12);
       if (f.city) lay = lay == null ? fy : Math.min(lay, fy); else cut = cut == null ? fy : Math.min(cut, fy);
     }
@@ -387,6 +402,11 @@
       if (!inPer(dr)) continue;
       const me = new THREE.Mesh(new THREE.BoxGeometry(0.14, 4.2, 2.0), M.wood);
       me.position.set(dr.x, dr.y + 2.1, dr.z); me.rotation.y = dr.ry; root.add(me);
+    }
+    for (const r of (W.rboxes || [])) {
+      if (!inPer(r) || r.hide) continue;
+      const me = new THREE.Mesh(boxGeo(r.w, r.h, r.d, r.tile), (typeof r.mat === 'string' ? M[r.mat] : r.mat) || M.field);
+      me.position.set(r.x, r.y0 + r.h / 2, r.z); me.rotation.y = r.ry || 0; me.castShadow = me.receiveShadow = shadows; root.add(me);
     }
     // מבנים מפורטים שנבנים בקוד משלהם: המשכן, המקדש שאפשר להיכנס אליו, כלי הקודש
     for (const hk of (W.hooks || [])) { try { hk({ THREE, root, M, addBox, boxGeo, period, showTemple, shadows, inPer, inBox, texture, clickables, addSmoke, flames, floorAt, lite: quality && quality.lite }); } catch (e) { console.warn(e); } }
@@ -647,6 +667,7 @@
 
   /* ---------- בניית הזירה ---------- */
   function build() {
+    if (av && av.modern) av.modern(period === 'n');
     if (root) { scene.remove(root); root.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
     if (farRoot) { scene.remove(farRoot); farRoot.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
     root = new THREE.Group(); scene.add(root); farRoot = new THREE.Group(); scene.add(farRoot); smoke = []; flames = []; clickables = [];
@@ -706,7 +727,7 @@
     const body = new THREE.Group(); av.add(body); av.body = body;
     body.add(mesh(new THREE.SphereGeometry(1, 30, 18), tunic, 0, 0, 0, 0.265, 0.112, 0.135));                 // הכתפיים
     body.add(mesh(new THREE.CylinderGeometry(0.205, 0.25, 2.4, 26), tunic, 0, -1.21, 0, 1, 1, 0.6));        // הגב העליון
-    body.add(mesh(new THREE.SphereGeometry(1, 22, 14), mantle, -0.112, 0.003, 0.002, 0.158, 0.116, 0.14));  // הגלימה שעל הכתף השמאלית
+    const cape = mesh(new THREE.SphereGeometry(1, 22, 14), mantle, -0.112, 0.003, 0.002, 0.158, 0.116, 0.14); body.add(cape);  // הגלימה שעל הכתף השמאלית
     const drape = mesh(new THREE.BoxGeometry(0.17, 1.1, 0.03), mantle, 0.04, -0.46, 0.128, 1, 1, 1); drape.rotation.z = 0.46; body.add(drape);
     body.add(mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.11, 16), skin, 0, 0.135, 0.004));                  // הצוואר
     const head = new THREE.Group(); head.position.set(0, 0.17, 0.004); head.rotation.order = 'YXZ'; av.add(head); av.head = head;
@@ -717,6 +738,12 @@
     const nose = mesh(new THREE.ConeGeometry(0.016, 0.042, 8), skin, 0, 0.088, -0.112); nose.rotation.x = -Math.PI / 2; head.add(nose);
     head.add(mesh(new THREE.SphereGeometry(0.06, 16, 12), hair, 0, 0.028, -0.07, 0.95, 0.85, 0.72));           // הזקן
     const tie = mesh(new THREE.TorusGeometry(0.1035, 0.012, 8, 36), band, 0, 0.15, 0.03, 0.99, 1.045, 1); tie.rotation.x = Math.PI / 2; head.add(tie);   // סרט בד סביב הראש
+    // בימינו: חולצה וכובע מצחייה במקום הכתונת, הגלימה וסרט הראש
+    const ancientMap = tunic.map, shirtMap = clothTex('#4f6f93', '#3d5a7a'), capMat = lam(0x5a5a52);
+    const cap = mesh(new THREE.SphereGeometry(0.108, 24, 14, 0, Math.PI * 2, 0, Math.PI / 2), capMat, 0, 0.13, 0.01, 1, 0.75, 1.05); head.add(cap);
+    const brim = mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.008, 18, 1, false, 0, Math.PI), capMat, 0, 0.13, -0.09, 1, 1, 1); brim.rotation.y = Math.PI / 2; head.add(brim);
+    av.modern = on => { tunic.map = on ? shirtMap : ancientMap; tunic.needsUpdate = true; cape.visible = drape.visible = tie.visible = !on; cap.visible = brim.visible = on; };
+    av.modern(false);
     hud.add(av);
   }
   function avatarStep(dt, moving) {
@@ -1077,7 +1104,8 @@
   }
   function canStandAny(x, z) {
     let best = null;
-    for (const f of W.floors) if (!f.deco && inPer(f) && inBox(f.box, x, z)) { const y = floorY(f, x, z); if (!blocked(x, z, y) && (!best || Math.abs(y - pos.y) < Math.abs(best.y - pos.y))) best = { f, y }; }
+    const ex = exclAt(x, z);
+    for (const f of W.floors) if (!f.deco && inPer(f) && onFloor(f, x, z) && (!ex || f.excl)) { const y = floorY(f, x, z); if (!blocked(x, z, y) && (!best || Math.abs(y - pos.y) < Math.abs(best.y - pos.y))) best = { f, y }; }
     return best;
   }
 
@@ -1086,7 +1114,7 @@
     const f = floorAt(pos.x, pos.z, pos.y), fid = f && f.f.id;
     for (const z of W.zones) {
       if (!inPer(z)) continue;
-      if (z.box && inBox(z.box, pos.x, pos.z) && (!f || Math.abs(f.y - (z.y || 0)) < 0.5)) return z;
+      if (z.box && inBox(z.box, pos.x, pos.z) && (!f || z.anyY || Math.abs(f.y - (z.y || 0)) < 0.5)) return z;
       if (z.floors && z.floors.indexOf(fid) >= 0) return z;
     }
     return null;
@@ -1137,12 +1165,17 @@
     const g = miniBase.getContext('2d');
     g.fillStyle = '#f1e9d2'; g.fillRect(0, 0, cw, ch);
     const rect = (b, fill, stroke) => { const x = (b[0] - B[0]) * MK, y = (b[1] - B[1]) * MK, ww = (b[2] - b[0]) * MK, hh = (b[3] - b[1]) * MK; if (fill) { g.fillStyle = fill; g.fillRect(x, y, ww, hh); } if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1.2; g.strokeRect(x, y, ww, hh); } };
-    for (const f of W.floors) if (inPer(f) && !f.deco && !f.follow) rect(f.box, f.steps ? '#c9b98f' : (/^road|^eroad|^sroad/.test(f.id) ? '#e8dfc6' : f.mat === 'pave' ? '#e3d7b6' : '#d9cba4'));
-    for (const f of W.floors) if (inPer(f) && f.steps) {     // קווי מדרגות
+    for (const f of W.floors) if (inPer(f) && !f.deco && !f.follow && !f.rot) rect(f.box, f.steps ? '#c9b98f' : (/^road|^eroad|^sroad/.test(f.id) ? '#e8dfc6' : f.mat === 'pave' ? '#e3d7b6' : '#d9cba4'));
+    for (const f of W.floors) if (inPer(f) && f.steps && !f.rot) {     // קווי מדרגות
       const b = f.box, r = f.ramp; g.strokeStyle = 'rgba(90,70,40,.55)'; g.lineWidth = 1;
       for (let i = 0; i <= 12; i++) { const v = r.a + (r.b - r.a) * i / 12; g.beginPath(); if (r.axis === 'x') { g.moveTo((v - B[0]) * MK, (b[1] - B[1]) * MK); g.lineTo((v - B[0]) * MK, (b[3] - B[1]) * MK); } else { g.moveTo((b[0] - B[0]) * MK, (v - B[1]) * MK); g.lineTo((b[2] - B[0]) * MK, (v - B[1]) * MK); } g.stroke(); }
     }
     for (const s of W.solids) if (inPer(s) && s.h > 0.5 && !s.shed) rect(s.box, s.id ? '#b8862e' : (s.house ? '#8a7a66' : '#3b3024'));
+    for (const r of (W.rboxes || [])) {
+      if (!inPer(r) || r.mini === false || (r.h < 0.25 && !r.mini)) continue;
+      g.save(); g.translate((r.x - B[0]) * MK, (r.z - B[1]) * MK); g.rotate(-(r.ry || 0)); g.fillStyle = r.mini || (r.h > 2 ? '#3b3024' : '#7d6a52');
+      g.fillRect(-r.w / 2 * MK, -r.d / 2 * MK, r.w * MK, r.d * MK); g.restore();
+    }
     const tpm = showTemple && W.temple[period] && !W.temple[period].custom ? W.temple[period] : null;
     if (tpm) { g.setLineDash([5, 4]); rect(tpm.box, 'rgba(184,134,46,.25)', '#8a5a1c'); if (tpm.inner) rect(tpm.inner, null, '#8a5a1c'); g.setLineDash([]); }
     // התחנות המרכזיות, בשמן הקצר
@@ -1211,7 +1244,7 @@
     if (el.dataset.ready) return;
     el.dataset.ready = '1';
     el.innerHTML = '<canvas id="walkCv"></canvas>' +
-      '<div id="walkTop"><button id="walkExit"></button><div id="walkPer"><button data-p="r"></button><button data-p="p"></button><button data-p="h"></button></div>' +
+      '<div id="walkTop"><button id="walkExit"></button><div id="walkPer"><button data-p="r"></button><button data-p="p"></button><button data-p="h"></button><button data-p="n"></button></div>' +
       '<div id="walkLayersBox"><button id="walkLayersBtn" aria-haspopup="true" aria-expanded="false"></button><div id="walkLayers" hidden><button class="lyx" id="walkLayersX"></button>' +
       LAYERS.map(k => '<label><input type="checkbox" data-l="' + k + '"><span></span></label>').join('') + '</div></div>' +
       '<button id="walkMapBtn"></button><button id="walkInfoBtn"></button><button id="walkSnd" aria-haspopup="true"></button>' +
@@ -1263,14 +1296,14 @@
   function texts() {
     const nar = window.innerWidth <= 640 || (window.innerHeight <= 500 && window.innerWidth > window.innerHeight), S2 = k => (nar && T(k + 'S')) || T(k);          // במסך צר: תוויות קצרות, כדי שהסרגל העליון לא יכסה את הנוף
     $('walkExit').textContent = S2('exit');
-    const pb = $('walkPer').querySelectorAll('button'), PK = { h: 'hel', p: 'per', r: 'rah' };       // לפי התקופה של כל כפתור, לא לפי מקומו
-    pb.forEach(b => { b.textContent = S2(PK[b.dataset.p]); b.title = b.dataset.p === 'r' ? T('rahT') : ''; });
+    const pb = $('walkPer').querySelectorAll('button'), PK = { h: 'hel', p: 'per', r: 'rah', n: 'now' };       // לפי התקופה של כל כפתור, לא לפי מקומו
+    pb.forEach(b => { b.textContent = S2(PK[b.dataset.p]); b.title = b.dataset.p === 'r' ? T('rahT') : b.dataset.p === 'n' ? T('nowT') : ''; });
     pb.forEach(b => b.classList.toggle('on', b.dataset.p === period));
     $('walkLayersBtn').textContent = '☰ ' + T('layers'); $('walkLayersX').textContent = T('lyClose'); $('walkMapBtn').textContent = T('mapBtn'); $('walkInfoBtn').textContent = 'ⓘ' + (nar ? '' : ' ' + T('infoBtn'));
     $('walkInfoBtn').setAttribute('aria-label', T('infoBtn')); $('walkInfoX').setAttribute('aria-label', T('close')); $('walkInfoX').title = T('close');
     $('walkMiniX').setAttribute('aria-label', T('mapHide')); $('walkMiniX').title = T('mapHide');
     $('walk').querySelectorAll('#walkLayers label').forEach(lb => { lb.querySelector('span').textContent = T('ly_' + lb.querySelector('input').dataset.l); });
-    $('walkMore').textContent = T('more'); $('walkNote').textContent = period === 'r' ? T('noteR') : T('note') + (INFO.plateNote ? ' ' + L(INFO.plateNote) : '') + (INFO.later ? ' ' + L(INFO.later) : '');
+    $('walkMore').textContent = T('more'); $('walkNote').textContent = period === 'r' ? T('noteR') : period === 'n' ? T('noteN') : T('note') + (INFO.plateNote ? ' ' + L(INFO.plateNote) : '') + (INFO.later ? ' ' + L(INFO.later) : '');
     $('walkHint').textContent = T(window.matchMedia && matchMedia('(hover:none)').matches ? 'hintT' : 'hint'); $('walkMiniT').textContent = T('map'); $('walk').dir = lang === 'en' ? 'ltr' : 'rtl'; $('walk').lang = lang;
     const pad = $('walkPad').querySelectorAll('button'); ['left', 'fwd', 'back', 'right'].forEach((k, i) => pad[i].setAttribute('aria-label', T(k)));
     applyUI();
@@ -1280,7 +1313,7 @@
     pos.x = s.x; pos.z = s.z; pos.y = f.y; look.yaw = s.yaw; look.pitch = 0; target = null; bodyYaw = null;
     if (camera) camera.position.set(pos.x, pos.y + EYE, pos.z);
   }
-  function rebuild() { build(); miniBase = null; zoneId = undefined; texts(); if (!canStandAny(pos.x, pos.z)) place(period === 'r' ? 'mishkan' : 'plaza'); drawMini(true); }
+  function rebuild() { build(); miniBase = null; zoneId = undefined; texts(); if (!canStandAny(pos.x, pos.z)) place(period === 'r' ? 'mishkan' : period === 'n' ? 'today' : 'plaza'); drawMini(true); }
   // מן התקופות האחרות אל ימי הרצון: עוברים אל רחבת המשכן
   const goMishkan = () => { if (period === 'r' && W.starts.mishkan) place('mishkan'); };
   function setPeriod(p) { if (p === period) return; const was = period; period = p; peek = null; insForce = null; rebuild(); if (p === 'r' && was !== 'r') goMishkan(); if (window.GerizimAudio) GerizimAudio.walkScene(period, showTemple); }

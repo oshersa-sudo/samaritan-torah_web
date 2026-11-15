@@ -64,6 +64,20 @@
       add([en(TN.x1, TN.z1), en(TN.x2, TN.z1), en(TN.x2, TN.z2), en(TN.x1, TN.z2)], b, b + 0.3, '#6b5238', 'z');
     }
     if (zc.length) ZFOCUS = { at: [zc.reduce((a, q) => a + q[0], 0) / zc.length, zc.reduce((a, q) => a + q[1], 0) / zc.length], zoom: 18.7, bearing: 260 };
+    // ימינו: החורבות, מקומות הקודש וגדרותיהם וקבר שיח' ע'אנם — מאותם גופים של הסיור הרגלי של היום (walk_now.js)
+    const NMAT = { bigstone: BIG, field: FIELD, ashlar: STONE, plaster: WHITE, rock: RUIN, pave: PAVE, wood: '#7a5a3a', dark: '#4a4038' };
+    W.solids.forEach(s => {
+      if (s.per !== 'n' || !s.h) return;
+      const [x1, z1, x2, z2] = s.box, g = W.terrain((x1 + x2) / 2, (z1 + z2) / 2);
+      add([en(x1, z1), en(x2, z1), en(x2, z2), en(x1, z2)], 0, Math.max(0.2, s.y0 + s.h - g), NMAT[s.mat] || FIELD, 'n');
+    });
+    (W.rboxes || []).forEach(r => {
+      if (r.per !== 'n' || (r.hide && !r.rc) || r.recon === false) return;
+      const c = Math.cos(r.ry || 0), sn = Math.sin(r.ry || 0), g = W.terrain(r.x, r.z);
+      const ring = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(q => { const lx = q[0] * r.w / 2, lz = q[1] * r.d / 2; return en(r.x + c * lx + sn * lz, r.z - sn * lx + c * lz); });
+      add(ring, Math.max(0, r.y0 - g), Math.max(0.15, r.y0 + r.h - g), r.rc || NMAT[r.mat] || FIELD, 'n');
+    });
+    if (W.nowTomb) { const q = W.nowTomb; ngon(q.E, q.N, q.R, 16, 0, q.top - 0.8, q.top, WHITE, 'n'); dome(q.E, q.N, q.R, q.top, 16, WHITE, 'n', 0.72); }
     // המדרגות והריצופים: לוח דק לכל מדרגה, כך שהגרם נראה מדורג על המדרון
     W.floors.forEach(f => {
       const [x1, z1, x2, z2] = f.box, p = per(f);
@@ -147,7 +161,7 @@
   window.GERIZIM_RECON = {
     feats,
     // אילו תקופות מוצגות לכל בחירה בסרגל התקופות (בלי בחירה: המתחם ההלניסטי והמקדש הרומי, שאינם עולים זה על זה)
-    show: { '': ['h', 'hp', 'r'], ratzon: ['z'], persian: ['p', 'hp'], hellenistic: ['h', 'hp'], roman: ['r'], byzantine: ['b'], islamic: ['i'] },
-    focus: { ratzon: ZFOCUS, roman: { at: [110, 800], zoom: 16.6, bearing: 170 }, byzantine: { at: [0, 10], zoom: 17.7, bearing: 200 }, islamic: { at: [25, 15], zoom: 18.1, bearing: 215 } }
+    show: { '': ['h', 'hp', 'r'], ratzon: ['z'], today: ['n'], persian: ['p', 'hp'], hellenistic: ['h', 'hp'], roman: ['r'], byzantine: ['b'], islamic: ['i'] },
+    focus: { ratzon: ZFOCUS, today: { at: [-5, -60], zoom: 17.4, bearing: 200 }, roman: { at: [110, 800], zoom: 16.6, bearing: 170 }, byzantine: { at: [0, 10], zoom: 17.7, bearing: 200 }, islamic: { at: [25, 15], zoom: 18.1, bearing: 215 } }
   };
 })();
