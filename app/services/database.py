@@ -645,7 +645,10 @@ def _seed_targum_words():
                 # the root named inside the gloss is what makes it checkable
                 text += ' (שורש %s)' % w['root']
             if w.get('ref'):
-                text += ' — מן הפסוק שמולו (%s)' % w['ref']
+                # a gloss that already names the verse takes the reference bare,
+                # so the line does not carry two dashes and say it twice
+                text += ((' (%s)' if 'שבפסוק' in text else ' — מן הפסוק שמולו (%s)')
+                         % w['ref'])
             src_name = w.get('src_name') or 'targum'
             if have:
                 # a row this patch wrote itself may be corrected; anything else
