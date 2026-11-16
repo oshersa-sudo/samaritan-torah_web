@@ -572,6 +572,98 @@ def _seed_guttural_gloss():
         print('[gutturals] skipped: %s' % exc)
 
 
+_TARGUM_WORDS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                   'data', 'targum_words_patch.json')
+# and the forms that are an affix away from an entry the dictionary glosses
+_INFLECTION_WORDS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                       'data', 'inflection_words_patch.json')
+
+
+def _seed_targum_words():
+    """Words of the Aramaic Torah that the dictionary never showed.
+
+    The rule is the owner's: no word of the Targum may be without an appearance
+    in the dictionary. Four hundred and fifty-four had none — not an entry, not
+    a form, not even a word standing inside somebody else's example sentence —
+    and for half of them the verse itself says what they mean: the Samaritan
+    Targum renders the Hebrew word for word, so where the two rows have the same
+    number of words, the Hebrew standing in the same place is the meaning, and
+    the patch carries the verse it was read from.
+
+    Written into the dictionary's word index and nowhere else, under the source
+    name 'targum', so they can be told from the dictionary's own readings and
+    taken out again in one line. A word already in the index is left alone."""
+    try:
+        if not os.path.exists(_TARGUM_WORDS_PATCH):
+            return
+        words = []
+        for path, src in ((_TARGUM_WORDS_PATCH, 'targum'),
+                          (_INFLECTION_WORDS_PATCH, 'inflection')):
+            if not os.path.exists(path):
+                continue
+            with open(path, encoding='utf-8') as fh:
+                for w in (json.load(fh).get('words') or []):
+                    w = dict(w)
+                    w['src_name'] = src
+                    words.append(w)
+        if not words:
+            return
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cols = {r['name'] for r in conn.execute('PRAGMA table_info(dict_word_index)')}
+        if 'word' not in cols:
+            conn.close()
+            return
+        added = kept = 0
+        for w in words:
+            form, norm_, gloss = w.get('word') or '', w.get('norm') or '', w.get('gloss') or ''
+            if not form or not gloss:
+                continue
+            try:
+                have = conn.execute(
+                    "SELECT 1 FROM dict_word_index WHERE word=? OR word_norm=? LIMIT 1",
+                    (form, norm_)).fetchone()
+            except sqlite3.Error:
+                break
+            text = gloss + (' — מן הפסוק שמולו (%s)' % w['ref'] if w.get('ref') else '')
+            src_name = w.get('src_name') or 'targum'
+            if have:
+                # a row this patch wrote itself may be corrected; anything else
+                # in the index is somebody else's reading and is left alone
+                try:
+                    conn.execute("UPDATE dict_word_index SET gloss=? "
+                                 "WHERE (word=? OR word_norm=?) AND gloss_src IN "
+                                 "('targum','inflection') AND gloss <> ?",
+                                 (text, form, norm_, text))
+                except sqlite3.Error:
+                    pass
+                kept += 1
+                continue
+            fields = {'word': form, 'word_norm': norm_, 'gloss': text}
+            if 'gloss_src' in cols:
+                fields['gloss_src'] = src_name
+            if 'in_torah' in cols and src_name == 'targum':
+                fields['in_torah'] = 1
+            if 'root' in cols and w.get('root'):
+                fields['root'] = w['root']
+            keys = [k for k in fields if k in cols]
+            try:
+                conn.execute('INSERT INTO dict_word_index (%s) VALUES (%s)'
+                             % (', '.join(keys), ', '.join('?' * len(keys))),
+                             tuple(fields[k] for k in keys))
+                added += 1
+            except sqlite3.Error:
+                pass
+        conn.commit()
+        conn.close()
+        PATCH_REPORT['targum_words'] = ('%d added, %d already there (of %d)'
+                                        % (added, kept, len(words)))
+        print('[targum-words] %s' % PATCH_REPORT['targum_words'])
+    except Exception as exc:
+        PATCH_REPORT['targum_words'] = 'failed: %s' % exc
+        print('[targum-words] skipped: %s' % exc)
+
+
 _DARA_UNIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                 'data', 'dara_unit_patch.json')
 
@@ -626,6 +718,8 @@ _seed_dara_unit()
 
 
 _seed_guttural_gloss()
+
+_seed_targum_words()
 
 
 _NIKUD_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
