@@ -74,14 +74,14 @@
   try { const q = new URLSearchParams(location.search).get('lang'); if (q) lang = q; } catch (e) { /* כתובת בלי פרמטרים */ }
   if (!UI[lang]) lang = 'he';
   // מדיה, תיאורי מטיילים, מוזיקה והמשכן
-  Object.assign(UI.he, { pwalkBtn: 'טיול בתמונות', pwPrev: 'הקודם', pwNext: 'הבא', perN: 'ימינו', w_today: 'ימינו · שתים עשרה האבנים', w_teternal: 'ימינו · גבעת עולם', w_tisaac: 'ימינו · מזבח יצחק', w_tghanim: 'ימינו · קבר שיח\' ע\'אנם', walkBtnToday: 'סיור רגלי בפסגה של היום', rc_today: 'שחזור: הפסגה כפי שהיא היום — החורבות החפורות, מקומות הקודש של העדה וגדרותיהם, וקבר שיח\' ע\'אנם.', rcHypN: 'לפי תצלומים עכשוויים ותצלום האוויר; הגבהים והגדרות בקירוב.', tlLink: 'בציר הזמן ←', rcHypR: 'המבנה כולו משוחזר מן הפסוקים ומן המסורת; לא נמצא לו שריד בחפירה.', rc_ratzon: 'שחזור: משכן משה בגבעת עולם — היריעות, אוהל מועד, המזבח והכיור, לפי פסוקי התורה ולהמחשה.', inWalk: 'בסיור הרגלי כאן', perH: 'התקופה ההלניסטית', perP: 'התקופה הפרסית', perR: 'ימי הרצון', photosOf: 'תמונות: {p}', photosOfNote: 'אין תמונות של החלק הזה עצמו; אלה תמונות של האתר כולו.', more: '⋯ עוד', moreClose: '× פחות', introGloss: 'והר גריזים — בית אל, כל ימי חיינו', coach: 'גררו כדי לסובב · הקישו על שם של מקום · או התחילו ▶ סיור מודרך', w_stairs: 'סיור רגלי · השער התחתון', w_plaza: 'סיור רגלי · רחבת המזבח', w_city: 'סיור רגלי · הכניסה המערבית', w_areaA: 'סיור רגלי · הרובע המערבי', w_areaB: 'סיור רגלי · הרובע הדרומי', media: 'סרטונים וקישורים', mediaLinks: 'עוד תמונות וסרטונים באתרי המקור (צפייה שם בלבד)', video: 'סרטון', play: 'צפייה בסרטון', mk_current: 'תצלום עדכני', mk_archival: 'תצלום ארכיוני', mk_rendering: 'הדמיה', mk_drawing: 'ציור ארכיוני', mk_tourism: 'אתר תיירות', mk_article: 'כתבה', mk_blog: 'בלוג', mk_data: 'נתונים', 'mk_video-extra': 'סרטון', mk_source: 'מקור', mk_link: 'קישור',
-    travel: 'בעיני מטיילים', travelAll: 'הר גריזים בעיני מטיילים', travelIntro: 'מבקרים שכתבו על ההר, ממארק טוויין ואילך. בכל אחד נבדק במקור עצמו אם עלה להר, ראה אותו מרחוק או תיאר רק את שכם והסביבה.', tr_climbed: 'עלה להר', tr_seen: 'ראה את ההר מרחוק', tr_nablus_only: 'תיאר את שכם והסביבה', trSource: 'המקור', trQuote: 'מן המקור', trAt: 'בתחנה:', trVisit: 'ביקור', trPub: 'פרסום',
+  Object.assign(UI.he, { sprTour: 'סיור בין המעיינות', stRead: 'הסיפור המלא', pwMorePh: 'עוד תמונות ({n})', pwNoPhoto: 'לא נמצא תצלום חופשי של המעיין הזה; המפה מראה את מקומו.', pwalkBtn: 'טיול בתמונות', pwPrev: 'הקודם', pwNext: 'הבא', perN: 'ימינו', w_today: 'ימינו · שתים עשרה האבנים', w_teternal: 'ימינו · גבעת עולם', w_tisaac: 'ימינו · מזבח יצחק', w_tghanim: 'ימינו · קבר שיח\' ע\'אנם', walkBtnToday: 'סיור רגלי בפסגה של היום', rc_today: 'שחזור: הפסגה כפי שהיא היום — החורבות החפורות, מקומות הקודש של העדה וגדרותיהם, וקבר שיח\' ע\'אנם.', rcHypN: 'לפי תצלומים עכשוויים ותצלום האוויר; הגבהים והגדרות בקירוב.', tlLink: 'בציר הזמן ←', rcHypR: 'המבנה כולו משוחזר מן הפסוקים ומן המסורת; לא נמצא לו שריד בחפירה.', rc_ratzon: 'שחזור: משכן משה בגבעת עולם — היריעות, אוהל מועד, המזבח והכיור, לפי פסוקי התורה ולהמחשה.', inWalk: 'בסיור הרגלי כאן', perH: 'התקופה ההלניסטית', perP: 'התקופה הפרסית', perR: 'ימי הרצון', photosOf: 'תמונות: {p}', photosOfNote: 'אין תמונות של החלק הזה עצמו; אלה תמונות של האתר כולו.', more: '⋯ עוד', moreClose: '× פחות', introGloss: 'והר גריזים — בית אל, כל ימי חיינו', coach: 'גררו כדי לסובב · הקישו על שם של מקום · או התחילו ▶ סיור מודרך', w_stairs: 'סיור רגלי · השער התחתון', w_plaza: 'סיור רגלי · רחבת המזבח', w_city: 'סיור רגלי · הכניסה המערבית', w_areaA: 'סיור רגלי · הרובע המערבי', w_areaB: 'סיור רגלי · הרובע הדרומי', media: 'סרטונים וקישורים', mediaLinks: 'עוד תמונות וסרטונים באתרי המקור (צפייה שם בלבד)', video: 'סרטון', play: 'צפייה בסרטון', mk_current: 'תצלום עדכני', mk_archival: 'תצלום ארכיוני', mk_rendering: 'הדמיה', mk_drawing: 'ציור ארכיוני', mk_tourism: 'אתר תיירות', mk_article: 'כתבה', mk_blog: 'בלוג', mk_data: 'נתונים', 'mk_video-extra': 'סרטון', mk_source: 'מקור', mk_link: 'קישור',
+    travel: 'בעיני מטיילים', travelAll: 'הר גריזים בעיני מטיילים', travelIntro: 'מבקרים שכתבו על ההר, מן הצליין מבורדו (333) ועד המאה העשרים, ומארק טוויין ביניהם. בכל אחד נבדק במקור עצמו אם עלה להר, ראה אותו מרחוק או תיאר רק את שכם והסביבה.', tr_climbed: 'עלה להר', tr_seen: 'ראה את ההר מרחוק', tr_nablus_only: 'תיאר את שכם והסביבה', trSource: 'המקור', trQuote: 'מן המקור', trAt: 'בתחנה:', trVisit: 'ביקור', trPub: 'פרסום',
     music: 'מוזיקת רקע', walkBtnMishkan: 'היכנסו אל המשכן — ימי הרצון', walkMishkan: 'אל המשכן', walkMishkanTip: 'ימי הרצון: כניסה אל חצר המשכן ואל אוהל מועד' });
-  Object.assign(UI.en, { pwalkBtn: 'Photo walk', pwPrev: 'Previous', pwNext: 'Next', perN: 'Today', w_today: 'Today · the Twelve Stones', w_teternal: 'Today · the Eternal Hill', w_tisaac: 'Today · the Altar of Isaac', w_tghanim: 'Today · Sheikh Ghanim\'s tomb', walkBtnToday: 'Walk the summit as it is today', rc_today: 'Reconstruction: the summit as it is today — the excavated ruins, the community\'s holy places with their fences, and the tomb of Sheikh Ghanim.', rcHypN: 'After recent photographs and the aerial image; heights and fences approximate.', tlLink: 'On the timeline →', rcHypR: 'The whole structure is reconstructed from the verses and the tradition; no remains of it were found in excavation.', rc_ratzon: 'Reconstruction: the Tabernacle of Moses on the Eternal Hill — the court hangings, the Tent of Meeting, the altar and the laver, from the verses of the Torah, as an illustration.', inWalk: 'In the walking tour here', perH: 'Hellenistic period', perP: 'Persian period', perR: 'Days of Favour', photosOf: 'Photos: {p}', photosOfNote: 'There are no photos of this part itself; these are photos of the whole site.', more: '⋯ More', moreClose: '× Less', introGloss: 'And Mount Gerizim — Bethel, all the days of our life', coach: 'Drag to turn · tap a place name · or start ▶ the guided tour', w_stairs: 'Walk · the lower gate', w_plaza: 'Walk · the altar court', w_city: 'Walk · the western entrance', w_areaA: 'Walk · the western quarter', w_areaB: 'Walk · the southern quarter', media: 'Videos and links', mediaLinks: 'More photos and videos on their source sites (view there only)', video: 'Video', play: 'Watch the video', mk_current: 'Recent photo', mk_archival: 'Archival photo', mk_rendering: 'Rendering', mk_drawing: 'Archival drawing', mk_tourism: 'Tourism site', mk_article: 'Article', mk_blog: 'Blog', mk_data: 'Data', 'mk_video-extra': 'Video', mk_source: 'Source', mk_link: 'Link',
-    travel: 'Through travellers\' eyes', travelAll: 'Mount Gerizim through travellers\' eyes', travelIntro: 'Visitors who wrote about the mountain, from Mark Twain onwards. For each, the source itself was checked: did the writer climb the mountain, see it from afar, or describe only Nablus and its surroundings.', tr_climbed: 'Climbed the mountain', tr_seen: 'Saw the mountain from afar', tr_nablus_only: 'Described Nablus and its surroundings', trSource: 'Source', trQuote: 'From the source', trAt: 'At the station:', trVisit: 'visit', trPub: 'published',
+  Object.assign(UI.en, { sprTour: 'Tour of the springs', stRead: 'The full story', pwMorePh: 'More photos ({n})', pwNoPhoto: 'No free photo of this spring was found; the map shows where it is.', pwalkBtn: 'Photo walk', pwPrev: 'Previous', pwNext: 'Next', perN: 'Today', w_today: 'Today · the Twelve Stones', w_teternal: 'Today · the Eternal Hill', w_tisaac: 'Today · the Altar of Isaac', w_tghanim: 'Today · Sheikh Ghanim\'s tomb', walkBtnToday: 'Walk the summit as it is today', rc_today: 'Reconstruction: the summit as it is today — the excavated ruins, the community\'s holy places with their fences, and the tomb of Sheikh Ghanim.', rcHypN: 'After recent photographs and the aerial image; heights and fences approximate.', tlLink: 'On the timeline →', rcHypR: 'The whole structure is reconstructed from the verses and the tradition; no remains of it were found in excavation.', rc_ratzon: 'Reconstruction: the Tabernacle of Moses on the Eternal Hill — the court hangings, the Tent of Meeting, the altar and the laver, from the verses of the Torah, as an illustration.', inWalk: 'In the walking tour here', perH: 'Hellenistic period', perP: 'Persian period', perR: 'Days of Favour', photosOf: 'Photos: {p}', photosOfNote: 'There are no photos of this part itself; these are photos of the whole site.', more: '⋯ More', moreClose: '× Less', introGloss: 'And Mount Gerizim — Bethel, all the days of our life', coach: 'Drag to turn · tap a place name · or start ▶ the guided tour', w_stairs: 'Walk · the lower gate', w_plaza: 'Walk · the altar court', w_city: 'Walk · the western entrance', w_areaA: 'Walk · the western quarter', w_areaB: 'Walk · the southern quarter', media: 'Videos and links', mediaLinks: 'More photos and videos on their source sites (view there only)', video: 'Video', play: 'Watch the video', mk_current: 'Recent photo', mk_archival: 'Archival photo', mk_rendering: 'Rendering', mk_drawing: 'Archival drawing', mk_tourism: 'Tourism site', mk_article: 'Article', mk_blog: 'Blog', mk_data: 'Data', 'mk_video-extra': 'Video', mk_source: 'Source', mk_link: 'Link',
+    travel: 'Through travellers\' eyes', travelAll: 'Mount Gerizim through travellers\' eyes', travelIntro: 'Visitors who wrote about the mountain, from the Bordeaux Pilgrim (333) to the twentieth century, Mark Twain among them. For each, the source itself was checked: did the writer climb the mountain, see it from afar, or describe only Nablus and its surroundings.', tr_climbed: 'Climbed the mountain', tr_seen: 'Saw the mountain from afar', tr_nablus_only: 'Described Nablus and its surroundings', trSource: 'Source', trQuote: 'From the source', trAt: 'At the station:', trVisit: 'visit', trPub: 'published',
     music: 'Background music', walkBtnMishkan: 'Enter the Tabernacle — the Days of Favour', walkMishkan: 'To the Tabernacle', walkMishkanTip: 'Days of Favour: enter the court of the Tabernacle and the Tent of Meeting' });
-  Object.assign(UI.ar, { pwalkBtn: 'جولة بالصور', pwPrev: 'السابق', pwNext: 'التالي', perN: 'أيامنا', w_today: 'أيامنا · الحجارة الاثنا عشر', w_teternal: 'أيامنا · التلة الأبدية', w_tisaac: 'أيامنا · مذبح إسحاق', w_tghanim: 'أيامنا · مقام الشيخ غانم', walkBtnToday: 'جولة سيرًا في القمة كما هي اليوم', rc_today: 'إعادة بناء: القمة كما هي اليوم — الأطلال المنقَّبة، والأماكن المقدّسة للطائفة وأسوارها، ومقام الشيخ غانم.', rcHypN: 'بحسب صور حديثة والصورة الجوية؛ الارتفاعات والأسوار تقريبية.', tlLink: 'في الخط الزمني ←', rcHypR: 'المبنى كله معاد بناؤه من الآيات ومن التقليد؛ ولم يُعثر له على أثر في التنقيب.', rc_ratzon: 'إعادة بناء: مسكن موسى على التلة الأبدية — أستار الدار وخيمة الاجتماع والمذبح والمرحضة، وفق آيات التوراة وللتوضيح.', inWalk: 'في الجولة سيرًا هنا', perH: 'الفترة الهلنستية', perP: 'الفترة الفارسية', perR: 'أيام الرضوان', photosOf: 'صور: {p}', photosOfNote: 'لا صور لهذا الجزء نفسه؛ هذه صور الموقع كله.', more: '⋯ المزيد', moreClose: '× أقل', introGloss: 'وجبل جرزيم — بيت إيل، كل أيام حياتنا', coach: 'اسحب للتدوير · انقر على اسم مكان · أو ابدأ ▶ الجولة المرشدة', w_stairs: 'جولة سيرًا · البوابة السفلى', w_plaza: 'جولة سيرًا · ساحة المذبح', w_city: 'جولة سيرًا · المدخل الغربي', w_areaA: 'جولة سيرًا · الحيّ الغربي', w_areaB: 'جولة سيرًا · الحيّ الجنوبي', media: 'مقاطع وروابط', mediaLinks: 'مزيد من الصور والمقاطع في مواقعها الأصلية (للمشاهدة هناك فقط)', video: 'مقطع', play: 'مشاهدة المقطع', mk_current: 'صورة حديثة', mk_archival: 'صورة أرشيفية', mk_rendering: 'محاكاة', mk_drawing: 'رسم أرشيفي', mk_tourism: 'موقع سياحي', mk_article: 'مقال', mk_blog: 'مدوّنة', mk_data: 'بيانات', 'mk_video-extra': 'مقطع', mk_source: 'مصدر', mk_link: 'رابط',
-    travel: 'بعيون الرحّالة', travelAll: 'جبل جرزيم بعيون الرحّالة', travelIntro: 'زوّار كتبوا عن الجبل، من مارك توين فصاعدًا. وقد فُحص في المصدر نفسه لكل منهم: هل صعد الجبل، أم رآه من بعيد، أم وصف نابلس وما حولها فقط.', tr_climbed: 'صعد الجبل', tr_seen: 'رأى الجبل من بعيد', tr_nablus_only: 'وصف نابلس وما حولها', trSource: 'المصدر', trQuote: 'من المصدر', trAt: 'في المحطة:', trVisit: 'الزيارة', trPub: 'النشر',
+  Object.assign(UI.ar, { sprTour: 'جولة بين الينابيع', stRead: 'القصة كاملة', pwMorePh: 'صور أخرى ({n})', pwNoPhoto: 'لم يُعثر على صورة حرّة لهذا النبع؛ الخريطة تُظهر موضعه.', pwalkBtn: 'جولة بالصور', pwPrev: 'السابق', pwNext: 'التالي', perN: 'أيامنا', w_today: 'أيامنا · الحجارة الاثنا عشر', w_teternal: 'أيامنا · التلة الأبدية', w_tisaac: 'أيامنا · مذبح إسحاق', w_tghanim: 'أيامنا · مقام الشيخ غانم', walkBtnToday: 'جولة سيرًا في القمة كما هي اليوم', rc_today: 'إعادة بناء: القمة كما هي اليوم — الأطلال المنقَّبة، والأماكن المقدّسة للطائفة وأسوارها، ومقام الشيخ غانم.', rcHypN: 'بحسب صور حديثة والصورة الجوية؛ الارتفاعات والأسوار تقريبية.', tlLink: 'في الخط الزمني ←', rcHypR: 'المبنى كله معاد بناؤه من الآيات ومن التقليد؛ ولم يُعثر له على أثر في التنقيب.', rc_ratzon: 'إعادة بناء: مسكن موسى على التلة الأبدية — أستار الدار وخيمة الاجتماع والمذبح والمرحضة، وفق آيات التوراة وللتوضيح.', inWalk: 'في الجولة سيرًا هنا', perH: 'الفترة الهلنستية', perP: 'الفترة الفارسية', perR: 'أيام الرضوان', photosOf: 'صور: {p}', photosOfNote: 'لا صور لهذا الجزء نفسه؛ هذه صور الموقع كله.', more: '⋯ المزيد', moreClose: '× أقل', introGloss: 'وجبل جرزيم — بيت إيل، كل أيام حياتنا', coach: 'اسحب للتدوير · انقر على اسم مكان · أو ابدأ ▶ الجولة المرشدة', w_stairs: 'جولة سيرًا · البوابة السفلى', w_plaza: 'جولة سيرًا · ساحة المذبح', w_city: 'جولة سيرًا · المدخل الغربي', w_areaA: 'جولة سيرًا · الحيّ الغربي', w_areaB: 'جولة سيرًا · الحيّ الجنوبي', media: 'مقاطع وروابط', mediaLinks: 'مزيد من الصور والمقاطع في مواقعها الأصلية (للمشاهدة هناك فقط)', video: 'مقطع', play: 'مشاهدة المقطع', mk_current: 'صورة حديثة', mk_archival: 'صورة أرشيفية', mk_rendering: 'محاكاة', mk_drawing: 'رسم أرشيفي', mk_tourism: 'موقع سياحي', mk_article: 'مقال', mk_blog: 'مدوّنة', mk_data: 'بيانات', 'mk_video-extra': 'مقطع', mk_source: 'مصدر', mk_link: 'رابط',
+    travel: 'بعيون الرحّالة', travelAll: 'جبل جرزيم بعيون الرحّالة', travelIntro: 'زوّار كتبوا عن الجبل، من حاجّ بوردو (333) حتى القرن العشرين، ومنهم مارك توين. وقد فُحص في المصدر نفسه لكل منهم: هل صعد الجبل، أم رآه من بعيد، أم وصف نابلس وما حولها فقط.', tr_climbed: 'صعد الجبل', tr_seen: 'رأى الجبل من بعيد', tr_nablus_only: 'وصف نابلس وما حولها', trSource: 'المصدر', trQuote: 'من المصدر', trAt: 'في المحطة:', trVisit: 'الزيارة', trPub: 'النشر',
     music: 'موسيقى خلفية', walkBtnMishkan: 'ادخلوا إلى المسكن — أيام الرضوان', walkMishkan: 'إلى المسكن', walkMishkanTip: 'أيام الرضوان: الدخول إلى دار المسكن وخيمة الاجتماع' });
   const T = k => UI[lang][k];
   // שדה תוכן הוא {he,en,ar}; בהיעדר תרגום חוזרים לעברית
@@ -281,8 +281,9 @@
     const st = trStation(e), place = withPlace && byId[st] ? '<div class="trat">' + esc(T('trAt')) + ' ' + linkTo(st) + '</div>' : '';
     return '<div class="trv"><div class="trh"><b>' + esc(L(e.writer)) + '</b><em class="c-' + esc(e.did_climb) + '">' + esc(T('tr_' + e.did_climb)) + '</em></div>' +
       '<div class="trt"><i>' + esc((lang === 'ar' ? (e.title.ar || e.title.en) : L(e.title)) || e.title.orig) + '</i>' + (yr ? ' · ' + esc(yr) : '') + '</div>' +
-      '<p>' + esc(L(e.summary)) + '</p>' + q + place + '<a class="trsrc" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(T('trSource')) + ' ↗</a></div>';
+      '<p>' + esc(L(e.summary)) + '</p>' + q + place + (window.GerizimLayers && GerizimLayers.hasStory(e.id) ? '<button class="walkbtn stbtn" data-story="' + esc(e.id) + '">📖 ' + esc(T('stRead')) + '</button>' : '') + '<a class="trsrc" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(T('trSource')) + ' ↗</a></div>';
   }
+  const storyBtns = root => root.querySelectorAll('[data-story]').forEach(b => { b.onclick = () => window.GerizimLayers && GerizimLayers.openStory(b.dataset.story); });
   function travelSection(p) {
     const list = TRAVEL.filter(e => trStation(e) === p.id);
     if (!list.length) return '';
@@ -456,7 +457,7 @@
   // הסדר: המקום שנבחר; במפת ההתמצאות העיר, העמקים, הדרך וההרים; על הפסגה המקומות הראשיים, ואחריהם החלקים, כניסות הסיור הרגלי והמקומות הרחוקים
   const ORANK = { nablus: 0.5, ebal: 3, balata: 3.4, well: 3.6, joseph: 3.8, awarta: 4.5, birhamam: 6.5, ebalsite: 6.5 };
   const SPRING1 = { sp_rasalein: 1, sp_balata: 1, sp_dafna: 1, sp_makhna: 1, sp_bidan: 1, sp_askar: 1 };
-  const rankO = p => ORANK[p.id] || (p.lab === 'valley' ? 1 : p.lab === 'road' ? 2 : p.lab === 'peak' ? 3 : p.lab === 'town' ? 4 : p.lab === 'spring' ? (SPRING1[p.id] ? 5.6 : 6.6) : !p.lab ? 5 : 6);
+  const rankO = p => ORANK[p.id] || (p.lab === 'valley' ? 1 : p.lab === 'road' ? 2 : p.lab === 'peak' ? 3 : p.lab === 'town' ? 4 : p.lab === 'spring' ? (state.lySpr ? 0.45 : SPRING1[p.id] ? 5.6 : 6.6) : !p.lab ? 5 : 6);
   const rankS = p => p.far ? 6 : p.parent ? 4 : state.tourAt >= 0 && G.tour[state.tourAt] === p.id ? 0.2 : p.group === 'holy' ? 1.5 : 1 + Math.max(0, (p.labelFrom || 15) - 15) * 0.5;
   const rank = p => p.id === state.sel ? 0 : state.orient ? rankO(p) : rankS(p);
   function declutter(cand) {
@@ -804,6 +805,7 @@
     if (hasPhotos && !phone) h += strip(im.photos, 'photos');
     h += '<p>' + esc(L(p.summary)) + '</p>';
     if (PWALK[p.id] && !walking) h += '<button class="walkbtn pwbtn" id="cardPWalk">📷 ' + esc(T('pwalkBtn')) + ' (' + PWALK[p.id].stations.length + ')</button>';
+    if (p.group === 'springs' && PWALK.springs && !walking) h += '<button class="walkbtn pwbtn" id="cardSpr">💧 ' + esc(T('sprTour')) + '</button>';
     if (walkKey(p.id) && !walking) h += '<button class="walkbtn" id="cardWalk">' + WALK_ICON + esc(T((WALK_STARTS[walkKey(p.id)] || {}).per === 'n' ? 'walkBtnToday' : walkKey(p.id) === 'mishkan' ? 'walkBtnMishkan' : 'walkBtn')) + '</button>';
     if (p.geo) h += '<p class="farline">' + esc(geoLine(p.geo)) + '</p>';
     if (p.far) { const dd = distDir(p); h += '<p class="farline">' + esc(T(p.unseen ? 'farAway' : 'far').replace('{d}', dd.d).replace('{c}', dd.c)) + '</p>'; }
@@ -850,6 +852,8 @@
     card.querySelectorAll('[data-video]').forEach(b => { b.onclick = () => videoBox(+b.dataset.video); });
     if ($('cardWalk')) $('cardWalk').onclick = () => enterWalk(walkKey(p.id));
     if ($('cardPWalk')) $('cardPWalk').onclick = () => photoWalk(p.id, 0);
+    if ($('cardSpr')) $('cardSpr').onclick = () => photoWalk('springs', Math.max(0, PWALK.springs.stations.findIndex(q => q.id === p.id)));
+    storyBtns(card);
     card.querySelectorAll('[data-walkz]').forEach(b => { b.onclick = () => enterWalk(walkKey(p.id)); });
     // מה שהמשתמש פתח או סגר נשאר כך גם בכרטיסים הבאים
     card.querySelectorAll('details.sec').forEach(d => { d.ontoggle = () => { state.exp[d.dataset.sec] = d.open; }; });
@@ -892,6 +896,7 @@
     let h = '<button class="x" id="cardX" aria-label="' + esc(T('close')) + '">✕</button><div class="kind">' + esc(T('travel')) + '</div><h2>' + esc(T('travelAll')) + '</h2><p>' + esc(T('travelIntro')) + '</p>';
     h += TRAVEL.map(e => travelItem(e, true)).join('');
     card.innerHTML = h; card.classList.add('open'); card.scrollTop = 0;
+    storyBtns(card);
     $('cardX').onclick = () => { state.listing = false; renderCard(); };
     card.querySelectorAll('[data-go]').forEach(b => { b.onclick = () => { state.listing = false; select(b.dataset.go); }; });
   }
@@ -928,15 +933,18 @@
     const n = W2.stations.length; i = ((i || 0) % n + n) % n;
     if (!pw) { introEnd(true); endTour(); if (window.GerizimAudio) GerizimAudio.duck(true); }
     pw = { id, i };
-    const s = W2.stations[i], im = s.photo, box = $('pwalk');
+    const s = W2.stations[i], im = s.photo || (s.photos || [])[0] || null, box = $('pwalk');
     $('pwTitle').textContent = L(W2.title);
     $('pwCount').textContent = (i + 1) + ' / ' + n;
-    $('pwImg').src = im.t ? sized(im, 960) : im.src;                // ויקישיתוף מגישה רק רוחבים קבועים (330, 960, 1280)
+    if (im) { $('pwImg').src = im.t ? sized(im, 960) : im.src; $('pwImg').style.display = ''; }   // ויקישיתוף מגישה רק רוחבים קבועים (330, 960, 1280)
+    else { $('pwImg').removeAttribute('src'); $('pwImg').style.display = 'none'; }
     $('pwImg').alt = L(s.cap);
+    box.classList.toggle('nophoto', !im);
     $('pwCap').innerHTML = '<b>' + esc(L(s.name)) + '</b><p>' + esc(L(s.cap)) + '</p>' +
-      '<span class="pwcred">' + esc(T('photoBy')) + ': ' + esc(im.by || '—') + ' · ' + esc(T('licence')) + ': ' + esc(im.lic || '—') + (im.y ? ' · ' + esc(im.y) : '') +
-      ' · <a href="' + esc(im.page) + '" target="_blank" rel="noopener">' + esc(T('source')) + '</a></span>' +
+      (im ? '<span class="pwcred">' + esc(T('photoBy')) + ': ' + esc(im.by || '—') + ' · ' + esc(T('licence')) + ': ' + esc(im.lic || '—') + (im.y ? ' · ' + esc(im.y) : '') +
+      ' · <a href="' + esc(im.page) + '" target="_blank" rel="noopener">' + esc(T('source')) + '</a>' + (s.photos && s.photos.length > 1 ? ' · <button class="pwmore">' + esc(T('pwMorePh').replace('{n}', s.photos.length)) + '</button>' : '') + '</span>' : '<span class="pwcred">' + esc(T('pwNoPhoto')) + '</span>') +
       (i === 0 && W2.intro ? '<p class="pwintro">' + esc(L(W2.intro)) + '</p>' : '');
+    const mb = box.querySelector('.pwmore'); if (mb) mb.onclick = () => lightbox(s.photos.map(q => Object.assign({ cap: s.name }, q)), 0);
     box.classList.add('open'); document.body.classList.add('pwalking');
     const c = [s.lon, s.lat];
     if (!pwMarker) { const el = document.createElement('div'); el.className = 'pwdot'; pwMarker = new maplibregl.Marker({ element: el }).setLngLat(c).addTo(map); }
@@ -956,7 +964,9 @@
     $('pwX').onclick = photoWalkEnd;
     $('pwPrev').onclick = () => pw && photoWalk(pw.id, pw.i - 1);
     $('pwNext').onclick = () => pw && photoWalk(pw.id, pw.i + 1);
-    $('pwImg').onclick = () => { if (!pw) return; const st2 = PWALK[pw.id].stations; lightbox(st2.map(q => Object.assign({ cap: q.cap }, q.photo)), pw.i); };
+    $('pwImg').onclick = () => { if (!pw) return; const st2 = PWALK[pw.id].stations, s2 = st2[pw.i];
+      if (s2.photos) return lightbox(s2.photos.map(q => Object.assign({ cap: s2.name }, q)), 0);
+      lightbox(st2.map(q => Object.assign({ cap: q.cap }, q.photo)), pw.i); };
     document.addEventListener('keydown', e => { if (!pw || $('lightbox').classList.contains('open')) return; if (e.key === 'Escape') photoWalkEnd(); if (e.key === 'ArrowLeft') $(lang === 'en' ? 'pwPrev' : 'pwNext').click(); if (e.key === 'ArrowRight') $(lang === 'en' ? 'pwNext' : 'pwPrev').click(); });
   }
 
@@ -1117,6 +1127,7 @@
     PLACES.forEach(p => { if (p._pin) { setPin(p); p._pin.title = L(p.name); p._pin.dir = T('dir'); } });
     [...document.querySelectorAll('#langs button')].forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
     if (window.GerizimWalk && window.GerizimWalk.setLang) window.GerizimWalk.setLang(lang, { scripts: T('scr'), insNo: T('insNo') });
+    if (window.GerizimLayers) window.GerizimLayers.setLang(lang);
     renderCard();
   }
   function setLang(code) {
@@ -1140,6 +1151,10 @@
     map.getCanvas().style.cursor = state.pick ? 'crosshair' : '';
     if (state.pick) toast(T('pickPrompt'));
   };
+  /* ---------- מה שמודול השכבות (layers.js) צריך מכאן ---------- */
+  window.GerizimTourAPI = { map, state, byId, PLACES, esc, lang: () => lang, select, enterOrient, leaveOrient, photoWalk, photoWalkEnd,
+    lightbox, isPhone, sized, introEnd, endTour, repaint, barHeight, inWalk, renderCard, PWALK, home: () => goHome() };
+
   map.on('click', ev => {
     if (!state.pick) return;
     const s = ev.lngLat.lat.toFixed(6) + ', ' + ev.lngLat.lng.toFixed(6);

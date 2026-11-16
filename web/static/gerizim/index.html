@@ -218,6 +218,87 @@
   @media (max-height:500px) and (orientation:landscape){
     #pwalk{top:8px;bottom:8px;height:auto;width:52vw;inset-inline-start:8px;inset-inline-end:auto;border-radius:10px}
   }
+  /* ---- שכבות: סיפורי מטיילים והר שופע מעיינות (layers.js) ---- */
+  #lyPop{position:fixed;z-index:26;display:none;bottom:calc(var(--barh,96px) + 8px);inset-inline-end:12px;width:min(380px,calc(100vw - 24px));background:rgba(20,16,11,.96);
+    border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:10px 12px 12px;color:var(--ink)}
+  #lyPop.open{display:block}
+  #lyPop .lyh{display:flex;align-items:center;margin-bottom:6px} #lyPop .lyh b{flex:1;color:var(--gold);font-size:15px}
+  #lyPop .lyx{background:none;border:0;color:var(--ink);font-size:17px;min-width:34px;min-height:34px;cursor:pointer}
+  .lyrow{border-top:1px solid rgba(217,178,95,.18);padding:8px 0 4px}
+  .lytg{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;color:var(--ink);text-align:start;cursor:pointer;padding:4px 0;font:inherit}
+  .lytg i{font-style:normal;font-size:22px;flex:none} .lytg span{flex:1} .lytg b{display:block;font-size:15px} .lytg small{display:block;font-size:12.5px;color:var(--dim);line-height:1.4;margin-top:1px}
+  .lytg em{flex:none;width:38px;height:22px;border-radius:11px;background:rgba(255,255,255,.18);position:relative;transition:background .2s}
+  .lytg em::after{content:'';position:absolute;top:3px;inset-inline-start:3px;width:16px;height:16px;border-radius:50%;background:#e9e1cd;transition:inset-inline-start .2s}
+  .lyrow.on .lytg em{background:var(--gold)} .lyrow.on .lytg em::after{inset-inline-start:19px}
+  .lyact{display:block;margin:6px 0 2px;margin-inline-start:32px;min-height:36px;padding:5px 12px;border-radius:9px;border:1px solid var(--line);background:rgba(217,178,95,.12);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  #btnLayers.on{background:var(--gold);color:#14110d}
+  .stmk{display:flex;align-items:center;gap:2px;background:rgba(36,26,14,.92);border:2px solid #e8c37a;border-radius:14px 14px 14px 3px;padding:2px 6px 2px 5px;cursor:pointer;color:#f3ead6;font:600 12px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+  .stmk i{font-style:normal;font-size:14px} .stmk b{font-size:11.5px}
+  .stpop b{display:block;font-size:14px;margin-bottom:2px;color:#2b2113} .stpop small{display:block;color:#666;margin-bottom:4px}
+  .stpop button{display:block;width:100%;text-align:start;background:#f4ecda;border:1px solid #d8c59a;border-radius:7px;margin:3px 0;padding:5px 8px;font:inherit;font-size:13.5px;cursor:pointer;color:#2b2113}
+  .stpop button i{font-style:normal;color:#7a6440}
+  body.lysprings .pin.olab:not(.g-springs){opacity:.45}
+  body.lysprings .pin.g-springs{filter:drop-shadow(0 0 4px rgba(79,179,240,.9))}
+  /* קורא הסיפורים: מסך מלא, או צמוד לצד כשמראים מקום על המפה */
+  #story{position:fixed;z-index:40;display:none;flex-direction:column;inset:0;background:#17130e;color:var(--ink)}
+  #story.open{display:flex}
+  #story .sttop{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);flex:none}
+  #story .sttop>b{flex:1;color:var(--gold);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #story .sttop button{flex:none;background:none;border:1px solid transparent;color:var(--ink);font:inherit;font-size:15px;min-width:36px;min-height:36px;cursor:pointer;border-radius:8px}
+  #story .stfull{display:none;white-space:nowrap} #story.docked .stfull{display:inline-block;border-color:var(--line)}
+  #stSel{display:none;min-width:0;flex:1 1 auto;max-width:48vw;background:#241c12;color:var(--ink);border:1px solid var(--line);border-radius:8px;min-height:36px;font:inherit;font-size:14px}
+  #story .stload{padding:30px;text-align:center;color:var(--dim)}
+  #story .stbody{flex:1;min-height:0;display:flex}
+  #stIdx{flex:none;width:250px;overflow:auto;border-inline-end:1px solid var(--line);padding:10px 8px}
+  #stIdx h3{margin:4px 8px 8px;font-size:13px;color:var(--dim);font-weight:600}
+  #stIdx button{display:block;width:100%;text-align:start;background:none;border:0;border-radius:8px;color:var(--ink);padding:7px 10px;cursor:pointer;font:inherit}
+  #stIdx button b{display:block;font-size:14px} #stIdx button i{font-style:normal;font-size:12px;color:var(--dim)}
+  #stIdx button.on{background:rgba(217,178,95,.18)} #stIdx button:hover{background:rgba(217,178,95,.1)}
+  #stArt{flex:1;min-width:0;overflow-x:hidden;overflow-y:auto;overflow-wrap:anywhere;padding:18px clamp(16px,4vw,48px) 40px}
+  #stArt>*{max-width:760px;margin-inline:auto}
+  #stArt h2{font-size:24px;margin:0 0 4px;color:#f6e7c4} #stArt h3{font-size:15px;color:var(--gold);margin:22px auto 8px}
+  .stmeta{font-size:13.5px;color:var(--dim);margin-bottom:8px} .stmeta i{font-style:italic}
+  .stmeta em{font-style:normal;font-size:12px;border:1px solid var(--line);border-radius:9px;padding:1px 8px;margin-inline-start:6px;color:var(--gold)}
+  .stmode{display:flex;gap:6px;margin:8px auto 4px}
+  .stmode button{border:1px solid var(--line);background:none;color:var(--ink);border-radius:16px;padding:4px 12px;min-height:32px;font:inherit;font-size:13px;cursor:pointer}
+  .stmode button.on{background:var(--gold);color:#14110d;border-color:var(--gold)}
+  .stsum{color:var(--dim);font-size:14.5px;line-height:1.6}
+  .sttext p{font-family:Georgia,'Frank Ruehl CLM','David',serif;font-size:17.5px;line-height:1.85;margin:0 auto 14px;color:#efe5cf}
+  .sttext.orig p{font-size:16.5px}
+  .stq{display:inline;background:rgba(217,178,95,.16);border:0;border-bottom:2px solid var(--gold);color:inherit;font:inherit;padding:0 2px;cursor:pointer;border-radius:3px 3px 0 0}
+  .stq:hover,.stq.hit{background:rgba(217,178,95,.38)}
+  .stq.chip{font-family:system-ui,sans-serif;font-size:13px;border:1px solid var(--line);border-radius:12px;padding:1px 8px;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;line-height:1.5}
+  .stq[disabled]{border-bottom-color:transparent;cursor:default;opacity:.7}
+  .stpts{padding-inline-start:20px;font-size:14px;line-height:1.55} .stpts li{margin-bottom:8px}
+  .stpts .stq{font-family:system-ui,sans-serif;font-size:14px}
+  .stpts em{font-style:normal;font-size:11.5px;margin-inline-start:6px;padding:0 7px;border-radius:8px;border:1px solid var(--line)}
+  .stpts em.cf-sure{color:#9fd39a;border-color:#5f8f5a} .stpts em.cf-likely{color:#e7c97e} .stpts em.cf-guess{color:#d9a3a3;border-color:#8a5a5a}
+  .stpts span{display:block;color:var(--dim);font-size:13px}
+  .stsrc{font-size:13px;color:var(--dim);margin-top:18px} .stsrc a{color:var(--gold)}
+  .stnav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+  .stnav button,.stcards button{border:1px solid var(--line);background:rgba(217,178,95,.08);color:var(--ink);border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+  .stcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+  .stcards button{text-align:start;display:flex;flex-direction:column;gap:3px} .stcards b{font-size:15px}
+  .stcards i{font-style:normal;font-size:12px;color:var(--gold)} .stcards span{font-size:13px;color:var(--dim);line-height:1.45}
+  .stbtn{margin-top:6px}
+  .stdot{width:16px;height:16px;border-radius:50%;background:#e8c37a;border:3px solid #fff;box-shadow:0 0 0 3px rgba(0,0,0,.35);position:relative}
+  .stdot span{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);white-space:nowrap;max-width:62vw;overflow:hidden;text-overflow:ellipsis;background:rgba(20,16,11,.92);color:#f3ead6;border:1px solid var(--line);border-radius:8px;padding:2px 8px;font:600 12.5px system-ui}
+  #story.docked{inset:auto;top:58px;bottom:calc(var(--barh) + 10px);inset-inline-start:12px;width:min(46vw,620px);border:1px solid var(--line);border-radius:12px;
+    background:rgba(18,15,11,.95);box-shadow:0 8px 30px rgba(0,0,0,.45);overflow:hidden;z-index:25}
+  #story.docked #stIdx{display:none} #story.docked #stSel{display:inline-block}
+  #story.docked .sttext p{font-size:15.5px;line-height:1.7}
+  body.storyopen #card,body.storydock #card{display:none}
+  body.storyopen:not(.storydock) #bar{visibility:hidden}
+  @media (max-width:760px){
+    #stIdx{display:none} #stSel{display:inline-block;max-width:none;flex:1} #story .sttop>b{display:none}
+    #story.docked{top:auto;inset-inline:0;width:auto;bottom:calc(var(--barh) + 4px);height:50vh;border-radius:12px 12px 0 0}
+    .sttext p{font-size:16.5px}
+  }
+  @media (max-height:500px) and (orientation:landscape){
+    #story.docked{top:8px;bottom:8px;height:auto;width:52vw;inset-inline-start:8px;inset-inline-end:auto;border-radius:10px}
+  }
+  #pwalk.nophoto #pwCap{max-height:none;flex:1}
+  .pwmore{background:none;border:0;color:var(--gold);font:inherit;font-size:12px;cursor:pointer;padding:0;text-decoration:underline}
   .stratum a.stl{display:inline-block;margin-top:3px;font-size:13px;color:var(--gold);text-decoration:none}
   #card ul{margin:0;padding-inline-start:18px;font-size:14.5px;line-height:1.6}
   .note{font-size:12px;color:var(--dim);margin-top:12px}
@@ -457,8 +538,8 @@
     /* 3. שורה ראשית קבועה; הכלים הנוספים נפתחים ב"עוד" */
     #btnMore{display:inline-block}
     .nav.on{margin:12px -14px -12px;padding:9px 14px 10px;bottom:-12px}
-    #btnOrient,#btnRecon,#btnRelief,#btnPick{display:none}
-    body.more #btnOrient,body.more #btnRecon,body.more #btnRelief{display:inline-block}
+    #btnOrient,#btnRecon,#btnRelief,#btnPick,#btnHome{display:none}
+    body.more #btnOrient,body.more #btnRecon,body.more #btnRelief,body.more #btnHome{display:inline-block}
     body.more #bar .row:last-child{flex-wrap:wrap}
     #periods{-webkit-mask-image:linear-gradient(to left,transparent 0,#000 28px);mask-image:linear-gradient(to left,transparent 0,#000 28px)}
   }
@@ -530,22 +611,24 @@
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <!-- מספר הגרסה מונע מהדפדפן להגיש קובץ ישן מהמטמון; להעלות אותו בכל שינוי -->
-<script src="places.js?v=63"></script>
-<script src="places_apply.js?v=63"></script>
-<script src="images.js?v=63"></script>
-<script src="walk_dem.js?v=63"></script>
-<script src="walk_data.js?v=63"></script>
-<script src="walk_info.js?v=63"></script>
-<script src="walk_sanct.js?v=63"></script>
-<script src="walk_now.js?v=63"></script>
-<script src="audio.js?v=63"></script>
-<script src="media.js?v=63"></script>
-<script src="travelers.js?v=63"></script>
-<script src="photowalks.js?v=63"></script>
-<script src="flickr.js?v=63"></script>
-<script src="inscriptions.js?v=63"></script>
-<script src="orient.js?v=63"></script>
-<script src="recon.js?v=63"></script>
-<script src="tour.js?v=63"></script>
+<script src="places.js?v=64"></script>
+<script src="places_apply.js?v=64"></script>
+<script src="images.js?v=64"></script>
+<script src="walk_dem.js?v=64"></script>
+<script src="walk_data.js?v=64"></script>
+<script src="walk_info.js?v=64"></script>
+<script src="walk_sanct.js?v=64"></script>
+<script src="walk_now.js?v=64"></script>
+<script src="audio.js?v=64"></script>
+<script src="media.js?v=64"></script>
+<script src="travelers.js?v=64"></script>
+<script src="photowalks.js?v=64"></script>
+<script src="springs.js?v=64"></script>
+<script src="flickr.js?v=64"></script>
+<script src="inscriptions.js?v=64"></script>
+<script src="orient.js?v=64"></script>
+<script src="recon.js?v=64"></script>
+<script src="tour.js?v=64"></script>
+<script src="layers.js?v=64"></script>
 </body>
 </html>
