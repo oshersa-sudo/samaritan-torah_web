@@ -54,7 +54,7 @@
         genealogy:{ name:'אילן היוחסין השומרוני', short:'אילן היוחסין', tag:'אילן היוחסין המלא של בני העדה',
           points:['אילן היוחסין השומרוני המלא של משפחות העדה','חיפוש אדם ומעקב אחר אבותיו וצאצאיו','מבוסס על מפקד העדה ועל רישומי אירועים','צפייה בקשרי המשפחה בין הדורות'] },
         archive:{ name:'הארכיון', short:'הארכיון', tag:'',
-          points:['הארכיון הגדול ביותר המצוי ברשת אודות הקהילה השומרונית','מסמכים ומכתבים, עלוני ובטאוני העדה לאורך הדורות','התמונות משכבר הימים - התמונות שאהבנו'] },
+          points:['הארכיון הגדול ביותר המצוי ברשת אודות הקהילה השומרונית','מסמכים ומכתבים, עלוני ובטאוני העדה לאורך הדורות','התמונות שאהבנו - אלבום תמונות משכבר הימים'] },
         gerizim:{ name:'גבעת עולם', short:'גבעת עולם', tag:'סיור תלת-ממדי על פסגת הר גריזים וסביבותיו',
           points:['סיור על צילום לוויין תלת-ממדי של פסגת ההר, עם חוגת כיוונים וסיור מודרך','המתחם המקודש, העיר ההלניסטית, הכנסייה המתומנת ותל א-ראס: מה נמצא בכל מקום, ושכבותיו לפי תקופות','המקומות הקדושים לעדה ושבע תחנות העלייה לרגל','אתרי הסביבה: שכם, הר עיבל, תל בלאטה, קבר יוסף ועוד, עם תמונות','התוכן ראשוני, ועוד יתעדכן'] },
       }
@@ -91,7 +91,7 @@
         genealogy:{ name:'Samaritan Genealogy', short:'Genealogy', tag:'The full family tree of the community',
           points:['The full Samaritan family tree of the community’s families','Look up a person and follow their ancestors and descendants','Built on the community census and records of events','See the family ties across the generations'] },
         archive:{ name:'The Archive', short:'The Archive', tag:'',
-          points:['The largest archive on the web about the Samaritan community','Documents and letters, community newsletters and bulletins through the generations','Photographs of days gone by — the pictures we loved'] },
+          points:['The largest archive on the web about the Samaritan community','Documents and letters, community newsletters and bulletins through the generations','The pictures we loved — an album of photographs from days gone by'] },
         gerizim:{ name:'Givat Olam — The Eternal Hill', short:'Givat Olam', tag:'A 3D tour of the summit of Mount Gerizim and its surroundings',
           points:['A tour over 3D satellite imagery of the summit, with a direction dial and a guided route','The sacred precinct, the Hellenistic city, the octagonal church and Tell er-Ras: what was found at each place, and its layers by period','The community’s holy places and the seven stations of the pilgrimage','The sites around: Nablus, Mount Ebal, Tell Balata, Joseph’s Tomb and more, with pictures','The content is preliminary and will be updated'] },
       }
@@ -128,7 +128,7 @@
         genealogy:{ name:'شجرة الأنساب السامرية', short:'شجرة الأنساب', tag:'شجرة الأنساب الكاملة لأبناء الطائفة',
           points:['شجرة الأنساب السامرية الكاملة لعائلات الطائفة','البحث عن شخص وتتبّع أجداده وأحفاده','مبنية على إحصاء الطائفة وسجلّات الأحداث','عرض الروابط العائلية عبر الأجيال'] },
         archive:{ name:'الأرشيف', short:'الأرشيف', tag:'',
-          points:['أكبر أرشيف على الشبكة عن الطائفة السامرية','وثائق ورسائل ونشرات ومجلات الطائفة عبر الأجيال','صور الأيام الماضية — الصور التي أحببناها'] },
+          points:['أكبر أرشيف على الشبكة عن الطائفة السامرية','وثائق ورسائل ونشرات ومجلات الطائفة عبر الأجيال','الصور التي أحببناها — ألبوم صور الأيام الماضية'] },
         gerizim:{ name:'جبعة عولام — التلة الأبدية', short:'التلة الأبدية', tag:'جولة ثلاثية الأبعاد على قمة جبل جرزيم ومحيطه',
           points:['جولة على صورة فضائية ثلاثية الأبعاد لقمة الجبل، مع قرص للاتجاهات وجولة إرشادية','الحرم المقدّس، والمدينة الهلنستية، والكنيسة المثمّنة، وتل الراس: ما وُجد في كل مكان، وطبقاته بحسب الفترات','الأماكن المقدّسة للطائفة والمحطات السبع للحجّ','مواقع المحيط: نابلس، وجبل عيبال، وتل بلاطة، وقبر يوسف وغيرها، مع صور','المحتوى أوّلي وسيُحدَّث'] },
       }
