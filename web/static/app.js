@@ -191,7 +191,7 @@ const I18N = {
     save_yes:'כן, שמור', save_no:'לא, רק הפעם',
     samsrc_pick:'ממקור שומרון — בחר מקור', checking_sources:'בודק מקורות זמינים…',
     no_sam_source:'אין מקור שומרוני זמין לפסוקים אלה', back_sources:'‹ מקורות',
-    src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים', src_bhuq:'פירוש אם בחקותי', src_ervah:'ספר הערוות',
+    src_tibat:'תיבת מרקה', src_eyalk:'מן המסורת השומרונית', src_tzdaka:'פירוש צדקה אל-חכים', src_bhuq:'פירוש אם בחקותי', src_ervah:'ספר הערוות', src_masail:'מסאיל אלח׳לאף',
     src_sir:'סוד הלבבות', src_shyt:'שו"ת — יעקב בן אהרן הכהן', src_asatir:'ספר האסאטיר',
     src_translit:'תעתיק הגייה', tr_source:'טקסט המקור', tr_translit:'תעתיק ההגייה השומרוני',
     no_translit:'אין תעתיק הגייה לפסוקים אלה',
@@ -222,6 +222,8 @@ const I18N = {
     m_sir_book:'סוד הלבבות (סיר אל-קלוב)', sir_title:'סוד הלבבות — סיר אל-קלוב', sir_toc_hint:'בחר פרק לעיון:',
     m_bhuq_book:'פירוש אם בחקותי', bhuq_title:'פירוש אם בחקותי — אבו אלפרג׳ איבן אל-כתאר',
     m_ervah_book:'ספר הערוות', ervah_title:'ספר הערוות — כִּתַאבּ אל-עִירוֹת',
+    m_masail_book:'מסאיל אלח׳לאף', masail_title:'מסאיל אלח׳לאף — שאלות המחלוקת',
+    masail_toc_hint:'ויכוחיו של אבו אלפרג׳ מונג׳א בן צדקה עם היהודים, בעברית בת זמננו; ובלשון ערבית — במקורו, כפי שהוא כתוב בכתב היד. בחר פרק לעיון:',
     ervah_toc_hint:'החיבור בא כאן בתרגום עברי מלא ורצוף, מחולק לפרקים לפי מהלך הדיון. בחר פרק לעיון:',
     bhuq_toc_hint:'החיבור מחולק כאן לחלקים לפי מהלך הטיעון; המספרים בסוגריים הם סעיפי המחבר. בחר חלק לעיון:',
     m_asatir_book:'ספר האסאטיר', asatir_title:'ספר האסאטיר', asatir_toc_hint:'בחר פרק לעיון:',
@@ -369,6 +371,8 @@ const I18N = {
     interp_words:'מילים', interp_words_lead:'מילות הפסוק:',
     interp_bhuq_lead:'ומדברי אבו אלפרג׳ איבן אל-כתאר בפירוש אם בחקותי',
     interp_ervah_lead:'ומדברי הכהן פינחס בן יצחק בספר הערוות',
+    interp_masail_lead:'ומדברי מונג׳א בן צדקה בספר מסאיל אלח׳לאף',
+    masail_credit:'מסאיל אלח׳לאף · אבו אלפרג׳ מונג׳א בן צדקה · כ"י הספרייה הבריטית Or. 12271 · עיבוד ותרגום: אושר ששוני',
     ervah_credit:'כתאב אל-עירות · הכהן פינחס בן יצחק · תרגום עברי מלא',
     help_title:'עזרה למשתמש', search_help_title:'עזרה לחיפוש', install_title:'התקנת אפליקציה',
     m_admin:'כניסת מנהל', adm_user:'שם משתמש', adm_show_pass:'הצג סיסמה',
@@ -526,7 +530,7 @@ const I18N = {
     save_yes:'Yes, save', save_no:'No, just now',
     samsrc_pick:'Samaritan sources — choose a source', checking_sources:'Checking available sources…',
     no_sam_source:'No Samaritan source for these verses', back_sources:'‹ Sources',
-    src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary", src_bhuq:'Commentary on Im Beḥuqotay', src_ervah:'The Book of Forbidden Unions',
+    src_tibat:'Tībåt Mårqe', src_eyalk:'From the Samaritan tradition', src_tzdaka:"Ṣadaqah al-Ḥakīm's commentary", src_bhuq:'Commentary on Im Beḥuqotay', src_ervah:'The Book of Forbidden Unions', src_masail:'Masāʾil al-Khilāf',
     src_sir:'Sīr al-Qulūb (Secret of Hearts)', src_shyt:'Responsa of Jacob ben Aaron', src_asatir:'The Book of Asatir',
     src_translit:'Pronunciation transcription', tr_source:'Source text', tr_translit:'Samaritan pronunciation',
     no_translit:'No pronunciation transcription for these verses',
@@ -557,6 +561,8 @@ const I18N = {
     m_sir_book:'Sīr al-Qulūb (Secret of Hearts)', sir_title:'Sīr al-Qulūb — The Secret of Hearts', sir_toc_hint:'Choose a section:',
     m_bhuq_book:'Commentary on Im Beḥuqotay', bhuq_title:'Im Beḥuqotay — Abū l-Faraj ibn al-Kathār',
     m_ervah_book:'The Book of Forbidden Unions', ervah_title:'Kitāb al-ʿAwrāt — the laws of forbidden unions',
+    m_masail_book:'Masāʾil al-Khilāf', masail_title:'Masāʾil al-Khilāf — the questions in dispute',
+    masail_toc_hint:'Munajja ibn Ṣadaqa’s disputations with the Jews, in contemporary Hebrew, and in Arabic as the manuscript has it. Choose a chapter:',
     ervah_toc_hint:'The treatise is given here in a full, continuous Hebrew translation, divided into chapters by the turns of its argument. Choose a chapter:',
     bhuq_toc_hint:'The treatise is divided here by the turns of its argument; the bracketed numbers are the author’s own paragraphs. Choose a part:',
     m_asatir_book:'The Book of Asatir', asatir_title:'The Book of Asatir', asatir_toc_hint:'Choose a chapter:',
@@ -703,6 +709,8 @@ const I18N = {
     interp_words:'Words', interp_words_lead:'Words of the verse:',
     interp_bhuq_lead:'And Abū l-Faraj ibn al-Kathār says, in his commentary on Im Beḥuqotay',
     interp_ervah_lead:'And the priest Pinḥas ben Yiṣḥaq says, in the Book of Forbidden Unions',
+    interp_masail_lead:'And Munajja ibn Ṣadaqa says, in Masāʾil al-Khilāf',
+    masail_credit:'Masāʾil al-Khilāf · Abū l-Faraj Munajja ibn Ṣadaqa · British Library MS Or. 12271 · edited and translated by Osher Sassoni',
     ervah_credit:'Kitāb al-ʿAwrāt · the priest Pinḥas ben Yiṣḥaq · full Hebrew translation',
     help_title:'Help', search_help_title:'Search help', install_title:'Install app',
     m_admin:'Admin login', adm_user:'Username', adm_show_pass:'Show the password',
@@ -860,7 +868,7 @@ const I18N = {
     save_yes:'نعم، احفظ', save_no:'لا، هذه المرّة فقط',
     samsrc_pick:'مصادر سامرية — اختر مصدراً', checking_sources:'جارٍ التحقق من المصادر…',
     no_sam_source:'لا يوجد مصدر سامري لهذه الآيات', back_sources:'‹ المصادر',
-    src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم', src_bhuq:'تفسير «إن سلكتم في فرائضي»', src_ervah:'كتاب العورات',
+    src_tibat:'تيبات مارقه', src_eyalk:'من التقليد السامري', src_tzdaka:'تفسير صدقة الحكيم', src_bhuq:'تفسير «إن سلكتم في فرائضي»', src_ervah:'كتاب العورات', src_masail:'مسائل الخلاف',
     src_sir:'سرّ القلوب', src_shyt:'أجوبة يعقوب بن هارون الكاهن', src_asatir:'كتاب الأساطير',
     src_translit:'نسخ النطق', tr_source:'النصّ المصدر', tr_translit:'نطق السامريين',
     no_translit:'لا يوجد نسخ نطق لهذه الآيات',
@@ -891,6 +899,8 @@ const I18N = {
     m_sir_book:'سِرّ القلوب', sir_title:'سِرّ القلوب', sir_toc_hint:'اختر فصلاً:',
     m_bhuq_book:'تفسير إم بحقوتي', bhuq_title:'تفسير إم بحقوتي — أبو الفرج ابن الكثار',
     m_ervah_book:'كتاب العورات', ervah_title:'كتاب العورات — أحكام العورات',
+    m_masail_book:'مسائل الخلاف', masail_title:'كتاب مسائل الخلاف',
+    masail_toc_hint:'مناظرات أبي الفرج منجا بن صدقة مع اليهود، بنصّها العربي كما ورد في المخطوطة. اختر فصلًا:',
     ervah_toc_hint:'يُقدَّم الكتاب هنا بترجمة عربية كاملة متّصلة، مقسّمة إلى فصول حسب مسار البحث. اختر فصلًا:',
     bhuq_toc_hint:'قُسّم الكتاب هنا حسب مسار الحجّة؛ الأرقام بين قوسين هي فقرات المؤلف. اختر قسمًا:',
     m_asatir_book:'كتاب الأساطير', asatir_title:'كتاب الأساطير', asatir_toc_hint:'اختر أصحاحاً:',
@@ -1037,6 +1047,8 @@ const I18N = {
     interp_words:'كلمات', interp_words_lead:'كلمات الآية:',
     interp_bhuq_lead:'ويقول أبو الفرج ابن الكثار في تفسير «إن سلكتم في فرائضي»',
     interp_ervah_lead:'ويقول الكاهن فينحاس بن إسحاق في كتاب العورات',
+    interp_masail_lead:'ويقول منجا بن صدقة في كتاب مسائل الخلاف',
+    masail_credit:'كتاب مسائل الخلاف · أبو الفرج منجا بن صدقة · مخطوطة المكتبة البريطانية Or. 12271',
     ervah_credit:'كتاب العورات · الكاهن فينحاس بن إسحاق · ترجمة عربية كاملة',
     help_title:'مساعدة المستخدم', search_help_title:'مساعدة البحث', install_title:'تثبيت التطبيق',
     m_admin:'دخول المسؤول', adm_user:'اسم المستخدم', adm_show_pass:'إظهار كلمة المرور',
@@ -3267,6 +3279,8 @@ async function interpFetch(verses){
   // ספר הערוות stands beneath the commentary for the same reason, and names
   // the verse the way the book itself named it — by quoting its words.
   const erv = await api('ervah_by_verse?verse_ids='+ids+(ar?'&lang=ar':'')).catch(()=>({}));
+  // מסאיל אלח'לאף likewise: the paragraph in which the book quotes the verse
+  const msl = await api('masail_by_verse?verse_ids='+ids+(ar?'&lang=ar':'')).catch(()=>({}));
   // The commentary is a synthesis OF SOURCES, and a source only speaks where it
   // happened to speak: a hard word nobody wrote about passed in silence, and the
   // Aramaic and the Arabic of the verse's own words were nowhere in the panel —
@@ -3275,7 +3289,7 @@ async function interpFetch(verses){
   // once for the whole chapter and set under each verse as a quiet strip.
   const wt = S.interpWords === false ? {} :
              await api('word_table?verse_ids='+ids).catch(()=>({}));
-  return {ar, sam, m, mHe, asa, bhq, erv, wt};
+  return {ar, sam, m, mHe, asa, bhq, erv, msl, wt};
 }
 
 // Header: title on one side, the two view switches on the other. Both are
@@ -3331,7 +3345,7 @@ function interpOnce(){
 // One verse's column: its commentary, the strip of its own words, and any
 // source quoted beneath it in its own name. null when there is nothing to show.
 function interpVerseCol(v, D, vidx, once){
-  const {ar, m, mHe, asa, bhq, erv, wt} = D;
+  const {ar, m, mHe, asa, bhq, erv, msl, wt} = D;
   const fs = fsize();
   let txt = (m[v.id]||'').trim();
   const fellBack = ar && !txt && !!(mHe[v.id]||'').trim();
@@ -3339,6 +3353,7 @@ function interpVerseCol(v, D, vidx, once){
   const asaItems = asa[v.id] || [];
   const bhqItems = bhq[v.id] || [];
   const ervItems = (erv && erv[v.id]) || [];
+  const mslItems = (msl && msl[v.id]) || [];
   // strip leftover markdown (heading lines, ** bold) that leaked into the text
   txt = txt.replace(/\*\*/g,'').replace(/^[ \t]*#{1,6}[ \t]+.*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
   // Every verse is worth a row. A verse a source speaks about earns one even
@@ -3350,7 +3365,7 @@ function interpVerseCol(v, D, vidx, once){
   const wordRows = (wt[v.id] || []).filter(w =>
     (w.aramaic||'').trim() || (w.arabic||'').trim() ||
     ((w.he_combined||w.meaning||'').trim() && (w.he_combined||w.meaning).trim() !== (w.word||'').trim()));
-  if(!txt && !asaItems.length && !bhqItems.length && !ervItems.length && !wordRows.length) return null;
+  if(!txt && !asaItems.length && !bhqItems.length && !ervItems.length && !mslItems.length && !wordRows.length) return null;
   const col = el('div','icol');
   if(txt){
     const showAr = ar && !fellBack;
@@ -3446,6 +3461,24 @@ function interpVerseCol(v, D, vidx, once){
     if(ar && it.pending) et.prepend(el('span','ipend', t('interp_ar_pending')));
     et.style.fontSize = fs+'px';
     box.appendChild(et);
+    col.appendChild(box);
+  }
+  for(const it of mslItems){
+    const base = t('interp_masail_lead')
+      + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '');
+    const leadEl = el('div','iasatir-lead', esc(base + ':'));
+    if(!once('msl', it.text || '', vidx, v.number, leadEl, base)) continue;
+    const box = el('div','iasatir ibhuq');
+    box.appendChild(leadEl);
+    // in Arabic the passage is read in the book's own Arabic
+    const showAr = ar && !it.pending;
+    const mt = el('div','iasatir-text'+(showAr?' iar':''),
+      showAr ? samMarkupFree(stripNiqqud(it.text))
+      : (!ar && (S.interpSam||S.samFont))
+        ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+    if(ar && it.pending) mt.prepend(el('span','ipend', t('interp_ar_pending')));
+    mt.style.fontSize = fs+'px';
+    box.appendChild(mt);
     col.appendChild(box);
   }
   // a verse whose only content was a passage already standing above it has
@@ -3901,6 +3934,25 @@ async function buildSamSrc(c, verses){
       panel.appendChild(card);
     }
     panel.appendChild(el('div','canchors', t('ervah_credit')));
+    c.appendChild(panel); return;
+  }
+  if(S.samSrcChoice==='masail'){
+    // the disputations quote the Torah throughout; a passage surfaces under each
+    // verse it quotes, as the paragraph the quotation stands in
+    const items = await api('masail?verse_ids='+ids+(LANG==='ar'?'&lang=ar':''));
+    const panel=el('div','srcpanel');
+    const head=el('div','shead');
+    const back=el('button','miniback',t('back_sources')); back.onclick=()=>{ S.samSrcChoice=null; paintVerses(); };
+    head.appendChild(back); head.appendChild(el('div','stitle',t('src_masail')));
+    panel.appendChild(head);
+    if(!items.length) panel.appendChild(el('div','note',t('no_sam_source')));
+    for(const it of items){
+      const card=el('div','card');
+      if(it.title) card.appendChild(el('div','chead',esc(it.title)));
+      const body=el('div','cbody',commentaryText(it.text)); body.style.fontSize=fsize()+'px'; card.appendChild(body);
+      panel.appendChild(card);
+    }
+    panel.appendChild(el('div','canchors', t('masail_credit')));
     c.appendChild(panel); return;
   }
   if(S.samSrcChoice==='bhuq'){
@@ -5340,7 +5392,8 @@ function sheetView(){
 const SAM_SUBS = [['tibat','tm','src_tibat'], ['eyalk','eyalk','src_eyalk'],
                   ['tzdaka','tzdaka','src_tzdaka'], ['sir','sir','src_sir'],
                   ['shyt','shyt','src_shyt'], ['bhuq','bhuq','src_bhuq'],
-                  ['ervah','ervah','src_ervah'], ['asatir','asatir','src_asatir']];
+                  ['ervah','ervah','src_ervah'], ['masail','masail','src_masail'],
+                  ['asatir','asatir','src_asatir']];
 // the pronunciation gets a line of its own here for the first time; until now it
 // was reachable only from inside "ממקור שומרון"
 const SIDE_ROWS = [
@@ -6493,6 +6546,7 @@ async function prPrefetch(groups){
     pre.asatir = await prFetchByVerses('asatir_by_verse', ids);
     pre.bhuq   = await prFetchByVerses('bhuq_by_verse', ids);
     pre.ervah  = await prFetchByVerses('ervah_by_verse', ids);
+    pre.masail = await prFetchByVerses('masail_by_verse', ids);
   }
   if(S_print.dict) pre.wtbl = await prFetchByVerses('word_table', ids);
   return pre;
@@ -6535,13 +6589,15 @@ async function addPrintInterp(page, verses, pre){
     const asa = (pre && pre.asatir) || await api('asatir_by_verse?verse_ids='+vids).catch(()=>({}));
     const bhq = (pre && pre.bhuq)   || await api('bhuq_by_verse?verse_ids='+vids).catch(()=>({}));
     const erv = (pre && pre.ervah)  || await api('ervah_by_verse?verse_ids='+vids).catch(()=>({}));
+    const msl = (pre && pre.masail) || await api('masail_by_verse?verse_ids='+vids).catch(()=>({}));
     let any = false;
     verses.forEach(v => {
       const txt = (m[v.id]||'').trim();
       const items = asa[v.id] || [];
       const bitems = bhq[v.id] || [];
       const eitems = erv[v.id] || [];
-      if(!txt && !items.length && !bitems.length && !eitems.length) return;
+      const mitems = msl[v.id] || [];
+      if(!txt && !items.length && !bitems.length && !eitems.length && !mitems.length) return;
       any = true;
       if(txt) sec.appendChild(prVrow(v.number, prProse(txt)));
       // `first` carries the verse number onto whichever quoted source opens the
@@ -6562,6 +6618,9 @@ async function addPrintInterp(page, verses, pre){
           + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ': ', it.text);
       for(const it of eitems)
         quoted(t('interp_ervah_lead')
+          + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '') + ': ', it.text);
+      for(const it of mitems)
+        quoted(t('interp_masail_lead')
           + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '') + ': ', it.text);
     });
     if(!any) sec.appendChild(el('div','','אין פירוש זמין לפרק זה'));
@@ -7165,7 +7224,7 @@ const LIB_SHELVES = ['shelf_sources', 'shelf_tools', 'shelf_study'];
 const LIB_SHELF = {
   tm_book:'shelf_sources', tz_book:'shelf_sources', shyt_book:'shelf_sources',
   sir_book:'shelf_sources', bhuq_book:'shelf_sources', asatir_book:'shelf_sources',
-  ervah_book:'shelf_sources',
+  ervah_book:'shelf_sources', masail_book:'shelf_sources',
   dict_app:'shelf_tools', rhyme_book:'shelf_tools',
   composer:'shelf_tools', privatecomp:'shelf_tools',
   piyutim_book:'shelf_study', dara_book:'shelf_study', people_book:'shelf_study',
@@ -7182,6 +7241,7 @@ const LIB_ITEMS = [
   {act:'sir_book',     titleKey:'m_sir_book',     open:()=>openSirBook()},
   {act:'bhuq_book',    titleKey:'m_bhuq_book',    open:()=>openBhuqBook()},
   {act:'ervah_book',   titleKey:'m_ervah_book',   open:()=>openErvahBook()},
+  {act:'masail_book',  titleKey:'m_masail_book',  open:()=>openMasailBook()},
   {act:'asatir_book',  titleKey:'m_asatir_book',  open:()=>openAsatirBook()},
   {act:'piyutim_book', titleKey:'m_piyutim_book', open:()=>openPiyutimBook()},
   {act:'dara_book',    titleKey:'m_dara_book',    open:()=>openDaraBook()},
@@ -7368,6 +7428,7 @@ const LIB_KIND = {
   sir_book:       {he:'חיבור מוסר',           en:'A work of moral teaching',   ar:'كتاب في الأخلاق'},
   bhuq_book:      {he:'פירוש',                en:'Commentary',                 ar:'تفسير'},
   ervah_book:     {he:'הלכה',                 en:'Halakhah',                   ar:'أحكام'},
+  masail_book:    {he:'ויכוח והלכה',          en:'Disputation and halakhah',   ar:'مناظرة وأحكام'},
   asatir_book:    {he:'מסורת ואגדה',          en:'Tradition and legend',       ar:'تراث وأساطير'},
   piyutim_book:   {he:'פיוטים',               en:'Piyyutim',                   ar:'أناشيد'},
   dara_book:      {he:'פיוטים בתעתיק הגייה',  en:'Piyyutim in transcription',  ar:'أناشيد بالنسخ الصوتي'},
@@ -7420,6 +7481,7 @@ const LIB_AUTHOR = {
   shyt_book:      'יעקב בן אהרן הכהן',
   bhuq_book:      'אבו אלפרג׳ בן פתיאל',
   ervah_book:     'הכהן פינחס בן יצחק',
+  masail_book:    'אבו אלפרג׳ מונג׳א בן צדקה',
   wreschner_book: 'ורשנר',
   cohen_book:     'כהן',
   // sir_book, asatir_book — the app does not name an author for these
@@ -7802,6 +7864,7 @@ function menuAction(a){
   else if(a==='sir_book')  openSirBook();
   else if(a==='bhuq_book') openBhuqBook();
   else if(a==='ervah_book') openErvahBook();
+  else if(a==='masail_book') openMasailBook();
   else if(a==='asatir_book') openAsatirBook();
   else if(a==='wreschner_book') openWreschnerBook();
   else if(a==='cohen_book') openCohenBook();
@@ -8547,6 +8610,22 @@ const BOOK_CFG = {
     searchTo:(r)=>({chap:r.id, dom:'rdsec-'+(r.id*1000+1)}),
     langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
   },
+  masail: {                            // מסאיל אלח'לאף — read the same way as ספר הערוות
+    titleKey:'masail_title', tocHintKey:'masail_toc_hint',
+    toc:()=>api('masail_toc'+(LANG==='ar'?'?lang=ar':'')),
+    // in Arabic the book is read in its own Arabic, as the manuscript has it
+    chapter:(id)=>api('masail_chapter?sec='+encodeURIComponent(id)+(LANG==='ar'?'&lang=ar':'')),
+    search:(q)=>api('masail_search?q='+encodeURIComponent(q)+(LANG==='ar'?'&lang=ar':'')),
+    words:null,
+    tocItem:(c)=>({id:c.id, letter:c.letter, title:c.title, count:c.count}),
+    chapterTitle:(ch)=>esc(ch.title||''),
+    unitLabel:()=>'',
+    unitVid:(s)=>s.verse_id,
+    unitDom:(s)=>'rdsec-'+s.id,
+    searchRef:(r)=>esc(r.title||''),
+    searchTo:(r)=>({chap:r.id, dom:'rdsec-'+(r.id*1000+1)}),
+    langs:[{key:'hebrew', htmlKey:'hebrew_html', labelKey:'rd_he'}],
+  },
   bhuq: {                              // פירוש אם בחקותי — one treatise, grouped into parts
     titleKey:'bhuq_title', tocHintKey:'bhuq_toc_hint',
     toc:()=>api('bhuq_toc'),
@@ -8868,6 +8947,7 @@ function openShytBook(){ openReader('shyt'); }
 function openSirBook(){ openReader('sir'); }
 function openBhuqBook(){ openReader('bhuq'); }
 function openErvahBook(){ openReader('ervah'); }
+function openMasailBook(){ openReader('masail'); }
 function openAsatirBook(){ openReader('asatir'); }
 function openWreschnerBook(){ openReader('wreschner'); }
 function openCohenBook(){ openReader('cohen'); }

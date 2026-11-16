@@ -68,6 +68,7 @@ _BOOKS = (
     ('sir', 'm_sir_book', db.search_sir),
     ('bhuq', 'm_bhuq_book', db.search_bhuq),
     ('ervah', 'm_ervah_book', db.search_ervah),
+    ('masail', 'm_masail_book', db.search_masail),
     ('asatir', 'm_asatir_book', db.search_asatir),
     ('wreschner', 'm_wreschner_book', db.search_wreschner),
     ('cohen', 'm_cohen_book', db.search_cohen),

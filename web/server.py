@@ -549,7 +549,7 @@ _RESEED_CONTENT_TABLES = [
     ('eyalk_verse_links', 'verse_id'), ('shyt_verse_links', 'verse_id'), ('sir_verse_links', 'verse_id'),
     ('tm_verse_links', 'verse_id'), ('tradart_verse_links', 'verse_id'), ('tzdaka_verse_links', 'verse_id'),
     ('bhuq_verse_links', 'verse_id'), ('asatir_verse_links', 'verse_id'),
-    ('ervah_verse_links', 'verse_id'),
+    ('ervah_verse_links', 'verse_id'), ('masail_verse_links', 'verse_id'),
 ]
 
 
@@ -2874,6 +2874,38 @@ def api_ervah_chapter():
 def api_ervah_search():
     lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
     return jsonify(db.search_ervah(request.args.get('q', ''), lang=lang))
+
+
+# ── מסאיל אלח'לאף: verse source, by-verse commentary, and full-book reader ──
+@app.route('/api/masail')
+def api_masail():
+    """The passages of מסאיל אלח'לאף that quote these verses."""
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_masail_commentary(_ids_arg(), lang))
+
+
+@app.route('/api/masail_by_verse')
+def api_masail_by_verse():
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_masail_by_verse(_ids_arg(), lang))
+
+
+@app.route('/api/masail_toc')
+def api_masail_toc():
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_masail_toc(lang))
+
+
+@app.route('/api/masail_chapter')
+def api_masail_chapter():
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.get_masail_chapter(request.args.get('sec', ''), lang))
+
+
+@app.route('/api/masail_search')
+def api_masail_search():
+    lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
+    return jsonify(db.search_masail(request.args.get('q', ''), lang=lang))
 
 
 # ── פירוש אם בחקותי: full-book reader (the verse source is /api/bhuq above) ──
