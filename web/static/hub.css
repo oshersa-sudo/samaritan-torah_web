@@ -661,3 +661,6 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
 .hub-res-ref{ font-size:16px; font-weight:700; line-height:1.4; color:#ffe6ad; }
 .hub-res-txt{ font-size:14.5px; line-height:1.62; color:#f4edda; }
 .hub-res-none{ padding:44px 12px; text-align:center; color:#f0dcab; font-size:15.5px; }
+
+/* a circle whose app is not open yet: its name, and under it a smaller "coming soon" */
+.hub-soon{ display:block; margin-top:.28em; font-size:.66em; font-weight:400; letter-spacing:.02em; color:var(--gold-bright); opacity:.85; }

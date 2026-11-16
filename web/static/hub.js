@@ -25,7 +25,7 @@
   const TX = {
     he: {
       torah:'התורה השומרונית הישראלית', hint:'סובבו את החוגה · הקישו על עיגול כדי להיכנס',
-      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', dl:'הורדה', exit:'יציאה לתפריט הראשי', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
+      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', dl:'הורדה', soon:'בקרוב...', exit:'יציאה לתפריט הראשי', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
       torahHelp:{ tag:'חמשת חומשי התורה בנוסח השומרוני',
         points:['חמישה חומשי תורה בנוסח השומרוני, בכתב השומרוני ובאותיות עבריות','פירוש הפסוק מן המקורות השומרוניים, ותרגומים: ארמי, ערבי ואנגלי','השוואת נוסחים: המסורה, השבעים, אונקלוס וקומראן','מילון מילים, הקראה, חיפוש מתקדם והדפסה'] },
       find:'חיפוש', findPh:'חפש פיוט, מבצע, פסוק בתורה, מילה, מקום במפות או ערך בספרייה, ואנחנו נמצא אותו בשבילך',
@@ -53,13 +53,15 @@
           points:['קטלוג כתבי היד של התורה ושל כתבי העדה בספריות ובאוספים ברחבי העולם','פרטי כל כתב יד ותיאורו','צפייה בדפי כתב היד'] },
         genealogy:{ name:'אילן היוחסין השומרוני', short:'אילן היוחסין', tag:'אילן היוחסין המלא של בני העדה',
           points:['אילן היוחסין השומרוני המלא של משפחות העדה','חיפוש אדם ומעקב אחר אבותיו וצאצאיו','מבוסס על מפקד העדה ועל רישומי אירועים','צפייה בקשרי המשפחה בין הדורות'] },
+        archive:{ name:'הארכיון', short:'הארכיון', tag:'',
+          points:['הארכיון הגדול ביותר המצוי ברשת אודות הקהילה השומרונית','מסמכים ומכתבים, עלוני ובטאוני העדה לאורך הדורות','התמונות משכבר הימים - התמונות שאהבנו'] },
         gerizim:{ name:'גבעת עולם', short:'גבעת עולם', tag:'סיור תלת-ממדי על פסגת הר גריזים וסביבותיו',
           points:['סיור על צילום לוויין תלת-ממדי של פסגת ההר, עם חוגת כיוונים וסיור מודרך','המתחם המקודש, העיר ההלניסטית, הכנסייה המתומנת ותל א-ראס: מה נמצא בכל מקום, ושכבותיו לפי תקופות','המקומות הקדושים לעדה ושבע תחנות העלייה לרגל','אתרי הסביבה: שכם, הר עיבל, תל בלאטה, קבר יוסף ועוד, עם תמונות','התוכן ראשוני, ועוד יתעדכן'] },
       }
     },
     en: {
       torah:'The Israelite Samaritan Torah', hint:'Turn the dial · tap a circle to enter',
-      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', dl:'Download', exit:'Exit to the main menu', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
+      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', dl:'Download', soon:'Coming soon...', exit:'Exit to the main menu', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
       torahHelp:{ tag:'The five books of the Torah in the Samaritan text',
         points:['The five books in the Samaritan text, in Samaritan script and Hebrew letters','Verse commentary from the Samaritan sources, and translations: Aramaic, Arabic and English','Comparison of versions: Masoretic, Septuagint, Onkelos and Qumran','A word dictionary, read-aloud, advanced search and printing'] },
       find:'Search', findPh:'Search for a piyyut, a performer, a verse of the Torah, a word, a place on the map or an entry in the library — and we will find it for you',
@@ -88,13 +90,15 @@
           points:['A catalogue of Torah and community manuscripts in libraries and collections worldwide','Details and a description of each manuscript','Viewing the manuscript pages'] },
         genealogy:{ name:'Samaritan Genealogy', short:'Genealogy', tag:'The full family tree of the community',
           points:['The full Samaritan family tree of the community’s families','Look up a person and follow their ancestors and descendants','Built on the community census and records of events','See the family ties across the generations'] },
+        archive:{ name:'The Archive', short:'The Archive', tag:'',
+          points:['The largest archive on the web about the Samaritan community','Documents and letters, community newsletters and bulletins through the generations','Photographs of days gone by — the pictures we loved'] },
         gerizim:{ name:'Givat Olam — The Eternal Hill', short:'Givat Olam', tag:'A 3D tour of the summit of Mount Gerizim and its surroundings',
           points:['A tour over 3D satellite imagery of the summit, with a direction dial and a guided route','The sacred precinct, the Hellenistic city, the octagonal church and Tell er-Ras: what was found at each place, and its layers by period','The community’s holy places and the seven stations of the pilgrimage','The sites around: Nablus, Mount Ebal, Tell Balata, Joseph’s Tomb and more, with pictures','The content is preliminary and will be updated'] },
       }
     },
     ar: {
       torah:'التوراة السامرية الإسرائيلية', hint:'أدِر القرص · اضغط على دائرة للدخول',
-      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', dl:'تنزيل', exit:'الخروج إلى القائمة الرئيسية', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
+      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', dl:'تنزيل', soon:'قريبًا...', exit:'الخروج إلى القائمة الرئيسية', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
       torahHelp:{ tag:'أسفار التوراة الخمسة بالنص السامري',
         points:['أسفار التوراة الخمسة بالنص السامري، بالخط السامري وبالحروف العبرية','تفسير الآية من المصادر السامرية، وترجمات: آرامية وعربية وإنجليزية','مقارنة النسخ: الماسوري والسبعينية وأونقلوس وقمران','قاموس للكلمات، وقراءة مسموعة، وبحث متقدّم، وطباعة'] },
       find:'بحث', findPh:'ابحث عن نشيد أو مؤدٍّ أو آية من التوراة أو كلمة أو موقع على الخريطة أو مدخل في المكتبة — ونحن نجده لك',
@@ -123,6 +127,8 @@
           points:['فهرس لمخطوطات التوراة ومخطوطات الطائفة في المكتبات والمجموعات حول العالم','تفاصيل كل مخطوط ووصفه','تصفّح صفحات المخطوط'] },
         genealogy:{ name:'شجرة الأنساب السامرية', short:'شجرة الأنساب', tag:'شجرة الأنساب الكاملة لأبناء الطائفة',
           points:['شجرة الأنساب السامرية الكاملة لعائلات الطائفة','البحث عن شخص وتتبّع أجداده وأحفاده','مبنية على إحصاء الطائفة وسجلّات الأحداث','عرض الروابط العائلية عبر الأجيال'] },
+        archive:{ name:'الأرشيف', short:'الأرشيف', tag:'',
+          points:['أكبر أرشيف على الشبكة عن الطائفة السامرية','وثائق ورسائل ونشرات ومجلات الطائفة عبر الأجيال','صور الأيام الماضية — الصور التي أحببناها'] },
         gerizim:{ name:'جبعة عولام — التلة الأبدية', short:'التلة الأبدية', tag:'جولة ثلاثية الأبعاد على قمة جبل جرزيم ومحيطه',
           points:['جولة على صورة فضائية ثلاثية الأبعاد لقمة الجبل، مع قرص للاتجاهات وجولة إرشادية','الحرم المقدّس، والمدينة الهلنستية، والكنيسة المثمّنة، وتل الراس: ما وُجد في كل مكان، وطبقاته بحسب الفترات','الأماكن المقدّسة للطائفة والمحطات السبع للحجّ','مواقع المحيط: نابلس، وجبل عيبال، وتل بلاطة، وقبر يوسف وغيرها، مع صور','المحتوى أوّلي وسيُحدَّث'] },
       }
@@ -140,6 +146,7 @@
     mss:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 5h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg>',
     dict:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z"/><path d="M4 18a2 2 0 0 1 2-2h12"/><line x1="8" y1="8" x2="14" y2="8"/><line x1="8" y1="12" x2="12" y2="12"/></svg>',
     gerizim:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20l7-12 4 6 2.5-3.5L22 20z"/><path d="M9 8l-1.6 4.2 2.2-.9 1.6 1.6"/><circle cx="18" cy="5.5" r="1.8"/></svg>',
+    archive:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="5" rx="1"/><path d="M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><line x1="10" y1="12.5" x2="14" y2="12.5"/></svg>',
     genealogy:'<svg class="hub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.6"/><circle cx="5" cy="19" r="2.6"/><circle cx="19" cy="19" r="2.6"/><path d="M12 7.6V12M12 12H5v4.4M12 12h7v4.4"/></svg>',
   };
   // the order here is the order round the ring, clockwise from the top
@@ -152,7 +159,9 @@
     { key:'mss',       open:() => (typeof window.openMss === 'function') && window.openMss() },
     { key:'genealogy', open:() => openExternalUnit(GENEALOGY_URL, t('m_genealogy')) },
     // the tour of Mount Gerizim: the app's own page, shown in the same frame-with-a-bar as the outside units
-    { key:'gerizim',   open:() => openExternalUnit('/static/gerizim/index.html?lang=' + lang(), T().apps.gerizim.short) }
+    { key:'gerizim',   open:() => openExternalUnit('/static/gerizim/index.html?lang=' + lang(), T().apps.gerizim.short) },
+    // the archive: not open yet — a circle and its card, with "coming soon" under the name
+    { key:'archive', soon:true, open:() => {} }
   ];
   const N = APPS.length, STEP = 360 / N;
 
@@ -461,7 +470,9 @@
     sats.forEach((b, i) => {
       const a = APPS[i], x = X.apps[a.key];
       b.innerHTML = ICON[a.key] + '<span class="hub-name"></span>';
-      b.querySelector('.hub-name').textContent = x.short || x.name;   // the circle is small; the pop-up carries the full name
+      const nmEl = b.querySelector('.hub-name');
+      nmEl.textContent = x.short || x.name;   // the circle is small; the pop-up carries the full name
+      if(a.soon){ const sm = document.createElement('small'); sm.className = 'hub-soon'; sm.textContent = X.soon; nmEl.appendChild(sm); }
       b.setAttribute('aria-label', x.name);
     });
     $('hubHint').textContent = X.hint;
@@ -620,6 +631,13 @@
     const isTorah = i === N, X = T();
     const a = isTorah ? null : APPS[i];
     const x = isTorah ? { name:X.torah, tag:X.torahHelp.tag, points:X.torahHelp.points } : X.apps[a.key];
+    if(a && a.soon){                                    // not open yet: the description, and no way in
+      pop.innerHTML = '<div class="hub-pop-row"><div class="hub-pop-txt"><h2></h2><ul></ul></div></div>';
+      pop.querySelector('h2').textContent = x.name;
+      const ul0 = pop.querySelector('ul');
+      x.points.forEach(p => { const li = document.createElement('li'); li.textContent = p; ul0.appendChild(li); });
+      return;
+    }
     pop.innerHTML = '<div class="hub-pop-row"><div class="hub-pop-txt"><h2></h2><p class="hub-tag"></p><ul></ul><div class="hub-actions"><button type="button" class="hub-go"></button></div></div></div>';
     pop.querySelector('h2').textContent = x.name;
     pop.querySelector('.hub-tag').textContent = x.tag;
@@ -1296,7 +1314,7 @@
   }
   function enterTorah(){ setOrigin('menu'); hideHub(); }
   center.addEventListener('click', enterTorah);
-  sats.forEach((b, i) => b.addEventListener('click', () => enter(APPS[i].key)));
+  sats.forEach((b, i) => b.addEventListener('click', () => { if(!APPS[i].soon) enter(APPS[i].key); }));
 
   // the Torah's hamburger: units reached from there keep their way back to the Torah
   // From the Torah's own menu the unit keeps its way back to the Torah. From the hub's
