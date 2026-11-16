@@ -584,6 +584,11 @@ _TARGUM_ALIGN2_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
 # and the last two dozen, read by hand where no alignment could speak honestly
 _TARGUM_HAND_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                   'data', 'targum_hand_patch.json')
+# and the words the app ANSWERED NOTHING about, which is a different and harder
+# question than whether the word is in some table: מריחין has a row in
+# word_align and that row says nothing
+_TARGUM_SILENT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                    'data', 'targum_silent_patch.json')
 
 
 def _seed_targum_words():
@@ -607,6 +612,7 @@ def _seed_targum_words():
         for path, src in ((_TARGUM_WORDS_PATCH, 'targum'),
                           (_TARGUM_ALIGN2_PATCH, 'targum'),
                           (_TARGUM_HAND_PATCH, 'targum'),
+                          (_TARGUM_SILENT_PATCH, 'targum'),
                           (_INFLECTION_WORDS_PATCH, 'inflection')):
             if not os.path.exists(path):
                 continue
@@ -4138,6 +4144,23 @@ def resolve_glosses(conn, words):
             v = f.get(w)
             if v:
                 out[w] = dict(v)
+    # The Samaritan script has no final letters, so a word the corpora spell
+    # דרכ or ועפ is the word the dictionary spells דרך and ועף. Asked last, and
+    # only for a word nothing else answered, so it can turn silence into an
+    # answer and can never overrule one.
+    left = [w for w in want if w not in out]
+    if left:
+        fin = {'כ': 'ך', 'מ': 'ם', 'נ': 'ן', 'פ': 'ף', 'צ': 'ץ'}
+        again = {w: w[:-1] + fin[w[-1]] for w in left
+                 if len(w) > 1 and w[-1] in fin}
+        if again:
+            try:
+                for w, v in (resolve_glosses(conn, sorted(set(again.values()))) or {}).items():
+                    for form, other in again.items():
+                        if other == w and form not in out and (v.get('g') or v.get('r')):
+                            out[form] = dict(v)
+            except Exception:
+                pass
     for w, name in echo.items():
         if w not in out:
             out[w] = {'g': '', 'k': 'he', 's': name}
