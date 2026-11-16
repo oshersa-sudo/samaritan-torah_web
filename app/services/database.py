@@ -623,7 +623,7 @@ def _seed_targum_words():
         if 'word' not in cols:
             conn.close()
             return
-        added = kept = 0
+        added = kept = filled = 0
         for w in words:
             form, norm_, gloss = w.get('word') or '', w.get('norm') or '', w.get('gloss') or ''
             if not form or not gloss:
@@ -649,6 +649,19 @@ def _seed_targum_words():
                                  "WHERE (word=? OR word_norm=?) AND gloss_src IN "
                                  "('targum','inflection') AND gloss <> ?",
                                  (text, form, norm_, text))
+                    # But a row that is THERE and SAYS NOTHING is the hole this
+                    # patch exists to close — on the live disk the index already
+                    # holds these words and holds them empty, which is why the
+                    # first pass appeared to do nothing there. Filling an empty
+                    # value takes no reading away from anyone.
+                    cur = conn.execute(
+                        "UPDATE dict_word_index SET gloss=?%s WHERE (word=? OR "
+                        "word_norm=?) AND TRIM(COALESCE(gloss,'')) = ''"
+                        % (", gloss_src=?" if 'gloss_src' in cols else ''),
+                        ((text, src_name, form, norm_) if 'gloss_src' in cols
+                         else (text, form, norm_)))
+                    if cur.rowcount:
+                        filled += cur.rowcount
                 except sqlite3.Error:
                     pass
                 kept += 1
@@ -670,8 +683,9 @@ def _seed_targum_words():
                 pass
         conn.commit()
         conn.close()
-        PATCH_REPORT['targum_words'] = ('%d added, %d already there (of %d)'
-                                        % (added, kept, len(words)))
+        PATCH_REPORT['targum_words'] = (
+            '%d added, %d empty rows filled, %d already there (of %d)'
+            % (added, filled, kept - filled, len(words)))
         print('[targum-words] %s' % PATCH_REPORT['targum_words'])
     except Exception as exc:
         PATCH_REPORT['targum_words'] = 'failed: %s' % exc
