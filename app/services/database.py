@@ -474,6 +474,10 @@ _GUTTURAL_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
 # lines agree among themselves on another word (see data/dara_gloss_patch.json)
 _DARA_GLOSS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                  'data', 'dara_gloss_patch.json')
+# and the large piyyut collection, which carries no translation of its own and
+# is judged by the Memar Marqe alignment instead (data/memar_gloss_patch.json)
+_MEMAR_GLOSS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                  'data', 'memar_gloss_patch.json')
 
 
 def _seed_guttural_gloss():
@@ -495,7 +499,7 @@ def _seed_guttural_gloss():
     run finds its own text and does nothing."""
     try:
         words = []
-        for path in (_GUTTURAL_PATCH, _DARA_GLOSS_PATCH):
+        for path in (_GUTTURAL_PATCH, _DARA_GLOSS_PATCH, _MEMAR_GLOSS_PATCH):
             if not os.path.exists(path):
                 continue
             with open(path, encoding='utf-8') as fh:
