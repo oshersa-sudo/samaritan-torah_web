@@ -469,6 +469,11 @@ _seed_masail()
 
 _GUTTURAL_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                'data', 'guttural_gloss_patch.json')
+# the same correction, swept over the whole volume: every word whose meaning is
+# nowhere in the Hebrew printed opposite the lines it stands in, where those
+# lines agree among themselves on another word (see data/dara_gloss_patch.json)
+_DARA_GLOSS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                 'data', 'dara_gloss_patch.json')
 
 
 def _seed_guttural_gloss():
@@ -489,11 +494,12 @@ def _seed_guttural_gloss():
     Tal's עמי is a real entry, it is simply not this word. Idempotent: a second
     run finds its own text and does nothing."""
     try:
-        if not os.path.exists(_GUTTURAL_PATCH):
-            return
-        with open(_GUTTURAL_PATCH, encoding='utf-8') as fh:
-            patch = json.load(fh)
-        words = patch.get('words') or []
+        words = []
+        for path in (_GUTTURAL_PATCH, _DARA_GLOSS_PATCH):
+            if not os.path.exists(path):
+                continue
+            with open(path, encoding='utf-8') as fh:
+                words.extend((json.load(fh).get('words') or []))
         if not words:
             return
         conn = sqlite3.connect(DB_PATH)
@@ -554,7 +560,8 @@ def _seed_guttural_gloss():
             kept += 0 if touched else 1
         conn.commit()
         conn.close()
-        PATCH_REPORT['gutturals'] = '%d forms set, %d already in place' % (fixed, kept)
+        PATCH_REPORT['gutturals'] = ('%d of %d forms set, %d already in place'
+                                     % (fixed, len(words), kept))
         print('[gutturals] %s' % PATCH_REPORT['gutturals'])
     except Exception as exc:
         PATCH_REPORT['gutturals'] = 'failed: %s' % exc
