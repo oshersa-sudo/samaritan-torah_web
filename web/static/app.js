@@ -8092,6 +8092,28 @@ async function dictAppSearch(){
   }
   body.innerHTML='';
   const roots=(d&&d.roots)||[];
+  /* The app's own answer, when the dictionary's own entries do not already say
+     it, belongs at the TOP and not at the foot of a long page. A word written
+     one way and entered another — the gutturals interchanged, so the verb
+     ח.מ.י is written עמי in the piyyutim — otherwise opens with Tal's entry for
+     the OTHER word ("חשכה, אפלה"), and what the liturgy's own Hebrew says it
+     means ("ראה") stood eleven screens down. Where the two agree nothing is
+     moved: the line is shown once, in its usual place. */
+  const saidEarly=(d&&d.said)||{};
+  const saidText=(saidEarly.gloss||'').trim();
+  const inRoots=(txt)=>{
+    if(!txt) return true;
+    const want=txt.replace(/\s+/g,' ').slice(0,18);
+    for(const r of roots) for(const sn of (r.senses||[]))
+      if((sn.gloss||'').replace(/\s+/g,' ').includes(want)) return true;
+    return false;
+  };
+  let saidShown=false;
+  if(saidText && !inRoots(saidText)){
+    body.appendChild(el('div','tal-sec', esc(t('dict_said'))));
+    body.appendChild(el('div','dict-direct dict-said-top', esc(saidText)));
+    saidShown=true;
+  }
   // direct head-word matches (the word itself stands in the dictionary), regardless of root
   if(direct && direct.length){
     // a direct entry is dropped only when the card for its root actually says
@@ -8216,7 +8238,7 @@ async function dictAppSearch(){
   }
   // what resolve_glosses says — the one lookup every word unit in this app asks
   const said=(d&&d.said)||{};
-  if(said.gloss || said.reading || said.kind==='he' || said.kind==='none'){
+  if(!saidShown && (said.gloss || said.reading || said.kind==='he' || said.kind==='none')){
     body.appendChild(el('div','tal-sec', esc(t('dict_said'))));
     const it=el('div','dict-direct');
     if(said.gloss) it.appendChild(document.createTextNode(said.gloss));

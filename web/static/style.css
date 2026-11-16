@@ -3150,3 +3150,8 @@ html[dir="ltr"] .lib-cover{ border-radius:7px 3px 3px 7px; }
 .lib-grid.sz-m .cover-dots{ gap:.42em; }
 
 @media (prefers-reduced-motion: reduce){ .lib-cover{ transition:none; } }
+
+/* the app's own answer for a word, when it stands at the head of the page
+   because the dictionary's entries say something else (see dictAppSearch) */
+.dict-said-top{ border-inline-start:3px solid var(--accent); padding-inline-start:9px;
+  background:rgba(233,196,106,.12); border-radius:0 7px 7px 0; font-size:15.5px; line-height:1.6; }

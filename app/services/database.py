@@ -467,6 +467,100 @@ def _seed_masail():
 _seed_masail()
 
 
+_GUTTURAL_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                               'data', 'guttural_gloss_patch.json')
+
+
+def _seed_guttural_gloss():
+    """ח/ע: the verb of seeing, as the liturgy spells it.
+
+    In the Samaritan reading the gutturals wore away and ח and ע fell together,
+    so the verb ח.מ.י — to see — is written in the piyyutim with an ʿayin: עמי,
+    עמיך, יעמי, מתעמי, עמין. The word lists were built by matching the spelling
+    against Tal's pages, and Tal has entries for those spellings too — עמי is a
+    darkness, עמיך is an uncle, עמין are peoples — so that is what the app said,
+    while the Hebrew Ben-Ḥayyim prints OPPOSITE THE VERY LINE says "ראה". The
+    volume is its own witness, and this brings the word lists to what it says.
+
+    Guarded twice over: a form is corrected only where what stands there now is
+    one of the meanings this patch knows to be the wrong one (or nothing at
+    all), so a reading somebody else wrote is never overwritten; and the
+    meanings themselves are left in the dictionary's own tables untouched —
+    Tal's עמי is a real entry, it is simply not this word. Idempotent: a second
+    run finds its own text and does nothing."""
+    try:
+        if not os.path.exists(_GUTTURAL_PATCH):
+            return
+        with open(_GUTTURAL_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        words = patch.get('words') or []
+        if not words:
+            return
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        fixed = kept = 0
+
+        def settable(now, w):
+            """may this patch write here?"""
+            now = (now or '').strip()
+            return (not now) or now in w['wrong'] or now == w['gloss']
+
+        for w in words:
+            form, gloss, root = w['word'], w['gloss'], w.get('root') or ''
+            touched = False
+            for sql_get, sql_set in (
+                    ("SELECT gloss AS g FROM piyutim_dict WHERE word=?",
+                     "INSERT OR REPLACE INTO piyutim_dict(word, gloss) VALUES(?,?)"),
+                    ("SELECT definition AS g FROM piyutim_words WHERE word=?",
+                     "UPDATE piyutim_words SET definition=? WHERE word=?")):
+                # dara_words is NOT written here. It belongs to the liturgy
+                # patch, which refills it whenever its fingerprint changes — so
+                # a correction written there would be wiped and rewritten at
+                # every boot, for ever. The liturgy's word panel reads the
+                # corrected tiers instead (see dara_gloss_for).
+                try:
+                    row = conn.execute(sql_get, (form,)).fetchone()
+                except sqlite3.Error:
+                    continue             # a database without that table has no say
+                if row is None and 'INSERT' not in sql_set:
+                    continue             # the word is not in that list at all
+                if not settable(row['g'] if row else '', w):
+                    continue             # somebody wrote something else here
+                if row is not None and (row['g'] or '').strip() == gloss:
+                    continue             # already so
+                try:
+                    conn.execute(sql_set, (form, gloss) if 'INSERT' in sql_set else (gloss, form))
+                    touched = True
+                except sqlite3.Error:
+                    pass
+            # and the inflection index, so the dictionary points at the right root
+            if root:
+                try:
+                    have = conn.execute("SELECT 1 FROM dict_infl WHERE form=? AND root=?",
+                                        (form, root)).fetchone()
+                    if not have:
+                        conn.execute(
+                            "INSERT INTO dict_infl(form, form_norm, root, root_norm, rank, derivation,"
+                            " evidence, score, gloss, gloss_tal, memar_he, memar_conf, src_kind,"
+                            " src_ref, freq_piyut, freq_memar, lang, status, verified)"
+                            " VALUES(?,?,?,?,-1,?,?,0,?,'','',0,'liturgy','',0,0,'arc','patched',?)",
+                            (form, form, root, root, 'חילוף ח/ע (הגיית השומרונים)',
+                             'התרגום העברי שמול השורה בספר בן-חיים', gloss,
+                             '%d/%d שורות' % (w.get('agree', 0), w.get('lines', 0))))
+                        touched = True
+                except sqlite3.Error:
+                    pass
+            fixed += 1 if touched else 0
+            kept += 0 if touched else 1
+        conn.commit()
+        conn.close()
+        PATCH_REPORT['gutturals'] = '%d forms set, %d already in place' % (fixed, kept)
+        print('[gutturals] %s' % PATCH_REPORT['gutturals'])
+    except Exception as exc:
+        PATCH_REPORT['gutturals'] = 'failed: %s' % exc
+        print('[gutturals] skipped: %s' % exc)
+
+
 _DARA_UNIT_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                 'data', 'dara_unit_patch.json')
 
@@ -518,6 +612,9 @@ def _seed_dara_unit():
 
 
 _seed_dara_unit()
+
+
+_seed_guttural_gloss()
 
 
 _NIKUD_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
@@ -6630,11 +6727,25 @@ def dara_gloss_for(word):
             (word, bn)).fetchone()
     except sqlite3.OperationalError:
         r = None
+    # The volume's word list was built by matching each form against Tal's
+    # pages, and where a form is written one way and entered another — the
+    # gutturals interchange, so the verb ח.מ.י is written עמי — it matched the
+    # wrong entry: the list said "חשכה" where the Hebrew Ben-Ḥayyim prints
+    # opposite the line says "ראה". So the app's own answer for the word is
+    # asked first, and the list stands behind it. The list itself is left
+    # exactly as the volume's patch writes it.
+    said = ''
+    if r:
+        try:
+            said = ((resolve_glosses(conn, [r['word'] or word]) or {})
+                    .get(r['word'] or word, {}) or {}).get('g', '') or ''
+        except Exception:
+            said = ''
     conn.close()
     if not r:
         return {}
     return {'word': r['word'] or word, 'root': (r['root'] or '').strip(),
-            'gloss': (r['gloss'] or '').strip(), 'translit': (r['translit'] or '').strip()}
+            'gloss': (said or r['gloss'] or '').strip(), 'translit': (r['translit'] or '').strip()}
 
 
 def tal_citations_for(word, limit=14):
@@ -7367,10 +7478,22 @@ def get_dara_word(word):
         return None
     conn = get_connection()
     w = conn.execute(
+        # the same correction as dara_gloss_for: the list's own gloss, unless the
+        # app has a better answer for this very form (see the note there)
         "SELECT word, freq, translit, root, gloss FROM dara_words WHERE word=? OR word_norm=?",
         (word, word)).fetchone()
     out = dict(w) if w else {'word': word, 'freq': 0, 'translit': '',
                              'root': '', 'gloss': ''}
+    # and the app's own answer for this form where there is one, for the reason
+    # written at dara_gloss_for: the volume's list matched some forms to the
+    # wrong entry of the dictionary, and the Hebrew printed opposite the line
+    # is what corrects them
+    try:
+        _said = ((resolve_glosses(conn, [word]) or {}).get(word, {}) or {}).get('g', '')
+        if _said:
+            out['gloss'] = _said
+    except Exception:
+        pass
 
     # where it is sung
     try:
