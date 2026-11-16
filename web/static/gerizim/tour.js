@@ -42,7 +42,7 @@
   /* ---------- שלוש שפות ---------- */
   const UI = {
     he: { dir: 'rtl', title: 'הר גריזים — סיור על הפסגה', tag: 'ניסיון', period: 'תקופה:', all: 'הכול',
-      tour: '▶ סיור מודרך', orient: 'מפת התמצאות', recon: 'שחזור תלת-ממדי', reconTip: 'המבנים המשוחזרים, במבט מבחוץ, לפי התקופה שנבחרה', rc_: 'שחזור: המתחם ההלניסטי והעיר, והמקדש הרומי שעל תל א-ראס. לכנסייה ולקבר שיח\' ע\'אנם בחרו תקופה.', rc_persian: 'שחזור: המתחם בתקופה הפרסית.', rc_hellenistic: 'שחזור: המתחם והעיר בתקופה ההלניסטית.', rc_roman: 'שחזור: מקדש זאוס שעל תל א-ראס, וגרם המדרגות היורד ממנו אל נאפוליס. מהלך המדרגות משוער.', rc_byzantine: 'שחזור: כנסיית מרים יולדת האל, חומתה ומגדליה, והאגף הצפוני.', rc_islamic: 'שחזור: חורבות מתחם הכנסייה, וקבר שיח\' ע\'אנם שנבנה על המגדל הצפון-מזרחי.', rcHyp: 'שחזור סכמטי. מהלך הקירות נמדד בחפירה; הגבהים, הגגות והכיפות משוערים.', legSpring: 'מעיין', legRoad: 'כביש 60 היום', legOld: 'הדרך הישנה דרך שכם', legVil: 'כפר, עיירה או יישוב', legVal: 'עמק', legPeak: 'הר', kmAir: '{n} ק"מ בקו אוויר', mAbove: '{m} מ\'', endTour: '■ סיום הסיור', home: 'מבט על', relief: 'הדגשת תבליט', pick: 'סימון נקודה', list: '☰ המקומות',
+      tour: '▶ סיור מודרך', orient: 'מפת התמצאות', recon: 'שחזור תלת-ממדי', reconTip: 'המבנים המשוחזרים, במבט מבחוץ, לפי התקופה שנבחרה', rc_: 'שחזור: המתחם ההלניסטי והעיר, והמקדש הרומי שעל תל א-ראס. לכנסייה ולקבר שיח\' ע\'אנם בחרו תקופה.', rc_persian: 'שחזור: המתחם בתקופה הפרסית.', rc_hellenistic: 'שחזור: המתחם והעיר בתקופה ההלניסטית.', rc_roman: 'שחזור: מקדש זאוס שעל תל א-ראס, וגרם המדרגות היורד ממנו אל נאפוליס. מהלך המדרגות משוער.', rc_byzantine: 'שחזור: כנסיית מרים יולדת האל, חומתה ומגדליה, והאגף הצפוני.', rc_islamic: 'שחזור: חורבות מתחם הכנסייה, וקבר שיח\' ע\'אנם שנבנה על המגדל הצפון-מזרחי.', rcHyp: 'שחזור סכמטי. מהלך הקירות נמדד בחפירה; הגבהים, הגגות והכיפות משוערים.', legSpring: 'מעיין', tours: 'סיורים', toursIntro: 'בחרו סיור: על הפסגה, בין המעיינות, בעקבות המטיילים, או ברגל — אל תוך המבנים.', tg: 'הסיור המודרך', tgTip: '{n} תחנות על הפסגה ובסביבתה, אחת אחרי השנייה', tsp: 'סיור המעיינות', tspTip: '30 המעיינות שסביב ההר, על המפה ובתמונות', tpw: 'טיול בתמונות', twk: 'סיור רגלי — נכנסים אל המבנים', twkTip: 'הליכה בשחזור תלת-ממדי: אל המקדש, אל המשכן ואל קבר שיח\' ע\'אנם', tnr: 'בעקבות המטיילים', tnrTip: 'כל סיפור כסיור: המצלמה עוברת ממקום למקום, והאזור מוצג כפי שהמספר ראה אותו', namesBtn: 'שמות הר גריזים במסורת השומרונית', narr: 'על המספר', scState: 'מצב האזור בעיני המספר', scShow: 'הצג תיאור חזותי', oTop: 'מבט מלמעלה על הסביבה', legRoad: 'כביש 60 היום', legOld: 'הדרך הישנה דרך שכם', legVil: 'כפר, עיירה או יישוב', legVal: 'עמק', legPeak: 'הר', kmAir: '{n} ק"מ בקו אוויר', mAbove: '{m} מ\'', endTour: '■ סיום הסיור', home: 'מבט על', relief: 'הדגשת תבליט', pick: 'סימון נקודה', list: '☰ המקומות',
       strata: 'שכבות המקום', finds: 'מה נתגלה כאן', inscr: 'כתובות וממצאים', parts: 'חלקי המקום',
       partOf: 'חלק מתוך', route: 'סדר התחנות', prev: '→ הקודמת', next: 'הבאה ←', finish: 'סיום',
       station: 'תחנה {i} מתוך {n}', note: 'תוכן ראשוני. המיקום והגבולות סומנו בקירוב וטעונים אימות.',
@@ -51,7 +51,7 @@
       photoBy: 'צילום', licence: 'רישיון', source: 'Wikimedia Commons', listTitle: 'המקומות בסיור', photos: 'תמונות', ins: 'כתובות שנמצאו כאן', insNo: 'כתובת מס\' {n}', insAt: 'נמצאה', scr: { 'aramaic-lapidary': 'ארמית, כתב לפידרי', 'aramaic-cursive': 'ארמית, כתב רהוט', 'paleo-hebrew': 'כתב עברי קדום', greek: 'יוונית', samaritan: 'כתב שומרוני' }, flk: 'צילומי אורי אורחוף', flkPhoto: 'צילום', flkVideo: 'סרטון', flkNote: '', flkAll: 'כל האלבומים של הצלם ב-Flickr', plan: 'שרטוט המקום', planNote: 'שרטוט סכמטי שצויר לפי מידות החפירה. החץ מראה את הצפון; המקום שבכרטיס מודגש בזהב.', planHel: 'התקופה ההלניסטית', planPer: 'התקופה הפרסית', walk: 'סיור רגלי', walkBtn: 'היכנסו לסיור רגלי במקום הזה', walkTip: 'כניסה לסיור רגלי בשחזור תלת-ממדי', dialLetters: ['צ', 'מז', 'ד', 'מע'], dialTitle: 'סיבוב המפה: גררו את החוגה, או לחצו על כיוון', lookTo: 'מבט אל {c}', elev: 'גובה {m} מ׳ מעל פני הים', pop: '{n} תושבים ({y})',
       compass: ['צפון', 'צפון-מזרח', 'מזרח', 'דרום-מזרח', 'דרום', 'דרום-מערב', 'מערב', 'צפון-מערב'] },
     en: { dir: 'ltr', title: 'Mount Gerizim — A Tour of the Summit', tag: 'Prototype', period: 'Period:', all: 'All',
-      tour: '▶ Guided tour', orient: 'Orientation map', recon: '3D reconstruction', reconTip: 'The reconstructed buildings, seen from outside, for the chosen period', rc_: 'Reconstruction: the Hellenistic precinct and city, and the Roman temple on Tell er-Ras. Choose a period for the church and for Sheikh Ghanim\'s tomb.', rc_persian: 'Reconstruction: the precinct in the Persian period.', rc_hellenistic: 'Reconstruction: the precinct and the city in the Hellenistic period.', rc_roman: 'Reconstruction: the temple of Zeus on Tell er-Ras, and the stairway going down from it to Neapolis. The course of the steps is conjectured.', rc_byzantine: 'Reconstruction: the church of Mary Theotokos, its wall and towers, and the northern wing.', rc_islamic: 'Reconstruction: the ruins of the church enclosure, and the tomb of Sheikh Ghanim built on the north-eastern tower.', rcHyp: 'A schematic reconstruction. The lines of the walls were measured in the excavation; heights, roofs and domes are conjecture.', legSpring: 'Spring', legRoad: 'Route 60 today', legOld: 'The old road through Nablus', legVil: 'Village, town or settlement', legVal: 'Valley', legPeak: 'Mountain', kmAir: '{n} km in a straight line', mAbove: '{m} m', endTour: '■ End tour', home: 'Overview', relief: 'Exaggerate relief', pick: 'Mark a point', list: '☰ Places',
+      tour: '▶ Guided tour', orient: 'Orientation map', recon: '3D reconstruction', reconTip: 'The reconstructed buildings, seen from outside, for the chosen period', rc_: 'Reconstruction: the Hellenistic precinct and city, and the Roman temple on Tell er-Ras. Choose a period for the church and for Sheikh Ghanim\'s tomb.', rc_persian: 'Reconstruction: the precinct in the Persian period.', rc_hellenistic: 'Reconstruction: the precinct and the city in the Hellenistic period.', rc_roman: 'Reconstruction: the temple of Zeus on Tell er-Ras, and the stairway going down from it to Neapolis. The course of the steps is conjectured.', rc_byzantine: 'Reconstruction: the church of Mary Theotokos, its wall and towers, and the northern wing.', rc_islamic: 'Reconstruction: the ruins of the church enclosure, and the tomb of Sheikh Ghanim built on the north-eastern tower.', rcHyp: 'A schematic reconstruction. The lines of the walls were measured in the excavation; heights, roofs and domes are conjecture.', legSpring: 'Spring', tours: 'Tours', toursIntro: 'Choose a tour: on the summit, among the springs, in the travellers\' footsteps, or on foot — into the buildings.', tg: 'The guided tour', tgTip: '{n} stops on the summit and around it, one after the other', tsp: 'The springs tour', tspTip: 'The 30 springs around the mountain, on the map and in photographs', tpw: 'Photo walk', twk: 'Walking tour — into the buildings', twkTip: 'Walk through a 3D reconstruction: into the temple, the Tabernacle and the tomb of Sheikh Ghanim', tnr: 'In the travellers\' footsteps', tnrTip: 'Each story as a tour: the camera moves from place to place, and the area is shown as the narrator saw it', namesBtn: 'The names of Mount Gerizim in the Samaritan tradition', narr: 'About the narrator', scState: 'The area as the narrator saw it', scShow: 'Show the visual description', oTop: 'View the surroundings from above', legRoad: 'Route 60 today', legOld: 'The old road through Nablus', legVil: 'Village, town or settlement', legVal: 'Valley', legPeak: 'Mountain', kmAir: '{n} km in a straight line', mAbove: '{m} m', endTour: '■ End tour', home: 'Overview', relief: 'Exaggerate relief', pick: 'Mark a point', list: '☰ Places',
       strata: 'Layers of the place', finds: 'What was found here', inscr: 'Inscriptions and finds', parts: 'Parts of this place',
       partOf: 'Part of', route: 'Order of the stations', prev: '← Previous', next: 'Next →', finish: 'Finish',
       station: 'Stop {i} of {n}', note: 'Preliminary content. Location and outline are approximate and need verification.',
@@ -60,7 +60,7 @@
       photoBy: 'Photo', licence: 'Licence', source: 'Wikimedia Commons', listTitle: 'Places in the tour', photos: 'Photos', ins: 'Inscriptions found here', insNo: 'Inscription no. {n}', insAt: 'Found', scr: { 'aramaic-lapidary': 'Aramaic, lapidary script', 'aramaic-cursive': 'Aramaic, cursive script', 'paleo-hebrew': 'Paleo-Hebrew script', greek: 'Greek', samaritan: 'Samaritan script' }, flk: 'Photographs by Ori Orhof', flkPhoto: 'Photo', flkVideo: 'Video', flkNote: 'The photographs belong to the photographer and open on Flickr.', flkAll: 'All the photographer’s albums on Flickr', plan: 'Plan of the place', planNote: 'A schematic plan drawn from the excavation dimensions. The arrow points north; the place of this card is marked in gold.', planHel: 'Hellenistic period', planPer: 'Persian period', walk: 'Walk here', walkBtn: 'Walk around this place', walkTip: 'Enter a walk through a 3D reconstruction', dialLetters: ['N', 'E', 'S', 'W'], dialTitle: 'Rotate the map: drag the dial, or tap a direction', lookTo: 'Look {c}', elev: '{m} m above sea level', pop: '{n} inhabitants ({y})',
       compass: ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'] },
     ar: { dir: 'rtl', title: 'جبل جرزيم — جولة على القمة', tag: 'تجريبي', period: 'الفترة:', all: 'الكل',
-      tour: '▶ جولة إرشادية', orient: 'خريطة توجيه', recon: 'إعادة بناء ثلاثية الأبعاد', reconTip: 'المباني المعاد بناؤها، من الخارج، بحسب الفترة المختارة', rc_: 'إعادة بناء: الحرم الهلنستي والمدينة، والمعبد الروماني على تل الراس. اختر فترة لرؤية الكنيسة ومقام الشيخ غانم.', rc_persian: 'إعادة بناء: الحرم في الفترة الفارسية.', rc_hellenistic: 'إعادة بناء: الحرم والمدينة في الفترة الهلنستية.', rc_roman: 'إعادة بناء: معبد زيوس على تل الراس، والدرج النازل منه إلى نيابوليس. مسار الدرج تقديري.', rc_byzantine: 'إعادة بناء: كنيسة مريم والدة الإله، وسورها وأبراجها، والجناح الشمالي.', rc_islamic: 'إعادة بناء: أطلال حرم الكنيسة، ومقام الشيخ غانم المبني على البرج الشمالي الشرقي.', rcHyp: 'إعادة بناء تخطيطية. خطوط الجدران قيست في التنقيب؛ أما الارتفاعات والسقوف والقباب فتقديرية.', legSpring: 'عين ماء', legRoad: 'الطريق 60 اليوم', legOld: 'الطريق القديمة عبر نابلس', legVil: 'قرية أو بلدة أو مستوطنة', legVal: 'سهل أو وادٍ', legPeak: 'جبل', kmAir: '{n} كم في خط مستقيم', mAbove: '{m} م', endTour: '■ إنهاء الجولة', home: 'نظرة عامة', relief: 'إبراز التضاريس', pick: 'تحديد نقطة', list: '☰ الأماكن',
+      tour: '▶ جولة إرشادية', orient: 'خريطة توجيه', recon: 'إعادة بناء ثلاثية الأبعاد', reconTip: 'المباني المعاد بناؤها، من الخارج، بحسب الفترة المختارة', rc_: 'إعادة بناء: الحرم الهلنستي والمدينة، والمعبد الروماني على تل الراس. اختر فترة لرؤية الكنيسة ومقام الشيخ غانم.', rc_persian: 'إعادة بناء: الحرم في الفترة الفارسية.', rc_hellenistic: 'إعادة بناء: الحرم والمدينة في الفترة الهلنستية.', rc_roman: 'إعادة بناء: معبد زيوس على تل الراس، والدرج النازل منه إلى نيابوليس. مسار الدرج تقديري.', rc_byzantine: 'إعادة بناء: كنيسة مريم والدة الإله، وسورها وأبراجها، والجناح الشمالي.', rc_islamic: 'إعادة بناء: أطلال حرم الكنيسة، ومقام الشيخ غانم المبني على البرج الشمالي الشرقي.', rcHyp: 'إعادة بناء تخطيطية. خطوط الجدران قيست في التنقيب؛ أما الارتفاعات والسقوف والقباب فتقديرية.', legSpring: 'عين ماء', tours: 'الجولات', toursIntro: 'اختر جولة: على القمة، أو بين الينابيع، أو على خطى الرحّالة، أو سيرًا على الأقدام — إلى داخل المباني.', tg: 'الجولة الإرشادية', tgTip: '{n} محطة على القمة وحولها، واحدة تلو الأخرى', tsp: 'جولة الينابيع', tspTip: 'الينابيع الثلاثون حول الجبل، على الخريطة وبالصور', tpw: 'جولة بالصور', twk: 'جولة سيرًا — إلى داخل المباني', twkTip: 'سير في إعادة بناء ثلاثية الأبعاد: إلى الهيكل والمسكن ومقام الشيخ غانم', tnr: 'على خطى الرحّالة', tnrTip: 'كل قصة جولة: تنتقل الكاميرا من مكان إلى مكان، وتُعرض المنطقة كما رآها الراوي', namesBtn: 'أسماء جبل جرزيم في التقليد السامري', narr: 'عن الراوي', scState: 'حال المنطقة كما رآها الراوي', scShow: 'اعرض الوصف المرئي', oTop: 'منظر للمحيط من الأعلى', legRoad: 'الطريق 60 اليوم', legOld: 'الطريق القديمة عبر نابلس', legVil: 'قرية أو بلدة أو مستوطنة', legVal: 'سهل أو وادٍ', legPeak: 'جبل', kmAir: '{n} كم في خط مستقيم', mAbove: '{m} م', endTour: '■ إنهاء الجولة', home: 'نظرة عامة', relief: 'إبراز التضاريس', pick: 'تحديد نقطة', list: '☰ الأماكن',
       strata: 'طبقات المكان', finds: 'ما اكتُشف هنا', inscr: 'نقوش ومكتشفات', parts: 'أجزاء المكان',
       partOf: 'جزء من', route: 'ترتيب المحطات', prev: '→ السابقة', next: 'التالية ←', finish: 'إنهاء',
       station: 'المحطة {i} من {n}', note: 'محتوى أوّلي. الموقع والحدود تقريبية وتحتاج إلى تحقق.',
@@ -281,9 +281,17 @@
     const st = trStation(e), place = withPlace && byId[st] ? '<div class="trat">' + esc(T('trAt')) + ' ' + linkTo(st) + '</div>' : '';
     return '<div class="trv"><div class="trh"><b>' + esc(L(e.writer)) + '</b><em class="c-' + esc(e.did_climb) + '">' + esc(T('tr_' + e.did_climb)) + '</em></div>' +
       '<div class="trt"><i>' + esc((lang === 'ar' ? (e.title.ar || e.title.en) : L(e.title)) || e.title.orig) + '</i>' + (yr ? ' · ' + esc(yr) : '') + '</div>' +
-      '<p>' + esc(L(e.summary)) + '</p>' + q + place + (window.GerizimLayers && GerizimLayers.hasStory(e.id) ? '<button class="walkbtn stbtn" data-story="' + esc(e.id) + '">📖 ' + esc(T('stRead')) + '</button>' : '') + '<a class="trsrc" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(T('trSource')) + ' ↗</a></div>';
+      '<p>' + esc(L(e.summary)) + '</p>' + q + place + (window.GerizimLayers && GerizimLayers.hasStory(e.id) ? '<button class="walkbtn stbtn" data-story="' + esc(e.id) + '">📖 ' + esc(T('stRead')) + '</button>' : '') +
+      (window.GerizimExtras ? '<button class="walkbtn narrbtn" data-narr="' + esc(e.id) + '">👤 ' + esc(T('narr')) + '</button>' : '') +
+      (SST[e.id] ? '<div class="trstate"><b>' + esc(T('scState')) + '</b><p>' + esc(L(SST[e.id])) + '</p><button class="walkbtn scbtn" data-scene="' + esc(e.id) + '">👁 ' + esc(T('scShow')) + '</button></div>' : '') + '<a class="trsrc" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(T('trSource')) + ' ↗</a></div>';
   }
-  const storyBtns = root => root.querySelectorAll('[data-story]').forEach(b => { b.onclick = () => window.GerizimLayers && GerizimLayers.openStory(b.dataset.story); });
+  const SST = window.GERIZIM_SCENE_STATE || {};           // מצב האזור בעיני כל מספר (scene_state.js)
+  const storyBtns = root => {
+    root.querySelectorAll('[data-story]').forEach(b => { b.onclick = () => window.GerizimLayers && GerizimLayers.openStory(b.dataset.story); });
+    root.querySelectorAll('[data-scene]').forEach(b => { b.onclick = () => window.GerizimScenes && GerizimScenes.play(b.dataset.scene); });
+    root.querySelectorAll('[data-narr]').forEach(b => { b.onclick = () => window.GerizimExtras && GerizimExtras.narrator(b.dataset.narr); });
+    root.querySelectorAll('[data-names]').forEach(b => { b.onclick = () => window.GerizimExtras && GerizimExtras.names(); });
+  };
   function travelSection(p) {
     const list = TRAVEL.filter(e => trStation(e) === p.id);
     if (!list.length) return '';
@@ -450,7 +458,8 @@
       if (on) cand.push(p);
     });
     oExtra.forEach(o => { o.el.style.display = state.orient && (!o.summit || wideView) ? '' : 'none'; });
-    Object.keys(walkPins).forEach(k => { walkPins[k].style.display = ((WALK_STARTS[k] || {}).per === 'n') === (state.period === 'today') ? '' : 'none'; });
+    // על גבי מפת ההתמצאות כניסות הסיור הרגלי מחכות עד שמתקרבים אל הפסגה
+    Object.keys(walkPins).forEach(k => { walkPins[k].style.display = ((WALK_STARTS[k] || {}).per === 'n') === (state.period === 'today') && !(state.orient && z < 15.6) ? '' : 'none'; });
     declutter(cand);
   }
   // תוויות שעולות זו על זו: החשובה נשארת, והאחרת מחכה עד שמתקרבים או מסובבים את המבט.
@@ -467,7 +476,7 @@
     const cv = map.getCanvas(), vw = cv.clientWidth, vh = cv.clientHeight, pitch = map.getPitch(), zoom = map.getZoom();
     const all = cand.map(p => ({ p, el: p._pin, c: p.center, r: rank(p) }))
       .concat(oExtra.filter(o => o.el.style.display !== 'none').map(o => ({ x: o, el: o.el, c: o.c, r: o.summit ? 0.1 : o.end ? 0.2 : o.shield ? 2.2 : 2.4 })));
-    if (!state.orient) Object.keys(walkPins).forEach(k => { if (walkPins[k].style.display !== 'none') all.push({ wp: 1, el: walkPins[k], c: walkPins[k]._c, r: 5 }); });
+    Object.keys(walkPins).forEach(k => { if (walkPins[k].style.display !== 'none') all.push({ wp: 1, el: walkPins[k], c: walkPins[k]._c, r: state.orient ? 6.8 : 5 }); });
     all.forEach(o => { o.d = dist(o.c); });
     all.sort((a, b) => a.r - b.r || a.d - b.d).forEach(o => {
       const p = o.p, q = map.project(o.c); let [w, h] = size(o.el), cy = q.y, pad = 0;
@@ -484,7 +493,7 @@
       // מקומות משניים מחכים עד שמתקרבים
       if (!hide && state.orient && o.r >= 6.5 && zoom < 12.6) hide = true;
       // במבט נוטה, מה שרחוק מצטופף אל האופק: מקום רחוק שנופל בחלק העליון של המסך מוצג רק אם נבחר
-      if (!hide && !state.orient && o.r >= 4 && pitch > 35 && q.y < vh * 0.16) hide = true;
+      if (!hide && o.r >= (state.orient ? 4.5 : 4) && pitch > 35 && q.y < vh * (state.orient ? 0.11 : 0.16)) hide = true;
       // מעיין ששמו אינו נכנס נשאר על המפה כנקודה כחולה, כדי שמקומו ייראה תמיד
       if (hide && p && p.lab === 'spring') o.el.classList.add('dotonly');
       else if (hide) o.el.style.display = 'none'; else taken.push(b);
@@ -502,6 +511,24 @@
   map.on('pitch', labelsSoon);
   map.on('move', labelsSoon);
   map.on('moveend', labels);
+  // אחרי טיסה אל מקום נמוך (מעיין בעמק) המפה נשארת עם גובה הייחוס של הפסגה, והמקום נופל אל תחתית המסך — מתחת לכרטיס.
+  // בסוף כל תנועה הגובה מתיישב בעדינות אל הקרקע שמתחת למרכז, וכך המקום חוזר אל החלק הפנוי של המסך
+  let settling = 0;
+  map.on('moveend', () => {
+    const tr = map.transform, te = map.terrain;
+    if (!te || settling) return;
+    const ce = te.getElevationForLngLatZoom(map.getCenter(), tr.tileZoom);
+    if (ce == null || !isFinite(ce) || Math.abs(ce - tr.elevation) < 12) return;
+    const from = tr.elevation, t0 = performance.now();
+    const step = now => {
+      if (map.isMoving()) { settling = 0; return; }
+      const k = Math.min(1, (now - t0) / 450);
+      tr.elevation = from + (ce - from) * (1 - Math.pow(1 - k, 3));
+      settling = 1; map.jumpTo({ center: map.getCenter() }); settling = 0;      // מעדכן את הסימנים שעל המפה
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
 
   /* ---------- מפת ההתמצאות: מבט רחב מלמעלה, הצפון למעלה, עם היישובים, העמקים והדרך ---------- */
   function buildOrient() {
@@ -537,10 +564,15 @@
       if (o.old) o.el.textContent = T('legOld');
     });
     $('olegend').innerHTML = '<div><i class="l60"></i>' + esc(T('legRoad')) + '</div><div><i class="lold"></i>' + esc(T('legOld')) + '</div>' +
-      '<div><i class="lvil"></i>' + esc(T('legVil')) + '</div><div><i class="lspr"></i>' + esc(T('legSpring')) + '</div><div><i class="lval">' + esc(T('legVal')) + '</i><i class="lpk">▲ ' + esc(T('legPeak')) + '</i></div>';
+      '<div><i class="lvil"></i>' + esc(T('legVil')) + '</div><div><i class="lspr"></i>' + esc(T('legSpring')) + '</div><div><i class="lval">' + esc(T('legVal')) + '</i><i class="lpk">▲ ' + esc(T('legPeak')) + '</i></div>' +
+      '<button id="oTop" type="button">⤒ ' + esc(T('oTop')) + '</button>';
+    $('oTop').onclick = orientTop;
   }
   function orientCam() {
-    const c = map.cameraForBounds(narrow() && OR.viewNarrow ? OR.viewNarrow : OR.view, { padding: { top: 62, bottom: $('bar').offsetHeight + 14, left: 14, right: 14 }, bearing: 0, pitch: 0 });
+    const B = narrow() && OR.viewNarrow ? OR.viewNarrow : OR.view;
+    // במסך נמוך (טלפון שוכב) הריפוד עלול לבלוע את כל הגובה, ואז אין מצלמה שמכילה את התחום — מנסים בלי ריפוד
+    const c = map.cameraForBounds(B, { padding: { top: 62, bottom: $('bar').offsetHeight + 14, left: 14, right: 14 }, bearing: 0, pitch: 0 }) || map.cameraForBounds(B, { padding: 0, bearing: 0, pitch: 0 });
+    if (!c) return { center: OR.summit.center, zoom: 11 };
     return { center: c.center, zoom: c.zoom };
   }
   function orientShow(on) {
@@ -764,6 +796,36 @@
     }
   }
 
+  // גוון הצילום: התיאור החזותי של סיפור מעמעם אותו לגוון של תקופה, כדי שהבנייה של היום תיסוג והשחזור יבלוט
+  function satLook(o) {
+    ['sat', 'gsat'].forEach(id => {
+      if (!map.getLayer(id)) return;
+      map.setPaintProperty(id, 'raster-saturation', o ? o.sat : 0);
+      map.setPaintProperty(id, 'raster-contrast', o ? o.con : 0);
+      map.setPaintProperty(id, 'raster-brightness-min', o ? o.bmin : 0);
+      map.setPaintProperty(id, 'raster-brightness-max', o ? o.bmax : 1);
+      map.setPaintProperty(id, 'raster-hue-rotate', o ? o.hue : 0);
+    });
+  }
+
+  const SKY = { 'sky-color': '#8fb8e0', 'horizon-color': '#dfe9f2', 'fog-color': '#e6ebee', 'sky-horizon-blend': 0.6, 'horizon-fog-blend': 0.6, 'fog-ground-blend': 0.9 };
+  const sceneLay = {};
+  function sceneMode(on, look, sky) {
+    if (!!state.scene === !!on) { if (on) { satLook(look); try { map.setSky(Object.assign({}, SKY, sky || {})); } catch (e) { /* בלי שמיים */ } } return; }
+    state.scene = !!on;
+    document.body.classList.toggle('scening', !!on);
+    ['places-fill', 'places-line', 'recon', 'oroad-oldcase', 'oroad-old', 'oroad-case', 'oroad-60'].forEach(id => {
+      if (!map.getLayer(id)) return;
+      if (on) { sceneLay[id] = map.getLayoutProperty(id, 'visibility') || 'visible'; map.setLayoutProperty(id, 'visibility', 'none'); }
+      else if (sceneLay[id]) map.setLayoutProperty(id, 'visibility', sceneLay[id]);
+    });
+    if (on) { introEnd(true); endTour(); finger(null); state.wide = true; map.setMinZoom(9.5); }
+    else if (!state.orient) { state.wide = false; map.setMinZoom(homeZoom() - 0.02); }
+    satLook(on ? look : null);
+    try { map.setSky(on ? Object.assign({}, SKY, sky || {}) : SKY); } catch (e) { /* בלי שמיים */ }
+    labels();
+  }
+
   /* ---------- כרטיס מקום ---------- */
   function distDir(p) {
     const dx = (p.center[0] - C[0]) / M_LON, dy = (p.center[1] - C[1]) / M_LAT;
@@ -788,7 +850,7 @@
     const p = byId[state.sel], walking = inWalk();
     // כרטיס שנפתח מתוך הסיור הרגלי מוצג מעליו; ההליכה נעצרת עד שסוגרים אותו, והמבקר נשאר במקומו
     card.classList.toggle('inwalk', walking); if (walking) window.GerizimWalk.pause(!!p);
-    if (!p) { card.classList.remove('open'); return; }
+    if (!p) { card.classList.remove('open'); finger(null); return; }
     const touring = state.tourAt >= 0 && !walking;
     const im = IMAGES[p.id] || {};
     const parts = kids(p.id);
@@ -804,6 +866,7 @@
     const hasPhotos = im.photos && im.photos.length;
     if (hasPhotos && !phone) h += strip(im.photos, 'photos');
     h += '<p>' + esc(L(p.summary)) + '</p>';
+    if ((p.id === 'precinct' || p.id === 'eternal') && window.GerizimExtras) h += '<button class="walkbtn namesbtn" data-names="1">📜 ' + esc(T('namesBtn')) + '</button>';
     if (PWALK[p.id] && !walking) h += '<button class="walkbtn pwbtn" id="cardPWalk">📷 ' + esc(T('pwalkBtn')) + ' (' + PWALK[p.id].stations.length + ')</button>';
     if (p.group === 'springs' && PWALK.springs && !walking) h += '<button class="walkbtn pwbtn" id="cardSpr">💧 ' + esc(T('sprTour')) + '</button>';
     if (walkKey(p.id) && !walking) h += '<button class="walkbtn" id="cardWalk">' + WALK_ICON + esc(T((WALK_STARTS[walkKey(p.id)] || {}).per === 'n' ? 'walkBtnToday' : walkKey(p.id) === 'mishkan' ? 'walkBtnMishkan' : 'walkBtn')) + '</button>';
@@ -857,6 +920,7 @@
     card.querySelectorAll('[data-walkz]').forEach(b => { b.onclick = () => enterWalk(walkKey(p.id)); });
     // מה שהמשתמש פתח או סגר נשאר כך גם בכרטיסים הבאים
     card.querySelectorAll('details.sec').forEach(d => { d.ontoggle = () => { state.exp[d.dataset.sec] = d.open; }; });
+    fingerSel();
   }
 
   /* ---------- פרקי הכרטיס: במחשב פתוחים, בטלפון סגורים עד שמבקשים ---------- */
@@ -885,7 +949,7 @@
     });
     if (TRAVEL.length) h += '<h3>' + esc(T('travel')) + '</h3><div class="parts col"><button class="lnk" id="travelOpen"><i style="background:#b98a4a"></i>' + esc(T('travelAll')) + ' (' + TRAVEL.length + ')</button></div>';
     card.innerHTML = h;
-    card.classList.add('open'); card.scrollTop = 0;
+    card.classList.add('open'); card.scrollTop = 0; finger(null);
     if ($('travelOpen')) $('travelOpen').onclick = renderTravel;
     $('cardX').onclick = () => { state.listing = false; renderCard(); };
     card.querySelectorAll('[data-go]').forEach(b => { b.onclick = () => { state.listing = false; select(b.dataset.go); }; });
@@ -895,7 +959,7 @@
     const card = $('card');
     let h = '<button class="x" id="cardX" aria-label="' + esc(T('close')) + '">✕</button><div class="kind">' + esc(T('travel')) + '</div><h2>' + esc(T('travelAll')) + '</h2><p>' + esc(T('travelIntro')) + '</p>';
     h += TRAVEL.map(e => travelItem(e, true)).join('');
-    card.innerHTML = h; card.classList.add('open'); card.scrollTop = 0;
+    card.innerHTML = h; card.classList.add('open'); card.scrollTop = 0; finger(null);
     storyBtns(card);
     $('cardX').onclick = () => { state.listing = false; renderCard(); };
     card.querySelectorAll('[data-go]').forEach(b => { b.onclick = () => { state.listing = false; select(b.dataset.go); }; });
@@ -950,14 +1014,15 @@
     if (!pwMarker) { const el = document.createElement('div'); el.className = 'pwdot'; pwMarker = new maplibregl.Marker({ element: el }).setLngLat(c).addTo(map); }
     pwMarker.setLngLat(c); pwMarker.getElement().style.display = '';
     if (!state.orient && OR) enterOrient(false);              // המסלול רחוק מן הפסגה: התחום הרחב של מפת ההתמצאות
-    const ph = isPhone(), side = Math.round(window.innerWidth * 0.48), rtl = lang !== 'en';
-    const pad = ph ? { top: 40, bottom: Math.round(window.innerHeight * 0.55), left: 10, right: 10 } : { top: 60, bottom: 60, left: rtl ? 20 : side, right: rtl ? side : 20 };
+    finger(c, 14);
+    const pad = padFor(box);
     map.flyTo({ center: c, zoom: s.zoom || 16.2, pitch: 58, bearing: s.bearing != null ? s.bearing : map.getBearing(), padding: pad, duration: 2200, essential: true });
   }
   function photoWalkEnd() {
     if (!pw) return; pw = null;
     $('pwalk').classList.remove('open'); document.body.classList.remove('pwalking'); $('pwImg').removeAttribute('src');
     if (pwMarker) pwMarker.getElement().style.display = 'none';
+    fingerSel();
     if (window.GerizimAudio) GerizimAudio.duck(false);
   }
   if ($('pwalk')) {
@@ -971,13 +1036,51 @@
   }
 
   /* ---------- תנועת המצלמה: המקום תמיד בחלק הפנוי של המסך, לא מתחת לכרטיס ---------- */
-  function freePad() {
-    const card = $('card'), barH = $('bar').offsetHeight, top = 58;
-    if (!card.classList.contains('open')) return { top, bottom: barH, left: 0, right: 0 };
-    const r = card.getBoundingClientRect();
-    if (narrow()) return { top, bottom: Math.round(window.innerHeight - r.top + 8), left: 0, right: 0 };
-    return { top, bottom: barH, left: 0, right: Math.round(window.innerWidth - r.left + 8) };
+  // הריפוד שמשאיר את המקום בחלק הגלוי: לוח שתופס את רוחב המסך יושב למטה (טלפון), לוח צר יושב בצד.
+  // מעל המקום עומדת האצבע המצביעה, ולכן למטה נשמר לה עוד מקום
+  const FINGER_ROOM = 64;
+  function padFor(el) {
+    const vw = window.innerWidth, vh = window.innerHeight, top = 58, barH = $('bar').offsetHeight;
+    if (!el || getComputedStyle(el).display === 'none') return { top, bottom: barH, left: 0, right: 0 };
+    const r = el.getBoundingClientRect();
+    if (r.width > vw * 0.7) return { top: Math.min(top, 46), bottom: Math.max(barH, Math.round(vh - r.top + 6)), left: 8, right: 8 };
+    return r.left + r.width / 2 > vw / 2 ? { top, bottom: barH, left: 10, right: Math.round(vw - r.left + 10) } : { top, bottom: barH, left: Math.round(r.right + 10), right: 10 };
   }
+  function freePad() {
+    const card = $('card');
+    if (card.classList.contains('open')) return padFor(card);
+    // הכרטיס עוד לא נפתח (למשל בזמן הפתיחה): בטלפון שומרים לו את חלקו התחתון של המסך מראש
+    if (state.sel && narrow()) return { top: 46, bottom: Math.round(window.innerHeight * 0.36) + $('bar').offsetHeight + 6, left: 8, right: 8 };
+    return padFor(null);
+  }
+  // אצבע שמצביעה מלמעלה על המקום שהכרטיס, הסיפור או התמונה מדברים עליו
+  let fingerMk = null;
+  function finger(c, lift) {
+    if (!c) { if (fingerMk) fingerMk.getElement().style.display = 'none'; return; }
+    if (!fingerMk) {
+      const el = document.createElement('div'); el.className = 'finger'; el.setAttribute('aria-hidden', 'true'); el.innerHTML = '<span>👇</span>';
+      fingerMk = new maplibregl.Marker({ element: el, anchor: 'bottom', opacityWhenCovered: '1' }).setLngLat(c).addTo(map);
+    }
+    fingerMk.setLngLat(c); fingerMk.setOffset([0, -(lift || 0)]);
+    const el = fingerMk.getElement(); el.style.display = '';
+    el.parentNode.appendChild(el);                         // מעל שאר הסימנים
+  }
+  // האצבע על המקום שבכרטיס: מעל התווית שלו
+  function fingerSel() {
+    const p = state.sel && byId[state.sel];
+    if (!p || !p.center || p.nomap || inWalk() || !$('card').classList.contains('open')) return finger(null);
+    finger(p.center, 9 + ((p._pin && p._pin.offsetHeight) || 22) + 2);
+  }
+  // הכרטיס גדל (פרק נפתח) או המסך השתנה: אם המקום נבלע מתחת לכרטיס, המפה זזה מעט כדי שייראה שוב
+  function keepVisible() {
+    const p = state.sel && byId[state.sel], card = $('card');
+    if (!p || !p.center || p.nomap || inWalk() || !card.classList.contains('open') || map.isMoving()) return;
+    const pad = freePad(), q = map.project(p.center), cv = map.getCanvas(), w = cv.clientWidth, h = cv.clientHeight;
+    if (q.y > pad.top + FINGER_ROOM && q.y < h - pad.bottom && q.x > pad.left && q.x < w - pad.right) return;
+    map.easeTo({ center: p.center, padding: pad, duration: 700, essential: true });
+  }
+  let kvT = 0;
+  if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(kvT); kvT = setTimeout(keepVisible, 250); }).observe($('card'));
   function flyToPlace(p, slow) {
     const duration = slow ? 5200 : 2400;
     if (p.nomap || !p.center) return;
@@ -986,7 +1089,7 @@
       // מי שבא מן הפסגה מקבל מבט מלמעלה, והצפון למעלה; מי שכבר במפה נשאר בזווית שבחר
       const top = p.lab === 'valley' || p.lab === 'road' || p.lab === 'peak' ? 12.5 : 13.3, fresh = orientFresh;
       orientFresh = false;
-      map.flyTo({ center: clampPt(p.center), zoom: Math.min(Math.max(map.getZoom(), 12.3), top), pitch: fresh ? 0 : map.getPitch(), bearing: fresh ? 0 : map.getBearing(),
+      map.flyTo({ center: clampPt(p.center), zoom: Math.min(Math.max(map.getZoom(), 12.3), top), pitch: fresh ? Math.min(map.getPitch(), 50) : map.getPitch(), bearing: map.getBearing(),
         duration: fresh ? 2200 : Math.min(duration, 1800), essential: true, curve: fresh ? 1.2 : 1, padding: freePad() });
       return;
     }
@@ -1014,10 +1117,13 @@
     state.open = p ? (p.parent || (kids(id).length ? id : null)) : null;
     if (p && OR && !inWalk()) { if (p.orient && !state.orient) { enterOrient(false); orientFresh = true; } else if (!p.far && state.orient) leaveOrient(); }
     repaint();
+    // כשאין כותרת פתיחה, הכרטיס נפתח לפני שהמצלמה זזה — כך היא יודעת כמה מן המסך הוא תופס, והמקום נוחת מעליו
+    const ready = introGone();
+    if (ready) renderCard();
     if (p && !inWalk()) flyToPlace(p, slow);
     else if (!started && map.getPitch() < 50) map.jumpTo(home());
-    // המצלמה כבר בדרך; הכרטיס עצמו נפתח רק אחרי שכותרת הפתיחה נמוגה
-    whenIntroGone(() => { if (state.sel === id && !state.listing) renderCard(); });
+    // אחרת המצלמה כבר בדרך, והכרטיס עצמו נפתח רק אחרי שכותרת הפתיחה נמוגה
+    if (!ready) whenIntroGone(() => { if (state.sel === id && !state.listing) renderCard(); });
   }
 
   /* ---------- סיור מודרך ---------- */
@@ -1063,9 +1169,51 @@
     map.flyTo(Object.assign({ duration: 2400, essential: true, curve: 1, padding: { top: 0, bottom: 0, left: 0, right: 0 } }, home()));
   }
 
-  $('btnTour').onclick = () => {
+  /* ---------- תפריט הסיורים: המודרך, המעיינות, טיולי התמונות, הסיור הרגלי אל תוך המבנים, ובעקבות המטיילים ---------- */
+  const tp = document.createElement('div');
+  tp.id = 'tourPop'; tp.setAttribute('role', 'dialog');
+  document.body.appendChild(tp);
+  const WALK_ORDER = ['plaza', 'stairs', 'city', 'areaA', 'areaB', 'mishkan', 'today', 'tghanim', 'teternal', 'tisaac'];
+  const walkLabel = k => T(k === 'mishkan' ? 'walkMishkan' : 'w_' + k) || T('walk');
+  function tourHtml() {
+    const rowB = (id, ic, name, tip) => '<button class="tprow" data-t="' + id + '"><i>' + ic + '</i><span><b>' + esc(name) + '</b>' + (tip ? '<small>' + esc(tip) + '</small>' : '') + '</span></button>';
+    const pws = Object.keys(PWALK).filter(k => k !== 'springs' && PWALK[k].stations && PWALK[k].stations.length && !Object.keys(PWALK).slice(0, Object.keys(PWALK).indexOf(k)).some(j => PWALK[j] === PWALK[k]));
+    const nar = TRAVEL.filter(e => window.GerizimScenes && GerizimScenes.has(e.id)).slice().sort((a, b) => (a.visit_year || a.pub_year || 0) - (b.visit_year || b.pub_year || 0));
+    tp.dir = T('dir');
+    tp.innerHTML = '<div class="lyh"><b>' + esc(T('tours')) + '</b><button class="lyx" aria-label="' + esc(T('close')) + '">✕</button></div>' +
+      '<p class="tpi">' + esc(T('toursIntro')) + '</p>' +
+      (window.GerizimExtras ? '<button class="tpnames" data-t="names">📜 ' + esc(T('namesBtn')) + '</button>' : '') +
+      rowB('guided', '▶', T('tg'), T('tgTip').replace('{n}', G.tour.length)) +
+      (PWALK.springs ? rowB('springs', '💧', T('tsp'), T('tspTip')) : '') +
+      pws.map(k => rowB('pw:' + k, '📷', L(PWALK[k].title).replace(/^[^:]*:\s*/, ''), T('tpw') + ' · ' + PWALK[k].stations.length)).join('') +
+      (Object.keys(WALK_STARTS).length ? '<details class="tpsub"><summary><i>' + WALK_ICON + '</i><span><b>' + esc(T('twk')) + '</b><small>' + esc(T('twkTip')) + '</small></span></summary><div>' +
+        WALK_ORDER.filter(k => WALK_STARTS[k]).map(k => '<button data-t="walk:' + k + '">' + esc(walkLabel(k)) + '</button>').join('') + '</div></details>' : '') +
+      (nar.length ? '<details class="tpsub"><summary><i>📖</i><span><b>' + esc(T('tnr')) + '</b><small>' + esc(T('tnrTip')) + '</small></span></summary><div>' +
+        nar.map(e => '<div class="tpnar"><button data-t="scene:' + esc(e.id) + '">' + esc(L(e.writer)) + ' <em>' + esc(e.visit_year || e.pub_year || '') + '</em></button>' +
+          (window.GerizimExtras ? '<button class="tpwho" data-t="narr:' + esc(e.id) + '" aria-label="' + esc(T('narr')) + '" title="' + esc(T('narr')) + '">👤</button>' : '') + '</div>').join('') + '</div></details>' : '');
+    tp.querySelector('.lyx').onclick = () => tourMenu(false);
+    tp.querySelectorAll('[data-t]').forEach(b => { b.onclick = () => {
+      const [k, v] = b.dataset.t.split(':');
+      if (k !== 'narr' && k !== 'names') tourMenu(false);
+      if (k === 'guided') startTour();
+      else if (k === 'springs') { if (window.GerizimLayers && GerizimLayers.springsLayer) GerizimLayers.springsLayer(true); photoWalk('springs', 0); }
+      else if (k === 'pw') photoWalk(v, 0);
+      else if (k === 'walk') enterWalk(v);
+      else if (k === 'scene') GerizimScenes.play(v);
+      else if (k === 'narr') GerizimExtras.narrator(v);
+      else if (k === 'names') GerizimExtras.names();
+    }; });
+  }
+  function tourMenu(v) {
+    if (v) { tourHtml(); introEnd(true); }
+    tp.classList.toggle('open', v);
+    $('btnTour').setAttribute('aria-expanded', v ? 'true' : 'false');
+  }
+  document.addEventListener('click', e => { if (tp.classList.contains('open') && !tp.contains(e.target) && e.target !== $('btnTour') && !(document.getElementById('xsheet') || {}).contains?.(e.target)) tourMenu(false); });
+  $('btnTour').onclick = e => {
+    e.stopPropagation();
     if (state.tourAt >= 0 || tourWait) { endTour(); select(null); goHome(); }
-    else startTour();
+    else tourMenu(!tp.classList.contains('open'));
   };
   $('btnHome').onclick = () => { endTour(); select(null); goHome(); };
   if (window.GerizimAudio) window.GerizimAudio.musicButton($('btnMusic'));
@@ -1076,7 +1224,24 @@
     endTour(); state.sel = null; state.open = null; state.listing = !state.listing; repaint();
     whenIntroGone(renderCard);
   };
-  $('btnOrient').onclick = () => { if (state.orient) { endTour(); select(null); goHome(); } else { select(null); enterOrient(); } };
+  // מפת ההתמצאות נפרשת על גבי המבט הנוכחי: הכבישים, היישובים, העמקים והמעיינות מופיעים על התבליט, והמצלמה נשארת במקומה.
+  // מי שרוצה את המבט מלמעלה על כל הסביבה — כפתור "מבט מלמעלה" שבמקרא
+  $('btnOrient').onclick = () => {
+    if (state.orient) return orientOff();
+    endTour(); select(null); enterOrient(false);
+    // מקרוב מאוד אין מה לראות מן הסביבה: מתרחקים מעט, באותה זווית ובאותו כיוון, כך שהתבליט נשאר כפי שהיה
+    if (map.getZoom() > 15.3) map.easeTo({ zoom: 15.3, duration: 1600, essential: true });
+  };
+  function orientOff() {
+    endTour(); select(null);
+    const c = map.getCenter();
+    const inside = c.lng > BOX.w && c.lng < BOX.e && c.lat > BOX.s && c.lat < BOX.n && map.getZoom() >= homeZoom() - 0.05;
+    if (inside) leaveOrient(); else goHome();
+  }
+  function orientTop() {
+    const cam = orientCam();
+    map.flyTo({ center: cam.center, zoom: cam.zoom, pitch: 0, bearing: 0, duration: 2200, essential: true, curve: 1.2, padding: { top: 0, bottom: 0, left: 0, right: 0 } });
+  }
   $('btnRecon').onclick = () => { if (!RC) return; state.recon = !state.recon; introEnd(true); reconApply(); reconLook(); };
   $('btnRelief').onclick = e => {
     state.relief = !state.relief;
@@ -1128,6 +1293,9 @@
     [...document.querySelectorAll('#langs button')].forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
     if (window.GerizimWalk && window.GerizimWalk.setLang) window.GerizimWalk.setLang(lang, { scripts: T('scr'), insNo: T('insNo') });
     if (window.GerizimLayers) window.GerizimLayers.setLang(lang);
+    if (window.GerizimScenes) window.GerizimScenes.setLang(lang);
+    if (window.GerizimExtras) window.GerizimExtras.setLang(lang);
+    if (tp.classList.contains('open')) tourHtml();
     renderCard();
   }
   function setLang(code) {
@@ -1153,7 +1321,8 @@
   };
   /* ---------- מה שמודול השכבות (layers.js) צריך מכאן ---------- */
   window.GerizimTourAPI = { map, state, byId, PLACES, esc, lang: () => lang, select, enterOrient, leaveOrient, photoWalk, photoWalkEnd,
-    lightbox, isPhone, sized, introEnd, endTour, repaint, barHeight, inWalk, renderCard, PWALK, home: () => goHome() };
+    lightbox, isPhone, sized, introEnd, endTour, repaint, barHeight, inWalk, renderCard, PWALK, home: () => goHome(),
+    finger, fingerSel, padFor, sceneMode, clampOff: () => { state.wide = true; map.setMinZoom(9.5); }, C };
 
   map.on('click', ev => {
     if (!state.pick) return;

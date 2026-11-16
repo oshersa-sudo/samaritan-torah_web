@@ -12,21 +12,21 @@
   const TX = {
     he: { layers: 'שכבות', lyTitle: 'שכבות על המפה', lyTravel: 'סיפורי מטיילים', lyTravelTip: 'המקומות שמטיילים נוצרים, מארק טוויין ואחרים, תיארו בסיפור ביקורם בהר — כל אחד במקומו על המפה',
       lySprings: 'הר שופע מעיינות', lySpringsTip: 'כל המעיינות שסביב הר גריזים, וסיור ממעיין למעיין עם תמונות', stOpen: '📖 פתיחת הסיפורים', sprTour: '▶ סיור בין המעיינות',
-      stTitle: 'סיפורי מטיילים בהר גריזים', stIntro: 'נוסעים וצליינים נוצרים, ומארק טוויין ביניהם, שכתבו על ביקורם בהר ובשכם. כל סיפור מובא מן המקור עצמו, בתרגום; המקומות שהם מתארים מסומנים בטקסט — לחיצה מראה אותם על המפה.',
+      stFindPh: 'חיפוש מספר, שנה או מילה בתוך הסיפורים', stFindN: 'מספרים', stFindT: 'בתוך הסיפורים', stFindCount: '{n} מופעים ב-{m} סיפורים', stFindNone: 'לא נמצא דבר', stFindBtn: 'חיפוש בסיפורים', stAbout: '👤 על המספר', scState: 'מצב האזור בעיני המספר', scShow: 'הצג תיאור חזותי', stTitle: 'סיפורי מטיילים בהר גריזים', stIntro: 'נוסעים וצליינים נוצרים, ומארק טוויין ביניהם, שכתבו על ביקורם בהר ובשכם. כל סיפור מובא מן המקור עצמו, בתרגום; המקומות שהם מתארים מסומנים בטקסט — לחיצה מראה אותם על המפה.',
       stOrig: 'המקור', stTr: 'התרגום', stMap: 'הצגה על המפה', stFull: '⤢ מסך מלא', stClose: 'סגירה', stPlaces: 'המקומות שבסיפור', stSource: 'המקור', stPrev: '→ הקודם', stNext: 'הבא ←',
       stLoading: 'טוען את הסיפורים…', stFail: 'הסיפורים לא נטענו. בדקו את החיבור לרשת ונסו שוב.', stNoStory: 'לסיפור הזה עדיין אין נוסח מלא; מוצג הציטוט הקצר.',
       conf_sure: 'זיהוי ודאי', conf_likely: 'זיהוי סביר', conf_guess: 'זיהוי משוער', stMentions: 'מוזכר בסיפורי:', stIdx: 'המטיילים', stAt: 'בסיפור', origLang: { en: 'אנגלית', fr: 'צרפתית', de: 'גרמנית', la: 'לטינית', ar: 'ערבית' },
       tr_climbed: 'עלה להר', tr_seen: 'ראה את ההר מרחוק', tr_nablus_only: 'תיאר את שכם והסביבה', visit: 'ביקור', pub: 'פרסום', orig: 'נוסח המקור', trNote: 'התרגום נעשה לצורך הסיור.' },
     en: { layers: 'Layers', lyTitle: 'Layers on the map', lyTravel: 'Travellers\' stories', lyTravelTip: 'The places that Christian travellers, Mark Twain and others, described in the story of their visit — each in its place on the map',
       lySprings: 'A mountain of springs', lySpringsTip: 'All the springs around Mount Gerizim, and a tour from spring to spring with photos', stOpen: '📖 Open the stories', sprTour: '▶ Tour of the springs',
-      stTitle: 'Travellers\' stories of Mount Gerizim', stIntro: 'Christian travellers and pilgrims, Mark Twain among them, who wrote about their visit to the mountain and to Nablus. Each story comes from the source itself; the places they describe are marked in the text — tap one to see it on the map.',
+      stFindPh: 'Search a narrator, a year or a word in the stories', stFindN: 'Narrators', stFindT: 'In the stories', stFindCount: '{n} matches in {m} stories', stFindNone: 'Nothing found', stFindBtn: 'Search the stories', stAbout: '👤 About the narrator', scState: 'The area as the narrator saw it', scShow: 'Show the visual description', stTitle: 'Travellers\' stories of Mount Gerizim', stIntro: 'Christian travellers and pilgrims, Mark Twain among them, who wrote about their visit to the mountain and to Nablus. Each story comes from the source itself; the places they describe are marked in the text — tap one to see it on the map.',
       stOrig: 'Original', stTr: 'Translation', stMap: 'Show on the map', stFull: '⤢ Full screen', stClose: 'Close', stPlaces: 'Places in the story', stSource: 'Source', stPrev: '← Previous', stNext: 'Next →',
       stLoading: 'Loading the stories…', stFail: 'The stories did not load. Check the connection and try again.', stNoStory: 'This story has no full text yet; the short quote is shown.',
       conf_sure: 'certain identification', conf_likely: 'likely identification', conf_guess: 'conjectural identification', stMentions: 'Mentioned by:', stIdx: 'The travellers', stAt: 'In the story', origLang: { en: 'English', fr: 'French', de: 'German', la: 'Latin', ar: 'Arabic' },
       tr_climbed: 'Climbed the mountain', tr_seen: 'Saw the mountain from afar', tr_nablus_only: 'Described Nablus and its surroundings', visit: 'visit', pub: 'published', orig: 'Original text', trNote: 'Translated for this tour.' },
     ar: { layers: 'الطبقات', lyTitle: 'طبقات على الخريطة', lyTravel: 'قصص الرحّالة', lyTravelTip: 'الأماكن التي وصفها الرحّالة المسيحيون، ومارك توين وغيره، في قصة زيارتهم للجبل — كلٌّ في موضعه على الخريطة',
       lySprings: 'جبل الينابيع', lySpringsTip: 'كل الينابيع حول جبل جرزيم، وجولة من نبع إلى نبع مع الصور', stOpen: '📖 فتح القصص', sprTour: '▶ جولة بين الينابيع',
-      stTitle: 'قصص الرحّالة عن جبل جرزيم', stIntro: 'رحّالة وحجّاج مسيحيون، ومنهم مارك توين، كتبوا عن زيارتهم للجبل ولنابلس. كل قصة مأخوذة من المصدر نفسه مترجمةً؛ والأماكن التي يصفونها معلَّمة في النص — انقر عليها لتراها على الخريطة.',
+      stFindPh: 'ابحث عن راوٍ أو سنة أو كلمة في القصص', stFindN: 'الرواة', stFindT: 'داخل القصص', stFindCount: '{n} موضعًا في {m} قصة', stFindNone: 'لم يُعثر على شيء', stFindBtn: 'البحث في القصص', stAbout: '👤 عن الراوي', scState: 'حال المنطقة كما رآها الراوي', scShow: 'اعرض الوصف المرئي', stTitle: 'قصص الرحّالة عن جبل جرزيم', stIntro: 'رحّالة وحجّاج مسيحيون، ومنهم مارك توين، كتبوا عن زيارتهم للجبل ولنابلس. كل قصة مأخوذة من المصدر نفسه مترجمةً؛ والأماكن التي يصفونها معلَّمة في النص — انقر عليها لتراها على الخريطة.',
       stOrig: 'الأصل', stTr: 'الترجمة', stMap: 'عرض على الخريطة', stFull: '⤢ ملء الشاشة', stClose: 'إغلاق', stPlaces: 'الأماكن في القصة', stSource: 'المصدر', stPrev: '→ السابق', stNext: 'التالي ←',
       stLoading: 'جارٍ تحميل القصص…', stFail: 'لم تُحمَّل القصص. تحقّق من الاتصال وحاول مجددًا.', stNoStory: 'لا نصّ كاملًا لهذه القصة بعد؛ يُعرض الاقتباس القصير.',
       conf_sure: 'تحديد مؤكد', conf_likely: 'تحديد مرجّح', conf_guess: 'تحديد تقديري', stMentions: 'ورد في قصص:', stIdx: 'الرحّالة', stAt: 'في القصة', origLang: { en: 'الإنجليزية', fr: 'الفرنسية', de: 'الألمانية', la: 'اللاتينية', ar: 'العربية' },
@@ -179,7 +179,7 @@
   const rd = document.createElement('div');
   rd.id = 'story'; rd.setAttribute('role', 'dialog'); rd.setAttribute('aria-modal', 'true');
   document.body.appendChild(rd);
-  let cur = null, mode = 'tr', ptMark = null;
+  let cur = null, mode = 'tr', ptMark = null, query = '', hl = null;
   function openReader(id, pt) {
     A.photoWalkEnd(); A.introEnd(true); A.endTour();
     rd.classList.add('open'); rd.classList.remove('docked'); document.body.classList.add('storyopen');
@@ -194,6 +194,7 @@
   function closeReader() {
     rd.classList.remove('open', 'docked'); document.body.classList.remove('storyopen', 'storydock'); rd.innerHTML = ''; cur = null;
     if (ptMark) { ptMark.remove(); ptMark = null; }
+    A.fingerSel();
   }
   // קטע שבתוכו השמטה ("...") — מסמנים את החלק שעד ההשמטה
   const cut = f => f ? f.split(/\s*(?:\.\.\.|…)\s*/)[0] : f;
@@ -213,8 +214,10 @@
     const e = cur && TRAVEL.find(x => x.id === cur), st = e && STORIES[e.id];
     let art;
     if (!e) {
-      art = '<h2>' + esc(T('stTitle')) + '</h2><p class="stsum">' + esc(T('stIntro')) + '</p><div class="stcards">' + list.map(x =>
-        '<button data-id="' + esc(x.id) + '"><b>' + esc(L(x.writer)) + '</b><i>' + esc(x.visit_year || x.pub_year || '') + ' · ' + esc(T('tr_' + x.did_climb) || '') + '</i><span>' + esc(L(x.summary)) + '</span></button>').join('') + '</div>';
+      art = '<h2>' + esc(T('stTitle')) + '</h2><p class="stsum">' + esc(T('stIntro')) + '</p>' +
+        '<div class="stfind"><input id="stQ" type="search" autocomplete="off" placeholder="' + esc(T('stFindPh')) + '" aria-label="' + esc(T('stFindPh')) + '" value="' + esc(query) + '"><div id="stRes"></div></div>' +
+        '<div class="stcards">' + list.map(x =>
+        '<button data-id="' + esc(x.id) + '" data-key="' + esc(keyOf(x)) + '"><b>' + esc(L(x.writer)) + '</b><i>' + esc(x.visit_year || x.pub_year || '') + ' · ' + esc(T('tr_' + x.did_climb) || '') + '</i><span>' + esc(L(x.summary)) + '</span></button>').join('') + '</div>';
     } else {
       const P = paras(st), pts = st.points || [], orig = (st.story || {}).orig || [];
       const canOrig = st.lang_orig && st.lang_orig !== lang && orig.length && (st.story[lang] || lang !== 'en');
@@ -234,11 +237,12 @@
         return '<p dir="auto">' + html + tail + '</p>';
       }).join('');
       const i0 = list.indexOf(e);
-      art = '<div class="sthead"><h2>' + esc(L(e.writer)) + '</h2><div class="stmeta"><i>' + esc((lang === 'ar' ? (e.title.ar || e.title.en) : L(e.title)) || e.title.orig) + '</i>' +
+      art = '<div class="sthead"><h2>' + esc(L(e.writer)) + '</h2><button class="lyact stabout" data-narr="' + esc(e.id) + '">' + esc(T('stAbout')) + '</button><div class="stmeta"><i>' + esc((lang === 'ar' ? (e.title.ar || e.title.en) : L(e.title)) || e.title.orig) + '</i>' +
         [e.visit_year ? T('visit') + ' ' + e.visit_year : '', e.pub_year ? T('pub') + ' ' + e.pub_year : ''].filter(Boolean).map(x => ' · ' + esc(x)).join('') +
         ' <em class="c-' + esc(e.did_climb) + '">' + esc(T('tr_' + e.did_climb) || '') + '</em></div>' +
         (canOrig ? '<div class="stmode"><button data-m="tr"' + (mode === 'tr' ? ' class="on"' : '') + '>' + esc(T('stTr')) + '</button><button data-m="orig"' + (mode === 'orig' ? ' class="on"' : '') + '>' + esc(T('stOrig')) + ' · ' + esc((T('origLang') || {})[st.lang_orig] || st.lang_orig) + '</button></div>' : '') +
         '</div><p class="stsum">' + esc(L(e.summary)) + '</p>' +
+        (window.GerizimScenes && GerizimScenes.has(e.id) ? '<div class="stscene"><b>' + esc(T('scState')) + '</b><p>' + esc(L(GerizimScenes.state(e.id))) + '</p><button class="lyact" data-scene="' + esc(e.id) + '">👁 ' + esc(T('scShow')) + '</button></div>' : '') +
         (P.length ? '<div class="sttext' + (mode === 'orig' ? ' orig' : '') + '">' + body + '</div>' : '<p class="stsum">' + esc(T('stNoStory')) + '</p>') +
         (pts.length ? '<h3>' + esc(T('stPlaces')) + '</h3><ol class="stpts">' + pts.map((q, i) =>
           '<li><button class="stq" data-pt="' + i + '"' + (ptLL(q) ? '' : ' disabled') + '>📍 ' + esc(ptName(q)) + '</button>' +
@@ -250,20 +254,82 @@
         (i0 < list.length - 1 ? '<button data-id="' + esc(list[i0 + 1].id) + '">' + esc(L(list[i0 + 1].writer)) + ' ' + esc(T('stNext')) + '</button>' : '') + '</div>';
     }
     rd.innerHTML = '<div class="sttop"><b>' + esc(T('stTitle')) + '</b>' + sel +
-      '<button class="stfull">' + esc(T('stFull')) + '</button><button class="stx" aria-label="' + esc(T('stClose')) + '">✕</button></div>' +
+      '<button class="stfind1" aria-label="' + esc(T('stFindBtn')) + '" title="' + esc(T('stFindBtn')) + '">🔍</button><button class="stfull">' + esc(T('stFull')) + '</button><button class="stx" aria-label="' + esc(T('stClose')) + '">✕</button></div>' +
       '<div class="stbody">' + nav + '<article id="stArt" dir="' + (lang === 'en' ? 'ltr' : 'rtl') + '">' + art + '</article></div>';
     rd.querySelector('.stx').onclick = closeReader;
     rd.querySelector('.stfull').onclick = () => { rd.classList.remove('docked'); document.body.classList.remove('storydock'); };
-    $('stSel').onchange = ev => { cur = ev.target.value || null; render(); };
-    rd.querySelectorAll('[data-id]').forEach(b => { b.onclick = () => { cur = b.dataset.id; render(); }; });
+    $('stSel').onchange = ev => { cur = ev.target.value || null; hl = null; render(); };
+    rd.querySelectorAll('[data-id]').forEach(b => { b.onclick = () => { cur = b.dataset.id; hl = null; render(); }; });
     rd.querySelectorAll('[data-m]').forEach(b => { b.onclick = () => { mode = b.dataset.m; render(); }; });
     rd.querySelectorAll('[data-pt]').forEach(b => { b.onclick = () => showPoint(+b.dataset.pt, b); });
+    rd.querySelectorAll('[data-scene]').forEach(b => { b.onclick = () => GerizimScenes.play(b.dataset.scene, 'story'); });
+    rd.querySelectorAll('[data-narr]').forEach(b => { b.onclick = () => window.GerizimExtras && GerizimExtras.narrator(b.dataset.narr, 'story'); });
+    rd.querySelector('.stfind1').onclick = () => { cur = null; hl = null; rd.classList.remove('docked'); document.body.classList.remove('storydock'); render(); const q = $('stQ'); if (q) q.focus(); };
+    if (!e) {
+      const q = $('stQ'); let qt = 0;
+      q.oninput = () => { clearTimeout(qt); qt = setTimeout(() => { query = q.value; find(); }, 180); };
+      find();
+    } else if (hl) mark($('stArt').querySelector('.sttext'), hl);
     const artEl = $('stArt'); artEl.scrollTop = 0;
-    if (pt != null && st) {
+    if (pt && pt.para != null && st) {
+      const pEl = artEl.querySelectorAll('.sttext p')[pt.para], m = pEl && (pEl.querySelector('mark') || pEl);
+      if (m) setTimeout(() => m.scrollIntoView({ block: 'center' }), 60);
+    } else if (pt != null && st) {
       const b = artEl.querySelector('.sttext [data-pt="' + pt + '"]') || artEl.querySelector('[data-pt="' + pt + '"]');
       if (b) { b.classList.add('hit'); setTimeout(() => b.scrollIntoView({ block: 'center' }), 60); }
     }
   }
+  /* ---------- חיפוש: מספר (שם, שנה, שם הספר) או מילה בתוך הסיפורים ---------- */
+  // ניקוד, טעמים, תנועות ערביות וסימני הטעמה אינם מפריעים להתאמה
+  const MARKS = '[\u0591-\u05C7\u064B-\u065F\u0670\u0300-\u036f]';
+  const norm = t => String(t || '').normalize('NFD').replace(new RegExp(MARKS, 'g'), '').toLowerCase();
+  const keyOf = x => norm([x.writer && x.writer.he, x.writer && x.writer.en, x.writer && x.writer.ar, x.title && x.title.he, x.title && x.title.en, x.title && x.title.ar, x.title && x.title.orig, x.visit_year, x.pub_year].join(' '));
+  const reOf = t => new RegExp(t.normalize('NFD').replace(new RegExp(MARKS, 'g'), '').split('').map(c => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + MARKS + '*').join(''), 'gi');
+  function find() {
+    const res = $('stRes'); if (!res) return;
+    const q = norm(query).trim();
+    rd.querySelectorAll('.stcards [data-key]').forEach(b => { b.style.display = !q || b.dataset.key.includes(q) ? '' : 'none'; });
+    if (q.length < 2) { res.innerHTML = ''; return; }
+    const list = order(), who = list.filter(x => keyOf(x).includes(q));
+    let hits = 0, nst = 0, h = '';
+    list.forEach(x => {
+      const st = STORIES[x.id]; if (!st || !st.story) return;
+      const tr = st.story[lang] || (lang === 'en' ? st.story.orig : null) || [], orig = st.lang_orig !== lang ? (st.story.orig || []) : [];
+      const found = [];
+      [[tr, 'tr'], [orig, 'orig']].forEach(([P, m]) => P.forEach((tx, k) => {
+        const n = norm(tx); let i = n.indexOf(q), c = 0;
+        while (i >= 0) { c++; if (found.length < 3 && c === 1) found.push({ m, k, tx }); i = n.indexOf(q, i + q.length); }
+        hits += c;
+      }));
+      if (!found.length) return;
+      nst++;
+      h += '<div class="stfhit"><b>' + esc(L(x.writer)) + ' · ' + esc(x.visit_year || x.pub_year || '') + '</b>' + found.map(f => {
+        // קטע קצר סביב המילה, מתוך הטקסט עצמו (עם הניקוד שבו)
+        const re = reOf(query.trim()), mm = re.exec(f.tx), i = mm ? mm.index : 0, len = mm ? mm[0].length : 0;
+        const a = Math.max(0, i - 60), b = Math.min(f.tx.length, i + len + 80);
+        const snip = (a ? '…' : '') + f.tx.slice(a, b) + (b < f.tx.length ? '…' : '');
+        return '<button data-fid="' + esc(x.id) + '" data-fk="' + f.k + '" data-fm="' + f.m + '" dir="auto">' + esc(snip).replace(reOf(query.trim()), '<mark>$&</mark>') + '</button>';
+      }).join('') + '</div>';
+    });
+    res.innerHTML = (who.length ? '<h4>' + esc(T('stFindN')) + '</h4><div class="stfwho">' + who.map(x => '<button data-wid="' + esc(x.id) + '">' + esc(L(x.writer)) + ' <i>' + esc(x.visit_year || x.pub_year || '') + '</i></button>').join('') + '</div>' : '') +
+      (nst ? '<h4>' + esc(T('stFindT')) + ' <em>' + esc(T('stFindCount').replace('{n}', hits).replace('{m}', nst)) + '</em></h4>' + h : '') +
+      (!who.length && !nst ? '<p class="stsum">' + esc(T('stFindNone')) + '</p>' : '');
+    res.querySelectorAll('[data-wid]').forEach(b => { b.onclick = () => { cur = b.dataset.wid; hl = null; render(); }; });
+    res.querySelectorAll('[data-fid]').forEach(b => { b.onclick = () => { cur = b.dataset.fid; mode = b.dataset.fm; hl = query.trim(); render({ para: +b.dataset.fk }); }; });
+  }
+  // הדגשת המילה שחיפשו בתוך הסיפור שנפתח
+  function mark(root, term) {
+    if (!root || !term) return;
+    const re = reOf(term), nodes = [], w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    while (w.nextNode()) nodes.push(w.currentNode);
+    nodes.forEach(n => {
+      re.lastIndex = 0; if (!re.test(n.nodeValue)) return;
+      const span = document.createElement('span'); re.lastIndex = 0;
+      span.innerHTML = esc(n.nodeValue).replace(re, '<mark>$&</mark>');
+      n.parentNode.replaceChild(span, n);
+    });
+  }
+
   // מקום שבסיפור: הקורא נצמד לצד, והמפה עוברת אליו
   function showPoint(i, b) {
     const st = STORIES[cur], q = st && st.points[i], ll = q && ptLL(q); if (!ll) return;
@@ -275,9 +341,8 @@
     if (!ptMark) { const el = document.createElement('div'); el.className = 'stdot'; ptMark = new maplibregl.Marker({ element: el }).setLngLat(ll).addTo(map); }
     ptMark.setLngLat(ll);
     const el = ptMark.getElement(); el.innerHTML = '<span>' + esc(ptName(q)) + '</span>';
-    const ph = A.isPhone(), side = Math.round(window.innerWidth * 0.48), rtl = lang !== 'en';
-    const pad = ph ? { top: 40, bottom: Math.round(window.innerHeight * 0.52), left: 10, right: 10 } : { top: 60, bottom: 60, left: rtl ? 20 : side, right: rtl ? side : 20 };
-    map.flyTo({ center: ll, zoom: far ? 15.4 : 17.3, pitch: far ? 45 : 55, bearing: map.getBearing(), padding: pad, duration: 2000, essential: true });
+    A.finger(ll, 48);                                    // מעל התווית שעל הנקודה
+    map.flyTo({ center: ll, zoom: far ? 15.4 : 17.3, pitch: far ? 45 : 55, bearing: map.getBearing(), padding: A.padFor(rd), duration: 2000, essential: true });
   }
   document.addEventListener('keydown', ev => {
     if (ev.key !== 'Escape') return;
@@ -293,7 +358,7 @@
     if (rd.classList.contains('open') && STORIES) { const dock = rd.classList.contains('docked'); render(); if (dock) rd.classList.add('docked'); }
     A.barHeight();
   }
-  window.GerizimLayers = { hasStory, openStory: id => openReader(id), setLang, travelLayer, springsLayer };
+  window.GerizimLayers = { hasStory, openStory: id => openReader(id), closeStory: () => closeReader(), isOpen: () => rd.classList.contains('open'), setLang, travelLayer, springsLayer };
   setLang(lang);
   A.renderCard();                      // כפתורי "הסיפור המלא" בכרטיסים שכבר פתוחים
 })();

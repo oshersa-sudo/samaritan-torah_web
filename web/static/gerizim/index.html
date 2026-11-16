@@ -213,7 +213,8 @@
   .pwdot{width:18px;height:18px;border-radius:50%;background:#e9b949;border:3px solid #fff;box-shadow:0 0 0 3px rgba(0,0,0,.35)}
   body.pwalking #card{display:none}
   @media (max-width:760px){
-    #pwalk{top:auto;inset-inline:0;width:auto;bottom:calc(var(--barh) + 4px);height:56vh;border-radius:12px 12px 0 0}
+    #pwalk{top:auto;inset-inline:0;width:auto;bottom:calc(var(--barh) + 4px);height:46vh;height:46dvh;border-radius:12px 12px 0 0}
+    #pwCap{max-height:40%}
   }
   @media (max-height:500px) and (orientation:landscape){
     #pwalk{top:8px;bottom:8px;height:auto;width:52vw;inset-inline-start:8px;inset-inline-end:auto;border-radius:10px}
@@ -291,13 +292,126 @@
   body.storyopen:not(.storydock) #bar{visibility:hidden}
   @media (max-width:760px){
     #stIdx{display:none} #stSel{display:inline-block;max-width:none;flex:1} #story .sttop>b{display:none}
-    #story.docked{top:auto;inset-inline:0;width:auto;bottom:calc(var(--barh) + 4px);height:50vh;border-radius:12px 12px 0 0}
+    #story.docked{top:auto;inset-inline:0;width:auto;bottom:calc(var(--barh) + 4px);height:40vh;height:40dvh;border-radius:12px 12px 0 0}
     .sttext p{font-size:16.5px}
   }
   @media (max-height:500px) and (orientation:landscape){
     #story.docked{top:8px;bottom:8px;height:auto;width:52vw;inset-inline-start:8px;inset-inline-end:auto;border-radius:10px}
   }
   #pwalk.nophoto #pwCap{max-height:none;flex:1}
+  /* האצבע שמצביעה על המקום שהכרטיס, הסיפור או התמונה מדברים עליו */
+  .finger{pointer-events:none;z-index:3}
+  .finger span{display:block;font-size:34px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.75)) drop-shadow(0 0 1px #fff);animation:fingerBob 1.1s ease-in-out infinite}
+  @keyframes fingerBob{0%,100%{transform:translateY(-7px)}50%{transform:translateY(0)}}
+  @media (prefers-reduced-motion:reduce){.finger span{animation:none}}
+  @media (max-width:640px){.finger span{font-size:30px}}
+  /* ---- תפריט הסיורים ---- */
+  #tourPop{position:fixed;z-index:27;display:none;bottom:calc(var(--barh,96px) + 8px);inset-inline-start:12px;width:min(400px,calc(100vw - 24px));max-height:calc(100dvh - var(--barh,96px) - 70px);overflow:auto;
+    background:rgba(20,16,11,.97);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:10px 12px 12px;color:var(--ink);overscroll-behavior:contain}
+  #tourPop.open{display:block}
+  #tourPop .lyh{display:flex;align-items:center;margin-bottom:4px} #tourPop .lyh b{flex:1;color:var(--gold);font-size:15.5px}
+  #tourPop .lyx{background:none;border:0;color:var(--ink);font-size:17px;min-width:34px;min-height:34px;cursor:pointer}
+  .tpi{margin:0 0 8px;font-size:13px;color:var(--dim);line-height:1.5}
+  .tpnames{display:block;width:100%;text-align:start;margin:0 0 8px;padding:8px 12px;border-radius:10px;border:1px solid rgba(217,178,95,.55);background:rgba(217,178,95,.14);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  .tprow,.tpsub>summary{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:none;border:0;border-top:1px solid rgba(217,178,95,.18);border-radius:0;color:var(--ink);padding:9px 2px;cursor:pointer;font:inherit}
+  .tprow i,.tpsub>summary>i{font-style:normal;font-size:20px;flex:none;width:28px;text-align:center;display:inline-flex;justify-content:center}
+  .tprow span,.tpsub>summary>span{flex:1;min-width:0} .tprow b,.tpsub b{display:block;font-size:14.5px} .tprow small,.tpsub small{display:block;font-size:12px;color:var(--dim);line-height:1.4;margin-top:1px}
+  .tprow:hover,.tpsub>summary:hover{background:rgba(217,178,95,.08)}
+  .tpsub>summary{list-style:none} .tpsub>summary::-webkit-details-marker{display:none}
+  .tpsub>summary::after{content:"+";font-size:18px;color:var(--dim);flex:none} .tpsub[open]>summary::after{content:"−"}
+  .tpsub>div{display:flex;flex-direction:column;gap:5px;padding:2px 0 8px;padding-inline-start:38px}
+  .tpsub>div>button,.tpnar>button{text-align:start;border-radius:9px;padding:6px 10px;font-size:13.5px;min-height:36px}
+  .tpnar{display:flex;gap:5px} .tpnar>button:first-child{flex:1} .tpnar em{font-style:normal;color:var(--dim);font-size:12px}
+  .tpnar .tpwho{flex:none;width:40px;padding:0}
+  /* ---- לוח מידע: על המספר, שמות ההר ---- */
+  #xsheet{position:fixed;inset:0;z-index:46;display:none;align-items:center;justify-content:center;background:rgba(8,6,4,.55);padding:16px}
+  #xsheet.open{display:flex}
+  #xsheet .xin{width:min(640px,100%);max-height:min(86dvh,860px);display:flex;flex-direction:column;background:#19140e;color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.6);overflow:hidden}
+  #xsheet .xtop{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);flex:none}
+  #xsheet .xtop b{flex:1;color:var(--gold);font-size:15.5px}
+  #xsheet .xtop button{background:none;border:0;color:var(--ink);font-size:18px;min-width:38px;min-height:38px;cursor:pointer}
+  #xBody{overflow:auto;padding:14px 18px 18px;overscroll-behavior:contain}
+  #xBody h2{margin:0 0 4px;font-size:21px;color:#f6e7c4} #xBody h3{margin:16px 0 6px;font-size:14.5px;color:var(--gold)}
+  .xmeta{font-size:13px;color:var(--dim);margin-bottom:10px}
+  .xbio{font-size:15.5px;line-height:1.75;margin:0 0 12px}
+  .xacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center} .xacts button{border-radius:9px;min-height:38px} .xacts a{color:var(--gold);font-size:14px}
+  .xload{color:var(--dim);text-align:center;padding:20px 0}
+  .xintro{font-size:14.5px;line-height:1.7;margin:0 0 10px}
+  .xnames{margin:0;padding-inline-start:26px} .xnames li{margin:0 0 11px;padding-inline-start:4px}
+  .xnames li::marker{color:var(--gold);font-weight:600}
+  .xnh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+  .xnh b{font-size:18px;color:#f6e7c4;font-family:Georgia,'Frank Ruehl CLM','David',serif}
+  .xsam{font-family:'Samaritan',serif;font-size:19px;color:var(--gold);direction:rtl}
+  .xnh i{font-style:normal;font-size:13.5px;color:var(--ink)}
+  .xv{font-size:12.5px;color:var(--dim);margin:1px 0 2px} .xv span{color:#e6d8b8}
+  .xnames p{margin:2px 0 0;font-size:13.5px;line-height:1.55}
+  .xsrc{font-size:12px;color:var(--dim);margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
+  @media (max-width:640px){
+    #xsheet{align-items:flex-end;padding:0}
+    #xsheet .xin{width:100%;max-height:88dvh;border-radius:14px 14px 0 0}
+    #xBody{padding:12px 14px 16px}
+    #tourPop{inset-inline:8px;width:auto}
+  }
+  /* ---- חיפוש בסיפורים ---- */
+  .stfind{margin:12px auto 6px}
+  #stQ{width:100%;box-sizing:border-box;min-height:42px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:#231b11;color:var(--ink);font:inherit;font-size:15px}
+  #stQ:focus{outline:2px solid var(--gold);outline-offset:1px}
+  #stRes h4{margin:12px 0 6px;font-size:13.5px;color:var(--gold)} #stRes h4 em{font-style:normal;font-weight:400;color:var(--dim);font-size:12.5px;margin-inline-start:6px}
+  .stfwho{display:flex;flex-wrap:wrap;gap:6px} .stfwho button{border-radius:14px;font-size:13.5px} .stfwho i{font-style:normal;color:var(--dim);font-size:12px}
+  .stfhit{border-top:1px solid rgba(217,178,95,.15);padding:6px 0} .stfhit>b{display:block;font-size:13.5px;margin-bottom:3px}
+  .stfhit button{display:block;width:100%;text-align:start;background:none;border:0;border-radius:8px;color:var(--ink);font:inherit;font-size:13.5px;line-height:1.55;padding:4px 6px;cursor:pointer}
+  .stfhit button:hover{background:rgba(217,178,95,.1)}
+  #story mark{background:rgba(233,185,73,.45);color:inherit;border-radius:2px;padding:0 1px}
+  .stabout{margin:2px 0 6px !important;display:inline-block !important}
+  #story .sttop .stfind1{font-size:16px}
+  .narrbtn,.namesbtn{margin-top:4px}
+  /* ---- התיאור החזותי של סיפור (scenes.js) ---- */
+  #scene{position:fixed;z-index:26;display:none;flex-direction:column;background:rgba(18,15,11,.95);color:#f3ead6;border:1px solid rgba(217,178,95,.4);box-shadow:0 8px 30px rgba(0,0,0,.5);
+    top:58px;bottom:calc(var(--barh) + 10px);inset-inline-start:12px;width:min(40vw,520px);border-radius:12px;overflow:hidden}
+  #scene.open{display:flex}
+  #scene .sctop{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid rgba(217,178,95,.25);flex:none}
+  #scene .sctop b{flex:1;min-width:0;font-size:15px;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #scene .sctop span{font-size:12.5px;color:var(--dim);white-space:nowrap}
+  #scene .sctop button{background:none;border:0;color:#f3ead6;font-size:18px;cursor:pointer;min-width:36px;min-height:36px;flex:none}
+  #scene .sctop .scbase{font-size:12.5px;border:1px solid rgba(217,178,95,.45);border-radius:14px;padding:2px 10px;min-height:30px;white-space:nowrap}
+  #scBody{flex:1;min-height:0;overflow:auto;padding:12px 16px 8px;overscroll-behavior:contain}
+  .scstate{border:1px solid rgba(217,178,95,.35);background:rgba(217,178,95,.08);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+  .scstate b{display:block;font-size:13px;color:var(--gold);margin-bottom:3px} .scstate p{margin:0;font-size:14px;line-height:1.6}
+  .scplace{font-size:13px;color:var(--gold);margin:2px 0 6px}
+  .scq{margin:0 0 10px;padding:2px 12px;border-inline-start:3px solid var(--gold);font-family:Georgia,'Frank Ruehl CLM','David',serif;font-size:17px;line-height:1.75;color:#f6ecd6}
+  .scnote{font-size:12px;color:var(--dim);margin:8px 0 2px;line-height:1.5}
+  .scload{color:var(--dim);text-align:center;padding:20px 0}
+  .scback{display:block;margin:4px 0 8px;min-height:38px;padding:5px 12px;border-radius:9px;border:1px solid var(--line);background:rgba(217,178,95,.14);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  #scene .scnav{display:flex;gap:10px;padding:8px 12px 12px;flex:none}
+  #scene .scnav button{flex:1;min-height:42px;border-radius:9px;border:1px solid rgba(217,178,95,.5);background:rgba(217,178,95,.12);color:#f3ead6;font-size:20px;cursor:pointer}
+  #scene .scnav #scPlay{flex:.8;font-size:17px}
+  body.scening .pin,body.scening .omark,body.scening .walkpin,body.scening .stmk,body.scening #olegend,body.scening #reconNote,body.scening #card,body.scening #lyPop,body.scening #coach{display:none !important}
+  body.sceneopen #pwalk{display:none}
+  .scmk{pointer-events:none} .scmk .scin{position:relative;scale:var(--scz,1);transform-origin:50% 50%}
+  .sc-fire .scin,.sc-cave .scin{transform-origin:50% 100%}
+  .scmk i{position:absolute;display:block;line-height:0;filter:drop-shadow(0 1px 1px rgba(0,0,0,.6))}
+  .sc-fire b{display:block;font-size:24px;line-height:1;filter:drop-shadow(0 0 6px rgba(255,140,40,.9))}
+  .sc-fire s{position:absolute;left:50%;bottom:22px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:rgba(210,205,195,.55);animation:scSmoke 3.2s linear infinite}
+  .sc-fire s:nth-of-type(2){animation-delay:1.05s} .sc-fire s:nth-of-type(3){animation-delay:2.1s}
+  @keyframes scSmoke{0%{transform:translate(0,0) scale(.6);opacity:.8}100%{transform:translate(10px,-46px) scale(2.6);opacity:0}}
+  @media (prefers-reduced-motion:reduce){.sc-fire s{animation:none;opacity:.35}}
+  .trstate{margin:4px 0 6px;padding:6px 9px;border-radius:8px;background:rgba(217,178,95,.07);border:1px solid rgba(217,178,95,.22)}
+  .trstate b{display:block;font-size:12px;color:var(--gold)} .trstate p{margin:2px 0 4px !important;font-size:13px !important;line-height:1.5 !important}
+  .scbtn{margin-top:2px}
+  .stscene{border:1px solid rgba(217,178,95,.35);background:rgba(217,178,95,.07);border-radius:10px;padding:10px 14px;margin:10px auto 6px}
+  .stscene b{display:block;font-size:13.5px;color:var(--gold);margin-bottom:4px} .stscene p{margin:0 0 4px;font-size:15px;line-height:1.65}
+  .stscene .lyact{margin-inline-start:0}
+  @media (max-width:760px){
+    #scene{top:auto;inset-inline:0;width:auto;bottom:calc(var(--barh) + 4px);height:38vh;height:38dvh;border-radius:12px 12px 0 0}
+    .scq{font-size:15.5px;line-height:1.6}
+    #scene .scpre{display:none} #scene .sctop span#scCount{font-size:11.5px}
+    #scBody{padding:10px 13px 6px}
+    #scene .scnav{padding:6px 10px 8px} #scene .scnav button{min-height:38px}
+  }
+  @media (max-height:500px) and (orientation:landscape){
+    #scene{top:8px;bottom:8px;height:auto;width:48vw;inset-inline-start:8px;inset-inline-end:auto;border-radius:10px}
+  }
+  #olegend #oTop{pointer-events:auto;display:block;width:100%;margin-top:5px;padding:4px 8px;font-size:12px;border-radius:8px;min-height:30px}
   .pwmore{background:none;border:0;color:var(--gold);font:inherit;font-size:12px;cursor:pointer;padding:0;text-decoration:underline}
   .stratum a.stl{display:inline-block;margin-top:3px;font-size:13px;color:var(--gold);text-decoration:none}
   #card ul{margin:0;padding-inline-start:18px;font-size:14.5px;line-height:1.6}
@@ -449,8 +563,10 @@
     .row::-webkit-scrollbar{display:none}
     .row button,.row .lbl{flex:none}
     button{padding:6px 11px;font-size:13.5px}
-    #card{top:auto;bottom:calc(104px + env(safe-area-inset-bottom));right:8px;left:8px;width:auto;
-      max-height:42vh;max-height:42dvh;padding:12px 14px 12px}
+    #card{top:auto;bottom:calc(var(--barh,104px) + 4px);right:8px;left:8px;width:auto;
+      max-height:34vh;max-height:34dvh;padding:10px 12px 10px}
+    #card h2{margin-bottom:5px}
+    #card .kind{margin-bottom:0}
     #card h2{font-size:18px}
     #card p{font-size:14.5px}
     .ph,.ph img{height:76px}
@@ -460,7 +576,7 @@
     #toast{bottom:112px}
     #dial{--d:90px;--rad:31px;left:8px;bottom:calc(var(--barh,96px) + 66px)}
     /* כשכרטיס פתוח הוא תופס את תחתית המסך, והחוגה עולה אל מעליו */
-    body:has(#card.open) #dial{bottom:calc(104px + 42dvh + 12px)}
+    body:has(#card.open) #dial{bottom:calc(var(--barh,104px) + 34dvh + 12px)}
     #dialNow{font-size:10px;padding:0 24px}
     #dialRose .dl{font-size:12px} #dialRose .dl.n{font-size:13px}
   }
@@ -611,24 +727,27 @@
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <!-- מספר הגרסה מונע מהדפדפן להגיש קובץ ישן מהמטמון; להעלות אותו בכל שינוי -->
-<script src="places.js?v=64"></script>
-<script src="places_apply.js?v=64"></script>
-<script src="images.js?v=64"></script>
-<script src="walk_dem.js?v=64"></script>
-<script src="walk_data.js?v=64"></script>
-<script src="walk_info.js?v=64"></script>
-<script src="walk_sanct.js?v=64"></script>
-<script src="walk_now.js?v=64"></script>
-<script src="audio.js?v=64"></script>
-<script src="media.js?v=64"></script>
-<script src="travelers.js?v=64"></script>
-<script src="photowalks.js?v=64"></script>
-<script src="springs.js?v=64"></script>
-<script src="flickr.js?v=64"></script>
-<script src="inscriptions.js?v=64"></script>
-<script src="orient.js?v=64"></script>
-<script src="recon.js?v=64"></script>
-<script src="tour.js?v=64"></script>
-<script src="layers.js?v=64"></script>
+<script src="places.js?v=65"></script>
+<script src="places_apply.js?v=65"></script>
+<script src="images.js?v=65"></script>
+<script src="walk_dem.js?v=65"></script>
+<script src="walk_data.js?v=65"></script>
+<script src="walk_info.js?v=65"></script>
+<script src="walk_sanct.js?v=65"></script>
+<script src="walk_now.js?v=65"></script>
+<script src="audio.js?v=65"></script>
+<script src="media.js?v=65"></script>
+<script src="travelers.js?v=65"></script>
+<script src="photowalks.js?v=65"></script>
+<script src="springs.js?v=65"></script>
+<script src="flickr.js?v=65"></script>
+<script src="inscriptions.js?v=65"></script>
+<script src="orient.js?v=65"></script>
+<script src="scene_state.js?v=65"></script>
+<script src="recon.js?v=65"></script>
+<script src="tour.js?v=65"></script>
+<script src="layers.js?v=65"></script>
+<script src="scenes.js?v=65"></script>
+<script src="extras.js?v=65"></script>
 </body>
 </html>
