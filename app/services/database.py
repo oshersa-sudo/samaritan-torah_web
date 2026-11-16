@@ -577,6 +577,13 @@ _TARGUM_WORDS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
 # and the forms that are an affix away from an entry the dictionary glosses
 _INFLECTION_WORDS_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                        'data', 'inflection_words_patch.json')
+# the second pass over the Targum: the same witness, reached by aligning the two
+# rows instead of demanding that they already have the same word-count
+_TARGUM_ALIGN2_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                    'data', 'targum_align2_patch.json')
+# and the last two dozen, read by hand where no alignment could speak honestly
+_TARGUM_HAND_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                  'data', 'targum_hand_patch.json')
 
 
 def _seed_targum_words():
@@ -598,6 +605,8 @@ def _seed_targum_words():
             return
         words = []
         for path, src in ((_TARGUM_WORDS_PATCH, 'targum'),
+                          (_TARGUM_ALIGN2_PATCH, 'targum'),
+                          (_TARGUM_HAND_PATCH, 'targum'),
                           (_INFLECTION_WORDS_PATCH, 'inflection')):
             if not os.path.exists(path):
                 continue
@@ -625,7 +634,12 @@ def _seed_targum_words():
                     (form, norm_)).fetchone()
             except sqlite3.Error:
                 break
-            text = gloss + (' — מן הפסוק שמולו (%s)' % w['ref'] if w.get('ref') else '')
+            text = gloss
+            if w.get('root'):
+                # the root named inside the gloss is what makes it checkable
+                text += ' (שורש %s)' % w['root']
+            if w.get('ref'):
+                text += ' — מן הפסוק שמולו (%s)' % w['ref']
             src_name = w.get('src_name') or 'targum'
             if have:
                 # a row this patch wrote itself may be corrected; anything else
