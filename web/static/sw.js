@@ -1,7 +1,7 @@
 /* Service worker: NETWORK-FIRST so the app always loads the latest code when
    online (an earlier cache-first version served stale assets after updates),
    falling back to the cache only when offline. /api/* always hits the network. */
-const CACHE = 'torah-web-v342';
+const CACHE = 'torah-web-v343';
 const SHELL = [
   '/', '/manifest.json',      // app.js + style.css are cached by the page's own
                              // versioned request; precaching them here fetched
@@ -29,6 +29,62 @@ self.addEventListener('activate', e => {
   e.waitUntil(caches.keys()
     .then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
+});
+
+/* ── התראות על תוכן חדש ───────────────────────────────────────────────────────
+   The server sends one of these when something is added to an app (see
+   web/push.py). It arrives whether or not the app is open, which is the whole
+   point: the star on the circle is only seen by someone who is already here. */
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (err) { d = { body: (e.data && e.data.text()) || '' }; }
+  const title = d.title || 'אבני שהם';
+  e.waitUntil(self.registration.showNotification(title, {
+    body: d.body || '',
+    icon: '/static/img/icon-192.png',
+    badge: '/static/img/icon-192.png',
+    lang: d.lang || 'he',
+    dir: (d.lang === 'en') ? 'ltr' : 'rtl',
+    // one notification per app replaces the previous one for that app, so a
+    // quiet week of additions does not pile up a tower on the lock screen
+    tag: d.tag || 'news',
+    renotify: true,
+    data: { url: d.url || '/' }
+  }));
+});
+
+/* A press opens the app — the window that is already open if there is one, so a
+   reader is not given a second copy of it, and at the news of that app. */
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || '/';
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+    for (const c of list) {
+      if (new URL(c.url).origin === self.location.origin) {
+        return c.focus().then(() => c.navigate ? c.navigate(url) : null).catch(() => c.focus());
+      }
+    }
+    return self.clients.openWindow(url);
+  }));
+});
+
+/* The push service may retire a subscription on its own; ask for a new one with
+   the same key so notifications do not stop silently. */
+self.addEventListener('pushsubscriptionchange', e => {
+  e.waitUntil((async () => {
+    try {
+      const r = await fetch('/api/push/key');
+      const { key } = await r.json();
+      if (!key) return;
+      const sub = await self.registration.pushManager.subscribe({
+        userVisibleOnly: true, applicationServerKey: key
+      });
+      await fetch('/api/push/subscribe', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscription: sub.toJSON(), lang: 'he' })
+      });
+    } catch (err) { /* nothing to be done from here */ }
+  })());
 });
 
 self.addEventListener('fetch', e => {

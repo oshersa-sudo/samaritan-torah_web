@@ -12,7 +12,7 @@
   "navigationDividerColor": "#1a3873",
   "navigationDividerColorDark": "#1a3873",
   "backgroundColor": "#f7f7f2",
-  "enableNotifications": false,
+  "enableNotifications": true,
   "startUrl": "/",
   "iconUrl": "https://samaritan-torah.onrender.com/static/img/icon-512.png",
   "maskableIconUrl": "https://samaritan-torah.onrender.com/static/img/icon-maskable-512.png",

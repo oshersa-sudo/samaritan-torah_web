@@ -2033,6 +2033,49 @@ app.register_blueprint(_mss_unit)
 from news import news as _news_bp                                    # noqa: E402
 app.register_blueprint(_news_bp)
 
+# התראות על תוכן חדש — the same news, carried to the phone of a reader who asked
+# for it, while the app is closed (see push.py). The sweep runs in its own
+# daemon thread; a first run only writes down what is already there.
+try:
+    from push import push as _push_bp                                # noqa: E402
+    import push as _push                                             # noqa: E402
+    app.register_blueprint(_push_bp)
+    _push.start_watch()
+except Exception as _exc:                                            # pragma: no cover
+    _push = None
+    print('[push] not available: %s' % _exc)
+
+
+@app.route('/api/admin/push_status')
+def api_admin_push_status():
+    """How many devices asked to be told, and what the last sweep did."""
+    if not _valid_token(request.args.get('token')):
+        return jsonify({'error': 'unauthorized'}), 401
+    if not _push:
+        return jsonify({'available': False})
+    return jsonify({'available': True, 'subscribers': _push.subscriber_count(),
+                    'last': _push.REPORT.get('push', '')})
+
+
+@app.route('/api/admin/push_test', methods=['POST'])
+def api_admin_push_test():
+    """Send one notification to every subscribed device — how the chain is
+    checked end to end without waiting for the next addition."""
+    d = request.get_json(silent=True) or {}
+    if not _valid_token(d.get('token')):
+        return jsonify({'error': 'unauthorized'}), 401
+    if not _push:
+        return jsonify({'ok': False, 'error': 'push unavailable'}), 503
+    head = {'he': (d.get('title') or 'אבני שהם'), 'en': (d.get('title') or 'Avney Shoam'),
+            'ar': (d.get('title') or 'אבני שהם')}
+    body = {'he': (d.get('body') or 'בדיקת התראות — ההתראות פועלות.'),
+            'en': (d.get('body') or 'Notification test — notifications are working.'),
+            'ar': (d.get('body') or 'اختبار الإشعارات — الإشعارات تعمل.')}
+    sent, dropped, failed = _push.send(
+        lambda lang: {'title': head.get(lang, head['he']), 'body': body.get(lang, body['he']),
+                      'url': '/', 'tag': 'push-test', 'lang': lang})
+    return jsonify({'ok': True, 'sent': sent, 'dropped': dropped, 'failed': failed})
+
 
 @app.route('/favicon.ico')
 def favicon():
@@ -2205,6 +2248,20 @@ def install_guide(lang):
 # deliberately does real work — opens the database and reads from it — so that
 # the warming up (importing, opening the file, filling the page cache) is paid
 # by the deploy and not by the first reader, who used to wait about four seconds.
+def _push_health():
+    """One line about the notification chain: is the module there, is the signing
+    key in place, how many devices asked to be told, what the last sweep did.
+    Nothing here identifies a device."""
+    try:
+        p = globals().get('_push')
+        if not p:
+            return {'available': False}
+        return {'available': True, 'key': bool(p._ensure_keys()),
+                'subscribers': p.subscriber_count(), 'last': p.REPORT.get('push', '')}
+    except Exception as exc:
+        return {'available': True, 'error': str(exc)}
+
+
 @app.route('/healthz')
 def healthz():
     t0 = time.time()
@@ -2214,7 +2271,10 @@ def healthz():
         return jsonify({'ok': True, 'books': len(books),
                         'ms': round((time.time() - t0) * 1000),
                         # what the boot patches did — see database.PATCH_REPORT
-                        'patches': getattr(db, 'PATCH_REPORT', {})})
+                        'patches': getattr(db, 'PATCH_REPORT', {}),
+                        # and whether the notification chain is alive (push.py):
+                        # the key exists, and how many devices asked to be told
+                        'push': _push_health()})
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
 

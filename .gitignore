@@ -61,3 +61,8 @@ data/dict_expand/dictionary_backup_pre_expand.sql
 
 # staging artefact of the lexicon split
 data/_dropped_test.db
+
+# the signing key for the push notifications (web/push.py). It is made on the
+# machine that runs the app and belongs beside its database, never in git.
+data/vapid_private.pem
+*.pem

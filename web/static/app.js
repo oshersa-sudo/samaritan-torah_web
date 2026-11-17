@@ -354,6 +354,15 @@ const I18N = {
     install_rec_title:'התקנת האפליקציה',
     install_rec_body:'מומלץ להתקין את האפליקציה על מסך הבית — לגישה מהירה, חוויה מלאה ושימוש גם ללא חיבור לאינטרנט.',
     install_rec_btn:'התקן עכשיו',
+    m_notif:'התראות על תוכן חדש',
+    notif_what:'כשמשהו נוסף לאחת האפליקציות — פיוט חדש באוצר השירה, ספר בספרייה, כתב יד, עדכון בציר הזמן או ביוחסין — נשלחת התראה למכשיר, גם כשהאפליקציה סגורה. לחיצה על ההתראה פותחת את האפליקציה במקום שבו נוסף הדבר.',
+    notif_state:'המצב כעת',
+    notif_is_on:'ההתראות פועלות במכשיר זה.',
+    notif_is_off:'ההתראות כבויות במכשיר זה.',
+    notif_blocked:'ההתראות חסומות בהגדרות המכשיר.',
+    notif_turn_on:'הפעל התראות',
+    notif_turn_off:'כבה התראות',
+    notif_unsupported:'הדפדפן או המכשיר הזה אינו תומך בהתראות. באייפון יש להתקין את האפליקציה למסך הבית.',
     notif_rec_title:'קבלת התראות',
     notif_rec_body:'אפשר התראות כדי לקבל עדכונים על חידושים, תוספות וגרסאות חדשות של האפליקציה.',
     notif_rec_btn:'אפשר התראות',
@@ -692,6 +701,15 @@ const I18N = {
     install_rec_title:'Install the app',
     install_rec_body:'We recommend installing the app to your home screen — for quick access, the full experience, and offline use.',
     install_rec_btn:'Install now',
+    m_notif:'Notifications about new content',
+    notif_what:'When something is added to one of the apps — a new piyyut in the Song Treasury, a book in the Library, a manuscript, an update to the timeline or the genealogy — a notification is sent to the device, even while the app is closed. Pressing it opens the app where the addition was made.',
+    notif_state:'Current state',
+    notif_is_on:'Notifications are on for this device.',
+    notif_is_off:'Notifications are off for this device.',
+    notif_blocked:'Notifications are blocked in the device settings.',
+    notif_turn_on:'Turn notifications on',
+    notif_turn_off:'Turn notifications off',
+    notif_unsupported:'This browser or device does not support notifications. On iPhone the app has to be installed to the home screen first.',
     notif_rec_title:'Enable notifications',
     notif_rec_body:'Allow notifications to get updates about new features, additions and new versions of the app.',
     notif_rec_btn:'Enable notifications',
@@ -1030,6 +1048,15 @@ const I18N = {
     install_rec_title:'تثبيت التطبيق',
     install_rec_body:'نوصي بتثبيت التطبيق على الشاشة الرئيسية — لوصول سريع، وتجربة كاملة، واستخدام دون اتصال بالإنترنت.',
     install_rec_btn:'ثبّت الآن',
+    m_notif:'إشعارات عن المحتوى الجديد',
+    notif_what:'عند إضافة شيء إلى أحد التطبيقات — قصيدة جديدة في كنز الأناشيد، كتاب في المكتبة، مخطوط، تحديث في الخط الزمني أو في شجرة الأنساب — يُرسل إشعار إلى الجهاز، حتى والتطبيق مُغلق. والضغط عليه يفتح التطبيق في موضع الإضافة.',
+    notif_state:'الحالة الآن',
+    notif_is_on:'الإشعارات مُشغّلة على هذا الجهاز.',
+    notif_is_off:'الإشعارات مُطفأة على هذا الجهاز.',
+    notif_blocked:'الإشعارات محجوبة في إعدادات الجهاز.',
+    notif_turn_on:'تشغيل الإشعارات',
+    notif_turn_off:'إطفاء الإشعارات',
+    notif_unsupported:'هذا المتصفّح أو الجهاز لا يدعم الإشعارات. على الآيفون يجب تثبيت التطبيق على الشاشة الرئيسية أولًا.',
     notif_rec_title:'تفعيل الإشعارات',
     notif_rec_body:'اسمح بالإشعارات لتصلك تحديثات حول الميزات الجديدة والإضافات والإصدارات الجديدة للتطبيق.',
     notif_rec_btn:'تفعيل الإشعارات',
@@ -7875,6 +7902,9 @@ function menuAction(a){
   else if(a==='bookmarks') openBookmarks();
   else if(a==='adminlogin') openAdminLogin();
   else if(a==='a11y')      openA11y();
+  // the way back for anyone who answered "no" to the one question, or who
+  // wants the notifications off again (see askPushOnce / web/push.py)
+  else if(a==='notif')     openPushSettings();
   else if(a==='lang')      $('langModal').classList.remove('hidden');
   // its own page, not a panel: a document scrolls, a panel has to be told its height
   else if(a==='getapp')    location.href = '/download?lang=' + LANG;
@@ -11523,6 +11553,123 @@ async function gotoBookmark(b){
   }catch(e){ showInfo(t('bm_my'), '<div class="note">לא ניתן לפתוח את הסימניה (ייתכן שהמבנה השתנה).</div>'); }
 }
 
+// ── התראות על תוכן חדש ────────────────────────────────────────────────────────
+// The star on a circle of the main menu is only seen by someone who is already
+// here. These are the same additions, carried to the phone while the app is
+// closed, for a reader who asked to be told. The question is asked ONCE, on the
+// first opening of the installed app, and it is asked in the language of the
+// DEVICE — not of the app — because at that moment the reader has not yet
+// chosen a language of ours.
+const PUSH_TX = {
+  he:{ t:'התראות', q:'האם תרצה לקבל התראות על תוכן חדש באפליקציה?', yes:'כן', no:'לא',
+       on:'ההתראות הופעלו. נודיע לך על כל תוספת חדשה.',
+       off:'ההתראות כבויות.',
+       denied:'ההתראות חסומות בהגדרות המכשיר לאפליקציה זו. יש לאפשר אותן שם.',
+       err:'לא הצלחנו להפעיל התראות כעת. נסה שוב מאוחר יותר.' },
+  en:{ t:'Notifications', q:'Would you like to receive notifications about new content in the app?', yes:'Yes', no:'No',
+       on:'Notifications are on. We will tell you about every addition.',
+       off:'Notifications are off.',
+       denied:'Notifications are blocked for this app in the device settings. They have to be allowed there.',
+       err:'Notifications could not be turned on just now. Please try again later.' },
+  ar:{ t:'الإشعارات', q:'هل تريد تلقّي إشعارات عن المحتوى الجديد في التطبيق؟', yes:'نعم', no:'لا',
+       on:'تم تشغيل الإشعارات. سنُعلمك بكل إضافة جديدة.',
+       off:'الإشعارات مُطفأة.',
+       denied:'الإشعارات محجوبة لهذا التطبيق في إعدادات الجهاز، ويجب السماح بها هناك.',
+       err:'لم نتمكّن من تشغيل الإشعارات الآن. يُرجى المحاولة لاحقًا.' }
+};
+// the language the DEVICE speaks, mapped onto the three this app speaks
+function deviceLang(){
+  const list = (navigator.languages && navigator.languages.length ? navigator.languages
+                : [navigator.language || navigator.userLanguage || '']);
+  for(const raw of list){
+    const l = String(raw || '').toLowerCase();
+    if(l.startsWith('he') || l.startsWith('iw')) return 'he';
+    if(l.startsWith('ar')) return 'ar';
+    if(l.startsWith('en')) return 'en';
+  }
+  return 'he';
+}
+const pushTx = () => PUSH_TX[deviceLang()] || PUSH_TX.he;
+function pushSupported(){
+  return ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window);
+}
+async function pushCurrent(){
+  if(!pushSupported()) return null;
+  try{ const reg = await navigator.serviceWorker.ready; return await reg.pushManager.getSubscription(); }
+  catch(e){ return null; }
+}
+// is this device subscribed right now?
+async function pushIsOn(){
+  return Notification.permission === 'granted' && !!(await pushCurrent());
+}
+// Ask the browser, then subscribe and hand the subscription to the server.
+// Returns 'on' | 'denied' | 'unsupported' | 'error'.
+async function pushEnable(lang){
+  if(!pushSupported()) return 'unsupported';
+  try{
+    const perm = (Notification.permission === 'granted')
+      ? 'granted' : await Notification.requestPermission();
+    if(perm !== 'granted') return 'denied';
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if(!sub){
+      const r = await fetch('/api/push/key');
+      const j = await r.json();
+      if(!j || !j.key) return 'error';
+      sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:j.key });
+    }
+    const ok = await fetch('/api/push/subscribe', { method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ subscription: sub.toJSON(), lang: lang || deviceLang() }) });
+    return ok.ok ? 'on' : 'error';
+  }catch(e){ return 'error'; }
+}
+async function pushDisable(){
+  const sub = await pushCurrent();
+  if(!sub) return 'off';
+  try{
+    await fetch('/api/push/unsubscribe', { method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ endpoint: sub.endpoint }) });
+  }catch(e){}
+  try{ await sub.unsubscribe(); }catch(e){}
+  return 'off';
+}
+// The one question, in the device's language, with כן / לא. Asked only on the
+// installed app, only while permission is still undecided, and only once: "no"
+// is an answer, and the menu is where one changes one's mind.
+const PUSH_ASKED = 'as_push_asked';
+async function askPushOnce(){
+  if(!pushSupported() || !isInstalled()) return;
+  if(Notification.permission !== 'default') return;          // already decided
+  try{ if(localStorage.getItem(PUSH_ASKED) === '1') return; }catch(e){}
+  const X = pushTx(), dl = deviceLang();
+  const r = await showOnboard({ title:X.t, body:'<p>'+X.q+'</p>', primaryLabel:X.yes, laterLabel:X.no,
+                                dir:(dl === 'en') ? 'ltr' : 'rtl',
+                                onPrimary: async () => { const s = await pushEnable(dl);
+                                  toast(s === 'on' ? X.on : s === 'denied' ? X.denied : X.err); } });
+  try{ localStorage.setItem(PUSH_ASKED, '1'); }catch(e){}
+  return r;
+}
+// and the way back: ☰ → התראות על תוכן חדש
+async function openPushSettings(){
+  const X = pushTx();
+  if(!pushSupported()){ showInfo(t('m_notif'), '<div class="note">'+t('notif_unsupported')+'</div>'); return; }
+  const on = await pushIsOn();
+  const blocked = Notification.permission === 'denied';
+  const body = '<p>'+t('notif_what')+'</p>' +
+    '<p><b>'+t('notif_state')+':</b> ' + (blocked ? t('notif_blocked') : on ? t('notif_is_on') : t('notif_is_off')) + '</p>' +
+    (blocked ? '<div class="note">'+X.denied+'</div>' : '');
+  const r = await showOnboard({ title:t('m_notif'), body:body,
+    primaryLabel: blocked ? '' : (on ? t('notif_turn_off') : t('notif_turn_on')),
+    onPrimary: async () => {
+      if(on){ await pushDisable(); toast(X.off); }
+      else { const s = await pushEnable(deviceLang());
+             toast(s === 'on' ? X.on : s === 'denied' ? X.denied : X.err); }
+    } });
+  return r;
+}
+
 // ── onboarding: welcome (first entry) + install & notification recommendations ──
 function isInstalled(){
   return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
@@ -11537,7 +11684,11 @@ function showOnboard(opts){
     const prim=$('obPrimary');
     if(opts.primaryLabel){ prim.textContent=opts.primaryLabel; prim.classList.remove('hidden'); }
     else prim.classList.add('hidden');
-    $('obLater').textContent = opts.dont ? t('ob_later') : t('ob_close');
+    // a plain "no" where the card asks a yes/no question, "later"/"close" otherwise
+    $('obLater').textContent = opts.laterLabel || (opts.dont ? t('ob_later') : t('ob_close'));
+    // a card in the device's language, not the app's, sets its own direction
+    const box = document.querySelector('#onboardModal .modal-box') || $('onboardModal');
+    if(box) box.style.direction = opts.dir || '';
     const done=(didPrimary)=>{ $('onboardModal').classList.add('hidden'); resolve({primary:didPrimary, dont:dont.checked}); };
     prim.onclick=async ()=>{ try{ if(opts.onPrimary) await opts.onPrimary(); }catch(e){} done(true); };
     $('obLater').onclick=()=>done(false);
@@ -11590,7 +11741,6 @@ function showWhatsNewCarousel(){
   const L=I18N[LANG]||I18N.he;
   return showCarousel({ title:t('m_whatsnew'), pages:(L.whatsnew_pages||[]).slice(0,5), withRead:false });
 }
-async function requestNotif(){ try{ if('Notification' in window) await Notification.requestPermission(); }catch(e){} }
 async function runOnboarding(){
   const ver = window.APP_VERSION || '1.0';
   // 1a. welcome — shown on EVERY entry until the reader ticks "קראתי" (as_welcome_read).
@@ -11608,14 +11758,13 @@ async function runOnboarding(){
       primaryLabel:t('install_rec_btn'), onPrimary:doInstall, dont:true });
     if(r.dont) localStorage.setItem('as_install_hide','1');
   }
-  // 3. recommend notifications — only if permission is still undecided (not granted/denied)
-  //    and the user hasn't dismissed it for good
-  if(('Notification' in window) && Notification.permission==='default'
-     && localStorage.getItem('as_notif_hide')!=='1'){
-    const r=await showOnboard({ title:t('notif_rec_title'), body:t('notif_rec_body'),
-      primaryLabel:t('notif_rec_btn'), onPrimary:requestNotif, dont:true });
-    if(r.dont) localStorage.setItem('as_notif_hide','1');
-  }
+  // 3. notifications — on the installed app, the one question, in the language of
+  //    the device, with כן / לא. "Yes" also subscribes this device to the push
+  //    notifications the server sends when something is added to an app, which
+  //    is what makes the answer worth anything (see askPushOnce / web/push.py).
+  //    On a browser tab nothing is asked: a permission prompt there is noise,
+  //    and on iOS push works only once the app is on the home screen.
+  await askPushOnce();
   // 4. the guided tour no longer asks on first entry. It was the fourth window
   //    between a reader and the first verse, and it is a thing one goes looking
   //    for rather than one that should interrupt — so it waits in the menu,

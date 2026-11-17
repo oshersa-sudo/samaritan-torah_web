@@ -1543,8 +1543,42 @@
   }
   if(typeof HELP !== 'undefined') ['he', 'en', 'ar'].forEach(l => { if(HELP[l]) HELP[l].unshift(HUBTXT[l].help); });
 
-  window.AvneiHub = { show:showHub, hide:hideHub, enter, apps:APPS, turnTo, step, glint, pickLang, get top(){ return topIdx; }, get pos(){ return u; } };
-  turnTo(0); paintHub(); loadNews(); setTimeout(refitCard, 400);
+  window.AvneiHub = { show:showHub, hide:hideHub, enter, apps:APPS, turnTo, step, glint, pickLang,
+                      news:openAppNews, get top(){ return topIdx; }, get pos(){ return u; } };
+
+  // Arriving from a notification on the phone: /?news=<app>. The notification
+  // said something was added to that app, so the menu turns to its circle and
+  // opens its news — the same window the star opens.
+  function openNewsFromLink(){
+    // read in the page's head (index.html) — by the time this runs the address
+    // has already been rewritten to the bare path by backSpare()
+    let want = window.__newsParam || '';
+    if(!want){ try{ want = new URLSearchParams(location.search).get('news') || ''; }catch(e){ return; } }
+    window.__newsParam = '';                       // once, not on every showHub
+    if(!want || !APPS.some(a => a.key === want)) return;
+    showHub();
+    const i = APPS.findIndex(a => a.key === want);
+    if(i >= 0) turnTo(i);
+    // Two things have to be out of the way first: the entry splash, which is
+    // still writing its verse over everything, and the feed itself, which may
+    // still be on its way. Both are waited for rather than guessed at.
+    const ready = () => !document.getElementById('samaritan-splash') &&
+                        !document.getElementById('splash-image');
+    const tryOpen = (left) => {
+      if(ready() && (NEWS[want] || []).length){
+        openAppNews(want);
+        // only now is the address tidied. A service worker that updates itself
+        // reloads the page once, and a query stripped before the window opened
+        // would be gone by then — which is exactly how this failed in testing.
+        try{ history.replaceState(null, '', location.pathname + location.hash); }catch(e){}
+        return;
+      }
+      if(left > 0) setTimeout(() => tryOpen(left - 1), 400);
+    };
+    tryOpen(60);                                   // the splash alone runs ten seconds
+  }
+
+  turnTo(0); paintHub(); loadNews().then(openNewsFromLink, openNewsFromLink); setTimeout(refitCard, 400);
   document.body.classList.toggle('hub-open', !hub.classList.contains('hidden'));
   document.body.style.overflow = hub.classList.contains('hidden') ? '' : 'hidden';
 })();
