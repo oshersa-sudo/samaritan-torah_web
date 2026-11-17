@@ -1279,6 +1279,24 @@
     document.body.style.overflow = '';
     if(typeof closeMenu === 'function') closeMenu();
   }
+  // התראות על תוכן חדש: the question meets the reader ON ENTERING THE MAIN MENU,
+  // which is this page, and not later inside the Torah. It waits only for the
+  // entry splash to finish writing its verse, and it is asked once — app.js
+  // keeps the flag, so a reader who answered is never asked again.
+  let _askedPush = false;
+  function askPushHere(){
+    if(_askedPush || typeof window.askPushOnce !== 'function') return;
+    _askedPush = true;
+    const go = left => {
+      if(!document.getElementById('samaritan-splash') && !document.getElementById('splash-image')){
+        try{ window.askPushOnce(); }catch(e){}
+        return;
+      }
+      if(left > 0) setTimeout(() => go(left - 1), 400);
+    };
+    go(60);
+  }
+
   function showHub(){
     hideUnits();
     paintHub();                       // the language may have been changed elsewhere meanwhile
@@ -1289,6 +1307,7 @@
     document.body.style.overflow = 'hidden';
     setOrigin('menu');
     restoreFind();
+    askPushHere();
   }
   /* back from an app that a line of the answer opened: the line, the question
      and the whole answer are put back as they were. Once — a reader who then
@@ -1579,6 +1598,7 @@
   }
 
   turnTo(0); paintHub(); loadNews().then(openNewsFromLink, openNewsFromLink); setTimeout(refitCard, 400);
+  if(!hub.classList.contains('hidden')) askPushHere();   // the menu is the entry screen
   document.body.classList.toggle('hub-open', !hub.classList.contains('hidden'));
   document.body.style.overflow = hub.classList.contains('hidden') ? '' : 'hidden';
 })();

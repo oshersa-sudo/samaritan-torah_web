@@ -11639,16 +11639,23 @@ async function pushDisable(){
 // installed app, only while permission is still undecided, and only once: "no"
 // is an answer, and the menu is where one changes one's mind.
 const PUSH_ASKED = 'as_push_asked';
+let _pushAskBusy = false;
 async function askPushOnce(){
+  // two places call this — the main menu as it comes up, and the onboarding —
+  // and the flag below is only written once the card is answered, so without
+  // this the card could be opened on top of itself
+  if(_pushAskBusy) return;
   if(!pushSupported() || !isInstalled()) return;
   if(Notification.permission !== 'default') return;          // already decided
   try{ if(localStorage.getItem(PUSH_ASKED) === '1') return; }catch(e){}
+  _pushAskBusy = true;
   const X = pushTx(), dl = deviceLang();
   const r = await showOnboard({ title:X.t, body:'<p>'+X.q+'</p>', primaryLabel:X.yes, laterLabel:X.no,
                                 dir:(dl === 'en') ? 'ltr' : 'rtl',
                                 onPrimary: async () => { const s = await pushEnable(dl);
                                   toast(s === 'on' ? X.on : s === 'denied' ? X.denied : X.err); } });
   try{ localStorage.setItem(PUSH_ASKED, '1'); }catch(e){}
+  _pushAskBusy = false;
   return r;
 }
 // and the way back: ☰ → התראות על תוכן חדש
@@ -11743,6 +11750,12 @@ function showWhatsNewCarousel(){
 }
 async function runOnboarding(){
   const ver = window.APP_VERSION || '1.0';
+  // Notifications are asked about first of all, as the main menu comes up and
+  // before any other card: the owner asked for the question to meet the reader
+  // on entering the menu, not three screens into the welcome. The main menu
+  // asks for it too, the moment it is shown (hub.js), and whichever gets there
+  // first is the one that asks.
+  await askPushOnce();
   // 1a. welcome — shown on EVERY entry until the reader ticks "קראתי" (as_welcome_read).
   if(localStorage.getItem('as_welcome_read')!=='1'){
     await showWelcome();
@@ -11758,13 +11771,6 @@ async function runOnboarding(){
       primaryLabel:t('install_rec_btn'), onPrimary:doInstall, dont:true });
     if(r.dont) localStorage.setItem('as_install_hide','1');
   }
-  // 3. notifications — on the installed app, the one question, in the language of
-  //    the device, with כן / לא. "Yes" also subscribes this device to the push
-  //    notifications the server sends when something is added to an app, which
-  //    is what makes the answer worth anything (see askPushOnce / web/push.py).
-  //    On a browser tab nothing is asked: a permission prompt there is noise,
-  //    and on iOS push works only once the app is on the home screen.
-  await askPushOnce();
   // 4. the guided tour no longer asks on first entry. It was the fourth window
   //    between a reader and the first verse, and it is a thing one goes looking
   //    for rather than one that should interrupt — so it waits in the menu,
