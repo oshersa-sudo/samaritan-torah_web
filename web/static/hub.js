@@ -172,6 +172,10 @@
   const sats = APPS.map((a, i) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'hub-c hub-sat'; b.dataset.i = i;
+    b.dataset.key = a.key;
+    // a circle whose app is not open yet breathes — brightening and dimming — so
+    // the eye finds it. See .hub-sat.soon in hub.css.
+    if(a.soon) b.classList.add('soon');
     dial.appendChild(b);
     return b;
   });

@@ -124,6 +124,37 @@
              0 0 44px rgba(236,205,132,.6), inset 0 0 0 4px rgba(10,23,51,.5), inset 0 0 30px rgba(236,205,132,.34);
 }
 .hub-sat:hover{ filter:brightness(1.12); }
+
+/* ── the circle whose app is not open yet ──────────────────────────────────────
+   It breathes: it lights up well beyond the others and dims again, at a middling
+   pace, so the eye is drawn to it and told there is something coming. The glow
+   is animated on the box-shadow and on a halo of its own, never on `filter` —
+   that one is already spoken for by --g, which brightens whichever circle stands
+   at the pointer, and an animation there would take that away from this one. */
+.hub-sat.soon{
+  animation:hubSoonBreathe 2.2s ease-in-out infinite;
+  z-index:2;                               /* its halo lies over its neighbours, not under them */
+}
+.hub-sat.soon::after{
+  content:''; position:absolute; inset:-9%; border-radius:50%; pointer-events:none;
+  border:1px solid rgba(236,205,132,.75);
+  animation:hubSoonHalo 2.2s ease-in-out infinite;
+}
+.hub-sat.soon .hub-soon{ animation:hubSoonCaption 2.2s ease-in-out infinite; }
+@keyframes hubSoonBreathe{
+  0%, 100%{ border-color:var(--gold);
+            box-shadow:0 10px 28px rgba(0,0,0,.5), 0 0 16px rgba(236,205,132,.22),
+                       inset 0 0 0 4px rgba(10,23,51,.55), inset 0 0 22px rgba(200,164,86,.16); }
+  50%     { border-color:#fbe6b4;
+            box-shadow:0 12px 34px rgba(0,0,0,.55), 0 0 0 5px rgba(236,205,132,.3),
+                       0 0 60px 10px rgba(236,205,132,.85),
+                       inset 0 0 0 4px rgba(10,23,51,.4), inset 0 0 38px rgba(236,205,132,.6); }
+}
+@keyframes hubSoonHalo{
+  0%, 100%{ opacity:0; transform:scale(.97); }
+  50%     { opacity:.9; transform:scale(1.07); }
+}
+@keyframes hubSoonCaption{ 0%, 100%{ opacity:.7; } 50%{ opacity:1; } }
 .hub-hint{
   margin:14px 12px 0; text-align:center; font-weight:300; font-size:13px; letter-spacing:.14em;
   color:var(--gold); opacity:.7;
@@ -217,6 +248,14 @@
 @media (prefers-reduced-motion:reduce){
   .hub-sat, .hub-pop{ transition:none; }
   .hub-star svg{ animation:none; }
+  /* a reader who asked for stillness is given the bright state, held — the
+     circle still stands out, it simply does not breathe */
+  .hub-sat.soon, .hub-sat.soon::after, .hub-sat.soon .hub-soon{ animation:none; }
+  .hub-sat.soon{ border-color:#fbe6b4;
+    box-shadow:0 12px 34px rgba(0,0,0,.55), 0 0 0 5px rgba(236,205,132,.3),
+               0 0 48px 8px rgba(236,205,132,.6),
+               inset 0 0 0 4px rgba(10,23,51,.4), inset 0 0 34px rgba(236,205,132,.5); }
+  .hub-sat.soon::after{ opacity:.8; }
 }
 
 /* ── how a unit's own bar answers to the hub ───────────────────────────────────
