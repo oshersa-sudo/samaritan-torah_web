@@ -1224,8 +1224,18 @@
   // places round it, while the dial itself turns half a round as if by its own hand —
   // about a second and a half in all. Then it is the reader's.
   // (Played whatever the system's motion setting says: it is short, it happens once, and it was asked for.)
+  // Nothing may be put on top of this while it is running — a card opened over it
+  // is lost with it. Whoever has something to show on entry waits for the word
+  // below: the flag for anyone who comes later, the event for anyone waiting now.
+  window.__hubIntroDone = true;                      // no intro to wait for, unless one is set up
+  const introSettled = () => {
+    if(window.__hubIntroDone) return;
+    window.__hubIntroDone = true;
+    try{ dispatchEvent(new Event('avneiHubIntroDone')); }catch(e){}
+  };
   const splashEl = document.getElementById('samaritan-splash');
   if(splashEl && isOpen()){
+    window.__hubIntroDone = false;
     hub.classList.add('hub-intro'); dial.classList.add('intro');
     APPS.forEach(() => { const sp = document.createElement('i'); sp.className = 'hub-spoke'; sp.setAttribute('aria-hidden', 'true'); dial.insertBefore(sp, center); spokes.push(sp); });
     dial.style.setProperty('--k', '0'); introDeg = -180; paint(u);        // waiting: all in the middle
@@ -1245,12 +1255,15 @@
         dial.classList.remove('intro'); hub.classList.remove('hub-intro');
         // the dotted lines, shown while the circles came out, fade away
         spokes.forEach(sp => sp.classList.add('gone'));
-        setTimeout(() => { spokes.splice(0).forEach(sp => sp.remove()); }, 700);
+        setTimeout(() => { spokes.splice(0).forEach(sp => sp.remove()); introSettled(); }, 700);
       })(t0);
     };
     // it starts when the splash has finished fading — not under the fade, where a phone shows none of it
     addEventListener('samaritanSplashComplete', () => setTimeout(startIntro, 250));
     setTimeout(startIntro, 20000);                      // never leave the circles in the middle
+    // the frames stop while the phone's screen is off, so the word is given in
+    // any case rather than leaving someone waiting on an animation that is paused
+    setTimeout(introSettled, 24000);
   }
 
   // ── a glint of sun on the Torah's dome ─────────────────────────────────────
@@ -1284,9 +1297,11 @@
     if(typeof closeMenu === 'function') closeMenu();
   }
   // התראות על תוכן חדש: the question meets the reader ON ENTERING THE MAIN MENU,
-  // which is this page, and not later inside the Torah. It waits only for the
-  // entry splash to finish writing its verse, and it is asked once — app.js
-  // keeps the flag, so a reader who answered is never asked again.
+  // which is this page, and not later inside the Torah. It waits for the entry
+  // splash to finish writing its verse AND for the circles to come to rest —
+  // askPushOnce holds itself back until `avneiHubIntroDone`, because a card put
+  // over the way in went with it. Asked once: app.js keeps the flag, so a reader
+  // who answered is never asked again.
   let _askedPush = false;
   function askPushHere(){
     if(_askedPush || typeof window.askPushOnce !== 'function') return;

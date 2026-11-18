@@ -11639,23 +11639,39 @@ async function pushDisable(){
 // installed app, only while permission is still undecided, and only once: "no"
 // is an answer, and the menu is where one changes one's mind.
 const PUSH_ASKED = 'as_push_asked';
-let _pushAskBusy = false;
-async function askPushOnce(){
-  // two places call this — the main menu as it comes up, and the onboarding —
-  // and the flag below is only written once the card is answered, so without
-  // this the card could be opened on top of itself
-  if(_pushAskBusy) return;
+// As the splash clears, the circles of the main menu come out of the middle of
+// the dial and it turns half a round — three and a half seconds in all, and a
+// card opened on top of that goes with it. So the question waits for the dial to
+// come to rest: hub.js raises `avneiHubIntroDone` once the last spoke has faded,
+// and leaves `__hubIntroDone` behind for anyone who asks after the event.
+function waitHubIntro(ms){
+  return new Promise(res => {
+    if(window.__hubIntroDone !== false) return res();     // nothing is running
+    let done = false;
+    const fin = () => { if(done) return; done = true;
+                        window.removeEventListener('avneiHubIntroDone', fin); res(); };
+    window.addEventListener('avneiHubIntroDone', fin);
+    setTimeout(fin, ms || 25000);                         // a question is never held for ever
+  });
+}
+// Two places call this — the main menu as it comes up, and the onboarding — and
+// both await the one promise: the card is never opened on top of itself, and the
+// welcome card that follows still waits its turn behind it.
+let _pushAsk = null;
+function askPushOnce(){ return _pushAsk || (_pushAsk = _askPushOnce()); }
+async function _askPushOnce(){
   if(!pushSupported() || !isInstalled()) return;
   if(Notification.permission !== 'default') return;          // already decided
   try{ if(localStorage.getItem(PUSH_ASKED) === '1') return; }catch(e){}
-  _pushAskBusy = true;
+  // only now that there IS a question to ask — nothing else is kept waiting
+  await waitHubIntro();
+  if(Notification.permission !== 'default') return;          // answered meanwhile
   const X = pushTx(), dl = deviceLang();
   const r = await showOnboard({ title:X.t, body:'<p>'+X.q+'</p>', primaryLabel:X.yes, laterLabel:X.no,
                                 dir:(dl === 'en') ? 'ltr' : 'rtl',
                                 onPrimary: async () => { const s = await pushEnable(dl);
                                   toast(s === 'on' ? X.on : s === 'denied' ? X.denied : X.err); } });
   try{ localStorage.setItem(PUSH_ASKED, '1'); }catch(e){}
-  _pushAskBusy = false;
   return r;
 }
 // and the way back: ☰ → התראות על תוכן חדש
@@ -11750,11 +11766,12 @@ function showWhatsNewCarousel(){
 }
 async function runOnboarding(){
   const ver = window.APP_VERSION || '1.0';
-  // Notifications are asked about first of all, as the main menu comes up and
-  // before any other card: the owner asked for the question to meet the reader
-  // on entering the menu, not three screens into the welcome. The main menu
-  // asks for it too, the moment it is shown (hub.js), and whichever gets there
-  // first is the one that asks.
+  // Notifications are asked about first of all, before any other card: the owner
+  // asked for the question to meet the reader on entering the menu, not three
+  // screens into the welcome. It is held back only until the circles of the dial
+  // have come to rest (waitHubIntro) — a card over that animation went with it.
+  // The main menu asks for it too, the moment it is shown (hub.js), and both
+  // await the one promise, so only one card is ever opened.
   await askPushOnce();
   // 1a. welcome — shown on EVERY entry until the reader ticks "קראתי" (as_welcome_read).
   if(localStorage.getItem('as_welcome_read')!=='1'){
