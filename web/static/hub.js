@@ -1303,7 +1303,16 @@
   const backArrow = () => (lang() === 'en') ? '&#8592;' : '&#8594;';
   const backWhere = () => document.body.classList.contains('from-hub')
                           ? T().exit : T().backTorah;
+  /* the apps that are pages of our own, opened in a frame: the header each
+     one has, which the arrow joins, and the button of ours it stands for */
+  var BACK_IN = null;
   function paintBack(){
+    for (const [id] of (BACK_IN || [])) {        // the arrows inside the apps say the same
+      try {
+        const d = $(id) && $(id).contentDocument, b = d && d.getElementById('hubBackIn');
+        if (b) { b.innerHTML = backArrow(); b.title = backWhere(); b.setAttribute('aria-label', backWhere()); }
+      } catch (e) { /* not ours */ }
+    }
     document.querySelectorAll('.hub-x, #hdr .torah-x, .unit-wrap > .unit-x').forEach(b => {
       if(b.classList.contains('to-find')) return;   // the search says its own thing
       b.innerHTML = backArrow();
@@ -1320,6 +1329,64 @@
     if(document.body.classList.contains('from-hub')){ showHub(); return; }
     if(modal) modal.classList.add('hidden');
     document.body.style.overflow = '';
+  }
+
+  /* ── the arrow inside the app ────────────────────────────────────────────
+   * No strip of ours above an app and no margin around it: on a telephone they
+   * took the app down to 355×761 of a 375×812 screen. So the arrow is put into
+   * the app's OWN header — the frame is ours, the same origin — and that header
+   * is given room for it on its right, so that nothing of the app is covered.
+   * It does nothing of its own: it presses the button of ours it stands for,
+   * so where it leads — the menu, or the Torah — stays decided in one place.
+   * An app that is not ours (the family tree, the calendar) cannot be entered;
+   * there the arrow of the frame stays, in a corner that app leaves empty.
+   */
+  BACK_IN = [
+    ['tlFrame',  '#topbar',    () => document.querySelector('#timelineModal .hub-x')],
+    ['shFrame',  'header.top', () => document.querySelector('#shiraModal .hub-x')],
+    ['mssFrame', '.topbar',    () => $('mssFrameClose')],
+    ['extFrame', '#top',       () => $('extFrameClose')],
+  ];
+  function injectBack(f, headSel, btnOf){
+    let d;
+    try { d = f.contentDocument; } catch(e){ return false; }        // another origin
+    if(!d || !d.body || !d.head) return false;
+    const pb = btnOf();
+    if(!pb) return false;
+    if(!d.getElementById('hubBackStyle')){
+      const st = d.createElement('style'); st.id = 'hubBackStyle';
+      st.textContent =
+        '#hubBackIn{position:fixed;top:5px;right:6px;z-index:2147483000;width:36px;height:36px;' +
+        'border-radius:50%;border:1px solid #1a3873;background:#fff;color:#1a3873;padding:0;' +
+        'font:600 22px/1 system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;' +
+        'cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.35)}' +
+        '#hubBackIn:hover{background:#1a3873;color:#fff}' +
+        headSel + '{padding-right:48px!important;box-sizing:border-box}';
+      d.head.appendChild(st);
+    }
+    let b = d.getElementById('hubBackIn');
+    if(!b){
+      b = d.createElement('button'); b.id = 'hubBackIn'; b.type = 'button';
+      b.addEventListener('click', ev => { ev.preventDefault(); const p2 = btnOf(); if(p2) p2.click(); });
+      d.body.appendChild(b);
+    }
+    b.innerHTML = backArrow(); b.title = backWhere(); b.setAttribute('aria-label', backWhere());
+    return true;
+  }
+  for (const [id, sel, btnOf] of BACK_IN) {
+    const f = $(id); if(!f) continue;
+    const fit = () => {
+      if(!f.src || /^about:/.test(f.src)) return;                  // not opened yet
+      const ok = injectBack(f, sel, btnOf);
+      const wrap = f.closest('.unit-wrap');
+      if(wrap){
+        let host = ''; try { host = new URL(f.src || '', location.href).host; } catch(e){}
+        wrap.classList.toggle('back-in', ok);
+        wrap.classList.toggle('back-left', !ok && /genealogy/.test(host));
+      }
+    };
+    f.addEventListener('load', fit);
+    fit();
   }
   function isOpen(){ return !hub.classList.contains('hidden'); }
   function hideUnits(){

@@ -1660,7 +1660,13 @@ html[dir="ltr"] .lib-book{ border-radius:6px 2px 2px 6px; }
   border-radius:0; gap:10px; padding:14px; }
 /* ציר הזמן: a whole page of its own inside the app, so it gets the full box with
    only the return bar above it — no padding to waste and no border to box it in */
-.modal-box.tl-box{ padding:10px 10px 0; gap:8px; }
+/* ...and then not even that, 2026-11-19. On a telephone the bar and the ten
+   pixels around the frame took the app down to 355×761 of a 375×812 screen,
+   and the owner asked for it gone altogether. The app is the whole screen; the
+   way back is an arrow inside its OWN header, put there by hub.js, which also
+   makes room for it there so that nothing of the app is covered. */
+.modal-box.tl-box{ padding:0; gap:0; }
+.modal-box.tl-box > .rd-top{ display:none; }
 #tlFrame, #shFrame{ flex:1 1 auto; width:100%; border:0; min-height:0; background:#fff; }
 /* explicit "return to the Torah app" button inside the reader / dictionary apps */
 .rd-totorah{ flex:0 0 auto; border:1px solid var(--navy); background:var(--navy); color:#fff;
@@ -3012,6 +3018,11 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
 .unit-wrap > .unit-x:hover{ background:var(--navy); color:#fff; }
 /* the way back to the Torah lives in the hamburger, not over the unit */
 .unit-wrap .unit-totorah{ display:none; }
+/* an app of our own carries the arrow in its own header instead */
+.unit-wrap.back-in > .unit-x{ display:none; }
+/* the family tree is not ours to change: its top-right holds "מנהל", so the
+   arrow goes to its empty corner, the top-left */
+.unit-wrap.back-left > .unit-x{ right:auto; left:8px; }
 
 
 /* ── הקראת הספר ──

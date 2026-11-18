@@ -43,13 +43,50 @@
       }
       a.wait = 0.5 + R() * 1.5; return false;
     }
+    let peopleRoot = null, trumpeters = [], trumpPhase = 'home', trumpT = 60, trumpK = 0;
+    /* ── שני כהנים צעירים בחצוצרות הכסף ─────────────────────────────────────
+     * מדי שתיים-חמש דקות הם יוצאים מן המשכן אל פניו, עומדים ותוקעים, ונכנסים
+     * חזרה. התקיעה עצמה — הצליל — נשמעת ברגע שהם עומדים במקומם. */
+    function trumpStep(dt) {
+      if (!trumpeters.length) return;
+      const place = k => {
+        const moving = trumpPhase === 'out' || trumpPhase === 'in';
+        for (const s of trumpeters) {
+          s.x = s.home.x + (s.out.x - s.home.x) * k; s.z = s.home.z + (s.out.z - s.home.z) * k;
+          const bob = moving ? Math.abs(Math.sin(k * 15)) * 0.04 : 0;            // צעד: הגוף עולה ויורד מעט
+          s.sp.position.set(s.x, s.y + bob, s.z);
+        }
+      };
+      trumpT -= dt;
+      if (trumpPhase === 'home') { if (trumpT <= 0) { trumpPhase = 'out'; trumpK = 0; } return; }
+      if (trumpPhase === 'out') {
+        trumpK = Math.min(1, trumpK + dt / 2.8); place(trumpK);
+        if (trumpK >= 1) {
+          trumpPhase = 'blow'; trumpT = 7.5;
+          const m = trumpeters[0];
+          if (window.GerizimAudio && GerizimAudio.call) GerizimAudio.call('trumpets', m.x, m.z);
+        }
+        return;
+      }
+      if (trumpPhase === 'blow') { if (trumpT <= 0) trumpPhase = 'in'; return; }
+      if (trumpPhase === 'in') {
+        trumpK = Math.max(0, trumpK - dt / 2.8); place(trumpK);
+        if (trumpK <= 0) { trumpPhase = 'home'; trumpT = 120 + R() * 180; }
+      }
+    }
     function addPeople(root) {
+      peopleRoot = root; hailed.clear(); nextHail = 14 + R() * 22; dropBubble();
       for (const p of W.people) {
         if (!cx.inPer(p)) continue;
         const placed = !(p.seed > 1000);                                // דמות שהוצבה במקום מסוים (ולא פוזרה ברחוב)
         if (!placed && R() < (cx.lite ? 0.5 : 0.2)) continue;           // לא כולם נמצאים בכל פעם; במכשיר חלש — פחות
+        // וגם מי שהוצב אינו עומד בכל כניסה באותה נקודה: מי שאינו קשור לחפץ
+        // בידו או לתנוחה, זז מעט, ולעתים אינו שם כלל
+        const tied = p.kind === 'guard' || FIXED.indexOf(p.carry || 'none') >= 0 || !!p.pose || p.kind === 'highpriest';
+        if (placed && !tied && R() < 0.12) continue;
         let x = p.x, z = p.z, s = null;
-        if (!placed) { const jx = x + (R() - 0.5) * 3.4, jz = z + (R() - 0.5) * 3.4; s = cx.spot(jx, jz); if (s) { x = jx; z = jz; } }
+        const jr = placed ? (tied ? 0 : 2.4) : 3.4;
+        if (jr) { const jx = x + (R() - 0.5) * jr, jz = z + (R() - 0.5) * jr; s = cx.spot(jx, jz); if (s) { x = jx; z = jz; } }
         s = s || cx.spot(x, z); if (!s) continue;
         const carry = p.carry || 'none', fixed = p.kind === 'guard' || FIXED.indexOf(carry) >= 0 || !!p.pose;
         const walks = GP && !fixed && R() < (WALKS[p.kind] || 0) * (placed ? 0.35 : 1);
@@ -65,13 +102,119 @@
         a.sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: walkTex(a, a.back, 0, true), transparent: true, alphaTest: 0.25, fog: true }));
         a.sp.center.set(0.5, 0); a.sp.scale.set(1.07, 2.14, 1); a.sp.position.set(x, s.y, z); root.add(a.sp); actors.push(a);
       }
+      /* התוקעים: ביתם בתוך המשכן, סמוך לפתח; מקום התקיעה — מפני האוהל, היכן
+         שהוצבו. בכניסה לסיור הם בפנים, ויוצאים רק כשמגיע זמנם */
+      trumpeters = still.filter(s => s.carry === 'trumpet');
+      for (const s of trumpeters) {
+        s.out = { x: s.x, z: s.z }; s.home = { x: s.x - 3.1, z: s.z };
+        s.x = s.home.x; s.sp.position.set(s.x, s.y, s.z);
+      }
+      trumpPhase = 'home'; trumpT = 35 + R() * 55; trumpK = 0;
       // שניים שעומדים קרוב זה לזה — משוחחים: אחד מדבר ומחווה בידו, והשני מקשיב
       for (let i = 0; i < still.length; i++) {
         const a = still[i]; if (a.pose !== 'stand' || a.talk || a.kind === 'guard' || FIXED.indexOf(a.carry) >= 0) continue;
         for (let j = i + 1; j < still.length; j++) { const b = still[j]; if (b.pose !== 'stand' || b.talk || b.kind === 'guard' || FIXED.indexOf(b.carry) >= 0) continue; if (Math.hypot(a.x - b.x, a.z - b.z) < 2.3) { a.talk = 1; b.talk = 2; a.mate = b; b.mate = a; break; } }
       }
     }
+    /* ── פנייה אל המטייל ────────────────────────────────────────────────────
+     * מדי פעם — ולא בלי סוף — אחד מן הקרובים פונה אל המטייל כאילו היה בן
+     * התקופה: הסוחר מזמין לדוכנו, הכהן מברך, הילד קורא "בוא אחריי" ורץ
+     * כמה צעדים לפנים, ומי שסתם עובר אומר שלום. בכל פעם מישהו אחר, ומי
+     * שפנה לא יפנה שוב באותה כניסה. הדברים בבועה מעל ראשו, כארבע שניות,
+     * והוא עצמו עובר לתנוחת דיבור ופונה אל המטייל.
+     */
+    const hailed = new Set();
+    let nextHail = 20, bubble = null;
+    const LINES = {
+      he: { sell: ['בוא, קנה ממני — תאנים טריות!', 'פיתות חמות, ישר מן הסאג\'!', 'ביצים של הבוקר, בוא ותראה', 'הבט — פרי מן השדה, במחיר טוב', 'תרנגולת שמנה? אפרוחים? בוא!'],
+            holy: ['שלום עליך, ברוך הבא אל המקום', 'ברוך הבא אל גבעת עולם', 'ברוך אתה בבואך'],
+            follow: ['בוא אחריי!', 'בוא, אראה לך משהו!', 'מהר, בוא אחריי!'],
+            greet: ['ברוכים הבאים!', 'שלום! מאין באת?', 'שלום עליך, אורח', 'בוא אחריי, אראה לך את הדרך'] },
+      en: { sell: ['Come, buy from me — fresh figs!', 'Warm bread, straight off the saj!', 'Eggs from this morning — come and see', 'Look — fruit from the field, a good price', 'A fat hen? Chicks? Come!'],
+            holy: ['Peace be on you, welcome to this place', 'Welcome to the Hill of the World', 'Blessed be your coming'],
+            follow: ['Follow me!', 'Come, I\'ll show you something!', 'Quick, follow me!'],
+            greet: ['Welcome!', 'Peace! Where are you from?', 'Peace be on you, guest', 'Follow me, I\'ll show you the way'] },
+      ar: { sell: ['تعال، اشترِ منّي — تين طازج!', 'خبز ساخن، من على الصاج!', 'بيض الصباح، تعال وانظر', 'انظر — فاكهة من الحقل، بسعر طيّب', 'دجاجة سمينة؟ صيصان؟ تعال!'],
+            holy: ['السلام عليك، أهلاً بك في هذا المكان', 'أهلاً بك في تلّة الأبد', 'مبارك قدومك'],
+            follow: ['اتبعني!', 'تعال، سأريك شيئاً!', 'بسرعة، اتبعني!'],
+            greet: ['أهلاً وسهلاً!', 'سلام! من أين أتيت؟', 'السلام عليك يا ضيف', 'اتبعني، سأريك الطريق'] }
+    };
+    const lang = () => ((document.documentElement.lang || 'he').slice(0, 2));
+    const pickOf = a => a[Math.floor(R() * a.length)];
+    function dropBubble() {
+      if (!bubble) return;
+      if (bubble.sp.parent) bubble.sp.parent.remove(bubble.sp);
+      bubble.sp.material.map.dispose(); bubble.sp.material.dispose();
+      if (bubble.who && bubble.who.prev !== undefined && bubble.who.sp && bubble.who.hailMat) {
+        bubble.who.sp.material = bubble.who.hailMat; bubble.who.hailMat = null; bubble.who.cur = '';
+      }
+      bubble = null;
+    }
+    function bubbleTex(text) {
+      const c = document.createElement('canvas'); c.width = 640; c.height = 180;
+      const g = c.getContext('2d'), L = lang();
+      g.font = '600 44px "Frank Ruhl Libre", "David", Arial, sans-serif';
+      const w = Math.min(600, g.measureText(text).width + 60), x0 = (640 - w) / 2;
+      g.fillStyle = 'rgba(255,251,240,.95)'; g.strokeStyle = 'rgba(90,70,40,.55)'; g.lineWidth = 3;
+      g.beginPath(); if (g.roundRect) g.roundRect(x0, 14, w, 112, 26); else g.rect(x0, 14, w, 112); g.fill(); g.stroke();   // WebView ישן: בלי פינות מעוגלות
+      g.beginPath(); g.moveTo(300, 124); g.lineTo(320, 162); g.lineTo(340, 124); g.closePath(); g.fill();
+      g.fillStyle = '#2a2118'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.direction = L === 'en' ? 'ltr' : 'rtl';
+      g.fillText(text, 320, 72, 570);
+      const t = new THREE.CanvasTexture(c); t.anisotropy = 2; return t;
+    }
+    const NEAR_TRADE = ['stall', 'cart', 'coopcart', 'eggs', 'bread', 'saj', 'produce', 'pots', 'sacks'];
+    function tradeNear(x, z) {
+      for (const pr of W.props) if (NEAR_TRADE.indexOf(pr.kind) >= 0 && cx.inPer(pr) && Math.abs(pr.x - x) + Math.abs(pr.z - z) < 4.5) return true;
+      return false;
+    }
+    function hail(dt, pos) {
+      if (bubble) {
+        bubble.t -= dt;
+        const k = Math.min(1, bubble.t / 0.5, (4.2 - bubble.t) / 0.3);
+        bubble.sp.material.opacity = Math.max(0, k);
+        const w = bubble.who; bubble.sp.position.set(w.x, w.y + 2.45, w.z);
+        if (bubble.t <= 0) dropBubble();
+        return;
+      }
+      nextHail -= dt; if (nextHail > 0 || !peopleRoot) return;
+      nextHail = 26 + R() * 40;                              // מדי פעם, לא בלי סוף
+      const cand = [];
+      for (const a of still) {
+        if (hailed.has(a) || a.kind === 'guard' || a.pose !== 'stand' || a.talk) continue;
+        const d = Math.hypot(a.x - pos.x, a.z - pos.z); if (d > 2 && d < 8) cand.push({ who: a, d, still: true });
+      }
+      for (const a of actors) {
+        if (hailed.has(a) || a.kind === 'guard') continue;
+        const d = Math.hypot(a.x - pos.x, a.z - pos.z); if (d > 2 && d < 7) cand.push({ who: a, d, still: false });
+      }
+      if (!cand.length) { nextHail = 6 + R() * 8; return; }
+      const c = pickOf(cand), w = c.who, L = LINES[lang()] || LINES.he;
+      hailed.add(w);
+      const kind = (w.kind === 'priest' || w.kind === 'levite' || w.kind === 'highpriest') ? 'holy'
+                 : (w.kind === 'merchant' || tradeNear(w.x, w.z)) ? 'sell'
+                 : w.kind === 'child' ? 'follow' : 'greet';
+      const text = pickOf(L[kind]);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: bubbleTex(text), transparent: true, depthWrite: false, depthTest: false, opacity: 0 }));
+      sp.center.set(0.5, 0); sp.scale.set(2.5, 0.7, 1); sp.renderOrder = 999;
+      sp.position.set(w.x, w.y + 2.45, w.z); peopleRoot.add(sp);
+      bubble = { sp, who: w, t: 4.2 };
+      // and the one who speaks turns to speak
+      if (c.still) {
+        const t = poseTex(w, 'talk', 'speak', true);
+        if (t) { w.hailMat = w.sp.material; w.prev = w.cur; w.sp.material = new THREE.SpriteMaterial({ map: t, transparent: true, alphaTest: 0.25, fog: true }); w.cur = 'talk|speak'; }
+      } else {
+        w.back = false; w.key = '';
+        if (kind === 'follow') {                             // הילד רץ כמה צעדים לפנים, ומחכה
+          const ang = Math.atan2(w.z - pos.z, w.x - pos.x);
+          const tx = w.x + Math.cos(ang) * 6, tz = w.z + Math.sin(ang) * 6;
+          if (clear(w.x, w.z, w.y, tx, tz)) { w.tx = tx; w.tz = tz; w.wait = 0; }
+          else { w.tx = null; w.wait = 4; }
+        } else { w.tx = null; w.wait = 4.5; }
+      }
+    }
     function stepPeople(dt, cam, pos) {
+      hail(dt, pos); trumpStep(dt);
       for (const a of actors) {
         const dc = Math.abs(cam.x - a.x) + Math.abs(cam.z - a.z);
         if (cullAt) { const far = dc > cullAt; a.sp.visible = shown && !far; if (far) continue; }

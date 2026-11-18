@@ -338,12 +338,9 @@
         if (hb) { one(hb, t, 0.07 + fall(dHoly, 120) * 0.3, chains.fx, 0.98 + Math.random() * 0.04); hornI++; }
         nextHorn = now() + 22 + Math.random() * 30;
       }
-      if (now() > nextTrump) {
-        const tb = sample('trumpets');
-        // שני כהנים צעירים יוצאים אל פני המשכן, תוקעים, וחוזרים
-        if (tb) one(tb, t, 0.06 + fall(dHoly, 100) * 0.26, chains.fx, 1);
-        nextTrump = now() + 160 + Math.random() * 140;
-      }
+      // החצוצרות אינן כאן: שני הכהנים התוקעים קוראים להן בעצמם (call), כשהם
+      // עומדים בפני המשכן — ולא בשעה שרירותית
+      sample('trumpets');                                  // שיהיה מוכן כשיקראו לו
     }
     // ומי שהרחיק מן המרכז הדתי שומע את השופר מעברו השני של ההר: מעומעם,
     // מהדהד, ולעתים רחוקות — הקול עצמו, מן ההקלטה של בעל האפליקציה
@@ -413,6 +410,17 @@
   // קריינות (אם תתווסף): בזמן הדיבור המוזיקה יורדת, ואחריו חוזרת
   function duck(on) { duckN = Math.max(0, duckN + (on ? 1 : -1)); if (ctx && musicOn) musicTick(); }
 
-  window.GerizimAudio = { music, walkScene, walkButton, musicButton, duck, set, get pref() { return Object.assign({}, pref); },
+  /* a sound the walk itself calls for, at a place: the two priests blowing
+     their trumpets before the Tabernacle. Heard by its distance from the
+     walker, like every other sound here. */
+  function call(name, x, z) {
+    if (!ctx || !chains || !scene || !pref.amb) return;
+    const b = sample(name);
+    const GW = window.GerizimWalk, p = GW && GW._pos && GW._pos();
+    if (!b || !p) return;
+    const d = Math.hypot(x - p.x, z - p.z);
+    one(b, now() + 0.05, 0.05 + fall(d, 110) * 0.32, chains.fx, 1);
+  }
+  window.GerizimAudio = { music, walkScene, walkButton, musicButton, duck, set, call, get pref() { return Object.assign({}, pref); },
     _state: () => ({ ctx: ctx && ctx.state, musicOn, music: ctx ? +musicBus.gain.value.toFixed(3) : 0, amb: ctx ? +ambBus.gain.value.toFixed(3) : 0, scene, chains: chains ? { crowd: +chains.crowd.gain.value.toFixed(3), fire: +chains.fire.gain.value.toFixed(3), wind: +chains.wind.gain.value.toFixed(3) } : null }) };
 })();
