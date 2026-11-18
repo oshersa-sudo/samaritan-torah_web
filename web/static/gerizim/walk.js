@@ -648,6 +648,99 @@
         cyl(0.42, 0.32, 0.36, new THREE.MeshLambertMaterial({ color: 0xb89a5c }), x, y + 0.18, z, 12);
         const top2 = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 6, 0, 6.3, 0, 1.2), new THREE.MeshLambertMaterial({ color: col })); top2.scale.y = 0.45; top2.position.set(x, y + 0.3, z); root.add(top2);
       }
+      /* ── עגלת פרי וירק ─────────────────────────────────────────────────
+       * ארגז על שני גלגלים ומוטות גרירה, ועליו שלוש ערמות פתוחות — מי
+       * שעומד לידה בוחן אותן בידו. */
+      if (p.kind === 'cart' || p.kind === 'coopcart') {
+        addBox(bxy(1.0, 0.6), y + 0.5, 0.18, M.wood);
+        for (const d of [-1, 1]) addBox(along ? [x - 0.6, z + d * 0.94, x + 0.6, z + d * 1.0] : [x + d * 0.94, z - 0.6, x + d * 1.0, z + 0.6], y + 0.66, 0.22, M.wood);
+        for (const d of [-1, 1]) addBox(along ? [x + d * 0.54, z - 1.0, x + d * 0.6, z + 1.0] : [x - 1.0, z + d * 0.54, x + 1.0, z + d * 0.6], y + 0.66, 0.22, M.wood);
+        for (const d of [-1, 1]) {
+          const wh = cyl(0.44, 0.44, 0.09, M.wood, x + (along ? d * 0.66 : 0), y + 0.44, z + (along ? 0 : d * 0.66), 16);
+          wh.rotation.z = Math.PI / 2; if (along) wh.rotation.y = Math.PI / 2;
+        }
+        for (const d of [-1, 1]) {
+          const ar = cyl(0.045, 0.045, 1.25, M.wood, x + (along ? d * 0.38 : 1.45), y + 0.6, z + (along ? 1.45 : d * 0.38), 6);
+          if (along) ar.rotation.x = Math.PI / 2; else ar.rotation.z = Math.PI / 2;
+        }
+        if (p.kind === 'cart') {
+          const COLS = [0xa83a2e, 0x4f5a2a, 0xd6b25a, 0x8a5a2a, 0x5b3a5e, 0xc0631f];
+          for (let i = 0; i < 3; i++) {
+            const hp = new THREE.Mesh(new THREE.SphereGeometry(0.27, 10, 6, 0, 6.3, 0, 1.45),
+                                      new THREE.MeshLambertMaterial({ color: COLS[(i * 2 + (p.c ? p.c.length : 1)) % COLS.length] }));
+            hp.scale.y = 0.52;
+            hp.position.set(x + (along ? 0 : (i - 1) * 0.54), y + 0.7, z + (along ? (i - 1) * 0.54 : 0));
+            hp.castShadow = shadows; root.add(hp);
+          }
+        } else {
+          /* ── לול על העגלה: כלוב נצרים, תרנגולות ואפרוחים ────────────── */
+          const cageW = 0.52, cy2 = y + 0.72;
+          addBox(bxy(0.9, 0.52), y + 0.68, 0.04, M.wood);
+          const bar = (ax, az, h2) => { const b2 = cyl(0.02, 0.02, h2, M.wood, ax, cy2 + h2 / 2, az, 5); return b2; };
+          for (let i = -3; i <= 3; i++) bar(x + (along ? 0.5 : i * 0.3), z + (along ? i * 0.3 : 0.5), 0.5);
+          for (let i = -3; i <= 3; i++) bar(x + (along ? -0.5 : i * 0.3), z + (along ? i * 0.3 : -0.5), 0.5);
+          const top2 = addBox(bxy(0.9, 0.52), cy2 + 0.5, 0.04, M.wood);
+          for (let i = 0; i < 4; i++) {                                   // תרנגולות
+            const hen = new THREE.Mesh(new THREE.SphereGeometry(0.13, 9, 7), new THREE.MeshLambertMaterial({ color: i % 2 ? 0xd8c9a8 : 0x8a5a3a }));
+            hen.scale.set(1.25, 0.95, 0.9);
+            hen.position.set(x + (along ? (i % 2 ? 0.2 : -0.2) : (i - 1.5) * 0.4), cy2 + 0.16, z + (along ? (i - 1.5) * 0.4 : (i % 2 ? 0.16 : -0.16)));
+            root.add(hen);
+          }
+          for (let i = 0; i < 5; i++) {                                   // אפרוחים
+            const ch = new THREE.Mesh(new THREE.SphereGeometry(0.06, 7, 6), new THREE.MeshLambertMaterial({ color: 0xf2d35c }));
+            ch.position.set(x + (along ? -0.1 + (i % 2) * 0.25 : (i - 2) * 0.3), cy2 + 0.08, z + (along ? (i - 2) * 0.3 : -0.1 + (i % 2) * 0.25));
+            root.add(ch);
+          }
+        }
+      }
+      /* ── ביצים למכירה: שתי טנאות שטוחות ──────────────────────────────── */
+      if (p.kind === 'eggs') {
+        for (const d of [-1, 1]) {
+          const bx2 = x + (along ? 0 : d * 0.34), bz2 = z + (along ? d * 0.34 : 0);
+          cyl(0.3, 0.24, 0.12, new THREE.MeshLambertMaterial({ color: 0xb89a5c }), bx2, y + 0.06, bz2, 12);
+          for (let i = 0; i < 7; i++) {
+            const eg = new THREE.Mesh(new THREE.SphereGeometry(0.052, 8, 6), new THREE.MeshLambertMaterial({ color: 0xf0e7d2 }));
+            eg.scale.set(0.85, 1.15, 0.85);
+            const a2 = i * 0.9, r2 = i ? 0.15 : 0;
+            eg.position.set(bx2 + Math.cos(a2) * r2, y + 0.15, bz2 + Math.sin(a2) * r2);
+            root.add(eg);
+          }
+        }
+      }
+      /* ── לחם: פיתות גדולות על דוכן ────────────────────────────────────── */
+      if (p.kind === 'bread') {
+        addBox(bxy(0.8, 0.5), y, 0.62, M.wood);
+        const dough = new THREE.MeshLambertMaterial({ color: 0xd9b178 });
+        for (let i = 0; i < 6; i++) {
+          const pit = cyl(0.3, 0.3, 0.035, dough,
+                          x + (along ? (i % 2 ? 0.16 : -0.16) : (i % 3 - 1) * 0.42),
+                          y + 0.64 + Math.floor(i / 3) * 0.04,
+                          z + (along ? (i % 3 - 1) * 0.42 : (i % 2 ? 0.16 : -0.16)), 14);
+          pit.rotation.x = 0.02 * (i % 3 - 1);
+        }
+      }
+      /* ── סאג' ──────────────────────────────────────────────────────────
+       * כיפת מתכת הפוכה על שלוש אבנים, אש בוערת תחתיה ועליה לאפה. */
+      if (p.kind === 'saj') {
+        for (let i = 0; i < 3; i++) {
+          const a2 = i * 2.1;
+          const st = new THREE.Mesh(new THREE.SphereGeometry(0.14, 7, 6), M.field);
+          st.scale.set(1, 0.7, 1); st.position.set(x + Math.cos(a2) * 0.34, y + 0.08, z + Math.sin(a2) * 0.34); root.add(st);
+        }
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(0.46, 16, 10, 0, 6.3, 0, 1.1),
+                                    new THREE.MeshLambertMaterial({ color: 0x3a3028 }));
+        dome.scale.y = 0.46; dome.position.set(x, y + 0.18, z); dome.castShadow = shadows; root.add(dome);
+        const laffa = cyl(0.3, 0.3, 0.02, new THREE.MeshLambertMaterial({ color: 0xe0bb84 }), x + 0.04, y + 0.33, z - 0.03, 14);
+        laffa.rotation.z = 0.04;
+        addSmoke(x, y + 0.42, z, 0.5, 0xc9c4ba);
+        const ft2 = texture('flame', 64, 96, c => { const g2 = c.getContext('2d'), gr2 = g2.createRadialGradient(32, 70, 2, 32, 62, 34); gr2.addColorStop(0, 'rgba(255,250,210,1)'); gr2.addColorStop(0.35, 'rgba(255,190,70,.95)'); gr2.addColorStop(0.7, 'rgba(240,110,30,.6)'); gr2.addColorStop(1, 'rgba(200,60,20,0)'); g2.fillStyle = gr2; g2.beginPath(); g2.moveTo(32, 2); g2.quadraticCurveTo(62, 52, 46, 84); g2.quadraticCurveTo(32, 96, 18, 84); g2.quadraticCurveTo(2, 52, 32, 2); g2.fill(); });
+        for (let i = 0; i < 3; i++) {
+          const fl2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: ft2, transparent: true, depthWrite: false, fog: false }));
+          fl2.center.set(0.5, 0.1);
+          fl2.userData = { x: x + (i - 1) * 0.16, y: y + 0.02, z: z + (i === 1 ? 0.1 : -0.08), s: 0.34, ph: i * 2.1 };
+          root.add(fl2); flames.push(fl2);
+        }
+      }
       if (p.kind === 'pots') { const pm = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.1), M.mat); pm.rotation.x = -Math.PI / 2; pm.position.set(x, y + 0.04, z); root.add(pm); for (let i = 0; i < 6; i++) jar(x - 0.5 + (i % 3) * 0.5, y + 0.04, z - 0.25 + Math.floor(i / 3) * 0.5, 0.42 + (i % 2) * 0.18); }
       if (p.kind === 'cloth') { [0x8f3a2c, 0x2d4766, 0xc9a24a, 0xe9e1cc].forEach((c2, i) => { const bl = cyl(0.11, 0.11, 0.9, M.cloth(c2), x, y + 0.12 + Math.floor(i / 2) * 0.2, z - 0.14 + (i % 2) * 0.28, 10); bl.rotation.z = Math.PI / 2; }); }
       if (p.kind === 'tub') {                           // אמבט ישיבה מטויח

@@ -669,6 +669,33 @@
   prx('tub', -190.7, 8.9, H); prx('jars', -190.9, 10.6, H); prx('bench', -188.5, 9.4, H); prx('lamp', -188.5, 8.1, H);
   // הרובע הדרומי: השוק, הרחוב ובית הסטיו
   prx('produce', -324.2, 43.6, H, { c: 'figs' }); prx('produce', -324.2, 56.4, H, { c: 'pomegranate' }); prx('produce', -336, 46.4, H, { c: 'olives' }); prx('produce', -336, 64.4, H, { c: 'grain' }); prx('produce', -330, 41.2, H, { c: 'dates' });
+  /* ── השוק עצמו: עגלות, לול, ביצים, לחם וסאג' ────────────────────────────
+   * שוק אינו ערמות פרי מונחות: הוא עגלות שעומדות ברחוב ואנשים ממששים את
+   * מה שעליהן, לול תרנגולות שאפרוחיו מצפצפים, טנאות ביצים, ערמת פיתות
+   * גדולות — ובצד הדרך אישה כורעת על סאג' שאש בוערת תחתיו ואופה לאפות.
+   * הכול משוער, ככל החיים שבסיור; מה שידוע הוא השוק עצמו ומקומו.
+   */
+  prx('cart', -327.5, 47.5, H, { c: 'figs' }); prx('cart', -333.5, 60.5, H, { c: 'grain', along: 'n' });
+  prx('coopcart', -326, 62.5, H); prx('eggs', -329.5, 63.8, H);
+  prx('bread', -335.5, 43.5, H); prx('bread', -324.8, 50.6, H, { along: 'n' });
+  prx('saj', -338.5, 52.5, H);
+  prx('cart', -300, 52, H, { c: 'olives', along: 'n' });          // ברחוב העולה מן השער
+  prx('eggs', -311, 49.4, H); prx('bread', -293, 55.4, H);
+  // ומי שעומד עליהם ומי שבא לבחון: הכורעת על הסאג', הסוחרים, והקונים
+  put('woman', -338.2, 53.6, { seed: 611, per: H, pose: 'crouch' });
+  put('child', -337.4, 55.4, { seed: 612, per: H });
+  put('merchant', -327.2, 48.9, { seed: 613, per: H });
+  put('woman', -328.8, 46.2, { seed: 614, per: H, carry: 'basket' });
+  put('man', -326.4, 61.3, { seed: 615, per: H });
+  put('merchant', -335.2, 42.2, { seed: 616, per: H });
+  put('woman', -334.6, 45.2, { seed: 617, per: H, carry: 'basket' });
+  put('man', -332.6, 59.4, { seed: 618, per: H });
+  put('child', -331, 62.2, { seed: 619, per: H });
+  put('merchant', -300.8, 50.8, { seed: 620, per: H });
+  put('man', -299.4, 53.6, { seed: 621, per: H, carry: 'sack' });
+  put('woman', -311.6, 50.6, { seed: 622, per: H, carry: 'basket' });
+  // ועוד הולכים ובאים, שהרחוב לא יעמוד ריק
+  scatter(9, -340, -296, 41, 68, ['man', 'woman', 'child', 'merchant', 'man'], { per: H });
   prx('cloth', -336.2, 60, H); prx('pots', -324, 60.6, H); prx('sacks', -330.5, 68.6, H); prx('amphorae', -322, 66, H); prx('bench', -321.8, 62.6, H); prx('pithos', -338, 41, H);
   prx('woodpile', -350, 46.6, H, { along: 'n' }); prx('sacks', -395, 46.7, H); prx('pithos', -400, 51.4, H); prx('produce', -380, 46.5, H, { c: 'grain' }); prx('amphorae', -366, 51.5, H, { along: 'n' });
   prx('quern', -352, 62, H); prx('vine', -349.5, 60.2, H); prx('pithos', -343.8, 56, H); prx('lamp', -344.3, 65.8, H);
@@ -679,7 +706,8 @@
   put('man', -351.6, 68.9, { pose: 'sit', seed: 210, per: H }); put('elder', -346.2, 68.9, { pose: 'sit', seed: 211, per: H });
   put('merchant', -321.8, 62.6, { pose: 'sit', seed: 212, per: H }); put('elder', 79, 20, { pose: 'sit', seed: 213, per: H }); put('man', 70, 122.3, { pose: 'sit', seed: 214, per: H }); put('woman', -56.8, -5, { pose: 'sit', seed: 215, per: H });
   // חפצים שאי אפשר לעבור דרכם
-  const BLOCK = { stall: 1.15, cistern: 0.95, press: 1.4, oven: 0.8, couch: 0.7, table: 0.5, chest: 0.5, pithos: 0.5, quern: 0.55, trough: 0.75, bench: 0.6, woodpile: 0.7, tub: 0.8, basin: 1.0, column: 0.4, loom: 0.7, amphorae: 0.4, sacks: 0.5, produce: 0.45, pots: 0.6, cloth: 0.4, rack: 0.5, altartools: 0.5, lamp: 0.15, pen: 0 };
+  const BLOCK = { stall: 1.15, cistern: 0.95, press: 1.4, oven: 0.8, couch: 0.7, table: 0.5, chest: 0.5, pithos: 0.5, quern: 0.55, trough: 0.75, bench: 0.6, woodpile: 0.7, tub: 0.8, basin: 1.0, column: 0.4, loom: 0.7, amphorae: 0.4, sacks: 0.5, produce: 0.45, pots: 0.6, cloth: 0.4, rack: 0.5, altartools: 0.5, lamp: 0.15, pen: 0,
+                cart: 1.1, coopcart: 1.1, eggs: 0.4, bread: 0.8, saj: 0.5 };
   const blocks = props.filter(q => BLOCK[q.kind]).map(q => ({ x: q.x, z: q.z, r: BLOCK[q.kind], per: q.per }));
 
   // אזור שכל מפלסיו הלניסטיים שייך לתקופה ההלניסטית בלבד

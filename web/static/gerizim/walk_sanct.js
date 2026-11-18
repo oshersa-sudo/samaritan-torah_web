@@ -146,10 +146,10 @@
    */
   P('priest', 87.4, 78.1, { seed: 51, carry: 'trumpet' });
   P('priest', 87.4, 80.1, { seed: 52, carry: 'trumpet' });
-  P('tallitpriest', 79.4, 77.4, { seed: 53, carry: 'censer' });
-  P('tallitpriest', 82.6, 80.5, { seed: 54, carry: 'censer' });
-  P('tallitpriest', 83.4, 77.8, { seed: 56 });
-  P('tallitpriest', 80.2, 80.8, { seed: 57, carry: 'bowl' });
+  P('priest', 79.4, 77.4, { seed: 53, carry: 'censer' });
+  P('priest', 82.6, 80.5, { seed: 54, carry: 'censer' });
+  P('priest', 83.4, 77.8, { seed: 56 });
+  P('priest', 80.2, 80.8, { seed: 57, carry: 'bowl' });
   P('highpriest', 77.3, 79.1, { seed: 55, carry: 'staff' });
   W.animals.push({ kind: 'sheep', x: 118.6, z: 79.3, per: 'r' }, { kind: 'ox', x: 120.6, z: 85.2, per: 'r' }, { kind: 'sheep', x: 122.4, z: 84.1, per: 'r' }, { kind: 'goat', x: 115, z: 72.5, per: 'r' });
   // שתים עשרה האבנים: במסורת העדה הקים אותן יהושע, ולכן הן עומדות גם בימי הרצון
