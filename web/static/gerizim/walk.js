@@ -338,6 +338,68 @@
       }
     }
   }
+  /* ── מזבח המשכן ────────────────────────────────────────────────────────────
+   * לא תיבה: סיבוב אבנים שלמות העולה מעט מעל פני הקרקע ונאסף כלפי מעלה —
+   * טרפז — כדרך שבונים מזבח מאבנים שלא הונף עליהן ברזל. על פיו מונחת רשת,
+   * ומעליה מוט שעליו הצלי; עצי המערכה בוערים מתחת לרשת, בתוך פי המזבח,
+   * והאש והעשן עולים דרכה.
+   */
+  function tabAltar(s, M) {
+    const b = s.box, x = (b[0] + b[2]) / 2, z = (b[1] + b[3]) / 2;
+    const y0 = s.y0, h = s.h;
+    const side = Math.max(b[2] - b[0], b[3] - b[1]);
+    const rB = side / Math.SQRT2 * 1.05, rT = rB * 0.78;        // נאסף למעלה
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(rT, rB, h, 4, 1), M.bigstone);
+    body.rotation.y = Math.PI / 4;                              // ריבוע, ישר עם החצר
+    body.position.set(x, y0 + h / 2, z);
+    if (shadows) { body.castShadow = true; body.receiveShadow = true; }
+    root.add(body);
+    // שני נדבכים, שייראה בנוי ולא יצוק
+    for (let i = 1; i <= 2; i++) {
+      const f = i / 3, r = (rB + (rT - rB) * f) * 1.035;
+      const ring = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.055, 4, 1), M.field);
+      ring.rotation.y = Math.PI / 4; ring.position.set(x, y0 + h * f, z); root.add(ring);
+    }
+    // הרשת שעל פיו
+    const half = rT / Math.SQRT2 * 1.35, gy = y0 + h + 0.04, bars = 7, br = 0.026;
+    for (let i = 0; i < bars; i++) {
+      const o = -half + (i + 0.5) * (2 * half / bars);
+      for (const along of [0, 1]) {
+        const bar = new THREE.Mesh(new THREE.CylinderGeometry(br, br, half * 2, 5), M.dark);
+        bar.rotation.z = Math.PI / 2;
+        if (along) bar.rotation.y = Math.PI / 2;
+        bar.position.set(x + (along ? o : 0), gy + (along ? br * 2.2 : 0), z + (along ? 0 : o));
+        root.add(bar);
+      }
+    }
+    // שני זקפים ומוט ביניהם, ועליו הצלי
+    const uh = 0.95, uy = gy + 0.02;
+    for (const d of [-1, 1]) {
+      const u = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.065, uh, 6), M.wood);
+      u.position.set(x + d * half * 0.95, uy + uh / 2, z);
+      root.add(u);
+    }
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, half * 2.2, 6), M.dark);
+    rod.rotation.z = Math.PI / 2; rod.position.set(x, uy + uh, z); root.add(rod);
+    const roast = new THREE.MeshLambertMaterial({ color: 0x703119, emissive: 0x2a0d05 });
+    for (const [dx, sx2, sy2] of [[-0.2, 1.55, 0.78], [0.66, 0.95, 0.62]]) {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 10), roast);
+      m.scale.set(sx2, sy2, 0.95);
+      m.position.set(x + dx, uy + uh - 0.36, z + (dx > 0 ? 0.05 : 0));
+      root.add(m);
+      const w = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.34, 4), M.dark);
+      w.position.set(m.position.x, uy + uh - 0.17, m.position.z);
+      root.add(w);
+    }
+    // עצי המערכה, בתוך פי המזבח ומתחת לרשת
+    for (let i = 0; i < 4; i++) {
+      const lg = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.085, rT * 1.25, 6), M.wood);
+      lg.rotation.z = Math.PI / 2; lg.rotation.y = i * 0.8;
+      lg.position.set(x, gy - 0.2 - (i % 2) * 0.1, z);
+      root.add(lg);
+    }
+  }
+
   function buildSolids(M) {
     for (const s of W.solids) {
       if (!inPer(s)) continue;
@@ -352,6 +414,7 @@
         root.add(new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: 0xe8e0cc, side: THREE.DoubleSide }))); continue;
       }
       if (s.h <= 0 || s.hide) continue;
+      if (s.id === 'altar' && s.per === 'r') { tabAltar(s, M); continue; }   // מזבח המשכן, מאבנים
       const mat = M[s.mat] || M.ashlar;
       addBox(b, s.y0, s.h, mat, s.mat === 'bigstone' ? 4 : 2);
       const top = s.y0 + s.h, w = b[2] - b[0], d = b[3] - b[1];
@@ -652,11 +715,24 @@
     for (const s of W.solids) {
       if (s.id !== 'altar' || !inPer(s)) continue;
       const ax = (s.box[0] + s.box[2]) / 2, az = (s.box[1] + s.box[3]) / 2, top = s.y0 + s.h;
-      addSmoke(ax, top + 0.2, az, 1.6, 0xcfcac0); addSmoke(ax + 1, top + 0.2, az - 1, 1.3, 0xbdb8ae);
+      const tab = s.per === 'r';                       // מזבח המשכן: אש הצלי, ועשן של ממש
+      addSmoke(ax, top + 0.2, az, tab ? 2.1 : 1.6, 0xcfcac0);
+      addSmoke(ax + 1, top + 0.2, az - 1, tab ? 1.7 : 1.3, 0xbdb8ae);
+      if (tab) { addSmoke(ax - 0.8, top + 0.35, az + 0.7, 1.9, 0xc6c1b6); addSmoke(ax + 0.3, top + 0.5, az + 0.2, 1.4, 0xd6d2c8); }
       // אש המזבח: לשונות להבה מרצדות מעל ערמת העצים
       const ft = texture('flame', 64, 96, c => { const g = c.getContext('2d'), gr = g.createRadialGradient(32, 70, 2, 32, 62, 34); gr.addColorStop(0, 'rgba(255,250,210,1)'); gr.addColorStop(0.35, 'rgba(255,190,70,.95)'); gr.addColorStop(0.7, 'rgba(240,110,30,.6)'); gr.addColorStop(1, 'rgba(200,60,20,0)'); g.fillStyle = gr; g.beginPath(); g.moveTo(32, 2); g.quadraticCurveTo(62, 52, 46, 84); g.quadraticCurveTo(32, 96, 18, 84); g.quadraticCurveTo(2, 52, 32, 2); g.fill(); });
-      for (let i = 0; i < 6; i++) { const fl = new THREE.Sprite(new THREE.SpriteMaterial({ map: ft, transparent: true, depthWrite: false, fog: false })); fl.center.set(0.5, 0.1); fl.userData = { x: ax + Math.cos(i * 1.05) * 0.75 * (i ? 1 : 0), y: top + 0.05, z: az + Math.sin(i * 1.05) * 0.75 * (i ? 1 : 0), s: i ? 0.9 : 1.5, ph: i * 1.7 }; root.add(fl); flames.push(fl); }
-      for (let i = 0; i < 5; i++) { const lg = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.1, 1.5, 6), M.dark); lg.rotation.z = Math.PI / 2; lg.rotation.y = i * 0.63; lg.position.set(ax, top + 0.1, az); root.add(lg); }
+      const nf = tab ? 9 : 6;
+      for (let i = 0; i < nf; i++) {
+        const fl = new THREE.Sprite(new THREE.SpriteMaterial({ map: ft, transparent: true, depthWrite: false, fog: false }));
+        fl.center.set(0.5, 0.1);
+        const spread = tab ? 0.62 : 0.75;
+        fl.userData = { x: ax + Math.cos(i * 1.05) * spread * (i ? 1 : 0), y: top + (tab ? -0.12 : 0.05),
+                        z: az + Math.sin(i * 1.05) * spread * (i ? 1 : 0),
+                        s: (i ? 0.9 : 1.5) * (tab ? 1.15 : 1), ph: i * 1.7 };
+        root.add(fl); flames.push(fl);
+      }
+      // ערמת העצים של מזבח הגזית; במשכן היא כבר בתוך פי המזבח, מתחת לרשת
+      if (!tab) for (let i = 0; i < 5; i++) { const lg = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.1, 1.5, 6), M.dark); lg.rotation.z = Math.PI / 2; lg.rotation.y = i * 0.63; lg.position.set(ax, top + 0.1, az); root.add(lg); }
     }
   }
   let smokeTex = null;
