@@ -11562,16 +11562,19 @@ async function gotoBookmark(b){
 // chosen a language of ours.
 const PUSH_TX = {
   he:{ t:'התראות', q:'האם תרצה לקבל התראות על תוכן חדש באפליקציה?', yes:'כן', no:'לא',
+       never:'אל תשאל שוב',
        on:'ההתראות הופעלו. נודיע לך על כל תוספת חדשה.',
        off:'ההתראות כבויות.',
        denied:'ההתראות חסומות בהגדרות המכשיר לאפליקציה זו. יש לאפשר אותן שם.',
        err:'לא הצלחנו להפעיל התראות כעת. נסה שוב מאוחר יותר.' },
   en:{ t:'Notifications', q:'Would you like to receive notifications about new content in the app?', yes:'Yes', no:'No',
+       never:'Don\'t ask again',
        on:'Notifications are on. We will tell you about every addition.',
        off:'Notifications are off.',
        denied:'Notifications are blocked for this app in the device settings. They have to be allowed there.',
        err:'Notifications could not be turned on just now. Please try again later.' },
   ar:{ t:'الإشعارات', q:'هل تريد تلقّي إشعارات عن المحتوى الجديد في التطبيق؟', yes:'نعم', no:'لا',
+       never:'لا تسألني مرّة أخرى',
        on:'تم تشغيل الإشعارات. سنُعلمك بكل إضافة جديدة.',
        off:'الإشعارات مُطفأة.',
        denied:'الإشعارات محجوبة لهذا التطبيق في إعدادات الجهاز، ويجب السماح بها هناك.',
@@ -11635,10 +11638,16 @@ async function pushDisable(){
   try{ await sub.unsubscribe(); }catch(e){}
   return 'off';
 }
-// The one question, in the device's language, with כן / לא. Asked only on the
-// installed app, only while permission is still undecided, and only once: "no"
-// is an answer, and the menu is where one changes one's mind.
+// The question, in the device's language, with כן / לא. Asked only on the
+// installed app and only while permission is still undecided — and, like the
+// welcome card, asked again on each entry until the reader has either settled it
+// (allowed or refused the device's own prompt) or ticked "אל תשאל שוב". A reader
+// who simply closed the card, or said "לא" once, is met again next time: that was
+// the owner's call, so that those who installed and never answered are not lost.
+// `as_push_asked` is the old one-shot flag and is deliberately no longer read —
+// everyone it silenced while the permission was still open is asked once more.
 const PUSH_ASKED = 'as_push_asked';
+const PUSH_NEVER = 'as_push_never';            // ticked: not again, ever
 // As the splash clears, the circles of the main menu come out of the middle of
 // the dial and it turns half a round — three and a half seconds in all, and a
 // card opened on top of that goes with it. So the question waits for the dial to
@@ -11662,16 +11671,21 @@ function askPushOnce(){ return _pushAsk || (_pushAsk = _askPushOnce()); }
 async function _askPushOnce(){
   if(!pushSupported() || !isInstalled()) return;
   if(Notification.permission !== 'default') return;          // already decided
-  try{ if(localStorage.getItem(PUSH_ASKED) === '1') return; }catch(e){}
+  try{ if(localStorage.getItem(PUSH_NEVER) === '1') return; }catch(e){}
   // only now that there IS a question to ask — nothing else is kept waiting
   await waitHubIntro();
   if(Notification.permission !== 'default') return;          // answered meanwhile
   const X = pushTx(), dl = deviceLang();
   const r = await showOnboard({ title:X.t, body:'<p>'+X.q+'</p>', primaryLabel:X.yes, laterLabel:X.no,
-                                dir:(dl === 'en') ? 'ltr' : 'rtl',
+                                dir:(dl === 'en') ? 'ltr' : 'rtl', dont:true, dontLabel:X.never,
                                 onPrimary: async () => { const s = await pushEnable(dl);
                                   toast(s === 'on' ? X.on : s === 'denied' ? X.denied : X.err); } });
-  try{ localStorage.setItem(PUSH_ASKED, '1'); }catch(e){}
+  // only the tick closes the question for good; "לא" on its own leaves it open,
+  // and the next entry asks again
+  try{
+    if(r && r.dont) localStorage.setItem(PUSH_NEVER, '1');
+    localStorage.removeItem(PUSH_ASKED);                     // the old one-shot flag, no longer used
+  }catch(e){}
   return r;
 }
 // and the way back: ☰ → התראות על תוכן חדש
@@ -11704,6 +11718,10 @@ function showOnboard(opts){
     $('obBody').innerHTML = opts.body || '';
     const dont=$('obDontShow'); dont.checked=false;
     $('obDontWrap').classList.toggle('hidden', !opts.dont);
+    // a card that speaks the device's language says this in it too, and not in
+    // the app's: "אל תשאל שוב" belongs to the question it stands under
+    const dlab=$('obDontWrap').querySelector('span');
+    if(dlab) dlab.textContent = opts.dontLabel || t('ob_dont');
     const prim=$('obPrimary');
     if(opts.primaryLabel){ prim.textContent=opts.primaryLabel; prim.classList.remove('hidden'); }
     else prim.classList.add('hidden');
