@@ -10,7 +10,7 @@
     let R = Math.random, actors = [], still = [], beasts = [], birds = [], clouds = [], floorsNow = [], time = 0, budget = 0, flock = null;
 
     /* ---------- אנשים ---------- */
-    const FIXED = ['lamb', 'bowl', 'doves', 'horn', 'spear', 'trumpet'];   // מי שנושא אותם עומד במקומו
+    const FIXED = ['lamb', 'bowl', 'doves', 'horn', 'spear', 'trumpet', 'censer'];   // מי שנושא אותם עומד במקומו (המחתות — מוזזות בידינו)
     // הכהן הגדול אינו משוטט, והנושא מחתה מסובב בתוך המשכן לאט
     const WALKS = { man: 0.6, woman: 0.55, elder: 0.4, child: 0.85, merchant: 0.25, levite: 0.3, priest: 0.25, highpriest: 0.12, tallitpriest: 0.3 };
     const SPEED = { man: 1.25, woman: 1.1, elder: 0.75, child: 2.1, merchant: 1.1, levite: 1.05, priest: 0.95, highpriest: 0.6, tallitpriest: 0.75 };
@@ -43,7 +43,48 @@
       }
       a.wait = 0.5 + R() * 1.5; return false;
     }
-    let peopleRoot = null, trumpeters = [], trumpPhase = 'home', trumpT = 60, trumpK = 0;
+    let peopleRoot = null, trumpeters = [], trumpPhase = 'home', trumpT = 60, trumpK = 0, censers = [], puffT = null;
+    /* ── המחתות ──────────────────────────────────────────────────────────────
+     * הכהנים הנושאים מחתה מסובבים בתוך המשכן ומפזרים את עשן הקטורת: הולכים
+     * לאט לאורך מסלול סגור, צעד אחר צעד, ומן הקערית עולה עשן מהיר שמתפזר
+     * ונגרר אחריהם. */
+    function puffTex() {
+      if (puffT) return puffT;
+      const c = document.createElement('canvas'); c.width = c.height = 64;
+      const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 2, 32, 32, 30);
+      gr.addColorStop(0, 'rgba(255,255,255,.95)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+      return (puffT = new THREE.CanvasTexture(c));
+    }
+    function loopAt(P, u) {
+      const w = P.x2 - P.x1, h = P.z2 - P.z1;
+      let d = ((u % 1) + 1) % 1 * P.len;
+      if (d < w) return { x: P.x1 + d, z: P.z1, dx: 1, dz: 0 }; d -= w;
+      if (d < h) return { x: P.x2, z: P.z1 + d, dx: 0, dz: 1 }; d -= h;
+      if (d < w) return { x: P.x2 - d, z: P.z2, dx: -1, dz: 0 }; d -= w;
+      return { x: P.x1, z: P.z2 - d, dx: 0, dz: -1 };
+    }
+    function censerStep(dt, cam) {
+      for (const s of censers) {
+        s.u = (s.u + dt * 0.45 / s.loop.len) % 1;                   // כחצי מטר בשנייה
+        const q = loopAt(s.loop, s.u);
+        s.dist += Math.hypot(q.x - s.x, q.z - s.z); s.x = q.x; s.z = q.z;
+        const back = q.dx * (cam.x - s.x) + q.dz * (cam.z - s.z) < 0;
+        const stride = (Math.floor(s.dist / 0.62 * 2) % 4) + 1, key = (back ? 'b' : 'f') + stride;
+        if (key !== s.wkey) {
+          const t = walkTex({ kind: s.kind, carry: s.carry, look: s.seed % (cx.lite ? 3 : 5) }, back, stride, false);
+          if (t) { s.sp.material.map = t; s.sp.material.needsUpdate = true; s.wkey = key; }
+        }
+        s.sp.position.set(s.x, s.y, s.z);
+        for (const p of s.puffs) {                                  // עשן מהיר, שמתפזר ונגרר
+          p.a += dt * 1.25;
+          if (p.a >= 1) { p.a -= 1; p.x = s.x + q.dx * 0.22; p.z = s.z + q.dz * 0.22; p.y = s.y + 0.92; }
+          p.sp.position.set(p.x + Math.sin(p.a * 6 + p.k) * 0.14 * p.a, p.y + p.a * 1.5, p.z + Math.cos(p.a * 5 + p.k) * 0.14 * p.a);
+          const k2 = 0.2 + p.a * 1.05; p.sp.scale.set(k2, k2, 1);
+          p.sp.material.opacity = 0.62 * (1 - p.a) * Math.min(1, p.a * 6);
+        }
+      }
+    }
     /* ── שני כהנים צעירים בחצוצרות הכסף ─────────────────────────────────────
      * מדי שתיים-חמש דקות הם יוצאים מן המשכן אל פניו, עומדים ותוקעים, ונכנסים
      * חזרה. התקיעה עצמה — הצליל — נשמעת ברגע שהם עומדים במקומם. */
@@ -71,7 +112,7 @@
       if (trumpPhase === 'blow') { if (trumpT <= 0) trumpPhase = 'in'; return; }
       if (trumpPhase === 'in') {
         trumpK = Math.max(0, trumpK - dt / 2.8); place(trumpK);
-        if (trumpK <= 0) { trumpPhase = 'home'; trumpT = 120 + R() * 180; }
+        if (trumpK <= 0) { trumpPhase = 'home'; trumpT = 110 + R() * 70; }   // ומאז — כל שתיים-שלוש דקות
       }
     }
     function addPeople(root) {
@@ -91,7 +132,7 @@
         const carry = p.carry || 'none', fixed = p.kind === 'guard' || FIXED.indexOf(carry) >= 0 || !!p.pose;
         const walks = GP && !fixed && R() < (WALKS[p.kind] || 0) * (placed ? 0.35 : 1);
         if (!walks) {
-          const seed = (p.seed || 1) % 16, st = { kind: p.kind, carry, seed, x, z, w: 0.5 + R() * 0.7, ph: R() * 6.3, pose: p.pose || 'stand', talk: 0, t: R() * 4, cur: '' };
+          const seed = (p.seed || 1) % 16, st = { kind: p.kind, carry, seed, x, z, y: s.y, w: 0.5 + R() * 0.7, ph: R() * 6.3, pose: p.pose || 'stand', talk: 0, t: R() * 4, cur: '' };
           if (st.pose === 'stand') st.sp = cx.sprite(p.kind + carry + seed, 1.07, 2.14, 160, 320, c => GP.drawPerson(c, p.kind, carry, seed + 3));
           else { st.sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: poseTex(st, st.pose, 'calm', true), transparent: true, alphaTest: 0.25, fog: true })); st.sp.center.set(0.5, 0); st.sp.scale.set(1.07, 2.14, 1); }
           st.sp.position.set(x, s.y, z); root.add(st.sp); still.push(st);
@@ -109,7 +150,21 @@
         s.out = { x: s.x, z: s.z }; s.home = { x: s.x - 3.1, z: s.z };
         s.x = s.home.x; s.sp.position.set(s.x, s.y, s.z);
       }
-      trumpPhase = 'home'; trumpT = 35 + R() * 55; trumpK = 0;
+      trumpPhase = 'home'; trumpT = 12 + R() * 10; trumpK = 0;        // בפעם הראשונה — כרבע דקה אחרי ההגעה
+      // המחתות: מסלול סגור בתוך הקודש, לפני הפרוכת — בין מזבח הקטורת לפתח, בין
+      // השולחן למנורה — והשניים בשני צדיו של המסלול
+      censers = still.filter(s => s.carry === 'censer');
+      censers.forEach((s, i) => {
+        s.loop = { x1: 79.2, x2: 83.2, z1: 78.2, z2: 80.0 };
+        s.loop.len = 2 * ((s.loop.x2 - s.loop.x1) + (s.loop.z2 - s.loop.z1));
+        s.u = i / Math.max(1, censers.length); s.dist = 0; s.wkey = '';
+        s.sp.material = new THREE.SpriteMaterial({ map: s.sp.material.map, transparent: true, alphaTest: 0.25, fog: true });
+        s.puffs = [];
+        for (let k = 0; k < 7; k++) {
+          const sp2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: puffTex(), transparent: true, depthWrite: false, opacity: 0, color: 0xc9c3b6 }));   // אפור-לבן, שייראה על רקע הבד הלבן
+          root.add(sp2); s.puffs.push({ sp: sp2, a: k / 7, x: s.x, y: s.y + 0.95, z: s.z, k: k * 1.7 });
+        }
+      });
       // שניים שעומדים קרוב זה לזה — משוחחים: אחד מדבר ומחווה בידו, והשני מקשיב
       for (let i = 0; i < still.length; i++) {
         const a = still[i]; if (a.pose !== 'stand' || a.talk || a.kind === 'guard' || FIXED.indexOf(a.carry) >= 0) continue;
@@ -163,7 +218,7 @@
       g.fillText(text, 320, 72, 570);
       const t = new THREE.CanvasTexture(c); t.anisotropy = 2; return t;
     }
-    const NEAR_TRADE = ['stall', 'cart', 'coopcart', 'eggs', 'bread', 'saj', 'produce', 'pots', 'sacks'];
+    const NEAR_TRADE = ['stall', 'cart', 'coopcart', 'chickpen', 'eggs', 'bread', 'saj', 'produce', 'pots', 'sacks'];
     function tradeNear(x, z) {
       for (const pr of W.props) if (NEAR_TRADE.indexOf(pr.kind) >= 0 && cx.inPer(pr) && Math.abs(pr.x - x) + Math.abs(pr.z - z) < 4.5) return true;
       return false;
@@ -181,7 +236,7 @@
       nextHail = 26 + R() * 40;                              // מדי פעם, לא בלי סוף
       const cand = [];
       for (const a of still) {
-        if (hailed.has(a) || a.kind === 'guard' || a.pose !== 'stand' || a.talk) continue;
+        if (hailed.has(a) || a.kind === 'guard' || a.pose !== 'stand' || a.talk || a.carry === 'censer' || a.carry === 'trumpet') continue;
         const d = Math.hypot(a.x - pos.x, a.z - pos.z); if (d > 2 && d < 8) cand.push({ who: a, d, still: true });
       }
       for (const a of actors) {
@@ -214,7 +269,7 @@
       }
     }
     function stepPeople(dt, cam, pos) {
-      hail(dt, pos); trumpStep(dt);
+      hail(dt, pos); trumpStep(dt); censerStep(dt, cam);
       for (const a of actors) {
         const dc = Math.abs(cam.x - a.x) + Math.abs(cam.z - a.z);
         if (cullAt) { const far = dc > cullAt; a.sp.visible = shown && !far; if (far) continue; }

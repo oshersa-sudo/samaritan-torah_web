@@ -13,7 +13,7 @@
     en: { snd: 'Sound', musicW: 'Background music (guided tour)', music: 'Background music', amb: 'Ambient sounds', musicS: 'Music', musicOn: 'Background music is on — tap to mute', musicOff: 'Background music is muted — tap to play' },
     ar: { snd: 'الصوت', musicW: 'موسيقى خلفية (الجولة المرشدة)', music: 'موسيقى خلفية', amb: 'أصوات المكان', musicS: 'موسيقى', musicOn: 'موسيقى الخلفية تعمل — انقر للإسكات', musicOff: 'موسيقى الخلفية صامتة — انقر للتشغيل' }
   };
-  let ctx = null, master, musicBus, ambBus, noise = null, verb = null;
+  let ctx = null, master, musicBus, synBus, ambBus, noise = null, verb = null;
   const MUSIC_LV = 0.16, DUCK_LV = 0.045;
   function ensure() {
     if (ctx) { if (ctx.state === 'suspended') ctx.resume().catch(() => {}); return ctx; }
@@ -22,6 +22,10 @@
     master = ctx.createGain(); master.gain.value = 0.9; master.connect(ctx.destination);
     try { if (localStorage.getItem('gerizim-audio-mute') === '1') master.gain.value = 0; } catch (e) { /* בדיקות בלי קול */ }
     musicBus = ctx.createGain(); musicBus.gain.value = 0; ambBus = ctx.createGain(); ambBus.gain.value = 0;
+    // the synthesized music has a channel of its own inside the music: when the
+    // recording takes over it is cut to nothing at once, so the two are never
+    // heard together — not even the notes already scheduled ahead
+    synBus = ctx.createGain(); synBus.gain.value = 1; synBus.connect(musicBus);
     // חדר: הד קצר ורך, משותף למוזיקה
     verb = ctx.createConvolver(); const len = ctx.sampleRate * 2.6, ir = ctx.createBuffer(2, len, ctx.sampleRate);
     for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
@@ -38,7 +42,8 @@
   let offscreen = false;
   try { new IntersectionObserver(es => { offscreen = !es[es.length - 1].isIntersecting; window.GerizimOffscreen = offscreen; settle(); }).observe(document.documentElement); } catch (e) { /* דפדפן ישן: רק document.hidden */ }
   const hiddenNow = () => document.hidden || offscreen;
-  const needed = () => !!((musicOn && pref.music) || (scene && pref.amb));
+  let mapSrc = null, mapBus = null, mapPray = null, mapWant = '';   // התפילה במפה (ראו להלן)
+  const needed = () => !!((musicOn && pref.music) || (scene && pref.amb) || (mapSrc && pref.amb));
   let sTimer = 0, verbOn = false;
   function settle() {
     if (!ctx) return;
@@ -109,14 +114,14 @@
     const g = ctx.createGain(), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900; lp.Q.value = 0.4;
     g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + dur * 0.35); g.gain.linearRampToValueAtTime(0, t + dur);
     for (const det of [-6, 5]) { const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = f; o.detune.value = det; o.connect(lp); o.start(t); o.stop(t + dur + 0.1); }
-    lp.connect(g); g.connect(musicBus);
+    lp.connect(g); g.connect(synBus);
   }
   function pluck(f, t, vol) {                                    // מעין עוד: צליל קצר שדועך
     const g = ctx.createGain(), o = ctx.createOscillator(), o2 = ctx.createOscillator(), lp = ctx.createBiquadFilter();
     o.type = 'sawtooth'; o.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f * 2;
     lp.type = 'lowpass'; lp.frequency.setValueAtTime(2400, t); lp.frequency.exponentialRampToValueAtTime(500, t + 0.9);
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
-    o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(musicBus); o.start(t); o2.start(t); o.stop(t + 2.3); o2.stop(t + 2.3);
+    o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(synBus); o.start(t); o2.start(t); o.stop(t + 2.3); o2.stop(t + 2.3);
   }
   /* the recorded music, once it is here: a flute on a long bed, looping */
   let mbed = null;
@@ -129,6 +134,7 @@
       sc.connect(musicBus);
       sc.start(0, Math.random() * Math.max(1, buf.duration - 20));
       mbed = sc;
+      synBus.gain.cancelScheduledValues(now()); synBus.gain.setValueAtTime(0, now());   // the synthesis: silent, at once
       stopDrone();                       // the synthetic bed makes way for it
     }
     return true;
@@ -149,7 +155,7 @@
   }
   function startDrone() {
     if (drone) return; drone = [];
-    const g = ctx.createGain(); g.gain.value = 0; g.connect(musicBus); g.gain.setTargetAtTime(0.06, now(), 2);
+    const g = ctx.createGain(); g.gain.value = 0; g.connect(synBus); g.gain.setTargetAtTime(0.06, now(), 2);
     for (const f of [ROOT / 2, ROOT * 0.75]) { const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f; o.connect(g); o.start(); drone.push(o); }
     drone.g = g;
   }
@@ -160,6 +166,7 @@
     if (musicOn && pref.music) { if (!ensure()) return; if (!verbOn) { musicBus.connect(verb); verbOn = true; } if (!musicBed()) startDrone(); mNext = now() + 0.4; clearInterval(mTimer); mTimer = setInterval(musicTick, 250); musicTick(); }
     else if (ctx) { ramp(musicBus.gain, 0, 0.6); stopDrone();
       if (mbed) { try { mbed.stop(); } catch (e) { /* already done */ } mbed = null; }
+      if (synBus) synBus.gain.setValueAtTime(1, now());
       clearInterval(mTimer); mTimer = 0; setTimeout(() => { if (verbOn && !(musicOn && pref.music)) { try { musicBus.disconnect(verb); } catch (e) { /* */ } verbOn = false; } }, 3500); }
     settle(); syncButtons();
   }
@@ -268,15 +275,19 @@
    * And every few minutes two silver trumpets answer from the front of it.
    */
   const HORN = ['shofar_tekia', 'shofar_shevarim', 'shofar_teruah'];
-  let hornI = 0, nextHorn = 0, nextTrump = 0, nextFarHorn = 0;
+  let hornI = 0, nextHorn = 0, nextTrump = 0, nextFarHorn = 0, nextCoop = 0;
   function ambTick() {
     const GW = window.GerizimWalk, D = W();
     if (!GW || !GW.active || !D || !scene || !pref.amb) { if (chains) { ramp(chains.crowd.gain, 0); ramp(chains.fire.gain, 0); ramp(chains.wind.gain, 0); } return; }
     if (GW.paused) { ramp(ambBus.gain, 0.25, 0.6); } else ramp(ambBus.gain, 1, 0.6);
     const p = GW._pos(), per = scene.per, tl = scene.tl, t = now() + 0.03;
     // a recording, where one has arrived: the synthetic bed under it is silenced
-    if (bed('market', chains.crowd)) { chains.gHum.gain.value = 0; chains.babble.gain.value = 0; }
-    if (bed('fire', chains.fire)) { chains.gFire.gain.value = 0; chains.crackle.gain.value = 0; }
+    // (and the syllables of the synthetic crowd are not even made while the
+    //  market is a recording — see below)
+    const liveMarket = bed('market', chains.crowd);
+    if (liveMarket) { chains.gHum.gain.value = 0; chains.babble.gain.value = 0; }
+    const liveFire = bed('fire', chains.fire);
+    if (liveFire) { chains.gFire.gain.value = 0; chains.crackle.gain.value = 0; }
     if (bed('wind', chains.wind)) chains.gWind.gain.value = 0;
     // המולה: לפי האנשים הקרובים ולפי מוקדי ההמולה
     let crowd = 0;
@@ -284,24 +295,30 @@
     for (const s of SPOTS) if (s.per === per) crowd += fall(Math.hypot(s.x - p.x, s.z - p.z), s.r) * s.lv;
     crowd = Math.min(1, crowd);
     ramp(chains.crowd.gain, crowd * 0.55, 0.35);
-    if (crowd > 0.04) { const n = Math.random() < crowd * 1.6 ? 1 + (crowd > 0.5 && Math.random() < 0.5 ? 1 : 0) : 0; for (let i = 0; i < n; i++) syllable(t + Math.random() * 0.1, 0.05 + crowd * 0.09); }
+    if (crowd > 0.04 && !liveMarket) { const n = Math.random() < crowd * 1.6 ? 1 + (crowd > 0.5 && Math.random() < 0.5 ? 1 : 0) : 0; for (let i = 0; i < n; i++) syllable(t + Math.random() * 0.1, 0.05 + crowd * 0.09); }
     // אש המזבח
     let fire = 0;
     for (const s of D.solids) if (s.id === 'altar' && inPer(s, per, tl)) { const x = (s.box[0] + s.box[2]) / 2, z = (s.box[1] + s.box[3]) / 2; fire = Math.max(fire, fall(Math.hypot(x - p.x, z - p.z), 24)); }
     ramp(chains.fire.gain, fire * 0.6, 0.3);
-    if (fire > 0.03 && Math.random() < 0.7) for (let i = 0; i < 2; i++) burst(chains.crackle, t + Math.random() * 0.09, 0.012 + Math.random() * 0.03, 0.08 + fire * 0.35, 'bandpass', 2500 + Math.random() * 3000, 1.2);
+    if (fire > 0.03 && !liveFire && Math.random() < 0.7) for (let i = 0; i < 2; i++) burst(chains.crackle, t + Math.random() * 0.09, 0.012 + Math.random() * 0.03, 0.08 + fire * 0.35, 'bandpass', 2500 + Math.random() * 3000, 1.2);
     // רוח: חזקה יותר על ראש ההר החשוף של ימי הרצון, ונבלעת בהמולה
     const inside = indoors(D, p, per, tl);
     ramp(chains.wind.gain, (per === 'r' ? 0.5 : 0.3) * (1 - crowd * 0.6) * (inside ? 0.18 : 1), 1.2);
     // בעלי חיים קרובים: פעייה מדי פעם
     // בעלי חיים קרובים — וכל מין בקולו שלו
     if (now() > nextBleat) {
-      let near = 1e9, kind = null;
+      // לא תמיד הקרובה ביותר — אחרת ליד המשכן נשמעה רק הכבשה, והשור שלידה
+      // לא נשמע לעולם. מגרילים מבין כל מי שבטווח, והקרוב — סיכוייו גדולים יותר
+      const cand = []; let sum = 0;
       for (const a of D.animals) if (inPer(a, per, tl)) {
         const d = Math.hypot(a.x - p.x, a.z - p.z);
-        if (d < near) { near = d; kind = a.kind; }
+        if (d < 32) { const w = 0.15 + fall(d, 32); cand.push({ d, kind: a.kind, w }); sum += w; }
       }
-      if (near < 32) beast(t, 0.06 + fall(near, 32) * 0.22, kind);
+      if (cand.length) {
+        let r = Math.random() * sum, c = cand[0];
+        for (const q of cand) { r -= q.w; if (r <= 0) { c = q; break; } }
+        beast(t, 0.06 + fall(c.d, 32) * 0.22, c.kind);
+      }
       nextBleat = now() + 5 + Math.random() * 9;
     }
     // ציפורים: מצע שקט בחוץ כשאין המולה, ובלעדיו ציוצים כבעבר
@@ -311,8 +328,16 @@
       if (crowd < 0.5) chirp(t, 0.025 + Math.random() * 0.03);
       nextBird = now() + 4 + Math.random() * 10;
     }
-    // וקולות שמסביב, לעתים: בשוק לולי תרנגולות ואפרוחים, ומן הכפר כלב, ועדר חולף
-    if (now() > nextFar) {
+    // ליד הלול: האפרוחים מצייצים והתרנגולות מקרקרות — לפי המרחק מן הלול הקרוב
+    let coopD = 1e9;
+    for (const q of D.props) if ((q.kind === 'coopcart' || q.kind === 'chickpen') && inPer(q, per, tl)) coopD = Math.min(coopD, Math.hypot(q.x - p.x, q.z - p.z));
+    if (coopD < 16 && now() > nextCoop) {
+      const b = sample(Math.random() < 0.6 ? 'chicks' : 'hen');
+      if (b) one(b, t, 0.05 + fall(coopD, 16) * 0.3, chains.fx, 0.95 + Math.random() * 0.1);
+      nextCoop = now() + (b ? 7 + Math.random() * 8 : 1);
+    }
+    // וקולות שמסביב, לעתים: מן הכפר כלב, ועדר חולף (ולא לול, אם כבר עומדים לידו)
+    if (now() > nextFar && coopD >= 16) {
       if (!inside) {
         const near = crowd > 0.25;
         const pick = near ? (Math.random() < 0.5 ? 'chicks' : 'hen')
@@ -335,8 +360,11 @@
     if (per === 'r' && dHoly < 150) {
       if (now() > nextHorn) {
         const hb = sample(HORN[hornI % HORN.length]);
-        if (hb) { one(hb, t, 0.07 + fall(dHoly, 120) * 0.3, chains.fx, 0.98 + Math.random() * 0.04); hornI++; }
-        nextHorn = now() + 22 + Math.random() * 30;
+        if (hb) {
+          // מוגבר: קרוב — מלוא הקול, ובתוך המשכן עוד יותר; רחוק — נחלש עם המרחק
+          one(hb, t, Math.min(0.9, (0.14 + fall(dHoly, 150) * 0.62) * (inside ? 1.15 : 1)), chains.fx, 0.98 + Math.random() * 0.04);
+          hornI++; nextHorn = now() + 16 + Math.random() * 12;
+        } else nextHorn = now() + 0.8;               // ההקלטה עוד נטענת: שוב בעוד רגע, ולא בעוד חצי דקה
       }
       // החצוצרות אינן כאן: שני הכהנים התוקעים קוראים להן בעצמם (call), כשהם
       // עומדים בפני המשכן — ולא בשעה שרירותית
@@ -344,22 +372,65 @@
     }
     // ומי שהרחיק מן המרכז הדתי שומע את השופר מעברו השני של ההר: מעומעם,
     // מהדהד, ולעתים רחוקות — הקול עצמו, מן ההקלטה של בעל האפליקציה
-    if (dHoly > 55 && now() > nextFarHorn) {
+    // (בימי הרצון — רק מעבר לטווח שבו השופר הקרוב נשמע: אחד מן השניים, לא שניהם)
+    if ((per === 'r' ? dHoly >= 150 : dHoly > 55) && now() > nextFarHorn) {
       const fb = sample('shofar_far');
       if (fb) one(fb, t, 0.08 + Math.max(0, 1 - dHoly / 320) * 0.12, chains.fx, 1);
-      nextFarHorn = now() + 70 + Math.random() * 110;
+      nextFarHorn = now() + (fb ? 70 + Math.random() * 110 : 2);
     }
     // צעדי ההולך: לפי המרחק שעבר
     if (last) { const d = Math.hypot(p.x - last.x, p.z - last.z); if (d < 3) { stepAcc += d; if (stepAcc > 0.78) {
+      // הצעדים — כפי שהיו: הבעלים ביקש את הצליל המסונתז ולא את ההקלטה
       stepAcc = 0;
-      const sb = sample('step');
-      if (sb) one(sb, t, 0.5 + Math.random() * 0.25, chains.fx, 0.9 + Math.random() * 0.2);
-      else { burst(chains.fx, t, 0.07, 0.22, 'lowpass', 700 + Math.random() * 300, 0.9); burst(chains.fx, t + 0.005, 0.04, 0.05, 'bandpass', 3200, 1.5); }
+      burst(chains.fx, t, 0.07, 0.22, 'lowpass', 700 + Math.random() * 300, 0.9);
+      burst(chains.fx, t + 0.005, 0.04, 0.05, 'bandpass', 3200, 1.5);
     } } else stepAcc = 0; }
     last = { x: p.x, z: p.z };
   }
+  /* ── התפילה במפה ──────────────────────────────────────────────────────────
+   * The Roman, Byzantine and Islamic periods have no walk of their own, so their
+   * prayer — and that of every other period — is heard when the period is chosen
+   * on the map: a quiet bed, muffled in the file itself, in the voice of those
+   * who held the mountain then. "הכול" is silence. Inside the walk the walk's own
+   * prayer takes over, and this one waits underneath at nothing.
+   */
+  const MAPPRAY = { ratzon: 'pray_r', persian: 'pray_p', hellenistic: 'pray_h', roman: 'pray_rom',
+                    byzantine: 'pray_b', islamic: 'pray_m', today: 'pray_n' };
+  const MAP_LV = 0.42;
+  function mapPeriod(id) {
+    const name = MAPPRAY[id] || null;
+    if (name === mapPray) return;
+    mapPray = name;
+    if (!ensure()) return;
+    if (!mapBus) { mapBus = ctx.createGain(); mapBus.gain.value = 0; mapBus.connect(master); }
+    if (mapSrc) {
+      const old = mapSrc; mapSrc = null;
+      ramp(mapBus.gain, 0, 0.35);
+      setTimeout(() => { try { old.stop(); } catch (e) { /* done */ } }, 1600);
+    }
+    if (!name || !pref.amb) { settle(); return; }
+    const go = () => {
+      if (mapPray !== name) return;
+      const b = sample(name);
+      if (!b) { if (bank[name] !== false) setTimeout(go, 300); return; }
+      const sc = ctx.createBufferSource(); sc.buffer = b; sc.loop = true;
+      sc.connect(mapBus); sc.start(0, Math.random() * b.duration);
+      mapSrc = sc;
+      ramp(mapBus.gain, scene ? 0 : MAP_LV, 1.2);
+      settle();
+    };
+    go();
+  }
+  document.addEventListener('click', ev => {
+    const b = ev.target && ev.target.closest && ev.target.closest('#periods button');
+    if (b) { mapWant = b.dataset.per || ''; mapPeriod(mapWant); }
+  }, true);
+
   function walkScene(per, tl) {
+    if (mapBus) ramp(mapBus.gain, (per == null && mapSrc) ? MAP_LV : 0, 0.8);   // the walk's prayer, not the map's
     if (per == null) { scene = null; clearInterval(aTimer); aTimer = 0; if (ctx) ramp(ambBus.gain, 0, 0.5); last = null; settle(); return; }
+    // בכל כניסה לימי הרצון השופר נשמע כמעט מיד — ולא אחרי חצי דקה של שקט
+    if (ctx && (!scene || scene.per !== per)) { nextHorn = now() + 4 + Math.random() * 3; hornI = Math.floor(Math.random() * 3); nextFarHorn = now() + 30 + Math.random() * 40; }
     scene = { per, tl: !!tl };
     if (!pref.amb) return;
     if (!ensure()) return;
@@ -404,7 +475,11 @@
   function set(k, v) {
     pref[k] = !!v; save();
     if (k === 'music') { if (musicOn) { if (pref.music) music(true); else if (ctx) { ramp(musicBus.gain, 0, 0.4); stopDrone(); } } }
-    if (k === 'amb') { if (pref.amb && scene) walkScene(scene.per, scene.tl); else if (ctx) ramp(ambBus.gain, 0, 0.4); }
+    if (k === 'amb') {
+      if (pref.amb && scene) walkScene(scene.per, scene.tl); else if (ctx) ramp(ambBus.gain, 0, 0.4);
+      // the map's prayer follows the same switch: off is silence, on is the period chosen
+      const want = mapWant; mapPray = null; mapPeriod(pref.amb ? want : ''); mapWant = want;
+    }
     settle(); syncButtons();
   }
   // קריינות (אם תתווסף): בזמן הדיבור המוזיקה יורדת, ואחריו חוזרת
@@ -419,7 +494,7 @@
     const GW = window.GerizimWalk, p = GW && GW._pos && GW._pos();
     if (!b || !p) return;
     const d = Math.hypot(x - p.x, z - p.z);
-    one(b, now() + 0.05, 0.05 + fall(d, 110) * 0.32, chains.fx, 1);
+    one(b, now() + 0.05, Math.min(0.85, 0.1 + fall(d, 140) * 0.6), chains.fx, 1);
   }
   window.GerizimAudio = { music, walkScene, walkButton, musicButton, duck, set, call, get pref() { return Object.assign({}, pref); },
     _state: () => ({ ctx: ctx && ctx.state, musicOn, music: ctx ? +musicBus.gain.value.toFixed(3) : 0, amb: ctx ? +ambBus.gain.value.toFixed(3) : 0, scene, chains: chains ? { crowd: +chains.crowd.gain.value.toFixed(3), fire: +chains.fire.gain.value.toFixed(3), wind: +chains.wind.gain.value.toFixed(3) } : null }) };

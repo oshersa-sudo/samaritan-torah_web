@@ -679,10 +679,12 @@
   prx('coopcart', -326, 62.5, H); prx('eggs', -329.5, 63.8, H);
   prx('bread', -335.5, 43.5, H); prx('bread', -324.8, 50.6, H, { along: 'n' });
   prx('saj', -338.5, 52.5, H);
-  prx('cart', -300, 52, H, { c: 'olives', along: 'n' });          // ברחוב העולה מן השער
-  prx('eggs', -311, 49.4, H); prx('bread', -293, 55.4, H);
+  prx('cart', -331.5, 54.2, H, { c: 'veg' }); prx('cart', -327.2, 67, H, { c: 'melons' }); prx('chickpen', -329, 59.8, H);
+  // ברחוב העולה מן השער (bstreet: n −339…−410, e 46…52) — ולא מצפון לשוק, היכן שאין רחוב
+  prx('cart', -343.5, 50.7, H, { c: 'olives', along: 'n' }); prx('eggs', -347.2, 51.2, H); prx('bread', -351.5, 51, H, { along: 'n' });
+  prx('coopcart', -355.5, 47.4, H, { along: 'n' }); prx('chickpen', -358.6, 51.1, H); prx('cart', -362.4, 47.3, H, { c: 'fruit', along: 'n' });
   // ומי שעומד עליהם ומי שבא לבחון: הכורעת על הסאג', הסוחרים, והקונים
-  put('woman', -338.2, 53.6, { seed: 611, per: H, pose: 'crouch' });
+  put('bedouin', -338.2, 53.6, { seed: 611, per: H, pose: 'crouch' });   // בדווית בצד הדרך, אופה על הסאג'
   put('child', -337.4, 55.4, { seed: 612, per: H });
   put('merchant', -327.2, 48.9, { seed: 613, per: H });
   put('woman', -328.8, 46.2, { seed: 614, per: H, carry: 'basket' });
@@ -691,9 +693,11 @@
   put('woman', -334.6, 45.2, { seed: 617, per: H, carry: 'basket' });
   put('man', -332.6, 59.4, { seed: 618, per: H });
   put('child', -331, 62.2, { seed: 619, per: H });
-  put('merchant', -300.8, 50.8, { seed: 620, per: H });
-  put('man', -299.4, 53.6, { seed: 621, per: H, carry: 'sack' });
-  put('woman', -311.6, 50.6, { seed: 622, per: H, carry: 'basket' });
+  put('merchant', -331.6, 55.8, { seed: 623, per: H }); put('woman', -332.5, 52.8, { seed: 624, per: H, carry: 'basket' }); put('man', -330.5, 52.9, { seed: 625, per: H });
+  put('merchant', -327.2, 68.6, { seed: 626, per: H }); put('elder', -328.6, 65.4, { seed: 627, per: H }); put('child', -330.2, 60.6, { seed: 628, per: H });
+  put('merchant', -343.2, 49.3, { seed: 620, per: H }); put('man', -345.2, 48.6, { seed: 621, per: H, carry: 'sack' });
+  put('woman', -347.8, 48.4, { seed: 622, per: H, carry: 'basket' }); put('child', -354.4, 49.0, { seed: 629, per: H });
+  put('merchant', -361.6, 48.8, { seed: 630, per: H }); put('woman', -363.8, 49.2, { seed: 631, per: H, carry: 'basket' });
   // ועוד הולכים ובאים, שהרחוב לא יעמוד ריק
   scatter(9, -340, -296, 41, 68, ['man', 'woman', 'child', 'merchant', 'man'], { per: H });
   prx('cloth', -336.2, 60, H); prx('pots', -324, 60.6, H); prx('sacks', -330.5, 68.6, H); prx('amphorae', -322, 66, H); prx('bench', -321.8, 62.6, H); prx('pithos', -338, 41, H);
@@ -707,7 +711,7 @@
   put('merchant', -321.8, 62.6, { pose: 'sit', seed: 212, per: H }); put('elder', 79, 20, { pose: 'sit', seed: 213, per: H }); put('man', 70, 122.3, { pose: 'sit', seed: 214, per: H }); put('woman', -56.8, -5, { pose: 'sit', seed: 215, per: H });
   // חפצים שאי אפשר לעבור דרכם
   const BLOCK = { stall: 1.15, cistern: 0.95, press: 1.4, oven: 0.8, couch: 0.7, table: 0.5, chest: 0.5, pithos: 0.5, quern: 0.55, trough: 0.75, bench: 0.6, woodpile: 0.7, tub: 0.8, basin: 1.0, column: 0.4, loom: 0.7, amphorae: 0.4, sacks: 0.5, produce: 0.45, pots: 0.6, cloth: 0.4, rack: 0.5, altartools: 0.5, lamp: 0.15, pen: 0,
-                cart: 1.1, coopcart: 1.1, eggs: 0.4, bread: 0.8, saj: 0.5 };
+                cart: 1.1, coopcart: 1.1, eggs: 0.4, bread: 0.8, saj: 0.5, chickpen: 0.7 };
   const blocks = props.filter(q => BLOCK[q.kind]).map(q => ({ x: q.x, z: q.z, r: BLOCK[q.kind], per: q.per }));
 
   // אזור שכל מפלסיו הלניסטיים שייך לתקופה ההלניסטית בלבד

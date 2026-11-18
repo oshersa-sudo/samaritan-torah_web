@@ -1254,6 +1254,7 @@
   function periodBtn(id, label, title) {
     const b = document.createElement('button');
     b.textContent = label; if (title) b.title = title;
+    b.dataset.per = id || '';                      // audio.js plays the prayer of the period chosen
     b.classList.toggle('on', state.period === id);
     b.onclick = () => {
       state.period = id;

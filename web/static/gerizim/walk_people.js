@@ -91,20 +91,30 @@
     const R = rng(seed + 11), pick = a => a[Math.floor(R() * a.length)];
     const g = c.getContext('2d'), Wd = c.width, Hh = c.height, u = Hh / 236;      // 236 יחידות: מקום גם לרומח שמעל הראש
     g.clearRect(0, 0, Wd, Hh); g.lineJoin = 'round';
-    const child = kind === 'child', woman = kind === 'woman', elder = kind === 'elder', guard = kind === 'guard',
+    const bedouin = kind === 'bedouin',                                // אישה בדווית: שמלה שחורה ורקמה אדומה
+      child = kind === 'child', woman = kind === 'woman' || bedouin, elder = kind === 'elder', guard = kind === 'guard',
       highp = kind === 'highpriest',                                   // הכהן הגדול
       tallit = kind === 'tallitpriest',                                // כהן שטליתו פרושה על ראשו
       priest = kind === 'priest' || highp || tallit, levite = kind === 'levite', merchant = kind === 'merchant';
 
     // ---------- המראה: נקבע רק לפי (kind, carry, seed) ----------
     const backR = !(guard || highp || carry === 'lamb' || carry === 'bowl' || carry === 'doves' || carry === 'basket' || carry === 'horn' || carry === 'trumpet' || carry === 'censer') && R() < 0.3;
-    const flip = R() < 0.5 ? -1 : 1;
+    // הכהן הגדול אינו מצויר במראה: המקל בידו הימנית, כבקשת הבעלים (ההגרלה נשארת, שהסדר לא יזוז)
+    const flip0 = R() < 0.5 ? -1 : 1, flip = highp ? 1 : flip0;
     const skin = pick(PAL.skin), hair = (elder || highp) ? pick(['#d6d2c8', '#bfb9ac', '#e2dfd6']) : pick(PAL.hair);
     let robe, cloak = null, sash = null, hem = -10, head = 'bare', beard = false, stripe = null;
-    if (priest) { robe = '#f3eee0'; sash = pick(['#2d4766', '#62466f', '#8f3a2c']); hem = -5; head = 'migbaat'; beard = true; }
-    if (highp) { sash = '#b98a34'; hem = -4; }                        // חגור בד על מתניו, ואפוד מעליו
+    // (one chain: a priest that fell through to the last `else` came out an
+    //  ordinary man — bare-headed, in a coloured cloak — and that is what the
+    //  trumpeters and the censer-bearers were, until 2026-11-19)
+    if (priest) {
+      robe = '#f3eee0'; sash = pick(['#2d4766', '#62466f', '#8f3a2c']); hem = -5; head = 'migbaat'; beard = true;
+      if (highp) { sash = '#b98a34'; hem = -4; }                      // חגור בד על מתניו, ואפוד מעליו
+    }
     else if (levite) { robe = '#e9e0cb'; sash = '#bfb49a'; hem = -7; head = 'cap'; beard = R() > 0.25; }
-    else if (woman) { robe = pick(PAL.dye); cloak = pick(PAL.wool); hem = -3; head = 'veil'; sash = R() > 0.5 ? pick(PAL.wool) : null; }
+    else if (woman) {
+      robe = pick(PAL.dye); cloak = pick(PAL.wool); hem = -3; head = 'veil'; sash = R() > 0.5 ? pick(PAL.wool) : null;
+      if (bedouin) { robe = '#211c24'; cloak = '#2b2329'; stripe = '#a8322c'; sash = '#a8322c'; }   // בתוך השרשרת, לא אחריה
+    }
     else if (elder) { robe = pick(PAL.wool); cloak = pick(['#8b6c4a', '#6c5843', '#b79a70', '#5a4a3c']); sash = '#75604a'; hem = -5; head = R() > 0.45 ? 'cloth' : 'bare'; beard = true; }
     else if (guard) { robe = pick(['#a2825c', '#8f3a2c', '#c9b48c', '#6f2c3a']); sash = '#3f2c1e'; hem = -84; head = 'helmet'; beard = R() > 0.5; }
     else if (merchant) { robe = pick(PAL.wool); sash = pick(PAL.dye); hem = -38; head = 'cloth'; beard = R() > 0.35; stripe = pick(PAL.dye); }
@@ -120,8 +130,8 @@
     const slv = guard || child ? 'short' : (woman || priest || levite || elder) ? 'long' : lv[4] < 0.5 ? 'elbow' : 'long';
     const beardLen = highp ? 3.1 : elder || priest ? 1.95 + lv[5] * 0.2 : 1.42 + lv[5] * 0.4;
     const iris = lv[6] < 0.8 ? '#2e1c10' : lv[6] < 0.93 ? '#4f3418' : '#56603f';
-    const trim = PAL.dye[Math.floor(lv[7] * PAL.dye.length)];
-    const border = woman ? lv[8] < 0.75 : (kind === 'man' || merchant || elder) ? lv[8] < 0.5 : false;
+    const trim = bedouin ? '#b8322a' : PAL.dye[Math.floor(lv[7] * PAL.dye.length)];
+    const border = bedouin || (woman ? lv[8] < 0.75 : (kind === 'man' || merchant || elder) ? lv[8] < 0.5 : false);
     const fringe = lv[9] < 0.75;
     const bald = elder && head === 'bare' && lv[10] < 0.5;
     const jewel = woman && lv[11] < 0.6;
@@ -523,6 +533,17 @@
         if (longHair) hairFill([[-hr - 0.5, hy - 2], [hr + 0.5, hy - 2], [hr + 2.5, hy + 10, hr, sh + 2], [0, sh + 5, -hr, sh + 2], [-hr - 2.5, hy + 10, -hr - 0.5, hy - 2]]);
         if (head === 'band') cloth(g, [[-hr - 0.8, hy - hr * 0.86], [hr + 0.8, hy - hr * 0.86], [hr + 0.8, hy - hr * 0.58], [-hr - 0.8, hy - hr * 0.58]], '#cfc4a8', -hr, hr);
         if (head === 'cap') cloth(g, [[-hr - 0.8, hy - 1], [-hr - 0.8, hy - hr * 1.66, 0, hy - hr * 1.64], [hr + 0.8, hy - hr * 1.66, hr + 0.8, hy - 1], [0, hy + 2.5, -hr - 0.8, hy - 1]], '#e3d9c0', -hr, hr);
+        /* המגבעת גם מאחור — עד כה נראה מגבו של כהן רק שיערו. לכהן הגדול:
+           השיער הארוך יורד מתחתיה אל העורף */
+        if (head === 'migbaat') {
+          const ht = hy - hr * 2.12, hb = hy - 4.6, hw2 = hr + 2.3, wt = highp ? 0 : 3.2;
+          if (highp) hairFill([[-hr, hy - 2], [hr, hy - 2], [hr + 2.2, hy + 12, hr - 1, sh + 5], [0, sh + 8, -hr + 1, sh + 5], [-hr - 2.2, hy + 12, -hr, hy - 2]]);
+          if (!highp) cloth(g, [[-hw2 + 1.4, ht + 7.5], [-hw2 + 1.6, ht + 1.4, 0, ht + 0.8], [hw2 - 1.6, ht + 1.4, hw2 - 1.4, ht + 7.5], [0, ht + 8.6, -hw2 + 1.4, ht + 7.5]], '#8e2620', -hw2, hw2);
+          cloth(g, [[-hw2, hb], [-hw2 + 0.6, ht + 4.4 + wt, 0, ht + 3.4 + wt], [hw2 - 0.6, ht + 4.4 + wt, hw2, hb], [0, hb + 3.2, -hw2, hb]], '#efebe0', -hw2, hw2);
+          stroke(g, [[-hw2, hb + 0.4], [-hw2 + 0.5, ht + 4.6 + wt, 0, ht + 3.4 + wt], [hw2 - 0.5, ht + 4.6 + wt, hw2, hb + 0.4]], '#a89c80', 0.75, 0.95);
+          for (const k of [0.3, 0.58]) fold(g, -hw2 + 0.6, hb - k * (11 - wt), 0, hb - 1.4 - k * (12 - wt), hw2 - 0.6, hb - k * (11 - wt), '#d8d0ba', 0.32, 1.3);
+          cloth(g, [[-hw2 - 0.8, hb - 1.8], [0, hb - 3.1, hw2 + 0.8, hb - 1.8], [hw2 + 0.6, hb + 1.4], [0, hb + 2.4, -hw2 - 0.6, hb + 1.4]], '#e9e3d2', -hw2 - 1, hw2 + 1, 0.3);
+        }
         if (head === 'turban') { cloth(g, [[-hr - 2.5, hy - 2], [-hr - 5, hy - hr * 1.9, 0, hy - hr * 2.05], [hr + 5, hy - hr * 1.9, hr + 2.5, hy - 2], [0, hy + 3, -hr - 2.5, hy - 2]], '#f8f5ec', -hr - 4, hr + 5); for (const k of [0.2, 0.45, 0.7]) fold(g, -hr - 2.5, hy - 3 - k * 15, 0, hy + 1 - k * 20, hr + 2.5, hy - 3 - k * 15, '#e8e2d2', 0.3, 1.4); }
         if (head === 'cloth') {
           const hc = headCloth;
@@ -577,10 +598,20 @@
         hairFill([[-hr + 0.4, hy - 1], [-hr - 0.2, hy - 7], [-hr + 2.5, hy - 7], [-hr + 1.6, hy - 2]]);
         hairFill([[hr - 0.4, hy - 1], [hr + 0.2, hy - 7], [hr - 2.5, hy - 7], [hr - 1.6, hy - 2]]);
         const ht = hy - hr * 2.12, hb = hy - 6.2, hw2 = hr + 2.3;   // שוליה מעל הגבות, לא על העיניים            // ראש המגבעת ושוליה
+        /* התרבוש האדום שבתוך הכריכה, כפי שהוא נראה בצילומי כהני העדה —
+           ראשו מבצבץ מעל הבד הלבן. לכהן הגדול — לא: הבעלים ביקש להסירו ממנו */
+        const wt = highp ? 0 : 3.2;                                // כמה נמוך יותר מתחיל הבד הלבן, כדי שהאדום ייראה
+        if (!highp) {
+          cloth(g, [[-hw2 + 1.4, ht + 7.5], [-hw2 + 1.6, ht + 1.4, 0, ht + 0.8], [hw2 - 1.6, ht + 1.4, hw2 - 1.4, ht + 7.5], [0, ht + 8.6, -hw2 + 1.4, ht + 7.5]],
+                '#8e2620', -hw2, hw2);
+          stroke(g, [[-hw2 + 1.6, ht + 3.2], [0, ht + 1.6, hw2 - 1.6, ht + 3.2]], '#b8463a', 0.6, 0.6);
+        }
         // גוף המגבעת
-        cloth(g, [[-hw2, hb], [-hw2 + 0.6, ht + 4.4, 0, ht + 3.4], [hw2 - 0.6, ht + 4.4, hw2, hb], [0, hb + 3.2, -hw2, hb]],
-              '#f4f0e2', -hw2, hw2);
-        for (const k of [0.3, 0.58]) fold(g, -hw2 + 0.6, hb - k * 11, 0, hb - 1.4 - k * 12, hw2 - 0.6, hb - k * 11, '#e6e0cc', 0.28, 1.3);
+        cloth(g, [[-hw2, hb], [-hw2 + 0.6, ht + 4.4 + wt, 0, ht + 3.4 + wt], [hw2 - 0.6, ht + 4.4 + wt, hw2, hb], [0, hb + 3.2, -hw2, hb]],
+              '#f6f3ea', -hw2, hw2);
+        // קו מתאר דק — שהמגבעת הלבנה לא תיבלע בשיער הלבן של הכהן הזקן
+        stroke(g, [[-hw2, hb + 0.4], [-hw2 + 0.5, ht + 4.6 + wt, 0, ht + 3.4 + wt], [hw2 - 0.5, ht + 4.6 + wt, hw2, hb + 0.4]], '#a89c80', 0.75, 0.95);
+        for (const k of [0.3, 0.58]) fold(g, -hw2 + 0.6, hb - k * (11 - wt), 0, hb - 1.4 - k * (12 - wt), hw2 - 0.6, hb - k * (11 - wt), '#ddd5bf', 0.32, 1.3);
         // הבד הכרוך בשוליים
         cloth(g, [[-hw2 - 0.8, hb - 1.8], [0, hb - 3.1, hw2 + 0.8, hb - 1.8], [hw2 + 0.6, hb + 1.4], [0, hb + 2.4, -hw2 - 0.6, hb + 1.4]],
               '#efe9d8', -hw2 - 1, hw2 + 1, 0.3);
@@ -795,10 +826,22 @@
         if (twoItem && !back) { itemDraw(); for (const sx of [-1, 1]) handDraw(sx, P[sx].E, [sx * (carry === 'lamb' ? 9 : 13.5), -108], 'grip', 1, skin); }
         if (carry === 'horn' && !back) hornDraw(P[1].H[0], P[1].H[1]);
         if (carry === 'trumpet' && !back) trumpetDraw(P[1].H[0], P[1].H[1]);
-        if (carry === 'censer' && !back) censerDraw(P[1].H[0], P[1].H[1]);
+        if (carry === 'censer') censerDraw(P[1].H[0], P[1].H[1]);          // גם מאחור: המחתה תלויה בצד, ונראית
       }
       for (const sx of [-1, 1]) if (P[sx].layer === 'late') armDraw(sx, P[sx]);
+      if (highp && !back && pose !== 'crouch') urimDraw();
     };
+    /* ועל כתפיו שני מלבנים המסמנים את האורים והתומים — אחד על כל כתפה,
+       משובצים בזהב. מצוירים אחרונים: השרוולים והזקן היו מכסים אותם */
+    function urimDraw() {
+      for (const sx of [-1, 1]) {
+        const ux = sx * (sw - 4.4), uy = sh + 1.6;
+        g.fillStyle = '#8a6a26'; g.fillRect(ux - 3.6, uy - 0.4, 7.2, 6.4);
+        g.fillStyle = '#d6b052'; g.fillRect(ux - 3.1, uy, 6.2, 5.6);
+        g.fillStyle = sx < 0 ? '#f3efe2' : '#e4e8ee'; g.fillRect(ux - 2.2, uy + 0.8, 4.4, 4);   // אורים · תומים
+        g.fillStyle = 'rgba(255,255,255,.85)'; g.fillRect(ux - 1.7, uy + 1.2, 1.5, 1.1);
+      }
+    }
     const hemShade = y => { g.globalCompositeOperation = 'source-atop'; const hg = g.createLinearGradient(0, y, 0, y + 15); hg.addColorStop(0, 'rgba(24,12,2,.5)'); hg.addColorStop(1, 'rgba(24,12,2,0)'); g.fillStyle = hg; g.fillRect(-32, y - 3, 64, 18); g.globalCompositeOperation = 'source-over'; };
 
     if (pose === 'stand' || pose === 'talk') {
