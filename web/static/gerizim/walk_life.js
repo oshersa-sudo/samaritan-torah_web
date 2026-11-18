@@ -12,8 +12,8 @@
     /* ---------- אנשים ---------- */
     const FIXED = ['lamb', 'bowl', 'doves', 'horn', 'spear', 'trumpet'];   // מי שנושא אותם עומד במקומו
     // הכהן הגדול אינו משוטט, והנושא מחתה מסובב בתוך המשכן לאט
-    const WALKS = { man: 0.6, woman: 0.55, elder: 0.4, child: 0.85, merchant: 0.25, levite: 0.3, priest: 0.25, highpriest: 0.12 };
-    const SPEED = { man: 1.25, woman: 1.1, elder: 0.75, child: 2.1, merchant: 1.1, levite: 1.05, priest: 0.95, highpriest: 0.6 };
+    const WALKS = { man: 0.6, woman: 0.55, elder: 0.4, child: 0.85, merchant: 0.25, levite: 0.3, priest: 0.25, highpriest: 0.12, tallitpriest: 0.3 };
+    const SPEED = { man: 1.25, woman: 1.1, elder: 0.75, child: 2.1, merchant: 1.1, levite: 1.05, priest: 0.95, highpriest: 0.6, tallitpriest: 0.75 };
     const STEP = { child: 0.44, elder: 0.56, woman: 0.6 };              // אורך צעד, במטרים
     const TW = cx.lite ? 104 : 128;                                     // רוחב המרקם של דמות הולכת
     const walkTex = (a, back, stride, force) => {

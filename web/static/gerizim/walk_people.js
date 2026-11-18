@@ -93,7 +93,8 @@
     g.clearRect(0, 0, Wd, Hh); g.lineJoin = 'round';
     const child = kind === 'child', woman = kind === 'woman', elder = kind === 'elder', guard = kind === 'guard',
       highp = kind === 'highpriest',                                   // הכהן הגדול
-      priest = kind === 'priest' || highp, levite = kind === 'levite', merchant = kind === 'merchant';
+      tallit = kind === 'tallitpriest',                                // כהן שטליתו פרושה על ראשו
+      priest = kind === 'priest' || highp || tallit, levite = kind === 'levite', merchant = kind === 'merchant';
 
     // ---------- המראה: נקבע רק לפי (kind, carry, seed) ----------
     const backR = !(guard || highp || carry === 'lamb' || carry === 'bowl' || carry === 'doves' || carry === 'basket' || carry === 'horn' || carry === 'trumpet' || carry === 'censer') && R() < 0.3;
@@ -158,7 +159,7 @@
     const lapY = pose === 'sit' ? Math.min(kneeTop, hipF - 5) : 0;
     const twoItem = carry === 'lamb' || carry === 'basket' || carry === 'bowl' || carry === 'doves';
     const pole = carry === 'spear' || carry === 'staff';
-    const rBusy = twoItem || carry === 'horn' || carry === 'trumpet' || carry === 'censer' || carry === 'jar' || carry === 'sack', lBusy = pole || twoItem;
+    const rBusy = twoItem || carry === 'horn' || carry === 'trumpet' || carry === 'censer' || carry === 'jar' || carry === 'sack', lBusy = pole || twoItem || carry === 'trumpet';
     const gs = pose !== 'talk' ? 0 : !rBusy ? 1 : !lBusy ? -1 : 0;   // היד המדברת
     const strapC = '#4a321e';
 
@@ -354,6 +355,11 @@
       if (sx < 0 && pole) return { E: [-(sw + 5), -125], H: [-(sw + 10), -144], hand: 'grip', layer: 'late' };
       if (sx > 0 && carry === 'jar') return { E: [sw + 15, sh + 3], H: [sw + 12, sh - 26], hand: 'rest', layer: 'late' };
       if (sx > 0 && carry === 'sack') return back ? { E: [sw + 6, -122], H: [sw - 3, sh + 12], hand: 'none', layer: 'behind' } : { E: [sw + 6, -122], H: [sw - 5, sh + 10], hand: 'grip', layer: 'late' };
+      /* התוקע אוחז את החצוצרה בשתי ידיו: הימנית סמוך לפייה שעל פיו,
+         והשמאלית הלאה ממנה על הקנה — כבצילום */
+      if (carry === 'trumpet' && !back) return sx > 0
+        ? { E: [sw + 7, -140], H: [12, -172], hand: 'grip', layer: 'front' }
+        : { E: [-(sw + 6.5), -143], H: [21.5, -179], hand: 'grip', layer: 'front' };
       if (twoItem || (sx > 0 && (carry === 'horn' || carry === 'trumpet' || carry === 'censer'))) return back ? { E: [sx * (sw + 6), -121], H: [sx * (sw - 4), -113], hand: 'none', layer: 'behind' } : { E: [sx * (sw + 5), -119.5], H: [sx * (twoItem ? 11 : 9), -114], hand: twoItem ? 'none' : 'grip', layer: 'front' };
       if (pose === 'talk' && sx === gs) return { E: [sx * (sw + 7), -124], H: [sx * (sw + 11.5), -147], hand: 'open', layer: 'late' };
       if (pose === 'sit') return back ? { E: [sx * (sw + 5), -121], H: [sx * (sw - 2), -107], hand: 'none', layer: 'behind' } : { E: [sx * (sw + 3.6), -119.5], H: [sx * (kxS + 1.5), IY(lapY - 2.5)], hand: 'rest', layer: 'late' };
@@ -570,7 +576,7 @@
       if (head === 'migbaat') {
         hairFill([[-hr + 0.4, hy - 1], [-hr - 0.2, hy - 7], [-hr + 2.5, hy - 7], [-hr + 1.6, hy - 2]]);
         hairFill([[hr - 0.4, hy - 1], [hr + 0.2, hy - 7], [hr - 2.5, hy - 7], [hr - 1.6, hy - 2]]);
-        const ht = hy - hr * 2.08, hb = hy - 4.4, hw2 = hr + 2.3;            // ראש המגבעת ושוליה
+        const ht = hy - hr * 2.12, hb = hy - 6.2, hw2 = hr + 2.3;   // שוליה מעל הגבות, לא על העיניים            // ראש המגבעת ושוליה
         // התרבוש שבפנים — נראה רק קצהו, בראש
         cloth(g, [[-hw2 + 1.6, ht + 2], [0, ht - 2.6, hw2 - 1.6, ht + 2], [hw2 - 2, ht + 6], [0, ht + 4, -hw2 + 2, ht + 6]],
               '#8c2f26', -hw2, hw2);
@@ -579,18 +585,18 @@
               '#f4f0e2', -hw2, hw2);
         for (const k of [0.3, 0.58]) fold(g, -hw2 + 0.6, hb - k * 11, 0, hb - 1.4 - k * 12, hw2 - 0.6, hb - k * 11, '#e6e0cc', 0.28, 1.3);
         // הבד הכרוך בשוליים
-        cloth(g, [[-hw2 - 0.8, hb - 1.6], [0, hb - 3, hw2 + 0.8, hb - 1.6], [hw2 + 0.6, hb + 2.4], [0, hb + 3.6, -hw2 - 0.6, hb + 2.4]],
+        cloth(g, [[-hw2 - 0.8, hb - 1.8], [0, hb - 3.1, hw2 + 0.8, hb - 1.8], [hw2 + 0.6, hb + 1.4], [0, hb + 2.4, -hw2 - 0.6, hb + 1.4]],
               '#efe9d8', -hw2 - 1, hw2 + 1, 0.3);
-        stroke(g, [[-hw2 - 0.4, hb - 0.4], [0, hb - 1.6, hw2 + 0.4, hb - 0.4]], '#cfc6ae', 0.7, 0.8);
-        stroke(g, [[-hw2 - 0.3, hb + 1.4], [0, hb + 0.4, hw2 + 0.3, hb + 1.4]], '#cfc6ae', 0.6, 0.7);
+        stroke(g, [[-hw2 - 0.4, hb - 0.7], [0, hb - 1.9, hw2 + 0.4, hb - 0.7]], '#cfc6ae', 0.7, 0.8);
+        stroke(g, [[-hw2 - 0.3, hb + 0.8], [0, hb - 0.2, hw2 + 0.3, hb + 0.8]], '#cfc6ae', 0.6, 0.7);
         /* הכהן הגדול: אבן שהם קטנה ואדומה במרכז המגבעת, ממש מעל המצח,
            ובולטת לפנים */
         if (highp && !back) {
-          blob(g, 0, hb - 5.4, 2.6, 2.1, '#7d1b16');
-          blob(g, 0, hb - 5.4, 1.8, 1.4, '#a8291f');
-          blob(g, -0.6, hb - 5.9, 0.6, 0.45, 'rgba(255,224,214,.85)');
+          blob(g, 0, hb - 4.6, 2.6, 2.1, '#7d1b16');
+          blob(g, 0, hb - 4.6, 1.8, 1.4, '#a8291f');
+          blob(g, -0.6, hb - 5.1, 0.6, 0.45, 'rgba(255,224,214,.85)');
           g.strokeStyle = '#c9a04a'; g.lineWidth = 0.55; g.globalAlpha = 0.9;
-          g.beginPath(); g.ellipse(0, hb - 5.4, 2.9, 2.3, 0, 0, TAU); g.stroke(); g.globalAlpha = 1;
+          g.beginPath(); g.ellipse(0, hb - 4.6, 2.9, 2.3, 0, 0, TAU); g.stroke(); g.globalAlpha = 1;
         }
         if (highp) for (const sx of [-1, 1])
           hairFill([[sx * (hr - 0.8), hy - 3], [sx * (hr + 4.2), hy + 5, sx * (hr + 3.2), hy + 17],
@@ -693,6 +699,46 @@
       stroke(g, [[hx + 2, hy2 + 1], [hx + 22, hy2 - 6, hx + 28.5, hy2 - 29]], '#8a7a58', 1, 0.8); for (const t of [0.3, 0.5, 0.7]) stroke(g, [[hx + 6 + t * 18, hy2 - 6 - t * 14], [hx + 9 + t * 18, hy2 - 2 - t * 16]], '#8a7a58', 0.6, 0.5);
     }
 
+    /* ── טלית פרושה על הראש ────────────────────────────────────────────────
+     * כבצילומי העדה: יריעה לבנה ורחבה ובה פסי תכלת, פרושה מעל הראש ויורדת
+     * על שתי הכתפיים אל המותניים, ופני הכהן מוקפות בה. היא מצוירת בשני
+     * חלקים — מה שמאחורי הפנים לפניהן, ומה שלפניהן אחריהן — כדי שהפנים
+     * עצמן יישארו גלויות.
+     */
+    function tallitBehind(hy2) {
+      if (!tallit) return;
+      const W2 = hr + 9, top = hy2 - hr * 2.25, bot = wst + 4;
+      cloth(g, [[-W2, bot], [-W2 - 1.2, sh - 6, -hr - 5, top + 5],
+                [0, top - 2, hr + 5, top + 5],
+                [W2 + 1.2, sh - 6, W2, bot],
+                [0, bot + 5, -W2, bot]], '#f7f4ea', -W2, W2);
+      for (const sx of [-1, 1]) for (const d of [0, 3]) {
+        stroke(g, [[sx * (W2 - 2 - d), bot - 2], [sx * (W2 - 2.6 - d), sh - 4, sx * (hr + 6 - d * 0.6), top + 9]],
+               '#2f4f86', 1.2, 0.72);
+      }
+      // ציציות בשוליים
+      g.strokeStyle = '#e8e3d4'; g.lineWidth = 0.6; g.globalAlpha = 0.9; g.beginPath();
+      for (const sx of [-1, 1]) for (let i = 0; i < 4; i++) {
+        const x = sx * (W2 - 1 - i * 1.6);
+        g.moveTo(x, bot + 1); g.lineTo(x + sx * 0.6, bot + 6.5);
+      }
+      g.stroke(); g.globalAlpha = 1;
+    }
+    function tallitFront(hy2) {
+      if (!tallit || back) return;
+      const W2 = hr + 5.4, bot = wst - 2;
+      // שתי היריעות היורדות לפנים, משני צדי הפנים
+      for (const sx of [-1, 1]) {
+        cloth(g, [[sx * (W2 - 4.6), hy2 - hr * 0.5], [sx * (W2 + 0.6), sh - 2, sx * (W2 - 0.4), bot],
+                  [sx * (W2 - 5.4), bot + 1.5],
+                  [sx * (W2 - 6), sh + 6, sx * (W2 - 4.6), hy2 - hr * 0.5]], '#f2eee2', -W2, W2, 0.5);
+        stroke(g, [[sx * (W2 - 1.8), sh + 2], [sx * (W2 - 1.6), bot - 1]], '#2f4f86', 1.1, 0.7);
+        stroke(g, [[sx * (W2 - 4), sh + 4], [sx * (W2 - 3.8), bot - 1]], '#2f4f86', 0.9, 0.6);
+      }
+      // הקצה שמעל המצח
+      stroke(g, [[-hr - 3.2, hy2 - hr * 0.72], [0, hy2 - hr * 1.45, hr + 3.2, hy2 - hr * 0.72]], '#e2dccb', 1.6, 0.9);
+    }
+
     /* ── חצוצרת כסף ─────────────────────────────────────────────────────────
      * ארוכה וישרה, בלי שסתומים, מורמת אל הפה — שני כהנים תוקעים בהן מפני
      * המשכן. (לפי צילום שהבעלים שלח: כתונת לבנה, אבנט כחול, והחצוצרה
@@ -702,15 +748,13 @@
       const x0 = 4.5, y0 = HY + 7.5, x2 = x0 + 38, y2 = y0 - 27;
       stroke(g, [[x0, y0], [x2, y2]], '#b9c0c6', 3.6);
       stroke(g, [[x0, y0], [x2, y2]], '#eef2f5', 1.3, 0.85);
-      // היד אוחזת בקנה
-      blob(g, hx + 1, hy2 - 2, 2.6, 2.2, '#9aa3aa');
       const a = Math.atan2(y2 - y0, x2 - x0);
       g.save(); g.translate(x2, y2); g.rotate(a);
       g.fillStyle = '#cdd4d9'; g.beginPath();
       g.moveTo(-1, -2); g.lineTo(8, -6.4); g.lineTo(8, 6.4); g.lineTo(-1, 2); g.closePath(); g.fill();
       g.strokeStyle = '#8f989f'; g.lineWidth = 0.7; g.stroke();
       g.restore();
-      for (const t of [0.34, 0.66]) blob(g, x0 + (x2 - x0) * t, y0 + (y2 - y0) * t, 2.3, 2.3, '#9aa3aa');
+      for (const t of [0.2, 0.45]) blob(g, x0 + (x2 - x0) * t, y0 + (y2 - y0) * t, 2.4, 2.4, '#9aa3aa');
     }
     /* ── מחתה ───────────────────────────────────────────────────────────────
      * קערית קטנה התלויה בשלוש שרשראות, ממנה עולה עשן הקטורת. הכהנים
@@ -741,9 +785,10 @@
       lowY();
       for (const sx of [-1, 1]) if (P[sx].layer === 'front') armDraw(sx, P[sx], twoItem);
       if (pose === 'stand' || pose === 'talk') cloakDraw((long ? hem - 26 : hem + 6), false); else if (pose === 'sit' && !back) cloakDraw(wst + 31, false); else cloakDraw(wst + 9, true);
-      headBehind(hyy); neckDraw();
+      headBehind(hyy); neckDraw(); tallitBehind(hyy);
       if (pose === 'crouch') { g.save(); g.translate(0, hyy); g.scale(1, 1 / sq); g.translate(0, -hyy); }
       headDraw(hyy, turn, tDn);
+      tallitFront(hyy);
       if (pose === 'crouch') g.restore();
       if (pose !== 'crouch') {
         if (carry === 'jar') jarDraw();
