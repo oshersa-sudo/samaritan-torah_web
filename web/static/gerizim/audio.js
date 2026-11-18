@@ -53,6 +53,53 @@
   const ramp = (p, v, tc) => { p.cancelScheduledValues(now()); p.setTargetAtTime(v, now(), tc || 0.4); };
   function noiseSrc() { const s = ctx.createBufferSource(); s.buffer = noise; s.loop = true; s.loopStart = Math.random(); s.start(); return s; }
 
+  /* ================= קולות אמיתיים =================
+   * Everything below this was made out of noise and oscillators, and still is
+   * whenever a recording is missing, slow or refused — nothing here can leave
+   * the tour silent. But wind on a bare hill, a market, fire on the altar, a
+   * goat: a real recording of those is a different thing altogether, so when
+   * one has arrived it is used and the synthetic one steps aside.
+   *
+   * Small files, fetched only when a scene actually asks for them, and
+   * decoded once. (The whole set is 3.4 MB; a bed decodes to a few megabytes
+   * of sound in memory, which is the only cost worth watching — see what a
+   * whole recording decoded to in אוצר השירה.)
+   */
+  const SND = 'snd/';
+  const bank = {};                       // name → AudioBuffer, null pending, false failed
+  function sample(name) {
+    if (!ctx) return null;
+    if (name in bank) return bank[name] || null;
+    bank[name] = null;
+    fetch(SND + name + '.mp3')
+      .then(r => r.ok ? r.arrayBuffer() : Promise.reject(r.status))
+      .then(b => new Promise((ok, no) => {
+        const p = ctx.decodeAudioData(b, ok, no); if (p && p.then) p.then(ok, no);
+      }))
+      .then(buf => { bank[name] = buf; })
+      .catch(() => { bank[name] = false; });   // the synthesis keeps the scene
+    return null;
+  }
+  const beds = {};
+  /* a bed is started once and left running into its chain's gain — the chain
+     is what the distance moves, exactly as it moved the synthetic one */
+  function bed(name, dest) {
+    const buf = sample(name);
+    if (!buf) return false;
+    if (!beds[name]) {
+      const sc = ctx.createBufferSource(); sc.buffer = buf; sc.loop = true;
+      sc.connect(dest); sc.start(0, Math.random() * buf.duration);
+      beds[name] = sc;
+    }
+    return true;
+  }
+  function one(buf, t, vol, dest, rate) {
+    const sc = ctx.createBufferSource(); sc.buffer = buf;
+    sc.playbackRate.value = rate || 1;
+    const g = ctx.createGain(); g.gain.value = vol;
+    sc.connect(g); g.connect(dest); sc.start(t);
+  }
+
   /* ================= מוזיקה: מקאם חיג'אז על רה, משטח רך ופריטות נדירות ================= */
   const SCALE = [0, 1, 4, 5, 7, 8, 10, 12, 13, 16];             // רה, מי במול, פה דיאז, סול, לה, סי במול, דו
   const ROOT = 146.83;                                            // רה
@@ -71,10 +118,26 @@
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
     o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(musicBus); o.start(t); o2.start(t); o.stop(t + 2.3); o2.stop(t + 2.3);
   }
+  /* the recorded music, once it is here: a flute on a long bed, looping */
+  let mbed = null;
+  function musicBed() {
+    if (!musicOn || !pref.music) return false;
+    const buf = sample('music_flute');
+    if (!buf) return false;
+    if (!mbed) {
+      const sc = ctx.createBufferSource(); sc.buffer = buf; sc.loop = true;
+      sc.connect(musicBus);
+      sc.start(0, Math.random() * Math.max(1, buf.duration - 20));
+      mbed = sc;
+      stopDrone();                       // the synthetic bed makes way for it
+    }
+    return true;
+  }
   function musicTick() {
     if (!ctx || !musicOn) return;
     const speaking = !!(window.speechSynthesis && speechSynthesis.speaking);
     musicBus.gain.setTargetAtTime(pref.music ? (speaking || duckN > 0 ? DUCK_LV : MUSIC_LV) : 0, now(), 0.5);
+    if (musicBed()) return;              // a recording is playing: no notes to write
     while (mNext < now() + 1.2) {
       const t = Math.max(mNext, now() + 0.05);
       if (phrase % 4 === 0) pad(hz(SCALE[[0, 4, 3, 0][(phrase / 4 | 0) % 4]] - 12), t, 9, 0.05);     // משטח ארוך כל כמה תיבות
@@ -94,13 +157,15 @@
   let duckN = 0;
   function music(on) {
     musicOn = !!on;
-    if (musicOn && pref.music) { if (!ensure()) return; if (!verbOn) { musicBus.connect(verb); verbOn = true; } startDrone(); mNext = now() + 0.4; clearInterval(mTimer); mTimer = setInterval(musicTick, 250); musicTick(); }
-    else if (ctx) { ramp(musicBus.gain, 0, 0.6); stopDrone(); clearInterval(mTimer); mTimer = 0; setTimeout(() => { if (verbOn && !(musicOn && pref.music)) { try { musicBus.disconnect(verb); } catch (e) { /* */ } verbOn = false; } }, 3500); }
+    if (musicOn && pref.music) { if (!ensure()) return; if (!verbOn) { musicBus.connect(verb); verbOn = true; } if (!musicBed()) startDrone(); mNext = now() + 0.4; clearInterval(mTimer); mTimer = setInterval(musicTick, 250); musicTick(); }
+    else if (ctx) { ramp(musicBus.gain, 0, 0.6); stopDrone();
+      if (mbed) { try { mbed.stop(); } catch (e) { /* already done */ } mbed = null; }
+      clearInterval(mTimer); mTimer = 0; setTimeout(() => { if (verbOn && !(musicOn && pref.music)) { try { musicBus.disconnect(verb); } catch (e) { /* */ } verbOn = false; } }, 3500); }
     settle(); syncButtons();
   }
 
   /* ================= קולות הסביבה בסיור הרגלי ================= */
-  let scene = null, aTimer = 0, last = null, chains = null, stepAcc = 0, nextBleat = 0, nextBird = 0;
+  let scene = null, aTimer = 0, last = null, chains = null, stepAcc = 0, nextBleat = 0, nextBird = 0, nextFar = 0;
   const W = () => window.GERIZIM_WALK;
   function inPer(o, per, tl) { return (o.per ? o.per === per : (per !== 'r' || !!o.allr)) && (o.tl == null || (o.tl ? tl : !tl)); }
   // מוקדי המולה קבועים (במטרים של הסיור): השוק, הרחובות, רחבת המזבח ושער החצר
@@ -115,15 +180,19 @@
     c.crowd = ctx.createGain(); c.crowd.gain.value = 0; c.crowd.connect(ambBus);
     const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 620; bp.Q.value = 0.7;
     const hum = ctx.createGain(); hum.gain.value = 0.16; ns.connect(bp); bp.connect(hum); hum.connect(c.crowd);
+    c.gHum = hum;                                     // silenced when a recording takes over
     c.babble = ctx.createGain(); c.babble.gain.value = 0.8; const blp = ctx.createBiquadFilter(); blp.type = 'lowpass'; blp.frequency.value = 2300; c.babble.connect(blp); blp.connect(c.crowd);
     // אש: פצפוצים ורחש נמוך
     c.fire = ctx.createGain(); c.fire.gain.value = 0; c.fire.connect(ambBus);
     const flp = ctx.createBiquadFilter(); flp.type = 'lowpass'; flp.frequency.value = 340; const fr = ctx.createGain(); fr.gain.value = 0.32; ns.connect(flp); flp.connect(fr); fr.connect(c.fire);
+    c.gFire = fr;
     c.crackle = ctx.createGain(); c.crackle.gain.value = 1; const chp = ctx.createBiquadFilter(); chp.type = 'highpass'; chp.frequency.value = 1700; c.crackle.connect(chp); chp.connect(c.fire);
     // רוח: רחש נמוך שמתנשם לאט
     c.wind = ctx.createGain(); c.wind.gain.value = 0; c.wind.connect(ambBus);
-    const wlp = ctx.createBiquadFilter(); wlp.type = 'lowpass'; wlp.frequency.value = 420; wlp.Q.value = 0.6; ns.connect(wlp); wlp.connect(c.wind);
+    const wlp = ctx.createBiquadFilter(); wlp.type = 'lowpass'; wlp.frequency.value = 420; wlp.Q.value = 0.6; ns.connect(wlp);
+    const wg = ctx.createGain(); wg.gain.value = 1; wlp.connect(wg); wg.connect(c.wind); c.gWind = wg;
     const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.07; lg.gain.value = 180; lfo.connect(lg); lg.connect(wlp.frequency); lfo.start();
+    c.birds = ctx.createGain(); c.birds.gain.value = 0; c.birds.connect(ambBus);           // ציפורי בוקר, כשאין המולה
     c.fx = ctx.createGain(); c.fx.gain.value = 1; c.fx.connect(ambBus);                     // צעדים, בעלי חיים, ציפורים
     return c;
   }
@@ -144,6 +213,14 @@
     const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1150; f.Q.value = 2.2;
     const g = ctx.createGain(), d = 0.55 + Math.random() * 0.4; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.06); g.gain.setValueAtTime(vol * 0.8, t + d * 0.7); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
     o.connect(f); f.connect(g); g.connect(chains.fx); o.start(t); vib.start(t); o.stop(t + d + 0.05); vib.stop(t + d + 0.05);
+  }
+  /* the flock is sheep, goats, donkeys and oxen — and the recordings are the
+     same four; without one, the old synthetic bleat still answers */
+  const BEAST = { sheep: 'sheep', goat: 'goat', donkey: 'donkey', ox: 'cow', cow: 'cow' };
+  function beast(t, vol, kind) {
+    const buf = sample(BEAST[kind] || 'goat');
+    if (!buf) return bleat(t, vol);
+    one(buf, t, Math.min(0.5, vol * 1.7), chains.fx, 0.93 + Math.random() * 0.14);
   }
   function chirp(t, vol) {
     for (let k = 0, n = 2 + Math.floor(Math.random() * 3); k < n; k++) {
@@ -167,6 +244,10 @@
     if (!GW || !GW.active || !D || !scene || !pref.amb) { if (chains) { ramp(chains.crowd.gain, 0); ramp(chains.fire.gain, 0); ramp(chains.wind.gain, 0); } return; }
     if (GW.paused) { ramp(ambBus.gain, 0.25, 0.6); } else ramp(ambBus.gain, 1, 0.6);
     const p = GW._pos(), per = scene.per, tl = scene.tl, t = now() + 0.03;
+    // a recording, where one has arrived: the synthetic bed under it is silenced
+    if (bed('market', chains.crowd)) { chains.gHum.gain.value = 0; chains.babble.gain.value = 0; }
+    if (bed('fire', chains.fire)) { chains.gFire.gain.value = 0; chains.crackle.gain.value = 0; }
+    if (bed('wind', chains.wind)) chains.gWind.gain.value = 0;
     // המולה: לפי האנשים הקרובים ולפי מוקדי ההמולה
     let crowd = 0;
     for (const q of D.people) if (inPer(q, per, tl)) { const d = Math.hypot(q.x - p.x, q.z - p.z); if (d < 24) crowd += fall(d, 24) * 0.11; }
@@ -183,14 +264,38 @@
     const inside = indoors(D, p, per, tl);
     ramp(chains.wind.gain, (per === 'r' ? 0.5 : 0.3) * (1 - crowd * 0.6) * (inside ? 0.18 : 1), 1.2);
     // בעלי חיים קרובים: פעייה מדי פעם
+    // בעלי חיים קרובים — וכל מין בקולו שלו
     if (now() > nextBleat) {
-      let near = 1e9; for (const a of D.animals) if (inPer(a, per, tl) && /sheep|goat/.test(a.kind)) near = Math.min(near, Math.hypot(a.x - p.x, a.z - p.z));
-      if (near < 32) bleat(t, 0.06 + fall(near, 32) * 0.22);
+      let near = 1e9, kind = null;
+      for (const a of D.animals) if (inPer(a, per, tl)) {
+        const d = Math.hypot(a.x - p.x, a.z - p.z);
+        if (d < near) { near = d; kind = a.kind; }
+      }
+      if (near < 32) beast(t, 0.06 + fall(near, 32) * 0.22, kind);
       nextBleat = now() + 5 + Math.random() * 9;
     }
-    if (now() > nextBird) { if (crowd < 0.5) chirp(t, 0.025 + Math.random() * 0.03); nextBird = now() + 4 + Math.random() * 10; }
+    // ציפורים: מצע שקט בחוץ כשאין המולה, ובלעדיו ציוצים כבעבר
+    if (bed('birds', chains.birds)) {
+      ramp(chains.birds.gain, Math.max(0, 1 - crowd * 1.6) * (inside ? 0.12 : 1) * 0.5, 1.5);
+    } else if (now() > nextBird) {
+      if (crowd < 0.5) chirp(t, 0.025 + Math.random() * 0.03);
+      nextBird = now() + 4 + Math.random() * 10;
+    }
+    // וקול רחוק של כפר, לעתים רחוקות: כלב, תרנגולת
+    if (now() > nextFar) {
+      if (!inside && Math.random() < 0.6) {
+        const b = sample(Math.random() < 0.55 ? 'dog' : 'hen');
+        if (b) one(b, t, 0.035 + Math.random() * 0.03, chains.fx, 0.95 + Math.random() * 0.1);
+      }
+      nextFar = now() + 40 + Math.random() * 70;
+    }
     // צעדי ההולך: לפי המרחק שעבר
-    if (last) { const d = Math.hypot(p.x - last.x, p.z - last.z); if (d < 3) { stepAcc += d; if (stepAcc > 0.78) { stepAcc = 0; burst(chains.fx, t, 0.07, 0.22, 'lowpass', 700 + Math.random() * 300, 0.9); burst(chains.fx, t + 0.005, 0.04, 0.05, 'bandpass', 3200, 1.5); } } else stepAcc = 0; }
+    if (last) { const d = Math.hypot(p.x - last.x, p.z - last.z); if (d < 3) { stepAcc += d; if (stepAcc > 0.78) {
+      stepAcc = 0;
+      const sb = sample('step');
+      if (sb) one(sb, t, 0.5 + Math.random() * 0.25, chains.fx, 0.9 + Math.random() * 0.2);
+      else { burst(chains.fx, t, 0.07, 0.22, 'lowpass', 700 + Math.random() * 300, 0.9); burst(chains.fx, t + 0.005, 0.04, 0.05, 'bandpass', 3200, 1.5); }
+    } } else stepAcc = 0; }
     last = { x: p.x, z: p.z };
   }
   function walkScene(per, tl) {
