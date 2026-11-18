@@ -25,7 +25,7 @@
   const TX = {
     he: {
       torah:'התורה השומרונית הישראלית', hint:'סובבו את החוגה · הקישו על עיגול כדי להיכנס',
-      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', dl:'הורדה', soon:'בקרוב...', exit:'יציאה לתפריט הראשי', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
+      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', dl:'הורדה', soon:'בקרוב...', exit:'יציאה לתפריט הראשי', backTorah:'חזרה לתורה', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
       torahHelp:{ tag:'חמשת חומשי התורה בנוסח השומרוני',
         points:['חמישה חומשי תורה בנוסח השומרוני, בכתב השומרוני ובאותיות עבריות','פירוש הפסוק מן המקורות השומרוניים, ותרגומים: ארמי, ערבי ואנגלי','השוואת נוסחים: המסורה, השבעים, אונקלוס וקומראן','מילון מילים, הקראה, חיפוש מתקדם והדפסה'] },
       find:'חיפוש', findPh:'חפש פיוט, מבצע, פסוק בתורה, מילה, מקום במפות או ערך בספרייה, ואנחנו נמצא אותו בשבילך',
@@ -61,7 +61,7 @@
     },
     en: {
       torah:'The Israelite Samaritan Torah', hint:'Turn the dial · tap a circle to enter',
-      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', dl:'Download', soon:'Coming soon...', exit:'Exit to the main menu', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
+      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', dl:'Download', soon:'Coming soon...', exit:'Exit to the main menu', backTorah:'Back to the Torah', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
       torahHelp:{ tag:'The five books of the Torah in the Samaritan text',
         points:['The five books in the Samaritan text, in Samaritan script and Hebrew letters','Verse commentary from the Samaritan sources, and translations: Aramaic, Arabic and English','Comparison of versions: Masoretic, Septuagint, Onkelos and Qumran','A word dictionary, read-aloud, advanced search and printing'] },
       find:'Search', findPh:'Search for a piyyut, a performer, a verse of the Torah, a word, a place on the map or an entry in the library — and we will find it for you',
@@ -98,7 +98,7 @@
     },
     ar: {
       torah:'التوراة السامرية الإسرائيلية', hint:'أدِر القرص · اضغط على دائرة للدخول',
-      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', dl:'تنزيل', soon:'قريبًا...', exit:'الخروج إلى القائمة الرئيسية', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
+      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', dl:'تنزيل', soon:'قريبًا...', exit:'الخروج إلى القائمة الرئيسية', backTorah:'العودة إلى التوراة', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
       torahHelp:{ tag:'أسفار التوراة الخمسة بالنص السامري',
         points:['أسفار التوراة الخمسة بالنص السامري، بالخط السامري وبالحروف العبرية','تفسير الآية من المصادر السامرية، وترجمات: آرامية وعربية وإنجليزية','مقارنة النسخ: الماسوري والسبعينية وأونقلوس وقمران','قاموس للكلمات، وقراءة مسموعة، وبحث متقدّم، وطباعة'] },
       find:'بحث', findPh:'ابحث عن نشيد أو مؤدٍّ أو آية من التوراة أو كلمة أو موقع على الخريطة أو مدخل في المكتبة — ونحن نجده لك',
@@ -1053,14 +1053,15 @@
      reads right to left, left in one that does not — and says where it leads.
      It is put back to an X the moment the answer is reached again. */
   function markFindBack(on){
-    const label = on ? T().findBackTo : T().exit;
-    const arrow = (lang() === 'en') ? '&#8592;' : '&#8594;';
     document.querySelectorAll('.hub-x, #hdr .torah-x').forEach(b => {
-      b.innerHTML = on ? arrow : '&times;';
-      b.title = label;
-      b.setAttribute('aria-label', label);
+      b.innerHTML = backArrow();                  // an arrow either way, now
       b.classList.toggle('to-find', !!on);
+      if(on){
+        b.title = T().findBackTo;
+        b.setAttribute('aria-label', T().findBackTo);
+      }
     });
+    if(!on) paintBack();                          // back to saying where it leads
   }
   function showResults(q, data){
     closeResults();
@@ -1285,7 +1286,39 @@
   // ── entering an app ────────────────────────────────────────────────────────
   // the Torah's own hamburger and a circle here lead to the same units; what
   // differs is where they were reached from, and so whether "↩ התורה" is offered.
-  function setOrigin(o){ document.body.classList.toggle('from-hub', o === 'hub'); }
+  function setOrigin(o){
+    document.body.classList.toggle('from-hub', o === 'hub');
+    paintBack();
+  }
+
+  /* ── the way out is a way BACK ─────────────────────────────────────────────
+   * Every unit used to be left by an ✕, and an ✕ says "this is gone". Nothing
+   * is gone: the reader is put back where they came from — the main menu, or
+   * the Torah. So it is an arrow pointing the way they came (right in a page
+   * that reads right to left, left in one that does not) and it says in words
+   * where it leads. Asked for by the owner, 2026-11-18.
+   */
+  const backArrow = () => (lang() === 'en') ? '&#8592;' : '&#8594;';
+  const backWhere = () => document.body.classList.contains('from-hub')
+                          ? T().exit : T().backTorah;
+  function paintBack(){
+    document.querySelectorAll('.hub-x, #hdr .torah-x, .unit-wrap > .unit-x').forEach(b => {
+      if(b.classList.contains('to-find')) return;   // the search says its own thing
+      b.innerHTML = backArrow();
+      // the Torah's own corner always leads out to the menu; a unit leads back
+      // to whichever of the two the reader opened it from
+      const lab = b.classList.contains('torah-x') ? T().exit : backWhere();
+      b.title = lab;
+      b.setAttribute('aria-label', lab);
+    });
+  }
+  /* and leaving is leaving for there: the menu if that is where it began,
+     otherwise the Torah, which is simply this unit closed */
+  function leaveUnit(modal){
+    if(document.body.classList.contains('from-hub')){ showHub(); return; }
+    if(modal) modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
   function isOpen(){ return !hub.classList.contains('hidden'); }
   function hideUnits(){
     const dm = $('dictModal'); if(dm) delete dm.dataset.direct;
@@ -1376,9 +1409,9 @@
   document.querySelectorAll('.rd-totorah').forEach(link => {
     const bar = link.parentElement; if(!bar) return;
     const x = document.createElement('button');
-    x.type = 'button'; x.className = 'hub-x'; x.innerHTML = '&times;';
-    x.title = 'חזרה לתפריט הראשי'; x.setAttribute('aria-label', 'חזרה לתפריט הראשי');
-    x.addEventListener('click', showHub);
+    x.type = 'button'; x.className = 'hub-x'; x.innerHTML = backArrow();
+    x.title = backWhere(); x.setAttribute('aria-label', backWhere());
+    x.addEventListener('click', () => leaveUnit(x.closest('.modal')));
     bar.insertBefore(x, bar.firstChild);
   });
   // the "סגור" at the foot of a reader or the dictionary: a unit entered from here closes back to here
@@ -1389,9 +1422,13 @@
   });
   [['extFrameClose', 'extFrameWrap'], ['mssFrameClose', 'mssFrameWrap']].forEach(([xid, wid]) => {
     const x = $(xid); if(!x) return;
-    x.title = 'חזרה לתפריט הראשי'; x.setAttribute('aria-label', 'חזרה לתפריט הראשי');
+    x.title = backWhere(); x.setAttribute('aria-label', backWhere());
     x.classList.add('hub-x');
-    x.addEventListener('click', showHub);              // after the old handler has hidden the frame
+    // the frame itself is already hidden by the handler beside the markup; this
+    // only decides where the reader is put down afterwards
+    x.addEventListener('click', () => {
+      if(document.body.classList.contains('from-hub')) showHub();
+    });
     const link = document.createElement('button');
     link.type = 'button'; link.className = 'unit-totorah'; link.textContent = '↩ התורה';
     link.title = 'חזרה לתורה';
@@ -1406,7 +1443,7 @@
   // Both lead to this page. The hamburger entry is the first line of the drawer, in
   // the same make as the others; it is not shown while this page is itself up.
   const torahX = document.createElement('button');
-  torahX.type = 'button'; torahX.className = 'torah-x'; torahX.innerHTML = '&times;';
+  torahX.type = 'button'; torahX.className = 'torah-x'; torahX.innerHTML = backArrow();
   torahX.addEventListener('click', showHub);
   const titleRow = document.querySelector('#hdr .title-row');
   if(titleRow) titleRow.appendChild(torahX);

@@ -2983,23 +2983,35 @@ body.ux2 #toolbar .tb.on:active{ background:rgba(233,196,106,.22) !important; }
    apps move their own buttons tomorrow. The wrapper stays position:fixed and is
    still raised and lowered by `style.display` block/none, which is what the Back
    key looks for (closeTopLayer in app.js). */
+/* ── and then the bar itself went, 2026-11-18 ──
+   A bar of 48px is six per cent of a telephone's screen, and under it each of
+   these apps has a header of its own — two strips of chrome before any of the
+   thing itself. So the button comes back onto the page, but in the ONE corner
+   that is safe: the far TOP-RIGHT, in physical pixels and not in the writing
+   direction, because every one of these apps keeps its own control at the
+   top-left — the calendar's ☰, the family tree's 🔧, the tour's zoom and its
+   languages. Opposite is opposite in every language.
+   And it is no longer a ✕ but an arrow pointing right: in a right-to-left app
+   that is "back", and back is what it does — to the main menu it came from. */
 .unit-wrap{ position:fixed; inset:0; z-index:4000; background:#f4f1ea; }
-.unit-bar{ position:absolute; top:0; inset-inline:0; height:48px; z-index:4001;
-           display:flex; align-items:center; gap:10px; padding:0 10px;
-           box-sizing:border-box; background:var(--navy); color:#fff; }
 /* The height is stated, not left to `bottom:0` — an iframe is a REPLACED element,
    and an absolutely positioned replaced box with height:auto takes its intrinsic
    height, which for an iframe is the browser's default 150px; `bottom` is then
    ignored and the unit came out 150 pixels tall at the top of the page. */
-.unit-wrap > iframe{ position:absolute; top:48px; inset-inline:0;
-                     width:100%; height:calc(100% - 48px); border:0; display:block; }
-.unit-x{ flex:0 0 auto; width:38px; height:38px; border:1px solid rgba(255,255,255,.38);
-         border-radius:9px; background:rgba(255,255,255,.14); color:#fff;
-         font-family:inherit; font-size:20px; line-height:1; cursor:pointer; }
-.unit-x:hover{ background:rgba(255,255,255,.28); }
-.unit-bar-title{ flex:1 1 auto; min-width:0; text-align:center; font-size:16px;
-                 font-weight:700; white-space:nowrap; overflow:hidden;
-                 text-overflow:ellipsis; padding-inline-end:48px; }
+.unit-wrap > iframe{ position:absolute; inset:0;
+                     width:100%; height:100%; border:0; display:block; }
+/* `.unit-wrap >` and not `.unit-x` alone: hub.js also puts `.hub-x` on this
+   button — the make the main menu gives all its close buttons — and the two
+   would otherwise tie and the last one written would win. */
+.unit-wrap > .unit-x{ position:absolute; top:8px; right:8px; z-index:4001;
+         width:42px; height:42px; display:flex; align-items:center;
+         justify-content:center; padding:0; border-radius:50%;
+         border:1px solid var(--navy); background:#fff; color:var(--navy);
+         cursor:pointer; box-shadow:0 2px 12px rgba(0,0,0,.45); }
+.unit-wrap > .unit-x{ font-family:inherit; font-size:24px; line-height:1; }
+.unit-wrap > .unit-x:hover{ background:var(--navy); color:#fff; }
+/* the way back to the Torah lives in the hamburger, not over the unit */
+.unit-wrap .unit-totorah{ display:none; }
 
 
 /* ── הקראת הספר ──

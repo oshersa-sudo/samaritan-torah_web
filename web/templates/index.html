@@ -1132,11 +1132,8 @@
 <!-- The close button sits in a bar of the app's own, never on the embedded page:
      each of these apps keeps a hamburger or an admin button in that same corner. -->
 <div id="extFrameWrap" class="unit-wrap" style="display:none">
-  <div class="unit-bar">
-    <button id="extFrameClose" class="unit-x" aria-label="חזרה לתורה" title="חזרה לתורה">&times;</button>
-    <span class="unit-bar-title" id="extFrameTitle"></span>
-  </div>
   <iframe id="extFrame" title=""></iframe>
+  <button id="extFrameClose" class="unit-x" aria-label="חזרה לתפריט הראשי" title="חזרה לתפריט הראשי">&#8594;</button>
 </div>
 <script>
   // wired here, not in app.js: that script is loaded above this markup and the
@@ -1149,11 +1146,8 @@
 
 <!-- אוצר כתבי היד: opens the unit full-screen, exactly as the recordings archive does -->
 <div id="mssFrameWrap" class="unit-wrap" style="display:none">
-  <div class="unit-bar">
-    <button id="mssFrameClose" class="unit-x" aria-label="סגירה" title="חזרה לתורה">&times;</button>
-    <span class="unit-bar-title" data-i18n="m_mss">אוצר כתבי היד השומרוניים בתבל</span>
-  </div>
   <iframe id="mssFrame" title="אוצר כתבי היד השומרוניים בתבל"></iframe>
+  <button id="mssFrameClose" class="unit-x" aria-label="חזרה לתפריט הראשי" title="חזרה לתפריט הראשי">&#8594;</button>
 </div>
 <script>
 (function(){
