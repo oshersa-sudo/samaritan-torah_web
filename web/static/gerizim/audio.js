@@ -268,7 +268,7 @@
    * And every few minutes two silver trumpets answer from the front of it.
    */
   const HORN = ['shofar_tekia', 'shofar_shevarim', 'shofar_teruah'];
-  let hornI = 0, nextHorn = 0, nextTrump = 0;
+  let hornI = 0, nextHorn = 0, nextTrump = 0, nextFarHorn = 0;
   function ambTick() {
     const GW = window.GerizimWalk, D = W();
     if (!GW || !GW.active || !D || !scene || !pref.amb) { if (chains) { ramp(chains.crowd.gain, 0); ramp(chains.fire.gain, 0); ramp(chains.wind.gain, 0); } return; }
@@ -344,6 +344,13 @@
         if (tb) one(tb, t, 0.06 + fall(dHoly, 100) * 0.26, chains.fx, 1);
         nextTrump = now() + 160 + Math.random() * 140;
       }
+    }
+    // ומי שהרחיק מן המרכז הדתי שומע את השופר מעברו השני של ההר: מעומעם,
+    // מהדהד, ולעתים רחוקות — הקול עצמו, מן ההקלטה של בעל האפליקציה
+    if (dHoly > 55 && now() > nextFarHorn) {
+      const fb = sample('shofar_far');
+      if (fb) one(fb, t, 0.08 + Math.max(0, 1 - dHoly / 320) * 0.12, chains.fx, 1);
+      nextFarHorn = now() + 70 + Math.random() * 110;
     }
     // צעדי ההולך: לפי המרחק שעבר
     if (last) { const d = Math.hypot(p.x - last.x, p.z - last.z); if (d < 3) { stepAcc += d; if (stepAcc > 0.78) {

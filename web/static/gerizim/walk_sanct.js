@@ -139,6 +139,16 @@
   P('levite', 111.4, 76.6, { seed: 35, carry: 'staff' }); P('levite', 111.4, 81.6, { seed: 36 }); P('levite', 106.5, 69.2, { seed: 37 });
   P('man', 116.4, 78.1, { seed: 38, carry: 'lamb' }); P('woman', 117.4, 80.3, { seed: 39 }); P('child', 116.9, 81.4, { seed: 40 }); P('elder', 119.2, 77.4, { seed: 41, carry: 'staff' });
   P('man', 121, 82.5, { seed: 42, carry: 'doves' }); P('woman', 113.6, 86.8, { seed: 43, carry: 'basket' }); P('man', 64, 95.5, { seed: 44, carry: 'staff' });
+  /* ── הכהנים שבמשכן ─────────────────────────────────────────────────────
+   * שני כהנים צעירים עומדים מפני אוהל מועד ובידיהם חצוצרות הכסף; שניים
+   * מסובבים בתוכו במחתות ומפזרים את עשן הקטורת; והכהן הגדול לפני הפרוכת,
+   * מקלו בימינו, האפוד על שמלתו והחושן על חזהו.
+   */
+  P('priest', 87.4, 78.1, { seed: 51, carry: 'trumpet' });
+  P('priest', 87.4, 80.1, { seed: 52, carry: 'trumpet' });
+  P('priest', 79.4, 77.4, { seed: 53, carry: 'censer' });
+  P('priest', 82.6, 80.5, { seed: 54, carry: 'censer' });
+  P('highpriest', 77.3, 79.1, { seed: 55, carry: 'staff' });
   W.animals.push({ kind: 'sheep', x: 118.6, z: 79.3, per: 'r' }, { kind: 'ox', x: 120.6, z: 85.2, per: 'r' }, { kind: 'sheep', x: 122.4, z: 84.1, per: 'r' }, { kind: 'goat', x: 115, z: 72.5, per: 'r' });
   // שתים עשרה האבנים: במסורת העדה הקים אותן יהושע, ולכן הן עומדות גם בימי הרצון
   W.solids.forEach(s => { if (s.id === 'stones12') s.allr = true; });
