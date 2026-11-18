@@ -167,7 +167,7 @@
       if (ev.target.closest('button')) return;           // the two buttons are not a grip
       const r = el.getBoundingClientRect();
       dx = ev.clientX - r.left; dy = ev.clientY - r.top; id = ev.pointerId;
-      handle.setPointerCapture(id);
+      try { handle.setPointerCapture(id); } catch (e) { /* a pointer that is not really there */ }
       el.classList.add('dragging');
       ev.preventDefault();
     });

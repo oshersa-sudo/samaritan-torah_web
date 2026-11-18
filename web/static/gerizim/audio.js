@@ -193,6 +193,7 @@
     const wg = ctx.createGain(); wg.gain.value = 1; wlp.connect(wg); wg.connect(c.wind); c.gWind = wg;
     const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.07; lg.gain.value = 180; lfo.connect(lg); lg.connect(wlp.frequency); lfo.start();
     c.birds = ctx.createGain(); c.birds.gain.value = 0; c.birds.connect(ambBus);           // ציפורי בוקר, כשאין המולה
+    c.pray = ctx.createGain(); c.pray.gain.value = 0; c.pray.connect(ambBus);              // תפילה מן המקדש, לפי התקופה
     c.fx = ctx.createGain(); c.fx.gain.value = 1; c.fx.connect(ambBus);                     // צעדים, בעלי חיים, ציפורים
     return c;
   }
@@ -216,9 +217,12 @@
   }
   /* the flock is sheep, goats, donkeys and oxen — and the recordings are the
      same four; without one, the old synthetic bleat still answers */
-  const BEAST = { sheep: 'sheep', goat: 'goat', donkey: 'donkey', ox: 'cow', cow: 'cow' };
+  const BEAST = { sheep: 'sheep', goat: 'goat', donkey: 'donkey', ox: 'cow', cow: 'cow',
+                  chicken: 'hen', hen: 'hen', dog: 'dog' };
   function beast(t, vol, kind) {
-    const buf = sample(BEAST[kind] || 'goat');
+    let name = BEAST[kind] || 'goat';
+    if (name === 'sheep' && Math.random() < 0.5) name = 'sheep2';   // לא אותה פעייה פעמיים
+    const buf = sample(name);
     if (!buf) return bleat(t, vol);
     one(buf, t, Math.min(0.5, vol * 1.7), chains.fx, 0.93 + Math.random() * 0.14);
   }
@@ -239,6 +243,32 @@
     return false;
   }
   const fall = (d, r) => { const k = Math.max(0, 1 - d / r); return k * k; };
+
+  /* ── התפילה ───────────────────────────────────────────────────────────────
+   * Each period prays in the voice of those who held the mountain then: the
+   * congregation of the Days of Favour and of our own day are the community's
+   * own singing, out of the recordings archive; the Persian period a low
+   * chant, the Hellenistic a lyre. All of them heard as from a distance —
+   * muffled and quiet in the file itself — and fading as the walker turns
+   * away, like every other sound here.
+   */
+  const PRAY = { r: 'pray_r', n: 'pray_n', p: 'pray_p', h: 'pray_h' };
+  function holyAt(D, per, tl) {
+    for (const o of D.solids) if (o.id === 'altar' && inPer(o, per, tl))
+      return { x: (o.box[0] + o.box[2]) / 2, z: (o.box[1] + o.box[3]) / 2 };
+    const b = D.sanctTB && D.sanctTB[per];
+    if (b) return { x: (b.e1 + b.e2) / 2, z: -(b.n1 + b.n2) / 2 };
+    const S2 = D.sanct;
+    if (S2 && S2.TN) return { x: (S2.TN.x1 + S2.TN.x2) / 2, z: (S2.TN.z1 + S2.TN.z2) / 2 };
+    return null;
+  }
+  /* ── השופר והחצוצרות ──────────────────────────────────────────────────────
+   * In the Days of Favour the horn is heard about the Tabernacle, inside and
+   * out: תקיעה, שברים, תרועה — each in its turn, and never one upon another.
+   * And every few minutes two silver trumpets answer from the front of it.
+   */
+  const HORN = ['shofar_tekia', 'shofar_shevarim', 'shofar_teruah'];
+  let hornI = 0, nextHorn = 0, nextTrump = 0;
   function ambTick() {
     const GW = window.GerizimWalk, D = W();
     if (!GW || !GW.active || !D || !scene || !pref.amb) { if (chains) { ramp(chains.crowd.gain, 0); ramp(chains.fire.gain, 0); ramp(chains.wind.gain, 0); } return; }
@@ -281,13 +311,39 @@
       if (crowd < 0.5) chirp(t, 0.025 + Math.random() * 0.03);
       nextBird = now() + 4 + Math.random() * 10;
     }
-    // וקול רחוק של כפר, לעתים רחוקות: כלב, תרנגולת
+    // וקולות שמסביב, לעתים: בשוק לולי תרנגולות ואפרוחים, ומן הכפר כלב, ועדר חולף
     if (now() > nextFar) {
-      if (!inside && Math.random() < 0.6) {
-        const b = sample(Math.random() < 0.55 ? 'dog' : 'hen');
-        if (b) one(b, t, 0.035 + Math.random() * 0.03, chains.fx, 0.95 + Math.random() * 0.1);
+      if (!inside) {
+        const near = crowd > 0.25;
+        const pick = near ? (Math.random() < 0.5 ? 'chicks' : 'hen')
+                          : (Math.random() < 0.5 ? 'dog' : 'flock');
+        const b = sample(pick);
+        if (b && Math.random() < 0.7)
+          one(b, t, (near ? 0.07 : 0.04) + Math.random() * 0.03, chains.fx, 0.95 + Math.random() * 0.1);
       }
-      nextFar = now() + 40 + Math.random() * 70;
+      nextFar = now() + 30 + Math.random() * 60;
+    }
+    // תפילה מן המקום הקדוש, לפי התקופה
+    const holy = holyAt(D, per, tl);
+    const dHoly = holy ? Math.hypot(holy.x - p.x, holy.z - p.z) : 1e9;
+    const pname = PRAY[per];
+    if (pname && bed(pname, chains.pray)) {
+      // קרוב — ברור יותר; בפנים — כאילו מעבר לקיר; ובהמולה היא נבלעת
+      ramp(chains.pray.gain, fall(dHoly, 70) * (inside ? 1.25 : 0.85) * (1 - crowd * 0.45), 1.4);
+    }
+    // קול השופר סביב המשכן: תקיעה, שברים ותרועה לסירוגין
+    if (per === 'r' && dHoly < 150) {
+      if (now() > nextHorn) {
+        const hb = sample(HORN[hornI % HORN.length]);
+        if (hb) { one(hb, t, 0.07 + fall(dHoly, 120) * 0.3, chains.fx, 0.98 + Math.random() * 0.04); hornI++; }
+        nextHorn = now() + 22 + Math.random() * 30;
+      }
+      if (now() > nextTrump) {
+        const tb = sample('trumpets');
+        // שני כהנים צעירים יוצאים אל פני המשכן, תוקעים, וחוזרים
+        if (tb) one(tb, t, 0.06 + fall(dHoly, 100) * 0.26, chains.fx, 1);
+        nextTrump = now() + 160 + Math.random() * 140;
+      }
     }
     // צעדי ההולך: לפי המרחק שעבר
     if (last) { const d = Math.hypot(p.x - last.x, p.z - last.z); if (d < 3) { stepAcc += d; if (stepAcc > 0.78) {

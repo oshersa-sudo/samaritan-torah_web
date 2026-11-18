@@ -136,6 +136,8 @@
   };
   const lang = () => (typeof LANG === 'string' && TX[LANG]) ? LANG : 'he';
   const T = () => TX[lang()];
+  /* the app's own build, carried into the units that are pages of their own */
+  const unitBuild = () => (window.ASSET_BUILD ? '&b=' + encodeURIComponent(window.ASSET_BUILD) : '');
 
   // ── the apps ────────────────────────────────────────────────────────────────
   const ICON = {
@@ -159,7 +161,7 @@
     { key:'mss',       open:() => (typeof window.openMss === 'function') && window.openMss() },
     { key:'genealogy', open:() => openExternalUnit(GENEALOGY_URL, t('m_genealogy')) },
     // the tour of Mount Gerizim: the app's own page, shown in the same frame-with-a-bar as the outside units
-    { key:'gerizim',   open:() => openExternalUnit('/static/gerizim/index.html?lang=' + lang(), T().apps.gerizim.short) },
+    { key:'gerizim',   open:() => openExternalUnit('/static/gerizim/index.html?lang=' + lang() + unitBuild(), T().apps.gerizim.short) },
     // the archive: not open yet — a circle and its card, with "coming soon" under the name
     { key:'archive', soon:true, open:() => {} }
   ];
@@ -1201,7 +1203,7 @@
         return;
       }
       if(g.t === 'gerizim'){
-        open(() => openExternalUnit('/static/gerizim/index.html?lang=' + lang() +
+        open(() => openExternalUnit('/static/gerizim/index.html?lang=' + lang() + unitBuild() +
                                     (g.place ? '&place=' + encodeURIComponent(g.place) : ''),
                                     T().apps.gerizim.short));
         return;

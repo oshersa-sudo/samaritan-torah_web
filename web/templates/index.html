@@ -14,7 +14,13 @@
      Back key needs (backSpare, app.js) rewrites the address to the pathname
      alone a moment later, and the parameter would be gone before the main menu
      could look for it. -->
-<script>try{ window.__newsParam = new URLSearchParams(location.search).get('news') || ''; }catch(e){ window.__newsParam = ''; }</script>
+<script>try{ window.__newsParam = new URLSearchParams(location.search).get('news') || ''; }catch(e){ window.__newsParam = ''; }
+/* The units that are pages of their own — the tour above all — are opened in a
+   frame by their own address, and that address never carried the app's build.
+   Flask serves everything under /static with an hour of cache, so a new version
+   of the tour's page (and of the scripts it names) reached nobody until the hour
+   was out. The build goes with it now, and changes the moment the app does. */
+window.ASSET_BUILD = '{{ asset_build }}';</script>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#1a3873">
 <meta name="mobile-web-app-capable" content="yes">
