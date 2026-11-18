@@ -319,6 +319,9 @@
       if (node) node.classList.add('hi');
     });
     el.phPriest.innerHTML = lines.map(esc).join('<br>');
+    /* the year under the 0-point, for whoever wants it — look.js shows the
+       period's picture behind the timeline by it */
+    try { document.dispatchEvent(new CustomEvent('tl:year', { detail: y })); } catch (e) { /* old WebView */ }
   }
 
   /* ─────────────── ציור מלא ─────────────── */

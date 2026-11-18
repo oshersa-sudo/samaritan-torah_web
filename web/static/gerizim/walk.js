@@ -134,6 +134,30 @@
     for (let i = 0; i < n; i++) { g.fillStyle = cols[i % cols.length]; g.globalAlpha = a * (0.4 + R() * 0.6); const r = 1 + R() * 3; g.fillRect(R() * S, R() * S, r, r); }
     g.globalAlpha = 1;
   }
+  /* ── מרקמים מ-Canva ─────────────────────────────────────────────────────
+   * לחפצים הקפואים — אבן הגזית של הבתים, העץ של העגלות, הדוכנים והספסלים,
+   * ויריעות המשכן — מרקם שצויר ב-Canva (img/tex/), במקום המרקם שהקוד מצייר
+   * לעצמו. המצויר נשאר עד שהתמונה נטענת, ואם אינה נטענת — הוא נשאר. `k` —
+   * כמה להגדיל את החזרה, כך שגודל האבן, הקרש או הכנף יישאר כשהיה.
+   */
+  const skins = {};
+  function skin(mat, file, k) {
+    if (!mat || !mat.map) return;
+    const old = mat.map;
+    const apply = t => {
+      const n = t.clone(); n.needsUpdate = true;
+      n.wrapS = n.wrapT = THREE.RepeatWrapping; n.repeat.copy(old.repeat).multiplyScalar(k || 1); n.offset.copy(old.offset);
+      n.anisotropy = 4; if ('encoding' in old) n.encoding = old.encoding;
+      mat.map = n; if (mat.bumpMap === old) mat.bumpMap = n; mat.needsUpdate = true;
+    };
+    let e = skins[file];
+    if (!e) {
+      e = skins[file] = { tex: null, wait: [] };
+      new THREE.TextureLoader().load('img/tex/' + file + '?v=1', t => { e.tex = t; e.wait.forEach(f => f(t)); e.wait = []; }, undefined, () => { e.wait = []; });
+    }
+    if (e.tex) apply(e.tex); else e.wait.push(apply);
+  }
+  window.GerizimSkin = (mat, file, k) => { if (THREE) skin(mat, file, k); };
   function makeMaterials() {
     const m = {};
     const lam = (map, extra) => new THREE.MeshLambertMaterial(Object.assign({ map }, extra || {}));
@@ -891,6 +915,7 @@
     if (farRoot) { scene.remove(farRoot); farRoot.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
     root = new THREE.Group(); scene.add(root); farRoot = new THREE.Group(); scene.add(farRoot); smoke = []; flames = []; clickables = [];
     const M = build.M || (build.M = makeMaterials());
+    if (!M.skinned) { M.skinned = 1; skin(M.ashlar, 'ashlar.jpg', 0.8); skin(M.wood, 'wood.jpg', 1); }   // מ-Canva
     buildTerrain(M); buildFloors(M); buildSolids(M); buildLife(M);
     marker = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.8, 28), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75, depthWrite: false }));
     marker.rotation.x = -Math.PI / 2; marker.visible = false; root.add(marker);

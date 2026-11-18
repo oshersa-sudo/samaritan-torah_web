@@ -654,3 +654,119 @@ button.on { background: var(--gold-soft); border-color: var(--gold); color: #fff
 }
 #rotate #rotateNo { background: transparent; border-color: var(--line); color: var(--ink-dim);
                     padding: 5px 9px; font-size: 15px; line-height: 1; }
+
+/* ───────────────────────── ערכות צבעים ─────────────────────────
+   Chosen in the hamburger menu (js/look.js), set on <html data-theme>. Each one
+   is only a set of values: the variables above, and the --t-* surfaces below,
+   which stand in for the colours this sheet otherwise writes out by hand. Without
+   data-theme nothing here applies, and the timeline is "night" as it always was. */
+html[data-theme="parchment"] {
+  --bg: #f2ead8; --bg-2: #e9dfc7; --panel: #fbf6ea; --line: #cbbb98; --ink: #2a2116; --ink-dim: #6b5e4a;
+  --gold: #94681a; --gold-soft: #d8c193;
+  --c-samaritan: #b06c12; --c-israel: #2a679c; --c-torah: #3b7f3f; --c-world: #74489a;
+  --c-priest: #a84a28; --c-people: #2a7f68; --c-pm: #33609c; --c-pres: #774f99;
+  --t-top1: #efe4cb; --t-top2: #e5d8b8; --t-deep: #e6dcc4; --t-hover: #e9dcbd; --t-btn: #f6efdd;
+  --t-glow: #fff8e6; --t-label: rgba(251,246,234,.86); --t-strong: rgba(251,246,234,.95);
+  --t-ruler1: rgba(239,228,203,.97); --t-ruler2: rgba(232,221,196,.92); --t-grid: rgba(60,40,10,.06);
+}
+html[data-theme="sea"] {
+  --bg: #06182a; --bg-2: #0a2136; --panel: #0f2d48; --line: #1f4a6c; --ink: #e5f0f6; --ink-dim: #8fb0c5;
+  --gold: #e8c46a; --gold-soft: #6a5626;
+  --t-top1: #0d2740; --t-top2: #071a2c; --t-deep: #04121f; --t-hover: #133a5c; --t-btn: #12324f;
+  --t-glow: #0f3556; --t-label: rgba(6,24,42,.74); --t-strong: rgba(5,18,32,.93);
+  --t-ruler1: rgba(10,36,58,.97); --t-ruler2: rgba(6,24,42,.9); --t-grid: rgba(255,255,255,.04);
+}
+html[data-theme="olive"] {
+  --bg: #10150c; --bg-2: #161d11; --panel: #1d2716; --line: #344228; --ink: #ebe8d4; --ink-dim: #a6aa8e;
+  --gold: #d6b45c; --gold-soft: #5e5122;
+  --t-top1: #1b2414; --t-top2: #121a0d; --t-deep: #0b0f08; --t-hover: #25321c; --t-btn: #212c19;
+  --t-glow: #222f18; --t-label: rgba(16,21,12,.74); --t-strong: rgba(11,15,8,.93);
+  --t-ruler1: rgba(25,33,18,.97); --t-ruler2: rgba(16,21,12,.9); --t-grid: rgba(255,255,255,.035);
+}
+html[data-theme="earth"] {
+  --bg: #1a110b; --bg-2: #22170f; --panel: #2b1c13; --line: #4a3121; --ink: #f2e5d2; --ink-dim: #bba189;
+  --gold: #e3a85a; --gold-soft: #6e4a22;
+  --t-top1: #281a11; --t-top2: #1c120b; --t-deep: #120b06; --t-hover: #3a2618; --t-btn: #332216;
+  --t-glow: #34210f; --t-label: rgba(26,17,11,.74); --t-strong: rgba(18,11,6,.93);
+  --t-ruler1: rgba(36,24,15,.97); --t-ruler2: rgba(26,17,11,.9); --t-grid: rgba(255,230,200,.035);
+}
+html[data-theme="contrast"] {
+  --bg: #000; --bg-2: #050505; --panel: #0d0d0d; --line: #6a6a6a; --ink: #fff; --ink-dim: #e2e2e2;
+  --gold: #ffd34d; --gold-soft: #7a6420;
+  --c-samaritan: #ffb02e; --c-israel: #5cc0ff; --c-torah: #7fe08a; --c-world: #d9a6ff;
+  --t-top1: #111; --t-top2: #000; --t-deep: #000; --t-hover: #262626; --t-btn: #161616;
+  --t-glow: #000; --t-label: rgba(0,0,0,.86); --t-strong: rgba(0,0,0,.96);
+  --t-ruler1: rgba(10,10,10,.98); --t-ruler2: rgba(0,0,0,.95); --t-grid: rgba(255,255,255,.08);
+}
+html[data-theme] #topbar { background: linear-gradient(180deg, var(--t-top1), var(--t-top2)); }
+html[data-theme] .brand .mark, html[data-theme] #foot .foot-brand { color: var(--gold); }
+html[data-theme] #search, html[data-theme] #foot,
+html[data-theme] #viewport::-webkit-scrollbar-track { background: var(--t-deep); }
+html[data-theme] .results .r { border-bottom-color: var(--line); }
+html[data-theme] .results .r:hover, html[data-theme] .chip:hover { background: var(--t-hover); }
+html[data-theme] button { background: var(--t-btn); color: var(--ink); }
+html[data-theme] #rail { background: linear-gradient(180deg, var(--t-top1), var(--t-deep)); }
+html[data-theme] .rail-tick b { color: var(--gold); }
+html[data-theme] #viewport { background: radial-gradient(1200px 400px at 20% 0%, var(--t-glow) 0%, transparent 70%), var(--bg); }
+html[data-theme] #viewport::-webkit-scrollbar-thumb { background: var(--line); }
+html[data-theme] .band .bl { color: var(--ink); background: var(--t-label); }
+html[data-theme] #ruler { background: linear-gradient(180deg, var(--t-ruler1), var(--t-ruler2)); }
+html[data-theme] .tick .stem { background: var(--line); }
+html[data-theme] .tick .lab { color: var(--ink-dim); }
+html[data-theme] .tick .sub { color: var(--ink-dim); opacity: .75; }
+html[data-theme] .gl { background: var(--t-grid); }
+html[data-theme] .ev .tl { color: var(--ink); background: var(--t-label); }
+html[data-theme] .ev:hover .tl { color: var(--ink); background: var(--panel); }
+html[data-theme] .ph-readout { background: var(--t-strong); }
+html[data-theme] .ph-readout em { border-top-color: var(--line); }
+html[data-theme] #foot, html[data-theme] #foot a, html[data-theme] .card-src { color: var(--ink-dim); }
+html[data-theme] #card { background: linear-gradient(180deg, var(--panel), var(--bg-2)); }
+html[data-theme] #card h2, html[data-theme] #cardBody { color: var(--ink); }
+html[data-theme] .help-inner { background: var(--panel); }
+html[data-theme] .help-inner li, html[data-theme] .help-inner p { color: var(--ink); }
+
+/* the choice itself, in the menu: a row of swatches */
+.tl-swatches { display: flex; flex-wrap: wrap; gap: 4px; padding: 2px 2px 6px; }
+.tl-sw { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 14px;
+         border: 1px solid var(--line); font-size: 12.5px; cursor: pointer;
+         width: auto; height: auto; min-height: 28px; white-space: nowrap; }   /* not the 30px square of the app's buttons */
+.tl-sw.on { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; background: var(--gold-soft); color: #fff5df; }
+html[data-theme="parchment"] .tl-sw.on { color: #2a2116; }
+.tl-dot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(128,128,128,.6); flex: 0 0 auto; }
+.tl-dot-night { background: linear-gradient(135deg, #0d1117 50%, #d9b166 50%); }
+.tl-dot-parchment { background: linear-gradient(135deg, #f2ead8 50%, #94681a 50%); }
+.tl-dot-sea { background: linear-gradient(135deg, #06182a 50%, #e8c46a 50%); }
+.tl-dot-olive { background: linear-gradient(135deg, #1d2716 50%, #d6b45c 50%); }
+.tl-dot-earth { background: linear-gradient(135deg, #2b1c13 50%, #e3a85a 50%); }
+.tl-dot-contrast { background: linear-gradient(135deg, #000 50%, #fff 50%); }
+.tl-pics { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 7px;
+            cursor: pointer; font-size: 13.5px; color: var(--ink); user-select: none; }
+.tl-pics:hover { background: var(--t-hover, #1b2430); }
+.tl-pics input { margin: 0; accent-color: var(--gold); }
+.tl-pics .tl-hint { flex-basis: 100%; color: var(--ink-dim); font-size: 11px; padding-inline-start: 22px; }
+
+/* ───────────────────────── תמונת התקופה ברקע ─────────────────────────
+   Behind the timeline, never over it: the layer is the first thing in #main and
+   takes no pointer; the timeline's own background turns transparent above it,
+   and the picture itself is dim, a little blurred and drained of most of its
+   colour, so that no label stands on a busy patch. Two layers cross-fade. */
+#periodBg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; display: none; }
+html.tl-pics #periodBg { display: block; }
+#main > #rail, #main > #viewport { position: relative; z-index: 1; }
+html.tl-pics #viewport { background: transparent; }
+html.tl-pics #main { background: var(--bg); }
+.pb-img { position: absolute; inset: -12px; background-size: cover; background-position: center 35%;
+          opacity: 0; transition: opacity 1.4s ease;
+          filter: grayscale(.45) sepia(.2) blur(1.6px) brightness(.9); }
+.pb-img.vis { opacity: .16; }
+html[data-theme="parchment"] .pb-img { filter: grayscale(.5) sepia(.35) blur(1.6px) brightness(1.05); }
+html[data-theme="parchment"] .pb-img.vis { opacity: .2; }
+html[data-theme="contrast"] .pb-img.vis { opacity: .1; }
+/* a veil that keeps the middle, where the labels are, the calmest */
+#periodBg::after { content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 55%, var(--bg) 0%, transparent 75%); opacity: .35; }
+.pb-cap { position: absolute; z-index: 3; inset-inline-end: 8px; bottom: 16px; max-width: min(60%, 520px);
+          font-size: 10px; line-height: 1.3; color: var(--ink-dim); opacity: .55; text-decoration: none;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: none; direction: ltr; }
+html.tl-pics .pb-cap { display: block; }
+.pb-cap:hover { opacity: .95; text-decoration: underline; }

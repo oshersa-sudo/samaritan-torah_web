@@ -299,6 +299,8 @@
       g.fillStyle = '#f1ece0'; g.beginPath(); g.ellipse(cx, cy + 30, 12, 34, 0, 0, 6.3); g.fill(); g.fillStyle = '#b3242a'; g.beginPath(); g.arc(cx, cy - 10, 11, 0, 6.3); g.fill();
     };
     M.cherub = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, emissive: 0x2a2620, map: canvasTex(THREE, 256, 256, cherubCloth) });
+    // the weave itself, from Canva: tekhelet, argaman and scarlet, and the spread wings only as a sign
+    if (window.GerizimSkin) window.GerizimSkin(M.cherub, 'curtain.jpg', 0.5);
     M.wood2 = M.wood;
     M.bread = new THREE.MeshLambertMaterial({ color: 0xd8b77a });
     M.earthR = M.earth;
