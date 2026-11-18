@@ -1442,6 +1442,15 @@ function interpText(text){
 // parentheses is fenced by pauses; quotation marks, the gershayim inside a
 // letter-name (יו"ד → יוד), brackets and niqqud are dropped. No dot after a
 // stop mark, before one, after a number, or at the end of the text.
+// A source passage set beneath the commentary, in Samaritan script. The rule of
+// the panel: whatever a Samaritan source contributes is read in the Torah's own
+// vocabulary — so the passage is its re-voicing (it.sam, which the server sends
+// when it has one for this exact Hebrew) through samPunct, like the commentary
+// above it. A passage not yet re-voiced keeps the older treatment.
+function srcSamHTML(it){
+  return it.sam ? samMarkupFree(samPunct(it.sam))
+                : samMarkupFree(addWordDots(stripNiqqud(it.text||'')));
+}
 function samPunct(text){
   let t = stripNiqqud(text||'');
   t = t.replace(/([א-ת]{2})["\u05f4]([א-ת])(?![א-ת])/g, '$1$2');
@@ -3447,7 +3456,7 @@ function interpVerseCol(v, D, vidx, once){
     const at = el('div','iasatir-text'+(showArAsa?' iar':''),
       showArAsa ? samMarkupFree(stripNiqqud(it.arabic))
       : ((!ar && (S.interpSam||S.samFont))
-          ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text)));
+          ? srcSamHTML(it) : esc(it.text)));
     at.style.fontSize = fs+'px';
     box.appendChild(at);
     col.appendChild(box);
@@ -3465,7 +3474,7 @@ function interpVerseCol(v, D, vidx, once){
     const bt = el('div','iasatir-text'+(showAr?' iar':''),
       showAr ? samMarkupFree(stripNiqqud(it.text))
       : (!ar && (S.interpSam||S.samFont))
-        ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+        ? srcSamHTML(it) : esc(it.text));
     if(ar && it.pending) bt.prepend(el('span','ipend', t('interp_ar_pending')));
     bt.style.fontSize = fs+'px';
     box.appendChild(bt);
@@ -3484,7 +3493,7 @@ function interpVerseCol(v, D, vidx, once){
     const et = el('div','iasatir-text'+(showAr?' iar':''),
       showAr ? samMarkupFree(stripNiqqud(it.text))
       : (!ar && (S.interpSam||S.samFont))
-        ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+        ? srcSamHTML(it) : esc(it.text));
     if(ar && it.pending) et.prepend(el('span','ipend', t('interp_ar_pending')));
     et.style.fontSize = fs+'px';
     box.appendChild(et);
@@ -3502,7 +3511,7 @@ function interpVerseCol(v, D, vidx, once){
     const mt = el('div','iasatir-text'+(showAr?' iar':''),
       showAr ? samMarkupFree(stripNiqqud(it.text))
       : (!ar && (S.interpSam||S.samFont))
-        ? samMarkupFree(addWordDots(stripNiqqud(it.text))) : esc(it.text));
+        ? srcSamHTML(it) : esc(it.text));
     if(ar && it.pending) mt.prepend(el('span','ipend', t('interp_ar_pending')));
     mt.style.fontSize = fs+'px';
     box.appendChild(mt);
@@ -6110,6 +6119,12 @@ const prVerseText = text => S_print.font === 'samaritan'
 // Hebrew. There is no separate choice for them: one sheet, one script.
 const prProse = txt => S_print.font === 'samaritan'
   ? samMarkupFree(addWordDots(stripNiqqud(txt||''))) : esc(txt||'');
+// On a Samaritan sheet the commentary and its sources are the re-voiced texts
+// (Torah vocabulary, samPunct), exactly as on screen; a source passage with no
+// re-voicing yet keeps the older treatment.
+const prSam = () => S_print.font === 'samaritan';
+const prVoice = txt => prSam() ? samMarkupFree(samPunct(txt||'')) : esc(txt||'');
+const prSrc = it => (prSam() && it.sam) ? samMarkupFree(samPunct(it.sam)) : prProse(it.text);
 const prVrow = (num, innerHTML, cls) => {
   const r = el('div','pr-vrow' + (cls ? ' ' + cls : ''));
   if(num != null) r.appendChild(el('span','pr-vnum', esc(String(num))));
@@ -6461,7 +6476,7 @@ async function buildBookDoc(area){
   const interp = {};
   for(let i = 0; i < all.length; i += 120){
     const slice = all.slice(i, i + 120);
-    try{ Object.assign(interp, await api('interpretations?verse_ids=' + slice.map(v => v.id).join(','))); }
+    try{ Object.assign(interp, await api('interpretations?lang=sam&verse_ids=' + slice.map(v => v.id).join(','))); }
     catch(e){ /* a batch that fails leaves its verses without a comment */ }
   }
   const block = {};                       // verse id -> its tokens
@@ -6569,7 +6584,7 @@ async function prPrefetch(groups){
   if(!ids.length) return null;
   const pre = {};
   if(S_print.interp){
-    pre.interp = await prFetchByVerses('interpretations', ids);
+    pre.interp = await prFetchByVerses('interpretations' + (prSam() ? '?lang=sam' : ''), ids);
     pre.asatir = await prFetchByVerses('asatir_by_verse', ids);
     pre.bhuq   = await prFetchByVerses('bhuq_by_verse', ids);
     pre.ervah  = await prFetchByVerses('ervah_by_verse', ids);
@@ -6611,7 +6626,8 @@ async function addPrintInterp(page, verses, pre){
     const vids = verses.map(v=>v.id).join(',');
     // handed the answer where the whole printout asked for it once; otherwise
     // this sheet asks for its own, which for a single chapter is the same cost
-    const m   = (pre && pre.interp) || await api('interpretations?verse_ids='+vids);
+    const m   = (pre && pre.interp)
+             || await api('interpretations?' + (prSam() ? 'lang=sam&' : '') + 'verse_ids='+vids);
     // the printed page carries what the screen carries, ספר האסאטיר included
     const asa = (pre && pre.asatir) || await api('asatir_by_verse?verse_ids='+vids).catch(()=>({}));
     const bhq = (pre && pre.bhuq)   || await api('bhuq_by_verse?verse_ids='+vids).catch(()=>({}));
@@ -6626,29 +6642,29 @@ async function addPrintInterp(page, verses, pre){
       const mitems = msl[v.id] || [];
       if(!txt && !items.length && !bitems.length && !eitems.length && !mitems.length) return;
       any = true;
-      if(txt) sec.appendChild(prVrow(v.number, prProse(txt)));
+      if(txt) sec.appendChild(prVrow(v.number, prVoice(txt)));
       // `first` carries the verse number onto whichever quoted source opens the
       // row, so a verse with no commentary of its own is still numbered once
       let first = !txt;
-      const quoted = (lead, text) => {
+      const quoted = (lead, it) => {
         const r = prVrow(first ? v.number : null, '', 'pr-quoted');
         first = false;
         r.appendChild(el('span','pr-quoted-lead', esc(lead)));
-        r.insertAdjacentHTML('beforeend', prProse(text));
+        r.insertAdjacentHTML('beforeend', prSrc(it));
         sec.appendChild(r);
       };
       for(const it of items)
         quoted(t('interp_asatir_lead')
-          + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '') + ': ', it.text);
+          + (it.ref ? ' (' + it.ref + (it.title ? ' · ' + it.title : '') + ')' : '') + ': ', it);
       for(const it of bitems)
         quoted(t('interp_bhuq_lead')
-          + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ': ', it.text);
+          + (it.ref ? ' ' + it.ref + (it.title ? ' · ' + it.title : '') : '') + ': ', it);
       for(const it of eitems)
         quoted(t('interp_ervah_lead')
-          + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '') + ': ', it.text);
+          + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '') + ': ', it);
       for(const it of mitems)
         quoted(t('interp_masail_lead')
-          + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '') + ': ', it.text);
+          + (it.ref ? ' — «' + it.ref + '»' : '') + (it.title ? ' · ' + it.title : '') + ': ', it);
     });
     if(!any) sec.appendChild(el('div','','אין פירוש זמין לפרק זה'));
   }catch(e){ sec.appendChild(el('div','','שגיאה בטעינת פירוש הפסוק')); }

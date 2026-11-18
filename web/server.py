@@ -2900,7 +2900,8 @@ def api_bhuq_by_verse():
     """פירוש אם בחקותי keyed by verse — feeds the verse-commentary panel, which
     sets each passage under the verse it argues about."""
     lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
-    return jsonify(db.get_bhuq_by_verse(_ids_arg(), lang))
+    out = db.get_bhuq_by_verse(_ids_arg(), lang)
+    return jsonify(out if lang == 'ar' else db.attach_sam_voice(out))
 
 
 @app.route('/api/ervah')
@@ -2914,7 +2915,8 @@ def api_ervah():
 def api_ervah_by_verse():
     """The same, keyed by verse, for the commentary panel and the printed sheet."""
     lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
-    return jsonify(db.get_ervah_by_verse(_ids_arg(), lang))
+    out = db.get_ervah_by_verse(_ids_arg(), lang)
+    return jsonify(out if lang == 'ar' else db.attach_sam_voice(out))
 
 
 # ── ספר הערוות: full-book reader (the verse source is /api/ervah above) ──
@@ -2947,7 +2949,8 @@ def api_masail():
 @app.route('/api/masail_by_verse')
 def api_masail_by_verse():
     lang = 'ar' if request.args.get('lang') == 'ar' else 'he'
-    return jsonify(db.get_masail_by_verse(_ids_arg(), lang))
+    out = db.get_masail_by_verse(_ids_arg(), lang)
+    return jsonify(out if lang == 'ar' else db.attach_sam_voice(out))
 
 
 @app.route('/api/masail_toc')
@@ -2994,7 +2997,7 @@ def api_asatir():
 def api_asatir_by_verse():
     """Asatir passages keyed by verse — feeds the verse-commentary panel, which
     sets each passage under the verse it retells."""
-    return jsonify(db.get_asatir_by_verse(_ids_arg()))
+    return jsonify(db.attach_sam_voice(db.get_asatir_by_verse(_ids_arg())))
 
 
 @app.route('/api/asatir_toc')

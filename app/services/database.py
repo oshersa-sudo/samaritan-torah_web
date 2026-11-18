@@ -1996,6 +1996,99 @@ def _seed_interp_sam():
 _seed_interp_sam()
 
 
+# ── the Samaritan voice of every text the commentary panel shows ────────────
+# RULE: whatever a Samaritan source contributes to פירוש הפסוק — the commentary
+# itself or a passage set beneath it (ספר האסאטיר, אם בחקותי, ספר הערוות, מסאיל
+# אלח'לאף, any later one) — is read in Samaritan script in the Torah's own
+# vocabulary, never as modern Hebrew in a Samaritan face.
+#
+# A re-voicing belongs to the exact Hebrew it was made from, so it is kept under a
+# key OF that Hebrew. Change the Hebrew and the key no longer matches: the reader
+# is given the current Hebrew, and scripts/interp_sam/passages.py lists the text
+# as work to do. A stale re-voicing can therefore never stand in for a text it was
+# not made from — which is what a per-verse column allowed.
+_SAM_VOICE_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
+                                'data', 'sam_voice_patch.json')
+
+
+def sam_voice_key(text):
+    import hashlib
+    return hashlib.sha1((text or '').strip().encode('utf-8')).hexdigest()[:16]
+
+
+def _seed_sam_voice():
+    """Bring the re-voicings into whatever DB is on disk. The table is this patch's
+    own and nothing else writes it, so it is simply brought to the patch's content;
+    a fingerprint in patch_state makes a rerun one SELECT."""
+    try:
+        if not os.path.exists(_SAM_VOICE_PATCH):
+            return
+        with open(_SAM_VOICE_PATCH, encoding='utf-8') as fh:
+            patch = json.load(fh)
+        conn = sqlite3.connect(DB_PATH, timeout=120)
+        conn.execute('CREATE TABLE IF NOT EXISTS patch_state (key TEXT PRIMARY KEY, value TEXT)')
+        conn.execute('CREATE TABLE IF NOT EXISTS sam_voice (k TEXT PRIMARY KEY, sam TEXT)')
+        cur = conn.execute("SELECT value FROM patch_state WHERE key='sam_voice'").fetchone()
+        if cur and cur[0] == patch.get('fingerprint'):
+            PATCH_REPORT['sam_voice'] = 'already current'
+            conn.close()
+            return
+        rows = [(k, s) for k, s in patch.get('rows', []) if k and s]
+        conn.execute('DELETE FROM sam_voice')
+        conn.executemany('INSERT OR REPLACE INTO sam_voice (k, sam) VALUES (?,?)', rows)
+        conn.execute("INSERT OR REPLACE INTO patch_state(key, value) VALUES ('sam_voice', ?)",
+                     (patch.get('fingerprint'),))
+        conn.commit()
+        conn.close()
+        PATCH_REPORT['sam_voice'] = '%d re-voiced texts' % len(rows)
+        print('[sam-voice] %s' % PATCH_REPORT['sam_voice'])
+    except Exception as exc:
+        PATCH_REPORT['sam_voice'] = 'failed: %s' % exc
+        print('[sam-voice] skipped: %s' % exc)
+
+
+_seed_sam_voice()
+
+
+def sam_voice_lookup(texts):
+    """{text: its re-voicing} for those of `texts` that have one."""
+    keys = {}
+    for t in texts:
+        if t and t.strip():
+            keys.setdefault(sam_voice_key(t), []).append(t)
+    if not keys:
+        return {}
+    out = {}
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        ks = list(keys)
+        for i in range(0, len(ks), 400):
+            part = ks[i:i + 400]
+            for k, sam in conn.execute('SELECT k, sam FROM sam_voice WHERE k IN (%s)'
+                                       % ','.join('?' * len(part)), part):
+                for t in keys[k]:
+                    out[t] = sam
+        conn.close()
+    except Exception:
+        return {}
+    return out
+
+
+def attach_sam_voice(by_verse):
+    """Give every passage of a {verse_id: [item, ...]} answer its re-voicing, as
+    item['sam'], where one exists for the item's exact text. Returns the same dict."""
+    try:
+        items = [it for lst in (by_verse or {}).values() for it in (lst or []) if isinstance(it, dict)]
+        voice = sam_voice_lookup([it.get('text') or '' for it in items])
+        for it in items:
+            s = voice.get(it.get('text') or '')
+            if s:
+                it['sam'] = s
+    except Exception:
+        pass
+    return by_verse
+
+
 _WORD_MEANING_PATCH = os.path.join(os.path.dirname(__file__), '..', '..',
                                    'data', 'word_meaning_patch.json')
 

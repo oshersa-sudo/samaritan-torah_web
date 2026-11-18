@@ -33,6 +33,11 @@ def get_chapter_interpretations(verse_rows, lang='he'):
     """
     if not verse_rows:
         return {}
+    if lang == 'sam':
+        try:
+            return _sam_interpretations([v['id'] for v in verse_rows])
+        except Exception:
+            pass                       # an older DB: fall through to the column below
     col = _COLUMNS.get(lang, _COLUMNS['he'])
     ids = [v['id'] for v in verse_rows]
     placeholders = ','.join('?' * len(ids))
@@ -49,3 +54,32 @@ def get_chapter_interpretations(verse_rows, lang='he'):
         ).fetchall()
     conn.close()
     return {r['id']: r['txt'] for r in rows if r['txt']}
+
+
+def _sam_interpretations(ids):
+    """The commentary for the Samaritan-script view.
+
+    What is shown is the re-voicing OF THE HEBREW THAT STANDS THERE NOW (sam_voice,
+    keyed by that Hebrew). A commentary whose Hebrew has changed since it was
+    re-voiced is therefore given in its current Hebrew until the new text is
+    re-voiced — never in an older re-voicing that says something else. The one
+    exception is a Samaritan text an editor wrote online: interpretation_sam that
+    differs from what the patch shipped is theirs, and stands."""
+    from .database import sam_voice_lookup
+    placeholders = ','.join('?' * len(ids))
+    conn = sqlite3.connect(_DB_PATH)
+    rows = conn.execute(
+        f'''SELECT v.id, v.interpretation, v.interpretation_sam, s.text
+              FROM verses v LEFT JOIN interp_sam_shipped s ON s.verse_id = v.id
+             WHERE v.id IN ({placeholders})''', ids).fetchall()
+    conn.close()
+    voice = sam_voice_lookup([r[1] or '' for r in rows])
+    out = {}
+    for vid, he, sam, shipped in rows:
+        he = he or ''
+        sam = (sam or '').strip()
+        if sam and sam != (shipped or '').strip():
+            out[vid] = sam                       # written or corrected online
+        elif he.strip():
+            out[vid] = voice.get(he) or he
+    return out
