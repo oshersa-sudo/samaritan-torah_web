@@ -730,7 +730,7 @@ function beginLoad(track, ready, edges) {
         au.addEventListener('loadedmetadata', go, { once: true });
       }
     } else {
-      ready.arrayBuffer().then(b => scanSilence(b, token)).catch(() => {});
+      scanSilence(ready, token, track.s);
     }
     return;
   }
@@ -779,6 +779,7 @@ const BANK = {
   size: {},                   // index → bytes held, for the ceiling
   held: 0,
   busy: false,
+  fetching: {},               // 'rec:idx' the player is pulling for itself
   ceiling: 64 * 1024 * 1024,  // what may be kept at once
   window: 12,                 // how far ahead of the needle to run
   keep: 2,                    // parts behind the needle to hold on to
@@ -814,7 +815,7 @@ function bankWant() {
   // six parts or seventy-six.
   const last = Math.min(r.tr.length, cur.idx + BANK.window);
   for (let i = cur.idx; i < last; i++) {
-    if (BANK.blob[i] === undefined) return i;
+    if (BANK.blob[i] === undefined && !BANK.fetching[BANK.rec + ':' + i]) return i;
   }
   return -1;
 }
@@ -845,8 +846,7 @@ async function bankFill() {
       BANK.held += bytes.size;
       if (BANK.trim[i] === undefined) {
         BANK.trim[i] = null;                      // measured just below
-        bytes.arrayBuffer()
-          .then(b => silenceEdges(b))
+        silenceEdges(bytes, t.s)
           .then(e => {
             BANK.trim[i] = e || null;
             // the part being heard right now learns its own edges late
@@ -872,6 +872,14 @@ function bankOpen(recId) {
   bankFill();
 }
 
+/* what the player downloaded for itself belongs in the bank as well */
+function bankHold(rec, idx, bytes) {
+  if (BANK.rec !== rec || BANK.blob[idx] !== undefined) return;
+  BANK.blob[idx] = bytes;
+  BANK.size[idx] = bytes.size;
+  BANK.held += bytes.size;
+}
+
 /* room may have been freed, or a skip may have put a gap ahead */
 function bankNudge() { if (BANK.rec === cur.rec) bankFill(); }
 
@@ -882,6 +890,12 @@ function bankNudge() { if (BANK.rec === cur.rec) bankFill(); }
  * the copy in memory: from then on every point in it is instant. */
 async function fetchTrack(track, token) {
   const url = audioURL(track.f);
+  // The bank runs from the needle forward, which is the very part being
+  // downloaded here — so it used to pull it a second time, over the air, on a
+  // telephone's own data. It is marked while it is in flight and handed over
+  // when it lands.
+  const rec = cur.rec, idx = cur.idx;
+  BANK.fetching[rec + ':' + idx] = 1;
   try {
     const res = await fetch(url);
     if (!res.ok || !res.body) return failFetch(token);
@@ -903,8 +917,13 @@ async function fetchTrack(track, token) {
     const type = res.headers.get('content-type') || 'audio/mpeg';
     const bytes = new Blob(chunks, { type });
     swapToBlob(bytes, token);
-    scanSilence(await bytes.arrayBuffer(), token);
+    scanSilence(bytes, token, track.s);
+    bankHold(rec, idx, bytes);         // one download of it, not two
   } catch (e) { failFetch(token); }
+  finally {
+    delete BANK.fetching[rec + ':' + idx];
+    bankNudge();                       // the bank may have been waiting on it
+  }
 }
 
 /* no download — carry on streaming, and say so honestly rather than showing a
@@ -984,8 +1003,6 @@ function loadTick() {
 const TRIM = { start: 0, end: 0 };
 const SILENCE = 0.012;                // below this counts as nothing
 
-/* The bytes are already here — the download did that — so this only decodes
- * them and reads where the sound begins and ends. */
 /* ---- where the singing actually begins and ends inside a file.
  *
  * Every one of these was digitised with the tape already running, so each
@@ -994,42 +1011,129 @@ const SILENCE = 0.012;                // below this counts as nothing
  * parts it is seventy-six small holes in the middle of the singing, and
  * those are what is heard as "it stops between the parts".
  *
- * Answers in seconds, or null when the file is nothing but silence.
+ * ONLY THE TWO ENDS ARE READ, and only after the bytes have been thinned.
+ *
+ * This measurement used to decode the whole recording. A decoded recording is
+ * not a compressed one — it is four bytes per sample per channel — so a tape
+ * of fifty-four minutes came to 1.1 GB, measured and not guessed, and the
+ * part after it was being measured at the same moment. A telephone has
+ * nothing like that to give: the process holding the archive was killed, and
+ * the app came back standing at the main menu. That was "it falls while the
+ * recording loads".
+ *
+ * Nothing about the measurement needed all that. The silence sits at the two
+ * ends, so a minute of bytes is read from each end and no more, and eight
+ * kilohertz is ample for telling sound from no sound. The same fifty-four
+ * minutes now costs under four megabytes.
+ *
+ * Answers in seconds, or null when there is nothing to trim.
  */
-async function silenceEdges(buf) {
-  if (!window.AudioContext && !window.webkitAudioContext) return null;
+const TRIM_RATE   = 8000;             // sound or no sound: this is plenty
+const TRIM_WINDOW = 60;               // seconds read at each end
+const TRIM_WHOLE  = 3 * 1024 * 1024;  // smaller than this, read it whole
+
+/* An mp3 is a run of self-contained frames, so a slice of one decodes on its
+ * own — provided the slice starts on a frame header and not in the middle of
+ * one. Anything else (wav, mp4, wma) keeps its description in a header at the
+ * front and cannot be cut this way; it says so by carrying no sync word. */
+function frameAt(bytes) {
+  const b = new Uint8Array(bytes);
+  const top = Math.min(b.length - 4, 65536);
+  for (let i = 0; i < top; i++)
+    if (b[i] === 0xFF && (b[i + 1] & 0xE0) === 0xE0 && (b[i + 1] & 0x06) !== 0)
+      return i;
+  return -1;
+}
+
+/* Decoded in an OfflineAudioContext, which is not counted against the
+ * browser's handful of live audio contexts and cannot reach the speakers. */
+async function decodeThin(buf) {
+  const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  if (!OAC) return null;
+  const oc = new OAC(1, 1, TRIM_RATE);
+  return await (oc.decodeAudioData.length > 1
+    ? new Promise((ok, no) => oc.decodeAudioData(buf, ok, no))
+    : oc.decodeAudioData(buf));
+}
+
+/* where sound begins and ends inside one decoded piece, in its own seconds */
+function soundEdges(audio) {
+  if (!audio) return null;
+  const ch = audio.getChannelData(0);
+  const rate = audio.sampleRate;
+  const win = Math.max(1, Math.floor(rate * 0.05));   // judge in 50 ms windows
+  const loud = i => {
+    let peak = 0;
+    for (let j = i, end = Math.min(i + win, ch.length); j < end; j++) {
+      const v = Math.abs(ch[j]);
+      if (v > peak) peak = v;
+    }
+    return peak > SILENCE;
+  };
+  let a = 0, b = ch.length - win;
+  while (a < ch.length && !loud(a)) a += win;
+  while (b > 0 && !loud(b)) b -= win;
+  if (a >= ch.length) return null;                    // nothing but silence
+  return { first: a / rate, last: Math.min(audio.duration, (b + win) / rate) };
+}
+
+/* The breath left either side. The tail is given twice what the whole-file
+ * measurement left it: read thinned, a note dying away crosses the threshold
+ * of silence a fraction of a second earlier than it does read in full — a
+ * quarter of a second, measured — and half a second of tape hiss kept is
+ * nothing beside half a second of singing lost. */
+function trimOf(first, last, dur) {
+  const start = Math.max(0, first - 0.15);
+  const end   = Math.min(dur, last + 0.5);
+  if (end - start < 1) return null;
+  return { start: start > 0.4 ? start : 0,
+           end:   end < dur - 0.4 ? end : 0 };
+}
+
+/* `src` is the recording's bytes — a Blob, so slicing it costs nothing until
+ * the slice is read — and `dur` its length in seconds, which is what turns a
+ * measurement made at the tail into a position in the file. */
+async function silenceEdges(src, dur) {
   try {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    const ctx = new AC();
-    const audio = await ctx.decodeAudioData(buf);
-    ctx.close();
-    const ch = audio.getChannelData(0);
-    const rate = audio.sampleRate;
-    const win = Math.floor(rate * 0.05);          // judge in 50 ms windows
-    const loud = i => {
-      let peak = 0;
-      for (let j = i; j < Math.min(i + win, ch.length); j++) {
-        const v = Math.abs(ch[j]);
-        if (v > peak) peak = v;
-      }
-      return peak > SILENCE;
-    };
-    let a = 0, b = ch.length - win;
-    while (a < ch.length && !loud(a)) a += win;
-    while (b > a && !loud(b)) b -= win;
-    const start = Math.max(0, a / rate - 0.15);   // leave a breath either side
-    const end   = Math.min(audio.duration, (b + win) / rate + 0.25);
-    if (end - start < 1) return null;             // nothing but silence
-    return { start: start > 0.4 ? start : 0,
-             end: end < audio.duration - 0.4 ? end : 0 };
+    const blob = (src instanceof Blob) ? src : new Blob([src]);
+    if (!blob.size) return null;
+
+    // short enough to read whole, and then the decoded length IS the duration
+    if (blob.size <= TRIM_WHOLE) {
+      const audio = await decodeThin(await blob.arrayBuffer());
+      const e = soundEdges(audio);
+      return e ? trimOf(e.first, e.last, audio.duration) : null;
+    }
+
+    if (!(dur > 1)) return null;        // with no length the tail cannot be placed
+    const bps  = blob.size / dur;       // bytes per second; near enough for this
+    const span = Math.max(5, Math.min(dur / 3, TRIM_WINDOW));
+    const cut  = Math.ceil(span * bps);
+    let first = 0, last = dur;
+
+    const head = await decodeThin(await blob.slice(0, cut).arrayBuffer())
+                       .catch(() => null);
+    const h = soundEdges(head);
+    if (h) first = h.first;
+
+    const raw = await blob.slice(Math.max(0, blob.size - cut)).arrayBuffer();
+    const at = frameAt(raw);
+    if (at >= 0) {
+      const tail = await decodeThin(raw.slice(at)).catch(() => null);
+      const t = soundEdges(tail);
+      // that slice IS the end of the file, so what is unsung after `last`
+      // there is unsung after the file's own end
+      if (t) last = dur - (tail.duration - t.last);
+    }
+    return trimOf(first, last, dur);
   } catch (e) {
     return null;                   // an odd codec, a short read — play it whole
   }
 }
 
-async function scanSilence(buf, token) {
+async function scanSilence(src, token, dur) {
   if (token !== LOAD.token) return;
-  const e = await silenceEdges(buf);
+  const e = await silenceEdges(src, dur);
   if (!e || token !== LOAD.token) return;         // the user moved on meanwhile
   TRIM.start = e.start;
   TRIM.end = e.end;
@@ -2766,7 +2870,13 @@ async function bandGo() {
   loadSay('load', 'מאזין לפיוט ומלחין ליווי…', 0);
   try {
     const src = LOAD.blob || audioURL(byId(C.recordings, cur.rec).tr[cur.idx].f);
-    const bytes = await (await fetch(src)).arrayBuffer();
+    // It listens to the first five minutes and no further, so only those are
+    // decoded: an hour-long tape decoded whole is another gigabyte, and the
+    // same death the silence scan used to die.
+    const blob = await (await fetch(src)).blob();
+    const bdur = (byId(C.recordings, cur.rec).tr[cur.idx] || {}).s || 0;
+    const bcap = (bdur > 340) ? Math.ceil(blob.size * 340 / bdur) : blob.size;
+    const bytes = await blob.slice(0, bcap).arrayBuffer();
     // let the browser paint "מלחין…" before the analysis blocks the thread
     await new Promise(r => setTimeout(r, 30));
     const A = await bandAnalyse(bytes);
