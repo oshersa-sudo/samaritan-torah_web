@@ -555,10 +555,16 @@ body.hub-open .menu-item[data-act="hub"]{ display:none; }
 .hub-confirm-box .hub-yes.cur{ background:var(--gold-bright); }
 @media (prefers-reduced-motion:reduce){ .hub-drawer, .hub-drawer-ov{ transition:none; } }
 
-/* the framed sites (the calendar, the family tree) are scaled, not zoomed, by the accessibility size */
+/* the framed sites (the calendar, the family tree) are scaled, not zoomed, by the accessibility size.
+   Pinned to the top-LEFT corner, because that is where the scaling grows from. With `inset:0` and a
+   width of its own the box is over-constrained, and in a right-to-left page the browser then drops
+   `left`, not `right`: at a larger type the frame was laid against the right edge, grew from its own
+   left side and slid 63px to the right — a pale band of the wrapper down the left side of the screen,
+   the app's right side cut off, and 48px more at the foot, kept for a bar that no longer exists. */
 .unit-wrap > iframe#extFrame.us{
+  inset:0 auto auto 0;
   transform:scale(var(--us, 1)); transform-origin:0 0;
-  width:calc(100% / var(--us, 1)); height:calc((100% - 48px) / var(--us, 1));
+  width:calc(100% / var(--us, 1)); height:calc(100% / var(--us, 1));
 }
 
 /* ── phone: the dial has the screen, the card is small, the instructions sit low ── */
