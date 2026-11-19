@@ -12721,8 +12721,12 @@ function layerStep(top){
       if(w && typeof w.unitBack === 'function' && w.unitBack()) return true;
     }catch(e){ /* a frame from elsewhere cannot be asked; close it instead */ }
   }
-  const b = top.querySelector && top.querySelector('.tm-back');
-  if(b && !b.classList.contains('hidden') && b.offsetParent){ b.click(); return true; }
+  // the readers' one-step key, and the dictionary's own "back to the search /
+  // the index" from a word's page — whichever of them is actually showing
+  const keys = top.querySelectorAll ? top.querySelectorAll('.tm-back, .dict-back') : [];
+  for(const b of keys){
+    if(!b.classList.contains('hidden') && b.offsetParent){ b.click(); return true; }
+  }
   return false;
 }
 function closeTopLayer(){

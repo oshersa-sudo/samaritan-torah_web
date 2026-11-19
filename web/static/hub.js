@@ -25,7 +25,7 @@
   const TX = {
     he: {
       torah:'התורה השומרונית הישראלית', hint:'סובבו את החוגה · הקישו על עיגול כדי להיכנס',
-      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', dl:'הורדה', soon:'בקרוב...', exit:'יציאה לתפריט הראשי', backTorah:'חזרה לתורה', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
+      copy:'© כל הזכויות שמורות לאושר ששוני', go:'כניסה לאפליקציה ›', goAll:'לכל החידושים ›', newsTag:'עיקר החידושים האחרונים', langs:'שפה', ver:'גרסה', newsShort:'מה חדש', dl:'הורדה', soon:'בקרוב...', exit:'יציאה לתפריט הראשי', backTorah:'חזרה לתורה', stepBack:'חזרה צעד אחד אחורה', shots:'צ. מסך', newsTitle:'חידושים', newsApp:'חידושים באפליקציה', title:'אבני שהם', goTorah:'כניסה לתורה ›',
       torahHelp:{ tag:'חמשת חומשי התורה בנוסח השומרוני',
         points:['חמישה חומשי תורה בנוסח השומרוני, בכתב השומרוני ובאותיות עבריות','פירוש הפסוק מן המקורות השומרוניים, ותרגומים: ארמי, ערבי ואנגלי','השוואת נוסחים: המסורה, השבעים, אונקלוס וקומראן','מילון מילים, הקראה, חיפוש מתקדם והדפסה'] },
       find:'חיפוש', findPh:'חפש פיוט, מבצע, פסוק בתורה, מילה, מקום במפות או ערך בספרייה, ואנחנו נמצא אותו בשבילך',
@@ -61,7 +61,7 @@
     },
     en: {
       torah:'The Israelite Samaritan Torah', hint:'Turn the dial · tap a circle to enter',
-      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', dl:'Download', soon:'Coming soon...', exit:'Exit to the main menu', backTorah:'Back to the Torah', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
+      copy:'© All rights reserved to Osher Sassoni', go:'Enter ›', goAll:'All the news ›', newsTag:'The main recent additions', langs:'Language', ver:'Version', newsShort:'What’s new', dl:'Download', soon:'Coming soon...', exit:'Exit to the main menu', backTorah:'Back to the Torah', stepBack:'One step back', shots:'Screenshots', newsTitle:'What’s new', newsApp:'New in this app', title:'AVNEY SHOAM', goTorah:'Enter the Torah ›',
       torahHelp:{ tag:'The five books of the Torah in the Samaritan text',
         points:['The five books in the Samaritan text, in Samaritan script and Hebrew letters','Verse commentary from the Samaritan sources, and translations: Aramaic, Arabic and English','Comparison of versions: Masoretic, Septuagint, Onkelos and Qumran','A word dictionary, read-aloud, advanced search and printing'] },
       find:'Search', findPh:'Search for a piyyut, a performer, a verse of the Torah, a word, a place on the map or an entry in the library — and we will find it for you',
@@ -98,7 +98,7 @@
     },
     ar: {
       torah:'التوراة السامرية الإسرائيلية', hint:'أدِر القرص · اضغط على دائرة للدخول',
-      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', dl:'تنزيل', soon:'قريبًا...', exit:'الخروج إلى القائمة الرئيسية', backTorah:'العودة إلى التوراة', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
+      copy:'© جميع الحقوق محفوظة لأوشير ساسوني', go:'دخول ›', goAll:'كل المستجدّات ›', newsTag:'أبرز المستجدّات الأخيرة', langs:'اللغة', ver:'الإصدار', newsShort:'ما الجديد', dl:'تنزيل', soon:'قريبًا...', exit:'الخروج إلى القائمة الرئيسية', backTorah:'العودة إلى التوراة', stepBack:'رجوع خطوة واحدة', shots:'لقطات', newsTitle:'المستجدّات', newsApp:'جديد في هذا التطبيق', title:'אבני שהם', goTorah:'دخول التوراة ›',
       torahHelp:{ tag:'أسفار التوراة الخمسة بالنص السامري',
         points:['أسفار التوراة الخمسة بالنص السامري، بالخط السامري وبالحروف العبرية','تفسير الآية من المصادر السامرية، وترجمات: آرامية وعربية وإنجليزية','مقارنة النسخ: الماسوري والسبعينية وأونقلوس وقمران','قاموس للكلمات، وقراءة مسموعة، وبحث متقدّم، وطباعة'] },
       find:'بحث', findPh:'ابحث عن نشيد أو مؤدٍّ أو آية من التوراة أو كلمة أو موقع على الخريطة أو مدخل في المكتبة — ونحن نجده لك',
@@ -1301,8 +1301,10 @@
    * where it leads. Asked for by the owner, 2026-11-18.
    */
   const backArrow = () => (lang() === 'en') ? '&#8592;' : '&#8594;';
-  const backWhere = () => document.body.classList.contains('from-hub')
-                          ? T().exit : T().backTorah;
+  // One step, not a destination (owner, 2026-11-19): the arrow may fold a
+  // player, close a card or turn a book back to its contents before it ever
+  // leaves the app, so it is named for what it always does.
+  const backWhere = () => T().stepBack;
   /* the apps that are pages of our own, opened in a frame: the header each
      one has, which the arrow joins, and the button of ours it stands for */
   var BACK_IN = null;
@@ -1316,19 +1318,85 @@
     document.querySelectorAll('.hub-x, #hdr .torah-x, .unit-wrap > .unit-x').forEach(b => {
       if(b.classList.contains('to-find')) return;   // the search says its own thing
       b.innerHTML = backArrow();
-      // the Torah's own corner always leads out to the menu; a unit leads back
-      // to whichever of the two the reader opened it from
-      const lab = b.classList.contains('torah-x') ? T().exit : backWhere();
+      // every arrow, the Torah's own included, takes one step
+      const lab = backWhere();
       b.title = lab;
       b.setAttribute('aria-label', lab);
     });
   }
-  /* and leaving is leaving for there: the menu if that is where it began,
-     otherwise the Torah, which is simply this unit closed */
+  /* ── one step back ────────────────────────────────────────────────────────
+   * The arrow is the phone's Back key put on the screen, and like it, it never
+   * goes further than one step (owner, 2026-11-19: "always one step back, not
+   * always out to the main menu"). The app is asked first for a step of its
+   * own — the archive's player folds down to its list, a book goes back to its
+   * contents, the timeline's card closes, a manuscript goes back to the
+   * library (layerStep: a frame of ours answers unitBack(), a reader presses
+   * its own .tm-back). Only when the app has nowhere left to go is it closed,
+   * and then the reader is put down on what it was opened FROM: the library's
+   * gallery for a book taken from its shelf; otherwise the Torah, or the main
+   * menu if that is where the app was entered.
+   *
+   * What an app was opened from is noticed, not declared: a press that lands
+   * inside one unit, followed at once by that unit going away and another
+   * appearing, is one unit opening the other. */
+  const PARENT = {};                       // unit layer id → the unit it was opened from
+  let pressedIn = null, restoring = null;
+  const unitEls = () => [...document.querySelectorAll('.rd-totorah')].map(b => b.closest('.modal'))
+    .concat([$('extFrameWrap'), $('mssFrameWrap')]).filter(Boolean);
+  const shownU = el => el.classList.contains('unit-wrap') ? el.style.display === 'block'
+                                                          : !el.classList.contains('hidden');
+  document.addEventListener('click', e => {
+    const u = unitEls().find(m => shownU(m) && m.contains(e.target));
+    if(u) pressedIn = { id: u.id, t: performance.now() };
+  }, true);
+  const wasShown = {};
+  const unitWatch = new MutationObserver(() => {
+    for(const el of unitEls()){
+      const on = shownU(el);
+      if(on && !wasShown[el.id]){
+        if(restoring === el.id) restoring = null;          // put back by a step: it keeps its own origin
+        else {
+          const p = pressedIn && pressedIn.id !== el.id && performance.now() - pressedIn.t < 2500 &&
+                    $(pressedIn.id) && !shownU($(pressedIn.id)) ? pressedIn.id : null;
+          if(p) PARENT[el.id] = p; else delete PARENT[el.id];
+        }
+      }
+      wasShown[el.id] = on;
+    }
+  });
+  unitEls().forEach(el => {
+    wasShown[el.id] = shownU(el);
+    unitWatch.observe(el, { attributes: true, attributeFilter: ['class', 'style'] });
+  });
+  // the gallery is opened by its own function, which lays its shelves out again
+  const REOPEN = { libraryModal: () => openLibrary() };
+  function reveal(id){
+    const el = $(id); if(!el) return false;
+    restoring = id;
+    if(REOPEN[id] && typeof openLibrary === 'function') REOPEN[id]();
+    else if(el.classList.contains('unit-wrap')) el.style.display = 'block';
+    else el.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    return true;
+  }
+  /* a unit has just been closed — by its arrow, its "סגור", or the Back key:
+     the reader is put down on what it was opened from */
+  function afterLeave(el){
+    const p = el && PARENT[el.id];
+    if(el) delete PARENT[el.id];
+    pressedIn = null;
+    if(p && $(p) && reveal(p)) return;
+    if(document.body.classList.contains('from-hub') && !isOpen() && !unitVisible()) showHub();
+    else if(!unitVisible()) document.body.style.overflow = '';
+  }
   function leaveUnit(modal){
-    if(document.body.classList.contains('from-hub')){ showHub(); return; }
     if(modal) modal.classList.add('hidden');
     document.body.style.overflow = '';
+    afterLeave(modal);
+  }
+  function stepBack(layer){
+    if(layer && typeof layerStep === 'function' && layerStep(layer)) return;   // the app's own step
+    leaveUnit(layer);
   }
 
   /* ── the arrow inside the app ────────────────────────────────────────────
@@ -1367,7 +1435,9 @@
     let b = d.getElementById('hubBackIn');
     if(!b){
       b = d.createElement('button'); b.id = 'hubBackIn'; b.type = 'button';
-      b.addEventListener('click', ev => { ev.preventDefault(); const p2 = btnOf(); if(p2) p2.click(); });
+      // the press is the arrow's alone: an app that closes its menus on any
+      // tap of its page must not take a second step from the same press
+      b.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); const p2 = btnOf(); if(p2) p2.click(); });
       d.body.appendChild(b);
     }
     b.innerHTML = backArrow(); b.title = backWhere(); b.setAttribute('aria-label', backWhere());
@@ -1480,24 +1550,32 @@
     const x = document.createElement('button');
     x.type = 'button'; x.className = 'hub-x'; x.innerHTML = backArrow();
     x.title = backWhere(); x.setAttribute('aria-label', backWhere());
-    x.addEventListener('click', () => leaveUnit(x.closest('.modal')));
+    x.addEventListener('click', () => stepBack(x.closest('.modal')));
     bar.insertBefore(x, bar.firstChild);
   });
-  // the "סגור" at the foot of a reader or the dictionary: a unit entered from here closes back to here
+  // the "סגור" at the foot of a reader or the dictionary closes the unit outright,
+  // and puts the reader down where it was opened from, as the arrow's last step does
   document.querySelectorAll('.rd-totorah').forEach(link => {
     const m = link.closest('.modal'); if(!m) return;
     m.querySelectorAll('.popup-close').forEach(c =>
-      c.addEventListener('click', () => { if(document.body.classList.contains('from-hub')) showHub(); }));
+      c.addEventListener('click', () => { if(m.classList.contains('hidden')) afterLeave(m); }));
   });
   [['extFrameClose', 'extFrameWrap'], ['mssFrameClose', 'mssFrameWrap']].forEach(([xid, wid]) => {
     const x = $(xid); if(!x) return;
     x.title = backWhere(); x.setAttribute('aria-label', backWhere());
     x.classList.add('hub-x');
-    // the frame itself is already hidden by the handler beside the markup; this
+    // The app in the frame takes its own step first. The handler beside the
+    // markup hides the frame on any press, so the question is put on the way
+    // down to the button (a capturing listener on the frame's wrapper runs
+    // before the button's own), and a step taken there ends the press.
+    const wrap = $(wid);
+    if(wrap) wrap.addEventListener('click', e => {
+      if(!e.target.closest('#' + xid)) return;
+      if(typeof layerStep === 'function' && layerStep(wrap)){ e.stopImmediatePropagation(); e.preventDefault(); }
+    }, true);
+    // the frame itself is then hidden by the handler beside the markup; this
     // only decides where the reader is put down afterwards
-    x.addEventListener('click', () => {
-      if(document.body.classList.contains('from-hub')) showHub();
-    });
+    x.addEventListener('click', () => afterLeave(wrap));
     const link = document.createElement('button');
     link.type = 'button'; link.className = 'unit-totorah'; link.textContent = '↩ התורה';
     link.title = 'חזרה לתורה';
@@ -1513,7 +1591,12 @@
   // the same make as the others; it is not shown while this page is itself up.
   const torahX = document.createElement('button');
   torahX.type = 'button'; torahX.className = 'torah-x'; torahX.innerHTML = backArrow();
-  torahX.addEventListener('click', showHub);
+  // one step, like every other arrow: inside a book it goes up the way the
+  // Back key does, and only from the list of books out to the main menu
+  torahX.addEventListener('click', () => {
+    if(typeof S !== 'undefined' && S.view !== 'books' && typeof goBack === 'function'){ goBack(); return; }
+    showHub();
+  });
   const titleRow = document.querySelector('#hdr .title-row');
   if(titleRow) titleRow.appendChild(torahX);
   const drawer = $('menuDrawer');
@@ -1574,10 +1657,15 @@
   if(typeof closeTopLayer === 'function'){
     const o = closeTopLayer;
     closeTopLayer = function(){
+      const before = unitEls().filter(shownU);
       const r = o.apply(this, arguments);
       if(r){
         lastHandled = performance.now();
-        if(document.body.classList.contains('from-hub') && !isOpen() && !unitVisible()) showHub();
+        // a unit that this press closed is left the way its arrow leaves it:
+        // back to what it was opened from
+        const gone = before.filter(el => !shownU(el));
+        if(gone.length) afterLeave(gone[gone.length - 1]);
+        else if(document.body.classList.contains('from-hub') && !isOpen() && !unitVisible()) showHub();
       }
       return r;
     };

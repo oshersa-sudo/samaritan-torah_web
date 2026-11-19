@@ -2683,6 +2683,18 @@ a.tbtn{text-decoration:none;display:inline-flex;align-items:center}
 .row-more:hover{border-color:var(--active);background:#eef3fc}
 .row-more.open{background:#eef3fc;border-color:var(--active)}
 
+/* ── the Torah app's way back (1.9.7) ────────────────────────────────────
+   Inside the Torah app the arrow that leads back stands in the frame's top
+   right corner, over everything (hub.js #hubBackIn, 36px at right:6px). The
+   header is given room for it from outside; whatever else of ours reaches
+   that corner keeps it free itself: the head of a window, the player when it
+   is the whole screen, and the words when they are. */
+body:has(> #hubBackIn) .txt.full .txt-scroll{top:48px}
+@media (max-width:720px){
+  body:has(> #hubBackIn) .sheet-h{padding-right:54px}          /* a window is the whole screen here */
+  body:has(> #hubBackIn) .deckwin:not(.min) .dw-bar{padding-right:50px}
+}
+
 /* ── on a phone the player is the whole screen (1.9.6) ───────────────────
    Opened on a phone the deck stands from the top of the screen to the
    bottom; the list behind it is reached by folding it (─, or the back key),

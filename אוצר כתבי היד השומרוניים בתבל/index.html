@@ -829,6 +829,14 @@
     .brand{display:none;}
   }
   .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+
+  /* Inside the Torah app the way back is an arrow of the app around this page,
+     36px in its top right corner, standing over everything (#hubBackIn). The
+     top bar is given room for it from outside; the library, which covers the
+     whole page, keeps that corner free itself, and the smaller windows open
+     below it. */
+  body:has(> #hubBackIn) #libOverlay .lib-head{padding-right:56px;}
+  body:has(> #hubBackIn) .lib-overlay:not(#libOverlay){padding-top:50px;}
 </style>
 
 <div class="topbar">
@@ -3102,5 +3110,24 @@ try{
   var _wantQ = new URLSearchParams(location.search).get("q");
   if(_wantQ) setTimeout(function(){ msFindOutside(_wantQ); }, 300);
 }catch(e){ /* an address with no parameters */ }
+
+/* ---- צעד אחד אחורה ----------------------------------------------------
+   מה שעושים החץ שבראש העמוד וכפתור החזרה של הטלפון. העמוד המחזיק את
+   המסגרת שואל קודם כאן: מה שפתוח מעל הצופה נסגר, העליון קודם; כתב יד
+   פתוח חוזר אל הספרייה שממנה נבחר; ורק מן הספרייה עצמה — המקום שבו
+   נכנסים — החץ יוצא אל המקום שממנו באו. */
+window.unitBack = function(){
+  if(!$("printMenu").hidden){ closePrintMenu(); return true; }
+  if(!$("pvOverlay").hidden){ $("pvOverlay").hidden = true; return true; }
+  if(!$("browseOverlay").hidden){ $("browseOverlay").hidden = true; return true; }
+  if(!side.hidden && getComputedStyle(side).position === "absolute"){
+    side.hidden = true;
+    $("btnIndex").setAttribute("aria-pressed", "false");
+    $("btnMeta").setAttribute("aria-pressed", "false");
+    return true;
+  }
+  if($("libOverlay").hidden && cur){ openLib(); return true; }
+  return false;
+};
 })();
 </script>

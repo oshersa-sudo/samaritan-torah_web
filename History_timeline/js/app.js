@@ -777,6 +777,19 @@
     ro.observe(el.viewport);
   }
 
+  /* צעד אחד אחורה — מה שלוחצים עליו בחץ שבראש הציר, או בכפתור החזרה של
+     הטלפון. האפליקציה שמסביב (התורה) שואלת קודם את הציר: אם יש כאן משהו
+     פתוח מעל הציר, הוא נסגר — העליון קודם — והציר נשאר; רק כשאין עוד מה
+     לסגור, החץ יוצא אל המקום שממנו נכנסו. */
+  window.unitBack = function () {
+    if (!el.help.hidden) { el.help.hidden = true; return true; }
+    if (!el.filters.hidden) { openLayers(false); return true; }
+    if (!el.results.hidden) { el.results.hidden = true; return true; }
+    if (!el.card.hidden) { el.cardClose.click(); return true; }
+    if (!el.rotate.hidden) { el.rotateNo.click(); return true; }
+    return false;
+  };
+
   /* העזרה נפתחת מעצמה רק בביקור הראשון */
   var seen = false;
   try { seen = localStorage.getItem('timelineHelpSeen') === '1'; } catch (e) { /* אין אחסון */ }
