@@ -347,6 +347,9 @@ function viewPiyyut() {
     secs[r.y]  = (secs[r.y] || 0) + r.s;
     (sample[r.y] = sample[r.y] || []).push(r);
   });
+  // a piyyut whose words were photographed says so on its card: the sheet
+  // hangs on its recordings, and nothing else on the card would tell
+  const withTx = new Set(C.recordings.filter(hasTx).map(r => r.y));
   const s = SORT_STATE.piyyut;
   list.sort((a, b) =>
     s === 'abc'  ? he(a.name, b.name) :
@@ -361,7 +364,8 @@ function viewPiyyut() {
              ? `<br><span dir="auto">גם: ${mark(p.variants.slice(0, 3).join(' · '), ts)}</span>` : '') +
            (touched(p.name, ts) || touched((p.variants || []).join(' '), ts)
              ? '' : whyRow(sample[p.id], ts)),
-    tags:  named(p.events || []).slice(0, 2).map(e => ({ t: e, cls: 'ev' }))
+    tags:  (withTx.has(p.id) ? [{ t: '📜 מילות השיר', cls: 'tx' }] : [])
+             .concat(named(p.events || []).slice(0, 2).map(e => ({ t: e, cls: 'ev' })))
              .concat(p.note ? [{ t: 'הערת עורך', cls: '' }] : []),
     click: () => { F.piyyut = p.id; go('rec'); },
   })));
@@ -458,6 +462,9 @@ function viewRec() {
         (p.variants.length ? ` · נכתב גם: ${esc(p.variants.join(' · '))}` : '') + `</div>` +
         `<p class="desc"><span class="lbl">מן הארכיון</span>${esc(p.desc)}</p>` +
         (p.note ? `<p class="desc note"><span class="lbl">הערת עורך</span>${esc(p.note)}</p>` : '') +
+        (recs.some(hasTx)
+          ? `<p class="desc txnote">📜 צילום מילות השיר נפתח מן ההקלטות המסומנות «מילות השיר» — ` +
+            `לחיצה עליו מנגנת את ההקלטה ופותחת את המילים בחלון הקריאה.</p>` : '') +
         `</div>`;
     }
   }
@@ -491,6 +498,7 @@ function recRow(r) {
           return whyRow([r], ts).replace('<br>', '');
         })()}
       </span>
+      ${hasTx(r) ? `<span class="row-tx" data-tx="${r.id}" title="נגן ופתח את מילות השיר">📜 מילות השיר</span>` : ''}
       <span class="qadd${inQueue(r.id) ? ' on' : ''}" data-q="${r.id}"
             title="${inQueue(r.id) ? 'הסר מרשימת ההשמעה' : 'הוסף לרשימת ההשמעה'}">${
         inQueue(r.id) ? '♪✓' : '♪+'}</span>
@@ -537,9 +545,12 @@ function draw() {
   $('pane').querySelectorAll('[data-toggle]').forEach(b => {
     b.onclick = ev => {
       if (ev.target.closest('[data-play]') || ev.target.closest('[data-edit]') ||
-          ev.target.closest('[data-q]')) return;
+          ev.target.closest('[data-q]') || ev.target.closest('[data-tx]')) return;
       toggleTracks(+b.dataset.toggle);
     };
+  });
+  $('pane').querySelectorAll('[data-tx]').forEach(b => {
+    b.onclick = ev => { ev.stopPropagation(); openSheet(+b.dataset.tx); };
   });
   $('pane').querySelectorAll('[data-q]').forEach(b => {
     b.onclick = ev => { ev.stopPropagation(); toggleQueue(+b.dataset.q, b); };
@@ -4898,13 +4909,33 @@ function txtFollow() {
  * and which has nothing. So when this recording has a text the key beats
  * quietly and a line under it, in white, says what pressing it will do. It
  * goes the moment the text is opened: it is an invitation, not a sign. */
+/* Whether a recording carries a photographed sheet. The catalog writes "none"
+ * as an empty list, and an empty list is true in JavaScript — which is how the
+ * key came to beat on all 890 recordings when 89 of them have anything behind
+ * it. */
+function hasTx(r) {
+  return !!(r && r.tx && (Array.isArray(r.tx) ? r.tx.length : true));
+}
+
+/* The words straight from the list: the row's "מילות השיר" does what PLAY and
+ * then the key would do, in one touch. The recording already in the deck is
+ * not started again — only its paper is brought up. */
+function openSheet(id) {
+  if (cur.rec !== id || !au.getAttribute('src')) playRec(id, 0);
+  else openDeck();
+  if (!TXT.on) $('dwText').click();
+}
+
 function txtHintPaint() {
   const b = $('dwText'), hint = $('txtHint');
   if (!b || !hint) return;
   const r = byId(C.recordings, cur.rec);
-  const show = !!(r && r.tx) && !TXT.on;
+  const show = hasTx(r) && !TXT.on;
   b.classList.toggle('has', show);
   hint.classList.toggle('hidden', !show);
+  // and the key's own tooltip makes the same promise, so it too is offered
+  // only where a sheet stands behind it (open, it says how to go back)
+  if (!TXT.on) b.title = hasTx(r) ? 'מילות השיר' : '';
 }
 
 function txtAutoSet(on) {

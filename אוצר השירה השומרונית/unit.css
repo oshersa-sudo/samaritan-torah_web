@@ -1884,6 +1884,15 @@ body.txtfull{overflow:hidden}
   padding:2px 7px;font-size:.72rem;
 }
 .tag.ev{background:#eaf5f0;color:var(--share)}
+/* the piyyut has a photographed sheet of its words */
+.tag.tx{background:#fbf1d6;color:#7a5600;font-weight:600}
+.desc.txnote{background:#fbf1d6;color:#5c4100;border-radius:7px;padding:6px 9px}
+.row-tx{
+  flex:0 0 auto;border:1px solid #e3c779;background:#fbf1d6;color:#7a5600;
+  border-radius:7px;font-size:.78rem;padding:4px 8px;cursor:pointer;
+  font-weight:600;white-space:nowrap;
+}
+.row-tx:hover{background:#f6e3ad;border-color:#c9a23f}
 
 /* section heading inside a drill-down */
 .head{
@@ -2415,7 +2424,7 @@ body.txtfull{overflow:hidden}
   .row-t{flex:1 1 60%}
   .row-t .t{white-space:normal}
   .row-d{margin-inline-start:auto}
-  .qadd,.edit-btn{font-size:.72rem;padding:3px 7px}
+  .qadd,.edit-btn,.row-tx{font-size:.72rem;padding:3px 7px}
 
   /* sheets take the whole screen rather than floating in it */
   .modal{padding:0;place-items:stretch}
