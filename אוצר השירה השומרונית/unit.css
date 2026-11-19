@@ -2671,3 +2671,50 @@ a.tbtn{text-decoration:none;display:inline-flex;align-items:center}
 .about .ab-links a:hover{text-decoration:underline}
 .about .ab-mail{margin:0;font-size:.95rem;color:var(--muted)}
 .about .ab-mail a{color:var(--active);text-decoration:none}
+
+/* ── the list of a recording's parts opens from its own key (1.9.6) ──────
+   A press on the row plays; this pill, only on recordings of more than one
+   track, unfolds the tracks under it, and folds them again. */
+.row-more{
+  flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--accent);
+  border-radius:999px;font-size:.78rem;padding:4px 10px;cursor:pointer;
+  white-space:nowrap;font-weight:600;
+}
+.row-more:hover{border-color:var(--active);background:#eef3fc}
+.row-more.open{background:#eef3fc;border-color:var(--active)}
+
+/* ── on a phone the player is the whole screen (1.9.6) ───────────────────
+   Opened on a phone the deck stands from the top of the screen to the
+   bottom; the list behind it is reached by folding it (─, or the back key),
+   and folded it is the strip along the bottom it always was. The height it
+   gains goes to the well — the cassette stands in the middle of it, and the
+   words, when opened, have the phone's height to be read in — and some of it
+   to the two rows of keys, which grow upward so that a finger finds them. */
+@media (max-width:720px){
+  .deckwin:not(.min){
+    top:0;bottom:0;left:0;right:0;width:auto;border-radius:0;
+    display:flex;flex-direction:column;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .deckwin:not(.min) .dw-bar{flex:0 0 auto}
+  .deckwin:not(.min) .dw-body{
+    flex:1 1 auto;min-height:0;max-height:none;
+    display:flex;flex-direction:column;
+  }
+  .deckwin:not(.min) .dw-body > *{flex:0 0 auto}
+  .deckwin:not(.min) .dw-body > .deck-face{flex:1 1 auto;min-height:0}
+  .deckwin:not(.min) .well{display:flex;flex-direction:column;justify-content:center}
+
+  /* the keys on the lid */
+  .deckwin .dw-bar{padding:8px 6px;gap:3px}
+  .deckwin .dw-btn{padding:7px 7px;font-size:1rem;line-height:1.25}
+  .deckwin .dw-ico,.deckwin .dw-quiet,.deckwin .dw-bt{padding:8px 5px}
+  .deckwin .dw-ico svg,.deckwin .dw-quiet svg,.deckwin .dw-bt svg{width:21px;height:21px}
+
+  /* the transport keys */
+  .deckwin .transport{gap:4px;padding:6px 5px 8px}
+  .deckwin .tbtn2,.deckwin .pbtn{width:auto;height:auto;min-height:62px;gap:5px}
+  .deckwin .tbtn2 svg,.deckwin .pbtn svg{width:21px;height:21px}
+  .deckwin .tbtn2 b,.deckwin .pbtn b{font-size:.6rem;letter-spacing:.04em}
+}

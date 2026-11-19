@@ -504,6 +504,8 @@ function recRow(r) {
         inQueue(r.id) ? '♪✓' : '♪+'}</span>
       ${ADMIN.token ? `<span class="edit-btn" data-edit="${r.id}">✎</span>` : ''}
       <span class="row-d">${dur(r.s)}</span>
+      ${r.tr.length > 1 ? `<span class="row-more" data-more="${r.id}" title="הצג את הרצועות"
+            aria-label="הצג את הרצועות">רצועות ▾</span>` : ''}
     </button>
   </div>`;
 }
@@ -545,9 +547,13 @@ function draw() {
   $('pane').querySelectorAll('[data-toggle]').forEach(b => {
     b.onclick = ev => {
       if (ev.target.closest('[data-play]') || ev.target.closest('[data-edit]') ||
-          ev.target.closest('[data-q]') || ev.target.closest('[data-tx]')) return;
-      toggleTracks(+b.dataset.toggle);
+          ev.target.closest('[data-q]') || ev.target.closest('[data-tx]') ||
+          ev.target.closest('[data-more]')) return;
+      rowPress(+b.dataset.toggle);
     };
+  });
+  $('pane').querySelectorAll('[data-more]').forEach(b => {
+    b.onclick = ev => { ev.stopPropagation(); toggleTracks(+b.dataset.more); };
   });
   $('pane').querySelectorAll('[data-tx]').forEach(b => {
     b.onclick = ev => { ev.stopPropagation(); openSheet(+b.dataset.tx); };
@@ -569,11 +575,29 @@ function draw() {
 function go(t) { tab = t; window.scrollTo({ top: 0 }); draw(); }
 
 /* --------------------------------------------------------------- tracks */
+/* A press on a recording plays it. The list of its parts is not opened by
+ * itself: it waits behind the row's own "רצועות ▾", for whoever wants to start
+ * from the middle. The recording already in the deck is not started over —
+ * the deck is only brought back up. */
+function rowPress(id) {
+  if (cur.rec === id && au.getAttribute('src')) { deckResume(); return; }
+  playRec(id, 0);
+}
+
 function toggleTracks(id) {
   const row = $('pane').querySelector(`.row[data-rec="${id}"]`);
   if (!row) return;
   const open = row.querySelector('.tracks');
-  if (open) { open.remove(); return; }
+  const more = row.querySelector('.row-more');
+  const say = on => {
+    if (!more) return;
+    more.classList.toggle('open', on);
+    more.textContent = on ? 'רצועות ▴' : 'רצועות ▾';
+    more.title = on ? 'הסתר את הרצועות' : 'הצג את הרצועות';
+    more.setAttribute('aria-label', more.title);
+  };
+  if (open) { open.remove(); say(false); return; }
+  say(true);
 
   // the track list only — where the file sits on the archive drive is not
   // something a listener needs to read
@@ -1213,14 +1237,14 @@ function deckResume() {
   const r = byId(C.recordings, cur.rec);
   if (r) deckLabel(r, cur.idx);
 
-  // If the recording happens to be in the list behind the deck, open it and
-  // bring it into view; if it is not — another tab, or a search narrowed to
-  // something else — the list is left exactly as it was. Coming back to a
-  // piyyut is no reason to throw away what someone was in the middle of
-  // looking for.
+  // If the recording happens to be in the list behind the deck, bring it into
+  // view — its tracks stay folded unless they were opened by hand, since the
+  // list of parts opens only from its own key; if it is not in the list —
+  // another tab, or a search narrowed to something else — the list is left
+  // exactly as it was. Coming back to a piyyut is no reason to throw away
+  // what someone was in the middle of looking for.
   const row = $('pane').querySelector(`.row[data-rec="${cur.rec}"]`);
   if (row) {
-    if (!row.querySelector('.tracks')) toggleTracks(cur.rec);
     markPlaying();
     try { row.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
   }
@@ -6967,6 +6991,11 @@ function markNewsSeen() {
 
 /* the second tab: what the app itself gained, newest first */
 const FEATURES = [
+  ['מילות השיר, והנגן במסך מלא',
+   'פיוט שיש לו צילום של מילות השיר מסומן «📜 מילות השיר» בכרטיס ובהקלטה; ' +
+   'לחיצה על הכפתור מנגנת את ההקלטה ופותחת את המילים בחלון הקריאה. לחיצה על ' +
+   'הקלטה מנגנת אותה, ורשימת הרצועות נפתחת בכפתור «רצועות ▾». בטלפון הנגן ' +
+   'ממלא את כל המסך, והכפתורים גדולים יותר.'],
   ['רשימות השמעה אישיות',
    'אפשר לסמן הקלטות בכפתור ♪+, לתת שם לרשימה ולשמור אותה על המכשיר. ' +
    'בכל רשימה אפשר לסדר מחדש את הסדר, להסיר פריטים, לנגן ברצף או באקראי, ' +
