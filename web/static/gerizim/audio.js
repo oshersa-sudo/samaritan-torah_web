@@ -188,6 +188,8 @@
     const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 620; bp.Q.value = 0.7;
     const hum = ctx.createGain(); hum.gain.value = 0.16; ns.connect(bp); bp.connect(hum); hum.connect(c.crowd);
     c.gHum = hum;                                     // silenced when a recording takes over
+    // the market's own recording: a channel of its own, moved only by the distance from the stalls
+    c.market = ctx.createGain(); c.market.gain.value = 0; c.market.connect(ambBus);
     c.babble = ctx.createGain(); c.babble.gain.value = 0.8; const blp = ctx.createBiquadFilter(); blp.type = 'lowpass'; blp.frequency.value = 2300; c.babble.connect(blp); blp.connect(c.crowd);
     // אש: פצפוצים ורחש נמוך
     c.fire = ctx.createGain(); c.fire.gain.value = 0; c.fire.connect(ambBus);
@@ -275,6 +277,7 @@
    * And every few minutes two silver trumpets answer from the front of it.
    */
   const HORN = ['shofar_tekia', 'shofar_shevarim', 'shofar_teruah'];
+  const MARKET = /^(cart|coopcart|eggs|bread|saj|chickpen)$/;      // דוכני השוק; סלי פרי עומדים גם ליד רחבת המזבח, ושם אין שוק
   let hornI = 0, nextHorn = 0, nextTrump = 0, nextFarHorn = 0, nextCoop = 0;
   function ambTick() {
     const GW = window.GerizimWalk, D = W();
@@ -284,8 +287,12 @@
     // a recording, where one has arrived: the synthetic bed under it is silenced
     // (and the syllables of the synthetic crowd are not even made while the
     //  market is a recording — see below)
-    const liveMarket = bed('market', chains.crowd);
-    if (liveMarket) { chains.gHum.gain.value = 0; chains.babble.gain.value = 0; }
+    // השוק — רק בשוק: ההקלטה של המולת השוק נשמעת לפי המרחק מן הדוכנים, ובשום מקום אחר
+    let marketD = 1e9;
+    for (const q of D.props) if (MARKET.test(q.kind) && inPer(q, per, tl)) marketD = Math.min(marketD, Math.hypot(q.x - p.x, q.z - p.z));
+    const market = marketD < 1e8 ? fall(marketD, 34) : 0;
+    const liveMarket = market > 0.01 && bed('market', chains.market);
+    if (chains.market) ramp(chains.market.gain, liveMarket ? market * 0.62 : 0, 0.5);
     const liveFire = bed('fire', chains.fire);
     if (liveFire) { chains.gFire.gain.value = 0; chains.crackle.gain.value = 0; }
     if (bed('wind', chains.wind)) chains.gWind.gain.value = 0;
@@ -294,8 +301,10 @@
     for (const q of D.people) if (inPer(q, per, tl)) { const d = Math.hypot(q.x - p.x, q.z - p.z); if (d < 24) crowd += fall(d, 24) * 0.11; }
     for (const s of SPOTS) if (s.per === per) crowd += fall(Math.hypot(s.x - p.x, s.z - p.z), s.r) * s.lv;
     crowd = Math.min(1, crowd);
-    ramp(chains.crowd.gain, crowd * 0.55, 0.35);
-    if (crowd > 0.04 && !liveMarket) { const n = Math.random() < crowd * 1.6 ? 1 + (crowd > 0.5 && Math.random() < 0.5 ? 1 : 0) : 0; for (let i = 0; i < n; i++) syllable(t + Math.random() * 0.1, 0.05 + crowd * 0.09); }
+    // סביב אנשים שאינם בשוק — רחש שקט של דיבור, לא המולה; ובשוק עצמו ההקלטה מחליפה אותו
+    const murmur = crowd * (1 - (liveMarket ? market : 0));
+    ramp(chains.crowd.gain, murmur * 0.36, 0.35);
+    if (murmur > 0.04) { const n = Math.random() < murmur * 1.3 ? 1 : 0; for (let i = 0; i < n; i++) syllable(t + Math.random() * 0.1, 0.035 + murmur * 0.06); }
     // אש המזבח
     let fire = 0;
     for (const s of D.solids) if (s.id === 'altar' && inPer(s, per, tl)) { const x = (s.box[0] + s.box[2]) / 2, z = (s.box[1] + s.box[3]) / 2; fire = Math.max(fire, fall(Math.hypot(x - p.x, z - p.z), 24)); }
@@ -497,5 +506,5 @@
     one(b, now() + 0.05, Math.min(0.85, 0.1 + fall(d, 140) * 0.6), chains.fx, 1);
   }
   window.GerizimAudio = { music, walkScene, walkButton, musicButton, duck, set, call, get pref() { return Object.assign({}, pref); },
-    _state: () => ({ ctx: ctx && ctx.state, musicOn, music: ctx ? +musicBus.gain.value.toFixed(3) : 0, amb: ctx ? +ambBus.gain.value.toFixed(3) : 0, scene, chains: chains ? { crowd: +chains.crowd.gain.value.toFixed(3), fire: +chains.fire.gain.value.toFixed(3), wind: +chains.wind.gain.value.toFixed(3) } : null }) };
+    _state: () => ({ ctx: ctx && ctx.state, musicOn, music: ctx ? +musicBus.gain.value.toFixed(3) : 0, amb: ctx ? +ambBus.gain.value.toFixed(3) : 0, scene, chains: chains ? { market: chains.market ? +chains.market.gain.value.toFixed(3) : null, crowd: +chains.crowd.gain.value.toFixed(3), fire: +chains.fire.gain.value.toFixed(3), wind: +chains.wind.gain.value.toFixed(3) } : null }) };
 })();

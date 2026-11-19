@@ -599,6 +599,122 @@
     if (!t) { const c = document.createElement('canvas'); c.width = cw; c.height = ch; draw(c); t = spriteCache[key] = new THREE.CanvasTexture(c); t.anisotropy = 2; }
     return t;
   }
+  /* ---------- סחורות השוק: מרקמים חדים ----------
+     היו כדורים בצבע אחד — מרחוק כתם, מקרוב לא ברור מה נמכר. עכשיו לכל סוג מרקם משלו:
+     הנצרים של הסלים והלול מ-Canva (img/tex/wicker.jpg), והשאר מצוירים כאן בחדות — נוצות התרנגולת, פלומת האפרוח,
+     הפיתה, וערמות של תאנים, זיתים, רימונים, תמרים, תבואה, ענבים, בצלים, מלפפונים ופירות הדר — כל פרי בצורתו ובברקו.
+     החומרים משותפים (חומר אחד לכל צבע ומרקם), כדי שהמיזוג יאחד את כל הסחורה של משבצת לקריאת ציור אחת. */
+  const goodsMat = {};
+  function gMat(color, map) {
+    const k = color + '|' + (map ? map.uuid : '');
+    return goodsMat[k] || (goodsMat[k] = new THREE.MeshLambertMaterial(map ? { color, map } : { color }));
+  }
+  let wickerMat = null;
+  function wicker() {
+    if (wickerMat) return wickerMat;
+    wickerMat = new THREE.MeshLambertMaterial({ color: 0xcdb27a });
+    new THREE.TextureLoader().load('img/tex/wicker.jpg?v=1', t => {
+      t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 1.4); t.anisotropy = 4;
+      wickerMat.map = t; wickerMat.color.set(0xf2e6cc); wickerMat.needsUpdate = true;
+    });
+    return wickerMat;
+  }
+  const rndOf = seed => { let s = seed >>> 0 || 1; return () => (s = (s * 16807) % 2147483647) / 2147483647; };
+  // כדור קטן מוצל: אור מלמעלה-שמאל, צל בצד הנגדי, ונקודת ברק
+  function ball(g, x, y, r, sy, col, shine, rot) {
+    g.save(); g.translate(x, y); g.rotate(rot || 0); g.scale(1, sy || 1);
+    const gr = g.createRadialGradient(-r * 0.35, -r * 0.4, r * 0.1, 0, 0, r);
+    gr.addColorStop(0, col[0]); gr.addColorStop(0.55, col[1]); gr.addColorStop(1, col[2]);
+    g.fillStyle = gr; g.beginPath(); g.arc(0, 0, r, 0, 6.283); g.fill();
+    g.strokeStyle = 'rgba(20,12,6,.35)'; g.lineWidth = Math.max(0.8, r * 0.06); g.stroke();
+    if (shine) { g.fillStyle = 'rgba(255,255,255,' + shine + ')'; g.beginPath(); g.ellipse(-r * 0.38, -r * 0.42, r * 0.22, r * 0.13, -0.6, 0, 6.283); g.fill(); }
+    g.restore();
+  }
+  // ערמה של פרי אחד, במבט מלמעלה: הרבה פירות זה על זה, מכסים את כל הריבוע (וחוזרים על עצמם בקצוות)
+  const HEAP = {
+    figs:        { n: 46, r: [15, 20], sy: 1.08, cols: [['#a8b860', '#6f7f34', '#3e4a1c'], ['#9a6a92', '#6b3e66', '#3a1f38']], shine: 0.16, stem: '#4a3a20' },
+    grapes:      { n: 150, r: [7, 9], cols: [['#8a5a96', '#53285e', '#2a1030'], ['#76487e', '#45204e', '#22081f']], shine: 0.35 },
+    pomegranate: { n: 26, r: [24, 30], cols: [['#e0705a', '#a8302a', '#5a1210'], ['#d8604a', '#982a22', '#4e100c']], shine: 0.22, crown: true },
+    olives:      { n: 170, r: [6, 8], sy: 0.72, cols: [['#7c8a3c', '#4a5620', '#262c0e'], ['#4a4030', '#2a2218', '#120e0a']], shine: 0.4 },
+    dates:       { n: 120, r: [8, 10], sy: 0.5, cols: [['#b8703a', '#7a3c1a', '#3a1a08'], ['#a05a2a', '#6a3014', '#2e1406']], shine: 0.3, spin: true },
+    grain:       { n: 900, r: [2.4, 3.2], sy: 0.45, cols: [['#f0d27a', '#d6b25a', '#8a6a24'], ['#e6c46a', '#c8a048', '#7a5a1a']], spin: true, bg: '#b8923e' },
+    onion:       { n: 34, r: [19, 24], sy: 0.9, cols: [['#f0d8a8', '#c99a58', '#6a4418'], ['#e8c890', '#b8844a', '#5a3610']], shine: 0.2, stripes: true },
+    cucumber:    { n: 40, r: [9, 11], sy: 3.4, cols: [['#7ab04a', '#3c6a24', '#1a3410'], ['#9cc060', '#5a8a30', '#2a4a14']], shine: 0.25, spin: true },
+    citron:      { n: 30, r: [18, 23], sy: 1.25, cols: [['#f4e070', '#d9b830', '#7a6010'], ['#c84a30', '#a8302a', '#4e100c']], shine: 0.28, spin: true },
+    apple:       { n: 32, r: [17, 21], cols: [['#e8705a', '#b8402a', '#5a1810'], ['#d8a040', '#b8402a', '#5a1810']], shine: 0.3, stem: '#4a3020' }
+  };
+  function heapTex(kind) {
+    const H = HEAP[kind] || HEAP.figs;
+    return texture('heap_' + kind, 256, 256, c => {
+      const g = c.getContext('2d'), q = rndOf(kind.length * 977 + 13);
+      g.fillStyle = H.bg || H.cols[0][2]; g.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < H.n; i++) {
+        const x = q() * 256, y = q() * 256, r = H.r[0] + q() * (H.r[1] - H.r[0]), col = H.cols[q() < 0.5 ? 0 : 1], rot = H.spin ? q() * 6.283 : 0;
+        for (const dx of [-256, 0, 256]) for (const dy of [-256, 0, 256]) {
+          const X = x + dx, Y = y + dy;
+          if (X < -r * 3.5 || X > 256 + r * 3.5 || Y < -r * 3.5 || Y > 256 + r * 3.5) continue;
+          ball(g, X, Y, r, H.sy, col, H.shine, rot);
+          if (H.stem) { g.fillStyle = H.stem; g.fillRect(X - 1.5, Y - r * (H.sy || 1) - 2, 3, 5); }
+          if (H.crown) { g.fillStyle = '#6a1a12'; for (let k = 0; k < 5; k++) { const a = k / 5 * 6.283; g.beginPath(); g.moveTo(X + Math.cos(a) * 3, Y - r * 0.15 + Math.sin(a) * 3); g.lineTo(X + Math.cos(a) * 8, Y - r * 0.15 + Math.sin(a) * 8); g.lineTo(X + Math.cos(a + 0.5) * 3, Y - r * 0.15 + Math.sin(a + 0.5) * 3); g.fill(); } }
+          if (H.stripes) { g.strokeStyle = 'rgba(90,50,16,.35)'; g.lineWidth = 1; for (let k = -2; k <= 2; k++) { g.beginPath(); g.ellipse(X, Y, Math.abs(k) * r * 0.22 + 1, r * (H.sy || 1) * 0.95, 0, 0, 6.283); g.stroke(); } }
+        }
+      }
+    });
+  }
+  // קליפה לכל פרי שעל העגלה: אפורה-בהירה, וצבע הפרי בא מן העותק עצמו (instanceColor)
+  function skinTex(kind) {
+    return texture('skin_' + kind, 64, 64, c => {
+      const g = c.getContext('2d'), q = rndOf(kind.length * 31 + 7);
+      g.fillStyle = '#ffffff'; g.fillRect(0, 0, 64, 64);
+      if (kind === 'melon') { g.fillStyle = '#8fa48a'; for (let k = 0; k < 8; k++) { g.beginPath(); g.moveTo(k * 8, 0); g.bezierCurveTo(k * 8 + 4, 22, k * 8 - 3, 42, k * 8 + 2, 64); g.lineTo(k * 8 + 5, 64); g.bezierCurveTo(k * 8, 42, k * 8 + 7, 22, k * 8 + 3, 0); g.fill(); } }
+      else if (kind === 'citron' || kind === 'onion') { for (let k = 0; k < 220; k++) { g.fillStyle = 'rgba(120,100,60,' + (0.08 + q() * 0.14) + ')'; g.fillRect(q() * 64, q() * 64, 1.3, 1.3); } if (kind === 'onion') { g.strokeStyle = 'rgba(110,70,30,.35)'; for (let k = 0; k < 9; k++) { g.beginPath(); g.moveTo(k * 7.2, 0); g.lineTo(k * 7.2 + 2, 64); g.stroke(); } } }
+      else if (kind === 'cucumber' || kind === 'leek') { g.fillStyle = 'rgba(200,220,170,.7)'; for (let k = 0; k < 5; k++) g.fillRect(k * 13 + 3, 0, 3, 64); for (let k = 0; k < 60; k++) { g.fillStyle = 'rgba(40,60,20,.25)'; g.beginPath(); g.arc(q() * 64, q() * 64, 0.9, 0, 6.283); g.fill(); } }
+      else if (kind === 'pomegranate' || kind === 'apple') { const gr = g.createLinearGradient(0, 0, 0, 64); gr.addColorStop(0, '#ffe8c0'); gr.addColorStop(0.5, '#ffffff'); gr.addColorStop(1, '#c8b8a8'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); for (let k = 0; k < 80; k++) { g.fillStyle = 'rgba(255,240,200,.35)'; g.fillRect(q() * 64, q() * 64, 1, 1); } }
+      else { const gr = g.createLinearGradient(0, 0, 0, 64); gr.addColorStop(0, '#f6f6f0'); gr.addColorStop(1, '#bdb8ac'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); }
+    });
+  }
+  // נוצות: שורות של קשקשים מעוגלים, בגווני אפור — הצבע של כל תרנגולת בא מן החומר
+  function featherTex() {
+    return texture('feathers', 128, 128, c => {
+      const g = c.getContext('2d'), q = rndOf(4242);
+      g.fillStyle = '#d8d2c8'; g.fillRect(0, 0, 128, 128);
+      for (let row = -1; row < 12; row++) for (let col = -1; col < 11; col++) {
+        const x = col * 13 + (row % 2 ? 6.5 : 0), y = row * 11, v = 170 + Math.floor(q() * 70);
+        g.fillStyle = 'rgb(' + v + ',' + v + ',' + (v - 6) + ')'; g.strokeStyle = 'rgba(60,50,40,.55)'; g.lineWidth = 1.2;
+        g.beginPath(); g.moveTo(x - 7, y); g.quadraticCurveTo(x, y + 15, x + 7, y); g.closePath(); g.fill(); g.stroke();
+        g.strokeStyle = 'rgba(255,255,255,.4)'; g.beginPath(); g.moveTo(x, y + 1); g.lineTo(x, y + 8); g.stroke();
+      }
+    });
+  }
+  function downTex() {
+    return texture('chickdown', 64, 64, c => {
+      const g = c.getContext('2d'), q = rndOf(99);
+      g.fillStyle = '#fff4c8'; g.fillRect(0, 0, 64, 64);
+      for (let k = 0; k < 420; k++) { const x = q() * 64, y = q() * 64, a = q() * 6.283; g.strokeStyle = q() < 0.5 ? 'rgba(255,255,255,.7)' : 'rgba(200,160,40,.35)'; g.lineWidth = 0.8; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * 3, y + Math.sin(a) * 3); g.stroke(); }
+    });
+  }
+  // פיתה: מאפה עגול, שוליים זהובים, ובועות שחומות מן האש
+  function pitaTex() {
+    return texture('pita', 256, 256, c => {
+      const g = c.getContext('2d'), q = rndOf(777);
+      const gr = g.createRadialGradient(128, 128, 20, 128, 128, 128); gr.addColorStop(0, '#f0d4a0'); gr.addColorStop(0.75, '#e2b878'); gr.addColorStop(1, '#b8803e');
+      g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+      for (let k = 0; k < 70; k++) { const x = 20 + q() * 216, y = 20 + q() * 216, r = 2 + q() * 7; if (Math.hypot(x - 128, y - 128) > 118) continue;
+        const bg = g.createRadialGradient(x - r * 0.3, y - r * 0.3, 0.5, x, y, r); bg.addColorStop(0, 'rgba(120,62,20,.85)'); bg.addColorStop(1, 'rgba(160,96,40,0)'); g.fillStyle = bg; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill(); }
+      for (let k = 0; k < 400; k++) { g.fillStyle = 'rgba(255,250,235,.25)'; g.fillRect(q() * 256, q() * 256, 1, 1); }
+    });
+  }
+  // כיפה של ערמה: מרקם הערמה מוקרן עליה מלמעלה, ולא נמתח סביב הכדור
+  const domeCache = {};
+  function domeGeo(R) {
+    const k = R.toFixed(3);
+    if (domeCache[k]) return domeCache[k];
+    const geo = new THREE.SphereGeometry(R, 16, 8, 0, 6.3, 0, 1.25), pos = geo.attributes.position, uv = geo.attributes.uv;
+    for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getX(i) / (2 * R) * 1.6 + 0.5, pos.getZ(i) / (2 * R) * 1.6 + 0.5);
+    uv.needsUpdate = true;
+    return (domeCache[k] = geo);
+  }
+  const heapMat = kind => { const t = heapTex(kind); t.wrapS = t.wrapT = THREE.RepeatWrapping; return gMat(0xffffff, t); };
   // נקודה שאפשר לעמוד בה: המפלס הנמוך שבה, ובלבד שאין שם קיר
   function spot(x, z) {
     let yy = null, on = null;
@@ -678,27 +794,26 @@
       if (p.kind === 'woodpile') { for (let i = 0; i < 9; i++) { const row = i < 4 ? 0 : i < 7 ? 1 : 2, k = i < 4 ? i - 1.5 : i < 7 ? i - 5 : i - 7.5, lg = cyl(0.09, 0.1, 1.1, M.wood, x + (along ? k * 0.2 : 0), y + 0.1 + row * 0.17, z + (along ? 0 : k * 0.2), 7); lg.rotation.x = along ? Math.PI / 2 : 0; lg.rotation.z = along ? 0 : Math.PI / 2; } }
       if (p.kind === 'sacks') { for (let i = 0; i < 3; i++) { const sk = new THREE.Mesh(new THREE.SphereGeometry(0.3, 10, 8), M.pale); sk.scale.set(1, 0.72, 0.8); sk.position.set(x + (i - 1) * 0.42, y + 0.2 + (i === 1 ? 0.3 : 0), z + (i === 1 ? 0.05 : 0)); sk.castShadow = shadows; root.add(sk); } }
       if (p.kind === 'produce') {                       // סל ובו פרי: תאנים, זיתים, רימונים, תמרים או תבואה
-        const col = { figs: 0x5b3a5e, olives: 0x4f5a2a, grain: 0xd6b25a, pomegranate: 0xa83a2e, dates: 0x8a5a2a }[p.c] || 0x8a5a2a;
-        cyl(0.42, 0.32, 0.36, new THREE.MeshLambertMaterial({ color: 0xb89a5c }), x, y + 0.18, z, 12);
-        const top2 = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 6, 0, 6.3, 0, 1.2), new THREE.MeshLambertMaterial({ color: col })); top2.scale.y = 0.45; top2.position.set(x, y + 0.3, z); root.add(top2);
+        cyl(0.42, 0.32, 0.36, wicker(), x, y + 0.18, z, 16);
+        const top2 = new THREE.Mesh(domeGeo(0.4), heapMat(HEAP[p.c] ? p.c : 'figs')); top2.scale.y = 0.45; top2.position.set(x, y + 0.3, z); root.add(top2);
       }
       /* תרנגולת: גוף, ראש, כרבולת ודלדול אדומים, מקור וזנב זקוף; אפרוח —
          כדור צהוב וראש קטן. `yaw` — לאן היא פונה */
       const henAt = (hx, hy, hz, yaw, colr) => {
-        const g = new THREE.Group(), mat = new THREE.MeshLambertMaterial({ color: colr }), red = new THREE.MeshLambertMaterial({ color: 0xc8281e });
+        const g = new THREE.Group(), mat = gMat(colr, featherTex()), red = gMat(0xc8281e);
         const body = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 8), mat); body.scale.set(1.3, 1, 0.95); body.position.y = 0.15; g.add(body);
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.075, 9, 7), mat); head.position.set(0.17, 0.3, 0); g.add(head);
         const comb = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.05, 0.02), red); comb.position.set(0.17, 0.38, 0); g.add(comb);
         const wat = new THREE.Mesh(new THREE.SphereGeometry(0.022, 6, 5), red); wat.scale.y = 1.5; wat.position.set(0.22, 0.25, 0); g.add(wat);
-        const beak = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.06, 6), new THREE.MeshLambertMaterial({ color: 0xd8a032 })); beak.rotation.z = -Math.PI / 2; beak.position.set(0.255, 0.3, 0); g.add(beak);
+        const beak = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.06, 6), gMat(0xd8a032)); beak.rotation.z = -Math.PI / 2; beak.position.set(0.255, 0.3, 0); g.add(beak);
         const tail = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.18, 7), mat); tail.rotation.z = 0.7; tail.position.set(-0.19, 0.25, 0); g.add(tail);
         g.position.set(hx, hy, hz); g.rotation.y = yaw; root.add(g); return g;
       };
       const chickAt = (hx, hy, hz, yaw) => {
-        const g = new THREE.Group(), mat = new THREE.MeshLambertMaterial({ color: 0xf4d64e });
+        const g = new THREE.Group(), mat = gMat(0xf4d64e, downTex());
         const b = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), mat); b.position.y = 0.05; g.add(b);
         const h = new THREE.Mesh(new THREE.SphereGeometry(0.03, 7, 5), mat); h.position.set(0.045, 0.1, 0); g.add(h);
-        const bk = new THREE.Mesh(new THREE.ConeGeometry(0.01, 0.025, 5), new THREE.MeshLambertMaterial({ color: 0xd88a22 })); bk.rotation.z = -Math.PI / 2; bk.position.set(0.08, 0.1, 0); g.add(bk);
+        const bk = new THREE.Mesh(new THREE.ConeGeometry(0.01, 0.025, 5), gMat(0xd88a22)); bk.rotation.z = -Math.PI / 2; bk.position.set(0.08, 0.1, 0); g.add(bk);
         g.position.set(hx, hy, hz); g.rotation.y = yaw; root.add(g); return g;
       };
       /* ── מכלאה על הארץ: גדר נמוכה של מקלות, ובה תרנגולת ואפרוחיה ───── */
@@ -707,7 +822,7 @@
         for (const hgt of [0.1, 0.27]) { const ring = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.012, 4, 28), M.wood); ring.rotation.x = Math.PI / 2; ring.position.set(x, y + hgt, z); root.add(ring); }
         henAt(x - 0.12, y, z + 0.05, 0.6, 0x9a5a32);
         for (let i = 0; i < 8; i++) { const a = i * 0.8 + 0.3, r2 = 0.2 + (i % 3) * 0.12; chickAt(x + Math.cos(a) * r2, y, z + Math.sin(a) * r2, a * 2); }
-        const grain2 = new THREE.Mesh(new THREE.CircleGeometry(0.16, 12), new THREE.MeshLambertMaterial({ color: 0xd6b25a })); grain2.rotation.x = -Math.PI / 2; grain2.position.set(x + 0.25, y + 0.01, z - 0.2); root.add(grain2);
+        const grain2 = new THREE.Mesh(new THREE.CircleGeometry(0.16, 12), heapMat('grain')); grain2.rotation.x = -Math.PI / 2; grain2.position.set(x + 0.25, y + 0.01, z - 0.2); root.add(grain2);
       }
       /* ── עגלת פרי וירק ─────────────────────────────────────────────────
        * ארגז על שני גלגלים ומוטות גרירה, ועליו שלוש ערמות פתוחות — מי
@@ -737,7 +852,10 @@
           MIX.forEach((kind, i) => {
             const F = CART_FRUIT[kind], cx0 = x + (along ? 0 : (i - 1) * 0.66), cz0 = z + (along ? (i - 1) * 0.66 : 0);
             const geo = F.len ? new THREE.CylinderGeometry(F.r, F.r * 0.9, F.len, 7) : new THREE.SphereGeometry(F.r, 9, 7);
-            const im = new THREE.InstancedMesh(geo, new THREE.MeshLambertMaterial({ color: F.c }), F.n);
+            const im = new THREE.InstancedMesh(geo, gMat(0xffffff, skinTex(kind)), F.n);
+            const HK = { leek: 'cucumber', melon: 'cucumber' }[kind] || kind;
+            const mound = new THREE.Mesh(domeGeo(0.3), heapMat(HEAP[HK] ? HK : 'figs'));
+            mound.scale.set(along ? 1.45 : 0.9, 0.32, along ? 0.9 : 1.45); mound.position.set(cx0, y + 0.69, cz0); root.add(mound);
             const col = new THREE.Color();
             for (let k = 0; k < F.n; k++) {
               // נקודה בתוך התא, וגובה הערמה יורד מן האמצע אל השוליים
@@ -771,9 +889,9 @@
       if (p.kind === 'eggs') {
         for (const d of [-1, 1]) {
           const bx2 = x + (along ? 0 : d * 0.34), bz2 = z + (along ? d * 0.34 : 0);
-          cyl(0.3, 0.24, 0.12, new THREE.MeshLambertMaterial({ color: 0xb89a5c }), bx2, y + 0.06, bz2, 12);
+          cyl(0.3, 0.24, 0.12, wicker(), bx2, y + 0.06, bz2, 16);
           for (let i = 0; i < 7; i++) {
-            const eg = new THREE.Mesh(new THREE.SphereGeometry(0.052, 8, 6), new THREE.MeshLambertMaterial({ color: 0xf0e7d2 }));
+            const eg = new THREE.Mesh(new THREE.SphereGeometry(0.052, 10, 8), gMat(i % 3 ? 0xf0e7d2 : 0xe2c8a4));
             eg.scale.set(0.85, 1.15, 0.85);
             const a2 = i * 0.9, r2 = i ? 0.15 : 0;
             eg.position.set(bx2 + Math.cos(a2) * r2, y + 0.15, bz2 + Math.sin(a2) * r2);
@@ -784,7 +902,7 @@
       /* ── לחם: פיתות גדולות על דוכן ────────────────────────────────────── */
       if (p.kind === 'bread') {
         addBox(bxy(0.8, 0.5), y, 0.62, M.wood);
-        const dough = new THREE.MeshLambertMaterial({ color: 0xd9b178 });
+        const dough = gMat(0xffffff, pitaTex());
         for (let i = 0; i < 6; i++) {
           const pit = cyl(0.3, 0.3, 0.035, dough,
                           x + (along ? (i % 2 ? 0.16 : -0.16) : (i % 3 - 1) * 0.42),
@@ -802,9 +920,9 @@
           st.scale.set(1, 0.7, 1); st.position.set(x + Math.cos(a2) * 0.34, y + 0.08, z + Math.sin(a2) * 0.34); root.add(st);
         }
         const dome = new THREE.Mesh(new THREE.SphereGeometry(0.46, 16, 10, 0, 6.3, 0, 1.1),
-                                    new THREE.MeshLambertMaterial({ color: 0x3a3028 }));
+                                    gMat(0x3a3028));
         dome.scale.y = 0.46; dome.position.set(x, y + 0.18, z); dome.castShadow = shadows; root.add(dome);
-        const laffa = cyl(0.3, 0.3, 0.02, new THREE.MeshLambertMaterial({ color: 0xe0bb84 }), x + 0.04, y + 0.33, z - 0.03, 14);
+        const laffa = cyl(0.3, 0.3, 0.02, gMat(0xffffff, pitaTex()), x + 0.04, y + 0.33, z - 0.03, 18);
         laffa.rotation.z = 0.04;
         addSmoke(x, y + 0.42, z, 0.5, 0xc9c4ba);
         const ft2 = texture('flame', 64, 96, c => { const g2 = c.getContext('2d'), gr2 = g2.createRadialGradient(32, 70, 2, 32, 62, 34); gr2.addColorStop(0, 'rgba(255,250,210,1)'); gr2.addColorStop(0.35, 'rgba(255,190,70,.95)'); gr2.addColorStop(0.7, 'rgba(240,110,30,.6)'); gr2.addColorStop(1, 'rgba(200,60,20,0)'); g2.fillStyle = gr2; g2.beginPath(); g2.moveTo(32, 2); g2.quadraticCurveTo(62, 52, 46, 84); g2.quadraticCurveTo(32, 96, 18, 84); g2.quadraticCurveTo(2, 52, 32, 2); g2.fill(); });
@@ -916,9 +1034,61 @@
     root = new THREE.Group(); scene.add(root); farRoot = new THREE.Group(); scene.add(farRoot); smoke = []; flames = []; clickables = [];
     const M = build.M || (build.M = makeMaterials());
     if (!M.skinned) { M.skinned = 1; skin(M.ashlar, 'ashlar.jpg', 0.8); skin(M.wood, 'wood.jpg', 1); }   // מ-Canva
-    buildTerrain(M); buildFloors(M); buildSolids(M); buildLife(M);
+    buildTerrain(M); buildFloors(M); buildSolids(M); try { mergeStatic(root); } catch (e) { window._mergeErr = String(e && e.stack || e); console.warn('merge', e); } buildLife(M);
     marker = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.8, 28), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75, depthWrite: false }));
     marker.rotation.x = -Math.PI / 2; marker.visible = false; root.add(marker);
+  }
+  /* ---------- מיזוג: מאות אבנים, קירות, עגלות ויתדות — כל אחת מהן קריאת ציור משלה, וזה מה שהאט את הטלפון ----------
+     מה שאינו זז מתמזג לגוף אחד לכל חומר, בכל משבצת של 40 מ' (כדי שמה שמאחורי המבט עדיין לא יצויר).
+     מה שזז, נלחץ או מוסתר בנפרד — אש, עשן, שלטים, כתובות, הסמן — נשאר כפי שהוא. הקרקע מתמזגת לחוד,
+     ונשארת ברשימה שהלחיצה בודקת: נקודת הפגיעה היא כל מה שצריך ממנה. */
+  function mergeStatic(grp) {
+    const keep = new Set([...flames, ...smoke, ...taps.map(t => t.obj), ...routeObjs, ...labelObjs, marker].filter(Boolean));
+    const ground = new Set(clickables), groups = new Map(), CELL = 40;
+    grp.updateMatrixWorld(true);
+    const inv = new THREE.Matrix4().copy(grp.matrixWorld).invert(), wp = new THREE.Vector3();
+    grp.traverse(o => {
+      if (!o.isMesh || o.isInstancedMesh || o.isSkinnedMesh || keep.has(o) || !o.visible || Array.isArray(o.material) || o.onBeforeRender !== THREE.Object3D.prototype.onBeforeRender) return;
+      for (let p = o.parent; p && p !== grp; p = p.parent) if (keep.has(p) || !p.visible || ground.has(p)) return;
+      const g = o.geometry, m = o.material;
+      if (!g || !g.attributes.position || (g.morphAttributes && Object.keys(g.morphAttributes).length)) return;
+      o.getWorldPosition(wp);
+      const at = g.attributes, key = (ground.has(o) ? 'g' : 's') + '|' + m.uuid + '|' + o.castShadow + o.receiveShadow + o.renderOrder + o.frustumCulled +
+        '|' + ['normal', 'uv', 'color'].filter(k => at[k]).join(',') + '|' + Math.floor(wp.x / CELL) + ',' + Math.floor(wp.z / CELL);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(o);
+    });
+    let before = 0, after = 0;
+    const mtx = new THREE.Matrix4();
+    groups.forEach(list => {
+      if (list.length < 2) return;
+      const names = ['position', 'normal', 'uv', 'color'].filter(k => list[0].geometry.attributes[k]);
+      const parts = list.map(o => {
+        const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+        g.applyMatrix4(mtx.multiplyMatrices(inv, o.matrixWorld));
+        return g;
+      });
+      if (parts.some(g => names.some(k => !g.attributes[k] || g.attributes[k].itemSize !== parts[0].attributes[k].itemSize))) return;
+      const merged = new THREE.BufferGeometry();
+      for (const k of names) {
+        const size = parts[0].attributes[k].itemSize, total = parts.reduce((s, g) => s + g.attributes[k].count, 0), arr = new Float32Array(total * size);
+        let off = 0; for (const g of parts) { const a = g.attributes[k]; for (let i = 0; i < a.count; i++) { arr[off++] = a.getX(i); if (size > 1) arr[off++] = a.getY(i); if (size > 2) arr[off++] = a.getZ(i); if (size > 3) arr[off++] = a.getW(i); } }
+        merged.setAttribute(k, new THREE.BufferAttribute(arr, size));
+      }
+      merged.computeBoundingSphere(); merged.computeBoundingBox();
+      parts.forEach(g => g.dispose());
+      const o0 = list[0], mesh = new THREE.Mesh(merged, o0.material);
+      mesh.castShadow = o0.castShadow; mesh.receiveShadow = o0.receiveShadow; mesh.renderOrder = o0.renderOrder; mesh.frustumCulled = o0.frustumCulled;
+      mesh.userData.merged = list.length;
+      grp.add(mesh);
+      list.forEach(o => { if (o.parent) o.parent.remove(o); });
+      if (ground.has(o0)) { clickables = clickables.filter(c => !list.includes(c)); clickables.push(mesh); }
+      before += list.length; after++;
+    });
+    // קבוצות שהתרוקנו (אביזר שכל חלקיו התמזגו) יוצאות מן הזירה
+    const empty = []; grp.traverse(o => { if (o !== grp && o.isGroup && !o.children.length) empty.push(o); });
+    empty.forEach(o => o.parent && o.parent.remove(o));
+    if (quality) quality.merged = before + '→' + after;
   }
   function setup(cv) {
     renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
@@ -1071,12 +1241,18 @@
     const d = sunRef.userData.dir || [-120, 220, 90], k = 300 / Math.hypot(d[0], d[1], d[2]);
     sunRef.position.set(x + d[0] * k, y + d[1] * k, z + d[2] * k); sunRef.target.position.set(x, y, z); sunRef.target.updateMatrixWorld();
   }
+  // מפת הצללים מצוירת מחדש רק כשההולך זז או אחת לכמה תמונות (בשביל הדמויות שזזות) — ולא בכל תמונה, שזה כפל ציור
+  let shN = 0, shX = 1e9, shZ = 1e9;
+  function shadowDue() {
+    if (++shN >= 12 || Math.hypot(pos.x - shX, pos.z - shZ) > 0.6) { shN = 0; shX = pos.x; shZ = pos.z; return true; }
+    return false;
+  }
   function passes(cam, withWalker) {
     const bg = scene.background;
     if (farRoot && farRoot.children.length) {
       root.visible = false; farRoot.visible = true; renderer.autoClear = true; renderer.render(scene, cam);
-      renderer.autoClear = false; renderer.clearDepth(); scene.background = null; farRoot.visible = false; root.visible = true; if (shadows) renderer.shadowMap.needsUpdate = true; renderer.render(scene, cam); scene.background = bg;
-    } else { if (shadows) renderer.shadowMap.needsUpdate = true; renderer.render(scene, cam); }
+      renderer.autoClear = false; renderer.clearDepth(); scene.background = null; farRoot.visible = false; root.visible = true; if (shadows && shadowDue()) renderer.shadowMap.needsUpdate = true; renderer.render(scene, cam); scene.background = bg;
+    } else { if (shadows && shadowDue()) renderer.shadowMap.needsUpdate = true; renderer.render(scene, cam); }
     if (withWalker && hud) { renderer.autoClear = false; renderer.clearDepth(); renderer.render(hud, hudCam); }
     renderer.autoClear = true;
   }
@@ -1597,7 +1773,7 @@
     if (window.GerizimAudio) GerizimAudio.walkScene(null);
     if (opts.onExit) opts.onExit();
   }
-  window.GerizimWalk = { enter, exit, pause, setLang, setLayer, _shot: shot, _frame: (dt, n) => { for (let i = 0; i < (n || 1); i++) frame(dt || 0.033, false); }, _life: box => life && life.sample && life.sample(box), _go: (x, z, yaw, pitch) => { const f = canStandAny(x, z); if (!f) return false; pos.x = x; pos.z = z; pos.y = f.y; if (yaw != null) look.yaw = yaw; look.pitch = pitch || 0; target = null; camera.position.y = pos.y + EYE; return true; }, get active() { return active; }, get paused() { return paused; }, get period() { return period; }, get temple() { return showTemple; }, _pos: () => pos,
+  window.GerizimWalk = { enter, exit, pause, setLang, setLayer, _shot: shot, _scene: () => ({ scene, root, farRoot, renderer, quality }), _frame: (dt, n) => { for (let i = 0; i < (n || 1); i++) frame(dt || 0.033, false); }, _life: box => life && life.sample && life.sample(box), _go: (x, z, yaw, pitch) => { const f = canStandAny(x, z); if (!f) return false; pos.x = x; pos.z = z; pos.y = f.y; if (yaw != null) look.yaw = yaw; look.pitch = pitch || 0; target = null; camera.position.y = pos.y + EYE; return true; }, get active() { return active; }, get paused() { return paused; }, get period() { return period; }, get temple() { return showTemple; }, _pos: () => pos,
     _state: () => ({ pos, look, period, lang, zoneId, paused, layers: Object.assign({}, layers), mapMode, infoClosed, quality, life: life && life.counts(), ins: insStones.map(q => [q.ins.no, +q.x.toFixed(1), +q.z.toFixed(1), q.shown, q.approx ? 1 : 0]), signs: signs.length, plates: taps.filter(q => q.plate).length, routes: routeObjs.length,
       vis: { plates: taps.filter(q => q.plate && q.obj.visible).length, labels: signs.filter(q => q.layer === 'names' && layers.names).length, poi: signs.filter(q => q.layer === 'poi' && layers.poi).length, routes: routeObjs.filter(o => o.visible).length, inscr: taps.filter(q => q.ins && q.obj.visible).length, info: !!$('walkInfo') && $('walkInfo').style.display !== 'none', templeMark: signs.some(q => q.info.id === 'temple') },
       walker: av && { on: showAvatar, headYaw: av.head.rotation.y, headPitch: av.head.rotation.x, y: av.position.y, scale: av.scale.x } }) };

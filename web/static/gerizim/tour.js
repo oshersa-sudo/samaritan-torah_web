@@ -733,13 +733,18 @@
     const start = () => {
       if (introDone) return;
       el.classList.add('show');
-      map.easeTo(Object.assign({ duration: 11000, easing: x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2 }, home()));
-      setTimeout(() => introEnd(false), 5500);
+      // essential: גם במכשיר שבו כובו האנימציות (חיסכון בסוללה, "הפחתת תנועה") — המפה מסתובבת, כמו תמיד; בלי זה היא קופצת אל הסוף
+      map.easeTo(Object.assign({ duration: 11000, essential: true, easing: x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2 }, home()));
+      // הכותרת נשארת חמש וחצי שניות מן הרגע שבאמת נראתה על המסך — לא מן הרגע שבו התבקשה
+      requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => introEnd(false), 5500)));
     };
     // נגיעה במפה עוצרת את הסיבוב, והכותרת נמוגה מיד
     ['mousedown', 'touchstart', 'wheel'].forEach(ev => map.once(ev, () => introEnd(true)));
-    (document.fonts && document.fonts.load ? document.fonts.load('40px Samaritan').catch(() => {}) : Promise.resolve())
-      .then(() => setTimeout(start, 400));
+    // הפתיחה מחכה שהמפה תסיים לצייר את התמונה הראשונה (או ארבע שניות לכל היותר): בטלפון, בזמן שהאריחים נטענים,
+    // הדף עסוק מכדי לצייר — הכותרת הופיעה באיחור ונמוגה כמעט מיד, והסיבוב קפץ
+    const ready = new Promise(ok => { if (map.loaded()) return ok(); map.once('idle', ok); setTimeout(ok, 4000); });
+    const font = document.fonts && document.fonts.load ? document.fonts.load('40px Samaritan').catch(() => {}) : Promise.resolve();
+    Promise.all([ready, font]).then(() => setTimeout(start, 250));
   }
 
   /* ---------- צילום חד (Google Map Tiles), רק אם הונח מפתח בקובץ google-key.txt ----------

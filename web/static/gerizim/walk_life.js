@@ -6,7 +6,7 @@
   window.GerizimLife = function (cx) {
     const THREE = cx.THREE, W = cx.W, GP = window.GerizimPeople;
     const rngOf = seed => { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; };
-    let cullAt = 0, shown = true;
+    let cullAt = 0, shown = true, flora = [];
     let R = Math.random, actors = [], still = [], beasts = [], birds = [], clouds = [], floorsNow = [], time = 0, budget = 0, flock = null;
 
     /* ---------- אנשים ---------- */
@@ -267,6 +267,21 @@
           else { w.tx = null; w.wait = 4; }
         } else { w.tx = null; w.wait = 4.5; }
       }
+    }
+    /* דמות רחוקה היא נקודה בגודל פיקסל, אבל כל אחת מהן היא קריאת ציור — ובימי הרצון יש כמאה וחמישים כאלה מעבר ל-90 מ'.
+       מעבר למרחק הזה המצלמה פשוט אינה רואה אותן (שכבה 1 של המצלמה); מה שהן עושות — ממשיך כרגיל, ואין כאן נגיעה בהצגתן. */
+    const FAR_CULL = cx.lite ? 90 : 150;
+    let cullT = 0;
+    function farCull(dt, cam) {
+      if ((cullT -= dt) > 0) return; cullT = 0.35;
+      const lim = cullAt ? Math.min(cullAt, FAR_CULL) : FAR_CULL;
+      const one = sp => { if (!sp) return; const far = Math.abs(cam.x - sp.position.x) + Math.abs(cam.z - sp.position.z) > lim; if (far !== (sp.layers.mask === 2)) sp.layers.set(far ? 1 : 0); };
+      for (const a of actors) one(a.sp);
+      for (const q of still) one(q.sp);
+      for (const b of beasts) one(b.sp);
+      for (const d of doves) one(d.sp);
+      // בטלפון גם העצים הרחוקים והעשב שמעבר לכמה עשרות מטרים — כמה פיקסלים כל אחד
+      if (cx.lite) for (const f of flora) { const far = Math.abs(cam.x - f.sp.position.x) + Math.abs(cam.z - f.sp.position.z) > f.lim; if (far !== (f.sp.layers.mask === 2)) f.sp.layers.set(far ? 1 : 0); }
     }
     function stepPeople(dt, cam, pos) {
       hail(dt, pos); trumpStep(dt); censerStep(dt, cam);
@@ -559,7 +574,7 @@
     }
     const TREE_H = { shrub: [1.1, 1.1], cypress: [7, 4.5], oak: [5, 3.4], olive: [3.6, 2.4], terebinth: [4.4, 2.6], carob: [5, 2.6], fig: [3.2, 1.6], pomegranate: [2.4, 1.2], grass: [0.5, 0.35], flowers: [0.45, 0.25] };
     const TREE_W = { cypress: 0.42, shrub: 1.5, grass: 1.3, flowers: 1.5, fig: 1.05, carob: 0.95 };
-    function addTrees(root, farRoot, near) {
+    function addTrees(root, farRoot, near) { flora = [];
       const q = rngOf(4711);                              // הצמחייה קבועה: נוף, לא מקרה
       const wild = ['olive', 'olive', 'oak', 'oak', 'terebinth', 'carob', 'shrub', 'shrub', 'shrub', 'cypress', 'olive'], town = ['fig', 'pomegranate', 'olive', 'fig', 'shrub', 'carob'];
       const onFloor = (x, z, m) => { for (const f of W.floors) if (!f.deco && cx.inBox(f.box, x, z, m)) return true; return false; };
@@ -568,6 +583,7 @@
         const hh = TREE_H[kind] || TREE_H.olive, h = hh[0] + q() * hh[1];
         const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: treeTex(kind, Math.floor(q() * 2)), transparent: true, alphaTest: 0.3, fog: true }));
         sp.center.set(0.5, 0.04); sp.scale.set(h * (TREE_W[kind] || 0.8), h, 1); sp.position.set(x, y, z); (into || root).add(sp);
+        if (!into) flora.push({ sp, lim: kind === 'grass' || kind === 'flowers' ? 40 : 160 });
       };
       const nTree = cx.lite ? 80 : 150, nTuft = cx.lite ? 45 : 130, nRock = cx.lite ? 110 : 260;
       for (let i = 0, n = 0; i < 1200 && n < nTree; i++) {     // עצים: בין הבתים — תאנה ורימון; על המדרונות — זית, אלון, אלה, חרוב
@@ -613,7 +629,7 @@
       },
       cull(dist) { cullAt = dist; },
       show(on) { shown = on; for (const a of actors) a.sp.visible = on; for (const s of still) s.sp.visible = on; for (const b of beasts) b.sp.visible = on; for (const d of doves) d.sp.visible = on; },
-      step(dt, cam, pos, yaw) { time += dt; budget = 3; budget = cx.lite ? 2 : 4; stepPeople(dt, cam, pos); stepBeasts(dt, cam, yaw, pos); stepDoves(dt, pos); stepSky(dt, pos); },
+      step(dt, cam, pos, yaw) { time += dt; budget = 3; budget = cx.lite ? 2 : 4; stepPeople(dt, cam, pos); stepBeasts(dt, cam, yaw, pos); stepDoves(dt, pos); stepSky(dt, pos); farCull(dt, cam); },
       sample: box => ({ walkers: (box ? actors.filter(a => a.x >= box[0] && a.x <= box[2] && a.z >= box[1] && a.z <= box[3]) : actors).slice(0, 10).map(a => [a.kind, +a.x.toFixed(2), +a.y.toFixed(2), +a.z.toFixed(2), a.key, a.tx != null ? 1 : 0, +a.slope.toFixed(2)]), beasts: beasts.slice(0, 8).map(b => [b.kind, +b.x.toFixed(2), +b.z.toFixed(2), b.key]), doves: doves.map(d => [+d.x.toFixed(1), +(d.h || 0).toFixed(1), +d.z.toFixed(1), d.fly > 0 ? 1 : 0]), still: still.filter(q => q.pose !== 'stand' || q.talk).slice(0, 8).map(q => [q.kind, q.pose, q.talk, q.cur]) }),
       counts: () => ({ walkers: actors.length, standing: still.length, seated: still.filter(q => q.pose !== 'stand').length, talking: still.filter(q => q.talk).length, doves: doves.length, resting: beasts.filter(q => q.mode === 'r').length, animals: beasts.length, birds: birds.length, clouds: clouds.length, moving: actors.filter(a => a.tx != null).length })
     };
