@@ -141,6 +141,11 @@
     max-width:none; transform-origin:0 0; user-select:none; -webkit-user-drag:none;
     display:block; box-shadow:0 4px 28px rgba(0,0,0,.45); background:#fff;
   }
+  /* The glide of a swiped page: out of the stage, back to its place, or the
+     next leaf settling in. Only while the class is on - a drag must follow
+     the finger with no easing at all. */
+  .stage img.gliding{transition:transform .2s cubic-bezier(.2,.7,.3,1);}
+  @media (prefers-reduced-motion:reduce){.stage img.gliding{transition:none;}}
   .stage-msg{
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     flex-direction:column; gap:14px; padding:32px; text-align:center; color:#d8dae0;
@@ -470,11 +475,6 @@
       border-color:var(--accent);}
   button.sum-kind[aria-pressed="true"] b{color:var(--accent-ink);}
 
-  .idxlinks{display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
-  .idxlinks-lbl{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em;
-      color:var(--ink-3); margin-inline-end:2px;}
-  .idxlink{padding:4px 10px; font-size:12.5px;}
-
   .lib-intro{font-size:13.5px; line-height:1.7; color:var(--ink-2); margin:0 0 16px;
       max-width:74ch;}
   .lib-intro p{margin:0 0 8px;}
@@ -483,26 +483,9 @@
   .lib-intro .closing{color:var(--bad); font-weight:500;}
   .lib-intro .sig{margin-top:2px; font-weight:600;}
 
-  .drill{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
-  .drill-item{display:inline-flex; align-items:baseline; gap:7px; cursor:pointer;
-      background:var(--surface); border:1px solid var(--rule); border-radius:2px;
-      padding:6px 11px; font:inherit; font-size:13px; color:var(--ink-2);}
-  .drill-item:hover{border-color:var(--accent); color:var(--ink);}
-  .drill-item[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink);
-      border-color:var(--accent);}
-  .drill-name{font-weight:600;}
-  .drill-n{font-family:var(--font-mono); font-size:11px; opacity:.8;}
-  .drill-d{font-family:var(--font-mono); font-size:10.5px; color:var(--ok);
-      background:var(--ok-bg); padding:0 5px; border-radius:2px;
-      border:1px solid color-mix(in srgb,var(--ok) 30%,transparent);}
-  .drill-item[aria-pressed="true"] .drill-d{background:transparent; color:var(--accent-ink);
-      border-color:color-mix(in srgb,var(--accent-ink) 40%,transparent);}
-  .drill-clear{margin-bottom:12px;}
-
   .admin-only{border:1px dashed var(--rule-2); border-radius:2px; padding:10px 12px;
       margin-bottom:12px; background:var(--surface-2);}
 
-  .drill-d{white-space:nowrap;}
   .sum-big{min-width:2ch; display:inline-block;}
 
   /* ===== parchment design for the manuscript library (per the proposal) ===== */
@@ -581,23 +564,93 @@
   #libOverlay button.sum-kind b, #libOverlay button.sum-kind .tnum{
     font-family:var(--pl-mono); font-size:11px; opacity:.75; color:inherit;
   }
-  #libOverlay .idxlink{
-    border-radius:8px; border:1px solid var(--pl-line); background:var(--pl-surface);
-    color:var(--pl-ink2); font-family:var(--pl-sans);
+
+  /* ---- the preface, folded to its first paragraph ---- */
+  .intro-toggle{
+    background:none; border:none; padding:0 2px; font:inherit; font-weight:600;
+    color:var(--pl-accent); cursor:pointer; text-decoration:underline;
+    text-underline-offset:3px; white-space:nowrap;
   }
-  #libOverlay .idxlink[aria-pressed="true"]{
-    background:var(--pl-accent-soft); color:var(--pl-accent); border-color:var(--pl-accent-line);
-    font-weight:600;
+  .intro-toggle:hover{filter:brightness(1.15);}
+  #introMore{margin-top:8px;}
+  .lib-intro .intro-less{margin-top:10px;}
+
+  /* ---- sort: one control, three orders ----
+     The catalogue is always shown sorted by something - library, kind or
+     year - and gathered under headings of that order. A heading is a
+     drawer: closed, the whole collection fits on a phone screen or two;
+     open, it lists its manuscripts in order. */
+  .sortbar{display:flex; align-items:center; gap:10px; margin:0 0 12px;}
+  .sortbar-lbl{font-size:13px; color:var(--pl-ink2); white-space:nowrap;}
+  .seg{
+    display:flex; flex:0 1 340px; min-width:0; padding:3px; gap:2px;
+    background:var(--pl-sunk); border:1px solid var(--pl-line); border-radius:12px;
   }
-  #libOverlay .drill-item{
-    border-radius:8px; border:1px solid var(--pl-line); background:var(--pl-surface);
-    color:var(--pl-ink2);
+  .seg-btn{
+    flex:1 1 0; min-width:0; min-height:38px; padding:6px 10px;
+    border:1px solid transparent; border-radius:9px; background:transparent;
+    font-family:var(--pl-sans); font-size:14px; color:var(--pl-ink2);
   }
-  #libOverlay .drill-item[aria-pressed="true"]{
-    background:var(--pl-accent-soft); color:var(--pl-accent); border-color:var(--pl-accent-line);
+  .seg-btn:hover{color:var(--pl-ink);}
+  .seg-btn[aria-pressed="true"]{
+    background:var(--pl-surface); color:var(--pl-accent); font-weight:600;
+    border-color:var(--pl-accent-line); box-shadow:var(--pl-shadow);
   }
-  #libOverlay .drill-d{color:var(--pl-ok); background:var(--pl-ok-soft);
-    border-color:transparent;}
+  .grp-all{
+    margin-inline-start:auto; background:none; border:none; padding:6px 2px;
+    font-family:var(--pl-sans); font-size:13px; color:var(--pl-accent);
+    white-space:nowrap; text-decoration:underline; text-underline-offset:3px;
+  }
+  .grp-all[hidden]{display:none;}
+
+  .grp{
+    border:1px solid var(--pl-line); border-radius:14px; background:var(--pl-surface);
+    box-shadow:var(--pl-shadow);
+  }
+  .grp[open]{background:transparent; box-shadow:none; border-color:var(--pl-line2);}
+  .grp-h{
+    display:flex; align-items:center; gap:8px; padding:12px 14px; min-height:50px;
+    cursor:pointer; list-style:none; user-select:none; border-radius:14px;
+  }
+  .grp-h::-webkit-details-marker{display:none;}
+  .grp-h::before{
+    /* Physical borders on purpose: the corner they make points left when
+       turned 45deg - "onward" in a right-to-left page - and down when open. */
+    content:""; flex:none; width:7px; height:7px; margin-inline:2px 4px;
+    border-left:2px solid var(--pl-ink3); border-bottom:2px solid var(--pl-ink3);
+    transform:rotate(45deg); transition:transform .15s;
+  }
+  .grp[open] > .grp-h::before{transform:rotate(-45deg) translate(1px,-2px);}
+  .grp[open] > .grp-h{
+    position:sticky; top:var(--lib-head-h,0px); z-index:3;
+    background:var(--pl-bg); border-radius:14px 14px 0 0;
+    border-bottom:1px solid var(--pl-line);
+  }
+  .grp-name{
+    flex:1 1 auto; min-width:0; font-family:var(--pl-serif); font-weight:700;
+    font-size:16.5px; line-height:1.3; color:var(--pl-ink); overflow-wrap:anywhere;
+  }
+  .grp-sub{font-family:var(--pl-mono); font-size:11px; color:var(--pl-ink3);
+    font-weight:400; margin-inline-start:6px; white-space:nowrap;
+    /* a range of years reads low-to-high, left to right, even on this page */
+    direction:ltr; unicode-bidi:isolate; text-align:right;}
+  .grp-d{
+    flex:none; font-size:11px; color:var(--pl-ok); background:var(--pl-ok-soft);
+    padding:2px 8px; border-radius:999px; white-space:nowrap;
+  }
+  .grp-n{
+    flex:none; min-width:30px; text-align:center; font-family:var(--pl-mono);
+    font-size:12.5px; color:var(--pl-ink2); background:var(--pl-sunk);
+    padding:2px 8px; border-radius:999px;
+  }
+  .grp-body{display:flex; flex-direction:column; gap:8px; padding:10px;}
+  .ms-year{
+    display:inline-block; margin-inline-start:8px; padding:1px 7px; border-radius:6px;
+    background:var(--pl-gold-soft); color:var(--pl-gold); font-family:var(--pl-mono);
+    font-size:11.5px; font-weight:400; vertical-align:middle; unicode-bidi:plaintext;
+    white-space:nowrap;
+  }
+  #libOverlay .ms-row{cursor:pointer;}
 
   /* the catalogue-in-numbers panel */
   #libOverlay .sum{
@@ -679,8 +732,33 @@
     border-radius:14px; font-family:var(--pl-sans);
   }
   @media (max-width:560px){
-    #libOverlay .ms-row{flex-direction:row; flex-wrap:wrap;}
+    /* On a phone the card is the button: the leaf beside its description,
+       one tap anywhere to open. The address of the manifest and the separate
+       "פתח" button are a desktop's luxury and cost a third of each card. */
+    #libOverlay .ms-row{flex-direction:row; flex-wrap:nowrap; padding:10px; gap:11px;}
+    #libOverlay .ms-info{flex:1 1 0;}
+    #libOverlay .ms-info .t{font-size:15px;}
+    #libOverlay .ms-info .u{display:none;}
+    #libOverlay .ms-acts .btn-primary{display:none;}
+    #libOverlay .ms-acts:not(:has(.btn-danger)){display:none;}
+    #libOverlay .rights-line{font-size:11px;}
     .ms-thumb{width:56px; height:74px;}
+    .sortbar{gap:8px;}
+    .seg{flex:1 1 auto;}
+    .grp-h{padding:10px 12px;}
+    .grp-name{font-size:15.5px;}
+    .grp-body{padding:8px 6px;}
+    .grp-sub{display:block; margin:1px 0 0;}
+    /* The kinds stay a filter, but as one row that scrolls sideways rather
+       than five rows standing between the reader and the list. */
+    #libOverlay .sum{padding:10px 12px;}
+    #libOverlay .sum-kinds{flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none;
+      margin-inline:-12px; padding-inline:12px; -webkit-overflow-scrolling:touch;}
+    #libOverlay .sum-kinds::-webkit-scrollbar{display:none;}
+    #libOverlay button.sum-kind{flex:none; padding:6px 12px;}
+  }
+  @media (max-width:330px){
+    .sortbar-lbl{display:none;}
   }
 
   /* The catalogue is the application, not a dialog over one: full viewport,
@@ -961,9 +1039,15 @@
       </div>
     </div>
     <div class="lib-body">
-      <div class="lib-intro">
+      <!-- One paragraph, and the rest behind "עוד…": on a phone the full
+           preface is three screens of text standing between the reader and
+           the manuscripts they came for. -->
+      <div class="lib-intro" id="libIntro">
         <p>אינדקס זה, הוא הגדול מסוגו — ריכוז אוסף כתבי היד השומרוניים
-           מכלל הספריות הדיגיטליות בארץ ובעולם.</p>
+           מכלל הספריות הדיגיטליות בארץ ובעולם.
+           <button type="button" class="intro-toggle" id="btnIntroMore"
+                   aria-expanded="false" aria-controls="introMore">עוד…</button></p>
+        <div id="introMore" hidden>
         <p>הרעיון שבבסיס הקטלוג, הוא לכנס את כל כתבי היד במקום אחד, נגיש וזמין,
            ולחסוך מן המתעניין — בן הקהילה השומרונית או חוקר מתעניין מן החוץ —
            את החיפוש והנבירה בספריות השונות.</p>
@@ -987,18 +1071,20 @@
            בראש ובראשונה, יוכלו לשוב ולשזוף עיניהם מחדש, בחלק
            מ"בניהם האהובים והאבודים", שמצאו את דרכם אל גלות עולם.</p>
         <p class="closing sig">שלכם,<br>אושר ששוני</p>
+        <p class="intro-less"><button type="button" class="intro-toggle"
+              id="btnIntroLess">סגירת המבוא</button></p>
+        </div>
       </div>
 
-      <div class="idxlinks" id="idxBar">
-        <span class="idxlinks-lbl">אינדקסים:</span>
-        <button class="btn idxlink" data-goidx="all" aria-pressed="true">הכל</button>
-        <button class="btn idxlink" data-goidx="inst">לפי ספרייה</button>
-        <button class="btn idxlink" data-goidx="type">לפי סוג</button>
-        <button class="btn idxlink" data-goidx="century">לפי מאה</button>
-        <button class="btn idxlink" data-goidx="person">לפי מחבר</button>
+      <div class="sortbar" id="sortBar">
+        <span class="sortbar-lbl" id="sortLbl">מיון לפי</span>
+        <div class="seg" role="group" aria-labelledby="sortLbl">
+          <button type="button" class="seg-btn" data-sort="inst" aria-pressed="true">ספרייה</button>
+          <button type="button" class="seg-btn" data-sort="type" aria-pressed="false">סוג</button>
+          <button type="button" class="seg-btn" data-sort="year" aria-pressed="false">שנה</button>
+        </div>
+        <button type="button" class="grp-all" id="btnGrpAll">פתח הכל</button>
       </div>
-
-      <div id="idxDrill" hidden></div>
 
       <div class="searchwrap">
         <input type="search" id="msSearch" class="searchbox"
@@ -1463,10 +1549,7 @@ function matchesSearch(m){
 
 function matchesType(m){
   if(!typeFilter) return true;
-  var e = m.manifest ? enriched[m.manifest] : null;
-  var src = e || m;   // world-index entries carry their own .type directly
-  var t = src && src.type ? src.type.he : "\u05dc\u05d0 \u05e1\u05d5\u05d5\u05d2";
-  return t === typeFilter;
+  return typeOf(m) === typeFilter;   // world-index entries carry their own .type
 }
 
 
@@ -1546,7 +1629,9 @@ function rebuildIndexes(){
   var held = [];
   for(var k in enriched){ if(enriched.hasOwnProperty(k)) held.push(enriched[k]); }
   buildIndexes(held.concat(worldIndex));
-  if(typeof renderDrill === "function") renderDrill();
+  // Library, kind and year all come from the enrichment, so the headings the
+  // list is gathered under are only right once it has arrived.
+  renderLibrary();
 }
 
 /* Enrichment produced by enrich.py: per-source rights, Hebrew/Arabic
@@ -1612,13 +1697,197 @@ function heTitle(m){
   return (e && e.title_he) || (m && m.title) || "";
 }
 
+/* ---------- sort + grouping ----------
+   The catalogue is always shown in one of three orders - by holding library,
+   by kind of text, or by year - and gathered under headings of that order.
+   A heading is a drawer. Closed, the whole collection is a screen or two of
+   headings on a phone; open, it lists its manuscripts in order. Nothing is
+   filtered away by choosing an order: the same manuscripts, differently
+   arranged. */
+var LS_SORT = "torahviewer.sort.v1";
+var sortMode = load(LS_SORT, "inst");
+if(!/^(inst|type|year)$/.test(sortMode)) sortMode = "inst";
+var openGroups = {inst:{}, type:{}, year:{}};   // which drawers the reader opened, per order
+var groupItems = {};                            // key -> its rows, to fill a drawer on demand
+var forcedOpen = false;                         // a search opens every drawer it leaves
+
+var NO_INST = "לא צוין", NO_TYPE = "לא סווג", NO_DATE = "ללא תאריך";
+
+/* The same library arrives under more than one name, because each record
+   keeps the name its own catalogue gave it. Under a heading they must be one
+   library, so the variants fold onto a name the data already uses. */
+var INST_ALIAS = {
+  "Bibliothèque nationale de France (BnF), Paris": "Bibliothèque nationale de France",
+  "The John Rylands Library": "ספריית ג׳ון ריילנדס, מנצ׳סטר",
+  "Biblioteca Apostolica Vaticana": "הספרייה האפוסטולית הוותיקנית",
+  "Bodleian Libraries, University of Oxford": "ספריות בודליאן, אוקספורד",
+  "ספריית הבודליאן, אוקספורד": "ספריות בודליאן, אוקספורד",
+  "Cambridge University Library": "ספריית אוניברסיטת קיימברידג׳",
+  "אוניברסיטת קיימברידג׳": "ספריית אוניברסיטת קיימברידג׳",
+  "הספרייה הלאומית של ישראל, ירושלים": "הספרייה הלאומית של ישראל"
+};
+var TYPE_ALIAS = { "מכתבים ותעודות": "תעודות ומכתבים" };
+var TYPE_LAST = { "שונות": 1, "לא סווג": 2 };
+
+function enrOf(m){ return m && m.manifest ? enriched[m.manifest] : null; }
+
+function instOf(m){
+  var e = enrOf(m);
+  // The enriched name first: a local record's own "inst" is sometimes the
+  // viewer software or a copyright line. Failing both, the rights holder.
+  var raw = (e && e.inst) || m.inst ||
+            (e && e.rights && (e.rights.holder_he || e.rights.holder)) || "";
+  raw = String(raw).trim();
+  return INST_ALIAS[raw] || raw || NO_INST;
+}
+
+function typeLabel(t){
+  var he = (t && t.he) || "";
+  return TYPE_ALIAS[he] || he || NO_TYPE;
+}
+function typeOf(m){ return typeLabel((enrOf(m) || m).type); }
+
+/* When was it written? The enrichment's year where there is one; otherwise the
+   date the catalogue gave - "1769-1780", "1339/40", "744 ה' / 1343-44" - read
+   for its first plausible year. `label` is what the reader is shown, always
+   the catalogue's own wording. */
+function dateOf(m){
+  var e = enrOf(m);
+  if(e && e.year){
+    var y = +e.year;
+    // Twice the enrichment kept the Hijri half of "AH 1281-1283 (1864-1866
+    // CE)" as the year, which files a nineteenth-century copy under the
+    // thirteenth. Where the note says so outright, believe the note.
+    var ah = new RegExp("AH\\s*" + y + "[^()]*\\(([^)]*CE[^)]*)\\)").exec(String(m.note || ""));
+    var ce4 = ah && /\d{4}/.exec(ah[1]);
+    if(ce4) y = +ce4[0];
+    return { y: y, label: String(y) };
+  }
+  var s = String(m.date || "").trim();
+  if(!s && m.mode === "local"){
+    var k = /^\s*(\d{3,4}(?:\s*[–-]\s*\d{2,4})?)\s*·/.exec(m.note || "");
+    if(k) s = k[1];
+  }
+  if(!s) return { y: null, label: "" };
+  // A Hijri year beside the common one ("930 AH / 1528 CE") is not the year
+  // to sort by: drop it, then prefer a four-digit year to a three-digit one.
+  var ce = s.replace(/\d{3,4}\s*(?:AH|ה['׳]|להג׳?|هـ)/g, " ");
+  var nums = ce.match(/\d{3,4}/g) || [];
+  var pick = null;
+  for(var i = 0; i < nums.length; i++){
+    var n = +nums[i];
+    if(n < 900 || n > 2100) continue;
+    if(n >= 1000){ pick = n; break; }
+    if(pick === null) pick = n;
+  }
+  if(pick !== null) return { y: pick, label: s };
+  var c = /המאה ה[-־]?\s*(\d{1,2})/.exec(s);
+  if(c) return { y: (+c[1] - 1) * 100 + 50, label: s };
+  return { y: null, label: s };
+}
+
+/* Readable here and now, as opposed to catalogued but held elsewhere. */
+function isHeld(m){ return !!(m.manifest || m.mode); }
+
+function natCmp(a, b){
+  return String(a || "").localeCompare(String(b || ""), "he", {numeric:true, sensitivity:"base"});
+}
+
+function buildGroups(lib){
+  var map = {}, groups = [];
+  lib.forEach(function(m){
+    var d = dateOf(m), inst = instOf(m);
+    var key, label, sub = "", rank = 0;
+    if(sortMode === "type"){
+      key = label = typeOf(m);
+      rank = TYPE_LAST[label] || 0;
+    } else if(sortMode === "year"){
+      if(d.y === null){ key = "none"; label = NO_DATE; rank = 1e6; }
+      else {
+        // A catalogue's "1300-1399" is the fourteenth century, so a century
+        // here runs 00-99.
+        var c = Math.floor(d.y / 100) + 1;
+        key = "c" + c; label = "המאה ה-" + c;
+        sub = ((c - 1) * 100) + "–" + ((c - 1) * 100 + 99);
+        rank = c;
+      }
+    } else {
+      key = label = inst;
+      rank = (inst === NO_INST) ? 1 : 0;
+    }
+    var g = map[key];
+    if(!g){
+      g = map[key] = {key:key, label:label, sub:sub, rank:rank, rows:[], digital:0};
+      groups.push(g);
+    }
+    g.rows.push({m:m, y:d.y, inst:inst});
+    if(isHeld(m)) g.digital++;
+  });
+
+  groups.sort(function(a, b){
+    if(a.rank !== b.rank) return a.rank - b.rank;
+    if(sortMode === "year") return 0;
+    return (b.rows.length - a.rows.length) || natCmp(a.label, b.label);
+  });
+  groups.forEach(function(g){
+    g.rows.sort(function(a, b){
+      if(sortMode === "year" && a.y !== b.y) return (a.y || 0) - (b.y || 0);
+      if(sortMode !== "inst"){
+        var byInst = natCmp(a.inst, b.inst);
+        if(byInst) return byInst;
+      }
+      return natCmp(a.m.shelf, b.m.shelf) || natCmp(heTitle(a.m), heTitle(b.m));
+    });
+    g.items = g.rows.map(function(r){ return r.m; });
+  });
+  return groups;
+}
+
+function rowHtml(m){
+  var isAdded = added.some(function(a){ return a.id === m.id; });
+  // The leaf: page one of the manuscript itself when it is on disk; the
+  // proposal's ruled-paper placeholder when it is not.
+  var thumb;
+  if(m.mode === "local" && m.files && m.files.length){
+    thumb = '<button class="ms-thumb" data-open="' + esc(m.id) + '" tabindex="-1">' +
+            '<img src="' + esc(m.thumb || (m.folder + "/" + m.files[0])) +
+            '" alt="" loading="lazy" decoding="async">' +
+            '<span class="pgs tnum">' + m.files.length + ' עמ׳</span></button>';
+  } else {
+    thumb = '<button class="ms-thumb" data-open="' + esc(m.id) + '" tabindex="-1">' +
+            '<span class="pgs tnum">' + ((m.files && m.files.length) || m.pages || "") +
+            '</span></button>';
+  }
+  var inst = instOf(m), d = dateOf(m);
+  // The year, unless the note beside it already opens with it.
+  var showDate = d.label && String(m.note || "").indexOf(d.label) !== 0;
+  return '<div class="ms-row' + (cur && cur.id === m.id ? ' is-open' : '') +
+      '" data-open="' + esc(m.id) + '">' +
+    thumb +
+    '<div class="ms-info">' +
+      '<p class="t">' + esc(heTitle(m)) +
+        (showDate ? '<span class="ms-year tnum">' + esc(d.label) + '</span>' : '') +
+        (isAdded ? '<span class="badge badge-own">נוסף ידנית</span>' : '') +
+        (m.mode === 'local' ? '<span class="badge badge-local">שמור מקומית</span>' : '') + '</p>' +
+      '<p class="s">' + esc(inst === NO_INST ? "" : inst) +
+        (m.shelf ? ' · <span class="mono">' + esc(m.shelf) + '</span>' : '') +
+        (m.note ? ' · ' + esc(m.note) : '') + '</p>' +
+      '<span class="u">' + esc(m.manifest) + '</span>' +
+      rightsLine(m) +
+    '</div>' +
+    '<div class="ms-acts">' +
+      '<button class="btn btn-primary" data-open="' + esc(m.id) + '">פתח</button>' +
+      (adminMode ? '<button class="btn btn-danger" data-remove="' + esc(m.id) + '" title="הסרה מהרשימה">הסר</button>' : '') +
+    '</div></div>';
+}
+
 function renderLibrary(){
   var all = library();
   var lib = (groupFilter === "all" ? all : all.filter(function(m){
     if(groupFilter === "local") return m.mode === "local";
     // user-added entries have no group, so keep them visible everywhere
     return !m.group || m.group === groupFilter;
-  })).filter(matchesSearch).filter(matchesType).filter(matchesDrill);
+  })).filter(matchesSearch).filter(matchesType);
   // Summarise the rows actually on screen, so the figures follow the filter.
   // `lib` already carries worldIndex entries (via library()) when the active
   // tab/filters admit them, so no separate concat is needed here any more.
@@ -1629,57 +1898,104 @@ function renderLibrary(){
             pages:(m.files ? m.files.length : (m.pages || 0)), inst:m.inst || ""};
   });
 
-  var html = summaryBar(summaryItems, 0);
+  var groups = buildGroups(lib);
+  forcedOpen = !!searchQuery || groups.length === 1;
+  groupItems = {};
+
+  // Sorted by kind, the headings are the kinds - the chips would say it twice.
+  var html = summaryBar(summaryItems, 0, false, sortMode === "type" && !typeFilter);
   if(!lib.length){
-    html += '<p style="color:var(--ink-3);font-size:13.5px;margin:0;">אין פריטים באוסף זה. הוסף כתב יד למטה.</p>';
+    html += '<p style="color:var(--ink-3);font-size:13.5px;margin:0;">' +
+      ((searchQuery || typeFilter) ? 'לא נמצאו כתבי יד התואמים את החיפוש.'
+                                   : 'אין פריטים באוסף זה. הוסף כתב יד למטה.') + '</p>';
   }
-  lib.forEach(function(m){
-    var isAdded = added.some(function(a){ return a.id === m.id; });
-    // The leaf: page one of the manuscript itself when it is on disk; the
-    // proposal's ruled-paper placeholder when it is not.
-    var thumb;
-    if(m.mode === "local" && m.files && m.files.length){
-      thumb = '<button class="ms-thumb" data-open="' + esc(m.id) + '" tabindex="-1">' +
-              '<img src="' + esc(m.thumb || (m.folder + "/" + m.files[0])) + '" alt="">' +
-              '<span class="pgs tnum">' + m.files.length + ' עמ׳</span></button>';
-    } else {
-      thumb = '<button class="ms-thumb" data-open="' + esc(m.id) + '" tabindex="-1">' +
-              '<span class="pgs tnum">' + ((m.files && m.files.length) || m.pages || "") +
-              '</span></button>';
-    }
-    html += '<div class="ms-row' + (cur && cur.id === m.id ? ' is-open' : '') + '">' +
-      thumb +
-      '<div class="ms-info">' +
-        '<p class="t">' + esc(heTitle(m)) +
-          (isAdded ? '<span class="badge badge-own">נוסף ידנית</span>' : '') +
-          (m.mode === 'local' ? '<span class="badge badge-local">שמור מקומית</span>' : '') + '</p>' +
-        '<p class="s">' + esc(m.inst) + (m.shelf ? ' · <span class="mono">' + esc(m.shelf) + '</span>' : '') +
-          (m.note ? ' · ' + esc(m.note) : '') + '</p>' +
-        '<span class="u">' + esc(m.manifest) + '</span>' +
-        rightsLine(m) +
-      '</div>' +
-      '<div class="ms-acts">' +
-        '<button class="btn btn-primary" data-open="' + esc(m.id) + '">פתח</button>' +
-        (adminMode ? '<button class="btn btn-danger" data-remove="' + esc(m.id) + '" title="הסרה מהרשימה">הסר</button>' : '') +
-      '</div></div>';
+  groups.forEach(function(g){
+    groupItems[g.key] = g.items;
+    var open = forcedOpen || !!openGroups[sortMode][g.key];
+    html += '<details class="grp" data-g="' + esc(g.key) + '"' + (open ? ' open' : '') + '>' +
+      '<summary class="grp-h">' +
+        '<span class="grp-name">' + esc(g.label) +
+          (g.sub ? '<span class="grp-sub">' + esc(g.sub) + '</span>' : '') + '</span>' +
+        (g.digital ? '<span class="grp-d" title="זמינים לצפייה דיגיטלית"><span class="tnum">' +
+                     g.digital + '</span> לצפייה</span>' : '') +
+        '<span class="grp-n tnum" title="כתבי יד">' + g.items.length + '</span>' +
+      '</summary>' +
+      // A closed drawer holds nothing until it is opened: four hundred cards
+      // and their first pages are not worth building for a reader who came
+      // for one library.
+      '<div class="grp-body">' + (open ? g.items.map(rowHtml).join("") : '') + '</div>' +
+    '</details>';
   });
   $("msList").innerHTML = html;
   runCounters($("msList"));
+  syncGroupAll();
 
   $("restoreWrap").hidden = !adminMode || removed.length === 0;
   $("remCount").textContent = removed.length;
 }
 
-$("msList").addEventListener("click", function(e){
-  var o = e.target.closest("[data-open]"), r = e.target.closest("[data-remove]");
-  if(o){
-    var m = library().filter(function(x){ return x.id === o.getAttribute("data-open"); })[0];
-    if(m){
-      closeLib();
-      if(!m.manifest && !m.mode) openWorldEntry(m);   // catalogued, not held
-      else openManuscript(m);
-    }
+function syncGroupAll(){
+  var b = $("btnGrpAll");
+  var ds = $("msList").querySelectorAll("details.grp");
+  var allOpen = ds.length > 0 && Array.prototype.every.call(ds, function(d){ return d.open; });
+  b.hidden = forcedOpen || ds.length < 2;
+  b.textContent = allOpen ? "סגור הכל" : "פתח הכל";
+  b.setAttribute("data-act", allOpen ? "close" : "open");
+}
+
+function syncSortBar(){
+  Array.prototype.forEach.call($("sortBar").querySelectorAll("[data-sort]"), function(x){
+    x.setAttribute("aria-pressed", x.getAttribute("data-sort") === sortMode ? "true" : "false");
+  });
+}
+syncSortBar();
+
+$("sortBar").addEventListener("click", function(e){
+  var b = e.target.closest("[data-sort]");
+  if(b){
+    var mode = b.getAttribute("data-sort");
+    if(mode === sortMode) return;
+    sortMode = mode; save(LS_SORT, mode);
+    if(mode === "type") typeFilter = "";      // the headings take over from the chips
+    syncSortBar();
+    renderLibrary();
+    return;
   }
+  var a = e.target.closest("#btnGrpAll");
+  if(a){
+    var want = a.getAttribute("data-act") !== "close";
+    openGroups[sortMode] = {};
+    if(want) Object.keys(groupItems).forEach(function(k){ openGroups[sortMode][k] = true; });
+    renderLibrary();
+  }
+});
+
+/* `toggle` does not bubble, hence the capture. It also fires for a drawer that
+   was drawn already open, which is harmless: filling is skipped when the
+   drawer has its rows, and the state recorded is the state it is in. */
+$("msList").addEventListener("toggle", function(e){
+  var d = e.target;
+  if(!d.classList || !d.classList.contains("grp") || !d.isConnected) return;
+  var key = d.getAttribute("data-g");
+  if(d.open){
+    var body = d.querySelector(".grp-body");
+    if(body && !body.firstChild && groupItems[key]){
+      body.innerHTML = groupItems[key].map(rowHtml).join("");
+    }
+  } else {
+    // Closed from its pinned heading, deep inside a long drawer: the rows
+    // vanish from under the reader. Bring the heading back into view.
+    var ov = $("libOverlay"), head = ov.querySelector(".lib-head");
+    var floor = ov.getBoundingClientRect().top + (head ? head.offsetHeight : 0);
+    var top = d.getBoundingClientRect().top;
+    if(top < floor) ov.scrollTop += top - floor - 8;
+  }
+  if(!forcedOpen) openGroups[sortMode][key] = d.open;
+  syncGroupAll();
+}, true);
+
+$("msList").addEventListener("click", function(e){
+  var r = e.target.closest("[data-remove]");
   if(r){
     var id = r.getAttribute("data-remove");
     if(added.some(function(a){ return a.id === id; })){
@@ -1690,101 +2006,30 @@ $("msList").addEventListener("click", function(e){
     }
     if(cur && cur.id === id){ cur = null; doc = null; resetViewerChrome(); }
     renderLibrary();
+    return;
+  }
+  // The whole card opens its manuscript, not only the button on it.
+  var o = e.target.closest("[data-open]");
+  if(o){
+    var m = library().filter(function(x){ return x.id === o.getAttribute("data-open"); })[0];
+    if(m){
+      closeLib();
+      if(!m.manifest && !m.mode) openWorldEntry(m);   // catalogued, not held
+      else openManuscript(m);
+    }
   }
 });
 
-/* ---------- index drill-down ----------
-   Choosing a cut lists its groups right here; choosing a group narrows the
-   manuscript list below. The separate index dialog still exists for the wide
-   browse, but nothing forces a reader to leave this page to use an index. */
-var drillMode = "all";
-var drillPick = "";
-
-function drillGroups(){
-  var src = IDX[drillMode] || {};
-  var keys = Object.keys(src);
-  if(drillMode === "century"){
-    keys.sort(function(a, b){
-      var na = parseInt((a.match(/\d+/) || ["9999"])[0], 10);
-      var nb = parseInt((b.match(/\d+/) || ["9999"])[0], 10);
-      return na - nb;
-    });
-  } else {
-    keys.sort(function(a, b){ return src[b].length - src[a].length; });
-  }
-  return keys.map(function(k){ return {key: k, items: src[k]}; });
+/* ---------- the preface: one paragraph, the rest on request ---------- */
+function setIntro(open){
+  $("introMore").hidden = !open;
+  $("btnIntroMore").hidden = open;
+  $("btnIntroMore").setAttribute("aria-expanded", open ? "true" : "false");
 }
-
-function renderDrill(){
-  var box = document.getElementById("idxDrill");
-  if(drillMode === "all"){ box.hidden = true; box.innerHTML = ""; return; }
-  var groups = drillGroups();
-  if(!groups.length){ box.hidden = true; box.innerHTML = ""; return; }
-  var h = '<div class="drill">';
-  groups.forEach(function(g){
-    var digital = g.items.filter(function(e){ return e.folder; }).length;
-    var on = (drillPick === g.key);
-    h += '<button type="button" class="drill-item" data-pick="' + esc(g.key) + '"' +
-         (on ? ' aria-pressed="true"' : '') + '>' +
-         '<span class="drill-name">' + esc(g.key) + '</span>' +
-         '<span class="drill-n tnum">' + g.items.length + '</span>' +
-         '<span class="drill-d tnum" title="זמינים לצפייה דיגיטלית">' +
-         digital + ' לצפייה</span>' +
-         '</button>';
-  });
-  h += '</div>';
-  if(drillPick){
-    h += '<div class="drill-clear"><button class="btn" id="btnDrillClear">' +
-         'הצג את כל כתבי היד</button></div>';
-  }
-  box.innerHTML = h;
-  box.hidden = false;
-}
-
-function matchesDrill(m){
-  if(!drillPick) return true;
-  var e = m.manifest ? enriched[m.manifest] : null;
-  if(!e){
-    // world-index entries have no enriched record but do carry their own
-    // inst/type directly (buildIndexes groups them the same way — see
-    // rebuildIndexes()), so the drill-down must fall back to those instead
-    // of just dropping every uncatalogued-elsewhere manuscript.
-    if(drillMode === "inst") return (m.inst || "לא צוין") === drillPick;
-    if(drillMode === "type") return (m.type ? m.type.he : "לא סווג") === drillPick;
-    return false;
-  }
-  if(drillMode === "inst")   return (e.inst || "לא צוין") === drillPick;
-  if(drillMode === "type")   return (e.type ? e.type.he : "לא סווג") === drillPick;
-  if(drillMode === "century") return (e.century ? ("המאה ה-" + e.century) : "לא מתוארך") === drillPick;
-  if(drillMode === "person"){
-    if(!(e.people || []).length) return drillPick === "לא זוהה מחבר";
-    return e.people.some(function(p){ return (p.name_he || p.name_en) === drillPick; });
-  }
-  return true;
-}
-
-document.getElementById("idxBar").addEventListener("click", function(e){
-  var b = e.target.closest("[data-goidx]");
-  if(!b) return;
-  drillMode = b.getAttribute("data-goidx");
-  drillPick = "";
-  Array.prototype.forEach.call(this.querySelectorAll("[data-goidx]"), function(x){
-    x.setAttribute("aria-pressed", x === b ? "true" : "false");
-  });
-  renderDrill();
-  renderLibrary();
-});
-
-document.getElementById("idxDrill").addEventListener("click", function(e){
-  if(e.target.closest("#btnDrillClear")){
-    drillPick = ""; renderDrill(); renderLibrary(); return;
-  }
-  var b = e.target.closest("[data-pick]");
-  if(!b) return;
-  var k = b.getAttribute("data-pick");
-  drillPick = (drillPick === k) ? "" : k;
-  renderDrill();
-  renderLibrary();
+$("btnIntroMore").addEventListener("click", function(){ setIntro(true); });
+$("btnIntroLess").addEventListener("click", function(){
+  setIntro(false);
+  $("libOverlay").scrollTop = 0;
 });
 
 document.getElementById("msSearch").addEventListener("input", function(){
@@ -2093,11 +2338,14 @@ function showPage(i, refit){
     img.hidden = false;
     stage.classList.remove("loading");
     if(refit) fit(); else applyTransform();
+    settleSwipe(true);
+    preloadNeighbour();
   };
   probe.onerror = function(){
     if(mine !== loadToken) return;
     if(p.direct && probe.src !== p.direct){ probe.src = p.direct; return; }
     stage.classList.remove("loading");
+    settleSwipe(false);
   };
   probe.src = url;
 
@@ -2209,6 +2457,69 @@ stage.addEventListener("wheel", function(e){
    touch and pen alike, and the stage already declares touch-action:none, so
    the browser never hijacks the pinch for page zoom. */
 var pointers = new Map();          // pointerId -> last client position
+
+/* ---------- turning the page by hand ----------
+   With the leaf at its fitted size there is nothing to pan to, so a sideways
+   drag means what it means on paper: turn the page. The leaf follows the
+   finger; let go past a fifth of the stage, or flick, and it turns. Zoomed in,
+   the same drag pans as before - the arrows still turn the page there.
+
+   Direction is the book's, not the screen's: these codices open right to
+   left, so the next leaf lies to the left and is drawn in by pulling
+   rightward, exactly as the hand turns it. That also agrees with the forward
+   arrow, which points right. */
+var swipe = null;        // {x0,y0,t0,axis,baseX} while one finger is down at fit
+var swipeTurn = null;    // {dir,baseX} between letting go and the next leaf arriving
+
+function atFit(){ return fitScale > 0 && zoom <= fitScale * 1.05; }
+
+var glideTimer = 0;
+function glide(toX){
+  clearTimeout(glideTimer);              // a second glide must not be cut short by the first
+  img.classList.add("gliding");
+  panX = toX; applyTransform();
+  glideTimer = setTimeout(function(){ img.classList.remove("gliding"); }, 220);
+}
+
+function endSwipe(e, cancelled){
+  var sw = swipe; swipe = null;
+  if(!sw || sw.axis !== "x") return false;
+  var sx = e.clientX - sw.x0, dir = sx > 0 ? 1 : -1, target = pageIdx + dir;
+  var far = Math.abs(sx) > Math.min(110, stage.clientWidth * 0.2);
+  var flick = Math.abs(sx) > 34 && (Date.now() - sw.t0) < 280;
+  if(cancelled || !doc || target < 0 || target >= doc.pages.length || !(far || flick)){
+    glide(sw.baseX);                       // not far enough, or no leaf that way
+    return true;
+  }
+  // Off the stage in the direction it was pulled, then ask for the next leaf.
+  swipeTurn = {dir:dir, baseX:sw.baseX};
+  glide(sw.baseX + dir * stage.clientWidth);
+  upgraded = false;
+  showPage(target, true);
+  return true;
+}
+
+/* The new leaf has arrived (or failed to): bring something back on stage. */
+function settleSwipe(loaded){
+  var t = swipeTurn; swipeTurn = null;
+  if(!t) return;
+  clearTimeout(glideTimer);
+  img.classList.remove("gliding");
+  if(!loaded){ panX = t.baseX; applyTransform(); return; }   // the old leaf, back in place
+  var home = panX;                                            // where fit() just put it
+  panX = home - t.dir * stage.clientWidth * 0.3; applyTransform();
+  void img.offsetWidth;                                       // commit the start position
+  glide(home);
+}
+
+/* Pages held on the media server are fetched one ahead, so a turn shows the
+   leaf rather than a wait. Institutions' own IIIF servers are left alone:
+   several of them throttle, and a speculative request is the one to skip. */
+function preloadNeighbour(){
+  if(!doc) return;
+  var nx = doc.pages[pageIdx + 1];
+  if(nx && !nx.service && nx.direct){ var pre = new Image(); pre.src = imgUrl(nx, pickWidth()); }
+}
 var dragging = false, lastX = 0, lastY = 0, pinchDist = 0;
 var lastTapT = 0, lastTapX = 0, lastTapY = 0, tapMoved = false;
 
@@ -2226,11 +2537,15 @@ stage.addEventListener("pointerdown", function(e){
   tapMoved = false;
   if(pointers.size === 2){
     dragging = false;                       // the second finger begins a pinch
+    swipe = null;
     var s = pinchState();
     pinchDist = s.dist; lastX = s.midX; lastY = s.midY;
   } else if(pointers.size === 1){
     dragging = true; lastX = e.clientX; lastY = e.clientY;
     stage.classList.add("grabbing");
+    img.classList.remove("gliding");
+    swipe = (atFit() && !swipeTurn)
+      ? {x0:e.clientX, y0:e.clientY, t0:Date.now(), axis:null, baseX:panX} : null;
   }
 });
 
@@ -2250,6 +2565,21 @@ stage.addEventListener("pointermove", function(e){
   } else if(dragging){
     var dx = e.clientX - lastX, dy = e.clientY - lastY;
     if(Math.abs(dx) + Math.abs(dy) > 2) tapMoved = true;
+    if(swipe){
+      var sx = e.clientX - swipe.x0, sy = e.clientY - swipe.y0;
+      if(!swipe.axis){
+        if(Math.abs(sx) + Math.abs(sy) < 8) return;          // not yet a gesture
+        swipe.axis = Math.abs(sx) > Math.abs(sy) * 1.2 ? "x" : "y";
+        if(swipe.axis === "y"){ swipe = null; lastX = e.clientX; lastY = e.clientY; return; }
+      }
+      // Follow the finger sideways only; drag heavily where there is no leaf.
+      var tgt = pageIdx + (sx > 0 ? 1 : -1);
+      var free = doc && tgt >= 0 && tgt < doc.pages.length;
+      panX = swipe.baseX + (free ? sx : sx * 0.22);
+      lastX = e.clientX; lastY = e.clientY;
+      applyTransform();
+      return;
+    }
     panX += dx; panY += dy;
     lastX = e.clientX; lastY = e.clientY;
     applyTransform();
@@ -2268,6 +2598,7 @@ stage.addEventListener("pointermove", function(e){
         lastTapT = 0;
       } else { lastTapT = now; lastTapX = e.clientX; lastTapY = e.clientY; }
     }
+    if(pointers.size === 1) endSwipe(e, ev === "pointercancel");
     pointers.delete(e.pointerId);
     if(pointers.size === 1){
       // Pinch over, one finger still down - carry on as a drag.
@@ -2694,11 +3025,11 @@ function runCounters(root){
   });
 }
 
-function summaryBar(items, groupCount, compact){
+function summaryBar(items, groupCount, compact, noKinds){
   if(!items || !items.length) return '';
   var byType = {}, digital = 0, pages = 0;
   items.forEach(function(e){
-    var t = e.type ? e.type.he : 'לא סווג';
+    var t = typeLabel(e.type);
     byType[t] = (byType[t] || 0) + 1;
     if(e.folder) digital++;                 // held here, readable now
     pages += (e.pages || 0);
@@ -2711,14 +3042,18 @@ function summaryBar(items, groupCount, compact){
   h += ' <span class="sum-sep">·</span> <span class="tnum" data-count="' + pages + '">0</span> עמודים';
   h += '<span class="sum-digital"><span class="tnum" data-count="' + digital + '">0</span>' +
        ' מתוך ' + items.length + ' זמינים לצפייה דיגיטלית</span>';
-  h += '</div><div class="sum-kinds">';
-  kinds.forEach(function(k){
-    var on = (typeof typeFilter !== "undefined" && typeFilter === k);
-    h += '<button type="button" class="sum-kind" data-kind="' + esc(k) + '"' +
-         (on ? ' aria-pressed="true"' : '') + '>' + esc(k) +
-         ' <b class="tnum">' + byType[k] + '</b></button>';
-  });
-  h += '</div></div>';
+  h += '</div>';
+  if(!noKinds){
+    h += '<div class="sum-kinds">';
+    kinds.forEach(function(k){
+      var on = (typeof typeFilter !== "undefined" && typeFilter === k);
+      h += '<button type="button" class="sum-kind" data-kind="' + esc(k) + '"' +
+           (on ? ' aria-pressed="true"' : '') + '>' + esc(k) +
+           ' <b class="tnum">' + byType[k] + '</b></button>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
   return h;
 }
 
@@ -2816,10 +3151,22 @@ document.getElementById("brBody").addEventListener("click", function(e){
 });
 
 /* ---------- wiring ---------- */
+/* An open drawer pins its heading under the catalogue's own sticky header, so
+   it needs to know how tall that header is at this width. */
+function measureLibHead(){
+  var ov = $("libOverlay"), head = ov.querySelector(".lib-head");
+  if(head && head.offsetHeight) ov.style.setProperty("--lib-head-h", (head.offsetHeight - 1) + "px");
+}
+// The header rewraps with the width (and has no height at all in a tab that
+// has not been shown yet), so follow it rather than measure it once.
+if(typeof ResizeObserver !== "undefined"){
+  new ResizeObserver(measureLibHead).observe(document.querySelector("#libOverlay .lib-head"));
+}
 function openLib(){
   renderLibrary();
   $("btnLibClose").hidden = !doc;   // nothing to return to before a manuscript is open
   $("libOverlay").hidden = false;
+  measureLibHead();
 }
 function closeLib(){ $("libOverlay").hidden = true; }
 $("btnLib").addEventListener("click", openLib);
@@ -3075,7 +3422,10 @@ document.addEventListener("visibilitychange", function(){
 var rt;
 window.addEventListener("resize", function(){
   clearTimeout(rt);
-  rt = setTimeout(function(){ if(doc && !img.hidden) fit(); }, 140);
+  rt = setTimeout(function(){
+    if(doc && !img.hidden) fit();
+    if(!$("libOverlay").hidden) measureLibHead();
+  }, 140);
 });
 
 if(adminMode){ var ab = document.getElementById("adminBox"); if(ab) ab.hidden = false; }
