@@ -152,6 +152,58 @@
     background:var(--stage); z-index:5;
   }
   .stage-msg h3{font-family:var(--font-display); font-weight:400; font-size:22px; margin:0;}
+  /* A catalogue record shown in place of pages: a card of its own, because a
+     full record runs to twenty fields and must scroll, and because the stage
+     is dark in both themes while the record is text to be read. The card is
+     the scroller, so the stage's touch-action:none does not pin it. */
+  .stage-msg:has(> .rec){padding:0; justify-content:flex-start; align-items:stretch;}
+  .rec{
+    flex:1 1 auto; min-height:0; overflow-y:auto; touch-action:pan-y;
+    -webkit-overflow-scrolling:touch; text-align:right; cursor:auto;
+    background:var(--pl-bg); color:var(--pl-ink); font-family:var(--pl-sans);
+  }
+  .rec-in{max-width:680px; margin:0 auto; padding:22px 20px 40px;}
+  .rec .rec-in h3{font-family:var(--pl-serif); font-weight:700; font-size:22px; line-height:1.3;
+    margin:0 0 4px; color:var(--pl-ink);}
+  .rec .rec-in p{max-width:none; color:var(--pl-ink2);}
+  .rec .rec-in .rec-sub{margin:0 0 14px; font-size:14px;}
+  .rec .rec-in .rec-note{font-size:13.5px; line-height:1.65; margin:12px 0 0;}
+  .rec .rec-in .row{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-start;
+    margin:16px 0 4px;}
+  .rec-h{font-family:var(--pl-sans); font-size:12px; font-weight:600; letter-spacing:.04em;
+    color:var(--pl-ink3); margin:22px 0 8px; padding-bottom:6px;
+    border-bottom:1px solid var(--pl-line);}
+  .rec dl.meta{grid-template-columns:minmax(88px,auto) 1fr; gap:7px 14px; font-size:13.5px;}
+  .rec dl.meta dt{font-family:var(--pl-sans); font-size:12px; letter-spacing:0;
+    text-transform:none; color:var(--pl-ink3); max-width:16ch; white-space:normal;
+    overflow:visible; padding-top:1px;}
+  .rec dl.meta dd{color:var(--pl-ink); line-height:1.55;}
+  .rec dl.meta dd .v{display:block; unicode-bidi:plaintext;}
+  .rec dl.meta dd .v + .v{margin-top:5px;}
+  .rec .rec-rights{margin-top:18px; padding:10px 12px; border-radius:10px; font-size:12.5px;
+    background:var(--pl-sunk); color:var(--pl-ink2); line-height:1.6;}
+  .rec .rec-rights b{color:var(--pl-ink);}
+  .rec a{color:var(--pl-accent);}
+  .rec a.btn-primary, .rec button.btn-primary{color:var(--pl-accent-ink);
+    background:var(--pl-accent); border-color:var(--pl-accent); border-radius:9px;
+    padding:8px 16px; text-decoration:none;}
+  .rec a.btn{border-radius:9px; padding:8px 14px; text-decoration:none;}
+  .rec-panel{overflow:visible; background:transparent; flex:none;}
+  .rec-panel .rec-in{padding:0; max-width:none;}
+  .rec.rec-panel .rec-in h3{font-size:18px;}
+  .rec-panel dl.meta{grid-template-columns:1fr; gap:2px 0;}
+  .rec-panel dl.meta dt{padding-top:9px; max-width:none;}
+  .frame-bar{
+    position:absolute; inset-block-start:8px; inset-inline-start:8px; z-index:7;
+    display:flex; gap:6px;
+  }
+  .frame-bar .btn{background:var(--surface); box-shadow:0 2px 10px rgba(0,0,0,.35);}
+  @media (max-width:560px){
+    .rec-in{padding:16px 14px 32px;}
+    .rec .rec-in h3{font-size:19px;}
+    .rec dl.meta{grid-template-columns:1fr; gap:2px 0;}
+    .rec dl.meta dt{padding-top:9px; max-width:none;}
+  }
   .stage-msg p{margin:0; max-width:52ch; font-size:14px; color:#a9adb8; line-height:1.6;}
   .stage-msg .row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center;}
   .spinner{
@@ -1536,6 +1588,15 @@ function searchBlob(m){
     if(e.rights) parts.push(e.rights.holder, e.rights.holder_he, e.rights.holder_ar);
     if(e.vongall) parts.push("von Gall", e.vongall.siglum);
   }
+  if(!e){
+    // A record we only catalogue: everything gathered about it is searchable.
+    parts.push(m.title_en, m.title_ar, m.inst_en, m.note_he, m.date);
+    if(m.type) parts.push(m.type.he, m.type.en);
+    var det = detailOf(m);
+    ((det && det.fields) || m.fields || []).forEach(function(f){
+      parts.push([].concat(f.value).join(" "));
+    });
+  }
   m._blob = parts.filter(Boolean).join(" \u00b7 ").toLowerCase();
   return m._blob;
 }
@@ -1612,6 +1673,7 @@ var worldIndex = [];
 (function loadWorld(){
   if(window.__OFFLINE_WORLD__){
     worldIndex = window.__OFFLINE_WORLD__;
+    setTimeout(loadKtivDetails, 0);
     return;
   }
   fetch("world-index.json?t=" + Date.now(), {cache:"no-store"})
@@ -1620,6 +1682,7 @@ var worldIndex = [];
       if(!list || !list.length) return;
       worldIndex = list;
       rebuildIndexes();
+      setTimeout(loadKtivDetails, 600);     // behind the list, not ahead of it
     })
     .catch(function(){ /* not generated yet */ });
 })();
@@ -1717,7 +1780,10 @@ var NO_INST = "לא צוין", NO_TYPE = "לא סווג", NO_DATE = "ללא תא
    keeps the name its own catalogue gave it. Under a heading they must be one
    library, so the variants fold onto a name the data already uses. */
 var INST_ALIAS = {
-  "Bibliothèque nationale de France (BnF), Paris": "Bibliothèque nationale de France",
+  "Bibliothèque nationale de France (BnF), Paris": "הספרייה הלאומית של צרפת",
+  "Bibliothèque nationale de France": "הספרייה הלאומית של צרפת",
+  "Universitätsbibliothek Heidelberg": "ספריית אוניברסיטת היידלברג",
+  "Chester Beatty, Dublin": "ספריית צ׳סטר ביטי, דבלין",
   "The John Rylands Library": "ספריית ג׳ון ריילנדס, מנצ׳סטר",
   "Biblioteca Apostolica Vaticana": "הספרייה האפוסטולית הוותיקנית",
   "Bodleian Libraries, University of Oxford": "ספריות בודליאן, אוקספורד",
@@ -1764,6 +1830,9 @@ function dateOf(m){
     return { y: y, label: String(y) };
   }
   var s = String(m.date || "").trim();
+  // A record whose date is written in words - "מאה י"ד" - brings the year to
+  // sort by alongside it.
+  if(m.year && +m.year >= 900 && +m.year <= 2100) return { y: +m.year, label: s || String(m.year) };
   if(!s && m.mode === "local"){
     var k = /^\s*(\d{3,4}(?:\s*[–-]\s*\d{2,4})?)\s*·/.exec(m.note || "");
     if(k) s = k[1];
@@ -1787,7 +1856,38 @@ function dateOf(m){
 }
 
 /* Readable here and now, as opposed to catalogued but held elsewhere. */
-function isHeld(m){ return !!(m.manifest || m.mode); }
+function isHeld(m){ return !!(m.manifest || m.mode || iiifOf(m)); }
+
+/* Where a manuscript we do not hold can still be shown in place: the source
+   library's IIIF manifest. A record matched to an entry we already list rides
+   along under .ktiv, so look there too. */
+function iiifOf(m){ return (m && (m.iiif || (m.ktiv && m.ktiv.iiif))) || ""; }
+
+/* The full record of a manuscript catalogued from the National Library's
+   Ktiv - every field of it - lives apart from the index, keyed by the Ktiv
+   id, and is fetched behind the list: the index stays light enough for a
+   phone, and the records still arrive in time to be searched and read. */
+var ktivDetails = null;
+function detailOf(m){
+  if(!m || !ktivDetails) return null;
+  return ktivDetails[m.id] || (m.ktiv && ktivDetails[m.ktiv.id]) || null;
+}
+function gotKtivDetails(map){
+  ktivDetails = map || {};
+  worldIndex.forEach(function(w){ delete w._blob; });     // now there is more to search
+  if(searchQuery) renderLibrary();
+  // the reader may already be looking at a record whose details just arrived
+  if(cur && !doc && detailOf(cur) && document.querySelector("#stageMsg .rec")) openWorldEntry(cur);
+  if(cur && cur._rec && !side.hidden) refreshSide();
+}
+function loadKtivDetails(){
+  if(ktivDetails) return;
+  if(window.__OFFLINE_KTIV__){ gotKtivDetails(window.__OFFLINE_KTIV__); return; }
+  fetch("ktiv-details.json?t=" + Date.now(), {cache:"no-store"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(map){ if(map) gotKtivDetails(map); })
+    .catch(function(){ /* the index works without them */ });
+}
 
 function natCmp(a, b){
   return String(a || "").localeCompare(String(b || ""), "he", {numeric:true, sensitivity:"base"});
@@ -1894,7 +1994,7 @@ function renderLibrary(){
   var summaryItems = lib.map(function(m){
     var e = m.manifest ? enriched[m.manifest] : null;
     if(e) return e;
-    return {type:m.type || null, folder:(m.mode === "local" ? (m.folder || "x") : ""),
+    return {type:m.type || null, folder:((m.mode === "local" || iiifOf(m)) ? (m.folder || "x") : ""),
             pages:(m.files ? m.files.length : (m.pages || 0)), inst:m.inst || ""};
   });
 
@@ -2099,39 +2199,54 @@ $("addForm").addEventListener("submit", function(e){
 /* Sources with no usable IIIF but no framing block either: show the
    institution's own viewer in place, with our credit bar underneath. The
    reader stays in the app; the pages are still served by the institution. */
-function openFramed(m){
+function openFramed(m, src){
   cur = m; doc = null;
   enableChrome(false);
   $("msTitle").textContent = heTitle(m);
   $("msShelf").textContent = m.shelf || "";
   side.hidden = true;
 
+  var url = src || m.frame || m.home;
   var f = document.getElementById("msFrame");
   if(!f){
     f = document.createElement("iframe");
     f.id = "msFrame";
     f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
     f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-forms");
+    f.setAttribute("allow", "fullscreen");
     f.style.cssText = "width:100%;height:100%;border:0;background:#fff;display:block";
     stage.appendChild(f);
   }
   img.hidden = true;
   hideMsg();
   f.hidden = false;
-  f.title = m.title + " — " + (m.inst || "");
-  f.src = m.frame || m.home;
+  f.title = heTitle(m) + " — " + (m.inst || "");
+  f.src = url;
+
+  // A catalogue record framed from its details card keeps a way back to the
+  // card, and a way out to the library's own page, on top of the frame.
+  var bar = document.getElementById("frameBar");
+  if(bar) bar.remove();
+  if(src){
+    bar = document.createElement("div");
+    bar.id = "frameBar"; bar.className = "frame-bar";
+    bar.innerHTML = '<button class="btn" id="btnFrameBack">פרטי הרשומה</button>' +
+      '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">פתח בלשונית ↗</a>';
+    stage.appendChild(bar);
+    document.getElementById("btnFrameBack").addEventListener("click", function(){ openWorldEntry(m); });
+  }
 
   // If the host quietly refuses to render, fall back to a plain link.
   var settled = false;
   f.onload = function(){ settled = true; };
   setTimeout(function(){
     if(settled || cur !== m) return;
-    f.hidden = true;
+    hideFrame();
     showMsg('<h3>המקור אינו מתיר הצגה בתוך מסגרת</h3>' +
-            '<p>' + esc(hostOf(m.frame || m.home)) + ' חסם את ההטמעה. אפשר לפתוח אותו בלשונית חדשה.</p>' +
-            '<div class="row"><a class="btn btn-primary" href="' + esc(m.frame || m.home) +
+            '<p>' + esc(hostOf(url)) + ' חסם את ההטמעה. אפשר לפתוח אותו בלשונית חדשה.</p>' +
+            '<div class="row"><a class="btn btn-primary" href="' + esc(url) +
             '" target="_blank" rel="noopener">פתח באתר המקור ↗</a></div>');
-  }, 6000);
+  }, 9000);
 
   updateCredit();
 }
@@ -2139,19 +2254,31 @@ function openFramed(m){
 function hideFrame(){
   var f = document.getElementById("msFrame");
   if(f){ f.hidden = true; f.removeAttribute("src"); }
+  var bar = document.getElementById("frameBar");
+  if(bar) bar.remove();
 }
 
-/* A world-index entry we don't hold and can't even frame (no digitised copy
-   at all). The point of mapping it was the catalogue record itself — show
-   what we gathered about it before sending the reader off to the source. */
-function openWorldEntry(m){
-  hideFrame();
-  cur = m; doc = null; pageIdx = 0;
-  enableChrome(false);
-  $("msTitle").textContent = heTitle(m);
-  $("msShelf").textContent = m.shelf || "";
-  side.hidden = true;
+/* A world-index entry we don't hold. The point of mapping it was the catalogue
+   record itself, so the whole record is shown - every field the source
+   catalogue gave - before the reader is sent anywhere. Where the source
+   library's viewer may be framed, the manuscript opens here, in place; the
+   pages are still served by the library and nothing is copied. */
+function recRows(fields){
+  return (fields || []).map(function(f){
+    var vals = [].concat(f.value).filter(Boolean);
+    if(!vals.length) return "";
+    return '<dt>' + esc(f.label) + '</dt><dd>' + vals.map(function(v){
+      return '<span class="v">' + (/^https?:\/\/\S+$/.test(v)
+        ? '<a href="' + esc(v) + '" target="_blank" rel="noopener">' + esc(v) + '</a>'
+        : esc(v)) + '</span>';
+    }).join("") + '</dd>';
+  }).join("");
+}
 
+/* The body of a catalogue record: title, holder, the facts, every field the
+   source catalogue gave, and the terms. Used twice - as the whole stage for a
+   record we cannot show, and as the "פרטים" panel beside one we can. */
+function recHtml(m, inPanel){
   var lang = metaLang || "he";
   var title = lang === "ar" ? (m.title_ar || m.title) : lang === "en" ? (m.title_en || m.title) : (m.title || m.title_he);
   var inst  = lang === "ar" ? (m.inst_ar || m.inst)   : lang === "en" ? (m.inst_en || m.inst)   : m.inst;
@@ -2159,22 +2286,82 @@ function openWorldEntry(m){
   var status = lang === "ar" ? m.status_ar : lang === "en" ? m.status_en : m.status_he;
   var type  = m.type ? (lang === "ar" ? m.type.ar : lang === "en" ? m.type.en : m.type.he) : "";
 
-  var h = '<div style="max-width:560px;margin:0 auto;text-align:right;padding:24px"' +
-          (lang === "ar" ? ' lang="ar"' : '') + '>' +
-    '<h3 style="margin:0 0 4px">' + esc(title || "") + '</h3>' +
-    '<p style="color:var(--ink-2);margin:0 0 14px">' + esc(inst || "") +
+  // A record matched to an entry already in the index rides under .ktiv:
+  // the entry keeps its own description and gains the library's.
+  var K = m.ktiv || null;
+  var det = detailOf(m) || {};
+  var fields = (m.fields || det.fields || []).filter(function(f){
+    return !(f.label === "תאריך" && f.value === m.date);       // already said above
+  });
+  var view = iiifOf(m);
+  var kurl = K && K.url && K.url !== m.url ? K.url : "";
+  var rights = m.rights_he || det.rights_he || "";
+  var rurl = m.rights_url || det.rights_url || "";
+  var credit = m.credit || det.credit || "";
+  var kstatus = K && K.status_he && K.status_he !== status ? K.status_he : "";
+  var fromKtiv = !!(K || m.src === "ktiv");
+  // details are fetched behind the list; a record opened first says so
+  var pending = fromKtiv && !ktivDetails;
+
+  return '<div class="rec' + (inPanel ? ' rec-panel' : '') + '"><div class="rec-in"' +
+      (lang === "ar" ? ' lang="ar"' : '') + '>' +
+    '<h3>' + esc(title || "") + '</h3>' +
+    '<p class="rec-sub">' + esc(inst || "") +
       (m.shelf ? ' · <span class="mono">' + esc(m.shelf) + '</span>' : '') + '</p>' +
     '<dl class="meta">' +
       (type ? '<dt>סוג</dt><dd>' + esc(type) + '</dd>' : '') +
       (m.date ? '<dt>תאריך</dt><dd>' + esc(m.date) + '</dd>' : '') +
       (status ? '<dt>סטטוס</dt><dd>' + esc(status) + '</dd>' : '') +
+      (kstatus ? '<dt>ב«כתיב»</dt><dd>' + esc(kstatus) + '</dd>' : '') +
     '</dl>' +
-    (note ? '<p style="font-size:13px;color:var(--ink-2);margin:14px 0 18px">' + esc(note) + '</p>' : '') +
-    (m.url ? '<div class="row"><a class="btn btn-primary" href="' + esc(m.url) +
-             '" target="_blank" rel="noopener">פתח באתר המקור ↗</a></div>' : '') +
-  '</div>';
-  showMsg(h);
+    (note ? '<p class="rec-note">' + esc(note) + '</p>' : '') +
+    '<div class="row">' +
+      (view && !inPanel ? '<button class="btn btn-primary" id="btnRecView">צפייה בכתב היד כאן</button>' : '') +
+      (m.url ? '<a class="btn' + (view || inPanel ? '' : ' btn-primary') + '" href="' + esc(m.url) +
+               '" target="_blank" rel="noopener">' +
+               (m.src === "ktiv" ? 'פתח באתר הספרייה הלאומית ↗' : 'פתח באתר המקור ↗') + '</a>' : '') +
+      (kurl ? '<a class="btn" href="' + esc(kurl) +
+              '" target="_blank" rel="noopener">הרשומה ב«כתיב» ↗</a>' : '') +
+    '</div>' +
+    (fields.length
+      ? '<h4 class="rec-h">' + (fromKtiv ? 'פרטי הרשומה ב«כתיב» — קטלוג הספרייה הלאומית' : 'פרטי הרשומה') + '</h4>' +
+        '<dl class="meta">' + recRows(fields) + '</dl>'
+      : pending ? '<p class="rec-note">טוען את פרטי הרשומה…</p>' : '') +
+    ((rights || credit)
+      ? '<div class="rec-rights">' +
+          (rights ? '<b>תנאי שימוש:</b> ' + esc(rights) +
+            (rurl ? ' · <a href="' + esc(rurl) + '" target="_blank" rel="noopener">התנאים המלאים ↗</a>' : '') : '') +
+          (credit ? (rights ? '<br>' : '') + esc(credit) : '') +
+        '</div>'
+      : '') +
+  '</div></div>';
+}
+
+function openWorldEntry(m){
+  hideFrame();
+  cur = m; doc = null; pageIdx = 0;
+  enableChrome(false);
+  $("msTitle").textContent = heTitle(m);
+  $("msShelf").textContent = m.shelf || "";
+  side.hidden = true;
+  $("pageIn").value = "—"; $("pageCount").textContent = "—";   // no pages on a record card
+  showMsg(recHtml(m, false));
+  var bv = document.getElementById("btnRecView");
+  if(bv) bv.addEventListener("click", function(){ openFromSource(m); });
   updateCredit();
+}
+
+/* Show a catalogued manuscript in place, from the source library's IIIF
+   manifest: the same viewer, the same paging, the page images served by the
+   library one at a time. The record stays with it, behind the "פרטים" button. */
+function openFromSource(m){
+  var v = {};
+  for(var k in m){ if(m.hasOwnProperty(k)) v[k] = m[k]; }
+  v.manifest = iiifOf(m);
+  v.home = (m.ktiv && m.ktiv.url) || m.url || "";
+  v._rec = m;
+  delete v._blob;
+  openManuscript(v);
 }
 
 function openLocal(m){
@@ -2755,6 +2942,8 @@ function langBar(){
 
 function renderMeta(){
   if(!doc){ sideBody.innerHTML = ""; return; }
+  // Opened from a catalogue record: the record is the description.
+  if(cur && cur._rec){ sideBody.innerHTML = recHtml(cur._rec, true); return; }
   var E0 = enrichedFor();
   var inst  = doc.dInst || doc.provider || cur.inst;
   var shelf = doc.dShelf || cur.shelf;

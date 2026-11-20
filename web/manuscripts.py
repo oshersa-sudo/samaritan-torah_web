@@ -34,7 +34,7 @@ MEDIA = os.environ.get('MSS_MEDIA', 'https://mss.onyx-study.com/images/')
 _OPEN_FILES = ('index.html',)
 _OPEN_DIRS = ('fonts/', 'img/')
 _OPEN_DATA = ('local-library.json', 'enriched-library.json', 'world-index.json',
-              'viewer-library.json')
+              'viewer-library.json', 'ktiv-details.json')
 
 manuscripts = Blueprint('manuscripts', __name__)
 
